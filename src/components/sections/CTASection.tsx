@@ -15,7 +15,11 @@ export function CTASection({ title, body, action }: CTASectionProps) {
             <h2 className="text-fluid-heading font-semibold leading-tight text-white">{title}</h2>
             <p className="mt-5 text-lg leading-8 text-white/75">{body}</p>
           </div>
-          <Button className="shrink-0 bg-white text-service-ink hover:bg-service-surface" href="#contact">
+          <Button
+            className="shrink-0 border-white bg-white text-service-ink hover:bg-service-surface"
+            href="#contact"
+            variant="secondary"
+          >
             {action}
           </Button>
         </div>
