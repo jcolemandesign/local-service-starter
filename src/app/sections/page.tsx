@@ -10,6 +10,7 @@ import {
   HeroBentoSection,
   HeroFullscreenSection,
   HeroSection,
+  NavPrimarySection,
   ProcessStepsSection,
   SectionLibraryCollections,
   ServicesBentoCardsSection,
@@ -43,6 +44,15 @@ const collections = [
             headingLevel={2}
           />
         ),
+      },
+    ],
+  },
+  {
+    title: "Navigation",
+    items: [
+      {
+        label: "Primary nav",
+        element: <NavPrimarySection {...sectionLibraryContent.navPrimary} />,
       },
     ],
   },

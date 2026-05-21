@@ -29,6 +29,27 @@ export const sectionLibraryContent = {
       },
     ],
   },
+  navPrimary: {
+    logoLabel: "Logo",
+    phone: "(555) 014-2250",
+    action: "Schedule now",
+    links: [
+      {
+        label: "Services",
+        items: ["Service 1", "Service 2", "Service 3", "Service 4"],
+      },
+      {
+        label: "Service areas",
+        items: ["Service area 1", "Service area 2", "Service area 3", "Service area 4"],
+      },
+      {
+        label: "About",
+      },
+      {
+        label: "Reviews",
+      },
+    ],
+  },
   trustBar: {
     label: "Trusted by homeowners and small businesses across the metro area",
     items: ["4.9 average rating", "2,400+ jobs completed", "Background-checked team", "Locally owned"],
