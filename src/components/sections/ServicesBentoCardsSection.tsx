@@ -46,11 +46,11 @@ export function ServicesBentoCardsSection({
         <div className="mt-16 grid grid-cols-3 gap-3 max-lg:grid-cols-2 max-md:mt-12 max-md:grid-cols-1">
           {items.map((item) => (
             <article
-              className="group relative aspect-[3/4] overflow-hidden rounded-lg border border-service-border bg-white shadow-service"
+              className="group/service-card relative aspect-[3/4] cursor-pointer overflow-hidden rounded-lg border border-service-border bg-white shadow-service transition-transform duration-300 ease-out hover:scale-[1.015]"
               key={item.title}
             >
               <ServiceImagePlaceholder label={item.imageLabel} />
-              <div className="absolute right-3 top-3 flex size-12 items-center justify-center rounded-tr-lg rounded-bl-lg border border-white/60 bg-white/90 text-xl font-semibold leading-none text-service-ink shadow-service transition-colors group-hover:bg-service-accent group-hover:text-white">
+              <div className="absolute right-3 top-3 flex size-12 items-center justify-center rounded-lg border border-white/60 bg-white/90 text-xl font-semibold leading-none text-service-ink shadow-service transition-colors group-hover/service-card:bg-service-accent group-hover/service-card:text-white">
                 <span aria-hidden="true">-&gt;</span>
               </div>
               <div className="absolute inset-x-0 bottom-0 flex h-[46%] flex-col justify-start bg-[linear-gradient(to_bottom,rgb(255_255_255_/_0)_0%,rgb(255_255_255_/_0.88)_34%,rgb(255_255_255)_48%,rgb(255_255_255)_100%)] px-7 pb-7 pt-20 max-lg:px-6 max-lg:pb-6">

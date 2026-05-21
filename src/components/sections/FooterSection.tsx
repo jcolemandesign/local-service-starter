@@ -19,7 +19,7 @@ export function FooterSection({ businessName, tagline, links }: FooterSectionPro
             <ul className="flex flex-wrap gap-5 text-sm font-medium text-white/75">
               {links.map((link) => (
                 <li key={link}>
-                  <a className="transition-colors hover:text-white" href="#">
+                  <a className="cursor-pointer transition-colors hover:text-white" href="#">
                     {link}
                   </a>
                 </li>

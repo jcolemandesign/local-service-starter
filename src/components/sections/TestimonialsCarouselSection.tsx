@@ -33,7 +33,7 @@ function SliderButton({
     <button
       type="button"
       aria-label={label}
-      className="flex size-14 shrink-0 items-center justify-center rounded-md border border-service-border bg-white text-2xl font-semibold leading-none text-service-accent shadow-service transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white max-md:size-12"
+      className="flex size-14 shrink-0 cursor-pointer items-center justify-center rounded-md border border-service-border bg-white text-2xl font-semibold leading-none text-service-accent shadow-service transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white max-md:size-12"
       onClick={onClick}
     >
       {direction === "previous" ? "<" : ">"}
@@ -148,7 +148,7 @@ export function TestimonialsCarouselSection({
                       type="button"
                       aria-label={`Show testimonial ${index + 1}`}
                       aria-current={isActive ? "true" : undefined}
-                      className={`size-3 rounded-full border border-service-accent transition-colors ${
+                      className={`size-3 cursor-pointer rounded-full border border-service-accent transition-colors ${
                         isActive ? "bg-service-accent" : "bg-transparent"
                       }`}
                       onClick={() => setActiveIndex(index)}

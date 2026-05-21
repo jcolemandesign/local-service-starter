@@ -18,7 +18,7 @@ export function Button({
 
   return (
     <a
-      className={`inline-flex min-h-12 items-center justify-center rounded-md px-6 text-sm font-semibold transition-colors ${styles} ${className}`}
+      className={`inline-flex min-h-12 cursor-pointer items-center justify-center rounded-md px-6 text-sm font-semibold transition-colors ${styles} ${className}`}
       {...props}
     >
       {children}

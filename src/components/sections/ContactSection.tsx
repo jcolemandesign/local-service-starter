@@ -48,7 +48,7 @@ export function ContactSection({ eyebrow, title, body, details }: ContactSection
                 />
               </label>
               <button
-                className="min-h-12 rounded-md bg-service-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-service-ink"
+                className="min-h-12 cursor-pointer rounded-md bg-service-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-service-ink"
                 type="button"
               >
                 Submit preview

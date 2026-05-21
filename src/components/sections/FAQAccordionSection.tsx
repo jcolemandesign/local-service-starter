@@ -59,7 +59,7 @@ export function FAQAccordionSection({
                 <h3>
                   <button
                     type="button"
-                    className="flex w-full items-center justify-between gap-8 py-8 text-left text-2xl font-semibold leading-tight text-service-ink transition-colors hover:text-service-accent max-md:gap-5 max-md:py-6 max-md:text-xl"
+                    className="flex w-full cursor-pointer items-center justify-between gap-8 py-8 text-left text-2xl font-semibold leading-tight text-service-ink transition-colors hover:text-service-accent max-md:gap-5 max-md:py-6 max-md:text-xl"
                     aria-expanded={isOpen}
                     aria-controls={answerId}
                     onClick={() => toggleItem(item.question)}
