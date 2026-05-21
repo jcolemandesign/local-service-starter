@@ -5,6 +5,7 @@ export { FAQAccordionSection } from "./FAQAccordionSection";
 export { FAQSection } from "./FAQSection";
 export { FeatureSplitSection } from "./FeatureSplitSection";
 export { FooterSection } from "./FooterSection";
+export { HeroBentoSection } from "./HeroBentoSection";
 export { HeroFullscreenSection } from "./HeroFullscreenSection";
 export { HeroSection } from "./HeroSection";
 export { ProcessStepsSection } from "./ProcessStepsSection";

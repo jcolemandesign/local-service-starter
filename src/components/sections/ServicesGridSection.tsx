@@ -21,7 +21,16 @@ export function ServicesGridSection({
   return (
     <Section id="services" className="bg-service-surface">
       <Container>
-        <SectionHeading eyebrow={eyebrow} title={title} body={body} />
+        <div className="grid grid-cols-3 items-end gap-6 max-lg:grid-cols-1 max-lg:gap-8">
+          <SectionHeading
+            eyebrow={eyebrow}
+            title={title}
+            className="col-span-2 max-w-none max-lg:col-span-1"
+          />
+          <p className="text-lg leading-8 text-service-muted max-md:text-base max-md:leading-7">
+            {body}
+          </p>
+        </div>
         <div className="mt-12 grid grid-cols-3 gap-6 max-lg:grid-cols-2 max-md:grid-cols-1">
           {items.map((item) => (
             <Card className="p-7" key={item.title}>

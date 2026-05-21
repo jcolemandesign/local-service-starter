@@ -26,7 +26,7 @@ export function SectionHeading({
           {eyebrow}
         </p>
       ) : null}
-      <HeadingTag className="text-fluid-heading font-semibold leading-tight text-service-ink">
+      <HeadingTag className="text-fluid-heading font-semibold leading-heading text-service-ink">
         {title}
       </HeadingTag>
       {body ? (

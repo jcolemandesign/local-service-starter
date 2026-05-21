@@ -7,6 +7,7 @@ import {
   FAQSection,
   FeatureSplitSection,
   FooterSection,
+  HeroBentoSection,
   HeroFullscreenSection,
   HeroSection,
   ProcessStepsSection,
@@ -28,6 +29,10 @@ const collections = [
       {
         label: "Hero section",
         element: <HeroSection {...sectionLibraryContent.hero} headingLevel={2} />,
+      },
+      {
+        label: "Bento hero",
+        element: <HeroBentoSection {...sectionLibraryContent.hero} headingLevel={2} />,
       },
       {
         label: "Fullscreen image hero",
@@ -167,7 +172,7 @@ export default function SectionsPage() {
           <p className="text-sm font-semibold uppercase tracking-widest text-white/65">
             Internal preview
           </p>
-          <h1 className="mt-4 text-fluid-heading font-semibold leading-tight">
+          <h1 className="mt-4 text-fluid-heading font-semibold leading-heading">
             Section Library
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-white/75">

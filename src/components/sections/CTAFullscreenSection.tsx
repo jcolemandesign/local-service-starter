@@ -43,7 +43,7 @@ export function CTAFullscreenSection({
           <p className="mb-5 text-sm font-semibold uppercase tracking-widest text-white/75">
             {eyebrow}
           </p>
-          <h2 className="text-fluid-heading font-semibold leading-tight">
+          <h2 className="text-fluid-heading font-semibold leading-heading">
             {title}
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-xl leading-9 text-white/80 max-md:text-lg max-md:leading-8">

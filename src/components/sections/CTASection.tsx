@@ -12,7 +12,7 @@ export function CTASection({ title, body, action }: CTASectionProps) {
       <Container>
         <div className="flex items-center justify-between gap-10 max-lg:flex-col max-lg:items-start">
           <div className="max-w-3xl">
-            <h2 className="text-fluid-heading font-semibold leading-tight text-white">{title}</h2>
+            <h2 className="text-fluid-heading font-semibold leading-heading text-white">{title}</h2>
             <p className="mt-5 text-lg leading-8 text-white/75">{body}</p>
           </div>
           <Button
