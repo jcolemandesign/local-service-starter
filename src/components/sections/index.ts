@@ -9,6 +9,7 @@ export { HeroBentoSection } from "./HeroBentoSection";
 export { HeroFullscreenSection } from "./HeroFullscreenSection";
 export { HeroSection } from "./HeroSection";
 export { ProcessStepsSection } from "./ProcessStepsSection";
+export { ServicesBentoCardsSection } from "./ServicesBentoCardsSection";
 export { ServicesGridSection } from "./ServicesGridSection";
 export { SectionLibraryCollections } from "./SectionLibraryCollections";
 export { TestimonialsCarouselSection } from "./TestimonialsCarouselSection";

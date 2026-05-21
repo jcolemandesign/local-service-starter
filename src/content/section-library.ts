@@ -82,6 +82,28 @@ export const sectionLibraryContent = {
       },
     ],
   },
+  servicesBento: {
+    eyebrow: "Services",
+    title: "Focused service paths for the work customers need most.",
+    body: "A larger image-led service card pattern for showing primary offers with more visual weight.",
+    items: [
+      {
+        title: "Emergency repairs",
+        body: "Fast help for urgent issues that need an experienced technician and a clear path to resolution.",
+        imageLabel: "Repair",
+      },
+      {
+        title: "Preventive maintenance",
+        body: "Seasonal tune-ups, inspection notes, and practical recommendations that reduce surprises.",
+        imageLabel: "Care",
+      },
+      {
+        title: "Installation",
+        body: "Clean, documented installs for new systems, fixtures, and upgrades with tidy closeout.",
+        imageLabel: "Install",
+      },
+    ],
+  },
   featureSplit: {
     eyebrow: "Why choose us",
     title: "A service experience that feels organized from the first call.",

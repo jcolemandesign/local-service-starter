@@ -12,6 +12,7 @@ import {
   HeroSection,
   ProcessStepsSection,
   SectionLibraryCollections,
+  ServicesBentoCardsSection,
   ServicesGridSection,
   TestimonialsCarouselSection,
   TestimonialsMasonrySection,
@@ -72,6 +73,14 @@ const collections = [
       {
         label: "Services grid",
         element: <ServicesGridSection {...sectionLibraryContent.services} />,
+      },
+      {
+        label: "Services bento cards",
+        element: (
+          <ServicesBentoCardsSection
+            {...sectionLibraryContent.servicesBento}
+          />
+        ),
       },
     ],
   },
