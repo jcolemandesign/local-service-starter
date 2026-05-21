@@ -18,6 +18,16 @@ export const sectionLibraryContent = {
       label: "Average rating from local customers",
       detail: "Based on verified service visits across residential repairs, installations, and maintenance plans.",
     },
+    trustSignals: [
+      {
+        value: "2,400+",
+        label: "Completed visits",
+      },
+      {
+        value: "Same-week",
+        label: "Scheduling",
+      },
+    ],
   },
   trustBar: {
     label: "Trusted by homeowners and small businesses across the metro area",
@@ -257,6 +267,12 @@ export const sectionLibraryContent = {
   cta: {
     title: "Ready to turn interest into a booked service call?",
     body: "Use this section near the end of a page to move visitors toward the primary conversion.",
+    action: "Start a request",
+  },
+  ctaFullscreen: {
+    eyebrow: "Ready when you are",
+    title: "Turn the next visit into a booked service call.",
+    body: "A cinematic conversion section for the end of a page, built to focus attention on one clear action.",
     action: "Start a request",
   },
   contact: {

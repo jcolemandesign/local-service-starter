@@ -1,4 +1,5 @@
 export { ContactSection } from "./ContactSection";
+export { CTAFullscreenSection } from "./CTAFullscreenSection";
 export { CTASection } from "./CTASection";
 export { FAQAccordionSection } from "./FAQAccordionSection";
 export { FAQSection } from "./FAQSection";

@@ -1,6 +1,7 @@
 import { Container } from "@/components/primitives";
 import {
   ContactSection,
+  CTAFullscreenSection,
   CTASection,
   FAQAccordionSection,
   FAQSection,
@@ -131,6 +132,10 @@ const collections = [
       {
         label: "CTA",
         element: <CTASection {...sectionLibraryContent.cta} />,
+      },
+      {
+        label: "Fullscreen conversion",
+        element: <CTAFullscreenSection {...sectionLibraryContent.ctaFullscreen} />,
       },
     ],
   },

@@ -6,6 +6,11 @@ type ReviewSnippet = {
   detail: string;
 };
 
+type TrustSignal = {
+  value: string;
+  label: string;
+};
+
 type HeroFullscreenSectionProps = {
   eyebrow: string;
   title: string;
@@ -13,6 +18,7 @@ type HeroFullscreenSectionProps = {
   primaryAction: string;
   secondaryAction: string;
   review: ReviewSnippet;
+  trustSignals: TrustSignal[];
   headingLevel?: 1 | 2;
 };
 
@@ -37,6 +43,7 @@ export function HeroFullscreenSection({
   primaryAction,
   secondaryAction,
   review,
+  trustSignals,
   headingLevel = 1,
 }: HeroFullscreenSectionProps) {
   const HeadingTag = `h${headingLevel}` as const;
@@ -69,10 +76,23 @@ export function HeroFullscreenSection({
           </div>
         </div>
 
-        <aside className="w-full max-w-sm rounded-lg border border-white/25 bg-white/15 p-6 text-white shadow-service backdrop-blur-md max-lg:max-w-md">
-          <p className="text-4xl font-semibold leading-none">{review.rating}</p>
-          <p className="mt-4 text-base font-semibold leading-7">{review.label}</p>
-          <p className="mt-2 text-sm leading-6 text-white/75">{review.detail}</p>
+        <aside className="grid w-full max-w-sm grid-cols-2 gap-4 text-white max-lg:max-w-md">
+          {trustSignals.map((signal) => (
+            <div
+              className="rounded-lg border border-white/25 bg-white/15 p-5 shadow-service backdrop-blur-md"
+              key={signal.label}
+            >
+              <p className="text-2xl font-semibold leading-none">{signal.value}</p>
+              <p className="mt-3 text-sm font-semibold leading-5 text-white/75">
+                {signal.label}
+              </p>
+            </div>
+          ))}
+          <div className="col-span-2 rounded-lg border border-white/25 bg-white/15 p-6 shadow-service backdrop-blur-md">
+            <p className="text-4xl font-semibold leading-none">{review.rating}</p>
+            <p className="mt-4 text-base font-semibold leading-7">{review.label}</p>
+            <p className="mt-2 text-sm leading-6 text-white/75">{review.detail}</p>
+          </div>
         </aside>
       </div>
     </section>
