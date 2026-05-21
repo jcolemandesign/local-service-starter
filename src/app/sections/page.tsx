@@ -2,15 +2,18 @@ import { Container } from "@/components/primitives";
 import {
   ContactSection,
   CTASection,
+  FAQAccordionSection,
   FAQSection,
   FeatureSplitSection,
   FooterSection,
+  HeroFullscreenSection,
   HeroSection,
   ProcessStepsSection,
   SectionLibraryCollections,
   ServicesGridSection,
   TestimonialsCarouselSection,
   TestimonialsSection,
+  TrustMarqueeSection,
   TrustBarSection,
 } from "@/components/sections";
 import { sectionLibraryContent } from "@/content/section-library";
@@ -23,6 +26,15 @@ const collections = [
         label: "Hero section",
         element: <HeroSection {...sectionLibraryContent.hero} headingLevel={2} />,
       },
+      {
+        label: "Fullscreen image hero",
+        element: (
+          <HeroFullscreenSection
+            {...sectionLibraryContent.heroFullscreen}
+            headingLevel={2}
+          />
+        ),
+      },
     ],
   },
   {
@@ -31,6 +43,10 @@ const collections = [
       {
         label: "Trust bar",
         element: <TrustBarSection {...sectionLibraryContent.trustBar} />,
+      },
+      {
+        label: "Trust marquee",
+        element: <TrustMarqueeSection {...sectionLibraryContent.trustMarquee} />,
       },
     ],
   },
@@ -84,6 +100,10 @@ const collections = [
       {
         label: "FAQ",
         element: <FAQSection {...sectionLibraryContent.faq} />,
+      },
+      {
+        label: "FAQ accordion",
+        element: <FAQAccordionSection {...sectionLibraryContent.faqAccordion} />,
       },
     ],
   },

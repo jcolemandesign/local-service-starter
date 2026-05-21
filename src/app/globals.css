@@ -18,6 +18,17 @@
   --shadow-service: 0 18px 50px rgb(23 33 29 / 0.08);
   --text-fluid-hero: clamp(3.25rem, 6vw, 6rem);
   --text-fluid-heading: clamp(2.25rem, 3.4vw, 4rem);
+  --animate-trust-marquee: trust-marquee 32s linear infinite;
+}
+
+@keyframes trust-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @media (prefers-color-scheme: dark) {

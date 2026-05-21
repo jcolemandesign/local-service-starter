@@ -7,9 +7,38 @@ export const sectionLibraryContent = {
     secondaryAction: "View services",
     stats: ["Same-week visits", "Licensed pros", "Clear estimates"],
   },
+  heroFullscreen: {
+    eyebrow: "Same-week local service",
+    title: "Home repairs handled with calm, capable follow-through.",
+    body: "A full-bleed hero pattern for service brands that need a strong first impression, a clear request path, and immediate trust proof.",
+    primaryAction: "Request service",
+    secondaryAction: "View services",
+    review: {
+      rating: "4.9",
+      label: "Average rating from local customers",
+      detail: "Based on verified service visits across residential repairs, installations, and maintenance plans.",
+    },
+  },
   trustBar: {
     label: "Trusted by homeowners and small businesses across the metro area",
     items: ["4.9 average rating", "2,400+ jobs completed", "Background-checked team", "Locally owned"],
+  },
+  trustMarquee: {
+    label: "Trusted by homeowners, property managers, and small businesses across the metro area",
+    items: [
+      "4.9 average rating",
+      "2,400+ jobs completed",
+      "Background-checked team",
+      "Locally owned",
+      "Same-week appointments",
+      "Licensed and insured",
+      "Upfront estimates",
+      "Photo-backed recommendations",
+      "Clean job sites",
+      "Friendly follow-up",
+      "Maintenance plans",
+      "Emergency availability",
+    ],
   },
   services: {
     eyebrow: "Services",
@@ -116,6 +145,38 @@ export const sectionLibraryContent = {
       {
         question: "Can customers book recurring maintenance?",
         answer: "Yes. This pattern supports one-time visits and recurring service plans.",
+      },
+    ],
+  },
+  faqAccordion: {
+    eyebrow: "FAQ",
+    title: "Clear answers before customers reach out.",
+    body: "A full-width accordion pattern for service pages that need organized answers without overwhelming the layout.",
+    items: [
+      {
+        question: "Do you provide estimates before work begins?",
+        answer:
+          "Yes. Customers receive a clear scope, pricing guidance, and an approval point before paid work starts. If the work changes once we are on site, we explain the reason and confirm the next step first.",
+      },
+      {
+        question: "What areas do you serve?",
+        answer:
+          "This placeholder can be adapted for city, county, or neighborhood coverage. It works well for businesses that serve a defined metro area and want to make location fit obvious before someone contacts the team.",
+      },
+      {
+        question: "Can customers book recurring maintenance?",
+        answer:
+          "Yes. This pattern supports one-time visits and recurring service plans, with room to explain seasonal tune-ups, reminder schedules, and what is included in each maintenance appointment.",
+      },
+      {
+        question: "How quickly can someone schedule service?",
+        answer:
+          "Availability depends on the service type and current schedule, but this section can communicate standard response windows, same-week availability, emergency support, and what customers should expect after submitting a request.",
+      },
+      {
+        question: "Are your technicians licensed and insured?",
+        answer:
+          "Yes. Use this answer to reinforce credentials, insurance coverage, background checks, training, or any local certifications that help customers feel confident before inviting the team into their home or business.",
       },
     ],
   },

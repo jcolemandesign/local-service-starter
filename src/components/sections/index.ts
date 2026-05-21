@@ -1,8 +1,10 @@
 export { ContactSection } from "./ContactSection";
 export { CTASection } from "./CTASection";
+export { FAQAccordionSection } from "./FAQAccordionSection";
 export { FAQSection } from "./FAQSection";
 export { FeatureSplitSection } from "./FeatureSplitSection";
 export { FooterSection } from "./FooterSection";
+export { HeroFullscreenSection } from "./HeroFullscreenSection";
 export { HeroSection } from "./HeroSection";
 export { ProcessStepsSection } from "./ProcessStepsSection";
 export { ServicesGridSection } from "./ServicesGridSection";
@@ -10,3 +12,4 @@ export { SectionLibraryCollections } from "./SectionLibraryCollections";
 export { TestimonialsCarouselSection } from "./TestimonialsCarouselSection";
 export { TestimonialsSection } from "./TestimonialsSection";
 export { TrustBarSection } from "./TrustBarSection";
+export { TrustMarqueeSection } from "./TrustMarqueeSection";
