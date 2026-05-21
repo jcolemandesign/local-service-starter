@@ -8,6 +8,7 @@ export { FooterSection } from "./FooterSection";
 export { HeroBentoSection } from "./HeroBentoSection";
 export { HeroFullscreenSection } from "./HeroFullscreenSection";
 export { HeroSection } from "./HeroSection";
+export { NavFloatingBentoSection } from "./NavFloatingBentoSection";
 export { NavPrimarySection } from "./NavPrimarySection";
 export { ProcessStepsSection } from "./ProcessStepsSection";
 export { ServicesBentoCardsSection } from "./ServicesBentoCardsSection";

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/primitives";
 
 const menuEase = [0.22, 1, 0.36, 1] as const;
@@ -50,21 +50,11 @@ export function NavPrimarySection({
     ? { duration: 0 }
     : { duration: 0.24, ease: menuEase };
 
-  useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? "hidden" : "";
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isMenuOpen]);
-
   return (
     <section className="relative bg-white">
       <nav
         aria-label="Primary preview navigation"
-        className={`relative z-30 flex min-h-20 w-full items-center justify-between gap-8 border-b border-service-border bg-white px-8 max-md:px-6 ${
-          isMenuOpen ? "max-lg:fixed max-lg:inset-x-0 max-lg:top-0" : ""
-        }`}
+        className="relative z-30 flex min-h-20 w-full items-center justify-between gap-8 border-b border-service-border bg-white px-8 max-md:px-6"
       >
         <div className="flex min-w-0 items-center gap-10">
           <a
@@ -179,7 +169,7 @@ export function NavPrimarySection({
         {isMenuOpen ? (
           <motion.div
             id="primary-nav-menu"
-            className="fixed inset-0 z-20 hidden min-h-svh flex-col items-center justify-center bg-service-ink px-8 pb-12 pt-28 text-white max-lg:flex max-md:px-6"
+            className="relative z-20 hidden min-h-[70svh] flex-col items-center justify-center bg-service-ink px-8 py-16 text-white max-lg:flex max-md:px-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
