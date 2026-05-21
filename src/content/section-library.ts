@@ -40,6 +40,19 @@ export const sectionLibraryContent = {
       "Emergency availability",
     ],
   },
+  trustLogoMarquee: {
+    label: "Recognized as a top service provider",
+    logos: [
+      "Brand 01",
+      "Assoc 02",
+      "Partner 03",
+      "Award 04",
+      "Guild 05",
+      "Network 06",
+      "Sponsor 07",
+      "Board 08",
+    ],
+  },
   services: {
     eyebrow: "Services",
     title: "Everyday services with a professional system behind them.",
@@ -126,6 +139,67 @@ export const sectionLibraryContent = {
         author: "Elena Walsh",
         city: "Nashville",
         service: "Preventive maintenance",
+      },
+    ],
+  },
+  testimonialsMasonry: {
+    eyebrow: "Reviews",
+    title: "A wall of proof from real service visits.",
+    body: "A masonry testimonial section for showing a larger review set while keeping the first view focused and scannable.",
+    items: [
+      {
+        quote:
+          "They arrived on time, explained the repair in plain language, and gave us a clear price before starting. The whole visit felt organized from beginning to end.",
+        author: "Maya R.",
+        detail: "Residential repair",
+      },
+      {
+        quote:
+          "The estimate was easy to understand and the installation team kept the work area spotless. We knew what was happening at every step.",
+        author: "Daniel K.",
+        detail: "System installation",
+      },
+      {
+        quote:
+          "I called in the morning and had someone scheduled for the next day. The technician was friendly, careful, and honest about what needed attention.",
+        author: "Priya S.",
+        detail: "Emergency service",
+      },
+      {
+        quote:
+          "Our maintenance appointment found a small issue before it became a major repair. That kind of practical advice is exactly why we keep using them.",
+        author: "Helen M.",
+        detail: "Preventive maintenance",
+      },
+      {
+        quote:
+          "They treated our small office like it mattered. The work was finished quickly, communication was consistent, and there were no surprises on the invoice.",
+        author: "Andre W.",
+        detail: "Small business service",
+      },
+      {
+        quote:
+          "Every option was explained without pressure. We picked the repair that made sense for our budget and felt confident about the choice.",
+        author: "Lauren P.",
+        detail: "Home service consultation",
+      },
+      {
+        quote:
+          "The follow-up after the visit was excellent. We received photos, notes, and a simple recommendation for what to watch over the next few months.",
+        author: "Chris T.",
+        detail: "Inspection visit",
+      },
+      {
+        quote:
+          "Booking was simple, the arrival window was accurate, and the technician took time to answer all of our questions before leaving.",
+        author: "Nina G.",
+        detail: "Recurring service plan",
+      },
+      {
+        quote:
+          "They helped us prioritize what was urgent and what could wait. That honesty made it easy to trust the recommendations.",
+        author: "Owen B.",
+        detail: "Property maintenance",
       },
     ],
   },

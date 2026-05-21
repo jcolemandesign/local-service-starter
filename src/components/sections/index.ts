@@ -10,6 +10,8 @@ export { ProcessStepsSection } from "./ProcessStepsSection";
 export { ServicesGridSection } from "./ServicesGridSection";
 export { SectionLibraryCollections } from "./SectionLibraryCollections";
 export { TestimonialsCarouselSection } from "./TestimonialsCarouselSection";
+export { TestimonialsMasonrySection } from "./TestimonialsMasonrySection";
 export { TestimonialsSection } from "./TestimonialsSection";
 export { TrustBarSection } from "./TrustBarSection";
+export { TrustLogoMarqueeSection } from "./TrustLogoMarqueeSection";
 export { TrustMarqueeSection } from "./TrustMarqueeSection";

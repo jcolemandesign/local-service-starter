@@ -12,7 +12,9 @@ import {
   SectionLibraryCollections,
   ServicesGridSection,
   TestimonialsCarouselSection,
+  TestimonialsMasonrySection,
   TestimonialsSection,
+  TrustLogoMarqueeSection,
   TrustMarqueeSection,
   TrustBarSection,
 } from "@/components/sections";
@@ -47,6 +49,14 @@ const collections = [
       {
         label: "Trust marquee",
         element: <TrustMarqueeSection {...sectionLibraryContent.trustMarquee} />,
+      },
+      {
+        label: "Trust logo marquee",
+        element: (
+          <TrustLogoMarqueeSection
+            {...sectionLibraryContent.trustLogoMarquee}
+          />
+        ),
       },
     ],
   },
@@ -89,6 +99,14 @@ const collections = [
         element: (
           <TestimonialsCarouselSection
             {...sectionLibraryContent.testimonialsCarousel}
+          />
+        ),
+      },
+      {
+        label: "Masonry testimonials",
+        element: (
+          <TestimonialsMasonrySection
+            {...sectionLibraryContent.testimonialsMasonry}
           />
         ),
       },
