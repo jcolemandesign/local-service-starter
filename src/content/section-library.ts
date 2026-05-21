@@ -72,6 +72,34 @@ export const sectionLibraryContent = {
       },
     ],
   },
+  testimonialsCarousel: {
+    eyebrow: "Customer stories",
+    title: "Longer proof for high-trust service pages.",
+    body: "A centered testimonial carousel for pages that need a stronger customer story after the introductory copy.",
+    items: [
+      {
+        quote:
+          "From the first call to the final walkthrough, the team made a stressful repair feel completely manageable. They explained the issue clearly, showed me the options, and left the house cleaner than they found it.",
+        author: "Amanda Reeves",
+        city: "Franklin",
+        service: "Emergency repair",
+      },
+      {
+        quote:
+          "We had put off replacing our old system because every estimate felt confusing. This team gave us a straightforward plan, arrived exactly when they said they would, and finished the installation without disrupting our workday.",
+        author: "Marcus Bennett",
+        city: "Brentwood",
+        service: "System installation",
+      },
+      {
+        quote:
+          "The maintenance visit caught two small problems before they became expensive ones. I appreciated how practical the recommendations were, and I never felt pushed into work we did not actually need.",
+        author: "Elena Walsh",
+        city: "Nashville",
+        service: "Preventive maintenance",
+      },
+    ],
+  },
   faq: {
     eyebrow: "FAQ",
     title: "Questions customers usually ask first.",

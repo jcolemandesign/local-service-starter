@@ -7,66 +7,114 @@ import {
   FooterSection,
   HeroSection,
   ProcessStepsSection,
+  SectionLibraryCollections,
   ServicesGridSection,
+  TestimonialsCarouselSection,
   TestimonialsSection,
   TrustBarSection,
 } from "@/components/sections";
 import { sectionLibraryContent } from "@/content/section-library";
 
-const examples = [
+const collections = [
   {
-    label: "Hero section",
-    element: <HeroSection {...sectionLibraryContent.hero} headingLevel={2} />,
+    title: "Hero",
+    items: [
+      {
+        label: "Hero section",
+        element: <HeroSection {...sectionLibraryContent.hero} headingLevel={2} />,
+      },
+    ],
   },
   {
-    label: "Trust bar",
-    element: <TrustBarSection {...sectionLibraryContent.trustBar} />,
+    title: "Trust",
+    items: [
+      {
+        label: "Trust bar",
+        element: <TrustBarSection {...sectionLibraryContent.trustBar} />,
+      },
+    ],
   },
   {
-    label: "Services grid",
-    element: <ServicesGridSection {...sectionLibraryContent.services} />,
+    title: "Services",
+    items: [
+      {
+        label: "Services grid",
+        element: <ServicesGridSection {...sectionLibraryContent.services} />,
+      },
+    ],
   },
   {
-    label: "Feature split",
-    element: <FeatureSplitSection {...sectionLibraryContent.featureSplit} />,
+    title: "Features",
+    items: [
+      {
+        label: "Feature split",
+        element: <FeatureSplitSection {...sectionLibraryContent.featureSplit} />,
+      },
+    ],
   },
   {
-    label: "Process steps",
-    element: <ProcessStepsSection {...sectionLibraryContent.process} />,
+    title: "Process",
+    items: [
+      {
+        label: "Process steps",
+        element: <ProcessStepsSection {...sectionLibraryContent.process} />,
+      },
+    ],
   },
   {
-    label: "Testimonials",
-    element: <TestimonialsSection {...sectionLibraryContent.testimonials} />,
+    title: "Testimonials",
+    items: [
+      {
+        label: "Testimonials",
+        element: <TestimonialsSection {...sectionLibraryContent.testimonials} />,
+      },
+      {
+        label: "Centered testimonial slider",
+        element: (
+          <TestimonialsCarouselSection
+            {...sectionLibraryContent.testimonialsCarousel}
+          />
+        ),
+      },
+    ],
   },
   {
-    label: "FAQ",
-    element: <FAQSection {...sectionLibraryContent.faq} />,
+    title: "FAQ",
+    items: [
+      {
+        label: "FAQ",
+        element: <FAQSection {...sectionLibraryContent.faq} />,
+      },
+    ],
   },
   {
-    label: "CTA",
-    element: <CTASection {...sectionLibraryContent.cta} />,
+    title: "Conversion",
+    items: [
+      {
+        label: "CTA",
+        element: <CTASection {...sectionLibraryContent.cta} />,
+      },
+    ],
   },
   {
-    label: "Contact section",
-    element: <ContactSection {...sectionLibraryContent.contact} />,
+    title: "Contact",
+    items: [
+      {
+        label: "Contact section",
+        element: <ContactSection {...sectionLibraryContent.contact} />,
+      },
+    ],
   },
   {
-    label: "Footer",
-    element: <FooterSection {...sectionLibraryContent.footer} />,
+    title: "Footer",
+    items: [
+      {
+        label: "Footer",
+        element: <FooterSection {...sectionLibraryContent.footer} />,
+      },
+    ],
   },
 ];
-
-function ShowcaseLabel({ label }: { label: string }) {
-  return (
-    <div className="border-y border-service-border bg-white py-4">
-      <Container>
-        <p className="text-sm font-semibold uppercase tracking-widest text-service-accent">
-          {label}
-        </p>
-      </Container>
-    </div>
-  );
-}
 
 export default function SectionsPage() {
   return (
@@ -86,12 +134,7 @@ export default function SectionsPage() {
         </Container>
       </section>
 
-      {examples.map((example) => (
-        <div key={example.label}>
-          <ShowcaseLabel label={example.label} />
-          {example.element}
-        </div>
-      ))}
+      <SectionLibraryCollections collections={collections} />
     </main>
   );
 }
