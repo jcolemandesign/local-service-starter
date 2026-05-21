@@ -13,6 +13,7 @@ export { NavPrimarySection } from "./NavPrimarySection";
 export { ProcessStepsSection } from "./ProcessStepsSection";
 export { ServicesBentoCardsSection } from "./ServicesBentoCardsSection";
 export { ServicesGridSection } from "./ServicesGridSection";
+export { ServicesHoverPanelSection } from "./ServicesHoverPanelSection";
 export { SectionLibraryCollections } from "./SectionLibraryCollections";
 export { TestimonialsCarouselSection } from "./TestimonialsCarouselSection";
 export { TestimonialsMasonrySection } from "./TestimonialsMasonrySection";

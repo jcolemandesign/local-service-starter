@@ -125,6 +125,43 @@ export const sectionLibraryContent = {
       },
     ],
   },
+  servicesHoverPanel: {
+    eyebrow: "Services",
+    title: "Explore service categories",
+    body: "A flexible service browser for local businesses that need to explain related offers without sending visitors away from the page.",
+    items: [
+      {
+        title: "Emergency repairs",
+        body: "Fast troubleshooting, clear next steps, and practical repairs for urgent issues that need attention right away.",
+        imageLabel: "Repair",
+      },
+      {
+        title: "Maintenance plans",
+        body: "Recurring visits, seasonal tune-ups, and documented recommendations that help customers prevent larger surprises.",
+        imageLabel: "Care",
+      },
+      {
+        title: "System installation",
+        body: "Clean installs for new systems, replacements, and upgrades with a tidy process from estimate to walkthrough.",
+        imageLabel: "Install",
+      },
+      {
+        title: "Inspections",
+        body: "Detailed checks with photo-backed notes, priority guidance, and simple recommendations customers can understand.",
+        imageLabel: "Inspect",
+      },
+      {
+        title: "Commercial service",
+        body: "Responsive support for offices, shops, and small facilities that need reliable communication and minimal disruption.",
+        imageLabel: "Biz",
+      },
+      {
+        title: "Consultations",
+        body: "Helpful planning conversations for customers comparing options, budgets, timelines, and future service needs.",
+        imageLabel: "Plan",
+      },
+    ],
+  },
   featureSplit: {
     eyebrow: "Why choose us",
     title: "A service experience that feels organized from the first call.",

@@ -16,6 +16,7 @@ import {
   SectionLibraryCollections,
   ServicesBentoCardsSection,
   ServicesGridSection,
+  ServicesHoverPanelSection,
   TestimonialsCarouselSection,
   TestimonialsMasonrySection,
   TestimonialsSection,
@@ -96,6 +97,14 @@ const collections = [
         element: (
           <ServicesBentoCardsSection
             {...sectionLibraryContent.servicesBento}
+          />
+        ),
+      },
+      {
+        label: "Services hover panel",
+        element: (
+          <ServicesHoverPanelSection
+            {...sectionLibraryContent.servicesHoverPanel}
           />
         ),
       },
