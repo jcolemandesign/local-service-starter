@@ -1,4 +1,6 @@
 export { ContactSection } from "./ContactSection";
+export { ContentRevealParagraphSection } from "./ContentRevealParagraphSection";
+export { ContentStickyIdeasSection } from "./ContentStickyIdeasSection";
 export { CTAFullscreenSection } from "./CTAFullscreenSection";
 export { CTASection } from "./CTASection";
 export { FAQAccordionSection } from "./FAQAccordionSection";
@@ -7,6 +9,7 @@ export { FeatureSplitSection } from "./FeatureSplitSection";
 export { FooterSection } from "./FooterSection";
 export { HeroBentoSection } from "./HeroBentoSection";
 export { HeroFullscreenSection } from "./HeroFullscreenSection";
+export { HeroGridMosaicSection } from "./HeroGridMosaicSection";
 export { HeroSection } from "./HeroSection";
 export { NavFloatingBentoSection } from "./NavFloatingBentoSection";
 export { NavPrimarySection } from "./NavPrimarySection";

@@ -29,6 +29,42 @@ export const sectionLibraryContent = {
       },
     ],
   },
+  heroGridMosaic: {
+    eyebrow: "Local service starter",
+    title: "Service pages with clarity, proof, and quick paths to action.",
+    body: "A modular grid hero for local service brands that need room for a strong message, trust proof, supporting visuals, and three high-priority service paths.",
+    primaryAction: "Request service",
+    secondaryAction: "Explore services",
+    images: ["Visit", "Map"],
+    trustSignals: [
+      {
+        value: "4.9",
+        label: "Average rating from verified local service visits",
+      },
+      {
+        value: "2,400+",
+        label: "Completed jobs across repairs, installs, and maintenance",
+      },
+      {
+        value: "Same-week",
+        label: "Scheduling options for urgent and planned work",
+      },
+    ],
+    services: [
+      {
+        title: "Emergency repairs",
+        body: "Fast help for urgent issues with clear next steps before work begins.",
+      },
+      {
+        title: "Maintenance plans",
+        body: "Recurring tune-ups and practical notes that help customers prevent surprises.",
+      },
+      {
+        title: "System installation",
+        body: "Clean upgrades and replacements with tidy closeout and simple documentation.",
+      },
+    ],
+  },
   navPrimary: {
     logoLabel: "Logo",
     phone: "(555) 014-2250",
@@ -48,6 +84,30 @@ export const sectionLibraryContent = {
       {
         label: "Reviews",
       },
+    ],
+  },
+  contentRevealParagraph: {
+    lines: [
+      "Local service websites need to feel useful",
+      "before they feel impressive.",
+      "This reusable system keeps proof, clarity,",
+      "and conversion close to every section.",
+    ],
+  },
+  contentStickyIdeas: {
+    eyebrow: "Content",
+    title: "A long-form content pattern for pages that need more room to explain.",
+    paragraphs: [
+      "A strong service page gives visitors enough context to understand the business without asking them to decode a wall of small copy.",
+      "Large paragraph blocks can slow the pace of a page in a useful way, giving important positioning, process details, or values room to breathe.",
+      "The sticky idea list keeps the main takeaways visible while someone scrolls through the longer narrative, so the section remains scannable even when the copy gets richer.",
+      "Use this pattern for about pages, service philosophy, process explanations, or any moment where the business needs to sound clear, confident, and human.",
+    ],
+    ideas: [
+      "Lead with clarity",
+      "Keep proof close",
+      "Make scanning easy",
+      "Let important copy breathe",
     ],
   },
   trustBar: {

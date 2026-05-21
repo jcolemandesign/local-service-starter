@@ -1,6 +1,8 @@
 import { Container } from "@/components/primitives";
 import {
   ContactSection,
+  ContentRevealParagraphSection,
+  ContentStickyIdeasSection,
   CTAFullscreenSection,
   CTASection,
   FAQAccordionSection,
@@ -9,6 +11,7 @@ import {
   FooterSection,
   HeroBentoSection,
   HeroFullscreenSection,
+  HeroGridMosaicSection,
   HeroSection,
   NavFloatingBentoSection,
   NavPrimarySection,
@@ -47,6 +50,15 @@ const collections = [
           />
         ),
       },
+      {
+        label: "Grid mosaic hero",
+        element: (
+          <HeroGridMosaicSection
+            {...sectionLibraryContent.heroGridMosaic}
+            headingLevel={2}
+          />
+        ),
+      },
     ],
   },
   {
@@ -60,6 +72,27 @@ const collections = [
         label: "Floating bento nav",
         element: (
           <NavFloatingBentoSection {...sectionLibraryContent.navPrimary} />
+        ),
+      },
+    ],
+  },
+  {
+    title: "Content",
+    items: [
+      {
+        label: "Reveal paragraph",
+        element: (
+          <ContentRevealParagraphSection
+            {...sectionLibraryContent.contentRevealParagraph}
+          />
+        ),
+      },
+      {
+        label: "Sticky ideas content",
+        element: (
+          <ContentStickyIdeasSection
+            {...sectionLibraryContent.contentStickyIdeas}
+          />
         ),
       },
     ],
