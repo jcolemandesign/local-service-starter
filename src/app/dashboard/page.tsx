@@ -20,6 +20,7 @@ const statusOptions = [
   "Quoted",
   "Booked",
   "Completed",
+  "Not responding",
   "Lost",
   "Spam",
 ];

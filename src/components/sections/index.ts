@@ -12,7 +12,7 @@ export { HeroFullscreenSection } from "./HeroFullscreenSection";
 export { HeroGridMosaicSection } from "./HeroGridMosaicSection";
 export { HeroSection } from "./HeroSection";
 export { NavFloatingBentoSection } from "./NavFloatingBentoSection";
-export { NavPrimarySection } from "./NavPrimarySection";
+export { NavCenterLogoSection, NavPrimarySection } from "./NavPrimarySection";
 export { ProcessStepsSection } from "./ProcessStepsSection";
 export { ServicesBentoCardsSection } from "./ServicesBentoCardsSection";
 export { ServicesGridSection } from "./ServicesGridSection";

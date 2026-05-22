@@ -12,6 +12,7 @@ type NavLink = {
 };
 
 type NavFloatingBentoSectionProps = {
+  logoLabel: string;
   phone: string;
   action: string;
   links: NavLink[];
@@ -91,7 +92,7 @@ function ModalMenu({
 
           <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
             <a
-              className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-md border border-white/25 bg-transparent px-5 text-sm font-semibold text-white transition-colors hover:border-white hover:text-white"
+              className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md border border-white/25 bg-transparent px-5 text-sm font-semibold text-white transition-colors hover:border-white hover:text-white"
               href="tel:5550142250"
             >
               <PhoneIcon />
@@ -106,6 +107,7 @@ function ModalMenu({
 }
 
 export function NavFloatingBentoSection({
+  logoLabel,
   phone,
   action,
   links,
@@ -121,6 +123,15 @@ export function NavFloatingBentoSection({
     <section className="relative min-h-20 bg-white">
       <nav aria-label="Floating bento preview navigation">
         <div className="pointer-events-none relative z-30 grid grid-cols-[1fr_auto_1fr] items-center px-8 py-3 max-lg:hidden">
+          <div className="pointer-events-auto col-start-1 flex justify-self-start">
+            <a
+              className="flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-service-border bg-white/90 p-1 text-sm font-semibold uppercase text-service-muted shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:text-service-accent"
+              href="#"
+            >
+              {logoLabel}
+            </a>
+          </div>
+
           <ul className="pointer-events-auto col-start-2 flex min-h-12 items-center gap-1 rounded-lg border border-service-border bg-white/90 p-1 text-sm font-semibold text-service-ink shadow-service backdrop-blur-md">
             {links.map((link) => {
               const hasDropdown = Boolean(link.items?.length);
@@ -203,7 +214,11 @@ export function NavFloatingBentoSection({
 
           <div className="pointer-events-auto col-start-3 flex justify-self-end">
             <div className="flex items-center gap-3">
-              <Button className="gap-2 px-5" href="tel:5550142250" variant="secondary">
+              <Button
+                className="gap-2 px-5"
+                href="tel:5550142250"
+                variant="secondary"
+              >
                 <PhoneIcon />
                 {phone}
               </Button>
@@ -212,7 +227,14 @@ export function NavFloatingBentoSection({
           </div>
         </div>
 
-        <div className="relative z-50 hidden justify-end px-8 py-3 max-lg:flex max-md:px-6">
+        <div className="relative z-50 hidden items-center justify-between gap-4 px-8 py-3 max-lg:flex max-md:px-6">
+          <a
+            className="flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-service-border bg-white/90 p-1 text-sm font-semibold uppercase text-service-muted shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:text-service-accent"
+            href="#"
+          >
+            {logoLabel}
+          </a>
+
           <button
             aria-controls="floating-bento-nav-menu"
             aria-expanded={isMenuOpen}

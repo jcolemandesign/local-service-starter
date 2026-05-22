@@ -18,6 +18,8 @@ type NavPrimarySectionProps = {
   links: NavLink[];
 };
 
+type NavPrimaryLayout = "default" | "centerLogo";
+
 function PhoneIcon() {
   return (
     <svg
@@ -43,26 +45,77 @@ export function NavPrimarySection({
   action,
   links,
 }: NavPrimarySectionProps) {
+  return (
+    <NavPrimaryLayoutSection
+      action={action}
+      layout="default"
+      links={links}
+      logoLabel={logoLabel}
+      phone={phone}
+    />
+  );
+}
+
+export function NavCenterLogoSection({
+  logoLabel,
+  phone,
+  action,
+  links,
+}: NavPrimarySectionProps) {
+  return (
+    <NavPrimaryLayoutSection
+      action={action}
+      layout="centerLogo"
+      links={links}
+      logoLabel={logoLabel}
+      phone={phone}
+    />
+  );
+}
+
+function NavPrimaryLayoutSection({
+  logoLabel,
+  phone,
+  action,
+  links,
+  layout,
+}: NavPrimarySectionProps & { layout: NavPrimaryLayout }) {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const shouldReduceMotion = useReducedMotion();
   const transition = shouldReduceMotion
     ? { duration: 0 }
     : { duration: 0.24, ease: menuEase };
+  const isCenterLogo = layout === "centerLogo";
+  const navLabel = isCenterLogo
+    ? "Center logo preview navigation"
+    : "Primary preview navigation";
 
   return (
     <section className="relative bg-white">
       <nav
-        aria-label="Primary preview navigation"
-        className="relative z-30 flex min-h-20 w-full items-center justify-between gap-8 border-b border-service-border bg-white px-8 max-md:px-6"
+        aria-label={navLabel}
+        className={
+          isCenterLogo
+            ? "relative z-30 grid min-h-20 w-full grid-cols-[1fr_auto_1fr] items-center gap-8 border-b border-service-border bg-white px-8 max-lg:flex max-lg:justify-between max-md:px-6"
+            : "relative z-30 flex min-h-20 w-full items-center justify-between gap-8 border-b border-service-border bg-white px-8 max-md:px-6"
+        }
       >
-        <div className="flex min-w-0 items-center gap-10">
-          <a
-            className="flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center rounded-md border border-service-border bg-service-surface text-sm font-semibold uppercase text-service-muted"
-            href="#"
-          >
-            {logoLabel}
-          </a>
+        <div
+          className={
+            isCenterLogo
+              ? "flex min-w-0 items-center gap-7 justify-self-start"
+              : "flex min-w-0 items-center gap-10"
+          }
+        >
+          {!isCenterLogo ? (
+            <a
+              className="flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center rounded-md border border-service-border bg-service-surface text-sm font-semibold uppercase text-service-muted"
+              href="#"
+            >
+              {logoLabel}
+            </a>
+          ) : null}
 
           <ul className="flex items-center gap-7 text-sm font-semibold text-service-ink max-lg:hidden">
             {links.map((link) => {
@@ -145,6 +198,15 @@ export function NavPrimarySection({
           </ul>
         </div>
 
+        {isCenterLogo ? (
+          <a
+            className="flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center rounded-md border border-service-border bg-service-surface text-sm font-semibold uppercase text-service-muted max-lg:order-first"
+            href="#"
+          >
+            {logoLabel}
+          </a>
+        ) : null}
+
         <button
           aria-controls="primary-nav-menu"
           aria-expanded={isMenuOpen}
@@ -156,7 +218,7 @@ export function NavPrimarySection({
           <span aria-hidden="true">{isMenuOpen ? "x" : "v"}</span>
         </button>
 
-        <div className="flex shrink-0 items-center gap-3 max-lg:hidden">
+        <div className="flex shrink-0 items-center gap-3 justify-self-end max-lg:hidden">
           <Button className="gap-2 px-5" href="tel:5550142250" variant="secondary">
             <PhoneIcon />
             {phone}
@@ -206,7 +268,7 @@ export function NavPrimarySection({
 
             <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
               <a
-                className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-md border border-white/25 bg-transparent px-5 text-sm font-semibold text-white transition-colors hover:border-white hover:text-white"
+                className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md border border-white/25 bg-transparent px-5 text-sm font-semibold text-white transition-colors hover:border-white hover:text-white"
                 href="tel:5550142250"
               >
                 <PhoneIcon />

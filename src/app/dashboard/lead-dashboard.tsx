@@ -90,6 +90,28 @@ const compactSecondaryButtonClass =
 const compactPrimaryButtonClass =
   "inline-flex min-h-10 w-full items-center justify-center whitespace-nowrap rounded-md bg-service-accent px-4 text-sm font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-full sm:w-auto";
 
+const statusPillClassByStatus: Record<string, string> = {
+  booked: "bg-green-600 text-white",
+  completed: "bg-green-50 text-green-700",
+  contacted: "bg-blue-50 text-blue-700",
+  lost: "bg-red-50 text-red-700",
+  new: "bg-service-surface text-service-accent",
+  "not responding": "bg-red-50 text-red-700",
+  quoted: "bg-blue-600 text-white",
+  spam: "bg-red-600 text-white",
+};
+
+const statusOptionClassByStatus: Record<string, string> = {
+  booked: "bg-green-600 text-white",
+  completed: "bg-green-50 text-green-700",
+  contacted: "bg-blue-50 text-blue-700",
+  lost: "bg-red-50 text-red-700",
+  new: "bg-service-surface text-service-accent",
+  "not responding": "bg-red-50 text-red-700",
+  quoted: "bg-blue-600 text-white",
+  spam: "bg-red-600 text-white",
+};
+
 function readLeadValue(lead: Lead, keys: string[]) {
   for (const key of keys) {
     const value = lead[key];
@@ -135,6 +157,25 @@ function displayValue(value: LeadValue) {
   return String(value);
 }
 
+function isBookedStatus(value: LeadValue) {
+  return typeof value === "string" && value.toLowerCase() === "booked";
+}
+
+function getStatusPillClass(value: LeadValue) {
+  if (typeof value !== "string") {
+    return "bg-service-surface text-service-accent";
+  }
+
+  return (
+    statusPillClassByStatus[value.toLowerCase()] ??
+    "bg-service-surface text-service-accent"
+  );
+}
+
+function getStatusOptionClass(value: string) {
+  return statusOptionClassByStatus[value.toLowerCase()] ?? "";
+}
+
 function getUniqueValues(leads: Lead[], keys: string[]) {
   return Array.from(
     new Set(
@@ -143,6 +184,15 @@ function getUniqueValues(leads: Lead[], keys: string[]) {
         .filter((value): value is string => Boolean(value)),
     ),
   ).sort((a, b) => a.localeCompare(b));
+}
+
+function getStatusFilterOptions(leads: Lead[], statusOptions: string[]) {
+  const leadStatusValues = getUniqueValues(leads, ["status"]);
+
+  return [
+    ...statusOptions,
+    ...leadStatusValues.filter((status) => !statusOptions.includes(status)),
+  ];
 }
 
 function getDateTime(value: LeadValue) {
@@ -225,6 +275,10 @@ function getUrgencyRank(value: string | null) {
   return rank === -1 ? urgencyOrder.length : rank;
 }
 
+function getDefaultStatusRank(value: string | null) {
+  return value?.toLowerCase() === "not responding" ? 1 : 0;
+}
+
 function matchesSearch(lead: Lead, searchTerm: string) {
   if (!searchTerm) {
     return true;
@@ -259,7 +313,6 @@ export function LeadDashboard({
   const [sortBy, setSortBy] = useState<SortOption>("created_at");
   const [openLeadIds, setOpenLeadIds] = useState<Set<string>>(new Set());
 
-  const statusValues = useMemo(() => getUniqueValues(leads, ["status"]), [leads]);
   const urgencyValues = useMemo(
     () => getUniqueValues(leads, leadFields.urgency),
     [leads],
@@ -267,6 +320,10 @@ export function LeadDashboard({
   const serviceValues = useMemo(
     () => getUniqueValues(leads, leadFields.service),
     [leads],
+  );
+  const statusFilterOptions = useMemo(
+    () => getStatusFilterOptions(leads, statusOptions),
+    [leads, statusOptions],
   );
 
   const visibleLeads = useMemo(() => {
@@ -313,6 +370,22 @@ export function LeadDashboard({
         );
       }
 
+      if (
+        !statusFilter &&
+        !urgencyFilter &&
+        !serviceFilter &&
+        !searchQuery &&
+        sortBy === "created_at"
+      ) {
+        const statusRank =
+          getDefaultStatusRank(readLeadText(a, ["status"])) -
+          getDefaultStatusRank(readLeadText(b, ["status"]));
+
+        if (statusRank !== 0) {
+          return statusRank;
+        }
+      }
+
       return getDateTime(b.created_at) - getDateTime(a.created_at);
     });
   }, [leads, searchQuery, serviceFilter, sortBy, statusFilter, urgencyFilter]);
@@ -354,9 +427,10 @@ export function LeadDashboard({
           </label>
 
           <FilterSelect
+            colorOptions
             label="Status"
             onChange={setStatusFilter}
-            options={statusValues}
+            options={statusFilterOptions}
             value={statusFilter}
           />
           <FilterSelect
@@ -446,6 +520,8 @@ export function LeadDashboard({
           {visibleLeads.map((lead) => {
             const leadId = String(lead.id);
             const isDetailsOpen = openLeadIds.has(leadId);
+            const status = readLeadValue(lead, ["status"]);
+            const isBooked = isBookedStatus(status);
 
             return (
               <Card className="p-6" key={lead.id}>
@@ -455,8 +531,26 @@ export function LeadDashboard({
                       <h2 className="text-2xl font-semibold leading-tight text-service-ink">
                         {displayValue(readLeadValue(lead, leadFields.name))}
                       </h2>
-                      <span className="rounded-full bg-service-surface px-3 py-1 text-sm font-semibold uppercase tracking-widest text-service-accent">
-                        {displayValue(readLeadValue(lead, ["status"]))}
+                      <span
+                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-semibold uppercase tracking-widest ${getStatusPillClass(status)}`}
+                      >
+                        {isBooked ? (
+                          <svg
+                            aria-hidden="true"
+                            className="size-3.5 shrink-0"
+                            fill="none"
+                            viewBox="0 0 16 16"
+                          >
+                            <path
+                              d="M13.25 4.25 6.5 11 2.75 7.25"
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                            />
+                          </svg>
+                        ) : null}
+                        {displayValue(status)}
                       </span>
                     </div>
                     <p className="mt-2 text-sm font-semibold uppercase tracking-widest text-service-muted">
@@ -597,11 +691,13 @@ export function LeadDashboard({
 }
 
 function FilterSelect({
+  colorOptions = false,
   label,
   onChange,
   options,
   value,
 }: {
+  colorOptions?: boolean;
   label: string;
   onChange: (value: string) => void;
   options: string[];
@@ -617,7 +713,11 @@ function FilterSelect({
       >
         <option value="">All</option>
         {options.map((option) => (
-          <option key={option} value={option}>
+          <option
+            className={colorOptions ? getStatusOptionClass(option) : undefined}
+            key={option}
+            value={option}
+          >
             {option}
           </option>
         ))}

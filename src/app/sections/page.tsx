@@ -13,6 +13,7 @@ import {
   HeroFullscreenSection,
   HeroGridMosaicSection,
   HeroSection,
+  NavCenterLogoSection,
   NavFloatingBentoSection,
   NavPrimarySection,
   ProcessStepsSection,
@@ -67,6 +68,10 @@ const collections = [
       {
         label: "Primary nav",
         element: <NavPrimarySection {...sectionLibraryContent.navPrimary} />,
+      },
+      {
+        label: "Center logo nav",
+        element: <NavCenterLogoSection {...sectionLibraryContent.navPrimary} />,
       },
       {
         label: "Floating bento nav",
