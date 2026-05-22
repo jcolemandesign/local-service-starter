@@ -57,18 +57,18 @@ export function HeroFullscreenSection({
         aria-hidden="true"
       />
 
-      <div className="relative z-10 flex w-full items-end justify-between gap-12 p-12 max-lg:flex-col max-lg:items-start max-lg:justify-end max-md:gap-8 max-md:p-6">
-        <div className="max-w-4xl">
+      <div className="relative z-10 flex w-full items-end justify-between gap-12 p-12 max-lg:flex-col max-lg:items-start max-lg:justify-end max-lg:gap-6 max-md:p-6">
+        <div className="max-w-4xl max-lg:max-w-2xl">
           <p className="mb-5 text-sm font-semibold uppercase tracking-widest text-white/75">
             {eyebrow}
           </p>
           <HeadingTag className="max-w-4xl text-fluid-hero font-semibold leading-none">
             {title}
           </HeadingTag>
-          <p className="mt-6 max-w-2xl text-xl leading-9 text-white/80 max-md:text-lg max-md:leading-8">
+          <p className="mt-6 max-w-2xl text-xl leading-9 text-white/80 max-lg:max-w-xl max-md:text-lg max-md:leading-8">
             {body}
           </p>
-          <div className="mt-9 flex flex-wrap gap-4">
+          <div className="mt-9 flex flex-wrap gap-4 max-lg:mt-7">
             <Button href="#contact">{primaryAction}</Button>
             <Button href="#services" variant="secondary">
               {secondaryAction}
@@ -76,22 +76,30 @@ export function HeroFullscreenSection({
           </div>
         </div>
 
-        <aside className="grid w-full max-w-sm grid-cols-2 gap-4 text-white max-lg:max-w-md">
+        <aside className="grid w-full max-w-sm grid-cols-2 gap-4 text-white max-lg:max-w-md max-lg:gap-3">
           {trustSignals.map((signal) => (
             <div
-              className="rounded-lg border border-white/25 bg-white/15 p-5 shadow-service backdrop-blur-md"
+              className="rounded-lg border border-white/25 bg-white/15 p-5 shadow-service backdrop-blur-md max-lg:order-1 max-lg:p-4"
               key={signal.label}
             >
-              <p className="text-2xl font-semibold leading-none">{signal.value}</p>
-              <p className="mt-3 text-sm font-semibold leading-5 text-white/75">
+              <p className="text-2xl font-semibold leading-none max-lg:text-xl">
+                {signal.value}
+              </p>
+              <p className="mt-3 text-sm font-semibold leading-5 text-white/75 max-lg:mt-2 max-lg:text-xs max-lg:leading-4">
                 {signal.label}
               </p>
             </div>
           ))}
-          <div className="col-span-2 rounded-lg border border-white/25 bg-white/15 p-6 shadow-service backdrop-blur-md">
-            <p className="text-4xl font-semibold leading-none">{review.rating}</p>
-            <p className="mt-4 text-base font-semibold leading-7">{review.label}</p>
-            <p className="mt-2 text-sm leading-6 text-white/75">{review.detail}</p>
+          <div className="col-span-2 rounded-lg border border-white/25 bg-white/15 p-6 shadow-service backdrop-blur-md max-lg:order-2 max-lg:p-4">
+            <p className="text-4xl font-semibold leading-none max-lg:text-2xl">
+              {review.rating}
+            </p>
+            <p className="mt-4 text-base font-semibold leading-7 max-lg:mt-2 max-lg:text-sm max-lg:leading-5">
+              {review.label}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-white/75 max-lg:hidden">
+              {review.detail}
+            </p>
           </div>
         </aside>
       </div>

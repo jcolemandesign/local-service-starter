@@ -15,15 +15,25 @@ type SectionLibraryCollectionsProps = {
   collections: SectionLibraryCollection[];
 };
 
-function ShowcaseLabel({ label }: { label: string }) {
+function ShowcasePanel({ item }: { item: SectionLibraryItem }) {
   return (
-    <div className="border-y border-service-border bg-white py-4">
-      <Container>
-        <p className="text-sm font-semibold uppercase tracking-widest text-service-accent">
-          {label}
-        </p>
-      </Container>
-    </div>
+    <details className="group/item border-b border-service-border bg-white">
+      <summary className="cursor-pointer list-none transition-colors hover:bg-service-surface">
+        <Container className="flex items-center justify-between gap-6 py-4">
+          <p className="text-sm font-semibold uppercase tracking-widest text-service-accent">
+            {item.label}
+          </p>
+          <span
+            aria-hidden="true"
+            className="flex size-9 shrink-0 items-center justify-center rounded-md border border-service-border text-xl leading-none text-service-accent transition-transform group-open/item:rotate-180"
+          >
+            v
+          </span>
+        </Container>
+      </summary>
+
+      <div>{item.element}</div>
+    </details>
   );
 }
 
@@ -31,7 +41,7 @@ function SectionCollection({ collection }: { collection: SectionLibraryCollectio
   const sectionCount = collection.items.length;
 
   return (
-    <details className="group border-b border-service-border bg-white">
+    <details className="group/collection border-b border-service-border bg-white">
       <summary className="cursor-pointer list-none transition-colors hover:bg-service-surface">
         <Container className="flex items-center justify-between gap-8 py-7 max-md:gap-5 max-md:py-6">
           <div>
@@ -44,7 +54,7 @@ function SectionCollection({ collection }: { collection: SectionLibraryCollectio
           </div>
           <span
             aria-hidden="true"
-            className="flex size-11 shrink-0 items-center justify-center rounded-md border border-service-border text-2xl leading-none text-service-accent transition-transform group-open:rotate-180 max-md:size-10"
+            className="flex size-11 shrink-0 items-center justify-center rounded-md border border-service-border text-2xl leading-none text-service-accent transition-transform group-open/collection:rotate-180 max-md:size-10"
           >
             v
           </span>
@@ -53,10 +63,7 @@ function SectionCollection({ collection }: { collection: SectionLibraryCollectio
 
       <div className="border-t border-service-border">
         {collection.items.map((item) => (
-          <div key={item.label}>
-            <ShowcaseLabel label={item.label} />
-            {item.element}
-          </div>
+          <ShowcasePanel item={item} key={item.label} />
         ))}
       </div>
     </details>

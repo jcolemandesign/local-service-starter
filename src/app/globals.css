@@ -20,6 +20,7 @@
   --text-fluid-heading: clamp(2.25rem, 3.4vw, 4rem);
   --leading-heading: 1.08;
   --animate-trust-marquee: trust-marquee 32s linear infinite;
+  --animate-violator-spin: violator-spin 4.25s linear infinite;
 }
 
 @keyframes trust-marquee {
@@ -29,6 +30,16 @@
 
   to {
     transform: translateX(-50%);
+  }
+}
+
+@keyframes violator-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
   }
 }
 

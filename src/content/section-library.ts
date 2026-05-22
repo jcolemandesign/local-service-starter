@@ -65,6 +65,14 @@ export const sectionLibraryContent = {
       },
     ],
   },
+  heroLogoStatement: {
+    logoLabel: "Logo",
+    statement:
+      "Local service pages can feel calm, capable, and immediately useful before a visitor reads the fine print.",
+    imageLabel: "Image",
+    violatorTop: "Schedule",
+    violatorBottom: "Service",
+  },
   navPrimary: {
     logoLabel: "Logo",
     phone: "(555) 014-2250",
@@ -109,6 +117,12 @@ export const sectionLibraryContent = {
       "Make scanning easy",
       "Let important copy breathe",
     ],
+  },
+  contentPositioningSplit: {
+    title: "Clear help, close by.",
+    body: "Use this positioning section for a concise about message, service philosophy, or the clearest reason customers should feel comfortable reaching out.",
+    action: "About us",
+    imageLabel: "Image",
   },
   trustBar: {
     label: "Trusted by homeowners and small businesses across the metro area",
@@ -222,11 +236,60 @@ export const sectionLibraryContent = {
       },
     ],
   },
+  servicesScrollCards: {
+    eyebrow: "Services",
+    title: "Service categories that move with the page.",
+    viewAllLabel: "View all services",
+    items: [
+      {
+        title: "Emergency repairs",
+        imageLabel: "Repair",
+      },
+      {
+        title: "Maintenance plans",
+        imageLabel: "Care",
+      },
+      {
+        title: "System installation",
+        imageLabel: "Install",
+      },
+      {
+        title: "Inspections",
+        imageLabel: "Inspect",
+      },
+      {
+        title: "Commercial service",
+        imageLabel: "Biz",
+      },
+      {
+        title: "Consultations",
+        imageLabel: "Plan",
+      },
+    ],
+  },
   featureSplit: {
     eyebrow: "Why choose us",
     title: "A service experience that feels organized from the first call.",
     body: "This split section can pair a key message with supporting highlights, media, or a quote.",
     points: ["Transparent arrival windows", "Photo-backed recommendations", "Friendly follow-up after each visit"],
+  },
+  featureOverlapRows: {
+    items: [
+      {
+        eyebrow: "How we work",
+        title: "Service that arrives prepared.",
+        body: "Use this feature row for a concise operational promise, process note, or trust-building detail paired with a strong image moment.",
+        imageLabel: "Visit",
+        position: "top" as const,
+      },
+      {
+        eyebrow: "What customers notice",
+        title: "Clear updates after every visit.",
+        body: "Mirror the second row to keep the page rhythm moving while giving another short feature room to breathe beside the image.",
+        imageLabel: "Follow-up",
+        position: "bottom" as const,
+      },
+    ],
   },
   process: {
     eyebrow: "Process",

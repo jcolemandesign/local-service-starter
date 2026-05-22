@@ -1,17 +1,20 @@
 import { Container } from "@/components/primitives";
 import {
   ContactSection,
+  ContentPositioningSplitSection,
   ContentRevealParagraphSection,
   ContentStickyIdeasSection,
   CTAFullscreenSection,
   CTASection,
   FAQAccordionSection,
   FAQSection,
+  FeatureOverlapRowsSection,
   FeatureSplitSection,
   FooterSection,
   HeroBentoSection,
   HeroFullscreenSection,
   HeroGridMosaicSection,
+  HeroLogoStatementSection,
   HeroSection,
   NavCenterLogoSection,
   NavFloatingBentoSection,
@@ -21,6 +24,7 @@ import {
   ServicesBentoCardsSection,
   ServicesGridSection,
   ServicesHoverPanelSection,
+  ServicesScrollCardsSection,
   TestimonialsCarouselSection,
   TestimonialsMasonrySection,
   TestimonialsSection,
@@ -56,6 +60,15 @@ const collections = [
         element: (
           <HeroGridMosaicSection
             {...sectionLibraryContent.heroGridMosaic}
+            headingLevel={2}
+          />
+        ),
+      },
+      {
+        label: "Logo statement hero",
+        element: (
+          <HeroLogoStatementSection
+            {...sectionLibraryContent.heroLogoStatement}
             headingLevel={2}
           />
         ),
@@ -97,6 +110,14 @@ const collections = [
         element: (
           <ContentStickyIdeasSection
             {...sectionLibraryContent.contentStickyIdeas}
+          />
+        ),
+      },
+      {
+        label: "Positioning split content",
+        element: (
+          <ContentPositioningSplitSection
+            {...sectionLibraryContent.contentPositioningSplit}
           />
         ),
       },
@@ -146,6 +167,14 @@ const collections = [
           />
         ),
       },
+      {
+        label: "Scroll service cards",
+        element: (
+          <ServicesScrollCardsSection
+            {...sectionLibraryContent.servicesScrollCards}
+          />
+        ),
+      },
     ],
   },
   {
@@ -154,6 +183,14 @@ const collections = [
       {
         label: "Feature split",
         element: <FeatureSplitSection {...sectionLibraryContent.featureSplit} />,
+      },
+      {
+        label: "Overlapping feature rows",
+        element: (
+          <FeatureOverlapRowsSection
+            {...sectionLibraryContent.featureOverlapRows}
+          />
+        ),
       },
     ],
   },

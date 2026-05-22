@@ -37,8 +37,8 @@ export function HeroBentoSection({
 
   return (
     <section className="min-h-svh bg-white p-4 max-md:p-3">
-      <div className="grid min-h-[calc(100svh-2rem)] grid-cols-2 gap-4 max-lg:grid-cols-1 max-md:min-h-[calc(100svh-1.5rem)] max-md:gap-3">
-        <div className="flex min-h-0 items-center rounded-lg bg-service-surface p-12 max-lg:min-h-[calc(50svh-1rem)] max-md:p-6">
+      <div className="grid min-h-[calc(100svh-2rem)] grid-cols-2 gap-4 max-lg:grid-cols-1 max-lg:grid-rows-[45fr_55fr] max-md:min-h-[calc(100svh-1.5rem)] max-md:gap-3">
+        <div className="flex min-h-0 items-center rounded-lg bg-service-surface p-12 max-lg:items-end max-lg:p-8 max-md:p-6">
           <div className="max-w-3xl">
             <p className="mb-5 text-sm font-semibold uppercase tracking-widest text-service-accent">
               {eyebrow}
@@ -49,16 +49,16 @@ export function HeroBentoSection({
             <p className="mt-6 max-w-2xl text-xl leading-9 text-service-muted max-md:text-lg max-md:leading-8">
               {body}
             </p>
-            <div className="mt-9 flex flex-wrap gap-4">
+            <div className="mt-9 flex flex-wrap gap-4 max-lg:hidden">
               <Button href="#contact">{primaryAction}</Button>
               <Button href="#services" variant="secondary">
                 {secondaryAction}
               </Button>
             </div>
-            <ul className="mt-12 grid max-w-2xl grid-cols-3 gap-4 max-md:grid-cols-1">
+            <ul className="mt-12 grid max-w-2xl grid-cols-3 gap-4 max-lg:flex max-lg:max-w-none max-lg:flex-nowrap max-lg:gap-0 max-lg:overflow-x-auto max-md:mt-8">
               {stats.map((stat) => (
                 <li
-                  className="border-l border-service-border pl-4 text-sm font-semibold text-service-ink"
+                  className="border-l border-service-border pl-4 text-sm font-semibold text-service-ink max-lg:shrink-0 max-lg:px-4 max-lg:first:border-l-0 max-lg:first:pl-0"
                   key={stat}
                 >
                   {stat}
@@ -68,7 +68,15 @@ export function HeroBentoSection({
           </div>
         </div>
 
-        <PlaceholderImagePanel />
+        <div className="relative min-h-0">
+          <div className="absolute left-8 top-8 z-10 hidden flex-wrap gap-4 max-lg:flex max-md:left-6 max-md:top-6 max-md:gap-3">
+            <Button href="#contact">{primaryAction}</Button>
+            <Button href="#services" variant="secondary">
+              {secondaryAction}
+            </Button>
+          </div>
+          <PlaceholderImagePanel />
+        </div>
       </div>
     </section>
   );
