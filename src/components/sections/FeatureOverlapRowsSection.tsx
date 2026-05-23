@@ -20,7 +20,7 @@ function FeatureImage({ label }: { label: string }) {
   return (
     <div
       aria-hidden="true"
-      className="relative h-full min-h-[70svh] overflow-hidden bg-service-border max-lg:min-h-[48svh]"
+      className="relative aspect-[3/2] w-full overflow-hidden bg-service-border"
     >
       <div className="absolute inset-0 bg-service-muted/10" />
       <div className="absolute inset-x-0 top-1/2 rotate-6 border-t border-white/45" />
@@ -60,7 +60,7 @@ function FeatureRow({
 }) {
   const card = (
     <div
-      className={`flex min-h-[70svh] px-12 py-16 max-lg:min-h-0 max-lg:px-8 max-lg:py-0 max-md:px-6 ${positionClass[item.position]} ${
+      className={`flex h-full px-12 py-16 max-lg:h-auto max-lg:px-8 max-lg:py-0 max-md:px-6 ${positionClass[item.position]} ${
         mirrored ? "justify-start" : "justify-end"
       }`}
     >
@@ -71,7 +71,7 @@ function FeatureRow({
 
   return (
     <div
-      className={`grid min-h-[70svh] overflow-hidden max-lg:min-h-0 max-lg:grid-cols-1 max-lg:gap-6 max-lg:py-10 ${
+      className={`grid overflow-hidden max-lg:grid-cols-1 max-lg:gap-6 max-lg:py-10 ${
         mirrored ? "grid-cols-[3fr_1fr]" : "grid-cols-[1fr_3fr]"
       }`}
     >

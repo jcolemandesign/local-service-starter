@@ -1,4 +1,5 @@
 import { Container, Section } from "@/components/primitives";
+import { ImportantIdeasBox } from "./ImportantIdeasBox";
 
 type ContentStickyIdeasSectionProps = {
   eyebrow: string;
@@ -37,21 +38,7 @@ export function ContentStickyIdeasSection({
           </div>
 
           <aside className="max-lg:order-first">
-            <div className="sticky top-8 rounded-lg border border-service-border bg-white p-7 shadow-service max-lg:static">
-              <p className="text-sm font-semibold uppercase tracking-widest text-service-accent">
-                Important ideas
-              </p>
-              <ul className="mt-6 grid gap-4">
-                {ideas.map((idea) => (
-                  <li
-                    className="border-l border-service-border pl-4 text-lg font-semibold leading-7 text-service-ink"
-                    key={idea}
-                  >
-                    {idea}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ImportantIdeasBox ideas={ideas} />
           </aside>
         </div>
       </Container>

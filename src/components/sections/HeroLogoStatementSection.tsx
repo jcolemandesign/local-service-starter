@@ -35,7 +35,7 @@ function ScheduleViolator({
 }) {
   return (
     <a
-      className="absolute right-16 top-0 z-10 flex size-36 -translate-y-1/4 rotate-12 cursor-pointer items-center justify-center rounded-full transition-transform duration-300 ease-out hover:-translate-y-1/4 hover:rotate-12 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent max-lg:right-10 max-lg:size-32 max-md:right-6 max-md:size-28"
+      className="absolute right-16 top-0 z-10 flex size-36 -translate-y-1/4 rotate-12 cursor-pointer items-center justify-center rounded-full [--violator-gap:4px] [--violator-stroke:1pt] transition-transform duration-300 ease-out hover:-translate-y-1/4 hover:rotate-12 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent max-lg:right-10 max-lg:size-32 max-md:right-6 max-md:size-28"
       href="#contact"
     >
       <span
@@ -44,10 +44,9 @@ function ScheduleViolator({
       />
       <span
         aria-hidden="true"
-        className="absolute inset-0 animate-violator-spin rounded-full bg-[conic-gradient(from_0deg,var(--color-service-accent),white,var(--color-service-accent))]"
+        className="absolute inset-0 animate-violator-spin rounded-full bg-[conic-gradient(from_0deg,var(--color-service-accent),white,var(--color-service-accent))] p-[var(--violator-stroke)] [mask:linear-gradient(#000_0_0)_content-box,linear-gradient(#000_0_0)] [mask-composite:exclude] [-webkit-mask:linear-gradient(#000_0_0)_content-box,linear-gradient(#000_0_0)] [-webkit-mask-composite:xor]"
       />
-      <span className="absolute inset-[3px] rounded-full" />
-      <span className="relative flex size-[calc(100%-20px)] flex-col items-center justify-center rounded-full bg-service-accent text-center text-sm font-semibold uppercase leading-tight text-white shadow-service max-md:text-xs">
+      <span className="relative flex size-[calc(100%_-_((var(--violator-gap)_+_var(--violator-stroke))_*_2))] flex-col items-center justify-center rounded-full bg-service-accent text-center text-sm font-semibold uppercase leading-tight text-white shadow-service max-md:text-xs">
         <svg
           aria-hidden="true"
           className="mb-2 size-5 max-md:mb-1.5 max-md:size-4"
