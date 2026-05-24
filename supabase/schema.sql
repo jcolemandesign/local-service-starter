@@ -21,3 +21,38 @@ create table public.leads (
   preferred_contact_method text null,
   constraint leads_pkey primary key (id)
 ) TABLESPACE pg_default;
+
+alter table public.leads enable row level security;
+
+grant usage on schema public to anon, authenticated;
+grant insert on table public.leads to anon, authenticated;
+grant select, update on table public.leads to authenticated;
+
+drop policy if exists "Allow public lead requests" on public.leads;
+
+create policy "Allow public lead requests"
+on public.leads
+for insert
+to anon, authenticated
+with check (
+  name is not null
+  and phone is not null
+  and contact_consent is true
+);
+
+drop policy if exists "Allow authenticated lead reads" on public.leads;
+
+create policy "Allow authenticated lead reads"
+on public.leads
+for select
+to authenticated
+using (true);
+
+drop policy if exists "Allow authenticated lead updates" on public.leads;
+
+create policy "Allow authenticated lead updates"
+on public.leads
+for update
+to authenticated
+using (true)
+with check (true);

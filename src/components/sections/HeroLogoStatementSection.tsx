@@ -1,4 +1,5 @@
 import { Container, Section } from "@/components/primitives";
+import { RequestServiceTrigger } from "@/components/request-service";
 
 type HeroLogoStatementSectionProps = {
   logoLabel: string;
@@ -34,9 +35,9 @@ function ScheduleViolator({
   top: string;
 }) {
   return (
-    <a
+    <RequestServiceTrigger
       className="absolute right-16 top-0 z-10 flex size-36 -translate-y-1/4 rotate-12 cursor-pointer items-center justify-center rounded-full [--violator-gap:4px] [--violator-stroke:1pt] transition-transform duration-300 ease-out hover:-translate-y-1/4 hover:rotate-12 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent max-lg:right-10 max-lg:size-32 max-md:right-6 max-md:size-28"
-      href="#contact"
+      aria-label={`${top} ${bottom}`}
     >
       <span
         aria-hidden="true"
@@ -61,7 +62,7 @@ function ScheduleViolator({
           {bottom}
         </span>
       </span>
-    </a>
+    </RequestServiceTrigger>
   );
 }
 

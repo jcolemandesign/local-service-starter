@@ -1,4 +1,5 @@
 import { Button } from "@/components/primitives";
+import { RequestServiceButton } from "@/components/request-service";
 
 type HeroBentoSectionProps = {
   eyebrow: string;
@@ -50,7 +51,7 @@ export function HeroBentoSection({
               {body}
             </p>
             <div className="mt-9 flex flex-wrap gap-4 max-lg:hidden">
-              <Button href="#contact">{primaryAction}</Button>
+              <RequestServiceButton>{primaryAction}</RequestServiceButton>
               <Button href="#services" variant="secondary">
                 {secondaryAction}
               </Button>
@@ -70,7 +71,7 @@ export function HeroBentoSection({
 
         <div className="relative min-h-0">
           <div className="absolute left-8 top-8 z-10 hidden flex-wrap gap-4 max-lg:flex max-md:left-6 max-md:top-6 max-md:gap-3">
-            <Button href="#contact">{primaryAction}</Button>
+            <RequestServiceButton>{primaryAction}</RequestServiceButton>
             <Button href="#services" variant="secondary">
               {secondaryAction}
             </Button>

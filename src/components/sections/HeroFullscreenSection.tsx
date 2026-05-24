@@ -1,4 +1,5 @@
 import { Button } from "@/components/primitives";
+import { RequestServiceButton } from "@/components/request-service";
 
 type ReviewSnippet = {
   rating: string;
@@ -69,7 +70,7 @@ export function HeroFullscreenSection({
             {body}
           </p>
           <div className="mt-9 flex flex-wrap gap-4 max-lg:mt-7">
-            <Button href="#contact">{primaryAction}</Button>
+            <RequestServiceButton>{primaryAction}</RequestServiceButton>
             <Button href="#services" variant="secondary">
               {secondaryAction}
             </Button>

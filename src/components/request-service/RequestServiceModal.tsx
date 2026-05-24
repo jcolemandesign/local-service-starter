@@ -1,0 +1,897 @@
+"use client";
+
+import {
+  createContext,
+  type ButtonHTMLAttributes,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/utils/supabase/client";
+
+type SystemType = "cooling" | "heating";
+type RequestType =
+  | "repair"
+  | "maintenance"
+  | "replacement_install"
+  | "not_sure";
+type ContactMethod = "call" | "text" | "email";
+
+type RequestServiceContextValue = {
+  openRequestService: () => void;
+};
+
+type RequestServiceButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  children: ReactNode;
+  variant?: "primary" | "secondary";
+};
+
+type RequestServiceTriggerProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  children: ReactNode;
+};
+
+type LeadData = {
+  id: string;
+  name: string;
+  phone: string;
+  email?: string;
+  zip_code?: string;
+  property_type?: string;
+  appointment_window?: string;
+  street_address?: string;
+  system_type: SystemType;
+  request_type: RequestType;
+  problem_type: string;
+  service_needed: string;
+  description?: string;
+  source: "Request Service Modal";
+  status: "New";
+  contact_consent: boolean;
+  preferred_contact_method?: ContactMethod;
+};
+
+type SupabaseErrorDetails = {
+  code?: string;
+  details?: string;
+  hint?: string;
+  message?: string;
+  name?: string;
+  status?: number;
+};
+
+type InsertLeadResult = {
+  error: unknown;
+  status?: number;
+  statusText?: string;
+};
+
+const RequestServiceContext = createContext<RequestServiceContextValue | null>(
+  null,
+);
+
+const systemOptions = [
+  { label: "Cooling", value: "cooling" },
+  { label: "Heating", value: "heating" },
+] as const;
+
+const requestOptions = [
+  { label: "Repair", value: "repair" },
+  { label: "Maintenance", value: "maintenance" },
+  { label: "Replacement / Install", value: "replacement_install" },
+  { label: "Not Sure", value: "not_sure" },
+] as const;
+
+const contactOptions = [
+  { label: "Call", value: "call" },
+  { label: "Text", value: "text" },
+  { label: "Email", value: "email" },
+] as const satisfies readonly { label: string; value: ContactMethod }[];
+
+const propertyTypeOptions = [
+  "Single-family home",
+  "Townhome",
+  "Condo",
+  "Commercial",
+  "Other",
+];
+
+const appointmentWindowOptions = [
+  "Today if available",
+  "This week",
+  "Flexible",
+  "Just getting information",
+];
+
+const problemOptionsBySelection: Record<
+  SystemType,
+  Record<RequestType, string[]>
+> = {
+  cooling: {
+    repair: [
+      "AC not cooling",
+      "Weak airflow",
+      "Unit won't turn on",
+      "Strange noise",
+      "Leaking / freezing up",
+      "Not sure",
+    ],
+    maintenance: [
+      "AC tune-up",
+      "Filter / airflow check",
+      "Seasonal maintenance",
+      "Maintenance plan",
+      "Not sure",
+    ],
+    replacement_install: [
+      "Replace AC system",
+      "Replace full HVAC system",
+      "New install / addition",
+      "Get an estimate",
+      "Not sure",
+    ],
+    not_sure: [
+      "Not cooling properly",
+      "Airflow feels weak",
+      "System is acting unusual",
+      "I need help figuring it out",
+    ],
+  },
+  heating: {
+    repair: [
+      "No heat",
+      "Weak heat",
+      "System won't turn on",
+      "Strange noise",
+      "Thermostat issue",
+      "Not sure",
+    ],
+    maintenance: [
+      "Heating tune-up",
+      "Furnace check",
+      "Heat pump check",
+      "Seasonal maintenance",
+      "Maintenance plan",
+      "Not sure",
+    ],
+    replacement_install: [
+      "Replace heating system",
+      "Replace full HVAC system",
+      "New install / addition",
+      "Get an estimate",
+      "Not sure",
+    ],
+    not_sure: [
+      "Not heating properly",
+      "Heat feels weak",
+      "System is acting unusual",
+      "I need help figuring it out",
+    ],
+  },
+};
+
+function getProblemOptions(systemType: SystemType, requestType: RequestType) {
+  return problemOptionsBySelection[systemType][requestType];
+}
+
+function getRequestLabel(value: RequestType) {
+  return (
+    requestOptions.find((option) => option.value === value)?.label ?? value
+  );
+}
+
+function getSystemLabel(value: SystemType) {
+  return systemOptions.find((option) => option.value === value)?.label ?? value;
+}
+
+function createLeadId() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+
+  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (value) =>
+    (
+      Number(value) ^
+      (Math.random() * 16) >> (Number(value) / 4)
+    ).toString(16),
+  );
+}
+
+function getErrorDetails(error: unknown): SupabaseErrorDetails {
+  if (!error || typeof error !== "object") {
+    return {
+      message: error instanceof Error ? error.message : String(error),
+    };
+  }
+
+  const errorRecord = error as Record<string, unknown>;
+
+  return {
+    code:
+      typeof errorRecord.code === "string" ? errorRecord.code : undefined,
+    details:
+      typeof errorRecord.details === "string"
+        ? errorRecord.details
+        : undefined,
+    hint:
+      typeof errorRecord.hint === "string" ? errorRecord.hint : undefined,
+    message:
+      typeof errorRecord.message === "string"
+        ? errorRecord.message
+        : undefined,
+    name:
+      typeof errorRecord.name === "string" ? errorRecord.name : undefined,
+    status:
+      typeof errorRecord.status === "number" ? errorRecord.status : undefined,
+  };
+}
+
+async function insertLead(leadData: LeadData) {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => {
+    controller.abort();
+  }, 15000);
+
+  try {
+    return (await supabase
+      .from("leads")
+      .insert([leadData])
+      .abortSignal(controller.signal)) as InsertLeadResult;
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
+function OptionButton({
+  isSelected,
+  label,
+  onClick,
+}: {
+  isSelected: boolean;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      className={`min-h-12 cursor-pointer rounded-md border px-4 py-3 text-left text-sm font-semibold transition-colors ${
+        isSelected
+          ? "border-service-accent bg-service-accent text-white"
+          : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent"
+      }`}
+      type="button"
+      onClick={onClick}
+    >
+      {label}
+    </button>
+  );
+}
+
+function StepIndicator({ currentStep }: { currentStep: number }) {
+  return (
+    <div
+      aria-label={`Step ${currentStep} of 3`}
+      className="flex items-center"
+      role="list"
+    >
+      {[1, 2, 3].map((stepNumber) => {
+        const isActive = currentStep === stepNumber;
+        const isComplete = currentStep > stepNumber;
+
+        return (
+          <div
+            className="flex items-center"
+            key={stepNumber}
+            role="listitem"
+          >
+            <span
+              aria-current={isActive ? "step" : undefined}
+              className={`flex size-8 items-center justify-center rounded-full border text-sm font-semibold transition-colors ${
+                isActive
+                  ? "border-service-accent bg-service-accent text-white"
+                  : isComplete
+                    ? "border-service-accent bg-service-accent/10 text-service-accent"
+                    : "border-service-border bg-service-surface text-service-muted"
+              }`}
+            >
+              {stepNumber}
+            </span>
+            {stepNumber < 3 ? (
+              <span
+                aria-hidden="true"
+                className={`h-px w-10 transition-colors max-sm:w-7 ${
+                  currentStep > stepNumber
+                    ? "bg-service-accent"
+                    : "bg-service-border"
+                }`}
+              />
+            ) : null}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export function useRequestService() {
+  const context = useContext(RequestServiceContext);
+
+  if (!context) {
+    throw new Error(
+      "useRequestService must be used inside RequestServiceProvider",
+    );
+  }
+
+  return context;
+}
+
+export function RequestServiceButton({
+  children,
+  className = "",
+  onClick,
+  variant = "primary",
+  ...props
+}: RequestServiceButtonProps) {
+  const { openRequestService } = useRequestService();
+  const styles =
+    variant === "primary"
+      ? "bg-service-accent text-white hover:bg-service-ink"
+      : "border border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent";
+
+  return (
+    <button
+      className={`inline-flex min-h-12 cursor-pointer items-center justify-center whitespace-nowrap rounded-md px-6 text-sm font-semibold transition-colors ${styles} ${className}`}
+      type="button"
+      onClick={(event) => {
+        onClick?.(event);
+
+        if (!event.defaultPrevented) {
+          openRequestService();
+        }
+      }}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+export function RequestServiceTrigger({
+  children,
+  onClick,
+  type = "button",
+  ...props
+}: RequestServiceTriggerProps) {
+  const { openRequestService } = useRequestService();
+
+  return (
+    <button
+      type={type}
+      onClick={(event) => {
+        onClick?.(event);
+
+        if (!event.defaultPrevented) {
+          openRequestService();
+        }
+      }}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+export function RequestServiceProvider({ children }: { children: ReactNode }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const contextValue = useMemo(
+    () => ({
+      openRequestService: () => setIsOpen(true),
+    }),
+    [],
+  );
+
+  return (
+    <RequestServiceContext.Provider value={contextValue}>
+      {children}
+      <RequestServiceModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+    </RequestServiceContext.Provider>
+  );
+}
+
+function RequestServiceModal({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) {
+  const router = useRouter();
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+  const [step, setStep] = useState(1);
+  const [systemType, setSystemType] = useState<SystemType | "">("");
+  const [requestType, setRequestType] = useState<RequestType | "">("");
+  const [problemType, setProblemType] = useState("");
+  const [description, setDescription] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [propertyType, setPropertyType] = useState("");
+  const [appointmentWindow, setAppointmentWindow] = useState("");
+  const [streetAddress, setStreetAddress] = useState("");
+  const [contactConsent, setContactConsent] = useState(false);
+  const [preferredContactMethod, setPreferredContactMethod] = useState<
+    ContactMethod | ""
+  >("");
+  const [submitError, setSubmitError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const hasProgress =
+    Boolean(systemType) ||
+    Boolean(requestType) ||
+    Boolean(problemType) ||
+    Boolean(description.trim()) ||
+    Boolean(name.trim()) ||
+    Boolean(phone.trim()) ||
+    Boolean(email.trim()) ||
+    Boolean(zipCode.trim()) ||
+    Boolean(propertyType) ||
+    Boolean(appointmentWindow) ||
+    Boolean(streetAddress.trim()) ||
+    contactConsent ||
+    Boolean(preferredContactMethod);
+
+  const problemOptions =
+    systemType && requestType
+      ? getProblemOptions(systemType, requestType)
+      : [];
+
+  const canContinue =
+    (step === 1 && Boolean(systemType && requestType)) ||
+    (step === 2 && Boolean(problemType)) ||
+    (step === 3 &&
+      Boolean(name.trim()) &&
+      Boolean(phone.trim()) &&
+      contactConsent);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialogRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) {
+    return null;
+  }
+
+  const resetForm = () => {
+    setStep(1);
+    setSystemType("");
+    setRequestType("");
+    setProblemType("");
+    setDescription("");
+    setName("");
+    setPhone("");
+    setEmail("");
+    setZipCode("");
+    setPropertyType("");
+    setAppointmentWindow("");
+    setStreetAddress("");
+    setContactConsent(false);
+    setPreferredContactMethod("");
+    setSubmitError("");
+    setIsSubmitting(false);
+  };
+
+  const handleSubmit = async () => {
+    if (
+      !systemType ||
+      !requestType ||
+      !problemType ||
+      !name.trim() ||
+      !phone.trim() ||
+      !contactConsent
+    ) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError("");
+
+    const serviceNeeded = `${getSystemLabel(systemType)} - ${getRequestLabel(
+      requestType,
+    )} - ${problemType}`;
+    const leadId = createLeadId();
+
+    const leadData: LeadData = {
+      id: leadId,
+      name: name.trim(),
+      phone: phone.trim(),
+      system_type: systemType,
+      request_type: requestType,
+      problem_type: problemType,
+      service_needed: serviceNeeded,
+      source: "Request Service Modal",
+      status: "New",
+      contact_consent: contactConsent,
+    };
+
+    if (email.trim()) {
+      leadData.email = email.trim();
+    }
+
+    if (zipCode.trim()) {
+      leadData.zip_code = zipCode.trim();
+    }
+
+    if (propertyType) {
+      leadData.property_type = propertyType;
+    }
+
+    if (appointmentWindow) {
+      leadData.appointment_window = appointmentWindow;
+    }
+
+    if (streetAddress.trim()) {
+      leadData.street_address = streetAddress.trim();
+    }
+
+    if (description.trim()) {
+      leadData.description = description.trim();
+    }
+
+    if (preferredContactMethod) {
+      leadData.preferred_contact_method = preferredContactMethod;
+    }
+
+    let insertResult: InsertLeadResult;
+
+    try {
+      insertResult = await insertLead(leadData);
+    } catch (error) {
+      const errorDetails = getErrorDetails(error);
+
+      console.error("Request service lead insert threw", {
+        error,
+        leadData,
+        leadId,
+        ...errorDetails,
+      });
+      setSubmitError(
+        "Something went wrong while submitting your request. Please try again or call us directly.",
+      );
+      setIsSubmitting(false);
+      return;
+    }
+
+    const { error, status, statusText } = insertResult;
+
+    if (error) {
+      const errorDetails = getErrorDetails(error);
+
+      console.error("Request service lead insert failed", {
+        error,
+        leadData,
+        leadId,
+        status,
+        statusText,
+        ...errorDetails,
+      });
+      setSubmitError(
+        "Something went wrong while submitting your request. Please try again or call us directly.",
+      );
+      setIsSubmitting(false);
+      return;
+    }
+
+    console.info("Request service lead insert succeeded", {
+      leadId,
+      status,
+      statusText,
+    });
+
+    resetForm();
+    onClose();
+    router.push("/thank-you");
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] grid bg-service-ink/55 p-4 backdrop-blur-sm max-md:p-0"
+      role="presentation"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget && !hasProgress) {
+          onClose();
+        }
+      }}
+    >
+      <div
+        ref={dialogRef}
+        aria-labelledby="request-service-title"
+        aria-modal="true"
+        className="m-auto flex max-h-[calc(100svh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white text-service-ink shadow-service outline-none max-md:min-h-svh max-md:max-h-svh max-md:rounded-none"
+        role="dialog"
+        tabIndex={-1}
+      >
+        <div className="flex items-start justify-between gap-5 border-b border-service-border px-6 py-5 max-md:px-5">
+          <div>
+            <StepIndicator currentStep={step} />
+            <h2
+              id="request-service-title"
+              className="mt-2 text-2xl font-semibold leading-tight text-service-ink"
+            >
+              {step === 1
+                ? "What do you need help with?"
+                : step === 2
+                  ? "What's going on?"
+                  : "Where should we follow up?"}
+            </h2>
+          </div>
+          <button
+            aria-label="Close request service modal"
+            className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-md border border-service-border bg-white text-xl leading-none text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+            type="button"
+            onClick={onClose}
+          >
+            x
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-6 py-6 max-md:px-5">
+          {step === 1 ? (
+            <div className="grid gap-8">
+              <div>
+                <h3 className="text-xl font-semibold leading-tight">
+                  What system needs help?
+                </h3>
+                <div className="mt-4 grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+                  {systemOptions.map((option) => (
+                    <OptionButton
+                      isSelected={systemType === option.value}
+                      key={option.value}
+                      label={option.label}
+                      onClick={() => {
+                        setSystemType(option.value);
+                        setProblemType("");
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold leading-tight">
+                  What do you need?
+                </h3>
+                <div className="mt-4 grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+                  {requestOptions.map((option) => (
+                    <OptionButton
+                      isSelected={requestType === option.value}
+                      key={option.value}
+                      label={option.label}
+                      onClick={() => {
+                        setRequestType(option.value);
+                        setProblemType("");
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          {step === 2 ? (
+            <div>
+              <h3 className="text-xl font-semibold leading-tight">
+                What is going on?
+              </h3>
+              <div className="mt-4 grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+                {problemOptions.map((option) => (
+                  <OptionButton
+                    isSelected={problemType === option}
+                    key={option}
+                    label={option}
+                    onClick={() => setProblemType(option)}
+                  />
+                ))}
+              </div>
+
+              <label className="mt-6 grid gap-2 text-sm font-semibold text-service-ink">
+                Anything else we should know?
+                <textarea
+                  className="min-h-32 rounded-md border border-service-border px-4 py-3 text-base font-normal outline-none transition focus:border-service-accent focus:ring-4 focus:ring-service-accent/15"
+                  placeholder="Tell us what's happening, when it started, or anything unusual you've noticed."
+                  value={description}
+                  onChange={(event) => setDescription(event.target.value)}
+                />
+              </label>
+            </div>
+          ) : null}
+
+          {step === 3 ? (
+            <div className="grid gap-5">
+              <label className="grid gap-2 text-sm font-semibold text-service-ink">
+                Name
+                <input
+                  autoComplete="name"
+                  className="min-h-12 rounded-md border border-service-border px-4 text-base font-normal outline-none transition focus:border-service-accent focus:ring-4 focus:ring-service-accent/15"
+                  required
+                  type="text"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                />
+              </label>
+
+              <label className="grid gap-2 text-sm font-semibold text-service-ink">
+                Phone
+                <input
+                  autoComplete="tel"
+                  className="min-h-12 rounded-md border border-service-border px-4 text-base font-normal outline-none transition focus:border-service-accent focus:ring-4 focus:ring-service-accent/15"
+                  required
+                  type="tel"
+                  value={phone}
+                  onChange={(event) => setPhone(event.target.value)}
+                />
+              </label>
+
+              <label className="grid gap-2 text-sm font-semibold text-service-ink">
+                Email
+                <span className="text-xs font-medium text-service-muted">
+                  Optional, but recommended.
+                </span>
+                <input
+                  autoComplete="email"
+                  className="min-h-12 rounded-md border border-service-border px-4 text-base font-normal outline-none transition focus:border-service-accent focus:ring-4 focus:ring-service-accent/15"
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                />
+              </label>
+
+              <label className="grid gap-2 text-sm font-semibold text-service-ink">
+                ZIP code
+                <input
+                  autoComplete="postal-code"
+                  className="min-h-12 rounded-md border border-service-border px-4 text-base font-normal outline-none transition focus:border-service-accent focus:ring-4 focus:ring-service-accent/15"
+                  inputMode="numeric"
+                  type="text"
+                  value={zipCode}
+                  onChange={(event) => setZipCode(event.target.value)}
+                />
+              </label>
+
+              <label className="grid gap-2 text-sm font-semibold text-service-ink">
+                Street address
+                <input
+                  autoComplete="street-address"
+                  className="min-h-12 rounded-md border border-service-border px-4 text-base font-normal outline-none transition focus:border-service-accent focus:ring-4 focus:ring-service-accent/15"
+                  type="text"
+                  value={streetAddress}
+                  onChange={(event) => setStreetAddress(event.target.value)}
+                />
+              </label>
+
+              <div>
+                <p className="text-sm font-semibold text-service-ink">
+                  What type of property is this?
+                </p>
+                <div className="mt-3 grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+                  {propertyTypeOptions.map((option) => (
+                    <OptionButton
+                      isSelected={propertyType === option}
+                      key={option}
+                      label={option}
+                      onClick={() => setPropertyType(option)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="text-sm font-semibold text-service-ink">
+                  When would you like help?
+                </p>
+                <div className="mt-3 grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+                  {appointmentWindowOptions.map((option) => (
+                    <OptionButton
+                      isSelected={appointmentWindow === option}
+                      key={option}
+                      label={option}
+                      onClick={() => setAppointmentWindow(option)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="text-sm font-semibold text-service-ink">
+                  How should we contact you?
+                </p>
+                <div className="mt-3 grid grid-cols-3 gap-3 max-sm:grid-cols-1">
+                  {contactOptions.map((option) => (
+                    <OptionButton
+                      isSelected={preferredContactMethod === option.value}
+                      key={option.value}
+                      label={option.label}
+                      onClick={() => setPreferredContactMethod(option.value)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <label className="flex gap-3 rounded-md border border-service-border bg-service-surface p-4 text-sm font-medium leading-6 text-service-ink">
+                <input
+                  className="mt-1 size-4 accent-service-accent"
+                  required
+                  type="checkbox"
+                  checked={contactConsent}
+                  onChange={(event) => setContactConsent(event.target.checked)}
+                />
+                I agree to be contacted about my service request.
+              </label>
+
+              {submitError ? (
+                <p
+                  className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-700"
+                  role="alert"
+                >
+                  {submitError}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+
+        <div className="flex items-center justify-between gap-3 border-t border-service-border px-6 py-5 max-md:px-5">
+          <button
+            className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-md border border-service-border bg-white px-5 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-45"
+            disabled={step === 1 || isSubmitting}
+            type="button"
+            onClick={() => setStep((currentStep) => Math.max(1, currentStep - 1))}
+          >
+            Back
+          </button>
+
+          {step < 3 ? (
+            <button
+              className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-md bg-service-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-not-allowed disabled:bg-service-muted"
+              disabled={!canContinue}
+              type="button"
+              onClick={() => setStep((currentStep) => currentStep + 1)}
+            >
+              Continue
+            </button>
+          ) : (
+            <button
+              className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-md bg-service-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-wait disabled:bg-service-muted"
+              disabled={!canContinue || isSubmitting}
+              type="button"
+              onClick={handleSubmit}
+            >
+              {isSubmitting ? "Sending request" : "Submit request"}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

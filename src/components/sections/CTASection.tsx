@@ -1,4 +1,5 @@
-import { Button, Container, Section } from "@/components/primitives";
+import { Container, Section } from "@/components/primitives";
+import { RequestServiceButton } from "@/components/request-service";
 
 type CTASectionProps = {
   title: string;
@@ -15,13 +16,12 @@ export function CTASection({ title, body, action }: CTASectionProps) {
             <h2 className="text-fluid-heading font-semibold leading-heading text-white">{title}</h2>
             <p className="mt-5 text-lg leading-8 text-white/75">{body}</p>
           </div>
-          <Button
+          <RequestServiceButton
             className="shrink-0 border-white bg-white text-service-ink hover:bg-service-surface"
-            href="#contact"
             variant="secondary"
           >
             {action}
-          </Button>
+          </RequestServiceButton>
         </div>
       </Container>
     </Section>

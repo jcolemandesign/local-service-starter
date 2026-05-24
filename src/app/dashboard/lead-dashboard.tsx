@@ -18,12 +18,16 @@ export type Lead = {
   notes?: LeadValue;
   phone?: LeadValue;
   postal_code?: LeadValue;
+  preferred_contact_method?: LeadValue;
+  problem_type?: LeadValue;
   property_type?: LeadValue;
+  request_type?: LeadValue;
   service?: LeadValue;
   service_needed?: LeadValue;
   source?: LeadValue;
   status?: LeadValue;
   street_address?: LeadValue;
+  system_type?: LeadValue;
   urgency?: LeadValue;
   zip_code?: LeadValue;
   [key: string]: LeadValue;
@@ -62,9 +66,13 @@ const leadFields = {
   email: ["email"],
   name: ["name", "full_name"],
   phone: ["phone"],
+  preferredContactMethod: ["preferred_contact_method"],
+  problemType: ["problem_type"],
   propertyType: ["property_type"],
+  requestType: ["request_type"],
   service: ["service_needed", "service"],
   source: ["source"],
+  systemType: ["system_type"],
   urgency: ["urgency"],
   zip: ["zip_code", "postal_code"],
 };
@@ -189,10 +197,7 @@ function getUniqueValues(leads: Lead[], keys: string[]) {
 function getStatusFilterOptions(leads: Lead[], statusOptions: string[]) {
   const leadStatusValues = getUniqueValues(leads, ["status"]);
 
-  return [
-    ...statusOptions,
-    ...leadStatusValues.filter((status) => !statusOptions.includes(status)),
-  ];
+  return leadStatusValues.filter((status) => statusOptions.includes(status));
 }
 
 function getDateTime(value: LeadValue) {
@@ -221,11 +226,15 @@ function getCsvColumns(leads: Lead[]) {
     "postal_code",
     "service_needed",
     "service",
+    "system_type",
+    "request_type",
+    "problem_type",
     "urgency",
     "property_type",
     "appointment_window",
     "street_address",
     "address",
+    "preferred_contact_method",
     "description",
     "message",
     "contact_consent",
@@ -427,7 +436,6 @@ export function LeadDashboard({
           </label>
 
           <FilterSelect
-            colorOptions
             label="Status"
             onChange={setStatusFilter}
             options={statusFilterOptions}
@@ -596,6 +604,18 @@ export function LeadDashboard({
                   <LeadDetail label="Email" value={readLeadValue(lead, leadFields.email)} />
                   <LeadDetail label="ZIP code" value={readLeadValue(lead, leadFields.zip)} />
                   <LeadDetail label="Service" value={readLeadValue(lead, leadFields.service)} />
+                  <LeadDetail
+                    label="System"
+                    value={readLeadValue(lead, leadFields.systemType)}
+                  />
+                  <LeadDetail
+                    label="Request type"
+                    value={readLeadValue(lead, leadFields.requestType)}
+                  />
+                  <LeadDetail
+                    label="Problem"
+                    value={readLeadValue(lead, leadFields.problemType)}
+                  />
                   <LeadDetail label="Urgency" value={readLeadValue(lead, leadFields.urgency)} />
                   <LeadDetail
                     label="Property type"
@@ -609,6 +629,10 @@ export function LeadDashboard({
                   <LeadDetail
                     label="Contact consent"
                     value={readLeadValue(lead, leadFields.consent)}
+                  />
+                  <LeadDetail
+                    label="Preferred contact"
+                    value={readLeadValue(lead, leadFields.preferredContactMethod)}
                   />
                   <LeadDetail label="Source" value={readLeadValue(lead, leadFields.source)} />
                 </div>

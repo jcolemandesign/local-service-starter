@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
 import { Button } from "@/components/primitives";
+import { RequestServiceButton } from "@/components/request-service";
 
 const menuEase = [0.22, 1, 0.36, 1] as const;
 
@@ -98,7 +99,9 @@ function ModalMenu({
               <PhoneIcon />
               {phone}
             </a>
-            <Button href="#contact">{action}</Button>
+            <RequestServiceButton onClick={() => setIsOpen(false)}>
+              {action}
+            </RequestServiceButton>
           </div>
         </motion.div>
       ) : null}
@@ -222,7 +225,7 @@ export function NavFloatingBentoSection({
                 <PhoneIcon />
                 {phone}
               </Button>
-              <Button href="#contact">{action}</Button>
+              <RequestServiceButton>{action}</RequestServiceButton>
             </div>
           </div>
         </div>

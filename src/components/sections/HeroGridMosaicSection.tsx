@@ -1,4 +1,5 @@
 import { Button } from "@/components/primitives";
+import { RequestServiceButton } from "@/components/request-service";
 
 type TrustSignal = {
   value: string;
@@ -65,7 +66,7 @@ export function HeroGridMosaicSection({
                 {body}
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
-                <Button href="#contact">{primaryAction}</Button>
+                <RequestServiceButton>{primaryAction}</RequestServiceButton>
                 <Button href="#services" variant="secondary">
                   {secondaryAction}
                 </Button>

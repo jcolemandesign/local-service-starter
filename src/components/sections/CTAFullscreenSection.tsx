@@ -1,4 +1,4 @@
-import { Button } from "@/components/primitives";
+import { RequestServiceButton } from "@/components/request-service";
 
 type CTAFullscreenSectionProps = {
   eyebrow: string;
@@ -52,13 +52,12 @@ export function CTAFullscreenSection({
         </div>
 
         <div className="flex items-end justify-center pt-12">
-          <Button
+          <RequestServiceButton
             className="border-white bg-white text-service-ink hover:bg-service-surface"
-            href="#contact"
             variant="secondary"
           >
             {action}
-          </Button>
+          </RequestServiceButton>
         </div>
       </div>
     </section>
