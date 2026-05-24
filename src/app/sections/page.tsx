@@ -1,8 +1,10 @@
 import { Container } from "@/components/primitives";
 import {
   ContactSection,
+  ContentAboutCompanySection,
   ContentPositioningSplitSection,
   ContentRevealParagraphSection,
+  ContentSplitHeadlineImageSection,
   ContentStickyIdeasSection,
   CTAFullscreenSection,
   CTASection,
@@ -118,6 +120,22 @@ const collections = [
         element: (
           <ContentPositioningSplitSection
             {...sectionLibraryContent.contentPositioningSplit}
+          />
+        ),
+      },
+      {
+        label: "About company content",
+        element: (
+          <ContentAboutCompanySection
+            {...sectionLibraryContent.contentAboutCompany}
+          />
+        ),
+      },
+      {
+        label: "Split headline image content",
+        element: (
+          <ContentSplitHeadlineImageSection
+            {...sectionLibraryContent.contentSplitHeadlineImage}
           />
         ),
       },

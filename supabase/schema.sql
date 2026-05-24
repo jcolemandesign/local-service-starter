@@ -1,0 +1,23 @@
+create table public.leads (
+  id uuid not null default gen_random_uuid (),
+  name text null,
+  phone text null,
+  email text null,
+  zip_code text null,
+  service_needed text null,
+  urgency text null,
+  property_type text null,
+  appointment_window text null,
+  street_address text null,
+  description text null,
+  created_at timestamp with time zone not null default now(),
+  contact_consent boolean null default false,
+  status text null default 'New'::text,
+  source text null default 'Website Contact Form'::text,
+  notes text null,
+  system_type text null,
+  request_type text null,
+  problem_type text null,
+  preferred_contact_method text null,
+  constraint leads_pkey primary key (id)
+) TABLESPACE pg_default;

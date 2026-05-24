@@ -1,6 +1,8 @@
 export { ContactSection } from "./ContactSection";
+export { ContentAboutCompanySection } from "./ContentAboutCompanySection";
 export { ContentPositioningSplitSection } from "./ContentPositioningSplitSection";
 export { ContentRevealParagraphSection } from "./ContentRevealParagraphSection";
+export { ContentSplitHeadlineImageSection } from "./ContentSplitHeadlineImageSection";
 export { ContentStickyIdeasSection } from "./ContentStickyIdeasSection";
 export { CTAFullscreenSection } from "./CTAFullscreenSection";
 export { CTASection } from "./CTASection";

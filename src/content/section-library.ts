@@ -124,6 +124,28 @@ export const sectionLibraryContent = {
     action: "About us",
     imageLabel: "Image",
   },
+  contentAboutCompany: {
+    eyebrow: "About the company",
+    statement:
+      "A locally minded service team built around clear communication, careful work, and practical next steps.",
+    summary:
+      "Meet the team, values, and process behind every visit.",
+    action: "Visit about page",
+    images: [
+      {
+        label: "Team",
+      },
+      {
+        label: "Service",
+      },
+    ],
+  },
+  contentSplitHeadlineImage: {
+    headlineTop: "Useful service pages",
+    headlineBottom: "feel calm first",
+    imageLabel: "Texture",
+    body: "A concise editorial content block for pairing a large positioning line with a quiet image moment.",
+  },
   trustBar: {
     label: "Trusted by homeowners and small businesses across the metro area",
     items: ["4.9 average rating", "2,400+ jobs completed", "Background-checked team", "Locally owned"],
@@ -486,7 +508,90 @@ export const sectionLibraryContent = {
   },
   footer: {
     businessName: "Example Local Service",
-    tagline: "Reusable footer structure for local service starters.",
-    links: ["Services", "About", "Reviews", "Contact"],
+    description:
+      "Reusable footer structure for local service starters, with clear navigation, service coverage, and contact details in one calm close.",
+    quickLinks: [
+      {
+        label: "Home",
+        href: "#",
+      },
+      {
+        label: "About us",
+        href: "#",
+      },
+      {
+        label: "Services",
+        href: "#services",
+      },
+      {
+        label: "Contact us",
+        href: "#contact",
+      },
+    ],
+    services: [
+      {
+        label: "Emergency repairs",
+        href: "#",
+      },
+      {
+        label: "Preventive maintenance",
+        href: "#",
+      },
+      {
+        label: "Installation",
+        href: "#",
+      },
+      {
+        label: "Inspections",
+        href: "#",
+      },
+    ],
+    serviceAreas: [
+      {
+        label: "Nashville",
+        href: "#",
+      },
+      {
+        label: "Franklin",
+        href: "#",
+      },
+      {
+        label: "Brentwood",
+        href: "#",
+      },
+      {
+        label: "Murfreesboro",
+        href: "#",
+      },
+    ],
+    contact: {
+      name: "Example Local Service",
+      address: "123 Main Street, Nashville, TN 37201",
+      phone: "(555) 014-2250",
+      email: "hello@examplelocal.com",
+    },
+    socialLinks: [
+      {
+        label: "Facebook",
+        href: "#",
+      },
+      {
+        label: "Instagram",
+        href: "#",
+      },
+      {
+        label: "LinkedIn",
+        href: "#",
+      },
+    ],
+    reviewLink: {
+      label: "Read our Google reviews",
+      href: "#",
+    },
+    copyright: "(c) 2026 Example Local Service. All rights reserved.",
+    privacyLink: {
+      label: "Privacy Policy",
+      href: "#",
+    },
   },
 };
