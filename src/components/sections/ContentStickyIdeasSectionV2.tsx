@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import styles from "./section-v2-type.module.css";
 
 type ContentStickyIdeasSectionV2Props = {
   eyebrow: string;
@@ -84,22 +83,22 @@ function ImportantIdeasBoxV2({ ideas }: { ideas: string[] }) {
   return (
     <div
       className={cx(
-        styles["radius-medium"],
-        styles["fluid-type-frame"],
+        "radius-medium",
+        "fluid-type-frame",
         "border border-service-border bg-white p-7 shadow-service will-change-transform max-lg:will-change-auto",
       )}
       ref={boxRef}
       style={{ transform: `translate3d(0, ${offset}px, 0)` }}
     >
-      <p className={cx(styles["fluid-label"], "text-service-accent")}>
+      <p className={cx("type-label", "text-service-accent")}>
         Important ideas
       </p>
       <ul className="mt-6 grid gap-4">
         {ideas.map((idea) => (
           <li
             className={cx(
-              styles["fluid-heading-sm"],
-              styles["wrap-balance"],
+              "type-heading-sm",
+              "wrap-balance",
               "border-l border-service-border pl-4 text-service-ink",
             )}
             key={idea}
@@ -120,16 +119,16 @@ export function ContentStickyIdeasSectionV2({
 }: ContentStickyIdeasSectionV2Props) {
   return (
     <section className="bg-service-surface py-24 max-lg:py-20 max-md:py-16">
-      <div className="mx-auto grid w-full max-w-[1600px] grid-cols-[minmax(0,1fr)_360px] gap-16 px-12 max-lg:grid-cols-1 max-lg:gap-12 max-lg:px-8 max-md:px-6">
-        <div className={styles["fluid-type-frame"]}>
-          <p className={cx(styles["fluid-label"], "text-service-accent")}>
+      <div className="container-site grid grid-cols-[minmax(0,1fr)_360px] gap-16 max-lg:grid-cols-1 max-lg:gap-12">
+        <div className="fluid-type-frame">
+          <p className={cx("type-label", "text-service-accent")}>
             {eyebrow}
           </p>
           <h2
             className={cx(
-              styles["fluid-heading-xl"],
-              styles["measure-heading-wide"],
-              styles["wrap-balance"],
+              "type-heading-xl",
+              "measure-heading-wide",
+              "wrap-balance",
               "mt-6 text-service-ink",
             )}
           >
@@ -139,9 +138,9 @@ export function ContentStickyIdeasSectionV2({
             {paragraphs.map((paragraph) => (
               <p
                 className={cx(
-                  styles["fluid-heading-md"],
-                  styles["measure-copy-wide"],
-                  styles["wrap-pretty"],
+                  "type-heading-md",
+                  "measure-copy-wide",
+                  "wrap-pretty",
                   "text-service-ink",
                 )}
                 key={paragraph}

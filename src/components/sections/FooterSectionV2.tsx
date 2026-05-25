@@ -1,4 +1,3 @@
-import styles from "./section-v2-type.module.css";
 
 type FooterLink = {
   label: string;
@@ -123,14 +122,14 @@ function FooterColumn({
   links: FooterLink[];
 }) {
   return (
-    <div className={styles["fluid-type-frame"]}>
-      <h2 className={cx(styles["fluid-label"], "text-white/55")}>{title}</h2>
+    <div className="fluid-type-frame">
+      <h2 className={cx("type-label", "text-white/55")}>{title}</h2>
       <ul className="mt-5 grid gap-3">
         {links.map((link) => (
           <li key={link.label}>
             <a
               className={cx(
-                styles["fluid-text-sm"],
+                "type-text-sm",
                 "cursor-pointer font-medium text-white/72 transition-colors hover:text-white",
               )}
               href={link.href}
@@ -159,13 +158,13 @@ export function FooterSectionV2({
 }: FooterSectionV2Props) {
   return (
     <footer className="bg-service-ink py-16 text-white max-md:py-12">
-      <div className="mx-auto w-full max-w-[1600px] px-12 max-lg:px-8 max-md:px-6">
+      <div className="container-site">
         <div className="grid grid-cols-6 gap-10 max-lg:grid-cols-3 max-md:grid-cols-1">
-          <div className={cx(styles["fluid-type-frame"], "col-span-2 max-lg:col-span-3 max-md:col-span-1")}>
+          <div className={cx("fluid-type-frame", "col-span-2 max-lg:col-span-3 max-md:col-span-1")}>
             <a
               className={cx(
-                styles["radius-medium"],
-                styles["fluid-label"],
+                "radius-medium",
+                "type-label",
                 "inline-flex min-h-12 min-w-40 cursor-pointer items-center justify-center border border-white/15 bg-white/5 px-5 text-white",
               )}
               href="#"
@@ -174,9 +173,9 @@ export function FooterSectionV2({
             </a>
             <p
               className={cx(
-                styles["fluid-text-md"],
-                styles["measure-copy"],
-                styles["wrap-pretty"],
+                "type-text-md",
+                "measure-copy",
+                "wrap-pretty",
                 "mt-5 text-white/70",
               )}
             >
@@ -188,7 +187,7 @@ export function FooterSectionV2({
                   <a
                     aria-label={link.label}
                     className={cx(
-                      styles["radius-medium"],
+                      "radius-medium",
                       "flex size-10 cursor-pointer items-center justify-center border border-white/15 text-white/72 transition-colors hover:border-white/45 hover:text-white",
                     )}
                     href={link.href}
@@ -212,18 +211,18 @@ export function FooterSectionV2({
             <FooterColumn links={serviceAreas} title="Service Areas" />
           </nav>
 
-          <div className={styles["fluid-type-frame"]}>
-            <h2 className={cx(styles["fluid-label"], "text-white/55")}>
+          <div className="fluid-type-frame">
+            <h2 className={cx("type-label", "text-white/55")}>
               Contact
             </h2>
             <address className="mt-5 grid gap-3 not-italic">
-              <span className={cx(styles["fluid-text-sm"], "font-medium text-white/72")}>
+              <span className={cx("type-text-sm", "font-medium text-white/72")}>
                 {contact.name}
               </span>
               <span
                 className={cx(
-                  styles["fluid-text-sm"],
-                  styles["wrap-pretty"],
+                  "type-text-sm",
+                  "wrap-pretty",
                   "font-medium text-white/72",
                 )}
               >
@@ -231,7 +230,7 @@ export function FooterSectionV2({
               </span>
               <a
                 className={cx(
-                  styles["fluid-text-sm"],
+                  "type-text-sm",
                   "cursor-pointer font-medium text-white/72 transition-colors hover:text-white",
                 )}
                 href={`tel:${contact.phone.replace(/\D/g, "")}`}
@@ -240,7 +239,7 @@ export function FooterSectionV2({
               </a>
               <a
                 className={cx(
-                  styles["fluid-text-sm"],
+                  "type-text-sm",
                   "cursor-pointer font-medium text-white/72 transition-colors hover:text-white",
                 )}
                 href={`mailto:${contact.email}`}
@@ -251,17 +250,17 @@ export function FooterSectionV2({
           </div>
         </div>
 
-        <div className={cx(styles["fluid-type-frame"], "mt-12 flex items-center justify-between gap-6 border-t border-white/10 pt-7 max-md:flex-col max-md:items-start")}>
+        <div className={cx("fluid-type-frame", "mt-12 flex items-center justify-between gap-6 border-t border-white/10 pt-7 max-md:flex-col max-md:items-start")}>
           <a
             className={cx(
-              styles["fluid-text-sm"],
+              "type-text-sm",
               "cursor-pointer font-medium text-white/60 transition-colors hover:text-white",
             )}
             href={reviewLink.href}
           >
             {reviewLink.label}
           </a>
-          <p className={cx(styles["fluid-text-sm"], "text-center font-medium text-white/60 max-md:text-left")}>
+          <p className={cx("type-text-sm", "text-center font-medium text-white/60 max-md:text-left")}>
             {copyright}
           </p>
           <nav aria-label="Footer legal navigation">
@@ -269,7 +268,7 @@ export function FooterSectionV2({
               <li>
                 <a
                   className={cx(
-                    styles["fluid-text-sm"],
+                    "type-text-sm",
                     "cursor-pointer font-medium text-white/60 transition-colors hover:text-white",
                   )}
                   href={privacyLink.href}
@@ -281,7 +280,7 @@ export function FooterSectionV2({
                 <li>
                   <a
                     className={cx(
-                      styles["fluid-text-sm"],
+                      "type-text-sm",
                       "cursor-pointer font-medium text-white/60 transition-colors hover:text-white",
                     )}
                     href={termsLink.href}

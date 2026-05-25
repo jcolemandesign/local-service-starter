@@ -2,7 +2,6 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-import styles from "./section-v2-type.module.css";
 
 const revealEase = [0.22, 1, 0.36, 1] as const;
 
@@ -85,16 +84,16 @@ export function ContentRevealParagraphSectionV2({
     <section className="bg-white py-24 max-lg:py-20 max-md:py-16">
       <div
         className={cx(
-          "mx-auto w-full max-w-[1600px] px-12 max-lg:px-8 max-md:px-6",
-          styles["fluid-type-frame"],
+          "container-site",
+          "fluid-type-frame",
         )}
         ref={sectionRef}
       >
         <p
           className={cx(
-            styles["fluid-heading-xl"],
-            styles["measure-copy-wide"],
-            styles["wrap-balance"],
+            "type-heading-xl",
+            "measure-copy-wide",
+            "wrap-balance",
             "text-service-ink",
           )}
         >

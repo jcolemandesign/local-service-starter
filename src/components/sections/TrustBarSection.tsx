@@ -1,5 +1,4 @@
 import { Container, Section } from "@/components/primitives";
-import styles from "./section-v2-type.module.css";
 
 type TrustBarSectionProps = {
   label: string;
@@ -16,15 +15,15 @@ export function TrustBarSection({ label, items }: TrustBarSectionProps) {
       <Container>
         <div
           className={cx(
-            styles["fluid-type-frame"],
+            "fluid-type-frame",
             "flex items-center justify-between gap-10 border-y border-service-border py-7 max-lg:flex-col max-lg:items-start",
           )}
         >
           <p
             className={cx(
-              styles["fluid-text-md"],
-              styles["measure-copy"],
-              styles["wrap-pretty"],
+              "type-text-md",
+              "measure-copy",
+              "wrap-pretty",
               "font-semibold text-service-ink",
             )}
           >
@@ -34,8 +33,8 @@ export function TrustBarSection({ label, items }: TrustBarSectionProps) {
             {items.map((item) => (
               <li
                 className={cx(
-                  styles["fluid-text-sm"],
-                  styles["wrap-pretty"],
+                  "type-text-sm",
+                  "wrap-pretty",
                   "font-medium text-service-muted",
                 )}
                 key={item}

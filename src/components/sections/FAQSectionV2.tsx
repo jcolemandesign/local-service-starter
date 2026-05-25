@@ -1,4 +1,3 @@
-import styles from "./section-v2-type.module.css";
 
 type FAQItem = {
   question: string;
@@ -19,17 +18,17 @@ function cx(...classes: Array<string | undefined>) {
 export function FAQSectionV2({ eyebrow, title, body, items }: FAQSectionV2Props) {
   return (
     <section className="bg-service-surface py-24 max-lg:py-20 max-md:py-16">
-      <div className="mx-auto w-full max-w-[1600px] px-12 max-lg:px-8 max-md:px-6">
+      <div className="container-site">
         <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-12 max-lg:grid-cols-1">
-          <div className={styles["fluid-type-frame"]}>
-            <p className={cx(styles["fluid-label"], "text-service-accent")}>
+          <div className="fluid-type-frame">
+            <p className={cx("type-label", "text-service-accent")}>
               {eyebrow}
             </p>
             <h2
               className={cx(
-                styles["fluid-heading-xl"],
-                styles["measure-heading-wide"],
-                styles["wrap-balance"],
+                "type-heading-xl",
+                "measure-heading-wide",
+                "wrap-balance",
                 "mt-5 text-service-ink",
               )}
             >
@@ -37,9 +36,9 @@ export function FAQSectionV2({ eyebrow, title, body, items }: FAQSectionV2Props)
             </h2>
             <p
               className={cx(
-                styles["fluid-text-lg"],
-                styles["measure-copy"],
-                styles["wrap-pretty"],
+                "type-text-lg",
+                "measure-copy",
+                "wrap-pretty",
                 "mt-6 text-service-muted",
               )}
             >
@@ -51,17 +50,17 @@ export function FAQSectionV2({ eyebrow, title, body, items }: FAQSectionV2Props)
             {items.map((item) => (
               <article
                 className={cx(
-                  styles["fluid-type-frame"],
-                  styles["radius-medium"],
+                  "fluid-type-frame",
+                  "radius-medium",
                   "border border-service-border bg-white p-7 shadow-service",
                 )}
                 key={item.question}
               >
                 <h3
                   className={cx(
-                    styles["fluid-heading-sm"],
-                    styles["measure-heading-wide"],
-                    styles["wrap-balance"],
+                    "type-heading-sm",
+                    "measure-heading-wide",
+                    "wrap-balance",
                     "text-service-ink",
                   )}
                 >
@@ -69,9 +68,9 @@ export function FAQSectionV2({ eyebrow, title, body, items }: FAQSectionV2Props)
                 </h3>
                 <p
                   className={cx(
-                    styles["fluid-text-md"],
-                    styles["measure-copy"],
-                    styles["wrap-pretty"],
+                    "type-text-md",
+                    "measure-copy",
+                    "wrap-pretty",
                     "mt-3 text-service-muted",
                   )}
                 >

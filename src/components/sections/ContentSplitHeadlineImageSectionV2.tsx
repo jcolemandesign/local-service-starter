@@ -1,4 +1,3 @@
-import styles from "./section-v2-type.module.css";
 
 type ContentSplitHeadlineImageSectionV2Props = {
   headlineTop: string;
@@ -16,7 +15,7 @@ function TexturedImage({ label }: { label: string }) {
     <div
       aria-label={`${label} image placeholder`}
       className={cx(
-        styles["radius-medium"],
+        "radius-medium",
         "relative mx-auto aspect-square w-[clamp(13rem,24vw,22rem)] overflow-hidden border border-service-border bg-service-surface shadow-service max-md:w-full max-md:max-w-80",
       )}
     >
@@ -34,18 +33,18 @@ export function ContentSplitHeadlineImageSectionV2({
 }: ContentSplitHeadlineImageSectionV2Props) {
   return (
     <section className="bg-service-surface py-24 max-lg:py-20 max-md:py-16">
-      <div className="mx-auto w-full max-w-[1600px] px-12 max-lg:px-8 max-md:px-6">
+      <div className="container-site">
         <div
           className={cx(
-            styles["fluid-type-frame"],
-            styles["radius-medium"],
+            "fluid-type-frame",
+            "radius-medium",
             "grid gap-10 bg-white p-12 max-lg:p-8 max-md:p-6",
           )}
         >
           <h2
             className={cx(
-              styles["fluid-display-lg"],
-              styles["wrap-balance"],
+              "type-display-lg",
+              "wrap-balance",
               "grid justify-items-center gap-7 text-center text-service-ink max-md:gap-5",
             )}
           >
@@ -56,9 +55,9 @@ export function ContentSplitHeadlineImageSectionV2({
 
           <p
             className={cx(
-              styles["fluid-text-xl"],
-              styles["measure-copy"],
-              styles["wrap-pretty"],
+              "type-text-xl",
+              "measure-copy",
+              "wrap-pretty",
               "mx-auto text-center text-service-muted",
             )}
           >

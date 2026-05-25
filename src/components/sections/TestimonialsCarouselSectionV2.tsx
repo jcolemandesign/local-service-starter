@@ -2,7 +2,6 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
-import styles from "./section-v2-type.module.css";
 
 const testimonialEase = [0.22, 1, 0.36, 1] as const;
 
@@ -38,7 +37,7 @@ function SliderButton({
       type="button"
       aria-label={label}
       className={cx(
-        styles["radius-medium"],
+        "radius-medium",
         "flex size-14 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-white text-2xl font-semibold leading-none text-service-accent shadow-service transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white max-md:size-12",
       )}
       onClick={onClick}
@@ -53,9 +52,9 @@ function TestimonialCardContent({ item }: { item: CarouselTestimonial }) {
     <>
       <blockquote
         className={cx(
-          styles["fluid-heading-lg"],
-          styles["measure-copy-wide"],
-          styles["wrap-balance"],
+          "type-heading-lg",
+          "measure-copy-wide",
+          "wrap-balance",
           "mx-auto text-service-ink",
         )}
       >
@@ -64,8 +63,8 @@ function TestimonialCardContent({ item }: { item: CarouselTestimonial }) {
       <figcaption className="mt-12 max-md:mt-9">
         <p
           className={cx(
-            styles["fluid-heading-md"],
-            styles["wrap-balance"],
+            "type-heading-md",
+            "wrap-balance",
             "text-service-ink",
           )}
         >
@@ -73,7 +72,7 @@ function TestimonialCardContent({ item }: { item: CarouselTestimonial }) {
         </p>
         <p
           className={cx(
-            styles["fluid-label"],
+            "type-label",
             "mt-3 text-service-muted",
           )}
         >
@@ -111,16 +110,16 @@ export function TestimonialsCarouselSectionV2({
 
   return (
     <section className="bg-service-surface py-24 max-lg:py-20 max-md:py-16">
-      <div className="mx-auto w-full max-w-[1600px] px-12 max-lg:px-8 max-md:px-6">
-        <div className={cx(styles["fluid-type-frame"], "mx-auto max-w-6xl text-center")}>
-          <p className={cx(styles["fluid-label"], "text-service-accent")}>
+      <div className="container-site">
+        <div className={cx("fluid-type-frame", "mx-auto max-w-6xl text-center")}>
+          <p className={cx("type-label", "text-service-accent")}>
             {eyebrow}
           </p>
           <h2
             className={cx(
-              styles["fluid-heading-xl"],
-              styles["measure-heading-wide"],
-              styles["wrap-balance"],
+              "type-heading-xl",
+              "measure-heading-wide",
+              "wrap-balance",
               "mx-auto mt-5 text-service-ink",
             )}
           >
@@ -128,9 +127,9 @@ export function TestimonialsCarouselSectionV2({
           </h2>
           <p
             className={cx(
-              styles["fluid-text-lg"],
-              styles["measure-copy"],
-              styles["wrap-pretty"],
+              "type-text-lg",
+              "measure-copy",
+              "wrap-pretty",
               "mx-auto mt-6 text-service-muted",
             )}
           >
@@ -151,7 +150,7 @@ export function TestimonialsCarouselSectionV2({
                     key={`${item.author}-size`}
                     aria-hidden="true"
                     className={cx(
-                      styles["radius-medium"],
+                      "radius-medium",
                       "invisible col-start-1 row-start-1 border border-service-border bg-white px-16 py-14 shadow-service max-lg:px-10 max-md:px-6 max-md:py-10",
                     )}
                   >
@@ -164,7 +163,7 @@ export function TestimonialsCarouselSectionV2({
                     key={activeItem.author}
                     aria-live="polite"
                     className={cx(
-                      styles["radius-medium"],
+                      "radius-medium",
                       "col-start-1 row-start-1 border border-service-border bg-white px-16 py-14 shadow-service max-lg:px-10 max-md:px-6 max-md:py-10",
                     )}
                     initial={{

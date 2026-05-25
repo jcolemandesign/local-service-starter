@@ -1,5 +1,4 @@
 import { Container, Section } from "@/components/primitives";
-import styles from "./section-v2-type.module.css";
 
 type TrustMarqueeSectionProps = {
   label: string;
@@ -25,7 +24,7 @@ function MarqueeItems({
       {items.map((item) => (
         <li
           className={cx(
-            styles["fluid-label"],
+            "type-label",
             "flex shrink-0 items-center gap-6 text-service-muted",
           )}
           key={item}
@@ -44,16 +43,16 @@ export function TrustMarqueeSection({ label, items }: TrustMarqueeSectionProps) 
       <Container>
         <div
           className={cx(
-            styles["fluid-type-frame"],
-            styles["radius-medium"],
+            "fluid-type-frame",
+            "radius-medium",
             "max-w-md rounded-b-none border border-b-0 border-service-border bg-service-surface px-7 py-5 max-md:max-w-none",
           )}
         >
           <p
             className={cx(
-              styles["fluid-text-md"],
-              styles["measure-copy"],
-              styles["wrap-pretty"],
+              "type-text-md",
+              "measure-copy",
+              "wrap-pretty",
               "font-semibold text-service-ink",
             )}
           >
@@ -63,7 +62,7 @@ export function TrustMarqueeSection({ label, items }: TrustMarqueeSectionProps) 
 
         <div
           className={cx(
-            styles["radius-medium"],
+            "radius-medium",
             "overflow-hidden rounded-tl-none border border-service-border bg-service-surface py-6",
           )}
         >

@@ -1,4 +1,3 @@
-import styles from "./section-v2-type.module.css";
 
 type ContactSectionV2Props = {
   eyebrow: string;
@@ -19,17 +18,17 @@ export function ContactSectionV2({
 }: ContactSectionV2Props) {
   return (
     <section id="contact" className="bg-white py-24 max-lg:py-20 max-md:py-16">
-      <div className="mx-auto w-full max-w-[1600px] px-12 max-lg:px-8 max-md:px-6">
+      <div className="container-site">
         <div className="grid grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] gap-12 max-lg:grid-cols-1">
-          <div className={styles["fluid-type-frame"]}>
-            <p className={cx(styles["fluid-label"], "text-service-accent")}>
+          <div className="fluid-type-frame">
+            <p className={cx("type-label", "text-service-accent")}>
               {eyebrow}
             </p>
             <h2
               className={cx(
-                styles["fluid-heading-xl"],
-                styles["measure-heading-wide"],
-                styles["wrap-balance"],
+                "type-heading-xl",
+                "measure-heading-wide",
+                "wrap-balance",
                 "mt-5 text-service-ink",
               )}
             >
@@ -37,9 +36,9 @@ export function ContactSectionV2({
             </h2>
             <p
               className={cx(
-                styles["fluid-text-lg"],
-                styles["measure-copy"],
-                styles["wrap-pretty"],
+                "type-text-lg",
+                "measure-copy",
+                "wrap-pretty",
                 "mt-6 text-service-muted",
               )}
             >
@@ -50,8 +49,8 @@ export function ContactSectionV2({
               {details.map((detail) => (
                 <li
                   className={cx(
-                    styles["fluid-text-md"],
-                    styles["wrap-pretty"],
+                    "type-text-md",
+                    "wrap-pretty",
                     "font-semibold text-service-ink",
                   )}
                   key={detail}
@@ -64,22 +63,22 @@ export function ContactSectionV2({
 
           <div
             className={cx(
-              styles["fluid-type-frame"],
-              styles["radius-medium"],
+              "fluid-type-frame",
+              "radius-medium",
               "border border-service-border bg-service-surface p-8 shadow-service max-md:p-6",
             )}
           >
             <form className="grid gap-5">
               <label
                 className={cx(
-                  styles["fluid-text-sm"],
+                  "type-text-sm",
                   "grid gap-2 font-semibold text-service-ink",
                 )}
               >
                 Name
                 <input
                   className={cx(
-                    styles["radius-4"],
+                    "radius-4",
                     "min-h-12 border border-service-border bg-white px-4 text-base font-normal outline-none transition-colors focus:border-service-accent",
                   )}
                   placeholder="Jane Smith"
@@ -88,14 +87,14 @@ export function ContactSectionV2({
               </label>
               <label
                 className={cx(
-                  styles["fluid-text-sm"],
+                  "type-text-sm",
                   "grid gap-2 font-semibold text-service-ink",
                 )}
               >
                 Service needed
                 <input
                   className={cx(
-                    styles["radius-4"],
+                    "radius-4",
                     "min-h-12 border border-service-border bg-white px-4 text-base font-normal outline-none transition-colors focus:border-service-accent",
                   )}
                   placeholder="Repair, installation, maintenance"
@@ -104,14 +103,14 @@ export function ContactSectionV2({
               </label>
               <label
                 className={cx(
-                  styles["fluid-text-sm"],
+                  "type-text-sm",
                   "grid gap-2 font-semibold text-service-ink",
                 )}
               >
                 Message
                 <textarea
                   className={cx(
-                    styles["radius-4"],
+                    "radius-4",
                     "min-h-32 border border-service-border bg-white px-4 py-3 text-base font-normal outline-none transition-colors focus:border-service-accent",
                   )}
                   placeholder="Briefly describe the issue"
@@ -119,8 +118,8 @@ export function ContactSectionV2({
               </label>
               <button
                 className={cx(
-                  styles["radius-4"],
-                  styles["fluid-label"],
+                  "radius-4",
+                  "type-label",
                   "min-h-12 cursor-pointer bg-service-accent px-6 text-white transition-colors hover:bg-service-ink",
                 )}
                 type="button"

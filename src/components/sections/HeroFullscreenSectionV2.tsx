@@ -1,6 +1,5 @@
 import { Button } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
-import styles from "./section-v2-type.module.css";
 
 type ReviewSnippet = {
   rating: string;
@@ -60,19 +59,19 @@ export function HeroFullscreenSectionV2({
 
       <div
         className={cx(
-          "relative z-10 mx-auto flex min-h-svh w-full max-w-[1600px] items-end justify-between gap-12 px-12 py-16 max-lg:flex-col max-lg:items-start max-lg:justify-end max-lg:gap-10 max-lg:px-8 max-md:px-6 max-md:py-12",
-          styles["fluid-type-frame"],
+          "container-site relative z-10 flex min-h-svh items-end justify-between gap-12 py-16 max-lg:flex-col max-lg:items-start max-lg:justify-end max-lg:gap-10 max-md:py-12",
+          "fluid-type-frame",
         )}
       >
         <div className="min-w-0">
-          <p className={cx(styles["fluid-label"], "text-white/70")}>
+          <p className={cx("type-label", "text-white/70")}>
             {eyebrow}
           </p>
           <HeadingTag
             className={cx(
-              styles["fluid-heading-lg"],
-              styles["measure-copy-wide"],
-              styles["wrap-balance"],
+              "type-heading-lg",
+              "measure-copy-wide",
+              "wrap-balance",
               "mt-6 text-white",
             )}
           >
@@ -80,9 +79,9 @@ export function HeroFullscreenSectionV2({
           </HeadingTag>
           <p
             className={cx(
-              styles["fluid-text-lg"],
-              styles["measure-copy"],
-              styles["wrap-pretty"],
+              "type-text-lg",
+              "measure-copy",
+              "wrap-pretty",
               "mt-7 text-white/78",
             )}
           >
@@ -100,7 +99,7 @@ export function HeroFullscreenSectionV2({
           {trustSignals.map((signal) => (
             <div
               className={cx(
-                styles["radius-medium"],
+                "radius-medium",
                 "border border-white/18 bg-white/12 p-5 backdrop-blur-md max-md:p-4",
               )}
               key={signal.label}
@@ -115,7 +114,7 @@ export function HeroFullscreenSectionV2({
           ))}
           <div
             className={cx(
-              styles["radius-medium"],
+              "radius-medium",
               "col-span-2 border border-white/18 bg-white/12 p-6 backdrop-blur-md max-md:p-4",
             )}
           >

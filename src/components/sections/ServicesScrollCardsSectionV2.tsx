@@ -2,7 +2,6 @@
 
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useLayoutEffect, useRef, useState } from "react";
-import styles from "./section-v2-type.module.css";
 
 type ScrollServiceItem = {
   title: string;
@@ -50,17 +49,17 @@ function ServiceScrollCard({ item }: { item: ScrollServiceItem }) {
   return (
     <article
       className={cx(
-        styles["fluid-type-frame"],
-        styles["radius-medium"],
+        "fluid-type-frame",
+        "radius-medium",
         "group/service-card flex h-[68svh] w-[min(34vw,430px)] shrink-0 cursor-pointer flex-col overflow-hidden border border-service-border bg-white shadow-service transition-transform duration-300 ease-out hover:-translate-y-2 max-lg:h-auto max-lg:min-h-[520px] max-lg:w-full",
       )}
     >
       <div className="flex min-h-28 items-center justify-between gap-8 px-7 py-6">
         <h3
           className={cx(
-            styles["fluid-heading-md"],
-            styles["measure-heading-wide"],
-            styles["wrap-balance"],
+            "type-heading-md",
+            "measure-heading-wide",
+            "wrap-balance",
             "text-service-ink",
           )}
         >
@@ -77,19 +76,19 @@ function ViewAllCard({ label }: { label: string }) {
   return (
     <a
       className={cx(
-        styles["fluid-type-frame"],
-        styles["radius-medium"],
+        "fluid-type-frame",
+        "radius-medium",
         "group/service-card flex h-[68svh] w-[min(34vw,430px)] shrink-0 cursor-pointer flex-col border border-service-border bg-service-ink p-8 text-white shadow-service transition-transform duration-300 ease-out hover:-translate-y-2 max-lg:h-auto max-lg:min-h-[360px] max-lg:w-full",
       )}
       href="#services"
     >
       <div>
-        <p className={cx(styles["fluid-label"], "text-white/60")}>Services</p>
+        <p className={cx("type-label", "text-white/60")}>Services</p>
         <h3
           className={cx(
-            styles["fluid-heading-lg"],
-            styles["measure-display-wide"],
-            styles["wrap-balance"],
+            "type-heading-lg",
+            "measure-display-wide",
+            "wrap-balance",
             "mt-5 text-white",
           )}
         >
@@ -200,16 +199,16 @@ export function ServicesScrollCardsSectionV2({
     >
       <div className="sticky top-0 flex min-h-svh items-center overflow-hidden py-16 max-lg:static max-lg:min-h-0 max-lg:overflow-visible">
         <div className="w-full">
-          <div className="mx-auto w-full max-w-[1600px] px-12 max-lg:px-8 max-md:px-6">
-            <div className={cx("max-w-4xl", styles["fluid-type-frame"])}>
-              <p className={cx(styles["fluid-label"], "text-service-accent")}>
+          <div className="container-site">
+            <div className={cx("max-w-4xl", "fluid-type-frame")}>
+              <p className={cx("type-label", "text-service-accent")}>
                 {eyebrow}
               </p>
               <h2
                 className={cx(
-                  styles["fluid-heading-xl"],
-                  styles["measure-heading-wide"],
-                  styles["wrap-balance"],
+                  "type-heading-xl",
+                  "measure-heading-wide",
+                  "wrap-balance",
                   "mt-5 text-service-ink",
                 )}
               >
@@ -222,7 +221,7 @@ export function ServicesScrollCardsSectionV2({
             className="mt-14 overflow-hidden max-lg:overflow-visible"
             ref={railViewportRef}
           >
-            <div className="mx-auto w-full max-w-[1600px] px-12 max-lg:grid max-lg:gap-4 max-lg:px-8 max-md:px-6">
+            <div className="container-site max-lg:grid max-lg:gap-4">
               <motion.div
                 ref={railRef}
                 className="flex w-max gap-4 will-change-transform max-lg:w-full max-lg:flex-col max-lg:![transform:none]"

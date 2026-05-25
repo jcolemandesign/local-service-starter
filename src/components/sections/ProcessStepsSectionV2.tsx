@@ -1,4 +1,3 @@
-import styles from "./section-v2-type.module.css";
 
 type ProcessStep = {
   title: string;
@@ -24,16 +23,16 @@ export function ProcessStepsSectionV2({
 }: ProcessStepsSectionV2Props) {
   return (
     <section className="bg-service-surface py-24 max-lg:py-20 max-md:py-16">
-      <div className="mx-auto w-full max-w-[1600px] px-12 max-lg:px-8 max-md:px-6">
-        <div className={cx("mx-auto text-center", styles["fluid-type-frame"])}>
-          <p className={cx(styles["fluid-label"], "text-service-accent")}>
+      <div className="container-site">
+        <div className={cx("mx-auto text-center", "fluid-type-frame")}>
+          <p className={cx("type-label", "text-service-accent")}>
             {eyebrow}
           </p>
           <h2
             className={cx(
-              styles["fluid-heading-xl"],
-              styles["measure-heading-wide"],
-              styles["wrap-balance"],
+              "type-heading-xl",
+              "measure-heading-wide",
+              "wrap-balance",
               "mx-auto mt-5 text-service-ink",
             )}
           >
@@ -41,9 +40,9 @@ export function ProcessStepsSectionV2({
           </h2>
           <p
             className={cx(
-              styles["fluid-text-lg"],
-              styles["measure-copy"],
-              styles["wrap-pretty"],
+              "type-text-lg",
+              "measure-copy",
+              "wrap-pretty",
               "mx-auto mt-6 text-service-muted",
             )}
           >
@@ -55,15 +54,15 @@ export function ProcessStepsSectionV2({
           {steps.map((step, index) => (
             <li
               className={cx(
-                styles["fluid-type-frame"],
-                styles["radius-medium"],
+                "fluid-type-frame",
+                "radius-medium",
                 "h-full border border-service-border bg-white p-7 shadow-service",
               )}
               key={step.title}
             >
               <div
                 className={cx(
-                  styles["radius-4"],
+                  "radius-4",
                   "mb-8 flex h-12 w-12 items-center justify-center bg-service-ink text-sm font-semibold text-white",
                 )}
               >
@@ -71,9 +70,9 @@ export function ProcessStepsSectionV2({
               </div>
               <h3
                 className={cx(
-                  styles["fluid-heading-sm"],
-                  styles["measure-heading-wide"],
-                  styles["wrap-balance"],
+                  "type-heading-sm",
+                  "measure-heading-wide",
+                  "wrap-balance",
                   "text-service-ink",
                 )}
               >
@@ -81,9 +80,9 @@ export function ProcessStepsSectionV2({
               </h3>
               <p
                 className={cx(
-                  styles["fluid-text-md"],
-                  styles["measure-copy"],
-                  styles["wrap-pretty"],
+                  "type-text-md",
+                  "measure-copy",
+                  "wrap-pretty",
                   "mt-4 text-service-muted",
                 )}
               >

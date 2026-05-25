@@ -1,4 +1,3 @@
-import styles from "./section-v2-type.module.css";
 
 type FeatureOverlapItem = {
   eyebrow: string;
@@ -44,20 +43,20 @@ function FeatureCard({
   return (
     <article
       className={cx(
-        styles["fluid-type-frame"],
-        styles["radius-medium"],
+        "fluid-type-frame",
+        "radius-medium",
         "relative z-10 w-[min(560px,calc(100vw-3rem))] border border-service-border bg-white p-10 shadow-service max-lg:w-full max-lg:translate-x-0 max-md:p-6",
         mirrored ? "-translate-x-1/4" : "translate-x-1/4",
       )}
     >
-      <p className={cx(styles["fluid-label"], "text-service-accent")}>
+      <p className={cx("type-label", "text-service-accent")}>
         {item.eyebrow}
       </p>
       <h2
         className={cx(
-          styles["fluid-heading-lg"],
-          styles["measure-heading"],
-          styles["wrap-balance"],
+          "type-heading-lg",
+          "measure-heading",
+          "wrap-balance",
           "mt-4 text-service-ink",
         )}
       >
@@ -65,9 +64,9 @@ function FeatureCard({
       </h2>
       <p
         className={cx(
-          styles["fluid-text-md"],
-          styles["measure-copy"],
-          styles["wrap-pretty"],
+          "type-text-md",
+          "measure-copy",
+          "wrap-pretty",
           "mt-6 text-service-muted",
         )}
       >

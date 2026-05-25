@@ -5,7 +5,6 @@ import { useState } from "react";
 import { Button } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 import { useScrollLock } from "@/hooks/useScrollLock";
-import styles from "./section-v2-type.module.css";
 
 const menuEase = [0.22, 1, 0.36, 1] as const;
 
@@ -56,8 +55,8 @@ function Logo({
   return (
     <a
       className={cx(
-        styles["fluid-label"],
-        styles["radius-medium"],
+        "type-label",
+        "radius-medium",
         "flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center border transition-colors",
         isMenuOpen
           ? "border-white/20 bg-white/5 text-white"
@@ -122,7 +121,7 @@ function NavPrimaryLayoutSection({
   useScrollLock(lockActive);
 
   return (
-    <section className={cx("relative bg-white", styles["fluid-type-frame"])}>
+    <section className={cx("relative bg-white", "fluid-type-frame")}>
       <nav
         aria-label={
           isCenterLogo
@@ -152,7 +151,7 @@ function NavPrimaryLayoutSection({
 
           <ul
             className={cx(
-              styles["fluid-text-sm"],
+              "type-text-sm",
               "flex items-center gap-7 font-semibold text-service-ink max-lg:hidden",
             )}
           >
@@ -195,7 +194,7 @@ function NavPrimaryLayoutSection({
                           <motion.div
                             id={menuId}
                             className={cx(
-                              styles["radius-medium"],
+                              "radius-medium",
                               "absolute left-0 top-[calc(100%+0.75rem)] z-40 w-56 border border-service-border bg-white p-2 shadow-service",
                             )}
                             initial={{
@@ -214,7 +213,7 @@ function NavPrimaryLayoutSection({
                                 <li key={item}>
                                   <a
                                     className={cx(
-                                      styles["radius-4"],
+                                      "radius-4",
                                       "block cursor-pointer px-4 py-3 text-sm font-semibold text-service-ink transition-colors hover:bg-service-surface hover:text-service-accent",
                                     )}
                                     href="#"
@@ -250,7 +249,7 @@ function NavPrimaryLayoutSection({
           aria-controls="primary-v2-nav-menu"
           aria-expanded={isMenuOpen}
           className={cx(
-            styles["radius-medium"],
+            "radius-medium",
             "hidden min-h-12 cursor-pointer items-center gap-3 border px-5 text-sm font-semibold transition-colors max-lg:flex",
             isMenuOpen
               ? "border-white/20 bg-white/5 text-white hover:border-white/45"
@@ -327,7 +326,7 @@ function NavPrimaryLayoutSection({
                 <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
                   <a
                     className={cx(
-                      styles["radius-medium"],
+                      "radius-medium",
                       "inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 whitespace-nowrap border border-white/25 bg-transparent px-5 text-sm font-semibold text-white transition-colors hover:border-white hover:text-white",
                     )}
                     href="tel:5550142250"

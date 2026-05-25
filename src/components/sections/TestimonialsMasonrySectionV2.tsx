@@ -3,7 +3,6 @@
 import { motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
 import { Button } from "@/components/primitives";
-import styles from "./section-v2-type.module.css";
 
 const masonryEase = [0.22, 1, 0.36, 1] as const;
 
@@ -38,16 +37,16 @@ export function TestimonialsMasonrySectionV2({
 
   return (
     <section className="bg-service-surface py-24 max-lg:py-20 max-md:py-16">
-      <div className="mx-auto w-full max-w-[1600px] px-12 max-lg:px-8 max-md:px-6">
-        <div className={cx(styles["fluid-type-frame"], "mx-auto max-w-4xl text-center")}>
-          <p className={cx(styles["fluid-label"], "text-service-accent")}>
+      <div className="container-site">
+        <div className={cx("fluid-type-frame", "mx-auto max-w-4xl text-center")}>
+          <p className={cx("type-label", "text-service-accent")}>
             {eyebrow}
           </p>
           <h2
             className={cx(
-              styles["fluid-heading-xl"],
-              styles["measure-heading-wide"],
-              styles["wrap-balance"],
+              "type-heading-xl",
+              "measure-heading-wide",
+              "wrap-balance",
               "mx-auto mt-5 text-service-ink",
             )}
           >
@@ -55,9 +54,9 @@ export function TestimonialsMasonrySectionV2({
           </h2>
           <p
             className={cx(
-              styles["fluid-text-lg"],
-              styles["measure-copy"],
-              styles["wrap-pretty"],
+              "type-text-lg",
+              "measure-copy",
+              "wrap-pretty",
               "mx-auto mt-6 text-service-muted",
             )}
           >
@@ -76,17 +75,17 @@ export function TestimonialsMasonrySectionV2({
               {items.map((item) => (
                 <article
                   className={cx(
-                    styles["fluid-type-frame"],
-                    styles["radius-medium"],
+                    "fluid-type-frame",
+                    "radius-medium",
                     "mb-6 break-inside-avoid border border-service-border bg-white p-7 shadow-service",
                   )}
                   key={`${item.author}-${item.detail}`}
                 >
                   <blockquote
                     className={cx(
-                      styles["fluid-text-lg"],
-                      styles["measure-copy"],
-                      styles["wrap-pretty"],
+                      "type-text-lg",
+                      "measure-copy",
+                      "wrap-pretty",
                       "font-medium text-service-ink",
                     )}
                   >
@@ -94,8 +93,8 @@ export function TestimonialsMasonrySectionV2({
                   </blockquote>
                   <p
                     className={cx(
-                      styles["fluid-heading-sm"],
-                      styles["wrap-balance"],
+                      "type-heading-sm",
+                      "wrap-balance",
                       "mt-8 text-service-ink",
                     )}
                   >
@@ -103,9 +102,9 @@ export function TestimonialsMasonrySectionV2({
                   </p>
                   <p
                     className={cx(
-                      styles["fluid-text-sm"],
-                      styles["measure-caption"],
-                      styles["wrap-pretty"],
+                      "type-text-sm",
+                      "measure-caption",
+                      "wrap-pretty",
                       "mt-2 text-service-muted",
                     )}
                   >

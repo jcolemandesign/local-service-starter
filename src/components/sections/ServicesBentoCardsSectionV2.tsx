@@ -1,4 +1,3 @@
-import styles from "./section-v2-type.module.css";
 
 type ServiceBentoItem = {
   title: string;
@@ -34,16 +33,16 @@ export function ServicesBentoCardsSectionV2({
 }: ServicesBentoCardsSectionV2Props) {
   return (
     <section id="services-bento" className="bg-white py-24 max-lg:py-20 max-md:py-16">
-      <div className="mx-auto w-full max-w-[1600px] px-12 max-lg:px-8 max-md:px-6">
-        <div className={cx("mx-auto text-center", styles["fluid-type-frame"])}>
-          <p className={cx(styles["fluid-label"], "text-service-accent")}>
+      <div className="container-site">
+        <div className={cx("mx-auto text-center", "fluid-type-frame")}>
+          <p className={cx("type-label", "text-service-accent")}>
             {eyebrow}
           </p>
           <h2
             className={cx(
-              styles["fluid-heading-xl"],
-              styles["measure-heading-wide"],
-              styles["wrap-balance"],
+              "type-heading-xl",
+              "measure-heading-wide",
+              "wrap-balance",
               "mx-auto mt-5 text-service-ink",
             )}
           >
@@ -51,9 +50,9 @@ export function ServicesBentoCardsSectionV2({
           </h2>
           <p
             className={cx(
-              styles["fluid-text-lg"],
-              styles["measure-copy"],
-              styles["wrap-pretty"],
+              "type-text-lg",
+              "measure-copy",
+              "wrap-pretty",
               "mx-auto mt-6 text-service-muted",
             )}
           >
@@ -65,8 +64,8 @@ export function ServicesBentoCardsSectionV2({
           {items.map((item) => (
             <article
               className={cx(
-                styles["fluid-type-frame"],
-                styles["radius-medium"],
+                "fluid-type-frame",
+                "radius-medium",
                 "group/service-card flex h-full cursor-pointer flex-col overflow-hidden border border-service-border bg-white shadow-service transition-transform duration-300 ease-out hover:scale-[1.015]",
               )}
               key={item.title}
@@ -74,7 +73,7 @@ export function ServicesBentoCardsSectionV2({
               <ServiceImagePlaceholder />
               <div
                 className={cx(
-                  styles["radius-medium"],
+                  "radius-medium",
                   "absolute right-3 top-3 flex size-12 items-center justify-center border border-white/60 bg-white/90 text-xl font-semibold leading-none text-service-ink shadow-service transition-colors group-hover/service-card:bg-service-accent group-hover/service-card:text-white",
                 )}
               >
@@ -84,9 +83,9 @@ export function ServicesBentoCardsSectionV2({
                 <div>
                 <h3
                   className={cx(
-                    styles["fluid-heading-sm"],
-                    styles["measure-heading-wide"],
-                    styles["wrap-balance"],
+                    "type-heading-sm",
+                    "measure-heading-wide",
+                    "wrap-balance",
                     "text-service-ink",
                   )}
                 >
@@ -94,9 +93,9 @@ export function ServicesBentoCardsSectionV2({
                 </h3>
                 <p
                   className={cx(
-                    styles["fluid-text-sm"],
-                    styles["measure-copy"],
-                    styles["wrap-pretty"],
+                    "type-text-sm",
+                    "measure-copy",
+                    "wrap-pretty",
                     "mt-4 text-service-muted",
                   )}
                 >

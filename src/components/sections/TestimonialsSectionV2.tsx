@@ -1,4 +1,3 @@
-import styles from "./section-v2-type.module.css";
 
 type Testimonial = {
   quote: string;
@@ -25,17 +24,17 @@ export function TestimonialsSectionV2({
 }: TestimonialsSectionV2Props) {
   return (
     <section className="bg-white py-24 max-lg:py-20 max-md:py-16">
-      <div className="mx-auto w-full max-w-[1600px] px-12 max-lg:px-8 max-md:px-6">
+      <div className="container-site">
         <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-12 max-lg:grid-cols-1 max-lg:gap-10">
-          <div className={styles["fluid-type-frame"]}>
-            <p className={cx(styles["fluid-label"], "text-service-accent")}>
+          <div className="fluid-type-frame">
+            <p className={cx("type-label", "text-service-accent")}>
               {eyebrow}
             </p>
             <h2
               className={cx(
-                styles["fluid-heading-xl"],
-                styles["measure-heading-wide"],
-                styles["wrap-balance"],
+                "type-heading-xl",
+                "measure-heading-wide",
+                "wrap-balance",
                 "mt-5 text-service-ink",
               )}
             >
@@ -43,9 +42,9 @@ export function TestimonialsSectionV2({
             </h2>
             <p
               className={cx(
-                styles["fluid-text-lg"],
-                styles["measure-copy"],
-                styles["wrap-pretty"],
+                "type-text-lg",
+                "measure-copy",
+                "wrap-pretty",
                 "mt-6 text-service-muted",
               )}
             >
@@ -57,17 +56,17 @@ export function TestimonialsSectionV2({
             {items.map((item) => (
               <article
                 className={cx(
-                  styles["fluid-type-frame"],
-                  styles["radius-medium"],
+                  "fluid-type-frame",
+                  "radius-medium",
                   "border border-service-border bg-service-surface p-8 shadow-service",
                 )}
                 key={item.author}
               >
                 <blockquote
                   className={cx(
-                    styles["fluid-text-xl"],
-                    styles["measure-copy"],
-                    styles["wrap-pretty"],
+                    "type-text-xl",
+                    "measure-copy",
+                    "wrap-pretty",
                     "font-medium text-service-ink",
                   )}
                 >
@@ -75,8 +74,8 @@ export function TestimonialsSectionV2({
                 </blockquote>
                 <p
                   className={cx(
-                    styles["fluid-heading-sm"],
-                    styles["wrap-balance"],
+                    "type-heading-sm",
+                    "wrap-balance",
                     "mt-8 text-service-ink",
                   )}
                 >
@@ -84,9 +83,9 @@ export function TestimonialsSectionV2({
                 </p>
                 <p
                   className={cx(
-                    styles["fluid-text-sm"],
-                    styles["measure-caption"],
-                    styles["wrap-pretty"],
+                    "type-text-sm",
+                    "measure-caption",
+                    "wrap-pretty",
                     "mt-2 text-service-muted",
                   )}
                 >

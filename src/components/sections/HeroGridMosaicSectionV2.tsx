@@ -1,6 +1,5 @@
 import { Button } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
-import styles from "./section-v2-type.module.css";
 
 type TrustSignal = {
   value: string;
@@ -32,7 +31,7 @@ function PlaceholderImagePanel({ label }: { label: string }) {
   return (
     <div
       className={cx(
-        styles["radius-medium"],
+        "radius-medium",
         "relative h-full min-h-64 overflow-hidden bg-service-border",
       )}
       aria-label={`${label} image placeholder`}
@@ -47,7 +46,7 @@ function ServiceCardImage({ label }: { label: string }) {
   return (
     <div
       className={cx(
-        styles["radius-4"],
+        "radius-4",
         "relative mb-6 aspect-[4/3] overflow-hidden bg-service-border",
       )}
       aria-label={`${label} service image placeholder`}
@@ -72,20 +71,20 @@ export function HeroGridMosaicSectionV2({
 
   return (
     <section className="min-h-svh bg-service-surface p-3">
-      <div className="mx-auto grid min-h-[calc(100svh-1.5rem)] w-full max-w-[1600px] grid-cols-8 grid-rows-6 gap-3 max-lg:min-h-0 max-lg:grid-cols-1 max-lg:grid-rows-none">
+      <div className="container-site grid min-h-[calc(100svh-1.5rem)] grid-cols-8 grid-rows-6 gap-3 max-lg:min-h-0 max-lg:grid-cols-1 max-lg:grid-rows-none">
         <article
           className={cx(
-            styles["fluid-type-frame"],
-            styles["radius-medium"],
+            "fluid-type-frame",
+            "radius-medium",
             "col-span-5 row-span-3 flex flex-col justify-between bg-white p-8 shadow-service max-lg:col-span-1 max-lg:row-auto max-md:p-6",
           )}
         >
           <div>
             <HeadingTag
               className={cx(
-                styles["fluid-heading-xl"],
-                styles["measure-display-wide"],
-                styles["wrap-balance"],
+                "type-heading-xl",
+                "measure-display-wide",
+                "wrap-balance",
                 "text-service-ink",
               )}
             >
@@ -95,9 +94,9 @@ export function HeroGridMosaicSectionV2({
           <div className="mt-12">
             <p
               className={cx(
-                styles["fluid-text-lg"],
-                styles["measure-copy"],
-                styles["wrap-pretty"],
+                "type-text-lg",
+                "measure-copy",
+                "wrap-pretty",
                 "mt-5 text-service-muted",
               )}
             >
@@ -120,8 +119,8 @@ export function HeroGridMosaicSectionV2({
           {trustSignals.slice(0, 3).map((signal) => (
             <div
               className={cx(
-                styles["fluid-type-frame"],
-                styles["radius-medium"],
+                "fluid-type-frame",
+                "radius-medium",
                 "flex flex-col justify-end bg-service-ink p-6 text-white max-md:p-5",
               )}
               key={signal.label}
@@ -129,8 +128,8 @@ export function HeroGridMosaicSectionV2({
               <p className="text-2xl font-semibold leading-none">{signal.value}</p>
               <p
                 className={cx(
-                  styles["fluid-text-sm"],
-                  styles["wrap-pretty"],
+                  "type-text-sm",
+                  "wrap-pretty",
                   "mt-3 text-white/72",
                 )}
               >
@@ -143,22 +142,22 @@ export function HeroGridMosaicSectionV2({
         {services.slice(0, 3).map((service) => (
           <article
             className={cx(
-              styles["fluid-type-frame"],
-              styles["radius-medium"],
+              "fluid-type-frame",
+              "radius-medium",
               "col-span-2 row-span-3 row-start-4 flex flex-col justify-between border border-service-border bg-white p-6 transition-transform duration-300 ease-out hover:-translate-y-1 max-lg:col-span-1 max-lg:row-auto",
             )}
             key={service.title}
           >
             <div>
               <ServiceCardImage label={service.title} />
-              <p className={cx(styles["fluid-label"], "text-service-accent")}>
+              <p className={cx("type-label", "text-service-accent")}>
                 Service
               </p>
               <h3
                 className={cx(
-                  styles["fluid-heading-sm"],
-                  styles["measure-display-wide"],
-                  styles["wrap-balance"],
+                  "type-heading-sm",
+                  "measure-display-wide",
+                  "wrap-balance",
                   "mt-4 text-service-ink",
                 )}
               >
@@ -166,9 +165,9 @@ export function HeroGridMosaicSectionV2({
               </h3>
               <p
                 className={cx(
-                  styles["fluid-text-md"],
-                  styles["measure-copy"],
-                  styles["wrap-pretty"],
+                  "type-text-md",
+                  "measure-copy",
+                  "wrap-pretty",
                   "mt-3 text-service-muted",
                 )}
               >
@@ -177,7 +176,7 @@ export function HeroGridMosaicSectionV2({
             </div>
             <div
               className={cx(
-                styles["radius-4"],
+                "radius-4",
                 "mt-6 flex size-11 items-center justify-center bg-service-surface text-service-ink",
               )}
             >

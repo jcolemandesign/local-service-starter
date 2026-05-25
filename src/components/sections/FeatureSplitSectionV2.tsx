@@ -1,4 +1,3 @@
-import styles from "./section-v2-type.module.css";
 
 type FeatureSplitSectionV2Props = {
   eyebrow: string;
@@ -15,18 +14,18 @@ function FeatureGraphic() {
   return (
     <div
       className={cx(
-        styles["radius-medium"],
+        "radius-medium",
         "border border-service-border bg-white p-8 shadow-service",
       )}
       aria-hidden="true"
     >
-      <div className={cx(styles["radius-4"], "aspect-video bg-service-surface p-6")}>
+      <div className={cx("radius-4", "aspect-video bg-service-surface p-6")}>
         <div className="grid h-full grid-cols-2 gap-4">
-          <div className={cx(styles["radius-4"], "bg-white shadow-service")} />
-          <div className={cx(styles["radius-4"], "bg-service-accent/15")} />
+          <div className={cx("radius-4", "bg-white shadow-service")} />
+          <div className={cx("radius-4", "bg-service-accent/15")} />
           <div
             className={cx(
-              styles["radius-4"],
+              "radius-4",
               "col-span-2 bg-white shadow-service",
             )}
           />
@@ -44,17 +43,17 @@ export function FeatureSplitSectionV2({
 }: FeatureSplitSectionV2Props) {
   return (
     <section className="bg-white py-24 max-lg:py-20 max-md:py-16">
-      <div className="mx-auto grid w-full max-w-[1600px] grid-cols-2 items-center gap-16 px-12 max-lg:grid-cols-1 max-lg:gap-10 max-lg:px-8 max-md:px-6">
+      <div className="container-site grid grid-cols-2 items-center gap-16 max-lg:grid-cols-1 max-lg:gap-10">
         <FeatureGraphic />
-        <div className={styles["fluid-type-frame"]}>
-          <p className={cx(styles["fluid-label"], "text-service-accent")}>
+        <div className="fluid-type-frame">
+          <p className={cx("type-label", "text-service-accent")}>
             {eyebrow}
           </p>
           <h2
             className={cx(
-              styles["fluid-heading-xl"],
-              styles["measure-heading-wide"],
-              styles["wrap-balance"],
+              "type-heading-xl",
+              "measure-heading-wide",
+              "wrap-balance",
               "mt-5 text-service-ink",
             )}
           >
@@ -62,9 +61,9 @@ export function FeatureSplitSectionV2({
           </h2>
           <p
             className={cx(
-              styles["fluid-text-lg"],
-              styles["measure-copy"],
-              styles["wrap-pretty"],
+              "type-text-lg",
+              "measure-copy",
+              "wrap-pretty",
               "mt-6 text-service-muted",
             )}
           >
@@ -74,9 +73,9 @@ export function FeatureSplitSectionV2({
             {points.map((point) => (
               <li
                 className={cx(
-                  styles["fluid-text-md"],
-                  styles["measure-copy"],
-                  styles["wrap-pretty"],
+                  "type-text-md",
+                  "measure-copy",
+                  "wrap-pretty",
                   "flex gap-4 text-service-muted",
                 )}
                 key={point}

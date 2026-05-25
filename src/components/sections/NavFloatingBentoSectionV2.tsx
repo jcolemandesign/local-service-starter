@@ -5,7 +5,6 @@ import { useState } from "react";
 import { Button } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 import { useScrollLock } from "@/hooks/useScrollLock";
-import styles from "./section-v2-type.module.css";
 
 const menuEase = [0.22, 1, 0.36, 1] as const;
 
@@ -44,8 +43,8 @@ function FloatingLogo({ label }: { label: string }) {
   return (
     <a
       className={cx(
-        styles["fluid-label"],
-        styles["radius-medium"],
+        "type-label",
+        "radius-medium",
         "flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-white/90 p-1 text-service-muted shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:text-service-accent",
       )}
       href="#"
@@ -122,7 +121,7 @@ function ModalMenu({
               <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
                 <a
                   className={cx(
-                    styles["radius-medium"],
+                    "radius-medium",
                     "inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 whitespace-nowrap border border-white/25 bg-transparent px-5 text-sm font-semibold text-white transition-colors hover:border-white hover:text-white",
                   )}
                   href="tel:5550142250"
@@ -164,7 +163,7 @@ export function NavFloatingBentoSectionV2({
         fixed
           ? "fixed inset-x-0 top-0 z-50 bg-transparent"
           : "relative min-h-20 bg-white",
-        styles["fluid-type-frame"],
+        "fluid-type-frame",
       )}
     >
       <nav aria-label="Floating bento v2 preview navigation">
@@ -175,8 +174,8 @@ export function NavFloatingBentoSectionV2({
 
           <ul
             className={cx(
-              styles["fluid-text-sm"],
-              styles["radius-medium"],
+              "type-text-sm",
+              "radius-medium",
               "pointer-events-auto col-start-2 flex min-h-12 items-center gap-1 border border-service-border bg-white/90 p-1 font-semibold text-service-ink shadow-service backdrop-blur-md",
             )}
           >
@@ -206,7 +205,7 @@ export function NavFloatingBentoSectionV2({
                         aria-controls={menuId}
                         aria-expanded={isOpen}
                         className={cx(
-                          styles["radius-4"],
+                          "radius-4",
                           "flex h-10 cursor-pointer items-center gap-2 px-4 transition-colors hover:bg-service-surface hover:text-service-accent",
                         )}
                         type="button"
@@ -222,7 +221,7 @@ export function NavFloatingBentoSectionV2({
                           <motion.div
                             id={menuId}
                             className={cx(
-                              styles["radius-medium"],
+                              "radius-medium",
                               "absolute left-0 top-[calc(100%+0.5rem)] z-40 w-56 border border-service-border bg-white p-2 shadow-service",
                             )}
                             initial={{
@@ -241,7 +240,7 @@ export function NavFloatingBentoSectionV2({
                                 <li key={item}>
                                   <a
                                     className={cx(
-                                      styles["radius-4"],
+                                      "radius-4",
                                       "block cursor-pointer px-4 py-3 text-sm font-semibold text-service-ink transition-colors hover:bg-service-surface hover:text-service-accent",
                                     )}
                                     href="#"
@@ -258,7 +257,7 @@ export function NavFloatingBentoSectionV2({
                   ) : (
                     <a
                       className={cx(
-                        styles["radius-4"],
+                        "radius-4",
                         "flex h-10 cursor-pointer items-center px-4 transition-colors hover:bg-service-surface hover:text-service-accent",
                       )}
                       href="#"
@@ -293,7 +292,7 @@ export function NavFloatingBentoSectionV2({
             aria-controls="floating-bento-v2-nav-menu"
             aria-expanded={isMenuOpen}
             className={cx(
-              styles["radius-medium"],
+              "radius-medium",
               "flex min-h-12 cursor-pointer items-center gap-3 border border-service-border bg-white/90 px-5 text-sm font-semibold text-service-ink shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:text-service-accent",
             )}
             type="button"

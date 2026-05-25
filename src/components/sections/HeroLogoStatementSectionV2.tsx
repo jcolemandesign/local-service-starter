@@ -1,5 +1,4 @@
 import { RequestServiceTrigger } from "@/components/request-service";
-import styles from "./section-v2-type.module.css";
 
 type HeroLogoStatementSectionV2Props = {
   logoLabel: string;
@@ -19,7 +18,7 @@ function WideImagePlaceholder() {
     <div
       aria-hidden="true"
       className={cx(
-        styles["radius-medium"],
+        "radius-medium",
         "relative aspect-[16/7] overflow-hidden bg-service-border max-lg:aspect-[4/3]",
       )}
     >
@@ -81,14 +80,14 @@ export function HeroLogoStatementSectionV2({
     <section className="bg-white py-24 max-lg:py-20 max-md:py-16">
       <div
         className={cx(
-          "mx-auto w-full max-w-[1600px] px-12 max-lg:px-8 max-md:px-6",
-          styles["fluid-type-frame"],
+          "container-site",
+          "fluid-type-frame",
         )}
       >
         <a
           className={cx(
-            styles["fluid-label"],
-            styles["radius-medium"],
+            "type-label",
+            "radius-medium",
             "flex min-h-24 w-full cursor-pointer items-center justify-center border border-service-border bg-service-surface text-service-muted transition-colors hover:border-service-accent hover:text-service-accent max-md:min-h-20",
           )}
           href="#"
@@ -98,9 +97,9 @@ export function HeroLogoStatementSectionV2({
 
         <HeadingTag
           className={cx(
-            styles["fluid-display-lg"],
-            styles["measure-copy-wide"],
-            styles["wrap-balance"],
+            "type-display-lg",
+            "measure-copy-wide",
+            "wrap-balance",
             "mt-16 text-service-ink max-lg:mt-12",
           )}
         >

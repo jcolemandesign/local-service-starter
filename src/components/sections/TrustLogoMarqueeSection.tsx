@@ -1,5 +1,4 @@
 import { Container, Section } from "@/components/primitives";
-import styles from "./section-v2-type.module.css";
 
 type TrustLogoMarqueeSectionProps = {
   label: string;
@@ -14,14 +13,14 @@ function LogoPlaceholder({ name }: { name: string }) {
   return (
     <div
       className={cx(
-        styles["radius-medium"],
+        "radius-medium",
         "flex h-24 items-center justify-center border border-service-border bg-white px-8 shadow-service",
       )}
     >
       <div
         className={cx(
-          styles["fluid-label"],
-          styles["radius-4"],
+          "type-label",
+          "radius-4",
           "flex h-12 w-full items-center justify-center border border-service-border bg-service-surface text-service-muted",
         )}
       >
@@ -64,22 +63,22 @@ export function TrustLogoMarqueeSection({
       <Container>
         <div
           className={cx(
-            styles["radius-medium"],
+            "radius-medium",
             "overflow-hidden border border-service-border bg-service-surface",
           )}
         >
           <div
             className={cx(
-              styles["fluid-type-frame"],
+              "fluid-type-frame",
               "flex items-center gap-10 px-10 py-12 max-lg:flex-col max-lg:items-start max-md:px-6 max-md:py-10",
             )}
           >
             <div className="basis-1/5">
               <p
                 className={cx(
-                  styles["fluid-text-xl"],
-                  styles["measure-caption"],
-                  styles["wrap-balance"],
+                  "type-text-xl",
+                  "measure-caption",
+                  "wrap-balance",
                   "font-semibold text-service-ink",
                 )}
               >

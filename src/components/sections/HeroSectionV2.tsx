@@ -1,6 +1,5 @@
 import { Button } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
-import styles from "./section-v2-type.module.css";
 
 type HeroSectionV2Props = {
   eyebrow: string;
@@ -39,22 +38,22 @@ export function HeroSectionV2({
 
   return (
     <section className="min-h-svh bg-service-surface">
-      <div className="mx-auto flex min-h-svh w-full max-w-[1600px] items-stretch gap-16 px-12 py-16 max-lg:flex-col max-lg:gap-12 max-lg:px-8 max-md:px-6 max-md:py-12">
+      <div className="container-site flex min-h-svh items-stretch gap-16 py-16 max-lg:flex-col max-lg:gap-12 max-md:py-12">
         <div
           className={cx(
             "flex min-w-0 basis-[60%] items-center max-lg:basis-auto",
-            styles["fluid-type-frame"],
+            "fluid-type-frame",
           )}
         >
           <div>
-            <p className={cx(styles["fluid-label"], "text-service-accent")}>
+            <p className={cx("type-label", "text-service-accent")}>
               {eyebrow}
             </p>
             <HeadingTag
               className={cx(
-                styles["fluid-display-lg"],
-                styles["measure-display-wide"],
-                styles["wrap-balance"],
+                "type-display-lg",
+                "measure-display-wide",
+                "wrap-balance",
                 "mt-6 text-service-ink",
               )}
             >
@@ -62,9 +61,9 @@ export function HeroSectionV2({
             </HeadingTag>
             <p
               className={cx(
-                styles["fluid-text-lg"],
-                styles["measure-copy"],
-                styles["wrap-pretty"],
+                "type-text-lg",
+                "measure-copy",
+                "wrap-pretty",
                 "mt-7 text-service-muted",
               )}
             >

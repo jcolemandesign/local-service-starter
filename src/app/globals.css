@@ -3,6 +3,26 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --container-site: 1600px;
+  --container-content: 1200px;
+  --container-narrow: 900px;
+  --container-gutter: 3rem;
+  --measure-display-tight: 12ch;
+  --measure-display: 15ch;
+  --measure-display-wide: 18ch;
+  --measure-heading-tight: 18ch;
+  --measure-heading: 22ch;
+  --measure-heading-wide: 28ch;
+  --measure-lead: 52ch;
+  --measure-copy: 60ch;
+  --measure-copy-wide: 70ch;
+  --measure-longform: 75ch;
+  --measure-caption: 48ch;
+  --radius-none-token: 0;
+  --radius-tiny-token: 2px;
+  --radius-sm-token: 4px;
+  --radius-md-token: 8px;
+  --radius-lg-token: 24px;
 }
 
 @theme inline {
@@ -13,6 +33,16 @@
   --color-service-accent: #1f7a5a;
   --color-service-surface: #f4f7f3;
   --color-service-border: #dfe7e1;
+  --color-bg-page: #ffffff;
+  --color-bg-surface: #f4f7f3;
+  --color-bg-muted: #dfe7e1;
+  --color-bg-dark: #17211d;
+  --color-text-main: #17211d;
+  --color-text-muted: #5f6f68;
+  --color-text-inverse: #ffffff;
+  --color-text-accent: #1f7a5a;
+  --color-border-default: #dfe7e1;
+  --color-accent: #1f7a5a;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --shadow-service: 0 18px 50px rgb(23 33 29 / 0.08);
@@ -54,4 +84,248 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .fluid-type-frame {
+    container-type: inline-size;
+  }
+
+  .container-site,
+  .container-content,
+  .container-narrow {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: var(--container-gutter);
+  }
+
+  .container-site {
+    max-width: var(--container-site);
+  }
+
+  .container-content {
+    max-width: var(--container-content);
+  }
+
+  .container-narrow {
+    max-width: var(--container-narrow);
+  }
+
+  .container-full {
+    width: 100%;
+  }
+
+  .wrap-balance {
+    text-wrap: balance;
+  }
+
+  .wrap-pretty {
+    text-wrap: pretty;
+  }
+
+  .measure-display-tight {
+    max-width: var(--measure-display-tight);
+  }
+
+  .measure-display {
+    max-width: var(--measure-display);
+  }
+
+  .measure-display-wide {
+    max-width: var(--measure-display-wide);
+  }
+
+  .measure-heading-tight {
+    max-width: var(--measure-heading-tight);
+  }
+
+  .measure-heading {
+    max-width: var(--measure-heading);
+  }
+
+  .measure-heading-wide {
+    max-width: var(--measure-heading-wide);
+  }
+
+  .measure-lead {
+    max-width: var(--measure-lead);
+  }
+
+  .measure-copy {
+    max-width: var(--measure-copy);
+  }
+
+  .measure-copy-wide {
+    max-width: var(--measure-copy-wide);
+  }
+
+  .measure-longform {
+    max-width: var(--measure-longform);
+  }
+
+  .measure-caption {
+    max-width: var(--measure-caption);
+  }
+
+  .radius-none {
+    border-radius: var(--radius-none-token);
+  }
+
+  .radius-tiny {
+    border-radius: var(--radius-tiny-token);
+  }
+
+  .radius-sm,
+  .radius-4 {
+    border-radius: var(--radius-sm-token);
+  }
+
+  .radius-md,
+  .radius-medium {
+    border-radius: var(--radius-md-token);
+  }
+
+  .radius-lg,
+  .radius-large {
+    border-radius: var(--radius-lg-token);
+  }
+
+  .type-display-xl {
+    font-size: clamp(3.5rem, calc(4.8611111111cqw + 2.3333333333rem), 7rem);
+    line-height: 0.92;
+    font-weight: 680;
+  }
+
+  .type-display-lg {
+    font-size: clamp(2.75rem, calc(3.7878787879cqw + 2.0909090909rem), 5.5rem);
+    line-height: 0.95;
+    font-weight: 670;
+  }
+
+  .type-heading-xl {
+    font-size: clamp(2.25rem, calc(2.9166666667cqw + 1.55rem), 4rem);
+    line-height: 1;
+    font-weight: 660;
+  }
+
+  .type-heading-lg {
+    font-size: clamp(1.75rem, calc(1.9230769231cqw + 1.2115384615rem), 2.75rem);
+    line-height: 1.05;
+    font-weight: 650;
+  }
+
+  .type-heading-md {
+    font-size: clamp(1.375rem, calc(1.3020833333cqw + 1.0104166667rem), 2rem);
+    line-height: 1.15;
+    font-weight: 650;
+  }
+
+  .type-heading-sm {
+    font-size: clamp(1.125rem, calc(0.5208333333cqw + 0.9791666667rem), 1.375rem);
+    line-height: 1.25;
+    font-weight: 650;
+  }
+
+  .type-text-xl {
+    font-size: clamp(1.1875rem, calc(0.625cqw + 1rem), 1.5rem);
+    line-height: 1.5;
+    font-weight: 400;
+  }
+
+  .type-text-lg {
+    font-size: clamp(1.0625rem, calc(0.4261363636cqw + 0.9090909091rem), 1.25rem);
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  .type-text-md {
+    font-size: clamp(1rem, calc(0.3125cqw + 0.875rem), 1.125rem);
+    line-height: 1.65;
+    font-weight: 400;
+  }
+
+  .type-text-sm {
+    font-size: clamp(0.875rem, calc(0.2142857143cqw + 0.7785714286rem), 0.95rem);
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  .type-text-xs {
+    font-size: clamp(0.8125rem, calc(0.1953125cqw + 0.71875rem), 0.875rem);
+    line-height: 1.55;
+    font-weight: 400;
+  }
+
+  .type-caption {
+    font-size: clamp(0.75rem, calc(0.1953125cqw + 0.65625rem), 0.8125rem);
+    line-height: 1.5;
+    font-weight: 400;
+  }
+
+  .type-label,
+  .type-eyebrow {
+    font-size: clamp(0.8125rem, calc(0.1953125cqw + 0.71875rem), 0.875rem);
+    line-height: 1.2;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .section-space {
+    padding-block: 6rem;
+  }
+
+  .section-space-tight {
+    padding-block: 4rem;
+  }
+
+  .section-space-loose {
+    padding-block: 8rem;
+  }
+
+  .stack-tight > * + * {
+    margin-top: 0.75rem;
+  }
+
+  .stack-default > * + * {
+    margin-top: 1.5rem;
+  }
+
+  .stack-loose > * + * {
+    margin-top: 2.5rem;
+  }
+
+  @media (width < 1024px) {
+    .container-site,
+    .container-content,
+    .container-narrow {
+      padding-inline: 2rem;
+    }
+
+    .section-space {
+      padding-block: 5rem;
+    }
+
+    .section-space-tight {
+      padding-block: 3.5rem;
+    }
+
+    .section-space-loose {
+      padding-block: 6rem;
+    }
+  }
+
+  @media (width < 768px) {
+    .container-site,
+    .container-content,
+    .container-narrow {
+      padding-inline: 1.5rem;
+    }
+
+    .section-space,
+    .section-space-tight,
+    .section-space-loose {
+      padding-block: 4rem;
+    }
+  }
 }

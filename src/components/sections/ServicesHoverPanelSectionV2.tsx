@@ -2,7 +2,6 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
-import styles from "./section-v2-type.module.css";
 
 const servicePanelEase = [0.22, 1, 0.36, 1] as const;
 
@@ -47,16 +46,16 @@ export function ServicesHoverPanelSectionV2({
 
   return (
     <section className="bg-service-surface py-24 max-lg:py-20 max-md:py-16">
-      <div className="mx-auto grid w-full max-w-[1600px] grid-cols-[minmax(18rem,0.9fr)_minmax(0,3.1fr)] gap-6 px-12 max-lg:grid-cols-1 max-lg:px-8 max-md:px-6">
-        <div className={styles["fluid-type-frame"]}>
-          <p className={cx(styles["fluid-label"], "text-service-accent")}>
+      <div className="container-site grid grid-cols-[minmax(18rem,0.9fr)_minmax(0,3.1fr)] gap-6 max-lg:grid-cols-1">
+        <div className="fluid-type-frame">
+          <p className={cx("type-label", "text-service-accent")}>
             {eyebrow}
           </p>
           <h2
             className={cx(
-              styles["fluid-heading-md"],
-              styles["measure-heading-wide"],
-              styles["wrap-balance"],
+              "type-heading-md",
+              "measure-heading-wide",
+              "wrap-balance",
               "mt-4 text-service-ink",
             )}
           >
@@ -72,7 +71,7 @@ export function ServicesHoverPanelSectionV2({
                   <button
                     type="button"
                     className={cx(
-                      styles["radius-medium"],
+                      "radius-medium",
                       "group/service-link flex min-h-14 w-full cursor-pointer items-center justify-between overflow-hidden border text-left text-base font-semibold transition-colors",
                       isActive
                         ? "border-service-accent bg-white text-service-accent"
@@ -101,7 +100,7 @@ export function ServicesHoverPanelSectionV2({
 
         <div
           className={cx(
-            styles["radius-medium"],
+            "radius-medium",
             "min-h-[560px] overflow-hidden border border-service-border bg-service-surface shadow-service max-md:min-h-[520px]",
           )}
         >
@@ -130,17 +129,17 @@ export function ServicesHoverPanelSectionV2({
                 <div
                   className={cx(
                     "relative z-10 w-full max-w-3xl",
-                    styles["fluid-type-frame"],
+                    "fluid-type-frame",
                   )}
                 >
-                  <p className={cx(styles["fluid-label"], "text-white/70")}>
+                  <p className={cx("type-label", "text-white/70")}>
                     Service focus
                   </p>
                   <h3
                     className={cx(
-                      styles["fluid-heading-xl"],
-                      styles["measure-heading"],
-                      styles["wrap-balance"],
+                      "type-heading-xl",
+                      "measure-heading",
+                      "wrap-balance",
                       "mt-5 text-white",
                     )}
                   >
@@ -148,9 +147,9 @@ export function ServicesHoverPanelSectionV2({
                   </h3>
                   <p
                     className={cx(
-                      styles["fluid-text-xl"],
-                      styles["measure-copy"],
-                      styles["wrap-pretty"],
+                      "type-text-xl",
+                      "measure-copy",
+                      "wrap-pretty",
                       "mt-6 text-white/80",
                     )}
                   >
@@ -158,9 +157,9 @@ export function ServicesHoverPanelSectionV2({
                   </p>
                   <p
                     className={cx(
-                      styles["fluid-text-md"],
-                      styles["measure-copy"],
-                      styles["wrap-pretty"],
+                      "type-text-md",
+                      "measure-copy",
+                      "wrap-pretty",
                       "mt-8 text-white/70",
                     )}
                   >

@@ -2,7 +2,6 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useId, useState } from "react";
-import styles from "./section-v2-type.module.css";
 
 const accordionEase = [0.22, 1, 0.36, 1] as const;
 
@@ -45,16 +44,16 @@ export function FAQAccordionSectionV2({
 
   return (
     <section className="bg-white py-24 max-lg:py-20 max-md:py-16">
-      <div className="mx-auto w-full max-w-[1600px] px-12 max-lg:px-8 max-md:px-6">
-        <div className={cx(styles["fluid-type-frame"], "mx-auto max-w-4xl text-center")}>
-          <p className={cx(styles["fluid-label"], "text-service-accent")}>
+      <div className="container-site">
+        <div className={cx("fluid-type-frame", "mx-auto max-w-4xl text-center")}>
+          <p className={cx("type-label", "text-service-accent")}>
             {eyebrow}
           </p>
           <h2
             className={cx(
-              styles["fluid-heading-xl"],
-              styles["measure-heading-wide"],
-              styles["wrap-balance"],
+              "type-heading-xl",
+              "measure-heading-wide",
+              "wrap-balance",
               "mx-auto mt-5 text-service-ink",
             )}
           >
@@ -62,9 +61,9 @@ export function FAQAccordionSectionV2({
           </h2>
           <p
             className={cx(
-              styles["fluid-text-lg"],
-              styles["measure-copy"],
-              styles["wrap-pretty"],
+              "type-text-lg",
+              "measure-copy",
+              "wrap-pretty",
               "mx-auto mt-6 text-service-muted",
             )}
           >
@@ -78,7 +77,7 @@ export function FAQAccordionSectionV2({
             const answerId = `${sectionId}-answer-${index}`;
 
             return (
-              <article className={styles["fluid-type-frame"]} key={item.question}>
+              <article className="fluid-type-frame" key={item.question}>
                 <h3>
                   <button
                     type="button"
@@ -89,16 +88,16 @@ export function FAQAccordionSectionV2({
                   >
                     <span
                       className={cx(
-                        styles["fluid-heading-md"],
-                        styles["measure-heading-wide"],
-                        styles["wrap-balance"],
+                        "type-heading-md",
+                        "measure-heading-wide",
+                        "wrap-balance",
                       )}
                     >
                       {item.question}
                     </span>
                     <span
                       className={cx(
-                        styles["radius-medium"],
+                        "radius-medium",
                         "flex size-10 shrink-0 items-center justify-center border border-service-border text-lg font-semibold leading-none text-service-accent max-md:size-9",
                       )}
                       aria-hidden="true"
@@ -120,9 +119,9 @@ export function FAQAccordionSectionV2({
                     >
                       <div
                         className={cx(
-                          styles["fluid-text-md"],
-                          styles["measure-copy"],
-                          styles["wrap-pretty"],
+                          "type-text-md",
+                          "measure-copy",
+                          "wrap-pretty",
                           "pb-8 text-service-muted max-md:pb-6",
                         )}
                       >

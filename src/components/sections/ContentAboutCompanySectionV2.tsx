@@ -1,4 +1,3 @@
-import styles from "./section-v2-type.module.css";
 
 type AboutImage = {
   label: string;
@@ -21,7 +20,7 @@ function BentoImage({ label }: AboutImage) {
     <div
       aria-label={`${label} image placeholder`}
       className={cx(
-        styles["radius-medium"],
+        "radius-medium",
         "relative aspect-[5/4] min-w-0 overflow-hidden bg-service-border",
       )}
     >
@@ -40,19 +39,19 @@ export function ContentAboutCompanySectionV2({
 }: ContentAboutCompanySectionV2Props) {
   return (
     <section id="about" className="bg-white py-24 max-lg:py-20 max-md:py-16">
-      <div className="mx-auto grid w-full max-w-[1600px] gap-6 px-12 max-lg:px-8 max-md:px-6">
+      <div className="container-site grid gap-6">
         <div className="grid grid-cols-[minmax(10rem,1fr)_minmax(0,3fr)] gap-6 max-lg:grid-cols-1">
           <div className="flex min-w-0 items-start">
-            <p className={cx(styles["fluid-label"], "text-service-accent")}>
+            <p className={cx("type-label", "text-service-accent")}>
               {eyebrow}
             </p>
           </div>
-          <div className={styles["fluid-type-frame"]}>
+          <div className="fluid-type-frame">
             <h2
               className={cx(
-                styles["fluid-heading-xl"],
-                styles["measure-copy-wide"],
-                styles["wrap-balance"],
+                "type-heading-xl",
+                "measure-copy-wide",
+                "wrap-balance",
                 "text-service-ink",
               )}
             >
@@ -68,16 +67,16 @@ export function ContentAboutCompanySectionV2({
 
           <div
             className={cx(
-              styles["fluid-type-frame"],
-              styles["radius-medium"],
+              "fluid-type-frame",
+              "radius-medium",
               "flex min-w-0 flex-col justify-between bg-service-surface p-7 max-lg:col-span-2 max-md:col-span-1 max-md:p-6",
             )}
           >
             <p
               className={cx(
-                styles["fluid-heading-sm"],
-                styles["measure-copy"],
-                styles["wrap-pretty"],
+                "type-heading-sm",
+                "measure-copy",
+                "wrap-pretty",
                 "text-service-ink",
               )}
             >
@@ -85,7 +84,7 @@ export function ContentAboutCompanySectionV2({
             </p>
             <a
               className={cx(
-                styles["radius-medium"],
+                "radius-medium",
                 "mt-10 inline-flex min-h-12 w-fit cursor-pointer items-center justify-center whitespace-nowrap bg-service-ink px-6 text-sm font-semibold text-white transition-colors hover:bg-service-accent",
               )}
               href="#about"
