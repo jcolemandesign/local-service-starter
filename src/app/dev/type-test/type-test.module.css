@@ -1,0 +1,120 @@
+.display-xl {
+  font-size: clamp(4rem, 7vw, 7rem);
+  line-height: 0.95;
+  font-weight: 650;
+}
+
+.display-lg {
+  font-size: clamp(3.25rem, 5.4vw, 5.5rem);
+  line-height: 0.98;
+  font-weight: 650;
+}
+
+.heading-xl {
+  font-size: clamp(2.75rem, 4.2vw, 4.5rem);
+  line-height: 1.02;
+  font-weight: 650;
+}
+
+.heading-lg {
+  font-size: clamp(2.25rem, 3.3vw, 3.5rem);
+  line-height: 1.06;
+  font-weight: 650;
+}
+
+.heading-md {
+  font-size: clamp(1.75rem, 2.3vw, 2.5rem);
+  line-height: 1.12;
+  font-weight: 650;
+}
+
+.heading-sm {
+  font-size: clamp(1.35rem, 1.7vw, 1.75rem);
+  line-height: 1.18;
+  font-weight: 650;
+}
+
+.text-xl {
+  font-size: 1.375rem;
+  line-height: 1.55;
+  font-weight: 400;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+.text-md {
+  font-size: 1rem;
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  font-weight: 400;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.caption {
+  font-size: 0.75rem;
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+.label {
+  font-size: 0.875rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.measure-tight {
+  max-width: 12ch;
+}
+
+.measure-heading {
+  max-width: 18ch;
+}
+
+.measure-heading-wide {
+  max-width: 24ch;
+}
+
+.measure-copy {
+  max-width: 60ch;
+}
+
+.measure-copy-wide {
+  max-width: 70ch;
+}
+
+.measure-longform {
+  max-width: 75ch;
+}
+
+.balance {
+  text-wrap: balance;
+}
+
+.pretty {
+  text-wrap: pretty;
+}
+
+.fluid-copy-frame {
+  container-type: inline-size;
+}
+
+.fluid-copy-after-60ch {
+  font-size: clamp(1rem, calc(100cqw / 60), 1.5rem);
+  line-height: 1.65;
+}

@@ -1,0 +1,126 @@
+.wrap-balance {
+  text-wrap: balance;
+}
+
+.wrap-pretty {
+  text-wrap: pretty;
+}
+
+.cq-frame {
+  container-type: inline-size;
+}
+
+.measure-outline {
+  position: relative;
+  outline: 1px dashed rgb(31 122 90 / 0.42);
+  outline-offset: 6px;
+}
+
+.measure-outline::after {
+  content: attr(data-measure);
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 0.45rem);
+  border: 1px solid rgb(31 122 90 / 0.3);
+  border-radius: 999px;
+  background: rgb(244 247 243 / 0.95);
+  padding: 0.2rem 0.5rem;
+  color: #1f7a5a;
+  font-family: var(--font-geist-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.hero-display {
+  max-width: 14ch;
+  font-size: clamp(3.75rem, calc(100cqw / 8), 7rem);
+  line-height: 0.95;
+  font-weight: 680;
+}
+
+.page-title {
+  max-width: 18ch;
+  font-size: clamp(3rem, calc(100cqw / 12), 5.75rem);
+  line-height: 0.98;
+  font-weight: 660;
+}
+
+.section-title {
+  max-width: 22ch;
+  font-size: clamp(2.25rem, calc(100cqw / 18), 4.25rem);
+  line-height: 1.04;
+  font-weight: 650;
+}
+
+.subsection-title {
+  max-width: 28ch;
+  font-size: clamp(1.65rem, calc(100cqw / 26), 2.75rem);
+  line-height: 1.12;
+  font-weight: 650;
+}
+
+.card-title {
+  max-width: 24ch;
+  font-size: clamp(1.25rem, calc(100cqw / 34), 1.75rem);
+  line-height: 1.16;
+  font-weight: 650;
+}
+
+.lead-copy {
+  max-width: 60ch;
+  font-size: clamp(1.125rem, calc(100cqw / 60), 1.6875rem);
+  line-height: 1.58;
+  font-weight: 400;
+}
+
+.body-copy {
+  max-width: 60ch;
+  font-size: clamp(1rem, calc(100cqw / 60), 1.5rem);
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+.body-wide {
+  max-width: 70ch;
+  font-size: clamp(1rem, calc(100cqw / 70), 1.375rem);
+  line-height: 1.68;
+  font-weight: 400;
+}
+
+.longform-copy {
+  max-width: 75ch;
+  font-size: clamp(1rem, calc(100cqw / 75), 1.25rem);
+  line-height: 1.72;
+  font-weight: 400;
+}
+
+.small-copy {
+  max-width: 55ch;
+  font-size: clamp(0.875rem, calc(100cqw / 62), 1.125rem);
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.eyebrow {
+  max-width: 34ch;
+  font-size: clamp(0.75rem, calc(100cqw / 120), 0.875rem);
+  line-height: 1.2;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.caption {
+  max-width: 48ch;
+  font-size: clamp(0.75rem, calc(100cqw / 110), 0.9375rem);
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+.label {
+  max-width: 28ch;
+  font-size: clamp(0.8125rem, calc(100cqw / 100), 1rem);
+  line-height: 1.2;
+  font-weight: 750;
+}
