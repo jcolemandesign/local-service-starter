@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
 import { Button } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
+import { useScrollLock } from "@/hooks/useScrollLock";
 
 const menuEase = [0.22, 1, 0.36, 1] as const;
 
@@ -17,6 +18,7 @@ type NavFloatingBentoSectionProps = {
   phone: string;
   action: string;
   links: NavLink[];
+  fixed?: boolean;
 };
 
 function PhoneIcon() {
@@ -37,12 +39,14 @@ function ModalMenu({
   action,
   isOpen,
   links,
+  onExitComplete,
   phone,
   setIsOpen,
 }: {
   action: string;
   isOpen: boolean;
   links: NavLink[];
+  onExitComplete: () => void;
   phone: string;
   setIsOpen: (isOpen: boolean) => void;
 }) {
@@ -52,56 +56,62 @@ function ModalMenu({
     : { duration: 0.24, ease: menuEase };
 
   return (
-    <AnimatePresence initial={false}>
+    <AnimatePresence initial={false} onExitComplete={onExitComplete}>
       {isOpen ? (
         <motion.div
-          id="floating-bento-nav-menu"
-          className="relative z-40 hidden min-h-[70svh] flex-col items-center justify-center bg-service-ink px-8 py-16 text-white max-lg:flex max-md:px-6"
+          className="fixed inset-0 z-40 hidden h-dvh overflow-hidden bg-service-ink text-white max-lg:flex"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={transition}
         >
-          <ul className="grid justify-items-center gap-8 text-center">
-            {links.map((link) => (
-              <li key={link.label}>
-                <a
-                  className="cursor-pointer text-5xl font-semibold leading-none transition-colors hover:text-service-accent max-md:text-4xl"
-                  href="#"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.label}
-                </a>
-                {link.items ? (
-                  <ul className="mt-5 flex max-w-xl flex-wrap justify-center gap-x-5 gap-y-3 text-sm font-semibold uppercase text-white/60">
-                    {link.items.map((item) => (
-                      <li key={item}>
-                        <a
-                          className="cursor-pointer transition-colors hover:text-white"
-                          href="#"
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {item}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </li>
-            ))}
-          </ul>
+          <div
+            id="floating-bento-nav-menu"
+            className="flex h-full min-h-0 flex-1 flex-col px-8 pb-16 pt-28 max-md:px-6"
+          >
+            <div className="flex min-h-0 flex-1 flex-col items-center justify-center overflow-y-auto overscroll-contain">
+              <ul className="grid justify-items-center gap-8 text-center">
+                {links.map((link) => (
+                  <li key={link.label}>
+                    <a
+                      className="cursor-pointer text-5xl font-semibold leading-none transition-colors hover:text-service-accent max-md:text-4xl"
+                      href="#"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {link.label}
+                    </a>
+                    {link.items ? (
+                      <ul className="mt-5 flex max-w-xl flex-wrap justify-center gap-x-5 gap-y-3 text-sm font-semibold uppercase text-white/60">
+                        {link.items.map((item) => (
+                          <li key={item}>
+                            <a
+                              className="cursor-pointer transition-colors hover:text-white"
+                              href="#"
+                              onClick={() => setIsOpen(false)}
+                            >
+                              {item}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
 
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
-            <a
-              className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md border border-white/25 bg-transparent px-5 text-sm font-semibold text-white transition-colors hover:border-white hover:text-white"
-              href="tel:5550142250"
-            >
-              <PhoneIcon />
-              {phone}
-            </a>
-            <RequestServiceButton onClick={() => setIsOpen(false)}>
-              {action}
-            </RequestServiceButton>
+              <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
+                <a
+                  className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md border border-white/25 bg-transparent px-5 text-sm font-semibold text-white transition-colors hover:border-white hover:text-white"
+                  href="tel:5550142250"
+                >
+                  <PhoneIcon />
+                  {phone}
+                </a>
+                <RequestServiceButton onClick={() => setIsOpen(false)}>
+                  {action}
+                </RequestServiceButton>
+              </div>
+            </div>
           </div>
         </motion.div>
       ) : null}
@@ -114,16 +124,25 @@ export function NavFloatingBentoSection({
   phone,
   action,
   links,
+  fixed = false,
 }: NavFloatingBentoSectionProps) {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [lockActive, setLockActive] = useState(false);
   const shouldReduceMotion = useReducedMotion();
   const transition = shouldReduceMotion
     ? { duration: 0 }
     : { duration: 0.24, ease: menuEase };
+  useScrollLock(lockActive);
 
   return (
-    <section className="relative min-h-20 bg-white">
+    <section
+      className={
+        fixed
+          ? "fixed inset-x-0 top-0 z-50 bg-transparent"
+          : "relative min-h-20 bg-white"
+      }
+    >
       <nav aria-label="Floating bento preview navigation">
         <div className="pointer-events-none relative z-30 grid grid-cols-[1fr_auto_1fr] items-center px-8 py-3 max-lg:hidden">
           <div className="pointer-events-auto col-start-1 flex justify-self-start">
@@ -243,7 +262,13 @@ export function NavFloatingBentoSection({
             aria-expanded={isMenuOpen}
             className="flex min-h-12 cursor-pointer items-center gap-3 rounded-lg border border-service-border bg-white/90 px-5 text-sm font-semibold text-service-ink shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:text-service-accent"
             type="button"
-            onClick={() => setIsMenuOpen((currentValue) => !currentValue)}
+            onClick={() => {
+              if (!isMenuOpen) {
+                setLockActive(true);
+              }
+
+              setIsMenuOpen((currentValue) => !currentValue);
+            }}
           >
             {isMenuOpen ? "Close" : "Menu"}
             <span aria-hidden="true">{isMenuOpen ? "x" : "v"}</span>
@@ -255,6 +280,7 @@ export function NavFloatingBentoSection({
         action={action}
         isOpen={isMenuOpen}
         links={links}
+        onExitComplete={() => setLockActive(false)}
         phone={phone}
         setIsOpen={setIsMenuOpen}
       />

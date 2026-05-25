@@ -15,10 +15,48 @@ export function ContentRevealParagraphSection({
 }: ContentRevealParagraphSectionProps) {
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const [revealKey, setRevealKey] = useState(0);
+  const [isRevealed, setIsRevealed] = useState(false);
   const shouldReduceMotion = useReducedMotion();
   const transition = shouldReduceMotion
     ? { duration: 0 }
     : { duration: 0.58, ease: revealEase };
+
+  useEffect(() => {
+    const sectionElement = sectionRef.current;
+    let fallbackFrame: number | null = null;
+
+    if (!sectionElement || shouldReduceMotion) {
+      fallbackFrame = requestAnimationFrame(() => setIsRevealed(true));
+      return () => {
+        if (fallbackFrame !== null) {
+          cancelAnimationFrame(fallbackFrame);
+        }
+      };
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      fallbackFrame = requestAnimationFrame(() => setIsRevealed(true));
+      return () => {
+        if (fallbackFrame !== null) {
+          cancelAnimationFrame(fallbackFrame);
+        }
+      };
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setIsRevealed(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -18% 0px", threshold: 0.2 },
+    );
+
+    observer.observe(sectionElement);
+
+    return () => observer.disconnect();
+  }, [shouldReduceMotion]);
 
   useEffect(() => {
     const details = sectionRef.current?.closest("details");
@@ -30,6 +68,7 @@ export function ContentRevealParagraphSection({
     const observer = new MutationObserver(() => {
       if (details.open) {
         setRevealKey((currentKey) => currentKey + 1);
+        setIsRevealed(true);
       }
     });
 
@@ -48,18 +87,26 @@ export function ContentRevealParagraphSection({
                 <motion.span
                   key={`${revealKey}-${line}`}
                   className="block"
-                  initial={{
-                    clipPath: "inset(100% 0 0 0)",
-                    y: shouldReduceMotion ? 0 : "0.65em",
-                  }}
-                  animate={{
-                    clipPath: "inset(0% 0 0 0)",
-                    y: 0,
-                  }}
+                  initial={
+                    shouldReduceMotion
+                      ? false
+                      : {
+                          clipPath: "inset(100% 0 0 0)",
+                          y: "0.65em",
+                        }
+                  }
                   transition={{
                     ...transition,
                     delay: shouldReduceMotion ? 0 : index * 0.12,
                   }}
+                  animate={
+                    isRevealed
+                      ? {
+                          clipPath: "inset(0% 0 0 0)",
+                          y: 0,
+                        }
+                      : undefined
+                  }
                 >
                   {line}
                 </motion.span>

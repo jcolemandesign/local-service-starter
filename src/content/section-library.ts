@@ -591,7 +591,11 @@ export const sectionLibraryContent = {
     copyright: "(c) 2026 Example Local Service. All rights reserved.",
     privacyLink: {
       label: "Privacy Policy",
-      href: "#",
+      href: "/privacy-policy",
+    },
+    termsLink: {
+      label: "Terms",
+      href: "/terms",
     },
   },
 };

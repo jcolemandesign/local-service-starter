@@ -11,6 +11,8 @@ import {
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "motion/react";
+import { useScrollLock } from "@/hooks/useScrollLock";
 import { supabase } from "@/utils/supabase/client";
 
 type SystemType = "cooling" | "heating";
@@ -385,9 +387,15 @@ export function RequestServiceTrigger({
 
 export function RequestServiceProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [lockActive, setLockActive] = useState(false);
+  useScrollLock(lockActive);
+
   const contextValue = useMemo(
     () => ({
-      openRequestService: () => setIsOpen(true),
+      openRequestService: () => {
+        setLockActive(true);
+        setIsOpen(true);
+      },
     }),
     [],
   );
@@ -395,7 +403,11 @@ export function RequestServiceProvider({ children }: { children: ReactNode }) {
   return (
     <RequestServiceContext.Provider value={contextValue}>
       {children}
-      <RequestServiceModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <RequestServiceModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onExitComplete={() => setLockActive(false)}
+      />
     </RequestServiceContext.Provider>
   );
 }
@@ -403,9 +415,11 @@ export function RequestServiceProvider({ children }: { children: ReactNode }) {
 function RequestServiceModal({
   isOpen,
   onClose,
+  onExitComplete,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  onExitComplete: () => void;
 }) {
   const router = useRouter();
   const dialogRef = useRef<HTMLDivElement | null>(null);
@@ -461,8 +475,6 @@ function RequestServiceModal({
       return;
     }
 
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     dialogRef.current?.focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -474,14 +486,9 @@ function RequestServiceModal({
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow = originalOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen, onClose]);
-
-  if (!isOpen) {
-    return null;
-  }
 
   const resetForm = () => {
     setStep(1);
@@ -615,24 +622,40 @@ function RequestServiceModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-[100] grid bg-service-ink/55 p-4 backdrop-blur-sm max-md:p-0"
-      role="presentation"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget && !hasProgress) {
-          onClose();
-        }
-      }}
+    <AnimatePresence
+      initial={false}
+      onExitComplete={onExitComplete}
     >
-      <div
-        ref={dialogRef}
-        aria-labelledby="request-service-title"
-        aria-modal="true"
-        className="m-auto flex max-h-[calc(100svh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white text-service-ink shadow-service outline-none max-md:min-h-svh max-md:max-h-svh max-md:rounded-none"
-        role="dialog"
-        tabIndex={-1}
-      >
-        <div className="flex items-start justify-between gap-5 border-b border-service-border px-6 py-5 max-md:px-5">
+      {isOpen ? (
+        <motion.div
+          className="fixed inset-0 z-[100] grid h-dvh bg-service-ink/55 p-4 backdrop-blur-sm max-md:p-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25, ease: "easeInOut" }}
+        >
+          <div
+            className="grid h-full min-h-0"
+            role="presentation"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget && !hasProgress) {
+                onClose();
+              }
+            }}
+          >
+            <motion.div
+              ref={dialogRef}
+              aria-labelledby="request-service-title"
+              aria-modal="true"
+              className="m-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white text-service-ink shadow-service outline-none max-md:h-dvh max-md:max-h-dvh max-md:rounded-none"
+              role="dialog"
+              tabIndex={-1}
+              initial={{ scale: 0.98 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.98 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+            >
+              <div className="flex shrink-0 items-start justify-between gap-5 border-b border-service-border px-6 py-5 max-md:px-5">
           <div>
             <StepIndicator currentStep={step} />
             <h2
@@ -654,9 +677,9 @@ function RequestServiceModal({
           >
             x
           </button>
-        </div>
+              </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-6 max-md:px-5">
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-6 max-md:px-5">
           {step === 1 ? (
             <div className="grid gap-8">
               <div>
@@ -859,9 +882,9 @@ function RequestServiceModal({
               ) : null}
             </div>
           ) : null}
-        </div>
+              </div>
 
-        <div className="flex items-center justify-between gap-3 border-t border-service-border px-6 py-5 max-md:px-5">
+              <div className="flex shrink-0 items-center justify-between gap-3 border-t border-service-border px-6 py-5 max-md:px-5">
           <button
             className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-md border border-service-border bg-white px-5 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-45"
             disabled={step === 1 || isSubmitting}
@@ -890,8 +913,11 @@ function RequestServiceModal({
               {isSubmitting ? "Sending request" : "Submit request"}
             </button>
           )}
-        </div>
-      </div>
-    </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
   );
 }

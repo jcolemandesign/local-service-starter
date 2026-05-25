@@ -23,6 +23,7 @@ type FooterSectionProps = {
   reviewLink: FooterLink;
   copyright: string;
   privacyLink: FooterLink;
+  termsLink?: FooterLink;
 };
 
 function SocialIcon({ label }: { label: string }) {
@@ -149,6 +150,7 @@ export function FooterSection({
   reviewLink,
   copyright,
   privacyLink,
+  termsLink,
 }: FooterSectionProps) {
   return (
     <footer className="bg-service-ink py-16 text-white max-md:py-12">
@@ -222,12 +224,28 @@ export function FooterSection({
             {reviewLink.label}
           </a>
           <p className="text-center max-md:text-left">{copyright}</p>
-          <a
-            className="cursor-pointer transition-colors hover:text-white"
-            href={privacyLink.href}
-          >
-            {privacyLink.label}
-          </a>
+          <nav aria-label="Footer legal navigation">
+            <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 max-md:justify-start">
+              <li>
+                <a
+                  className="cursor-pointer transition-colors hover:text-white"
+                  href={privacyLink.href}
+                >
+                  {privacyLink.label}
+                </a>
+              </li>
+              {termsLink ? (
+                <li>
+                  <a
+                    className="cursor-pointer transition-colors hover:text-white"
+                    href={termsLink.href}
+                  >
+                    {termsLink.label}
+                  </a>
+                </li>
+              ) : null}
+            </ul>
+          </nav>
         </div>
       </Container>
     </footer>

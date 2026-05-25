@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
 import { Button } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
+import { useScrollLock } from "@/hooks/useScrollLock";
 
 const menuEase = [0.22, 1, 0.36, 1] as const;
 
@@ -83,6 +84,7 @@ function NavPrimaryLayoutSection({
 }: NavPrimarySectionProps & { layout: NavPrimaryLayout }) {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [lockActive, setLockActive] = useState(false);
   const shouldReduceMotion = useReducedMotion();
   const transition = shouldReduceMotion
     ? { duration: 0 }
@@ -91,15 +93,22 @@ function NavPrimaryLayoutSection({
   const navLabel = isCenterLogo
     ? "Center logo preview navigation"
     : "Primary preview navigation";
+  useScrollLock(lockActive);
 
   return (
     <section className="relative bg-white">
       <nav
         aria-label={navLabel}
         className={
-          isCenterLogo
-            ? "relative z-30 grid min-h-20 w-full grid-cols-[1fr_auto_1fr] items-center gap-8 border-b border-service-border bg-white px-8 max-lg:flex max-lg:justify-between max-md:px-6"
-            : "relative z-30 flex min-h-20 w-full items-center justify-between gap-8 border-b border-service-border bg-white px-8 max-md:px-6"
+          `${
+            isCenterLogo
+              ? "grid grid-cols-[1fr_auto_1fr] max-lg:flex max-lg:justify-between"
+              : "flex justify-between"
+          } relative z-30 min-h-20 w-full items-center gap-8 border-b px-8 max-md:px-6 ${
+            isMenuOpen
+              ? "border-transparent bg-transparent max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-50 max-lg:text-white"
+              : "border-service-border bg-white"
+          }`
         }
       >
         <div
@@ -111,7 +120,11 @@ function NavPrimaryLayoutSection({
         >
           {!isCenterLogo ? (
             <a
-              className="flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center rounded-md border border-service-border bg-service-surface text-sm font-semibold uppercase text-service-muted"
+              className={`flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center rounded-md border text-sm font-semibold uppercase ${
+                isMenuOpen
+                  ? "border-white/20 bg-white/5 text-white"
+                  : "border-service-border bg-service-surface text-service-muted"
+              }`}
               href="#"
             >
               {logoLabel}
@@ -201,7 +214,11 @@ function NavPrimaryLayoutSection({
 
         {isCenterLogo ? (
           <a
-            className="flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center rounded-md border border-service-border bg-service-surface text-sm font-semibold uppercase text-service-muted max-lg:order-first"
+            className={`flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center rounded-md border text-sm font-semibold uppercase max-lg:order-first ${
+              isMenuOpen
+                ? "border-white/20 bg-white/5 text-white"
+                : "border-service-border bg-service-surface text-service-muted"
+            }`}
             href="#"
           >
             {logoLabel}
@@ -211,9 +228,19 @@ function NavPrimaryLayoutSection({
         <button
           aria-controls="primary-nav-menu"
           aria-expanded={isMenuOpen}
-          className="hidden min-h-12 cursor-pointer items-center gap-3 rounded-md border border-service-border bg-white px-5 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent max-lg:flex"
+          className={`hidden min-h-12 cursor-pointer items-center gap-3 rounded-md border px-5 text-sm font-semibold transition-colors max-lg:flex ${
+            isMenuOpen
+              ? "border-white/20 bg-white/5 text-white hover:border-white/45"
+              : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent"
+          }`}
           type="button"
-          onClick={() => setIsMenuOpen((currentValue) => !currentValue)}
+          onClick={() => {
+            if (!isMenuOpen) {
+              setLockActive(true);
+            }
+
+            setIsMenuOpen((currentValue) => !currentValue);
+          }}
         >
           {isMenuOpen ? "Close" : "Menu"}
           <span aria-hidden="true">{isMenuOpen ? "x" : "v"}</span>
@@ -228,56 +255,65 @@ function NavPrimaryLayoutSection({
         </div>
       </nav>
 
-      <AnimatePresence initial={false}>
+      <AnimatePresence
+        initial={false}
+        onExitComplete={() => setLockActive(false)}
+      >
         {isMenuOpen ? (
           <motion.div
-            id="primary-nav-menu"
-            className="relative z-20 hidden min-h-[70svh] flex-col items-center justify-center bg-service-ink px-8 py-16 text-white max-lg:flex max-md:px-6"
+            className="fixed inset-0 z-40 hidden h-dvh overflow-hidden bg-service-ink text-white max-lg:flex"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={transition}
           >
-            <ul className="grid justify-items-center gap-8 text-center">
-              {links.map((link) => (
-                <li key={link.label}>
-                  <a
-                    className="cursor-pointer text-5xl font-semibold leading-none transition-colors hover:text-service-accent max-md:text-4xl"
-                    href="#"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {link.label}
-                  </a>
-                  {link.items ? (
-                    <ul className="mt-5 flex max-w-xl flex-wrap justify-center gap-x-5 gap-y-3 text-sm font-semibold uppercase text-white/60">
-                      {link.items.map((item) => (
-                        <li key={item}>
-                          <a
-                            className="cursor-pointer transition-colors hover:text-white"
-                            href="#"
-                            onClick={() => setIsMenuOpen(false)}
-                          >
-                            {item}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
+            <div
+              id="primary-nav-menu"
+              className="flex h-full min-h-0 flex-1 flex-col px-8 pb-16 pt-28 max-md:px-6"
+            >
+              <div className="flex min-h-0 flex-1 flex-col items-center justify-center overflow-y-auto overscroll-contain">
+                <ul className="grid justify-items-center gap-8 text-center">
+                  {links.map((link) => (
+                    <li key={link.label}>
+                      <a
+                        className="cursor-pointer text-5xl font-semibold leading-none transition-colors hover:text-service-accent max-md:text-4xl"
+                        href="#"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {link.label}
+                      </a>
+                      {link.items ? (
+                        <ul className="mt-5 flex max-w-xl flex-wrap justify-center gap-x-5 gap-y-3 text-sm font-semibold uppercase text-white/60">
+                          {link.items.map((item) => (
+                            <li key={item}>
+                              <a
+                                className="cursor-pointer transition-colors hover:text-white"
+                                href="#"
+                                onClick={() => setIsMenuOpen(false)}
+                              >
+                                {item}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
 
-            <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
-              <a
-                className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md border border-white/25 bg-transparent px-5 text-sm font-semibold text-white transition-colors hover:border-white hover:text-white"
-                href="tel:5550142250"
-              >
-                <PhoneIcon />
-                {phone}
-              </a>
-              <RequestServiceButton onClick={() => setIsMenuOpen(false)}>
-                {action}
-              </RequestServiceButton>
+                <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
+                  <a
+                    className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md border border-white/25 bg-transparent px-5 text-sm font-semibold text-white transition-colors hover:border-white hover:text-white"
+                    href="tel:5550142250"
+                  >
+                    <PhoneIcon />
+                    {phone}
+                  </a>
+                  <RequestServiceButton onClick={() => setIsMenuOpen(false)}>
+                    {action}
+                  </RequestServiceButton>
+                </div>
+              </div>
             </div>
           </motion.div>
         ) : null}
