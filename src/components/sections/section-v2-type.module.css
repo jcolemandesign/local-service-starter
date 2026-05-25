@@ -1,0 +1,123 @@
+.fluid-type-frame {
+  container-type: inline-size;
+}
+
+.wrap-balance {
+  text-wrap: balance;
+}
+
+.wrap-pretty {
+  text-wrap: pretty;
+}
+
+.measure-display-wide {
+  max-width: 18ch;
+}
+
+.measure-heading {
+  max-width: 22ch;
+}
+
+.measure-heading-wide {
+  max-width: 28ch;
+}
+
+.measure-copy {
+  max-width: 60ch;
+}
+
+.measure-copy-wide {
+  max-width: 70ch;
+}
+
+.measure-caption {
+  max-width: 48ch;
+}
+
+.radius-none {
+  border-radius: 0;
+}
+
+.radius-tiny {
+  border-radius: 2px;
+}
+
+.radius-4 {
+  border-radius: 4px;
+}
+
+.radius-medium {
+  border-radius: 8px;
+}
+
+.radius-large {
+  border-radius: 24px;
+}
+
+.fluid-display-xl {
+  font-size: clamp(3.5rem, calc(4.8611111111cqw + 2.3333333333rem), 7rem);
+  line-height: 0.92;
+  font-weight: 680;
+}
+
+.fluid-display-lg {
+  font-size: clamp(2.75rem, calc(3.7878787879cqw + 2.0909090909rem), 5.5rem);
+  line-height: 0.95;
+  font-weight: 670;
+}
+
+.fluid-heading-lg {
+  font-size: clamp(1.75rem, calc(1.9230769231cqw + 1.2115384615rem), 2.75rem);
+  line-height: 1.05;
+  font-weight: 650;
+}
+
+.fluid-heading-xl {
+  font-size: clamp(2.25rem, calc(2.9166666667cqw + 1.55rem), 4rem);
+  line-height: 1;
+  font-weight: 660;
+}
+
+.fluid-heading-md {
+  font-size: clamp(1.375rem, calc(1.3020833333cqw + 1.0104166667rem), 2rem);
+  line-height: 1.15;
+  font-weight: 650;
+}
+
+.fluid-heading-sm {
+  font-size: clamp(1.125rem, calc(0.5208333333cqw + 0.9791666667rem), 1.375rem);
+  line-height: 1.25;
+  font-weight: 650;
+}
+
+.fluid-text-sm {
+  font-size: clamp(0.875rem, calc(0.2142857143cqw + 0.7785714286rem), 0.95rem);
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.fluid-text-md {
+  font-size: clamp(1rem, calc(0.3125cqw + 0.875rem), 1.125rem);
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+.fluid-text-lg {
+  font-size: clamp(1.0625rem, calc(0.4261363636cqw + 0.9090909091rem), 1.25rem);
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.fluid-text-xl {
+  font-size: clamp(1.1875rem, calc(0.625cqw + 1rem), 1.5rem);
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.fluid-label {
+  font-size: clamp(0.8125rem, calc(0.1953125cqw + 0.71875rem), 0.875rem);
+  line-height: 1.2;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}

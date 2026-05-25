@@ -1,14 +1,30 @@
 import { Container, Section } from "@/components/primitives";
+import styles from "./section-v2-type.module.css";
 
 type TrustLogoMarqueeSectionProps = {
   label: string;
   logos: string[];
 };
 
+function cx(...classes: Array<string | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
+
 function LogoPlaceholder({ name }: { name: string }) {
   return (
-    <div className="flex h-24 items-center justify-center rounded-lg border border-service-border bg-white px-8 shadow-service">
-      <div className="flex h-12 w-full items-center justify-center rounded-md border border-service-border bg-service-surface text-sm font-semibold uppercase text-service-muted">
+    <div
+      className={cx(
+        styles["radius-medium"],
+        "flex h-24 items-center justify-center border border-service-border bg-white px-8 shadow-service",
+      )}
+    >
+      <div
+        className={cx(
+          styles["fluid-label"],
+          styles["radius-4"],
+          "flex h-12 w-full items-center justify-center border border-service-border bg-service-surface text-service-muted",
+        )}
+      >
         {name}
       </div>
     </div>
@@ -46,10 +62,27 @@ export function TrustLogoMarqueeSection({
   return (
     <Section className="bg-white py-16 max-md:py-12">
       <Container>
-        <div className="overflow-hidden rounded-lg border border-service-border bg-service-surface">
-          <div className="flex items-center gap-10 px-10 py-12 max-lg:flex-col max-lg:items-start max-md:px-6 max-md:py-10">
+        <div
+          className={cx(
+            styles["radius-medium"],
+            "overflow-hidden border border-service-border bg-service-surface",
+          )}
+        >
+          <div
+            className={cx(
+              styles["fluid-type-frame"],
+              "flex items-center gap-10 px-10 py-12 max-lg:flex-col max-lg:items-start max-md:px-6 max-md:py-10",
+            )}
+          >
             <div className="basis-1/5">
-              <p className="max-w-xs text-xl font-semibold leading-8 text-service-ink">
+              <p
+                className={cx(
+                  styles["fluid-text-xl"],
+                  styles["measure-caption"],
+                  styles["wrap-balance"],
+                  "font-semibold text-service-ink",
+                )}
+              >
                 {label}
               </p>
             </div>
