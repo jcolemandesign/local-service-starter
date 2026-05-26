@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import {
-  CTAFullscreenSection,
-  ContentAboutCompanySection,
-  ContentRevealParagraphSection,
-  FAQSection,
-  FooterSection,
-  HeroFullscreenSection,
-  NavFloatingBentoSection,
-  ServicesScrollCardsSection,
-  TestimonialsCarouselSection,
+  CTAFullscreenSectionV2,
+  ContentAboutCompanySectionV2,
+  ContentRevealParagraphSectionV2,
+  FAQSectionV2,
+  FooterSectionV2,
+  HeroFullscreenSectionV2,
+  NavFloatingBentoSectionV2,
+  ServicesScrollCardsSectionV2,
+  TestimonialsCarouselSectionV2,
 } from "@/components/sections";
 import { sectionLibraryContent } from "@/content/section-library";
 
@@ -21,25 +21,27 @@ export const metadata: Metadata = {
 export default function SampleTwoPage() {
   return (
     <>
-      <NavFloatingBentoSection {...sectionLibraryContent.navPrimary} fixed />
+      <NavFloatingBentoSectionV2 {...sectionLibraryContent.navPrimary} fixed />
       <main className="bg-white">
-        <HeroFullscreenSection {...sectionLibraryContent.heroFullscreen} />
-        <ContentRevealParagraphSection
+        <HeroFullscreenSectionV2 {...sectionLibraryContent.heroFullscreen} />
+        <ContentRevealParagraphSectionV2
           {...sectionLibraryContent.contentRevealParagraph}
+          sectionSpace="lrg"
         />
-        <ServicesScrollCardsSection
+        <ServicesScrollCardsSectionV2
           {...sectionLibraryContent.servicesScrollCards}
         />
-        <ContentAboutCompanySection
+        <ContentAboutCompanySectionV2
           {...sectionLibraryContent.contentAboutCompany}
+          sectionSpace="lrg"
         />
-        <TestimonialsCarouselSection
+        <TestimonialsCarouselSectionV2
           {...sectionLibraryContent.testimonialsCarousel}
         />
-        <FAQSection {...sectionLibraryContent.faq} />
-        <CTAFullscreenSection {...sectionLibraryContent.ctaFullscreen} />
+        <FAQSectionV2 {...sectionLibraryContent.faq} />
+        <CTAFullscreenSectionV2 {...sectionLibraryContent.ctaFullscreen} />
       </main>
-      <FooterSection {...sectionLibraryContent.footer} />
+      <FooterSectionV2 {...sectionLibraryContent.footer} />
     </>
   );
 }

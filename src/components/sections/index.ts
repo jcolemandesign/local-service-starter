@@ -25,6 +25,7 @@ export { FeatureSplitSectionV2 } from "./FeatureSplitSectionV2";
 export { FooterSection } from "./FooterSection";
 export { FooterSectionV2 } from "./FooterSectionV2";
 export { HeroBentoSection } from "./HeroBentoSection";
+export { HeroBentoSectionV2 } from "./HeroBentoSectionV2";
 export { HeroFullscreenSection } from "./HeroFullscreenSection";
 export { HeroFullscreenSectionV2 } from "./HeroFullscreenSectionV2";
 export { HeroGridMosaicSection } from "./HeroGridMosaicSection";

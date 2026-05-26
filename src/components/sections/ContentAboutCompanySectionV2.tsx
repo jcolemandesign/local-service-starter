@@ -9,6 +9,7 @@ type ContentAboutCompanySectionV2Props = {
   summary: string;
   action: string;
   images: AboutImage[];
+  sectionSpace?: "vsml" | "sml" | "med" | "lrg";
 };
 
 function cx(...classes: Array<string | undefined>) {
@@ -36,9 +37,17 @@ export function ContentAboutCompanySectionV2({
   summary,
   action,
   images,
+  sectionSpace = "med",
 }: ContentAboutCompanySectionV2Props) {
+  const sectionSpaceClass = {
+    vsml: "section-space-vsml",
+    sml: "section-space-sml",
+    med: "section-space-med",
+    lrg: "section-space-lrg",
+  }[sectionSpace];
+
   return (
-    <section id="about" className="bg-white py-24 max-lg:py-20 max-md:py-16">
+    <section id="about" className={cx("bg-white", sectionSpaceClass)}>
       <div className="container-site grid gap-6">
         <div className="grid grid-cols-[minmax(10rem,1fr)_minmax(0,3fr)] gap-6 max-lg:grid-cols-1">
           <div className="flex min-w-0 items-start">

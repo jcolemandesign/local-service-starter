@@ -38,10 +38,10 @@ export function HeroSectionV2({
 
   return (
     <section className="min-h-svh bg-service-surface">
-      <div className="container-site flex min-h-svh items-stretch gap-16 py-16 max-lg:flex-col max-lg:gap-12 max-md:py-12">
+      <div className="container-site flex min-h-svh items-stretch gap-10 py-16 max-lg:flex-col max-lg:gap-12 max-md:py-12">
         <div
           className={cx(
-            "flex min-w-0 basis-[60%] items-center max-lg:basis-auto",
+            "flex min-w-0 basis-[56%] items-center max-lg:basis-auto",
             "fluid-type-frame",
           )}
         >
@@ -78,7 +78,7 @@ export function HeroSectionV2({
           </div>
         </div>
 
-        <div className="flex min-w-[18rem] basis-[40%] items-stretch justify-end max-lg:min-w-0 max-lg:basis-auto max-lg:justify-start">
+        <div className="flex min-w-[18rem] basis-[48%] items-stretch justify-end -ml-10 max-lg:ml-0 max-lg:min-w-0 max-lg:basis-auto max-lg:justify-start">
           <SampleImage />
         </div>
       </div>

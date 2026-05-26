@@ -13,6 +13,7 @@ import {
   FeatureSplitSectionV2,
   FAQAccordionSectionV2,
   FAQSectionV2,
+  HeroBentoSectionV2,
   HeroFullscreenSectionV2,
   HeroGridMosaicSectionV2,
   HeroLogoStatementSectionV2,
@@ -44,6 +45,9 @@ export const metadata: Metadata = {
 };
 
 const sectionElements = {
+  "hero-bento-v2": (
+    <HeroBentoSectionV2 {...sectionLibraryContent.hero} headingLevel={2} />
+  ),
   "hero-section-v2": (
     <HeroSectionV2 {...sectionLibraryContent.hero} headingLevel={2} />
   ),

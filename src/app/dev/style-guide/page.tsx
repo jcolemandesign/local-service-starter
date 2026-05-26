@@ -10,49 +10,63 @@ const typeTokens = [
   {
     name: "type-display-xl",
     role: "Largest display",
-    className: "type-display-xl measure-display wrap-balance",
+    typeClass: "type-display-xl",
+    measureClass: "measure-display",
+    wrapClass: "wrap-balance",
     spec: "3.5rem - 7rem / 0.92 / 680",
     sample: "Emergency repairs without the runaround",
   },
   {
     name: "type-display-lg",
     role: "Display heading",
-    className: "type-display-lg measure-display-wide wrap-balance",
+    typeClass: "type-display-lg",
+    measureClass: "measure-display-wide",
+    wrapClass: "wrap-balance",
     spec: "2.75rem - 5.5rem / 0.95 / 670",
     sample: "Fast HVAC service when the house will not wait",
   },
   {
     name: "type-heading-xl",
     role: "Large section title",
-    className: "type-heading-xl measure-heading-wide wrap-balance",
+    typeClass: "type-heading-xl",
+    measureClass: "measure-heading-wide",
+    wrapClass: "wrap-balance",
     spec: "2.25rem - 4rem / 1 / 660",
     sample: "Clear service from request to resolved",
   },
   {
     name: "type-heading-lg",
     role: "Editorial heading",
-    className: "type-heading-lg measure-heading wrap-balance",
+    typeClass: "type-heading-lg",
+    measureClass: "measure-heading",
+    wrapClass: "wrap-balance",
     spec: "1.75rem - 2.75rem / 1.05 / 650",
     sample: "Repairs explained before work begins",
   },
   {
     name: "type-heading-md",
     role: "Subsection heading",
-    className: "type-heading-md measure-heading-wide wrap-balance",
+    typeClass: "type-heading-md",
+    measureClass: "measure-heading-wide",
+    wrapClass: "wrap-balance",
     spec: "1.375rem - 2rem / 1.15 / 650",
     sample: "What happens after you request service",
   },
   {
     name: "type-heading-sm",
     role: "Card heading",
-    className: "type-heading-sm measure-heading-wide wrap-balance",
+    typeClass: "type-heading-sm",
+    measureClass: "measure-heading-wide",
+    wrapClass: "wrap-balance",
     spec: "1.125rem - 1.375rem / 1.25 / 650",
     sample: "Same-day repair support",
   },
   {
     name: "type-text-xl",
     role: "Lead copy",
-    className: "type-text-xl measure-lead wrap-pretty",
+    typeClass: "type-text-xl",
+    measureClass: "measure-lead",
+    wrapClass: "wrap-pretty",
     spec: "1.1875rem - 1.5rem / 1.5 / 400",
     sample:
       "Lead copy gives important pages a little more voice while keeping the line length readable across screens.",
@@ -60,7 +74,9 @@ const typeTokens = [
   {
     name: "type-text-lg",
     role: "Intro copy",
-    className: "type-text-lg measure-copy wrap-pretty",
+    typeClass: "type-text-lg",
+    measureClass: "measure-copy",
+    wrapClass: "wrap-pretty",
     spec: "1.0625rem - 1.25rem / 1.6 / 400",
     sample:
       "Use this for short section introductions, service summaries, and supporting copy that needs more presence than body text.",
@@ -68,7 +84,9 @@ const typeTokens = [
   {
     name: "type-text-md",
     role: "Body copy",
-    className: "type-text-md measure-copy wrap-pretty",
+    typeClass: "type-text-md",
+    measureClass: "measure-copy",
+    wrapClass: "wrap-pretty",
     spec: "1rem - 1.125rem / 1.65 / 400",
     sample:
       "Request service online, describe the issue, and get a fast response from a local technician. Every submission is organized so fewer leads slip through the cracks.",
@@ -76,7 +94,9 @@ const typeTokens = [
   {
     name: "type-text-sm",
     role: "Small body",
-    className: "type-text-sm measure-copy-wide wrap-pretty",
+    typeClass: "type-text-sm",
+    measureClass: "measure-copy-wide",
+    wrapClass: "wrap-pretty",
     spec: "0.875rem - 0.95rem / 1.6 / 400",
     sample:
       "Useful for supporting details, captions inside cards, and compact text that still needs enough room to breathe.",
@@ -84,7 +104,9 @@ const typeTokens = [
   {
     name: "type-text-xs",
     role: "Microcopy",
-    className: "type-text-xs measure-caption wrap-pretty",
+    typeClass: "type-text-xs",
+    measureClass: "measure-caption",
+    wrapClass: "wrap-pretty",
     spec: "0.8125rem - 0.875rem / 1.55 / 400",
     sample:
       "Most appointment windows are confirmed by phone or email before the technician arrives.",
@@ -92,14 +114,18 @@ const typeTokens = [
   {
     name: "type-caption",
     role: "Caption",
-    className: "type-caption measure-caption wrap-pretty",
+    typeClass: "type-caption",
+    measureClass: "measure-caption",
+    wrapClass: "wrap-pretty",
     spec: "0.75rem - 0.8125rem / 1.5 / 400",
     sample: "Preview image, service area, or review attribution text.",
   },
   {
     name: "type-label / type-eyebrow",
     role: "Label",
-    className: "type-label",
+    typeClass: "type-label",
+    measureClass: undefined,
+    wrapClass: undefined,
     spec: "0.8125rem - 0.875rem / 1.2 / 750 / 0.12em",
     sample: "Emergency HVAC Repair",
   },
@@ -135,7 +161,7 @@ const colors = [
     muted: "text-white/68",
     border: "border-white/18",
     accent: "bg-white text-service-ink",
-    usage: "Dark sections, footer, high-contrast CTA bands",
+    usage: "Brand dark ink with a green undertone",
   },
   {
     name: "service-muted",
@@ -155,7 +181,7 @@ const colors = [
     muted: "text-white/78",
     border: "border-white/24",
     accent: "bg-white text-service-accent",
-    usage: "Primary actions, eyebrow text, active states",
+    usage: "Core service brand accent and primary action color",
   },
   {
     name: "service-surface",
@@ -189,23 +215,23 @@ const colors = [
   },
   {
     name: "bg-dark",
-    value: "#17211d",
+    value: "#10141b",
     surface: "bg-bg-dark",
     text: "text-text-inverse",
     muted: "text-white/68",
     border: "border-white/18",
     accent: "bg-white text-bg-dark",
-    usage: "Semantic dark background alias",
+    usage: "Neutral dark background for non-brand dark sections",
   },
   {
     name: "accent",
-    value: "#1f7a5a",
+    value: "#c45a2c",
     surface: "bg-accent",
     text: "text-white",
     muted: "text-white/78",
     border: "border-white/24",
     accent: "bg-white text-accent",
-    usage: "Semantic accent alias",
+    usage: "Warm highlight accent for contrast moments",
   },
 ];
 
@@ -218,17 +244,56 @@ const radii = [
 ];
 
 const spacing = [
-  ["section-space-tight", "4rem desktop / 4rem mobile"],
-  ["section-space", "6rem desktop / 4rem mobile"],
-  ["section-space-loose", "8rem desktop / 4rem mobile"],
-  ["stack-tight", "0.75rem between children"],
-  ["stack-default", "1.5rem between children"],
-  ["stack-loose", "2.5rem between children"],
+  ["section-space-vsml", "2rem desktop / 2rem mobile"],
+  ["section-space-sml", "4rem desktop / 4rem mobile"],
+  ["section-space-med", "6rem desktop / 4rem mobile"],
+  ["section-space-lrg", "8rem desktop / 4rem mobile"],
 ];
 
-const stackSpacing = spacing.filter(([name]) => name.startsWith("stack"));
-
 const sectionSpacing = spacing.filter(([name]) => name.startsWith("section"));
+
+const relationshipSpacing = [
+  {
+    title: "Compact Card Header",
+    description: "label -> heading-sm -> text-sm -> text link",
+    tokens: [
+      ["mt-eyebrow-heading-sm", "0.5rem"],
+      ["mt-heading-body-sm", "0.75rem"],
+      ["mt-body-actions-sm", "1.25rem"],
+    ],
+    kind: "compact",
+  },
+  {
+    title: "Default Section Header",
+    description: "label -> heading-xl -> text-lg -> button row",
+    tokens: [
+      ["mt-eyebrow-heading-lg", "1.25rem"],
+      ["mt-heading-body-lg", "1.5rem"],
+      ["mt-body-actions-md", "2rem"],
+    ],
+    kind: "default",
+  },
+  {
+    title: "Hero / Display Header",
+    description: "label -> display-lg -> text-xl -> primary actions",
+    tokens: [
+      ["mt-eyebrow-display", "1.5rem"],
+      ["mt-display-body", "1.75rem"],
+      ["mt-body-actions-lg", "2.5rem"],
+    ],
+    kind: "hero",
+  },
+  {
+    title: "Editorial Flow",
+    description: "paragraph -> paragraph -> subheading -> paragraph",
+    tokens: [
+      ["mt-paragraph-paragraph", "1rem"],
+      ["mt-paragraph-heading-md", "2.25rem"],
+      ["mt-heading-body-md", "1rem"],
+    ],
+    kind: "editorial",
+  },
+];
 
 function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -246,7 +311,7 @@ function GuideSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="section-space border-t border-service-border">
+    <section className="section-space-med border-t border-service-border">
       <div className="container-site">
         <div className="fluid-type-frame mb-12">
           <p className="type-label text-service-accent">{eyebrow}</p>
@@ -279,7 +344,7 @@ function TokenMeta({ name, value }: { name: string; value: string }) {
 export default function StyleGuidePage() {
   return (
     <main className="bg-white text-service-ink">
-      <section className="section-space bg-service-ink text-white">
+      <section className="section-space-med bg-service-ink text-white">
         <div className="container-site fluid-type-frame">
           <p className="type-label text-white/65">Internal style guide</p>
           <h1 className="type-display-lg measure-heading-wide wrap-balance mt-5">
@@ -306,11 +371,30 @@ export default function StyleGuidePage() {
                   <TokenMeta name={token.name} value={token.spec} />
                   <p className="type-caption mt-2 text-service-muted">{token.role}</p>
                 </div>
-                <code className="rounded bg-service-surface px-2 py-1 text-xs text-service-muted">
-                  {token.className}
-                </code>
+                <div className="grid min-w-44 gap-1 rounded border border-service-border bg-service-surface p-2">
+                  <code className="rounded bg-white px-2 py-1 text-xs font-semibold text-service-ink">
+                    {token.typeClass}
+                  </code>
+                  {token.measureClass ? (
+                    <code className="rounded bg-white px-2 py-1 text-xs text-service-muted">
+                      {token.measureClass}
+                    </code>
+                  ) : null}
+                  {token.wrapClass ? (
+                    <code className="rounded bg-white px-2 py-1 text-xs text-service-muted">
+                      {token.wrapClass}
+                    </code>
+                  ) : null}
+                </div>
               </div>
-              <p className={cx(token.className, "text-service-ink")}>
+              <p
+                className={cx(
+                  token.typeClass,
+                  token.measureClass,
+                  token.wrapClass,
+                  "text-service-ink",
+                )}
+              >
                 {token.sample}
               </p>
             </Card>
@@ -450,7 +534,11 @@ export default function StyleGuidePage() {
         </div>
       </GuideSection>
 
-      <GuideSection eyebrow="Spacing" title="Section And Stack Spacing">
+      <GuideSection
+        eyebrow="Spacing"
+        title="Semantic Spacing Relationships"
+        body="These tokens describe why space exists: eyebrow to heading, heading to body, body to actions, and editorial text rhythm."
+      >
         <div className="grid gap-8">
           <div className="grid grid-cols-3 gap-5 max-lg:grid-cols-1">
             {sectionSpacing.map(([name, value]) => (
@@ -474,27 +562,106 @@ export default function StyleGuidePage() {
             ))}
           </div>
 
-          <div className="grid grid-cols-3 gap-5 max-lg:grid-cols-1">
-            {stackSpacing.map(([name, value]) => (
-            <Card className="p-6 shadow-none" key={name}>
-              <TokenMeta name={name} value={value} />
-              <div className={cx(name, "fluid-type-frame mt-6")}>
-                <p className="type-label text-service-accent">Emergency Repair</p>
-                <h3 className="type-heading-md measure-heading-wide wrap-balance text-service-ink">
-                  Same-day help when the system quits
-                </h3>
-                <p className="type-text-md measure-copy wrap-pretty text-service-muted">
-                  This stack uses actual eyebrow, heading, body copy, and actions
-                  so the spacing relationship can be judged in context.
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  <Button href="#">Schedule Now</Button>
-                  <Button href="#" variant="secondary">
-                    Call Today
-                  </Button>
+          <div className="grid grid-cols-2 gap-5 max-lg:grid-cols-1">
+            {relationshipSpacing.map((example) => (
+              <Card className="p-6 shadow-none" key={example.title}>
+                <div className="mb-6">
+                  <h3 className="type-heading-sm text-service-ink">
+                    {example.title}
+                  </h3>
+                  <p className="type-caption mt-2 text-service-muted">
+                    {example.description}
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {example.tokens.map(([name, value]) => (
+                      <TokenMeta key={name} name={name} value={value} />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </Card>
+
+                {example.kind === "compact" ? (
+                  <div className="fluid-type-frame rounded border border-service-border bg-service-surface p-6">
+                    <p className="type-label text-service-accent">Maintenance</p>
+                    <h4 className="type-heading-sm measure-heading-wide wrap-balance mt-eyebrow-heading-sm text-service-ink">
+                      Seasonal tune-ups before the busy months
+                    </h4>
+                    <p className="type-text-sm measure-copy-wide wrap-pretty mt-heading-body-sm text-service-muted">
+                      A compact service card should feel tight and scannable
+                      without collapsing the relationship between title and copy.
+                    </p>
+                    <a
+                      className="type-label mt-body-actions-sm inline-block text-service-accent"
+                      href="#"
+                    >
+                      View service
+                    </a>
+                  </div>
+                ) : null}
+
+                {example.kind === "default" ? (
+                  <div className="fluid-type-frame rounded border border-service-border bg-service-surface p-6">
+                    <p className="type-label text-service-accent">
+                      Emergency HVAC Repair
+                    </p>
+                    <h4 className="type-heading-xl measure-heading-wide wrap-balance mt-eyebrow-heading-lg text-service-ink">
+                      Same-day repairs when your system quits
+                    </h4>
+                    <p className="type-text-lg measure-copy wrap-pretty mt-heading-body-lg text-service-muted">
+                      Get fast help from licensed technicians serving
+                      Huntersville, Cornelius, Davidson, and North Charlotte.
+                    </p>
+                    <div className="mt-body-actions-md flex flex-wrap gap-3">
+                      <Button href="#">Schedule Now</Button>
+                      <Button href="#" variant="secondary">
+                        Call Today
+                      </Button>
+                    </div>
+                  </div>
+                ) : null}
+
+                {example.kind === "hero" ? (
+                  <div className="fluid-type-frame rounded border border-service-border bg-service-ink p-6 text-white">
+                    <p className="type-label text-white/70">Ready when you are</p>
+                    <h4 className="type-display-lg measure-heading-wide wrap-balance mt-eyebrow-display">
+                      Turn the next visit into a booked service call
+                    </h4>
+                    <p className="type-text-xl measure-copy wrap-pretty mt-display-body text-white/75">
+                      A display group needs more breathing room because the
+                      headline scale creates a stronger visual event.
+                    </p>
+                    <div className="mt-body-actions-lg flex flex-wrap gap-3">
+                      <Button
+                        className="border-white bg-white text-service-ink hover:bg-service-surface"
+                        href="#"
+                        variant="secondary"
+                      >
+                        Start a request
+                      </Button>
+                    </div>
+                  </div>
+                ) : null}
+
+                {example.kind === "editorial" ? (
+                  <div className="fluid-type-frame rounded border border-service-border bg-service-surface p-6">
+                    <p className="type-text-md measure-longform wrap-pretty text-service-muted">
+                      When a heating system quits on a cold morning, the customer
+                      is not looking for a brand manifesto. They are trying to
+                      understand whether someone can come soon.
+                    </p>
+                    <p className="type-text-md measure-longform wrap-pretty mt-paragraph-paragraph text-service-muted">
+                      The page should answer that quickly, then make the next
+                      step feel obvious without flattening the tone.
+                    </p>
+                    <h4 className="type-heading-lg measure-heading wrap-balance mt-paragraph-heading-md text-service-ink">
+                      Clear next steps matter more than decoration
+                    </h4>
+                    <p className="type-text-md measure-longform wrap-pretty mt-heading-body-md text-service-muted">
+                      Editorial spacing should make the copy feel intentional
+                      while still supporting a service page rhythm.
+                    </p>
+                  </div>
+                ) : null}
+              </Card>
             ))}
           </div>
         </div>

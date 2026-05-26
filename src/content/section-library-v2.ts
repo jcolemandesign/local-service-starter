@@ -2,6 +2,7 @@ export const sectionLibraryV2Collections = [
   {
     title: "Hero",
     items: [
+      { label: "Bento homepage hero", component: "hero-bento-v2" },
       { label: "Split hero image right", component: "hero-section-v2" },
       { label: "Fullscreen image hero", component: "hero-fullscreen-v2" },
       { label: "Grid mosaic hero", component: "hero-grid-mosaic-v2" },

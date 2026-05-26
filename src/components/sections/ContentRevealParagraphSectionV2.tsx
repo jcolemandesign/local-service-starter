@@ -7,6 +7,7 @@ const revealEase = [0.22, 1, 0.36, 1] as const;
 
 type ContentRevealParagraphSectionV2Props = {
   lines: string[];
+  sectionSpace?: "vsml" | "sml" | "med" | "lrg";
 };
 
 function cx(...classes: Array<string | undefined>) {
@@ -15,6 +16,7 @@ function cx(...classes: Array<string | undefined>) {
 
 export function ContentRevealParagraphSectionV2({
   lines,
+  sectionSpace = "med",
 }: ContentRevealParagraphSectionV2Props) {
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const [revealKey, setRevealKey] = useState(0);
@@ -80,8 +82,15 @@ export function ContentRevealParagraphSectionV2({
     return () => observer.disconnect();
   }, []);
 
+  const sectionSpaceClass = {
+    vsml: "section-space-vsml",
+    sml: "section-space-sml",
+    med: "section-space-med",
+    lrg: "section-space-lrg",
+  }[sectionSpace];
+
   return (
-    <section className="bg-white py-24 max-lg:py-20 max-md:py-16">
+    <section className={cx("bg-white", sectionSpaceClass)}>
       <div
         className={cx(
           "container-site",
