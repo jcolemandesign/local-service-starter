@@ -118,6 +118,33 @@ export const sectionLibraryContent = {
       "Let important copy breathe",
     ],
   },
+  contentStickyCardStream: {
+    eyebrow: "Service clarity",
+    title: "A steady message beside a moving proof stream.",
+    body: "Use this section when the page needs one persistent idea while supporting details, proof points, or service moments move through the reader's attention.",
+    cards: [
+      {
+        eyebrow: "First response",
+        title: "The request path stays obvious while details unfold.",
+        body: "A sticky message can hold the main promise in place while the supporting column explains what happens after a homeowner reaches out.",
+      },
+      {
+        eyebrow: "Visit prep",
+        title: "Each card can carry a focused operational proof point.",
+        body: "Use the stream for arrival windows, diagnostic steps, photo-backed notes, or practical expectations that make the service feel organized.",
+      },
+      {
+        eyebrow: "Clear options",
+        title: "Complex service decisions become easier to scan.",
+        body: "The section can slow the page down without becoming static, giving each idea enough room to land as the visitor scrolls.",
+      },
+      {
+        eyebrow: "Follow-through",
+        title: "The final card can reinforce confidence before conversion.",
+        body: "Close the stream with cleanup, documentation, follow-up, or another trust point that makes the next action feel low-friction.",
+      },
+    ],
+  },
   contentPositioningSplit: {
     title: "Clear help, close by.",
     body: "Use this positioning section for a concise about message, service philosophy, or the clearest reason customers should feel comfortable reaching out.",

@@ -26,6 +26,10 @@ export const sectionLibraryV2Collections = [
       { label: "Reveal paragraph", component: "content-reveal-v2" },
       { label: "Sticky ideas content", component: "content-sticky-ideas-v2" },
       {
+        label: "Sticky card stream content",
+        component: "content-sticky-card-stream-v2",
+      },
+      {
         label: "Positioning split content",
         component: "content-positioning-split-v2",
       },
@@ -40,6 +44,10 @@ export const sectionLibraryV2Collections = [
     title: "Trust",
     items: [
       { label: "Trust bar", component: "trust-bar-v2" },
+      {
+        label: "Floating bento trust bar",
+        component: "trust-bar-floating-bento-v2",
+      },
       { label: "Trust marquee", component: "trust-marquee-v2" },
       { label: "Trust logo marquee", component: "trust-logo-marquee-v2" },
     ],

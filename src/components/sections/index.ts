@@ -9,6 +9,7 @@ export { ContentRevealParagraphSectionV2 } from "./ContentRevealParagraphSection
 export { ContentSplitHeadlineImageSection } from "./ContentSplitHeadlineImageSection";
 export { ContentSplitHeadlineImageSectionV2 } from "./ContentSplitHeadlineImageSectionV2";
 export { ContentStickyIdeasSection } from "./ContentStickyIdeasSection";
+export { ContentStickyCardStreamSectionV2 } from "./ContentStickyCardStreamSectionV2";
 export { ContentStickyIdeasSectionV2 } from "./ContentStickyIdeasSectionV2";
 export { CTAFullscreenSection } from "./CTAFullscreenSection";
 export { CTAFullscreenSectionV2 } from "./CTAFullscreenSectionV2";
@@ -56,6 +57,7 @@ export { TestimonialsMasonrySection } from "./TestimonialsMasonrySection";
 export { TestimonialsMasonrySectionV2 } from "./TestimonialsMasonrySectionV2";
 export { TestimonialsSection } from "./TestimonialsSection";
 export { TestimonialsSectionV2 } from "./TestimonialsSectionV2";
+export { TrustBarFloatingBentoSectionV2 } from "./TrustBarFloatingBentoSectionV2";
 export { TrustBarSection } from "./TrustBarSection";
 export { TrustLogoMarqueeSection } from "./TrustLogoMarqueeSection";
 export { TrustMarqueeSection } from "./TrustMarqueeSection";

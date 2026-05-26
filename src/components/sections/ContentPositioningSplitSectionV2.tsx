@@ -48,8 +48,8 @@ export function ContentPositioningSplitSectionV2({
           >
             <h2
               className={cx(
-                "type-heading-xl",
-                "measure-heading",
+                "type-display-lg",
+                "measure-heading-wide",
                 "wrap-balance",
                 "text-service-ink",
               )}

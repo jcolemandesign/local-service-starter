@@ -7,6 +7,7 @@ import {
   CTASectionV2,
   ContentPositioningSplitSectionV2,
   ContentRevealParagraphSectionV2,
+  ContentStickyCardStreamSectionV2,
   ContentSplitHeadlineImageSectionV2,
   ContentStickyIdeasSectionV2,
   FeatureOverlapRowsSectionV2,
@@ -31,6 +32,7 @@ import {
   TestimonialsCarouselSectionV2,
   TestimonialsMasonrySectionV2,
   TestimonialsSectionV2,
+  TrustBarFloatingBentoSectionV2,
   TrustBarSection,
   TrustLogoMarqueeSection,
   TrustMarqueeSection,
@@ -86,6 +88,11 @@ const sectionElements = {
       {...sectionLibraryContent.contentStickyIdeas}
     />
   ),
+  "content-sticky-card-stream-v2": (
+    <ContentStickyCardStreamSectionV2
+      {...sectionLibraryContent.contentStickyCardStream}
+    />
+  ),
   "content-positioning-split-v2": (
     <ContentPositioningSplitSectionV2
       {...sectionLibraryContent.contentPositioningSplit}
@@ -102,6 +109,9 @@ const sectionElements = {
     />
   ),
   "trust-bar-v2": <TrustBarSection {...sectionLibraryContent.trustBar} />,
+  "trust-bar-floating-bento-v2": (
+    <TrustBarFloatingBentoSectionV2 {...sectionLibraryContent.trustBar} />
+  ),
   "trust-marquee-v2": (
     <TrustMarqueeSection {...sectionLibraryContent.trustMarquee} />
   ),
