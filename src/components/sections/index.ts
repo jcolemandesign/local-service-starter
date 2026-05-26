@@ -7,10 +7,12 @@ export { ContentPositioningSplitSection } from "./ContentPositioningSplitSection
 export { ContentPositioningSplitSectionV2 } from "./ContentPositioningSplitSectionV2";
 export { ContentRevealParagraphSection } from "./ContentRevealParagraphSection";
 export { ContentRevealParagraphSectionV2 } from "./ContentRevealParagraphSectionV2";
+export { ContentScrollWrittenRevealSectionV2 } from "./ContentScrollWrittenRevealSectionV2";
 export { ContentSplitHeadlineImageSection } from "./ContentSplitHeadlineImageSection";
 export { ContentSplitHeadlineImageSectionV2 } from "./ContentSplitHeadlineImageSectionV2";
 export { ContentStickyIdeasSection } from "./ContentStickyIdeasSection";
 export { ContentStickyCardStreamSectionV2 } from "./ContentStickyCardStreamSectionV2";
+export { ContentStickyImagePanelSectionV2 } from "./ContentStickyImagePanelSectionV2";
 export { ContentStickyIdeasSectionV2 } from "./ContentStickyIdeasSectionV2";
 export { CTAFullscreenSection } from "./CTAFullscreenSection";
 export { CTAFullscreenSectionV2 } from "./CTAFullscreenSectionV2";

@@ -102,6 +102,14 @@ export const sectionLibraryContent = {
       "and conversion close to every section.",
     ],
   },
+  contentScrollWrittenReveal: {
+    lines: [
+      "Service pages can reveal trust gradually",
+      "as the visitor moves through the work.",
+      "Each line writes itself with the scroll,",
+      "then unwrites when the page moves back.",
+    ],
+  },
   contentStickyIdeas: {
     eyebrow: "Content",
     title: "A long-form content pattern for pages that need more room to explain.",
@@ -214,6 +222,17 @@ export const sectionLibraryContent = {
         body: "The final card can bridge the carousel back into conversion, process, or another section without a hard visual stop.",
         size: "medium" as const,
       },
+    ],
+  },
+  contentStickyImagePanel: {
+    eyebrow: "Field notes",
+    title: "One focused message travels inside a full-height image.",
+    body: "Use this pattern when an image should carry the atmosphere of the section while a compact square content block stays readable through the scroll.",
+    imageLabel: "Full-height service image",
+    points: [
+      "Sticky within image bounds",
+      "Offset near the right edge",
+      "Releases at the image bottom",
     ],
   },
   contentPositioningSplit: {

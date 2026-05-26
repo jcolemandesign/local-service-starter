@@ -24,6 +24,10 @@ export const sectionLibraryV2Collections = [
     title: "Content",
     items: [
       { label: "Reveal paragraph", component: "content-reveal-v2" },
+      {
+        label: "Scroll-written reveal paragraph",
+        component: "content-scroll-written-reveal-v2",
+      },
       { label: "Sticky ideas content", component: "content-sticky-ideas-v2" },
       {
         label: "Sticky card stream content",
@@ -32,6 +36,10 @@ export const sectionLibraryV2Collections = [
       {
         label: "Horizontal card carousel content",
         component: "content-horizontal-card-carousel-v2",
+      },
+      {
+        label: "Sticky image panel content",
+        component: "content-sticky-image-panel-v2",
       },
       {
         label: "Positioning split content",

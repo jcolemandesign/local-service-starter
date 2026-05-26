@@ -8,7 +8,9 @@ import {
   CTASectionV2,
   ContentPositioningSplitSectionV2,
   ContentRevealParagraphSectionV2,
+  ContentScrollWrittenRevealSectionV2,
   ContentStickyCardStreamSectionV2,
+  ContentStickyImagePanelSectionV2,
   ContentSplitHeadlineImageSectionV2,
   ContentStickyIdeasSectionV2,
   FeatureOverlapRowsSectionV2,
@@ -85,6 +87,11 @@ const sectionElements = {
       {...sectionLibraryContent.contentRevealParagraph}
     />
   ),
+  "content-scroll-written-reveal-v2": (
+    <ContentScrollWrittenRevealSectionV2
+      {...sectionLibraryContent.contentScrollWrittenReveal}
+    />
+  ),
   "content-sticky-ideas-v2": (
     <ContentStickyIdeasSectionV2
       {...sectionLibraryContent.contentStickyIdeas}
@@ -98,6 +105,11 @@ const sectionElements = {
   "content-horizontal-card-carousel-v2": (
     <ContentHorizontalCardCarouselSectionV2
       {...sectionLibraryContent.contentHorizontalCardCarousel}
+    />
+  ),
+  "content-sticky-image-panel-v2": (
+    <ContentStickyImagePanelSectionV2
+      {...sectionLibraryContent.contentStickyImagePanel}
     />
   ),
   "content-positioning-split-v2": (
