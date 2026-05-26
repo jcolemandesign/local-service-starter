@@ -295,6 +295,42 @@ const relationshipSpacing = [
   },
 ];
 
+const gapTokens = [
+  {
+    group: "Inline gaps",
+    description: "Small flex groups: buttons, nav items, badges, controls.",
+    items: [
+      ["inline-gap-sml", "0.5rem"],
+      ["inline-gap-med", "1rem"],
+      ["inline-gap-lrg", "1.75rem"],
+      ["inline-gap-xlrg", "2.25rem"],
+    ],
+    kind: "inline",
+  },
+  {
+    group: "Card grid gaps",
+    description: "Spacing between repeated card items in a grid.",
+    items: [
+      ["card-grid-gap-sml", "0.5rem"],
+      ["card-grid-gap-med", "1rem"],
+      ["card-grid-gap-lrg", "1.75rem"],
+      ["card-grid-gap-xlrg", "2.25rem"],
+    ],
+    kind: "card",
+  },
+  {
+    group: "Layout gaps",
+    description: "Major columns and internal section layouts.",
+    items: [
+      ["layout-gap-sml", "0.5rem"],
+      ["layout-gap-med", "1rem"],
+      ["layout-gap-lrg", "1.75rem"],
+      ["layout-gap-xlrg", "2.25rem"],
+    ],
+    kind: "layout",
+  },
+];
+
 function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
@@ -664,6 +700,68 @@ export default function StyleGuidePage() {
               </Card>
             ))}
           </div>
+        </div>
+      </GuideSection>
+
+      <GuideSection
+        eyebrow="Gaps"
+        title="Inline, Card, And Layout Gaps"
+        body="Gap tokens describe the kind of layout relationship: small inline clusters, repeated cards, or major section columns."
+      >
+        <div className="grid grid-cols-3 gap-5 max-lg:grid-cols-1">
+          {gapTokens.map((group) => (
+            <Card className="p-6 shadow-none" key={group.group}>
+              <h3 className="type-heading-sm text-service-ink">{group.group}</h3>
+              <p className="type-caption mt-2 text-service-muted">
+                {group.description}
+              </p>
+
+              <div className="mt-6 grid gap-5">
+                {group.items.map(([name, value]) => (
+                  <div key={name}>
+                    <TokenMeta name={name} value={value} />
+
+                    {group.kind === "inline" ? (
+                      <div className={cx(name, "mt-4 flex flex-wrap")}>
+                        <span className="radius-4 bg-service-accent px-3 py-2 text-sm font-semibold text-white">
+                          Primary
+                        </span>
+                        <span className="radius-4 border border-service-border px-3 py-2 text-sm font-semibold text-service-ink">
+                          Secondary
+                        </span>
+                        <span className="radius-4 border border-service-border px-3 py-2 text-sm font-semibold text-service-muted">
+                          Tertiary
+                        </span>
+                      </div>
+                    ) : null}
+
+                    {group.kind === "card" ? (
+                      <div className={cx(name, "mt-4 grid grid-cols-3")}>
+                        <div className="radius-4 h-16 bg-service-surface" />
+                        <div className="radius-4 h-16 bg-service-border" />
+                        <div className="radius-4 h-16 bg-service-accent/20" />
+                      </div>
+                    ) : null}
+
+                    {group.kind === "layout" ? (
+                      <div className={cx(name, "mt-4 grid grid-cols-[1.2fr_0.8fr]")}>
+                        <div className="radius-4 min-h-20 bg-service-surface p-4">
+                          <p className="type-caption text-service-muted">
+                            Content column
+                          </p>
+                        </div>
+                        <div className="radius-4 min-h-20 bg-service-border p-4">
+                          <p className="type-caption text-service-muted">
+                            Media column
+                          </p>
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            </Card>
+          ))}
         </div>
       </GuideSection>
 
