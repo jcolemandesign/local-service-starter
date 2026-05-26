@@ -2,6 +2,7 @@ export { ContactSection } from "./ContactSection";
 export { ContactSectionV2 } from "./ContactSectionV2";
 export { ContentAboutCompanySection } from "./ContentAboutCompanySection";
 export { ContentAboutCompanySectionV2 } from "./ContentAboutCompanySectionV2";
+export { ContentFixedCoverFadeSectionV2 } from "./ContentFixedCoverFadeSectionV2";
 export { ContentHorizontalCardCarouselSectionV2 } from "./ContentHorizontalCardCarouselSectionV2";
 export { ContentPositioningSplitSection } from "./ContentPositioningSplitSection";
 export { ContentPositioningSplitSectionV2 } from "./ContentPositioningSplitSectionV2";

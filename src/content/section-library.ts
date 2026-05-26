@@ -235,6 +235,22 @@ export const sectionLibraryContent = {
       "Releases at the image bottom",
     ],
   },
+  contentFixedCoverFade: {
+    backgroundEyebrow: "Transition",
+    backgroundTitle: "A fixed idea gives way to the next layer.",
+    backgroundBody:
+      "Use this pattern when one atmospheric message should hold the viewport while the next section rises up and takes over the page.",
+    backgroundLabel: "Fixed background",
+    foregroundEyebrow: "Next section",
+    foregroundTitle: "The follow-up content slides above the scene.",
+    foregroundBody:
+      "As the lower section covers the background, the original message fades back so the transition feels intentional instead of abrupt.",
+    items: [
+      "Sticky full-viewport background",
+      "Foreground section naturally covers it",
+      "Background copy fades with scroll",
+    ],
+  },
   contentPositioningSplit: {
     title: "Clear help, close by.",
     body: "Use this positioning section for a concise about message, service philosophy, or the clearest reason customers should feel comfortable reaching out.",

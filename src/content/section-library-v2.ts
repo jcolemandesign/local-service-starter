@@ -42,6 +42,10 @@ export const sectionLibraryV2Collections = [
         component: "content-sticky-image-panel-v2",
       },
       {
+        label: "Fixed cover fade content",
+        component: "content-fixed-cover-fade-v2",
+      },
+      {
         label: "Positioning split content",
         component: "content-positioning-split-v2",
       },

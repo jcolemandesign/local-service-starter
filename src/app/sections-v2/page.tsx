@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/primitives";
 import {
   ContentAboutCompanySectionV2,
+  ContentFixedCoverFadeSectionV2,
   ContentHorizontalCardCarouselSectionV2,
   ContactSectionV2,
   CTAFullscreenSectionV2,
@@ -110,6 +111,11 @@ const sectionElements = {
   "content-sticky-image-panel-v2": (
     <ContentStickyImagePanelSectionV2
       {...sectionLibraryContent.contentStickyImagePanel}
+    />
+  ),
+  "content-fixed-cover-fade-v2": (
+    <ContentFixedCoverFadeSectionV2
+      {...sectionLibraryContent.contentFixedCoverFade}
     />
   ),
   "content-positioning-split-v2": (
