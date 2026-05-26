@@ -51,50 +51,33 @@ export function ProcessStepsSectionV2({
             </p>
           </div>
 
-          <ol className="grid grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] grid-rows-2 items-stretch card-grid-gap-lrg max-md:grid-cols-1 max-md:grid-rows-none">
+          <ol className="grid card-grid-gap-med">
             {steps.map((step, index) => (
               <li
                 className={cx(
                   "fluid-type-frame",
-                  "radius-medium",
-                  index === 0
-                    ? "row-span-2 min-h-[28rem] border border-service-ink bg-service-ink p-8 text-white shadow-service max-md:min-h-0"
-                    : "border border-service-border bg-white p-7 text-service-ink shadow-service",
+                  "grid grid-cols-[auto_minmax(0,1fr)] items-center layout-gap-med bg-transparent py-7 text-service-ink max-md:grid-cols-1 max-md:items-start",
+                  index === steps.length - 1
+                    ? undefined
+                    : "border-b border-service-border",
                 )}
                 key={step.title}
               >
                 <div
                   className={cx(
-                    "radius-4",
-                    index === 0
-                      ? "mb-10 flex h-14 w-14 items-center justify-center bg-white text-sm font-semibold text-service-ink"
-                      : "mb-8 flex h-12 w-12 items-center justify-center bg-service-ink text-sm font-semibold text-white",
+                    "flex h-12 min-w-12 items-center justify-center text-sm font-semibold text-service-ink",
                   )}
                 >
                   {String(index + 1).padStart(2, "0")}
                 </div>
-                <h3
-                  className={cx(
-                    index === 0 ? "type-heading-md" : "type-heading-sm",
-                    index === 0 ? "measure-heading" : "measure-heading-wide",
-                    "wrap-balance",
-                    index === 0 ? "text-white" : "text-service-ink",
-                  )}
-                >
-                  {step.title}
-                </h3>
-                <p
-                  className={cx(
-                    index === 0 ? "type-text-lg" : "type-text-md",
-                    "measure-copy",
-                    "wrap-pretty",
-                    index === 0
-                      ? "mt-heading-body-md text-white/72"
-                      : "mt-heading-body-md text-service-muted",
-                  )}
-                >
-                  {step.body}
-                </p>
+                <div className="pl-4 max-md:pl-0 max-md:pt-4">
+                  <h3 className="type-heading-md measure-heading-wide wrap-balance text-service-ink">
+                    {step.title}
+                  </h3>
+                  <p className="type-text-md measure-heading-wide wrap-pretty mt-heading-body-md text-service-muted">
+                    {step.body}
+                  </p>
+                </div>
               </li>
             ))}
           </ol>

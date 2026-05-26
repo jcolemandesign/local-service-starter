@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/primitives";
 import {
   ContentAboutCompanySectionV2,
+  ContentHorizontalCardCarouselSectionV2,
   ContactSectionV2,
   CTAFullscreenSectionV2,
   CTASectionV2,
@@ -23,6 +24,7 @@ import {
   NavCenterLogoSectionV2,
   NavFloatingBentoSectionV2,
   NavPrimarySectionV2,
+  ProcessImageChecklistSectionV2,
   ProcessStepsSectionV2,
   SectionLibraryV2Accordions,
   ServicesBentoCardsSectionV2,
@@ -93,6 +95,11 @@ const sectionElements = {
       {...sectionLibraryContent.contentStickyCardStream}
     />
   ),
+  "content-horizontal-card-carousel-v2": (
+    <ContentHorizontalCardCarouselSectionV2
+      {...sectionLibraryContent.contentHorizontalCardCarousel}
+    />
+  ),
   "content-positioning-split-v2": (
     <ContentPositioningSplitSectionV2
       {...sectionLibraryContent.contentPositioningSplit}
@@ -142,6 +149,11 @@ const sectionElements = {
   ),
   "process-steps-v2": (
     <ProcessStepsSectionV2 {...sectionLibraryContent.process} />
+  ),
+  "process-image-checklist-v2": (
+    <ProcessImageChecklistSectionV2
+      {...sectionLibraryContent.processImageChecklist}
+    />
   ),
   "testimonials-v2": (
     <TestimonialsSectionV2 {...sectionLibraryContent.testimonials} />

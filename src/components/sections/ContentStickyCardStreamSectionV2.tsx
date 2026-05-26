@@ -45,7 +45,7 @@ export function ContentStickyCardStreamSectionV2({
             </div>
           </div>
 
-          <div className="min-h-[135svh] max-lg:min-h-0">
+          <div>
             <div className="grid card-grid-gap-xlrg">
               {cards.map((card, index) => (
                 <motion.article
@@ -58,10 +58,11 @@ export function ContentStickyCardStreamSectionV2({
                     shouldReduceMotion ? false : { opacity: 0, y: 36 }
                   }
                   transition={{
-                    duration: shouldReduceMotion ? 0 : 0.42,
+                    delay: shouldReduceMotion ? 0 : 0.12 + index * 0.08,
+                    duration: shouldReduceMotion ? 0 : 0.62,
                     ease: [0.22, 1, 0.36, 1],
                   }}
-                  viewport={{ once: true, amount: 0.36 }}
+                  viewport={{ once: true, amount: 0.48 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   key={card.title}
                 >

@@ -30,6 +30,10 @@ export const sectionLibraryV2Collections = [
         component: "content-sticky-card-stream-v2",
       },
       {
+        label: "Horizontal card carousel content",
+        component: "content-horizontal-card-carousel-v2",
+      },
+      {
         label: "Positioning split content",
         component: "content-positioning-split-v2",
       },
@@ -73,7 +77,13 @@ export const sectionLibraryV2Collections = [
   },
   {
     title: "Process",
-    items: [{ label: "Process steps", component: "process-steps-v2" }],
+    items: [
+      { label: "Process steps", component: "process-steps-v2" },
+      {
+        label: "Image checklist process",
+        component: "process-image-checklist-v2",
+      },
+    ],
   },
   {
     title: "Testimonials",
