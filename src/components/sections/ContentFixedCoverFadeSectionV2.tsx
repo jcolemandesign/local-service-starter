@@ -83,7 +83,7 @@ export function ContentFixedCoverFadeSectionV2({
         <div className="container-site relative z-10 flex min-h-svh items-center">
           <div className="fluid-type-frame w-full max-w-none">
             <p className="type-label text-white/60">{backgroundEyebrow}</p>
-            <h2 className="type-display-lg mt-eyebrow-display max-w-[36ch] text-white">
+            <h2 className="type-display-lg mt-eyebrow-display text-white">
               {backgroundTitle}
             </h2>
             <p className="type-text-xl measure-longform wrap-pretty mt-display-body text-white/72">
@@ -99,7 +99,7 @@ export function ContentFixedCoverFadeSectionV2({
             <p className="type-label text-service-accent">
               {foregroundEyebrow}
             </p>
-            <h3 className="type-heading-xl measure-heading-wide wrap-balance mt-eyebrow-heading-lg text-service-ink">
+            <h3 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
               {foregroundTitle}
             </h3>
           </div>

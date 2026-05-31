@@ -71,7 +71,6 @@ export function HeroFullscreenSectionV2({
             className={cx(
               "type-heading-lg",
               "measure-copy-wide",
-              "wrap-balance",
               "mt-6 text-white",
             )}
           >

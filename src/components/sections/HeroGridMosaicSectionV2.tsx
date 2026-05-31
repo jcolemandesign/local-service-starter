@@ -83,8 +83,6 @@ export function HeroGridMosaicSectionV2({
             <HeadingTag
               className={cx(
                 "type-heading-xl",
-                "measure-display-wide",
-                "wrap-balance",
                 "text-service-ink",
               )}
             >
@@ -156,8 +154,6 @@ export function HeroGridMosaicSectionV2({
               <h3
                 className={cx(
                   "type-heading-sm",
-                  "measure-display-wide",
-                  "wrap-balance",
                   "mt-4 text-service-ink",
                 )}
               >

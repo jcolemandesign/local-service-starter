@@ -55,8 +55,6 @@ function FeatureCard({
       <h2
         className={cx(
           "type-heading-lg",
-          "measure-heading",
-          "wrap-balance",
           "mt-4 text-service-ink",
         )}
       >

@@ -102,7 +102,6 @@ export function ContentRevealParagraphSectionV2({
           className={cx(
             "type-heading-xl",
             "measure-copy-wide",
-            "wrap-balance",
             "text-service-ink",
           )}
         >

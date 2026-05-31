@@ -45,8 +45,6 @@ export function TestimonialsMasonrySectionV2({
           <h2
             className={cx(
               "type-heading-xl",
-              "measure-heading-wide",
-              "wrap-balance",
               "mx-auto mt-5 text-service-ink",
             )}
           >
@@ -94,7 +92,6 @@ export function TestimonialsMasonrySectionV2({
                   <p
                     className={cx(
                       "type-heading-sm",
-                      "wrap-balance",
                       "mt-8 text-service-ink",
                     )}
                   >

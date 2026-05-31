@@ -27,8 +27,6 @@ export function ContactSectionV2({
             <h2
               className={cx(
                 "type-heading-xl",
-                "measure-heading-wide",
-                "wrap-balance",
                 "mt-5 text-service-ink",
               )}
             >

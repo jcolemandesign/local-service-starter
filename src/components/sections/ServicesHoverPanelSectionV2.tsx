@@ -54,8 +54,6 @@ export function ServicesHoverPanelSectionV2({
           <h2
             className={cx(
               "type-heading-md",
-              "measure-heading-wide",
-              "wrap-balance",
               "mt-4 text-service-ink",
             )}
           >
@@ -138,8 +136,6 @@ export function ServicesHoverPanelSectionV2({
                   <h3
                     className={cx(
                       "type-heading-xl",
-                      "measure-heading",
-                      "wrap-balance",
                       "mt-5 text-white",
                     )}
                   >

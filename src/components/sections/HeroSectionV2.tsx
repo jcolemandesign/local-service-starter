@@ -52,8 +52,6 @@ export function HeroSectionV2({
             <HeadingTag
               className={cx(
                 "type-display-lg",
-                "measure-display-wide",
-                "wrap-balance",
                 "mt-6 text-service-ink",
               )}
             >

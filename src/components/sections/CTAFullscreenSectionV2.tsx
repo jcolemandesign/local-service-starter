@@ -55,7 +55,6 @@ export function CTAFullscreenSectionV2({
           <h2
             className={cx(
               "type-display-lg",
-              "wrap-balance",
               "mx-auto max-w-5xl",
             )}
           >

@@ -85,18 +85,6 @@ const measureSamples = [
     text: "Short labels break quickly.",
   },
   {
-    name: "measure-heading",
-    details: "max-width: 18ch",
-    className: styles["measure-heading"],
-    text: "Fast HVAC service without the runaround",
-  },
-  {
-    name: "measure-heading-wide",
-    details: "max-width: 24ch",
-    className: styles["measure-heading-wide"],
-    text: "Same-day repairs when your system quits",
-  },
-  {
     name: "measure-copy",
     details: "max-width: 60ch",
     className: styles["measure-copy"],
@@ -116,7 +104,6 @@ const measureSamples = [
   },
 ] as const;
 
-const headingWidths = ["10ch", "12ch", "14ch", "16ch", "18ch", "22ch", "26ch"];
 const bodyWidths = ["45ch", "55ch", "60ch", "65ch", "70ch", "75ch"];
 const bodyWrapModes = [
   {
@@ -146,7 +133,7 @@ const styleGuideNavCollections = [
       { label: "Type hierarchy", href: "#type-hierarchy" },
       { label: "Universal color tokens", href: "#color-tokens" },
       { label: "Text measure", href: "#text-measure" },
-      { label: "Heading wraps", href: "#heading-wraps" },
+      { label: "Heading behavior", href: "#heading-behavior" },
       { label: "Body copy measures", href: "#body-copy-measures" },
       { label: "Body wrap assists", href: "#body-wrap-assists" },
       { label: "Spacing rhythm", href: "#spacing-rhythm" },
@@ -228,7 +215,6 @@ const universalColorTokens = [
   },
 ] as const;
 
-const headingText = "Fast HVAC service without the runaround";
 const bodyText =
   "Request service online, describe the issue, and get a fast response from a local technician. Every submission is saved, organized, and sent directly to the business owner so fewer leads slip through the cracks.";
 
@@ -324,7 +310,7 @@ function StyleGuideNavAccordions() {
       <Container className="py-16 max-md:py-12">
         <div className="mb-10 max-w-4xl">
           <p className="text-sm font-semibold uppercase tracking-widest text-service-accent">
-            Menu
+            Internal style guide
           </p>
           <h2
             className={cx(
@@ -332,10 +318,11 @@ function StyleGuideNavAccordions() {
               styles.balance,
             )}
           >
-            Style guide sections
+            Typography, color, measure, and composition tests
           </h2>
           <p className={cx("mt-5 max-w-3xl text-lg leading-8 text-service-muted", styles.pretty)}>
-            Jump between the foundation tests and composition examples.
+            Use this menu to jump between the foundation tests and composition
+            examples for the local service starter.
           </p>
         </div>
         <div className="grid gap-3">
@@ -383,7 +370,7 @@ function StyleGuideNavAccordions() {
 function BackToMenuButton() {
   return (
     <a
-      className="fixed bottom-6 right-6 z-50 inline-flex min-h-11 items-center justify-center rounded-full border border-service-border bg-white/82 px-4 text-xs font-semibold uppercase tracking-widest text-service-accent shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent max-md:bottom-4 max-md:right-4"
+      className="fixed bottom-7 right-7 z-50 inline-flex min-h-14 items-center justify-center rounded-full border border-service-border bg-white/86 px-7 text-sm font-semibold uppercase tracking-widest text-service-accent shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent max-md:bottom-4 max-md:right-4 max-md:min-h-12 max-md:px-5 max-md:text-xs"
       href="#style-guide-menu"
     >
       Menu
@@ -432,27 +419,7 @@ export default function TypeTestPage() {
   return (
     <main className={cx("bg-service-surface text-service-ink", styles["style-guide-page"])}>
       <BackToMenuButton />
-      <section className="border-b border-service-border bg-white py-20 max-lg:py-16 max-md:py-12">
-        <Container>
-          <p className="text-sm font-semibold uppercase tracking-widest text-service-accent">
-            Internal style guide
-          </p>
-          <h1
-            className={cx(
-              "mt-5 max-w-[18ch] text-fluid-hero font-semibold leading-heading text-service-ink",
-              styles.balance,
-            )}
-          >
-            Typography, measure, and wrap tests
-          </h1>
-          <p className={cx("mt-6 max-w-[65ch] text-lg leading-8 text-service-muted", styles.pretty)}>
-            A throwaway page for checking how local service copy behaves across
-            heading scales, ch-based line lengths, and browser text wrapping
-            support.
-          </p>
-        </Container>
-      </section>
-
+      <div aria-hidden="true" className={styles["page-flash"]} />
       <StyleGuideNavAccordions />
 
       <Section id="type-hierarchy" className={styles["anchor-section"]}>
@@ -523,27 +490,31 @@ export default function TypeTestPage() {
         </Container>
       </Section>
 
-      <Section id="heading-wraps" className={styles["anchor-section"]}>
+      <Section id="heading-behavior" className={styles["anchor-section"]}>
         <Container>
           <PageIntro
             kicker="Heading wraps"
-            title="Heading Measure Tests"
-            body="The same heading is repeated across narrow and wider ch values with balanced wrapping enabled."
+            title="Heading Behavior"
+            body="Headings rely on balanced wrapping by default. Add a layout width only when the composition needs it, and use manual line breaks only when the break is part of the design."
           />
-          <div className="grid grid-cols-1 gap-5">
-            {headingWidths.map((width) => (
-              <WidthCard key={width} label={width}>
-                <h3
-                  className={cx(
-                    "text-4xl font-semibold leading-heading text-service-ink max-md:text-3xl",
-                    styles.balance,
-                  )}
-                  style={{ maxWidth: width } as CSSProperties}
-                >
-                  {headingText}
-                </h3>
-              </WidthCard>
-            ))}
+          <div className="grid grid-cols-3 gap-5 max-lg:grid-cols-1">
+            <WidthCard label="Default balanced heading">
+              <h3 className="type-heading-xl text-service-ink">
+                Fast HVAC service without the runaround
+              </h3>
+            </WidthCard>
+            <WidthCard label="Layout-constrained heading">
+              <h3 className="type-heading-xl max-w-xl text-service-ink">
+                Fast HVAC service without the runaround
+              </h3>
+            </WidthCard>
+            <WidthCard label="Manual art-directed break">
+              <h3 className="type-heading-xl text-service-ink">
+                Fast HVAC service
+                <br />
+                without the runaround
+              </h3>
+            </WidthCard>
           </div>
         </Container>
       </Section>

@@ -44,7 +44,7 @@ export function ButtonStylesSectionV2() {
             )}
           >
             <p className="type-label text-service-accent">Button style 01</p>
-            <h2 className="type-heading-lg measure-heading wrap-balance mt-eyebrow-heading-md text-service-ink">
+            <h2 className="type-heading-lg mt-eyebrow-heading-md text-service-ink">
               Expanding arrow CTA
             </h2>
             <p className="type-text-md measure-copy wrap-pretty mt-heading-body-md text-service-muted">

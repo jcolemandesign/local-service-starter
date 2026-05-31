@@ -113,7 +113,7 @@ function HorizontalCarouselCard({
           <h3
             className={cx(
               size === "large" ? "type-heading-lg" : "type-heading-md",
-              "measure-heading wrap-balance mt-eyebrow-heading-md",
+              "mt-eyebrow-heading-md",
               isFeatured ? "text-white" : "text-service-ink",
             )}
           >
@@ -418,7 +418,7 @@ export function ContentHorizontalCardCarouselSectionV2({
         <div className="fluid-type-frame flex items-end justify-between gap-8 max-md:flex-col max-md:items-start">
           <div>
             <p className="type-label text-service-accent">{eyebrow}</p>
-            <h2 className="type-heading-xl measure-heading-wide wrap-balance mt-eyebrow-heading-lg text-service-ink">
+            <h2 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
               {title}
             </h2>
             <p className="type-text-lg measure-lead wrap-pretty mt-heading-body-lg text-service-muted">

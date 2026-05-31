@@ -82,14 +82,6 @@
   max-width: 12ch;
 }
 
-.measure-heading {
-  max-width: 18ch;
-}
-
-.measure-heading-wide {
-  max-width: 24ch;
-}
-
 .measure-copy {
   max-width: 60ch;
 }
@@ -123,14 +115,17 @@
   position: relative;
 }
 
-.style-guide-page:has(.anchor-section:target)::before {
-  animation: page-change-flash 520ms ease-out both;
+.page-flash {
   background: var(--color-service-surface);
-  content: "";
   inset: 0;
+  opacity: 0;
   pointer-events: none;
   position: fixed;
   z-index: 60;
+}
+
+.style-guide-page:has(.anchor-section:target) .page-flash {
+  animation: page-change-flash 520ms ease-out both;
 }
 
 .anchor-section {
@@ -173,7 +168,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .style-guide-page:has(.anchor-section:target)::before,
+  .style-guide-page:has(.anchor-section:target) .page-flash,
   .anchor-section:target > * {
     animation: none;
   }

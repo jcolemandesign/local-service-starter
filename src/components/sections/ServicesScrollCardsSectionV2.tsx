@@ -58,8 +58,6 @@ function ServiceScrollCard({ item }: { item: ScrollServiceItem }) {
         <h3
           className={cx(
             "type-heading-md",
-            "measure-heading-wide",
-            "wrap-balance",
             "text-service-ink",
           )}
         >
@@ -87,8 +85,6 @@ function ViewAllCard({ label }: { label: string }) {
         <h3
           className={cx(
             "type-heading-lg",
-            "measure-display-wide",
-            "wrap-balance",
             "mt-5 text-white",
           )}
         >
@@ -207,8 +203,6 @@ export function ServicesScrollCardsSectionV2({
               <h2
                 className={cx(
                   "type-heading-xl",
-                  "measure-heading-wide",
-                  "wrap-balance",
                   "mt-5 text-service-ink",
                 )}
               >

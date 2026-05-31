@@ -22,7 +22,7 @@ export function TrustBarFloatingBentoSectionV2({
           )}
         >
           <div className="radius-medium flex min-h-44 items-end bg-service-ink p-7 text-white max-md:min-h-0 max-md:p-6">
-            <p className="type-heading-sm measure-copy wrap-balance">
+            <p className="type-heading-sm">
               {label}
             </p>
           </div>

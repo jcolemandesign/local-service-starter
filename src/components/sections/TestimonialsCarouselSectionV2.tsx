@@ -54,7 +54,6 @@ function TestimonialCardContent({ item }: { item: CarouselTestimonial }) {
         className={cx(
           "type-heading-lg",
           "measure-copy-wide",
-          "wrap-balance",
           "mx-auto text-service-ink",
         )}
       >
@@ -64,7 +63,6 @@ function TestimonialCardContent({ item }: { item: CarouselTestimonial }) {
         <p
           className={cx(
             "type-heading-md",
-            "wrap-balance",
             "text-service-ink",
           )}
         >
@@ -118,8 +116,6 @@ export function TestimonialsCarouselSectionV2({
           <h2
             className={cx(
               "type-heading-xl",
-              "measure-heading-wide",
-              "wrap-balance",
               "mx-auto mt-5 text-service-ink",
             )}
           >

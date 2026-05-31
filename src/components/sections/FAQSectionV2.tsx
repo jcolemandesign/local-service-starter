@@ -27,8 +27,6 @@ export function FAQSectionV2({ eyebrow, title, body, items }: FAQSectionV2Props)
             <h2
               className={cx(
                 "type-heading-xl",
-                "measure-heading-wide",
-                "wrap-balance",
                 "mt-5 text-service-ink",
               )}
             >
@@ -59,8 +57,6 @@ export function FAQSectionV2({ eyebrow, title, body, items }: FAQSectionV2Props)
                 <h3
                   className={cx(
                     "type-heading-sm",
-                    "measure-heading-wide",
-                    "wrap-balance",
                     "text-service-ink",
                   )}
                 >

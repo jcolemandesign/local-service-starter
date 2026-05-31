@@ -45,7 +45,7 @@ export function HeroBentoSectionV2({
         <div className="radius-medium flex min-h-0 items-center justify-center bg-service-surface p-12 text-service-ink max-lg:items-end max-lg:p-8 max-md:p-6">
           <div className="fluid-type-frame w-full max-w-3xl">
             <p className="type-label text-service-accent">{eyebrow}</p>
-            <HeadingTag className="type-display-lg measure-heading-wide wrap-balance mt-eyebrow-display text-service-ink">
+            <HeadingTag className="type-display-lg mt-eyebrow-display text-service-ink">
               {title}
             </HeadingTag>
             <p className="type-text-xl measure-copy wrap-pretty mt-display-body text-service-muted">

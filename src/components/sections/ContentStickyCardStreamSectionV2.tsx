@@ -35,7 +35,7 @@ export function ContentStickyCardStreamSectionV2({
             <div className="fluid-type-frame">
               <div>
                 <p className="type-label text-service-accent">{eyebrow}</p>
-                <h2 className="type-display-lg measure-heading-wide wrap-balance mt-eyebrow-display text-service-ink">
+                <h2 className="type-display-lg mt-eyebrow-display text-service-ink">
                   {title}
                 </h2>
                 <p className="type-text-xl measure-lead wrap-pretty mt-display-body text-service-muted">
@@ -74,7 +74,7 @@ export function ContentStickyCardStreamSectionV2({
                       {String(index + 1).padStart(2, "0")}
                     </span>
                   </div>
-                  <h3 className="type-heading-lg measure-heading wrap-balance mt-eyebrow-heading-md text-service-ink">
+                  <h3 className="type-heading-lg mt-eyebrow-heading-md text-service-ink">
                     {card.title}
                   </h3>
                   <p className="type-text-md measure-copy wrap-pretty mt-heading-body-md text-service-muted">

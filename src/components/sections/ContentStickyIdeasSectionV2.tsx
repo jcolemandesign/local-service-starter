@@ -98,7 +98,6 @@ function ImportantIdeasBoxV2({ ideas }: { ideas: string[] }) {
           <li
             className={cx(
               "type-heading-sm",
-              "wrap-balance",
               "border-l border-service-border pl-4 text-service-ink",
             )}
             key={idea}
@@ -127,8 +126,6 @@ export function ContentStickyIdeasSectionV2({
           <h2
             className={cx(
               "type-heading-xl",
-              "measure-heading-wide",
-              "wrap-balance",
               "mt-6 text-service-ink",
             )}
           >

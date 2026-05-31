@@ -19,8 +19,6 @@ export function CTASectionV2({ title, body, action }: CTASectionV2Props) {
             <h2
               className={cx(
                 "type-heading-xl",
-                "measure-heading-wide",
-                "wrap-balance",
               )}
             >
               {title}

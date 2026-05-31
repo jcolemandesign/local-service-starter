@@ -52,8 +52,6 @@ export function FAQAccordionSectionV2({
           <h2
             className={cx(
               "type-heading-xl",
-              "measure-heading-wide",
-              "wrap-balance",
               "mx-auto mt-5 text-service-ink",
             )}
           >
@@ -89,8 +87,6 @@ export function FAQAccordionSectionV2({
                     <span
                       className={cx(
                         "type-heading-md",
-                        "measure-heading-wide",
-                        "wrap-balance",
                       )}
                     >
                       {item.question}

@@ -11,54 +11,54 @@ const typeTokens = [
     name: "type-display-xl",
     role: "Largest display",
     typeClass: "type-display-xl",
-    measureClass: "measure-display",
-    wrapClass: "wrap-balance",
-    spec: "3.5rem - 7rem / 0.92 / 680",
+    measureClass: undefined,
+    wrapClass: undefined,
+    spec: "3.5rem - 7rem / 0.92 / 680 / balanced",
     sample: "Emergency repairs without the runaround",
   },
   {
     name: "type-display-lg",
     role: "Display heading",
     typeClass: "type-display-lg",
-    measureClass: "measure-display-wide",
-    wrapClass: "wrap-balance",
-    spec: "2.75rem - 5.5rem / 0.95 / 670",
+    measureClass: undefined,
+    wrapClass: undefined,
+    spec: "2.75rem - 5.5rem / 0.95 / 670 / balanced",
     sample: "Fast HVAC service when the house will not wait",
   },
   {
     name: "type-heading-xl",
     role: "Large section title",
     typeClass: "type-heading-xl",
-    measureClass: "measure-heading-wide",
-    wrapClass: "wrap-balance",
-    spec: "2.25rem - 4rem / 1 / 660",
+    measureClass: undefined,
+    wrapClass: undefined,
+    spec: "2.25rem - 4rem / 1 / 660 / balanced",
     sample: "Clear service from request to resolved",
   },
   {
     name: "type-heading-lg",
     role: "Editorial heading",
     typeClass: "type-heading-lg",
-    measureClass: "measure-heading",
-    wrapClass: "wrap-balance",
-    spec: "1.75rem - 2.75rem / 1.05 / 650",
+    measureClass: undefined,
+    wrapClass: undefined,
+    spec: "1.75rem - 2.75rem / 1.05 / 650 / balanced",
     sample: "Repairs explained before work begins",
   },
   {
     name: "type-heading-md",
     role: "Subsection heading",
     typeClass: "type-heading-md",
-    measureClass: "measure-heading-wide",
-    wrapClass: "wrap-balance",
-    spec: "1.375rem - 2rem / 1.15 / 650",
+    measureClass: undefined,
+    wrapClass: undefined,
+    spec: "1.375rem - 2rem / 1.15 / 650 / balanced",
     sample: "What happens after you request service",
   },
   {
     name: "type-heading-sm",
     role: "Card heading",
     typeClass: "type-heading-sm",
-    measureClass: "measure-heading-wide",
-    wrapClass: "wrap-balance",
-    spec: "1.125rem - 1.375rem / 1.25 / 650",
+    measureClass: undefined,
+    wrapClass: undefined,
+    spec: "1.125rem - 1.375rem / 1.25 / 650 / balanced",
     sample: "Same-day repair support",
   },
   {
@@ -132,12 +132,6 @@ const typeTokens = [
 ];
 
 const measureTokens = [
-  ["measure-display-tight", "12ch"],
-  ["measure-display", "15ch"],
-  ["measure-display-wide", "18ch"],
-  ["measure-heading-tight", "18ch"],
-  ["measure-heading", "22ch"],
-  ["measure-heading-wide", "28ch"],
   ["measure-lead", "52ch"],
   ["measure-copy", "60ch"],
   ["measure-copy-wide", "70ch"],
@@ -351,7 +345,7 @@ function GuideSection({
       <div className="container-site">
         <div className="fluid-type-frame mb-12">
           <p className="type-label text-service-accent">{eyebrow}</p>
-          <h2 className="type-heading-xl measure-heading-wide wrap-balance mt-4 text-service-ink">
+          <h2 className="type-heading-xl mt-4 text-service-ink">
             {title}
           </h2>
           {body ? (
@@ -410,7 +404,7 @@ export default function StyleGuidePage() {
       <section className="section-space-med bg-service-ink text-white">
         <div className="container-site fluid-type-frame">
           <p className="type-label text-white/65">Internal style guide</p>
-          <h1 className="type-display-lg measure-heading-wide wrap-balance mt-5">
+          <h1 className="type-display-lg mt-5">
             Live token reference for the local service starter
           </h1>
           <p className="type-text-xl measure-copy wrap-pretty mt-7 text-white/75">
@@ -424,7 +418,7 @@ export default function StyleGuidePage() {
       <GuideSection
         eyebrow="Type"
         title="Typography Roles"
-        body="Each sample combines a type role, a recommended measure, and a wrap utility so the preview reflects real composition."
+        body="Heading roles include balanced wrapping by default. Copy roles pair with measure and wrap utilities so the preview reflects real composition."
       >
         <div className="grid gap-4">
           {typeTokens.map((token) => (
@@ -468,7 +462,7 @@ export default function StyleGuidePage() {
       <GuideSection
         eyebrow="Measure"
         title="Text Measures"
-        body="Measure tokens control line length only. They should be composed with type and wrap utilities rather than baked into type classes."
+        body="Measure tokens control readable copy width. Heading roles rely on balanced wrapping by default, with manual line breaks reserved for art-directed headlines."
       >
         <div className="grid grid-cols-2 gap-5 max-lg:grid-cols-1">
           {measureTokens.map(([name, value]) => (
@@ -527,7 +521,7 @@ export default function StyleGuidePage() {
                       )}
                     />
                     <p className="type-label opacity-75">{color.name}</p>
-                    <h3 className="type-heading-sm wrap-balance mt-4">
+                    <h3 className="type-heading-sm mt-4">
                       {color.usage}
                     </h3>
                     <p className={cx(color.muted, "type-text-sm wrap-pretty mt-4")}>
@@ -609,7 +603,7 @@ export default function StyleGuidePage() {
                 <div className={cx(name, "bg-service-surface px-6")}>
                   <div className="fluid-type-frame rounded border border-service-border bg-white p-6">
                     <p className="type-label text-service-accent">Section sample</p>
-                    <h3 className="type-heading-sm measure-heading-wide wrap-balance mt-4 text-service-ink">
+                    <h3 className="type-heading-sm mt-4 text-service-ink">
                       Padding around a real content group
                     </h3>
                     <p className="type-text-sm measure-copy-wide wrap-pretty mt-3 text-service-muted">
@@ -645,7 +639,7 @@ export default function StyleGuidePage() {
                 {example.kind === "compact" ? (
                   <div className="fluid-type-frame rounded border border-service-border bg-service-surface p-6">
                     <p className="type-label text-service-accent">Maintenance</p>
-                    <h4 className="type-heading-sm measure-heading-wide wrap-balance mt-eyebrow-heading-sm text-service-ink">
+                    <h4 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
                       Seasonal tune-ups before the busy months
                     </h4>
                     <p className="type-text-sm measure-copy-wide wrap-pretty mt-heading-body-sm text-service-muted">
@@ -666,7 +660,7 @@ export default function StyleGuidePage() {
                     <p className="type-label text-service-accent">
                       Emergency HVAC Repair
                     </p>
-                    <h4 className="type-heading-xl measure-heading-wide wrap-balance mt-eyebrow-heading-lg text-service-ink">
+                    <h4 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
                       Same-day repairs when your system quits
                     </h4>
                     <p className="type-text-lg measure-copy wrap-pretty mt-heading-body-lg text-service-muted">
@@ -685,7 +679,7 @@ export default function StyleGuidePage() {
                 {example.kind === "hero" ? (
                   <div className="fluid-type-frame rounded border border-service-border bg-service-ink p-6 text-white">
                     <p className="type-label text-white/70">Ready when you are</p>
-                    <h4 className="type-display-lg measure-heading-wide wrap-balance mt-eyebrow-display">
+                    <h4 className="type-display-lg mt-eyebrow-display">
                       Turn the next visit into a booked service call
                     </h4>
                     <p className="type-text-xl measure-copy wrap-pretty mt-display-body text-white/75">
@@ -715,7 +709,7 @@ export default function StyleGuidePage() {
                       The page should answer that quickly, then make the next
                       step feel obvious without flattening the tone.
                     </p>
-                    <h4 className="type-heading-lg measure-heading wrap-balance mt-paragraph-heading-md text-service-ink">
+                    <h4 className="type-heading-lg mt-paragraph-heading-md text-service-ink">
                       Clear next steps matter more than decoration
                     </h4>
                     <p className="type-text-md measure-longform wrap-pretty mt-heading-body-md text-service-muted">
@@ -812,7 +806,7 @@ export default function StyleGuidePage() {
 
           <Card className="fluid-type-frame p-6 shadow-none">
             <p className="type-label text-service-accent">Interaction</p>
-            <h3 className="type-heading-sm measure-heading-wide wrap-balance mt-4 text-service-ink">
+            <h3 className="type-heading-sm mt-4 text-service-ink">
               Accent circle expands across the ink button on hover.
             </h3>
             <p className="type-text-sm measure-copy-wide wrap-pretty mt-4 text-service-muted">
@@ -832,7 +826,7 @@ export default function StyleGuidePage() {
         <div className="grid grid-cols-[1.2fr_0.8fr] gap-6 max-lg:grid-cols-1">
           <Card className="fluid-type-frame p-8 shadow-none max-md:p-6">
             <p className="type-label text-service-accent">Emergency HVAC Repair</p>
-            <h3 className="type-heading-xl measure-heading-wide wrap-balance mt-5 text-service-ink">
+            <h3 className="type-heading-xl mt-5 text-service-ink">
               Same-day repairs when your system quits
             </h3>
             <p className="type-text-lg measure-copy wrap-pretty mt-6 text-service-muted">
@@ -849,7 +843,7 @@ export default function StyleGuidePage() {
 
           <div className="grid gap-6">
             <Card className="fluid-type-frame p-7 shadow-none">
-              <h3 className="type-heading-sm measure-heading-wide wrap-balance text-service-ink">
+              <h3 className="type-heading-sm text-service-ink">
                 Preventive maintenance
               </h3>
               <p className="type-text-sm measure-copy-wide wrap-pretty mt-4 text-service-muted">
@@ -862,7 +856,7 @@ export default function StyleGuidePage() {
             </Card>
 
             <Card className="fluid-type-frame p-7 shadow-none">
-              <h3 className="type-heading-sm measure-heading-wide wrap-balance text-service-ink">
+              <h3 className="type-heading-sm text-service-ink">
                 Do you provide estimates before work begins?
               </h3>
               <p className="type-text-md measure-copy wrap-pretty mt-4 text-service-muted">

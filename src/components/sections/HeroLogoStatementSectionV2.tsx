@@ -99,7 +99,6 @@ export function HeroLogoStatementSectionV2({
           className={cx(
             "type-display-lg",
             "measure-copy-wide",
-            "wrap-balance",
             "mt-16 text-service-ink max-lg:mt-12",
           )}
         >

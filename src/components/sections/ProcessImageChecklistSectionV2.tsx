@@ -48,7 +48,7 @@ export function ProcessImageChecklistSectionV2({
 
           <div className="fluid-type-frame">
             <p className="type-label text-service-accent">{eyebrow}</p>
-            <h2 className="type-heading-lg measure-heading wrap-balance mt-eyebrow-heading-lg text-service-ink">
+            <h2 className="type-heading-lg mt-eyebrow-heading-lg text-service-ink">
               {title}
             </h2>
             <p className="type-text-lg measure-copy wrap-pretty mt-heading-body-lg text-service-muted">

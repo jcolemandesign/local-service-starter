@@ -33,8 +33,6 @@ export function TestimonialsSectionV2({
             <h2
               className={cx(
                 "type-heading-xl",
-                "measure-heading-wide",
-                "wrap-balance",
                 "mt-5 text-service-ink",
               )}
             >
@@ -75,7 +73,6 @@ export function TestimonialsSectionV2({
                 <p
                   className={cx(
                     "type-heading-sm",
-                    "wrap-balance",
                     "mt-8 text-service-ink",
                   )}
                 >

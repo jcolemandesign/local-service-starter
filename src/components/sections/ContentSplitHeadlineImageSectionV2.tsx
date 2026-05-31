@@ -44,7 +44,6 @@ export function ContentSplitHeadlineImageSectionV2({
           <h2
             className={cx(
               "type-display-lg",
-              "wrap-balance",
               "grid justify-items-center gap-7 text-center text-service-ink max-md:gap-5",
             )}
           >

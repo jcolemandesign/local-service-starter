@@ -32,8 +32,6 @@ export function ProcessStepsSectionV2({
             <h2
               className={cx(
                 "type-heading-xl",
-                "measure-heading-wide",
-                "wrap-balance",
                 "mt-eyebrow-heading-lg text-service-ink",
               )}
             >
@@ -71,10 +69,10 @@ export function ProcessStepsSectionV2({
                   {String(index + 1).padStart(2, "0")}
                 </div>
                 <div className="pl-4 max-md:pl-0 max-md:pt-4">
-                  <h3 className="type-heading-md measure-heading-wide wrap-balance text-service-ink">
+                  <h3 className="type-heading-md text-service-ink">
                     {step.title}
                   </h3>
-                  <p className="type-text-md measure-heading-wide wrap-pretty mt-heading-body-md text-service-muted">
+                  <p className="type-text-md measure-copy wrap-pretty mt-heading-body-md text-service-muted">
                     {step.body}
                   </p>
                 </div>
