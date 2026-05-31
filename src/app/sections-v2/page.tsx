@@ -23,6 +23,7 @@ import {
   HeroFullscreenSectionV2,
   HeroGridMosaicSectionV2,
   HeroLogoStatementSectionV2,
+  HeroNotchedNavSectionV2,
   HeroSectionV2,
   FooterSectionV2,
   NavCenterLogoSectionV2,
@@ -74,6 +75,13 @@ const sectionElements = {
   "hero-logo-statement-v2": (
     <HeroLogoStatementSectionV2
       {...sectionLibraryContent.heroLogoStatement}
+      headingLevel={2}
+    />
+  ),
+  "hero-notched-nav-v2": (
+    <HeroNotchedNavSectionV2
+      {...sectionLibraryContent.heroFullscreen}
+      {...sectionLibraryContent.navPrimary}
       headingLevel={2}
     />
   ),

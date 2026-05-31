@@ -10,6 +10,10 @@ export const sectionLibraryV2Collections = [
         label: "Large logo+headline stacked",
         component: "hero-logo-statement-v2",
       },
+      {
+        label: "Notched nav image hero",
+        component: "hero-notched-nav-v2",
+      },
     ],
   },
   {

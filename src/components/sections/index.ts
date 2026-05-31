@@ -38,6 +38,7 @@ export { HeroGridMosaicSection } from "./HeroGridMosaicSection";
 export { HeroGridMosaicSectionV2 } from "./HeroGridMosaicSectionV2";
 export { HeroLogoStatementSection } from "./HeroLogoStatementSection";
 export { HeroLogoStatementSectionV2 } from "./HeroLogoStatementSectionV2";
+export { HeroNotchedNavSectionV2 } from "./HeroNotchedNavSectionV2";
 export { HeroSection } from "./HeroSection";
 export { HeroSectionV2 } from "./HeroSectionV2";
 export { NavFloatingBentoSection } from "./NavFloatingBentoSection";
