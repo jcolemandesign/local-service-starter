@@ -377,6 +377,33 @@ function TokenMeta({ name, value }: { name: string; value: string }) {
   );
 }
 
+function ExpandingArrowButton({
+  children,
+  href,
+}: {
+  children: React.ReactNode;
+  href: string;
+}) {
+  return (
+    <a
+      className="group relative inline-flex min-h-14 items-center overflow-hidden rounded-full border border-service-ink bg-service-ink px-6 py-2 pr-16 text-sm font-semibold text-service-accent transition-colors duration-300 ease-out hover:text-service-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+      href={href}
+    >
+      <span
+        aria-hidden="true"
+        className="absolute right-1.5 top-1/2 h-11 w-11 -translate-y-1/2 rounded-full bg-service-accent transition-all duration-300 ease-out group-hover:right-0 group-hover:h-full group-hover:w-full"
+      />
+      <span className="relative z-10">{children}</span>
+      <span
+        aria-hidden="true"
+        className="absolute right-5 top-1/2 z-10 -translate-y-1/2 text-service-ink transition-transform duration-300 ease-out group-hover:-translate-x-1"
+      >
+        -&gt;
+      </span>
+    </a>
+  );
+}
+
 export default function StyleGuidePage() {
   return (
     <main className="bg-white text-service-ink">
@@ -762,6 +789,38 @@ export default function StyleGuidePage() {
               </div>
             </Card>
           ))}
+        </div>
+      </GuideSection>
+
+      <GuideSection
+        eyebrow="Buttons"
+        title="Custom Button Styles"
+        body="Reusable button treatments for stronger calls to action and brand moments."
+      >
+        <div className="grid grid-cols-[0.8fr_1.2fr] gap-5 max-lg:grid-cols-1">
+          <Card className="p-6 shadow-none">
+            <TokenMeta
+              name="expanding-arrow-cta"
+              value="ink surface / accent fill / rounded pill"
+            />
+            <div className="mt-8">
+              <ExpandingArrowButton href="#">
+                Schedule service
+              </ExpandingArrowButton>
+            </div>
+          </Card>
+
+          <Card className="fluid-type-frame p-6 shadow-none">
+            <p className="type-label text-service-accent">Interaction</p>
+            <h3 className="type-heading-sm measure-heading-wide wrap-balance mt-4 text-service-ink">
+              Accent circle expands across the ink button on hover.
+            </h3>
+            <p className="type-text-sm measure-copy-wide wrap-pretty mt-4 text-service-muted">
+              The label starts in accent color, then reverses to ink as the
+              accent fill grows. The arrow stays on the right and drifts inward
+              during the hover state.
+            </p>
+          </Card>
         </div>
       </GuideSection>
 

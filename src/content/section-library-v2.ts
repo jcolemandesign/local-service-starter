@@ -21,6 +21,15 @@ export const sectionLibraryV2Collections = [
     ],
   },
   {
+    title: "Buttons",
+    items: [
+      {
+        label: "Expanding arrow CTA",
+        component: "button-expanding-arrow-v2",
+      },
+    ],
+  },
+  {
     title: "Content",
     items: [
       { label: "Reveal paragraph", component: "content-reveal-v2" },

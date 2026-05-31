@@ -139,6 +139,95 @@ const bodyWrapModes = [
   },
 ] as const;
 
+const styleGuideNavCollections = [
+  {
+    title: "Foundations",
+    items: [
+      { label: "Type hierarchy", href: "#type-hierarchy" },
+      { label: "Universal color tokens", href: "#color-tokens" },
+      { label: "Text measure", href: "#text-measure" },
+      { label: "Heading wraps", href: "#heading-wraps" },
+      { label: "Body copy measures", href: "#body-copy-measures" },
+      { label: "Body wrap assists", href: "#body-wrap-assists" },
+      { label: "Spacing rhythm", href: "#spacing-rhythm" },
+    ],
+  },
+  {
+    title: "Composition Tests",
+    items: [
+      { label: "Full width editorial block", href: "#editorial-block" },
+      { label: "Real page copy examples", href: "#real-copy-examples" },
+    ],
+  },
+] as const;
+
+const universalColorTokens = [
+  {
+    name: "bg-page",
+    value: "#ffffff",
+    className: "bg-bg-page",
+    textClassName: "text-text-main",
+    borderClassName: "border-border-default",
+    role: "Default page canvas",
+  },
+  {
+    name: "bg-surface",
+    value: "#f4f7f3",
+    className: "bg-bg-surface",
+    textClassName: "text-text-main",
+    borderClassName: "border-border-default",
+    role: "Soft section or panel background",
+  },
+  {
+    name: "bg-muted",
+    value: "#dfe7e1",
+    className: "bg-bg-muted",
+    textClassName: "text-text-main",
+    borderClassName: "border-border-default",
+    role: "Quiet dividers and subdued fields",
+  },
+  {
+    name: "bg-dark",
+    value: "#10141b",
+    className: "bg-bg-dark",
+    textClassName: "text-text-inverse",
+    borderClassName: "border-white/18",
+    role: "Dark editorial or contrast section",
+  },
+  {
+    name: "text-main",
+    value: "#17211d",
+    className: "bg-bg-page",
+    textClassName: "text-text-main",
+    borderClassName: "border-border-default",
+    role: "Primary readable text",
+  },
+  {
+    name: "text-muted",
+    value: "#5f6f68",
+    className: "bg-bg-page",
+    textClassName: "text-text-muted",
+    borderClassName: "border-border-default",
+    role: "Secondary copy and support text",
+  },
+  {
+    name: "text-accent",
+    value: "#1f7a5a",
+    className: "bg-bg-page",
+    textClassName: "text-text-accent",
+    borderClassName: "border-border-default",
+    role: "Semantic emphasis and links",
+  },
+  {
+    name: "accent",
+    value: "#c45a2c",
+    className: "bg-accent",
+    textClassName: "text-white",
+    borderClassName: "border-accent",
+    role: "Warm highlight or campaign accent",
+  },
+] as const;
+
 const headingText = "Fast HVAC service without the runaround";
 const bodyText =
   "Request service online, describe the issue, and get a fast response from a local technician. Every submission is saved, organized, and sent directly to the business owner so fewer leads slip through the cracks.";
@@ -223,9 +312,126 @@ function WidthCard({
   );
 }
 
+function StyleGuideNavAccordions() {
+  return (
+    <section
+      id="style-guide-menu"
+      className={cx(
+        "flex min-h-svh items-center border-b border-service-border bg-white",
+        styles["anchor-section"],
+      )}
+    >
+      <Container className="py-16 max-md:py-12">
+        <div className="mb-10 max-w-4xl">
+          <p className="text-sm font-semibold uppercase tracking-widest text-service-accent">
+            Menu
+          </p>
+          <h2
+            className={cx(
+              "mt-4 text-fluid-heading font-semibold leading-heading text-service-ink",
+              styles.balance,
+            )}
+          >
+            Style guide sections
+          </h2>
+          <p className={cx("mt-5 max-w-3xl text-lg leading-8 text-service-muted", styles.pretty)}>
+            Jump between the foundation tests and composition examples.
+          </p>
+        </div>
+        <div className="grid gap-3">
+          {styleGuideNavCollections.map((collection) => (
+            <details
+              className="group/nav overflow-hidden rounded-lg border border-service-border bg-white"
+              key={collection.title}
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 bg-service-surface px-5 py-4 transition-colors hover:bg-service-border/45">
+                <div>
+                  <h2 className="text-lg font-semibold leading-tight text-service-ink">
+                    {collection.title}
+                  </h2>
+                  <p className="mt-1 text-sm font-medium text-service-muted">
+                    {collection.items.length} links
+                  </p>
+                </div>
+                <span
+                  aria-hidden="true"
+                  className="flex size-9 shrink-0 items-center justify-center rounded-md border border-service-border text-xl leading-none text-service-accent transition-transform group-open/nav:rotate-180"
+                >
+                  v
+                </span>
+              </summary>
+              <div className="border-t border-service-border">
+                {collection.items.map((item) => (
+                  <a
+                    className="flex items-center justify-between gap-4 border-b border-service-border px-5 py-4 text-sm font-semibold uppercase tracking-widest text-service-accent transition-colors last:border-b-0 hover:bg-service-surface"
+                    href={item.href}
+                    key={item.href}
+                  >
+                    {item.label}
+                    <span aria-hidden="true">-&gt;</span>
+                  </a>
+                ))}
+              </div>
+            </details>
+          ))}
+        </div>
+      </Container>
+    </section>
+  );
+}
+
+function BackToMenuButton() {
+  return (
+    <a
+      className="fixed bottom-6 right-6 z-50 inline-flex min-h-11 items-center justify-center rounded-full border border-service-border bg-white/82 px-4 text-xs font-semibold uppercase tracking-widest text-service-accent shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent max-md:bottom-4 max-md:right-4"
+      href="#style-guide-menu"
+    >
+      Menu
+    </a>
+  );
+}
+
+function ColorTokenCard({
+  token,
+}: {
+  token: (typeof universalColorTokens)[number];
+}) {
+  return (
+    <Card className="overflow-hidden shadow-none">
+      <div
+        className={cx(
+          token.className,
+          token.textClassName,
+          token.borderClassName,
+          "min-h-56 border-b p-6",
+        )}
+      >
+        <div className="flex h-full flex-col justify-between gap-8">
+          <div>
+            <p className="font-mono text-xs font-semibold uppercase opacity-70">
+              {token.name}
+            </p>
+            <h3 className="mt-4 text-2xl font-semibold leading-tight">
+              {token.role}
+            </h3>
+          </div>
+          <p className="font-mono text-xs opacity-70">{token.value}</p>
+        </div>
+      </div>
+      <div className="p-5">
+        <TokenLabel name={token.name} details={token.value} />
+        <p className="text-sm leading-6 text-service-muted">
+          Use this semantic token by intent, not by the literal color value.
+        </p>
+      </div>
+    </Card>
+  );
+}
+
 export default function TypeTestPage() {
   return (
-    <main className="bg-service-surface text-service-ink">
+    <main className={cx("bg-service-surface text-service-ink", styles["style-guide-page"])}>
+      <BackToMenuButton />
       <section className="border-b border-service-border bg-white py-20 max-lg:py-16 max-md:py-12">
         <Container>
           <p className="text-sm font-semibold uppercase tracking-widest text-service-accent">
@@ -247,7 +453,9 @@ export default function TypeTestPage() {
         </Container>
       </section>
 
-      <Section>
+      <StyleGuideNavAccordions />
+
+      <Section id="type-hierarchy" className={styles["anchor-section"]}>
         <Container>
           <PageIntro
             kicker="Type hierarchy"
@@ -274,7 +482,22 @@ export default function TypeTestPage() {
         </Container>
       </Section>
 
-      <Section className="bg-white">
+      <Section id="color-tokens" className={cx("bg-white", styles["anchor-section"])}>
+        <Container>
+          <PageIntro
+            kicker="Color"
+            title="Universal Color Tokens"
+            body="Semantic color tokens for page surfaces, text roles, borders, and accents. These names should work across business types instead of describing one specific section."
+          />
+          <div className="grid grid-cols-4 gap-5 max-lg:grid-cols-2 max-md:grid-cols-1">
+            {universalColorTokens.map((token) => (
+              <ColorTokenCard key={token.name} token={token} />
+            ))}
+          </div>
+        </Container>
+      </Section>
+
+      <Section id="text-measure" className={cx("bg-white", styles["anchor-section"])}>
         <Container>
           <PageIntro
             kicker="Text measure"
@@ -300,7 +523,7 @@ export default function TypeTestPage() {
         </Container>
       </Section>
 
-      <Section>
+      <Section id="heading-wraps" className={styles["anchor-section"]}>
         <Container>
           <PageIntro
             kicker="Heading wraps"
@@ -325,7 +548,7 @@ export default function TypeTestPage() {
         </Container>
       </Section>
 
-      <Section className="bg-white">
+      <Section id="body-copy-measures" className={cx("bg-white", styles["anchor-section"])}>
         <Container>
           <PageIntro
             kicker="Body copy"
@@ -347,7 +570,7 @@ export default function TypeTestPage() {
         </Container>
       </Section>
 
-      <Section>
+      <Section id="body-wrap-assists" className={styles["anchor-section"]}>
         <Container>
           <PageIntro
             kicker="Body copy"
@@ -377,7 +600,7 @@ export default function TypeTestPage() {
         </Container>
       </Section>
 
-      <Section>
+      <Section id="spacing-rhythm" className={styles["anchor-section"]}>
         <Container>
           <PageIntro
             kicker="Spacing rhythm"
@@ -428,7 +651,10 @@ export default function TypeTestPage() {
         </Container>
       </Section>
 
-      <Section className="bg-service-ink text-white">
+      <Section
+        id="editorial-block"
+        className={cx("bg-service-ink text-white", styles["anchor-section"])}
+      >
         <Container>
           <div className="max-w-none">
             <p className={cx(styles.eyebrow, "text-white/60")}>
@@ -545,7 +771,7 @@ export default function TypeTestPage() {
         </Container>
       </Section>
 
-      <Section className="bg-white">
+      <Section id="real-copy-examples" className={cx("bg-white", styles["anchor-section"])}>
         <Container>
           <PageIntro
             kicker="Real copy"

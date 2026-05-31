@@ -118,3 +118,63 @@
   font-size: clamp(1rem, calc(100cqw / 60), 1.5rem);
   line-height: 1.65;
 }
+
+.style-guide-page {
+  position: relative;
+}
+
+.style-guide-page:has(.anchor-section:target)::before {
+  animation: page-change-flash 520ms ease-out both;
+  background: var(--color-service-surface);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: fixed;
+  z-index: 60;
+}
+
+.anchor-section {
+  scroll-margin-top: 1.5rem;
+}
+
+.anchor-section:target > * {
+  animation: anchor-content-flash 640ms ease-out both;
+}
+
+@keyframes page-change-flash {
+  0% {
+    opacity: 0;
+  }
+
+  22% {
+    opacity: 0.72;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes anchor-content-flash {
+  0% {
+    opacity: 0;
+    transform: translateY(0.35rem);
+  }
+
+  45% {
+    opacity: 0;
+    transform: translateY(0.35rem);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .style-guide-page:has(.anchor-section:target)::before,
+  .anchor-section:target > * {
+    animation: none;
+  }
+}

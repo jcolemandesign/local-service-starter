@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/primitives";
 import {
+  ButtonStylesSectionV2,
   ContentAboutCompanySectionV2,
   ContentFixedCoverFadeSectionV2,
   ContentHorizontalCardCarouselSectionV2,
@@ -83,6 +84,7 @@ const sectionElements = {
   "nav-floating-bento-v2": (
     <NavFloatingBentoSectionV2 {...sectionLibraryContent.navPrimary} />
   ),
+  "button-expanding-arrow-v2": <ButtonStylesSectionV2 />,
   "content-reveal-v2": (
     <ContentRevealParagraphSectionV2
       {...sectionLibraryContent.contentRevealParagraph}
