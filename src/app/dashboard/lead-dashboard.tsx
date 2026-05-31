@@ -7,7 +7,9 @@ type LeadValue = boolean | number | string | null | undefined;
 
 export type Lead = {
   id: number | string;
+  appointment_date?: LeadValue;
   appointment_window?: LeadValue;
+  booked_at?: LeadValue;
   contact_consent?: LeadValue;
   created_at?: LeadValue;
   description?: LeadValue;
@@ -27,6 +29,8 @@ export type Lead = {
   source?: LeadValue;
   status?: LeadValue;
   street_address?: LeadValue;
+  scheduled_at?: LeadValue;
+  scheduled_date?: LeadValue;
   system_type?: LeadValue;
   urgency?: LeadValue;
   zip_code?: LeadValue;
@@ -39,6 +43,10 @@ type SortOption =
   | "service"
   | "status"
   | "urgency";
+
+type DashboardView = "all" | "booked";
+
+type BookedTiming = "needs-date" | "upcoming" | "past";
 
 type LeadDashboardProps = {
   leads: Lead[];
@@ -75,6 +83,16 @@ const leadFields = {
   systemType: ["system_type"],
   urgency: ["urgency"],
   zip: ["zip_code", "postal_code"],
+  scheduledDate: [
+    "scheduled_at",
+    "scheduled_date",
+    "appointment_date",
+    "appointment_at",
+    "job_date",
+    "service_date",
+    "booked_for",
+    "appointment_window",
+  ],
 };
 
 const fieldClass =
@@ -204,6 +222,64 @@ function getDateTime(value: LeadValue) {
   return typeof value === "string" ? new Date(value).getTime() : 0;
 }
 
+function getValidDateTime(value: LeadValue) {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    return null;
+  }
+
+  const time = new Date(value).getTime();
+
+  return Number.isNaN(time) ? null : time;
+}
+
+function getBookedTiming(lead: Lead): BookedTiming {
+  const scheduledTime = getValidDateTime(
+    readLeadValue(lead, leadFields.scheduledDate),
+  );
+
+  if (scheduledTime === null) {
+    return "needs-date";
+  }
+
+  return scheduledTime < Date.now() ? "past" : "upcoming";
+}
+
+function getBookedTimingLabel(timing: BookedTiming) {
+  if (timing === "needs-date") {
+    return "Needs date";
+  }
+
+  if (timing === "upcoming") {
+    return "Date set";
+  }
+
+  return "Date passed";
+}
+
+function getBookedTimingCardClass(timing: BookedTiming) {
+  if (timing === "needs-date") {
+    return "border-amber-200 bg-amber-50 text-amber-900";
+  }
+
+  if (timing === "upcoming") {
+    return "border-blue-200 bg-blue-50 text-blue-900";
+  }
+
+  return "border-red-400 bg-red-50 text-red-900";
+}
+
+function getBookedTimingPillClass(timing: BookedTiming) {
+  if (timing === "needs-date") {
+    return "bg-amber-200 text-amber-950";
+  }
+
+  if (timing === "upcoming") {
+    return "bg-blue-200 text-blue-950";
+  }
+
+  return "bg-red-200 text-red-950";
+}
+
 function formatFileDate(date: Date) {
   return date.toISOString().slice(0, 10);
 }
@@ -320,6 +396,7 @@ export function LeadDashboard({
   const [serviceFilter, setServiceFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("created_at");
+  const [activeView, setActiveView] = useState<DashboardView>("all");
   const [openLeadIds, setOpenLeadIds] = useState<Set<string>>(new Set());
 
   const urgencyValues = useMemo(
@@ -399,6 +476,51 @@ export function LeadDashboard({
     });
   }, [leads, searchQuery, serviceFilter, sortBy, statusFilter, urgencyFilter]);
 
+  const bookedLeads = useMemo(
+    () =>
+      leads
+        .filter((lead) => isBookedStatus(readLeadValue(lead, ["status"])))
+        .sort((a, b) => {
+          const aTiming = getBookedTiming(a);
+          const bTiming = getBookedTiming(b);
+          const timingRank: Record<BookedTiming, number> = {
+            "needs-date": 0,
+            upcoming: 1,
+            past: 2,
+          };
+          const rankDifference = timingRank[aTiming] - timingRank[bTiming];
+
+          if (rankDifference !== 0) {
+            return rankDifference;
+          }
+
+          return (
+            (getValidDateTime(readLeadValue(a, leadFields.scheduledDate)) ??
+              getDateTime(a.created_at)) -
+            (getValidDateTime(readLeadValue(b, leadFields.scheduledDate)) ??
+              getDateTime(b.created_at))
+          );
+        }),
+    [leads],
+  );
+
+  const bookedCounts = useMemo(
+    () =>
+      bookedLeads.reduce(
+        (counts, lead) => {
+          counts[getBookedTiming(lead)] += 1;
+
+          return counts;
+        },
+        {
+          "needs-date": 0,
+          upcoming: 0,
+          past: 0,
+        } as Record<BookedTiming, number>,
+      ),
+    [bookedLeads],
+  );
+
   const hasActiveFilters =
     statusFilter ||
     urgencyFilter ||
@@ -422,6 +544,48 @@ export function LeadDashboard({
 
   return (
     <>
+      <Card className="mb-6 border-0 bg-service-surface p-2 shadow-none">
+        <div
+          aria-label="Dashboard views"
+          className="grid gap-2 rounded-lg bg-service-surface max-md:grid-cols-1 md:grid-cols-2"
+          role="tablist"
+        >
+          <button
+            aria-selected={activeView === "all"}
+            className={`min-h-12 cursor-pointer rounded-md px-5 text-left text-sm font-semibold transition-colors ${
+              activeView === "all"
+                ? "bg-service-ink text-white"
+                : "bg-white text-service-ink hover:bg-service-surface"
+            }`}
+            onClick={() => setActiveView("all")}
+            role="tab"
+            type="button"
+          >
+            All leads
+          </button>
+          <button
+            aria-selected={activeView === "booked"}
+            className={`min-h-12 cursor-pointer rounded-md px-5 text-left text-sm font-semibold transition-colors ${
+              activeView === "booked"
+                ? "bg-service-ink text-white"
+                : "bg-white text-service-ink hover:bg-service-surface"
+            }`}
+            onClick={() => setActiveView("booked")}
+            role="tab"
+            type="button"
+          >
+            Booked jobs
+            <span className="ml-2 text-current/65">({bookedLeads.length})</span>
+          </button>
+        </div>
+      </Card>
+
+      {activeView === "booked" ? (
+        <BookedJobsView bookedCounts={bookedCounts} leads={bookedLeads} />
+      ) : null}
+
+      {activeView === "all" ? (
+        <>
       <Card className="p-6">
         <div className="grid gap-4 max-lg:grid-cols-2 max-md:grid-cols-1 lg:grid-cols-[1fr_0.7fr_0.7fr_0.8fr_0.7fr] lg:items-end">
           <label className={labelClass}>
@@ -710,7 +874,173 @@ export function LeadDashboard({
       >
         Back to top
       </button>
+        </>
+      ) : null}
     </>
+  );
+}
+
+function BookedJobsView({
+  bookedCounts,
+  leads,
+}: {
+  bookedCounts: Record<BookedTiming, number>;
+  leads: Lead[];
+}) {
+  return (
+    <div className="grid gap-6">
+      <div className="grid gap-4 max-lg:grid-cols-1 lg:grid-cols-3">
+        <BookedCountCard
+          body="Booked jobs that still need a scheduled visit date."
+          count={bookedCounts["needs-date"]}
+          label="No date set"
+          tone="needs-date"
+        />
+        <BookedCountCard
+          body="Booked jobs with a future scheduled date."
+          count={bookedCounts.upcoming}
+          label="Upcoming"
+          tone="upcoming"
+        />
+        <BookedCountCard
+          body={
+            bookedCounts.past === 0
+              ? "No booked jobs are past their scheduled date."
+              : "Booked jobs with a scheduled date that has already passed."
+          }
+          count={bookedCounts.past}
+          label={bookedCounts.past === 0 ? "On schedule" : "Date passed"}
+          tone="past"
+        />
+      </div>
+
+      {leads.length === 0 ? (
+        <Card className="p-8 text-center">
+          <h2 className="text-2xl font-semibold leading-tight text-service-ink">
+            No booked jobs yet
+          </h2>
+          <p className="mt-3 text-base leading-7 text-service-muted">
+            Change a lead status to Booked and it will appear in this view.
+          </p>
+        </Card>
+      ) : (
+        <div className="grid gap-4">
+          {leads.map((lead) => (
+            <BookedJobCard key={lead.id} lead={lead} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function BookedCountCard({
+  body,
+  count,
+  label,
+  tone,
+}: {
+  body: string;
+  count: number;
+  label: string;
+  tone: BookedTiming;
+}) {
+  const isClearPastDueState = tone === "past" && count === 0;
+
+  return (
+    <Card
+      className={`border p-6 ${
+        isClearPastDueState
+          ? "flex min-h-48 flex-col items-center justify-center bg-green-50 text-center text-green-900"
+          : getBookedTimingCardClass(tone)
+      }`}
+    >
+      <p className="text-sm font-semibold uppercase tracking-widest opacity-75">
+        {label}
+      </p>
+      {isClearPastDueState ? (
+        <p className="mt-4 text-3xl font-semibold leading-tight">On schedule</p>
+      ) : (
+        <p className="mt-4 text-5xl font-semibold leading-none">{count}</p>
+      )}
+      <p className="mt-4 text-base leading-7 opacity-75">{body}</p>
+    </Card>
+  );
+}
+
+function BookedJobCard({ lead }: { lead: Lead }) {
+  const timing = getBookedTiming(lead);
+  const scheduledValue = readLeadValue(lead, leadFields.scheduledDate);
+
+  return (
+    <Card
+      className={`overflow-hidden p-0 ${
+        timing === "past" ? "border-red-400" : ""
+      }`}
+    >
+      <div className="grid min-h-40 grid-cols-[minmax(0,0.36fr)_minmax(0,1fr)] max-lg:grid-cols-1">
+        <div
+          className={`flex flex-col justify-between border-r border-service-border p-5 max-lg:border-b max-lg:border-r-0 ${getBookedTimingCardClass(timing)}`}
+        >
+          <span
+            className={`w-fit rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest ${getBookedTimingPillClass(timing)}`}
+          >
+            {getBookedTimingLabel(timing)}
+          </span>
+          <p className="mt-8 text-2xl font-semibold leading-tight">
+            {timing === "needs-date" ? "Schedule next" : formatDate(scheduledValue)}
+          </p>
+        </div>
+
+        <div className="grid gap-5 p-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
+          <div className="min-w-0">
+            <h2 className="text-2xl font-semibold leading-tight text-service-ink">
+              {displayValue(readLeadValue(lead, leadFields.name))}
+            </h2>
+            <p className="mt-2 text-sm font-semibold uppercase tracking-widest text-service-muted">
+              Booked from {formatDate(lead.created_at)}
+            </p>
+            <div className="mt-5 grid gap-x-5 gap-y-3 md:grid-cols-2 xl:grid-cols-4">
+              <LeadDetail
+                label="Service"
+                value={readLeadValue(lead, leadFields.service)}
+              />
+              <LeadDetail
+                label="Urgency"
+                value={readLeadValue(lead, leadFields.urgency)}
+              />
+              <LeadDetail
+                label="Phone"
+                value={readLeadValue(lead, leadFields.phone)}
+              />
+              <LeadDetail
+                label="ZIP"
+                value={readLeadValue(lead, leadFields.zip)}
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row md:flex-col">
+            {readLeadText(lead, leadFields.phone) ? (
+              <a
+                className={primaryButtonClass}
+                href={`tel:${readLeadText(lead, leadFields.phone)}`}
+              >
+                Call
+              </a>
+            ) : null}
+            {readLeadText(lead, leadFields.email) ? (
+              <a
+                className={secondaryButtonClass}
+                href={`mailto:${readLeadText(lead, leadFields.email)}`}
+              >
+                Email
+              </a>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    </Card>
   );
 }
 

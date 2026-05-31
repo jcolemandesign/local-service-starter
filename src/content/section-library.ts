@@ -224,6 +224,30 @@ export const sectionLibraryContent = {
       },
     ],
   },
+  contentFourColumnScroll: {
+    items: [
+      {
+        symbol: "+",
+        title: "Clear request path",
+        body: "Keep the next step visible without making the page feel loud or urgent.",
+      },
+      {
+        symbol: "+",
+        title: "Proof sits close to the promise",
+        body: "Use the wider columns for details that need a little more room, like process notes, trust points, or practical expectations.",
+      },
+      {
+        symbol: "+",
+        title: "Quiet visual weight",
+        body: "Small symbols give the card rhythm without turning the section into an icon set.",
+      },
+      {
+        symbol: "+",
+        title: "A mid-page pause with enough structure to scan",
+        body: "The full rounded container creates a contained moment between heavier sections while the uneven columns keep the layout from feeling too uniform.",
+      },
+    ],
+  },
   contentStickyImagePanel: {
     eyebrow: "Field notes",
     title: "One focused message travels inside a full-height image.",
@@ -646,6 +670,23 @@ export const sectionLibraryContent = {
     title: "Turn the next visit into a booked service call.",
     body: "A cinematic conversion section for the end of a page, built to focus attention on one clear action.",
     action: "Start a request",
+  },
+  ctaScrollRevealOffer: {
+    introEyebrow: "Seasonal offer",
+    introTitle: "A quiet lead-in before the offer takes over the page.",
+    introBody:
+      "The textured panel above moves away first, letting the sale message feel like it was waiting underneath the page.",
+    offerEyebrow: "Limited time service offer",
+    offerTitle: "Save 15% on your first scheduled maintenance visit.",
+    offerBody:
+      "A full-bleed conversion reveal for seasonal promotions, service specials, and moments where the offer should feel discovered instead of dropped into the flow.",
+    offerDetail:
+      "Offer terms can live here: new customers, eligible service visits, and availability windows.",
+    action: "Claim the offer",
+    closeEyebrow: "Next step",
+    closeTitle: "The follow-up section covers the offer and returns the page to normal rhythm.",
+    closeBody:
+      "Use the closing panel for reassurance, eligibility details, or a softer transition back into services, testimonials, or FAQ content.",
   },
   contact: {
     eyebrow: "Contact",

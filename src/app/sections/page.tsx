@@ -4,9 +4,11 @@ import {
   ButtonStylesSectionV2,
   ContentAboutCompanySectionV2,
   ContentFixedCoverFadeSectionV2,
+  ContentFourColumnScrollSectionV2,
   ContentHorizontalCardCarouselSectionV2,
   ContactSectionV2,
   CTAFullscreenSectionV2,
+  CTAScrollRevealOfferSectionV2,
   CTASectionV2,
   ContentPositioningSplitSectionV2,
   ContentRevealParagraphSectionV2,
@@ -118,6 +120,11 @@ const sectionElements = {
       {...sectionLibraryContent.contentHorizontalCardCarousel}
     />
   ),
+  "content-four-column-scroll-v2": (
+    <ContentFourColumnScrollSectionV2
+      {...sectionLibraryContent.contentFourColumnScroll}
+    />
+  ),
   "content-sticky-image-panel-v2": (
     <ContentStickyImagePanelSectionV2
       {...sectionLibraryContent.contentStickyImagePanel}
@@ -203,6 +210,11 @@ const sectionElements = {
   "cta-v2": <CTASectionV2 {...sectionLibraryContent.cta} />,
   "cta-fullscreen-v2": (
     <CTAFullscreenSectionV2 {...sectionLibraryContent.ctaFullscreen} />
+  ),
+  "cta-scroll-reveal-offer-v2": (
+    <CTAScrollRevealOfferSectionV2
+      {...sectionLibraryContent.ctaScrollRevealOffer}
+    />
   ),
   "contact-v2": <ContactSectionV2 {...sectionLibraryContent.contact} />,
   "footer-v2": <FooterSectionV2 {...sectionLibraryContent.footer} />,

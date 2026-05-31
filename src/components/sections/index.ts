@@ -4,6 +4,7 @@ export { ButtonStylesSectionV2 } from "./ButtonStylesSectionV2";
 export { ContentAboutCompanySection } from "./ContentAboutCompanySection";
 export { ContentAboutCompanySectionV2 } from "./ContentAboutCompanySectionV2";
 export { ContentFixedCoverFadeSectionV2 } from "./ContentFixedCoverFadeSectionV2";
+export { ContentFourColumnScrollSectionV2 } from "./ContentFourColumnScrollSectionV2";
 export { ContentHorizontalCardCarouselSectionV2 } from "./ContentHorizontalCardCarouselSectionV2";
 export { ContentPositioningSplitSection } from "./ContentPositioningSplitSection";
 export { ContentPositioningSplitSectionV2 } from "./ContentPositioningSplitSectionV2";
@@ -18,6 +19,7 @@ export { ContentStickyImagePanelSectionV2 } from "./ContentStickyImagePanelSecti
 export { ContentStickyIdeasSectionV2 } from "./ContentStickyIdeasSectionV2";
 export { CTAFullscreenSection } from "./CTAFullscreenSection";
 export { CTAFullscreenSectionV2 } from "./CTAFullscreenSectionV2";
+export { CTAScrollRevealOfferSectionV2 } from "./CTAScrollRevealOfferSectionV2";
 export { CTASection } from "./CTASection";
 export { CTASectionV2 } from "./CTASectionV2";
 export { FAQAccordionSection } from "./FAQAccordionSection";

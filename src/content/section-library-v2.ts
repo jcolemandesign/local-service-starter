@@ -51,6 +51,10 @@ export const sectionLibraryV2Collections = [
         component: "content-horizontal-card-carousel-v2",
       },
       {
+        label: "Four column card field content",
+        component: "content-four-column-scroll-v2",
+      },
+      {
         label: "Sticky image panel content",
         component: "content-sticky-image-panel-v2",
       },
@@ -133,6 +137,10 @@ export const sectionLibraryV2Collections = [
     items: [
       { label: "CTA", component: "cta-v2" },
       { label: "Fullscreen conversion", component: "cta-fullscreen-v2" },
+      {
+        label: "Scroll reveal offer conversion",
+        component: "cta-scroll-reveal-offer-v2",
+      },
     ],
   },
   {
