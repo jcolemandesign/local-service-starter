@@ -1,296 +1,223 @@
+import type { Metadata } from "next";
 import { Container } from "@/components/primitives";
 import {
-  ContactSection,
-  ContentAboutCompanySection,
-  ContentPositioningSplitSection,
-  ContentRevealParagraphSection,
-  ContentSplitHeadlineImageSection,
-  ContentStickyIdeasSection,
-  CTAFullscreenSection,
-  CTASection,
-  FAQAccordionSection,
-  FAQSection,
-  FeatureOverlapRowsSection,
-  FeatureSplitSection,
-  FooterSection,
-  HeroBentoSection,
-  HeroFullscreenSection,
-  HeroGridMosaicSection,
-  HeroLogoStatementSection,
-  HeroSection,
-  NavCenterLogoSection,
-  NavFloatingBentoSection,
-  NavPrimarySection,
-  ProcessStepsSection,
-  SectionLibraryCollections,
-  ServicesBentoCardsSection,
-  ServicesGridSection,
-  ServicesHoverPanelSection,
-  ServicesScrollCardsSection,
-  TestimonialsCarouselSection,
-  TestimonialsMasonrySection,
-  TestimonialsSection,
+  ButtonStylesSectionV2,
+  ContentAboutCompanySectionV2,
+  ContentFixedCoverFadeSectionV2,
+  ContentHorizontalCardCarouselSectionV2,
+  ContactSectionV2,
+  CTAFullscreenSectionV2,
+  CTASectionV2,
+  ContentPositioningSplitSectionV2,
+  ContentRevealParagraphSectionV2,
+  ContentScrollWrittenRevealSectionV2,
+  ContentStickyCardStreamSectionV2,
+  ContentStickyImagePanelSectionV2,
+  ContentSplitHeadlineImageSectionV2,
+  ContentStickyIdeasSectionV2,
+  FeatureOverlapRowsSectionV2,
+  FeatureSplitSectionV2,
+  FAQAccordionSectionV2,
+  FAQSectionV2,
+  HeroBentoSectionV2,
+  HeroFullscreenSectionV2,
+  HeroGridMosaicSectionV2,
+  HeroLogoStatementSectionV2,
+  HeroNotchedNavSectionV2,
+  HeroSectionV2,
+  FooterSectionV2,
+  NavCenterLogoSectionV2,
+  NavFloatingBentoSectionV2,
+  NavPrimarySectionV2,
+  ProcessImageChecklistSectionV2,
+  ProcessStepsSectionV2,
+  SectionLibraryV2Accordions,
+  ServicesBentoCardsSectionV2,
+  ServicesGridSectionV2,
+  ServicesHoverPanelSectionV2,
+  ServicesScrollCardsSectionV2,
+  TestimonialsCarouselSectionV2,
+  TestimonialsMasonrySectionV2,
+  TestimonialsSectionV2,
+  TrustBarFloatingBentoSectionV2,
+  TrustBarSection,
   TrustLogoMarqueeSection,
   TrustMarqueeSection,
-  TrustBarSection,
 } from "@/components/sections";
 import { sectionLibraryContent } from "@/content/section-library";
+import { sectionLibraryV2Collections } from "@/content/section-library-v2";
 
-const collections = [
-  {
-    title: "Hero",
-    items: [
-      {
-        label: "Hero section",
-        element: <HeroSection {...sectionLibraryContent.hero} headingLevel={2} />,
-      },
-      {
-        label: "Bento hero",
-        element: <HeroBentoSection {...sectionLibraryContent.hero} headingLevel={2} />,
-      },
-      {
-        label: "Fullscreen image hero",
-        element: (
-          <HeroFullscreenSection
-            {...sectionLibraryContent.heroFullscreen}
-            headingLevel={2}
-          />
-        ),
-      },
-      {
-        label: "Grid mosaic hero",
-        element: (
-          <HeroGridMosaicSection
-            {...sectionLibraryContent.heroGridMosaic}
-            headingLevel={2}
-          />
-        ),
-      },
-      {
-        label: "Logo statement hero",
-        element: (
-          <HeroLogoStatementSection
-            {...sectionLibraryContent.heroLogoStatement}
-            headingLevel={2}
-          />
-        ),
-      },
-    ],
-  },
-  {
-    title: "Navigation",
-    items: [
-      {
-        label: "Primary nav",
-        element: <NavPrimarySection {...sectionLibraryContent.navPrimary} />,
-      },
-      {
-        label: "Center logo nav",
-        element: <NavCenterLogoSection {...sectionLibraryContent.navPrimary} />,
-      },
-      {
-        label: "Floating bento nav",
-        element: (
-          <NavFloatingBentoSection {...sectionLibraryContent.navPrimary} />
-        ),
-      },
-    ],
-  },
-  {
-    title: "Content",
-    items: [
-      {
-        label: "Reveal paragraph",
-        element: (
-          <ContentRevealParagraphSection
-            {...sectionLibraryContent.contentRevealParagraph}
-          />
-        ),
-      },
-      {
-        label: "Sticky ideas content",
-        element: (
-          <ContentStickyIdeasSection
-            {...sectionLibraryContent.contentStickyIdeas}
-          />
-        ),
-      },
-      {
-        label: "Positioning split content",
-        element: (
-          <ContentPositioningSplitSection
-            {...sectionLibraryContent.contentPositioningSplit}
-          />
-        ),
-      },
-      {
-        label: "About company content",
-        element: (
-          <ContentAboutCompanySection
-            {...sectionLibraryContent.contentAboutCompany}
-          />
-        ),
-      },
-      {
-        label: "Split headline image content",
-        element: (
-          <ContentSplitHeadlineImageSection
-            {...sectionLibraryContent.contentSplitHeadlineImage}
-          />
-        ),
-      },
-    ],
-  },
-  {
-    title: "Trust",
-    items: [
-      {
-        label: "Trust bar",
-        element: <TrustBarSection {...sectionLibraryContent.trustBar} />,
-      },
-      {
-        label: "Trust marquee",
-        element: <TrustMarqueeSection {...sectionLibraryContent.trustMarquee} />,
-      },
-      {
-        label: "Trust logo marquee",
-        element: (
-          <TrustLogoMarqueeSection
-            {...sectionLibraryContent.trustLogoMarquee}
-          />
-        ),
-      },
-    ],
-  },
-  {
-    title: "Services",
-    items: [
-      {
-        label: "Services grid",
-        element: <ServicesGridSection {...sectionLibraryContent.services} />,
-      },
-      {
-        label: "Services bento cards",
-        element: (
-          <ServicesBentoCardsSection
-            {...sectionLibraryContent.servicesBento}
-          />
-        ),
-      },
-      {
-        label: "Services hover panel",
-        element: (
-          <ServicesHoverPanelSection
-            {...sectionLibraryContent.servicesHoverPanel}
-          />
-        ),
-      },
-      {
-        label: "Scroll service cards",
-        element: (
-          <ServicesScrollCardsSection
-            {...sectionLibraryContent.servicesScrollCards}
-          />
-        ),
-      },
-    ],
-  },
-  {
-    title: "Features",
-    items: [
-      {
-        label: "Feature split",
-        element: <FeatureSplitSection {...sectionLibraryContent.featureSplit} />,
-      },
-      {
-        label: "Overlapping feature rows",
-        element: (
-          <FeatureOverlapRowsSection
-            {...sectionLibraryContent.featureOverlapRows}
-          />
-        ),
-      },
-    ],
-  },
-  {
-    title: "Process",
-    items: [
-      {
-        label: "Process steps",
-        element: <ProcessStepsSection {...sectionLibraryContent.process} />,
-      },
-    ],
-  },
-  {
-    title: "Testimonials",
-    items: [
-      {
-        label: "Testimonials",
-        element: <TestimonialsSection {...sectionLibraryContent.testimonials} />,
-      },
-      {
-        label: "Centered testimonial slider",
-        element: (
-          <TestimonialsCarouselSection
-            {...sectionLibraryContent.testimonialsCarousel}
-          />
-        ),
-      },
-      {
-        label: "Masonry testimonials",
-        element: (
-          <TestimonialsMasonrySection
-            {...sectionLibraryContent.testimonialsMasonry}
-          />
-        ),
-      },
-    ],
-  },
-  {
-    title: "FAQ",
-    items: [
-      {
-        label: "FAQ",
-        element: <FAQSection {...sectionLibraryContent.faq} />,
-      },
-      {
-        label: "FAQ accordion",
-        element: <FAQAccordionSection {...sectionLibraryContent.faqAccordion} />,
-      },
-    ],
-  },
-  {
-    title: "Conversion",
-    items: [
-      {
-        label: "CTA",
-        element: <CTASection {...sectionLibraryContent.cta} />,
-      },
-      {
-        label: "Fullscreen conversion",
-        element: <CTAFullscreenSection {...sectionLibraryContent.ctaFullscreen} />,
-      },
-    ],
-  },
-  {
-    title: "Contact",
-    items: [
-      {
-        label: "Contact section",
-        element: <ContactSection {...sectionLibraryContent.contact} />,
-      },
-    ],
-  },
-  {
-    title: "Footer",
-    items: [
-      {
-        label: "Footer",
-        element: <FooterSection {...sectionLibraryContent.footer} />,
-      },
-    ],
-  },
-];
+export const metadata: Metadata = {
+  title: "Section Library",
+  description:
+    "Internal empty accordion shell for adapting reusable local service sections.",
+};
+
+const sectionElements = {
+  "hero-bento-v2": (
+    <HeroBentoSectionV2 {...sectionLibraryContent.hero} headingLevel={2} />
+  ),
+  "hero-section-v2": (
+    <HeroSectionV2 {...sectionLibraryContent.hero} headingLevel={2} />
+  ),
+  "hero-fullscreen-v2": (
+    <HeroFullscreenSectionV2
+      {...sectionLibraryContent.heroFullscreen}
+      headingLevel={2}
+    />
+  ),
+  "hero-grid-mosaic-v2": (
+    <HeroGridMosaicSectionV2
+      {...sectionLibraryContent.heroGridMosaic}
+      headingLevel={2}
+    />
+  ),
+  "hero-logo-statement-v2": (
+    <HeroLogoStatementSectionV2
+      {...sectionLibraryContent.heroLogoStatement}
+      headingLevel={2}
+    />
+  ),
+  "hero-notched-nav-v2": (
+    <HeroNotchedNavSectionV2
+      {...sectionLibraryContent.heroFullscreen}
+      {...sectionLibraryContent.navPrimary}
+      headingLevel={2}
+    />
+  ),
+  "nav-primary-v2": <NavPrimarySectionV2 {...sectionLibraryContent.navPrimary} />,
+  "nav-center-logo-v2": (
+    <NavCenterLogoSectionV2 {...sectionLibraryContent.navPrimary} />
+  ),
+  "nav-floating-bento-v2": (
+    <NavFloatingBentoSectionV2 {...sectionLibraryContent.navPrimary} />
+  ),
+  "button-expanding-arrow-v2": <ButtonStylesSectionV2 />,
+  "content-reveal-v2": (
+    <ContentRevealParagraphSectionV2
+      {...sectionLibraryContent.contentRevealParagraph}
+    />
+  ),
+  "content-scroll-written-reveal-v2": (
+    <ContentScrollWrittenRevealSectionV2
+      {...sectionLibraryContent.contentScrollWrittenReveal}
+    />
+  ),
+  "content-sticky-ideas-v2": (
+    <ContentStickyIdeasSectionV2
+      {...sectionLibraryContent.contentStickyIdeas}
+    />
+  ),
+  "content-sticky-card-stream-v2": (
+    <ContentStickyCardStreamSectionV2
+      {...sectionLibraryContent.contentStickyCardStream}
+    />
+  ),
+  "content-horizontal-card-carousel-v2": (
+    <ContentHorizontalCardCarouselSectionV2
+      {...sectionLibraryContent.contentHorizontalCardCarousel}
+    />
+  ),
+  "content-sticky-image-panel-v2": (
+    <ContentStickyImagePanelSectionV2
+      {...sectionLibraryContent.contentStickyImagePanel}
+    />
+  ),
+  "content-fixed-cover-fade-v2": (
+    <ContentFixedCoverFadeSectionV2
+      {...sectionLibraryContent.contentFixedCoverFade}
+    />
+  ),
+  "content-positioning-split-v2": (
+    <ContentPositioningSplitSectionV2
+      {...sectionLibraryContent.contentPositioningSplit}
+    />
+  ),
+  "content-about-company-v2": (
+    <ContentAboutCompanySectionV2
+      {...sectionLibraryContent.contentAboutCompany}
+    />
+  ),
+  "content-split-headline-image-v2": (
+    <ContentSplitHeadlineImageSectionV2
+      {...sectionLibraryContent.contentSplitHeadlineImage}
+    />
+  ),
+  "trust-bar-v2": <TrustBarSection {...sectionLibraryContent.trustBar} />,
+  "trust-bar-floating-bento-v2": (
+    <TrustBarFloatingBentoSectionV2 {...sectionLibraryContent.trustBar} />
+  ),
+  "trust-marquee-v2": (
+    <TrustMarqueeSection {...sectionLibraryContent.trustMarquee} />
+  ),
+  "trust-logo-marquee-v2": (
+    <TrustLogoMarqueeSection {...sectionLibraryContent.trustLogoMarquee} />
+  ),
+  "services-grid-v2": <ServicesGridSectionV2 {...sectionLibraryContent.services} />,
+  "services-bento-v2": (
+    <ServicesBentoCardsSectionV2 {...sectionLibraryContent.servicesBento} />
+  ),
+  "services-hover-panel-v2": (
+    <ServicesHoverPanelSectionV2
+      {...sectionLibraryContent.servicesHoverPanel}
+    />
+  ),
+  "services-scroll-cards-v2": (
+    <ServicesScrollCardsSectionV2
+      {...sectionLibraryContent.servicesScrollCards}
+    />
+  ),
+  "feature-split-v2": (
+    <FeatureSplitSectionV2 {...sectionLibraryContent.featureSplit} />
+  ),
+  "feature-overlap-rows-v2": (
+    <FeatureOverlapRowsSectionV2
+      {...sectionLibraryContent.featureOverlapRows}
+    />
+  ),
+  "process-steps-v2": (
+    <ProcessStepsSectionV2 {...sectionLibraryContent.process} />
+  ),
+  "process-image-checklist-v2": (
+    <ProcessImageChecklistSectionV2
+      {...sectionLibraryContent.processImageChecklist}
+    />
+  ),
+  "testimonials-v2": (
+    <TestimonialsSectionV2 {...sectionLibraryContent.testimonials} />
+  ),
+  "testimonials-carousel-v2": (
+    <TestimonialsCarouselSectionV2
+      {...sectionLibraryContent.testimonialsCarousel}
+    />
+  ),
+  "testimonials-masonry-v2": (
+    <TestimonialsMasonrySectionV2
+      {...sectionLibraryContent.testimonialsMasonry}
+    />
+  ),
+  "faq-v2": <FAQSectionV2 {...sectionLibraryContent.faq} />,
+  "faq-accordion-v2": (
+    <FAQAccordionSectionV2 {...sectionLibraryContent.faqAccordion} />
+  ),
+  "cta-v2": <CTASectionV2 {...sectionLibraryContent.cta} />,
+  "cta-fullscreen-v2": (
+    <CTAFullscreenSectionV2 {...sectionLibraryContent.ctaFullscreen} />
+  ),
+  "contact-v2": <ContactSectionV2 {...sectionLibraryContent.contact} />,
+  "footer-v2": <FooterSectionV2 {...sectionLibraryContent.footer} />,
+} as const;
+
+const collections = sectionLibraryV2Collections.map((collection) => ({
+  ...collection,
+  items: collection.items.map((item) => ({
+    label: item.label,
+    element:
+      "component" in item
+        ? sectionElements[item.component as keyof typeof sectionElements]
+        : undefined,
+  })),
+}));
 
 export default function SectionsPage() {
   return (
@@ -304,13 +231,13 @@ export default function SectionsPage() {
             Section Library
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-white/75">
-            Reusable local service section components for previewing layout,
-            spacing, and responsive behavior before building a full site.
+            Empty accordion shell for adapting each existing layout to the new
+            responsive type and measure logic.
           </p>
         </Container>
       </section>
 
-      <SectionLibraryCollections collections={collections} />
+      <SectionLibraryV2Accordions collections={collections} />
     </main>
   );
 }
