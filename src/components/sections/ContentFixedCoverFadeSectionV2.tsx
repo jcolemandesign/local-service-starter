@@ -1,8 +1,3 @@
-"use client";
-
-import { motion, useMotionValueEvent, useReducedMotion, useScroll } from "motion/react";
-import { useRef, useState } from "react";
-
 type ContentFixedCoverFadeSectionV2Props = {
   backgroundEyebrow: string;
   backgroundTitle: string;
@@ -16,18 +11,6 @@ type ContentFixedCoverFadeSectionV2Props = {
 
 function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
-}
-
-function getBackgroundOpacity(progress: number) {
-  if (progress <= 0.16) {
-    return 1;
-  }
-
-  if (progress >= 0.34) {
-    return 0;
-  }
-
-  return 1 - (progress - 0.16) / 0.18;
 }
 
 function BackgroundTexture({ label }: { label: string }) {
@@ -56,29 +39,9 @@ export function ContentFixedCoverFadeSectionV2({
   foregroundBody,
   items,
 }: ContentFixedCoverFadeSectionV2Props) {
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const shouldReduceMotion = useReducedMotion();
-  const [backgroundOpacity, setBackgroundOpacity] = useState(1);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
-
-  useMotionValueEvent(scrollYProgress, "change", (latestProgress) => {
-    if (!shouldReduceMotion) {
-      setBackgroundOpacity(getBackgroundOpacity(latestProgress));
-    }
-  });
-
   return (
-    <section
-      className="relative min-h-[200svh] bg-white"
-      ref={sectionRef}
-    >
-      <motion.div
-        className="sticky top-0 flex min-h-svh overflow-hidden text-white"
-        style={{ opacity: shouldReduceMotion ? 1 : backgroundOpacity }}
-      >
+    <section className="relative min-h-[200svh] bg-white">
+      <div className="sticky top-0 flex min-h-svh overflow-hidden text-white">
         <BackgroundTexture label={backgroundLabel} />
         <div className="container-site relative z-10 flex min-h-svh items-center">
           <div className="fluid-type-frame w-full max-w-none">
@@ -91,7 +54,7 @@ export function ContentFixedCoverFadeSectionV2({
             </p>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       <div className="relative z-10 min-h-[112svh] bg-white text-service-ink shadow-[0_-32px_90px_rgb(23_33_29_/_0.18)]">
         <div className="container-site grid min-h-[112svh] grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] items-center layout-gap-xlrg py-24 max-lg:grid-cols-1 max-md:py-16">

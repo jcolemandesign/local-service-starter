@@ -17,7 +17,7 @@ function cx(...classes: Array<string | undefined>) {
 function SampleImage() {
   return (
     <div
-      className="relative h-full min-h-0 w-full overflow-hidden bg-service-border max-lg:aspect-[2/3] max-lg:h-auto"
+      className="relative aspect-[4/5] w-full overflow-hidden bg-service-border max-lg:aspect-[2/3]"
       aria-label="Sample service image placeholder"
     >
       <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.34),rgb(23_33_29_/_0.08)),linear-gradient(45deg,rgb(255_255_255_/_0.22)_0_1px,transparent_1px_18px)]" />
@@ -76,7 +76,7 @@ export function HeroSectionV2({
           </div>
         </div>
 
-        <div className="flex min-w-[18rem] basis-[48%] items-stretch justify-end -ml-10 max-lg:ml-0 max-lg:min-w-0 max-lg:basis-auto max-lg:justify-start">
+        <div className="flex min-w-[18rem] basis-[48%] items-center justify-end -ml-10 max-lg:ml-0 max-lg:min-w-0 max-lg:basis-auto max-lg:justify-start">
           <SampleImage />
         </div>
       </div>

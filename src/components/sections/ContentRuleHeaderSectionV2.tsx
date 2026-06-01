@@ -1,0 +1,42 @@
+"use client";
+
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { useRef } from "react";
+
+type ContentRuleHeaderSectionV2Props = {
+  eyebrow: string;
+  title: string;
+};
+
+export function ContentRuleHeaderSectionV2({
+  eyebrow,
+  title,
+}: ContentRuleHeaderSectionV2Props) {
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const shouldReduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start 78%", "center center"],
+  });
+  const ruleScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
+
+  return (
+    <section className="section-space-med bg-white">
+      <div
+        className="container-site fluid-type-frame w-full min-w-0"
+        ref={sectionRef}
+      >
+        <p className="type-label text-service-accent">{eyebrow}</p>
+        <div className="mt-eyebrow-heading-lg h-px overflow-hidden bg-service-border">
+          <motion.div
+            className="h-full origin-left bg-service-ink"
+            style={{ scaleX: shouldReduceMotion ? 1 : ruleScale }}
+          />
+        </div>
+        <h2 className="type-heading-xl mt-display-body max-w-5xl text-service-ink">
+          {title}
+        </h2>
+      </div>
+    </section>
+  );
+}

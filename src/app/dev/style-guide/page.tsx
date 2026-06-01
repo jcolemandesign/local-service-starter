@@ -464,7 +464,7 @@ export default function StyleGuidePage() {
         title="Text Measures"
         body="Measure tokens control readable copy width. Heading roles rely on balanced wrapping by default, with manual line breaks reserved for art-directed headlines."
       >
-        <div className="grid grid-cols-2 gap-5 max-lg:grid-cols-1">
+        <div className="grid gap-5">
           {measureTokens.map(([name, value]) => (
             <Card className="p-6 shadow-none" key={name}>
               <TokenMeta name={name} value={`max-width: ${value}`} />

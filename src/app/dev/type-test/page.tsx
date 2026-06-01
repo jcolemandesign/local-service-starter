@@ -684,11 +684,11 @@ export default function TypeTestPage() {
                 and whether they will be pressured into a decision before they
                 know what is wrong.
               </p>
-              <p className={cx(styles["text-md"], styles.pretty, "text-white/64")}>
-                That changes the job of the page. The headline should carry the
-                promise plainly. Supporting copy should lower the temperature.
-                Details should answer the next practical question before it has
-                to be asked.
+              <p className={cx(styles["text-xl"], styles.pretty, "text-white/64")}>
+                This longer paragraph tests whether the hierarchy can support
+                an editorial section without relying on cards, columns, or
+                decorative layout tricks. The measure should stay readable even
+                as the type scales with the container.
               </p>
             </div>
 

@@ -12,6 +12,7 @@ import {
   CTASectionV2,
   ContentPositioningSplitSectionV2,
   ContentRevealParagraphSectionV2,
+  ContentRuleHeaderSectionV2,
   ContentScrollWrittenRevealSectionV2,
   ContentStickyCardStreamSectionV2,
   ContentStickyImagePanelSectionV2,
@@ -22,11 +23,14 @@ import {
   FAQAccordionSectionV2,
   FAQSectionV2,
   HeroBentoSectionV2,
+  HeroCenteredFloatersSectionV2,
+  HeroContentTopImageBottomSectionV2,
   HeroFullscreenSectionV2,
   HeroGridMosaicSectionV2,
-  HeroLogoStatementSectionV2,
+  HeroImageTopContentBottomSectionV2,
   HeroNotchedNavSectionV2,
   HeroSectionV2,
+  HeroStackedHeaderImageSectionV2,
   FooterSectionV2,
   NavCenterLogoSectionV2,
   NavFloatingBentoSectionV2,
@@ -62,6 +66,12 @@ const sectionElements = {
   "hero-section-v2": (
     <HeroSectionV2 {...sectionLibraryContent.hero} headingLevel={2} />
   ),
+  "hero-centered-floaters-v2": (
+    <HeroCenteredFloatersSectionV2
+      {...sectionLibraryContent.hero}
+      headingLevel={2}
+    />
+  ),
   "hero-fullscreen-v2": (
     <HeroFullscreenSectionV2
       {...sectionLibraryContent.heroFullscreen}
@@ -74,10 +84,23 @@ const sectionElements = {
       headingLevel={2}
     />
   ),
-  "hero-logo-statement-v2": (
-    <HeroLogoStatementSectionV2
-      {...sectionLibraryContent.heroLogoStatement}
+  "hero-content-top-image-bottom-v2": (
+    <HeroContentTopImageBottomSectionV2
+      {...sectionLibraryContent.hero}
       headingLevel={2}
+    />
+  ),
+  "hero-image-top-content-bottom-v2": (
+    <HeroImageTopContentBottomSectionV2
+      {...sectionLibraryContent.hero}
+      headingLevel={2}
+    />
+  ),
+  "hero-stacked-header-image-v2": (
+    <HeroStackedHeaderImageSectionV2
+      {...sectionLibraryContent.hero}
+      headingLevel={2}
+      title="Reliable Home Services Delivered"
     />
   ),
   "hero-notched-nav-v2": (
@@ -95,6 +118,11 @@ const sectionElements = {
     <NavFloatingBentoSectionV2 {...sectionLibraryContent.navPrimary} />
   ),
   "button-expanding-arrow-v2": <ButtonStylesSectionV2 />,
+  "content-rule-header-v2": (
+    <ContentRuleHeaderSectionV2
+      {...sectionLibraryContent.contentRuleHeader}
+    />
+  ),
   "content-reveal-v2": (
     <ContentRevealParagraphSectionV2
       {...sectionLibraryContent.contentRevealParagraph}

@@ -2,13 +2,25 @@ export const sectionLibraryV2Collections = [
   {
     title: "Hero",
     items: [
-      { label: "Bento homepage hero", component: "hero-bento-v2" },
+      { label: "Split hero image right (full height)", component: "hero-bento-v2" },
       { label: "Split hero image right", component: "hero-section-v2" },
+      {
+        label: "Centered with left right floaters",
+        component: "hero-centered-floaters-v2",
+      },
       { label: "Fullscreen image hero", component: "hero-fullscreen-v2" },
       { label: "Grid mosaic hero", component: "hero-grid-mosaic-v2" },
       {
-        label: "Large logo+headline stacked",
-        component: "hero-logo-statement-v2",
+        label: "Content top image bottom",
+        component: "hero-content-top-image-bottom-v2",
+      },
+      {
+        label: "Image top content bottom",
+        component: "hero-image-top-content-bottom-v2",
+      },
+      {
+        label: "Stacked header and image",
+        component: "hero-stacked-header-image-v2",
       },
       {
         label: "Notched nav image hero",
@@ -36,6 +48,7 @@ export const sectionLibraryV2Collections = [
   {
     title: "Content",
     items: [
+      { label: "Rule header content", component: "content-rule-header-v2" },
       { label: "Reveal paragraph", component: "content-reveal-v2" },
       {
         label: "Scroll-written reveal paragraph",
@@ -57,10 +70,6 @@ export const sectionLibraryV2Collections = [
       {
         label: "Sticky image panel content",
         component: "content-sticky-image-panel-v2",
-      },
-      {
-        label: "Fixed cover fade content",
-        component: "content-fixed-cover-fade-v2",
       },
       {
         label: "Positioning split content",
@@ -137,6 +146,10 @@ export const sectionLibraryV2Collections = [
     items: [
       { label: "CTA", component: "cta-v2" },
       { label: "Fullscreen conversion", component: "cta-fullscreen-v2" },
+      {
+        label: "Bottom section slide up",
+        component: "content-fixed-cover-fade-v2",
+      },
       {
         label: "Scroll reveal offer conversion",
         component: "cta-scroll-reveal-offer-v2",

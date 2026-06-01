@@ -102,6 +102,11 @@ export const sectionLibraryContent = {
       "and conversion close to every section.",
     ],
   },
+  contentRuleHeader: {
+    eyebrow: "Section intro",
+    title:
+      "A simple header rhythm for introducing the next idea with a drawn rule and a clear editorial line.",
+  },
   contentScrollWrittenReveal: {
     lines: [
       "Service pages can reveal trust gradually",
