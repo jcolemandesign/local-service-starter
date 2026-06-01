@@ -5,6 +5,7 @@ import type { CSSProperties } from "react";
 import { Card } from "@/components/primitives";
 
 type WrapMode = "balance" | "pretty" | "wrap";
+type CapitalizationStyle = "none" | "uppercase" | "lowercase" | "capitalize";
 
 type FontOption = {
   label: string;
@@ -35,8 +36,8 @@ type TypeRole = {
   weight: number;
   measureCh: number;
   wrap: WrapMode;
-  letterSpacingEm?: number;
-  uppercase?: boolean;
+  letterSpacingEm: number;
+  capitalization: CapitalizationStyle;
 };
 
 const projectFontOptions: FontOption[] = [
@@ -93,6 +94,8 @@ const initialRoles: TypeRole[] = [
     weight: 680,
     measureCh: 14,
     wrap: "balance",
+    letterSpacingEm: 0,
+    capitalization: "none",
   },
   {
     id: "display-lg",
@@ -105,6 +108,8 @@ const initialRoles: TypeRole[] = [
     weight: 670,
     measureCh: 18,
     wrap: "balance",
+    letterSpacingEm: 0,
+    capitalization: "none",
   },
   {
     id: "heading-xl",
@@ -117,6 +122,8 @@ const initialRoles: TypeRole[] = [
     weight: 660,
     measureCh: 22,
     wrap: "balance",
+    letterSpacingEm: 0,
+    capitalization: "none",
   },
   {
     id: "heading-lg",
@@ -129,6 +136,8 @@ const initialRoles: TypeRole[] = [
     weight: 650,
     measureCh: 22,
     wrap: "balance",
+    letterSpacingEm: 0,
+    capitalization: "none",
   },
   {
     id: "heading-md",
@@ -141,6 +150,8 @@ const initialRoles: TypeRole[] = [
     weight: 650,
     measureCh: 28,
     wrap: "balance",
+    letterSpacingEm: 0,
+    capitalization: "none",
   },
   {
     id: "heading-sm",
@@ -153,6 +164,8 @@ const initialRoles: TypeRole[] = [
     weight: 650,
     measureCh: 28,
     wrap: "balance",
+    letterSpacingEm: 0,
+    capitalization: "none",
   },
   {
     id: "text-xl",
@@ -166,6 +179,8 @@ const initialRoles: TypeRole[] = [
     weight: 400,
     measureCh: 52,
     wrap: "pretty",
+    letterSpacingEm: 0,
+    capitalization: "none",
   },
   {
     id: "text-lg",
@@ -179,6 +194,8 @@ const initialRoles: TypeRole[] = [
     weight: 400,
     measureCh: 60,
     wrap: "pretty",
+    letterSpacingEm: 0,
+    capitalization: "none",
   },
   {
     id: "text-md",
@@ -192,6 +209,8 @@ const initialRoles: TypeRole[] = [
     weight: 400,
     measureCh: 60,
     wrap: "pretty",
+    letterSpacingEm: 0,
+    capitalization: "none",
   },
   {
     id: "text-sm",
@@ -205,6 +224,8 @@ const initialRoles: TypeRole[] = [
     weight: 400,
     measureCh: 70,
     wrap: "pretty",
+    letterSpacingEm: 0,
+    capitalization: "none",
   },
   {
     id: "text-xs",
@@ -218,6 +239,8 @@ const initialRoles: TypeRole[] = [
     weight: 400,
     measureCh: 48,
     wrap: "pretty",
+    letterSpacingEm: 0,
+    capitalization: "none",
   },
   {
     id: "caption",
@@ -230,6 +253,8 @@ const initialRoles: TypeRole[] = [
     weight: 400,
     measureCh: 48,
     wrap: "pretty",
+    letterSpacingEm: 0,
+    capitalization: "none",
   },
   {
     id: "label",
@@ -243,7 +268,7 @@ const initialRoles: TypeRole[] = [
     measureCh: 30,
     wrap: "wrap",
     letterSpacingEm: 0.12,
-    uppercase: true,
+    capitalization: "uppercase",
   },
 ];
 
@@ -276,7 +301,7 @@ function roleSpec(role: TypeRole) {
     role.maxRem,
   )}rem / ${formatNumber(role.lineHeight)} / ${role.weight} / ${
     role.wrap === "wrap" ? "default" : role.wrap
-  }`;
+  } / ${formatNumber(role.letterSpacingEm)}em / ${role.capitalization}`;
 }
 
 function fontFamilyForValue(value: string, customFont: string) {
@@ -323,13 +348,11 @@ function previewStyle(role: TypeRole, fontFamily: string): CSSProperties {
     fontFamily,
     fontSize: clampExpression(role.minRem, role.maxRem),
     fontWeight: role.weight,
-    letterSpacing:
-      role.letterSpacingEm === undefined
-        ? undefined
-        : `${role.letterSpacingEm}em`,
+    letterSpacing: `${role.letterSpacingEm}em`,
     lineHeight: role.lineHeight,
     maxWidth: `${role.measureCh}ch`,
-    textTransform: role.uppercase ? "uppercase" : undefined,
+    textTransform:
+      role.capitalization === "none" ? undefined : role.capitalization,
     textWrap: role.wrap,
   };
 }
@@ -582,7 +605,7 @@ export function FontLabSection() {
     <section className="section-space-med">
       <div className="container-site">
         <div className="grid grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] gap-6 max-lg:grid-cols-1">
-          <aside className="self-start rounded-lg border border-service-border bg-white p-6 shadow-service max-md:p-5">
+          <aside className="sticky top-4 max-h-[calc(100svh-2rem)] self-start overflow-y-auto rounded-lg border border-service-border bg-white p-6 shadow-service max-lg:static max-lg:max-h-none max-lg:overflow-visible max-md:p-5">
             <div className="fluid-type-frame border-b border-service-border pb-6">
               <p className="type-label text-service-accent">Internal font lab</p>
               <h1 className="type-heading-xl mt-4 text-service-ink">
@@ -713,18 +736,32 @@ export function FontLabSection() {
                   <option value="wrap">Default</option>
                 </SelectField>
 
-                {selectedRole.letterSpacingEm !== undefined ? (
-                  <NumberControl
-                    label="Tracking em"
-                    min={0}
-                    max={0.18}
-                    step={0.01}
-                    value={selectedRole.letterSpacingEm}
-                    onChange={(value) =>
-                      updateSelectedRole({ letterSpacingEm: value })
-                    }
-                  />
-                ) : null}
+                <NumberControl
+                  label="Tracking em"
+                  min={0}
+                  max={0.18}
+                  step={0.01}
+                  value={selectedRole.letterSpacingEm}
+                  onChange={(value) =>
+                    updateSelectedRole({ letterSpacingEm: value })
+                  }
+                />
+
+                <SelectField
+                  id="selected-capitalization"
+                  label="Capitalization"
+                  value={selectedRole.capitalization}
+                  onChange={(value) =>
+                    updateSelectedRole({
+                      capitalization: value as CapitalizationStyle,
+                    })
+                  }
+                >
+                  <option value="none">None</option>
+                  <option value="uppercase">Uppercase</option>
+                  <option value="lowercase">Lowercase</option>
+                  <option value="capitalize">Title Case</option>
+                </SelectField>
               </div>
 
               <button
@@ -733,6 +770,25 @@ export function FontLabSection() {
                 onClick={resetSelectedRole}
               >
                 Reset Selected Role
+              </button>
+
+              <button
+                className="min-h-11 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                type="button"
+                onClick={() =>
+                  copyBrief(
+                    [
+                      "Update this typography role from the font lab:",
+                      selectedRoleBrief,
+                      "Promote this into the shared type utilities only. Do not redesign sections or rewrite copy.",
+                    ].join("\n"),
+                    selectedRole.id,
+                  )
+                }
+              >
+                {copiedTarget === selectedRole.id
+                  ? "Copied Selected Style"
+                  : "Copy Selected Style"}
               </button>
 
               <button
