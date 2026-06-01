@@ -11,6 +11,7 @@ const linkGroups = [
     links: [
       { label: "Home", href: "/" },
       { label: "Sample", href: "/sample" },
+      { label: "Sample Plumbing", href: "/sample-plumbing" },
       { label: "Sections", href: "/sections" },
     ],
   },
@@ -18,6 +19,7 @@ const linkGroups = [
     title: "Dev",
     links: [
       { label: "Style Guide", href: "/dev/style-guide" },
+      { label: "Font Lab", href: "/dev/font-lab" },
       { label: "Type Test", href: "/dev/type-test" },
       { label: "Type Hierarchy Test", href: "/dev/type-hierarchy-test" },
     ],
