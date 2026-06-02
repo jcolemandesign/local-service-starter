@@ -572,6 +572,8 @@ function isBodyRole(role: TypeRole) {
   );
 }
 
+const sampleImageUrl = "/images/bg-image-sample.jpg";
+
 export function FontLabSection() {
   const [profiles, setProfiles] = useState<TypePalette[]>(() =>
     typePalettes.map(cloneProfile),
@@ -587,9 +589,6 @@ export function FontLabSection() {
   const [roleFontOverrides, setRoleFontOverrides] = useState<
     Record<string, string>
   >(() => ({ ...typePalettes[0].roleFontOverrides }));
-  const [appliedSettings, setAppliedSettings] = useState<TypeSettings>(() =>
-    settingsFromProfile(typePalettes[0]),
-  );
   const [localFontOptions, setLocalFontOptions] = useState<FontOption[]>([]);
   const [fontScanStatus, setFontScanStatus] = useState(
     "Scan availability has not run.",
@@ -637,9 +636,9 @@ export function FontLabSection() {
     }),
     [customFont, globalFont, roleFontOverrides, roles],
   );
-  const appliedTypeVariables = useMemo(
-    () => typeVariableStyle(appliedSettings),
-    [appliedSettings],
+  const previewTypeVariables = useMemo(
+    () => typeVariableStyle(editorSettings),
+    [editorSettings],
   );
   const livePromotionCss = useMemo(
     () => promotionCss(editorSettings),
@@ -838,12 +837,7 @@ export function FontLabSection() {
   }
 
   function applyCurrentProfile() {
-    setAppliedSettings({
-      customFont,
-      globalFont,
-      roleFontOverrides: { ...roleFontOverrides },
-      roles: cloneRoles(roles),
-    });
+    saveCurrentProfile();
   }
 
   function updateSelectedRoleFont(value: string) {
@@ -858,14 +852,6 @@ export function FontLabSection() {
       [roleId]: value,
     }));
 
-    setAppliedSettings((currentSettings) => ({
-      ...currentSettings,
-      customFont,
-      roleFontOverrides: {
-        ...currentSettings.roleFontOverrides,
-        [roleId]: value,
-      },
-    }));
   }
 
   function applySelectedFontToRoles(
@@ -887,21 +873,6 @@ export function FontLabSection() {
       return nextOverridesForRoles(currentOverrides);
     });
 
-    setAppliedSettings((currentSettings) => {
-      const nextOverrides = { ...currentSettings.roleFontOverrides };
-
-      currentSettings.roles.forEach((role) => {
-        if (matchesRole(role)) {
-          nextOverrides[role.id] = selectedRoleFontOverride;
-        }
-      });
-
-      return {
-        ...currentSettings,
-        customFont,
-        roleFontOverrides: nextOverrides,
-      };
-    });
   }
 
   async function scanLocalFonts() {
@@ -950,6 +921,91 @@ export function FontLabSection() {
       setCopiedTarget(null);
     }
   }
+
+  const roleSpecimenCards = roles.map((role) => {
+    const override = roleFontOverrides[role.id] ?? "global";
+    const roleFontFamily =
+      override === "global"
+        ? globalFontFamily
+        : fontFamilyForValue(override, customFont);
+    const isSelected = role.id === selectedRole?.id;
+
+    return (
+      <Card
+        className={cx(
+          "fluid-type-frame p-6 shadow-none transition-colors max-md:p-5",
+          isSelected && "border-service-accent",
+        )}
+        key={role.id}
+      >
+        <div className="mb-6 grid grid-cols-[minmax(0,1fr)_minmax(13rem,0.35fr)] gap-4 max-md:grid-cols-1">
+          <div>
+            <div className="flex flex-wrap items-center gap-3">
+              <code className="rounded bg-service-surface px-2 py-1 text-xs font-semibold text-service-ink">
+                {role.token}
+              </code>
+              <span className="type-caption text-service-muted">
+                {roleSpec(role)}
+              </span>
+            </div>
+            <p className="type-caption mt-2 text-service-muted">
+              {role.role} / {role.measureCh}ch
+            </p>
+          </div>
+
+          <div className="grid gap-2">
+            <select
+              className="min-h-10 rounded-md border border-service-border bg-service-surface px-3 text-xs font-semibold text-service-ink outline-none transition-colors focus:border-service-accent"
+              value={override}
+              onChange={(event) =>
+                setRoleFontOverrides((currentOverrides) => ({
+                  ...currentOverrides,
+                  [role.id]: event.target.value,
+                }))
+              }
+              aria-label={`${role.token} font family`}
+            >
+              <FontFamilyOptions
+                includeGlobal
+                localFontOptions={localFontOptions}
+              />
+            </select>
+            <button
+              className="min-h-10 rounded-md border border-service-border bg-white px-3 text-xs font-semibold text-service-accent transition-colors hover:border-service-accent hover:bg-service-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+              type="button"
+              onClick={() => selectTypeRole(role.id)}
+            >
+              Tune Role
+            </button>
+            <button
+              className="min-h-10 rounded-md border border-service-border bg-white px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+              type="button"
+              onClick={() =>
+                copyBrief(
+                  [
+                    "Update this typography role from the font lab:",
+                    briefForRole(role),
+                    "Promote this into the shared type utilities only. Do not redesign sections or rewrite copy.",
+                  ].join("\n"),
+                  role.id,
+                )
+              }
+            >
+              {copiedTarget === role.id ? "Copied Style" : "Copy Style"}
+            </button>
+          </div>
+        </div>
+
+        <p
+          className={selectableTypeClasses(role.id, "text-service-ink")}
+          style={previewStyle(role, roleFontFamily)}
+          {...roleSelectProps(role.id)}
+        >
+          {role.sample}
+        </p>
+      </Card>
+    );
+  });
 
   return (
     <section className="section-space-med" onClick={handleInertSurfaceClick}>
@@ -1176,7 +1232,7 @@ export function FontLabSection() {
 
                     <NumberControl
                       label="Tracking em"
-                      min={0}
+                      min={-0.12}
                       max={0.18}
                       step={0.01}
                       value={selectedRole.letterSpacingEm}
@@ -1274,7 +1330,7 @@ export function FontLabSection() {
               <div className="mt-6 flex max-h-[78svh] justify-center overflow-y-auto rounded-md border border-service-border bg-service-surface p-4 max-md:p-2">
                 <div
                   className="w-full max-w-[var(--container-site)]"
-                  style={appliedTypeVariables}
+                  style={previewTypeVariables}
                 >
                   <div className="grid gap-10 p-10 max-md:p-6">
                     <section className="grid gap-7">
@@ -1287,7 +1343,7 @@ export function FontLabSection() {
                         </h3>
                       </div>
 
-                      {appliedSettings.roles.map((role) => {
+                      {roles.map((role) => {
                         const tokenClass = role.token.split(" / ")[0];
                         const isLargestDisplay = role.id === "display-xl";
 
@@ -1331,11 +1387,12 @@ export function FontLabSection() {
                     <section className="grid gap-8 border-t border-service-border pt-10">
                       <div className="relative aspect-[16/10] min-h-[28rem] overflow-hidden rounded-md bg-service-ink text-white max-lg:min-h-0">
                         <div
-                          className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.44),rgb(23_33_29_/_0.12)),linear-gradient(45deg,rgb(255_255_255_/_0.16)_0_1px,transparent_1px_20px)]"
+                          className="absolute inset-0 bg-cover bg-center"
                           aria-hidden="true"
+                          style={{ backgroundImage: `url(${sampleImageUrl})` }}
                         />
                         <div
-                          className="absolute inset-0 bg-service-ink/25"
+                          className="absolute inset-0 bg-service-ink/30"
                           aria-hidden="true"
                         />
                         <div
@@ -1468,6 +1525,86 @@ export function FontLabSection() {
                                 </p>
                               </div>
                             </aside>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid aspect-[16/9] overflow-hidden rounded-md border border-service-border bg-white max-lg:aspect-auto max-lg:min-h-[34rem] max-lg:grid-rows-[1fr_1fr] lg:grid-cols-2">
+                        <div className="flex min-h-0 items-center bg-service-surface p-8 text-service-ink max-md:p-5">
+                          <div className="min-w-0">
+                            <p
+                              className={selectableTypeClasses(
+                                "label",
+                                "type-label text-service-accent",
+                              )}
+                              {...roleSelectProps("label")}
+                            >
+                              {sectionLibraryContent.hero.eyebrow}
+                            </p>
+                            <h2
+                              className={selectableTypeClasses(
+                                "display-lg",
+                                "type-display-lg mt-eyebrow-display text-service-ink",
+                              )}
+                              {...roleSelectProps("display-lg")}
+                            >
+                              {sectionLibraryContent.hero.title}
+                            </h2>
+                            <p
+                              className={selectableTypeClasses(
+                                "text-xl",
+                                "type-text-xl measure-copy mt-display-body text-service-muted",
+                              )}
+                              {...roleSelectProps("text-xl")}
+                            >
+                              {sectionLibraryContent.hero.body}
+                            </p>
+                            <ul className="mt-8 grid grid-cols-3 gap-3 max-md:grid-cols-1">
+                              {sectionLibraryContent.hero.stats.map((stat) => (
+                                <li
+                                  className={selectableTypeClasses(
+                                    "text-sm",
+                                    "type-text-sm border-l border-service-border pl-3 font-semibold text-service-ink max-md:border-l-0 max-md:pl-0",
+                                  )}
+                                  key={stat}
+                                  {...roleSelectProps("text-sm")}
+                                >
+                                  {stat}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                        <div
+                          className="relative min-h-0 overflow-hidden bg-cover bg-center"
+                          aria-label="Sample split hero image"
+                          style={{ backgroundImage: `url(${sampleImageUrl})` }}
+                        >
+                          <div
+                            className="absolute inset-0 bg-service-ink/10"
+                            aria-hidden="true"
+                          />
+                          <div className="absolute left-6 top-6 flex flex-wrap gap-3">
+                            <button
+                              className={selectableTypeClasses(
+                                "text-sm",
+                                "type-text-sm rounded-md bg-service-accent px-4 py-3 font-semibold text-white shadow-service",
+                              )}
+                              type="button"
+                              {...roleSelectProps("text-sm")}
+                            >
+                              {sectionLibraryContent.hero.primaryAction}
+                            </button>
+                            <button
+                              className={selectableTypeClasses(
+                                "text-sm",
+                                "type-text-sm rounded-md border border-white/40 bg-white/85 px-4 py-3 font-semibold text-service-ink shadow-service backdrop-blur-sm",
+                              )}
+                              type="button"
+                              {...roleSelectProps("text-sm")}
+                            >
+                              {sectionLibraryContent.hero.secondaryAction}
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -1732,95 +1869,14 @@ export function FontLabSection() {
                         </div>
                       </div>
                     </section>
+
+                    <section className="grid gap-4 border-t border-service-border pt-10">
+                      {roleSpecimenCards}
+                    </section>
                   </div>
                 </div>
               </div>
             </section>
-
-            {roles.map((role) => {
-              const override = roleFontOverrides[role.id] ?? "global";
-              const roleFontFamily =
-                override === "global"
-                  ? globalFontFamily
-                  : fontFamilyForValue(override, customFont);
-              const isSelected = role.id === selectedRole?.id;
-
-              return (
-                <Card
-                  className={cx(
-                    "fluid-type-frame p-6 shadow-none transition-colors max-md:p-5",
-                    isSelected && "border-service-accent",
-                  )}
-                  key={role.id}
-                >
-                  <div className="mb-6 grid grid-cols-[minmax(0,1fr)_minmax(13rem,0.35fr)] gap-4 max-md:grid-cols-1">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-3">
-                        <code className="rounded bg-service-surface px-2 py-1 text-xs font-semibold text-service-ink">
-                          {role.token}
-                        </code>
-                        <span className="type-caption text-service-muted">
-                          {roleSpec(role)}
-                        </span>
-                      </div>
-                      <p className="type-caption mt-2 text-service-muted">
-                        {role.role} / {role.measureCh}ch
-                      </p>
-                    </div>
-
-                    <div className="grid gap-2">
-                      <select
-                        className="min-h-10 rounded-md border border-service-border bg-service-surface px-3 text-xs font-semibold text-service-ink outline-none transition-colors focus:border-service-accent"
-                        value={override}
-                        onChange={(event) =>
-                          setRoleFontOverrides((currentOverrides) => ({
-                            ...currentOverrides,
-                            [role.id]: event.target.value,
-                          }))
-                        }
-                        aria-label={`${role.token} font family`}
-                      >
-                        <FontFamilyOptions
-                          includeGlobal
-                          localFontOptions={localFontOptions}
-                        />
-                      </select>
-                      <button
-                        className="min-h-10 rounded-md border border-service-border bg-white px-3 text-xs font-semibold text-service-accent transition-colors hover:border-service-accent hover:bg-service-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
-                        type="button"
-                        onClick={() => selectTypeRole(role.id)}
-                      >
-                        Tune Role
-                      </button>
-                      <button
-                        className="min-h-10 rounded-md border border-service-border bg-white px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
-                        type="button"
-                        onClick={() =>
-                          copyBrief(
-                            [
-                              "Update this typography role from the font lab:",
-                              briefForRole(role),
-                              "Promote this into the shared type utilities only. Do not redesign sections or rewrite copy.",
-                            ].join("\n"),
-                            role.id,
-                          )
-                        }
-                      >
-                        {copiedTarget === role.id ? "Copied Style" : "Copy Style"}
-                      </button>
-                    </div>
-                  </div>
-
-                  <p
-                    className={selectableTypeClasses(role.id, "text-service-ink")}
-                    style={previewStyle(role, roleFontFamily)}
-                    {...roleSelectProps(role.id)}
-                  >
-                    {role.sample}
-                  </p>
-                </Card>
-              );
-            })}
           </div>
         </div>
       </div>
