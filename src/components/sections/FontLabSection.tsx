@@ -649,11 +649,6 @@ export function FontLabSection() {
     () => !sameProfileSettings(selectedProfile, editorSettings),
     [editorSettings, selectedProfile],
   );
-  const selectedProfileHasTempStorage = useMemo(
-    () => hasTemporaryStoredProfileEdits(selectedProfile),
-    [selectedProfile],
-  );
-
   function fontValueForRole(role: TypeRole) {
     const override = roleFontOverrides[role.id] ?? "global";
 
@@ -851,6 +846,28 @@ export function FontLabSection() {
     });
   }
 
+  function updateSelectedRoleFont(value: string) {
+    if (!selectedRole) {
+      return;
+    }
+
+    const roleId = selectedRole.id;
+
+    setRoleFontOverrides((currentOverrides) => ({
+      ...currentOverrides,
+      [roleId]: value,
+    }));
+
+    setAppliedSettings((currentSettings) => ({
+      ...currentSettings,
+      customFont,
+      roleFontOverrides: {
+        ...currentSettings.roleFontOverrides,
+        [roleId]: value,
+      },
+    }));
+  }
+
   function applySelectedFontToRoles(
     matchesRole: (role: TypeRole) => boolean,
   ) {
@@ -957,40 +974,49 @@ export function FontLabSection() {
               </SelectField>
 
               <div className="grid gap-2 rounded-md border border-service-border bg-service-surface p-4">
-                <SelectField
-                  id="type-profile"
-                  label="Profile"
-                  value={selectedProfileId}
-                  onChange={(value) => {
-                    const nextProfile =
-                      profiles.find((profile) => profile.id === value) ??
-                      profiles[0];
+                <label className="grid gap-2">
+                  <span className="type-caption font-semibold text-service-muted">
+                    Profile
+                  </span>
+                  <span className="relative">
+                    <select
+                      id="type-profile"
+                      className="min-h-11 w-full rounded-md border border-service-border bg-white px-3 pr-12 text-sm font-semibold text-service-ink outline-none transition-colors focus:border-service-accent"
+                      value={selectedProfileId}
+                      onChange={(event) => {
+                        const nextProfile =
+                          profiles.find(
+                            (profile) => profile.id === event.target.value,
+                          ) ?? profiles[0];
 
-                    loadProfile(nextProfile);
-                  }}
-                >
-                  {profiles.map((profile) => (
-                    <option key={profile.id} value={profile.id}>
-                      {profile.label}
-                      {hasTemporaryStoredProfileEdits(profile)
-                        ? " (temp stored)"
-                        : ""}
-                    </option>
-                  ))}
-                </SelectField>
-                <p className="type-caption text-service-muted">
-                  {selectedProfile.description}
-                </p>
-                <p className="type-caption font-semibold text-service-muted">
-                  {hasUnsavedProfileEdits
-                    ? "Unsaved profile edits"
-                    : "Profile ready"}
-                </p>
-                {selectedProfileHasTempStorage ? (
-                  <p className="type-caption font-semibold text-service-accent">
-                    Temp stored from user input
-                  </p>
-                ) : null}
+                        loadProfile(nextProfile);
+                      }}
+                    >
+                      {profiles.map((profile) => (
+                        <option key={profile.id} value={profile.id}>
+                          {profile.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span
+                      aria-label="Profile edit state"
+                      className="pointer-events-none absolute right-9 top-1/2 flex -translate-y-1/2 items-center gap-1"
+                    >
+                      {hasTemporaryStoredProfileEdits(selectedProfile) ? (
+                        <span
+                          aria-label="Saved temporary profile edits"
+                          className="size-1.5 rounded-full bg-green-500"
+                        />
+                      ) : null}
+                      {hasUnsavedProfileEdits ? (
+                        <span
+                          aria-label="Unsaved profile edits"
+                          className="size-1.5 rounded-full bg-cyan-400"
+                        />
+                      ) : null}
+                    </span>
+                  </span>
+                </label>
                 <button
                   className="min-h-11 rounded-md border border-service-accent bg-service-accent px-4 text-sm font-semibold text-white transition-colors hover:bg-service-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
                   type="button"
@@ -1064,12 +1090,7 @@ export function FontLabSection() {
                     id="selected-role-font"
                     label="Selected role family"
                     value={selectedRoleFontOverride}
-                    onChange={(value) =>
-                      setRoleFontOverrides((currentOverrides) => ({
-                        ...currentOverrides,
-                        [selectedRole.id]: value,
-                      }))
-                    }
+                    onChange={updateSelectedRoleFont}
                   >
                     <FontFamilyOptions
                       includeGlobal
@@ -1289,6 +1310,9 @@ export function FontLabSection() {
                               </code>
                               <p className="type-caption mt-3 text-service-muted">
                                 {role.role}
+                              </p>
+                              <p className="mt-2 text-xs font-semibold leading-5 text-service-muted">
+                                {roleSpec(role)}
                               </p>
                             </div>
                             <p
