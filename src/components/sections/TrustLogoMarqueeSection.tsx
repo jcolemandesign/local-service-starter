@@ -30,23 +30,13 @@ function LogoPlaceholder({ name }: { name: string }) {
   );
 }
 
-function LogoTrack({
-  logos,
-  hidden = false,
-}: {
-  logos: string[];
-  hidden?: boolean;
-}) {
+function LogoGrid({ logos }: { logos: string[] }) {
   return (
     <ul
-      className="flex shrink-0 items-center gap-5 px-2"
-      aria-hidden={hidden ? "true" : undefined}
+      className="grid grid-cols-6 gap-4 max-lg:grid-cols-3 max-sm:grid-cols-2"
     >
       {logos.map((logo) => (
-        <li
-          className="w-60 shrink-0 max-lg:w-52 max-md:w-44"
-          key={logo}
-        >
+        <li key={logo}>
           <LogoPlaceholder name={logo} />
         </li>
       ))}
@@ -64,16 +54,16 @@ export function TrustLogoMarqueeSection({
         <div
           className={cx(
             "radius-medium",
-            "overflow-hidden border border-service-border bg-service-surface",
+            "border border-service-border bg-service-surface",
           )}
         >
           <div
             className={cx(
               "fluid-type-frame",
-              "flex items-center gap-10 px-10 py-12 max-lg:flex-col max-lg:items-start max-md:px-6 max-md:py-10",
+              "grid grid-cols-[minmax(14rem,0.28fr)_1fr] gap-10 px-10 py-12 max-lg:grid-cols-1 max-md:px-6 max-md:py-10",
             )}
           >
-            <div className="basis-1/5">
+            <div>
               <p
                 className={cx(
                   "type-text-xl",
@@ -86,19 +76,8 @@ export function TrustLogoMarqueeSection({
               </p>
             </div>
 
-            <div className="relative min-w-0 flex-1 overflow-hidden">
-              <div
-                className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-linear-to-r from-service-surface to-service-surface/0"
-                aria-hidden="true"
-              />
-              <div
-                className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-linear-to-l from-service-surface to-service-surface/0"
-                aria-hidden="true"
-              />
-              <div className="flex w-max animate-trust-marquee motion-reduce:animate-none">
-                <LogoTrack logos={logos} />
-                <LogoTrack logos={logos} hidden />
-              </div>
+            <div className="min-w-0">
+              <LogoGrid logos={logos} />
             </div>
           </div>
         </div>

@@ -562,8 +562,52 @@ function NumberControl({
   );
 }
 
+function SpacingPresetControl({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (value: number) => void;
+}) {
+  const currentPreset = spacingPresets[value - 1] ?? spacingPresets[2];
+
+  return (
+    <label className="grid gap-2">
+      <span className="type-caption font-semibold text-service-muted">
+        Section spacing
+      </span>
+      <input
+        aria-label={`Section spacing: ${currentPreset.label}`}
+        className="h-2 accent-service-accent"
+        min={1}
+        max={spacingPresets.length}
+        step={1}
+        type="range"
+        value={value}
+        onChange={(event) => onChange(Number(event.target.value))}
+      />
+      <div className="grid grid-cols-5 gap-2 text-center text-[0.625rem] font-semibold uppercase leading-4 text-service-muted">
+        {spacingPresets.map((preset) => (
+          <span
+            className={cx(
+              preset.label === currentPreset.label && "text-service-accent",
+            )}
+            key={preset.label}
+          >
+            {preset.label}
+          </span>
+        ))}
+      </div>
+    </label>
+  );
+}
+
 function isHeaderRole(role: TypeRole) {
-  return role.id.startsWith("display-") || role.id.startsWith("heading-");
+  return (
+    role.id === "display-xl" ||
+    role.id.startsWith("display-") ||
+    role.id.startsWith("heading-")
+  );
 }
 
 function isBodyRole(role: TypeRole) {
@@ -573,6 +617,13 @@ function isBodyRole(role: TypeRole) {
 }
 
 const sampleImageUrl = "/images/bg-image-sample.jpg";
+const spacingPresets = [
+  { label: "Compact", sectionGapRem: 0.75, innerGapRem: 0.75 },
+  { label: "Tight", sectionGapRem: 1.5, innerGapRem: 1 },
+  { label: "Normal", sectionGapRem: 2.5, innerGapRem: 2 },
+  { label: "Open", sectionGapRem: 4.25, innerGapRem: 3.25 },
+  { label: "Spacious", sectionGapRem: 6, innerGapRem: 4.5 },
+] as const;
 
 export function FontLabSection() {
   const [profiles, setProfiles] = useState<TypePalette[]>(() =>
@@ -595,6 +646,7 @@ export function FontLabSection() {
   );
   const [isScanningFonts, setIsScanningFonts] = useState(false);
   const [copiedTarget, setCopiedTarget] = useState<string | null>(null);
+  const [sectionSpacingPreset, setSectionSpacingPreset] = useState(3);
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(
     initialRoles[0].id,
   );
@@ -639,6 +691,24 @@ export function FontLabSection() {
   const previewTypeVariables = useMemo(
     () => typeVariableStyle(editorSettings),
     [editorSettings],
+  );
+  const selectedSpacingPreset =
+    spacingPresets[sectionSpacingPreset - 1] ?? spacingPresets[2];
+  const previewFrameStyle = useMemo(
+    () =>
+      ({
+        ...previewTypeVariables,
+        "--font-lab-section-gap": `${formatNumber(
+          selectedSpacingPreset.sectionGapRem,
+        )}rem`,
+        "--font-lab-inner-y-gap": `${formatNumber(
+          selectedSpacingPreset.innerGapRem,
+        )}rem`,
+        "--font-lab-section-divider-pad": `${formatNumber(
+          selectedSpacingPreset.sectionGapRem,
+        )}rem`,
+      }) as CSSProperties,
+    [previewTypeVariables, selectedSpacingPreset],
   );
   const livePromotionCss = useMemo(
     () => promotionCss(editorSettings),
@@ -1140,6 +1210,11 @@ export function FontLabSection() {
                 ))}
               </SelectField>
 
+              <SpacingPresetControl
+                value={sectionSpacingPreset}
+                onChange={setSectionSpacingPreset}
+              />
+
               {selectedRole ? (
                 <>
                   <SelectField
@@ -1330,9 +1405,9 @@ export function FontLabSection() {
               <div className="mt-6 flex max-h-[78svh] justify-center overflow-y-auto rounded-md border border-service-border bg-service-surface p-4 max-md:p-2">
                 <div
                   className="w-full max-w-[var(--container-site)]"
-                  style={previewTypeVariables}
+                  style={previewFrameStyle}
                 >
-                  <div className="grid gap-10 p-10 max-md:p-6">
+                  <div className="grid gap-y-[var(--font-lab-section-gap)] p-10 max-md:p-6">
                     <section className="grid gap-7">
                       <div className="border-b border-service-border pb-5">
                         <p className="type-label text-service-accent">
@@ -1384,7 +1459,7 @@ export function FontLabSection() {
                       })}
                     </section>
 
-                    <section className="grid gap-8 border-t border-service-border pt-10">
+                    <section className="grid gap-y-[var(--font-lab-inner-y-gap)] border-t border-service-border pt-[var(--font-lab-section-divider-pad)]">
                       <div className="relative aspect-[16/10] min-h-[28rem] overflow-hidden rounded-md bg-service-ink text-white max-lg:min-h-0">
                         <div
                           className="absolute inset-0 bg-cover bg-center"
@@ -1445,7 +1520,7 @@ export function FontLabSection() {
                             </div>
                           </nav>
 
-                          <div className="grid min-h-0 grid-cols-[minmax(0,0.68fr)_minmax(15rem,0.32fr)] items-end gap-8 px-8 pb-8 max-lg:grid-cols-1 max-lg:gap-6 max-md:px-5 max-md:pb-5">
+                          <div className="grid min-h-0 grid-cols-[minmax(0,0.68fr)_minmax(15rem,0.32fr)] items-end gap-x-8 gap-y-[var(--font-lab-inner-y-gap)] px-8 pb-8 max-lg:grid-cols-1 max-md:px-5 max-md:pb-5">
                             <div className="min-w-0">
                               <p
                                 className={selectableTypeClasses(
@@ -1609,7 +1684,198 @@ export function FontLabSection() {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-[minmax(0,0.72fr)_minmax(18rem,0.28fr)] gap-8 max-lg:grid-cols-1">
+                      <div className="rounded-md border border-service-border bg-white p-8 max-md:p-5">
+                        <div className="grid grid-cols-[minmax(0,0.45fr)_minmax(0,0.55fr)] gap-x-8 gap-y-[var(--font-lab-inner-y-gap)] max-lg:grid-cols-1">
+                          <div>
+                            <p
+                              className={selectableTypeClasses(
+                                "label",
+                                "type-label text-service-accent",
+                              )}
+                              {...roleSelectProps("label")}
+                            >
+                              {sectionLibraryContent.testimonialsCarousel.eyebrow}
+                            </p>
+                            <h2
+                              className={selectableTypeClasses(
+                                "heading-xl",
+                                "type-heading-xl mt-eyebrow-heading text-service-ink",
+                              )}
+                              {...roleSelectProps("heading-xl")}
+                            >
+                              {sectionLibraryContent.testimonialsCarousel.title}
+                            </h2>
+                            <p
+                              className={selectableTypeClasses(
+                                "text-lg",
+                                "type-text-lg measure-copy mt-heading-body text-service-muted",
+                              )}
+                              {...roleSelectProps("text-lg")}
+                            >
+                              {sectionLibraryContent.testimonialsCarousel.body}
+                            </p>
+                          </div>
+
+                          <div className="grid gap-4">
+                            {sectionLibraryContent.testimonialsCarousel.items
+                              .slice(0, 2)
+                              .map((story) => (
+                                <article
+                                  className="rounded-md border border-service-border bg-service-surface p-6"
+                                  key={story.author}
+                                >
+                                  <p
+                                    className={selectableTypeClasses(
+                                      "heading-sm",
+                                      "type-heading-sm text-service-ink",
+                                    )}
+                                    {...roleSelectProps("heading-sm")}
+                                  >
+                                    “{story.quote}”
+                                  </p>
+                                  <footer className="mt-6 border-t border-service-border pt-4">
+                                    <p
+                                      className={selectableTypeClasses(
+                                        "label",
+                                        "type-label text-service-accent",
+                                      )}
+                                      {...roleSelectProps("label")}
+                                    >
+                                      {story.author}
+                                    </p>
+                                    <p
+                                      className={selectableTypeClasses(
+                                        "caption",
+                                        "type-caption mt-heading-body-sm text-service-muted",
+                                      )}
+                                      {...roleSelectProps("caption")}
+                                    >
+                                      {story.service} / {story.city}
+                                    </p>
+                                  </footer>
+                                </article>
+                              ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="rounded-md border border-service-border bg-service-surface p-8 max-md:p-5">
+                        <div className="grid grid-cols-[minmax(0,0.62fr)_minmax(0,0.38fr)] items-end gap-6 max-lg:grid-cols-1">
+                          <div>
+                            <p
+                              className={selectableTypeClasses(
+                                "label",
+                                "type-label text-service-accent",
+                              )}
+                              {...roleSelectProps("label")}
+                            >
+                              {sectionLibraryContent.services.eyebrow}
+                            </p>
+                            <h2
+                              className={selectableTypeClasses(
+                                "heading-xl",
+                                "type-heading-xl mt-eyebrow-heading text-service-ink",
+                              )}
+                              {...roleSelectProps("heading-xl")}
+                            >
+                              {sectionLibraryContent.services.title}
+                            </h2>
+                          </div>
+                          <p
+                            className={selectableTypeClasses(
+                              "text-lg",
+                              "type-text-lg text-service-muted",
+                            )}
+                            {...roleSelectProps("text-lg")}
+                          >
+                            {sectionLibraryContent.services.body}
+                          </p>
+                        </div>
+                        <div className="mt-[var(--font-lab-inner-y-gap)] grid grid-cols-3 gap-x-4 gap-y-[var(--font-lab-inner-y-gap)] max-lg:grid-cols-1">
+                          {sectionLibraryContent.services.items.map((service) => (
+                            <article
+                              className="grid min-h-56 content-between rounded-md border border-service-border bg-white p-6"
+                              key={service.title}
+                            >
+                              <div>
+                                <p
+                                  className={selectableTypeClasses(
+                                    "label",
+                                    "type-label text-service-accent",
+                                  )}
+                                  {...roleSelectProps("label")}
+                                >
+                                  Service
+                                </p>
+                                <h3
+                                  className={selectableTypeClasses(
+                                    "heading-sm",
+                                    "type-heading-sm mt-eyebrow-heading-sm text-service-ink",
+                                  )}
+                                  {...roleSelectProps("heading-sm")}
+                                >
+                                  {service.title}
+                                </h3>
+                              </div>
+                              <p
+                                className={selectableTypeClasses(
+                                  "text-sm",
+                                  "type-text-sm text-service-muted",
+                                )}
+                                {...roleSelectProps("text-sm")}
+                              >
+                                {service.body}
+                              </p>
+                            </article>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="rounded-md bg-service-ink p-10 text-white max-md:p-6">
+                        <p
+                          className={selectableTypeClasses(
+                            "label",
+                            "type-label text-white/60",
+                          )}
+                          {...roleSelectProps("label")}
+                        >
+                          Positioning
+                        </p>
+                        <div className="mt-[var(--font-lab-inner-y-gap)] grid grid-cols-[minmax(0,0.72fr)_minmax(14rem,0.28fr)] gap-x-8 gap-y-[var(--font-lab-inner-y-gap)] max-lg:grid-cols-1">
+                          <h2
+                            className={selectableTypeClasses(
+                              "display-lg",
+                              "type-display-lg max-w-4xl text-white",
+                            )}
+                            {...roleSelectProps("display-lg")}
+                          >
+                            {sectionLibraryContent.contentPositioningSplit.title}
+                          </h2>
+                          <div className="grid content-end gap-6">
+                            <p
+                              className={selectableTypeClasses(
+                                "text-lg",
+                                "type-text-lg text-white/74",
+                              )}
+                              {...roleSelectProps("text-lg")}
+                            >
+                              {sectionLibraryContent.contentPositioningSplit.body}
+                            </p>
+                            <button
+                              className={selectableTypeClasses(
+                                "text-sm",
+                                "type-text-sm rounded-md bg-white px-4 py-3 font-semibold text-service-ink",
+                              )}
+                              type="button"
+                              {...roleSelectProps("text-sm")}
+                            >
+                              {sectionLibraryContent.contentPositioningSplit.action}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-[minmax(0,0.72fr)_minmax(18rem,0.28fr)] gap-x-8 gap-y-[var(--font-lab-inner-y-gap)] max-lg:grid-cols-1">
                         <div>
                           <p
                             className={selectableTypeClasses(
@@ -1674,7 +1940,7 @@ export function FontLabSection() {
                         </aside>
                       </div>
 
-                      <div className="grid grid-cols-[minmax(0,0.62fr)_minmax(0,0.38fr)] gap-8 max-lg:grid-cols-1">
+                      <div className="grid grid-cols-[minmax(0,0.62fr)_minmax(0,0.38fr)] gap-x-8 gap-y-[var(--font-lab-inner-y-gap)] max-lg:grid-cols-1">
                         <div className="grid gap-5">
                           <p
                             className={selectableTypeClasses(
@@ -1717,7 +1983,7 @@ export function FontLabSection() {
                           </p>
                         </div>
 
-                        <blockquote className="grid content-between gap-8 bg-service-ink p-7 text-white">
+                        <blockquote className="grid content-between gap-y-[var(--font-lab-inner-y-gap)] bg-service-ink p-7 text-white">
                           <p
                             className={selectableTypeClasses(
                               "heading-lg",
@@ -1870,7 +2136,7 @@ export function FontLabSection() {
                       </div>
                     </section>
 
-                    <section className="grid gap-4 border-t border-service-border pt-10">
+                    <section className="grid gap-4 border-t border-service-border pt-[var(--font-lab-section-divider-pad)]">
                       {roleSpecimenCards}
                     </section>
                   </div>
