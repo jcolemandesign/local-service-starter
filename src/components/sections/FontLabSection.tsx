@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { CSSProperties } from "react";
+import type { CSSProperties, KeyboardEvent, MouseEvent } from "react";
 import { Card } from "@/components/primitives";
 import { sectionLibraryContent } from "@/content/section-library";
 import {
@@ -596,10 +596,18 @@ export function FontLabSection() {
   );
   const [isScanningFonts, setIsScanningFonts] = useState(false);
   const [copiedTarget, setCopiedTarget] = useState<string | null>(null);
-  const [selectedRoleId, setSelectedRoleId] = useState(initialRoles[0].id);
+  const [selectedRoleId, setSelectedRoleId] = useState<string | null>(
+    initialRoles[0].id,
+  );
+  const [roleSelectionPulseId, setRoleSelectionPulseId] = useState<
+    string | null
+  >(null);
 
   const selectedRole = useMemo(
-    () => roles.find((role) => role.id === selectedRoleId) ?? roles[0],
+    () =>
+      selectedRoleId
+        ? roles.find((role) => role.id === selectedRoleId) ?? null
+        : null,
     [roles, selectedRoleId],
   );
 
@@ -618,7 +626,7 @@ export function FontLabSection() {
   );
 
   const selectedRoleFontOverride =
-    roleFontOverrides[selectedRole.id] ?? "global";
+    selectedRole ? roleFontOverrides[selectedRole.id] ?? "global" : "global";
   const globalFontFamily = fontFamilyForValue(globalFont, customFont);
   const editorSettings = useMemo<TypeSettings>(
     () => ({
@@ -664,7 +672,9 @@ export function FontLabSection() {
     )} / ${roleSpec(role)} / ${role.measureCh}ch`;
   }
 
-  const selectedRoleBrief = briefForRole(selectedRole);
+  const selectedRoleBrief = selectedRole
+    ? briefForRole(selectedRole)
+    : "No type role selected.";
   const allTypeStylesBrief = [
     "Update the project type system using these font lab decisions:",
     "",
@@ -684,6 +694,10 @@ export function FontLabSection() {
   ].join("\n");
 
   function updateSelectedRole(nextValues: Partial<TypeRole>) {
+    if (!selectedRole) {
+      return;
+    }
+
     setRoles((currentRoles) =>
       currentRoles.map((role) =>
         role.id === selectedRole.id ? { ...role, ...nextValues } : role,
@@ -691,7 +705,84 @@ export function FontLabSection() {
     );
   }
 
+  function selectTypeRole(roleId: string) {
+    setSelectedRoleId(roleId);
+    setRoleSelectionPulseId(roleId);
+    window.setTimeout(() => {
+      setRoleSelectionPulseId((currentRoleId) =>
+        currentRoleId === roleId ? null : currentRoleId,
+      );
+    }, 700);
+  }
+
+  function clearSelectedRole() {
+    setSelectedRoleId(null);
+    setRoleSelectionPulseId(null);
+  }
+
+  function handleInertSurfaceClick(event: MouseEvent<HTMLElement>) {
+    const target = event.target;
+
+    if (!(target instanceof Element)) {
+      return;
+    }
+
+    if (
+      target.closest(
+        "button, input, select, textarea, label, a, [data-selects-type-role]",
+      )
+    ) {
+      return;
+    }
+
+    clearSelectedRole();
+  }
+
+  function handleTypeRoleKeyDown(
+    event: KeyboardEvent<HTMLElement>,
+    roleId: string,
+  ) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      selectTypeRole(roleId);
+    }
+  }
+
+  function roleSelectProps(roleId: string) {
+    return {
+      role: "button" as const,
+      tabIndex: 0,
+      "data-selects-type-role": true,
+      onClick: (event: MouseEvent<HTMLElement>) => {
+        event.stopPropagation();
+        selectTypeRole(roleId);
+      },
+      onKeyDown: (event: KeyboardEvent<HTMLElement>) => {
+        event.stopPropagation();
+        handleTypeRoleKeyDown(event, roleId);
+      },
+    };
+  }
+
+  function selectableTypeClasses(roleId: string, classes: string) {
+    const isSelected = roleId === selectedRoleId;
+    const shouldPulse = roleId === roleSelectionPulseId;
+
+    return cx(
+      classes,
+      "-m-2 rounded-md p-2 transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
+      "cursor-pointer hover:bg-service-accent/10 hover:ring-1 hover:ring-service-accent/30",
+      isSelected &&
+        "bg-service-accent/10 ring-2 ring-service-accent/45 shadow-[0_0_0_4px_rgb(31_122_90_/_0.08)]",
+      shouldPulse && "motion-safe:animate-pulse",
+    );
+  }
+
   function resetSelectedRole() {
+    if (!selectedRole) {
+      return;
+    }
+
     const original = selectedProfile.roles.find(
       (role) => role.id === selectedRole.id,
     );
@@ -844,7 +935,7 @@ export function FontLabSection() {
   }
 
   return (
-    <section className="section-space-med">
+    <section className="section-space-med" onClick={handleInertSurfaceClick}>
       <div className="w-full px-6 max-md:px-4">
         <div className="grid grid-cols-[minmax(24rem,34rem)_minmax(0,1fr)] gap-6 max-lg:grid-cols-1">
           <aside className="sticky top-4 max-h-[calc(100svh-2rem)] self-start overflow-y-auto rounded-lg border border-service-border bg-white p-6 shadow-service max-lg:static max-lg:max-h-none max-lg:overflow-visible max-md:p-5">
@@ -956,9 +1047,10 @@ export function FontLabSection() {
               <SelectField
                 id="selected-role"
                 label="Selected role"
-                value={selectedRole.id}
-                onChange={setSelectedRoleId}
+                value={selectedRole?.id ?? ""}
+                onChange={(value) => setSelectedRoleId(value || null)}
               >
+                <option value="">No role selected</option>
                 {roles.map((role) => (
                   <option key={role.id} value={role.id}>
                     {role.token}
@@ -966,149 +1058,161 @@ export function FontLabSection() {
                 ))}
               </SelectField>
 
-              <SelectField
-                id="selected-role-font"
-                label="Selected role family"
-                value={selectedRoleFontOverride}
-                onChange={(value) =>
-                  setRoleFontOverrides((currentOverrides) => ({
-                    ...currentOverrides,
-                    [selectedRole.id]: value,
-                  }))
-                }
-              >
-                <FontFamilyOptions
-                  includeGlobal
-                  localFontOptions={localFontOptions}
-                />
-              </SelectField>
+              {selectedRole ? (
+                <>
+                  <SelectField
+                    id="selected-role-font"
+                    label="Selected role family"
+                    value={selectedRoleFontOverride}
+                    onChange={(value) =>
+                      setRoleFontOverrides((currentOverrides) => ({
+                        ...currentOverrides,
+                        [selectedRole.id]: value,
+                      }))
+                    }
+                  >
+                    <FontFamilyOptions
+                      includeGlobal
+                      localFontOptions={localFontOptions}
+                    />
+                  </SelectField>
 
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  className="min-h-11 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
-                  type="button"
-                  onClick={() => applySelectedFontToRoles(isBodyRole)}
-                >
-                  Set Body Font
-                </button>
-                <button
-                  className="min-h-11 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
-                  type="button"
-                  onClick={() => applySelectedFontToRoles(isHeaderRole)}
-                >
-                  Set Header Fonts
-                </button>
-              </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      className="min-h-11 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                      type="button"
+                      onClick={() => applySelectedFontToRoles(isBodyRole)}
+                    >
+                      Set Body Font
+                    </button>
+                    <button
+                      className="min-h-11 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                      type="button"
+                      onClick={() => applySelectedFontToRoles(isHeaderRole)}
+                    >
+                      Set Header Fonts
+                    </button>
+                  </div>
 
-              <div className="grid gap-4 rounded-md border border-service-border bg-service-surface p-4">
-                <NumberControl
-                  label="Min rem"
-                  min={0.5}
-                  max={8}
-                  step={0.0625}
-                  value={selectedRole.minRem}
-                  onChange={(value) => updateSelectedRole({ minRem: value })}
-                />
-                <NumberControl
-                  label="Max rem"
-                  min={0.5}
-                  max={9}
-                  step={0.0625}
-                  value={selectedRole.maxRem}
-                  onChange={(value) => updateSelectedRole({ maxRem: value })}
-                />
-                <NumberControl
-                  label="Line height"
-                  min={0.8}
-                  max={2}
-                  step={0.01}
-                  value={selectedRole.lineHeight}
-                  onChange={(value) => updateSelectedRole({ lineHeight: value })}
-                />
-                <NumberControl
-                  label="Weight"
-                  min={300}
-                  max={900}
-                  step={10}
-                  value={selectedRole.weight}
-                  onChange={(value) => updateSelectedRole({ weight: value })}
-                />
-                <NumberControl
-                  label="Measure ch"
-                  min={10}
-                  max={90}
-                  step={1}
-                  value={selectedRole.measureCh}
-                  onChange={(value) => updateSelectedRole({ measureCh: value })}
-                />
+                  <div className="grid gap-4 rounded-md border border-service-border bg-service-surface p-4">
+                    <NumberControl
+                      label="Min rem"
+                      min={0.5}
+                      max={8}
+                      step={0.0625}
+                      value={selectedRole.minRem}
+                      onChange={(value) => updateSelectedRole({ minRem: value })}
+                    />
+                    <NumberControl
+                      label="Max rem"
+                      min={0.5}
+                      max={9}
+                      step={0.0625}
+                      value={selectedRole.maxRem}
+                      onChange={(value) => updateSelectedRole({ maxRem: value })}
+                    />
+                    <NumberControl
+                      label="Line height"
+                      min={0.8}
+                      max={2}
+                      step={0.01}
+                      value={selectedRole.lineHeight}
+                      onChange={(value) =>
+                        updateSelectedRole({ lineHeight: value })
+                      }
+                    />
+                    <NumberControl
+                      label="Weight"
+                      min={300}
+                      max={900}
+                      step={10}
+                      value={selectedRole.weight}
+                      onChange={(value) => updateSelectedRole({ weight: value })}
+                    />
+                    <NumberControl
+                      label="Measure ch"
+                      min={10}
+                      max={90}
+                      step={1}
+                      value={selectedRole.measureCh}
+                      onChange={(value) =>
+                        updateSelectedRole({ measureCh: value })
+                      }
+                    />
 
-                <SelectField
-                  id="selected-wrap"
-                  label="Wrap"
-                  value={selectedRole.wrap}
-                  onChange={(value) =>
-                    updateSelectedRole({ wrap: value as WrapMode })
-                  }
-                >
-                  <option value="balance">Balanced</option>
-                  <option value="pretty">Pretty</option>
-                  <option value="wrap">Default</option>
-                </SelectField>
+                    <SelectField
+                      id="selected-wrap"
+                      label="Wrap"
+                      value={selectedRole.wrap}
+                      onChange={(value) =>
+                        updateSelectedRole({ wrap: value as WrapMode })
+                      }
+                    >
+                      <option value="balance">Balanced</option>
+                      <option value="pretty">Pretty</option>
+                      <option value="wrap">Default</option>
+                    </SelectField>
 
-                <NumberControl
-                  label="Tracking em"
-                  min={0}
-                  max={0.18}
-                  step={0.01}
-                  value={selectedRole.letterSpacingEm}
-                  onChange={(value) =>
-                    updateSelectedRole({ letterSpacingEm: value })
-                  }
-                />
+                    <NumberControl
+                      label="Tracking em"
+                      min={0}
+                      max={0.18}
+                      step={0.01}
+                      value={selectedRole.letterSpacingEm}
+                      onChange={(value) =>
+                        updateSelectedRole({ letterSpacingEm: value })
+                      }
+                    />
 
-                <SelectField
-                  id="selected-capitalization"
-                  label="Capitalization"
-                  value={selectedRole.capitalization}
-                  onChange={(value) =>
-                    updateSelectedRole({
-                      capitalization: value as CapitalizationStyle,
-                    })
-                  }
-                >
-                  <option value="none">None</option>
-                  <option value="uppercase">Uppercase</option>
-                  <option value="lowercase">Lowercase</option>
-                  <option value="capitalize">Title Case</option>
-                </SelectField>
-              </div>
+                    <SelectField
+                      id="selected-capitalization"
+                      label="Capitalization"
+                      value={selectedRole.capitalization}
+                      onChange={(value) =>
+                        updateSelectedRole({
+                          capitalization: value as CapitalizationStyle,
+                        })
+                      }
+                    >
+                      <option value="none">None</option>
+                      <option value="uppercase">Uppercase</option>
+                      <option value="lowercase">Lowercase</option>
+                      <option value="capitalize">Title Case</option>
+                    </SelectField>
+                  </div>
 
-              <button
-                className="min-h-11 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
-                type="button"
-                onClick={resetSelectedRole}
-              >
-                Reset Selected Role
-              </button>
+                  <button
+                    className="min-h-11 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                    type="button"
+                    onClick={resetSelectedRole}
+                  >
+                    Reset Selected Role
+                  </button>
 
-              <button
-                className="min-h-11 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
-                type="button"
-                onClick={() =>
-                  copyBrief(
-                    [
-                      "Update this typography role from the font lab:",
-                      selectedRoleBrief,
-                      "Promote this into the shared type utilities only. Do not redesign sections or rewrite copy.",
-                    ].join("\n"),
-                    selectedRole.id,
-                  )
-                }
-              >
-                {copiedTarget === selectedRole.id
-                  ? "Copied Selected Style"
-                  : "Copy Selected Style"}
-              </button>
+                  <button
+                    className="min-h-11 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                    type="button"
+                    onClick={() =>
+                      copyBrief(
+                        [
+                          "Update this typography role from the font lab:",
+                          selectedRoleBrief,
+                          "Promote this into the shared type utilities only. Do not redesign sections or rewrite copy.",
+                        ].join("\n"),
+                        selectedRole.id,
+                      )
+                    }
+                  >
+                    {copiedTarget === selectedRole.id
+                      ? "Copied Selected Style"
+                      : "Copy Selected Style"}
+                  </button>
+                </>
+              ) : (
+                <p className="rounded-md border border-service-border bg-service-surface p-4 text-sm font-semibold text-service-muted">
+                  No type role selected. Click copy in the preview to edit it.
+                </p>
+              )}
 
               <button
                 className="min-h-11 rounded-md border border-service-accent bg-service-accent px-4 text-sm font-semibold text-white transition-colors hover:bg-service-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
@@ -1169,10 +1273,15 @@ export function FontLabSection() {
                         return (
                           <article
                             className={cx(
-                              "grid grid-cols-[minmax(9rem,0.28fr)_minmax(0,1fr)] gap-6 border-b border-service-border max-md:grid-cols-1",
+                              "grid cursor-pointer grid-cols-[minmax(9rem,0.28fr)_minmax(0,1fr)] gap-6 border-b border-service-border rounded-md transition-all duration-200 hover:bg-service-accent/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent max-md:grid-cols-1",
                               isLargestDisplay ? "pb-10" : "pb-6",
+                              role.id === selectedRoleId &&
+                                "bg-service-accent/10 ring-2 ring-service-accent/45 shadow-[0_0_0_4px_rgb(31_122_90_/_0.08)]",
+                              role.id === roleSelectionPulseId &&
+                                "motion-safe:animate-pulse",
                             )}
                             key={role.id}
+                            {...roleSelectProps(role.id)}
                           >
                             <div>
                               <code className="rounded bg-service-surface px-2 py-1 text-xs font-semibold text-service-ink">
@@ -1215,43 +1324,73 @@ export function FontLabSection() {
                             aria-label="Floating bento type specimen navigation"
                             className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-6 py-4 max-lg:grid-cols-[auto_1fr] max-md:px-4"
                           >
-                            <a
-                              className="type-label flex h-11 w-32 items-center justify-center rounded-md border border-white/20 bg-white/90 p-1 text-service-muted shadow-service backdrop-blur-md"
-                              href="#"
+                            <button
+                              className={selectableTypeClasses(
+                                "label",
+                                "type-label flex h-11 w-32 items-center justify-center rounded-md border border-white/20 bg-white/90 p-1 text-service-muted shadow-service backdrop-blur-md",
+                              )}
+                              type="button"
+                              {...roleSelectProps("label")}
                             >
                               {sectionLibraryContent.navPrimary.logoLabel}
-                            </a>
+                            </button>
                             <ul className="type-text-sm flex min-h-11 items-center gap-1 rounded-md border border-white/20 bg-white/90 p-1 font-semibold text-service-ink shadow-service backdrop-blur-md max-lg:hidden">
                               {sectionLibraryContent.navPrimary.links.map((link) => (
                                 <li key={link.label}>
-                                  <a
-                                    className="flex h-9 items-center px-3"
-                                    href="#"
+                                  <button
+                                    className={selectableTypeClasses(
+                                      "text-sm",
+                                      "flex h-9 items-center px-3",
+                                    )}
+                                    type="button"
+                                    {...roleSelectProps("text-sm")}
                                   >
                                     {link.label}
-                                  </a>
+                                  </button>
                                 </li>
                               ))}
                             </ul>
                             <div className="flex justify-self-end max-lg:hidden">
-                              <a
-                                className="type-text-sm inline-flex min-h-11 items-center justify-center rounded-md bg-service-accent px-4 font-semibold text-white"
-                                href="#"
+                              <button
+                                className={selectableTypeClasses(
+                                  "text-sm",
+                                  "type-text-sm inline-flex min-h-11 items-center justify-center rounded-md bg-service-accent px-4 font-semibold text-white",
+                                )}
+                                type="button"
+                                {...roleSelectProps("text-sm")}
                               >
                                 {sectionLibraryContent.navPrimary.action}
-                              </a>
+                              </button>
                             </div>
                           </nav>
 
                           <div className="grid min-h-0 grid-cols-[minmax(0,0.68fr)_minmax(15rem,0.32fr)] items-end gap-8 px-8 pb-8 max-lg:grid-cols-1 max-lg:gap-6 max-md:px-5 max-md:pb-5">
                             <div className="min-w-0">
-                              <p className="type-label text-white/70">
+                              <p
+                                className={selectableTypeClasses(
+                                  "label",
+                                  "type-label text-white/70",
+                                )}
+                                {...roleSelectProps("label")}
+                              >
                                 {sectionLibraryContent.heroFullscreen.eyebrow}
                               </p>
-                              <h2 className="type-heading-lg measure-copy-wide mt-5 text-white">
+                              <h2
+                                className={selectableTypeClasses(
+                                  "heading-lg",
+                                  "type-heading-lg measure-copy-wide mt-5 text-white",
+                                )}
+                                {...roleSelectProps("heading-lg")}
+                              >
                                 {sectionLibraryContent.heroFullscreen.title}
                               </h2>
-                              <p className="type-text-lg measure-copy mt-5 text-white/78">
+                              <p
+                                className={selectableTypeClasses(
+                                  "text-lg",
+                                  "type-text-lg measure-copy mt-5 text-white/78",
+                                )}
+                                {...roleSelectProps("text-lg")}
+                              >
                                 {sectionLibraryContent.heroFullscreen.body}
                               </p>
                             </div>
@@ -1263,20 +1402,44 @@ export function FontLabSection() {
                                     className="rounded-md border border-white/18 bg-white/12 p-4 backdrop-blur-md"
                                     key={signal.label}
                                   >
-                                    <p className="type-heading-sm leading-none">
+                                    <p
+                                      className={selectableTypeClasses(
+                                        "heading-sm",
+                                        "type-heading-sm leading-none",
+                                      )}
+                                      {...roleSelectProps("heading-sm")}
+                                    >
                                       {signal.value}
                                     </p>
-                                    <p className="type-caption mt-2 text-white/72">
+                                    <p
+                                      className={selectableTypeClasses(
+                                        "caption",
+                                        "type-caption mt-2 text-white/72",
+                                      )}
+                                      {...roleSelectProps("caption")}
+                                    >
                                       {signal.label}
                                     </p>
                                   </div>
                                 ),
                               )}
                               <div className="col-span-2 rounded-md border border-white/18 bg-white/12 p-5 backdrop-blur-md">
-                                <p className="type-heading-md leading-none">
+                                <p
+                                  className={selectableTypeClasses(
+                                    "heading-md",
+                                    "type-heading-md leading-none",
+                                  )}
+                                  {...roleSelectProps("heading-md")}
+                                >
                                   {sectionLibraryContent.heroFullscreen.review.rating}
                                 </p>
-                                <p className="type-text-sm mt-3 font-semibold">
+                                <p
+                                  className={selectableTypeClasses(
+                                    "text-sm",
+                                    "type-text-sm mt-3 font-semibold",
+                                  )}
+                                  {...roleSelectProps("text-sm")}
+                                >
                                   {sectionLibraryContent.heroFullscreen.review.label}
                                 </p>
                               </div>
@@ -1287,13 +1450,31 @@ export function FontLabSection() {
 
                       <div className="grid grid-cols-[minmax(0,0.72fr)_minmax(18rem,0.28fr)] gap-8 max-lg:grid-cols-1">
                         <div>
-                          <p className="type-label text-service-accent">
+                          <p
+                            className={selectableTypeClasses(
+                              "label",
+                              "type-label text-service-accent",
+                            )}
+                            {...roleSelectProps("label")}
+                          >
                             Editorial texture
                           </p>
-                          <h2 className="type-display-lg mt-eyebrow-display text-service-ink">
+                          <h2
+                            className={selectableTypeClasses(
+                              "display-lg",
+                              "type-display-lg mt-eyebrow-display text-service-ink",
+                            )}
+                            {...roleSelectProps("display-lg")}
+                          >
                             A service brand should feel clear before it feels clever.
                           </h2>
-                          <p className="type-text-xl measure-lead mt-display-body text-service-muted">
+                          <p
+                            className={selectableTypeClasses(
+                              "text-xl",
+                              "type-text-xl measure-lead mt-display-body text-service-muted",
+                            )}
+                            {...roleSelectProps("text-xl")}
+                          >
                             This section tests long-form rhythm, short emphatic
                             lines, supporting paragraphs, captions, labels, and
                             mixed-density layouts without relying on imagery.
@@ -1301,13 +1482,31 @@ export function FontLabSection() {
                         </div>
 
                         <aside className="grid content-start gap-4 border-l border-service-border pl-6 max-lg:border-l-0 max-lg:border-t max-lg:pl-0 max-lg:pt-6">
-                          <p className="type-caption text-service-muted">
+                          <p
+                            className={selectableTypeClasses(
+                              "caption",
+                              "type-caption text-service-muted",
+                            )}
+                            {...roleSelectProps("caption")}
+                          >
                             Profile sample
                           </p>
-                          <p className="type-heading-sm text-service-ink">
+                          <p
+                            className={selectableTypeClasses(
+                              "heading-sm",
+                              "type-heading-sm text-service-ink",
+                            )}
+                            {...roleSelectProps("heading-sm")}
+                          >
                             Same words, different hierarchy.
                           </p>
-                          <p className="type-text-sm text-service-muted">
+                          <p
+                            className={selectableTypeClasses(
+                              "text-sm",
+                              "type-text-sm text-service-muted",
+                            )}
+                            {...roleSelectProps("text-sm")}
+                          >
                             A compact sidebar exposes caption, small body, and
                             card heading behavior in a narrow measure.
                           </p>
@@ -1316,7 +1515,13 @@ export function FontLabSection() {
 
                       <div className="grid grid-cols-[minmax(0,0.62fr)_minmax(0,0.38fr)] gap-8 max-lg:grid-cols-1">
                         <div className="grid gap-5">
-                          <p className="type-text-lg measure-copy-wide text-service-ink">
+                          <p
+                            className={selectableTypeClasses(
+                              "text-lg",
+                              "type-text-lg measure-copy-wide text-service-ink",
+                            )}
+                            {...roleSelectProps("text-lg")}
+                          >
                             Homeowners often arrive with a practical concern:
                             a leak under the sink, a noisy unit, a room that
                             will not cool, or a repair bill they do not fully
@@ -1324,14 +1529,26 @@ export function FontLabSection() {
                             sequence, and trust before the visitor has decided
                             whether to call.
                           </p>
-                          <p className="type-text-md measure-copy text-service-muted">
+                          <p
+                            className={selectableTypeClasses(
+                              "text-md",
+                              "type-text-md measure-copy text-service-muted",
+                            )}
+                            {...roleSelectProps("text-md")}
+                          >
                             Body copy should hold up across plain explanations,
                             proof points, qualifications, and next-step
                             instructions. It should be easy to scan, but still
                             substantial enough to support a premium local
                             service brand.
                           </p>
-                          <p className="type-text-sm measure-caption text-service-muted">
+                          <p
+                            className={selectableTypeClasses(
+                              "text-sm",
+                              "type-text-sm measure-caption text-service-muted",
+                            )}
+                            {...roleSelectProps("text-sm")}
+                          >
                             Smaller paragraphs test whether supporting content
                             remains useful without becoming whisper-thin,
                             cramped, or visually detached from the rest of the
@@ -1340,15 +1557,33 @@ export function FontLabSection() {
                         </div>
 
                         <blockquote className="grid content-between gap-8 bg-service-ink p-7 text-white">
-                          <p className="type-heading-lg">
+                          <p
+                            className={selectableTypeClasses(
+                              "heading-lg",
+                              "type-heading-lg",
+                            )}
+                            {...roleSelectProps("heading-lg")}
+                          >
                             The best local service pages make the next step feel
                             obvious, not forced.
                           </p>
                           <footer>
-                            <p className="type-label text-white/60">
+                            <p
+                              className={selectableTypeClasses(
+                                "label",
+                                "type-label text-white/60",
+                              )}
+                              {...roleSelectProps("label")}
+                            >
                               Pullquote rhythm
                             </p>
-                            <p className="type-caption mt-heading-body-sm text-white/70">
+                            <p
+                              className={selectableTypeClasses(
+                                "caption",
+                                "type-caption mt-heading-body-sm text-white/70",
+                              )}
+                              {...roleSelectProps("caption")}
+                            >
                               Useful for testimonials, process notes, and
                               editorial emphasis.
                             </p>
@@ -1378,13 +1613,31 @@ export function FontLabSection() {
                             className="grid gap-4 border border-service-border bg-service-surface p-6"
                             key={card.title}
                           >
-                            <p className="type-label text-service-accent">
+                            <p
+                              className={selectableTypeClasses(
+                                "label",
+                                "type-label text-service-accent",
+                              )}
+                              {...roleSelectProps("label")}
+                            >
                               {card.eyebrow}
                             </p>
-                            <h3 className="type-heading-sm text-service-ink">
+                            <h3
+                              className={selectableTypeClasses(
+                                "heading-sm",
+                                "type-heading-sm text-service-ink",
+                              )}
+                              {...roleSelectProps("heading-sm")}
+                            >
                               {card.title}
                             </h3>
-                            <p className="type-text-sm text-service-muted">
+                            <p
+                              className={selectableTypeClasses(
+                                "text-sm",
+                                "type-text-sm text-service-muted",
+                              )}
+                              {...roleSelectProps("text-sm")}
+                            >
                               {card.body}
                             </p>
                           </article>
@@ -1393,7 +1646,13 @@ export function FontLabSection() {
 
                       <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-4 max-lg:grid-cols-1">
                         <div className="border border-service-border p-6">
-                          <p className="type-label text-service-accent">
+                          <p
+                            className={selectableTypeClasses(
+                              "label",
+                              "type-label text-service-accent",
+                            )}
+                            {...roleSelectProps("label")}
+                          >
                             Dense list
                           </p>
                           <ul className="mt-5 grid gap-3">
@@ -1402,7 +1661,14 @@ export function FontLabSection() {
                               "Body rows need enough line height for scanning.",
                               "Microcopy should still feel connected.",
                             ].map((item) => (
-                              <li className="type-text-md text-service-ink" key={item}>
+                              <li
+                                className={selectableTypeClasses(
+                                  "text-md",
+                                  "type-text-md text-service-ink",
+                                )}
+                                key={item}
+                                {...roleSelectProps("text-md")}
+                              >
                                 {item}
                               </li>
                             ))}
@@ -1419,10 +1685,22 @@ export function FontLabSection() {
                               className="border-r border-service-border p-6 last:border-r-0 max-md:border-b max-md:border-r-0 max-md:last:border-b-0"
                               key={label}
                             >
-                              <p className="type-heading-lg text-service-ink">
+                              <p
+                                className={selectableTypeClasses(
+                                  "heading-lg",
+                                  "type-heading-lg text-service-ink",
+                                )}
+                                {...roleSelectProps("heading-lg")}
+                              >
                                 {value}
                               </p>
-                              <p className="type-caption mt-heading-body-sm text-service-muted">
+                              <p
+                                className={selectableTypeClasses(
+                                  "caption",
+                                  "type-caption mt-heading-body-sm text-service-muted",
+                                )}
+                                {...roleSelectProps("caption")}
+                              >
                                 {label}
                               </p>
                             </div>
@@ -1441,7 +1719,7 @@ export function FontLabSection() {
                 override === "global"
                   ? globalFontFamily
                   : fontFamilyForValue(override, customFont);
-              const isSelected = role.id === selectedRole.id;
+              const isSelected = role.id === selectedRole?.id;
 
               return (
                 <Card
@@ -1486,7 +1764,7 @@ export function FontLabSection() {
                       <button
                         className="min-h-10 rounded-md border border-service-border bg-white px-3 text-xs font-semibold text-service-accent transition-colors hover:border-service-accent hover:bg-service-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
                         type="button"
-                        onClick={() => setSelectedRoleId(role.id)}
+                        onClick={() => selectTypeRole(role.id)}
                       >
                         Tune Role
                       </button>
@@ -1510,8 +1788,9 @@ export function FontLabSection() {
                   </div>
 
                   <p
-                    className="text-service-ink"
+                    className={selectableTypeClasses(role.id, "text-service-ink")}
                     style={previewStyle(role, roleFontFamily)}
+                    {...roleSelectProps(role.id)}
                   >
                     {role.sample}
                   </p>
