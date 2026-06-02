@@ -161,90 +161,134 @@ body {
   }
 
   .type-display-xl {
-    font-size: clamp(3.5rem, calc(4.8611111111cqw + 2.3333333333rem), 7rem);
-    line-height: 0.92;
-    font-weight: 680;
-    text-wrap: balance;
+    font-family: var(--type-display-xl-font, var(--font-sans));
+    font-size: var(--type-display-xl-size, clamp(3.5rem, calc(4.8611111111cqw + 2.3333333333rem), 7rem));
+    line-height: var(--type-display-xl-leading, 0.92);
+    font-weight: var(--type-display-xl-weight, 680);
+    letter-spacing: var(--type-display-xl-tracking);
+    text-transform: var(--type-display-xl-transform);
+    text-wrap: var(--type-display-xl-wrap, balance);
   }
 
   .type-display-lg {
-    font-size: clamp(2.75rem, calc(3.7878787879cqw + 2.0909090909rem), 5.5rem);
-    line-height: 0.95;
-    font-weight: 670;
-    text-wrap: balance;
+    font-family: var(--type-display-lg-font, var(--font-sans));
+    font-size: var(--type-display-lg-size, clamp(2.75rem, calc(3.7878787879cqw + 2.0909090909rem), 5.5rem));
+    line-height: var(--type-display-lg-leading, 0.95);
+    font-weight: var(--type-display-lg-weight, 670);
+    letter-spacing: var(--type-display-lg-tracking);
+    text-transform: var(--type-display-lg-transform);
+    text-wrap: var(--type-display-lg-wrap, balance);
   }
 
   .type-heading-xl {
-    font-size: clamp(2.25rem, calc(2.9166666667cqw + 1.55rem), 4rem);
-    line-height: 1;
-    font-weight: 660;
-    text-wrap: balance;
+    font-family: var(--type-heading-xl-font, var(--font-sans));
+    font-size: var(--type-heading-xl-size, clamp(2.25rem, calc(2.9166666667cqw + 1.55rem), 4rem));
+    line-height: var(--type-heading-xl-leading, 1);
+    font-weight: var(--type-heading-xl-weight, 660);
+    letter-spacing: var(--type-heading-xl-tracking);
+    text-transform: var(--type-heading-xl-transform);
+    text-wrap: var(--type-heading-xl-wrap, balance);
   }
 
   .type-heading-lg {
-    font-size: clamp(1.75rem, calc(1.9230769231cqw + 1.2115384615rem), 2.75rem);
-    line-height: 1.05;
-    font-weight: 650;
-    text-wrap: balance;
+    font-family: var(--type-heading-lg-font, var(--font-sans));
+    font-size: var(--type-heading-lg-size, clamp(1.75rem, calc(1.9230769231cqw + 1.2115384615rem), 2.75rem));
+    line-height: var(--type-heading-lg-leading, 1.05);
+    font-weight: var(--type-heading-lg-weight, 650);
+    letter-spacing: var(--type-heading-lg-tracking);
+    text-transform: var(--type-heading-lg-transform);
+    text-wrap: var(--type-heading-lg-wrap, balance);
   }
 
   .type-heading-md {
-    font-size: clamp(1.375rem, calc(1.3020833333cqw + 1.0104166667rem), 2rem);
-    line-height: 1.15;
-    font-weight: 650;
-    text-wrap: balance;
+    font-family: var(--type-heading-md-font, var(--font-sans));
+    font-size: var(--type-heading-md-size, clamp(1.375rem, calc(1.3020833333cqw + 1.0104166667rem), 2rem));
+    line-height: var(--type-heading-md-leading, 1.15);
+    font-weight: var(--type-heading-md-weight, 650);
+    letter-spacing: var(--type-heading-md-tracking);
+    text-transform: var(--type-heading-md-transform);
+    text-wrap: var(--type-heading-md-wrap, balance);
   }
 
   .type-heading-sm {
-    font-size: clamp(1.125rem, calc(0.5208333333cqw + 0.9791666667rem), 1.375rem);
-    line-height: 1.25;
-    font-weight: 650;
-    text-wrap: balance;
+    font-family: var(--type-heading-sm-font, var(--font-sans));
+    font-size: var(--type-heading-sm-size, clamp(1.125rem, calc(0.5208333333cqw + 0.9791666667rem), 1.375rem));
+    line-height: var(--type-heading-sm-leading, 1.25);
+    font-weight: var(--type-heading-sm-weight, 650);
+    letter-spacing: var(--type-heading-sm-tracking);
+    text-transform: var(--type-heading-sm-transform);
+    text-wrap: var(--type-heading-sm-wrap, balance);
   }
 
   .type-text-xl {
-    font-size: clamp(1.1875rem, calc(0.625cqw + 1rem), 1.5rem);
-    line-height: 1.5;
-    font-weight: 400;
+    font-family: var(--type-text-xl-font, var(--font-sans));
+    font-size: var(--type-text-xl-size, clamp(1.1875rem, calc(0.625cqw + 1rem), 1.5rem));
+    line-height: var(--type-text-xl-leading, 1.5);
+    font-weight: var(--type-text-xl-weight, 400);
+    letter-spacing: var(--type-text-xl-tracking);
+    text-transform: var(--type-text-xl-transform);
+    text-wrap: var(--type-text-xl-wrap);
   }
 
   .type-text-lg {
-    font-size: clamp(1.0625rem, calc(0.4261363636cqw + 0.9090909091rem), 1.25rem);
-    line-height: 1.6;
-    font-weight: 400;
+    font-family: var(--type-text-lg-font, var(--font-sans));
+    font-size: var(--type-text-lg-size, clamp(1.0625rem, calc(0.4261363636cqw + 0.9090909091rem), 1.25rem));
+    line-height: var(--type-text-lg-leading, 1.6);
+    font-weight: var(--type-text-lg-weight, 400);
+    letter-spacing: var(--type-text-lg-tracking);
+    text-transform: var(--type-text-lg-transform);
+    text-wrap: var(--type-text-lg-wrap);
   }
 
   .type-text-md {
-    font-size: clamp(1rem, calc(0.3125cqw + 0.875rem), 1.125rem);
-    line-height: 1.65;
-    font-weight: 400;
+    font-family: var(--type-text-md-font, var(--font-sans));
+    font-size: var(--type-text-md-size, clamp(1rem, calc(0.3125cqw + 0.875rem), 1.125rem));
+    line-height: var(--type-text-md-leading, 1.65);
+    font-weight: var(--type-text-md-weight, 400);
+    letter-spacing: var(--type-text-md-tracking);
+    text-transform: var(--type-text-md-transform);
+    text-wrap: var(--type-text-md-wrap);
   }
 
   .type-text-sm {
-    font-size: clamp(0.875rem, calc(0.2142857143cqw + 0.7785714286rem), 0.95rem);
-    line-height: 1.6;
-    font-weight: 400;
+    font-family: var(--type-text-sm-font, var(--font-sans));
+    font-size: var(--type-text-sm-size, clamp(0.875rem, calc(0.2142857143cqw + 0.7785714286rem), 0.95rem));
+    line-height: var(--type-text-sm-leading, 1.6);
+    font-weight: var(--type-text-sm-weight, 400);
+    letter-spacing: var(--type-text-sm-tracking);
+    text-transform: var(--type-text-sm-transform);
+    text-wrap: var(--type-text-sm-wrap);
   }
 
   .type-text-xs {
-    font-size: clamp(0.8125rem, calc(0.1953125cqw + 0.71875rem), 0.875rem);
-    line-height: 1.55;
-    font-weight: 400;
+    font-family: var(--type-text-xs-font, var(--font-sans));
+    font-size: var(--type-text-xs-size, clamp(0.8125rem, calc(0.1953125cqw + 0.71875rem), 0.875rem));
+    line-height: var(--type-text-xs-leading, 1.55);
+    font-weight: var(--type-text-xs-weight, 400);
+    letter-spacing: var(--type-text-xs-tracking);
+    text-transform: var(--type-text-xs-transform);
+    text-wrap: var(--type-text-xs-wrap);
   }
 
   .type-caption {
-    font-size: clamp(0.75rem, calc(0.1953125cqw + 0.65625rem), 0.8125rem);
-    line-height: 1.5;
-    font-weight: 400;
+    font-family: var(--type-caption-font, var(--font-sans));
+    font-size: var(--type-caption-size, clamp(0.75rem, calc(0.1953125cqw + 0.65625rem), 0.8125rem));
+    line-height: var(--type-caption-leading, 1.5);
+    font-weight: var(--type-caption-weight, 400);
+    letter-spacing: var(--type-caption-tracking);
+    text-transform: var(--type-caption-transform);
+    text-wrap: var(--type-caption-wrap);
   }
 
   .type-label,
   .type-eyebrow {
-    font-size: clamp(0.8125rem, calc(0.1953125cqw + 0.71875rem), 0.875rem);
-    line-height: 1.2;
-    font-weight: 750;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-family: var(--type-label-font, var(--font-sans));
+    font-size: var(--type-label-size, clamp(0.8125rem, calc(0.1953125cqw + 0.71875rem), 0.875rem));
+    line-height: var(--type-label-leading, 1.2);
+    font-weight: var(--type-label-weight, 750);
+    letter-spacing: var(--type-label-tracking, 0.12em);
+    text-transform: var(--type-label-transform, uppercase);
+    text-wrap: var(--type-label-wrap);
   }
 
   .section-space-vsml {

@@ -3,13 +3,24 @@
 import { useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import { Card } from "@/components/primitives";
-
-type WrapMode = "balance" | "pretty" | "wrap";
-type CapitalizationStyle = "none" | "uppercase" | "lowercase" | "capitalize";
+import {
+  typePalettes,
+  type CapitalizationStyle,
+  type TypePalette,
+  type TypeRole,
+  type WrapMode,
+} from "@/content/type-palettes";
 
 type FontOption = {
   label: string;
   value: string;
+};
+
+type TypeSettings = {
+  customFont: string;
+  globalFont: string;
+  roleFontOverrides: Record<string, string>;
+  roles: TypeRole[];
 };
 
 type LocalFontData = {
@@ -24,21 +35,6 @@ declare global {
     queryLocalFonts?: () => Promise<LocalFontData[]>;
   }
 }
-
-type TypeRole = {
-  id: string;
-  token: string;
-  role: string;
-  sample: string;
-  minRem: number;
-  maxRem: number;
-  lineHeight: number;
-  weight: number;
-  measureCh: number;
-  wrap: WrapMode;
-  letterSpacingEm: number;
-  capitalization: CapitalizationStyle;
-};
 
 const projectFontOptions: FontOption[] = [
   {
@@ -357,6 +353,94 @@ function previewStyle(role: TypeRole, fontFamily: string): CSSProperties {
   };
 }
 
+function textTransformForRole(role: TypeRole) {
+  return role.capitalization === "none" ? "none" : role.capitalization;
+}
+
+function cloneRoles(roles: TypeRole[]) {
+  return roles.map((role) => ({ ...role }));
+}
+
+function cloneProfile(profile: TypePalette): TypePalette {
+  return {
+    ...profile,
+    customFont: profile.customFont ?? "",
+    roleFontOverrides: { ...profile.roleFontOverrides },
+    roles: cloneRoles(profile.roles),
+  };
+}
+
+function settingsFromProfile(profile: TypePalette): TypeSettings {
+  return {
+    customFont: profile.customFont ?? "",
+    globalFont: profile.globalFont,
+    roleFontOverrides: { ...profile.roleFontOverrides },
+    roles: cloneRoles(profile.roles),
+  };
+}
+
+function profileFromSettings(
+  profile: TypePalette,
+  settings: TypeSettings,
+): TypePalette {
+  return {
+    ...profile,
+    customFont: settings.customFont,
+    globalFont: settings.globalFont,
+    roleFontOverrides: { ...settings.roleFontOverrides },
+    roles: cloneRoles(settings.roles),
+  };
+}
+
+function sameProfileSettings(profile: TypePalette, settings: TypeSettings) {
+  return (
+    JSON.stringify(settingsFromProfile(profile)) === JSON.stringify(settings)
+  );
+}
+
+function typeVariableEntries({
+  customFont,
+  globalFont,
+  roleFontOverrides,
+  roles,
+}: {
+  customFont: string;
+  globalFont: string;
+  roleFontOverrides: Record<string, string>;
+  roles: TypeRole[];
+}) {
+  return roles.flatMap((role) => {
+    const override = roleFontOverrides[role.id] ?? "global";
+    const fontFamily =
+      override === "global"
+        ? fontFamilyForValue(globalFont, customFont)
+        : fontFamilyForValue(override, customFont);
+    const prefix = `--type-${role.id}`;
+
+    return [
+      [`${prefix}-font`, fontFamily],
+      [`${prefix}-size`, clampExpression(role.minRem, role.maxRem)],
+      [`${prefix}-leading`, String(role.lineHeight)],
+      [`${prefix}-weight`, String(role.weight)],
+      [`${prefix}-tracking`, `${role.letterSpacingEm}em`],
+      [`${prefix}-wrap`, role.wrap === "wrap" ? "wrap" : role.wrap],
+      [`${prefix}-transform`, textTransformForRole(role)],
+    ] as Array<[string, string]>;
+  });
+}
+
+function typeVariableStyle(options: TypeSettings): CSSProperties {
+  return Object.fromEntries(typeVariableEntries(options)) as CSSProperties;
+}
+
+function promotionCss(options: TypeSettings) {
+  return [
+    ":root {",
+    ...typeVariableEntries(options).map(([name, value]) => `  ${name}: ${value};`),
+    "}",
+  ].join("\n");
+}
+
 function SelectField({
   id,
   label,
@@ -470,9 +554,23 @@ function NumberControl({
 }
 
 export function FontLabSection() {
-  const [roles, setRoles] = useState<TypeRole[]>(initialRoles);
-  const [globalFont, setGlobalFont] = useState(fontOptions[0].value);
-  const [customFont, setCustomFont] = useState("");
+  const [profiles, setProfiles] = useState<TypePalette[]>(() =>
+    typePalettes.map(cloneProfile),
+  );
+  const [selectedProfileId, setSelectedProfileId] = useState(
+    typePalettes[0].id,
+  );
+  const [roles, setRoles] = useState<TypeRole[]>(() =>
+    cloneRoles(typePalettes[0].roles),
+  );
+  const [globalFont, setGlobalFont] = useState(typePalettes[0].globalFont);
+  const [customFont, setCustomFont] = useState(typePalettes[0].customFont ?? "");
+  const [roleFontOverrides, setRoleFontOverrides] = useState<
+    Record<string, string>
+  >(() => ({ ...typePalettes[0].roleFontOverrides }));
+  const [appliedSettings, setAppliedSettings] = useState<TypeSettings>(() =>
+    settingsFromProfile(typePalettes[0]),
+  );
   const [localFontOptions, setLocalFontOptions] = useState<FontOption[]>([]);
   const [fontScanStatus, setFontScanStatus] = useState(
     "Scan availability has not run.",
@@ -480,18 +578,50 @@ export function FontLabSection() {
   const [isScanningFonts, setIsScanningFonts] = useState(false);
   const [copiedTarget, setCopiedTarget] = useState<string | null>(null);
   const [selectedRoleId, setSelectedRoleId] = useState(initialRoles[0].id);
-  const [roleFontOverrides, setRoleFontOverrides] = useState<
-    Record<string, string>
-  >({});
 
   const selectedRole = useMemo(
     () => roles.find((role) => role.id === selectedRoleId) ?? roles[0],
     [roles, selectedRoleId],
   );
 
+  const selectedProfile = useMemo(
+    () =>
+      profiles.find((profile) => profile.id === selectedProfileId) ??
+      profiles[0],
+    [profiles, selectedProfileId],
+  );
+
+  const originalSelectedProfile = useMemo(
+    () =>
+      typePalettes.find((profile) => profile.id === selectedProfileId) ??
+      typePalettes[0],
+    [selectedProfileId],
+  );
+
   const selectedRoleFontOverride =
     roleFontOverrides[selectedRole.id] ?? "global";
   const globalFontFamily = fontFamilyForValue(globalFont, customFont);
+  const editorSettings = useMemo<TypeSettings>(
+    () => ({
+      customFont,
+      globalFont,
+      roleFontOverrides,
+      roles,
+    }),
+    [customFont, globalFont, roleFontOverrides, roles],
+  );
+  const appliedTypeVariables = useMemo(
+    () => typeVariableStyle(appliedSettings),
+    [appliedSettings],
+  );
+  const livePromotionCss = useMemo(
+    () => promotionCss(editorSettings),
+    [editorSettings],
+  );
+  const hasUnsavedProfileEdits = useMemo(
+    () => !sameProfileSettings(selectedProfile, editorSettings),
+    [editorSettings, selectedProfile],
+  );
 
   function fontValueForRole(role: TypeRole) {
     const override = roleFontOverrides[role.id] ?? "global";
@@ -524,6 +654,9 @@ export function FontLabSection() {
     "Roles:",
     ...roles.map((role) => `- ${briefForRole(role)}`),
     "",
+    "Promotion CSS:",
+    livePromotionCss,
+    "",
     "Promote these into the shared type utilities only. Do not redesign sections or rewrite copy. After updating, check the style guide and sample page for obvious wrapping/spacing regressions.",
   ].join("\n");
 
@@ -536,7 +669,9 @@ export function FontLabSection() {
   }
 
   function resetSelectedRole() {
-    const original = initialRoles.find((role) => role.id === selectedRole.id);
+    const original = selectedProfile.roles.find(
+      (role) => role.id === selectedRole.id,
+    );
 
     if (!original) {
       return;
@@ -549,8 +684,56 @@ export function FontLabSection() {
     );
     setRoleFontOverrides((currentOverrides) => {
       const nextOverrides = { ...currentOverrides };
-      delete nextOverrides[selectedRole.id];
+      const savedOverride = selectedProfile.roleFontOverrides[selectedRole.id];
+
+      if (savedOverride) {
+        nextOverrides[selectedRole.id] = savedOverride;
+      } else {
+        delete nextOverrides[selectedRole.id];
+      }
+
       return nextOverrides;
+    });
+  }
+
+  function loadProfile(profile: TypePalette) {
+    const settings = settingsFromProfile(profile);
+
+    setSelectedProfileId(profile.id);
+    setRoles(settings.roles);
+    setGlobalFont(settings.globalFont);
+    setCustomFont(settings.customFont);
+    setRoleFontOverrides(settings.roleFontOverrides);
+    setSelectedRoleId(settings.roles[0]?.id ?? selectedRoleId);
+  }
+
+  function saveCurrentProfile() {
+    setProfiles((currentProfiles) =>
+      currentProfiles.map((profile) =>
+        profile.id === selectedProfile.id
+          ? profileFromSettings(profile, editorSettings)
+          : profile,
+      ),
+    );
+  }
+
+  function resetCurrentProfile() {
+    const resetProfile = cloneProfile(originalSelectedProfile);
+
+    setProfiles((currentProfiles) =>
+      currentProfiles.map((profile) =>
+        profile.id === resetProfile.id ? resetProfile : profile,
+      ),
+    );
+    loadProfile(resetProfile);
+  }
+
+  function applyCurrentProfile() {
+    setAppliedSettings({
+      customFont,
+      globalFont,
+      roleFontOverrides: { ...roleFontOverrides },
+      roles: cloneRoles(roles),
     });
   }
 
@@ -603,8 +786,8 @@ export function FontLabSection() {
 
   return (
     <section className="section-space-med">
-      <div className="container-site">
-        <div className="grid grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] gap-6 max-lg:grid-cols-1">
+      <div className="w-full px-6 max-md:px-4">
+        <div className="grid grid-cols-[minmax(24rem,34rem)_minmax(0,1fr)] gap-6 max-lg:grid-cols-1">
           <aside className="sticky top-4 max-h-[calc(100svh-2rem)] self-start overflow-y-auto rounded-lg border border-service-border bg-white p-6 shadow-service max-lg:static max-lg:max-h-none max-lg:overflow-visible max-md:p-5">
             <div className="fluid-type-frame border-b border-service-border pb-6">
               <p className="type-label text-service-accent">Internal font lab</p>
@@ -622,6 +805,56 @@ export function FontLabSection() {
               >
                 <FontFamilyOptions localFontOptions={localFontOptions} />
               </SelectField>
+
+              <div className="grid gap-2 rounded-md border border-service-border bg-service-surface p-4">
+                <SelectField
+                  id="type-profile"
+                  label="Profile"
+                  value={selectedProfileId}
+                  onChange={(value) => {
+                    const nextProfile =
+                      profiles.find((profile) => profile.id === value) ??
+                      profiles[0];
+
+                    loadProfile(nextProfile);
+                  }}
+                >
+                  {profiles.map((profile) => (
+                    <option key={profile.id} value={profile.id}>
+                      {profile.label}
+                    </option>
+                  ))}
+                </SelectField>
+                <p className="type-caption text-service-muted">
+                  {selectedProfile.description}
+                </p>
+                <p className="type-caption font-semibold text-service-muted">
+                  {hasUnsavedProfileEdits ? "Unsaved profile edits" : "Profile saved"}
+                </p>
+                <button
+                  className="min-h-11 rounded-md border border-service-accent bg-service-accent px-4 text-sm font-semibold text-white transition-colors hover:bg-service-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                  type="button"
+                  onClick={applyCurrentProfile}
+                >
+                  Apply Current Profile
+                </button>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    className="min-h-11 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                    type="button"
+                    onClick={saveCurrentProfile}
+                  >
+                    Save Edits
+                  </button>
+                  <button
+                    className="min-h-11 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                    type="button"
+                    onClick={resetCurrentProfile}
+                  >
+                    Reset Profile
+                  </button>
+                </div>
+              </div>
 
               <div className="grid gap-2">
                 <button
@@ -812,7 +1045,217 @@ export function FontLabSection() {
             </div>
           </aside>
 
-          <div className="grid gap-4">
+          <div className="grid min-w-0 gap-4">
+            <section className="fluid-type-frame rounded-lg border border-service-border bg-white p-6 shadow-service max-md:p-5">
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <p className="type-label text-service-accent">Applied profile preview</p>
+                  <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                    Hierarchy waterfall and editorial stress test
+                  </h2>
+                </div>
+                <p className="type-caption max-w-sm text-service-muted">
+                  This surface uses the last applied profile. Edit a profile on
+                  the left, then apply it to test the hierarchy here.
+                </p>
+              </div>
+
+              <div className="mt-6 flex max-h-[78svh] justify-center overflow-y-auto rounded-md border border-service-border bg-service-surface p-4 max-md:p-2">
+                <div
+                  className="w-full max-w-[var(--container-site)] bg-white shadow-service"
+                  style={appliedTypeVariables}
+                >
+                  <div className="grid gap-10 p-10 max-md:p-6">
+                    <section className="grid gap-7">
+                      <div className="border-b border-service-border pb-5">
+                        <p className="type-label text-service-accent">
+                          Hierarchy waterfall
+                        </p>
+                        <h3 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                          Role-by-role applied type system
+                        </h3>
+                      </div>
+
+                      {appliedSettings.roles.map((role) => {
+                        const tokenClass = role.token.split(" / ")[0];
+
+                        return (
+                          <article
+                            className="grid grid-cols-[minmax(9rem,0.28fr)_minmax(0,1fr)] gap-6 border-b border-service-border pb-6 max-md:grid-cols-1"
+                            key={role.id}
+                          >
+                            <div>
+                              <code className="rounded bg-service-surface px-2 py-1 text-xs font-semibold text-service-ink">
+                                {role.token}
+                              </code>
+                              <p className="type-caption mt-3 text-service-muted">
+                                {role.role}
+                              </p>
+                            </div>
+                            <p
+                              className={cx(
+                                tokenClass,
+                                "measure-copy-wide text-service-ink",
+                              )}
+                            >
+                              {role.sample}
+                            </p>
+                          </article>
+                        );
+                      })}
+                    </section>
+
+                    <section className="grid gap-8 border-t border-service-border pt-10">
+                      <div className="grid grid-cols-[minmax(0,0.72fr)_minmax(18rem,0.28fr)] gap-8 max-lg:grid-cols-1">
+                        <div>
+                          <p className="type-label text-service-accent">
+                            Editorial texture
+                          </p>
+                          <h2 className="type-display-lg mt-eyebrow-display text-service-ink">
+                            A service brand should feel clear before it feels clever.
+                          </h2>
+                          <p className="type-text-xl measure-lead mt-display-body text-service-muted">
+                            This section tests long-form rhythm, short emphatic
+                            lines, supporting paragraphs, captions, labels, and
+                            mixed-density layouts without relying on imagery.
+                          </p>
+                        </div>
+
+                        <aside className="grid content-start gap-4 border-l border-service-border pl-6 max-lg:border-l-0 max-lg:border-t max-lg:pl-0 max-lg:pt-6">
+                          <p className="type-caption text-service-muted">
+                            Profile sample
+                          </p>
+                          <p className="type-heading-sm text-service-ink">
+                            Same words, different hierarchy.
+                          </p>
+                          <p className="type-text-sm text-service-muted">
+                            A compact sidebar exposes caption, small body, and
+                            card heading behavior in a narrow measure.
+                          </p>
+                        </aside>
+                      </div>
+
+                      <div className="grid grid-cols-[minmax(0,0.62fr)_minmax(0,0.38fr)] gap-8 max-lg:grid-cols-1">
+                        <div className="grid gap-5">
+                          <p className="type-text-lg measure-copy-wide text-service-ink">
+                            Homeowners often arrive with a practical concern:
+                            a leak under the sink, a noisy unit, a room that
+                            will not cool, or a repair bill they do not fully
+                            understand. The typography has to carry calm,
+                            sequence, and trust before the visitor has decided
+                            whether to call.
+                          </p>
+                          <p className="type-text-md measure-copy text-service-muted">
+                            Body copy should hold up across plain explanations,
+                            proof points, qualifications, and next-step
+                            instructions. It should be easy to scan, but still
+                            substantial enough to support a premium local
+                            service brand.
+                          </p>
+                          <p className="type-text-sm measure-caption text-service-muted">
+                            Smaller paragraphs test whether supporting content
+                            remains useful without becoming whisper-thin,
+                            cramped, or visually detached from the rest of the
+                            page.
+                          </p>
+                        </div>
+
+                        <blockquote className="grid content-between gap-8 bg-service-ink p-7 text-white">
+                          <p className="type-heading-lg">
+                            The best local service pages make the next step feel
+                            obvious, not forced.
+                          </p>
+                          <footer>
+                            <p className="type-label text-white/60">
+                              Pullquote rhythm
+                            </p>
+                            <p className="type-caption mt-heading-body-sm text-white/70">
+                              Useful for testimonials, process notes, and
+                              editorial emphasis.
+                            </p>
+                          </footer>
+                        </blockquote>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-1">
+                        {[
+                          {
+                            eyebrow: "Service card",
+                            title: "Diagnose before deciding",
+                            body: "A card title needs enough authority to scan quickly without overpowering the body copy below it.",
+                          },
+                          {
+                            eyebrow: "Process card",
+                            title: "Explain the options",
+                            body: "Supporting text should handle practical detail, plain-language guidance, and service expectations.",
+                          },
+                          {
+                            eyebrow: "Proof card",
+                            title: "Close the loop",
+                            body: "Captions, labels, and small paragraphs should still feel deliberate in dense layouts.",
+                          },
+                        ].map((card) => (
+                          <article
+                            className="grid gap-4 border border-service-border bg-service-surface p-6"
+                            key={card.title}
+                          >
+                            <p className="type-label text-service-accent">
+                              {card.eyebrow}
+                            </p>
+                            <h3 className="type-heading-sm text-service-ink">
+                              {card.title}
+                            </h3>
+                            <p className="type-text-sm text-service-muted">
+                              {card.body}
+                            </p>
+                          </article>
+                        ))}
+                      </div>
+
+                      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-4 max-lg:grid-cols-1">
+                        <div className="border border-service-border p-6">
+                          <p className="type-label text-service-accent">
+                            Dense list
+                          </p>
+                          <ul className="mt-5 grid gap-3">
+                            {[
+                              "Short labels should remain crisp.",
+                              "Body rows need enough line height for scanning.",
+                              "Microcopy should still feel connected.",
+                            ].map((item) => (
+                              <li className="type-text-md text-service-ink" key={item}>
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div className="grid grid-cols-3 border border-service-border max-md:grid-cols-1">
+                          {[
+                            ["4.9", "Average rating"],
+                            ["24h", "Fast response"],
+                            ["12k", "Local visits"],
+                          ].map(([value, label]) => (
+                            <div
+                              className="border-r border-service-border p-6 last:border-r-0 max-md:border-b max-md:border-r-0 max-md:last:border-b-0"
+                              key={label}
+                            >
+                              <p className="type-heading-lg text-service-ink">
+                                {value}
+                              </p>
+                              <p className="type-caption mt-heading-body-sm text-service-muted">
+                                {label}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </div>
+              </div>
+            </section>
+
             {roles.map((role) => {
               const override = roleFontOverrides[role.id] ?? "global";
               const roleFontFamily =
