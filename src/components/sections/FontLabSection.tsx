@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import { Card } from "@/components/primitives";
+import { sectionLibraryContent } from "@/content/section-library";
 import {
   typePalettes,
   type CapitalizationStyle,
@@ -398,6 +399,14 @@ function sameProfileSettings(profile: TypePalette, settings: TypeSettings) {
   );
 }
 
+function hasTemporaryStoredProfileEdits(profile: TypePalette) {
+  const originalProfile =
+    typePalettes.find((candidate) => candidate.id === profile.id) ??
+    typePalettes[0];
+
+  return !sameProfileSettings(originalProfile, settingsFromProfile(profile));
+}
+
 function typeVariableEntries({
   customFont,
   globalFont,
@@ -553,6 +562,16 @@ function NumberControl({
   );
 }
 
+function isHeaderRole(role: TypeRole) {
+  return role.id.startsWith("display-") || role.id.startsWith("heading-");
+}
+
+function isBodyRole(role: TypeRole) {
+  return (
+    role.id.startsWith("text-") || role.id === "caption" || role.id === "label"
+  );
+}
+
 export function FontLabSection() {
   const [profiles, setProfiles] = useState<TypePalette[]>(() =>
     typePalettes.map(cloneProfile),
@@ -621,6 +640,10 @@ export function FontLabSection() {
   const hasUnsavedProfileEdits = useMemo(
     () => !sameProfileSettings(selectedProfile, editorSettings),
     [editorSettings, selectedProfile],
+  );
+  const selectedProfileHasTempStorage = useMemo(
+    () => hasTemporaryStoredProfileEdits(selectedProfile),
+    [selectedProfile],
   );
 
   function fontValueForRole(role: TypeRole) {
@@ -737,6 +760,42 @@ export function FontLabSection() {
     });
   }
 
+  function applySelectedFontToRoles(
+    matchesRole: (role: TypeRole) => boolean,
+  ) {
+    const nextOverridesForRoles = (currentOverrides: Record<string, string>) => {
+      const nextOverrides = { ...currentOverrides };
+
+      roles.forEach((role) => {
+        if (matchesRole(role)) {
+          nextOverrides[role.id] = selectedRoleFontOverride;
+        }
+      });
+
+      return nextOverrides;
+    };
+
+    setRoleFontOverrides((currentOverrides) => {
+      return nextOverridesForRoles(currentOverrides);
+    });
+
+    setAppliedSettings((currentSettings) => {
+      const nextOverrides = { ...currentSettings.roleFontOverrides };
+
+      currentSettings.roles.forEach((role) => {
+        if (matchesRole(role)) {
+          nextOverrides[role.id] = selectedRoleFontOverride;
+        }
+      });
+
+      return {
+        ...currentSettings,
+        customFont,
+        roleFontOverrides: nextOverrides,
+      };
+    });
+  }
+
   async function scanLocalFonts() {
     if (!window.queryLocalFonts) {
       setFontScanStatus("Local font scanning is not available in this browser.");
@@ -822,6 +881,9 @@ export function FontLabSection() {
                   {profiles.map((profile) => (
                     <option key={profile.id} value={profile.id}>
                       {profile.label}
+                      {hasTemporaryStoredProfileEdits(profile)
+                        ? " (temp stored)"
+                        : ""}
                     </option>
                   ))}
                 </SelectField>
@@ -829,8 +891,15 @@ export function FontLabSection() {
                   {selectedProfile.description}
                 </p>
                 <p className="type-caption font-semibold text-service-muted">
-                  {hasUnsavedProfileEdits ? "Unsaved profile edits" : "Profile saved"}
+                  {hasUnsavedProfileEdits
+                    ? "Unsaved profile edits"
+                    : "Profile ready"}
                 </p>
+                {selectedProfileHasTempStorage ? (
+                  <p className="type-caption font-semibold text-service-accent">
+                    Temp stored from user input
+                  </p>
+                ) : null}
                 <button
                   className="min-h-11 rounded-md border border-service-accent bg-service-accent px-4 text-sm font-semibold text-white transition-colors hover:bg-service-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
                   type="button"
@@ -913,6 +982,23 @@ export function FontLabSection() {
                   localFontOptions={localFontOptions}
                 />
               </SelectField>
+
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  className="min-h-11 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                  type="button"
+                  onClick={() => applySelectedFontToRoles(isBodyRole)}
+                >
+                  Set Body Font
+                </button>
+                <button
+                  className="min-h-11 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                  type="button"
+                  onClick={() => applySelectedFontToRoles(isHeaderRole)}
+                >
+                  Set Header Fonts
+                </button>
+              </div>
 
               <div className="grid gap-4 rounded-md border border-service-border bg-service-surface p-4">
                 <NumberControl
@@ -1062,7 +1148,7 @@ export function FontLabSection() {
 
               <div className="mt-6 flex max-h-[78svh] justify-center overflow-y-auto rounded-md border border-service-border bg-service-surface p-4 max-md:p-2">
                 <div
-                  className="w-full max-w-[var(--container-site)] bg-white shadow-service"
+                  className="w-full max-w-[var(--container-site)]"
                   style={appliedTypeVariables}
                 >
                   <div className="grid gap-10 p-10 max-md:p-6">
@@ -1078,10 +1164,14 @@ export function FontLabSection() {
 
                       {appliedSettings.roles.map((role) => {
                         const tokenClass = role.token.split(" / ")[0];
+                        const isLargestDisplay = role.id === "display-xl";
 
                         return (
                           <article
-                            className="grid grid-cols-[minmax(9rem,0.28fr)_minmax(0,1fr)] gap-6 border-b border-service-border pb-6 max-md:grid-cols-1"
+                            className={cx(
+                              "grid grid-cols-[minmax(9rem,0.28fr)_minmax(0,1fr)] gap-6 border-b border-service-border max-md:grid-cols-1",
+                              isLargestDisplay ? "pb-10" : "pb-6",
+                            )}
                             key={role.id}
                           >
                             <div>
@@ -1106,6 +1196,95 @@ export function FontLabSection() {
                     </section>
 
                     <section className="grid gap-8 border-t border-service-border pt-10">
+                      <div className="relative aspect-[16/10] min-h-[28rem] overflow-hidden rounded-md bg-service-ink text-white max-lg:min-h-0">
+                        <div
+                          className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.44),rgb(23_33_29_/_0.12)),linear-gradient(45deg,rgb(255_255_255_/_0.16)_0_1px,transparent_1px_20px)]"
+                          aria-hidden="true"
+                        />
+                        <div
+                          className="absolute inset-0 bg-service-ink/25"
+                          aria-hidden="true"
+                        />
+                        <div
+                          className="absolute inset-0 bg-linear-to-t from-service-ink via-service-ink/52 to-transparent"
+                          aria-hidden="true"
+                        />
+
+                        <div className="relative z-10 grid h-full grid-rows-[auto_1fr]">
+                          <nav
+                            aria-label="Floating bento type specimen navigation"
+                            className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-6 py-4 max-lg:grid-cols-[auto_1fr] max-md:px-4"
+                          >
+                            <a
+                              className="type-label flex h-11 w-32 items-center justify-center rounded-md border border-white/20 bg-white/90 p-1 text-service-muted shadow-service backdrop-blur-md"
+                              href="#"
+                            >
+                              {sectionLibraryContent.navPrimary.logoLabel}
+                            </a>
+                            <ul className="type-text-sm flex min-h-11 items-center gap-1 rounded-md border border-white/20 bg-white/90 p-1 font-semibold text-service-ink shadow-service backdrop-blur-md max-lg:hidden">
+                              {sectionLibraryContent.navPrimary.links.map((link) => (
+                                <li key={link.label}>
+                                  <a
+                                    className="flex h-9 items-center px-3"
+                                    href="#"
+                                  >
+                                    {link.label}
+                                  </a>
+                                </li>
+                              ))}
+                            </ul>
+                            <div className="flex justify-self-end max-lg:hidden">
+                              <a
+                                className="type-text-sm inline-flex min-h-11 items-center justify-center rounded-md bg-service-accent px-4 font-semibold text-white"
+                                href="#"
+                              >
+                                {sectionLibraryContent.navPrimary.action}
+                              </a>
+                            </div>
+                          </nav>
+
+                          <div className="grid min-h-0 grid-cols-[minmax(0,0.68fr)_minmax(15rem,0.32fr)] items-end gap-8 px-8 pb-8 max-lg:grid-cols-1 max-lg:gap-6 max-md:px-5 max-md:pb-5">
+                            <div className="min-w-0">
+                              <p className="type-label text-white/70">
+                                {sectionLibraryContent.heroFullscreen.eyebrow}
+                              </p>
+                              <h2 className="type-heading-lg measure-copy-wide mt-5 text-white">
+                                {sectionLibraryContent.heroFullscreen.title}
+                              </h2>
+                              <p className="type-text-lg measure-copy mt-5 text-white/78">
+                                {sectionLibraryContent.heroFullscreen.body}
+                              </p>
+                            </div>
+
+                            <aside className="grid grid-cols-2 gap-3 text-white max-md:hidden">
+                              {sectionLibraryContent.heroFullscreen.trustSignals.map(
+                                (signal) => (
+                                  <div
+                                    className="rounded-md border border-white/18 bg-white/12 p-4 backdrop-blur-md"
+                                    key={signal.label}
+                                  >
+                                    <p className="type-heading-sm leading-none">
+                                      {signal.value}
+                                    </p>
+                                    <p className="type-caption mt-2 text-white/72">
+                                      {signal.label}
+                                    </p>
+                                  </div>
+                                ),
+                              )}
+                              <div className="col-span-2 rounded-md border border-white/18 bg-white/12 p-5 backdrop-blur-md">
+                                <p className="type-heading-md leading-none">
+                                  {sectionLibraryContent.heroFullscreen.review.rating}
+                                </p>
+                                <p className="type-text-sm mt-3 font-semibold">
+                                  {sectionLibraryContent.heroFullscreen.review.label}
+                                </p>
+                              </div>
+                            </aside>
+                          </div>
+                        </div>
+                      </div>
+
                       <div className="grid grid-cols-[minmax(0,0.72fr)_minmax(18rem,0.28fr)] gap-8 max-lg:grid-cols-1">
                         <div>
                           <p className="type-label text-service-accent">

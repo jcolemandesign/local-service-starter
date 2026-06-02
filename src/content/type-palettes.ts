@@ -237,7 +237,7 @@ function updateRoles(
 export const typePalettes: TypePalette[] = [
   {
     id: "geist-service",
-    label: "Geist Service",
+    label: "Profile 1",
     description: "Current clean, flexible baseline for broad local service sites.",
     globalFont: fontStacks.geistSans,
     roleFontOverrides: {},
@@ -245,7 +245,7 @@ export const typePalettes: TypePalette[] = [
   },
   {
     id: "editorial-trust",
-    label: "Editorial Trust",
+    label: "Profile 2",
     description: "Serif display with calmer sans body for premium home services.",
     globalFont: fontStacks.systemSans,
     roleFontOverrides: {
@@ -279,7 +279,7 @@ export const typePalettes: TypePalette[] = [
   },
   {
     id: "utility-dense",
-    label: "Utility Dense",
+    label: "Profile 3",
     description: "Tighter, operational rhythm for dashboards and lead-heavy pages.",
     globalFont: fontStacks.aptos,
     roleFontOverrides: {},
@@ -317,7 +317,7 @@ export const typePalettes: TypePalette[] = [
   },
   {
     id: "friendly-local",
-    label: "Friendly Local",
+    label: "Profile 4",
     description: "Warmer system-stack feel for approachable neighborhood brands.",
     globalFont: fontStacks.trebuchet,
     roleFontOverrides: {},
