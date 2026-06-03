@@ -1,10 +1,11 @@
 "use client";
 
 import type { CSSProperties, ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { HomepageRecipe, SectionMode } from "@/content/design-lab";
 import type { TypePalette, TypeRole } from "@/content/type-palettes";
 import { typePalettes } from "@/content/type-palettes";
+import { loadStoredFontLabProfiles } from "@/lib/font-lab-storage";
 
 type DesignLabShellProps = {
   previewCatalog: Record<string, ReactNode>;
@@ -191,6 +192,78 @@ const viewportOptions = [
     brief: "Review the template in a phone-shaped window with responsive simplification.",
   },
 ] as const;
+
+type DesignStyleSettings = {
+  colorId: string;
+  colorVariables: ColorVariables;
+  profileId: string;
+  showSectionMarkers: boolean;
+  spacingId: (typeof spacingOptions)[number]["id"];
+  viewportId: (typeof viewportOptions)[number]["id"];
+};
+
+const devFontSpecimens = [
+  {
+    name: "Noto Sans",
+    suggestedUse: "Durable body and UI baseline with broad neutral coverage.",
+    variable: "--font-dev-noto-sans",
+  },
+  {
+    name: "Brawler",
+    suggestedUse: "Editorial headings, trust stories, and warmer local service tone.",
+    variable: "--font-dev-brawler",
+  },
+  {
+    name: "Vend Sans",
+    suggestedUse: "Contemporary service brands that need a crisp full-page voice.",
+    variable: "--font-dev-vend-sans",
+  },
+  {
+    name: "Spline Sans",
+    suggestedUse: "Technical service pages, clean headers, and readable body systems.",
+    variable: "--font-dev-spline-sans",
+  },
+  {
+    name: "Spline Sans Mono",
+    suggestedUse: "Specs, labels, process metadata, and utility details.",
+    variable: "--font-dev-spline-sans-mono",
+  },
+  {
+    name: "Archivo Black",
+    suggestedUse: "Loud hero headlines, offer moments, and punchy display accents.",
+    variable: "--font-dev-archivo-black",
+  },
+  {
+    name: "Raleway",
+    suggestedUse: "Polished headings and lighter premium service positioning.",
+    variable: "--font-dev-raleway",
+  },
+  {
+    name: "Inter",
+    suggestedUse: "Highly legible UI, forms, nav, and practical body copy.",
+    variable: "--font-dev-inter",
+  },
+  {
+    name: "Libre Franklin",
+    suggestedUse: "Editorial service pages with sturdy headlines and readable body text.",
+    variable: "--font-dev-libre-franklin",
+  },
+  {
+    name: "Host Grotesk",
+    suggestedUse: "Modern local brands, nav systems, and confident section titles.",
+    variable: "--font-dev-host-grotesk",
+  },
+  {
+    name: "DM Sans",
+    suggestedUse: "Friendly SaaS-like service pages, cards, and conversion UI.",
+    variable: "--font-dev-dm-sans",
+  },
+  {
+    name: "DM Mono",
+    suggestedUse: "Small technical labels, pricing details, and diagnostic notes.",
+    variable: "--font-dev-dm-mono",
+  },
+];
 
 const sectionSwapOptions = [
   {
@@ -456,49 +529,83 @@ export function DesignLabShell({
       })),
     ),
   );
+  const [availableTypePalettes, setAvailableTypePalettes] =
+    useState<TypePalette[]>(() => loadStoredFontLabProfiles() ?? typePalettes);
+  const [designStyleSettings, setDesignStyleSettings] = useState<
+    DesignStyleSettings[]
+  >(() =>
+    recipes.map((_, index) => ({
+      colorId: "quiet",
+      colorVariables: { ...baseColorVariables },
+      profileId: typePalettes[index]?.id ?? typePalettes[0]?.id ?? "",
+      showSectionMarkers: true,
+      spacingId: "normal",
+      viewportId: "wide",
+    })),
+  );
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(
     null,
   );
-  const [selectedProfileId, setSelectedProfileId] = useState(
-    typePalettes[0]?.id ?? "",
-  );
-  const [selectedSpacingId, setSelectedSpacingId] =
-    useState<(typeof spacingOptions)[number]["id"]>("normal");
-  const [selectedColorId, setSelectedColorId] = useState("quiet");
-  const [colorVariables, setColorVariables] =
-    useState<ColorVariables>(baseColorVariables);
-  const [selectedViewportId, setSelectedViewportId] =
-    useState<(typeof viewportOptions)[number]["id"]>("wide");
-  const [showSectionMarkers, setShowSectionMarkers] = useState(true);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+  useEffect(() => {
+    function syncStoredProfiles() {
+      setAvailableTypePalettes(loadStoredFontLabProfiles() ?? typePalettes);
+    }
+
+    syncStoredProfiles();
+    window.addEventListener("font-lab-profiles-updated", syncStoredProfiles);
+    window.addEventListener("storage", syncStoredProfiles);
+
+    return () => {
+      window.removeEventListener(
+        "font-lab-profiles-updated",
+        syncStoredProfiles,
+      );
+      window.removeEventListener("storage", syncStoredProfiles);
+    };
+  }, []);
   const activeRecipeIndex = Math.max(
     recipes.findIndex((recipe) => recipe.id === activeRecipeId),
     0,
   );
   const activeRecipe = recipes[activeRecipeIndex] ?? recipes[0];
+  const activeDesignLabel = `Design ${activeRecipeIndex + 1}`;
+  const activeDesignStyle =
+    designStyleSettings[activeRecipeIndex] ??
+    designStyleSettings[0] ?? {
+      colorId: "quiet",
+      colorVariables: { ...baseColorVariables },
+      profileId: typePalettes[0]?.id ?? "",
+      showSectionMarkers: true,
+      spacingId: "normal",
+      viewportId: "wide",
+    };
   const activeStack = workingStacks[activeRecipeIndex] ?? [];
   const selectedSection =
     activeStack.find((section) => section.id === selectedSectionId) ?? null;
   const selectedSwapOptions = selectedSection
     ? sectionSwapOptions.filter((option) => option.mode === selectedSection.mode)
     : [];
+  const selectedProfileId = activeDesignStyle.profileId;
   const selectedProfile =
-    typePalettes.find((profile) => profile.id === selectedProfileId) ??
+    availableTypePalettes.find((profile) => profile.id === selectedProfileId) ??
+    availableTypePalettes[0] ??
     typePalettes[0];
   const selectedSpacing =
-    spacingOptions.find((option) => option.id === selectedSpacingId) ??
+    spacingOptions.find((option) => option.id === activeDesignStyle.spacingId) ??
     spacingOptions[1];
   const selectedColor =
-    colorRules.find((rule) => rule.id === selectedColorId) ?? null;
+    colorRules.find((rule) => rule.id === activeDesignStyle.colorId) ?? null;
   const selectedColorLabel = selectedColor?.label ?? "Custom Palette";
   const selectedColorBrief =
     selectedColor?.brief ?? "Use the custom token values currently entered.";
   const selectedViewport =
-    viewportOptions.find((option) => option.id === selectedViewportId) ??
+    viewportOptions.find((option) => option.id === activeDesignStyle.viewportId) ??
     viewportOptions[0];
   const appliedColorVariables = Object.fromEntries(
     colorTokenControls.map((control) => {
-      const value = colorVariables[control.variable];
+      const value = activeDesignStyle.colorVariables[control.variable];
 
       return [
         control.variable,
@@ -510,11 +617,85 @@ export function DesignLabShell({
     ...typeVariableStyle(selectedProfile),
     ...appliedColorVariables,
   };
+  const includedSections = activeStack.filter((section) => section.included);
+  const excludedSections = activeStack.filter((section) => !section.included);
+  const codexRebuildBrief = [
+    `Build this homepage from the current Design Lab configuration.`,
+    ``,
+    `Design: ${activeDesignLabel}`,
+    `Recipe intent: ${activeRecipe.positioning}`,
+    ``,
+    `Typography source: ${selectedProfile.label}`,
+    `Use the Font Lab profile values below. Preserve the project's semantic type utilities and CSS variables; do not hard-code one-off type classes.`,
+    `Global font: ${selectedProfile.globalFont}`,
+    `Role font overrides: ${
+      Object.keys(selectedProfile.roleFontOverrides).length > 0
+        ? JSON.stringify(selectedProfile.roleFontOverrides)
+        : "none"
+    }`,
+    `Type roles:`,
+    ...selectedProfile.roles.map(
+      (role) =>
+        `- ${role.token} (${role.role}): min ${role.minRem}rem, max ${role.maxRem}rem, line-height ${role.lineHeight}, weight ${role.weight}, tracking ${role.letterSpacingEm}em, measure ${role.measureCh}ch, wrap ${role.wrap}, capitalization ${role.capitalization}`,
+    ),
+    ``,
+    `Color tokens:`,
+    ...colorTokenControls.map(
+      (control) => `- ${control.variable}: ${appliedColorVariables[control.variable]}`,
+    ),
+    ``,
+    `Spacing: ${selectedSpacing.label}`,
+    `Spacing instruction: ${selectedSpacing.brief}`,
+    `Preview/device reference: ${selectedViewport.label} (${selectedViewport.sizeLabel})`,
+    ``,
+    `Section order:`,
+    ...includedSections.map(
+      (section, index) =>
+        `${index + 1}. ${section.component}
+   Name: ${section.name}
+   Mode: ${section.mode}
+   Instruction: ${section.instruction}
+   Source state: ${
+     section.originalIndex < 0
+       ? "added in Design Lab"
+       : section.component !== section.originalComponent
+         ? `swapped from ${section.originalComponent}`
+         : "original recipe section"
+   }`,
+    ),
+    ``,
+    `Excluded sections: ${
+      excludedSections.length > 0
+        ? excludedSections
+            .map((section) => `${section.component} (${section.name})`)
+            .join(", ")
+        : "none"
+    }`,
+    ``,
+    `Implementation rules:`,
+    `- Use existing section components from src/components/sections/.`,
+    `- Compose imported sections in the target page; do not paste large raw section markup into app/**/page.tsx.`,
+    `- Keep reusable/business-specific copy in src/content/.`,
+    `- Use shared primitives, design tokens, type utilities, spacing utilities, and color variables before adding anything new.`,
+    `- Preserve desktop-first Tailwind with max-* responsive variants.`,
+    `- Do not add new dependencies, redesign unrelated sections, rewrite form/Supabase logic, or add Google Fonts link tags.`,
+    `- If a section needs new copy, create concise local-service business copy that matches the section mode and instruction.`,
+  ].join("\n");
 
   function updateActiveStack(updater: (stack: WorkingSection[]) => WorkingSection[]) {
     setWorkingStacks((currentStacks) =>
       currentStacks.map((stack, index) =>
         index === activeRecipeIndex ? updater(stack) : stack,
+      ),
+    );
+  }
+
+  function updateActiveDesignStyle(
+    updater: (settings: DesignStyleSettings) => DesignStyleSettings,
+  ) {
+    setDesignStyleSettings((currentSettings) =>
+      currentSettings.map((settings, index) =>
+        index === activeRecipeIndex ? updater(settings) : settings,
       ),
     );
   }
@@ -563,6 +744,16 @@ export function DesignLabShell({
     moveSection(selectedSection.id, direction);
   }
 
+  function deleteSection(sectionId: string) {
+    updateActiveStack((stack) =>
+      stack.filter((section) => section.id !== sectionId),
+    );
+
+    if (sectionId === selectedSectionId) {
+      setSelectedSectionId(null);
+    }
+  }
+
   function swapSelectedSection(component: string) {
     const nextOption = sectionSwapOptions.find(
       (option) => option.component === component,
@@ -587,24 +778,70 @@ export function DesignLabShell({
     );
   }
 
+  function addSection(component: string) {
+    const nextOption = sectionSwapOptions.find(
+      (option) => option.component === component,
+    );
+
+    if (!nextOption) {
+      return;
+    }
+
+    const nextSection: WorkingSection = {
+      component: nextOption.component,
+      id: `${activeRecipe.id}-${nextOption.component}-added-${Date.now()}`,
+      included: true,
+      instruction: nextOption.instruction,
+      mode: nextOption.mode,
+      name: nextOption.name,
+      originalComponent: nextOption.component,
+      originalIndex: -1,
+    };
+
+    updateActiveStack((stack) => {
+      const selectedIndex = selectedSection
+        ? stack.findIndex((section) => section.id === selectedSection.id)
+        : -1;
+      const insertIndex = selectedIndex >= 0 ? selectedIndex + 1 : stack.length;
+      const nextStack = [...stack];
+
+      nextStack.splice(insertIndex, 0, nextSection);
+      return nextStack;
+    });
+    setSelectedSectionId(nextSection.id);
+  }
+
   function selectColorRule(ruleId: string) {
     const rule = colorRules.find((option) => option.id === ruleId);
 
     if (!rule) {
-      setSelectedColorId("custom");
+      updateActiveDesignStyle((settings) => ({
+        ...settings,
+        colorId: "custom",
+      }));
       return;
     }
 
-    setSelectedColorId(rule.id);
-    setColorVariables(rule.variables);
+    updateActiveDesignStyle((settings) => ({
+      ...settings,
+      colorId: rule.id,
+      colorVariables: { ...rule.variables },
+    }));
   }
 
   function updateColorVariable(variable: ColorVariableName, value: string) {
-    setSelectedColorId("custom");
-    setColorVariables((currentVariables) => ({
-      ...currentVariables,
-      [variable]: cleanHexDraft(value),
+    updateActiveDesignStyle((settings) => ({
+      ...settings,
+      colorId: "custom",
+      colorVariables: {
+        ...settings.colorVariables,
+        [variable]: cleanHexDraft(value),
+      },
     }));
+  }
+
+  async function copyCodexRebuildBrief() {
+    await navigator.clipboard.writeText(codexRebuildBrief);
   }
 
   const previewWindow = (
@@ -612,7 +849,7 @@ export function DesignLabShell({
       className={cx(
         "design-lab-color-preview max-h-full min-h-0 w-full",
         selectedSpacing.className,
-        !showSectionMarkers && "design-lab-hide-markers",
+        !activeDesignStyle.showSectionMarkers && "design-lab-hide-markers",
       )}
       style={previewStyle}
     >
@@ -637,7 +874,7 @@ export function DesignLabShell({
           />
           <div className="ml-2 flex min-w-0 flex-1 items-center rounded-full border border-service-border bg-white px-3 py-1">
             <span className="truncate text-[0.65rem] font-semibold uppercase tracking-widest text-service-muted">
-              {selectedViewport.sizeLabel} / {activeRecipe.name}
+              {selectedViewport.sizeLabel} / {activeDesignLabel}
             </span>
           </div>
         </div>
@@ -752,27 +989,31 @@ export function DesignLabShell({
                 Style Inputs
               </h2>
               <div className="mt-4 grid gap-4">
-                <label className="grid gap-2">
+                <div className="grid gap-2 rounded border border-service-border bg-service-surface p-3">
                   <span className="type-caption font-semibold text-service-ink">
-                    Typography Profile
+                    Typography Source
                   </span>
                   <select
-                    className="radius-4 min-h-11 border border-service-border bg-service-surface px-3 text-sm font-semibold text-service-ink"
+                    className="radius-4 min-h-11 border border-service-border bg-white px-3 text-sm font-semibold text-service-ink"
                     onChange={(event) =>
-                      setSelectedProfileId(event.target.value)
+                      updateActiveDesignStyle((settings) => ({
+                        ...settings,
+                        profileId: event.target.value,
+                      }))
                     }
                     value={selectedProfile.id}
                   >
-                    {typePalettes.map((profile) => (
+                    {availableTypePalettes.map((profile) => (
                       <option key={profile.id} value={profile.id}>
                         {profile.label}
                       </option>
                     ))}
                   </select>
                   <span className="type-caption text-service-muted">
-                    Applies real type CSS variables to the rendered preview.
+                    {activeDesignLabel} loads this Font Lab profile slot.
+                    Tweak profile details in Font Lab.
                   </span>
-                </label>
+                </div>
 
                 <label className="grid gap-2">
                   <span className="type-caption font-semibold text-service-ink">
@@ -781,9 +1022,11 @@ export function DesignLabShell({
                   <select
                     className="radius-4 min-h-11 border border-service-border bg-service-surface px-3 text-sm font-semibold text-service-ink"
                     onChange={(event) =>
-                      setSelectedSpacingId(
-                        event.target.value as typeof selectedSpacingId,
-                      )
+                      updateActiveDesignStyle((settings) => ({
+                        ...settings,
+                        spacingId: event.target
+                          .value as DesignStyleSettings["spacingId"],
+                      }))
                     }
                     value={selectedSpacing.id}
                   >
@@ -805,7 +1048,7 @@ export function DesignLabShell({
                   <select
                     className="radius-4 min-h-11 border border-service-border bg-service-surface px-3 text-sm font-semibold text-service-ink"
                     onChange={(event) => selectColorRule(event.target.value)}
-                    value={selectedColorId}
+                    value={activeDesignStyle.colorId}
                   >
                     <option value="custom">Custom Palette</option>
                     {colorRules.map((rule) => (
@@ -820,7 +1063,8 @@ export function DesignLabShell({
 
                   <div className="grid gap-2 rounded border border-service-border bg-service-surface p-3">
                     {colorTokenControls.map((control) => {
-                      const value = colorVariables[control.variable];
+                      const value =
+                        activeDesignStyle.colorVariables[control.variable];
                       const isValid = isHexColor(value);
 
                       return (
@@ -896,7 +1140,12 @@ export function DesignLabShell({
                               : "border-service-border bg-service-surface text-service-ink hover:border-service-accent hover:text-service-accent",
                           )}
                           key={option.id}
-                          onClick={() => setSelectedViewportId(option.id)}
+                          onClick={() =>
+                            updateActiveDesignStyle((settings) => ({
+                              ...settings,
+                              viewportId: option.id,
+                            }))
+                          }
                           type="button"
                         >
                           {option.label}
@@ -911,10 +1160,13 @@ export function DesignLabShell({
 
                 <label className="flex items-start gap-3 rounded border border-service-border bg-service-surface p-3">
                   <input
-                    checked={showSectionMarkers}
+                    checked={activeDesignStyle.showSectionMarkers}
                     className="mt-1 size-4 accent-service-accent"
                     onChange={(event) =>
-                      setShowSectionMarkers(event.target.checked)
+                      updateActiveDesignStyle((settings) => ({
+                        ...settings,
+                        showSectionMarkers: event.target.checked,
+                      }))
                     }
                     type="checkbox"
                   />
@@ -1027,7 +1279,7 @@ export function DesignLabShell({
                 className="grid grid-cols-5 gap-1.5 max-xl:grid-cols-3 max-md:grid-cols-1"
                 role="tablist"
               >
-                {recipes.map((recipe) => {
+                {recipes.map((recipe, index) => {
                   const isActive = recipe.id === activeRecipe.id;
 
                   return (
@@ -1049,7 +1301,7 @@ export function DesignLabShell({
                       role="tab"
                       type="button"
                     >
-                      {recipe.name}
+                      {`Design ${index + 1}`}
                     </button>
                   );
                 })}
@@ -1070,7 +1322,7 @@ export function DesignLabShell({
                         Homepage Recipe
                       </p>
                       <h2 className="mt-1 text-lg font-semibold text-service-ink">
-                        {activeRecipe.name}
+                        {activeDesignLabel}
                       </h2>
                       <p className="type-caption measure-copy-wide wrap-pretty mt-1 text-service-muted">
                         {activeRecipe.positioning}
@@ -1103,7 +1355,7 @@ export function DesignLabShell({
                         Rendered Preview
                       </p>
                       <h3 className="type-heading-sm mt-2 text-service-ink">
-                        {activeRecipe.name} homepage body
+                        {activeDesignLabel} homepage body
                       </h3>
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -1147,6 +1399,49 @@ export function DesignLabShell({
                   <summary className="cursor-pointer text-sm font-semibold text-service-ink">
                     Section Stack
                   </summary>
+                  <div className="mt-5 grid gap-2 rounded border border-service-border bg-service-surface p-3">
+                    <label className="grid gap-2">
+                      <span className="type-caption font-semibold text-service-ink">
+                        Add Section Template
+                      </span>
+                      <select
+                        className="radius-4 min-h-11 border border-service-border bg-white px-3 text-sm font-semibold text-service-ink"
+                        onChange={(event) => {
+                          addSection(event.target.value);
+                          event.currentTarget.value = "";
+                        }}
+                        value=""
+                      >
+                        <option value="">Choose a section to add...</option>
+                        {sectionModes.map((mode) => {
+                          const options = sectionSwapOptions.filter(
+                            (option) => option.mode === mode.name,
+                          );
+
+                          if (options.length === 0) {
+                            return null;
+                          }
+
+                          return (
+                            <optgroup key={mode.id} label={mode.name}>
+                              {options.map((option) => (
+                                <option
+                                  key={option.component}
+                                  value={option.component}
+                                >
+                                  {option.name}
+                                </option>
+                              ))}
+                            </optgroup>
+                          );
+                        })}
+                      </select>
+                      <span className="type-caption text-service-muted">
+                        Adds after the selected section, or at the bottom if
+                        nothing is selected.
+                      </span>
+                    </label>
+                  </div>
                   <ol className="mt-5 grid gap-3">
                     {activeStack.map((section, index) => (
                       <li
@@ -1181,7 +1476,7 @@ export function DesignLabShell({
                             {section.instruction}
                           </p>
                         </div>
-                        <div className="grid content-start gap-2 max-md:col-span-2 max-md:grid-cols-3">
+                        <div className="grid content-start gap-2 max-md:col-span-2 max-md:grid-cols-4">
                           <button
                             className="radius-4 min-h-9 border border-service-border bg-white px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-40"
                             disabled={index === 0}
@@ -1211,6 +1506,13 @@ export function DesignLabShell({
                           >
                             Select
                           </button>
+                          <button
+                            className="radius-4 min-h-9 border border-service-border bg-white px-3 text-xs font-semibold text-service-muted transition-colors hover:border-service-accent hover:text-service-accent"
+                            onClick={() => deleteSection(section.id)}
+                            type="button"
+                          >
+                            Delete
+                          </button>
                         </div>
                       </li>
                     ))}
@@ -1219,12 +1521,26 @@ export function DesignLabShell({
 
                 <details className="radius-medium border border-service-border bg-white p-5 shadow-service">
                   <summary className="cursor-pointer text-sm font-semibold text-service-ink">
-                    Build Brief
+                    Codex Rebuild Brief
                   </summary>
-                  <div className="mt-4 grid grid-cols-[minmax(0,0.85fr)_minmax(18rem,0.55fr)] gap-4 max-lg:grid-cols-1">
+                  <div className="mt-4 grid grid-cols-[minmax(0,0.9fr)_minmax(18rem,0.45fr)] gap-4 max-lg:grid-cols-1">
+                    <div className="grid gap-3">
+                      <textarea
+                        className="min-h-[34rem] resize-y rounded border border-service-border bg-service-surface p-4 font-mono text-xs leading-6 text-service-ink outline-none focus:border-service-accent"
+                        readOnly
+                        value={codexRebuildBrief}
+                      />
+                      <button
+                        className="radius-4 min-h-11 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent"
+                        onClick={copyCodexRebuildBrief}
+                        type="button"
+                      >
+                        Copy Codex Brief
+                      </button>
+                    </div>
                     <div className="rounded border border-service-border bg-service-surface p-4">
                       <p className="type-caption font-semibold text-service-ink">
-                        Use {activeRecipe.name}
+                        Use {activeDesignLabel}
                       </p>
                       <p className="type-caption mt-2 text-service-muted">
                         {activeRecipe.positioning}
@@ -1269,24 +1585,69 @@ export function DesignLabShell({
                           </p>
                         ))}
                       </div>
+                      <ol className="mt-3 grid gap-2">
+                        {includedSections.map((section, index) => (
+                          <li
+                            className="type-caption rounded border border-service-border bg-white p-3 text-service-muted"
+                            key={`${section.id}-brief`}
+                          >
+                            <span className="font-semibold text-service-ink">
+                              {index + 1}. {section.component}
+                            </span>
+                            <br />
+                            {section.mode}: {section.instruction}
+                          </li>
+                        ))}
+                      </ol>
                     </div>
+                  </div>
+                </details>
 
-                    <ol className="grid gap-3">
-                      {activeStack
-                        .filter((section) => section.included)
-                        .map((section, index) => (
-                        <li
-                          className="type-caption rounded border border-service-border p-3 text-service-muted"
-                          key={`${section.id}-brief`}
-                        >
-                          <span className="font-semibold text-service-ink">
-                            {index + 1}. {section.component}
-                          </span>
-                          <br />
-                          {section.mode}: {section.instruction}
-                        </li>
-                      ))}
-                    </ol>
+                <details className="radius-medium border border-service-border bg-white p-5 shadow-service">
+                  <summary className="cursor-pointer text-sm font-semibold text-service-ink">
+                    Font Specimens
+                  </summary>
+                  <div className="mt-4 grid gap-3">
+                    {devFontSpecimens.map((font) => (
+                      <article
+                        className="grid grid-cols-[minmax(12rem,0.35fr)_minmax(0,1fr)] gap-4 rounded border border-service-border bg-service-surface p-4 max-lg:grid-cols-1"
+                        key={font.variable}
+                        style={{ fontFamily: `var(${font.variable})` }}
+                      >
+                        <div className="min-w-0">
+                          <h3 className="text-lg font-semibold text-service-ink">
+                            {font.name}
+                          </h3>
+                          <p className="mt-2 text-sm leading-6 text-service-muted">
+                            {font.suggestedUse}
+                          </p>
+                          <code className="mt-3 block rounded border border-service-border bg-white px-2 py-1 font-mono text-xs text-service-muted">
+                            {font.variable}
+                          </code>
+                        </div>
+                        <div className="grid gap-3 rounded border border-service-border bg-white p-4">
+                          <h4 className="text-4xl font-semibold leading-none text-service-ink max-md:text-3xl">
+                            Clear service from request to resolved
+                          </h4>
+                          <p className="max-w-2xl text-base leading-7 text-service-muted">
+                            A practical service homepage needs readable copy,
+                            confident section rhythm, and type that can carry
+                            trust without slowing the visitor down.
+                          </p>
+                          <div className="flex flex-wrap items-center gap-3">
+                            <span className="inline-flex min-h-10 items-center rounded bg-service-ink px-4 text-sm font-semibold text-white">
+                              Request service
+                            </span>
+                            <span className="inline-flex min-h-10 items-center rounded border border-service-border px-4 text-sm font-semibold text-service-ink">
+                              Services
+                            </span>
+                            <span className="text-sm font-semibold text-service-muted">
+                              Areas / Reviews / Contact
+                            </span>
+                          </div>
+                        </div>
+                      </article>
+                    ))}
                   </div>
                 </details>
 
@@ -1341,7 +1702,7 @@ export function DesignLabShell({
             <div className="flex flex-wrap items-center justify-between gap-3 rounded border border-white/15 bg-white px-3 py-2 shadow-service">
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-service-ink">
-                  {activeRecipe.name}
+                  {activeDesignLabel}
                 </p>
                 <p className="type-caption truncate text-service-muted">
                   {selectedViewport.sizeLabel} preview
@@ -1364,7 +1725,12 @@ export function DesignLabShell({
                           : "text-service-muted hover:bg-white hover:text-service-accent",
                       )}
                       key={option.id}
-                      onClick={() => setSelectedViewportId(option.id)}
+                      onClick={() =>
+                        updateActiveDesignStyle((settings) => ({
+                          ...settings,
+                          viewportId: option.id,
+                        }))
+                      }
                       type="button"
                     >
                       {option.label}

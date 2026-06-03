@@ -11,6 +11,10 @@ import {
   type TypeRole,
   type WrapMode,
 } from "@/content/type-palettes";
+import {
+  loadStoredFontLabProfiles,
+  saveStoredFontLabProfiles,
+} from "@/lib/font-lab-storage";
 
 type FontOption = {
   label: string;
@@ -41,6 +45,54 @@ const projectFontOptions: FontOption[] = [
   {
     label: "Geist Sans",
     value: "var(--font-geist-sans), Arial, Helvetica, sans-serif",
+  },
+  {
+    label: "Noto Sans",
+    value: "var(--font-dev-noto-sans), Arial, Helvetica, sans-serif",
+  },
+  {
+    label: "Brawler",
+    value: "var(--font-dev-brawler), Georgia, Times New Roman, serif",
+  },
+  {
+    label: "Vend Sans",
+    value: "var(--font-dev-vend-sans), Arial, Helvetica, sans-serif",
+  },
+  {
+    label: "Spline Sans",
+    value: "var(--font-dev-spline-sans), Arial, Helvetica, sans-serif",
+  },
+  {
+    label: "Spline Sans Mono",
+    value: "var(--font-dev-spline-sans-mono), monospace",
+  },
+  {
+    label: "Archivo Black",
+    value: "var(--font-dev-archivo-black), Arial Black, Arial, sans-serif",
+  },
+  {
+    label: "Raleway",
+    value: "var(--font-dev-raleway), Arial, Helvetica, sans-serif",
+  },
+  {
+    label: "Inter",
+    value: "var(--font-dev-inter), Arial, Helvetica, sans-serif",
+  },
+  {
+    label: "Libre Franklin",
+    value: "var(--font-dev-libre-franklin), Arial, Helvetica, sans-serif",
+  },
+  {
+    label: "Host Grotesk",
+    value: "var(--font-dev-host-grotesk), Arial, Helvetica, sans-serif",
+  },
+  {
+    label: "DM Sans",
+    value: "var(--font-dev-dm-sans), Arial, Helvetica, sans-serif",
+  },
+  {
+    label: "DM Mono",
+    value: "var(--font-dev-dm-mono), monospace",
   },
 ];
 
@@ -562,46 +614,6 @@ function NumberControl({
   );
 }
 
-function SpacingPresetControl({
-  value,
-  onChange,
-}: {
-  value: number;
-  onChange: (value: number) => void;
-}) {
-  const currentPreset = spacingPresets[value - 1] ?? spacingPresets[2];
-
-  return (
-    <label className="grid gap-2">
-      <span className="type-caption font-semibold text-service-muted">
-        Section spacing
-      </span>
-      <input
-        aria-label={`Section spacing: ${currentPreset.label}`}
-        className="h-2 accent-service-accent"
-        min={1}
-        max={spacingPresets.length}
-        step={1}
-        type="range"
-        value={value}
-        onChange={(event) => onChange(Number(event.target.value))}
-      />
-      <div className="grid grid-cols-5 gap-2 text-center text-[0.625rem] font-semibold uppercase leading-4 text-service-muted">
-        {spacingPresets.map((preset) => (
-          <span
-            className={cx(
-              preset.label === currentPreset.label && "text-service-accent",
-            )}
-            key={preset.label}
-          >
-            {preset.label}
-          </span>
-        ))}
-      </div>
-    </label>
-  );
-}
-
 function isHeaderRole(role: TypeRole) {
   return (
     role.id === "display-xl" ||
@@ -627,7 +639,7 @@ const spacingPresets = [
 
 export function FontLabSection() {
   const [profiles, setProfiles] = useState<TypePalette[]>(() =>
-    typePalettes.map(cloneProfile),
+    (loadStoredFontLabProfiles() ?? typePalettes).map(cloneProfile),
   );
   const [selectedProfileId, setSelectedProfileId] = useState(
     typePalettes[0].id,
@@ -646,7 +658,6 @@ export function FontLabSection() {
   );
   const [isScanningFonts, setIsScanningFonts] = useState(false);
   const [copiedTarget, setCopiedTarget] = useState<string | null>(null);
-  const [sectionSpacingPreset, setSectionSpacingPreset] = useState(3);
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(
     initialRoles[0].id,
   );
@@ -692,8 +703,7 @@ export function FontLabSection() {
     () => typeVariableStyle(editorSettings),
     [editorSettings],
   );
-  const selectedSpacingPreset =
-    spacingPresets[sectionSpacingPreset - 1] ?? spacingPresets[2];
+  const selectedSpacingPreset = spacingPresets[4];
   const previewFrameStyle = useMemo(
     () =>
       ({
@@ -886,23 +896,29 @@ export function FontLabSection() {
   }
 
   function saveCurrentProfile() {
-    setProfiles((currentProfiles) =>
-      currentProfiles.map((profile) =>
+    setProfiles((currentProfiles) => {
+      const nextProfiles = currentProfiles.map((profile) =>
         profile.id === selectedProfile.id
           ? profileFromSettings(profile, editorSettings)
           : profile,
-      ),
-    );
+      );
+
+      saveStoredFontLabProfiles(nextProfiles);
+      return nextProfiles;
+    });
   }
 
   function resetCurrentProfile() {
     const resetProfile = cloneProfile(originalSelectedProfile);
 
-    setProfiles((currentProfiles) =>
-      currentProfiles.map((profile) =>
+    setProfiles((currentProfiles) => {
+      const nextProfiles = currentProfiles.map((profile) =>
         profile.id === resetProfile.id ? resetProfile : profile,
-      ),
-    );
+      );
+
+      saveStoredFontLabProfiles(nextProfiles);
+      return nextProfiles;
+    });
     loadProfile(resetProfile);
   }
 
@@ -1209,11 +1225,6 @@ export function FontLabSection() {
                   </option>
                 ))}
               </SelectField>
-
-              <SpacingPresetControl
-                value={sectionSpacingPreset}
-                onChange={setSectionSpacingPreset}
-              />
 
               {selectedRole ? (
                 <>

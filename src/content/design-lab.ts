@@ -106,10 +106,10 @@ export const sectionModes: SectionMode[] = [
 export const homepageRecipes: HomepageRecipe[] = [
   {
     id: "classic-service",
-    name: "Classic Service",
+    name: "Design 1",
     positioning: "Balanced homepage for a broad local service business.",
     styleRules: [
-      "Use Profile 1 or 2 for a clean service baseline.",
+      "Use the corresponding Font Lab profile slot for typography.",
       "Alternate white and service-surface sections.",
       "Use one dark or accent conversion moment near the end.",
     ],
@@ -167,10 +167,10 @@ export const homepageRecipes: HomepageRecipe[] = [
   },
   {
     id: "premium-trust",
-    name: "Premium Trust",
+    name: "Design 2",
     positioning: "More editorial, image-led, and confidence-focused.",
     styleRules: [
-      "Use Profile 3 or 4 for more character in headings.",
+      "Use the corresponding Font Lab profile slot for typography.",
       "Keep section spacing open and deliberate.",
       "Use proof in fewer, stronger moments instead of many small badges.",
     ],
@@ -235,7 +235,7 @@ export const homepageRecipes: HomepageRecipe[] = [
   },
   {
     id: "conversion-heavy",
-    name: "Conversion Heavy",
+    name: "Design 3",
     positioning: "For urgent services where booking clarity matters most.",
     styleRules: [
       "Use compact-to-normal spacing so the first two viewports stay dense.",
@@ -296,7 +296,7 @@ export const homepageRecipes: HomepageRecipe[] = [
   },
   {
     id: "editorial-local",
-    name: "Editorial Local",
+    name: "Design 4",
     positioning: "Slower, story-driven homepage for trust-heavy services.",
     styleRules: [
       "Use an expressive heading profile with restrained body copy.",
@@ -364,10 +364,10 @@ export const homepageRecipes: HomepageRecipe[] = [
   },
   {
     id: "compact-utility",
-    name: "Compact Utility",
+    name: "Design 5",
     positioning: "Lean homepage for simple businesses and fast launches.",
     styleRules: [
-      "Use Profile 1 and normal spacing.",
+      "Use the corresponding Font Lab profile slot and normal spacing.",
       "Avoid extra editorial sections unless the service needs explanation.",
       "Keep each section useful on its own.",
     ],
