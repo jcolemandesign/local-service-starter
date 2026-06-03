@@ -34,6 +34,7 @@ export { FeatureSplitSection } from "./FeatureSplitSection";
 export { FeatureSplitSectionV2 } from "./FeatureSplitSectionV2";
 export { FooterSection } from "./FooterSection";
 export { FooterSectionV2 } from "./FooterSectionV2";
+export { GridLabSection } from "./GridLabSection";
 export { HeroBentoSection } from "./HeroBentoSection";
 export { HeroBentoSectionV2 } from "./HeroBentoSectionV2";
 export { HeroCenteredFloatersSectionV2 } from "./HeroCenteredFloatersSectionV2";

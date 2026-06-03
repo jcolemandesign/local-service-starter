@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties, KeyboardEvent, MouseEvent } from "react";
 import { Card } from "@/components/primitives";
 import { sectionLibraryContent } from "@/content/section-library";
@@ -639,7 +639,7 @@ const spacingPresets = [
 
 export function FontLabSection() {
   const [profiles, setProfiles] = useState<TypePalette[]>(() =>
-    (loadStoredFontLabProfiles() ?? typePalettes).map(cloneProfile),
+    typePalettes.map(cloneProfile),
   );
   const [selectedProfileId, setSelectedProfileId] = useState(
     typePalettes[0].id,
@@ -894,6 +894,36 @@ export function FontLabSection() {
     setRoleFontOverrides(settings.roleFontOverrides);
     setSelectedRoleId(settings.roles[0]?.id ?? selectedRoleId);
   }
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      const storedProfiles = loadStoredFontLabProfiles();
+
+      if (!storedProfiles) {
+        return;
+      }
+
+      const nextProfiles = storedProfiles.map(cloneProfile);
+      const nextProfile =
+        nextProfiles.find((profile) => profile.id === typePalettes[0].id) ??
+        nextProfiles[0];
+
+      setProfiles(nextProfiles);
+
+      if (nextProfile) {
+        const settings = settingsFromProfile(nextProfile);
+
+        setSelectedProfileId(nextProfile.id);
+        setRoles(settings.roles);
+        setGlobalFont(settings.globalFont);
+        setCustomFont(settings.customFont);
+        setRoleFontOverrides(settings.roleFontOverrides);
+        setSelectedRoleId(settings.roles[0]?.id ?? null);
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
+  }, []);
 
   function saveCurrentProfile() {
     setProfiles((currentProfiles) => {

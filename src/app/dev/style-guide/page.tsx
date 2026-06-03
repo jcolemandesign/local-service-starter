@@ -460,6 +460,40 @@ export default function StyleGuidePage() {
       </GuideSection>
 
       <GuideSection
+        eyebrow="Throwaway"
+        title="Seven Column Type Stack"
+        body="One live specimen per typography role, placed on a seven-column row so the text can occupy the main track while the token metadata stays fixed."
+      >
+        <div className="grid gap-3">
+          {typeTokens.map((token) => (
+            <div
+              className="fluid-type-frame grid grid-cols-7 gap-4 border-t border-service-border py-6 max-lg:grid-cols-4 max-md:grid-cols-1"
+              key={`grid-row-${token.name}`}
+            >
+              <div className="col-span-1 max-lg:col-span-4 max-md:col-span-1">
+                <code className="radius-4 inline-flex bg-service-surface px-2 py-1 text-xs font-semibold text-service-ink">
+                  {token.name}
+                </code>
+                <p className="type-caption mt-2 text-service-muted">
+                  {token.role}
+                </p>
+              </div>
+              <p
+                className={cx(
+                  token.typeClass,
+                  token.measureClass,
+                  token.wrapClass,
+                  "col-span-6 text-service-ink max-lg:col-span-4 max-md:col-span-1",
+                )}
+              >
+                {token.sample}
+              </p>
+            </div>
+          ))}
+        </div>
+      </GuideSection>
+
+      <GuideSection
         eyebrow="Measure"
         title="Text Measures"
         body="Measure tokens control readable copy width. Heading roles rely on balanced wrapping by default, with manual line breaks reserved for art-directed headlines."

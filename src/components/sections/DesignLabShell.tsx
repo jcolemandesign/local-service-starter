@@ -202,69 +202,6 @@ type DesignStyleSettings = {
   viewportId: (typeof viewportOptions)[number]["id"];
 };
 
-const devFontSpecimens = [
-  {
-    name: "Noto Sans",
-    suggestedUse: "Durable body and UI baseline with broad neutral coverage.",
-    variable: "--font-dev-noto-sans",
-  },
-  {
-    name: "Brawler",
-    suggestedUse: "Editorial headings, trust stories, and warmer local service tone.",
-    variable: "--font-dev-brawler",
-  },
-  {
-    name: "Vend Sans",
-    suggestedUse: "Contemporary service brands that need a crisp full-page voice.",
-    variable: "--font-dev-vend-sans",
-  },
-  {
-    name: "Spline Sans",
-    suggestedUse: "Technical service pages, clean headers, and readable body systems.",
-    variable: "--font-dev-spline-sans",
-  },
-  {
-    name: "Spline Sans Mono",
-    suggestedUse: "Specs, labels, process metadata, and utility details.",
-    variable: "--font-dev-spline-sans-mono",
-  },
-  {
-    name: "Archivo Black",
-    suggestedUse: "Loud hero headlines, offer moments, and punchy display accents.",
-    variable: "--font-dev-archivo-black",
-  },
-  {
-    name: "Raleway",
-    suggestedUse: "Polished headings and lighter premium service positioning.",
-    variable: "--font-dev-raleway",
-  },
-  {
-    name: "Inter",
-    suggestedUse: "Highly legible UI, forms, nav, and practical body copy.",
-    variable: "--font-dev-inter",
-  },
-  {
-    name: "Libre Franklin",
-    suggestedUse: "Editorial service pages with sturdy headlines and readable body text.",
-    variable: "--font-dev-libre-franklin",
-  },
-  {
-    name: "Host Grotesk",
-    suggestedUse: "Modern local brands, nav systems, and confident section titles.",
-    variable: "--font-dev-host-grotesk",
-  },
-  {
-    name: "DM Sans",
-    suggestedUse: "Friendly SaaS-like service pages, cards, and conversion UI.",
-    variable: "--font-dev-dm-sans",
-  },
-  {
-    name: "DM Mono",
-    suggestedUse: "Small technical labels, pricing details, and diagnostic notes.",
-    variable: "--font-dev-dm-mono",
-  },
-];
-
 const sectionSwapOptions = [
   {
     component: "NavPrimarySectionV2",
@@ -530,7 +467,7 @@ export function DesignLabShell({
     ),
   );
   const [availableTypePalettes, setAvailableTypePalettes] =
-    useState<TypePalette[]>(() => loadStoredFontLabProfiles() ?? typePalettes);
+    useState<TypePalette[]>(typePalettes);
   const [designStyleSettings, setDesignStyleSettings] = useState<
     DesignStyleSettings[]
   >(() =>
@@ -956,32 +893,6 @@ export function DesignLabShell({
                 A working prototype for comparing clean homepage section stacks
                 against the implementation brief they produce.
               </p>
-            </div>
-
-            <div className="radius-medium border border-service-border bg-white p-5 shadow-service">
-              <h2 className="type-heading-sm text-service-ink">
-                Baseline Rules
-              </h2>
-              <ul className="mt-4 grid gap-3">
-                {[
-                  "Use one h1, normally inside the hero.",
-                  "Compose pages from section components in src/components/sections.",
-                  "Keep business copy in src/content when the section becomes reusable.",
-                  "Use global type, spacing, color, and radius tokens before custom values.",
-                  "Write desktop-first classes and simplify downward with max-* variants.",
-                ].map((rule) => (
-                  <li
-                    className="type-caption flex gap-3 rounded border border-service-border bg-service-surface p-3 text-service-muted"
-                    key={rule}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="mt-1 size-1.5 shrink-0 rounded-full bg-service-accent"
-                    />
-                    <span>{rule}</span>
-                  </li>
-                ))}
-              </ul>
             </div>
 
             <div className="radius-medium border border-service-border bg-white p-5 shadow-service">
@@ -1600,54 +1511,6 @@ export function DesignLabShell({
                         ))}
                       </ol>
                     </div>
-                  </div>
-                </details>
-
-                <details className="radius-medium border border-service-border bg-white p-5 shadow-service">
-                  <summary className="cursor-pointer text-sm font-semibold text-service-ink">
-                    Font Specimens
-                  </summary>
-                  <div className="mt-4 grid gap-3">
-                    {devFontSpecimens.map((font) => (
-                      <article
-                        className="grid grid-cols-[minmax(12rem,0.35fr)_minmax(0,1fr)] gap-4 rounded border border-service-border bg-service-surface p-4 max-lg:grid-cols-1"
-                        key={font.variable}
-                        style={{ fontFamily: `var(${font.variable})` }}
-                      >
-                        <div className="min-w-0">
-                          <h3 className="text-lg font-semibold text-service-ink">
-                            {font.name}
-                          </h3>
-                          <p className="mt-2 text-sm leading-6 text-service-muted">
-                            {font.suggestedUse}
-                          </p>
-                          <code className="mt-3 block rounded border border-service-border bg-white px-2 py-1 font-mono text-xs text-service-muted">
-                            {font.variable}
-                          </code>
-                        </div>
-                        <div className="grid gap-3 rounded border border-service-border bg-white p-4">
-                          <h4 className="text-4xl font-semibold leading-none text-service-ink max-md:text-3xl">
-                            Clear service from request to resolved
-                          </h4>
-                          <p className="max-w-2xl text-base leading-7 text-service-muted">
-                            A practical service homepage needs readable copy,
-                            confident section rhythm, and type that can carry
-                            trust without slowing the visitor down.
-                          </p>
-                          <div className="flex flex-wrap items-center gap-3">
-                            <span className="inline-flex min-h-10 items-center rounded bg-service-ink px-4 text-sm font-semibold text-white">
-                              Request service
-                            </span>
-                            <span className="inline-flex min-h-10 items-center rounded border border-service-border px-4 text-sm font-semibold text-service-ink">
-                              Services
-                            </span>
-                            <span className="text-sm font-semibold text-service-muted">
-                              Areas / Reviews / Contact
-                            </span>
-                          </div>
-                        </div>
-                      </article>
-                    ))}
                   </div>
                 </details>
 
