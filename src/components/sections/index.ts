@@ -23,6 +23,7 @@ export { CTAFullscreenSectionV2 } from "./CTAFullscreenSectionV2";
 export { CTAScrollRevealOfferSectionV2 } from "./CTAScrollRevealOfferSectionV2";
 export { CTASection } from "./CTASection";
 export { CTASectionV2 } from "./CTASectionV2";
+export { DesignLabSection } from "./DesignLabSection";
 export { FAQAccordionSection } from "./FAQAccordionSection";
 export { FAQAccordionSectionV2 } from "./FAQAccordionSectionV2";
 export { FAQSection } from "./FAQSection";
@@ -72,5 +73,8 @@ export { TestimonialsSection } from "./TestimonialsSection";
 export { TestimonialsSectionV2 } from "./TestimonialsSectionV2";
 export { TrustBarFloatingBentoSectionV2 } from "./TrustBarFloatingBentoSectionV2";
 export { TrustBarSection } from "./TrustBarSection";
-export { TrustLogoMarqueeSection } from "./TrustLogoMarqueeSection";
+export {
+  TrustLogoGridSection,
+  TrustLogoMarqueeSection,
+} from "./TrustLogoMarqueeSection";
 export { TrustMarqueeSection } from "./TrustMarqueeSection";

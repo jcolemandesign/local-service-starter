@@ -47,6 +47,7 @@ import {
   TestimonialsSectionV2,
   TrustBarFloatingBentoSectionV2,
   TrustBarSection,
+  TrustLogoGridSection,
   TrustLogoMarqueeSection,
   TrustMarqueeSection,
 } from "@/components/sections";
@@ -187,6 +188,9 @@ const sectionElements = {
   ),
   "trust-logo-marquee-v2": (
     <TrustLogoMarqueeSection {...sectionLibraryContent.trustLogoMarquee} />
+  ),
+  "trust-logo-grid-v2": (
+    <TrustLogoGridSection {...sectionLibraryContent.trustLogoMarquee} />
   ),
   "services-grid-v2": <ServicesGridSectionV2 {...sectionLibraryContent.services} />,
   "services-bento-v2": (

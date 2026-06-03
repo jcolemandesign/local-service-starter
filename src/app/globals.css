@@ -43,7 +43,7 @@
   --text-fluid-hero: clamp(3rem, 5vw, 4.5rem);
   --text-fluid-heading: clamp(2.25rem, 3.4vw, 4rem);
   --leading-heading: 1.08;
-  --animate-trust-marquee: trust-marquee 32s linear infinite;
+  --animate-trust-marquee: trust-marquee 44s linear infinite;
   --animate-violator-spin: violator-spin 4.25s linear infinite;
 }
 
@@ -333,6 +333,293 @@ body {
 
   .inline-gap-xlrg {
     gap: 2.25rem;
+  }
+
+  .design-lab-density-compact section {
+    padding-block: 2.5rem;
+  }
+
+  .design-lab-density-compact .section-space-med,
+  .design-lab-density-compact .section-space-lrg,
+  .design-lab-density-compact .section-space-sml {
+    padding-block: 2.5rem;
+  }
+
+  .design-lab-density-compact .min-h-svh {
+    min-height: 34rem;
+  }
+
+  .design-lab-density-normal section {
+    padding-block: 4rem;
+  }
+
+  .design-lab-density-normal .section-space-med,
+  .design-lab-density-normal .section-space-lrg,
+  .design-lab-density-normal .section-space-sml {
+    padding-block: 4rem;
+  }
+
+  .design-lab-density-normal .min-h-svh {
+    min-height: 42rem;
+  }
+
+  .design-lab-density-open section {
+    padding-block: 6rem;
+  }
+
+  .design-lab-density-open .section-space-med,
+  .design-lab-density-open .section-space-lrg,
+  .design-lab-density-open .section-space-sml {
+    padding-block: 6rem;
+  }
+
+  .design-lab-density-open .min-h-svh {
+    min-height: 52rem;
+  }
+
+  .design-lab-hide-markers .design-lab-section-marker {
+    display: none;
+  }
+
+  .design-lab-color-preview .bg-white {
+    background-color: var(--design-lab-page-surface, #ffffff);
+  }
+
+  .design-lab-color-preview .text-white {
+    color: var(--design-lab-page-surface, #ffffff);
+  }
+
+  .design-lab-color-preview .border-white {
+    border-color: var(--design-lab-page-surface, #ffffff);
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:grid-cols-2"],
+  .design-lab-responsive-md [class*="max-md:grid-cols-2"],
+  .design-lab-responsive-sm [class*="max-sm:grid-cols-2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:grid-cols-3"],
+  .design-lab-responsive-md [class*="max-md:grid-cols-3"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:grid-cols-1"],
+  .design-lab-responsive-md [class*="max-md:grid-cols-1"],
+  .design-lab-responsive-sm [class*="max-sm:grid-cols-1"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:flex-col"],
+  .design-lab-responsive-md [class*="max-md:flex-col"] {
+    flex-direction: column !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:flex-wrap"],
+  .design-lab-responsive-md [class*="max-md:flex-wrap"] {
+    flex-wrap: wrap !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:items-start"],
+  .design-lab-responsive-md [class*="max-md:items-start"] {
+    align-items: flex-start !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:justify-start"],
+  .design-lab-responsive-md [class*="max-md:justify-start"] {
+    justify-content: flex-start !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:static"],
+  .design-lab-responsive-md [class*="max-md:static"] {
+    position: static !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:hidden"],
+  .design-lab-responsive-md [class*="max-md:hidden"],
+  .design-lab-responsive-sm [class*="max-sm:hidden"] {
+    display: none !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:inline-flex"],
+  .design-lab-responsive-md [class*="max-md:inline-flex"],
+  .design-lab-responsive-sm [class*="max-sm:inline-flex"] {
+    display: inline-flex !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:grid"],
+  .design-lab-responsive-md [class*="max-md:grid"],
+  .design-lab-responsive-sm [class*="max-sm:grid"] {
+    display: grid;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:w-full"],
+  .design-lab-responsive-md [class*="max-md:w-full"] {
+    width: 100% !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:h-auto"],
+  .design-lab-responsive-md [class*="max-md:h-auto"] {
+    height: auto !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:min-h-0"],
+  .design-lab-responsive-md [class*="max-md:min-h-0"] {
+    min-height: 0 !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:col-span-1"],
+  .design-lab-responsive-md [class*="max-md:col-span-1"] {
+    grid-column: span 1 / span 1 !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:col-span-2"],
+  .design-lab-responsive-md [class*="max-md:col-span-2"] {
+    grid-column: span 2 / span 2 !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:order-first"] {
+    order: -9999 !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:overflow-visible"],
+  .design-lab-responsive-md [class*="max-md:overflow-visible"] {
+    overflow: visible !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:![transform:none]"] {
+    transform: none !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:p-8"] {
+    padding: 2rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:p-6"] {
+    padding: 1.5rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:p-5"] {
+    padding: 1.25rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:p-4"] {
+    padding: 1rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:px-6"] {
+    padding-inline: 1.5rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:px-5"] {
+    padding-inline: 1.25rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:px-4"] {
+    padding-inline: 1rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:py-16"] {
+    padding-block: 4rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:py-12"] {
+    padding-block: 3rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:py-10"] {
+    padding-block: 2.5rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:py-8"] {
+    padding-block: 2rem !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:gap-12"] {
+    gap: 3rem !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:gap-10"] {
+    gap: 2.5rem !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:gap-8"] {
+    gap: 2rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:gap-6"] {
+    gap: 1.5rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:gap-5"] {
+    gap: 1.25rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:gap-4"] {
+    gap: 1rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:gap-3"] {
+    gap: 0.75rem !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:text-4xl"],
+  .design-lab-responsive-md [class*="max-md:text-4xl"] {
+    font-size: 2.25rem !important;
+    line-height: 2.5rem !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:text-3xl"],
+  .design-lab-responsive-md [class*="max-md:text-3xl"] {
+    font-size: 1.875rem !important;
+    line-height: 2.25rem !important;
+  }
+
+  .design-lab-responsive-lg [class*="max-lg:text-2xl"],
+  .design-lab-responsive-md [class*="max-md:text-2xl"] {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:text-xl"] {
+    font-size: 1.25rem !important;
+    line-height: 1.75rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:text-lg"] {
+    font-size: 1.125rem !important;
+    line-height: 1.75rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:text-base"] {
+    font-size: 1rem !important;
+    line-height: 1.5rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:text-sm"] {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:text-xs"] {
+    font-size: 0.75rem !important;
+    line-height: 1rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:leading-8"] {
+    line-height: 2rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:leading-7"] {
+    line-height: 1.75rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:leading-5"] {
+    line-height: 1.25rem !important;
+  }
+
+  .design-lab-responsive-md [class*="max-md:leading-4"] {
+    line-height: 1rem !important;
   }
 
   .card-grid-gap-sml {

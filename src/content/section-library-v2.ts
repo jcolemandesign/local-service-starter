@@ -92,6 +92,7 @@ export const sectionLibraryV2Collections = [
       },
       { label: "Trust marquee", component: "trust-marquee-v2" },
       { label: "Trust logo marquee", component: "trust-logo-marquee-v2" },
+      { label: "Static trust logo grid", component: "trust-logo-grid-v2" },
     ],
   },
   {

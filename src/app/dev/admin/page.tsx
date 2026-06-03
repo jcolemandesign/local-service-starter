@@ -20,6 +20,7 @@ const linkGroups = [
     links: [
       { label: "Style Guide", href: "/dev/style-guide" },
       { label: "Font Lab", href: "/dev/font-lab" },
+      { label: "Design Lab", href: "/dev/design-lab" },
       { label: "Type Test", href: "/dev/type-test" },
       { label: "Type Hierarchy Test", href: "/dev/type-hierarchy-test" },
     ],
