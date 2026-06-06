@@ -1,4 +1,8 @@
-import { Button } from "@/components/primitives";
+import {
+  Button,
+  SevenColumnGrid,
+  SevenColumnGridItem,
+} from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 
 type HeroSectionV2Props = {
@@ -37,15 +41,14 @@ export function HeroSectionV2({
   const HeadingTag = `h${headingLevel}` as const;
 
   return (
-    <section className="min-h-svh bg-service-surface">
-      <div className="container-site flex min-h-svh items-stretch gap-10 py-16 max-lg:flex-col max-lg:gap-12 max-md:py-12">
-        <div
-          className={cx(
-            "flex min-w-0 basis-[56%] items-center max-lg:basis-auto",
-            "fluid-type-frame",
-          )}
+    <section className="bg-service-surface">
+      <SevenColumnGrid className="section-min-screen">
+        <SevenColumnGridItem
+          alignX="left"
+          alignY="middle"
+          className="col-span-4 max-lg:col-span-7"
         >
-          <div>
+          <div className="fluid-type-frame measure-copy-wide">
             <p className={cx("type-label", "text-service-accent")}>
               {eyebrow}
             </p>
@@ -74,12 +77,16 @@ export function HeroSectionV2({
               </Button>
             </div>
           </div>
-        </div>
+        </SevenColumnGridItem>
 
-        <div className="flex min-w-[18rem] basis-[48%] items-center justify-end -ml-10 max-lg:ml-0 max-lg:min-w-0 max-lg:basis-auto max-lg:justify-start">
+        <SevenColumnGridItem
+          alignX="stretch"
+          alignY="middle"
+          className="col-span-3 col-start-5 max-lg:col-span-7 max-lg:col-start-1"
+        >
           <SampleImage />
-        </div>
-      </div>
+        </SevenColumnGridItem>
+      </SevenColumnGrid>
     </section>
   );
 }

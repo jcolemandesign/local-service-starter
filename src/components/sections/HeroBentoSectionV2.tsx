@@ -1,4 +1,8 @@
-import { Button } from "@/components/primitives";
+import {
+  Button,
+  SevenColumnGrid,
+  SevenColumnGridItem,
+} from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 
 type HeroBentoSectionV2Props = {
@@ -40,10 +44,14 @@ export function HeroBentoSectionV2({
   const HeadingTag = `h${headingLevel}` as const;
 
   return (
-    <section className="container-full min-h-svh bg-white p-4 max-md:p-3">
-      <div className="grid min-h-[calc(100svh-2rem)] grid-cols-2 gap-4 max-lg:grid-cols-1 max-lg:grid-rows-[45fr_55fr] max-md:min-h-[calc(100svh-1.5rem)] max-md:gap-3">
-        <div className="radius-medium flex min-h-0 items-center justify-center bg-service-surface p-12 text-service-ink max-lg:items-end max-lg:p-8 max-md:p-6">
-          <div className="fluid-type-frame w-full max-w-3xl">
+    <section className="bg-white">
+      <SevenColumnGrid className="section-min-screen grid-rows-[minmax(0,1fr)] max-lg:grid-rows-none">
+        <SevenColumnGridItem
+          alignX="left"
+          alignY="middle"
+          className="col-span-3 row-start-1 h-full min-h-0 bg-service-surface p-8 text-service-ink max-lg:col-span-7 max-lg:row-auto max-md:p-6"
+        >
+          <div className="fluid-type-frame w-full measure-copy-wide">
             <p className="type-label text-service-accent">{eyebrow}</p>
             <HeadingTag className="type-display-lg mt-eyebrow-display text-service-ink">
               {title}
@@ -57,7 +65,7 @@ export function HeroBentoSectionV2({
                 {secondaryAction}
               </Button>
             </div>
-            <ul className="mt-12 grid max-w-2xl grid-cols-3 gap-4 max-lg:flex max-lg:max-w-none max-lg:flex-nowrap max-lg:gap-0 max-lg:overflow-x-auto max-md:mt-8">
+            <ul className="mt-12 grid grid-cols-3 gap-4 max-lg:flex max-lg:flex-nowrap max-lg:gap-0 max-lg:overflow-x-auto max-md:mt-8">
               {stats.map((stat) => (
                 <li
                   className="type-text-sm border-l border-service-border pl-4 font-semibold text-service-ink max-lg:shrink-0 max-lg:px-4 max-lg:first:border-l-0 max-lg:first:pl-0"
@@ -68,9 +76,13 @@ export function HeroBentoSectionV2({
               ))}
             </ul>
           </div>
-        </div>
+        </SevenColumnGridItem>
 
-        <div className="radius-medium relative min-h-0 overflow-hidden">
+        <SevenColumnGridItem
+          alignX="stretch"
+          alignY="stretch"
+          className="col-span-4 col-start-4 row-start-1 h-full min-h-0 overflow-hidden max-lg:media-min-medium max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto"
+        >
           <div className="absolute left-8 top-8 z-10 hidden flex-wrap gap-4 max-lg:flex max-md:left-6 max-md:top-6 max-md:gap-3">
             <RequestServiceButton>{primaryAction}</RequestServiceButton>
             <Button href="#services" variant="secondary">
@@ -78,8 +90,8 @@ export function HeroBentoSectionV2({
             </Button>
           </div>
           <PlaceholderImagePanel />
-        </div>
-      </div>
+        </SevenColumnGridItem>
+      </SevenColumnGrid>
     </section>
   );
 }

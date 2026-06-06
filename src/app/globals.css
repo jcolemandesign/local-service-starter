@@ -7,11 +7,26 @@
   --container-content: 1200px;
   --container-narrow: 900px;
   --container-gutter: 3rem;
+  --site-grid-max: none;
+  --site-grid-inset-inline: clamp(1.5rem, 4vw, 8rem);
+  --site-grid-inset-block: clamp(2rem, 4vw, 7rem);
+  --site-grid-gap: clamp(0.75rem, 1vw, 1.5rem);
   --measure-lead: 52ch;
   --measure-copy: 60ch;
   --measure-copy-wide: 70ch;
   --measure-longform: 75ch;
   --measure-caption: 48ch;
+  --section-min-short: 36rem;
+  --section-min-medium: 48rem;
+  --section-min-tall: 64rem;
+  --section-min-screen: 100svh;
+  --section-min-story: 140svh;
+  --card-min-short: 14rem;
+  --card-min-medium: 20rem;
+  --card-min-tall: 28rem;
+  --media-min-short: 18rem;
+  --media-min-medium: 28rem;
+  --media-min-tall: 38rem;
   --radius-none-token: 0;
   --radius-tiny-token: 2px;
   --radius-sm-token: 4px;
@@ -97,6 +112,18 @@ body {
     max-width: var(--container-site);
   }
 
+  .site-grid-frame {
+    width: 100%;
+    min-height: 100svh;
+    max-width: var(--site-grid-max);
+    margin-inline: auto;
+    padding: var(--site-grid-inset-block) var(--site-grid-inset-inline);
+  }
+
+  .site-grid-gap {
+    gap: var(--site-grid-gap);
+  }
+
   .container-content {
     max-width: var(--container-content);
   }
@@ -135,6 +162,54 @@ body {
 
   .measure-caption {
     max-width: var(--measure-caption);
+  }
+
+  .section-min-none {
+    min-height: 0;
+  }
+
+  .section-min-short {
+    min-height: var(--section-min-short);
+  }
+
+  .section-min-medium {
+    min-height: var(--section-min-medium);
+  }
+
+  .section-min-tall {
+    min-height: var(--section-min-tall);
+  }
+
+  .section-min-screen {
+    min-height: var(--section-min-screen);
+  }
+
+  .section-min-story {
+    min-height: var(--section-min-story);
+  }
+
+  .card-min-short {
+    min-height: var(--card-min-short);
+  }
+
+  .card-min-medium {
+    min-height: var(--card-min-medium);
+  }
+
+  .card-min-tall {
+    min-height: var(--card-min-tall);
+  }
+
+  .media-min-short {
+    min-height: var(--media-min-short);
+  }
+
+  .media-min-medium {
+    min-height: var(--media-min-medium);
+  }
+
+  .media-min-tall {
+    min-height: var(--media-min-tall);
   }
 
   .radius-none {
@@ -711,6 +786,12 @@ body {
   }
 
   @media (width < 1024px) {
+    :root {
+      --site-grid-inset-inline: 2rem;
+      --site-grid-inset-block: 3.5rem;
+      --site-grid-gap: 1rem;
+    }
+
     .container-site,
     .container-content,
     .container-narrow {
@@ -743,6 +824,12 @@ body {
   }
 
   @media (width < 768px) {
+    :root {
+      --site-grid-inset-inline: 1.5rem;
+      --site-grid-inset-block: 3rem;
+      --site-grid-gap: 1rem;
+    }
+
     .container-site,
     .container-content,
     .container-narrow {

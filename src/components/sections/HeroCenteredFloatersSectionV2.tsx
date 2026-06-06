@@ -1,4 +1,8 @@
-import { Button } from "@/components/primitives";
+import {
+  Button,
+  SevenColumnGrid,
+  SevenColumnGridItem,
+} from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 import { HeroCenteredFloatersParallax } from "./HeroCenteredFloatersParallax";
 
@@ -22,33 +26,51 @@ export function HeroCenteredFloatersSectionV2({
   const HeadingTag = `h${headingLevel}` as const;
 
   return (
-    <section className="relative min-h-svh overflow-hidden bg-service-surface text-service-ink">
-      <div className="container-site grid min-h-svh grid-cols-[1fr_minmax(22rem,1fr)_1fr] items-center gap-10 py-16 max-lg:grid-cols-1 max-lg:gap-12 max-md:py-12">
-        <HeroCenteredFloatersParallax side="left" />
+    <section className="relative overflow-hidden bg-service-surface text-service-ink">
+      <SevenColumnGrid className="section-min-screen">
+        <SevenColumnGridItem
+          alignX="stretch"
+          alignY="middle"
+          className="col-span-2 max-lg:hidden"
+        >
+          <HeroCenteredFloatersParallax side="left" />
+        </SevenColumnGridItem>
 
-        <div className="fluid-type-frame mx-auto flex w-full max-w-[34rem] flex-col items-center text-center">
-          <p className="type-label text-service-accent">{eyebrow}</p>
-          <HeadingTag className="type-display-lg mt-eyebrow-display text-service-ink">
-            {title}
-          </HeadingTag>
-          <p className="type-text-lg wrap-pretty mt-display-body text-service-muted">
-            {body}
-          </p>
-          <div className="mt-body-actions-md flex flex-wrap justify-center gap-3">
-            <RequestServiceButton>{primaryAction}</RequestServiceButton>
-            <Button href="#services" variant="secondary">
-              {secondaryAction}
-            </Button>
+        <SevenColumnGridItem
+          alignX="center"
+          alignY="middle"
+          className="col-span-3 col-start-3 max-lg:col-span-7 max-lg:col-start-1"
+        >
+          <div className="fluid-type-frame measure-copy flex w-full flex-col items-center text-center">
+            <p className="type-label text-service-accent">{eyebrow}</p>
+            <HeadingTag className="type-display-lg mt-eyebrow-display text-service-ink">
+              {title}
+            </HeadingTag>
+            <p className="type-text-lg wrap-pretty mt-display-body text-service-muted">
+              {body}
+            </p>
+            <div className="mt-body-actions-md flex flex-wrap justify-center gap-3">
+              <RequestServiceButton>{primaryAction}</RequestServiceButton>
+              <Button href="#services" variant="secondary">
+                {secondaryAction}
+              </Button>
+            </div>
           </div>
-        </div>
+        </SevenColumnGridItem>
 
-        <HeroCenteredFloatersParallax side="right" />
+        <SevenColumnGridItem
+          alignX="stretch"
+          alignY="middle"
+          className="col-span-2 col-start-6 max-lg:hidden"
+        >
+          <HeroCenteredFloatersParallax side="right" />
+        </SevenColumnGridItem>
 
-        <div className="hidden grid-cols-2 gap-3 max-lg:grid">
+        <div className="col-span-7 hidden grid-cols-2 gap-3 max-lg:grid">
           <div className="radius-medium aspect-[4/3] bg-zinc-200" />
           <div className="radius-medium aspect-[4/3] bg-zinc-300" />
         </div>
-      </div>
+      </SevenColumnGrid>
     </section>
   );
 }

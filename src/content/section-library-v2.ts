@@ -22,10 +22,6 @@ export const sectionLibraryV2Collections = [
         label: "Stacked header and image",
         component: "hero-stacked-header-image-v2",
       },
-      {
-        label: "Notched nav image hero",
-        component: "hero-notched-nav-v2",
-      },
     ],
   },
   {
@@ -48,6 +44,19 @@ export const sectionLibraryV2Collections = [
   {
     title: "Content",
     items: [
+      {
+        label: "Four column card field content",
+        component: "content-four-column-scroll-v2",
+      },
+      {
+        label: "Positioning split content",
+        component: "content-positioning-split-v2",
+      },
+    ],
+  },
+  {
+    title: "Effects",
+    items: [
       { label: "Rule header content", component: "content-rule-header-v2" },
       { label: "Reveal paragraph", component: "content-reveal-v2" },
       {
@@ -64,18 +73,13 @@ export const sectionLibraryV2Collections = [
         component: "content-horizontal-card-carousel-v2",
       },
       {
-        label: "Four column card field content",
-        component: "content-four-column-scroll-v2",
-      },
-      {
         label: "Sticky image panel content",
         component: "content-sticky-image-panel-v2",
       },
       {
-        label: "Positioning split content",
-        component: "content-positioning-split-v2",
+        label: "Bottom section slide up",
+        component: "content-fixed-cover-fade-v2",
       },
-      { label: "About company content", component: "content-about-company-v2" },
       {
         label: "Split headline image content",
         component: "content-split-headline-image-v2",
@@ -147,10 +151,6 @@ export const sectionLibraryV2Collections = [
     items: [
       { label: "CTA", component: "cta-v2" },
       { label: "Fullscreen conversion", component: "cta-fullscreen-v2" },
-      {
-        label: "Bottom section slide up",
-        component: "content-fixed-cover-fade-v2",
-      },
       {
         label: "Scroll reveal offer conversion",
         component: "cta-scroll-reveal-offer-v2",

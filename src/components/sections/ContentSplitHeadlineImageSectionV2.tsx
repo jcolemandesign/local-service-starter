@@ -1,4 +1,9 @@
 
+import {
+  SevenColumnGrid,
+  SevenColumnGridItem,
+} from "@/components/primitives";
+
 type ContentSplitHeadlineImageSectionV2Props = {
   headlineTop: string;
   headlineBottom: string;
@@ -32,8 +37,12 @@ export function ContentSplitHeadlineImageSectionV2({
   body,
 }: ContentSplitHeadlineImageSectionV2Props) {
   return (
-    <section className="bg-service-surface py-24 max-lg:py-20 max-md:py-16">
-      <div className="container-site">
+    <section className="bg-service-surface">
+      <SevenColumnGrid className="section-min-screen">
+        <SevenColumnGridItem
+          alignY="middle"
+          className="col-span-7"
+        >
         <div
           className={cx(
             "fluid-type-frame",
@@ -63,7 +72,8 @@ export function ContentSplitHeadlineImageSectionV2({
             {body}
           </p>
         </div>
-      </div>
+        </SevenColumnGridItem>
+      </SevenColumnGrid>
     </section>
   );
 }

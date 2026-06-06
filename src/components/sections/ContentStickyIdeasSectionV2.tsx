@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import {
+  SevenColumnGrid,
+  SevenColumnGridItem,
+} from "@/components/primitives";
 
 type ContentStickyIdeasSectionV2Props = {
   eyebrow: string;
@@ -117,41 +121,49 @@ export function ContentStickyIdeasSectionV2({
   ideas,
 }: ContentStickyIdeasSectionV2Props) {
   return (
-    <section className="bg-service-surface py-24 max-lg:py-20 max-md:py-16">
-      <div className="container-site grid grid-cols-[minmax(0,1fr)_360px] gap-16 max-lg:grid-cols-1 max-lg:gap-12">
-        <div className="fluid-type-frame">
-          <p className={cx("type-label", "text-service-accent")}>
-            {eyebrow}
-          </p>
-          <h2
-            className={cx(
-              "type-heading-xl",
-              "mt-6 text-service-ink",
-            )}
-          >
-            {title}
-          </h2>
-          <div className="mt-14 space-y-12">
-            {paragraphs.map((paragraph) => (
-              <p
-                className={cx(
-                  "type-heading-md",
-                  "measure-copy-wide",
-                  "wrap-pretty",
-                  "text-service-ink",
-                )}
-                key={paragraph}
-              >
-                {paragraph}
-              </p>
-            ))}
+    <section className="bg-service-surface">
+      <SevenColumnGrid className="section-min-screen">
+        <SevenColumnGridItem
+          className="col-span-5 max-lg:col-span-7"
+          alignY="middle"
+        >
+          <div className="fluid-type-frame">
+            <p className={cx("type-label", "text-service-accent")}>
+              {eyebrow}
+            </p>
+            <h2
+              className={cx(
+                "type-heading-xl",
+                "mt-6 text-service-ink",
+              )}
+            >
+              {title}
+            </h2>
+            <div className="mt-14 space-y-12">
+              {paragraphs.map((paragraph) => (
+                <p
+                  className={cx(
+                    "type-heading-md",
+                    "measure-copy-wide",
+                    "wrap-pretty",
+                    "text-service-ink",
+                  )}
+                  key={paragraph}
+                >
+                  {paragraph}
+                </p>
+              ))}
+            </div>
           </div>
-        </div>
+        </SevenColumnGridItem>
 
-        <aside className="max-lg:order-first">
+        <SevenColumnGridItem
+          className="col-span-2 col-start-6 max-lg:col-span-7 max-lg:col-start-1 max-lg:order-first"
+          alignY="top"
+        >
           <ImportantIdeasBoxV2 ideas={ideas} />
-        </aside>
-      </div>
+        </SevenColumnGridItem>
+      </SevenColumnGrid>
     </section>
   );
 }

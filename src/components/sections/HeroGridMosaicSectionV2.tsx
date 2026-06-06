@@ -1,4 +1,7 @@
-import { Button } from "@/components/primitives";
+import {
+  Button,
+  SevenColumnGrid,
+} from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 
 type TrustSignal = {
@@ -70,13 +73,13 @@ export function HeroGridMosaicSectionV2({
   const HeadingTag = `h${headingLevel}` as const;
 
   return (
-    <section className="min-h-svh bg-service-surface p-3">
-      <div className="container-site grid min-h-[calc(100svh-1.5rem)] grid-cols-8 grid-rows-6 gap-3 max-lg:min-h-0 max-lg:grid-cols-1 max-lg:grid-rows-none">
+    <section className="bg-service-surface">
+      <SevenColumnGrid className="section-min-screen grid-rows-6 max-lg:grid-rows-none">
         <article
           className={cx(
             "fluid-type-frame",
             "radius-medium",
-            "col-span-5 row-span-3 flex flex-col justify-between bg-white p-8 shadow-service max-lg:col-span-1 max-lg:row-auto max-md:p-6",
+            "col-span-4 row-span-3 flex w-full min-w-0 flex-col justify-between bg-white p-8 shadow-service [&>*]:min-w-0 max-lg:col-span-7 max-lg:row-auto max-md:p-6",
           )}
         >
           <div>
@@ -109,11 +112,11 @@ export function HeroGridMosaicSectionV2({
           </div>
         </article>
 
-        <div className="col-span-3 row-span-3 col-start-6 row-start-1 max-lg:col-span-1 max-lg:row-auto">
+        <div className="col-span-3 col-start-5 row-span-3 row-start-1 w-full min-w-0 max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto">
           <PlaceholderImagePanel label={images[0] ?? "Image"} />
         </div>
 
-        <div className="col-span-2 col-start-7 row-span-3 row-start-4 grid grid-rows-3 gap-3 max-lg:col-span-1 max-lg:row-auto max-lg:grid-rows-none">
+        <div className="col-span-1 col-start-7 row-span-3 row-start-4 grid w-full min-w-0 grid-rows-3 gap-[var(--site-grid-gap)] max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto max-lg:grid-rows-none">
           {trustSignals.slice(0, 3).map((signal) => (
             <div
               className={cx(
@@ -142,7 +145,7 @@ export function HeroGridMosaicSectionV2({
             className={cx(
               "fluid-type-frame",
               "radius-medium",
-              "col-span-2 row-span-3 row-start-4 flex flex-col justify-between border border-service-border bg-white p-6 transition-transform duration-300 ease-out hover:-translate-y-1 max-lg:col-span-1 max-lg:row-auto",
+              "col-span-2 row-span-3 row-start-4 flex w-full min-w-0 flex-col justify-between border border-service-border bg-white p-6 transition-transform duration-300 ease-out hover:-translate-y-1 [&>*]:min-w-0 max-lg:col-span-7 max-lg:row-auto",
             )}
             key={service.title}
           >
@@ -180,7 +183,7 @@ export function HeroGridMosaicSectionV2({
             </div>
           </article>
         ))}
-      </div>
+      </SevenColumnGrid>
     </section>
   );
 }

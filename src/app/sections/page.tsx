@@ -28,7 +28,6 @@ import {
   HeroFullscreenSectionV2,
   HeroGridMosaicSectionV2,
   HeroImageTopContentBottomSectionV2,
-  HeroNotchedNavSectionV2,
   HeroSectionV2,
   HeroStackedHeaderImageSectionV2,
   FooterSectionV2,
@@ -102,13 +101,6 @@ const sectionElements = {
       {...sectionLibraryContent.hero}
       headingLevel={2}
       title="Reliable Home Services Delivered"
-    />
-  ),
-  "hero-notched-nav-v2": (
-    <HeroNotchedNavSectionV2
-      {...sectionLibraryContent.heroFullscreen}
-      {...sectionLibraryContent.navPrimary}
-      headingLevel={2}
     />
   ),
   "nav-primary-v2": <NavPrimarySectionV2 {...sectionLibraryContent.navPrimary} />,

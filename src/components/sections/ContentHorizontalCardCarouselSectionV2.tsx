@@ -2,6 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { PointerEvent } from "react";
+import {
+  SevenColumnGrid,
+  SevenColumnGridItem,
+} from "@/components/primitives";
 
 type HorizontalCardSize = "small" | "medium" | "large";
 
@@ -413,76 +417,80 @@ export function ContentHorizontalCardCarouselSectionV2({
   const isFreeScrolling = isDragging || isCoasting;
 
   return (
-    <section className="section-space-lrg bg-service-surface">
-      <div className="container-site">
-        <div className="fluid-type-frame flex items-end justify-between gap-8 max-md:flex-col max-md:items-start">
-          <div>
-            <p className="type-label text-service-accent">{eyebrow}</p>
-            <h2 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
-              {title}
-            </h2>
-            <p className="type-text-lg measure-lead wrap-pretty mt-heading-body-lg text-service-muted">
-              {body}
-            </p>
-          </div>
+    <section className="bg-service-surface">
+      <SevenColumnGrid className="section-min-screen content-center">
+        <SevenColumnGridItem className="col-span-7">
+          <div className="fluid-type-frame flex items-end justify-between gap-8 max-md:flex-col max-md:items-start">
+            <div>
+              <p className="type-label text-service-accent">{eyebrow}</p>
+              <h2 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
+                {title}
+              </h2>
+              <p className="type-text-lg measure-lead wrap-pretty mt-heading-body-lg text-service-muted">
+                {body}
+              </p>
+            </div>
 
-          <div className="flex shrink-0 items-center gap-2">
-            <ArrowButton
-              direction="previous"
-              disabled={!canScrollPrevious}
-              onClick={() => scrollCards("previous")}
-              onPointerEnter={(event) => {
-                if (event.pointerType === "mouse") {
-                  startHoverScroll("previous");
-                }
-              }}
-              onPointerLeave={stopHoverScroll}
-            />
-            <ArrowButton
-              direction="next"
-              disabled={!canScrollNext}
-              onClick={() => scrollCards("next")}
-              onPointerEnter={(event) => {
-                if (event.pointerType === "mouse") {
-                  startHoverScroll("next");
-                }
-              }}
-              onPointerLeave={stopHoverScroll}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-body-actions-lg">
-        <div
-          aria-label={`${title} cards`}
-          className={cx(
-            "overflow-x-auto overscroll-x-contain pl-[max(var(--container-gutter),calc((100vw-var(--container-site))/2+var(--container-gutter)))] pr-[var(--container-gutter)] [scrollbar-width:none] max-lg:pl-8 max-md:pl-6 [&::-webkit-scrollbar]:hidden",
-            isFreeScrolling
-              ? "cursor-grabbing select-none scroll-auto"
-              : "cursor-grab scroll-auto",
-          )}
-          onPointerCancel={finishDrag}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={finishDrag}
-          onScroll={updateScrollState}
-          ref={scrollerRef}
-          role="region"
-          tabIndex={0}
-        >
-          <ul className="flex w-max card-grid-gap-med pb-12 pt-2">
-            {cards.map((card, index) => (
-              <HorizontalCarouselCard
-                card={card}
-                index={index}
-                key={card.title}
+            <div className="flex shrink-0 items-center gap-2">
+              <ArrowButton
+                direction="previous"
+                disabled={!canScrollPrevious}
+                onClick={() => scrollCards("previous")}
+                onPointerEnter={(event) => {
+                  if (event.pointerType === "mouse") {
+                    startHoverScroll("previous");
+                  }
+                }}
+                onPointerLeave={stopHoverScroll}
               />
-            ))}
-            <li aria-hidden="true" className="w-[min(14vw,10rem)] shrink-0" />
-          </ul>
-        </div>
-      </div>
+              <ArrowButton
+                direction="next"
+                disabled={!canScrollNext}
+                onClick={() => scrollCards("next")}
+                onPointerEnter={(event) => {
+                  if (event.pointerType === "mouse") {
+                    startHoverScroll("next");
+                  }
+                }}
+                onPointerLeave={stopHoverScroll}
+              />
+            </div>
+          </div>
+        </SevenColumnGridItem>
+
+        <SevenColumnGridItem className="col-span-7">
+          <div className="mt-body-actions-lg">
+            <div
+              aria-label={`${title} cards`}
+              className={cx(
+                "-mx-[var(--site-grid-inset-inline)] overflow-x-auto overscroll-x-contain pl-[var(--site-grid-inset-inline)] pr-[var(--site-grid-inset-inline)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+                isFreeScrolling
+                  ? "cursor-grabbing select-none scroll-auto"
+                  : "cursor-grab scroll-auto",
+              )}
+              onPointerCancel={finishDrag}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={finishDrag}
+              onScroll={updateScrollState}
+              ref={scrollerRef}
+              role="region"
+              tabIndex={0}
+            >
+              <ul className="flex w-max card-grid-gap-med pb-12 pt-2">
+                {cards.map((card, index) => (
+                  <HorizontalCarouselCard
+                    card={card}
+                    index={index}
+                    key={card.title}
+                  />
+                ))}
+                <li aria-hidden="true" className="w-[min(14vw,10rem)] shrink-0" />
+              </ul>
+            </div>
+          </div>
+        </SevenColumnGridItem>
+      </SevenColumnGrid>
     </section>
   );
 }

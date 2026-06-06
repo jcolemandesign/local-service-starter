@@ -1,3 +1,4 @@
+import { SevenColumnGrid, SevenColumnGridItem } from "@/components/primitives";
 import { HeroStackedHeaderImageVisual } from "./HeroStackedHeaderImageVisual";
 
 type HeroStackedHeaderImageSectionV2Props = {
@@ -12,14 +13,16 @@ export function HeroStackedHeaderImageSectionV2({
   headingLevel = 1,
 }: HeroStackedHeaderImageSectionV2Props) {
   return (
-    <section className="min-h-svh overflow-hidden bg-white text-service-ink">
-      <div className="container-site">
-        <HeroStackedHeaderImageVisual
-          eyebrow={eyebrow}
-          headingLevel={headingLevel}
-          title={title}
-        />
-      </div>
+    <section className="overflow-hidden bg-white text-service-ink">
+      <SevenColumnGrid className="section-min-screen">
+        <SevenColumnGridItem className="col-span-7">
+          <HeroStackedHeaderImageVisual
+            eyebrow={eyebrow}
+            headingLevel={headingLevel}
+            title={title}
+          />
+        </SevenColumnGridItem>
+      </SevenColumnGrid>
     </section>
   );
 }

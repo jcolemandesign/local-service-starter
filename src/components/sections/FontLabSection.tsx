@@ -55,10 +55,6 @@ const projectFontOptions: FontOption[] = [
     value: "var(--font-dev-brawler), Georgia, Times New Roman, serif",
   },
   {
-    label: "Vend Sans",
-    value: "var(--font-dev-vend-sans), Arial, Helvetica, sans-serif",
-  },
-  {
     label: "Spline Sans",
     value: "var(--font-dev-spline-sans), Arial, Helvetica, sans-serif",
   },

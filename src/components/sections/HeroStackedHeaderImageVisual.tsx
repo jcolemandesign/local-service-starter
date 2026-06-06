@@ -27,7 +27,7 @@ export function HeroStackedHeaderImageVisual({
   return (
     <div
       ref={frameRef}
-      className="fluid-type-frame relative flex min-h-svh items-start justify-center pt-[calc(33svh-(var(--headline-size)*0.41))] [--headline-size:clamp(4rem,calc(var(--stack-width)*0.112),9.5rem)] [--image-width:calc(var(--stack-width)*0.8333)] [--stack-width:clamp(34rem,72vw,78rem)] max-md:min-h-[40rem] max-md:[--headline-size:clamp(3.5rem,calc(var(--stack-width)*0.16),6rem)] max-md:[--stack-width:min(100%,38rem)]"
+      className="fluid-type-frame relative flex min-h-[calc(var(--section-min-screen)-(var(--site-grid-inset-block)*2))] items-start justify-center pt-[calc(33svh-(var(--headline-size)*0.41))] [--headline-size:clamp(4rem,calc(var(--stack-width)*0.112),9.5rem)] [--image-width:calc(var(--stack-width)*0.8333)] [--stack-width:clamp(34rem,72vw,78rem)] max-md:min-h-[40rem] max-md:[--headline-size:clamp(3.5rem,calc(var(--stack-width)*0.16),6rem)] max-md:[--stack-width:min(100%,38rem)]"
     >
       <div className="relative mx-auto w-[var(--stack-width)] text-center text-[length:var(--headline-size)]">
         <motion.div

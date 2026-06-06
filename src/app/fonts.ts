@@ -12,7 +12,6 @@ import {
   Raleway,
   Spline_Sans,
   Spline_Sans_Mono,
-  Vend_Sans,
 } from "next/font/google";
 
 export const geistSans = Geist({
@@ -38,13 +37,6 @@ export const brawler = Brawler({
   subsets: ["latin"],
   variable: "--font-dev-brawler",
   weight: ["400", "700"],
-});
-
-export const vendSans = Vend_Sans({
-  adjustFontFallback: false,
-  display: "swap",
-  subsets: ["latin"],
-  variable: "--font-dev-vend-sans",
 });
 
 export const splineSans = Spline_Sans({
@@ -108,7 +100,6 @@ export const rootFontVariables = [
   geistMono.variable,
   notoSans.variable,
   brawler.variable,
-  vendSans.variable,
   splineSans.variable,
   splineSansMono.variable,
   archivoBlack.variable,
@@ -130,11 +121,6 @@ export const designLabFontSpecimens = [
     name: "Brawler",
     suggestedUse: "Editorial headings, trust stories, and warmer local service tone.",
     variable: "--font-dev-brawler",
-  },
-  {
-    name: "Vend Sans",
-    suggestedUse: "Contemporary service brands that need a crisp full-page voice.",
-    variable: "--font-dev-vend-sans",
   },
   {
     name: "Spline Sans",

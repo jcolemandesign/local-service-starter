@@ -3,19 +3,15 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 
-type ContentStickyImagePanelSectionV2Props = {
-  eyebrow: string;
-  title: string;
+type ContentStickyImagePanelSectionV3Props = {
   body: string;
+  eyebrow: string;
   imageLabel: string;
-  points: string[];
+  points: readonly string[];
+  title: string;
 };
 
-function cx(...classes: Array<string | undefined>) {
-  return classes.filter(Boolean).join(" ");
-}
-
-function FullHeightImage({ label }: { label: string }) {
+function FullBleedImage({ label }: { label: string }) {
   return (
     <div
       aria-label={`${label} image placeholder`}
@@ -31,31 +27,25 @@ function FullHeightImage({ label }: { label: string }) {
   );
 }
 
-export function ContentStickyImagePanelSectionV2({
-  eyebrow,
-  title,
+export function ContentStickyImagePanelSectionV3({
   body,
+  eyebrow,
   imageLabel,
   points,
-}: ContentStickyImagePanelSectionV2Props) {
+  title,
+}: ContentStickyImagePanelSectionV3Props) {
   return (
-    <section className="relative section-min-story bg-service-ink text-service-ink max-md:section-min-screen">
-      <FullHeightImage label={imageLabel} />
+    <section className="relative bg-service-ink text-service-ink">
+      <FullBleedImage label={imageLabel} />
 
-      <SevenColumnGrid className="relative min-h-[inherit] items-start">
+      <SevenColumnGrid className="relative section-min-story items-start max-md:section-min-screen">
         <SevenColumnGridItem
           alignX="stretch"
-          alignY="top"
-          className="col-span-3 col-start-5 max-lg:col-span-4 max-lg:col-start-4 max-md:col-span-7 max-md:col-start-1"
+          alignY="stretch"
+          className="col-span-3 col-start-5 h-full max-lg:col-span-4 max-lg:col-start-4 max-md:col-span-7 max-md:col-start-1"
         >
           <div className="sticky top-[var(--site-grid-inset-block)] max-md:static">
-            <article
-              className={cx(
-                "fluid-type-frame",
-                "radius-medium",
-                "card-min-medium flex max-h-[calc(100svh-(var(--site-grid-inset-block)*2))] w-full flex-col justify-between overflow-auto border border-white/45 bg-white p-7 shadow-service max-md:card-min-tall max-md:p-6",
-              )}
-            >
+            <article className="fluid-type-frame radius-medium card-min-medium flex max-h-[calc(100svh-(var(--site-grid-inset-block)*2))] w-full flex-col justify-between overflow-auto border border-white/45 bg-white p-7 shadow-service max-md:card-min-tall max-md:p-6">
               <div>
                 <p className="type-label text-service-accent">{eyebrow}</p>
                 <h2 className="type-heading-lg mt-eyebrow-heading-md text-service-ink">
