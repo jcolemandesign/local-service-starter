@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
-import { Button, Card } from "@/components/primitives";
+import {
+  Button,
+  Card,
+  SevenColumnGrid,
+  SevenColumnGridItem,
+} from "@/components/primitives";
 
 export const metadata: Metadata = {
   title: "Style Guide",
-  description: "Internal live reference for shared site design tokens.",
+  description:
+    "Internal live reference for current v3 seven-column design tokens.",
 };
 
 const typeTokens = [
@@ -139,11 +145,9 @@ const measureTokens = [
   ["measure-caption", "48ch"],
 ];
 
-const containers = [
-  ["container-site", "1600px max / responsive gutters"],
-  ["container-content", "1200px max / responsive gutters"],
-  ["container-narrow", "900px max / responsive gutters"],
-  ["container-full", "100% width"],
+const layoutFrameTokens = [
+  ["site-grid-frame", "Current v3 section frame / responsive edge insets"],
+  ["site-grid-gap", "Current v3 seven-column gutter token"],
 ];
 
 const colors = [
@@ -246,6 +250,38 @@ const spacing = [
 
 const sectionSpacing = spacing.filter(([name]) => name.startsWith("section"));
 
+const sevenColumnGridTokens = [
+  {
+    name: "SevenColumnGrid",
+    value: "grid grid-cols-7 / frame=site / gap=site",
+    role: "Canonical v3 section layout primitive.",
+  },
+  {
+    name: "SevenColumnGridItem",
+    value: "col-span-* / col-start-* / alignX / alignY / measure",
+    role: "Places content on the shared seven-column frame.",
+  },
+  {
+    name: "site-grid-frame",
+    value: "padding: var(--site-grid-inset-block) var(--site-grid-inset-inline)",
+    role: "Edge-to-edge section frame with system insets.",
+  },
+  {
+    name: "site-grid-gap",
+    value: "gap: var(--site-grid-gap)",
+    role: "Fluid column gap for the seven-column system.",
+  },
+];
+
+const sectionMinTokens = [
+  ["section-min-none", "0"],
+  ["section-min-short", "36rem"],
+  ["section-min-medium", "48rem"],
+  ["section-min-tall", "64rem"],
+  ["section-min-screen", "100svh"],
+  ["section-min-story", "140svh"],
+];
+
 const relationshipSpacing = [
   {
     title: "Compact Card Header",
@@ -341,21 +377,23 @@ function GuideSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="section-space-med border-t border-service-border">
-      <div className="container-site">
-        <div className="fluid-type-frame mb-12">
-          <p className="type-label text-service-accent">{eyebrow}</p>
-          <h2 className="type-heading-xl mt-4 text-service-ink">
-            {title}
-          </h2>
-          {body ? (
-            <p className="type-text-lg measure-copy wrap-pretty mt-5 text-service-muted">
-              {body}
-            </p>
-          ) : null}
-        </div>
-        {children}
-      </div>
+    <section className="border-t border-service-border">
+      <SevenColumnGrid minHeight="none" padding="med">
+        <SevenColumnGridItem className="col-span-7">
+          <div className="fluid-type-frame mb-12">
+            <p className="type-label text-service-accent">{eyebrow}</p>
+            <h2 className="type-heading-xl mt-4 text-service-ink">
+              {title}
+            </h2>
+            {body ? (
+              <p className="type-text-lg measure-copy wrap-pretty mt-5 text-service-muted">
+                {body}
+              </p>
+            ) : null}
+          </div>
+          {children}
+        </SevenColumnGridItem>
+      </SevenColumnGrid>
     </section>
   );
 }
@@ -401,19 +439,145 @@ function ExpandingArrowButton({
 export default function StyleGuidePage() {
   return (
     <main className="bg-white text-service-ink">
-      <section className="section-space-med bg-service-ink text-white">
-        <div className="container-site fluid-type-frame">
-          <p className="type-label text-white/65">Internal style guide</p>
-          <h1 className="type-display-lg mt-5">
-            Live token reference for the local service starter
-          </h1>
-          <p className="type-text-xl measure-copy wrap-pretty mt-7 text-white/75">
-            This page consumes the same global utilities as the V2 section
-            library. Update the shared tokens, and this reference updates with
-            the components.
-          </p>
-        </div>
+      <section className="bg-service-ink text-white">
+        <SevenColumnGrid
+          className="fluid-type-frame"
+          minHeight="none"
+          padding="med"
+        >
+          <SevenColumnGridItem className="col-span-5 max-lg:col-span-7">
+            <p className="type-label text-white/65">Internal style guide</p>
+            <h1 className="type-display-lg mt-5">
+              Current v3 seven-column style guide
+            </h1>
+            <p className="type-text-xl measure-copy wrap-pretty mt-7 text-white/75">
+              This page documents the shared tokens behind the current section
+              library: seven-column layout, semantic type, reusable spacing,
+              surface colors, and reusable interaction patterns.
+            </p>
+          </SevenColumnGridItem>
+        </SevenColumnGrid>
       </section>
+
+      <GuideSection
+        eyebrow="System"
+        title="Current V3 Surface"
+        body="Use this guide as the clean reference for new section work: one seven-column layout frame, semantic type roles, reusable spacing relationships, and shared surface tokens."
+      >
+        <div className="grid grid-cols-[0.8fr_1.2fr] gap-5 max-lg:grid-cols-1">
+          <Card className="fluid-type-frame p-6 shadow-none">
+            <p className="type-label text-service-accent">Canonical</p>
+            <h3 className="type-heading-lg mt-eyebrow-heading-sm text-service-ink">
+              V3 sections use one seven-column frame
+            </h3>
+            <p className="type-text-md measure-copy wrap-pretty mt-heading-body-md text-service-muted">
+              New section work should compose with SevenColumnGrid,
+              SevenColumnGridItem, type role utilities, semantic spacing, and
+              shared color tokens.
+            </p>
+            <div className="mt-body-actions-md flex flex-wrap gap-3">
+              <Button href="/sections">Current sections</Button>
+            </div>
+          </Card>
+
+          <div className="grid gap-3">
+            {[
+              ["Layout", "SevenColumnGrid and SevenColumnGridItem"],
+              ["Type", "type-display through type-label role utilities"],
+              ["Spacing", "section-space, relationship margins, and gap tokens"],
+              ["Surfaces", "service color tokens and radius utilities"],
+            ].map(([label, value]) => (
+              <Card className="p-5 shadow-none" key={label}>
+                <p className="type-label text-service-accent">{label}</p>
+                <p className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
+                  {value}
+                </p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </GuideSection>
+
+      <GuideSection
+        eyebrow="Layout"
+        title="V3 Seven-Column Grid"
+        body="SevenColumnGrid is the current section frame. It keeps column count stable while frame inset, gap, vertical padding, item alignment, and copy measures move through tokens."
+      >
+        <div className="grid gap-5">
+          <div className="overflow-hidden rounded border border-service-border bg-service-surface">
+            <SevenColumnGrid
+              className="items-stretch"
+              minHeight="short"
+              padding="med"
+            >
+              <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
+                <div className="grid h-full content-between rounded border border-service-border bg-white p-5">
+                  <div>
+                    <p className="type-label text-service-accent">Columns 1-2</p>
+                    <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
+                      Fixed metadata rail
+                    </h3>
+                  </div>
+                  <code className="mt-8 rounded bg-service-surface px-2 py-1 text-xs font-semibold text-service-muted">
+                    col-span-2
+                  </code>
+                </div>
+              </SevenColumnGridItem>
+              <SevenColumnGridItem
+                className="col-span-3 max-lg:col-span-7"
+                measure="copy"
+              >
+                <div className="grid h-full content-center rounded border border-service-border bg-white p-5">
+                  <p className="type-label text-service-accent">Columns 3-5</p>
+                  <h3 className="type-heading-lg mt-eyebrow-heading-sm text-service-ink">
+                    Main copy track with a readable measure
+                  </h3>
+                  <p className="type-text-md wrap-pretty mt-heading-body-md text-service-muted">
+                    This item uses the grid item measure prop rather than a
+                    one-off max width, so the copy follows the same readable
+                    width rules as production sections.
+                  </p>
+                </div>
+              </SevenColumnGridItem>
+              <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
+                <div className="grid h-full content-between rounded border border-service-border bg-service-ink p-5 text-white">
+                  <div>
+                    <p className="type-label text-white/70">Columns 6-7</p>
+                    <h3 className="type-heading-sm mt-eyebrow-heading-sm">
+                      Action or proof rail
+                    </h3>
+                  </div>
+                  <code className="mt-8 rounded bg-white/10 px-2 py-1 text-xs font-semibold text-white/75">
+                    col-span-2
+                  </code>
+                </div>
+              </SevenColumnGridItem>
+            </SevenColumnGrid>
+          </div>
+
+          <div className="grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
+            {sevenColumnGridTokens.map((token) => (
+              <Card className="p-5 shadow-none" key={token.name}>
+                <TokenMeta name={token.name} value={token.value} />
+                <p className="type-caption mt-3 text-service-muted">
+                  {token.role}
+                </p>
+              </Card>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-6 gap-4 max-lg:grid-cols-3 max-md:grid-cols-1">
+            {sectionMinTokens.map(([name, value]) => (
+              <Card className="p-5 shadow-none" key={name}>
+                <TokenMeta name={name} value={value} />
+                <div className="mt-4 rounded border border-service-border bg-service-surface p-3">
+                  <div className="h-16 rounded bg-white" />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </GuideSection>
 
       <GuideSection
         eyebrow="Type"
@@ -460,7 +624,7 @@ export default function StyleGuidePage() {
       </GuideSection>
 
       <GuideSection
-        eyebrow="Throwaway"
+        eyebrow="Type + Grid"
         title="Seven Column Type Stack"
         body="One live specimen per typography role, placed on a seven-column row so the text can occupy the main track while the token metadata stays fixed."
       >
@@ -516,21 +680,24 @@ export default function StyleGuidePage() {
 
       <GuideSection
         eyebrow="Layout"
-        title="Containers And Widths"
-        body="Container utilities set page alignment and gutters. Text still gets its own measure token inside the container."
+        title="Layout Frame Tokens"
+        body="V3 major sections start with the seven-column grid frame. These tokens control the section inset and column gap used by the layout primitive."
       >
-        <div className="grid gap-5">
-          {containers.map(([name, value]) => (
-            <div className="rounded border border-service-border bg-service-surface py-4" key={name}>
-              <div className={cx(name, "fluid-type-frame")}>
-                <div className="rounded border border-service-accent/25 bg-white p-5">
-                  <TokenMeta name={name} value={value} />
-                  <p className="type-text-md measure-copy wrap-pretty mt-4 text-service-muted">
-                    The visible white area is using the named container utility.
-                  </p>
+        <div className="grid grid-cols-2 gap-5 max-md:grid-cols-1">
+          {layoutFrameTokens.map(([name, value]) => (
+            <Card className="p-6 shadow-none" key={name}>
+              <TokenMeta name={name} value={value} />
+              <div className="mt-5 rounded border border-service-border bg-service-surface p-4">
+                <div className="grid grid-cols-7 gap-2">
+                  {Array.from({ length: 7 }, (_, index) => (
+                    <div
+                      className="h-24 rounded bg-white"
+                      key={`${name}-${index}`}
+                    />
+                  ))}
                 </div>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       </GuideSection>

@@ -278,14 +278,16 @@ export function CTAFullscreenSectionV3({
         <SevenColumnGridItem
           alignX="center"
           alignY="bottom"
-          className="col-span-7 row-start-3"
+          className="col-span-7 row-start-3 pt-8 max-md:pt-6"
         >
-          <RequestServiceButton
-            className="radius-4 border-white bg-white text-service-ink hover:bg-service-surface"
-            variant="secondary"
-          >
-            {action}
-          </RequestServiceButton>
+          <div className="flex w-full justify-center">
+            <RequestServiceButton
+              className="radius-4 w-auto max-w-max shrink-0 border-white bg-white text-service-ink hover:bg-service-surface"
+              variant="secondary"
+            >
+              {action}
+            </RequestServiceButton>
+          </div>
         </SevenColumnGridItem>
       </SevenColumnGrid>
     </section>
@@ -301,7 +303,7 @@ export function ContactSectionV3({
   return (
     <section className="bg-white" id="contact">
       <SevenColumnGrid className="section-min-none" padding="med">
-        <SevenColumnGridItem className="col-span-3 max-lg:col-span-7">
+        <SevenColumnGridItem className="col-span-2 col-start-2 max-lg:col-span-7 max-lg:col-start-1">
           <div className="fluid-type-frame">
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2 className="type-heading-xl mt-5 text-service-ink">{title}</h2>
@@ -322,7 +324,7 @@ export function ContactSectionV3({
           </div>
         </SevenColumnGridItem>
 
-        <SevenColumnGridItem className="col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1">
+        <SevenColumnGridItem className="col-span-3 col-start-4 max-lg:col-span-7 max-lg:col-start-1">
           <div className="fluid-type-frame radius-medium border border-service-border bg-service-surface p-8 shadow-service max-md:p-6">
             <form className="grid gap-5">
               <label className="type-text-sm grid gap-2 font-semibold text-service-ink">

@@ -2,6 +2,14 @@ import type { ReactNode } from "react";
 
 type SevenColumnGridFrame = "site" | "none";
 type SevenColumnGridGap = "site" | "sml" | "med" | "lrg";
+type SevenColumnGridMinHeight =
+  | "default"
+  | "none"
+  | "short"
+  | "medium"
+  | "tall"
+  | "screen"
+  | "story";
 type SevenColumnGridPadding = "none" | "sml" | "med" | "lrg";
 type SevenColumnGridAlignX = "left" | "center" | "right" | "stretch";
 type SevenColumnGridAlignY = "top" | "middle" | "bottom" | "stretch";
@@ -12,6 +20,7 @@ type SevenColumnGridProps = {
   className?: string;
   frame?: SevenColumnGridFrame;
   gap?: SevenColumnGridGap;
+  minHeight?: SevenColumnGridMinHeight;
   padding?: SevenColumnGridPadding;
 };
 
@@ -40,6 +49,16 @@ const paddingClasses: Record<SevenColumnGridPadding, string> = {
 const frameClasses: Record<SevenColumnGridFrame, string> = {
   site: "site-grid-frame",
   none: "",
+};
+
+const minHeightClasses: Record<SevenColumnGridMinHeight, string> = {
+  default: "",
+  none: "section-min-none",
+  short: "section-min-short",
+  medium: "section-min-medium",
+  tall: "section-min-tall",
+  screen: "section-min-screen",
+  story: "section-min-story",
 };
 
 const alignXClasses: Record<SevenColumnGridAlignX, string> = {
@@ -73,6 +92,7 @@ export function SevenColumnGrid({
   className,
   frame = "site",
   gap = "site",
+  minHeight = "default",
   padding = "none",
 }: SevenColumnGridProps) {
   return (
@@ -80,6 +100,7 @@ export function SevenColumnGrid({
       className={cx(
         "grid grid-cols-7",
         frameClasses[frame],
+        minHeightClasses[minHeight],
         gapClasses[gap],
         paddingClasses[padding],
         className,

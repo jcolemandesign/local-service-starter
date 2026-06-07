@@ -1,71 +1,58 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/primitives";
 import {
-  ButtonStylesSectionV2,
-  ContentAboutCompanySectionV2,
   ContentFixedCoverFadeSectionV2,
-  ContentFourColumnScrollSectionV2,
   ContentHorizontalCardCarouselSectionV2,
-  ContactSectionV2,
-  CTAFullscreenSectionV2,
-  CTAScrollRevealOfferSectionV2,
-  CTASectionV2,
-  ContentPositioningSplitSectionV2,
   ContentRevealParagraphSectionV2,
   ContentRuleHeaderSectionV2,
   ContentScrollWrittenRevealSectionV2,
-  ContentStickyCardStreamSectionV2,
-  ContentStickyImagePanelSectionV2,
   ContentSplitHeadlineImageSectionV2,
+  ContentStickyCardStreamSectionV2,
   ContentStickyIdeasSectionV2,
-  FeatureOverlapRowsSectionV2,
-  FeatureSplitSectionV2,
-  FAQAccordionSectionV2,
-  FAQSectionV2,
-  HeroBentoSectionV2,
+  ContentStickyImagePanelSectionV3,
+  ContactSectionV3,
+  CTAFullscreenSectionV3,
+  CTASectionV3,
+  CTAScrollRevealOfferSectionV3,
+  FAQAccordionSectionV3,
+  FAQSectionV3,
+  FeatureOverlapRowsSectionV3,
+  FeaturePortraitParagraphSectionV3,
+  FooterSectionV3,
   HeroCenteredFloatersSectionV2,
   HeroContentTopImageBottomSectionV2,
   HeroFullscreenSectionV2,
   HeroGridMosaicSectionV2,
   HeroImageTopContentBottomSectionV2,
-  HeroSectionV2,
+  HeroSplitFullHeightSectionV3,
   HeroStackedHeaderImageSectionV2,
-  FooterSectionV2,
-  NavCenterLogoSectionV2,
-  NavFloatingBentoSectionV2,
-  NavPrimarySectionV2,
-  ProcessImageChecklistSectionV2,
-  ProcessStepsSectionV2,
-  SectionLibraryV2Accordions,
-  ServicesBentoCardsSectionV2,
-  ServicesGridSectionV2,
-  ServicesHoverPanelSectionV2,
-  ServicesScrollCardsSectionV2,
-  TestimonialsCarouselSectionV2,
-  TestimonialsMasonrySectionV2,
-  TestimonialsSectionV2,
-  TrustBarFloatingBentoSectionV2,
-  TrustBarSection,
-  TrustLogoGridSection,
-  TrustLogoMarqueeSection,
-  TrustMarqueeSection,
+  ProcessImageChecklistSectionV3,
+  ProcessStepsSectionV3,
+  SectionLibraryV3Accordions,
+  ServicesThreeCardsRightSectionV3,
+  TestimonialsCarouselSectionV3,
+  TestimonialsMasonrySectionV3,
+  TestimonialsSectionV3,
+  TrustBarFloatingBentoSectionV3,
+  TrustBarSectionV3,
+  TrustLogoGridSectionV3,
+  TrustLogoMarqueeSectionV3,
+  TrustMarqueeSectionV3,
 } from "@/components/sections";
+import type { HeroSplitFullHeightVariant } from "@/components/sections/HeroSplitFullHeightSectionV3";
 import { sectionLibraryContent } from "@/content/section-library";
-import { sectionLibraryV2Collections } from "@/content/section-library-v2";
+import {
+  sectionLibraryV3Collections,
+  sectionLibraryV3Content,
+} from "@/content/section-library-v3";
 
 export const metadata: Metadata = {
   title: "Section Library",
   description:
-    "Internal empty accordion shell for adapting reusable local service sections.",
+    "Current internal section library for seven-column layout system sections.",
 };
 
 const sectionElements = {
-  "hero-bento-v2": (
-    <HeroBentoSectionV2 {...sectionLibraryContent.hero} headingLevel={2} />
-  ),
-  "hero-section-v2": (
-    <HeroSectionV2 {...sectionLibraryContent.hero} headingLevel={2} />
-  ),
   "hero-centered-floaters-v2": (
     <HeroCenteredFloatersSectionV2
       {...sectionLibraryContent.hero}
@@ -103,14 +90,6 @@ const sectionElements = {
       title="Reliable Home Services Delivered"
     />
   ),
-  "nav-primary-v2": <NavPrimarySectionV2 {...sectionLibraryContent.navPrimary} />,
-  "nav-center-logo-v2": (
-    <NavCenterLogoSectionV2 {...sectionLibraryContent.navPrimary} />
-  ),
-  "nav-floating-bento-v2": (
-    <NavFloatingBentoSectionV2 {...sectionLibraryContent.navPrimary} />
-  ),
-  "button-expanding-arrow-v2": <ButtonStylesSectionV2 />,
   "content-rule-header-v2": (
     <ContentRuleHeaderSectionV2
       {...sectionLibraryContent.contentRuleHeader}
@@ -141,13 +120,8 @@ const sectionElements = {
       {...sectionLibraryContent.contentHorizontalCardCarousel}
     />
   ),
-  "content-four-column-scroll-v2": (
-    <ContentFourColumnScrollSectionV2
-      {...sectionLibraryContent.contentFourColumnScroll}
-    />
-  ),
-  "content-sticky-image-panel-v2": (
-    <ContentStickyImagePanelSectionV2
+  "content-sticky-image-panel-v3": (
+    <ContentStickyImagePanelSectionV3
       {...sectionLibraryContent.contentStickyImagePanel}
     />
   ),
@@ -156,106 +130,113 @@ const sectionElements = {
       {...sectionLibraryContent.contentFixedCoverFade}
     />
   ),
-  "content-positioning-split-v2": (
-    <ContentPositioningSplitSectionV2
-      {...sectionLibraryContent.contentPositioningSplit}
-    />
-  ),
-  "content-about-company-v2": (
-    <ContentAboutCompanySectionV2
-      {...sectionLibraryContent.contentAboutCompany}
-    />
-  ),
   "content-split-headline-image-v2": (
     <ContentSplitHeadlineImageSectionV2
       {...sectionLibraryContent.contentSplitHeadlineImage}
     />
   ),
-  "trust-bar-v2": <TrustBarSection {...sectionLibraryContent.trustBar} />,
-  "trust-bar-floating-bento-v2": (
-    <TrustBarFloatingBentoSectionV2 {...sectionLibraryContent.trustBar} />
-  ),
-  "trust-marquee-v2": (
-    <TrustMarqueeSection {...sectionLibraryContent.trustMarquee} />
-  ),
-  "trust-logo-marquee-v2": (
-    <TrustLogoMarqueeSection {...sectionLibraryContent.trustLogoMarquee} />
-  ),
-  "trust-logo-grid-v2": (
-    <TrustLogoGridSection {...sectionLibraryContent.trustLogoMarquee} />
-  ),
-  "services-grid-v2": <ServicesGridSectionV2 {...sectionLibraryContent.services} />,
-  "services-bento-v2": (
-    <ServicesBentoCardsSectionV2 {...sectionLibraryContent.servicesBento} />
-  ),
-  "services-hover-panel-v2": (
-    <ServicesHoverPanelSectionV2
-      {...sectionLibraryContent.servicesHoverPanel}
+  "feature-portrait-paragraph-v3": (
+    <FeaturePortraitParagraphSectionV3
+      {...sectionLibraryV3Content.featurePortraitParagraph}
     />
   ),
-  "services-scroll-cards-v2": (
-    <ServicesScrollCardsSectionV2
-      {...sectionLibraryContent.servicesScrollCards}
-    />
-  ),
-  "feature-split-v2": (
-    <FeatureSplitSectionV2 {...sectionLibraryContent.featureSplit} />
-  ),
-  "feature-overlap-rows-v2": (
-    <FeatureOverlapRowsSectionV2
+  "feature-overlap-rows-v3": (
+    <FeatureOverlapRowsSectionV3
       {...sectionLibraryContent.featureOverlapRows}
     />
   ),
-  "process-steps-v2": (
-    <ProcessStepsSectionV2 {...sectionLibraryContent.process} />
+  "services-three-cards-right-v3": (
+    <ServicesThreeCardsRightSectionV3
+      {...sectionLibraryV3Content.servicesThreeCardsRight}
+    />
   ),
-  "process-image-checklist-v2": (
-    <ProcessImageChecklistSectionV2
+  "process-steps-v3": (
+    <ProcessStepsSectionV3 {...sectionLibraryContent.process} />
+  ),
+  "process-image-checklist-v3": (
+    <ProcessImageChecklistSectionV3
       {...sectionLibraryContent.processImageChecklist}
     />
   ),
-  "testimonials-v2": (
-    <TestimonialsSectionV2 {...sectionLibraryContent.testimonials} />
+  "testimonials-v3": (
+    <TestimonialsSectionV3 {...sectionLibraryContent.testimonials} />
   ),
-  "testimonials-carousel-v2": (
-    <TestimonialsCarouselSectionV2
+  "testimonials-carousel-v3": (
+    <TestimonialsCarouselSectionV3
       {...sectionLibraryContent.testimonialsCarousel}
     />
   ),
-  "testimonials-masonry-v2": (
-    <TestimonialsMasonrySectionV2
+  "testimonials-masonry-v3": (
+    <TestimonialsMasonrySectionV3
       {...sectionLibraryContent.testimonialsMasonry}
     />
   ),
-  "faq-v2": <FAQSectionV2 {...sectionLibraryContent.faq} />,
-  "faq-accordion-v2": (
-    <FAQAccordionSectionV2 {...sectionLibraryContent.faqAccordion} />
+  "faq-v3": <FAQSectionV3 {...sectionLibraryContent.faq} />,
+  "faq-accordion-v3": (
+    <FAQAccordionSectionV3 {...sectionLibraryContent.faqAccordion} />
   ),
-  "cta-v2": <CTASectionV2 {...sectionLibraryContent.cta} />,
-  "cta-fullscreen-v2": (
-    <CTAFullscreenSectionV2 {...sectionLibraryContent.ctaFullscreen} />
+  "cta-v3": <CTASectionV3 {...sectionLibraryContent.cta} />,
+  "cta-fullscreen-v3": (
+    <CTAFullscreenSectionV3 {...sectionLibraryContent.ctaFullscreen} />
   ),
-  "cta-scroll-reveal-offer-v2": (
-    <CTAScrollRevealOfferSectionV2
+  "cta-scroll-reveal-offer-v3": (
+    <CTAScrollRevealOfferSectionV3
       {...sectionLibraryContent.ctaScrollRevealOffer}
     />
   ),
-  "contact-v2": <ContactSectionV2 {...sectionLibraryContent.contact} />,
-  "footer-v2": <FooterSectionV2 {...sectionLibraryContent.footer} />,
+  "contact-v3": <ContactSectionV3 {...sectionLibraryContent.contact} />,
+  "footer-v3": <FooterSectionV3 {...sectionLibraryContent.footer} />,
+  "trust-bar-v3": (
+    <TrustBarSectionV3 {...sectionLibraryV3Content.trustBar} />
+  ),
+  "trust-bar-floating-bento-v3": (
+    <TrustBarFloatingBentoSectionV3
+      {...sectionLibraryV3Content.trustBar}
+    />
+  ),
+  "trust-marquee-v3": (
+    <TrustMarqueeSectionV3 {...sectionLibraryV3Content.trustMarquee} />
+  ),
+  "trust-logo-marquee-v3": (
+    <TrustLogoMarqueeSectionV3
+      {...sectionLibraryV3Content.trustLogoMarquee}
+    />
+  ),
+  "trust-logo-grid-v3": (
+    <TrustLogoGridSectionV3
+      {...sectionLibraryV3Content.trustLogoMarquee}
+    />
+  ),
 } as const;
 
-const collections = sectionLibraryV2Collections.map((collection) => ({
+const heroSplitVariants = sectionLibraryV3Content.heroSplitFullHeight.variants.map(
+  ({ label, variant }) => ({
+    label,
+    element: (
+      <HeroSplitFullHeightSectionV3
+        {...sectionLibraryV3Content.heroSplitFullHeight}
+        variant={variant as HeroSplitFullHeightVariant}
+      />
+    ),
+  }),
+);
+
+const collections = sectionLibraryV3Collections.map((collection) => ({
   ...collection,
   items: collection.items.map((item) => ({
     label: item.label,
+    variants:
+      item.component === "hero-split-full-height-v3"
+        ? heroSplitVariants
+        : undefined,
     element:
-      "component" in item
+      item.component !== "hero-split-full-height-v3"
         ? sectionElements[item.component as keyof typeof sectionElements]
         : undefined,
   })),
 }));
 
-export default function SectionsPage() {
+export default function SectionsV3Page() {
   return (
     <main className="bg-white">
       <section className="bg-service-ink py-16 text-white">
@@ -267,13 +248,12 @@ export default function SectionsPage() {
             Section Library
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-white/75">
-            Empty accordion shell for adapting each existing layout to the new
-            responsive type and measure logic.
+            Current seven-column section templates for the local service starter.
           </p>
         </Container>
       </section>
 
-      <SectionLibraryV2Accordions collections={collections} />
+      <SectionLibraryV3Accordions collections={collections} />
     </main>
   );
 }

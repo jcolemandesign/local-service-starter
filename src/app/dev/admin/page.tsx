@@ -13,7 +13,7 @@ const linkGroups = [
       { label: "Sample", href: "/sample" },
       { label: "Sample Plumbing", href: "/sample-plumbing" },
       { label: "Sections", href: "/sections" },
-      { label: "Sections V3", href: "/sections-v3" },
+      { label: "Deprecated Sections", href: "/sections-deprecated" },
     ],
   },
   {
@@ -24,7 +24,6 @@ const linkGroups = [
       { label: "Grid Lab", href: "/dev/grid-lab" },
       { label: "Design Lab", href: "/dev/design-lab" },
       { label: "Type Test", href: "/dev/type-test" },
-      { label: "Type Hierarchy Test", href: "/dev/type-hierarchy-test" },
     ],
   },
   {

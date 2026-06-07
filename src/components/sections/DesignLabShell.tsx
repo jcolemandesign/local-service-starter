@@ -1,7 +1,8 @@
 "use client";
 
 import type { CSSProperties, ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { HomepageRecipe, SectionMode } from "@/content/design-lab";
 import type { TypePalette, TypeRole } from "@/content/type-palettes";
 import { typePalettes } from "@/content/type-palettes";
@@ -164,6 +165,16 @@ const viewportOptions = [
     brief: "Review the template in a wide browser-style viewport.",
   },
   {
+    id: "main",
+    label: "Main",
+    contentClassName: "max-w-full",
+    frameClassName: "h-full w-full max-w-[90rem]",
+    screenClassName: "h-full flex-1",
+    sizeLabel: "Main container",
+    brief:
+      "Review the template in the 1440px main container with preserved page scrolling.",
+  },
+  {
     id: "desktop",
     label: "Desktop",
     contentClassName: "max-w-full",
@@ -175,7 +186,7 @@ const viewportOptions = [
   {
     id: "tablet",
     label: "Tablet",
-    contentClassName: "design-lab-responsive-lg max-w-full",
+    contentClassName: "max-w-full",
     frameClassName: "w-full max-w-[min(42rem,calc((100svh-7rem)*0.75))]",
     screenClassName: "aspect-[3/4]",
     sizeLabel: "Tablet window",
@@ -184,8 +195,7 @@ const viewportOptions = [
   {
     id: "mobile",
     label: "Mobile",
-    contentClassName:
-      "design-lab-responsive-lg design-lab-responsive-md design-lab-responsive-sm max-w-full",
+    contentClassName: "max-w-full",
     frameClassName: "w-full max-w-[min(24rem,calc((100svh-7rem)*0.5625))]",
     screenClassName: "aspect-[9/16]",
     sizeLabel: "Mobile window",
@@ -448,6 +458,137 @@ function typeVariableStyle(profile: TypePalette) {
   return style;
 }
 
+type DesignLabPreviewWindowProps = {
+  activeDesignLabel: string;
+  children: ReactNode;
+  contentClassName: string;
+  frameClassName: string;
+  previewStyle: CSSProperties;
+  screenClassName: string;
+  showSectionMarkers: boolean;
+  sizeLabel: string;
+  spacingClassName: string;
+};
+
+function DesignLabPreviewWindow({
+  activeDesignLabel,
+  children,
+  contentClassName,
+  frameClassName,
+  previewStyle,
+  screenClassName,
+  showSectionMarkers,
+  sizeLabel,
+  spacingClassName,
+}: DesignLabPreviewWindowProps) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    const iframeDocument = iframe?.contentDocument;
+
+    if (!iframe || !iframeDocument) {
+      return;
+    }
+
+    const headMarkup = Array.from(
+      document.head.querySelectorAll('link[rel="stylesheet"], style'),
+    )
+      .map((node) => node.outerHTML)
+      .join("");
+
+    iframeDocument.open();
+    iframeDocument.write(`<!doctype html>
+<html>
+  <head>
+    <base target="_parent" />
+    ${headMarkup}
+    <style>
+      html,
+      body,
+      #design-lab-preview-root {
+        min-height: 100%;
+        margin: 0;
+        background: white;
+      }
+
+      body {
+        overflow-x: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="design-lab-preview-root"></div>
+  </body>
+</html>`);
+    iframeDocument.close();
+
+    setPortalRoot(
+      iframeDocument.getElementById("design-lab-preview-root"),
+    );
+  }, []);
+
+  return (
+    <div
+      className={cx(
+        "mx-auto flex max-h-full min-h-0 flex-col overflow-hidden rounded border border-service-border bg-white shadow-service transition-all duration-300",
+        frameClassName,
+      )}
+    >
+      <div className="flex h-9 shrink-0 items-center gap-2 border-b border-service-border bg-service-surface px-3">
+        <span
+          aria-hidden="true"
+          className="size-2.5 rounded-full bg-service-border"
+        />
+        <span
+          aria-hidden="true"
+          className="size-2.5 rounded-full bg-service-border"
+        />
+        <span
+          aria-hidden="true"
+          className="size-2.5 rounded-full bg-service-accent"
+        />
+        <div className="ml-2 flex min-w-0 flex-1 items-center rounded-full border border-service-border bg-white px-3 py-1">
+          <span className="truncate text-[0.65rem] font-semibold uppercase tracking-widest text-service-muted">
+            {sizeLabel} / {activeDesignLabel}
+          </span>
+        </div>
+      </div>
+
+      <div className={cx("min-h-0 bg-white", screenClassName)}>
+        <iframe
+          className="block h-full w-full bg-white"
+          ref={iframeRef}
+          title={`${sizeLabel} preview`}
+        />
+        {portalRoot
+          ? createPortal(
+              <div
+                className={cx(
+                  "design-lab-color-preview min-h-full w-full bg-white",
+                  spacingClassName,
+                  !showSectionMarkers && "design-lab-hide-markers",
+                )}
+                style={previewStyle}
+              >
+                <div
+                  className={cx(
+                    "fluid-type-frame mx-auto min-h-full w-full bg-white",
+                    contentClassName,
+                  )}
+                >
+                  {children}
+                </div>
+              </div>,
+              portalRoot,
+            )
+          : null}
+      </div>
+    </div>
+  );
+}
+
 export function DesignLabShell({
   previewCatalog,
   previewSections,
@@ -477,7 +618,7 @@ export function DesignLabShell({
       profileId: typePalettes[index]?.id ?? typePalettes[0]?.id ?? "",
       showSectionMarkers: true,
       spacingId: "normal",
-      viewportId: "wide",
+      viewportId: index === 0 ? "main" : "wide",
     })),
   );
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(
@@ -516,7 +657,7 @@ export function DesignLabShell({
       profileId: typePalettes[0]?.id ?? "",
       showSectionMarkers: true,
       spacingId: "normal",
-      viewportId: "wide",
+      viewportId: "main",
     };
   const activeStack = workingStacks[activeRecipeIndex] ?? [];
   const selectedSection =
@@ -781,110 +922,70 @@ export function DesignLabShell({
     await navigator.clipboard.writeText(codexRebuildBrief);
   }
 
-  const previewWindow = (
-    <div
-      className={cx(
-        "design-lab-color-preview max-h-full min-h-0 w-full",
-        selectedSpacing.className,
-        !activeDesignStyle.showSectionMarkers && "design-lab-hide-markers",
-      )}
-      style={previewStyle}
-    >
-      <div
-        className={cx(
-          "mx-auto flex max-h-full min-h-0 flex-col overflow-hidden rounded border border-service-border bg-white shadow-service transition-all duration-300",
-          selectedViewport.frameClassName,
-        )}
+  function renderPreviewWindow() {
+    return (
+      <DesignLabPreviewWindow
+        activeDesignLabel={activeDesignLabel}
+        contentClassName={selectedViewport.contentClassName}
+        frameClassName={selectedViewport.frameClassName}
+        previewStyle={previewStyle}
+        screenClassName={selectedViewport.screenClassName}
+        showSectionMarkers={activeDesignStyle.showSectionMarkers}
+        sizeLabel={selectedViewport.sizeLabel}
+        spacingClassName={selectedSpacing.className}
       >
-        <div className="flex h-9 shrink-0 items-center gap-2 border-b border-service-border bg-service-surface px-3">
-          <span
-            aria-hidden="true"
-            className="size-2.5 rounded-full bg-service-border"
-          />
-          <span
-            aria-hidden="true"
-            className="size-2.5 rounded-full bg-service-border"
-          />
-          <span
-            aria-hidden="true"
-            className="size-2.5 rounded-full bg-service-accent"
-          />
-          <div className="ml-2 flex min-w-0 flex-1 items-center rounded-full border border-service-border bg-white px-3 py-1">
-            <span className="truncate text-[0.65rem] font-semibold uppercase tracking-widest text-service-muted">
-              {selectedViewport.sizeLabel} / {activeDesignLabel}
-            </span>
-          </div>
-        </div>
-        <div
-          className={cx(
-            "min-h-0 bg-white",
-            selectedViewport.screenClassName,
-          )}
-        >
-          <div className="h-full overflow-y-auto overflow-x-hidden overscroll-contain">
-            <div
-              className={cx(
-                "fluid-type-frame mx-auto min-h-full w-full bg-white",
-                selectedViewport.contentClassName,
-              )}
-            >
-              {activeStack
-                .filter((section) => section.included)
-                .map((section) => {
-                  const isSelected = section.id === selectedSectionId;
+        {activeStack
+          .filter((section) => section.included)
+          .map((section) => {
+            const isSelected = section.id === selectedSectionId;
 
-                  return (
-                    <div
-                      className={cx(
-                        "group/design-lab-section relative cursor-pointer outline outline-0 outline-offset-0 transition-shadow",
-                        isSelected &&
-                          "z-10 shadow-[0_0_0_3px_var(--color-service-accent)]",
-                      )}
-                      data-design-lab-section-id={section.id}
-                      key={section.id}
-                      onClick={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        setSelectedSectionId(section.id);
-                      }}
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                          event.preventDefault();
-                          setSelectedSectionId(section.id);
-                        }
-                      }}
-                      role="button"
-                      tabIndex={0}
-                    >
-                      <div className="design-lab-section-marker pointer-events-none absolute left-3 top-3 z-30 max-w-[calc(100%-1.5rem)] rounded border border-service-border bg-white/90 px-3 py-2 text-service-ink shadow-service backdrop-blur">
-                        <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-service-accent">
-                          {section.mode}
-                        </p>
-                        <p className="mt-1 text-xs font-semibold">
-                          {section.name}
-                        </p>
-                      </div>
-                      {previewCatalog[section.component] ??
-                        previewSections[activeRecipeIndex]?.[
-                          section.originalIndex
-                        ] ??
-                        null}
-                    </div>
-                  );
-                })}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+            return (
+              <div
+                className={cx(
+                  "group/design-lab-section relative cursor-pointer outline outline-0 outline-offset-0 transition-shadow",
+                  isSelected &&
+                    "z-10 shadow-[0_0_0_3px_var(--color-service-accent)]",
+                )}
+                data-design-lab-section-id={section.id}
+                key={section.id}
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  setSelectedSectionId(section.id);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setSelectedSectionId(section.id);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+              >
+                <div className="design-lab-section-marker pointer-events-none absolute left-3 top-3 z-30 max-w-[calc(100%-1.5rem)] rounded border border-service-border bg-white/90 px-3 py-2 text-service-ink shadow-service backdrop-blur">
+                  <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-service-accent">
+                    {section.mode}
+                  </p>
+                  <p className="mt-1 text-xs font-semibold">{section.name}</p>
+                </div>
+                {previewCatalog[section.component] ??
+                  previewSections[activeRecipeIndex]?.[
+                    section.originalIndex
+                  ] ??
+                  null}
+              </div>
+            );
+          })}
+      </DesignLabPreviewWindow>
+    );
+  }
 
   return (
-    <section className="min-h-svh bg-service-surface text-service-ink">
-      <div className="w-full px-4 py-4 max-md:px-3">
-        <div className="grid grid-cols-[22rem_minmax(0,1fr)] items-start gap-5 max-lg:grid-cols-1">
-          <aside className="grid content-start gap-4">
-            <div className="radius-medium border border-service-border bg-white p-5 shadow-service">
+    <section className="h-svh overflow-hidden bg-service-surface text-service-ink max-lg:h-auto max-lg:min-h-svh max-lg:overflow-visible">
+      <div className="h-full w-full px-4 py-4 max-md:px-3">
+        <div className="grid h-full min-h-0 grid-cols-[22rem_minmax(0,1fr)] items-stretch gap-5 max-lg:h-auto max-lg:grid-cols-1">
+          <aside className="grid h-full min-h-0 content-start gap-4 overflow-y-auto overscroll-contain pr-1 max-lg:h-auto max-lg:overflow-visible max-lg:pr-0">
+            <div className="radius-medium order-1 border border-service-border bg-white p-5 shadow-service">
               <p className="type-label text-service-accent">Design Lab</p>
               <h1 className="type-heading-lg mt-eyebrow-heading-md text-service-ink">
                 Homepage build briefs
@@ -895,7 +996,7 @@ export function DesignLabShell({
               </p>
             </div>
 
-            <div className="radius-medium border border-service-border bg-white p-5 shadow-service">
+            <div className="radius-medium order-3 border border-service-border bg-white p-5 shadow-service">
               <h2 className="type-heading-sm text-service-ink">
                 Style Inputs
               </h2>
@@ -1045,7 +1146,7 @@ export function DesignLabShell({
                       return (
                         <button
                           className={cx(
-                            "radius-4 min-h-10 border px-3 text-sm font-semibold transition-colors",
+                            "radius-4 min-h-10 min-w-20 border px-3 text-sm font-semibold transition-colors max-sm:min-w-0 max-sm:px-2",
                             isActive
                               ? "border-service-ink bg-service-ink text-white"
                               : "border-service-border bg-service-surface text-service-ink hover:border-service-accent hover:text-service-accent",
@@ -1093,7 +1194,7 @@ export function DesignLabShell({
               </div>
             </div>
 
-            <div className="radius-medium border border-service-border bg-white p-5 shadow-service">
+            <div className="radius-medium sticky top-0 z-20 order-2 border border-service-border bg-white p-5 shadow-service max-lg:static">
               <h2 className="type-heading-sm text-service-ink">
                 Selected Section
               </h2>
@@ -1183,7 +1284,7 @@ export function DesignLabShell({
             </div>
           </aside>
 
-          <div className="grid content-start gap-4">
+          <div className="grid h-full min-h-0 content-start gap-4 overflow-y-auto overscroll-contain pr-1 max-lg:h-auto max-lg:overflow-visible max-lg:pr-0">
             <div className="radius-medium border border-service-border bg-white p-1.5 shadow-service">
               <div
                 aria-label="Homepage recipe tabs"
@@ -1292,8 +1393,8 @@ export function DesignLabShell({
                         {selectedViewport.sizeLabel}
                       </p>
                       <p className="type-caption mt-1 text-service-muted">
-                        Open a focused preview window with its own scroll area
-                        and small edge margins.
+                        Click rendered sections to select them, then swap,
+                        reorder, or toggle them from the controls.
                       </p>
                     </div>
                     <button
@@ -1301,8 +1402,14 @@ export function DesignLabShell({
                       onClick={() => setIsPreviewOpen(true)}
                       type="button"
                     >
-                      Open Preview
+                      Focus Preview
                     </button>
+                  </div>
+
+                  <div className="mt-4 h-[72svh] min-h-[36rem] overflow-hidden rounded border border-service-border bg-service-surface p-3 max-md:h-[68svh] max-md:min-h-[28rem] max-sm:min-h-[24rem]">
+                    <div className="grid h-full min-h-0 place-items-center overflow-hidden">
+                      {renderPreviewWindow()}
+                    </div>
                   </div>
                 </section>
 
@@ -1573,7 +1680,7 @@ export function DesignLabShell({
               </div>
               <div
                 aria-label="Preview viewport"
-                className="flex flex-wrap gap-1 rounded border border-service-border bg-service-surface p-1"
+                className="flex max-w-full flex-wrap gap-1 rounded border border-service-border bg-service-surface p-1"
                 role="group"
               >
                 {viewportOptions.map((option) => {
@@ -1582,7 +1689,7 @@ export function DesignLabShell({
                   return (
                     <button
                       className={cx(
-                        "radius-4 min-h-8 px-3 text-xs font-semibold transition-colors",
+                        "radius-4 min-h-8 min-w-16 px-3 text-xs font-semibold transition-colors max-sm:min-w-0 max-sm:px-2",
                         isActive
                           ? "bg-service-ink text-white"
                           : "text-service-muted hover:bg-white hover:text-service-accent",
@@ -1611,7 +1718,7 @@ export function DesignLabShell({
               </button>
             </div>
             <div className="grid min-h-0 place-items-center overflow-hidden">
-              {previewWindow}
+              {renderPreviewWindow()}
             </div>
           </div>
         </div>

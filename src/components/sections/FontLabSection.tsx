@@ -2,7 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties, KeyboardEvent, MouseEvent } from "react";
-import { Card } from "@/components/primitives";
+import {
+  Card,
+  SevenColumnGrid,
+  SevenColumnGridItem,
+} from "@/components/primitives";
 import { sectionLibraryContent } from "@/content/section-library";
 import {
   typePalettes,
@@ -1496,7 +1500,13 @@ export function FontLabSection() {
                       })}
                     </section>
 
-                    <section className="grid gap-y-[var(--font-lab-inner-y-gap)] border-t border-service-border pt-[var(--font-lab-section-divider-pad)]">
+                    <SevenColumnGrid
+                      className="border-t border-service-border pt-[var(--font-lab-section-divider-pad)]"
+                      frame="none"
+                      gap="med"
+                    >
+                      <SevenColumnGridItem className="col-span-7">
+                        <div className="grid gap-y-[var(--font-lab-inner-y-gap)]">
                       <div className="relative aspect-[16/10] min-h-[28rem] overflow-hidden rounded-md bg-service-ink text-white max-lg:min-h-0">
                         <div
                           className="absolute inset-0 bg-cover bg-center"
@@ -1557,8 +1567,8 @@ export function FontLabSection() {
                             </div>
                           </nav>
 
-                          <div className="grid min-h-0 grid-cols-[minmax(0,0.68fr)_minmax(15rem,0.32fr)] items-end gap-x-8 gap-y-[var(--font-lab-inner-y-gap)] px-8 pb-8 max-lg:grid-cols-1 max-md:px-5 max-md:pb-5">
-                            <div className="min-w-0">
+                          <div className="grid min-h-0 grid-cols-7 items-end gap-x-6 gap-y-[var(--font-lab-inner-y-gap)] px-8 pb-8 max-lg:grid-cols-1 max-md:px-5 max-md:pb-5">
+                            <div className="col-span-5 min-w-0 max-lg:col-span-1">
                               <p
                                 className={selectableTypeClasses(
                                   "label",
@@ -1588,7 +1598,7 @@ export function FontLabSection() {
                               </p>
                             </div>
 
-                            <aside className="grid grid-cols-2 gap-3 text-white max-md:hidden">
+                            <aside className="col-span-2 grid grid-cols-2 gap-3 text-white max-lg:col-span-1 max-md:hidden">
                               {sectionLibraryContent.heroFullscreen.trustSignals.map(
                                 (signal) => (
                                   <div
@@ -1641,8 +1651,8 @@ export function FontLabSection() {
                         </div>
                       </div>
 
-                      <div className="grid aspect-[16/9] overflow-hidden rounded-md border border-service-border bg-white max-lg:aspect-auto max-lg:min-h-[34rem] max-lg:grid-rows-[1fr_1fr] lg:grid-cols-2">
-                        <div className="flex min-h-0 items-center bg-service-surface p-8 text-service-ink max-md:p-5">
+                      <div className="grid aspect-[16/9] grid-cols-7 overflow-hidden rounded-md border border-service-border bg-white max-lg:aspect-auto max-lg:min-h-[34rem] max-lg:grid-cols-1 max-lg:grid-rows-[1fr_1fr]">
+                        <div className="col-span-4 flex min-h-0 items-center bg-service-surface p-8 text-service-ink max-lg:col-span-1 max-md:p-5">
                           <div className="min-w-0">
                             <p
                               className={selectableTypeClasses(
@@ -1688,7 +1698,7 @@ export function FontLabSection() {
                           </div>
                         </div>
                         <div
-                          className="relative min-h-0 overflow-hidden bg-cover bg-center"
+                          className="relative col-span-3 min-h-0 overflow-hidden bg-cover bg-center max-lg:col-span-1"
                           aria-label="Sample split hero image"
                           style={{ backgroundImage: `url(${sampleImageUrl})` }}
                         >
@@ -1722,8 +1732,8 @@ export function FontLabSection() {
                       </div>
 
                       <div className="rounded-md border border-service-border bg-white p-8 max-md:p-5">
-                        <div className="grid grid-cols-[minmax(0,0.45fr)_minmax(0,0.55fr)] gap-x-8 gap-y-[var(--font-lab-inner-y-gap)] max-lg:grid-cols-1">
-                          <div>
+                        <div className="grid grid-cols-7 gap-x-6 gap-y-[var(--font-lab-inner-y-gap)] max-lg:grid-cols-1">
+                          <div className="col-span-3 max-lg:col-span-1">
                             <p
                               className={selectableTypeClasses(
                                 "label",
@@ -1753,7 +1763,7 @@ export function FontLabSection() {
                             </p>
                           </div>
 
-                          <div className="grid gap-4">
+                          <div className="col-span-4 grid gap-4 max-lg:col-span-1">
                             {sectionLibraryContent.testimonialsCarousel.items
                               .slice(0, 2)
                               .map((story) => (
@@ -1797,8 +1807,8 @@ export function FontLabSection() {
                       </div>
 
                       <div className="rounded-md border border-service-border bg-service-surface p-8 max-md:p-5">
-                        <div className="grid grid-cols-[minmax(0,0.62fr)_minmax(0,0.38fr)] items-end gap-6 max-lg:grid-cols-1">
-                          <div>
+                        <div className="grid grid-cols-7 items-end gap-6 max-lg:grid-cols-1">
+                          <div className="col-span-4 max-lg:col-span-1">
                             <p
                               className={selectableTypeClasses(
                                 "label",
@@ -1821,17 +1831,22 @@ export function FontLabSection() {
                           <p
                             className={selectableTypeClasses(
                               "text-lg",
-                              "type-text-lg text-service-muted",
+                              "type-text-lg col-span-3 text-service-muted max-lg:col-span-1",
                             )}
                             {...roleSelectProps("text-lg")}
                           >
                             {sectionLibraryContent.services.body}
                           </p>
                         </div>
-                        <div className="mt-[var(--font-lab-inner-y-gap)] grid grid-cols-3 gap-x-4 gap-y-[var(--font-lab-inner-y-gap)] max-lg:grid-cols-1">
-                          {sectionLibraryContent.services.items.map((service) => (
+                        <div className="mt-[var(--font-lab-inner-y-gap)] grid grid-cols-7 gap-x-4 gap-y-[var(--font-lab-inner-y-gap)] max-lg:grid-cols-1">
+                          {sectionLibraryContent.services.items.map((service, index) => (
                             <article
-                              className="grid min-h-56 content-between rounded-md border border-service-border bg-white p-6"
+                              className={cx(
+                                "grid min-h-56 content-between rounded-md border border-service-border bg-white p-6 max-lg:col-span-1",
+                                index === 0 && "col-span-2 col-start-2",
+                                index === 1 && "col-span-2 col-start-4",
+                                index === 2 && "col-span-2 col-start-6",
+                              )}
                               key={service.title}
                             >
                               <div>
@@ -1878,17 +1893,17 @@ export function FontLabSection() {
                         >
                           Positioning
                         </p>
-                        <div className="mt-[var(--font-lab-inner-y-gap)] grid grid-cols-[minmax(0,0.72fr)_minmax(14rem,0.28fr)] gap-x-8 gap-y-[var(--font-lab-inner-y-gap)] max-lg:grid-cols-1">
+                        <div className="mt-[var(--font-lab-inner-y-gap)] grid grid-cols-7 gap-x-8 gap-y-[var(--font-lab-inner-y-gap)] max-lg:grid-cols-1">
                           <h2
                             className={selectableTypeClasses(
                               "display-lg",
-                              "type-display-lg max-w-4xl text-white",
+                              "type-display-lg col-span-5 max-w-4xl text-white max-lg:col-span-1",
                             )}
                             {...roleSelectProps("display-lg")}
                           >
                             {sectionLibraryContent.contentPositioningSplit.title}
                           </h2>
-                          <div className="grid content-end gap-6">
+                          <div className="col-span-2 grid content-end gap-6 max-lg:col-span-1">
                             <p
                               className={selectableTypeClasses(
                                 "text-lg",
@@ -1912,8 +1927,8 @@ export function FontLabSection() {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-[minmax(0,0.72fr)_minmax(18rem,0.28fr)] gap-x-8 gap-y-[var(--font-lab-inner-y-gap)] max-lg:grid-cols-1">
-                        <div>
+                      <div className="grid grid-cols-7 gap-x-8 gap-y-[var(--font-lab-inner-y-gap)] max-lg:grid-cols-1">
+                        <div className="col-span-5 max-lg:col-span-1">
                           <p
                             className={selectableTypeClasses(
                               "label",
@@ -1945,7 +1960,7 @@ export function FontLabSection() {
                           </p>
                         </div>
 
-                        <aside className="grid content-start gap-4 border-l border-service-border pl-6 max-lg:border-l-0 max-lg:border-t max-lg:pl-0 max-lg:pt-6">
+                        <aside className="col-span-2 grid content-start gap-4 border-l border-service-border pl-6 max-lg:col-span-1 max-lg:border-l-0 max-lg:border-t max-lg:pl-0 max-lg:pt-6">
                           <p
                             className={selectableTypeClasses(
                               "caption",
@@ -1977,8 +1992,8 @@ export function FontLabSection() {
                         </aside>
                       </div>
 
-                      <div className="grid grid-cols-[minmax(0,0.62fr)_minmax(0,0.38fr)] gap-x-8 gap-y-[var(--font-lab-inner-y-gap)] max-lg:grid-cols-1">
-                        <div className="grid gap-5">
+                      <div className="grid grid-cols-7 gap-x-8 gap-y-[var(--font-lab-inner-y-gap)] max-lg:grid-cols-1">
+                        <div className="col-span-4 grid gap-5 max-lg:col-span-1">
                           <p
                             className={selectableTypeClasses(
                               "text-lg",
@@ -2020,7 +2035,7 @@ export function FontLabSection() {
                           </p>
                         </div>
 
-                        <blockquote className="grid content-between gap-y-[var(--font-lab-inner-y-gap)] bg-service-ink p-7 text-white">
+                        <blockquote className="col-span-3 grid content-between gap-y-[var(--font-lab-inner-y-gap)] bg-service-ink p-7 text-white max-lg:col-span-1">
                           <p
                             className={selectableTypeClasses(
                               "heading-lg",
@@ -2055,7 +2070,7 @@ export function FontLabSection() {
                         </blockquote>
                       </div>
 
-                      <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-1">
+                      <div className="grid grid-cols-7 gap-4 max-lg:grid-cols-1">
                         {[
                           {
                             eyebrow: "Service card",
@@ -2072,9 +2087,14 @@ export function FontLabSection() {
                             title: "Close the loop",
                             body: "Captions, labels, and small paragraphs should still feel deliberate in dense layouts.",
                           },
-                        ].map((card) => (
+                        ].map((card, index) => (
                           <article
-                            className="grid gap-4 border border-service-border bg-service-surface p-6"
+                            className={cx(
+                              "grid gap-4 border border-service-border bg-service-surface p-6 max-lg:col-span-1",
+                              index === 0 && "col-span-2 col-start-1",
+                              index === 1 && "col-span-3 col-start-3",
+                              index === 2 && "col-span-2 col-start-6",
+                            )}
                             key={card.title}
                           >
                             <p
@@ -2108,8 +2128,8 @@ export function FontLabSection() {
                         ))}
                       </div>
 
-                      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-4 max-lg:grid-cols-1">
-                        <div className="border border-service-border p-6">
+                      <div className="grid grid-cols-7 gap-4 max-lg:grid-cols-1">
+                        <div className="col-span-3 border border-service-border p-6 max-lg:col-span-1">
                           <p
                             className={selectableTypeClasses(
                               "label",
@@ -2139,7 +2159,7 @@ export function FontLabSection() {
                           </ul>
                         </div>
 
-                        <div className="grid grid-cols-3 border border-service-border max-md:grid-cols-1">
+                        <div className="col-span-4 grid grid-cols-3 border border-service-border max-lg:col-span-1 max-md:grid-cols-1">
                           {[
                             ["4.9", "Average rating"],
                             ["24h", "Fast response"],
@@ -2171,7 +2191,9 @@ export function FontLabSection() {
                           ))}
                         </div>
                       </div>
-                    </section>
+                        </div>
+                      </SevenColumnGridItem>
+                    </SevenColumnGrid>
 
                     <section className="grid gap-4 border-t border-service-border pt-[var(--font-lab-section-divider-pad)]">
                       {roleSpecimenCards}
