@@ -4,7 +4,7 @@ export const homeIndexContent = {
   body: "Quick links for reviewing the reusable starter, section library, and development workspaces while the dev server is running.",
   groups: [
     {
-      title: "Preview pages",
+      title: "Created pages",
       links: [
         {
           label: "Sample local service",
@@ -16,6 +16,11 @@ export const homeIndexContent = {
           href: "/sample-plumbing",
           description: "Business-specific sample content applied to the system.",
         },
+      ],
+    },
+    {
+      title: "Section libraries",
+      links: [
         {
           label: "Section library",
           href: "/sections",
@@ -64,7 +69,7 @@ export const homeIndexContent = {
       ],
     },
     {
-      title: "App flows",
+      title: "Utility pages",
       links: [
         {
           label: "Dashboard",
