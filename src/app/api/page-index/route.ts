@@ -7,6 +7,7 @@ type HomeIndexLink = {
   label: string;
   href: string;
   description: string;
+  mutable?: boolean;
 };
 
 type HomeIndexGroup = {
@@ -37,6 +38,7 @@ type PageIndexRequest = CloneRequest | DeleteRequest;
 
 const appDir = path.join(process.cwd(), "src", "app");
 const homeContentPath = path.join(process.cwd(), "src", "content", "home.json");
+const mutableGroupTitles = new Set(["Created Pages"]);
 const segmentPattern = /^[a-z0-9-]+$/;
 
 export async function POST(request: Request) {
@@ -72,7 +74,6 @@ export async function POST(request: Request) {
 
 async function clonePage(body: CloneRequest) {
   const source = routeFromHref(body.href);
-  const sourceLink = await getSourceLink(body.href);
   const slug = sanitizeSlug(body.slug);
 
   if (!slug) {
@@ -89,11 +90,8 @@ async function clonePage(body: CloneRequest) {
   const targetHref = `/${[...parentSegments, slug].join("/")}`;
   const target = routeFromHref(targetHref);
   const content = await readHomeContent();
-  const location = findLinkLocation(content, body.href);
-
-  if (!location) {
-    throw new Error("Source link is no longer in the project index.");
-  }
+  const location = getMutableLinkLocation(content, body.href);
+  const sourceLink = content.groups[location.groupIndex].links[location.linkIndex];
 
   if (findLinkLocation(content, targetHref)) {
     throw new Error("That route already exists in the project index.");
@@ -107,6 +105,7 @@ async function clonePage(body: CloneRequest) {
     label,
     href: targetHref,
     description: `${sourceLink.description} Cloned from ${sourceLink.label}.`,
+    mutable: true,
   };
 
   content.groups[location.groupIndex].links.splice(
@@ -122,11 +121,7 @@ async function clonePage(body: CloneRequest) {
 async function deletePage(body: DeleteRequest) {
   const source = routeFromHref(body.href);
   const content = await readHomeContent();
-  const location = findLinkLocation(content, body.href);
-
-  if (!location) {
-    throw new Error("Source link is no longer in the project index.");
-  }
+  const location = getMutableLinkLocation(content, body.href);
 
   await ensureRoutePageExists(source.dir);
   await rm(source.dir, { recursive: true, force: false });
@@ -135,17 +130,6 @@ async function deletePage(body: DeleteRequest) {
   await writeHomeContent(content);
 
   return { ok: true, groups: content.groups };
-}
-
-async function getSourceLink(href: string) {
-  const content = await readHomeContent();
-  const location = findLinkLocation(content, href);
-
-  if (!location) {
-    throw new Error("Source link is no longer in the project index.");
-  }
-
-  return content.groups[location.groupIndex].links[location.linkIndex];
 }
 
 function routeFromHref(href: string) {
@@ -213,6 +197,25 @@ function findLinkLocation(content: HomeIndexContent, href: string) {
   }
 
   return null;
+}
+
+function getMutableLinkLocation(content: HomeIndexContent, href: string) {
+  const location = findLinkLocation(content, href);
+
+  if (!location) {
+    throw new Error("Source link is no longer in the project index.");
+  }
+
+  const link = content.groups[location.groupIndex].links[location.linkIndex];
+
+  if (
+    !mutableGroupTitles.has(content.groups[location.groupIndex].title) ||
+    link.mutable !== true
+  ) {
+    throw new Error("Only Created Pages can be cloned or deleted.");
+  }
+
+  return location;
 }
 
 function sanitizeSlug(value: string) {

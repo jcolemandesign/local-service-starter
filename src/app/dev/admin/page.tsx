@@ -10,19 +10,16 @@ const linkGroups = [
     title: "Pages",
     links: [
       { label: "Home", href: "/" },
-      { label: "Sample", href: "/sample" },
-      { label: "Sample Plumbing", href: "/sample-plumbing" },
-      { label: "Sections", href: "/sections" },
-      { label: "Deprecated Sections", href: "/sections-deprecated" },
     ],
   },
   {
     title: "Dev",
     links: [
+      { label: "Section Library", href: "/sections" },
       { label: "Style Guide", href: "/dev/style-guide" },
       { label: "Font Lab", href: "/dev/font-lab" },
       { label: "Grid Lab", href: "/dev/grid-lab" },
-      { label: "Page Builder", href: "/dev/design-lab" },
+      { label: "Pagebuilder", href: "/dev/pagebuilder" },
       { label: "Type Test", href: "/dev/type-test" },
     ],
   },

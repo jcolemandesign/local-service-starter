@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DesignLabSection } from "@/components/sections/DesignLabSection";
+import { PagebuilderSection } from "@/components/sections/PagebuilderSection";
 
 export const metadata: Metadata = {
   title: "Pagebuilder",
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function PagebuilderPage() {
   return (
     <main className="bg-service-surface text-service-ink">
-      <DesignLabSection />
+      <PagebuilderSection />
     </main>
   );
 }

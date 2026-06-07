@@ -29,25 +29,25 @@ import { TestimonialsMasonrySectionV2 } from "@/components/sections/Testimonials
 import { TrustBarSection } from "@/components/sections/TrustBarSection";
 import { TrustLogoGridSection } from "@/components/sections/TrustLogoMarqueeSection";
 import { TrustMarqueeSection } from "@/components/sections/TrustMarqueeSection";
-import { DesignLabShell } from "@/components/sections/DesignLabShell";
-import { homepageRecipes, sectionModes } from "@/content/design-lab";
+import { PagebuilderShell } from "@/components/sections/PagebuilderShell";
+import { pagebuilderRecipes, sectionModes } from "@/content/pagebuilder";
 import { sectionLibraryContent } from "@/content/section-library";
-import type { HomepageSection } from "@/content/design-lab";
+import type { PagebuilderRecipeSection } from "@/content/pagebuilder";
 
-function UnknownSection({ section }: { section: HomepageSection }) {
+function UnknownSection({ section }: { section: PagebuilderRecipeSection }) {
   return (
     <section className="bg-service-surface p-8 text-service-ink">
       <p className="type-label text-service-accent">Preview unavailable</p>
       <h3 className="type-heading-sm mt-3">{section.name}</h3>
       <p className="type-text-sm measure-copy mt-3 text-service-muted">
         {section.component} is listed in the recipe but has not been wired into
-        the Page Builder renderer yet.
+        the Pagebuilder renderer yet.
       </p>
     </section>
   );
 }
 
-function renderPreviewSection(section: HomepageSection, index: number) {
+function renderPreviewSection(section: PagebuilderRecipeSection, index: number) {
   const headingLevel = index === 1 ? 1 : 2;
 
   switch (section.component) {
@@ -187,8 +187,8 @@ function renderPreviewSection(section: HomepageSection, index: number) {
   }
 }
 
-export function DesignLabSection() {
-  const previewSections = homepageRecipes.map((recipe) =>
+export function PagebuilderSection() {
+  const previewSections = pagebuilderRecipes.map((recipe) =>
     recipe.sectionStack.map((section, index) =>
       <div key={`${recipe.id}-${section.component}-${index}`}>
         {renderPreviewSection(section, index)}
@@ -576,10 +576,10 @@ export function DesignLabSection() {
   };
 
   return (
-    <DesignLabShell
+    <PagebuilderShell
       previewCatalog={previewCatalog}
       previewSections={previewSections}
-      recipes={homepageRecipes}
+      recipes={pagebuilderRecipes}
       sectionModes={sectionModes}
     />
   );

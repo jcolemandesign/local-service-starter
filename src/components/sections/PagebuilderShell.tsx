@@ -3,16 +3,16 @@
 import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { HomepageRecipe, SectionMode } from "@/content/design-lab";
+import type { PagebuilderRecipe, SectionMode } from "@/content/pagebuilder";
 
-type DesignLabShellProps = {
+type PagebuilderShellProps = {
   previewCatalog: Record<string, ReactNode>;
   previewSections: ReactNode[][];
-  recipes: HomepageRecipe[];
+  recipes: PagebuilderRecipe[];
   sectionModes: SectionMode[];
 };
 
-type WorkingSection = HomepageRecipe["sectionStack"][number] & {
+type WorkingSection = PagebuilderRecipe["sectionStack"][number] & {
   id: string;
   included: boolean;
   originalComponent: string;
@@ -23,7 +23,7 @@ function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-const normalSpacingClassName = "design-lab-density-normal";
+const normalSpacingClassName = "pagebuilder-density-normal";
 const previewStyle: CSSProperties = {};
 
 const viewportOptions = [
@@ -78,6 +78,14 @@ const viewportOptions = [
 type DesignStyleSettings = {
   showSectionMarkers: boolean;
   viewportId: (typeof viewportOptions)[number]["id"];
+};
+
+type PageInstructionInput = {
+  designLabel: string;
+  excludedSections: WorkingSection[];
+  includedSections: WorkingSection[];
+  recipe: PagebuilderRecipe;
+  selectedViewport: (typeof viewportOptions)[number];
 };
 
 const sectionSwapOptions = [
@@ -286,8 +294,69 @@ const sectionSwapOptions = [
   },
 ] as const;
 
-type DesignLabPreviewWindowProps = {
-  activeDesignLabel: string;
+function buildPageInstruction({
+  designLabel,
+  excludedSections,
+  includedSections,
+  recipe,
+  selectedViewport,
+}: PageInstructionInput) {
+  return [
+    `Pageworks Page Instruction`,
+    ``,
+    `Pipeline stage: Pagebuilder`,
+    `Target page type: ${designLabel}`,
+    `Source recipe id: ${recipe.id}`,
+    `Page intent: ${recipe.positioning}`,
+    `Viewport/design reference: ${selectedViewport.label} (${selectedViewport.sizeLabel})`,
+    ``,
+    `Style rules:`,
+    ...recipe.styleRules.map((rule) => `- ${rule}`),
+    `- Use normal section spacing and the existing project typography and color tokens.`,
+    ``,
+    `Included section order:`,
+    ...includedSections.map(
+      (section, index) =>
+        `${index + 1}. ${section.component}
+   Name: ${section.name}
+   Mode: ${section.mode}
+   Instruction: ${section.instruction}
+   Origin: ${
+     section.originalComponent !== section.component
+       ? `swapped from ${section.originalComponent}`
+       : section.originalIndex === index
+         ? "original recipe section"
+         : "reordered original recipe section"
+   }`,
+    ),
+    ``,
+    `Excluded sections: ${
+      excludedSections.length > 0
+        ? excludedSections
+            .map((section) => `${section.component} (${section.name})`)
+            .join(", ")
+        : "none"
+    }`,
+    ``,
+    `Bake-in implementation rules:`,
+    `- Create a concrete page from this instruction; do not make the page depend on Pagebuilder runtime state.`,
+    `- Use existing section components from src/components/sections/.`,
+    `- Compose imported sections in the target page; do not paste large raw section markup into app/**/page.tsx.`,
+    `- Keep reusable/business-specific copy in src/content/.`,
+    `- Use shared primitives, design tokens, type utilities, spacing utilities, and color variables before adding anything new.`,
+    `- Preserve desktop-first Tailwind with max-* responsive variants.`,
+    `- Do not add new dependencies, redesign unrelated sections, rewrite form/Supabase logic, or add Google Fonts link tags.`,
+    `- If a section needs new copy, create concise local-service business copy that matches the section mode and instruction.`,
+    ``,
+    `Expected output:`,
+    `- Baked page route under src/app/ or a WIP Created Pages route.`,
+    `- Page content stored or exported from src/content/.`,
+    `- No extra builder/editor controls on the baked page.`,
+  ].join("\n");
+}
+
+type PagebuilderPreviewWindowProps = {
+  activePageLabel: string;
   children: ReactNode;
   contentClassName: string;
   frameClassName: string;
@@ -298,8 +367,8 @@ type DesignLabPreviewWindowProps = {
   spacingClassName: string;
 };
 
-function DesignLabPreviewWindow({
-  activeDesignLabel,
+function PagebuilderPreviewWindow({
+  activePageLabel,
   children,
   contentClassName,
   frameClassName,
@@ -308,7 +377,7 @@ function DesignLabPreviewWindow({
   showSectionMarkers,
   sizeLabel,
   spacingClassName,
-}: DesignLabPreviewWindowProps) {
+}: PagebuilderPreviewWindowProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
 
@@ -335,7 +404,7 @@ function DesignLabPreviewWindow({
     <style>
       html,
       body,
-      #design-lab-preview-root {
+      #pagebuilder-preview-root {
         min-height: 100%;
         margin: 0;
         background: white;
@@ -347,13 +416,13 @@ function DesignLabPreviewWindow({
     </style>
   </head>
   <body>
-    <div id="design-lab-preview-root"></div>
+    <div id="pagebuilder-preview-root"></div>
   </body>
 </html>`);
     iframeDocument.close();
 
     setPortalRoot(
-      iframeDocument.getElementById("design-lab-preview-root"),
+      iframeDocument.getElementById("pagebuilder-preview-root"),
     );
   }, []);
 
@@ -379,7 +448,7 @@ function DesignLabPreviewWindow({
         />
         <div className="ml-2 flex min-w-0 flex-1 items-center rounded-full border border-service-border bg-white px-3 py-1">
           <span className="truncate text-[0.65rem] font-semibold uppercase tracking-widest text-service-muted">
-            {sizeLabel} / {activeDesignLabel}
+            {sizeLabel} / {activePageLabel}
           </span>
         </div>
       </div>
@@ -396,7 +465,7 @@ function DesignLabPreviewWindow({
                 className={cx(
                   "min-h-full w-full bg-white",
                   spacingClassName,
-                  !showSectionMarkers && "design-lab-hide-markers",
+                  !showSectionMarkers && "pagebuilder-hide-markers",
                 )}
                 style={previewStyle}
               >
@@ -417,12 +486,12 @@ function DesignLabPreviewWindow({
   );
 }
 
-export function DesignLabShell({
+export function PagebuilderShell({
   previewCatalog,
   previewSections,
   recipes,
   sectionModes,
-}: DesignLabShellProps) {
+}: PagebuilderShellProps) {
   const [activeRecipeId, setActiveRecipeId] = useState(recipes[0]?.id ?? "");
   const [workingStacks, setWorkingStacks] = useState<WorkingSection[][]>(() =>
     recipes.map((recipe) =>
@@ -453,7 +522,7 @@ export function DesignLabShell({
     0,
   );
   const activeRecipe = recipes[activeRecipeIndex] ?? recipes[0];
-  const activeDesignLabel = `Design ${activeRecipeIndex + 1}`;
+  const activePageLabel = activeRecipe?.name ?? `Page ${activeRecipeIndex + 1}`;
   const activeDesignStyle =
     designStyleSettings[activeRecipeIndex] ??
     designStyleSettings[0] ?? {
@@ -471,48 +540,30 @@ export function DesignLabShell({
     viewportOptions[0];
   const includedSections = activeStack.filter((section) => section.included);
   const excludedSections = activeStack.filter((section) => !section.included);
-  const codexRebuildBrief = [
-    `Build this homepage from the current Page Builder configuration.`,
-    ``,
-    `Design: ${activeDesignLabel}`,
-    `Recipe intent: ${activeRecipe.positioning}`,
-    ``,
-    `Style rule: use normal section spacing and the existing project typography and color tokens.`,
-    `Preview/device reference: ${selectedViewport.label} (${selectedViewport.sizeLabel})`,
-    ``,
-    `Section order:`,
-    ...includedSections.map(
-      (section, index) =>
-        `${index + 1}. ${section.component}
-   Name: ${section.name}
-   Mode: ${section.mode}
-   Instruction: ${section.instruction}
-   Source state: ${
-     section.originalIndex < 0
-       ? "added in Page Builder"
-       : section.component !== section.originalComponent
-         ? `swapped from ${section.originalComponent}`
-         : "original recipe section"
-   }`,
-    ),
-    ``,
-    `Excluded sections: ${
-      excludedSections.length > 0
-        ? excludedSections
-            .map((section) => `${section.component} (${section.name})`)
-            .join(", ")
-        : "none"
-    }`,
-    ``,
-    `Implementation rules:`,
-    `- Use existing section components from src/components/sections/.`,
-    `- Compose imported sections in the target page; do not paste large raw section markup into app/**/page.tsx.`,
-    `- Keep reusable/business-specific copy in src/content/.`,
-    `- Use shared primitives, design tokens, type utilities, spacing utilities, and color variables before adding anything new.`,
-    `- Preserve desktop-first Tailwind with max-* responsive variants.`,
-    `- Do not add new dependencies, redesign unrelated sections, rewrite form/Supabase logic, or add Google Fonts link tags.`,
-    `- If a section needs new copy, create concise local-service business copy that matches the section mode and instruction.`,
-  ].join("\n");
+  const pageInstruction = buildPageInstruction({
+    designLabel: activePageLabel,
+    excludedSections,
+    includedSections,
+    recipe: activeRecipe,
+    selectedViewport,
+  });
+  const allLayoutInstructions = recipes
+    .map((recipe, index) => {
+      const stack = workingStacks[index] ?? [];
+      const settings = designStyleSettings[index] ?? designStyleSettings[0];
+      const viewport =
+        viewportOptions.find((option) => option.id === settings?.viewportId) ??
+        viewportOptions[0];
+
+      return buildPageInstruction({
+        designLabel: recipe.name,
+        excludedSections: stack.filter((section) => !section.included),
+        includedSections: stack.filter((section) => section.included),
+        recipe,
+        selectedViewport: viewport,
+      });
+    })
+    .join("\n\n---\n\n");
 
   function updateActiveStack(updater: (stack: WorkingSection[]) => WorkingSection[]) {
     setWorkingStacks((currentStacks) =>
@@ -643,14 +694,18 @@ export function DesignLabShell({
     setSelectedSectionId(nextSection.id);
   }
 
-  async function copyCodexRebuildBrief() {
-    await navigator.clipboard.writeText(codexRebuildBrief);
+  async function copyPageInstruction() {
+    await navigator.clipboard.writeText(pageInstruction);
+  }
+
+  async function copyAllLayoutInstructions() {
+    await navigator.clipboard.writeText(allLayoutInstructions);
   }
 
   function renderPreviewWindow() {
     return (
-      <DesignLabPreviewWindow
-        activeDesignLabel={activeDesignLabel}
+      <PagebuilderPreviewWindow
+        activePageLabel={activePageLabel}
         contentClassName={selectedViewport.contentClassName}
         frameClassName={selectedViewport.frameClassName}
         previewStyle={previewStyle}
@@ -667,11 +722,11 @@ export function DesignLabShell({
             return (
               <div
                 className={cx(
-                  "group/design-lab-section relative cursor-pointer outline outline-0 outline-offset-0 transition-shadow",
+                  "group/pagebuilder-section relative cursor-pointer outline outline-0 outline-offset-0 transition-shadow",
                   isSelected &&
                     "z-10 shadow-[0_0_0_3px_var(--color-service-accent)]",
                 )}
-                data-design-lab-section-id={section.id}
+                data-pagebuilder-section-id={section.id}
                 key={section.id}
                 onClick={(event) => {
                   event.preventDefault();
@@ -687,7 +742,7 @@ export function DesignLabShell({
                 role="button"
                 tabIndex={0}
               >
-                <div className="design-lab-section-marker pointer-events-none absolute left-3 top-3 z-30 max-w-[calc(100%-1.5rem)] rounded border border-service-border bg-white/90 px-3 py-2 text-service-ink shadow-service backdrop-blur">
+                <div className="pagebuilder-section-marker pointer-events-none absolute left-3 top-3 z-30 max-w-[calc(100%-1.5rem)] rounded border border-service-border bg-white/90 px-3 py-2 text-service-ink shadow-service backdrop-blur">
                   <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-service-accent">
                     {section.mode}
                   </p>
@@ -701,7 +756,7 @@ export function DesignLabShell({
               </div>
             );
           })}
-      </DesignLabPreviewWindow>
+      </PagebuilderPreviewWindow>
     );
   }
 
@@ -711,7 +766,7 @@ export function DesignLabShell({
         <div className="grid h-full min-h-0 grid-cols-[22rem_minmax(0,1fr)] items-stretch gap-5 max-lg:h-auto max-lg:grid-cols-1">
           <aside className="grid h-full min-h-0 content-start gap-4 overflow-y-auto overscroll-contain pr-1 max-lg:h-auto max-lg:overflow-visible max-lg:pr-0">
             <div className="radius-medium order-1 border border-service-border bg-white p-5 shadow-service">
-              <p className="type-label text-service-accent">Page Builder</p>
+              <p className="type-label text-service-accent">Pagebuilder</p>
               <h1 className="type-heading-lg mt-eyebrow-heading-md text-service-ink">
                 Homepage section builder
               </h1>
@@ -878,11 +933,11 @@ export function DesignLabShell({
           <div className="grid h-full min-h-0 content-start gap-4 overflow-y-auto overscroll-contain pr-1 max-lg:h-auto max-lg:overflow-visible max-lg:pr-0">
             <div className="radius-medium border border-service-border bg-white p-1.5 shadow-service">
               <div
-                aria-label="Homepage recipe tabs"
+                aria-label="Pagebuilder design tabs"
                 className="grid grid-cols-5 gap-1.5 max-xl:grid-cols-3 max-md:grid-cols-1"
                 role="tablist"
               >
-                {recipes.map((recipe, index) => {
+                {recipes.map((recipe) => {
                   const isActive = recipe.id === activeRecipe.id;
 
                   return (
@@ -904,7 +959,7 @@ export function DesignLabShell({
                       role="tab"
                       type="button"
                     >
-                      {`Design ${index + 1}`}
+                      {recipe.name}
                     </button>
                   );
                 })}
@@ -922,10 +977,10 @@ export function DesignLabShell({
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div className="min-w-0">
                       <p className="type-label text-service-accent">
-                        Homepage Recipe
+                        Pagebuilder Design
                       </p>
                       <h2 className="mt-1 text-lg font-semibold text-service-ink">
-                        {activeDesignLabel}
+                        {activePageLabel}
                       </h2>
                       <p className="type-caption measure-copy-wide wrap-pretty mt-1 text-service-muted">
                         {activeRecipe.positioning}
@@ -956,7 +1011,7 @@ export function DesignLabShell({
                         Rendered Preview
                       </p>
                       <h3 className="type-heading-sm mt-2 text-service-ink">
-                        {activeDesignLabel} homepage body
+                        {activePageLabel} page body
                       </h3>
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -1127,26 +1182,35 @@ export function DesignLabShell({
 
                 <details className="radius-medium border border-service-border bg-white p-5 shadow-service">
                   <summary className="cursor-pointer text-sm font-semibold text-service-ink">
-                    Codex Rebuild Brief
+                    Page Instruction
                   </summary>
                   <div className="mt-4 grid grid-cols-[minmax(0,0.9fr)_minmax(18rem,0.45fr)] gap-4 max-lg:grid-cols-1">
                     <div className="grid gap-3">
                       <textarea
                         className="min-h-[34rem] resize-y rounded border border-service-border bg-service-surface p-4 font-mono text-xs leading-6 text-service-ink outline-none focus:border-service-accent"
                         readOnly
-                        value={codexRebuildBrief}
+                        value={pageInstruction}
                       />
-                      <button
-                        className="radius-4 min-h-11 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent"
-                        onClick={copyCodexRebuildBrief}
-                        type="button"
-                      >
-                        Copy Codex Brief
-                      </button>
+                      <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1">
+                        <button
+                          className="radius-4 min-h-11 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent"
+                          onClick={copyPageInstruction}
+                          type="button"
+                        >
+                          Copy Page Instruction
+                        </button>
+                        <button
+                          className="radius-4 min-h-11 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                          onClick={copyAllLayoutInstructions}
+                          type="button"
+                        >
+                          Copy All Layouts
+                        </button>
+                      </div>
                     </div>
                     <div className="rounded border border-service-border bg-service-surface p-4">
                       <p className="type-caption font-semibold text-service-ink">
-                        Use {activeDesignLabel}
+                        Use {activePageLabel}
                       </p>
                       <p className="type-caption mt-2 text-service-muted">
                         {activeRecipe.positioning}
@@ -1254,7 +1318,7 @@ export function DesignLabShell({
             <div className="flex flex-wrap items-center justify-between gap-3 rounded border border-white/15 bg-white px-3 py-2 shadow-service">
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-service-ink">
-                  {activeDesignLabel}
+                  {activePageLabel}
                 </p>
                 <p className="type-caption truncate text-service-muted">
                   {selectedViewport.sizeLabel} preview

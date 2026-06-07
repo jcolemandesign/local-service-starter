@@ -4,32 +4,42 @@
   "body": "Quick links for reviewing the reusable starter, section library, and development workspaces while the dev server is running.",
   "groups": [
     {
-      "title": "Created pages",
+      "title": "Created Pages",
       "links": [
         {
-          "label": "Sample local service",
-          "href": "/sample",
-          "description": "A complete starter page assembled from reusable sections."
+          "label": "Created Pages index",
+          "href": "/created-pages",
+          "description": "Review baked WIP pages generated from Pagebuilder instructions."
         },
         {
-          "label": "Sample plumbing",
-          "href": "/sample-plumbing",
-          "description": "Business-specific sample content applied to the system."
-        }
-      ]
-    },
-    {
-      "title": "Section libraries",
-      "links": [
-        {
-          "label": "Section library",
-          "href": "/sections",
-          "description": "Browse the current reusable section collection."
+          "label": "homepage1",
+          "href": "/created-pages/homepage1",
+          "description": "Baked WIP homepage from the Pagebuilder homepage1 instruction.",
+          "mutable": true
         },
         {
-          "label": "Section library v3",
-          "href": "/sections-v3",
-          "description": "Redirects to the current section library."
+          "label": "homepage2",
+          "href": "/created-pages/homepage2",
+          "description": "Baked WIP homepage from the Pagebuilder homepage2 instruction.",
+          "mutable": true
+        },
+        {
+          "label": "about",
+          "href": "/created-pages/about",
+          "description": "Baked WIP about page from the Pagebuilder about instruction.",
+          "mutable": true
+        },
+        {
+          "label": "services",
+          "href": "/created-pages/services",
+          "description": "Baked WIP services page from the Pagebuilder services instruction.",
+          "mutable": true
+        },
+        {
+          "label": "individual service page",
+          "href": "/created-pages/individual-service-page",
+          "description": "Baked WIP individual service page from the Pagebuilder service-page instruction.",
+          "mutable": true
         }
       ]
     },
@@ -37,9 +47,19 @@
       "title": "Design tools",
       "links": [
         {
+          "label": "Section library",
+          "href": "/sections",
+          "description": "Browse the current reusable section collection."
+        },
+        {
           "label": "Pagebuilder",
           "href": "/dev/pagebuilder",
           "description": "Compose, swap, and review page section recipes."
+        },
+        {
+          "label": "Content Editor",
+          "href": "/dev/content-editor",
+          "description": "Map page copy and image fields into editable content forms."
         },
         {
           "label": "Style guide",
@@ -65,6 +85,16 @@
           "label": "Type test",
           "href": "/dev/type-test",
           "description": "Legacy typography test surface."
+        }
+      ]
+    },
+    {
+      "title": "Website Pages",
+      "links": [
+        {
+          "label": "Staged Pages",
+          "href": "/dev/website-pages",
+          "description": "Review baked pages that are eligible to become public pages."
         }
       ]
     },

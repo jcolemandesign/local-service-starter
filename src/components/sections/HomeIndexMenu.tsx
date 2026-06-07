@@ -8,6 +8,7 @@ export type HomeIndexLink = {
   label: string;
   href: string;
   description: string;
+  mutable?: boolean;
 };
 
 export type HomeIndexGroup = {
@@ -27,6 +28,8 @@ type PendingAction =
 type ActionResponse =
   | { ok: true; groups: HomeIndexGroup[]; href?: string }
   | { ok: false; error: string };
+
+const manageableGroupTitles = new Set(["Created Pages"]);
 
 export function HomeIndexMenu({ initialGroups }: HomeIndexMenuProps) {
   const [groups, setGroups] = useState(initialGroups);
@@ -150,58 +153,65 @@ export function HomeIndexMenu({ initialGroups }: HomeIndexMenuProps) {
           </div>
           <div className="col-start-3 col-span-5 mt-8 grid w-full min-w-0 content-start self-start justify-items-start text-left [&>*]:min-w-0 [&>*]:w-full max-lg:col-start-2 max-lg:col-span-4 max-lg:mt-4 max-md:col-start-1 max-md:col-span-3 max-md:mt-0 max-sm:col-span-1">
             <div className="grid grid-cols-3 gap-4 max-xl:grid-cols-2 max-md:grid-cols-3 max-sm:grid-cols-1">
-              {group.links.map((link) => (
-                <Card
-                  key={link.href}
-                  className="flex min-h-44 flex-col p-5 transition-transform duration-200 hover:-translate-y-1 hover:border-service-accent"
-                >
-                  <div className="flex items-start justify-between gap-4">
+              {group.links.map((link) => {
+                const canManagePage =
+                  manageableGroupTitles.has(group.title) && link.mutable === true;
+
+                return (
+                  <Card
+                    key={link.href}
+                    className="flex min-h-44 flex-col p-5 transition-transform duration-200 hover:-translate-y-1 hover:border-service-accent"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <Link
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="min-w-0 flex-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-service-accent focus-visible:ring-offset-2"
+                      >
+                        <span className="type-text-md block font-semibold text-service-ink">
+                          {link.label}
+                        </span>
+                      </Link>
+                      {canManagePage ? (
+                        <div
+                          className="flex shrink-0 items-center gap-1"
+                          aria-label={`${link.label} actions`}
+                        >
+                          <CardActionButton
+                            label={`Clone ${link.label}`}
+                            title="Clone page for a new version or branch"
+                            onClick={() => openClone(link)}
+                          >
+                            <CopyIcon />
+                          </CardActionButton>
+                          <CardActionButton
+                            label={`Delete ${link.label}`}
+                            title="Delete page"
+                            tone="danger"
+                            onClick={() => openDelete(link)}
+                          >
+                            <TrashIcon />
+                          </CardActionButton>
+                        </div>
+                      ) : null}
+                    </div>
                     <Link
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="min-w-0 flex-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-service-accent focus-visible:ring-offset-2"
+                      className="mt-3 flex flex-1 flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-service-accent focus-visible:ring-offset-2"
                     >
-                      <span className="type-text-md block font-semibold text-service-ink">
-                        {link.label}
+                      <span className="type-text-sm block text-service-muted">
+                        {link.description}
+                      </span>
+                      <span className="type-caption mt-auto block pt-5 font-semibold text-service-accent">
+                        {link.href}
                       </span>
                     </Link>
-                    <div
-                      className="flex shrink-0 items-center gap-1"
-                      aria-label={`${link.label} actions`}
-                    >
-                      <CardActionButton
-                        label={`Clone ${link.label}`}
-                        title="Clone page for a new version or branch"
-                        onClick={() => openClone(link)}
-                      >
-                        <CopyIcon />
-                      </CardActionButton>
-                      <CardActionButton
-                        label={`Delete ${link.label}`}
-                        title="Delete page"
-                        tone="danger"
-                        onClick={() => openDelete(link)}
-                      >
-                        <TrashIcon />
-                      </CardActionButton>
-                    </div>
-                  </div>
-                  <Link
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3 flex flex-1 flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-service-accent focus-visible:ring-offset-2"
-                  >
-                    <span className="type-text-sm block text-service-muted">
-                      {link.description}
-                    </span>
-                    <span className="type-caption mt-auto block pt-5 font-semibold text-service-accent">
-                      {link.href}
-                    </span>
-                  </Link>
-                </Card>
-              ))}
+                  </Card>
+                );
+              })}
             </div>
           </div>
         </section>

@@ -11,6 +11,7 @@ type HomeIndexLink = {
   label: string;
   href: string;
   description: string;
+  mutable?: boolean;
 };
 
 type HomeIndexGroup = {

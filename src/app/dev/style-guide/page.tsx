@@ -5,6 +5,13 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import {
+  FAQSectionV2,
+  HeroBentoSectionV2,
+  ServicesGridSectionV2,
+  TrustBarSection,
+} from "@/components/sections";
+import { sectionLibraryContent } from "@/content/section-library";
 
 export const metadata: Metadata = {
   title: "Style Guide",
@@ -358,6 +365,105 @@ const gapTokens = [
       ["layout-gap-xlrg", "2.25rem"],
     ],
     kind: "layout",
+  },
+];
+
+const editorialStressTests = [
+  {
+    title: "Long Service Heading",
+    label: "Type hierarchy",
+    heading:
+      "Emergency repair scheduling for older homes, mixed systems, and urgent customer expectations",
+    body:
+      "This stress test checks whether the heading can wrap naturally without crowding the body copy, action row, or surrounding card chrome.",
+    className: "type-heading-xl",
+  },
+  {
+    title: "Dense Support Copy",
+    label: "Editorial body",
+    heading: "A paragraph that needs to stay readable inside a real section.",
+    body:
+      "Customers may arrive with a messy problem, partial information, an old estimate, and a short window for scheduling. The copy needs enough line height, measure, and contrast to stay calm while still carrying useful details about timing, proof, service area, and next steps.",
+    className: "type-heading-lg",
+  },
+  {
+    title: "Compact Card Stack",
+    label: "Card rhythm",
+    heading: "Repair, document, explain, follow up.",
+    body:
+      "Small cards need to preserve hierarchy with less room, especially when a label, title, body, and action all compete for attention.",
+    className: "type-heading-sm",
+  },
+];
+
+const colorRoleCombinations = [
+  {
+    name: "Default page",
+    surfaceClass: "bg-bg-page",
+    textClass: "text-text-main",
+    mutedClass: "text-text-muted",
+    borderClass: "border-border-default",
+    actionClass: "bg-service-accent text-white",
+  },
+  {
+    name: "Soft service",
+    surfaceClass: "bg-service-surface",
+    textClass: "text-service-ink",
+    mutedClass: "text-service-muted",
+    borderClass: "border-service-border",
+    actionClass: "bg-service-ink text-white",
+  },
+  {
+    name: "Brand accent",
+    surfaceClass: "bg-service-accent",
+    textClass: "text-white",
+    mutedClass: "text-white/78",
+    borderClass: "border-white/24",
+    actionClass: "bg-white text-service-accent",
+  },
+  {
+    name: "Inverse ink",
+    surfaceClass: "bg-service-ink",
+    textClass: "text-white",
+    mutedClass: "text-white/70",
+    borderClass: "border-white/18",
+    actionClass: "bg-white text-service-ink",
+  },
+  {
+    name: "Neutral dark",
+    surfaceClass: "bg-bg-dark",
+    textClass: "text-text-inverse",
+    mutedClass: "text-white/68",
+    borderClass: "border-white/18",
+    actionClass: "bg-accent text-white",
+  },
+  {
+    name: "Warm action",
+    surfaceClass: "bg-accent",
+    textClass: "text-white",
+    mutedClass: "text-white/78",
+    borderClass: "border-white/24",
+    actionClass: "bg-white text-accent",
+  },
+];
+
+const surfaceExamples = [
+  {
+    name: "Quiet card",
+    className: "rounded border border-service-border bg-white p-6 shadow-service",
+  },
+  {
+    name: "Soft panel",
+    className:
+      "rounded-md border border-service-border bg-service-surface p-6 shadow-none",
+  },
+  {
+    name: "Dark proof",
+    className: "rounded-lg border border-white/18 bg-service-ink p-6 text-white",
+  },
+  {
+    name: "Accent callout",
+    className: "rounded-sm border border-white/24 bg-service-accent p-6 text-white",
   },
 ];
 
@@ -1016,6 +1122,161 @@ export default function StyleGuidePage() {
               during the hover state.
             </p>
           </Card>
+        </div>
+      </GuideSection>
+
+      <GuideSection
+        eyebrow="Preview Matrix"
+        title="Editorial Stress Tests"
+        body="Stress cases for long headings, dense copy, compact card rhythm, and repeated action patterns."
+      >
+        <div className="grid grid-cols-3 gap-5 max-lg:grid-cols-1">
+          {editorialStressTests.map((test) => (
+            <Card className="fluid-type-frame p-6 shadow-none" key={test.title}>
+              <p className="type-label text-service-accent">{test.label}</p>
+              <h3 className={cx(test.className, "mt-eyebrow-heading-md text-service-ink")}>
+                {test.heading}
+              </h3>
+              <p className="type-text-md measure-copy-wide wrap-pretty mt-heading-body-md text-service-muted">
+                {test.body}
+              </p>
+              <div className="mt-body-actions-md flex flex-wrap gap-3">
+                <Button href="#">Primary action</Button>
+                <Button href="#" variant="secondary">
+                  Secondary
+                </Button>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </GuideSection>
+
+      <GuideSection
+        eyebrow="Preview Matrix"
+        title="Color Roles And Contrast Examples"
+        body="Every pertinent surface role is shown with heading text, muted copy, border treatment, and a contrasting action."
+      >
+        <div className="grid grid-cols-3 gap-5 max-lg:grid-cols-2 max-md:grid-cols-1">
+          {colorRoleCombinations.map((combo) => (
+            <div
+              className={cx(
+                combo.surfaceClass,
+                combo.textClass,
+                combo.borderClass,
+                "fluid-type-frame rounded border p-6",
+              )}
+              key={combo.name}
+            >
+              <p className="type-label opacity-75">{combo.name}</p>
+              <h3 className="type-heading-md mt-eyebrow-heading-md">
+                Surface, text, and action together
+              </h3>
+              <p className={cx(combo.mutedClass, "type-text-sm measure-copy-wide wrap-pretty mt-heading-body-md")}>
+                This combination checks the live relationship between role color,
+                muted copy, borders, and inverse action treatment.
+              </p>
+              <div
+                className={cx(
+                  combo.borderClass,
+                  "mt-5 rounded border p-4",
+                )}
+              >
+                <p className="type-caption opacity-80">
+                  Nested border and surface sample
+                </p>
+              </div>
+              <span
+                className={cx(
+                  combo.actionClass,
+                  "mt-body-actions-sm inline-flex min-h-10 items-center rounded-sm px-4 text-sm font-semibold",
+                )}
+              >
+                Action sample
+              </span>
+            </div>
+          ))}
+        </div>
+      </GuideSection>
+
+      <GuideSection
+        eyebrow="Preview Matrix"
+        title="Cards, Buttons, Surfaces, Borders, Radii, Shadows"
+        body="A compact component surface board for the styleguide preview stage."
+      >
+        <div className="grid grid-cols-[0.9fr_1.1fr] gap-5 max-lg:grid-cols-1">
+          <div className="grid gap-4">
+            {surfaceExamples.map((surface) => (
+              <div className={surface.className} key={surface.name}>
+                <p className="type-label opacity-75">{surface.name}</p>
+                <h3 className="type-heading-sm mt-eyebrow-heading-sm">
+                  Surface sample with live radius and shadow
+                </h3>
+                <p className="type-text-sm measure-copy-wide wrap-pretty mt-heading-body-sm opacity-75">
+                  The shell, border, corner radius, and shadow all come from the
+                  current shared utility set.
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <Card className="fluid-type-frame p-6 shadow-none">
+            <p className="type-label text-service-accent">Button states</p>
+            <h3 className="type-heading-lg mt-eyebrow-heading-md text-service-ink">
+              Primary, secondary, dark inverse, and custom CTA
+            </h3>
+            <div className="mt-body-actions-md flex flex-wrap gap-3">
+              <Button href="#">Request service</Button>
+              <Button href="#" variant="secondary">
+                View services
+              </Button>
+              <Button
+                className="border-service-ink bg-service-ink text-white hover:border-service-accent hover:bg-service-accent"
+                href="#"
+                variant="secondary"
+              >
+                Dark action
+              </Button>
+              <ExpandingArrowButton href="#">Schedule service</ExpandingArrowButton>
+            </div>
+
+            <div className="mt-8 grid grid-cols-3 gap-4 max-md:grid-cols-1">
+              {radii.slice(2).map(([name]) => (
+                <div
+                  className={cx(
+                    name.split(" / ")[0],
+                    "border border-service-border bg-service-surface p-4 shadow-service",
+                  )}
+                  key={name}
+                >
+                  <p className="type-caption font-semibold text-service-ink">
+                    {name}
+                  </p>
+                  <div
+                    className={cx(
+                      name.split(" / ")[0],
+                      "mt-4 h-20 border border-service-border bg-white",
+                    )}
+                  />
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+      </GuideSection>
+
+      <GuideSection
+        eyebrow="Preview Matrix"
+        title="Representative Real Sections"
+        body="A few real section-library components rendered inside the styleguide so token changes can be reviewed against organic compositions."
+      >
+        <div className="grid gap-6 overflow-hidden rounded border border-service-border bg-service-surface">
+          <HeroBentoSectionV2
+            {...sectionLibraryContent.hero}
+            headingLevel={2}
+          />
+          <TrustBarSection {...sectionLibraryContent.trustBar} />
+          <ServicesGridSectionV2 {...sectionLibraryContent.services} />
+          <FAQSectionV2 {...sectionLibraryContent.faq} />
         </div>
       </GuideSection>
 

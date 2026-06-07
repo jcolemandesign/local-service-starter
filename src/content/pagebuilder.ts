@@ -5,19 +5,19 @@ export type SectionMode = {
   rules: string[];
 };
 
-export type HomepageSection = {
+export type PagebuilderRecipeSection = {
   name: string;
   component: string;
   mode: string;
   instruction: string;
 };
 
-export type HomepageRecipe = {
+export type PagebuilderRecipe = {
   id: string;
   name: string;
   positioning: string;
   styleRules: string[];
-  sectionStack: HomepageSection[];
+  sectionStack: PagebuilderRecipeSection[];
 };
 
 export const sectionModes: SectionMode[] = [
@@ -103,10 +103,10 @@ export const sectionModes: SectionMode[] = [
   },
 ];
 
-export const homepageRecipes: HomepageRecipe[] = [
+export const pagebuilderRecipes: PagebuilderRecipe[] = [
   {
     id: "classic-service",
-    name: "Design 1",
+    name: "homepage1",
     positioning: "Balanced homepage for a broad local service business.",
     styleRules: [
       "Use the corresponding Font Lab profile slot for typography.",
@@ -167,7 +167,7 @@ export const homepageRecipes: HomepageRecipe[] = [
   },
   {
     id: "premium-trust",
-    name: "Design 2",
+    name: "homepage2",
     positioning: "More editorial, image-led, and confidence-focused.",
     styleRules: [
       "Use the corresponding Font Lab profile slot for typography.",
@@ -235,8 +235,9 @@ export const homepageRecipes: HomepageRecipe[] = [
   },
   {
     id: "conversion-heavy",
-    name: "Design 3",
-    positioning: "For urgent services where booking clarity matters most.",
+    name: "about",
+    positioning:
+      "About page for explaining trust, process, credibility, and the business story without losing clear contact paths.",
     styleRules: [
       "Use compact-to-normal spacing so the first two viewports stay dense.",
       "Repeat the primary CTA after major decision sections.",
@@ -296,8 +297,9 @@ export const homepageRecipes: HomepageRecipe[] = [
   },
   {
     id: "editorial-local",
-    name: "Design 4",
-    positioning: "Slower, story-driven homepage for trust-heavy services.",
+    name: "services",
+    positioning:
+      "Services overview page for helping visitors compare core offers, understand fit, and move toward the right next step.",
     styleRules: [
       "Use an expressive heading profile with restrained body copy.",
       "Let narrative sections breathe more than card sections.",
@@ -364,8 +366,9 @@ export const homepageRecipes: HomepageRecipe[] = [
   },
   {
     id: "compact-utility",
-    name: "Design 5",
-    positioning: "Lean homepage for simple businesses and fast launches.",
+    name: "individual service page",
+    positioning:
+      "Individual service page for making one offer easy to understand, trust, and act on.",
     styleRules: [
       "Use the corresponding Font Lab profile slot and normal spacing.",
       "Avoid extra editorial sections unless the service needs explanation.",
