@@ -22,7 +22,7 @@ const linkGroups = [
       { label: "Style Guide", href: "/dev/style-guide" },
       { label: "Font Lab", href: "/dev/font-lab" },
       { label: "Grid Lab", href: "/dev/grid-lab" },
-      { label: "Design Lab", href: "/dev/design-lab" },
+      { label: "Page Builder", href: "/dev/design-lab" },
       { label: "Type Test", href: "/dev/type-test" },
     ],
   },

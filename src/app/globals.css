@@ -410,20 +410,6 @@ body {
     gap: 2.25rem;
   }
 
-  .design-lab-density-compact section {
-    padding-block: 2.5rem;
-  }
-
-  .design-lab-density-compact .section-space-med,
-  .design-lab-density-compact .section-space-lrg,
-  .design-lab-density-compact .section-space-sml {
-    padding-block: 2.5rem;
-  }
-
-  .design-lab-density-compact .min-h-svh {
-    min-height: 34rem;
-  }
-
   .design-lab-density-normal section {
     padding-block: 4rem;
   }
@@ -438,34 +424,8 @@ body {
     min-height: 42rem;
   }
 
-  .design-lab-density-open section {
-    padding-block: 6rem;
-  }
-
-  .design-lab-density-open .section-space-med,
-  .design-lab-density-open .section-space-lrg,
-  .design-lab-density-open .section-space-sml {
-    padding-block: 6rem;
-  }
-
-  .design-lab-density-open .min-h-svh {
-    min-height: 52rem;
-  }
-
   .design-lab-hide-markers .design-lab-section-marker {
     display: none;
-  }
-
-  .design-lab-color-preview .bg-white {
-    background-color: var(--design-lab-page-surface, #ffffff);
-  }
-
-  .design-lab-color-preview .text-white {
-    color: var(--design-lab-page-surface, #ffffff);
-  }
-
-  .design-lab-color-preview .border-white {
-    border-color: var(--design-lab-page-surface, #ffffff);
   }
 
   .design-lab-responsive-lg [class*="max-lg:grid-cols-2"],

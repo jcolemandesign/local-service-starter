@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { DesignLabSection } from "@/components/sections/DesignLabSection";
 
 export const metadata: Metadata = {
-  title: "Design Lab",
-  description: "Internal homepage recipe and section mode design lab.",
+  title: "Page Builder",
+  description: "Internal homepage section builder.",
 };
 
 export default function DesignLabPage() {

@@ -41,7 +41,7 @@ function UnknownSection({ section }: { section: HomepageSection }) {
       <h3 className="type-heading-sm mt-3">{section.name}</h3>
       <p className="type-text-sm measure-copy mt-3 text-service-muted">
         {section.component} is listed in the recipe but has not been wired into
-        the Design Lab renderer yet.
+        the Page Builder renderer yet.
       </p>
     </section>
   );

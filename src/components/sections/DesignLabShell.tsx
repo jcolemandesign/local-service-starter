@@ -4,9 +4,6 @@ import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { HomepageRecipe, SectionMode } from "@/content/design-lab";
-import type { TypePalette, TypeRole } from "@/content/type-palettes";
-import { typePalettes } from "@/content/type-palettes";
-import { loadStoredFontLabProfiles } from "@/lib/font-lab-storage";
 
 type DesignLabShellProps = {
   previewCatalog: Record<string, ReactNode>;
@@ -22,137 +19,12 @@ type WorkingSection = HomepageRecipe["sectionStack"][number] & {
   originalIndex: number;
 };
 
-const baseColorVariables = {
-  "--design-lab-page-surface": "#ffffff",
-  "--color-service-ink": "#17211d",
-  "--color-service-muted": "#5f6f68",
-  "--color-service-accent": "#1f7a5a",
-  "--color-service-surface": "#f4f7f3",
-  "--color-service-border": "#dfe7e1",
-} as const;
-
-type ColorVariableName = keyof typeof baseColorVariables;
-type ColorVariables = Record<ColorVariableName, string>;
-
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-function isHexColor(value: string) {
-  return /^#[0-9a-fA-F]{6}$/.test(value);
-}
-
-function cleanHexDraft(value: string) {
-  const trimmed = value.trim();
-  const withHash = trimmed.startsWith("#") ? trimmed : `#${trimmed}`;
-  return withHash.replace(/[^#0-9a-fA-F]/g, "").slice(0, 7);
-}
-
-const spacingOptions = [
-  {
-    id: "compact",
-    label: "Compact",
-    brief: "Use compact vertical spacing for dense, fast-scanning pages.",
-    className: "design-lab-density-compact",
-  },
-  {
-    id: "normal",
-    label: "Normal",
-    brief: "Use normal vertical spacing for broad local service homepages.",
-    className: "design-lab-density-normal",
-  },
-  {
-    id: "open",
-    label: "Open",
-    brief: "Use open vertical spacing for premium or editorial pages.",
-    className: "design-lab-density-open",
-  },
-] as const;
-
-const colorRules = [
-  {
-    id: "quiet",
-    label: "Quiet Service",
-    brief: "Use white and service-surface sections with restrained accent use.",
-    variables: baseColorVariables,
-  },
-  {
-    id: "warm",
-    label: "Warm Local",
-    brief: "Use warmer surface and accent values for approachable local brands.",
-    variables: {
-      "--design-lab-page-surface": "#fffdf8",
-      "--color-service-ink": "#241d18",
-      "--color-service-muted": "#71675f",
-      "--color-service-accent": "#b85c38",
-      "--color-service-surface": "#f7f3ec",
-      "--color-service-border": "#e8ded0",
-    },
-  },
-  {
-    id: "cool",
-    label: "Crisp Professional",
-    brief: "Use cooler neutrals and accent values for technical service brands.",
-    variables: {
-      "--design-lab-page-surface": "#fbfeff",
-      "--color-service-ink": "#162027",
-      "--color-service-muted": "#5d6a72",
-      "--color-service-accent": "#2c6f9f",
-      "--color-service-surface": "#eef5f6",
-      "--color-service-border": "#d8e6ea",
-    },
-  },
-  {
-    id: "contrast",
-    label: "High Contrast",
-    brief: "Use stronger ink and accent contrast for conversion-heavy pages.",
-    variables: {
-      "--design-lab-page-surface": "#ffffff",
-      "--color-service-ink": "#11141a",
-      "--color-service-muted": "#5d646b",
-      "--color-service-accent": "#d38b2f",
-      "--color-service-surface": "#f1f2ee",
-      "--color-service-border": "#dfe1dc",
-    },
-  },
-] as const;
-
-const colorTokenControls: Array<{
-  brief: string;
-  label: string;
-  variable: ColorVariableName;
-}> = [
-  {
-    brief: "Main white/page fields in the preview.",
-    label: "Page surface",
-    variable: "--design-lab-page-surface",
-  },
-  {
-    brief: "Primary headings and strong UI text.",
-    label: "Ink text",
-    variable: "--color-service-ink",
-  },
-  {
-    brief: "Body support copy and secondary labels.",
-    label: "Muted text",
-    variable: "--color-service-muted",
-  },
-  {
-    brief: "Buttons, labels, active states, and highlights.",
-    label: "Accent",
-    variable: "--color-service-accent",
-  },
-  {
-    brief: "Alternating section backgrounds and soft panels.",
-    label: "Section surface",
-    variable: "--color-service-surface",
-  },
-  {
-    brief: "Rules, card outlines, dividers, and quiet structure.",
-    label: "Border",
-    variable: "--color-service-border",
-  },
-];
+const normalSpacingClassName = "design-lab-density-normal";
+const previewStyle: CSSProperties = {};
 
 const viewportOptions = [
   {
@@ -204,11 +76,7 @@ const viewportOptions = [
 ] as const;
 
 type DesignStyleSettings = {
-  colorId: string;
-  colorVariables: ColorVariables;
-  profileId: string;
   showSectionMarkers: boolean;
-  spacingId: (typeof spacingOptions)[number]["id"];
   viewportId: (typeof viewportOptions)[number]["id"];
 };
 
@@ -418,46 +286,6 @@ const sectionSwapOptions = [
   },
 ] as const;
 
-function formatNumber(value: number) {
-  return Number(value.toFixed(4)).toString();
-}
-
-function fluidSize(role: TypeRole) {
-  const slope = ((role.maxRem - role.minRem) / 72) * 100;
-  const intercept = role.minRem - slope * 0.24;
-
-  return `clamp(${formatNumber(role.minRem)}rem, calc(${formatNumber(
-    slope,
-  )}cqw + ${formatNumber(intercept)}rem), ${formatNumber(role.maxRem)}rem)`;
-}
-
-function typeVariableStyle(profile: TypePalette) {
-  const style: CSSProperties & Record<string, string | number> = {
-    "--font-sans": profile.globalFont,
-  };
-
-  profile.roles.forEach((role) => {
-    const tokens = role.token.split(" / ");
-    const font = profile.roleFontOverrides[role.id] ?? profile.globalFont;
-
-    tokens.forEach((token) => {
-      style[`--${token}-font`] = font;
-      style[`--${token}-size`] = fluidSize(role);
-      style[`--${token}-leading`] = formatNumber(role.lineHeight);
-      style[`--${token}-weight`] = role.weight;
-      style[`--${token}-tracking`] = `${formatNumber(
-        role.letterSpacingEm,
-      )}em`;
-      style[`--${token}-transform`] =
-        role.capitalization === "none" ? "none" : role.capitalization;
-      style[`--${token}-wrap`] =
-        role.wrap === "wrap" ? "normal" : role.wrap;
-    });
-  });
-
-  return style;
-}
-
 type DesignLabPreviewWindowProps = {
   activeDesignLabel: string;
   children: ReactNode;
@@ -566,7 +394,7 @@ function DesignLabPreviewWindow({
           ? createPortal(
               <div
                 className={cx(
-                  "design-lab-color-preview min-h-full w-full bg-white",
+                  "min-h-full w-full bg-white",
                   spacingClassName,
                   !showSectionMarkers && "design-lab-hide-markers",
                 )}
@@ -607,17 +435,11 @@ export function DesignLabShell({
       })),
     ),
   );
-  const [availableTypePalettes, setAvailableTypePalettes] =
-    useState<TypePalette[]>(typePalettes);
   const [designStyleSettings, setDesignStyleSettings] = useState<
     DesignStyleSettings[]
   >(() =>
     recipes.map((_, index) => ({
-      colorId: "quiet",
-      colorVariables: { ...baseColorVariables },
-      profileId: typePalettes[index]?.id ?? typePalettes[0]?.id ?? "",
       showSectionMarkers: true,
-      spacingId: "normal",
       viewportId: index === 0 ? "main" : "wide",
     })),
   );
@@ -626,23 +448,6 @@ export function DesignLabShell({
   );
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
-  useEffect(() => {
-    function syncStoredProfiles() {
-      setAvailableTypePalettes(loadStoredFontLabProfiles() ?? typePalettes);
-    }
-
-    syncStoredProfiles();
-    window.addEventListener("font-lab-profiles-updated", syncStoredProfiles);
-    window.addEventListener("storage", syncStoredProfiles);
-
-    return () => {
-      window.removeEventListener(
-        "font-lab-profiles-updated",
-        syncStoredProfiles,
-      );
-      window.removeEventListener("storage", syncStoredProfiles);
-    };
-  }, []);
   const activeRecipeIndex = Math.max(
     recipes.findIndex((recipe) => recipe.id === activeRecipeId),
     0,
@@ -652,11 +457,7 @@ export function DesignLabShell({
   const activeDesignStyle =
     designStyleSettings[activeRecipeIndex] ??
     designStyleSettings[0] ?? {
-      colorId: "quiet",
-      colorVariables: { ...baseColorVariables },
-      profileId: typePalettes[0]?.id ?? "",
       showSectionMarkers: true,
-      spacingId: "normal",
       viewportId: "main",
     };
   const activeStack = workingStacks[activeRecipeIndex] ?? [];
@@ -665,65 +466,18 @@ export function DesignLabShell({
   const selectedSwapOptions = selectedSection
     ? sectionSwapOptions.filter((option) => option.mode === selectedSection.mode)
     : [];
-  const selectedProfileId = activeDesignStyle.profileId;
-  const selectedProfile =
-    availableTypePalettes.find((profile) => profile.id === selectedProfileId) ??
-    availableTypePalettes[0] ??
-    typePalettes[0];
-  const selectedSpacing =
-    spacingOptions.find((option) => option.id === activeDesignStyle.spacingId) ??
-    spacingOptions[1];
-  const selectedColor =
-    colorRules.find((rule) => rule.id === activeDesignStyle.colorId) ?? null;
-  const selectedColorLabel = selectedColor?.label ?? "Custom Palette";
-  const selectedColorBrief =
-    selectedColor?.brief ?? "Use the custom token values currently entered.";
   const selectedViewport =
     viewportOptions.find((option) => option.id === activeDesignStyle.viewportId) ??
     viewportOptions[0];
-  const appliedColorVariables = Object.fromEntries(
-    colorTokenControls.map((control) => {
-      const value = activeDesignStyle.colorVariables[control.variable];
-
-      return [
-        control.variable,
-        isHexColor(value) ? value : baseColorVariables[control.variable],
-      ];
-    }),
-  ) as ColorVariables;
-  const previewStyle = {
-    ...typeVariableStyle(selectedProfile),
-    ...appliedColorVariables,
-  };
   const includedSections = activeStack.filter((section) => section.included);
   const excludedSections = activeStack.filter((section) => !section.included);
   const codexRebuildBrief = [
-    `Build this homepage from the current Design Lab configuration.`,
+    `Build this homepage from the current Page Builder configuration.`,
     ``,
     `Design: ${activeDesignLabel}`,
     `Recipe intent: ${activeRecipe.positioning}`,
     ``,
-    `Typography source: ${selectedProfile.label}`,
-    `Use the Font Lab profile values below. Preserve the project's semantic type utilities and CSS variables; do not hard-code one-off type classes.`,
-    `Global font: ${selectedProfile.globalFont}`,
-    `Role font overrides: ${
-      Object.keys(selectedProfile.roleFontOverrides).length > 0
-        ? JSON.stringify(selectedProfile.roleFontOverrides)
-        : "none"
-    }`,
-    `Type roles:`,
-    ...selectedProfile.roles.map(
-      (role) =>
-        `- ${role.token} (${role.role}): min ${role.minRem}rem, max ${role.maxRem}rem, line-height ${role.lineHeight}, weight ${role.weight}, tracking ${role.letterSpacingEm}em, measure ${role.measureCh}ch, wrap ${role.wrap}, capitalization ${role.capitalization}`,
-    ),
-    ``,
-    `Color tokens:`,
-    ...colorTokenControls.map(
-      (control) => `- ${control.variable}: ${appliedColorVariables[control.variable]}`,
-    ),
-    ``,
-    `Spacing: ${selectedSpacing.label}`,
-    `Spacing instruction: ${selectedSpacing.brief}`,
+    `Style rule: use normal section spacing and the existing project typography and color tokens.`,
     `Preview/device reference: ${selectedViewport.label} (${selectedViewport.sizeLabel})`,
     ``,
     `Section order:`,
@@ -735,7 +489,7 @@ export function DesignLabShell({
    Instruction: ${section.instruction}
    Source state: ${
      section.originalIndex < 0
-       ? "added in Design Lab"
+       ? "added in Page Builder"
        : section.component !== section.originalComponent
          ? `swapped from ${section.originalComponent}`
          : "original recipe section"
@@ -889,35 +643,6 @@ export function DesignLabShell({
     setSelectedSectionId(nextSection.id);
   }
 
-  function selectColorRule(ruleId: string) {
-    const rule = colorRules.find((option) => option.id === ruleId);
-
-    if (!rule) {
-      updateActiveDesignStyle((settings) => ({
-        ...settings,
-        colorId: "custom",
-      }));
-      return;
-    }
-
-    updateActiveDesignStyle((settings) => ({
-      ...settings,
-      colorId: rule.id,
-      colorVariables: { ...rule.variables },
-    }));
-  }
-
-  function updateColorVariable(variable: ColorVariableName, value: string) {
-    updateActiveDesignStyle((settings) => ({
-      ...settings,
-      colorId: "custom",
-      colorVariables: {
-        ...settings.colorVariables,
-        [variable]: cleanHexDraft(value),
-      },
-    }));
-  }
-
   async function copyCodexRebuildBrief() {
     await navigator.clipboard.writeText(codexRebuildBrief);
   }
@@ -932,7 +657,7 @@ export function DesignLabShell({
         screenClassName={selectedViewport.screenClassName}
         showSectionMarkers={activeDesignStyle.showSectionMarkers}
         sizeLabel={selectedViewport.sizeLabel}
-        spacingClassName={selectedSpacing.className}
+        spacingClassName={normalSpacingClassName}
       >
         {activeStack
           .filter((section) => section.included)
@@ -986,155 +711,21 @@ export function DesignLabShell({
         <div className="grid h-full min-h-0 grid-cols-[22rem_minmax(0,1fr)] items-stretch gap-5 max-lg:h-auto max-lg:grid-cols-1">
           <aside className="grid h-full min-h-0 content-start gap-4 overflow-y-auto overscroll-contain pr-1 max-lg:h-auto max-lg:overflow-visible max-lg:pr-0">
             <div className="radius-medium order-1 border border-service-border bg-white p-5 shadow-service">
-              <p className="type-label text-service-accent">Design Lab</p>
+              <p className="type-label text-service-accent">Page Builder</p>
               <h1 className="type-heading-lg mt-eyebrow-heading-md text-service-ink">
-                Homepage build briefs
+                Homepage section builder
               </h1>
               <p className="type-text-sm measure-caption wrap-pretty mt-heading-body-sm text-service-muted">
-                A working prototype for comparing clean homepage section stacks
-                against the implementation brief they produce.
+                Choose, swap, reorder, and preview homepage sections while the
+                implementation brief updates with the live stack.
               </p>
             </div>
 
             <div className="radius-medium order-3 border border-service-border bg-white p-5 shadow-service">
               <h2 className="type-heading-sm text-service-ink">
-                Style Inputs
+                Preview Controls
               </h2>
               <div className="mt-4 grid gap-4">
-                <div className="grid gap-2 rounded border border-service-border bg-service-surface p-3">
-                  <span className="type-caption font-semibold text-service-ink">
-                    Typography Source
-                  </span>
-                  <select
-                    className="radius-4 min-h-11 border border-service-border bg-white px-3 text-sm font-semibold text-service-ink"
-                    onChange={(event) =>
-                      updateActiveDesignStyle((settings) => ({
-                        ...settings,
-                        profileId: event.target.value,
-                      }))
-                    }
-                    value={selectedProfile.id}
-                  >
-                    {availableTypePalettes.map((profile) => (
-                      <option key={profile.id} value={profile.id}>
-                        {profile.label}
-                      </option>
-                    ))}
-                  </select>
-                  <span className="type-caption text-service-muted">
-                    {activeDesignLabel} loads this Font Lab profile slot.
-                    Tweak profile details in Font Lab.
-                  </span>
-                </div>
-
-                <label className="grid gap-2">
-                  <span className="type-caption font-semibold text-service-ink">
-                    Section Spacing
-                  </span>
-                  <select
-                    className="radius-4 min-h-11 border border-service-border bg-service-surface px-3 text-sm font-semibold text-service-ink"
-                    onChange={(event) =>
-                      updateActiveDesignStyle((settings) => ({
-                        ...settings,
-                        spacingId: event.target
-                          .value as DesignStyleSettings["spacingId"],
-                      }))
-                    }
-                    value={selectedSpacing.id}
-                  >
-                    {spacingOptions.map((option) => (
-                      <option key={option.id} value={option.id}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                  <span className="type-caption text-service-muted">
-                    Adjusts vertical density inside the preview frame.
-                  </span>
-                </label>
-
-                <div className="grid gap-3">
-                  <span className="type-caption font-semibold text-service-ink">
-                    Color Palette
-                  </span>
-                  <select
-                    className="radius-4 min-h-11 border border-service-border bg-service-surface px-3 text-sm font-semibold text-service-ink"
-                    onChange={(event) => selectColorRule(event.target.value)}
-                    value={activeDesignStyle.colorId}
-                  >
-                    <option value="custom">Custom Palette</option>
-                    {colorRules.map((rule) => (
-                      <option key={rule.id} value={rule.id}>
-                        {rule.label}
-                      </option>
-                    ))}
-                  </select>
-                  <span className="type-caption text-service-muted">
-                    Remaps the preview color tokens without editing sections.
-                  </span>
-
-                  <div className="grid gap-2 rounded border border-service-border bg-service-surface p-3">
-                    {colorTokenControls.map((control) => {
-                      const value =
-                        activeDesignStyle.colorVariables[control.variable];
-                      const isValid = isHexColor(value);
-
-                      return (
-                        <label
-                          className="grid grid-cols-[minmax(0,1fr)_6.5rem] items-center gap-3 rounded border border-service-border bg-white p-2"
-                          key={control.variable}
-                        >
-                          <span className="min-w-0">
-                            <span className="block text-sm font-semibold text-service-ink">
-                              {control.label}
-                            </span>
-                            <span className="type-caption mt-1 block text-service-muted">
-                              {control.brief}
-                            </span>
-                          </span>
-                          <span className="grid gap-2">
-                            <input
-                              aria-label={`${control.label} color picker`}
-                              className="h-8 w-full cursor-pointer rounded border border-service-border bg-white p-1"
-                              onChange={(event) =>
-                                updateColorVariable(
-                                  control.variable,
-                                  event.target.value,
-                                )
-                              }
-                              type="color"
-                              value={
-                                isValid
-                                  ? value
-                                  : baseColorVariables[control.variable]
-                              }
-                            />
-                            <input
-                              aria-label={`${control.label} hex value`}
-                              aria-invalid={!isValid}
-                              className={cx(
-                                "radius-4 min-h-9 w-full border bg-white px-2 font-mono text-xs text-service-ink",
-                                isValid
-                                  ? "border-service-border"
-                                  : "border-service-accent",
-                              )}
-                              maxLength={7}
-                              onChange={(event) =>
-                                updateColorVariable(
-                                  control.variable,
-                                  event.target.value,
-                                )
-                              }
-                              spellCheck={false}
-                              value={value}
-                            />
-                          </span>
-                        </label>
-                      );
-                    })}
-                  </div>
-                </div>
-
                 <div className="grid gap-2">
                   <span className="type-caption font-semibold text-service-ink">
                     Preview Width
@@ -1344,11 +935,9 @@ export function DesignLabShell({
 
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {[
-                      `Typography: ${selectedProfile.label}`,
-                      `Spacing: ${selectedSpacing.label}`,
-                      `Palette: ${selectedColorLabel}`,
                       `Viewport: ${selectedViewport.label}`,
-                      ...activeRecipe.styleRules,
+                      `Sections: ${includedSections.length}`,
+                      "Normal spacing",
                     ].map((rule) => (
                       <span
                         className="rounded-full border border-service-border bg-service-surface px-2.5 py-1 text-xs font-semibold text-service-muted"
@@ -1372,10 +961,9 @@ export function DesignLabShell({
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {[
-                        selectedProfile.label,
-                        selectedSpacing.label,
-                        selectedColorLabel,
                         selectedViewport.label,
+                        "Normal spacing",
+                        "Section builder",
                       ].map((label) => (
                           <span
                             className="rounded-full border border-service-border bg-service-surface px-3 py-1 text-xs font-semibold text-service-muted"
@@ -1565,21 +1153,15 @@ export function DesignLabShell({
                       </p>
                       <div className="mt-3 grid gap-2 rounded border border-service-border bg-white p-3">
                         <p className="type-caption text-service-muted">
-                          Typography:{" "}
+                          Sections:{" "}
                           <span className="font-semibold text-service-ink">
-                            {selectedProfile.label}
+                            {includedSections.length}
                           </span>
                         </p>
                         <p className="type-caption text-service-muted">
                           Spacing:{" "}
                           <span className="font-semibold text-service-ink">
-                            {selectedSpacing.label}
-                          </span>
-                        </p>
-                        <p className="type-caption text-service-muted">
-                          Palette:{" "}
-                          <span className="font-semibold text-service-ink">
-                            {selectedColorLabel}
+                            Normal
                           </span>
                         </p>
                         <p className="type-caption text-service-muted">
@@ -1591,8 +1173,8 @@ export function DesignLabShell({
                       </div>
                       <div className="mt-3 grid gap-2 rounded border border-service-border bg-white p-3">
                         {[
-                          selectedSpacing.brief,
-                          selectedColorBrief,
+                          "Use the existing project typography and color tokens.",
+                          "Keep section spacing on the normal shared density.",
                           selectedViewport.brief,
                         ].map((brief) => (
                           <p
