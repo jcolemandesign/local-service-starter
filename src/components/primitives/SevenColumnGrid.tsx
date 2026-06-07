@@ -98,7 +98,7 @@ export function SevenColumnGrid({
   return (
     <div
       className={cx(
-        "grid grid-cols-7",
+        "grid grid-cols-7 max-lg:grid-cols-5 max-md:grid-cols-3 max-sm:grid-cols-1",
         frameClasses[frame],
         minHeightClasses[minHeight],
         gapClasses[gap],
