@@ -42,12 +42,12 @@ export function TestimonialsMasonrySectionV3({
           alignX="center"
           className="col-span-3 col-start-3 max-lg:col-span-7 max-lg:col-start-1"
         >
-          <div className="fluid-type-frame mx-auto w-full measure-lead text-center">
+          <div className="fluid-type-frame mx-auto w-full text-center">
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2 className="type-heading-xl mx-auto mt-5 text-service-ink">
               {title}
             </h2>
-            <p className="type-text-lg measure-copy wrap-pretty mx-auto mt-6 text-service-muted">
+            <p className="type-text-lg wrap-pretty mx-auto mt-6 text-service-muted">
               {body}
             </p>
           </div>
@@ -67,13 +67,13 @@ export function TestimonialsMasonrySectionV3({
                     className="fluid-type-frame radius-medium mb-6 break-inside-avoid border border-service-border bg-white p-7 shadow-service"
                     key={`${item.author}-${item.detail}`}
                   >
-                    <blockquote className="type-text-lg measure-copy wrap-pretty font-medium text-service-ink">
+                    <blockquote className="type-text-lg wrap-pretty font-medium text-service-ink">
                       &quot;{item.quote}&quot;
                     </blockquote>
                     <p className="type-heading-sm mt-8 text-service-ink">
                       {item.author}
                     </p>
-                    <p className="type-text-sm measure-caption wrap-pretty mt-2 text-service-muted">
+                    <p className="type-text-sm wrap-pretty mt-2 text-service-muted">
                       {item.detail}
                     </p>
                   </article>

@@ -51,7 +51,7 @@ export function ContentStickyImagePanelSectionV3({
                 <h2 className="type-heading-lg mt-eyebrow-heading-md text-service-ink">
                   {title}
                 </h2>
-                <p className="type-text-md measure-copy wrap-pretty mt-heading-body-md text-service-muted">
+                <p className="type-text-md wrap-pretty mt-heading-body-md text-service-muted">
                   {body}
                 </p>
               </div>

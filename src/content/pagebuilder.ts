@@ -130,14 +130,14 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       },
       {
         name: "Trust bar",
-        component: "TrustBarSection",
+        component: "TrustBarSectionV3",
         mode: "Proof",
         instruction:
           "Validate the promise immediately with rating, volume, team, and local ownership claims.",
       },
       {
         name: "Services grid",
-        component: "ServicesGridSectionV2",
+        component: "ServicesThreeCardsRightSectionV3",
         mode: "Scan",
         instruction:
           "Show three to six top-level services with consistent title and body length.",
@@ -151,14 +151,14 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       },
       {
         name: "FAQ",
-        component: "FAQSectionV2",
+        component: "FAQSectionV3",
         mode: "Decision",
         instruction:
           "Answer estimates, timing, service area, and maintenance questions.",
       },
       {
         name: "Contact section",
-        component: "ContactSectionV2",
+        component: "ContactSectionV3",
         mode: "Utility",
         instruction:
           "Close with phone, email, hours, and a simple form or request path.",
@@ -212,21 +212,21 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       },
       {
         name: "Customer stories",
-        component: "TestimonialsCarouselSectionV2",
+        component: "TestimonialsCarouselSectionV3",
         mode: "Proof",
         instruction:
           "Use longer stories only if they contain useful service detail.",
       },
       {
         name: "Process image checklist",
-        component: "ProcessImageChecklistSectionV2",
+        component: "ProcessImageChecklistSectionV3",
         mode: "Decision",
         instruction:
           "Turn process uncertainty into clear expectations before contact.",
       },
       {
         name: "Fullscreen conversion",
-        component: "CTAFullscreenSectionV2",
+        component: "CTAFullscreenSectionV3",
         mode: "Action",
         instruction:
           "Use the strongest special-button treatment here if the page needs a memorable final booking moment.",
@@ -260,7 +260,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       },
       {
         name: "Trust bar",
-        component: "TrustBarSection",
+        component: "TrustBarSectionV3",
         mode: "Proof",
         instruction:
           "Use four short claims that validate speed, safety, rating, and locality.",
@@ -281,14 +281,14 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       },
       {
         name: "FAQ accordion",
-        component: "FAQAccordionSectionV2",
+        component: "FAQAccordionSectionV3",
         mode: "Decision",
         instruction:
           "Handle urgent objections with expandable answers and no vague copy.",
       },
       {
         name: "Contact section",
-        component: "ContactSectionV2",
+        component: "ContactSectionV3",
         mode: "Utility",
         instruction:
           "Show phone, email, hours, and form in a direct conversion area with a stronger primary button if urgency needs it.",
@@ -343,21 +343,21 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       },
       {
         name: "Static trust logo grid",
-        component: "TrustLogoGridSection",
+        component: "TrustLogoGridSectionV3",
         mode: "Proof",
         instruction:
           "Use static logos or associations when motion would distract from reading.",
       },
       {
         name: "Masonry testimonials",
-        component: "TestimonialsMasonrySectionV2",
+        component: "TestimonialsMasonrySectionV3",
         mode: "Proof",
         instruction:
           "Use varied quote lengths to create a fuller body of evidence.",
       },
       {
         name: "Scroll reveal offer conversion",
-        component: "CTAScrollRevealOfferSectionV2",
+        component: "CTAScrollRevealOfferSectionV3",
         mode: "Action",
         instruction:
           "Use a discovered offer or next-step reveal to transition from editorial trust into action.",
@@ -391,7 +391,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       },
       {
         name: "Trust marquee",
-        component: "TrustMarqueeSection",
+        component: "TrustMarqueeSectionV3",
         mode: "Proof",
         instruction:
           "Use short repeated claims when there are many small proof points.",
@@ -412,14 +412,14 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       },
       {
         name: "FAQ",
-        component: "FAQSectionV2",
+        component: "FAQSectionV3",
         mode: "Decision",
         instruction:
           "Include only the questions that affect whether someone contacts you.",
       },
       {
         name: "Footer",
-        component: "FooterSectionV2",
+        component: "FooterSectionV3",
         mode: "Utility",
         instruction:
           "End with service links, areas, contact details, and legal links.",

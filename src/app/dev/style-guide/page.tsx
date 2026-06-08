@@ -5,13 +5,20 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import { StyleGuideLiveSurface } from "@/components/sections/StyleGuideLiveSurface";
 import {
-  FAQSectionV2,
-  HeroBentoSectionV2,
-  ServicesGridSectionV2,
-  TrustBarSection,
+  StyleGuideTypeSpec,
+  StyleGuideTypographyControls,
+} from "@/components/sections/StyleGuideTypographyControls";
+import {
+  FAQSectionV3,
+  HeroSplitFullHeightSectionV3,
+  ServicesThreeCardsRightSectionV3,
+  TrustBarSectionV3,
 } from "@/components/sections";
+import { StyleGuideColorSwatch } from "@/components/sections/StyleGuideColorSwatch";
 import { sectionLibraryContent } from "@/content/section-library";
+import { sectionLibraryV3Content } from "@/content/section-library-v3";
 
 export const metadata: Metadata = {
   title: "Style Guide",
@@ -26,7 +33,6 @@ const typeTokens = [
     typeClass: "type-display-xl",
     measureClass: undefined,
     wrapClass: undefined,
-    spec: "3.5rem - 7rem / 0.92 / 680 / balanced",
     sample: "Emergency repairs without the runaround",
   },
   {
@@ -35,7 +41,6 @@ const typeTokens = [
     typeClass: "type-display-lg",
     measureClass: undefined,
     wrapClass: undefined,
-    spec: "2.75rem - 5.5rem / 0.95 / 670 / balanced",
     sample: "Fast HVAC service when the house will not wait",
   },
   {
@@ -44,7 +49,6 @@ const typeTokens = [
     typeClass: "type-heading-xl",
     measureClass: undefined,
     wrapClass: undefined,
-    spec: "2.25rem - 4rem / 1 / 660 / balanced",
     sample: "Clear service from request to resolved",
   },
   {
@@ -53,7 +57,6 @@ const typeTokens = [
     typeClass: "type-heading-lg",
     measureClass: undefined,
     wrapClass: undefined,
-    spec: "1.75rem - 2.75rem / 1.05 / 650 / balanced",
     sample: "Repairs explained before work begins",
   },
   {
@@ -62,7 +65,6 @@ const typeTokens = [
     typeClass: "type-heading-md",
     measureClass: undefined,
     wrapClass: undefined,
-    spec: "1.375rem - 2rem / 1.15 / 650 / balanced",
     sample: "What happens after you request service",
   },
   {
@@ -71,16 +73,14 @@ const typeTokens = [
     typeClass: "type-heading-sm",
     measureClass: undefined,
     wrapClass: undefined,
-    spec: "1.125rem - 1.375rem / 1.25 / 650 / balanced",
     sample: "Same-day repair support",
   },
   {
     name: "type-text-xl",
     role: "Lead copy",
     typeClass: "type-text-xl",
-    measureClass: "measure-lead",
+    measureClass: undefined,
     wrapClass: "wrap-pretty",
-    spec: "1.1875rem - 1.5rem / 1.5 / 400",
     sample:
       "Lead copy gives important pages a little more voice while keeping the line length readable across screens.",
   },
@@ -88,9 +88,8 @@ const typeTokens = [
     name: "type-text-lg",
     role: "Intro copy",
     typeClass: "type-text-lg",
-    measureClass: "measure-copy",
+    measureClass: undefined,
     wrapClass: "wrap-pretty",
-    spec: "1.0625rem - 1.25rem / 1.6 / 400",
     sample:
       "Use this for short section introductions, service summaries, and supporting copy that needs more presence than body text.",
   },
@@ -98,9 +97,8 @@ const typeTokens = [
     name: "type-text-md",
     role: "Body copy",
     typeClass: "type-text-md",
-    measureClass: "measure-copy",
+    measureClass: undefined,
     wrapClass: "wrap-pretty",
-    spec: "1rem - 1.125rem / 1.65 / 400",
     sample:
       "Request service online, describe the issue, and get a fast response from a local technician. Every submission is organized so fewer leads slip through the cracks.",
   },
@@ -108,9 +106,8 @@ const typeTokens = [
     name: "type-text-sm",
     role: "Small body",
     typeClass: "type-text-sm",
-    measureClass: "measure-copy-wide",
+    measureClass: undefined,
     wrapClass: "wrap-pretty",
-    spec: "0.875rem - 0.95rem / 1.6 / 400",
     sample:
       "Useful for supporting details, captions inside cards, and compact text that still needs enough room to breathe.",
   },
@@ -118,9 +115,8 @@ const typeTokens = [
     name: "type-text-xs",
     role: "Microcopy",
     typeClass: "type-text-xs",
-    measureClass: "measure-caption",
+    measureClass: undefined,
     wrapClass: "wrap-pretty",
-    spec: "0.8125rem - 0.875rem / 1.55 / 400",
     sample:
       "Most appointment windows are confirmed by phone or email before the technician arrives.",
   },
@@ -128,9 +124,8 @@ const typeTokens = [
     name: "type-caption",
     role: "Caption",
     typeClass: "type-caption",
-    measureClass: "measure-caption",
+    measureClass: undefined,
     wrapClass: "wrap-pretty",
-    spec: "0.75rem - 0.8125rem / 1.5 / 400",
     sample: "Preview image, service area, or review attribution text.",
   },
   {
@@ -139,17 +134,8 @@ const typeTokens = [
     typeClass: "type-label",
     measureClass: undefined,
     wrapClass: undefined,
-    spec: "0.8125rem - 0.875rem / 1.2 / 750 / 0.12em",
     sample: "Emergency HVAC Repair",
   },
-];
-
-const measureTokens = [
-  ["measure-lead", "52ch"],
-  ["measure-copy", "60ch"],
-  ["measure-copy-wide", "70ch"],
-  ["measure-longform", "75ch"],
-  ["measure-caption", "48ch"],
 ];
 
 const layoutFrameTokens = [
@@ -160,6 +146,7 @@ const layoutFrameTokens = [
 const colors = [
   {
     name: "service-ink",
+    controlKey: "serviceInk",
     value: "#17211d",
     surface: "bg-service-ink",
     text: "text-white",
@@ -170,6 +157,7 @@ const colors = [
   },
   {
     name: "service-muted",
+    controlKey: "serviceMuted",
     value: "#5f6f68",
     surface: "bg-service-muted",
     text: "text-white",
@@ -180,6 +168,7 @@ const colors = [
   },
   {
     name: "service-accent",
+    controlKey: "serviceAccent",
     value: "#1f7a5a",
     surface: "bg-service-accent",
     text: "text-white",
@@ -190,6 +179,7 @@ const colors = [
   },
   {
     name: "service-surface",
+    controlKey: "serviceSurface",
     value: "#f4f7f3",
     surface: "bg-service-surface",
     text: "text-service-ink",
@@ -200,6 +190,7 @@ const colors = [
   },
   {
     name: "service-border",
+    controlKey: "serviceBorder",
     value: "#dfe7e1",
     surface: "bg-service-border",
     text: "text-service-ink",
@@ -210,7 +201,8 @@ const colors = [
   },
   {
     name: "bg-page",
-    value: "#ffffff",
+    controlKey: "bgPage",
+    value: "#fbfaf6",
     surface: "bg-bg-page",
     text: "text-text-main",
     muted: "text-text-muted",
@@ -220,6 +212,7 @@ const colors = [
   },
   {
     name: "bg-dark",
+    controlKey: "bgDark",
     value: "#10141b",
     surface: "bg-bg-dark",
     text: "text-text-inverse",
@@ -230,6 +223,7 @@ const colors = [
   },
   {
     name: "accent",
+    controlKey: "accent",
     value: "#c45a2c",
     surface: "bg-accent",
     text: "text-white",
@@ -238,7 +232,7 @@ const colors = [
     accent: "bg-white text-accent",
     usage: "Warm highlight accent for contrast moments",
   },
-];
+] as const;
 
 const radii = [
   ["radius-none", "0"],
@@ -253,7 +247,7 @@ const spacing = [
   ["section-space-sml", "4rem desktop / 4rem mobile"],
   ["section-space-med", "6rem desktop / 4rem mobile"],
   ["section-space-lrg", "8rem desktop / 4rem mobile"],
-];
+] as const;
 
 const sectionSpacing = spacing.filter(([name]) => name.startsWith("section"));
 
@@ -447,23 +441,146 @@ const colorRoleCombinations = [
   },
 ];
 
+const surfaceTypeSpecimens = [
+  {
+    name: "Page default",
+    semantic: "bg-bg-page / text-text-main / text-text-muted",
+    headingClassName: "type-display-lg",
+    bodyClassName: "type-text-xl",
+    surfaceClass: "bg-bg-page",
+    frameClass: "border-border-default",
+    eyebrowClass: "text-service-accent",
+    headingClass: "text-text-main",
+    bodyClass: "text-text-muted",
+    insetClass: "border-border-default bg-bg-surface",
+    insetHeadingClass: "text-text-main",
+    insetBodyClass: "text-text-muted",
+    actionClass: "bg-service-accent text-white",
+  },
+  {
+    name: "Soft service section",
+    semantic: "bg-service-surface / text-service-ink / text-service-muted",
+    headingClassName: "type-heading-xl",
+    bodyClassName: "type-text-lg",
+    surfaceClass: "bg-service-surface",
+    frameClass: "border-service-border",
+    eyebrowClass: "text-service-accent",
+    headingClass: "text-service-ink",
+    bodyClass: "text-service-muted",
+    insetClass: "border-service-border bg-white",
+    insetHeadingClass: "text-service-ink",
+    insetBodyClass: "text-service-muted",
+    actionClass: "bg-service-ink text-white",
+  },
+  {
+    name: "White card on quiet surface",
+    semantic: "bg-white / text-service-ink / text-service-muted",
+    headingClassName: "type-heading-lg",
+    bodyClassName: "type-text-md",
+    surfaceClass: "bg-white",
+    frameClass: "border-service-border",
+    eyebrowClass: "text-service-accent",
+    headingClass: "text-service-ink",
+    bodyClass: "text-service-muted",
+    insetClass: "border-service-border bg-service-surface",
+    insetHeadingClass: "text-service-ink",
+    insetBodyClass: "text-service-muted",
+    actionClass: "bg-service-accent text-white",
+  },
+  {
+    name: "Ink inverse",
+    semantic: "bg-service-ink / text-white / text-white/72",
+    headingClassName: "type-display-lg",
+    bodyClassName: "type-text-lg",
+    surfaceClass: "bg-service-ink",
+    frameClass: "border-white/18",
+    eyebrowClass: "text-white/68",
+    headingClass: "text-white",
+    bodyClass: "text-white/72",
+    insetClass: "border-white/14 bg-white/8",
+    insetHeadingClass: "text-white",
+    insetBodyClass: "text-white/68",
+    actionClass: "bg-white text-service-ink",
+  },
+  {
+    name: "Accent inverse",
+    semantic: "bg-service-accent / text-white / text-white/80",
+    headingClassName: "type-heading-xl",
+    bodyClassName: "type-text-xl",
+    surfaceClass: "bg-service-accent",
+    frameClass: "border-white/24",
+    eyebrowClass: "text-white/78",
+    headingClass: "text-white",
+    bodyClass: "text-white/80",
+    insetClass: "border-white/20 bg-white/10",
+    insetHeadingClass: "text-white",
+    insetBodyClass: "text-white/72",
+    actionClass: "bg-white text-service-accent",
+  },
+  {
+    name: "Neutral dark",
+    semantic: "bg-bg-dark / text-text-inverse / text-white/70",
+    headingClassName: "type-heading-lg",
+    bodyClassName: "type-text-md",
+    surfaceClass: "bg-bg-dark",
+    frameClass: "border-white/18",
+    eyebrowClass: "text-white/68",
+    headingClass: "text-text-inverse",
+    bodyClass: "text-white/70",
+    insetClass: "border-white/14 bg-white/8",
+    insetHeadingClass: "text-white",
+    insetBodyClass: "text-white/66",
+    actionClass: "bg-accent text-white",
+  },
+  {
+    name: "Warm offer",
+    semantic: "bg-accent / text-white / text-white/78",
+    headingClassName: "type-heading-md",
+    bodyClassName: "type-text-sm",
+    surfaceClass: "bg-accent",
+    frameClass: "border-white/24",
+    eyebrowClass: "text-white/76",
+    headingClass: "text-white",
+    bodyClass: "text-white/78",
+    insetClass: "border-white/18 bg-white/10",
+    insetHeadingClass: "text-white",
+    insetBodyClass: "text-white/70",
+    actionClass: "bg-white text-accent",
+  },
+  {
+    name: "Muted proof panel",
+    semantic: "bg-service-border / text-service-ink / text-service-muted",
+    headingClassName: "type-heading-sm",
+    bodyClassName: "type-caption",
+    surfaceClass: "bg-service-border",
+    frameClass: "border-service-muted/25",
+    eyebrowClass: "text-service-accent",
+    headingClass: "text-service-ink",
+    bodyClass: "text-service-muted",
+    insetClass: "border-service-muted/20 bg-white",
+    insetHeadingClass: "text-service-ink",
+    insetBodyClass: "text-service-muted",
+    actionClass: "bg-service-ink text-white",
+  },
+];
+
 const surfaceExamples = [
   {
     name: "Quiet card",
-    className: "rounded border border-service-border bg-white p-6 shadow-service",
+    className: "radius-4 border border-service-border bg-white p-6 shadow-service",
   },
   {
     name: "Soft panel",
     className:
-      "rounded-md border border-service-border bg-service-surface p-6 shadow-none",
+      "radius-medium border border-service-border bg-service-surface p-6 shadow-none",
   },
   {
     name: "Dark proof",
-    className: "rounded-lg border border-white/18 bg-service-ink p-6 text-white",
+    className: "radius-large border border-white/18 bg-service-ink p-6 text-white",
   },
   {
     name: "Accent callout",
-    className: "rounded-sm border border-white/24 bg-service-accent p-6 text-white",
+    className: "radius-sm border border-white/24 bg-service-accent p-6 text-white",
   },
 ];
 
@@ -492,7 +609,7 @@ function GuideSection({
               {title}
             </h2>
             {body ? (
-              <p className="type-text-lg measure-copy wrap-pretty mt-5 text-service-muted">
+              <p className="type-text-lg wrap-pretty mt-5 text-service-muted">
                 {body}
               </p>
             ) : null}
@@ -544,7 +661,8 @@ function ExpandingArrowButton({
 
 export default function StyleGuidePage() {
   return (
-    <main className="bg-white text-service-ink">
+    <StyleGuideLiveSurface>
+      <main className="bg-bg-page text-service-ink">
       <section className="bg-service-ink text-white">
         <SevenColumnGrid
           className="fluid-type-frame"
@@ -556,7 +674,7 @@ export default function StyleGuidePage() {
             <h1 className="type-display-lg mt-5">
               Current v3 seven-column style guide
             </h1>
-            <p className="type-text-xl measure-copy wrap-pretty mt-7 text-white/75">
+            <p className="type-text-xl wrap-pretty mt-7 text-white/75">
               This page documents the shared tokens behind the current section
               library: seven-column layout, semantic type, reusable spacing,
               surface colors, and reusable interaction patterns.
@@ -570,38 +688,43 @@ export default function StyleGuidePage() {
         title="Current V3 Surface"
         body="Use this guide as the clean reference for new section work: one seven-column layout frame, semantic type roles, reusable spacing relationships, and shared surface tokens."
       >
-        <div className="grid grid-cols-[0.8fr_1.2fr] gap-5 max-lg:grid-cols-1">
-          <Card className="fluid-type-frame p-6 shadow-none">
-            <p className="type-label text-service-accent">Canonical</p>
-            <h3 className="type-heading-lg mt-eyebrow-heading-sm text-service-ink">
-              V3 sections use one seven-column frame
-            </h3>
-            <p className="type-text-md measure-copy wrap-pretty mt-heading-body-md text-service-muted">
-              New section work should compose with SevenColumnGrid,
-              SevenColumnGridItem, type role utilities, semantic spacing, and
-              shared color tokens.
-            </p>
-            <div className="mt-body-actions-md flex flex-wrap gap-3">
-              <Button href="/sections">Current sections</Button>
-            </div>
-          </Card>
+        <SevenColumnGrid minHeight="none" padding="none">
+          <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+            <Card className="fluid-type-frame h-full p-6 shadow-none">
+              <p className="type-label text-service-accent">Canonical</p>
+              <h3 className="type-heading-lg mt-eyebrow-heading-sm text-service-ink">
+                V3 sections use one seven-column frame
+              </h3>
+              <p className="type-text-md wrap-pretty mt-heading-body-md text-service-muted">
+                New section work should compose with SevenColumnGrid,
+                SevenColumnGridItem, type role utilities, semantic spacing, and
+                shared color tokens.
+              </p>
+              <div className="mt-body-actions-md flex flex-wrap gap-3">
+                <Button href="/sections">Current sections</Button>
+              </div>
+            </Card>
+          </SevenColumnGridItem>
 
-          <div className="grid gap-3">
-            {[
-              ["Layout", "SevenColumnGrid and SevenColumnGridItem"],
-              ["Type", "type-display through type-label role utilities"],
-              ["Spacing", "section-space, relationship margins, and gap tokens"],
-              ["Surfaces", "service color tokens and radius utilities"],
-            ].map(([label, value]) => (
-              <Card className="p-5 shadow-none" key={label}>
+          {[
+            ["Layout", "SevenColumnGrid and SevenColumnGridItem"],
+            ["Type", "type-display through type-label role utilities"],
+            ["Spacing", "section-space, relationship margins, and gap tokens"],
+            ["Surfaces", "service color tokens and radius utilities"],
+          ].map(([label, value]) => (
+            <SevenColumnGridItem
+              className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+              key={label}
+            >
+              <Card className="h-full p-5 shadow-none">
                 <p className="type-label text-service-accent">{label}</p>
                 <p className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
                   {value}
                 </p>
               </Card>
-            ))}
-          </div>
-        </div>
+            </SevenColumnGridItem>
+          ))}
+        </SevenColumnGrid>
       </GuideSection>
 
       <GuideSection
@@ -661,208 +784,116 @@ export default function StyleGuidePage() {
             </SevenColumnGrid>
           </div>
 
-          <div className="grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
+          <SevenColumnGrid minHeight="none" padding="none">
             {sevenColumnGridTokens.map((token) => (
-              <Card className="p-5 shadow-none" key={token.name}>
-                <TokenMeta name={token.name} value={token.value} />
-                <p className="type-caption mt-3 text-service-muted">
-                  {token.role}
-                </p>
-              </Card>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-6 gap-4 max-lg:grid-cols-3 max-md:grid-cols-1">
-            {sectionMinTokens.map(([name, value]) => (
-              <Card className="p-5 shadow-none" key={name}>
-                <TokenMeta name={name} value={value} />
-                <div className="mt-4 rounded border border-service-border bg-service-surface p-3">
-                  <div className="h-16 rounded bg-white" />
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </GuideSection>
-
-      <GuideSection
-        eyebrow="Type"
-        title="Typography Roles"
-        body="Heading roles include balanced wrapping by default. Copy roles pair with measure and wrap utilities so the preview reflects real composition."
-      >
-        <div className="grid gap-4">
-          {typeTokens.map((token) => (
-            <Card className="fluid-type-frame p-6 shadow-none" key={token.name}>
-              <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <TokenMeta name={token.name} value={token.spec} />
-                  <p className="type-caption mt-2 text-service-muted">{token.role}</p>
-                </div>
-                <div className="grid min-w-44 gap-1 rounded border border-service-border bg-service-surface p-2">
-                  <code className="rounded bg-white px-2 py-1 text-xs font-semibold text-service-ink">
-                    {token.typeClass}
-                  </code>
-                  {token.measureClass ? (
-                    <code className="rounded bg-white px-2 py-1 text-xs text-service-muted">
-                      {token.measureClass}
-                    </code>
-                  ) : null}
-                  {token.wrapClass ? (
-                    <code className="rounded bg-white px-2 py-1 text-xs text-service-muted">
-                      {token.wrapClass}
-                    </code>
-                  ) : null}
-                </div>
-              </div>
-              <p
-                className={cx(
-                  token.typeClass,
-                  token.measureClass,
-                  token.wrapClass,
-                  "text-service-ink",
-                )}
+              <SevenColumnGridItem
+                className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+                key={token.name}
               >
-                {token.sample}
-              </p>
-            </Card>
-          ))}
+                <Card className="h-full p-5 shadow-none">
+                  <TokenMeta name={token.name} value={token.value} />
+                  <p className="type-caption mt-3 text-service-muted">
+                    {token.role}
+                  </p>
+                </Card>
+              </SevenColumnGridItem>
+            ))}
+          </SevenColumnGrid>
+
+          <SevenColumnGrid minHeight="none" padding="none">
+            {sectionMinTokens.map(([name, value]) => (
+              <SevenColumnGridItem
+                className="col-span-1 max-lg:col-span-1 max-md:col-span-1 max-sm:col-span-1"
+                key={name}
+              >
+                <Card className="h-full p-5 shadow-none">
+                  <TokenMeta name={name} value={value} />
+                  <div className="mt-4 rounded border border-service-border bg-service-surface p-3">
+                    <div className="h-16 rounded bg-white" />
+                  </div>
+                </Card>
+              </SevenColumnGridItem>
+            ))}
+          </SevenColumnGrid>
+
+          <SevenColumnGrid minHeight="none" padding="none">
+            {layoutFrameTokens.map(([name, value]) => (
+              <SevenColumnGridItem
+                className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+                key={name}
+              >
+                <Card className="h-full p-6 shadow-none">
+                  <TokenMeta name={name} value={value} />
+                  <div className="mt-5 rounded border border-service-border bg-service-surface p-4">
+                    <div className="grid grid-cols-7 gap-2 max-lg:grid-cols-5 max-md:grid-cols-3 max-sm:grid-cols-1">
+                      {Array.from({ length: 7 }, (_, index) => (
+                        <div
+                          className="h-24 rounded bg-white"
+                          key={`${name}-${index}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </Card>
+              </SevenColumnGridItem>
+            ))}
+          </SevenColumnGrid>
         </div>
       </GuideSection>
 
       <GuideSection
         eyebrow="Type + Grid"
-        title="Seven Column Type Stack"
+        title="Typographic Hierarchy"
         body="One live specimen per typography role, placed on a seven-column row so the text can occupy the main track while the token metadata stays fixed."
       >
-        <div className="grid gap-3">
-          {typeTokens.map((token) => (
-            <div
-              className="fluid-type-frame grid grid-cols-7 gap-4 border-t border-service-border py-6 max-lg:grid-cols-4 max-md:grid-cols-1"
-              key={`grid-row-${token.name}`}
-            >
-              <div className="col-span-1 max-lg:col-span-4 max-md:col-span-1">
-                <code className="radius-4 inline-flex bg-service-surface px-2 py-1 text-xs font-semibold text-service-ink">
-                  {token.name}
-                </code>
-                <p className="type-caption mt-2 text-service-muted">
-                  {token.role}
-                </p>
-              </div>
-              <p
-                className={cx(
-                  token.typeClass,
-                  token.measureClass,
-                  token.wrapClass,
-                  "col-span-6 text-service-ink max-lg:col-span-4 max-md:col-span-1",
-                )}
-              >
-                {token.sample}
-              </p>
-            </div>
-          ))}
-        </div>
-      </GuideSection>
+        <SevenColumnGrid minHeight="none" padding="none">
+          <SevenColumnGridItem className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+            <StyleGuideTypographyControls />
+          </SevenColumnGridItem>
 
-      <GuideSection
-        eyebrow="Measure"
-        title="Text Measures"
-        body="Measure tokens control readable copy width. Heading roles rely on balanced wrapping by default, with manual line breaks reserved for art-directed headlines."
-      >
-        <div className="grid gap-5">
-          {measureTokens.map(([name, value]) => (
-            <Card className="p-6 shadow-none" key={name}>
-              <TokenMeta name={name} value={`max-width: ${value}`} />
-              <div className="mt-5 border-l-2 border-dashed border-service-accent/35 pl-4">
-                <p className={cx(name, "type-text-md wrap-pretty text-service-muted")}>
-                  Healthy service pages keep copy narrow enough to scan while
-                  leaving larger containers free to support grids, media, and
-                  stronger composition.
-                </p>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </GuideSection>
-
-      <GuideSection
-        eyebrow="Layout"
-        title="Layout Frame Tokens"
-        body="V3 major sections start with the seven-column grid frame. These tokens control the section inset and column gap used by the layout primitive."
-      >
-        <div className="grid grid-cols-2 gap-5 max-md:grid-cols-1">
-          {layoutFrameTokens.map(([name, value]) => (
-            <Card className="p-6 shadow-none" key={name}>
-              <TokenMeta name={name} value={value} />
-              <div className="mt-5 rounded border border-service-border bg-service-surface p-4">
-                <div className="grid grid-cols-7 gap-2">
-                  {Array.from({ length: 7 }, (_, index) => (
-                    <div
-                      className="h-24 rounded bg-white"
-                      key={`${name}-${index}`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </GuideSection>
-
-      <GuideSection eyebrow="Color" title="Palette Tokens">
-        <div className="grid grid-cols-4 gap-5 max-lg:grid-cols-2 max-md:grid-cols-1">
-          {colors.map((color) => (
-            <Card className="overflow-hidden shadow-none" key={color.name}>
-              <div
-                className={cx(
-                  color.surface,
-                  color.text,
-                  "fluid-type-frame min-h-72 p-5",
-                )}
-              >
-                <div className="flex h-full flex-col justify-between gap-8">
-                  <div>
-                    <div
-                      className={cx(
-                        color.border,
-                        "mb-5 h-16 rounded border bg-white/8",
-                      )}
-                    />
-                    <p className="type-label opacity-75">{color.name}</p>
-                    <h3 className="type-heading-sm mt-4">
-                      {color.usage}
-                    </h3>
-                    <p className={cx(color.muted, "type-text-sm wrap-pretty mt-4")}>
-                      This card uses the token as the actual surface so contrast,
-                      borders, and readable text are visible together.
+          <SevenColumnGridItem className="col-span-5 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+            <div className="grid gap-3">
+              {typeTokens.map((token) => (
+                <div
+                  className="fluid-type-frame grid grid-cols-7 gap-4 border-t border-service-border py-6 max-lg:grid-cols-5 max-md:grid-cols-3 max-sm:grid-cols-1"
+                  key={`grid-row-${token.name}`}
+                >
+                  <div className="col-span-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+                    <code className="radius-4 inline-flex bg-service-surface px-2 py-1 text-xs font-semibold text-service-ink">
+                      {token.name}
+                    </code>
+                    <p className="type-caption mt-2 text-service-muted">
+                      {token.role}
+                    </p>
+                    <p className="type-caption mt-2 font-semibold text-service-muted">
+                      <StyleGuideTypeSpec tokenName={token.name} />
                     </p>
                   </div>
-                  <div>
-                    <span
-                      className={cx(
-                        color.accent,
-                        "inline-flex min-h-10 items-center rounded px-4 text-sm font-semibold",
-                      )}
-                    >
-                      Action state
-                    </span>
-                  </div>
+                  <p
+                    className={cx(
+                      token.typeClass,
+                      token.measureClass,
+                      token.wrapClass,
+                      "col-span-6 text-service-ink max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
+                    )}
+                  >
+                    {token.sample}
+                  </p>
                 </div>
-              </div>
-              <div className="p-5">
-                <TokenMeta name={color.name} value={color.value} />
-                <p className="type-caption mt-3 text-service-muted">
-                  {color.surface} / {color.text}
-                </p>
-              </div>
-            </Card>
-          ))}
-        </div>
+              ))}
+            </div>
+          </SevenColumnGridItem>
+        </SevenColumnGrid>
       </GuideSection>
 
       <GuideSection eyebrow="Shape" title="Radius, Borders, And Shadows">
-        <div className="grid grid-cols-5 gap-5 max-lg:grid-cols-3 max-md:grid-cols-1">
+        <SevenColumnGrid minHeight="none" padding="none">
           {radii.map(([name, value]) => (
-            <Card className="p-5 shadow-none" key={name}>
+            <SevenColumnGridItem
+              className="col-span-2 max-lg:col-span-2 max-md:col-span-3 max-sm:col-span-1"
+              key={name}
+            >
+            <Card className="h-full p-5 shadow-none">
               <div
                 className={cx(
                   name.split(" / ")[0],
@@ -894,8 +925,9 @@ export default function StyleGuidePage() {
                 <TokenMeta name={name} value={value} />
               </div>
             </Card>
+            </SevenColumnGridItem>
           ))}
-        </div>
+        </SevenColumnGrid>
       </GuideSection>
 
       <GuideSection
@@ -904,16 +936,20 @@ export default function StyleGuidePage() {
         body="These tokens describe why space exists: eyebrow to heading, heading to body, body to actions, and editorial text rhythm."
       >
         <div className="grid gap-8">
-          <div className="grid grid-cols-3 gap-5 max-lg:grid-cols-1">
+          <SevenColumnGrid minHeight="none" padding="none">
             {sectionSpacing.map(([name, value]) => (
-              <Card className="overflow-hidden shadow-none" key={name}>
+              <SevenColumnGridItem
+                className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+                key={name}
+              >
+              <Card className="h-full overflow-hidden shadow-none">
                 <div className={cx(name, "bg-service-surface px-6")}>
                   <div className="fluid-type-frame rounded border border-service-border bg-white p-6">
                     <p className="type-label text-service-accent">Section sample</p>
                     <h3 className="type-heading-sm mt-4 text-service-ink">
                       Padding around a real content group
                     </h3>
-                    <p className="type-text-sm measure-copy-wide wrap-pretty mt-3 text-service-muted">
+                    <p className="type-text-sm wrap-pretty mt-3 text-service-muted">
                       The empty area above and below this white box is the section
                       spacing token in action.
                     </p>
@@ -923,12 +959,17 @@ export default function StyleGuidePage() {
                   <TokenMeta name={name} value={value} />
                 </div>
               </Card>
+              </SevenColumnGridItem>
             ))}
-          </div>
+          </SevenColumnGrid>
 
-          <div className="grid grid-cols-2 gap-5 max-lg:grid-cols-1">
+          <SevenColumnGrid minHeight="none" padding="none">
             {relationshipSpacing.map((example) => (
-              <Card className="p-6 shadow-none" key={example.title}>
+              <SevenColumnGridItem
+                className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+                key={example.title}
+              >
+              <Card className="h-full p-6 shadow-none">
                 <div className="mb-6">
                   <h3 className="type-heading-sm text-service-ink">
                     {example.title}
@@ -949,7 +990,7 @@ export default function StyleGuidePage() {
                     <h4 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
                       Seasonal tune-ups before the busy months
                     </h4>
-                    <p className="type-text-sm measure-copy-wide wrap-pretty mt-heading-body-sm text-service-muted">
+                    <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
                       A compact service card should feel tight and scannable
                       without collapsing the relationship between title and copy.
                     </p>
@@ -970,7 +1011,7 @@ export default function StyleGuidePage() {
                     <h4 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
                       Same-day repairs when your system quits
                     </h4>
-                    <p className="type-text-lg measure-copy wrap-pretty mt-heading-body-lg text-service-muted">
+                    <p className="type-text-lg wrap-pretty mt-heading-body-lg text-service-muted">
                       Get fast help from licensed technicians serving
                       Huntersville, Cornelius, Davidson, and North Charlotte.
                     </p>
@@ -989,7 +1030,7 @@ export default function StyleGuidePage() {
                     <h4 className="type-display-lg mt-eyebrow-display">
                       Turn the next visit into a booked service call
                     </h4>
-                    <p className="type-text-xl measure-copy wrap-pretty mt-display-body text-white/75">
+                    <p className="type-text-xl wrap-pretty mt-display-body text-white/75">
                       A display group needs more breathing room because the
                       headline scale creates a stronger visual event.
                     </p>
@@ -1007,27 +1048,28 @@ export default function StyleGuidePage() {
 
                 {example.kind === "editorial" ? (
                   <div className="fluid-type-frame rounded border border-service-border bg-service-surface p-6">
-                    <p className="type-text-md measure-longform wrap-pretty text-service-muted">
+                    <p className="type-text-md wrap-pretty text-service-muted">
                       When a heating system quits on a cold morning, the customer
                       is not looking for a brand manifesto. They are trying to
                       understand whether someone can come soon.
                     </p>
-                    <p className="type-text-md measure-longform wrap-pretty mt-paragraph-paragraph text-service-muted">
+                    <p className="type-text-md wrap-pretty mt-paragraph-paragraph text-service-muted">
                       The page should answer that quickly, then make the next
                       step feel obvious without flattening the tone.
                     </p>
                     <h4 className="type-heading-lg mt-paragraph-heading-md text-service-ink">
                       Clear next steps matter more than decoration
                     </h4>
-                    <p className="type-text-md measure-longform wrap-pretty mt-heading-body-md text-service-muted">
+                    <p className="type-text-md wrap-pretty mt-heading-body-md text-service-muted">
                       Editorial spacing should make the copy feel intentional
                       while still supporting a service page rhythm.
                     </p>
                   </div>
                 ) : null}
               </Card>
+              </SevenColumnGridItem>
             ))}
-          </div>
+          </SevenColumnGrid>
         </div>
       </GuideSection>
 
@@ -1036,9 +1078,13 @@ export default function StyleGuidePage() {
         title="Inline, Card, And Layout Gaps"
         body="Gap tokens describe the kind of layout relationship: small inline clusters, repeated cards, or major section columns."
       >
-        <div className="grid grid-cols-3 gap-5 max-lg:grid-cols-1">
+        <SevenColumnGrid minHeight="none" padding="none">
           {gapTokens.map((group) => (
-            <Card className="p-6 shadow-none" key={group.group}>
+            <SevenColumnGridItem
+              className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+              key={group.group}
+            >
+            <Card className="h-full p-6 shadow-none">
               <h3 className="type-heading-sm text-service-ink">{group.group}</h3>
               <p className="type-caption mt-2 text-service-muted">
                 {group.description}
@@ -1072,25 +1118,34 @@ export default function StyleGuidePage() {
                     ) : null}
 
                     {group.kind === "layout" ? (
-                      <div className={cx(name, "mt-4 grid grid-cols-[1.2fr_0.8fr]")}>
-                        <div className="radius-4 min-h-20 bg-service-surface p-4">
-                          <p className="type-caption text-service-muted">
-                            Content column
-                          </p>
-                        </div>
-                        <div className="radius-4 min-h-20 bg-service-border p-4">
-                          <p className="type-caption text-service-muted">
-                            Media column
-                          </p>
-                        </div>
-                      </div>
+                      <SevenColumnGrid
+                        className={cx(name, "mt-4")}
+                        minHeight="none"
+                        padding="none"
+                      >
+                        <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+                          <div className="radius-4 min-h-20 bg-service-surface p-4">
+                            <p className="type-caption text-service-muted">
+                              Content column
+                            </p>
+                          </div>
+                        </SevenColumnGridItem>
+                        <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+                          <div className="radius-4 min-h-20 bg-service-border p-4">
+                            <p className="type-caption text-service-muted">
+                              Media column
+                            </p>
+                          </div>
+                        </SevenColumnGridItem>
+                      </SevenColumnGrid>
                     ) : null}
                   </div>
                 ))}
               </div>
             </Card>
+            </SevenColumnGridItem>
           ))}
-        </div>
+        </SevenColumnGrid>
       </GuideSection>
 
       <GuideSection
@@ -1098,8 +1153,9 @@ export default function StyleGuidePage() {
         title="Custom Button Styles"
         body="Reusable button treatments for stronger calls to action and brand moments."
       >
-        <div className="grid grid-cols-[0.8fr_1.2fr] gap-5 max-lg:grid-cols-1">
-          <Card className="p-6 shadow-none">
+        <SevenColumnGrid minHeight="none" padding="none">
+          <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+          <Card className="h-full p-6 shadow-none">
             <TokenMeta
               name="expanding-arrow-cta"
               value="ink surface / accent fill / rounded pill"
@@ -1110,19 +1166,22 @@ export default function StyleGuidePage() {
               </ExpandingArrowButton>
             </div>
           </Card>
+          </SevenColumnGridItem>
 
-          <Card className="fluid-type-frame p-6 shadow-none">
+          <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+          <Card className="fluid-type-frame h-full p-6 shadow-none">
             <p className="type-label text-service-accent">Interaction</p>
             <h3 className="type-heading-sm mt-4 text-service-ink">
               Accent circle expands across the ink button on hover.
             </h3>
-            <p className="type-text-sm measure-copy-wide wrap-pretty mt-4 text-service-muted">
+            <p className="type-text-sm wrap-pretty mt-4 text-service-muted">
               The label starts in accent color, then reverses to ink as the
               accent fill grows. The arrow stays on the right and drifts inward
               during the hover state.
             </p>
           </Card>
-        </div>
+          </SevenColumnGridItem>
+        </SevenColumnGrid>
       </GuideSection>
 
       <GuideSection
@@ -1130,14 +1189,18 @@ export default function StyleGuidePage() {
         title="Editorial Stress Tests"
         body="Stress cases for long headings, dense copy, compact card rhythm, and repeated action patterns."
       >
-        <div className="grid grid-cols-3 gap-5 max-lg:grid-cols-1">
+        <SevenColumnGrid minHeight="none" padding="none">
           {editorialStressTests.map((test) => (
-            <Card className="fluid-type-frame p-6 shadow-none" key={test.title}>
+            <SevenColumnGridItem
+              className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+              key={test.title}
+            >
+            <Card className="fluid-type-frame h-full p-6 shadow-none">
               <p className="type-label text-service-accent">{test.label}</p>
               <h3 className={cx(test.className, "mt-eyebrow-heading-md text-service-ink")}>
                 {test.heading}
               </h3>
-              <p className="type-text-md measure-copy-wide wrap-pretty mt-heading-body-md text-service-muted">
+              <p className="type-text-md wrap-pretty mt-heading-body-md text-service-muted">
                 {test.body}
               </p>
               <div className="mt-body-actions-md flex flex-wrap gap-3">
@@ -1147,55 +1210,207 @@ export default function StyleGuidePage() {
                 </Button>
               </div>
             </Card>
+            </SevenColumnGridItem>
           ))}
-        </div>
+        </SevenColumnGrid>
       </GuideSection>
 
       <GuideSection
-        eyebrow="Preview Matrix"
-        title="Color Roles And Contrast Examples"
-        body="Every pertinent surface role is shown with heading text, muted copy, border treatment, and a contrasting action."
+        eyebrow="Color"
+        title="Color System"
+        body="Palette tokens, semantic color roles, and live surface/type relationships in one place. The color inputs on these swatches update the cards directly."
       >
-        <div className="grid grid-cols-3 gap-5 max-lg:grid-cols-2 max-md:grid-cols-1">
+        <SevenColumnGrid minHeight="none" padding="none">
+          {colors.map((color) => (
+            <SevenColumnGridItem
+              className="col-span-1 max-lg:col-span-1 max-md:col-span-1 max-sm:col-span-1"
+              key={color.name}
+            >
+              <StyleGuideColorSwatch color={color} />
+            </SevenColumnGridItem>
+          ))}
+        </SevenColumnGrid>
+
+        <SevenColumnGrid className="mt-6" minHeight="none" padding="none">
           {colorRoleCombinations.map((combo) => (
-            <div
-              className={cx(
-                combo.surfaceClass,
-                combo.textClass,
-                combo.borderClass,
-                "fluid-type-frame rounded border p-6",
-              )}
+            <SevenColumnGridItem
+              className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
               key={combo.name}
             >
-              <p className="type-label opacity-75">{combo.name}</p>
-              <h3 className="type-heading-md mt-eyebrow-heading-md">
-                Surface, text, and action together
-              </h3>
-              <p className={cx(combo.mutedClass, "type-text-sm measure-copy-wide wrap-pretty mt-heading-body-md")}>
-                This combination checks the live relationship between role color,
-                muted copy, borders, and inverse action treatment.
-              </p>
               <div
                 className={cx(
+                  combo.surfaceClass,
+                  combo.textClass,
                   combo.borderClass,
-                  "mt-5 rounded border p-4",
+                  "fluid-type-frame h-full rounded border p-6",
                 )}
               >
-                <p className="type-caption opacity-80">
-                  Nested border and surface sample
+                <p className="type-label opacity-75">{combo.name}</p>
+                <h3 className="type-heading-md mt-eyebrow-heading-md">
+                  Semantic role relationship
+                </h3>
+                <p className={cx(combo.mutedClass, "type-text-sm wrap-pretty mt-heading-body-md")}>
+                  {combo.surfaceClass} / {combo.textClass} / {combo.mutedClass}
+                </p>
+                <div className={cx(combo.borderClass, "mt-5 rounded border p-4")}>
+                  <p className="type-caption opacity-80">
+                    Border role: {combo.borderClass}
+                  </p>
+                </div>
+                <span
+                  className={cx(
+                    combo.actionClass,
+                    "mt-body-actions-sm inline-flex min-h-10 items-center rounded-sm px-4 text-sm font-semibold",
+                  )}
+                >
+                  {combo.actionClass}
+                </span>
+              </div>
+            </SevenColumnGridItem>
+          ))}
+        </SevenColumnGrid>
+
+        <SevenColumnGrid className="mt-6" minHeight="none" padding="none">
+          {surfaceTypeSpecimens.map((specimen) => (
+            <SevenColumnGridItem
+              className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+              key={specimen.name}
+            >
+              <article
+                className={cx(
+                  specimen.surfaceClass,
+                  specimen.frameClass,
+                  "fluid-type-frame radius-medium grid min-h-[30rem] border p-6 shadow-service",
+                )}
+              >
+                <div className="grid content-between gap-8">
+                  <div>
+                    <p className={cx("type-label", specimen.eyebrowClass)}>
+                      {specimen.name}
+                    </p>
+                    <p className={cx("type-caption mt-2", specimen.bodyClass)}>
+                      {specimen.semantic}
+                    </p>
+                    <h3
+                      className={cx(
+                        specimen.headingClassName,
+                        "mt-eyebrow-heading-lg",
+                        specimen.headingClass,
+                      )}
+                    >
+                      Fast repairs with clear options before work begins
+                    </h3>
+                    <p
+                      className={cx(
+                        specimen.bodyClassName,
+                        "wrap-pretty mt-heading-body-lg",
+                        specimen.bodyClass,
+                      )}
+                    >
+                      This paragraph shows whether the muted text can carry real
+                      service detail without feeling faint, muddy, or too close to
+                      the heading color.
+                    </p>
+                  </div>
+
+                  <div
+                    className={cx(
+                      specimen.insetClass,
+                      "radius-4 border p-4",
+                    )}
+                  >
+                    <p
+                      className={cx(
+                        "type-heading-sm",
+                        specimen.insetHeadingClass,
+                      )}
+                    >
+                      Estimate window
+                    </p>
+                    <p
+                      className={cx(
+                        "type-caption mt-heading-body-sm",
+                        specimen.insetBodyClass,
+                      )}
+                    >
+                      Same-day scheduling, arrival notes, and approval before
+                      paid repair work.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span
+                      className={cx(
+                        specimen.actionClass,
+                        "radius-4 type-label inline-flex min-h-11 items-center px-4",
+                      )}
+                    >
+                      Request service
+                    </span>
+                    <span className={cx("type-caption", specimen.bodyClass)}>
+                      4.9 rating / local team
+                    </span>
+                  </div>
+                </div>
+              </article>
+            </SevenColumnGridItem>
+          ))}
+        </SevenColumnGrid>
+
+        <SevenColumnGrid className="mt-6" minHeight="none" padding="none">
+          <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+            <div className="fluid-type-frame radius-medium border border-service-border bg-white p-8 shadow-service max-md:p-6">
+              <p className="type-label text-service-accent">Hierarchy waterfall</p>
+              <h3 className="type-display-lg mt-eyebrow-display text-service-ink">
+                Emergency help, calm communication, clean closeout notes
+              </h3>
+              <p className="type-text-xl wrap-pretty mt-display-body text-service-muted">
+                This larger specimen makes font scale, heading weight, body
+                leading, and color contrast visible in one normal homepage-style
+                block.
+              </p>
+              <div className="mt-body-actions-lg grid grid-cols-3 gap-4 max-md:grid-cols-1">
+                <div className="radius-4 border border-service-border bg-service-surface p-4">
+                  <p className="type-heading-sm text-service-ink">42 min</p>
+                  <p className="type-caption mt-2 text-service-muted">
+                    Average response window
+                  </p>
+                </div>
+                <div className="radius-4 border border-service-border bg-service-surface p-4">
+                  <p className="type-heading-sm text-service-ink">2,400+</p>
+                  <p className="type-caption mt-2 text-service-muted">
+                    Completed visits
+                  </p>
+                </div>
+                <div className="radius-4 border border-service-border bg-service-surface p-4">
+                  <p className="type-heading-sm text-service-ink">4.9</p>
+                  <p className="type-caption mt-2 text-service-muted">
+                    Review average
+                  </p>
+                </div>
+              </div>
+            </div>
+          </SevenColumnGridItem>
+
+          <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+            <div className="fluid-type-frame radius-medium border border-white/18 bg-service-ink p-8 text-white shadow-service max-md:p-6">
+              <p className="type-label text-white/68">Inverse check</p>
+              <h3 className="type-heading-xl mt-eyebrow-heading-lg">
+                When the palette turns dark, the hierarchy should stay calm.
+              </h3>
+              <p className="type-text-lg wrap-pretty mt-heading-body-lg text-white/72">
+                Use this to judge whether inverse copy has enough presence beside
+                bright actions, muted labels, and card borders.
+              </p>
+              <div className="mt-body-actions-md rounded-sm border border-white/14 bg-white/8 p-5">
+                <p className="type-heading-sm">Ready for dispatch</p>
+                <p className="type-caption mt-heading-body-sm text-white/66">
+                  The nested panel should feel distinct without turning chalky.
                 </p>
               </div>
-              <span
-                className={cx(
-                  combo.actionClass,
-                  "mt-body-actions-sm inline-flex min-h-10 items-center rounded-sm px-4 text-sm font-semibold",
-                )}
-              >
-                Action sample
-              </span>
             </div>
-          ))}
-        </div>
+          </SevenColumnGridItem>
+        </SevenColumnGrid>
       </GuideSection>
 
       <GuideSection
@@ -1203,7 +1418,8 @@ export default function StyleGuidePage() {
         title="Cards, Buttons, Surfaces, Borders, Radii, Shadows"
         body="A compact component surface board for the styleguide preview stage."
       >
-        <div className="grid grid-cols-[0.9fr_1.1fr] gap-5 max-lg:grid-cols-1">
+        <SevenColumnGrid minHeight="none" padding="none">
+          <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <div className="grid gap-4">
             {surfaceExamples.map((surface) => (
               <div className={surface.className} key={surface.name}>
@@ -1211,15 +1427,17 @@ export default function StyleGuidePage() {
                 <h3 className="type-heading-sm mt-eyebrow-heading-sm">
                   Surface sample with live radius and shadow
                 </h3>
-                <p className="type-text-sm measure-copy-wide wrap-pretty mt-heading-body-sm opacity-75">
+                <p className="type-text-sm wrap-pretty mt-heading-body-sm opacity-75">
                   The shell, border, corner radius, and shadow all come from the
                   current shared utility set.
                 </p>
               </div>
             ))}
           </div>
+          </SevenColumnGridItem>
 
-          <Card className="fluid-type-frame p-6 shadow-none">
+          <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+          <Card className="fluid-type-frame h-full p-6 shadow-none">
             <p className="type-label text-service-accent">Button states</p>
             <h3 className="type-heading-lg mt-eyebrow-heading-md text-service-ink">
               Primary, secondary, dark inverse, and custom CTA
@@ -1261,7 +1479,8 @@ export default function StyleGuidePage() {
               ))}
             </div>
           </Card>
-        </div>
+          </SevenColumnGridItem>
+        </SevenColumnGrid>
       </GuideSection>
 
       <GuideSection
@@ -1270,13 +1489,15 @@ export default function StyleGuidePage() {
         body="A few real section-library components rendered inside the styleguide so token changes can be reviewed against organic compositions."
       >
         <div className="grid gap-6 overflow-hidden rounded border border-service-border bg-service-surface">
-          <HeroBentoSectionV2
-            {...sectionLibraryContent.hero}
-            headingLevel={2}
+          <HeroSplitFullHeightSectionV3
+            {...sectionLibraryV3Content.heroSplitFullHeight}
+            variant="text-3-image-4-right"
           />
-          <TrustBarSection {...sectionLibraryContent.trustBar} />
-          <ServicesGridSectionV2 {...sectionLibraryContent.services} />
-          <FAQSectionV2 {...sectionLibraryContent.faq} />
+          <TrustBarSectionV3 {...sectionLibraryV3Content.trustBar} />
+          <ServicesThreeCardsRightSectionV3
+            {...sectionLibraryV3Content.servicesThreeCardsRight}
+          />
+          <FAQSectionV3 {...sectionLibraryContent.faq} />
         </div>
       </GuideSection>
 
@@ -1285,50 +1506,55 @@ export default function StyleGuidePage() {
         title="Shared Styles In Context"
         body="These previews use the same global tokens a production section would compose."
       >
-        <div className="grid grid-cols-[1.2fr_0.8fr] gap-6 max-lg:grid-cols-1">
-          <Card className="fluid-type-frame p-8 shadow-none max-md:p-6">
-            <p className="type-label text-service-accent">Emergency HVAC Repair</p>
-            <h3 className="type-heading-xl mt-5 text-service-ink">
-              Same-day repairs when your system quits
-            </h3>
-            <p className="type-text-lg measure-copy wrap-pretty mt-6 text-service-muted">
-              Get fast help from licensed technicians serving Huntersville,
-              Cornelius, Davidson, and North Charlotte.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button href="#">Schedule Now</Button>
-              <Button href="#" variant="secondary">
-                Call Today
-              </Button>
+        <SevenColumnGrid minHeight="none" padding="none">
+          <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+            <Card className="fluid-type-frame h-full p-8 shadow-none max-md:p-6">
+              <p className="type-label text-service-accent">Emergency HVAC Repair</p>
+              <h3 className="type-heading-xl mt-5 text-service-ink">
+                Same-day repairs when your system quits
+              </h3>
+              <p className="type-text-lg wrap-pretty mt-6 text-service-muted">
+                Get fast help from licensed technicians serving Huntersville,
+                Cornelius, Davidson, and North Charlotte.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button href="#">Schedule Now</Button>
+                <Button href="#" variant="secondary">
+                  Call Today
+                </Button>
+              </div>
+            </Card>
+          </SevenColumnGridItem>
+
+          <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+            <div className="grid gap-6">
+              <Card className="fluid-type-frame p-7 shadow-none">
+                <h3 className="type-heading-sm text-service-ink">
+                  Preventive maintenance
+                </h3>
+                <p className="type-text-sm wrap-pretty mt-4 text-service-muted">
+                  Seasonal tune-ups help catch small issues before they become
+                  expensive repairs.
+                </p>
+                <a className="type-label mt-6 inline-block text-service-accent" href="#">
+                  View service
+                </a>
+              </Card>
+
+              <Card className="fluid-type-frame p-7 shadow-none">
+                <h3 className="type-heading-sm text-service-ink">
+                  Do you provide estimates before work begins?
+                </h3>
+                <p className="type-text-md wrap-pretty mt-4 text-service-muted">
+                  Yes. Customers receive a clear scope and approval point before
+                  paid work starts.
+                </p>
+              </Card>
             </div>
-          </Card>
-
-          <div className="grid gap-6">
-            <Card className="fluid-type-frame p-7 shadow-none">
-              <h3 className="type-heading-sm text-service-ink">
-                Preventive maintenance
-              </h3>
-              <p className="type-text-sm measure-copy-wide wrap-pretty mt-4 text-service-muted">
-                Seasonal tune-ups help catch small issues before they become
-                expensive repairs.
-              </p>
-              <a className="type-label mt-6 inline-block text-service-accent" href="#">
-                View service
-              </a>
-            </Card>
-
-            <Card className="fluid-type-frame p-7 shadow-none">
-              <h3 className="type-heading-sm text-service-ink">
-                Do you provide estimates before work begins?
-              </h3>
-              <p className="type-text-md measure-copy wrap-pretty mt-4 text-service-muted">
-                Yes. Customers receive a clear scope and approval point before
-                paid work starts.
-              </p>
-            </Card>
-          </div>
-        </div>
+          </SevenColumnGridItem>
+        </SevenColumnGrid>
       </GuideSection>
-    </main>
+      </main>
+    </StyleGuideLiveSurface>
   );
 }

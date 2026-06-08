@@ -10,6 +10,14 @@ import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/Conten
 import { ContentStickyIdeasSectionV2 } from "@/components/sections/ContentStickyIdeasSectionV2";
 import { FAQAccordionSectionV2 } from "@/components/sections/FAQAccordionSectionV2";
 import { FAQSectionV2 } from "@/components/sections/FAQSectionV2";
+import {
+  ContactSectionV3,
+  CTAFullscreenSectionV3,
+  FooterSectionV3,
+  FAQSectionV3,
+} from "@/components/sections/FAQConversionContactFooterSectionsV3";
+import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
+import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
 import { HeroBentoSectionV2 } from "@/components/sections/HeroBentoSectionV2";
 import { HeroCenteredFloatersSectionV2 } from "@/components/sections/HeroCenteredFloatersSectionV2";
 import { HeroContentTopImageBottomSectionV2 } from "@/components/sections/HeroContentTopImageBottomSectionV2";
@@ -22,16 +30,26 @@ import {
 } from "@/components/sections/NavPrimarySectionV2";
 import { NavFloatingBentoSectionV2 } from "@/components/sections/NavFloatingBentoSectionV2";
 import { ProcessImageChecklistSectionV2 } from "@/components/sections/ProcessImageChecklistSectionV2";
+import { ProcessImageChecklistSectionV3 } from "@/components/sections/ProcessImageChecklistSectionV3";
 import { ServicesGridSectionV2 } from "@/components/sections/ServicesGridSectionV2";
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
+import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/ServicesThreeCardsRightSectionV3";
 import { TestimonialsCarouselSectionV2 } from "@/components/sections/TestimonialsCarouselSectionV2";
+import { TestimonialsCarouselSectionV3 } from "@/components/sections/TestimonialsCarouselSectionV3";
 import { TestimonialsMasonrySectionV2 } from "@/components/sections/TestimonialsMasonrySectionV2";
+import { TestimonialsMasonrySectionV3 } from "@/components/sections/TestimonialsMasonrySectionV3";
 import { TrustBarSection } from "@/components/sections/TrustBarSection";
 import { TrustLogoGridSection } from "@/components/sections/TrustLogoMarqueeSection";
 import { TrustMarqueeSection } from "@/components/sections/TrustMarqueeSection";
+import {
+  TrustBarSectionV3,
+  TrustLogoGridSectionV3,
+  TrustMarqueeSectionV3,
+} from "@/components/sections/TrustSectionsV3";
 import { PagebuilderShell } from "@/components/sections/PagebuilderShell";
 import { pagebuilderRecipes, sectionModes } from "@/content/pagebuilder";
 import { sectionLibraryContent } from "@/content/section-library";
+import { sectionLibraryV3Content } from "@/content/section-library-v3";
 import type { PagebuilderRecipeSection } from "@/content/pagebuilder";
 
 function UnknownSection({ section }: { section: PagebuilderRecipeSection }) {
@@ -94,12 +112,28 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       );
     case "TrustBarSection":
       return <TrustBarSection {...sectionLibraryContent.trustBar} />;
+    case "TrustBarSectionV3":
+      return <TrustBarSectionV3 {...sectionLibraryV3Content.trustBar} />;
     case "TrustMarqueeSection":
       return <TrustMarqueeSection {...sectionLibraryContent.trustMarquee} />;
+    case "TrustMarqueeSectionV3":
+      return <TrustMarqueeSectionV3 {...sectionLibraryV3Content.trustMarquee} />;
     case "TrustLogoGridSection":
       return <TrustLogoGridSection {...sectionLibraryContent.trustLogoMarquee} />;
+    case "TrustLogoGridSectionV3":
+      return (
+        <TrustLogoGridSectionV3
+          {...sectionLibraryV3Content.trustLogoMarquee}
+        />
+      );
     case "ServicesGridSectionV2":
       return <ServicesGridSectionV2 {...sectionLibraryContent.services} />;
+    case "ServicesThreeCardsRightSectionV3":
+      return (
+        <ServicesThreeCardsRightSectionV3
+          {...sectionLibraryV3Content.servicesThreeCardsRight}
+        />
+      );
     case "ServicesScrollCardsSectionV2":
       return (
         <ServicesScrollCardsSectionV2
@@ -150,11 +184,21 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       );
     case "FAQSectionV2":
       return <FAQSectionV2 {...sectionLibraryContent.faq} />;
+    case "FAQSectionV3":
+      return <FAQSectionV3 {...sectionLibraryContent.faq} />;
     case "FAQAccordionSectionV2":
       return <FAQAccordionSectionV2 {...sectionLibraryContent.faqAccordion} />;
+    case "FAQAccordionSectionV3":
+      return <FAQAccordionSectionV3 {...sectionLibraryContent.faqAccordion} />;
     case "TestimonialsCarouselSectionV2":
       return (
         <TestimonialsCarouselSectionV2
+          {...sectionLibraryContent.testimonialsCarousel}
+        />
+      );
+    case "TestimonialsCarouselSectionV3":
+      return (
+        <TestimonialsCarouselSectionV3
           {...sectionLibraryContent.testimonialsCarousel}
         />
       );
@@ -164,24 +208,48 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryContent.testimonialsMasonry}
         />
       );
+    case "TestimonialsMasonrySectionV3":
+      return (
+        <TestimonialsMasonrySectionV3
+          {...sectionLibraryContent.testimonialsMasonry}
+        />
+      );
     case "ProcessImageChecklistSectionV2":
       return (
         <ProcessImageChecklistSectionV2
           {...sectionLibraryContent.processImageChecklist}
         />
       );
+    case "ProcessImageChecklistSectionV3":
+      return (
+        <ProcessImageChecklistSectionV3
+          {...sectionLibraryContent.processImageChecklist}
+        />
+      );
     case "CTAFullscreenSectionV2":
       return <CTAFullscreenSectionV2 {...sectionLibraryContent.ctaFullscreen} />;
+    case "CTAFullscreenSectionV3":
+      return <CTAFullscreenSectionV3 {...sectionLibraryContent.ctaFullscreen} />;
     case "CTAScrollRevealOfferSectionV2":
       return (
         <CTAScrollRevealOfferSectionV2
           {...sectionLibraryContent.ctaScrollRevealOffer}
         />
       );
+    case "CTAScrollRevealOfferSectionV3":
+      return (
+        <CTAScrollRevealOfferSectionV3
+          {...sectionLibraryContent.ctaScrollRevealOffer}
+        />
+      );
     case "ContactSectionV2":
       return <ContactSectionV2 {...sectionLibraryContent.contact} />;
+    case "ContactSectionV3":
+      return <ContactSectionV3 {...sectionLibraryContent.contact} />;
     case "FooterSectionV2":
       return <FooterSectionV2 {...sectionLibraryContent.footer} />;
+    case "FooterSectionV3":
+      return <FooterSectionV3 {...sectionLibraryContent.footer} />;
     default:
       return <UnknownSection section={section} />;
   }
@@ -300,11 +368,11 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    TrustBarSection: (
-      <div key="TrustBarSection">
+    TrustBarSectionV3: (
+      <div key="TrustBarSectionV3">
         {renderPreviewSection(
           {
-            component: "TrustBarSection",
+            component: "TrustBarSectionV3",
             instruction: "",
             mode: "Proof",
             name: "Trust bar",
@@ -313,11 +381,11 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    TrustMarqueeSection: (
-      <div key="TrustMarqueeSection">
+    TrustMarqueeSectionV3: (
+      <div key="TrustMarqueeSectionV3">
         {renderPreviewSection(
           {
-            component: "TrustMarqueeSection",
+            component: "TrustMarqueeSectionV3",
             instruction: "",
             mode: "Proof",
             name: "Trust marquee",
@@ -326,11 +394,11 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    TrustLogoGridSection: (
-      <div key="TrustLogoGridSection">
+    TrustLogoGridSectionV3: (
+      <div key="TrustLogoGridSectionV3">
         {renderPreviewSection(
           {
-            component: "TrustLogoGridSection",
+            component: "TrustLogoGridSectionV3",
             instruction: "",
             mode: "Proof",
             name: "Static trust logo grid",
@@ -339,11 +407,11 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    ServicesGridSectionV2: (
-      <div key="ServicesGridSectionV2">
+    ServicesThreeCardsRightSectionV3: (
+      <div key="ServicesThreeCardsRightSectionV3">
         {renderPreviewSection(
           {
-            component: "ServicesGridSectionV2",
+            component: "ServicesThreeCardsRightSectionV3",
             instruction: "",
             mode: "Scan",
             name: "Services grid",
@@ -456,11 +524,11 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    FAQSectionV2: (
-      <div key="FAQSectionV2">
+    FAQSectionV3: (
+      <div key="FAQSectionV3">
         {renderPreviewSection(
           {
-            component: "FAQSectionV2",
+            component: "FAQSectionV3",
             instruction: "",
             mode: "Decision",
             name: "FAQ",
@@ -469,11 +537,11 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    FAQAccordionSectionV2: (
-      <div key="FAQAccordionSectionV2">
+    FAQAccordionSectionV3: (
+      <div key="FAQAccordionSectionV3">
         {renderPreviewSection(
           {
-            component: "FAQAccordionSectionV2",
+            component: "FAQAccordionSectionV3",
             instruction: "",
             mode: "Decision",
             name: "FAQ accordion",
@@ -482,11 +550,11 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    TestimonialsCarouselSectionV2: (
-      <div key="TestimonialsCarouselSectionV2">
+    TestimonialsCarouselSectionV3: (
+      <div key="TestimonialsCarouselSectionV3">
         {renderPreviewSection(
           {
-            component: "TestimonialsCarouselSectionV2",
+            component: "TestimonialsCarouselSectionV3",
             instruction: "",
             mode: "Proof",
             name: "Customer stories",
@@ -495,11 +563,11 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    TestimonialsMasonrySectionV2: (
-      <div key="TestimonialsMasonrySectionV2">
+    TestimonialsMasonrySectionV3: (
+      <div key="TestimonialsMasonrySectionV3">
         {renderPreviewSection(
           {
-            component: "TestimonialsMasonrySectionV2",
+            component: "TestimonialsMasonrySectionV3",
             instruction: "",
             mode: "Proof",
             name: "Masonry testimonials",
@@ -508,11 +576,11 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    ProcessImageChecklistSectionV2: (
-      <div key="ProcessImageChecklistSectionV2">
+    ProcessImageChecklistSectionV3: (
+      <div key="ProcessImageChecklistSectionV3">
         {renderPreviewSection(
           {
-            component: "ProcessImageChecklistSectionV2",
+            component: "ProcessImageChecklistSectionV3",
             instruction: "",
             mode: "Decision",
             name: "Process image checklist",
@@ -521,11 +589,11 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    CTAFullscreenSectionV2: (
-      <div key="CTAFullscreenSectionV2">
+    CTAFullscreenSectionV3: (
+      <div key="CTAFullscreenSectionV3">
         {renderPreviewSection(
           {
-            component: "CTAFullscreenSectionV2",
+            component: "CTAFullscreenSectionV3",
             instruction: "",
             mode: "Action",
             name: "Fullscreen conversion",
@@ -534,11 +602,11 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    CTAScrollRevealOfferSectionV2: (
-      <div key="CTAScrollRevealOfferSectionV2">
+    CTAScrollRevealOfferSectionV3: (
+      <div key="CTAScrollRevealOfferSectionV3">
         {renderPreviewSection(
           {
-            component: "CTAScrollRevealOfferSectionV2",
+            component: "CTAScrollRevealOfferSectionV3",
             instruction: "",
             mode: "Action",
             name: "Scroll reveal offer conversion",
@@ -547,11 +615,11 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    ContactSectionV2: (
-      <div key="ContactSectionV2">
+    ContactSectionV3: (
+      <div key="ContactSectionV3">
         {renderPreviewSection(
           {
-            component: "ContactSectionV2",
+            component: "ContactSectionV3",
             instruction: "",
             mode: "Utility",
             name: "Contact section",
@@ -560,11 +628,11 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    FooterSectionV2: (
-      <div key="FooterSectionV2">
+    FooterSectionV3: (
+      <div key="FooterSectionV3">
         {renderPreviewSection(
           {
-            component: "FooterSectionV2",
+            component: "FooterSectionV3",
             instruction: "",
             mode: "Utility",
             name: "Footer",

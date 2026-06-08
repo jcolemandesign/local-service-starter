@@ -49,12 +49,12 @@ export function FAQAccordionSectionV3({
           alignX="center"
           className="col-span-3 col-start-3 max-lg:col-span-7 max-lg:col-start-1"
         >
-          <div className="fluid-type-frame mx-auto w-full measure-lead text-center">
+          <div className="fluid-type-frame mx-auto w-full text-center">
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2 className="type-heading-xl mx-auto mt-5 text-service-ink">
               {title}
             </h2>
-            <p className="type-text-lg measure-copy wrap-pretty mx-auto mt-6 text-service-muted">
+            <p className="type-text-lg wrap-pretty mx-auto mt-6 text-service-muted">
               {body}
             </p>
           </div>
@@ -96,7 +96,7 @@ export function FAQAccordionSectionV3({
                         initial={{ height: 0, opacity: 0 }}
                         transition={answerTransition}
                       >
-                        <div className="type-text-md measure-copy wrap-pretty pb-8 text-service-muted max-md:pb-6">
+                        <div className="type-text-md wrap-pretty pb-8 text-service-muted max-md:pb-6">
                           {item.answer}
                         </div>
                       </motion.div>

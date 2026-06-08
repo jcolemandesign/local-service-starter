@@ -79,7 +79,7 @@ function FeatureOverlapCard({
     >
       <p className="type-label text-service-accent">{item.eyebrow}</p>
       <h2 className="type-heading-lg mt-4 text-service-ink">{item.title}</h2>
-      <p className="type-text-md measure-copy wrap-pretty mt-6 text-service-muted">
+      <p className="type-text-md wrap-pretty mt-6 text-service-muted">
         {item.body}
       </p>
     </article>
@@ -167,7 +167,7 @@ export function ProcessStepsSectionV3({
             <h2 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
               {title}
             </h2>
-            <p className="type-text-lg measure-copy wrap-pretty mt-heading-body-lg text-service-muted">
+            <p className="type-text-lg wrap-pretty mt-heading-body-lg text-service-muted">
               {body}
             </p>
           </div>
@@ -195,7 +195,7 @@ export function ProcessStepsSectionV3({
                   <h3 className="type-heading-md text-service-ink">
                     {step.title}
                   </h3>
-                  <p className="type-text-md measure-copy wrap-pretty mt-heading-body-md text-service-muted">
+                  <p className="type-text-md wrap-pretty mt-heading-body-md text-service-muted">
                     {step.body}
                   </p>
                 </div>
@@ -224,7 +224,7 @@ export function TestimonialsSectionV3({
           <div className="fluid-type-frame">
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2 className="type-heading-xl mt-5 text-service-ink">{title}</h2>
-            <p className="type-text-lg measure-copy wrap-pretty mt-6 text-service-muted">
+            <p className="type-text-lg wrap-pretty mt-6 text-service-muted">
               {body}
             </p>
           </div>
@@ -240,13 +240,13 @@ export function TestimonialsSectionV3({
                 className="fluid-type-frame radius-medium border border-service-border bg-service-surface p-8 shadow-service"
                 key={item.author}
               >
-                <blockquote className="type-text-xl measure-copy wrap-pretty font-medium text-service-ink">
+                <blockquote className="type-text-xl wrap-pretty font-medium text-service-ink">
                   &quot;{item.quote}&quot;
                 </blockquote>
                 <p className="type-heading-sm mt-8 text-service-ink">
                   {item.author}
                 </p>
-                <p className="type-text-sm measure-caption wrap-pretty mt-2 text-service-muted">
+                <p className="type-text-sm wrap-pretty mt-2 text-service-muted">
                   {item.detail}
                 </p>
               </article>

@@ -32,6 +32,10 @@ type PromotionSnapshot = {
   promotedAt: string;
 };
 
+type PromotionResponse =
+  | { ok: true; page: PromotionSnapshot }
+  | { ok: false; error: string };
+
 const draftStorageKey = "pageworks-content-editor-draft-v1";
 const promotionStorageKey = "pageworks-content-editor-promotion-v1";
 
@@ -45,6 +49,8 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
   const [savedAt, setSavedAt] = useState(initialDraft.savedAt);
   const [promotedAt, setPromotedAt] = useState("");
   const [status, setStatus] = useState("");
+  const [isPromoting, setIsPromoting] = useState(false);
+  const [openSectionIds, setOpenSectionIds] = useState<string[]>([]);
 
   const activePage = pages.find((page) => page.id === activePageId) ?? pages[0];
   const allFields = pages.flatMap((page) =>
@@ -66,6 +72,21 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
       [fieldId]: value,
     }));
     setStatus("");
+  }
+
+  function selectPage(pageId: string) {
+    setActivePageId(pageId);
+    setOpenSectionIds([]);
+  }
+
+  function toggleSection(sectionId: string) {
+    setOpenSectionIds((currentSectionIds) =>
+      currentSectionIds.includes(sectionId)
+        ? currentSectionIds.filter(
+            (currentSectionId) => currentSectionId !== sectionId,
+          )
+        : [...currentSectionIds, sectionId],
+    );
   }
 
   function resetActivePage() {
@@ -97,13 +118,15 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
     setStatus("Draft saved.");
   }
 
-  function promoteActivePage() {
+  async function promoteActivePage() {
     if (!activePage) {
       return;
     }
 
-    const nextPromotedAt = new Date().toISOString();
-    const snapshot: PromotionSnapshot = {
+    setIsPromoting(true);
+    setStatus("");
+
+    const snapshot = {
       fields: activeFields.map((field) => ({
         id: field.id,
         kind: field.kind,
@@ -113,15 +136,32 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
       pageHref: activePage.href,
       pageId: activePage.id,
       pageLabel: activePage.label,
-      promotedAt: nextPromotedAt,
     };
 
-    window.localStorage.setItem(
-      promotionStorageKey,
-      JSON.stringify(snapshot, null, 2),
-    );
-    setPromotedAt(nextPromotedAt);
-    setStatus("Promotion snapshot saved.");
+    try {
+      const response = await fetch("/api/content-editor-promotions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(snapshot),
+      });
+      const result = (await response.json()) as PromotionResponse;
+
+      if (!response.ok || !result.ok) {
+        setStatus(result.ok ? "Promotion failed." : result.error);
+        return;
+      }
+
+      window.localStorage.setItem(
+        promotionStorageKey,
+        JSON.stringify(result.page, null, 2),
+      );
+      setPromotedAt(result.page.promotedAt);
+      setStatus("Staged content promoted.");
+    } catch {
+      setStatus("Promotion failed.");
+    } finally {
+      setIsPromoting(false);
+    }
   }
 
   return (
@@ -132,7 +172,7 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
           <h1 className="type-display-lg mt-eyebrow-display text-service-ink">
             Content Editor
           </h1>
-          <p className="type-text-xl measure-copy wrap-pretty mt-display-body text-service-muted">
+          <p className="type-text-xl wrap-pretty mt-display-body text-service-muted">
             Created Pages copy and image-placement fields grouped by page and
             section.
           </p>
@@ -153,7 +193,7 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
                 <button
                   key={page.id}
                   type="button"
-                  onClick={() => setActivePageId(page.id)}
+                  onClick={() => selectPage(page.id)}
                   className={`rounded-sm border px-3 py-3 text-left transition-colors ${
                     isActive
                       ? "border-service-accent bg-white text-service-ink shadow-service"
@@ -197,7 +237,7 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
                 <div className="flex flex-wrap items-start justify-end gap-2 max-md:justify-start">
                   <ActionButton onClick={saveDraft}>Save Draft</ActionButton>
                   <ActionButton onClick={promoteActivePage} tone="dark">
-                    Promote Snapshot
+                    {isPromoting ? "Promoting..." : "Promote To Staged"}
                   </ActionButton>
                   <ActionButton onClick={resetActivePage} tone="quiet">
                     Reset Page
@@ -215,44 +255,77 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
               </div>
 
               <div className="grid gap-5">
-                {activePage.sections.map((section) => (
-                  <section
-                    key={section.id}
-                    aria-labelledby={`content-editor-${activePage.id}-${section.id}`}
-                    className="rounded-sm border border-service-border bg-white p-5 shadow-service"
-                  >
-                    <div className="flex flex-wrap items-start justify-between gap-4">
-                      <div>
-                        <p className="type-label text-service-accent">
-                          {section.id}
-                        </p>
-                        <h3
-                          id={`content-editor-${activePage.id}-${section.id}`}
-                          className="type-heading-sm mt-eyebrow-heading-sm text-service-ink"
-                        >
-                          {section.label}
-                        </h3>
-                      </div>
-                      <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
-                        {section.fields.length} fields
-                      </span>
-                    </div>
+                {activePage.sections.map((section) => {
+                  const isOpen = openSectionIds.includes(section.id);
+                  const sectionDirtyCount = section.fields.filter((field) =>
+                    dirtyFieldIds.includes(field.id),
+                  ).length;
+                  const sectionFieldCounts = getFieldCounts(section.fields);
+                  const panelId = `content-editor-${activePage.id}-${section.id}-panel`;
+                  const buttonId = `content-editor-${activePage.id}-${section.id}-button`;
 
-                    <div className="mt-5 grid grid-cols-2 gap-4 max-lg:grid-cols-1">
-                      {section.fields.map((field) => (
-                        <FieldEditor
-                          key={field.id}
-                          field={field}
-                          value={values[field.id] ?? field.value}
-                          originalValue={originalValues[field.id] ?? field.value}
-                          onChange={(nextValue) =>
-                            updateField(field.id, nextValue)
-                          }
-                        />
-                      ))}
-                    </div>
-                  </section>
-                ))}
+                  return (
+                    <section
+                      key={section.id}
+                      aria-labelledby={buttonId}
+                      className="overflow-hidden rounded-sm border border-service-border bg-white shadow-service"
+                    >
+                      <button
+                        id={buttonId}
+                        type="button"
+                        aria-controls={panelId}
+                        aria-expanded={isOpen}
+                        onClick={() => toggleSection(section.id)}
+                        className="flex w-full items-start justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-service-surface/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-service-accent focus-visible:ring-inset"
+                      >
+                        <span className="min-w-0">
+                          <span className="type-label block text-service-accent">
+                            {section.id}
+                          </span>
+                          <span className="type-heading-sm mt-eyebrow-heading-sm block text-service-ink">
+                            {section.label}
+                          </span>
+                          <span className="mt-3 flex flex-wrap gap-2">
+                            <StatusPill label={`${section.fields.length} fields`} />
+                            <StatusPill label={`${sectionFieldCounts.copy} copy`} />
+                            <StatusPill label={`${sectionFieldCounts.image} image`} />
+                            <StatusPill label={`${sectionFieldCounts.link} link`} />
+                            <StatusPill label={`${sectionDirtyCount} edited`} />
+                          </span>
+                        </span>
+                        <span
+                          aria-hidden="true"
+                          className={`mt-1 flex size-9 shrink-0 items-center justify-center rounded-sm border border-service-border text-xl leading-none text-service-accent transition-transform ${
+                            isOpen ? "rotate-180" : ""
+                          }`}
+                        >
+                          v
+                        </span>
+                      </button>
+
+                      {isOpen ? (
+                        <div
+                          id={panelId}
+                          role="region"
+                          aria-labelledby={buttonId}
+                          className="grid grid-cols-4 gap-4 border-t border-service-border p-5 max-2xl:grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1"
+                        >
+                          {section.fields.map((field) => (
+                            <FieldEditor
+                              key={field.id}
+                              field={field}
+                              value={values[field.id] ?? field.value}
+                              originalValue={originalValues[field.id] ?? field.value}
+                              onChange={(nextValue) =>
+                                updateField(field.id, nextValue)
+                              }
+                            />
+                          ))}
+                        </div>
+                      ) : null}
+                    </section>
+                  );
+                })}
               </div>
             </div>
           ) : null}

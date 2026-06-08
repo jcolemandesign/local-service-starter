@@ -113,7 +113,7 @@ export function HeroSplitFullHeightSectionV3({
             config.textClassName,
           )}
         >
-          <div className="fluid-type-frame w-full measure-copy-wide">
+          <div className="fluid-type-frame w-full">
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2
               className={cx(
@@ -126,7 +126,6 @@ export function HeroSplitFullHeightSectionV3({
             <p
               className={cx(
                 "type-text-xl wrap-pretty mt-display-body text-service-muted",
-                isTextFourImageThree ? "measure-lead" : "measure-copy",
               )}
             >
               {body}

@@ -70,21 +70,6 @@
           "label": "Font lab",
           "href": "/dev/font-lab",
           "description": "Inspect type options and hierarchy tests."
-        },
-        {
-          "label": "Grid lab",
-          "href": "/dev/grid-lab",
-          "description": "Check layout grid behavior across viewports."
-        },
-        {
-          "label": "Type hierarchy",
-          "href": "/dev/type-hierarchy-test",
-          "description": "Stress-test heading and body type relationships."
-        },
-        {
-          "label": "Type test",
-          "href": "/dev/type-test",
-          "description": "Legacy typography test surface."
         }
       ]
     },

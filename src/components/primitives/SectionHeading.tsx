@@ -16,21 +16,22 @@ export function SectionHeading({
   className = "",
 }: SectionHeadingProps) {
   const HeadingTag = `h${level}` as const;
+  const headingSpacing = eyebrow ? "mt-eyebrow-heading-lg" : "";
 
   return (
     <div
-      className={`max-w-3xl ${align === "center" ? "mx-auto text-center" : ""} ${className}`}
+      className={`fluid-type-frame measure-lead ${align === "center" ? "mx-auto text-center" : ""} ${className}`}
     >
       {eyebrow ? (
-        <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-service-accent">
+        <p className="type-label text-service-accent">
           {eyebrow}
         </p>
       ) : null}
-      <HeadingTag className="text-fluid-heading font-semibold leading-heading text-service-ink">
+      <HeadingTag className={`type-heading-xl text-service-ink ${headingSpacing}`}>
         {title}
       </HeadingTag>
       {body ? (
-        <p className="mt-5 text-lg leading-8 text-service-muted max-md:text-base max-md:leading-7">
+        <p className="type-text-lg measure-copy wrap-pretty mt-heading-body-lg text-service-muted">
           {body}
         </p>
       ) : null}

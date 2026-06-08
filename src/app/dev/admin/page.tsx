@@ -18,9 +18,7 @@ const linkGroups = [
       { label: "Section Library", href: "/sections" },
       { label: "Style Guide", href: "/dev/style-guide" },
       { label: "Font Lab", href: "/dev/font-lab" },
-      { label: "Grid Lab", href: "/dev/grid-lab" },
       { label: "Pagebuilder", href: "/dev/pagebuilder" },
-      { label: "Type Test", href: "/dev/type-test" },
     ],
   },
   {
@@ -50,7 +48,7 @@ export default function DevAdminPage() {
             <h1 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
               Local preview links
             </h1>
-            <p className="type-text-lg measure-copy wrap-pretty mt-heading-body-md text-service-muted">
+            <p className="type-text-lg wrap-pretty mt-heading-body-md text-service-muted">
               Open common project routes in a separate tab while working through
               layouts, style tests, and page previews.
             </p>

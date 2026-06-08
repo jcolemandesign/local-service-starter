@@ -60,7 +60,7 @@ export function ProcessImageChecklistSectionV3({
             <h2 className="type-heading-lg mt-eyebrow-heading-lg text-service-ink">
               {title}
             </h2>
-            <p className="type-text-lg measure-copy wrap-pretty mt-heading-body-lg text-service-muted">
+            <p className="type-text-lg wrap-pretty mt-heading-body-lg text-service-muted">
               {body}
             </p>
 
@@ -87,7 +87,7 @@ export function ProcessImageChecklistSectionV3({
                   <span className="radius-4 mt-1 flex size-8 shrink-0 items-center justify-center bg-service-ink text-xs font-semibold text-white">
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                  <span className="type-text-md measure-copy wrap-pretty font-medium text-service-ink">
+                  <span className="type-text-md wrap-pretty font-medium text-service-ink">
                     {item}
                   </span>
                 </motion.li>

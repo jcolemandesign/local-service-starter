@@ -239,15 +239,15 @@ const collections = sectionLibraryV3Collections.map((collection) => ({
 export default function SectionsV3Page() {
   return (
     <main className="bg-white">
-      <section className="bg-service-ink py-16 text-white">
+      <section className="section-space-sml bg-service-ink text-white">
         <Container>
-          <p className="text-sm font-semibold uppercase tracking-widest text-white/65">
+          <p className="type-label text-white/65">
             Internal preview
           </p>
-          <h1 className="mt-4 text-fluid-heading font-semibold leading-heading">
+          <h1 className="type-display-lg mt-eyebrow-display">
             Section Library
           </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-white/75">
+          <p className="type-text-xl measure-copy wrap-pretty mt-display-body text-white/75">
             Current seven-column section templates for the local service starter.
           </p>
         </Container>

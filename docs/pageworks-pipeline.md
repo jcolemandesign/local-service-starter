@@ -151,7 +151,20 @@ Status: in progress
 Progress:
 
 - Expanded styleguide preview matrix is in place.
-- Live token preview and promote behavior remain open.
+- Phase 4 control loop has started.
+- Live token controls preview color, radius, shadow, and core typography
+  variables across the styleguide surface.
+- The styleguide control surface is being shaped as a Font Lab 2.0 style lab
+  with color, type, radius, and shadow controls.
+- Promote writes a generated token override block to `src/app/globals.css` in
+  dev.
+- Core typography scale/weight/leading controls have been folded into the
+  Styleguide control loop.
+- Representative section previews now use current seven-column section-library
+  components where available.
+- Added surface/type relationship specimens so color choices can be judged
+  against headings, muted copy, nested cards, actions, and inverse treatments.
+- Full Font Lab role/profile editing remains separate.
 
 ### Phase 5: Content Editor
 
@@ -165,16 +178,25 @@ Progress:
 
 - Content Editor inventory reads Created Pages content.
 - Fields are grouped by page and section.
-- Draft save and promotion snapshot are local to the dev browser.
+- Draft save remains local to the dev browser.
+- Promote writes staged content snapshots to `src/content/staged-pages.json`.
+- Website Pages reads staged content snapshots from the repo.
 
 ### Phase 6: Website Pages And Public Promotion
+
+Status: in progress
 
 - Add Website Pages with Staged Pages.
 - Promote staged pages to public routes.
 - Keep public pages free of builder/editor controls.
 
+Progress:
+
+- Website Pages now lists staged pages promoted from the Content Editor.
+- Public route promotion remains open.
+
 ## Next Implementation Slice
 
-Start Phase 5 by replacing the Content Editor placeholder with a copy inventory
-surface that reads Created Pages content, groups editable fields by page and
-section, and separates save/promote as explicit next steps.
+Continue Phase 5/6 by adding public-route promotion from staged pages, then
+decide whether staged content snapshots should become canonical content files or
+remain a promotion handoff artifact.

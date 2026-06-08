@@ -14,7 +14,7 @@ export function Section({
   as: Component = "section",
 }: SectionProps) {
   return (
-    <Component id={id} className={`py-24 max-lg:py-20 max-md:py-16 ${className}`}>
+    <Component id={id} className={`section-space-med ${className}`}>
       {children}
     </Component>
   );

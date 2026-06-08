@@ -47,7 +47,7 @@ function SliderButton({
 function TestimonialCardContent({ item }: { item: CarouselTestimonial }) {
   return (
     <>
-      <blockquote className="type-text-xl measure-lead wrap-pretty mx-auto font-medium text-service-ink">
+      <blockquote className="type-text-xl wrap-pretty mx-auto font-medium text-service-ink">
         &quot;{item.quote}&quot;
       </blockquote>
       <figcaption className="mt-12 max-md:mt-9">
@@ -92,12 +92,12 @@ export function TestimonialsCarouselSectionV3({
           alignX="center"
           className="col-span-3 col-start-3 max-lg:col-span-7 max-lg:col-start-1"
         >
-          <div className="fluid-type-frame mx-auto w-full measure-lead text-center">
+          <div className="fluid-type-frame mx-auto w-full text-center">
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2 className="type-heading-xl mx-auto mt-5 text-service-ink">
               {title}
             </h2>
-            <p className="type-text-lg measure-copy wrap-pretty mx-auto mt-6 text-service-muted">
+            <p className="type-text-lg wrap-pretty mx-auto mt-6 text-service-muted">
               {body}
             </p>
           </div>

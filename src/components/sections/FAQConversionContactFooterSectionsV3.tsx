@@ -188,7 +188,7 @@ export function FAQSectionV3({
           <div className="fluid-type-frame">
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2 className="type-heading-xl mt-5 text-service-ink">{title}</h2>
-            <p className="type-text-lg measure-copy wrap-pretty mt-6 text-service-muted">
+            <p className="type-text-lg wrap-pretty mt-6 text-service-muted">
               {body}
             </p>
           </div>
@@ -204,7 +204,7 @@ export function FAQSectionV3({
                 <h3 className="type-heading-sm text-service-ink">
                   {item.question}
                 </h3>
-                <p className="type-text-md measure-copy wrap-pretty mt-3 text-service-muted">
+                <p className="type-text-md wrap-pretty mt-3 text-service-muted">
                   {item.answer}
                 </p>
               </article>
@@ -223,7 +223,7 @@ export function CTASectionV3({ action, body, title }: CTASectionV3Props) {
         <SevenColumnGridItem className="col-span-5 max-lg:col-span-7">
           <div className="fluid-type-frame">
             <h2 className="type-heading-xl">{title}</h2>
-            <p className="type-text-lg measure-copy wrap-pretty mt-6 text-white/75">
+            <p className="type-text-lg wrap-pretty mt-6 text-white/75">
               {body}
             </p>
           </div>
@@ -270,7 +270,7 @@ export function CTAFullscreenSectionV3({
           <div className="fluid-type-frame mx-auto w-full text-center">
             <p className="type-label mb-5 text-white/75">{eyebrow}</p>
             <h2 className="type-display-lg mx-auto max-w-5xl">{title}</h2>
-            <p className="type-text-xl measure-copy wrap-pretty mx-auto mt-6 text-white/80">
+            <p className="type-text-xl wrap-pretty mx-auto mt-6 text-white/80">
               {body}
             </p>
           </div>
@@ -307,7 +307,7 @@ export function ContactSectionV3({
           <div className="fluid-type-frame">
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2 className="type-heading-xl mt-5 text-service-ink">{title}</h2>
-            <p className="type-text-lg measure-copy wrap-pretty mt-6 text-service-muted">
+            <p className="type-text-lg wrap-pretty mt-6 text-service-muted">
               {body}
             </p>
 
@@ -388,7 +388,7 @@ export function FooterSectionV3({
             >
               {businessName}
             </a>
-            <p className="type-text-md measure-copy wrap-pretty mt-5 text-white/70">
+            <p className="type-text-md wrap-pretty mt-5 text-white/70">
               {description}
             </p>
             <ul aria-label="Social links" className="mt-7 flex gap-3">

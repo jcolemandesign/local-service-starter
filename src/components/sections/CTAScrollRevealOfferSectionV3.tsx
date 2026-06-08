@@ -77,7 +77,7 @@ export function CTAScrollRevealOfferSectionV3({
               <h2 className="type-display-lg mt-eyebrow-display text-white">
                 {offerTitle}
               </h2>
-              <p className="type-text-xl measure-lead wrap-pretty mt-display-body text-white/78">
+              <p className="type-text-xl wrap-pretty mt-display-body text-white/78">
                 {offerBody}
               </p>
               <div className="mt-body-actions-lg flex flex-wrap items-center gap-4">
@@ -110,7 +110,7 @@ export function CTAScrollRevealOfferSectionV3({
                 <h3 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
                   {introTitle}
                 </h3>
-                <p className="type-text-xl measure-lead wrap-pretty mt-display-body text-service-muted">
+                <p className="type-text-xl wrap-pretty mt-display-body text-service-muted">
                   {introBody}
                 </p>
               </div>
@@ -141,7 +141,7 @@ export function CTAScrollRevealOfferSectionV3({
               className="col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1"
             >
               <div className="radius-large border border-service-border bg-service-surface p-8 shadow-service max-md:p-6">
-                <p className="type-text-xl measure-lead wrap-pretty text-service-muted">
+                <p className="type-text-xl wrap-pretty text-service-muted">
                   {closeBody}
                 </p>
               </div>

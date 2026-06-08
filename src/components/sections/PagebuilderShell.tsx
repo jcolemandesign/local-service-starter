@@ -146,7 +146,7 @@ const sectionSwapOptions = [
     name: "Content top image bottom",
   },
   {
-    component: "ServicesGridSectionV2",
+    component: "ServicesThreeCardsRightSectionV3",
     instruction:
       "Show top-level services with consistent title and body length.",
     mode: "Scan",
@@ -209,84 +209,84 @@ const sectionSwapOptions = [
     name: "Rule header content",
   },
   {
-    component: "TrustBarSection",
+    component: "TrustBarSectionV3",
     instruction:
       "Validate the promise immediately with rating, volume, team, and locality claims.",
     mode: "Proof",
     name: "Trust bar",
   },
   {
-    component: "TrustMarqueeSection",
+    component: "TrustMarqueeSectionV3",
     instruction:
       "Use short repeated claims when there are many small proof points.",
     mode: "Proof",
     name: "Trust marquee",
   },
   {
-    component: "TrustLogoGridSection",
+    component: "TrustLogoGridSectionV3",
     instruction:
       "Use static logos or associations when motion would distract from reading.",
     mode: "Proof",
     name: "Static trust logo grid",
   },
   {
-    component: "TestimonialsCarouselSectionV2",
+    component: "TestimonialsCarouselSectionV3",
     instruction:
       "Use longer customer stories only if they contain useful service detail.",
     mode: "Proof",
     name: "Customer stories",
   },
   {
-    component: "TestimonialsMasonrySectionV2",
+    component: "TestimonialsMasonrySectionV3",
     instruction:
       "Use varied quote lengths to create a fuller body of evidence.",
     mode: "Proof",
     name: "Masonry testimonials",
   },
   {
-    component: "FAQSectionV2",
+    component: "FAQSectionV3",
     instruction:
       "Include only the questions that affect whether someone contacts you.",
     mode: "Decision",
     name: "FAQ",
   },
   {
-    component: "FAQAccordionSectionV2",
+    component: "FAQAccordionSectionV3",
     instruction:
       "Handle objections with expandable answers and no vague copy.",
     mode: "Decision",
     name: "FAQ accordion",
   },
   {
-    component: "ProcessImageChecklistSectionV2",
+    component: "ProcessImageChecklistSectionV3",
     instruction:
       "Turn process uncertainty into clear expectations before contact.",
     mode: "Decision",
     name: "Process image checklist",
   },
   {
-    component: "CTAFullscreenSectionV2",
+    component: "CTAFullscreenSectionV3",
     instruction:
       "Use the strongest conversion treatment for a memorable final booking moment.",
     mode: "Action",
     name: "Fullscreen conversion",
   },
   {
-    component: "CTAScrollRevealOfferSectionV2",
+    component: "CTAScrollRevealOfferSectionV3",
     instruction:
       "Use a discovered offer or next-step reveal to transition from trust into action.",
     mode: "Action",
     name: "Scroll reveal offer conversion",
   },
   {
-    component: "ContactSectionV2",
+    component: "ContactSectionV3",
     instruction:
       "Close with phone, email, hours, and a simple form or request path.",
     mode: "Utility",
     name: "Contact section",
   },
   {
-    component: "FooterSectionV2",
+    component: "FooterSectionV3",
     instruction:
       "End with service links, areas, contact details, and legal links.",
     mode: "Utility",
@@ -312,7 +312,9 @@ function buildPageInstruction({
     ``,
     `Style rules:`,
     ...recipe.styleRules.map((rule) => `- ${rule}`),
-    `- Use normal section spacing and the existing project typography and color tokens.`,
+    `- Use the universal SevenColumnGrid / SevenColumnGridItem system where an equivalent current section exists.`,
+    `- Use common regular/medium section spacing through section-space-med or SevenColumnGrid padding="med", unless a real hero/footer pattern requires its established spacing.`,
+    `- Use the existing project typography, radius, surface, and color tokens.`,
     ``,
     `Included section order:`,
     ...includedSections.map(
@@ -447,7 +449,7 @@ function PagebuilderPreviewWindow({
           className="size-2.5 rounded-full bg-service-accent"
         />
         <div className="ml-2 flex min-w-0 flex-1 items-center rounded-full border border-service-border bg-white px-3 py-1">
-          <span className="truncate text-[0.65rem] font-semibold uppercase tracking-widest text-service-muted">
+          <span className="type-caption truncate font-semibold text-service-muted">
             {sizeLabel} / {activePageLabel}
           </span>
         </div>
@@ -516,6 +518,7 @@ export function PagebuilderShell({
     null,
   );
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isRenderedPreviewOpen, setIsRenderedPreviewOpen] = useState(false);
 
   const activeRecipeIndex = Math.max(
     recipes.findIndex((recipe) => recipe.id === activeRecipeId),
@@ -743,7 +746,7 @@ export function PagebuilderShell({
                 tabIndex={0}
               >
                 <div className="pagebuilder-section-marker pointer-events-none absolute left-3 top-3 z-30 max-w-[calc(100%-1.5rem)] rounded border border-service-border bg-white/90 px-3 py-2 text-service-ink shadow-service backdrop-blur">
-                  <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-service-accent">
+                  <p className="type-caption font-semibold text-service-accent">
                     {section.mode}
                   </p>
                   <p className="mt-1 text-xs font-semibold">{section.name}</p>
@@ -770,7 +773,7 @@ export function PagebuilderShell({
               <h1 className="type-heading-lg mt-eyebrow-heading-md text-service-ink">
                 Homepage section builder
               </h1>
-              <p className="type-text-sm measure-caption wrap-pretty mt-heading-body-sm text-service-muted">
+              <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
                 Choose, swap, reorder, and preview homepage sections while the
                 implementation brief updates with the live stack.
               </p>
@@ -982,7 +985,7 @@ export function PagebuilderShell({
                       <h2 className="mt-1 text-lg font-semibold text-service-ink">
                         {activePageLabel}
                       </h2>
-                      <p className="type-caption measure-copy-wide wrap-pretty mt-1 text-service-muted">
+                      <p className="type-caption wrap-pretty mt-1 text-service-muted">
                         {activeRecipe.positioning}
                       </p>
                     </div>
@@ -1004,56 +1007,87 @@ export function PagebuilderShell({
                   </div>
                 </section>
 
-                <section className="radius-medium border border-service-border bg-white p-5 shadow-service">
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                      <p className="type-label text-service-accent">
+                <section
+                  aria-labelledby="pagebuilder-rendered-preview-button"
+                  className="radius-medium overflow-hidden border border-service-border bg-white shadow-service"
+                >
+                  <button
+                    aria-controls="pagebuilder-rendered-preview-panel"
+                    aria-expanded={isRenderedPreviewOpen}
+                    className="flex w-full items-start justify-between gap-4 p-5 text-left transition-colors hover:bg-service-surface/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-service-accent"
+                    id="pagebuilder-rendered-preview-button"
+                    onClick={() =>
+                      setIsRenderedPreviewOpen(
+                        (currentIsOpen) => !currentIsOpen,
+                      )
+                    }
+                    type="button"
+                  >
+                    <span className="min-w-0">
+                      <span className="type-label block text-service-accent">
                         Rendered Preview
-                      </p>
-                      <h3 className="type-heading-sm mt-2 text-service-ink">
+                      </span>
+                      <span className="type-heading-sm mt-2 block text-service-ink">
                         {activePageLabel} page body
-                      </h3>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
+                      </span>
+                    </span>
+                    <span className="flex flex-wrap justify-end gap-2">
                       {[
                         selectedViewport.label,
                         "Normal spacing",
                         "Section builder",
                       ].map((label) => (
-                          <span
-                            className="rounded-full border border-service-border bg-service-surface px-3 py-1 text-xs font-semibold text-service-muted"
-                            key={label}
-                          >
-                            {label}
-                          </span>
-                        ))}
-                    </div>
-                  </div>
+                        <span
+                          className="rounded-full border border-service-border bg-service-surface px-3 py-1 text-xs font-semibold text-service-muted"
+                          key={label}
+                        >
+                          {label}
+                        </span>
+                      ))}
+                      <span
+                        aria-hidden="true"
+                        className={`flex size-8 items-center justify-center rounded-sm border border-service-border text-lg leading-none text-service-accent transition-transform ${
+                          isRenderedPreviewOpen ? "rotate-180" : ""
+                        }`}
+                      >
+                        v
+                      </span>
+                    </span>
+                  </button>
 
-                  <div className="mt-5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 rounded border border-service-border bg-service-surface p-4 max-md:grid-cols-1">
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-service-ink">
-                        {selectedViewport.sizeLabel}
-                      </p>
-                      <p className="type-caption mt-1 text-service-muted">
-                        Click rendered sections to select them, then swap,
-                        reorder, or toggle them from the controls.
-                      </p>
-                    </div>
-                    <button
-                      className="radius-4 min-h-11 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent"
-                      onClick={() => setIsPreviewOpen(true)}
-                      type="button"
+                  {isRenderedPreviewOpen ? (
+                    <div
+                      aria-labelledby="pagebuilder-rendered-preview-button"
+                      className="border-t border-service-border p-5"
+                      id="pagebuilder-rendered-preview-panel"
+                      role="region"
                     >
-                      Focus Preview
-                    </button>
-                  </div>
+                      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 rounded border border-service-border bg-service-surface p-4 max-md:grid-cols-1">
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-service-ink">
+                            {selectedViewport.sizeLabel}
+                          </p>
+                          <p className="type-caption mt-1 text-service-muted">
+                            Click rendered sections to select them, then swap,
+                            reorder, or toggle them from the controls.
+                          </p>
+                        </div>
+                        <button
+                          className="radius-4 min-h-11 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent"
+                          onClick={() => setIsPreviewOpen(true)}
+                          type="button"
+                        >
+                          Focus Preview
+                        </button>
+                      </div>
 
-                  <div className="mt-4 h-[72svh] min-h-[36rem] overflow-hidden rounded border border-service-border bg-service-surface p-3 max-md:h-[68svh] max-md:min-h-[28rem] max-sm:min-h-[24rem]">
-                    <div className="grid h-full min-h-0 place-items-center overflow-hidden">
-                      {renderPreviewWindow()}
+                      <div className="mt-4 h-[72svh] min-h-[36rem] overflow-hidden rounded border border-service-border bg-service-surface p-3 max-md:h-[68svh] max-md:min-h-[28rem] max-sm:min-h-[24rem]">
+                        <div className="grid h-full min-h-0 place-items-center overflow-hidden">
+                          {renderPreviewWindow()}
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ) : null}
                 </section>
 
                 <details className="radius-medium border border-service-border bg-white p-5 shadow-service">
@@ -1133,7 +1167,7 @@ export function PagebuilderShell({
                                 : `${section.mode} / excluded`}
                             </span>
                           </div>
-                          <p className="type-text-sm measure-copy-wide wrap-pretty mt-3 text-service-muted">
+                          <p className="type-text-sm wrap-pretty mt-3 text-service-muted">
                             {section.instruction}
                           </p>
                         </div>
