@@ -8,9 +8,25 @@ export type StyleGuideTokenDraft = {
   accent: string;
   bgDark: string;
   bgPage: string;
+  activeRadiusName: string;
+  activeRadiusValue: string;
+  activeCardGapName: string;
+  activeCardGapValue: string;
+  activeInlineGapName: string;
+  activeInlineGapValue: string;
+  activeLayoutGapName: string;
+  activeLayoutGapValue: string;
+  activeSectionMinName: string;
+  activeSectionMinValue: string;
+  activeSiteGridFrameBlock: string;
+  activeSiteGridFrameInline: string;
+  activeSiteGridFrameName: string;
+  activeSiteGridGapName: string;
+  activeSiteGridGapValue: string;
   radiusLg: number;
   radiusMd: number;
   radiusSm: number;
+  radiusXl: number;
   serviceAccent: string;
   serviceBorder: string;
   serviceInk: string;
@@ -20,9 +36,12 @@ export type StyleGuideTokenDraft = {
   shadowBlur: number;
   shadowY: number;
   typeCustomFont: string;
+  typeBodyFontAssignment: string;
   typeGlobalFont: string;
+  typeHeaderFontAssignment: string;
   typeRoleOverrides: Record<string, string>;
   typeRoles: TypeRole[];
+  typeSelectedRoleId: string;
 };
 
 type StyleGuideLiveSurfaceProps = {
@@ -45,9 +64,25 @@ const defaultDraft: StyleGuideTokenDraft = {
   accent: "#c45a2c",
   bgDark: "#10141b",
   bgPage: "#fbfaf6",
+  activeRadiusName: "radius-md / radius-medium",
+  activeRadiusValue: "8px",
+  activeCardGapName: "card-grid-gap-med",
+  activeCardGapValue: "1rem",
+  activeInlineGapName: "inline-gap-med",
+  activeInlineGapValue: "1rem",
+  activeLayoutGapName: "layout-gap-med",
+  activeLayoutGapValue: "1rem",
+  activeSectionMinName: "section-min-tiny",
+  activeSectionMinValue: "18rem",
+  activeSiteGridFrameBlock: "clamp(2rem, 4vw, 7rem)",
+  activeSiteGridFrameInline: "clamp(1.5rem, 4vw, 8rem)",
+  activeSiteGridFrameName: "site-grid-frame-default",
+  activeSiteGridGapName: "site-grid-gap-default",
+  activeSiteGridGapValue: "clamp(0.75rem, 1vw, 1.5rem)",
   radiusLg: 24,
   radiusMd: 8,
   radiusSm: 4,
+  radiusXl: 40,
   serviceAccent: "#1f7a5a",
   serviceBorder: "#dfe7e1",
   serviceInk: "#17211d",
@@ -56,10 +91,13 @@ const defaultDraft: StyleGuideTokenDraft = {
   shadowAlpha: 0.08,
   shadowBlur: 50,
   shadowY: 18,
+  typeBodyFontAssignment: "global",
   typeCustomFont: typePalettes[0].customFont ?? "",
   typeGlobalFont: typePalettes[0].globalFont,
+  typeHeaderFontAssignment: "global",
   typeRoleOverrides: { ...typePalettes[0].roleFontOverrides },
   typeRoles: typePalettes[0].roles.map((role) => ({ ...role })),
+  typeSelectedRoleId: typePalettes[0].roles[0]?.id ?? "",
 };
 
 const numberFormat = new Intl.NumberFormat("en-US", {
@@ -83,6 +121,14 @@ function clampExpression(minRem: number, maxRem: number) {
 }
 
 function fontFamilyForValue(value: string, customFont: string) {
+  if (value.startsWith("local:")) {
+    const family = value.replace("local:", "").trim();
+
+    return family
+      ? `"${family.replaceAll('"', '\\"')}", ${defaultDraft.typeGlobalFont}`
+      : defaultDraft.typeGlobalFont;
+  }
+
   if (value !== "custom") {
     return value;
   }
@@ -113,6 +159,7 @@ function typeVariableEntries(draft: StyleGuideTokenDraft) {
       [`${prefix}-font`, fontFamily],
       [`${prefix}-size`, clampExpression(role.minRem, role.maxRem)],
       [`${prefix}-leading`, String(role.lineHeight)],
+      [`${prefix}-measure`, `${role.measureCh}ch`],
       [`${prefix}-weight`, String(role.weight)],
       [`${prefix}-tracking`, `${role.letterSpacingEm}em`],
       [`${prefix}-wrap`, role.wrap === "wrap" ? "wrap" : role.wrap],
@@ -153,9 +200,18 @@ function buildStyleVariables(draft: StyleGuideTokenDraft): StyleVariableProperti
     "--live-text-accent": draft.serviceAccent,
     "--live-text-main": draft.serviceInk,
     "--live-text-muted": draft.serviceMuted,
+    "--card-grid-gap-active": draft.activeCardGapValue,
+    "--inline-gap-active": draft.activeInlineGapValue,
+    "--layout-gap-active": draft.activeLayoutGapValue,
+    "--section-min-active": draft.activeSectionMinValue,
+    "--site-grid-gap": draft.activeSiteGridGapValue,
+    "--site-grid-inset-block": draft.activeSiteGridFrameBlock,
+    "--site-grid-inset-inline": draft.activeSiteGridFrameInline,
     "--radius-lg-token": `${draft.radiusLg}px`,
     "--radius-md-token": `${draft.radiusMd}px`,
     "--radius-sm-token": `${draft.radiusSm}px`,
+    "--radius-surface-token": draft.activeRadiusValue,
+    "--radius-xl-token": `${draft.radiusXl}px`,
     "--shadow-service": `0 ${draft.shadowY}px ${draft.shadowBlur}px rgb(23 33 29 / ${draft.shadowAlpha})`,
     ...Object.fromEntries(typeVariableEntries(draft)),
   };

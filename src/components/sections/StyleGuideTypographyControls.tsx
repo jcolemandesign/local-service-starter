@@ -19,6 +19,19 @@ type FontOption = {
   value: string;
 };
 
+type LocalFontData = {
+  family: string;
+  fullName: string;
+  postscriptName: string;
+  style: string;
+};
+
+declare global {
+  interface Window {
+    queryLocalFonts?: () => Promise<LocalFontData[]>;
+  }
+}
+
 const fontOptions: FontOption[] = [
   { label: "Geist Sans", value: fontStacks.geistSans },
   { label: "System UI", value: fontStacks.systemSans },
@@ -50,7 +63,9 @@ function roleSpec(role: TypeRole) {
     role.maxRem,
   )}rem / ${formatNumber(role.lineHeight)} / ${role.weight} / ${
     role.wrap === "wrap" ? "default" : role.wrap
-  } / ${formatNumber(role.letterSpacingEm)}em / ${role.capitalization}`;
+  } / ${formatNumber(role.letterSpacingEm)}em / ${role.capitalization} / ${
+    role.measureCh
+  }ch`;
 }
 
 function roleForToken(roles: TypeRole[], tokenName: string) {
@@ -62,9 +77,16 @@ function roleForToken(roles: TypeRole[], tokenName: string) {
   );
 }
 
-function fontLabelForValue(value: string) {
+function fontLabelForValue(value: string, localFontOptions: FontOption[] = []) {
   if (value === "global") {
     return "Use global family";
+  }
+
+  if (value.startsWith("local:")) {
+    return (
+      localFontOptions.find((font) => font.value === value)?.label ??
+      value.replace("local:", "")
+    );
   }
 
   return fontOptions.find((font) => font.value === value)?.label ?? value;
@@ -84,6 +106,18 @@ function isBodyRole(role: TypeRole) {
     role.id === "caption" ||
     role.id === "label"
   );
+}
+
+type FontGroup = "body" | "header";
+
+function storedFontForGroup(profileRoles: TypeRole[], overrides: Record<string, string>, group: FontGroup) {
+  const matchingRole = profileRoles.find(group === "header" ? isHeaderRole : isBodyRole);
+
+  if (!matchingRole) {
+    return "global";
+  }
+
+  return overrides[matchingRole.id] ?? "global";
 }
 
 function SelectField({
@@ -154,7 +188,13 @@ function NumberControl({
   );
 }
 
-function FontFamilyOptions({ includeGlobal = false }: { includeGlobal?: boolean }) {
+function FontFamilyOptions({
+  includeGlobal = false,
+  localFontOptions,
+}: {
+  includeGlobal?: boolean;
+  localFontOptions: FontOption[];
+}) {
   return (
     <>
       {includeGlobal ? <option value="global">Use global family</option> : null}
@@ -163,23 +203,34 @@ function FontFamilyOptions({ includeGlobal = false }: { includeGlobal?: boolean 
           {font.label}
         </option>
       ))}
+      {localFontOptions.length > 0 ? (
+        <optgroup label="Detected local fonts">
+          {localFontOptions.map((font) => (
+            <option key={font.value} value={font.value}>
+              {font.label}
+            </option>
+          ))}
+        </optgroup>
+      ) : null}
     </>
   );
 }
 
 export function StyleGuideTypographyControls() {
   const { draft, updateDraft } = useStyleGuideTokens();
-  const [selectedProfileId, setSelectedProfileId] = useState(typePalettes[0].id);
-  const [selectedRoleId, setSelectedRoleId] = useState(
-    draft.typeRoles[0]?.id ?? "",
+  const [fontScanStatus, setFontScanStatus] = useState(
+    "Scan availability has not run.",
   );
+  const [isScanningFonts, setIsScanningFonts] = useState(false);
+  const [localFontOptions, setLocalFontOptions] = useState<FontOption[]>([]);
+  const [selectedProfileId, setSelectedProfileId] = useState(typePalettes[0].id);
 
   const selectedRole = useMemo(
     () =>
-      draft.typeRoles.find((role) => role.id === selectedRoleId) ??
+      draft.typeRoles.find((role) => role.id === draft.typeSelectedRoleId) ??
       draft.typeRoles[0] ??
       null,
-    [draft.typeRoles, selectedRoleId],
+    [draft.typeRoles, draft.typeSelectedRoleId],
   );
   const selectedRoleFontOverride = selectedRole
     ? draft.typeRoleOverrides[selectedRole.id] ?? "global"
@@ -187,6 +238,7 @@ export function StyleGuideTypographyControls() {
   const selectedRoleBrief = selectedRole
     ? `${selectedRole.token}: ${fontLabelForValue(
         selectedRoleFontOverride,
+        localFontOptions,
       )} / ${roleSpec(selectedRole)}`
     : "No type role selected.";
 
@@ -220,11 +272,19 @@ export function StyleGuideTypographyControls() {
       typePalettes[0];
 
     setSelectedProfileId(profile.id);
-    setSelectedRoleId(profile.roles[0]?.id ?? "");
+    updateDraft(
+      "typeBodyFontAssignment",
+      storedFontForGroup(profile.roles, profile.roleFontOverrides, "body"),
+    );
     updateDraft("typeCustomFont", profile.customFont ?? "");
     updateDraft("typeGlobalFont", profile.globalFont);
+    updateDraft(
+      "typeHeaderFontAssignment",
+      storedFontForGroup(profile.roles, profile.roleFontOverrides, "header"),
+    );
     updateDraft("typeRoleOverrides", { ...profile.roleFontOverrides });
     updateDraft("typeRoles", cloneRoles(profile.roles));
+    updateDraft("typeSelectedRoleId", profile.roles[0]?.id ?? "");
   }
 
   function resetSelectedRole() {
@@ -248,7 +308,10 @@ export function StyleGuideTypographyControls() {
     });
   }
 
-  function applySelectedFontToRoles(matchesRole: (role: TypeRole) => boolean) {
+  function applySelectedFontToRoles(
+    group: FontGroup,
+    matchesRole: (role: TypeRole) => boolean,
+  ) {
     const nextOverrides = { ...draft.typeRoleOverrides };
 
     draft.typeRoles.forEach((role) => {
@@ -258,6 +321,55 @@ export function StyleGuideTypographyControls() {
     });
 
     updateDraft("typeRoleOverrides", nextOverrides);
+    updateDraft(
+      group === "header" ? "typeHeaderFontAssignment" : "typeBodyFontAssignment",
+      selectedRoleFontOverride,
+    );
+  }
+
+  function applyStoredFontToSelectedRole(group: FontGroup) {
+    if (!selectedRole) {
+      return;
+    }
+
+    updateSelectedRoleFont(
+      group === "header"
+        ? draft.typeHeaderFontAssignment
+        : draft.typeBodyFontAssignment,
+    );
+  }
+
+  async function scanLocalFonts() {
+    if (!window.queryLocalFonts) {
+      setFontScanStatus("Local font scanning is not available in this browser.");
+      return;
+    }
+
+    setIsScanningFonts(true);
+    setFontScanStatus("Waiting for browser permission.");
+
+    try {
+      const fonts = await window.queryLocalFonts();
+      const families = Array.from(
+        new Set(
+          fonts
+            .map((font) => font.family)
+            .filter((family) => family.trim().length > 0),
+        ),
+      ).sort((a, b) => a.localeCompare(b));
+
+      setLocalFontOptions(
+        families.map((family) => ({
+          label: family,
+          value: `local:${family}`,
+        })),
+      );
+      setFontScanStatus(`${families.length} local font families detected.`);
+    } catch {
+      setFontScanStatus("Local font scanning was blocked or canceled.");
+    } finally {
+      setIsScanningFonts(false);
+    }
   }
 
   return (
@@ -289,8 +401,20 @@ export function StyleGuideTypographyControls() {
           onChange={(value) => updateDraft("typeGlobalFont", value)}
           value={draft.typeGlobalFont}
         >
-          <FontFamilyOptions />
+          <FontFamilyOptions localFontOptions={localFontOptions} />
         </SelectField>
+
+        <div className="grid gap-2">
+          <button
+            className="min-h-11 rounded-md border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:bg-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent disabled:cursor-wait disabled:opacity-70"
+            disabled={isScanningFonts}
+            onClick={scanLocalFonts}
+            type="button"
+          >
+            {isScanningFonts ? "Scanning Fonts" : "Scan Local Fonts"}
+          </button>
+          <p className="type-caption text-service-muted">{fontScanStatus}</p>
+        </div>
 
         {draft.typeGlobalFont === "custom" ||
         selectedRoleFontOverride === "custom" ? (
@@ -312,7 +436,7 @@ export function StyleGuideTypographyControls() {
         <SelectField
           id="styleguide-selected-role"
           label="Selected role"
-          onChange={setSelectedRoleId}
+          onChange={(value) => updateDraft("typeSelectedRoleId", value)}
           value={selectedRole?.id ?? ""}
         >
           {draft.typeRoles.map((role) => (
@@ -330,24 +454,43 @@ export function StyleGuideTypographyControls() {
               onChange={updateSelectedRoleFont}
               value={selectedRoleFontOverride}
             >
-              <FontFamilyOptions includeGlobal />
+              <FontFamilyOptions includeGlobal localFontOptions={localFontOptions} />
             </SelectField>
 
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                className="min-h-11 rounded-md border border-service-border bg-white px-3 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
-                onClick={() => applySelectedFontToRoles(isBodyRole)}
-                type="button"
-              >
-                Set Body Fonts
-              </button>
-              <button
-                className="min-h-11 rounded-md border border-service-border bg-white px-3 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
-                onClick={() => applySelectedFontToRoles(isHeaderRole)}
-                type="button"
-              >
-                Set Header Fonts
-              </button>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="grid gap-2">
+                <button
+                  className="min-h-11 rounded-md border border-service-ink bg-service-ink px-3 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                  onClick={() => applyStoredFontToSelectedRole("header")}
+                  type="button"
+                >
+                  Apply Header Font
+                </button>
+                <button
+                  className="min-h-11 rounded-md border border-service-border bg-white px-3 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                  onClick={() => applySelectedFontToRoles("header", isHeaderRole)}
+                  type="button"
+                >
+                  Make Header Font
+                </button>
+              </div>
+
+              <div className="grid gap-2">
+                <button
+                  className="min-h-11 rounded-md border border-service-accent bg-service-accent px-3 text-sm font-semibold text-white transition-colors hover:border-service-ink hover:bg-service-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                  onClick={() => applyStoredFontToSelectedRole("body")}
+                  type="button"
+                >
+                  Apply Body Font
+                </button>
+                <button
+                  className="min-h-11 rounded-md border border-service-border bg-white px-3 text-sm font-semibold text-service-muted transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                  onClick={() => applySelectedFontToRoles("body", isBodyRole)}
+                  type="button"
+                >
+                  Make Body Font
+                </button>
+              </div>
             </div>
 
             <div className="grid gap-4 rounded-md border border-service-border bg-service-surface p-4">
@@ -420,6 +563,16 @@ export function StyleGuideTypographyControls() {
                 <option value="lowercase">Lowercase</option>
                 <option value="capitalize">Title Case</option>
               </SelectField>
+              {isBodyRole(selectedRole) ? (
+                <NumberControl
+                  label="Max measure ch"
+                  max={90}
+                  min={24}
+                  onChange={(value) => updateSelectedRole({ measureCh: value })}
+                  step={1}
+                  value={selectedRole.measureCh}
+                />
+              ) : null}
             </div>
 
             <button
@@ -428,6 +581,14 @@ export function StyleGuideTypographyControls() {
               type="button"
             >
               Reset Selected Role
+            </button>
+
+            <button
+              className="min-h-11 rounded-md border border-service-border bg-service-surface px-4 text-sm font-semibold text-service-muted transition-colors hover:border-service-accent hover:bg-white hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+              onClick={() => loadProfile(selectedProfileId)}
+              type="button"
+            >
+              Reset Selected Profile
             </button>
 
             <div
@@ -459,4 +620,38 @@ export function StyleGuideTypeSpec({ tokenName }: { tokenName: string }) {
   }
 
   return <>{roleSpec(role)}</>;
+}
+
+export function StyleGuideTypeSample({
+  children,
+  className,
+  tokenName,
+}: {
+  children: ReactNode;
+  className?: string;
+  tokenName: string;
+}) {
+  const { draft, updateDraft } = useStyleGuideTokens();
+  const role = roleForToken(draft.typeRoles, tokenName);
+  const isSelected = Boolean(role && role.id === draft.typeSelectedRoleId);
+
+  return (
+    <button
+      className={cx(
+        className,
+        "-m-2 block rounded-md p-2 text-left transition-all duration-200 hover:bg-service-accent/10 hover:ring-1 hover:ring-service-accent/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
+        isSelected &&
+          "ring-2 ring-service-accent/60 shadow-[0_0_0_4px_rgb(31_122_90_/_0.08)]",
+      )}
+      disabled={!role}
+      onClick={() => {
+        if (role) {
+          updateDraft("typeSelectedRoleId", role.id);
+        }
+      }}
+      type="button"
+    >
+      {children}
+    </button>
+  );
 }

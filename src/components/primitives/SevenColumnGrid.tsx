@@ -5,6 +5,7 @@ type SevenColumnGridGap = "site" | "sml" | "med" | "lrg";
 type SevenColumnGridMinHeight =
   | "default"
   | "none"
+  | "tiny"
   | "short"
   | "medium"
   | "tall"
@@ -54,6 +55,7 @@ const frameClasses: Record<SevenColumnGridFrame, string> = {
 const minHeightClasses: Record<SevenColumnGridMinHeight, string> = {
   default: "",
   none: "section-min-none",
+  tiny: "section-min-tiny",
   short: "section-min-short",
   medium: "section-min-medium",
   tall: "section-min-tall",

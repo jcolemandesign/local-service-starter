@@ -6,7 +6,11 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 import { StyleGuideLiveSurface } from "@/components/sections/StyleGuideLiveSurface";
+import { StyleGuideRadiusCard } from "@/components/sections/StyleGuideRadiusCard";
+import { StyleGuideSectionMinControl } from "@/components/sections/StyleGuideSectionMinControl";
+import { StyleGuideGridTokenControl } from "@/components/sections/StyleGuideGridTokenControl";
 import {
+  StyleGuideTypeSample,
   StyleGuideTypeSpec,
   StyleGuideTypographyControls,
 } from "@/components/sections/StyleGuideTypographyControls";
@@ -16,7 +20,9 @@ import {
   ServicesThreeCardsRightSectionV3,
   TrustBarSectionV3,
 } from "@/components/sections";
+import { StyleGuideGapCard } from "@/components/sections/StyleGuideGapCard";
 import { StyleGuideColorSwatch } from "@/components/sections/StyleGuideColorSwatch";
+import { StyleGuideColorResetButton } from "@/components/sections/StyleGuideColorResetButton";
 import { sectionLibraryContent } from "@/content/section-library";
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
 
@@ -138,11 +144,6 @@ const typeTokens = [
   },
 ];
 
-const layoutFrameTokens = [
-  ["site-grid-frame", "Current v3 section frame / responsive edge insets"],
-  ["site-grid-gap", "Current v3 seven-column gutter token"],
-];
-
 const colors = [
   {
     name: "service-ink",
@@ -240,6 +241,7 @@ const radii = [
   ["radius-sm / radius-4", "4px"],
   ["radius-md / radius-medium", "8px"],
   ["radius-lg / radius-large", "24px"],
+  ["radius-xl / radius-extra-large", "40px"],
 ];
 
 const spacing = [
@@ -251,36 +253,152 @@ const spacing = [
 
 const sectionSpacing = spacing.filter(([name]) => name.startsWith("section"));
 
-const sevenColumnGridTokens = [
+const siteGridFrameOptions = [
   {
-    name: "SevenColumnGrid",
-    value: "grid grid-cols-7 / frame=site / gap=site",
-    role: "Canonical v3 section layout primitive.",
+    block: "clamp(1.5rem, 3vw, 5rem)",
+    inline: "clamp(1rem, 3vw, 5rem)",
+    label: "Compact frame",
+    name: "site-grid-frame-compact",
   },
   {
-    name: "SevenColumnGridItem",
-    value: "col-span-* / col-start-* / alignX / alignY / measure",
-    role: "Places content on the shared seven-column frame.",
+    block: "clamp(2rem, 4vw, 7rem)",
+    inline: "clamp(1.5rem, 4vw, 8rem)",
+    label: "Default frame",
+    name: "site-grid-frame-default",
   },
   {
-    name: "site-grid-frame",
-    value: "padding: var(--site-grid-inset-block) var(--site-grid-inset-inline)",
-    role: "Edge-to-edge section frame with system insets.",
+    block: "clamp(2.5rem, 5vw, 8rem)",
+    inline: "clamp(2rem, 5vw, 10rem)",
+    label: "Open frame",
+    name: "site-grid-frame-open",
+  },
+] as const;
+
+const siteGridGapOptions = [
+  {
+    label: "Tight gutter",
+    name: "site-grid-gap-tight",
+    value: "clamp(0.5rem, 0.75vw, 1rem)",
   },
   {
-    name: "site-grid-gap",
-    value: "gap: var(--site-grid-gap)",
-    role: "Fluid column gap for the seven-column system.",
+    label: "Default gutter",
+    name: "site-grid-gap-default",
+    value: "clamp(0.75rem, 1vw, 1.5rem)",
   },
-];
+  {
+    label: "Open gutter",
+    name: "site-grid-gap-open",
+    value: "clamp(1rem, 1.35vw, 2rem)",
+  },
+  {
+    label: "Wide gutter",
+    name: "site-grid-gap-wide",
+    value: "clamp(1.25rem, 1.75vw, 2.75rem)",
+  },
+] as const;
+
+const columnNicknameExamples = [
+  {
+    name: "thumb",
+    span: "1 col",
+    spanClass: "col-span-1",
+    rowClass: "row-start-1",
+    allowOverflow: true,
+    examples: "thumbnails, icons, side links, small vertical cards",
+  },
+  {
+    name: "rail",
+    span: "2 cols",
+    spanClass: "col-span-2",
+    rowClass: "row-start-2",
+    allowOverflow: true,
+    examples: "editorial rail, pull quote, important idea, link list",
+  },
+  {
+    name: "condensed",
+    span: "3 cols",
+    spanClass: "col-span-3",
+    rowClass: "row-start-3",
+    allowOverflow: true,
+    examples: "article preview, condensed content, vertical image panel",
+  },
+  {
+    name: "content",
+    span: "4 cols",
+    spanClass: "col-span-4",
+    rowClass: "row-start-4",
+    allowOverflow: false,
+    examples: "default content size, image/text card, main copy group",
+  },
+  {
+    name: "large",
+    span: "5 cols",
+    spanClass: "col-span-5",
+    rowClass: "row-start-5",
+    allowOverflow: false,
+    examples: "story/photo layouts, content with a sidebar",
+  },
+  {
+    name: "panel",
+    span: "6 cols",
+    spanClass: "col-span-6",
+    rowClass: "row-start-6",
+    allowOverflow: false,
+    examples: "large graphics, storytelling panels, immersive previews",
+  },
+  {
+    name: "full",
+    span: "7 cols",
+    spanClass: "col-span-7",
+    rowClass: "row-start-7",
+    allowOverflow: false,
+    examples: "full-width media, complete section bands",
+  },
+] as const;
 
 const sectionMinTokens = [
-  ["section-min-none", "0"],
-  ["section-min-short", "36rem"],
-  ["section-min-medium", "48rem"],
-  ["section-min-tall", "64rem"],
-  ["section-min-screen", "100svh"],
-  ["section-min-story", "140svh"],
+  {
+    colorClass: "border-service-muted/45 bg-service-muted/10",
+    name: "section-min-none",
+    ratio: 0,
+    value: "0",
+  },
+  {
+    colorClass: "border-service-muted/45 bg-service-muted/10",
+    name: "section-min-tiny",
+    ratio: 18 / 140,
+    value: "18rem",
+  },
+  {
+    colorClass: "border-service-accent/45 bg-service-accent/14",
+    name: "section-min-short",
+    ratio: 36 / 140,
+    value: "36rem",
+  },
+  {
+    colorClass: "border-service-ink/35 bg-service-ink/10",
+    name: "section-min-medium",
+    ratio: 54 / 140,
+    value: "54rem",
+  },
+  {
+    colorClass: "border-accent/45 bg-accent/16",
+    name: "section-min-tall",
+    ratio: 72 / 140,
+    value: "72rem",
+  },
+  {
+    colorClass: "border-service-accent/70 bg-service-accent/22",
+    name: "section-min-screen",
+    ratio: 100 / 140,
+    value: "100svh",
+  },
+  {
+    colorClass: "border-service-ink/60 bg-service-ink/18",
+    name: "section-min-story",
+    ratio: 1,
+    value: "140svh",
+  },
 ];
 
 const relationshipSpacing = [
@@ -329,7 +447,7 @@ const relationshipSpacing = [
 const gapTokens = [
   {
     group: "Inline gaps",
-    description: "Small flex groups: buttons, nav items, badges, controls.",
+    description: "Secondary helper for small clusters inside a grid item.",
     items: [
       ["inline-gap-sml", "0.5rem"],
       ["inline-gap-med", "1rem"],
@@ -339,8 +457,8 @@ const gapTokens = [
     kind: "inline",
   },
   {
-    group: "Card grid gaps",
-    description: "Spacing between repeated card items in a grid.",
+    group: "Card/list gaps",
+    description: "Secondary helper for repeated cards inside a grid item.",
     items: [
       ["card-grid-gap-sml", "0.5rem"],
       ["card-grid-gap-med", "1rem"],
@@ -350,8 +468,8 @@ const gapTokens = [
     kind: "card",
   },
   {
-    group: "Layout gaps",
-    description: "Major columns and internal section layouts.",
+    group: "Nested layout gaps",
+    description: "Secondary helper for sub-layouts after the seven-column frame.",
     items: [
       ["layout-gap-sml", "0.5rem"],
       ["layout-gap-med", "1rem"],
@@ -360,7 +478,7 @@ const gapTokens = [
     ],
     kind: "layout",
   },
-];
+] as const;
 
 const editorialStressTests = [
   {
@@ -584,30 +702,180 @@ const surfaceExamples = [
   },
 ];
 
+const styleGuideToc = [
+  { href: "#seven-column-grid", label: "Layout" },
+  { href: "#typographic-hierarchy", label: "Type" },
+  { href: "#shape", label: "Shape" },
+  { href: "#spacing", label: "Spacing" },
+  { href: "#gaps", label: "Gaps" },
+  { href: "#buttons", label: "Buttons" },
+  { href: "#editorial-stress-tests", label: "Stress" },
+  { href: "#color-system", label: "Color" },
+  { href: "#preview-matrix", label: "Components" },
+  { href: "#real-sections", label: "Sections" },
+  { href: "#styles-in-context", label: "Context" },
+];
+
 function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+function FrameVisualAid({
+  block,
+  inline,
+  label,
+}: {
+  block: string;
+  inline: string;
+  label: string;
+}) {
+  return (
+    <div className="radius-medium border border-service-border bg-white p-4">
+      <p className="type-caption font-semibold text-service-ink">{label}</p>
+      <p className="type-caption mt-1 text-service-muted">
+        inline {inline} / block {block}
+      </p>
+      <div
+        className="radius-medium mt-4 border border-service-border bg-service-surface"
+        style={{ padding: `${block} ${inline}` }}
+      >
+        <div className="grid grid-cols-7 gap-1.5">
+          {Array.from({ length: 7 }, (_, index) => (
+            <span
+              className="radius-4 h-8 bg-white"
+              key={`${label}-frame-aid-${index}`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GapVisualAid({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="radius-medium border border-service-border bg-white p-4">
+      <p className="type-caption font-semibold text-service-ink">{label}</p>
+      <p className="type-caption mt-1 text-service-muted">{value}</p>
+      <div className="radius-medium mt-4 border border-service-border bg-service-surface p-4">
+        <div className="grid grid-cols-7" style={{ gap: value }}>
+          {Array.from({ length: 7 }, (_, index) => (
+            <span
+              className="radius-4 h-14 bg-white"
+              key={`${label}-gap-aid-${index}`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RadiusVisualAid({ name, value }: { name: string; value: string }) {
+  const radiusStyle = { borderRadius: value };
+
+  return (
+    <div className="radius-medium border border-service-border bg-white p-4">
+      <div
+        className="border border-service-border bg-service-surface p-3 shadow-service"
+        style={radiusStyle}
+      >
+        <div
+          className="relative aspect-[5/3] overflow-hidden border border-service-accent/25 bg-white"
+          style={radiusStyle}
+        >
+          <div className="absolute inset-4 border border-dashed border-service-accent/35" />
+          <div
+            className="absolute bottom-4 right-4 size-16 border border-service-border bg-service-surface"
+            style={radiusStyle}
+          />
+        </div>
+      </div>
+      <p className="type-caption mt-4 font-semibold text-service-ink">{name}</p>
+      <p className="type-caption mt-1 text-service-muted">{value}</p>
+    </div>
+  );
+}
+
+function NestedGapVisualAid({
+  kind,
+  name,
+  value,
+}: {
+  kind: "card" | "inline" | "layout";
+  name: string;
+  value: string;
+}) {
+  return (
+    <div className="radius-medium border border-service-border bg-white p-4">
+      <p className="type-caption font-semibold text-service-ink">{name}</p>
+      <p className="type-caption mt-1 text-service-muted">{value}</p>
+
+      {kind === "inline" ? (
+        <div className="mt-4 flex flex-wrap" style={{ gap: value }}>
+          <span className="radius-4 bg-service-accent px-3 py-2 text-sm font-semibold text-white">
+            Primary
+          </span>
+          <span className="radius-4 border border-service-border px-3 py-2 text-sm font-semibold text-service-ink">
+            Secondary
+          </span>
+          <span className="radius-4 border border-service-border px-3 py-2 text-sm font-semibold text-service-muted">
+            Tertiary
+          </span>
+        </div>
+      ) : null}
+
+      {kind === "card" ? (
+        <div className="mt-4 grid grid-cols-3" style={{ gap: value }}>
+          <div className="radius-4 h-16 bg-service-surface" />
+          <div className="radius-4 h-16 bg-service-border" />
+          <div className="radius-4 h-16 bg-service-accent/20" />
+        </div>
+      ) : null}
+
+      {kind === "layout" ? (
+        <div
+          className="mt-4 grid grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]"
+          style={{ gap: value }}
+        >
+          <div className="radius-4 min-h-20 bg-service-surface p-4">
+            <p className="type-caption text-service-muted">Content column</p>
+          </div>
+          <div className="radius-4 min-h-20 bg-service-border p-4">
+            <p className="type-caption text-service-muted">Media column</p>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function GuideSection({
+  id,
   eyebrow,
   title,
+  titleAs = "h2",
   body,
   children,
 }: {
+  id: string;
   eyebrow: string;
   title: string;
+  titleAs?: "h1" | "h2";
   body?: string;
   children: React.ReactNode;
 }) {
+  const Title = titleAs;
+
   return (
-    <section className="border-t border-service-border">
+    <section className="scroll-mt-12 border-t border-service-border" id={id}>
       <SevenColumnGrid minHeight="none" padding="med">
         <SevenColumnGridItem className="col-span-7">
           <div className="fluid-type-frame mb-12">
             <p className="type-label text-service-accent">{eyebrow}</p>
-            <h2 className="type-heading-xl mt-4 text-service-ink">
+            <Title className="type-heading-xl mt-4 text-service-ink">
               {title}
-            </h2>
+            </Title>
             {body ? (
               <p className="type-text-lg wrap-pretty mt-5 text-service-muted">
                 {body}
@@ -663,91 +931,48 @@ export default function StyleGuidePage() {
   return (
     <StyleGuideLiveSurface>
       <main className="bg-bg-page text-service-ink">
-      <section className="bg-service-ink text-white">
-        <SevenColumnGrid
-          className="fluid-type-frame"
-          minHeight="none"
-          padding="med"
-        >
-          <SevenColumnGridItem className="col-span-5 max-lg:col-span-7">
-            <p className="type-label text-white/65">Internal style guide</p>
-            <h1 className="type-display-lg mt-5">
-              Current v3 seven-column style guide
-            </h1>
-            <p className="type-text-xl wrap-pretty mt-7 text-white/75">
-              This page documents the shared tokens behind the current section
-              library: seven-column layout, semantic type, reusable spacing,
-              surface colors, and reusable interaction patterns.
-            </p>
-          </SevenColumnGridItem>
-        </SevenColumnGrid>
-      </section>
-
-      <GuideSection
-        eyebrow="System"
-        title="Current V3 Surface"
-        body="Use this guide as the clean reference for new section work: one seven-column layout frame, semantic type roles, reusable spacing relationships, and shared surface tokens."
+      <nav
+        aria-label="Style guide table of contents"
+        className="inline-gap-lrg sticky top-0 z-40 flex w-full items-center overflow-x-auto border-b border-service-border bg-bg-page/92 px-[var(--site-grid-inset-inline)] py-2 text-service-muted backdrop-blur"
       >
-        <SevenColumnGrid minHeight="none" padding="none">
-          <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-            <Card className="fluid-type-frame h-full p-6 shadow-none">
-              <p className="type-label text-service-accent">Canonical</p>
-              <h3 className="type-heading-lg mt-eyebrow-heading-sm text-service-ink">
-                V3 sections use one seven-column frame
-              </h3>
-              <p className="type-text-md wrap-pretty mt-heading-body-md text-service-muted">
-                New section work should compose with SevenColumnGrid,
-                SevenColumnGridItem, type role utilities, semantic spacing, and
-                shared color tokens.
-              </p>
-              <div className="mt-body-actions-md flex flex-wrap gap-3">
-                <Button href="/sections">Current sections</Button>
-              </div>
-            </Card>
-          </SevenColumnGridItem>
-
-          {[
-            ["Layout", "SevenColumnGrid and SevenColumnGridItem"],
-            ["Type", "type-display through type-label role utilities"],
-            ["Spacing", "section-space, relationship margins, and gap tokens"],
-            ["Surfaces", "service color tokens and radius utilities"],
-          ].map(([label, value]) => (
-            <SevenColumnGridItem
-              className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
-              key={label}
-            >
-              <Card className="h-full p-5 shadow-none">
-                <p className="type-label text-service-accent">{label}</p>
-                <p className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
-                  {value}
-                </p>
-              </Card>
-            </SevenColumnGridItem>
-          ))}
-        </SevenColumnGrid>
-      </GuideSection>
+        {styleGuideToc.map((item) => (
+          <a
+            className="type-text-xs max-w-none shrink-0 font-semibold transition-colors hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+            href={item.href}
+            key={item.href}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
 
       <GuideSection
         eyebrow="Layout"
-        title="V3 Seven-Column Grid"
+        id="seven-column-grid"
+        title="Layout System"
+        titleAs="h1"
         body="SevenColumnGrid is the current section frame. It keeps column count stable while frame inset, gap, vertical padding, item alignment, and copy measures move through tokens."
       >
         <div className="grid gap-5">
-          <div className="overflow-hidden rounded border border-service-border bg-service-surface">
+          <div className="radius-medium overflow-hidden border border-service-border bg-service-surface">
             <SevenColumnGrid
-              className="items-stretch"
-              minHeight="short"
+              className="section-min-active items-stretch"
+              minHeight="none"
               padding="med"
             >
               <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
-                <div className="grid h-full content-between rounded border border-service-border bg-white p-5">
+                <div className="radius-medium grid h-full content-between border border-service-border bg-white p-5">
                   <div>
                     <p className="type-label text-service-accent">Columns 1-2</p>
                     <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
-                      Fixed metadata rail
+                      Planning rail
                     </h3>
+                    <p className="type-text-sm mt-heading-body-sm text-service-muted">
+                      Small side columns hold labels, notes, proof, or navigation
+                      without stealing the main reading track.
+                    </p>
                   </div>
-                  <code className="mt-8 rounded bg-service-surface px-2 py-1 text-xs font-semibold text-service-muted">
+                  <code className="radius-medium mt-8 bg-service-surface px-2 py-1 text-xs font-semibold text-service-muted">
                     col-span-2
                   </code>
                 </div>
@@ -756,93 +981,294 @@ export default function StyleGuidePage() {
                 className="col-span-3 max-lg:col-span-7"
                 measure="copy"
               >
-                <div className="grid h-full content-center rounded border border-service-border bg-white p-5">
+                <div className="radius-medium grid h-full content-center border border-service-border bg-white p-5">
                   <p className="type-label text-service-accent">Columns 3-5</p>
                   <h3 className="type-heading-lg mt-eyebrow-heading-sm text-service-ink">
-                    Main copy track with a readable measure
+                    Main copy track with editorial texture
                   </h3>
                   <p className="type-text-md wrap-pretty mt-heading-body-md text-service-muted">
-                    This item uses the grid item measure prop rather than a
-                    one-off max width, so the copy follows the same readable
-                    width rules as production sections.
+                    The center span is where a service page can slow down just
+                    enough to explain the offer. A good paragraph has room for
+                    texture, but it should still resolve quickly: what changed,
+                    why it matters, and what the visitor can do next.
+                  </p>
+                  <p className="type-text-sm wrap-pretty mt-paragraph-paragraph text-service-muted">
+                    Here the grid span gives the passage structure, while the
+                    text role measure keeps the line length comfortable.
                   </p>
                 </div>
               </SevenColumnGridItem>
               <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
-                <div className="grid h-full content-between rounded border border-service-border bg-service-ink p-5 text-white">
+                <div className="radius-medium grid h-full content-between border border-service-border bg-service-ink p-5 text-white">
                   <div>
                     <p className="type-label text-white/70">Columns 6-7</p>
                     <h3 className="type-heading-sm mt-eyebrow-heading-sm">
                       Action or proof rail
                     </h3>
+                    <p className="type-text-sm mt-heading-body-sm text-white/70">
+                      Use this rail for compact conversion support, ratings,
+                      service areas, or one strong next step.
+                    </p>
                   </div>
-                  <code className="mt-8 rounded bg-white/10 px-2 py-1 text-xs font-semibold text-white/75">
-                    col-span-2
-                  </code>
+                  <div className="mt-8 grid gap-2">
+                    <span className="type-caption rounded-sm border border-white/18 bg-white/10 px-3 py-2 font-semibold text-white/80">
+                      4.9 local rating
+                    </span>
+                    <span className="type-caption rounded-sm border border-white/18 bg-white/10 px-3 py-2 font-semibold text-white/80">
+                      Same-day dispatch
+                    </span>
+                  </div>
+                </div>
+              </SevenColumnGridItem>
+            </SevenColumnGrid>
+          </div>
+
+          <div className="radius-medium overflow-visible border border-service-border bg-service-surface p-4">
+            <SevenColumnGrid minHeight="none" padding="none">
+              {columnNicknameExamples.map((item) => (
+                <SevenColumnGridItem
+                  className={cx(
+                    item.spanClass,
+                    item.rowClass,
+                    "overflow-visible max-lg:row-auto max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
+                  )}
+                  key={item.name}
+                >
+                  <div className="radius-medium min-h-12 overflow-visible border border-service-border bg-white">
+                    <div
+                      className={cx(
+                        "flex min-h-12 items-center gap-3 px-4 py-3",
+                        item.allowOverflow
+                          ? "w-max max-w-none flex-nowrap whitespace-nowrap max-lg:w-auto max-lg:flex-wrap max-lg:whitespace-normal"
+                          : "max-md:flex-wrap",
+                      )}
+                    >
+                      <span className="type-label shrink-0 text-service-accent">
+                        {item.name}
+                      </span>
+                      <span className="type-caption shrink-0 font-semibold text-service-ink">
+                        {item.span}
+                      </span>
+                      <span className="type-caption min-w-0 text-service-muted">
+                        {item.examples}
+                      </span>
+                    </div>
+                  </div>
+                </SevenColumnGridItem>
+              ))}
+            </SevenColumnGrid>
+          </div>
+
+          <div className="radius-medium overflow-hidden border border-service-border bg-service-surface">
+            <SevenColumnGrid minHeight="none" padding="med">
+              <SevenColumnGridItem className="col-span-2 row-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+                <div className="fluid-type-frame h-full">
+                  <p className="type-label text-service-accent">rail / 2 cols</p>
+                  <h3 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                    Header plus three repeated cards
+                  </h3>
+                </div>
+              </SevenColumnGridItem>
+              {[
+                [
+                  "Repair",
+                  "condensed / 2 cols",
+                  "Urgent calls, diagnostics, and clear approval points.",
+                  "col-span-2 col-start-2 row-start-2",
+                ],
+                [
+                  "Maintenance",
+                  "condensed / 2 cols",
+                  "Seasonal tune-ups that keep small issues visible.",
+                  "col-span-2 col-start-4 row-start-2",
+                ],
+                [
+                  "Replace",
+                  "condensed / 2 cols",
+                  "Options when repair no longer makes sense.",
+                  "col-span-2 col-start-6 row-start-2",
+                ],
+              ].map(([title, semantic, body, spanClass]) => (
+                <SevenColumnGridItem
+                  className={cx(
+                    spanClass,
+                    "max-lg:col-start-1 max-lg:row-auto max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
+                  )}
+                  key={title}
+                >
+                  <Card className="h-full p-5 shadow-none">
+                    <p className="type-label text-service-accent">{semantic}</p>
+                    <p className="type-heading-sm text-service-ink">{title}</p>
+                    <p className="type-text-sm mt-heading-body-sm text-service-muted">
+                      {body}
+                    </p>
+                  </Card>
+                </SevenColumnGridItem>
+              ))}
+            </SevenColumnGrid>
+          </div>
+
+          <div className="radius-medium overflow-hidden border border-service-border bg-white">
+            <SevenColumnGrid minHeight="none" padding="med">
+              <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+                <div className="radius-medium aspect-[4/3] h-full min-h-80 border border-service-border bg-service-surface p-6">
+                  <div className="grid h-full content-between">
+                    <p className="type-label text-service-accent">4 / 3 media</p>
+                    <div className="grid grid-cols-4 gap-3">
+                      {Array.from({ length: 8 }, (_, index) => (
+                        <span
+                          className="radius-4 h-12 bg-white"
+                          key={`layout-media-${index}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </SevenColumnGridItem>
+              <SevenColumnGridItem
+                className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+                alignY="middle"
+              >
+                <div className="fluid-type-frame">
+                  <p className="type-label text-service-accent">Image / text split</p>
+                  <h3 className="type-heading-lg mt-eyebrow-heading-sm text-service-ink">
+                    A common proof section can stay aligned without custom widths
+                  </h3>
+                  <p className="type-text-md mt-heading-body-md text-service-muted">
+                    The media occupies four columns, the text occupies three,
+                    and the selected gutter controls the relationship between
+                    them.
+                  </p>
+                  <div className="mt-body-actions-md flex flex-wrap gap-3">
+                    <Button href="#">View services</Button>
+                    <Button href="#" variant="secondary">
+                      See process
+                    </Button>
+                  </div>
+                </div>
+              </SevenColumnGridItem>
+            </SevenColumnGrid>
+          </div>
+
+          <div className="radius-medium overflow-hidden border border-service-border bg-service-ink text-white">
+            <SevenColumnGrid minHeight="none" padding="med">
+              <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+                <div className="fluid-type-frame">
+                  <p className="type-label text-white/68">Conversion</p>
+                  <h3 className="type-heading-xl mt-eyebrow-heading-lg">
+                    Ready for a faster service request flow?
+                  </h3>
+                  <p className="type-text-lg mt-heading-body-lg text-white/72">
+                    A conversion row should feel anchored to the same page
+                    system, not pasted on after the layout is finished.
+                  </p>
+                </div>
+              </SevenColumnGridItem>
+              <SevenColumnGridItem
+                className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+                alignY="middle"
+              >
+                <div className="radius-medium border border-white/18 bg-white/8 p-6">
+                  <p className="type-heading-sm">Book the next visit</p>
+                  <p className="type-text-sm mt-heading-body-sm text-white/70">
+                    Keep form, phone, and trust cues close enough to scan as one
+                    decision.
+                  </p>
+                  <div className="mt-body-actions-md flex flex-wrap gap-3">
+                    <Button
+                      className="border-white bg-white text-service-ink hover:bg-service-surface"
+                      href="#"
+                      variant="secondary"
+                    >
+                      Schedule now
+                    </Button>
+                  </div>
                 </div>
               </SevenColumnGridItem>
             </SevenColumnGrid>
           </div>
 
           <SevenColumnGrid minHeight="none" padding="none">
-            {sevenColumnGridTokens.map((token) => (
-              <SevenColumnGridItem
-                className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
-                key={token.name}
-              >
-                <Card className="h-full p-5 shadow-none">
-                  <TokenMeta name={token.name} value={token.value} />
-                  <p className="type-caption mt-3 text-service-muted">
-                    {token.role}
-                  </p>
-                </Card>
-              </SevenColumnGridItem>
-            ))}
+            <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+              <StyleGuideGridTokenControl
+                kind="frame"
+                options={siteGridFrameOptions}
+              />
+            </SevenColumnGridItem>
+
+            <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+              <StyleGuideGridTokenControl
+                kind="gap"
+                options={siteGridGapOptions}
+              />
+            </SevenColumnGridItem>
           </SevenColumnGrid>
 
-          <SevenColumnGrid minHeight="none" padding="none">
-            {sectionMinTokens.map(([name, value]) => (
-              <SevenColumnGridItem
-                className="col-span-1 max-lg:col-span-1 max-md:col-span-1 max-sm:col-span-1"
-                key={name}
-              >
-                <Card className="h-full p-5 shadow-none">
-                  <TokenMeta name={name} value={value} />
-                  <div className="mt-4 rounded border border-service-border bg-service-surface p-3">
-                    <div className="h-16 rounded bg-white" />
-                  </div>
-                </Card>
+          <Card className="p-6 shadow-none">
+            <div className="fluid-type-frame">
+              <p className="type-label text-service-accent">Visual aids</p>
+              <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                Site grid frame and gutter references
+              </h2>
+              <p className="type-text-sm mt-heading-body-sm text-service-muted">
+                These examples explain the available token sizes without acting
+                as controls. Use the compact buttons above to change the live
+                style guide.
+              </p>
+            </div>
+
+            <SevenColumnGrid className="mt-6" minHeight="none" padding="none">
+              <SevenColumnGridItem className="col-span-7">
+                <p className="type-label text-service-muted">site-grid-frame</p>
               </SevenColumnGridItem>
-            ))}
-          </SevenColumnGrid>
+              {siteGridFrameOptions.map((option) => (
+                <SevenColumnGridItem
+                  className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+                  key={option.name}
+                >
+                  <FrameVisualAid
+                    block={option.block}
+                    inline={option.inline}
+                    label={option.label}
+                  />
+                </SevenColumnGridItem>
+              ))}
+
+              <SevenColumnGridItem className="col-span-7 mt-3">
+                <p className="type-label text-service-muted">site-grid-gap</p>
+              </SevenColumnGridItem>
+              {siteGridGapOptions.map((option) => (
+                <SevenColumnGridItem
+                  className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+                  key={option.name}
+                >
+                  <GapVisualAid label={option.label} value={option.value} />
+                </SevenColumnGridItem>
+              ))}
+            </SevenColumnGrid>
+          </Card>
 
           <SevenColumnGrid minHeight="none" padding="none">
-            {layoutFrameTokens.map(([name, value]) => (
-              <SevenColumnGridItem
-                className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
-                key={name}
-              >
-                <Card className="h-full p-6 shadow-none">
-                  <TokenMeta name={name} value={value} />
-                  <div className="mt-5 rounded border border-service-border bg-service-surface p-4">
-                    <div className="grid grid-cols-7 gap-2 max-lg:grid-cols-5 max-md:grid-cols-3 max-sm:grid-cols-1">
-                      {Array.from({ length: 7 }, (_, index) => (
-                        <div
-                          className="h-24 rounded bg-white"
-                          key={`${name}-${index}`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </Card>
-              </SevenColumnGridItem>
-            ))}
+            <SevenColumnGridItem className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+              <StyleGuideSectionMinControl
+                tokens={sectionMinTokens}
+                variant="controls"
+              />
+            </SevenColumnGridItem>
+
+            <SevenColumnGridItem className="col-span-5 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+              <StyleGuideSectionMinControl
+                tokens={sectionMinTokens}
+                variant="graphic"
+              />
+            </SevenColumnGridItem>
           </SevenColumnGrid>
         </div>
       </GuideSection>
 
       <GuideSection
         eyebrow="Type + Grid"
+        id="typographic-hierarchy"
         title="Typographic Hierarchy"
         body="One live specimen per typography role, placed on a seven-column row so the text can occupy the main track while the token metadata stays fixed."
       >
@@ -869,16 +1295,17 @@ export default function StyleGuidePage() {
                       <StyleGuideTypeSpec tokenName={token.name} />
                     </p>
                   </div>
-                  <p
+                  <StyleGuideTypeSample
                     className={cx(
                       token.typeClass,
                       token.measureClass,
                       token.wrapClass,
                       "col-span-6 text-service-ink max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
                     )}
+                    tokenName={token.name}
                   >
                     {token.sample}
-                  </p>
+                  </StyleGuideTypeSample>
                 </div>
               ))}
             </div>
@@ -886,52 +1313,45 @@ export default function StyleGuidePage() {
         </SevenColumnGrid>
       </GuideSection>
 
-      <GuideSection eyebrow="Shape" title="Radius, Borders, And Shadows">
-        <SevenColumnGrid minHeight="none" padding="none">
-          {radii.map(([name, value]) => (
-            <SevenColumnGridItem
-              className="col-span-2 max-lg:col-span-2 max-md:col-span-3 max-sm:col-span-1"
-              key={name}
-            >
-            <Card className="h-full p-5 shadow-none">
-              <div
-                className={cx(
-                  name.split(" / ")[0],
-                  "border border-service-border bg-service-surface p-4 shadow-service",
-                )}
-              >
-                <div
-                  className={cx(
-                    name.split(" / ")[0],
-                    "aspect-[4/3] border border-service-accent/25 bg-white",
-                  )}
-                />
-                <div className="mt-4 flex items-center justify-between gap-3">
-                  <div>
-                    <p className="type-heading-sm text-service-ink">Card shell</p>
-                    <p className="type-caption mt-1 text-service-muted">
-                      Radius applied to outer and inner boxes.
-                    </p>
-                  </div>
-                  <span
-                    className={cx(
-                      name.split(" / ")[0],
-                      "size-10 shrink-0 border border-service-border bg-white",
-                    )}
-                  />
-                </div>
-              </div>
-              <div className="mt-4">
-                <TokenMeta name={name} value={value} />
-              </div>
-            </Card>
-            </SevenColumnGridItem>
-          ))}
-        </SevenColumnGrid>
+      <GuideSection
+        eyebrow="Shape"
+        id="shape"
+        title="Radius, Borders, And Shadows"
+      >
+        <div className="grid gap-5">
+          <Card className="p-5 shadow-none">
+            <p className="type-label text-service-accent">radius tokens</p>
+            <div className="mt-4 grid grid-cols-3 gap-2 max-lg:grid-cols-2 max-md:grid-cols-1">
+              {radii.map(([name, value]) => (
+                <StyleGuideRadiusCard key={name} name={name} value={value} />
+              ))}
+            </div>
+          </Card>
+
+          <Card className="p-6 shadow-none">
+            <div className="fluid-type-frame">
+              <p className="type-label text-service-accent">Visual aids</p>
+              <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                Radius reference
+              </h2>
+            </div>
+            <SevenColumnGrid className="mt-6" minHeight="none" padding="none">
+              {radii.map(([name, value]) => (
+                <SevenColumnGridItem
+                  className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+                  key={name}
+                >
+                  <RadiusVisualAid name={name} value={value} />
+                </SevenColumnGridItem>
+              ))}
+            </SevenColumnGrid>
+          </Card>
+        </div>
       </GuideSection>
 
       <GuideSection
         eyebrow="Spacing"
+        id="spacing"
         title="Semantic Spacing Relationships"
         body="These tokens describe why space exists: eyebrow to heading, heading to body, body to actions, and editorial text rhythm."
       >
@@ -1075,81 +1495,70 @@ export default function StyleGuidePage() {
 
       <GuideSection
         eyebrow="Gaps"
-        title="Inline, Card, And Layout Gaps"
-        body="Gap tokens describe the kind of layout relationship: small inline clusters, repeated cards, or major section columns."
+        id="gaps"
+        title="Nested Gap Helpers"
+        body="Use the seven-column grid first for alignment. These lower-priority gap helpers are for small clusters, repeated cards, and sub-layouts inside a SevenColumnGridItem."
       >
-        <SevenColumnGrid minHeight="none" padding="none">
-          {gapTokens.map((group) => (
-            <SevenColumnGridItem
-              className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
-              key={group.group}
-            >
-            <Card className="h-full p-6 shadow-none">
-              <h3 className="type-heading-sm text-service-ink">{group.group}</h3>
-              <p className="type-caption mt-2 text-service-muted">
-                {group.description}
-              </p>
-
-              <div className="mt-6 grid gap-5">
-                {group.items.map(([name, value]) => (
-                  <div key={name}>
-                    <TokenMeta name={name} value={value} />
-
-                    {group.kind === "inline" ? (
-                      <div className={cx(name, "mt-4 flex flex-wrap")}>
-                        <span className="radius-4 bg-service-accent px-3 py-2 text-sm font-semibold text-white">
-                          Primary
-                        </span>
-                        <span className="radius-4 border border-service-border px-3 py-2 text-sm font-semibold text-service-ink">
-                          Secondary
-                        </span>
-                        <span className="radius-4 border border-service-border px-3 py-2 text-sm font-semibold text-service-muted">
-                          Tertiary
-                        </span>
-                      </div>
-                    ) : null}
-
-                    {group.kind === "card" ? (
-                      <div className={cx(name, "mt-4 grid grid-cols-3")}>
-                        <div className="radius-4 h-16 bg-service-surface" />
-                        <div className="radius-4 h-16 bg-service-border" />
-                        <div className="radius-4 h-16 bg-service-accent/20" />
-                      </div>
-                    ) : null}
-
-                    {group.kind === "layout" ? (
-                      <SevenColumnGrid
-                        className={cx(name, "mt-4")}
-                        minHeight="none"
-                        padding="none"
-                      >
-                        <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-                          <div className="radius-4 min-h-20 bg-service-surface p-4">
-                            <p className="type-caption text-service-muted">
-                              Content column
-                            </p>
-                          </div>
-                        </SevenColumnGridItem>
-                        <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-                          <div className="radius-4 min-h-20 bg-service-border p-4">
-                            <p className="type-caption text-service-muted">
-                              Media column
-                            </p>
-                          </div>
-                        </SevenColumnGridItem>
-                      </SevenColumnGrid>
-                    ) : null}
+        <div className="grid gap-5">
+          <SevenColumnGrid minHeight="none" padding="none">
+            {gapTokens.map((group) => (
+              <SevenColumnGridItem
+                className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+                key={group.group}
+              >
+                <Card className="h-full p-5 shadow-none">
+                  <h3 className="type-heading-sm text-service-ink">
+                    {group.group}
+                  </h3>
+                  <div className="mt-4 grid gap-2">
+                    {group.items.map(([name, value]) => (
+                      <StyleGuideGapCard
+                        key={name}
+                        kind={group.kind}
+                        name={name}
+                        value={value}
+                      />
+                    ))}
                   </div>
-                ))}
-              </div>
-            </Card>
-            </SevenColumnGridItem>
-          ))}
-        </SevenColumnGrid>
+                </Card>
+              </SevenColumnGridItem>
+            ))}
+          </SevenColumnGrid>
+
+          <Card className="p-6 shadow-none">
+            <div className="fluid-type-frame">
+              <p className="type-label text-service-accent">Visual aids</p>
+              <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                Nested gap references
+              </h2>
+              <p className="type-text-sm mt-heading-body-sm text-service-muted">
+                These show how each lower-priority gap token behaves inside a
+                grid item. The buttons above choose values.
+              </p>
+            </div>
+            <SevenColumnGrid className="mt-6" minHeight="none" padding="none">
+              {gapTokens.flatMap((group) =>
+                group.items.map(([name, value]) => (
+                  <SevenColumnGridItem
+                    className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+                    key={`${group.kind}-${name}`}
+                  >
+                    <NestedGapVisualAid
+                      kind={group.kind}
+                      name={name}
+                      value={value}
+                    />
+                  </SevenColumnGridItem>
+                )),
+              )}
+            </SevenColumnGrid>
+          </Card>
+        </div>
       </GuideSection>
 
       <GuideSection
         eyebrow="Buttons"
+        id="buttons"
         title="Custom Button Styles"
         body="Reusable button treatments for stronger calls to action and brand moments."
       >
@@ -1186,6 +1595,7 @@ export default function StyleGuidePage() {
 
       <GuideSection
         eyebrow="Preview Matrix"
+        id="editorial-stress-tests"
         title="Editorial Stress Tests"
         body="Stress cases for long headings, dense copy, compact card rhythm, and repeated action patterns."
       >
@@ -1217,9 +1627,14 @@ export default function StyleGuidePage() {
 
       <GuideSection
         eyebrow="Color"
+        id="color-system"
         title="Color System"
         body="Palette tokens, semantic color roles, and live surface/type relationships in one place. The color inputs on these swatches update the cards directly."
       >
+        <div className="mb-6 flex justify-end">
+          <StyleGuideColorResetButton />
+        </div>
+
         <SevenColumnGrid minHeight="none" padding="none">
           {colors.map((color) => (
             <SevenColumnGridItem
@@ -1415,6 +1830,7 @@ export default function StyleGuidePage() {
 
       <GuideSection
         eyebrow="Preview Matrix"
+        id="preview-matrix"
         title="Cards, Buttons, Surfaces, Borders, Radii, Shadows"
         body="A compact component surface board for the styleguide preview stage."
       >
@@ -1485,6 +1901,7 @@ export default function StyleGuidePage() {
 
       <GuideSection
         eyebrow="Preview Matrix"
+        id="real-sections"
         title="Representative Real Sections"
         body="A few real section-library components rendered inside the styleguide so token changes can be reviewed against organic compositions."
       >
@@ -1503,6 +1920,7 @@ export default function StyleGuidePage() {
 
       <GuideSection
         eyebrow="Composition"
+        id="styles-in-context"
         title="Shared Styles In Context"
         body="These previews use the same global tokens a production section would compose."
       >

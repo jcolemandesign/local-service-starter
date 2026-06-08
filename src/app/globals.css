@@ -16,9 +16,10 @@
   --measure-copy-wide: 70ch;
   --measure-longform: 75ch;
   --measure-caption: 48ch;
+  --section-min-tiny: 18rem;
   --section-min-short: 36rem;
-  --section-min-medium: 48rem;
-  --section-min-tall: 64rem;
+  --section-min-medium: 54rem;
+  --section-min-tall: 72rem;
   --section-min-screen: 100svh;
   --section-min-story: 140svh;
   --card-min-short: 14rem;
@@ -32,6 +33,7 @@
   --radius-sm-token: 4px;
   --radius-md-token: 8px;
   --radius-lg-token: 24px;
+  --radius-xl-token: 40px;
 }
 
 @theme inline {
@@ -168,6 +170,10 @@ body {
     min-height: 0;
   }
 
+  .section-min-tiny {
+    min-height: var(--section-min-tiny);
+  }
+
   .section-min-short {
     min-height: var(--section-min-short);
   }
@@ -186,6 +192,10 @@ body {
 
   .section-min-story {
     min-height: var(--section-min-story);
+  }
+
+  .section-min-active {
+    min-height: var(--section-min-active, var(--section-min-short));
   }
 
   .card-min-short {
@@ -227,12 +237,17 @@ body {
 
   .radius-md,
   .radius-medium {
-    border-radius: var(--radius-md-token);
+    border-radius: var(--radius-surface-token, var(--radius-md-token));
   }
 
   .radius-lg,
   .radius-large {
     border-radius: var(--radius-lg-token);
+  }
+
+  .radius-xl,
+  .radius-extra-large {
+    border-radius: var(--radius-xl-token);
   }
 
   .type-display-xl {
@@ -299,6 +314,7 @@ body {
     font-family: var(--type-text-xl-font, var(--font-sans));
     font-size: var(--type-text-xl-size, clamp(1.1875rem, calc(0.625cqw + 1rem), 1.5rem));
     line-height: var(--type-text-xl-leading, 1.5);
+    max-width: var(--type-text-xl-measure, 52ch);
     font-weight: var(--type-text-xl-weight, 400);
     letter-spacing: var(--type-text-xl-tracking);
     text-transform: var(--type-text-xl-transform);
@@ -309,6 +325,7 @@ body {
     font-family: var(--type-text-lg-font, var(--font-sans));
     font-size: var(--type-text-lg-size, clamp(1.0625rem, calc(0.4261363636cqw + 0.9090909091rem), 1.25rem));
     line-height: var(--type-text-lg-leading, 1.6);
+    max-width: var(--type-text-lg-measure, 60ch);
     font-weight: var(--type-text-lg-weight, 400);
     letter-spacing: var(--type-text-lg-tracking);
     text-transform: var(--type-text-lg-transform);
@@ -319,6 +336,7 @@ body {
     font-family: var(--type-text-md-font, var(--font-sans));
     font-size: var(--type-text-md-size, clamp(1rem, calc(0.3125cqw + 0.875rem), 1.125rem));
     line-height: var(--type-text-md-leading, 1.65);
+    max-width: var(--type-text-md-measure, 60ch);
     font-weight: var(--type-text-md-weight, 400);
     letter-spacing: var(--type-text-md-tracking);
     text-transform: var(--type-text-md-transform);
@@ -329,6 +347,7 @@ body {
     font-family: var(--type-text-sm-font, var(--font-sans));
     font-size: var(--type-text-sm-size, clamp(0.875rem, calc(0.2142857143cqw + 0.7785714286rem), 0.95rem));
     line-height: var(--type-text-sm-leading, 1.6);
+    max-width: var(--type-text-sm-measure, 70ch);
     font-weight: var(--type-text-sm-weight, 400);
     letter-spacing: var(--type-text-sm-tracking);
     text-transform: var(--type-text-sm-transform);
@@ -339,6 +358,7 @@ body {
     font-family: var(--type-text-xs-font, var(--font-sans));
     font-size: var(--type-text-xs-size, clamp(0.8125rem, calc(0.1953125cqw + 0.71875rem), 0.875rem));
     line-height: var(--type-text-xs-leading, 1.55);
+    max-width: var(--type-text-xs-measure, 48ch);
     font-weight: var(--type-text-xs-weight, 400);
     letter-spacing: var(--type-text-xs-tracking);
     text-transform: var(--type-text-xs-transform);
@@ -349,6 +369,7 @@ body {
     font-family: var(--type-caption-font, var(--font-sans));
     font-size: var(--type-caption-size, clamp(0.75rem, calc(0.1953125cqw + 0.65625rem), 0.8125rem));
     line-height: var(--type-caption-leading, 1.5);
+    max-width: var(--type-caption-measure, 48ch);
     font-weight: var(--type-caption-weight, 400);
     letter-spacing: var(--type-caption-tracking);
     text-transform: var(--type-caption-transform);
@@ -395,19 +416,19 @@ body {
   }
 
   .inline-gap-sml {
-    gap: 0.5rem;
+    gap: var(--inline-gap-active, 0.5rem);
   }
 
   .inline-gap-med {
-    gap: 1rem;
+    gap: var(--inline-gap-active, 1rem);
   }
 
   .inline-gap-lrg {
-    gap: 1.75rem;
+    gap: var(--inline-gap-active, 1.75rem);
   }
 
   .inline-gap-xlrg {
-    gap: 2.25rem;
+    gap: var(--inline-gap-active, 2.25rem);
   }
 
   .pagebuilder-density-normal section {
@@ -658,35 +679,35 @@ body {
   }
 
   .card-grid-gap-sml {
-    gap: 0.5rem;
+    gap: var(--card-grid-gap-active, 0.5rem);
   }
 
   .card-grid-gap-med {
-    gap: 1rem;
+    gap: var(--card-grid-gap-active, 1rem);
   }
 
   .card-grid-gap-lrg {
-    gap: 1.75rem;
+    gap: var(--card-grid-gap-active, 1.75rem);
   }
 
   .card-grid-gap-xlrg {
-    gap: 2.25rem;
+    gap: var(--card-grid-gap-active, 2.25rem);
   }
 
   .layout-gap-sml {
-    gap: 0.5rem;
+    gap: var(--layout-gap-active, 0.5rem);
   }
 
   .layout-gap-med {
-    gap: 1rem;
+    gap: var(--layout-gap-active, 1rem);
   }
 
   .layout-gap-lrg {
-    gap: 1.75rem;
+    gap: var(--layout-gap-active, 1.75rem);
   }
 
   .layout-gap-xlrg {
-    gap: 2.25rem;
+    gap: var(--layout-gap-active, 2.25rem);
   }
 
   .mt-eyebrow-heading-sm {
