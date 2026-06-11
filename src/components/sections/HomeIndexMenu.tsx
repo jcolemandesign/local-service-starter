@@ -138,7 +138,7 @@ export function HomeIndexMenu({ initialGroups }: HomeIndexMenuProps) {
           aria-labelledby={`home-${slugify(group.title)}`}
           className="contents"
         >
-          <div className="col-start-2 col-span-1 mt-8 grid w-full min-w-0 content-start self-start justify-items-start text-left [&>*]:min-w-0 [&>*]:w-full max-lg:col-start-1 max-lg:col-span-1 max-lg:mt-4 max-md:col-span-3 max-sm:col-span-1">
+          <div className="col-start-1 col-span-1 mt-8 grid w-full min-w-0 content-start self-start justify-items-start text-left [&>*]:min-w-0 [&>*]:w-full max-lg:col-start-1 max-lg:col-span-1 max-lg:mt-4 max-md:col-span-3 max-sm:col-span-1">
             <div className="border-t border-border-default pt-3">
               <h2
                 id={`home-${slugify(group.title)}`}
@@ -151,7 +151,7 @@ export function HomeIndexMenu({ initialGroups }: HomeIndexMenuProps) {
               </p>
             </div>
           </div>
-          <div className="col-start-3 col-span-5 mt-8 grid w-full min-w-0 content-start self-start justify-items-start text-left [&>*]:min-w-0 [&>*]:w-full max-lg:col-start-2 max-lg:col-span-4 max-lg:mt-4 max-md:col-start-1 max-md:col-span-3 max-md:mt-0 max-sm:col-span-1">
+          <div className="col-start-2 col-span-6 mt-8 grid w-full min-w-0 content-start self-start justify-items-start text-left [&>*]:min-w-0 [&>*]:w-full max-lg:col-start-2 max-lg:col-span-4 max-lg:mt-4 max-md:col-start-1 max-md:col-span-3 max-md:mt-0 max-sm:col-span-1">
             <div className="grid grid-cols-3 gap-4 max-xl:grid-cols-2 max-md:grid-cols-3 max-sm:grid-cols-1">
               {group.links.map((link) => {
                 const canManagePage =

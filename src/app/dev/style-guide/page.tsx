@@ -866,25 +866,50 @@ function GuideSection({
   children: React.ReactNode;
 }) {
   const Title = titleAs;
+  const defaultOpen = titleAs === "h1";
 
   return (
     <section className="scroll-mt-12 border-t border-service-border" id={id}>
-      <SevenColumnGrid minHeight="none" padding="med">
-        <SevenColumnGridItem className="col-span-7">
-          <div className="fluid-type-frame mb-12">
-            <p className="type-label text-service-accent">{eyebrow}</p>
-            <Title className="type-heading-xl mt-4 text-service-ink">
-              {title}
-            </Title>
-            {body ? (
-              <p className="type-text-lg wrap-pretty mt-5 text-service-muted">
-                {body}
-              </p>
-            ) : null}
-          </div>
-          {children}
-        </SevenColumnGridItem>
-      </SevenColumnGrid>
+      <details
+        className="group [&[open]_.guide-section-icon]:rotate-45"
+        open={defaultOpen}
+      >
+        <summary className="list-none cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-service-accent [&::-webkit-details-marker]:hidden">
+          <SevenColumnGrid minHeight="none" padding="med">
+            <SevenColumnGridItem className="col-span-7">
+              <div className="fluid-type-frame flex items-start justify-between gap-8">
+                <div className="max-w-5xl">
+                  <p className="type-label text-service-accent">{eyebrow}</p>
+                  <Title className="type-heading-xl mt-4 text-service-ink">
+                    {title}
+                  </Title>
+                  {body ? (
+                    <p className="type-text-lg wrap-pretty mt-5 text-service-muted">
+                      {body}
+                    </p>
+                  ) : null}
+                </div>
+                <span
+                  aria-hidden="true"
+                  className="guide-section-icon mt-2 grid size-11 shrink-0 place-items-center rounded-full border border-service-border bg-white text-2xl leading-none text-service-ink transition-transform duration-200 max-sm:size-9 max-sm:text-xl"
+                >
+                  +
+                </span>
+              </div>
+            </SevenColumnGridItem>
+          </SevenColumnGrid>
+        </summary>
+        <SevenColumnGrid
+          className="px-[var(--site-grid-inset-inline)] pb-[var(--site-grid-inset-block)]"
+          frame="none"
+          minHeight="none"
+          padding="none"
+        >
+          <SevenColumnGridItem className="col-span-7">
+            {children}
+          </SevenColumnGridItem>
+        </SevenColumnGrid>
+      </details>
     </section>
   );
 }

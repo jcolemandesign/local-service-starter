@@ -36,7 +36,7 @@ export function HomeIndexSection({
     <Section className="min-h-svh bg-bg-surface text-text-main">
       <Container>
         <SevenColumnGrid frame="none" gap="lrg" className="fluid-type-frame">
-          <SevenColumnGridItem className="col-start-2 col-span-4 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+          <SevenColumnGridItem className="col-start-2 col-span-6 max-lg:col-start-2 max-lg:col-span-4 max-md:col-start-1 max-md:col-span-3 max-sm:col-span-1">
             <SectionHeading
               eyebrow={eyebrow}
               title={title}
