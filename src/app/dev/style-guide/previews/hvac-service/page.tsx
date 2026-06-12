@@ -7,6 +7,7 @@ import {
   FAQSectionV3,
   FooterSectionV3,
   HeroSplitFullHeightSectionV3,
+  NavFloatingBentoSectionV2,
   ProcessImageChecklistSectionV3,
   ServicesThreeCardsRightSectionV3,
   TestimonialsCarouselSectionV3,
@@ -18,6 +19,18 @@ import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSu
 export const metadata: Metadata = {
   title: "HVAC Service Preview | Style Guide",
 };
+
+const hvacNav = {
+  logoLabel: "Summit Air Co.",
+  phone: "(555) 014-2250",
+  action: "Request service",
+  links: [
+    { label: "Services", items: ["AC repair", "Heating repair", "Tune-ups"] },
+    { label: "Process" },
+    { label: "Reviews" },
+    { label: "FAQ" },
+  ],
+} as const;
 
 const hvacHero = {
   eyebrow: "Summit Air Co.",
@@ -205,6 +218,7 @@ const hvacFooter = {
 export default function HvacServicePreviewPage() {
   return (
     <StyleGuidePreviewSurface>
+      <NavFloatingBentoSectionV2 {...hvacNav} fixed />
       <main className="bg-bg-page text-service-ink">
         <HeroSplitFullHeightSectionV3
           {...hvacHero}

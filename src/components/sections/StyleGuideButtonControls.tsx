@@ -79,7 +79,7 @@ export function StyleGuideButtonControls() {
 
   return (
     <div className="grid gap-5">
-      <Card className="p-5 shadow-none">
+      <Card className="bg-service-surface p-5 shadow-none">
         <div className="fluid-type-frame">
           <p className="type-label text-service-accent">Button controls</p>
           <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -91,27 +91,29 @@ export function StyleGuideButtonControls() {
           </p>
         </div>
 
-        <div className="mt-5 grid grid-cols-4 gap-2 max-lg:grid-cols-2 max-md:grid-cols-1">
-          {buttonExamples.map((example) => {
-            const isActive = example.name === activeExample.name;
+        <div className="radius-medium mt-5 border border-service-border bg-white p-3">
+          <div className="grid grid-cols-4 gap-2 max-lg:grid-cols-2 max-md:grid-cols-1">
+            {buttonExamples.map((example) => {
+              const isActive = example.name === activeExample.name;
 
-            return (
-              <button
-                aria-pressed={isActive}
-                className={cx(
-                  "radius-button min-h-11 border px-3 py-2 text-left text-xs font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
-                  isActive
-                    ? "border-service-accent bg-service-accent text-white"
-                    : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent",
-                )}
-                key={example.name}
-                onClick={() => setActiveName(example.name)}
-                type="button"
-              >
-                {example.label}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  aria-pressed={isActive}
+                  className={cx(
+                    "radius-button min-h-11 border px-3 py-2 text-center text-xs font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
+                    isActive
+                      ? "border-service-accent bg-service-accent text-white"
+                      : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent",
+                  )}
+                  key={example.name}
+                  onClick={() => setActiveName(example.name)}
+                  type="button"
+                >
+                  {example.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </Card>
 
@@ -129,8 +131,10 @@ export function StyleGuideButtonControls() {
           </code>
         </Card>
 
-        <Card className="flex min-h-64 items-center justify-center p-8 shadow-none">
-          <ButtonPreview example={activeExample} />
+        <Card className="p-6 shadow-none">
+          <div className="radius-medium flex min-h-64 items-center justify-center border border-service-border bg-service-surface p-8">
+            <ButtonPreview example={activeExample} />
+          </div>
         </Card>
       </div>
 
@@ -141,7 +145,7 @@ export function StyleGuideButtonControls() {
             Standard and special buttons together
           </h3>
         </div>
-        <div className="mt-6 flex flex-wrap items-center gap-3">
+        <div className="radius-medium mt-6 flex flex-wrap items-center justify-center gap-3 border border-service-border bg-service-surface p-6">
           <Button href="#">Request service</Button>
           <Button href="#" variant="secondary">
             View services

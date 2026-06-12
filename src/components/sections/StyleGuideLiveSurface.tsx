@@ -8,8 +8,10 @@ export type StyleGuideTokenDraft = {
   accent: string;
   bgDark: string;
   bgPage: string;
-  activeRadiusName: string;
-  activeRadiusValue: string;
+  activeButtonRadiusName: string;
+  activeButtonRadiusValue: string;
+  activeSurfaceRadiusName: string;
+  activeSurfaceRadiusValue: string;
   activeBorderWidthName: string;
   activeBorderWidthValue: string;
   activeCardGapName: string;
@@ -39,6 +41,7 @@ export type StyleGuideTokenDraft = {
   serviceSurface: string;
   shadowAlpha: number;
   shadowBlur: number;
+  shadowColor: string;
   shadowX: number;
   shadowY: number;
   typeCustomFont: string;
@@ -70,8 +73,10 @@ export const defaultStyleGuideTokenDraft: StyleGuideTokenDraft = {
   accent: "#c45a2c",
   bgDark: "#10141b",
   bgPage: "#fbfaf6",
-  activeRadiusName: "radius-md / radius-medium",
-  activeRadiusValue: "8px",
+  activeButtonRadiusName: "radius-sm / radius-4",
+  activeButtonRadiusValue: "4px",
+  activeSurfaceRadiusName: "radius-md / radius-medium",
+  activeSurfaceRadiusValue: "8px",
   activeBorderWidthName: "border-default",
   activeBorderWidthValue: "1px",
   activeCardGapName: "card-grid-gap-med",
@@ -101,6 +106,7 @@ export const defaultStyleGuideTokenDraft: StyleGuideTokenDraft = {
   serviceSurface: "#f4f7f3",
   shadowAlpha: 0.08,
   shadowBlur: 50,
+  shadowColor: "#17211d",
   shadowX: 0,
   shadowY: 18,
   typeBodyFontAssignment: "global",
@@ -180,6 +186,20 @@ function typeVariableEntries(draft: StyleGuideTokenDraft) {
   });
 }
 
+function hexToRgbChannels(value: string) {
+  const normalizedValue = value.replace("#", "");
+
+  if (!/^[0-9a-fA-F]{6}$/.test(normalizedValue)) {
+    return "23 33 29";
+  }
+
+  const red = Number.parseInt(normalizedValue.slice(0, 2), 16);
+  const green = Number.parseInt(normalizedValue.slice(2, 4), 16);
+  const blue = Number.parseInt(normalizedValue.slice(4, 6), 16);
+
+  return `${red} ${green} ${blue}`;
+}
+
 const StyleGuideTokenContext = createContext<StyleGuideTokenContextValue | null>(
   null,
 );
@@ -199,11 +219,7 @@ export function useStyleGuideTokens() {
 export function buildStyleVariables(
   draft: StyleGuideTokenDraft,
 ): StyleVariableProperties {
-  const activeRadiusPx = Number.parseFloat(draft.activeRadiusValue);
-  const buttonRadius = Number.isFinite(activeRadiusPx)
-    ? Math.min(Math.max(activeRadiusPx <= 2 ? activeRadiusPx : activeRadiusPx / 2, 0), 14)
-    : draft.radiusSm;
-  const serviceShadow = `${draft.shadowX}px ${draft.shadowY}px ${draft.shadowBlur}px rgb(23 33 29 / ${draft.shadowAlpha})`;
+  const serviceShadow = `${draft.shadowX}px ${draft.shadowY}px ${draft.shadowBlur}px rgb(${hexToRgbChannels(draft.shadowColor)} / ${draft.shadowAlpha})`;
 
   return {
     "--live-accent": draft.accent,
@@ -232,9 +248,10 @@ export function buildStyleVariables(
     "--site-grid-inset-inline": draft.activeSiteGridFrameInline,
     "--radius-lg-token": `${draft.radiusLg}px`,
     "--radius-md-token": `${draft.radiusMd}px`,
+    "--radius-round-token": "9999px",
     "--radius-sm-token": `${draft.radiusSm}px`,
-    "--radius-surface-token": draft.activeRadiusValue,
-    "--radius-button-token": `${buttonRadius}px`,
+    "--radius-surface-token": draft.activeSurfaceRadiusValue,
+    "--radius-button-token": draft.activeButtonRadiusValue,
     "--radius-xl-token": `${draft.radiusXl}px`,
     "--live-shadow-service": serviceShadow,
     "--shadow-service": serviceShadow,

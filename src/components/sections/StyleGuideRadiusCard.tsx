@@ -3,6 +3,7 @@
 import { useStyleGuideTokens } from "@/components/sections/StyleGuideLiveSurface";
 
 type StyleGuideRadiusCardProps = {
+  target: "button" | "surface";
   name: string;
   value: string;
 };
@@ -11,9 +12,16 @@ function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-export function StyleGuideRadiusCard({ name, value }: StyleGuideRadiusCardProps) {
+export function StyleGuideRadiusCard({
+  target,
+  name,
+  value,
+}: StyleGuideRadiusCardProps) {
   const { draft, updateDraft } = useStyleGuideTokens();
-  const isActive = draft.activeRadiusName === name;
+  const isActive =
+    target === "button"
+      ? draft.activeButtonRadiusName === name
+      : draft.activeSurfaceRadiusName === name;
   const radiusStyle = { borderRadius: value };
 
   return (
@@ -26,8 +34,15 @@ export function StyleGuideRadiusCard({ name, value }: StyleGuideRadiusCardProps)
           : "border-service-border bg-white text-service-ink hover:border-service-accent",
       )}
       onClick={() => {
-        updateDraft("activeRadiusName", name);
-        updateDraft("activeRadiusValue", value);
+        if (target === "button") {
+          updateDraft("activeButtonRadiusName", name);
+          updateDraft("activeButtonRadiusValue", value);
+
+          return;
+        }
+
+        updateDraft("activeSurfaceRadiusName", name);
+        updateDraft("activeSurfaceRadiusValue", value);
       }}
       type="button"
     >

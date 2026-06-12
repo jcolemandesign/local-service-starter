@@ -31,6 +31,9 @@ function SliderControl({
   value: number;
   valueLabel: string;
 }) {
+  const zeroPosition =
+    min < 0 && max > 0 ? ((0 - min) / (max - min)) * 100 : null;
+
   return (
     <label className="grid gap-2">
       <span className="flex items-center justify-between gap-3">
@@ -41,15 +44,24 @@ function SliderControl({
           {valueLabel}
         </span>
       </span>
-      <input
-        className="w-full accent-service-accent"
-        max={max}
-        min={min}
-        onChange={(event) => onChange(Number(event.target.value))}
-        step={step}
-        type="range"
-        value={value}
-      />
+      <span className="relative grid py-1">
+        {zeroPosition !== null ? (
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute top-1/2 z-10 h-4 w-px -translate-x-1/2 -translate-y-1/2 bg-service-muted/55"
+            style={{ left: `${zeroPosition}%` }}
+          />
+        ) : null}
+        <input
+          className="relative z-20 w-full accent-service-accent"
+          max={max}
+          min={min}
+          onChange={(event) => onChange(Number(event.target.value))}
+          step={step}
+          type="range"
+          value={value}
+        />
+      </span>
     </label>
   );
 }
@@ -125,12 +137,31 @@ export function StyleGuideSurfaceControls() {
             Elevation recipe
           </h3>
           <p className="type-text-sm mt-heading-body-sm text-service-muted">
-            Adjust the shared service shadow x offset, y offset, blur, and
-            opacity.
+            Adjust the shared service shadow color, x offset, y offset, blur,
+            and opacity.
           </p>
         </div>
 
         <div className="mt-5 grid gap-5">
+          <label className="grid gap-2">
+            <span className="type-caption font-semibold text-service-ink">
+              Shadow color
+            </span>
+            <span className="radius-button flex min-h-11 items-center gap-3 border border-service-border bg-service-surface px-3">
+              <input
+                aria-label="Shadow color"
+                className="size-7 cursor-pointer border-0 bg-transparent p-0"
+                onChange={(event) =>
+                  updateDraft("shadowColor", event.target.value)
+                }
+                type="color"
+                value={draft.shadowColor}
+              />
+              <code className="type-caption font-semibold text-service-muted">
+                {draft.shadowColor}
+              </code>
+            </span>
+          </label>
           <SliderControl
             label="X offset"
             max={40}

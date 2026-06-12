@@ -247,6 +247,7 @@ const radii = [
   ["radius-md / radius-medium", "8px"],
   ["radius-lg / radius-large", "24px"],
   ["radius-xl / radius-extra-large", "40px"],
+  ["radius-round", "9999px"],
 ];
 
 const spacing = [
@@ -945,7 +946,7 @@ function GuideSection({
   id: string;
   eyebrow: string;
   title: string;
-  titleAs?: "h1" | "h2";
+  titleAs?: "h1" | "h2" | "h3";
   body?: string;
   children: React.ReactNode;
 }) {
@@ -965,7 +966,12 @@ function GuideSection({
               <div className="fluid-type-frame flex items-start justify-between gap-8">
                 <div className="max-w-5xl">
                   <p className="type-label text-service-accent">{eyebrow}</p>
-                  <Title className="type-heading-xl mt-4 text-service-ink">
+                  <Title
+                    className={cx(
+                      "mt-4 text-service-ink",
+                      titleAs === "h3" ? "type-heading-lg" : "type-heading-xl",
+                    )}
+                  >
                     {title}
                   </Title>
                   {body ? (
@@ -1114,6 +1120,9 @@ export default function StyleGuidePage() {
               className="section-min-active items-stretch"
               minHeight="none"
               padding="med"
+              style={{
+                minHeight: "min(var(--section-min-active), 42rem)",
+              }}
             >
               <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
                 <div className="content-frame radius-medium grid h-full content-between border border-service-border bg-white">
@@ -1715,30 +1724,63 @@ export default function StyleGuidePage() {
                     Corner controls
                   </h2>
                   <p className="type-text-sm mt-heading-body-sm text-service-muted">
-                    Select the active radius token used by cards, previews, and
-                    surface examples.
+                    Select separate active radius tokens for cards/surfaces and
+                    button controls.
                   </p>
                 </div>
-                <div className="mt-5">
-                  <div className="grid grid-cols-[minmax(0,1fr)_4rem_2rem] gap-3 px-3 pb-2">
-                    <span className="type-caption font-semibold text-service-muted">
-                      Token
-                    </span>
-                    <span className="type-caption text-right font-semibold text-service-muted">
-                      Value
-                    </span>
-                    <span className="type-caption text-right font-semibold text-service-muted">
-                      Edge
-                    </span>
+                <div className="mt-5 grid gap-5">
+                  <div>
+                    <p className="type-caption mb-2 font-semibold text-service-ink">
+                      Cards and surfaces
+                    </p>
+                    <div className="grid grid-cols-[minmax(0,1fr)_4rem_2rem] gap-3 px-3 pb-2">
+                      <span className="type-caption font-semibold text-service-muted">
+                        Token
+                      </span>
+                      <span className="type-caption text-right font-semibold text-service-muted">
+                        Value
+                      </span>
+                      <span className="type-caption text-right font-semibold text-service-muted">
+                        Edge
+                      </span>
+                    </div>
+                    <div className="grid gap-2">
+                      {radii.map(([name, value]) => (
+                        <StyleGuideRadiusCard
+                          key={`surface-${name}`}
+                          name={name}
+                          target="surface"
+                          value={value}
+                        />
+                      ))}
+                    </div>
                   </div>
-                  <div className="grid gap-2">
-                    {radii.map(([name, value]) => (
-                      <StyleGuideRadiusCard
-                        key={name}
-                        name={name}
-                        value={value}
-                      />
-                    ))}
+
+                  <div>
+                    <p className="type-caption mb-2 font-semibold text-service-ink">
+                      Buttons
+                    </p>
+                    <div className="grid grid-cols-[minmax(0,1fr)_4rem_2rem] gap-3 px-3 pb-2">
+                      <span className="type-caption font-semibold text-service-muted">
+                        Token
+                      </span>
+                      <span className="type-caption text-right font-semibold text-service-muted">
+                        Value
+                      </span>
+                      <span className="type-caption text-right font-semibold text-service-muted">
+                        Edge
+                      </span>
+                    </div>
+                    <div className="grid gap-2">
+                      {radii.map(([name, value]) => (
+                        <StyleGuideRadiusCard
+                          key={`button-${name}`}
+                          name={name}
+                          target="button"
+                          value={value}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
               </SevenColumnGridItem>
@@ -2040,6 +2082,7 @@ export default function StyleGuidePage() {
         eyebrow="Composition"
         id="styles-in-context"
         title="Shared Styles In Context"
+        titleAs="h3"
         body="These previews use the same global tokens a production section would compose."
       >
         <SevenColumnGrid minHeight="none" padding="none">

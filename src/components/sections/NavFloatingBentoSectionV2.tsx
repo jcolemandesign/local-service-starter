@@ -10,14 +10,14 @@ const menuEase = [0.22, 1, 0.36, 1] as const;
 
 type NavLink = {
   label: string;
-  items?: string[];
+  items?: readonly string[];
 };
 
 type NavFloatingBentoSectionV2Props = {
   logoLabel: string;
   phone: string;
   action: string;
-  links: NavLink[];
+  links: readonly NavLink[];
   fixed?: boolean;
 };
 
@@ -64,7 +64,7 @@ function ModalMenu({
 }: {
   action: string;
   isOpen: boolean;
-  links: NavLink[];
+  links: readonly NavLink[];
   onExitComplete: () => void;
   phone: string;
   setIsOpen: (isOpen: boolean) => void;

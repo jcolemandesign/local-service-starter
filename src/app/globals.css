@@ -36,6 +36,7 @@
   --radius-md-token: 8px;
   --radius-lg-token: 24px;
   --radius-xl-token: 40px;
+  --radius-round-token: 9999px;
 }
 
 @theme inline {
@@ -266,6 +267,10 @@ body {
   .radius-xl,
   .radius-extra-large {
     border-radius: var(--radius-xl-token);
+  }
+
+  .radius-round {
+    border-radius: var(--radius-round-token);
   }
 
   .type-display-xl {

@@ -12,12 +12,15 @@ type StyleGuideTokenDraft = {
   bgDark: string;
   accent: string;
   activeBorderWidthValue: string;
+  activeButtonRadiusValue: string;
+  activeSurfaceRadiusValue: string;
   radiusSm: number;
   radiusMd: number;
   radiusLg: number;
   shadowX: number;
   shadowY: number;
   shadowBlur: number;
+  shadowColor: string;
   shadowAlpha: number;
 };
 
@@ -75,12 +78,21 @@ function normalizeTokens(tokens: Partial<StyleGuideTokenDraft> | undefined) {
     activeBorderWidthValue: normalizeBorderWidth(
       tokens.activeBorderWidthValue,
     ),
+    activeButtonRadiusValue: normalizeRadiusValue(
+      tokens.activeButtonRadiusValue,
+      "button radius",
+    ),
+    activeSurfaceRadiusValue: normalizeRadiusValue(
+      tokens.activeSurfaceRadiusValue,
+      "surface radius",
+    ),
     radiusSm: normalizeNumber(tokens.radiusSm, "small radius", 0, 16),
     radiusMd: normalizeNumber(tokens.radiusMd, "medium radius", 0, 24),
     radiusLg: normalizeNumber(tokens.radiusLg, "large radius", 8, 40),
     shadowX: normalizeNumber(tokens.shadowX, "shadow x", -40, 40),
     shadowY: normalizeNumber(tokens.shadowY, "shadow y", -40, 40),
     shadowBlur: normalizeNumber(tokens.shadowBlur, "shadow blur", 0, 80),
+    shadowColor: normalizeColor(tokens.shadowColor, "shadow"),
     shadowAlpha: normalizeNumber(tokens.shadowAlpha, "shadow alpha", 0, 0.25),
   };
 }
@@ -117,6 +129,26 @@ function normalizeBorderWidth(value: unknown) {
   return value;
 }
 
+function normalizeRadiusValue(value: unknown, label: string) {
+  if (
+    typeof value !== "string" ||
+    !/^(0|2|4|8|24|40|9999)px$/.test(value)
+  ) {
+    throw new Error(`Invalid ${label} value.`);
+  }
+
+  return value;
+}
+
+function hexToRgbChannels(value: string) {
+  const normalizedValue = value.replace("#", "");
+  const red = Number.parseInt(normalizedValue.slice(0, 2), 16);
+  const green = Number.parseInt(normalizedValue.slice(2, 4), 16);
+  const blue = Number.parseInt(normalizedValue.slice(4, 6), 16);
+
+  return `${red} ${green} ${blue}`;
+}
+
 function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   return `${beginMarker}
 :root {
@@ -139,7 +171,10 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --radius-sm-token: ${tokens.radiusSm}px;
   --radius-md-token: ${tokens.radiusMd}px;
   --radius-lg-token: ${tokens.radiusLg}px;
-  --shadow-service: ${tokens.shadowX}px ${tokens.shadowY}px ${tokens.shadowBlur}px rgb(23 33 29 / ${tokens.shadowAlpha});
+  --radius-round-token: 9999px;
+  --radius-surface-token: ${tokens.activeSurfaceRadiusValue};
+  --radius-button-token: ${tokens.activeButtonRadiusValue};
+  --shadow-service: ${tokens.shadowX}px ${tokens.shadowY}px ${tokens.shadowBlur}px rgb(${hexToRgbChannels(tokens.shadowColor)} / ${tokens.shadowAlpha});
 }
 ${endMarker}`;
 }

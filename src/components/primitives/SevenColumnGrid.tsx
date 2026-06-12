@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 type SevenColumnGridFrame = "site" | "none";
 type SevenColumnGridGap = "site" | "sml" | "med" | "lrg";
@@ -23,6 +23,7 @@ type SevenColumnGridProps = {
   gap?: SevenColumnGridGap;
   minHeight?: SevenColumnGridMinHeight;
   padding?: SevenColumnGridPadding;
+  style?: CSSProperties;
 };
 
 type SevenColumnGridItemProps = {
@@ -96,6 +97,7 @@ export function SevenColumnGrid({
   gap = "site",
   minHeight = "default",
   padding = "none",
+  style,
 }: SevenColumnGridProps) {
   return (
     <div
@@ -107,6 +109,7 @@ export function SevenColumnGrid({
         paddingClasses[padding],
         className,
       )}
+      style={style}
     >
       {children}
     </div>
