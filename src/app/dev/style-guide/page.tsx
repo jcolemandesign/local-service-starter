@@ -258,6 +258,73 @@ const spacing = [
 
 const sectionSpacing = spacing.filter(([name]) => name.startsWith("section"));
 
+const sectionPaddingOptions = [
+  {
+    label: "Compact padding",
+    lrg: "5rem",
+    lrgMobile: "3rem",
+    lrgTablet: "4.5rem",
+    med: "4rem",
+    medMobile: "3rem",
+    medTablet: "3.75rem",
+    name: "section-padding-compact",
+    sml: "3rem",
+    smlMobile: "2.75rem",
+    smlTablet: "3rem",
+    vsml: "1.5rem",
+    vsmlMobile: "1.5rem",
+    vsmlTablet: "1.5rem",
+  },
+  {
+    label: "Default padding",
+    lrg: "8rem",
+    lrgMobile: "4rem",
+    lrgTablet: "6rem",
+    med: "6rem",
+    medMobile: "4rem",
+    medTablet: "5rem",
+    name: "section-padding-default",
+    sml: "4rem",
+    smlMobile: "4rem",
+    smlTablet: "3.5rem",
+    vsml: "2rem",
+    vsmlMobile: "2rem",
+    vsmlTablet: "2rem",
+  },
+  {
+    label: "Open padding",
+    lrg: "10rem",
+    lrgMobile: "5rem",
+    lrgTablet: "7rem",
+    med: "7.5rem",
+    medMobile: "4.75rem",
+    medTablet: "6rem",
+    name: "section-padding-open",
+    sml: "5rem",
+    smlMobile: "4.5rem",
+    smlTablet: "4.5rem",
+    vsml: "2.5rem",
+    vsmlMobile: "2rem",
+    vsmlTablet: "2.25rem",
+  },
+  {
+    label: "Wide padding",
+    lrg: "12rem",
+    lrgMobile: "5.5rem",
+    lrgTablet: "8rem",
+    med: "9rem",
+    medMobile: "5rem",
+    medTablet: "7rem",
+    name: "section-padding-wide",
+    sml: "6rem",
+    smlMobile: "5rem",
+    smlTablet: "5rem",
+    vsml: "3rem",
+    vsmlMobile: "2.5rem",
+    vsmlTablet: "2.5rem",
+  },
+] as const;
+
 const siteGridFrameOptions = [
   {
     block: "clamp(1.5rem, 3vw, 5rem)",
@@ -1062,8 +1129,8 @@ export default function StyleGuidePage() {
         body="SevenColumnGrid is the current section frame. It keeps column count stable while frame inset, gap, vertical padding, item alignment, and copy measures move through tokens."
       >
         <div className="grid gap-5">
-          <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
-            <div className="col-span-3 max-lg:col-span-2 max-md:col-span-1">
+          <div className="grid grid-cols-4 gap-4 max-xl:grid-cols-2 max-md:grid-cols-1">
+            <div className="col-span-4 max-xl:col-span-2 max-md:col-span-1">
               <div className="fluid-type-frame">
                 <p className="type-label text-service-accent">Layout controls</p>
                 <h2 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -1080,6 +1147,13 @@ export default function StyleGuidePage() {
               <StyleGuideGridTokenControl
                 kind="body-spacing"
                 options={siteGridFrameOptions}
+              />
+            </div>
+
+            <div className="min-w-0">
+              <StyleGuideGridTokenControl
+                kind="section-spacing"
+                options={sectionPaddingOptions}
               />
             </div>
 

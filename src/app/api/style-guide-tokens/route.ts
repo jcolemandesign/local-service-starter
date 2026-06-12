@@ -14,6 +14,18 @@ type StyleGuideTokenDraft = {
   activeBorderWidthValue: string;
   activeButtonRadiusValue: string;
   activeSurfaceRadiusValue: string;
+  activeSectionSpaceLrg: string;
+  activeSectionSpaceLrgMobile: string;
+  activeSectionSpaceLrgTablet: string;
+  activeSectionSpaceMed: string;
+  activeSectionSpaceMedMobile: string;
+  activeSectionSpaceMedTablet: string;
+  activeSectionSpaceSml: string;
+  activeSectionSpaceSmlMobile: string;
+  activeSectionSpaceSmlTablet: string;
+  activeSectionSpaceVsml: string;
+  activeSectionSpaceVsmlMobile: string;
+  activeSectionSpaceVsmlTablet: string;
   radiusSm: number;
   radiusMd: number;
   radiusLg: number;
@@ -86,6 +98,54 @@ function normalizeTokens(tokens: Partial<StyleGuideTokenDraft> | undefined) {
       tokens.activeSurfaceRadiusValue,
       "surface radius",
     ),
+    activeSectionSpaceLrg: normalizeSpacingValue(
+      tokens.activeSectionSpaceLrg,
+      "large section padding",
+    ),
+    activeSectionSpaceLrgMobile: normalizeSpacingValue(
+      tokens.activeSectionSpaceLrgMobile,
+      "large mobile section padding",
+    ),
+    activeSectionSpaceLrgTablet: normalizeSpacingValue(
+      tokens.activeSectionSpaceLrgTablet,
+      "large tablet section padding",
+    ),
+    activeSectionSpaceMed: normalizeSpacingValue(
+      tokens.activeSectionSpaceMed,
+      "medium section padding",
+    ),
+    activeSectionSpaceMedMobile: normalizeSpacingValue(
+      tokens.activeSectionSpaceMedMobile,
+      "medium mobile section padding",
+    ),
+    activeSectionSpaceMedTablet: normalizeSpacingValue(
+      tokens.activeSectionSpaceMedTablet,
+      "medium tablet section padding",
+    ),
+    activeSectionSpaceSml: normalizeSpacingValue(
+      tokens.activeSectionSpaceSml,
+      "small section padding",
+    ),
+    activeSectionSpaceSmlMobile: normalizeSpacingValue(
+      tokens.activeSectionSpaceSmlMobile,
+      "small mobile section padding",
+    ),
+    activeSectionSpaceSmlTablet: normalizeSpacingValue(
+      tokens.activeSectionSpaceSmlTablet,
+      "small tablet section padding",
+    ),
+    activeSectionSpaceVsml: normalizeSpacingValue(
+      tokens.activeSectionSpaceVsml,
+      "very small section padding",
+    ),
+    activeSectionSpaceVsmlMobile: normalizeSpacingValue(
+      tokens.activeSectionSpaceVsmlMobile,
+      "very small mobile section padding",
+    ),
+    activeSectionSpaceVsmlTablet: normalizeSpacingValue(
+      tokens.activeSectionSpaceVsmlTablet,
+      "very small tablet section padding",
+    ),
     radiusSm: normalizeNumber(tokens.radiusSm, "small radius", 0, 16),
     radiusMd: normalizeNumber(tokens.radiusMd, "medium radius", 0, 24),
     radiusLg: normalizeNumber(tokens.radiusLg, "large radius", 8, 40),
@@ -140,6 +200,17 @@ function normalizeRadiusValue(value: unknown, label: string) {
   return value;
 }
 
+function normalizeSpacingValue(value: unknown, label: string) {
+  if (
+    typeof value !== "string" ||
+    !/^(?:\d+(?:\.\d+)?rem|clamp\([^)]+\))$/.test(value)
+  ) {
+    throw new Error(`Invalid ${label}.`);
+  }
+
+  return value;
+}
+
 function hexToRgbChannels(value: string) {
   const normalizedValue = value.replace("#", "");
   const red = Number.parseInt(normalizedValue.slice(0, 2), 16);
@@ -174,6 +245,18 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --radius-round-token: 9999px;
   --radius-surface-token: ${tokens.activeSurfaceRadiusValue};
   --radius-button-token: ${tokens.activeButtonRadiusValue};
+  --section-space-vsml: ${tokens.activeSectionSpaceVsml};
+  --section-space-sml: ${tokens.activeSectionSpaceSml};
+  --section-space-med: ${tokens.activeSectionSpaceMed};
+  --section-space-lrg: ${tokens.activeSectionSpaceLrg};
+  --section-space-vsml-tablet: ${tokens.activeSectionSpaceVsmlTablet};
+  --section-space-sml-tablet: ${tokens.activeSectionSpaceSmlTablet};
+  --section-space-med-tablet: ${tokens.activeSectionSpaceMedTablet};
+  --section-space-lrg-tablet: ${tokens.activeSectionSpaceLrgTablet};
+  --section-space-vsml-mobile: ${tokens.activeSectionSpaceVsmlMobile};
+  --section-space-sml-mobile: ${tokens.activeSectionSpaceSmlMobile};
+  --section-space-med-mobile: ${tokens.activeSectionSpaceMedMobile};
+  --section-space-lrg-mobile: ${tokens.activeSectionSpaceLrgMobile};
   --shadow-service: ${tokens.shadowX}px ${tokens.shadowY}px ${tokens.shadowBlur}px rgb(${hexToRgbChannels(tokens.shadowColor)} / ${tokens.shadowAlpha});
 }
 ${endMarker}`;

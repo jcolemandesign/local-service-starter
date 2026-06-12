@@ -16,10 +16,31 @@ type SiteGridValueOption = {
   value: string;
 };
 
+type SectionSpacingOption = {
+  label: string;
+  lrg: string;
+  lrgMobile: string;
+  lrgTablet: string;
+  med: string;
+  medMobile: string;
+  medTablet: string;
+  name: string;
+  sml: string;
+  smlMobile: string;
+  smlTablet: string;
+  vsml: string;
+  vsmlMobile: string;
+  vsmlTablet: string;
+};
+
 type StyleGuideGridTokenControlProps =
   | {
       kind: "body-spacing";
       options: readonly BodySpacingOption[];
+    }
+  | {
+      kind: "section-spacing";
+      options: readonly SectionSpacingOption[];
     }
   | {
       kind: "content-spacing" | "gap";
@@ -47,6 +68,17 @@ export function StyleGuideGridTokenControl(
               option.inline === draft.activeSiteGridFrameInline),
         )
       : null;
+  const activeSectionSpacingOption =
+    props.kind === "section-spacing"
+      ? props.options.find(
+          (option) =>
+            option.name === draft.activeSectionSpaceName ||
+            (option.vsml === draft.activeSectionSpaceVsml &&
+              option.sml === draft.activeSectionSpaceSml &&
+              option.med === draft.activeSectionSpaceMed &&
+              option.lrg === draft.activeSectionSpaceLrg),
+        )
+      : null;
   const activeContentSpacingOption =
     props.kind === "content-spacing"
       ? props.options.find(
@@ -58,15 +90,19 @@ export function StyleGuideGridTokenControl(
   const controlLabel =
     props.kind === "body-spacing"
       ? "Body Padding"
-      : props.kind === "content-spacing"
-        ? "Content Padding"
-        : "Grid Gutter";
+      : props.kind === "section-spacing"
+        ? "Section Padding"
+        : props.kind === "content-spacing"
+          ? "Content Padding"
+          : "Grid Gutter";
   const activeName =
     props.kind === "body-spacing"
       ? activeBodySpacingOption?.name ?? draft.activeSiteGridFrameName
-      : props.kind === "content-spacing"
-        ? activeContentSpacingOption?.name ?? draft.activeContentFrameName
-        : draft.activeSiteGridGapName;
+      : props.kind === "section-spacing"
+        ? activeSectionSpacingOption?.name ?? draft.activeSectionSpaceName
+        : props.kind === "content-spacing"
+          ? activeContentSpacingOption?.name ?? draft.activeContentFrameName
+          : draft.activeSiteGridGapName;
 
   return (
     <Card className="h-full p-5 shadow-none">
@@ -107,6 +143,67 @@ export function StyleGuideGridTokenControl(
                 </button>
               );
             })
+          : props.kind === "section-spacing"
+            ? props.options.map((option) => {
+                const isActive =
+                  activeSectionSpacingOption?.name === option.name ||
+                  draft.activeSectionSpaceName === option.name;
+
+                return (
+                  <button
+                    aria-pressed={isActive}
+                    className={cx(
+                      "type-caption radius-4 border px-3 py-2 font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
+                      isActive
+                        ? "border-service-accent bg-service-accent text-white"
+                        : "border-service-border bg-white text-service-ink hover:border-service-accent",
+                    )}
+                    key={option.name}
+                    onClick={() => {
+                      updateDraft("activeSectionSpaceName", option.name);
+                      updateDraft("activeSectionSpaceVsml", option.vsml);
+                      updateDraft("activeSectionSpaceSml", option.sml);
+                      updateDraft("activeSectionSpaceMed", option.med);
+                      updateDraft("activeSectionSpaceLrg", option.lrg);
+                      updateDraft(
+                        "activeSectionSpaceVsmlTablet",
+                        option.vsmlTablet,
+                      );
+                      updateDraft(
+                        "activeSectionSpaceSmlTablet",
+                        option.smlTablet,
+                      );
+                      updateDraft(
+                        "activeSectionSpaceMedTablet",
+                        option.medTablet,
+                      );
+                      updateDraft(
+                        "activeSectionSpaceLrgTablet",
+                        option.lrgTablet,
+                      );
+                      updateDraft(
+                        "activeSectionSpaceVsmlMobile",
+                        option.vsmlMobile,
+                      );
+                      updateDraft(
+                        "activeSectionSpaceSmlMobile",
+                        option.smlMobile,
+                      );
+                      updateDraft(
+                        "activeSectionSpaceMedMobile",
+                        option.medMobile,
+                      );
+                      updateDraft(
+                        "activeSectionSpaceLrgMobile",
+                        option.lrgMobile,
+                      );
+                    }}
+                    type="button"
+                  >
+                    {shortSpacingLabel(option.label)}
+                  </button>
+                );
+              })
           : props.options.map((option) => {
               const isActive =
                 props.kind === "content-spacing"

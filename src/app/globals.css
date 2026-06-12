@@ -11,6 +11,18 @@
   --site-grid-inset-inline: clamp(1.5rem, 4vw, 8rem);
   --site-grid-inset-block: clamp(2rem, 4vw, 7rem);
   --site-grid-gap: clamp(0.75rem, 1vw, 1.5rem);
+  --section-space-vsml: 2rem;
+  --section-space-sml: 4rem;
+  --section-space-med: 6rem;
+  --section-space-lrg: 8rem;
+  --section-space-vsml-tablet: 2rem;
+  --section-space-sml-tablet: 3.5rem;
+  --section-space-med-tablet: 5rem;
+  --section-space-lrg-tablet: 6rem;
+  --section-space-vsml-mobile: 2rem;
+  --section-space-sml-mobile: 4rem;
+  --section-space-med-mobile: 4rem;
+  --section-space-lrg-mobile: 4rem;
   --border-surface-width-token: 1px;
   --semantic-spacing-scale: 1;
   --measure-lead: 52ch;
@@ -411,19 +423,19 @@ body {
   }
 
   .section-space-vsml {
-    padding-block: 2rem;
+    padding-block: var(--section-space-vsml);
   }
 
   .section-space-sml {
-    padding-block: 4rem;
+    padding-block: var(--section-space-sml);
   }
 
   .section-space-med {
-    padding-block: 6rem;
+    padding-block: var(--section-space-med);
   }
 
   .section-space-lrg {
-    padding-block: 8rem;
+    padding-block: var(--section-space-lrg);
   }
 
   .stack-tight > * + * {
@@ -803,19 +815,19 @@ body {
     }
 
     .section-space-vsml {
-      padding-block: 2rem;
+      padding-block: var(--section-space-vsml-tablet);
     }
 
     .section-space-sml {
-      padding-block: 3.5rem;
+      padding-block: var(--section-space-sml-tablet);
     }
 
     .section-space-med {
-      padding-block: 5rem;
+      padding-block: var(--section-space-med-tablet);
     }
 
     .section-space-lrg {
-      padding-block: 6rem;
+      padding-block: var(--section-space-lrg-tablet);
     }
 
     .mt-body-actions-lg {
@@ -841,13 +853,21 @@ body {
     }
 
     .section-space-vsml {
-      padding-block: 2rem;
+      padding-block: var(--section-space-vsml-mobile);
     }
 
     .section-space-sml,
     .section-space-med,
     .section-space-lrg {
-      padding-block: 4rem;
+      padding-block: var(--section-space-med-mobile);
+    }
+
+    .section-space-sml {
+      padding-block: var(--section-space-sml-mobile);
+    }
+
+    .section-space-lrg {
+      padding-block: var(--section-space-lrg-mobile);
     }
 
     .mt-eyebrow-display {

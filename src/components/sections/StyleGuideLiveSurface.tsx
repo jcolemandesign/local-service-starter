@@ -22,6 +22,19 @@ export type StyleGuideTokenDraft = {
   activeLayoutGapValue: string;
   activeSectionMinName: string;
   activeSectionMinValue: string;
+  activeSectionSpaceLrg: string;
+  activeSectionSpaceLrgMobile: string;
+  activeSectionSpaceLrgTablet: string;
+  activeSectionSpaceMed: string;
+  activeSectionSpaceMedMobile: string;
+  activeSectionSpaceMedTablet: string;
+  activeSectionSpaceName: string;
+  activeSectionSpaceSml: string;
+  activeSectionSpaceSmlMobile: string;
+  activeSectionSpaceSmlTablet: string;
+  activeSectionSpaceVsml: string;
+  activeSectionSpaceVsmlMobile: string;
+  activeSectionSpaceVsmlTablet: string;
   activeSemanticSpacingScale: number;
   activeContentFrameName: string;
   activeContentFrameValue: string;
@@ -87,6 +100,19 @@ export const defaultStyleGuideTokenDraft: StyleGuideTokenDraft = {
   activeLayoutGapValue: "1rem",
   activeSectionMinName: "section-min-tiny",
   activeSectionMinValue: "18rem",
+  activeSectionSpaceLrg: "8rem",
+  activeSectionSpaceLrgMobile: "4rem",
+  activeSectionSpaceLrgTablet: "6rem",
+  activeSectionSpaceMed: "6rem",
+  activeSectionSpaceMedMobile: "4rem",
+  activeSectionSpaceMedTablet: "5rem",
+  activeSectionSpaceName: "section-padding-default",
+  activeSectionSpaceSml: "4rem",
+  activeSectionSpaceSmlMobile: "4rem",
+  activeSectionSpaceSmlTablet: "3.5rem",
+  activeSectionSpaceVsml: "2rem",
+  activeSectionSpaceVsmlMobile: "2rem",
+  activeSectionSpaceVsmlTablet: "2rem",
   activeSemanticSpacingScale: 1,
   activeContentFrameName: "content-spacing-default",
   activeContentFrameValue: "clamp(1.5rem, 3vw, 2.5rem)",
@@ -241,6 +267,18 @@ export function buildStyleVariables(
     "--layout-gap-active": draft.activeLayoutGapValue,
     "--border-surface-width-token": draft.activeBorderWidthValue,
     "--section-min-active": draft.activeSectionMinValue,
+    "--section-space-lrg": draft.activeSectionSpaceLrg,
+    "--section-space-lrg-mobile": draft.activeSectionSpaceLrgMobile,
+    "--section-space-lrg-tablet": draft.activeSectionSpaceLrgTablet,
+    "--section-space-med": draft.activeSectionSpaceMed,
+    "--section-space-med-mobile": draft.activeSectionSpaceMedMobile,
+    "--section-space-med-tablet": draft.activeSectionSpaceMedTablet,
+    "--section-space-sml": draft.activeSectionSpaceSml,
+    "--section-space-sml-mobile": draft.activeSectionSpaceSmlMobile,
+    "--section-space-sml-tablet": draft.activeSectionSpaceSmlTablet,
+    "--section-space-vsml": draft.activeSectionSpaceVsml,
+    "--section-space-vsml-mobile": draft.activeSectionSpaceVsmlMobile,
+    "--section-space-vsml-tablet": draft.activeSectionSpaceVsmlTablet,
     "--semantic-spacing-scale": String(draft.activeSemanticSpacingScale),
     "--container-gutter": draft.activeContentFrameValue,
     "--site-grid-gap": draft.activeSiteGridGapValue,
