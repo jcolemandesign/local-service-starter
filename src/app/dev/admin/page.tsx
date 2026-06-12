@@ -17,7 +17,7 @@ const linkGroups = [
     links: [
       { label: "Section Library", href: "/sections" },
       { label: "Style Guide", href: "/dev/style-guide" },
-      { label: "Font Lab", href: "/dev/font-lab" },
+      { label: "Font Lab (deprecated)", href: "/dev/font-lab" },
       { label: "Pagebuilder", href: "/dev/pagebuilder" },
     ],
   },

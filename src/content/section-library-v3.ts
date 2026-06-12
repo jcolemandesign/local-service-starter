@@ -4,7 +4,7 @@ export const sectionLibraryV3Content = {
     title: "Reliable home services built around your schedule.",
     body: "A polished hero pattern for local service companies, with a clear value proposition, supporting proof, and two focused calls to action.",
     imageAlt: "Sample local service project image",
-    imageSrc: "/images/bg-image-sample.jpg",
+    imageSrc: "/images/bg-image-sample 2.1.jpg",
     primaryAction: "Request service",
     secondaryAction: "View services",
     stats: ["Same-week visits", "Licensed pros", "Clear estimates"],

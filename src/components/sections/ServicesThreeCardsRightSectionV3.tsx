@@ -18,8 +18,8 @@ export function ServicesThreeCardsRightSectionV3({
   title,
 }: ServicesThreeCardsRightSectionV3Props) {
   return (
-    <section className="bg-white">
-      <SevenColumnGrid className="section-min-medium">
+    <section className="bg-bg-page">
+      <SevenColumnGrid className="section-min-short">
         <SevenColumnGridItem
           alignX="left"
           alignY="top"
@@ -46,7 +46,7 @@ export function ServicesThreeCardsRightSectionV3({
           <SevenColumnGridItem
             alignY="stretch"
             className={[
-              "card-min-short col-span-2 row-start-2 border border-service-border bg-service-surface p-6 shadow-service max-md:col-span-7 max-md:col-start-1 max-md:row-auto",
+              "radius-medium card-min-short col-span-2 row-start-2 border border-service-border bg-service-surface p-6 shadow-service max-md:col-span-7 max-md:col-start-1 max-md:row-auto",
               index === 0 ? "col-start-2" : undefined,
               index === 1 ? "col-start-4" : undefined,
               index === 2 ? "col-start-6" : undefined,

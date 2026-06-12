@@ -301,7 +301,7 @@ export function ContactSectionV3({
   title,
 }: ContactSectionV3Props) {
   return (
-    <section className="bg-white" id="contact">
+    <section className="bg-bg-page" id="contact">
       <SevenColumnGrid className="section-min-none" padding="med">
         <SevenColumnGridItem className="col-span-2 col-start-2 max-lg:col-span-7 max-lg:col-start-1">
           <div className="fluid-type-frame">

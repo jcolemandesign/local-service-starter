@@ -11,9 +11,11 @@ type StyleGuideTokenDraft = {
   serviceBorder: string;
   bgDark: string;
   accent: string;
+  activeBorderWidthValue: string;
   radiusSm: number;
   radiusMd: number;
   radiusLg: number;
+  shadowX: number;
   shadowY: number;
   shadowBlur: number;
   shadowAlpha: number;
@@ -70,10 +72,14 @@ function normalizeTokens(tokens: Partial<StyleGuideTokenDraft> | undefined) {
     serviceBorder: normalizeColor(tokens.serviceBorder, "service border"),
     bgDark: normalizeColor(tokens.bgDark, "dark background"),
     accent: normalizeColor(tokens.accent, "warm accent"),
+    activeBorderWidthValue: normalizeBorderWidth(
+      tokens.activeBorderWidthValue,
+    ),
     radiusSm: normalizeNumber(tokens.radiusSm, "small radius", 0, 16),
     radiusMd: normalizeNumber(tokens.radiusMd, "medium radius", 0, 24),
     radiusLg: normalizeNumber(tokens.radiusLg, "large radius", 8, 40),
-    shadowY: normalizeNumber(tokens.shadowY, "shadow y", 0, 32),
+    shadowX: normalizeNumber(tokens.shadowX, "shadow x", -40, 40),
+    shadowY: normalizeNumber(tokens.shadowY, "shadow y", -40, 40),
     shadowBlur: normalizeNumber(tokens.shadowBlur, "shadow blur", 0, 80),
     shadowAlpha: normalizeNumber(tokens.shadowAlpha, "shadow alpha", 0, 0.25),
   };
@@ -100,6 +106,17 @@ function normalizeNumber(
   return Math.min(max, Math.max(min, value));
 }
 
+function normalizeBorderWidth(value: unknown) {
+  if (
+    typeof value !== "string" ||
+    !/^(0|0\.5|1|2)px$/.test(value)
+  ) {
+    throw new Error("Invalid border width.");
+  }
+
+  return value;
+}
+
 function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   return `${beginMarker}
 :root {
@@ -118,10 +135,11 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --color-text-accent: ${tokens.serviceAccent};
   --color-border-default: ${tokens.serviceBorder};
   --color-accent: ${tokens.accent};
+  --border-surface-width-token: ${tokens.activeBorderWidthValue};
   --radius-sm-token: ${tokens.radiusSm}px;
   --radius-md-token: ${tokens.radiusMd}px;
   --radius-lg-token: ${tokens.radiusLg}px;
-  --shadow-service: 0 ${tokens.shadowY}px ${tokens.shadowBlur}px rgb(23 33 29 / ${tokens.shadowAlpha});
+  --shadow-service: ${tokens.shadowX}px ${tokens.shadowY}px ${tokens.shadowBlur}px rgb(23 33 29 / ${tokens.shadowAlpha});
 }
 ${endMarker}`;
 }

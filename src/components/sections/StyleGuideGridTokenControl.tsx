@@ -3,14 +3,14 @@
 import { Card } from "@/components/primitives";
 import { useStyleGuideTokens } from "@/components/sections/StyleGuideLiveSurface";
 
-type SiteGridFrameOption = {
+type BodySpacingOption = {
   block: string;
   inline: string;
   label: string;
   name: string;
 };
 
-type SiteGridGapOption = {
+type SiteGridValueOption = {
   label: string;
   name: string;
   value: string;
@@ -18,40 +18,73 @@ type SiteGridGapOption = {
 
 type StyleGuideGridTokenControlProps =
   | {
-      kind: "frame";
-      options: readonly SiteGridFrameOption[];
+      kind: "body-spacing";
+      options: readonly BodySpacingOption[];
     }
   | {
-      kind: "gap";
-      options: readonly SiteGridGapOption[];
+      kind: "content-spacing" | "gap";
+      options: readonly SiteGridValueOption[];
     };
 
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+function shortSpacingLabel(label: string) {
+  return label.replace(/\s+(spacing|padding)$/i, "");
+}
+
 export function StyleGuideGridTokenControl(
   props: StyleGuideGridTokenControlProps,
 ) {
   const { draft, updateDraft } = useStyleGuideTokens();
+  const activeBodySpacingOption =
+    props.kind === "body-spacing"
+      ? props.options.find(
+          (option) =>
+            option.name === draft.activeSiteGridFrameName ||
+            (option.block === draft.activeSiteGridFrameBlock &&
+              option.inline === draft.activeSiteGridFrameInline),
+        )
+      : null;
+  const activeContentSpacingOption =
+    props.kind === "content-spacing"
+      ? props.options.find(
+          (option) =>
+            option.name === draft.activeContentFrameName ||
+            option.value === draft.activeContentFrameValue,
+        )
+      : null;
+  const controlLabel =
+    props.kind === "body-spacing"
+      ? "Body Padding"
+      : props.kind === "content-spacing"
+        ? "Content Padding"
+        : "Grid Gutter";
+  const activeName =
+    props.kind === "body-spacing"
+      ? activeBodySpacingOption?.name ?? draft.activeSiteGridFrameName
+      : props.kind === "content-spacing"
+        ? activeContentSpacingOption?.name ?? draft.activeContentFrameName
+        : draft.activeSiteGridGapName;
 
   return (
     <Card className="h-full p-5 shadow-none">
       <div className="flex items-center justify-between gap-3">
         <p className="type-label text-service-accent">
-          {props.kind === "frame" ? "site-grid-frame" : "site-grid-gap"}
+          {controlLabel}
         </p>
         <span className="type-caption font-semibold text-service-muted">
-          {props.kind === "frame"
-            ? draft.activeSiteGridFrameName
-            : draft.activeSiteGridGapName}
+          {activeName}
         </span>
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        {props.kind === "frame"
+      <div className="mt-4 grid grid-cols-2 gap-2 max-sm:grid-cols-1">
+        {props.kind === "body-spacing"
           ? props.options.map((option) => {
-              const isActive = draft.activeSiteGridFrameName === option.name;
+              const isActive =
+                activeBodySpacingOption?.name === option.name ||
+                draft.activeSiteGridFrameName === option.name;
 
               return (
                 <button
@@ -70,12 +103,16 @@ export function StyleGuideGridTokenControl(
                   }}
                   type="button"
                 >
-                  {option.label}
+                  {shortSpacingLabel(option.label)}
                 </button>
               );
             })
           : props.options.map((option) => {
-              const isActive = draft.activeSiteGridGapName === option.name;
+              const isActive =
+                props.kind === "content-spacing"
+                  ? activeContentSpacingOption?.name === option.name ||
+                    draft.activeContentFrameName === option.name
+                  : draft.activeSiteGridGapName === option.name;
 
               return (
                 <button
@@ -88,12 +125,20 @@ export function StyleGuideGridTokenControl(
                   )}
                   key={option.name}
                   onClick={() => {
+                    if (props.kind === "content-spacing") {
+                      updateDraft("activeContentFrameName", option.name);
+                      updateDraft("activeContentFrameValue", option.value);
+                      return;
+                    }
+
                     updateDraft("activeSiteGridGapName", option.name);
                     updateDraft("activeSiteGridGapValue", option.value);
                   }}
                   type="button"
                 >
-                  {option.label}
+                  {props.kind === "content-spacing"
+                    ? shortSpacingLabel(option.label)
+                    : shortSpacingLabel(option.label)}
                 </button>
               );
             })}

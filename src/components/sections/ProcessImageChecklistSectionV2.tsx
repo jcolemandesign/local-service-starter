@@ -63,7 +63,7 @@ export function ProcessImageChecklistSectionV2({
             >
               {items.map((item, index) => (
                 <motion.li
-                  className="radius-medium flex items-start inline-gap-med border border-service-border bg-service-surface p-5"
+                  className="radius-medium grid grid-cols-[2rem_minmax(0,1fr)] items-start inline-gap-med border border-service-border bg-service-surface p-5"
                   key={item}
                   variants={{
                     hidden: { opacity: 0, y: 18 },
@@ -75,10 +75,10 @@ export function ProcessImageChecklistSectionV2({
                     ease: [0.22, 1, 0.36, 1],
                   }}
                 >
-                  <span className="radius-4 mt-1 flex size-8 shrink-0 items-center justify-center bg-service-ink text-xs font-semibold text-white">
+                  <span className="radius-4 flex size-8 shrink-0 items-center justify-center bg-service-ink text-xs font-semibold text-white">
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                  <span className="type-text-md measure-copy wrap-pretty font-medium text-service-ink">
+                  <span className="type-text-md measure-copy wrap-pretty min-w-0 pt-0.5 font-medium text-service-ink">
                     {item}
                   </span>
                 </motion.li>

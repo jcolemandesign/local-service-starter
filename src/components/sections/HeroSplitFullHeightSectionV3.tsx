@@ -1,5 +1,6 @@
 import Image from "next/image";
 import {
+  Button,
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
@@ -61,7 +62,7 @@ function SampleImagePanel({
   slotLabel: string;
 }) {
   return (
-    <div className="relative h-full min-h-0 w-full overflow-hidden border-2 border-service-accent bg-service-accent/10">
+    <div className="relative h-full min-h-0 w-full overflow-hidden bg-service-surface">
       <Image
         alt={imageAlt}
         className="object-cover"
@@ -70,13 +71,8 @@ function SampleImagePanel({
         sizes="(max-width: 1024px) 100vw, 58vw"
         src={imageSrc}
       />
-      <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.28),rgb(23_33_29_/_0.04))]" />
-      <div className="absolute inset-0 bg-service-accent/10 mix-blend-multiply" />
-      <div className="absolute left-5 top-5 max-w-[calc(100%-2.5rem)] bg-white/90 px-4 py-3 shadow-service backdrop-blur-sm">
-        <p className="text-xs font-semibold uppercase tracking-widest text-service-accent">
-          Image slot
-        </p>
-        <p className="mt-1 text-sm font-semibold text-service-ink">
+      <div className="absolute inset-x-0 bottom-0 px-4 py-2">
+        <p className="truncate text-xs font-semibold uppercase text-white drop-shadow">
           {slotLabel}
         </p>
       </div>
@@ -103,13 +99,13 @@ export function HeroSplitFullHeightSectionV3({
   const isTextFourImageThree = variant === "text-4-image-3-right";
 
   return (
-    <section className="bg-white">
+    <section className="bg-bg-page">
       <SevenColumnGrid className="section-min-screen grid-rows-[minmax(0,1fr)] max-lg:grid-rows-none">
         <SevenColumnGridItem
           alignX="left"
           alignY="middle"
           className={cx(
-            "row-start-1 h-full min-h-0 bg-service-surface p-8 text-service-ink max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto max-md:p-6",
+            "radius-medium row-start-1 h-full min-h-0 bg-service-surface p-8 text-service-ink max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto max-md:p-6",
             config.textClassName,
           )}
         >
@@ -133,18 +129,12 @@ export function HeroSplitFullHeightSectionV3({
             <div
               className="mt-body-actions-md flex flex-wrap gap-4"
             >
-              <a
-                className="inline-flex min-h-12 cursor-pointer items-center justify-center whitespace-nowrap bg-service-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-service-ink"
-                href="#contact"
-              >
+              <Button href="#contact">
                 {primaryAction}
-              </a>
-              <a
-                className="inline-flex min-h-12 cursor-pointer items-center justify-center whitespace-nowrap border border-service-border bg-white px-6 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-                href="#services"
-              >
+              </Button>
+              <Button href="#services" variant="secondary">
                 {secondaryAction}
-              </a>
+              </Button>
             </div>
             <ul
               className={cx(
@@ -172,7 +162,7 @@ export function HeroSplitFullHeightSectionV3({
           alignX="stretch"
           alignY="stretch"
           className={cx(
-            "row-start-1 h-full min-h-0 overflow-hidden max-lg:media-min-medium max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto",
+            "radius-medium row-start-1 h-full min-h-0 overflow-hidden max-lg:media-min-medium max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto",
             config.imageClassName,
           )}
         >

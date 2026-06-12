@@ -67,9 +67,14 @@
           "description": "Review shared visual tokens and section defaults."
         },
         {
-          "label": "Font lab",
+          "label": "Styleguide sample page",
+          "href": "/dev/style-guide/previews/hvac-service",
+          "description": "Review the live HVAC example page correlated with Style Guide tokens."
+        },
+        {
+          "label": "Font lab (deprecated)",
           "href": "/dev/font-lab",
-          "description": "Inspect type options and hierarchy tests."
+          "description": "Deprecated legacy tool. Typography controls now live in the Style Guide; delete after the next commit."
         }
       ]
     },

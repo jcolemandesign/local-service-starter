@@ -11,6 +11,8 @@
   --site-grid-inset-inline: clamp(1.5rem, 4vw, 8rem);
   --site-grid-inset-block: clamp(2rem, 4vw, 7rem);
   --site-grid-gap: clamp(0.75rem, 1vw, 1.5rem);
+  --border-surface-width-token: 1px;
+  --semantic-spacing-scale: 1;
   --measure-lead: 52ch;
   --measure-copy: 60ch;
   --measure-copy-wide: 70ch;
@@ -56,7 +58,7 @@
   --color-accent: var(--live-accent, #c45a2c);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --shadow-service: 0 18px 50px rgb(23 33 29 / 0.08);
+  --shadow-service: var(--live-shadow-service, 0 18px 50px rgb(23 33 29 / 0.08));
   --text-fluid-hero: clamp(3rem, 5vw, 4.5rem);
   --text-fluid-heading: clamp(2.25rem, 3.4vw, 4rem);
   --leading-heading: 1.08;
@@ -136,6 +138,18 @@ body {
 
   .container-full {
     width: 100%;
+  }
+
+  .content-frame {
+    padding: var(--container-gutter);
+  }
+
+  .border {
+    border-width: var(--border-surface-width-token, 1px) !important;
+  }
+
+  .shadow-service {
+    box-shadow: var(--shadow-service);
   }
 
   .wrap-balance {
@@ -235,6 +249,10 @@ body {
     border-radius: var(--radius-sm-token);
   }
 
+  .radius-button {
+    border-radius: var(--radius-button-token, var(--radius-sm-token));
+  }
+
   .radius-md,
   .radius-medium {
     border-radius: var(--radius-surface-token, var(--radius-md-token));
@@ -254,7 +272,7 @@ body {
     font-family: var(--type-display-xl-font, var(--font-sans));
     font-size: var(--type-display-xl-size, clamp(3.5rem, calc(4.8611111111cqw + 2.3333333333rem), 7rem));
     line-height: var(--type-display-xl-leading, 0.92);
-    font-weight: var(--type-display-xl-weight, 680);
+    font-weight: var(--type-display-xl-weight, 680) !important;
     letter-spacing: var(--type-display-xl-tracking);
     text-transform: var(--type-display-xl-transform);
     text-wrap: var(--type-display-xl-wrap, balance);
@@ -264,7 +282,7 @@ body {
     font-family: var(--type-display-lg-font, var(--font-sans));
     font-size: var(--type-display-lg-size, clamp(2.75rem, calc(3.7878787879cqw + 2.0909090909rem), 5.5rem));
     line-height: var(--type-display-lg-leading, 0.95);
-    font-weight: var(--type-display-lg-weight, 670);
+    font-weight: var(--type-display-lg-weight, 670) !important;
     letter-spacing: var(--type-display-lg-tracking);
     text-transform: var(--type-display-lg-transform);
     text-wrap: var(--type-display-lg-wrap, balance);
@@ -274,7 +292,7 @@ body {
     font-family: var(--type-heading-xl-font, var(--font-sans));
     font-size: var(--type-heading-xl-size, clamp(2.25rem, calc(2.9166666667cqw + 1.55rem), 4rem));
     line-height: var(--type-heading-xl-leading, 1);
-    font-weight: var(--type-heading-xl-weight, 660);
+    font-weight: var(--type-heading-xl-weight, 660) !important;
     letter-spacing: var(--type-heading-xl-tracking);
     text-transform: var(--type-heading-xl-transform);
     text-wrap: var(--type-heading-xl-wrap, balance);
@@ -284,7 +302,7 @@ body {
     font-family: var(--type-heading-lg-font, var(--font-sans));
     font-size: var(--type-heading-lg-size, clamp(1.75rem, calc(1.9230769231cqw + 1.2115384615rem), 2.75rem));
     line-height: var(--type-heading-lg-leading, 1.05);
-    font-weight: var(--type-heading-lg-weight, 650);
+    font-weight: var(--type-heading-lg-weight, 650) !important;
     letter-spacing: var(--type-heading-lg-tracking);
     text-transform: var(--type-heading-lg-transform);
     text-wrap: var(--type-heading-lg-wrap, balance);
@@ -294,7 +312,7 @@ body {
     font-family: var(--type-heading-md-font, var(--font-sans));
     font-size: var(--type-heading-md-size, clamp(1.375rem, calc(1.3020833333cqw + 1.0104166667rem), 2rem));
     line-height: var(--type-heading-md-leading, 1.15);
-    font-weight: var(--type-heading-md-weight, 650);
+    font-weight: var(--type-heading-md-weight, 650) !important;
     letter-spacing: var(--type-heading-md-tracking);
     text-transform: var(--type-heading-md-transform);
     text-wrap: var(--type-heading-md-wrap, balance);
@@ -304,7 +322,7 @@ body {
     font-family: var(--type-heading-sm-font, var(--font-sans));
     font-size: var(--type-heading-sm-size, clamp(1.125rem, calc(0.5208333333cqw + 0.9791666667rem), 1.375rem));
     line-height: var(--type-heading-sm-leading, 1.25);
-    font-weight: var(--type-heading-sm-weight, 650);
+    font-weight: var(--type-heading-sm-weight, 650) !important;
     letter-spacing: var(--type-heading-sm-tracking);
     text-transform: var(--type-heading-sm-transform);
     text-wrap: var(--type-heading-sm-wrap, balance);
@@ -315,7 +333,7 @@ body {
     font-size: var(--type-text-xl-size, clamp(1.1875rem, calc(0.625cqw + 1rem), 1.5rem));
     line-height: var(--type-text-xl-leading, 1.5);
     max-width: var(--type-text-xl-measure, 52ch);
-    font-weight: var(--type-text-xl-weight, 400);
+    font-weight: var(--type-text-xl-weight, 400) !important;
     letter-spacing: var(--type-text-xl-tracking);
     text-transform: var(--type-text-xl-transform);
     text-wrap: var(--type-text-xl-wrap);
@@ -326,7 +344,7 @@ body {
     font-size: var(--type-text-lg-size, clamp(1.0625rem, calc(0.4261363636cqw + 0.9090909091rem), 1.25rem));
     line-height: var(--type-text-lg-leading, 1.6);
     max-width: var(--type-text-lg-measure, 60ch);
-    font-weight: var(--type-text-lg-weight, 400);
+    font-weight: var(--type-text-lg-weight, 400) !important;
     letter-spacing: var(--type-text-lg-tracking);
     text-transform: var(--type-text-lg-transform);
     text-wrap: var(--type-text-lg-wrap);
@@ -337,7 +355,7 @@ body {
     font-size: var(--type-text-md-size, clamp(1rem, calc(0.3125cqw + 0.875rem), 1.125rem));
     line-height: var(--type-text-md-leading, 1.65);
     max-width: var(--type-text-md-measure, 60ch);
-    font-weight: var(--type-text-md-weight, 400);
+    font-weight: var(--type-text-md-weight, 400) !important;
     letter-spacing: var(--type-text-md-tracking);
     text-transform: var(--type-text-md-transform);
     text-wrap: var(--type-text-md-wrap);
@@ -348,7 +366,7 @@ body {
     font-size: var(--type-text-sm-size, clamp(0.875rem, calc(0.2142857143cqw + 0.7785714286rem), 0.95rem));
     line-height: var(--type-text-sm-leading, 1.6);
     max-width: var(--type-text-sm-measure, 70ch);
-    font-weight: var(--type-text-sm-weight, 400);
+    font-weight: var(--type-text-sm-weight, 400) !important;
     letter-spacing: var(--type-text-sm-tracking);
     text-transform: var(--type-text-sm-transform);
     text-wrap: var(--type-text-sm-wrap);
@@ -359,7 +377,7 @@ body {
     font-size: var(--type-text-xs-size, clamp(0.8125rem, calc(0.1953125cqw + 0.71875rem), 0.875rem));
     line-height: var(--type-text-xs-leading, 1.55);
     max-width: var(--type-text-xs-measure, 48ch);
-    font-weight: var(--type-text-xs-weight, 400);
+    font-weight: var(--type-text-xs-weight, 400) !important;
     letter-spacing: var(--type-text-xs-tracking);
     text-transform: var(--type-text-xs-transform);
     text-wrap: var(--type-text-xs-wrap);
@@ -370,7 +388,7 @@ body {
     font-size: var(--type-caption-size, clamp(0.75rem, calc(0.1953125cqw + 0.65625rem), 0.8125rem));
     line-height: var(--type-caption-leading, 1.5);
     max-width: var(--type-caption-measure, 48ch);
-    font-weight: var(--type-caption-weight, 400);
+    font-weight: var(--type-caption-weight, 400) !important;
     letter-spacing: var(--type-caption-tracking);
     text-transform: var(--type-caption-transform);
     text-wrap: var(--type-caption-wrap);
@@ -381,7 +399,7 @@ body {
     font-family: var(--type-label-font, var(--font-sans));
     font-size: var(--type-label-size, clamp(0.8125rem, calc(0.1953125cqw + 0.71875rem), 0.875rem));
     line-height: var(--type-label-leading, 1.2);
-    font-weight: var(--type-label-weight, 750);
+    font-weight: var(--type-label-weight, 750) !important;
     letter-spacing: var(--type-label-tracking, 0.12em);
     text-transform: var(--type-label-transform, uppercase);
     text-wrap: var(--type-label-wrap);
@@ -711,59 +729,59 @@ body {
   }
 
   .mt-eyebrow-heading-sm {
-    margin-top: 0.5rem;
+    margin-top: calc(0.5rem * var(--semantic-spacing-scale));
   }
 
   .mt-eyebrow-heading-md {
-    margin-top: 1rem;
+    margin-top: calc(1rem * var(--semantic-spacing-scale));
   }
 
   .mt-eyebrow-heading-lg {
-    margin-top: 1.25rem;
+    margin-top: calc(1.25rem * var(--semantic-spacing-scale));
   }
 
   .mt-eyebrow-display {
-    margin-top: 1.5rem;
+    margin-top: calc(1.5rem * var(--semantic-spacing-scale));
   }
 
   .mt-heading-body-sm {
-    margin-top: 0.75rem;
+    margin-top: calc(0.75rem * var(--semantic-spacing-scale));
   }
 
   .mt-heading-body-md {
-    margin-top: 1rem;
+    margin-top: calc(1rem * var(--semantic-spacing-scale));
   }
 
   .mt-heading-body-lg {
-    margin-top: 1.5rem;
+    margin-top: calc(1.5rem * var(--semantic-spacing-scale));
   }
 
   .mt-display-body {
-    margin-top: 1.75rem;
+    margin-top: calc(1.75rem * var(--semantic-spacing-scale));
   }
 
   .mt-body-actions-sm {
-    margin-top: 1.25rem;
+    margin-top: calc(1.25rem * var(--semantic-spacing-scale));
   }
 
   .mt-body-actions-md {
-    margin-top: 2rem;
+    margin-top: calc(2rem * var(--semantic-spacing-scale));
   }
 
   .mt-body-actions-lg {
-    margin-top: 2.5rem;
+    margin-top: calc(2.5rem * var(--semantic-spacing-scale));
   }
 
   .mt-paragraph-heading-sm {
-    margin-top: 1.75rem;
+    margin-top: calc(1.75rem * var(--semantic-spacing-scale));
   }
 
   .mt-paragraph-heading-md {
-    margin-top: 2.25rem;
+    margin-top: calc(2.25rem * var(--semantic-spacing-scale));
   }
 
   .mt-paragraph-paragraph {
-    margin-top: 1rem;
+    margin-top: calc(1rem * var(--semantic-spacing-scale));
   }
 
   @media (width < 1024px) {
@@ -796,7 +814,7 @@ body {
     }
 
     .mt-body-actions-lg {
-      margin-top: 2rem;
+      margin-top: calc(2rem * var(--semantic-spacing-scale));
     }
 
     .layout-gap-xlrg {
@@ -828,16 +846,16 @@ body {
     }
 
     .mt-eyebrow-display {
-      margin-top: 1.25rem;
+      margin-top: calc(1.25rem * var(--semantic-spacing-scale));
     }
 
     .mt-display-body {
-      margin-top: 1.5rem;
+      margin-top: calc(1.5rem * var(--semantic-spacing-scale));
     }
 
     .mt-body-actions-md,
     .mt-body-actions-lg {
-      margin-top: 1.75rem;
+      margin-top: calc(1.75rem * var(--semantic-spacing-scale));
     }
 
     .card-grid-gap-lrg,

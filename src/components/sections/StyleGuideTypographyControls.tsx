@@ -308,25 +308,6 @@ export function StyleGuideTypographyControls() {
     });
   }
 
-  function applySelectedFontToRoles(
-    group: FontGroup,
-    matchesRole: (role: TypeRole) => boolean,
-  ) {
-    const nextOverrides = { ...draft.typeRoleOverrides };
-
-    draft.typeRoles.forEach((role) => {
-      if (matchesRole(role)) {
-        nextOverrides[role.id] = selectedRoleFontOverride;
-      }
-    });
-
-    updateDraft("typeRoleOverrides", nextOverrides);
-    updateDraft(
-      group === "header" ? "typeHeaderFontAssignment" : "typeBodyFontAssignment",
-      selectedRoleFontOverride,
-    );
-  }
-
   function applyStoredFontToSelectedRole(group: FontGroup) {
     if (!selectedRole) {
       return;
@@ -337,6 +318,12 @@ export function StyleGuideTypographyControls() {
         ? draft.typeHeaderFontAssignment
         : draft.typeBodyFontAssignment,
     );
+  }
+
+  function resetAssignedFonts() {
+    updateDraft("typeBodyFontAssignment", "global");
+    updateDraft("typeHeaderFontAssignment", "global");
+    updateDraft("typeRoleOverrides", {});
   }
 
   async function scanLocalFonts() {
@@ -373,7 +360,7 @@ export function StyleGuideTypographyControls() {
   }
 
   return (
-    <Card className="sticky top-4 max-h-[calc(100svh-2rem)] overflow-y-auto p-5 shadow-service max-lg:static max-lg:max-h-none max-lg:overflow-visible">
+    <Card className="max-h-[calc(100svh-5rem)] overflow-y-auto p-5 shadow-service max-sm:max-h-none max-sm:overflow-visible">
       <div className="border-b border-service-border pb-5">
         <p className="type-label text-service-accent">Style Guide Font Lab</p>
         <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -464,14 +451,7 @@ export function StyleGuideTypographyControls() {
                   onClick={() => applyStoredFontToSelectedRole("header")}
                   type="button"
                 >
-                  Apply Header Font
-                </button>
-                <button
-                  className="min-h-11 rounded-md border border-service-border bg-white px-3 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
-                  onClick={() => applySelectedFontToRoles("header", isHeaderRole)}
-                  type="button"
-                >
-                  Make Header Font
+                  Assign Header Font
                 </button>
               </div>
 
@@ -481,17 +461,18 @@ export function StyleGuideTypographyControls() {
                   onClick={() => applyStoredFontToSelectedRole("body")}
                   type="button"
                 >
-                  Apply Body Font
-                </button>
-                <button
-                  className="min-h-11 rounded-md border border-service-border bg-white px-3 text-sm font-semibold text-service-muted transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
-                  onClick={() => applySelectedFontToRoles("body", isBodyRole)}
-                  type="button"
-                >
-                  Make Body Font
+                  Assign Body Font
                 </button>
               </div>
             </div>
+
+            <button
+              className="min-h-11 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-muted transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+              onClick={resetAssignedFonts}
+              type="button"
+            >
+              Reset Fonts
+            </button>
 
             <div className="grid gap-4 rounded-md border border-service-border bg-service-surface p-4">
               <NumberControl
@@ -620,6 +601,51 @@ export function StyleGuideTypeSpec({ tokenName }: { tokenName: string }) {
   }
 
   return <>{roleSpec(role)}</>;
+}
+
+export function StyleGuideResetFontButton({
+  tokenName,
+}: {
+  tokenName: string;
+}) {
+  const { draft, updateDraft } = useStyleGuideTokens();
+  const role = roleForToken(draft.typeRoles, tokenName);
+  const group: FontGroup | null = role
+    ? isHeaderRole(role)
+      ? "header"
+      : isBodyRole(role)
+        ? "body"
+        : null
+    : null;
+
+  if (!role || !group) {
+    return null;
+  }
+
+  function resetRoleFont() {
+    if (!role) {
+      return;
+    }
+
+    const baselineFont =
+      group === "header" ? draft.typeHeaderFontAssignment : "global";
+
+    updateDraft("typeSelectedRoleId", role.id);
+    updateDraft("typeRoleOverrides", {
+      ...draft.typeRoleOverrides,
+      [role.id]: baselineFont,
+    });
+  }
+
+  return (
+    <button
+      className="type-caption mt-5 inline-flex font-semibold text-service-muted underline underline-offset-4 transition-colors hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+      onClick={resetRoleFont}
+      type="button"
+    >
+      {group === "header" ? "Reset To Header Font" : "Reset To Global Font"}
+    </button>
+  );
 }
 
 export function StyleGuideTypeSample({

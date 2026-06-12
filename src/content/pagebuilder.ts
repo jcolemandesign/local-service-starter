@@ -109,7 +109,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
     name: "homepage1",
     positioning: "Balanced homepage for a broad local service business.",
     styleRules: [
-      "Use the corresponding Font Lab profile slot for typography.",
+      "Use the corresponding Style Guide typography profile for type decisions.",
       "Alternate white and service-surface sections.",
       "Use one dark or accent conversion moment near the end.",
     ],
@@ -170,7 +170,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
     name: "homepage2",
     positioning: "More editorial, image-led, and confidence-focused.",
     styleRules: [
-      "Use the corresponding Font Lab profile slot for typography.",
+      "Use the corresponding Style Guide typography profile for type decisions.",
       "Keep section spacing open and deliberate.",
       "Use proof in fewer, stronger moments instead of many small badges.",
     ],
@@ -370,7 +370,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
     positioning:
       "Individual service page for making one offer easy to understand, trust, and act on.",
     styleRules: [
-      "Use the corresponding Font Lab profile slot and normal spacing.",
+      "Use the corresponding Style Guide typography profile and normal spacing.",
       "Avoid extra editorial sections unless the service needs explanation.",
       "Keep each section useful on its own.",
     ],

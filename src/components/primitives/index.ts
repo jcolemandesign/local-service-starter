@@ -1,4 +1,10 @@
-export { Button } from "./Button";
+export {
+  Button,
+  ExpandingArrowButton,
+  TextLiftButton,
+  WrappingArrowButton,
+} from "./Button";
+export type { ButtonTreatment } from "./Button";
 export { Card } from "./Card";
 export { Container } from "./Container";
 export { SevenColumnGrid, SevenColumnGridItem } from "./SevenColumnGrid";

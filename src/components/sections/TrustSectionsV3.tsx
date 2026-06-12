@@ -71,7 +71,7 @@ function LogoTrack({
 
 export function TrustBarSectionV3({ items, label }: TrustItemsProps) {
   return (
-    <section className="bg-white">
+    <section className="bg-bg-page">
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem
           className="col-span-3 border-y border-service-border py-7 max-lg:col-span-7"
@@ -145,7 +145,7 @@ export function TrustBarFloatingBentoSectionV3({
 
 export function TrustMarqueeSectionV3({ items, label }: TrustItemsProps) {
   return (
-    <section className="bg-white">
+    <section className="bg-bg-page">
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem
           className="col-span-3 max-lg:col-span-7"
@@ -179,7 +179,7 @@ export function TrustLogoMarqueeSectionV3({
   logos,
 }: TrustLogosProps) {
   return (
-    <section className="bg-white">
+    <section className="bg-bg-page">
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem
           className="col-span-2 max-lg:col-span-7"
@@ -218,7 +218,7 @@ export function TrustLogoMarqueeSectionV3({
 
 export function TrustLogoGridSectionV3({ label, logos }: TrustLogosProps) {
   return (
-    <section className="bg-white">
+    <section className="bg-bg-page">
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem
           className="col-span-2 max-lg:col-span-7"

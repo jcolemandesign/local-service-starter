@@ -10,6 +10,8 @@ export type StyleGuideTokenDraft = {
   bgPage: string;
   activeRadiusName: string;
   activeRadiusValue: string;
+  activeBorderWidthName: string;
+  activeBorderWidthValue: string;
   activeCardGapName: string;
   activeCardGapValue: string;
   activeInlineGapName: string;
@@ -18,6 +20,9 @@ export type StyleGuideTokenDraft = {
   activeLayoutGapValue: string;
   activeSectionMinName: string;
   activeSectionMinValue: string;
+  activeSemanticSpacingScale: number;
+  activeContentFrameName: string;
+  activeContentFrameValue: string;
   activeSiteGridFrameBlock: string;
   activeSiteGridFrameInline: string;
   activeSiteGridFrameName: string;
@@ -34,6 +39,7 @@ export type StyleGuideTokenDraft = {
   serviceSurface: string;
   shadowAlpha: number;
   shadowBlur: number;
+  shadowX: number;
   shadowY: number;
   typeCustomFont: string;
   typeBodyFontAssignment: string;
@@ -58,14 +64,16 @@ type StyleGuideTokenContextValue = {
 
 type StyleVariableProperties = CSSProperties & Record<`--${string}`, string>;
 
-const storageKey = "pageworks-styleguide-token-draft-v1";
+export const styleGuideStorageKey = "pageworks-styleguide-token-draft-v1";
 
-const defaultDraft: StyleGuideTokenDraft = {
+export const defaultStyleGuideTokenDraft: StyleGuideTokenDraft = {
   accent: "#c45a2c",
   bgDark: "#10141b",
   bgPage: "#fbfaf6",
   activeRadiusName: "radius-md / radius-medium",
   activeRadiusValue: "8px",
+  activeBorderWidthName: "border-default",
+  activeBorderWidthValue: "1px",
   activeCardGapName: "card-grid-gap-med",
   activeCardGapValue: "1rem",
   activeInlineGapName: "inline-gap-med",
@@ -74,9 +82,12 @@ const defaultDraft: StyleGuideTokenDraft = {
   activeLayoutGapValue: "1rem",
   activeSectionMinName: "section-min-tiny",
   activeSectionMinValue: "18rem",
+  activeSemanticSpacingScale: 1,
+  activeContentFrameName: "content-spacing-default",
+  activeContentFrameValue: "clamp(1.5rem, 3vw, 2.5rem)",
   activeSiteGridFrameBlock: "clamp(2rem, 4vw, 7rem)",
-  activeSiteGridFrameInline: "clamp(1.5rem, 4vw, 8rem)",
-  activeSiteGridFrameName: "site-grid-frame-default",
+  activeSiteGridFrameInline: "clamp(0.5rem, 3vw, 6rem)",
+  activeSiteGridFrameName: "body-spacing-default",
   activeSiteGridGapName: "site-grid-gap-default",
   activeSiteGridGapValue: "clamp(0.75rem, 1vw, 1.5rem)",
   radiusLg: 24,
@@ -90,6 +101,7 @@ const defaultDraft: StyleGuideTokenDraft = {
   serviceSurface: "#f4f7f3",
   shadowAlpha: 0.08,
   shadowBlur: 50,
+  shadowX: 0,
   shadowY: 18,
   typeBodyFontAssignment: "global",
   typeCustomFont: typePalettes[0].customFont ?? "",
@@ -125,8 +137,8 @@ function fontFamilyForValue(value: string, customFont: string) {
     const family = value.replace("local:", "").trim();
 
     return family
-      ? `"${family.replaceAll('"', '\\"')}", ${defaultDraft.typeGlobalFont}`
-      : defaultDraft.typeGlobalFont;
+      ? `"${family.replaceAll('"', '\\"')}", ${defaultStyleGuideTokenDraft.typeGlobalFont}`
+      : defaultStyleGuideTokenDraft.typeGlobalFont;
   }
 
   if (value !== "custom") {
@@ -136,10 +148,10 @@ function fontFamilyForValue(value: string, customFont: string) {
   const trimmedFont = customFont.trim();
 
   if (!trimmedFont) {
-    return defaultDraft.typeGlobalFont;
+    return defaultStyleGuideTokenDraft.typeGlobalFont;
   }
 
-  return `"${trimmedFont.replaceAll('"', '\\"')}", ${defaultDraft.typeGlobalFont}`;
+  return `"${trimmedFont.replaceAll('"', '\\"')}", ${defaultStyleGuideTokenDraft.typeGlobalFont}`;
 }
 
 function textTransformForRole(role: TypeRole) {
@@ -184,7 +196,15 @@ export function useStyleGuideTokens() {
   return context;
 }
 
-function buildStyleVariables(draft: StyleGuideTokenDraft): StyleVariableProperties {
+export function buildStyleVariables(
+  draft: StyleGuideTokenDraft,
+): StyleVariableProperties {
+  const activeRadiusPx = Number.parseFloat(draft.activeRadiusValue);
+  const buttonRadius = Number.isFinite(activeRadiusPx)
+    ? Math.min(Math.max(activeRadiusPx <= 2 ? activeRadiusPx : activeRadiusPx / 2, 0), 14)
+    : draft.radiusSm;
+  const serviceShadow = `${draft.shadowX}px ${draft.shadowY}px ${draft.shadowBlur}px rgb(23 33 29 / ${draft.shadowAlpha})`;
+
   return {
     "--live-accent": draft.accent,
     "--live-bg-dark": draft.bgDark,
@@ -203,7 +223,10 @@ function buildStyleVariables(draft: StyleGuideTokenDraft): StyleVariableProperti
     "--card-grid-gap-active": draft.activeCardGapValue,
     "--inline-gap-active": draft.activeInlineGapValue,
     "--layout-gap-active": draft.activeLayoutGapValue,
+    "--border-surface-width-token": draft.activeBorderWidthValue,
     "--section-min-active": draft.activeSectionMinValue,
+    "--semantic-spacing-scale": String(draft.activeSemanticSpacingScale),
+    "--container-gutter": draft.activeContentFrameValue,
     "--site-grid-gap": draft.activeSiteGridGapValue,
     "--site-grid-inset-block": draft.activeSiteGridFrameBlock,
     "--site-grid-inset-inline": draft.activeSiteGridFrameInline,
@@ -211,14 +234,18 @@ function buildStyleVariables(draft: StyleGuideTokenDraft): StyleVariableProperti
     "--radius-md-token": `${draft.radiusMd}px`,
     "--radius-sm-token": `${draft.radiusSm}px`,
     "--radius-surface-token": draft.activeRadiusValue,
+    "--radius-button-token": `${buttonRadius}px`,
     "--radius-xl-token": `${draft.radiusXl}px`,
-    "--shadow-service": `0 ${draft.shadowY}px ${draft.shadowBlur}px rgb(23 33 29 / ${draft.shadowAlpha})`,
+    "--live-shadow-service": serviceShadow,
+    "--shadow-service": serviceShadow,
     ...Object.fromEntries(typeVariableEntries(draft)),
   };
 }
 
 export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) {
-  const [draft, setDraft] = useState<StyleGuideTokenDraft>(defaultDraft);
+  const [draft, setDraft] = useState<StyleGuideTokenDraft>(
+    defaultStyleGuideTokenDraft,
+  );
   const [hasHydrated, setHasHydrated] = useState(false);
 
   const previewStyle = useMemo(() => buildStyleVariables(draft), [draft]);
@@ -226,14 +253,14 @@ export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) 
   useEffect(() => {
     const restoreTimer = window.setTimeout(() => {
       try {
-        const storedDraft = window.localStorage.getItem(storageKey);
+        const storedDraft = window.localStorage.getItem(styleGuideStorageKey);
         setDraft(
           storedDraft
-            ? { ...defaultDraft, ...JSON.parse(storedDraft) }
-            : defaultDraft,
+            ? { ...defaultStyleGuideTokenDraft, ...JSON.parse(storedDraft) }
+            : defaultStyleGuideTokenDraft,
         );
       } catch {
-        setDraft(defaultDraft);
+        setDraft(defaultStyleGuideTokenDraft);
       } finally {
         setHasHydrated(true);
       }
@@ -247,7 +274,7 @@ export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) 
       return;
     }
 
-    window.localStorage.setItem(storageKey, JSON.stringify(draft));
+    window.localStorage.setItem(styleGuideStorageKey, JSON.stringify(draft));
   }, [draft, hasHydrated]);
 
   function updateDraft<K extends keyof StyleGuideTokenDraft>(
@@ -265,4 +292,52 @@ export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) 
       <div style={previewStyle}>{children}</div>
     </StyleGuideTokenContext.Provider>
   );
+}
+
+function readStoredStyleGuideDraft() {
+  try {
+    const storedDraft = window.localStorage.getItem(styleGuideStorageKey);
+
+    return storedDraft
+      ? { ...defaultStyleGuideTokenDraft, ...JSON.parse(storedDraft) }
+      : defaultStyleGuideTokenDraft;
+  } catch {
+    return defaultStyleGuideTokenDraft;
+  }
+}
+
+export function StyleGuidePreviewSurface({
+  children,
+}: StyleGuideLiveSurfaceProps) {
+  const [draft, setDraft] = useState<StyleGuideTokenDraft>(
+    defaultStyleGuideTokenDraft,
+  );
+  const previewStyle = useMemo(() => buildStyleVariables(draft), [draft]);
+
+  useEffect(() => {
+    const restoreTimer = window.setTimeout(() => {
+      setDraft(readStoredStyleGuideDraft());
+    }, 0);
+
+    function handleStorage(event: StorageEvent) {
+      if (event.key === styleGuideStorageKey) {
+        setDraft(readStoredStyleGuideDraft());
+      }
+    }
+
+    function handleFocus() {
+      setDraft(readStoredStyleGuideDraft());
+    }
+
+    window.addEventListener("storage", handleStorage);
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      window.clearTimeout(restoreTimer);
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, []);
+
+  return <div style={previewStyle}>{children}</div>;
 }
