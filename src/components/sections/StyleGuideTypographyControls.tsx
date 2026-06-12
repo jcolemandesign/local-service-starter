@@ -308,16 +308,26 @@ export function StyleGuideTypographyControls() {
     });
   }
 
-  function applyStoredFontToSelectedRole(group: FontGroup) {
+  function applySelectedFontToGroup(group: FontGroup) {
     if (!selectedRole) {
       return;
     }
 
-    updateSelectedRoleFont(
-      group === "header"
-        ? draft.typeHeaderFontAssignment
-        : draft.typeBodyFontAssignment,
+    const nextFontAssignment = selectedRoleFontOverride;
+    const belongsToGroup = group === "header" ? isHeaderRole : isBodyRole;
+    const nextRoleOverrides = { ...draft.typeRoleOverrides };
+
+    for (const role of draft.typeRoles) {
+      if (belongsToGroup(role)) {
+        nextRoleOverrides[role.id] = nextFontAssignment;
+      }
+    }
+
+    updateDraft(
+      group === "header" ? "typeHeaderFontAssignment" : "typeBodyFontAssignment",
+      nextFontAssignment,
     );
+    updateDraft("typeRoleOverrides", nextRoleOverrides);
   }
 
   function resetAssignedFonts() {
@@ -448,7 +458,7 @@ export function StyleGuideTypographyControls() {
               <div className="grid gap-2">
                 <button
                   className="min-h-11 rounded-md border border-service-ink bg-service-ink px-3 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
-                  onClick={() => applyStoredFontToSelectedRole("header")}
+                  onClick={() => applySelectedFontToGroup("header")}
                   type="button"
                 >
                   Assign Header Font
@@ -458,7 +468,7 @@ export function StyleGuideTypographyControls() {
               <div className="grid gap-2">
                 <button
                   className="min-h-11 rounded-md border border-service-accent bg-service-accent px-3 text-sm font-semibold text-white transition-colors hover:border-service-ink hover:bg-service-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
-                  onClick={() => applyStoredFontToSelectedRole("body")}
+                  onClick={() => applySelectedFontToGroup("body")}
                   type="button"
                 >
                   Assign Body Font
@@ -628,7 +638,9 @@ export function StyleGuideResetFontButton({
     }
 
     const baselineFont =
-      group === "header" ? draft.typeHeaderFontAssignment : "global";
+      group === "header"
+        ? draft.typeHeaderFontAssignment
+        : draft.typeBodyFontAssignment;
 
     updateDraft("typeSelectedRoleId", role.id);
     updateDraft("typeRoleOverrides", {
@@ -643,7 +655,7 @@ export function StyleGuideResetFontButton({
       onClick={resetRoleFont}
       type="button"
     >
-      {group === "header" ? "Reset To Header Font" : "Reset To Global Font"}
+      {group === "header" ? "Reset To Header Font" : "Reset To Body Font"}
     </button>
   );
 }
