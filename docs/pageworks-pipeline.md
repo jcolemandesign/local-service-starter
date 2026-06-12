@@ -154,8 +154,8 @@ Progress:
 - Phase 4 control loop has started.
 - Live token controls preview color, radius, shadow, and core typography
   variables across the styleguide surface.
-- The styleguide control surface is being shaped as a Font Lab 2.0 style lab
-  with color, type, radius, and shadow controls.
+- The styleguide control surface now owns the former Font Lab typography role
+  controls alongside color, radius, and shadow controls.
 - Promote writes a generated token override block to `src/app/globals.css` in
   dev.
 - Core typography scale/weight/leading controls have been folded into the
@@ -164,7 +164,8 @@ Progress:
   components where available.
 - Added surface/type relationship specimens so color choices can be judged
   against headings, muted copy, nested cards, actions, and inverse treatments.
-- Full Font Lab role/profile editing remains separate.
+- Former Font Lab role/profile editing has been transferred into the Style
+  Guide typography section.
 
 ### Phase 5: Content Editor
 

@@ -48,7 +48,6 @@ import {
 } from "@/components/sections/TrustSectionsV3";
 import { PagebuilderShell } from "@/components/sections/PagebuilderShell";
 import { pagebuilderRecipes, sectionModes } from "@/content/pagebuilder";
-import { sectionLibraryContent } from "@/content/section-library";
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
 import type { PagebuilderRecipeSection } from "@/content/pagebuilder";
 
@@ -70,56 +69,56 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
 
   switch (section.component) {
     case "NavPrimarySectionV2":
-      return <NavPrimarySectionV2 {...sectionLibraryContent.navPrimary} />;
+      return <NavPrimarySectionV2 {...sectionLibraryV3Content.navPrimary} />;
     case "NavCenterLogoSectionV2":
-      return <NavCenterLogoSectionV2 {...sectionLibraryContent.navPrimary} />;
+      return <NavCenterLogoSectionV2 {...sectionLibraryV3Content.navPrimary} />;
     case "NavFloatingBentoSectionV2":
-      return <NavFloatingBentoSectionV2 {...sectionLibraryContent.navPrimary} />;
+      return <NavFloatingBentoSectionV2 {...sectionLibraryV3Content.navPrimary} />;
     case "HeroBentoSectionV2":
       return (
         <HeroBentoSectionV2
-          {...sectionLibraryContent.hero}
+          {...sectionLibraryV3Content.hero}
           headingLevel={headingLevel}
         />
       );
     case "HeroFullscreenSectionV2":
       return (
         <HeroFullscreenSectionV2
-          {...sectionLibraryContent.heroFullscreen}
+          {...sectionLibraryV3Content.heroFullscreen}
           headingLevel={headingLevel}
         />
       );
     case "HeroCenteredFloatersSectionV2":
       return (
         <HeroCenteredFloatersSectionV2
-          {...sectionLibraryContent.hero}
+          {...sectionLibraryV3Content.hero}
           headingLevel={headingLevel}
         />
       );
     case "HeroGridMosaicSectionV2":
       return (
         <HeroGridMosaicSectionV2
-          {...sectionLibraryContent.heroGridMosaic}
+          {...sectionLibraryV3Content.heroGridMosaic}
           headingLevel={headingLevel}
         />
       );
     case "HeroContentTopImageBottomSectionV2":
       return (
         <HeroContentTopImageBottomSectionV2
-          {...sectionLibraryContent.hero}
+          {...sectionLibraryV3Content.hero}
           headingLevel={headingLevel}
         />
       );
     case "TrustBarSection":
-      return <TrustBarSection {...sectionLibraryContent.trustBar} />;
+      return <TrustBarSection {...sectionLibraryV3Content.trustBar} />;
     case "TrustBarSectionV3":
       return <TrustBarSectionV3 {...sectionLibraryV3Content.trustBar} />;
     case "TrustMarqueeSection":
-      return <TrustMarqueeSection {...sectionLibraryContent.trustMarquee} />;
+      return <TrustMarqueeSection {...sectionLibraryV3Content.trustMarquee} />;
     case "TrustMarqueeSectionV3":
       return <TrustMarqueeSectionV3 {...sectionLibraryV3Content.trustMarquee} />;
     case "TrustLogoGridSection":
-      return <TrustLogoGridSection {...sectionLibraryContent.trustLogoMarquee} />;
+      return <TrustLogoGridSection {...sectionLibraryV3Content.trustLogoMarquee} />;
     case "TrustLogoGridSectionV3":
       return (
         <TrustLogoGridSectionV3
@@ -127,7 +126,7 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
         />
       );
     case "ServicesGridSectionV2":
-      return <ServicesGridSectionV2 {...sectionLibraryContent.services} />;
+      return <ServicesGridSectionV2 {...sectionLibraryV3Content.services} />;
     case "ServicesThreeCardsRightSectionV3":
       return (
         <ServicesThreeCardsRightSectionV3
@@ -137,119 +136,119 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
     case "ServicesScrollCardsSectionV2":
       return (
         <ServicesScrollCardsSectionV2
-          {...sectionLibraryContent.servicesScrollCards}
+          {...sectionLibraryV3Content.servicesScrollCards}
         />
       );
     case "ContentPositioningSplitSectionV2":
       return (
         <ContentPositioningSplitSectionV2
-          {...sectionLibraryContent.contentPositioningSplit}
+          {...sectionLibraryV3Content.contentPositioningSplit}
         />
       );
     case "ContentRevealParagraphSectionV2":
       return (
         <ContentRevealParagraphSectionV2
-          {...sectionLibraryContent.contentRevealParagraph}
+          {...sectionLibraryV3Content.contentRevealParagraph}
         />
       );
     case "ContentSplitHeadlineImageSectionV2":
       return (
         <ContentSplitHeadlineImageSectionV2
-          {...sectionLibraryContent.contentSplitHeadlineImage}
+          {...sectionLibraryV3Content.contentSplitHeadlineImage}
         />
       );
     case "ContentStickyCardStreamSectionV2":
       return (
         <ContentStickyCardStreamSectionV2
-          {...sectionLibraryContent.contentStickyCardStream}
+          {...sectionLibraryV3Content.contentStickyCardStream}
         />
       );
     case "ContentStickyIdeasSectionV2":
       return (
         <ContentStickyIdeasSectionV2
-          {...sectionLibraryContent.contentStickyIdeas}
+          {...sectionLibraryV3Content.contentStickyIdeas}
         />
       );
     case "ContentAboutCompanySectionV2":
       return (
         <ContentAboutCompanySectionV2
-          {...sectionLibraryContent.contentAboutCompany}
+          {...sectionLibraryV3Content.contentAboutCompany}
         />
       );
     case "ContentRuleHeaderSectionV2":
       return (
         <ContentRuleHeaderSectionV2
-          {...sectionLibraryContent.contentRuleHeader}
+          {...sectionLibraryV3Content.contentRuleHeader}
         />
       );
     case "FAQSectionV2":
-      return <FAQSectionV2 {...sectionLibraryContent.faq} />;
+      return <FAQSectionV2 {...sectionLibraryV3Content.faq} />;
     case "FAQSectionV3":
-      return <FAQSectionV3 {...sectionLibraryContent.faq} />;
+      return <FAQSectionV3 {...sectionLibraryV3Content.faq} />;
     case "FAQAccordionSectionV2":
-      return <FAQAccordionSectionV2 {...sectionLibraryContent.faqAccordion} />;
+      return <FAQAccordionSectionV2 {...sectionLibraryV3Content.faqAccordion} />;
     case "FAQAccordionSectionV3":
-      return <FAQAccordionSectionV3 {...sectionLibraryContent.faqAccordion} />;
+      return <FAQAccordionSectionV3 {...sectionLibraryV3Content.faqAccordion} />;
     case "TestimonialsCarouselSectionV2":
       return (
         <TestimonialsCarouselSectionV2
-          {...sectionLibraryContent.testimonialsCarousel}
+          {...sectionLibraryV3Content.testimonialsCarousel}
         />
       );
     case "TestimonialsCarouselSectionV3":
       return (
         <TestimonialsCarouselSectionV3
-          {...sectionLibraryContent.testimonialsCarousel}
+          {...sectionLibraryV3Content.testimonialsCarousel}
         />
       );
     case "TestimonialsMasonrySectionV2":
       return (
         <TestimonialsMasonrySectionV2
-          {...sectionLibraryContent.testimonialsMasonry}
+          {...sectionLibraryV3Content.testimonialsMasonry}
         />
       );
     case "TestimonialsMasonrySectionV3":
       return (
         <TestimonialsMasonrySectionV3
-          {...sectionLibraryContent.testimonialsMasonry}
+          {...sectionLibraryV3Content.testimonialsMasonry}
         />
       );
     case "ProcessImageChecklistSectionV2":
       return (
         <ProcessImageChecklistSectionV2
-          {...sectionLibraryContent.processImageChecklist}
+          {...sectionLibraryV3Content.processImageChecklist}
         />
       );
     case "ProcessImageChecklistSectionV3":
       return (
         <ProcessImageChecklistSectionV3
-          {...sectionLibraryContent.processImageChecklist}
+          {...sectionLibraryV3Content.processImageChecklist}
         />
       );
     case "CTAFullscreenSectionV2":
-      return <CTAFullscreenSectionV2 {...sectionLibraryContent.ctaFullscreen} />;
+      return <CTAFullscreenSectionV2 {...sectionLibraryV3Content.ctaFullscreen} />;
     case "CTAFullscreenSectionV3":
-      return <CTAFullscreenSectionV3 {...sectionLibraryContent.ctaFullscreen} />;
+      return <CTAFullscreenSectionV3 {...sectionLibraryV3Content.ctaFullscreen} />;
     case "CTAScrollRevealOfferSectionV2":
       return (
         <CTAScrollRevealOfferSectionV2
-          {...sectionLibraryContent.ctaScrollRevealOffer}
+          {...sectionLibraryV3Content.ctaScrollRevealOffer}
         />
       );
     case "CTAScrollRevealOfferSectionV3":
       return (
         <CTAScrollRevealOfferSectionV3
-          {...sectionLibraryContent.ctaScrollRevealOffer}
+          {...sectionLibraryV3Content.ctaScrollRevealOffer}
         />
       );
     case "ContactSectionV2":
-      return <ContactSectionV2 {...sectionLibraryContent.contact} />;
+      return <ContactSectionV2 {...sectionLibraryV3Content.contact} />;
     case "ContactSectionV3":
-      return <ContactSectionV3 {...sectionLibraryContent.contact} />;
+      return <ContactSectionV3 {...sectionLibraryV3Content.contact} />;
     case "FooterSectionV2":
-      return <FooterSectionV2 {...sectionLibraryContent.footer} />;
+      return <FooterSectionV2 {...sectionLibraryV3Content.footer} />;
     case "FooterSectionV3":
-      return <FooterSectionV3 {...sectionLibraryContent.footer} />;
+      return <FooterSectionV3 {...sectionLibraryV3Content.footer} />;
     default:
       return <UnknownSection section={section} />;
   }

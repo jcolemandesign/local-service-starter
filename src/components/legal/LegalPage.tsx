@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Container, Section } from "@/components/primitives";
 import { FooterSection } from "@/components/sections";
-import { sectionLibraryContent } from "@/content/section-library";
+import { sectionLibraryV3Content } from "@/content/section-library-v3";
 
 type LegalSection = {
   title: string;
@@ -93,7 +93,7 @@ export function LegalPage({
         </Container>
       </Section>
 
-      <FooterSection {...sectionLibraryContent.footer} />
+      <FooterSection {...sectionLibraryV3Content.footer} />
     </main>
   );
 }

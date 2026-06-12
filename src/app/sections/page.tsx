@@ -40,7 +40,6 @@ import {
   TrustMarqueeSectionV3,
 } from "@/components/sections";
 import type { HeroSplitFullHeightVariant } from "@/components/sections/HeroSplitFullHeightSectionV3";
-import { sectionLibraryContent } from "@/content/section-library";
 import {
   sectionLibraryV3Collections,
   sectionLibraryV3Content,
@@ -55,84 +54,84 @@ export const metadata: Metadata = {
 const sectionElements = {
   "hero-centered-floaters-v2": (
     <HeroCenteredFloatersSectionV2
-      {...sectionLibraryContent.hero}
+      {...sectionLibraryV3Content.hero}
       headingLevel={2}
     />
   ),
   "hero-fullscreen-v2": (
     <HeroFullscreenSectionV2
-      {...sectionLibraryContent.heroFullscreen}
+      {...sectionLibraryV3Content.heroFullscreen}
       headingLevel={2}
     />
   ),
   "hero-grid-mosaic-v2": (
     <HeroGridMosaicSectionV2
-      {...sectionLibraryContent.heroGridMosaic}
+      {...sectionLibraryV3Content.heroGridMosaic}
       headingLevel={2}
     />
   ),
   "hero-content-top-image-bottom-v2": (
     <HeroContentTopImageBottomSectionV2
-      {...sectionLibraryContent.hero}
+      {...sectionLibraryV3Content.hero}
       headingLevel={2}
     />
   ),
   "hero-image-top-content-bottom-v2": (
     <HeroImageTopContentBottomSectionV2
-      {...sectionLibraryContent.hero}
+      {...sectionLibraryV3Content.hero}
       headingLevel={2}
     />
   ),
   "hero-stacked-header-image-v2": (
     <HeroStackedHeaderImageSectionV2
-      {...sectionLibraryContent.hero}
+      {...sectionLibraryV3Content.hero}
       headingLevel={2}
       title="Reliable Home Services Delivered"
     />
   ),
   "content-rule-header-v2": (
     <ContentRuleHeaderSectionV2
-      {...sectionLibraryContent.contentRuleHeader}
+      {...sectionLibraryV3Content.contentRuleHeader}
     />
   ),
   "content-reveal-v2": (
     <ContentRevealParagraphSectionV2
-      {...sectionLibraryContent.contentRevealParagraph}
+      {...sectionLibraryV3Content.contentRevealParagraph}
     />
   ),
   "content-scroll-written-reveal-v2": (
     <ContentScrollWrittenRevealSectionV2
-      {...sectionLibraryContent.contentScrollWrittenReveal}
+      {...sectionLibraryV3Content.contentScrollWrittenReveal}
     />
   ),
   "content-sticky-ideas-v2": (
     <ContentStickyIdeasSectionV2
-      {...sectionLibraryContent.contentStickyIdeas}
+      {...sectionLibraryV3Content.contentStickyIdeas}
     />
   ),
   "content-sticky-card-stream-v2": (
     <ContentStickyCardStreamSectionV2
-      {...sectionLibraryContent.contentStickyCardStream}
+      {...sectionLibraryV3Content.contentStickyCardStream}
     />
   ),
   "content-horizontal-card-carousel-v2": (
     <ContentHorizontalCardCarouselSectionV2
-      {...sectionLibraryContent.contentHorizontalCardCarousel}
+      {...sectionLibraryV3Content.contentHorizontalCardCarousel}
     />
   ),
   "content-sticky-image-panel-v3": (
     <ContentStickyImagePanelSectionV3
-      {...sectionLibraryContent.contentStickyImagePanel}
+      {...sectionLibraryV3Content.contentStickyImagePanel}
     />
   ),
   "content-fixed-cover-fade-v2": (
     <ContentFixedCoverFadeSectionV2
-      {...sectionLibraryContent.contentFixedCoverFade}
+      {...sectionLibraryV3Content.contentFixedCoverFade}
     />
   ),
   "content-split-headline-image-v2": (
     <ContentSplitHeadlineImageSectionV2
-      {...sectionLibraryContent.contentSplitHeadlineImage}
+      {...sectionLibraryV3Content.contentSplitHeadlineImage}
     />
   ),
   "feature-portrait-paragraph-v3": (
@@ -142,7 +141,7 @@ const sectionElements = {
   ),
   "feature-overlap-rows-v3": (
     <FeatureOverlapRowsSectionV3
-      {...sectionLibraryContent.featureOverlapRows}
+      {...sectionLibraryV3Content.featureOverlapRows}
     />
   ),
   "services-three-cards-right-v3": (
@@ -151,41 +150,41 @@ const sectionElements = {
     />
   ),
   "process-steps-v3": (
-    <ProcessStepsSectionV3 {...sectionLibraryContent.process} />
+    <ProcessStepsSectionV3 {...sectionLibraryV3Content.process} />
   ),
   "process-image-checklist-v3": (
     <ProcessImageChecklistSectionV3
-      {...sectionLibraryContent.processImageChecklist}
+      {...sectionLibraryV3Content.processImageChecklist}
     />
   ),
   "testimonials-v3": (
-    <TestimonialsSectionV3 {...sectionLibraryContent.testimonials} />
+    <TestimonialsSectionV3 {...sectionLibraryV3Content.testimonials} />
   ),
   "testimonials-carousel-v3": (
     <TestimonialsCarouselSectionV3
-      {...sectionLibraryContent.testimonialsCarousel}
+      {...sectionLibraryV3Content.testimonialsCarousel}
     />
   ),
   "testimonials-masonry-v3": (
     <TestimonialsMasonrySectionV3
-      {...sectionLibraryContent.testimonialsMasonry}
+      {...sectionLibraryV3Content.testimonialsMasonry}
     />
   ),
-  "faq-v3": <FAQSectionV3 {...sectionLibraryContent.faq} />,
+  "faq-v3": <FAQSectionV3 {...sectionLibraryV3Content.faq} />,
   "faq-accordion-v3": (
-    <FAQAccordionSectionV3 {...sectionLibraryContent.faqAccordion} />
+    <FAQAccordionSectionV3 {...sectionLibraryV3Content.faqAccordion} />
   ),
-  "cta-v3": <CTASectionV3 {...sectionLibraryContent.cta} />,
+  "cta-v3": <CTASectionV3 {...sectionLibraryV3Content.cta} />,
   "cta-fullscreen-v3": (
-    <CTAFullscreenSectionV3 {...sectionLibraryContent.ctaFullscreen} />
+    <CTAFullscreenSectionV3 {...sectionLibraryV3Content.ctaFullscreen} />
   ),
   "cta-scroll-reveal-offer-v3": (
     <CTAScrollRevealOfferSectionV3
-      {...sectionLibraryContent.ctaScrollRevealOffer}
+      {...sectionLibraryV3Content.ctaScrollRevealOffer}
     />
   ),
-  "contact-v3": <ContactSectionV3 {...sectionLibraryContent.contact} />,
-  "footer-v3": <FooterSectionV3 {...sectionLibraryContent.footer} />,
+  "contact-v3": <ContactSectionV3 {...sectionLibraryV3Content.contact} />,
+  "footer-v3": <FooterSectionV3 {...sectionLibraryV3Content.footer} />,
   "trust-bar-v3": (
     <TrustBarSectionV3 {...sectionLibraryV3Content.trustBar} />
   ),

@@ -28,7 +28,6 @@ import { StyleGuideColorResetButton } from "@/components/sections/StyleGuideColo
 import { StyleGuideCloseAllButton } from "@/components/sections/StyleGuideCloseAllButton";
 import { StyleGuideButtonControls } from "@/components/sections/StyleGuideButtonControls";
 import { StyleGuideSurfaceControls } from "@/components/sections/StyleGuideSurfaceControls";
-import { sectionLibraryContent } from "@/content/section-library";
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
 
 export const metadata: Metadata = {
@@ -2154,7 +2153,7 @@ export default function StyleGuidePage() {
             <ServicesThreeCardsRightSectionV3
               {...sectionLibraryV3Content.servicesThreeCardsRight}
             />
-            <FAQSectionV3 {...sectionLibraryContent.faq} />
+            <FAQSectionV3 {...sectionLibraryV3Content.faq} />
           </div>
         </div>
       </GuideSection>
