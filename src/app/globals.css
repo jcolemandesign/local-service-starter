@@ -157,6 +157,18 @@ body {
     padding: var(--container-gutter);
   }
 
+  .content-padding {
+    padding: var(--container-gutter);
+  }
+
+  .content-padding-x {
+    padding-inline: var(--container-gutter);
+  }
+
+  .content-padding-y {
+    padding-block: var(--container-gutter);
+  }
+
   .border {
     border-width: var(--border-surface-width-token, 1px) !important;
   }

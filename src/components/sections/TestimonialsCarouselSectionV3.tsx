@@ -116,7 +116,7 @@ export function TestimonialsCarouselSectionV3({
                 {items.map((item) => (
                   <figure
                     aria-hidden="true"
-                    className="radius-medium invisible col-start-1 row-start-1 border border-service-border bg-white px-16 py-14 text-center shadow-service max-lg:px-10 max-md:px-6 max-md:py-10"
+                    className="content-padding radius-medium invisible col-start-1 row-start-1 border border-service-border bg-white text-center shadow-service"
                     key={`${item.author}-size`}
                   >
                     <TestimonialCardContent item={item} />
@@ -126,7 +126,7 @@ export function TestimonialsCarouselSectionV3({
                 <AnimatePresence initial={false} mode="wait">
                   <motion.figure
                     aria-live="polite"
-                    className="radius-medium col-start-1 row-start-1 border border-service-border bg-white px-16 py-14 text-center shadow-service max-lg:px-10 max-md:px-6 max-md:py-10"
+                    className="content-padding radius-medium col-start-1 row-start-1 border border-service-border bg-white text-center shadow-service"
                     key={activeItem.author}
                     initial={{
                       opacity: 0,

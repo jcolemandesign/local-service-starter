@@ -198,7 +198,7 @@ export function FAQSectionV3({
           <div className="space-y-4">
             {items.map((item) => (
               <article
-                className="fluid-type-frame radius-medium border border-service-border bg-white p-7 shadow-service"
+                className="content-padding fluid-type-frame radius-medium border border-service-border bg-white shadow-service"
                 key={item.question}
               >
                 <h3 className="type-heading-sm text-service-ink">
@@ -325,7 +325,7 @@ export function ContactSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-3 col-start-4 max-lg:col-span-7 max-lg:col-start-1">
-          <div className="fluid-type-frame radius-medium border border-service-border bg-service-surface p-8 shadow-service max-md:p-6">
+          <div className="content-padding fluid-type-frame radius-medium border border-service-border bg-service-surface shadow-service">
             <form className="grid gap-5">
               <label className="type-text-sm grid gap-2 font-semibold text-service-ink">
                 Name

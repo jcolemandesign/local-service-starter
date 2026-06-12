@@ -140,7 +140,7 @@ export function CTAScrollRevealOfferSectionV3({
               alignY="middle"
               className="col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1"
             >
-              <div className="radius-large border border-service-border bg-service-surface p-8 shadow-service max-md:p-6">
+              <div className="content-padding radius-large border border-service-border bg-service-surface shadow-service">
                 <p className="type-text-xl wrap-pretty text-service-muted">
                   {closeBody}
                 </p>
