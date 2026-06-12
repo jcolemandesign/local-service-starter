@@ -173,8 +173,8 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
             Content Editor
           </h1>
           <p className="type-text-xl wrap-pretty mt-display-body text-service-muted">
-            Created Pages copy and image-placement fields grouped by page and
-            section.
+            Template Builder copy and image-placement fields will appear here
+            once clean generated pages are ready for editing.
           </p>
         </SevenColumnGridItem>
 
@@ -328,7 +328,18 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
                 })}
               </div>
             </div>
-          ) : null}
+          ) : (
+            <div className="rounded-sm border border-service-border bg-white p-6 shadow-service">
+              <p className="type-label text-service-accent">No pages connected</p>
+              <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                Waiting for clean template output
+              </h2>
+              <p className="type-text-md mt-heading-body text-service-muted">
+                The old generated page inventory has been retired. This editor
+                is ready to receive pages from the completed template builder.
+              </p>
+            </div>
+          )}
         </SevenColumnGridItem>
       </SevenColumnGrid>
     </section>

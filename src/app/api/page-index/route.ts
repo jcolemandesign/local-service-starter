@@ -38,7 +38,7 @@ type PageIndexRequest = CloneRequest | DeleteRequest;
 
 const appDir = path.join(process.cwd(), "src", "app");
 const homeContentPath = path.join(process.cwd(), "src", "content", "home.json");
-const mutableGroupTitles = new Set(["Created Pages"]);
+const mutableGroupTitles = new Set<string>();
 const segmentPattern = /^[a-z0-9-]+$/;
 
 export async function POST(request: Request) {
@@ -212,7 +212,7 @@ function getMutableLinkLocation(content: HomeIndexContent, href: string) {
     !mutableGroupTitles.has(content.groups[location.groupIndex].title) ||
     link.mutable !== true
   ) {
-    throw new Error("Only Created Pages can be cloned or deleted.");
+    throw new Error("Only mutable project index pages can be cloned or deleted.");
   }
 
   return location;

@@ -94,8 +94,8 @@ function normalizePromotion(body: PromotionRequest): StagedPage {
     throw new Error("Invalid page id.");
   }
 
-  if (!body.pageHref.startsWith("/created-pages/")) {
-    throw new Error("Only Created Pages can be staged from the Content Editor.");
+  if (!body.pageHref.startsWith("/")) {
+    throw new Error("Invalid page href.");
   }
 
   if (typeof body.pageLabel !== "string" || body.pageLabel.trim().length === 0) {

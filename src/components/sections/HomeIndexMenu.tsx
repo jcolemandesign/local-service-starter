@@ -29,7 +29,7 @@ type ActionResponse =
   | { ok: true; groups: HomeIndexGroup[]; href?: string }
   | { ok: false; error: string };
 
-const manageableGroupTitles = new Set(["Created Pages"]);
+const manageableGroupTitles = new Set<string>();
 
 export function HomeIndexMenu({ initialGroups }: HomeIndexMenuProps) {
   const [groups, setGroups] = useState(initialGroups);

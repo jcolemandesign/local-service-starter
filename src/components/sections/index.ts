@@ -1,6 +1,5 @@
 export { ContactSection } from "./ContactSection";
 export { ContactSectionV2 } from "./ContactSectionV2";
-export { CreatedPagesIndexSection } from "./CreatedPagesIndexSection";
 export { ButtonStylesSectionV2 } from "./ButtonStylesSectionV2";
 export { ContentAboutCompanySection } from "./ContentAboutCompanySection";
 export { ContentAboutCompanySectionV2 } from "./ContentAboutCompanySectionV2";

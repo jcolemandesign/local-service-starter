@@ -16,7 +16,7 @@ code, not a live dependency on Pagebuilder state.
 | --- | --- | --- |
 | Section Library | Build reusable template sections and global layout rules. | Generic sections and shared layout/token rules. |
 | Pagebuilder | Examine layout flows with template sections. | Instructions/briefs for creating concrete pages. |
-| Created Pages | WIP pages generated from Pagebuilder instructions. | Baked page files that can be edited and refined. |
+| Template Builder | Generate clean pages from approved templates. | Public-ready page files and canonical content. |
 | Styleguide | Preview and promote global visual tokens. | Shared tokens for type, color, surfaces, radius, shadow, and spacing. |
 | Content Editor | Map page/section copy and image fields into editable forms. | Saved content changes ready for promotion. |
 | Website Pages | Review staged pages that are eligible to become public. | Staged pages and public-ready pages. |
@@ -97,7 +97,7 @@ Example metadata:
 Status: complete
 
 - Use the Pageworks Pipeline name in docs.
-- Add/rename home menu groups for Pagebuilder, Created Pages, Website Pages,
+- Add/rename home menu groups for Pagebuilder, Website Pages,
   Styleguide, and Content Editor.
 - Rename Pagebuilder design tabs.
 
@@ -122,23 +122,22 @@ Minimum page instruction format:
 - Implementation rules for baking the page.
 - Expected output paths for the baked page and content.
 
-### Phase 2.5: Housekeeping Before Created Pages
+### Phase 2.5: Housekeeping Before Generated Pages
 
 Status: complete
 
 - Rename Design Lab code and routes to Pagebuilder.
 - Remove the legacy `/dev/design-lab` route instead of keeping it as an alias.
-- Limit project-index clone/delete actions to Created Pages.
+- Limit project-index clone/delete actions to generated page experiments.
 - Align Pagebuilder recipe intent copy with the five target page types.
 - Clean stale navigation and roadmap labels.
 
-### Phase 3: Created Pages
+### Phase 3: Retired Generated Pages
 
-Status: complete
+Status: retired
 
-- Add a Created Pages home/menu area.
-- Create baked WIP pages from Pagebuilder instructions.
-- Keep pages lightweight and independent from Pagebuilder runtime state.
+- The old baked WIP generated page route set has been removed.
+- Clean pages will be rebuilt through the completed template builder instead.
 
 ### Phase 4: Styleguide Promotion
 
@@ -177,7 +176,7 @@ Status: in progress
 
 Progress:
 
-- Content Editor inventory reads Created Pages content.
+- Content Editor inventory is waiting for clean Template Builder output.
 - Fields are grouped by page and section.
 - Draft save remains local to the dev browser.
 - Promote writes staged content snapshots to `src/content/staged-pages.json`.

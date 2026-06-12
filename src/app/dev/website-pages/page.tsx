@@ -119,8 +119,8 @@ export default async function WebsitePagesPage() {
                 Promote content from the Content Editor first.
               </h2>
               <p className="type-text-md wrap-pretty mt-heading-body-md text-service-muted">
-                Staged pages will appear here after a Created Page is promoted
-                from the Content Editor.
+                Staged pages will appear here after clean template output is
+                promoted from the Content Editor.
               </p>
               <div className="mt-body-actions-md">
                 <Button href="/dev/content-editor">Open Content Editor</Button>

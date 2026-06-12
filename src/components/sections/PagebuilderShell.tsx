@@ -351,7 +351,7 @@ function buildPageInstruction({
     `- If a section needs new copy, create concise local-service business copy that matches the section mode and instruction.`,
     ``,
     `Expected output:`,
-    `- Baked page route under src/app/ or a WIP Created Pages route.`,
+    `- Clean page route under src/app/ generated from the completed template builder.`,
     `- Page content stored or exported from src/content/.`,
     `- No extra builder/editor controls on the baked page.`,
   ].join("\n");

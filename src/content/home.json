@@ -4,46 +4,6 @@
   "body": "Quick links for reviewing the reusable starter, section library, and development workspaces while the dev server is running.",
   "groups": [
     {
-      "title": "Created Pages",
-      "links": [
-        {
-          "label": "Created Pages index",
-          "href": "/created-pages",
-          "description": "Review baked WIP pages generated from Pagebuilder instructions."
-        },
-        {
-          "label": "homepage1",
-          "href": "/created-pages/homepage1",
-          "description": "Baked WIP homepage from the Pagebuilder homepage1 instruction.",
-          "mutable": true
-        },
-        {
-          "label": "homepage2",
-          "href": "/created-pages/homepage2",
-          "description": "Baked WIP homepage from the Pagebuilder homepage2 instruction.",
-          "mutable": true
-        },
-        {
-          "label": "about",
-          "href": "/created-pages/about",
-          "description": "Baked WIP about page from the Pagebuilder about instruction.",
-          "mutable": true
-        },
-        {
-          "label": "services",
-          "href": "/created-pages/services",
-          "description": "Baked WIP services page from the Pagebuilder services instruction.",
-          "mutable": true
-        },
-        {
-          "label": "individual service page",
-          "href": "/created-pages/individual-service-page",
-          "description": "Baked WIP individual service page from the Pagebuilder service-page instruction.",
-          "mutable": true
-        }
-      ]
-    },
-    {
       "title": "Design tools",
       "links": [
         {

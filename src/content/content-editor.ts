@@ -1,11 +1,3 @@
-import {
-  createdAboutContent,
-  createdHomepage1Content,
-  createdHomepage2Content,
-  createdIndividualServicePageContent,
-  createdServicesContent,
-} from "@/content/created-pages";
-
 export type ContentEditorFieldKind = "copy" | "image" | "link";
 
 export type ContentEditorField = {
@@ -32,40 +24,14 @@ export type ContentEditorPage = {
 
 type ContentRecord = Record<string, unknown>;
 
-const createdPageSources = [
-  {
-    id: "homepage1",
-    label: "homepage1",
-    href: "/created-pages/homepage1",
-    content: createdHomepage1Content,
-  },
-  {
-    id: "homepage2",
-    label: "homepage2",
-    href: "/created-pages/homepage2",
-    content: createdHomepage2Content,
-  },
-  {
-    id: "about",
-    label: "about",
-    href: "/created-pages/about",
-    content: createdAboutContent,
-  },
-  {
-    id: "services",
-    label: "services",
-    href: "/created-pages/services",
-    content: createdServicesContent,
-  },
-  {
-    id: "individual-service-page",
-    label: "individual service page",
-    href: "/created-pages/individual-service-page",
-    content: createdIndividualServicePageContent,
-  },
-] as const;
+const contentPageSources: Array<{
+  content: ContentRecord;
+  href: string;
+  id: string;
+  label: string;
+}> = [];
 
-export const contentEditorPages: ContentEditorPage[] = createdPageSources.map(
+export const contentEditorPages: ContentEditorPage[] = contentPageSources.map(
   (page) => {
     const content = page.content as ContentRecord;
     const source = content.source as ContentRecord | undefined;
