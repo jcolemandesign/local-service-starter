@@ -25,6 +25,7 @@ import {
 import { StyleGuideGapCard } from "@/components/sections/StyleGuideGapCard";
 import { StyleGuideColorSwatch } from "@/components/sections/StyleGuideColorSwatch";
 import { StyleGuideColorResetButton } from "@/components/sections/StyleGuideColorResetButton";
+import { StyleGuidePromoteTokensButton } from "@/components/sections/StyleGuidePromoteTokensButton";
 import { StyleGuideCloseAllButton } from "@/components/sections/StyleGuideCloseAllButton";
 import { StyleGuideButtonControls } from "@/components/sections/StyleGuideButtonControls";
 import { StyleGuideSurfaceControls } from "@/components/sections/StyleGuideSurfaceControls";
@@ -1585,8 +1586,9 @@ export default function StyleGuidePage() {
         title="Color System"
         body="Palette tokens, semantic color roles, and live surface/type relationships in one place. The color inputs on these swatches update the cards directly."
       >
-        <div className="mb-6 flex justify-end">
+        <div className="mb-6 flex flex-wrap items-center justify-end inline-gap-sml">
           <StyleGuideColorResetButton />
+          <StyleGuidePromoteTokensButton />
         </div>
 
         <SevenColumnGrid minHeight="none" padding="none">

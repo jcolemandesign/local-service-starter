@@ -9,11 +9,16 @@ type StyleGuideTokenDraft = {
   serviceAccent: string;
   serviceSurface: string;
   serviceBorder: string;
+  bgPage: string;
   bgDark: string;
   accent: string;
+  activeCardGapValue: string;
+  activeInlineGapValue: string;
+  activeLayoutGapValue: string;
   activeBorderWidthValue: string;
   activeButtonRadiusValue: string;
   activeSurfaceRadiusValue: string;
+  activeSectionMinValue: string;
   activeSectionSpaceLrg: string;
   activeSectionSpaceLrgMobile: string;
   activeSectionSpaceLrgTablet: string;
@@ -26,9 +31,15 @@ type StyleGuideTokenDraft = {
   activeSectionSpaceVsml: string;
   activeSectionSpaceVsmlMobile: string;
   activeSectionSpaceVsmlTablet: string;
+  activeSemanticSpacingScale: number;
+  activeContentFrameValue: string;
+  activeSiteGridFrameBlock: string;
+  activeSiteGridFrameInline: string;
+  activeSiteGridGapValue: string;
   radiusSm: number;
   radiusMd: number;
   radiusLg: number;
+  radiusXl: number;
   shadowX: number;
   shadowY: number;
   shadowBlur: number;
@@ -85,8 +96,18 @@ function normalizeTokens(tokens: Partial<StyleGuideTokenDraft> | undefined) {
     serviceAccent: normalizeColor(tokens.serviceAccent, "service accent"),
     serviceSurface: normalizeColor(tokens.serviceSurface, "service surface"),
     serviceBorder: normalizeColor(tokens.serviceBorder, "service border"),
+    bgPage: normalizeColor(tokens.bgPage, "page background"),
     bgDark: normalizeColor(tokens.bgDark, "dark background"),
     accent: normalizeColor(tokens.accent, "warm accent"),
+    activeCardGapValue: normalizeSpacingValue(tokens.activeCardGapValue, "card gap"),
+    activeInlineGapValue: normalizeSpacingValue(
+      tokens.activeInlineGapValue,
+      "inline gap",
+    ),
+    activeLayoutGapValue: normalizeSpacingValue(
+      tokens.activeLayoutGapValue,
+      "layout gap",
+    ),
     activeBorderWidthValue: normalizeBorderWidth(
       tokens.activeBorderWidthValue,
     ),
@@ -97,6 +118,9 @@ function normalizeTokens(tokens: Partial<StyleGuideTokenDraft> | undefined) {
     activeSurfaceRadiusValue: normalizeRadiusValue(
       tokens.activeSurfaceRadiusValue,
       "surface radius",
+    ),
+    activeSectionMinValue: normalizeSectionMinValue(
+      tokens.activeSectionMinValue,
     ),
     activeSectionSpaceLrg: normalizeSpacingValue(
       tokens.activeSectionSpaceLrg,
@@ -146,9 +170,32 @@ function normalizeTokens(tokens: Partial<StyleGuideTokenDraft> | undefined) {
       tokens.activeSectionSpaceVsmlTablet,
       "very small tablet section padding",
     ),
+    activeSemanticSpacingScale: normalizeNumber(
+      tokens.activeSemanticSpacingScale,
+      "semantic spacing scale",
+      0.75,
+      1.35,
+    ),
+    activeContentFrameValue: normalizeSpacingValue(
+      tokens.activeContentFrameValue,
+      "content padding",
+    ),
+    activeSiteGridFrameBlock: normalizeSpacingValue(
+      tokens.activeSiteGridFrameBlock,
+      "site grid block padding",
+    ),
+    activeSiteGridFrameInline: normalizeSpacingValue(
+      tokens.activeSiteGridFrameInline,
+      "site grid inline padding",
+    ),
+    activeSiteGridGapValue: normalizeSpacingValue(
+      tokens.activeSiteGridGapValue,
+      "site grid gap",
+    ),
     radiusSm: normalizeNumber(tokens.radiusSm, "small radius", 0, 16),
     radiusMd: normalizeNumber(tokens.radiusMd, "medium radius", 0, 24),
     radiusLg: normalizeNumber(tokens.radiusLg, "large radius", 8, 40),
+    radiusXl: normalizeNumber(tokens.radiusXl, "extra large radius", 16, 80),
     shadowX: normalizeNumber(tokens.shadowX, "shadow x", -40, 40),
     shadowY: normalizeNumber(tokens.shadowY, "shadow y", -40, 40),
     shadowBlur: normalizeNumber(tokens.shadowBlur, "shadow blur", 0, 80),
@@ -192,7 +239,7 @@ function normalizeBorderWidth(value: unknown) {
 function normalizeRadiusValue(value: unknown, label: string) {
   if (
     typeof value !== "string" ||
-    !/^(0|2|4|8|24|40|9999)px$/.test(value)
+    !/^(?:0|(?:2|4|8|24|40|9999)px)$/.test(value)
   ) {
     throw new Error(`Invalid ${label} value.`);
   }
@@ -206,6 +253,14 @@ function normalizeSpacingValue(value: unknown, label: string) {
     !/^(?:\d+(?:\.\d+)?rem|clamp\([^)]+\))$/.test(value)
   ) {
     throw new Error(`Invalid ${label}.`);
+  }
+
+  return value;
+}
+
+function normalizeSectionMinValue(value: unknown) {
+  if (typeof value !== "string" || !/^(?:0|\d+rem|\d+svh)$/.test(value)) {
+    throw new Error("Invalid section minimum height.");
   }
 
   return value;
@@ -228,7 +283,7 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --color-service-accent: ${tokens.serviceAccent};
   --color-service-surface: ${tokens.serviceSurface};
   --color-service-border: ${tokens.serviceBorder};
-  --color-bg-page: #ffffff;
+  --color-bg-page: ${tokens.bgPage};
   --color-bg-surface: ${tokens.serviceSurface};
   --color-bg-muted: ${tokens.serviceBorder};
   --color-bg-dark: ${tokens.bgDark};
@@ -238,13 +293,18 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --color-text-accent: ${tokens.serviceAccent};
   --color-border-default: ${tokens.serviceBorder};
   --color-accent: ${tokens.accent};
+  --card-grid-gap-active: ${tokens.activeCardGapValue};
+  --inline-gap-active: ${tokens.activeInlineGapValue};
+  --layout-gap-active: ${tokens.activeLayoutGapValue};
   --border-surface-width-token: ${tokens.activeBorderWidthValue};
   --radius-sm-token: ${tokens.radiusSm}px;
   --radius-md-token: ${tokens.radiusMd}px;
   --radius-lg-token: ${tokens.radiusLg}px;
+  --radius-xl-token: ${tokens.radiusXl}px;
   --radius-round-token: 9999px;
   --radius-surface-token: ${tokens.activeSurfaceRadiusValue};
   --radius-button-token: ${tokens.activeButtonRadiusValue};
+  --section-min-active: ${tokens.activeSectionMinValue};
   --section-space-vsml: ${tokens.activeSectionSpaceVsml};
   --section-space-sml: ${tokens.activeSectionSpaceSml};
   --section-space-med: ${tokens.activeSectionSpaceMed};
@@ -257,6 +317,11 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --section-space-sml-mobile: ${tokens.activeSectionSpaceSmlMobile};
   --section-space-med-mobile: ${tokens.activeSectionSpaceMedMobile};
   --section-space-lrg-mobile: ${tokens.activeSectionSpaceLrgMobile};
+  --semantic-spacing-scale: ${tokens.activeSemanticSpacingScale};
+  --container-gutter: ${tokens.activeContentFrameValue};
+  --site-grid-inset-block: ${tokens.activeSiteGridFrameBlock};
+  --site-grid-inset-inline: ${tokens.activeSiteGridFrameInline};
+  --site-grid-gap: ${tokens.activeSiteGridGapValue};
   --shadow-service: ${tokens.shadowX}px ${tokens.shadowY}px ${tokens.shadowBlur}px rgb(${hexToRgbChannels(tokens.shadowColor)} / ${tokens.shadowAlpha});
 }
 ${endMarker}`;
