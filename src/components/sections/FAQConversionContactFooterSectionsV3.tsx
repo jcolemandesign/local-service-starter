@@ -142,7 +142,7 @@ function FooterColumn({
   return (
     <div className="fluid-type-frame">
       <h2 className="type-label text-white/55">{title}</h2>
-      <ul className="mt-5 grid gap-3">
+      <ul className="mt-heading-body-sm grid card-grid-gap-sml">
         {links.map((link) => (
           <li key={link.label}>
             <a
@@ -187,15 +187,15 @@ export function FAQSectionV3({
         <SevenColumnGridItem className="col-span-3 max-lg:col-span-7">
           <div className="fluid-type-frame">
             <p className="type-label text-service-accent">{eyebrow}</p>
-            <h2 className="type-heading-xl mt-5 text-service-ink">{title}</h2>
-            <p className="type-text-lg wrap-pretty mt-6 text-service-muted">
+            <h2 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">{title}</h2>
+            <p className="type-text-lg wrap-pretty mt-heading-body-lg text-service-muted">
               {body}
             </p>
           </div>
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1">
-          <div className="space-y-4">
+          <div className="grid card-grid-gap-med">
             {items.map((item) => (
               <article
                 className="content-padding fluid-type-frame radius-medium border border-service-border bg-white shadow-service"
@@ -204,7 +204,7 @@ export function FAQSectionV3({
                 <h3 className="type-heading-sm text-service-ink">
                   {item.question}
                 </h3>
-                <p className="type-text-md wrap-pretty mt-3 text-service-muted">
+                <p className="type-text-md wrap-pretty mt-heading-body-sm text-service-muted">
                   {item.answer}
                 </p>
               </article>
@@ -223,7 +223,7 @@ export function CTASectionV3({ action, body, title }: CTASectionV3Props) {
         <SevenColumnGridItem className="col-span-5 max-lg:col-span-7">
           <div className="fluid-type-frame">
             <h2 className="type-heading-xl">{title}</h2>
-            <p className="type-text-lg wrap-pretty mt-6 text-white/75">
+            <p className="type-text-lg wrap-pretty mt-heading-body-lg text-white/75">
               {body}
             </p>
           </div>
@@ -268,9 +268,9 @@ export function CTAFullscreenSectionV3({
           className="col-span-5 col-start-2 row-start-2 max-lg:col-span-7 max-lg:col-start-1"
         >
           <div className="fluid-type-frame mx-auto w-full text-center">
-            <p className="type-label mb-5 text-white/75">{eyebrow}</p>
+            <p className="type-label text-white/75">{eyebrow}</p>
             <h2 className="type-display-lg mx-auto max-w-5xl">{title}</h2>
-            <p className="type-text-xl wrap-pretty mx-auto mt-6 text-white/80">
+            <p className="type-text-xl wrap-pretty mx-auto mt-display-body text-white/80">
               {body}
             </p>
           </div>
@@ -278,7 +278,7 @@ export function CTAFullscreenSectionV3({
         <SevenColumnGridItem
           alignX="center"
           alignY="bottom"
-          className="col-span-7 row-start-3 pt-8 max-md:pt-6"
+          className="col-span-7 row-start-3 mt-body-actions-md max-md:mt-body-actions-sm"
         >
           <div className="flex w-full justify-center">
             <RequestServiceButton
@@ -306,12 +306,12 @@ export function ContactSectionV3({
         <SevenColumnGridItem className="col-span-2 col-start-2 max-lg:col-span-7 max-lg:col-start-1">
           <div className="fluid-type-frame">
             <p className="type-label text-service-accent">{eyebrow}</p>
-            <h2 className="type-heading-xl mt-5 text-service-ink">{title}</h2>
-            <p className="type-text-lg wrap-pretty mt-6 text-service-muted">
+            <h2 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">{title}</h2>
+            <p className="type-text-lg wrap-pretty mt-heading-body-lg text-service-muted">
               {body}
             </p>
 
-            <ul className="mt-9 grid gap-3">
+            <ul className="mt-body-actions-md grid card-grid-gap-sml">
               {details.map((detail) => (
                 <li
                   className="type-text-md wrap-pretty font-semibold text-service-ink"
@@ -326,8 +326,8 @@ export function ContactSectionV3({
 
         <SevenColumnGridItem className="col-span-3 col-start-4 max-lg:col-span-7 max-lg:col-start-1">
           <div className="content-padding fluid-type-frame radius-medium border border-service-border bg-service-surface shadow-service">
-            <form className="grid gap-5">
-              <label className="type-text-sm grid gap-2 font-semibold text-service-ink">
+            <form className="grid card-grid-gap-med">
+              <label className="type-text-sm grid card-grid-gap-sml font-semibold text-service-ink">
                 Name
                 <input
                   className="radius-4 min-h-12 border border-service-border bg-white px-4 text-base font-normal outline-none transition-colors focus:border-service-accent"
@@ -335,7 +335,7 @@ export function ContactSectionV3({
                   type="text"
                 />
               </label>
-              <label className="type-text-sm grid gap-2 font-semibold text-service-ink">
+              <label className="type-text-sm grid card-grid-gap-sml font-semibold text-service-ink">
                 Service needed
                 <input
                   className="radius-4 min-h-12 border border-service-border bg-white px-4 text-base font-normal outline-none transition-colors focus:border-service-accent"
@@ -343,7 +343,7 @@ export function ContactSectionV3({
                   type="text"
                 />
               </label>
-              <label className="type-text-sm grid gap-2 font-semibold text-service-ink">
+              <label className="type-text-sm grid card-grid-gap-sml font-semibold text-service-ink">
                 Message
                 <textarea
                   className="radius-4 min-h-32 border border-service-border bg-white px-4 py-3 text-base font-normal outline-none transition-colors focus:border-service-accent"
@@ -388,10 +388,10 @@ export function FooterSectionV3({
             >
               {businessName}
             </a>
-            <p className="type-text-md wrap-pretty mt-5 text-white/70">
+            <p className="type-text-md wrap-pretty mt-heading-body-sm text-white/70">
               {description}
             </p>
-            <ul aria-label="Social links" className="mt-7 flex gap-3">
+            <ul aria-label="Social links" className="mt-body-actions-sm flex inline-gap-sml">
               {socialLinks.map((link) => (
                 <li key={link.label}>
                   <a
@@ -428,7 +428,7 @@ export function FooterSectionV3({
         <SevenColumnGridItem className="col-span-2 col-start-6 max-lg:col-span-7 max-lg:col-start-1">
           <div className="fluid-type-frame">
             <h2 className="type-label text-white/55">Contact</h2>
-            <address className="mt-5 grid gap-3 not-italic">
+            <address className="mt-heading-body-sm grid card-grid-gap-sml not-italic">
               <span className="type-text-sm font-medium text-white/72">
                 {contact.name}
               </span>
@@ -451,7 +451,7 @@ export function FooterSectionV3({
           </div>
         </SevenColumnGridItem>
 
-        <div className="fluid-type-frame col-span-7 mt-4 flex items-center justify-between gap-6 border-t border-white/10 pt-7 max-md:flex-col max-md:items-start">
+        <div className="fluid-type-frame col-span-7 mt-body-actions-sm flex items-center justify-between inline-gap-lrg border-t border-white/10 pt-[var(--inline-gap-active)] max-md:flex-col max-md:items-start">
           <a
             className="type-text-sm cursor-pointer font-medium text-white/60 transition-colors hover:text-white"
             href={reviewLink.href}

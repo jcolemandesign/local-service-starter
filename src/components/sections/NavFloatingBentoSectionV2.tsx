@@ -44,7 +44,7 @@ function FloatingLogo({ label }: { label: string }) {
     <a
       className={cx(
         "type-label",
-        "radius-medium",
+        "radius-surface",
         "flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-white/90 p-1 text-service-muted shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:text-service-accent",
       )}
       href="#"
@@ -86,10 +86,10 @@ function ModalMenu({
         >
           <div
             id="floating-bento-v2-nav-menu"
-            className="flex h-full min-h-0 flex-1 flex-col px-8 pb-16 pt-28 max-md:px-6"
+            className="flex h-full min-h-0 flex-1 flex-col px-[var(--site-grid-inset-inline)] pb-[var(--section-space-sml-mobile)] pt-[var(--section-space-med-mobile)]"
           >
             <div className="flex min-h-0 flex-1 flex-col items-center justify-center overflow-y-auto overscroll-contain">
-              <ul className="grid justify-items-center gap-8 text-center">
+              <ul className="grid justify-items-center layout-gap-lrg text-center">
                 {links.map((link) => (
                   <li key={link.label}>
                     <a
@@ -100,7 +100,7 @@ function ModalMenu({
                       {link.label}
                     </a>
                     {link.items ? (
-                      <ul className="mt-5 flex max-w-xl flex-wrap justify-center gap-x-5 gap-y-3 text-sm font-semibold uppercase text-white/60">
+                      <ul className="mt-heading-body-sm flex max-w-xl flex-wrap justify-center inline-gap-med text-sm font-semibold uppercase text-white/60">
                         {link.items.map((item) => (
                           <li key={item}>
                             <a
@@ -118,10 +118,10 @@ function ModalMenu({
                 ))}
               </ul>
 
-              <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
+              <div className="mt-body-actions-lg flex flex-wrap items-center justify-center inline-gap-sml">
                 <a
                   className={cx(
-                    "radius-medium",
+                    "radius-button",
                     "inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 whitespace-nowrap border border-white/25 bg-transparent px-5 text-sm font-semibold text-white transition-colors hover:border-white hover:text-white",
                   )}
                   href="tel:5550142250"
@@ -167,7 +167,7 @@ export function NavFloatingBentoSectionV2({
       )}
     >
       <nav aria-label="Floating bento v2 preview navigation">
-        <div className="pointer-events-none relative z-30 grid grid-cols-[1fr_auto_1fr] items-center px-8 py-3 max-lg:hidden">
+        <div className="pointer-events-none relative z-30 grid grid-cols-[1fr_auto_1fr] items-center px-[var(--site-grid-inset-inline)] py-[var(--inline-gap-active)] max-lg:hidden">
           <div className="pointer-events-auto col-start-1 flex justify-self-start">
             <FloatingLogo label={logoLabel} />
           </div>
@@ -175,7 +175,7 @@ export function NavFloatingBentoSectionV2({
           <ul
             className={cx(
               "type-text-sm",
-              "radius-medium",
+              "radius-surface",
               "pointer-events-auto col-start-2 flex min-h-12 items-center gap-1 border border-service-border bg-white/90 p-1 font-semibold text-service-ink shadow-service backdrop-blur-md",
             )}
           >
@@ -205,7 +205,7 @@ export function NavFloatingBentoSectionV2({
                         aria-controls={menuId}
                         aria-expanded={isOpen}
                         className={cx(
-                          "radius-4",
+                          "radius-button",
                           "flex h-10 cursor-pointer items-center gap-2 px-4 transition-colors hover:bg-service-surface hover:text-service-accent",
                         )}
                         type="button"
@@ -221,7 +221,7 @@ export function NavFloatingBentoSectionV2({
                           <motion.div
                             id={menuId}
                             className={cx(
-                              "radius-medium",
+                              "radius-surface",
                               "absolute left-0 top-[calc(100%+0.5rem)] z-40 w-56 border border-service-border bg-white p-2 shadow-service",
                             )}
                             initial={{
@@ -240,7 +240,7 @@ export function NavFloatingBentoSectionV2({
                                 <li key={item}>
                                   <a
                                     className={cx(
-                                      "radius-4",
+                                      "radius-button",
                                       "block cursor-pointer px-4 py-3 text-sm font-semibold text-service-ink transition-colors hover:bg-service-surface hover:text-service-accent",
                                     )}
                                     href="#"
@@ -257,7 +257,7 @@ export function NavFloatingBentoSectionV2({
                   ) : (
                     <a
                       className={cx(
-                        "radius-4",
+                        "radius-button",
                         "flex h-10 cursor-pointer items-center px-4 transition-colors hover:bg-service-surface hover:text-service-accent",
                       )}
                       href="#"
@@ -271,7 +271,7 @@ export function NavFloatingBentoSectionV2({
           </ul>
 
           <div className="pointer-events-auto col-start-3 flex justify-self-end">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center inline-gap-sml">
               <Button
                 className="gap-2 px-5"
                 href="tel:5550142250"
@@ -285,14 +285,14 @@ export function NavFloatingBentoSectionV2({
           </div>
         </div>
 
-        <div className="relative z-50 hidden items-center justify-between gap-4 px-8 py-3 max-lg:flex max-md:px-6">
+        <div className="relative z-50 hidden items-center justify-between inline-gap-med px-[var(--site-grid-inset-inline)] py-[var(--inline-gap-active)] max-lg:flex">
           <FloatingLogo label={logoLabel} />
 
           <button
             aria-controls="floating-bento-v2-nav-menu"
             aria-expanded={isMenuOpen}
             className={cx(
-              "radius-medium",
+              "radius-button",
               "flex min-h-12 cursor-pointer items-center gap-3 border border-service-border bg-white/90 px-5 text-sm font-semibold text-service-ink shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:text-service-accent",
             )}
             type="button"

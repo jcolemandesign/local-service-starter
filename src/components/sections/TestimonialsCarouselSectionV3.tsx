@@ -50,9 +50,9 @@ function TestimonialCardContent({ item }: { item: CarouselTestimonial }) {
       <blockquote className="type-text-xl wrap-pretty mx-auto font-medium text-service-ink">
         &quot;{item.quote}&quot;
       </blockquote>
-      <figcaption className="mt-12 max-md:mt-9">
+      <figcaption className="mt-body-actions-lg max-md:mt-body-actions-md">
         <p className="type-heading-md text-service-ink">{item.author}</p>
-        <p className="type-label mt-3 text-service-muted">
+        <p className="type-label mt-heading-body-sm text-service-muted">
           {item.city} | {item.service}
         </p>
       </figcaption>
@@ -94,17 +94,17 @@ export function TestimonialsCarouselSectionV3({
         >
           <div className="fluid-type-frame mx-auto w-full text-center">
             <p className="type-label text-service-accent">{eyebrow}</p>
-            <h2 className="type-heading-xl mx-auto mt-5 text-service-ink">
+            <h2 className="type-heading-xl mx-auto mt-eyebrow-heading-lg text-service-ink">
               {title}
             </h2>
-            <p className="type-text-lg wrap-pretty mx-auto mt-6 text-service-muted">
+            <p className="type-text-lg wrap-pretty mx-auto mt-heading-body-lg text-service-muted">
               {body}
             </p>
           </div>
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-5 col-start-2 max-lg:col-span-7 max-lg:col-start-1">
-          <div className="mt-16 flex items-center justify-center gap-8 max-lg:gap-5 max-md:mt-12 max-md:flex-wrap">
+          <div className="mt-body-actions-lg flex items-center justify-center inline-gap-xlrg max-md:flex-wrap">
             <SliderButton
               direction="previous"
               label="Show previous testimonial"
@@ -146,7 +146,7 @@ export function TestimonialsCarouselSectionV3({
 
               <div
                 aria-label="Testimonial slides"
-                className="mt-8 flex items-center justify-center gap-3"
+                className="mt-body-actions-sm flex items-center justify-center inline-gap-sml"
               >
                 {items.map((item, index) => {
                   const isActive = index === activeIndex;

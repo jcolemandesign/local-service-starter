@@ -127,7 +127,7 @@ export function HeroSplitFullHeightSectionV3({
               {body}
             </p>
             <div
-              className="mt-body-actions-md flex flex-wrap gap-4"
+              className="mt-body-actions-md flex flex-wrap inline-gap-med"
             >
               <Button href="#contact">
                 {primaryAction}
@@ -138,7 +138,7 @@ export function HeroSplitFullHeightSectionV3({
             </div>
             <ul
               className={cx(
-                "mt-12 grid grid-cols-3 gap-4 max-md:mt-8 max-md:grid-cols-1",
+                "mt-body-actions-lg grid grid-cols-3 card-grid-gap-med max-md:mt-body-actions-md max-md:grid-cols-1",
               )}
             >
               {stats.map((stat) => (

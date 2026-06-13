@@ -56,7 +56,7 @@ export function ServicesThreeCardsRightSectionV3({
             key={card.title}
             measure="copyWide"
           >
-            <article className="flex h-full flex-col justify-between gap-8">
+            <article className="flex h-full flex-col justify-between layout-gap-lrg">
               <h3 className="type-heading-sm text-service-ink">
                 {card.title}
               </h3>

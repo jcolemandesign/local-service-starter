@@ -56,10 +56,10 @@ export function ContentStickyImagePanelSectionV3({
                 </p>
               </div>
 
-              <ul className="mt-8 grid card-grid-gap-sml">
+              <ul className="mt-body-actions-md grid card-grid-gap-sml">
                 {points.map((point) => (
                   <li
-                    className="type-caption flex items-center justify-between gap-4 border-t border-service-border pt-3 text-service-muted"
+                    className="type-caption flex items-center justify-between inline-gap-med border-t border-service-border pt-[var(--inline-gap-active)] text-service-muted"
                     key={point}
                   >
                     <span>{point}</span>

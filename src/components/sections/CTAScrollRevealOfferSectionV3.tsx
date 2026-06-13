@@ -80,16 +80,16 @@ export function CTAScrollRevealOfferSectionV3({
               <p className="type-text-xl wrap-pretty mt-display-body text-white/78">
                 {offerBody}
               </p>
-              <div className="mt-body-actions-lg flex flex-wrap items-center gap-4">
+              <div className="mt-body-actions-lg flex flex-wrap items-center inline-gap-med">
                 <RequestServiceButton
                   className="border-white bg-white text-service-ink hover:bg-service-surface"
                   variant="secondary"
                 >
                   {action}
                 </RequestServiceButton>
-                <p className="type-caption max-w-xs text-white/64">
-                  {offerDetail}
-                </p>
+              <p className="type-caption max-w-xs text-white/64">
+                {offerDetail}
+              </p>
               </div>
             </motion.div>
           </SevenColumnGridItem>

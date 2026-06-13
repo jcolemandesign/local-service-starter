@@ -33,11 +33,11 @@ function TextMarqueeItems({
   return (
     <ul
       aria-hidden={hidden ? "true" : undefined}
-      className="flex shrink-0 items-center gap-6 px-3"
+      className="flex shrink-0 items-center inline-gap-lrg px-3"
     >
       {items.map((item) => (
         <li
-          className="type-label flex shrink-0 items-center gap-6 text-service-muted"
+          className="type-label flex shrink-0 items-center inline-gap-lrg text-service-muted"
           key={item}
         >
           <span>{item}</span>
@@ -58,7 +58,7 @@ function LogoTrack({
   return (
     <ul
       aria-hidden={hidden ? "true" : undefined}
-      className="flex shrink-0 items-center gap-5 px-2"
+      className="flex shrink-0 items-center inline-gap-med px-2"
     >
       {logos.map((logo) => (
         <li className="w-60 shrink-0 max-lg:w-52 max-md:w-44" key={logo}>
@@ -86,7 +86,7 @@ export function TrustBarSectionV3({ items, label }: TrustItemsProps) {
           className="content-padding-y col-span-4 col-start-4 border-y border-service-border max-lg:col-span-7 max-lg:col-start-1 max-lg:border-t-0 max-lg:pt-0"
           alignY="middle"
         >
-          <ul className="grid grid-cols-4 gap-4 max-md:grid-cols-2 max-sm:grid-cols-1">
+          <ul className="grid grid-cols-4 card-grid-gap-med max-md:grid-cols-2 max-sm:grid-cols-1">
             {items.map((item) => (
               <li
                 className="type-text-sm wrap-pretty font-medium text-service-muted"
