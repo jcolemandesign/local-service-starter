@@ -146,7 +146,7 @@ const collections = sectionLibraryV3Collections.map((collection) => ({
 
 export default function SectionsV3Page() {
   return (
-    <main className="bg-white">
+    <main className="bg-bg-page">
       <section className="section-space-sml bg-service-ink text-white">
         <Container>
           <p className="type-label text-white/65">
