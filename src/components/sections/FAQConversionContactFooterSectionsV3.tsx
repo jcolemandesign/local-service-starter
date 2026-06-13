@@ -235,7 +235,7 @@ export function CTASectionV3({ action, body, title }: CTASectionV3Props) {
           className="col-span-2 col-start-6 max-lg:col-span-7 max-lg:col-start-1 max-lg:justify-items-start"
         >
           <RequestServiceButton
-            className="radius-4 shrink-0 border-white bg-white text-service-ink hover:bg-service-surface"
+            className="shrink-0 border-white bg-white text-service-ink hover:bg-service-surface"
             variant="secondary"
           >
             {action}
@@ -282,7 +282,7 @@ export function CTAFullscreenSectionV3({
         >
           <div className="flex w-full justify-center">
             <RequestServiceButton
-              className="radius-4 w-auto max-w-max shrink-0 border-white bg-white text-service-ink hover:bg-service-surface"
+              className="w-auto max-w-max shrink-0 border-white bg-white text-service-ink hover:bg-service-surface"
               variant="secondary"
             >
               {action}
@@ -351,7 +351,7 @@ export function ContactSectionV3({
                 />
               </label>
               <button
-                className="radius-4 type-label min-h-12 cursor-pointer bg-service-accent px-6 text-white transition-colors hover:bg-service-ink"
+                className="radius-button type-label min-h-12 cursor-pointer bg-service-accent px-6 text-white transition-colors hover:bg-service-ink"
                 type="button"
               >
                 Submit preview

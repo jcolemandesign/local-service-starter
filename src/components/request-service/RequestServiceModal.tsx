@@ -258,7 +258,7 @@ function OptionButton({
 }) {
   return (
     <button
-      className={`min-h-12 cursor-pointer rounded-md border px-4 py-3 text-left text-sm font-semibold transition-colors ${
+      className={`radius-button min-h-12 cursor-pointer border px-4 py-3 text-left text-sm font-semibold transition-colors ${
         isSelected
           ? "border-service-accent bg-service-accent text-white"
           : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent"
@@ -344,7 +344,7 @@ export function RequestServiceButton({
 
   return (
     <button
-      className={`inline-flex min-h-12 cursor-pointer items-center justify-center whitespace-nowrap rounded-md px-6 text-sm font-semibold transition-colors ${styles} ${className}`}
+      className={`radius-button inline-flex min-h-12 cursor-pointer items-center justify-center whitespace-nowrap px-6 text-sm font-semibold transition-colors ${styles} ${className}`}
       type="button"
       onClick={(event) => {
         onClick?.(event);
@@ -671,7 +671,7 @@ function RequestServiceModal({
           </div>
           <button
             aria-label="Close request service modal"
-            className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-md border border-service-border bg-white text-xl leading-none text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+            className="radius-button flex size-11 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-white text-xl leading-none text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
             type="button"
             onClick={onClose}
           >
@@ -886,7 +886,7 @@ function RequestServiceModal({
 
               <div className="flex shrink-0 items-center justify-between gap-3 border-t border-service-border px-6 py-5 max-md:px-5">
           <button
-            className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-md border border-service-border bg-white px-5 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-45"
+            className="radius-button inline-flex min-h-12 cursor-pointer items-center justify-center border border-service-border bg-white px-5 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-45"
             disabled={step === 1 || isSubmitting}
             type="button"
             onClick={() => setStep((currentStep) => Math.max(1, currentStep - 1))}
@@ -896,7 +896,7 @@ function RequestServiceModal({
 
           {step < 3 ? (
             <button
-              className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-md bg-service-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-not-allowed disabled:bg-service-muted"
+              className="radius-button inline-flex min-h-12 cursor-pointer items-center justify-center bg-service-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-not-allowed disabled:bg-service-muted"
               disabled={!canContinue}
               type="button"
               onClick={() => setStep((currentStep) => currentStep + 1)}
@@ -905,7 +905,7 @@ function RequestServiceModal({
             </button>
           ) : (
             <button
-              className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-md bg-service-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-wait disabled:bg-service-muted"
+              className="radius-button inline-flex min-h-12 cursor-pointer items-center justify-center bg-service-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-wait disabled:bg-service-muted"
               disabled={!canContinue || isSubmitting}
               type="button"
               onClick={handleSubmit}
