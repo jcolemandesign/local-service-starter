@@ -30,6 +30,7 @@ import {
   sectionLibraryV3Collections,
   sectionLibraryV3Content,
 } from "@/content/section-library-v3";
+import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 
 export const metadata: Metadata = {
   title: "Section Library",
@@ -146,22 +147,24 @@ const collections = sectionLibraryV3Collections.map((collection) => ({
 
 export default function SectionsV3Page() {
   return (
-    <main className="bg-bg-page">
-      <section className="section-space-sml bg-service-ink text-white">
-        <Container>
-          <p className="type-label text-white/65">
-            Internal preview
-          </p>
-          <h1 className="type-display-lg mt-eyebrow-display">
-            Section Library
-          </h1>
-          <p className="type-text-xl measure-copy wrap-pretty mt-display-body text-white/75">
-            Current seven-column section templates for the local service starter.
-          </p>
-        </Container>
-      </section>
+    <StyleGuidePreviewSurface>
+      <main className="bg-bg-page">
+        <section className="section-space-sml bg-service-ink text-white">
+          <Container>
+            <p className="type-label text-white/65">
+              Internal preview
+            </p>
+            <h1 className="type-display-lg mt-eyebrow-display">
+              Section Library
+            </h1>
+            <p className="type-text-xl measure-copy wrap-pretty mt-display-body text-white/75">
+              Current seven-column section templates for the local service starter.
+            </p>
+          </Container>
+        </section>
 
-      <SectionLibraryV3Accordions collections={collections} />
-    </main>
+        <SectionLibraryV3Accordions collections={collections} />
+      </main>
+    </StyleGuidePreviewSurface>
   );
 }
