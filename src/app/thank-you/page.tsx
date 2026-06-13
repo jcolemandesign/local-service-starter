@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { Container, Section } from "@/components/primitives";
+import { Button, Container, Section } from "@/components/primitives";
+import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 
 export const metadata: Metadata = {
   title: "Thank You | Local Service Starter",
@@ -9,29 +9,28 @@ export const metadata: Metadata = {
 
 export default function ThankYouPage() {
   return (
-    <main className="min-h-screen bg-service-surface text-service-ink">
-      <Section>
-        <Container>
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-widest text-service-accent">
-              Request received
-            </p>
-            <h1 className="mt-4 text-fluid-heading font-semibold leading-heading">
-              Thank you. Your service request has been sent.
-            </h1>
-            <p className="mt-6 text-lg leading-8 text-service-muted">
-              A team member can review the details and follow up using the
-              contact information provided.
-            </p>
-            <Link
-              className="mt-9 inline-flex min-h-12 items-center justify-center rounded-md bg-service-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-service-ink"
-              href="/"
-            >
-              Back to home
-            </Link>
-          </div>
-        </Container>
-      </Section>
-    </main>
+    <StyleGuidePreviewSurface>
+      <main className="min-h-screen bg-bg-page text-service-ink">
+        <Section>
+          <Container>
+            <div className="measure-copy-wide fluid-type-frame">
+              <p className="type-label text-service-accent">
+                Request received
+              </p>
+              <h1 className="type-heading-xl mt-eyebrow-heading-lg">
+                Thank you. Your service request has been sent.
+              </h1>
+              <p className="type-text-lg wrap-pretty mt-heading-body-lg text-service-muted">
+                A team member can review the details and follow up using the
+                contact information provided.
+              </p>
+              <Button className="mt-body-actions-lg" href="/">
+                Back to home
+              </Button>
+            </div>
+          </Container>
+        </Section>
+      </main>
+    </StyleGuidePreviewSurface>
   );
 }
