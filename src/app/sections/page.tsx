@@ -1,14 +1,6 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/primitives";
 import {
-  ContentFixedCoverFadeSectionV2,
-  ContentHorizontalCardCarouselSectionV2,
-  ContentRevealParagraphSectionV2,
-  ContentRuleHeaderSectionV2,
-  ContentScrollWrittenRevealSectionV2,
-  ContentSplitHeadlineImageSectionV2,
-  ContentStickyCardStreamSectionV2,
-  ContentStickyIdeasSectionV2,
   ContentStickyImagePanelSectionV3,
   ContactSectionV3,
   CTAFullscreenSectionV3,
@@ -19,13 +11,7 @@ import {
   FeatureOverlapRowsSectionV3,
   FeaturePortraitParagraphSectionV3,
   FooterSectionV3,
-  HeroCenteredFloatersSectionV2,
-  HeroContentTopImageBottomSectionV2,
-  HeroFullscreenSectionV2,
-  HeroGridMosaicSectionV2,
-  HeroImageTopContentBottomSectionV2,
   HeroSplitFullHeightSectionV3,
-  HeroStackedHeaderImageSectionV2,
   ProcessImageChecklistSectionV3,
   ProcessStepsSectionV3,
   SectionLibraryV3Accordions,
@@ -52,86 +38,9 @@ export const metadata: Metadata = {
 };
 
 const sectionElements = {
-  "hero-centered-floaters-v2": (
-    <HeroCenteredFloatersSectionV2
-      {...sectionLibraryV3Content.hero}
-      headingLevel={2}
-    />
-  ),
-  "hero-fullscreen-v2": (
-    <HeroFullscreenSectionV2
-      {...sectionLibraryV3Content.heroFullscreen}
-      headingLevel={2}
-    />
-  ),
-  "hero-grid-mosaic-v2": (
-    <HeroGridMosaicSectionV2
-      {...sectionLibraryV3Content.heroGridMosaic}
-      headingLevel={2}
-    />
-  ),
-  "hero-content-top-image-bottom-v2": (
-    <HeroContentTopImageBottomSectionV2
-      {...sectionLibraryV3Content.hero}
-      headingLevel={2}
-    />
-  ),
-  "hero-image-top-content-bottom-v2": (
-    <HeroImageTopContentBottomSectionV2
-      {...sectionLibraryV3Content.hero}
-      headingLevel={2}
-    />
-  ),
-  "hero-stacked-header-image-v2": (
-    <HeroStackedHeaderImageSectionV2
-      {...sectionLibraryV3Content.hero}
-      headingLevel={2}
-      title="Reliable Home Services Delivered"
-    />
-  ),
-  "content-rule-header-v2": (
-    <ContentRuleHeaderSectionV2
-      {...sectionLibraryV3Content.contentRuleHeader}
-    />
-  ),
-  "content-reveal-v2": (
-    <ContentRevealParagraphSectionV2
-      {...sectionLibraryV3Content.contentRevealParagraph}
-    />
-  ),
-  "content-scroll-written-reveal-v2": (
-    <ContentScrollWrittenRevealSectionV2
-      {...sectionLibraryV3Content.contentScrollWrittenReveal}
-    />
-  ),
-  "content-sticky-ideas-v2": (
-    <ContentStickyIdeasSectionV2
-      {...sectionLibraryV3Content.contentStickyIdeas}
-    />
-  ),
-  "content-sticky-card-stream-v2": (
-    <ContentStickyCardStreamSectionV2
-      {...sectionLibraryV3Content.contentStickyCardStream}
-    />
-  ),
-  "content-horizontal-card-carousel-v2": (
-    <ContentHorizontalCardCarouselSectionV2
-      {...sectionLibraryV3Content.contentHorizontalCardCarousel}
-    />
-  ),
   "content-sticky-image-panel-v3": (
     <ContentStickyImagePanelSectionV3
       {...sectionLibraryV3Content.contentStickyImagePanel}
-    />
-  ),
-  "content-fixed-cover-fade-v2": (
-    <ContentFixedCoverFadeSectionV2
-      {...sectionLibraryV3Content.contentFixedCoverFade}
-    />
-  ),
-  "content-split-headline-image-v2": (
-    <ContentSplitHeadlineImageSectionV2
-      {...sectionLibraryV3Content.contentSplitHeadlineImage}
     />
   ),
   "feature-portrait-paragraph-v3": (

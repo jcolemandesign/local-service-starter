@@ -860,30 +860,6 @@ export const sectionLibraryV3Collections = [
         label: "Split content and image",
         component: "hero-split-full-height-v3",
       },
-      {
-        label: "Centered with left right floaters",
-        component: "hero-centered-floaters-v2",
-      },
-      {
-        label: "Fullscreen image hero",
-        component: "hero-fullscreen-v2",
-      },
-      {
-        label: "Grid mosaic hero",
-        component: "hero-grid-mosaic-v2",
-      },
-      {
-        label: "Content top image bottom",
-        component: "hero-content-top-image-bottom-v2",
-      },
-      {
-        label: "Image top content bottom",
-        component: "hero-image-top-content-bottom-v2",
-      },
-      {
-        label: "Stacked header and image",
-        component: "hero-stacked-header-image-v2",
-      },
     ],
   },
   {
@@ -911,32 +887,9 @@ export const sectionLibraryV3Collections = [
   {
     title: "Effects",
     items: [
-      { label: "Rule header content", component: "content-rule-header-v2" },
-      { label: "Reveal paragraph", component: "content-reveal-v2" },
-      {
-        label: "Scroll-written reveal paragraph",
-        component: "content-scroll-written-reveal-v2",
-      },
-      { label: "Sticky ideas content", component: "content-sticky-ideas-v2" },
-      {
-        label: "Sticky card stream content",
-        component: "content-sticky-card-stream-v2",
-      },
-      {
-        label: "Horizontal card carousel content",
-        component: "content-horizontal-card-carousel-v2",
-      },
       {
         label: "Sticky image panel content",
         component: "content-sticky-image-panel-v3",
-      },
-      {
-        label: "Bottom section slide up",
-        component: "content-fixed-cover-fade-v2",
-      },
-      {
-        label: "Split headline image content",
-        component: "content-split-headline-image-v2",
       },
     ],
   },
