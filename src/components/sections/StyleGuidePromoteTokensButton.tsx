@@ -56,7 +56,7 @@ export function StyleGuidePromoteTokensButton() {
         onClick={promoteTokens}
         type="button"
       >
-        {isPromoting ? "Promoting" : "Promote Tokens"}
+        {isPromoting ? "Promoting" : "Promote Style Guide"}
       </button>
     </div>
   );

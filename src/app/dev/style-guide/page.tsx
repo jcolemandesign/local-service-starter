@@ -1105,6 +1105,7 @@ export default function StyleGuidePage() {
         </div>
 
         <div className="ml-auto flex shrink-0 items-center gap-3 border-l border-service-border pl-5">
+          <StyleGuidePromoteTokensButton />
           <span className="type-caption font-semibold uppercase text-service-muted">
             Preview pages
           </span>
@@ -1588,7 +1589,6 @@ export default function StyleGuidePage() {
       >
         <div className="mb-6 flex flex-wrap items-center justify-end inline-gap-sml">
           <StyleGuideColorResetButton />
-          <StyleGuidePromoteTokensButton />
         </div>
 
         <SevenColumnGrid minHeight="none" padding="none">
