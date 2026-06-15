@@ -1,5 +1,12 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import {
+  type CapitalizationStyle,
+  type TypeRole,
+  type WrapMode,
+  fontStacks,
+  typePalettes,
+} from "@/content/type-palettes";
 
 export const runtime = "nodejs";
 
@@ -45,12 +52,18 @@ type StyleGuideTokenDraft = {
   shadowBlur: number;
   shadowColor: string;
   shadowAlpha: number;
+  typeCustomFont: string;
+  typeGlobalFont: string;
+  typeRoleOverrides: Record<string, string>;
+  typeRoles: TypeRole[];
 };
 
 const globalsPath = path.join(process.cwd(), "src", "app", "globals.css");
 const beginMarker = "/* BEGIN PAGEWORKS STYLEGUIDE TOKEN OVERRIDES */";
 const endMarker = "/* END PAGEWORKS STYLEGUIDE TOKEN OVERRIDES */";
 const colorPattern = /^#[0-9a-fA-F]{6}$/;
+const defaultTypeRoles = typePalettes[0].roles;
+const allowedFontStacks = new Set<string>(Object.values(fontStacks));
 
 export async function POST(request: Request) {
   if (
@@ -173,8 +186,8 @@ function normalizeTokens(tokens: Partial<StyleGuideTokenDraft> | undefined) {
     activeSemanticSpacingScale: normalizeNumber(
       tokens.activeSemanticSpacingScale,
       "semantic spacing scale",
-      0.75,
-      1.35,
+      0.5,
+      1.5,
     ),
     activeContentFrameValue: normalizeSpacingValue(
       tokens.activeContentFrameValue,
@@ -201,6 +214,10 @@ function normalizeTokens(tokens: Partial<StyleGuideTokenDraft> | undefined) {
     shadowBlur: normalizeNumber(tokens.shadowBlur, "shadow blur", 0, 80),
     shadowColor: normalizeColor(tokens.shadowColor, "shadow"),
     shadowAlpha: normalizeNumber(tokens.shadowAlpha, "shadow alpha", 0, 0.25),
+    typeCustomFont: normalizeFontFamilyName(tokens.typeCustomFont),
+    typeGlobalFont: normalizeFontChoice(tokens.typeGlobalFont, false),
+    typeRoleOverrides: normalizeTypeRoleOverrides(tokens.typeRoleOverrides),
+    typeRoles: normalizeTypeRoles(tokens.typeRoles),
   };
 }
 
@@ -225,10 +242,23 @@ function normalizeNumber(
   return Math.min(max, Math.max(min, value));
 }
 
+function normalizeOptionalNumber(
+  value: unknown,
+  fallback: number,
+  min: number,
+  max: number,
+) {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return fallback;
+  }
+
+  return Math.min(max, Math.max(min, value));
+}
+
 function normalizeBorderWidth(value: unknown) {
   if (
     typeof value !== "string" ||
-    !/^(0|0\.5|1|2)px$/.test(value)
+    !/^(0|0\.5|1|2|3)px$/.test(value)
   ) {
     throw new Error("Invalid border width.");
   }
@@ -266,6 +296,197 @@ function normalizeSectionMinValue(value: unknown) {
   return value;
 }
 
+function normalizeWrap(value: unknown, fallback: WrapMode) {
+  return value === "balance" || value === "pretty" || value === "wrap"
+    ? value
+    : fallback;
+}
+
+function normalizeCapitalization(
+  value: unknown,
+  fallback: CapitalizationStyle,
+) {
+  return value === "none" ||
+    value === "uppercase" ||
+    value === "lowercase" ||
+    value === "capitalize"
+    ? value
+    : fallback;
+}
+
+function normalizeFontFamilyName(value: unknown) {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  return value.replace(/[";{}]/g, "").trim().slice(0, 80);
+}
+
+function normalizeFontChoice(value: unknown, allowGlobal: boolean) {
+  if (allowGlobal && value === "global") {
+    return "global";
+  }
+
+  if (typeof value !== "string") {
+    return typePalettes[0].globalFont;
+  }
+
+  if (value === "custom") {
+    return "custom";
+  }
+
+  if (allowedFontStacks.has(value)) {
+    return value;
+  }
+
+  if (value.startsWith("local:")) {
+    const family = normalizeFontFamilyName(value.replace("local:", ""));
+
+    return family ? `local:${family}` : typePalettes[0].globalFont;
+  }
+
+  return typePalettes[0].globalFont;
+}
+
+function normalizeTypeRoleOverrides(value: unknown) {
+  const overrides: Record<string, string> = {};
+
+  if (!value || typeof value !== "object") {
+    return overrides;
+  }
+
+  const overrideRecord = value as Record<string, unknown>;
+
+  for (const role of defaultTypeRoles) {
+    const override = overrideRecord[role.id];
+
+    if (override !== undefined) {
+      overrides[role.id] = normalizeFontChoice(override, true);
+    }
+  }
+
+  return overrides;
+}
+
+function normalizeTypeRoles(value: unknown) {
+  const roleInputs = Array.isArray(value) ? value : [];
+  const roleInputMap = new Map<string, Record<string, unknown>>();
+
+  for (const roleInput of roleInputs) {
+    if (!roleInput || typeof roleInput !== "object") {
+      continue;
+    }
+
+    const roleRecord = roleInput as Record<string, unknown>;
+
+    if (typeof roleRecord.id === "string") {
+      roleInputMap.set(roleRecord.id, roleRecord);
+    }
+  }
+
+  return defaultTypeRoles.map((role) => {
+    const roleInput = roleInputMap.get(role.id);
+
+    if (!roleInput) {
+      return { ...role };
+    }
+
+    return {
+      ...role,
+      capitalization: normalizeCapitalization(
+        roleInput.capitalization,
+        role.capitalization,
+      ),
+      letterSpacingEm: normalizeOptionalNumber(
+        roleInput.letterSpacingEm,
+        role.letterSpacingEm,
+        -0.12,
+        0.18,
+      ),
+      lineHeight: normalizeOptionalNumber(
+        roleInput.lineHeight,
+        role.lineHeight,
+        0.8,
+        2,
+      ),
+      maxRem: normalizeOptionalNumber(roleInput.maxRem, role.maxRem, 0.5, 9),
+      measureCh: normalizeOptionalNumber(
+        roleInput.measureCh,
+        role.measureCh,
+        14,
+        90,
+      ),
+      minRem: normalizeOptionalNumber(roleInput.minRem, role.minRem, 0.5, 8),
+      weight: normalizeOptionalNumber(roleInput.weight, role.weight, 300, 900),
+      wrap: normalizeWrap(roleInput.wrap, role.wrap),
+    };
+  });
+}
+
+const numberFormat = new Intl.NumberFormat("en-US", {
+  maximumFractionDigits: 4,
+});
+
+function formatNumber(value: number) {
+  return numberFormat.format(value);
+}
+
+function clampExpression(minRem: number, maxRem: number) {
+  const minContainerRem = 24;
+  const maxContainerRem = 96;
+  const slope = (maxRem - minRem) / (maxContainerRem - minContainerRem);
+  const cqw = slope * 100;
+  const intercept = minRem - slope * minContainerRem;
+
+  return `clamp(${formatNumber(minRem)}rem, calc(${formatNumber(
+    cqw,
+  )}cqw + ${formatNumber(intercept)}rem), ${formatNumber(maxRem)}rem)`;
+}
+
+function fontFamilyForValue(value: string, customFont: string) {
+  if (value.startsWith("local:")) {
+    const family = normalizeFontFamilyName(value.replace("local:", ""));
+
+    return family
+      ? `"${family.replaceAll('"', '\\"')}", ${typePalettes[0].globalFont}`
+      : typePalettes[0].globalFont;
+  }
+
+  if (value !== "custom") {
+    return value;
+  }
+
+  return customFont
+    ? `"${customFont.replaceAll('"', '\\"')}", ${typePalettes[0].globalFont}`
+    : typePalettes[0].globalFont;
+}
+
+function textTransformForRole(role: TypeRole) {
+  return role.capitalization === "none" ? "none" : role.capitalization;
+}
+
+function typeVariableLines(tokens: StyleGuideTokenDraft) {
+  return tokens.typeRoles.flatMap((role) => {
+    const override = tokens.typeRoleOverrides[role.id] ?? "global";
+    const fontFamily =
+      override === "global"
+        ? fontFamilyForValue(tokens.typeGlobalFont, tokens.typeCustomFont)
+        : fontFamilyForValue(override, tokens.typeCustomFont);
+    const prefix = `--type-${role.id}`;
+
+    return [
+      [`${prefix}-font`, fontFamily],
+      [`${prefix}-size`, clampExpression(role.minRem, role.maxRem)],
+      [`${prefix}-leading`, String(role.lineHeight)],
+      [`${prefix}-measure`, `${role.measureCh}ch`],
+      [`${prefix}-weight`, String(role.weight)],
+      [`${prefix}-tracking`, `${role.letterSpacingEm}em`],
+      [`${prefix}-wrap`, role.wrap === "wrap" ? "wrap" : role.wrap],
+      [`${prefix}-transform`, textTransformForRole(role)],
+    ].map(([name, tokenValue]) => `  ${name}: ${tokenValue};`);
+  });
+}
+
 function hexToRgbChannels(value: string) {
   const normalizedValue = value.replace("#", "");
   const red = Number.parseInt(normalizedValue.slice(0, 2), 16);
@@ -276,8 +497,26 @@ function hexToRgbChannels(value: string) {
 }
 
 function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
+  const serviceShadow = `${tokens.shadowX}px ${tokens.shadowY}px ${tokens.shadowBlur}px rgb(${hexToRgbChannels(tokens.shadowColor)} / ${tokens.shadowAlpha})`;
+  const typeVariables = typeVariableLines(tokens).join("\n");
+
   return `${beginMarker}
 :root {
+  --live-service-ink: ${tokens.serviceInk};
+  --live-service-muted: ${tokens.serviceMuted};
+  --live-service-accent: ${tokens.serviceAccent};
+  --live-service-surface: ${tokens.serviceSurface};
+  --live-service-border: ${tokens.serviceBorder};
+  --live-bg-page: ${tokens.bgPage};
+  --live-bg-surface: ${tokens.serviceSurface};
+  --live-bg-muted: ${tokens.serviceBorder};
+  --live-bg-dark: ${tokens.bgDark};
+  --live-text-main: ${tokens.serviceInk};
+  --live-text-muted: ${tokens.serviceMuted};
+  --live-text-accent: ${tokens.serviceAccent};
+  --live-border-default: ${tokens.serviceBorder};
+  --live-accent: ${tokens.accent};
+  --live-shadow-service: ${serviceShadow};
   --color-service-ink: ${tokens.serviceInk};
   --color-service-muted: ${tokens.serviceMuted};
   --color-service-accent: ${tokens.serviceAccent};
@@ -322,7 +561,8 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --site-grid-inset-block: ${tokens.activeSiteGridFrameBlock};
   --site-grid-inset-inline: ${tokens.activeSiteGridFrameInline};
   --site-grid-gap: ${tokens.activeSiteGridGapValue};
-  --shadow-service: ${tokens.shadowX}px ${tokens.shadowY}px ${tokens.shadowBlur}px rgb(${hexToRgbChannels(tokens.shadowColor)} / ${tokens.shadowAlpha});
+  --shadow-service: ${serviceShadow};
+${typeVariables}
 }
 ${endMarker}`;
 }

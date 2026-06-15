@@ -1174,6 +1174,42 @@ export default function StyleGuidePage() {
             </div>
           </div>
 
+          <div className="radius-medium overflow-visible border border-service-border bg-service-surface p-4">
+            <SevenColumnGrid minHeight="none" padding="none">
+              {columnNicknameExamples.map((item) => (
+                <SevenColumnGridItem
+                  className={cx(
+                    item.spanClass,
+                    item.rowClass,
+                    "overflow-visible max-lg:row-auto max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
+                  )}
+                  key={item.name}
+                >
+                  <div className="radius-medium min-h-12 overflow-visible border border-service-border bg-white">
+                    <div
+                      className={cx(
+                        "flex min-h-12 items-center gap-3 px-4 py-3",
+                        item.allowOverflow
+                          ? "w-max max-w-none flex-nowrap whitespace-nowrap max-lg:w-auto max-lg:flex-wrap max-lg:whitespace-normal"
+                          : "max-md:flex-wrap",
+                      )}
+                    >
+                      <span className="type-label shrink-0 text-service-accent">
+                        {item.name}
+                      </span>
+                      <span className="type-caption shrink-0 font-semibold text-service-ink">
+                        {item.span}
+                      </span>
+                      <span className="type-caption min-w-0 text-service-muted">
+                        {item.examples}
+                      </span>
+                    </div>
+                  </div>
+                </SevenColumnGridItem>
+              ))}
+            </SevenColumnGrid>
+          </div>
+
           <SevenColumnGrid minHeight="none" padding="none">
             <SevenColumnGridItem className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
               <StyleGuideSectionMinControl
@@ -1259,42 +1295,6 @@ export default function StyleGuidePage() {
                   </div>
                 </div>
               </SevenColumnGridItem>
-            </SevenColumnGrid>
-          </div>
-
-          <div className="radius-medium overflow-visible border border-service-border bg-service-surface p-4">
-            <SevenColumnGrid minHeight="none" padding="none">
-              {columnNicknameExamples.map((item) => (
-                <SevenColumnGridItem
-                  className={cx(
-                    item.spanClass,
-                    item.rowClass,
-                    "overflow-visible max-lg:row-auto max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
-                  )}
-                  key={item.name}
-                >
-                  <div className="radius-medium min-h-12 overflow-visible border border-service-border bg-white">
-                    <div
-                      className={cx(
-                        "flex min-h-12 items-center gap-3 px-4 py-3",
-                        item.allowOverflow
-                          ? "w-max max-w-none flex-nowrap whitespace-nowrap max-lg:w-auto max-lg:flex-wrap max-lg:whitespace-normal"
-                          : "max-md:flex-wrap",
-                      )}
-                    >
-                      <span className="type-label shrink-0 text-service-accent">
-                        {item.name}
-                      </span>
-                      <span className="type-caption shrink-0 font-semibold text-service-ink">
-                        {item.span}
-                      </span>
-                      <span className="type-caption min-w-0 text-service-muted">
-                        {item.examples}
-                      </span>
-                    </div>
-                  </div>
-                </SevenColumnGridItem>
-              ))}
             </SevenColumnGrid>
           </div>
 

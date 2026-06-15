@@ -69,12 +69,13 @@ function roleSpec(role: TypeRole) {
 }
 
 function roleForToken(roles: TypeRole[], tokenName: string) {
-  return roles.find((role) =>
-    role.token
-      .split("/")
-      .map((token) => token.trim())
-      .includes(tokenName),
-  );
+  const tokenNames = tokenName.split("/").map((token) => token.trim());
+
+  return roles.find((role) => {
+    const roleTokens = role.token.split("/").map((token) => token.trim());
+
+    return tokenNames.some((token) => roleTokens.includes(token));
+  });
 }
 
 function fontLabelForValue(value: string, localFontOptions: FontOption[] = []) {

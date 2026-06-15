@@ -3,8 +3,8 @@
 import { Card } from "@/components/primitives";
 import { useStyleGuideTokens } from "@/components/sections/StyleGuideLiveSurface";
 
-const minScale = 0.75;
-const maxScale = 1.35;
+const minScale = 0.5;
+const maxScale = 1.5;
 const defaultScale = 1;
 
 export function StyleGuideSemanticSpacingControl() {
