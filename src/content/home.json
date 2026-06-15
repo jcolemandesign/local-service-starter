@@ -27,15 +27,50 @@
           "description": "Review shared visual tokens and section defaults."
         },
         {
-          "label": "Styleguide sample page",
+          "label": "Type test",
+          "href": "/dev/type-test",
+          "description": "Review typography hierarchy, text measures, and wrapping behavior."
+        },
+        {
+          "label": "Style guide sample page",
           "href": "/dev/style-guide/previews/hvac-service",
           "description": "Review the live HVAC example page correlated with Style Guide tokens."
         }
       ]
     },
     {
-      "title": "Website Pages",
+      "title": "Website pages",
       "links": [
+        {
+          "label": "HVAC service",
+          "href": "/hvac-service",
+          "description": "Current public example service page using the shared section system."
+        },
+        {
+          "label": "Client intake",
+          "href": "/client-intake",
+          "description": "Choose an intake path for different local business types."
+        },
+        {
+          "label": "Home service intake",
+          "href": "/client-intake/home-services",
+          "description": "Intake flow for repair-first local service businesses."
+        },
+        {
+          "label": "Contractor intake",
+          "href": "/client-intake/contractors",
+          "description": "Intake flow for estimate, project, and larger job businesses."
+        },
+        {
+          "label": "Property service intake",
+          "href": "/client-intake/property-services",
+          "description": "Intake flow for recurring, upkeep, and route-based services."
+        },
+        {
+          "label": "Appointment-based intake",
+          "href": "/client-intake/appointment-based",
+          "description": "Intake flow for booking, visit, and appointment-led businesses."
+        },
         {
           "label": "Staged Pages",
           "href": "/dev/website-pages",

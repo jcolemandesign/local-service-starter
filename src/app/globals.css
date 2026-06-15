@@ -11,6 +11,7 @@
   --site-grid-inset-inline: clamp(1.5rem, 4vw, 8rem);
   --site-grid-inset-block: clamp(2rem, 4vw, 7rem);
   --site-grid-gap: clamp(0.75rem, 1vw, 1.5rem);
+  --site-grid-row-gap: clamp(2.5rem, 4vw, 4.5rem);
   --section-space-vsml: 2rem;
   --section-space-sml: 4rem;
   --section-space-med: 6rem;
@@ -138,7 +139,8 @@ body {
   }
 
   .site-grid-gap {
-    gap: var(--site-grid-gap);
+    column-gap: var(--site-grid-gap);
+    row-gap: var(--site-grid-row-gap);
   }
 
   .container-content {
