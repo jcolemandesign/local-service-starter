@@ -5,13 +5,16 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Card, Container, Section } from "@/components/primitives";
 import { createClient } from "@/utils/supabase/server";
-import { LeadDashboard, type Lead } from "./lead-dashboard";
+import {
+  ProjectIntakeDashboard,
+  type ProjectIntake,
+} from "../../dashboard/lead-dashboard";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Dashboard | Local Service Starter",
-  description: "Lead dashboard for local service website submissions.",
+  title: "Owner Dashboard | Local Service Starter",
+  description: "Internal dashboard for leads and client-intake submissions.",
 };
 
 const statusOptions = [
@@ -55,48 +58,48 @@ async function getAuthenticatedSupabase() {
   return supabase;
 }
 
-async function getLeads() {
+async function getProjectIntakes() {
   const supabase = await getAuthenticatedSupabase();
 
-  return supabase.from("leads").select("*").order("created_at", {
+  return supabase.from("project_intakes").select("*").order("created_at", {
     ascending: false,
   });
 }
 
-async function updateLead(formData: FormData) {
+async function updateProjectIntake(formData: FormData) {
   "use server";
 
   const supabase = await getAuthenticatedSupabase();
-  const leadId = getFormString(formData, "leadId");
+  const intakeId = getFormString(formData, "intakeId");
   const status = getFormString(formData, "status");
-  const notes = getFormString(formData, "notes");
 
-  if (!leadId || !statusOptions.includes(status)) {
-    redirect("/dashboard?save=error");
+  if (!intakeId || !statusOptions.includes(status)) {
+    redirect("/dev/dashboard?intakeSave=error");
   }
 
   const { error } = await supabase
-    .from("leads")
-    .update({
-      notes,
-      status,
-    })
-    .eq("id", leadId);
+    .from("project_intakes")
+    .update({ status })
+    .eq("id", intakeId);
 
   if (error) {
-    console.error("Supabase lead update failed", {
+    console.error("Supabase project intake update failed", {
       code: "code" in error ? error.code : undefined,
       details: "details" in error ? error.details : undefined,
       hint: "hint" in error ? error.hint : undefined,
-      leadId,
+      intakeId,
       message: error.message,
     });
 
-    redirect(`/dashboard?save=error&lead=${encodeURIComponent(leadId)}`);
+    redirect(
+      `/dev/dashboard?intakeSave=error&intake=${encodeURIComponent(intakeId)}`,
+    );
   }
 
-  revalidatePath("/dashboard");
-  redirect(`/dashboard?save=success&lead=${encodeURIComponent(leadId)}`);
+  revalidatePath("/dev/dashboard");
+  redirect(
+    `/dev/dashboard?intakeSave=success&intake=${encodeURIComponent(intakeId)}`,
+  );
 }
 
 async function logout() {
@@ -108,22 +111,28 @@ async function logout() {
   redirect("/login?loggedOut=1");
 }
 
-type DashboardPageProps = {
+type OwnerDashboardPageProps = {
   searchParams?: Promise<{
-    lead?: string | string[];
-    save?: string | string[];
+    intake?: string | string[];
+    intakeSave?: string | string[];
   }>;
 };
 
-export default async function DashboardPage({ searchParams }: DashboardPageProps) {
+export default async function OwnerDashboardPage({
+  searchParams,
+}: OwnerDashboardPageProps) {
   const params = await searchParams;
-  const saveState = typeof params?.save === "string" ? params.save : null;
-  const savedLeadId = typeof params?.lead === "string" ? params.lead : null;
-  const { data, error } = await getLeads();
-  const leads = Array.isArray(data) ? (data as Lead[]) : [];
-  const totalLeads = leads.length;
-  const newLeads = leads.filter((lead) => lead.status === "New").length;
-  const latestLeadDate = leads[0]?.created_at ?? null;
+  const intakeSaveState =
+    typeof params?.intakeSave === "string" ? params.intakeSave : null;
+  const savedIntakeId =
+    typeof params?.intake === "string" ? params.intake : null;
+  const { data, error } = await getProjectIntakes();
+  const projectIntakes = Array.isArray(data) ? (data as ProjectIntake[]) : [];
+  const totalIntakes = projectIntakes.length;
+  const newIntakes = projectIntakes.filter(
+    (intake) => intake.status === "New",
+  ).length;
+  const latestIntakeDate = projectIntakes[0]?.created_at ?? null;
 
   return (
     <main className="min-h-screen bg-bg-page text-service-ink">
@@ -139,9 +148,9 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
             <nav className="flex items-center inline-gap-med max-sm:w-full max-sm:flex-col max-sm:items-stretch">
               <Link
                 className="radius-button inline-flex min-h-12 items-center justify-center border border-service-border bg-white px-5 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-                href="/#contact"
+                href="/dashboard"
               >
-                View site
+                Client dashboard
               </Link>
               <form action={logout}>
                 <button
@@ -159,32 +168,34 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
       <Section className="pb-12">
         <Container>
           <p className="type-label text-service-accent">
-            Admin dashboard
+            Owner dashboard
           </p>
           <div className="mt-eyebrow-heading-lg grid layout-gap-xlrg max-lg:grid-cols-1 lg:grid-cols-[1fr_auto] lg:items-end">
             <div className="fluid-type-frame">
               <h1 className="type-heading-xl text-service-ink">
-                Website leads
+                Client intake submissions
               </h1>
               <p className="type-text-lg mt-heading-body-md text-service-muted">
-                Review incoming contact form submissions from Supabase and keep
-                follow-up notes current.
+                Review the project briefs submitted through the reusable client
+                intake flow.
               </p>
             </div>
             <Link
               className="radius-button inline-flex min-h-12 w-fit items-center justify-center border border-service-border bg-white px-6 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-              href="/#contact"
+              href="/client-intake"
+              rel="noreferrer"
+              target="_blank"
             >
-              View contact form
+              View intake flow
             </Link>
           </div>
 
           <div className="mt-body-actions-lg grid card-grid-gap-med max-md:grid-cols-1 md:grid-cols-3">
-            <DashboardStat label="Total leads" value={String(totalLeads)} />
-            <DashboardStat label="New leads" value={String(newLeads)} />
+            <DashboardStat label="Total intakes" value={String(totalIntakes)} />
+            <DashboardStat label="Needs review" value={String(newIntakes)} />
             <DashboardStat
-              label="Latest lead date"
-              value={formatDate(latestLeadDate)}
+              label="Latest intake date"
+              value={formatDate(latestIntakeDate)}
             />
           </div>
         </Container>
@@ -195,19 +206,19 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
           {error ? (
             <Card className="border-red-200 bg-red-50 p-[var(--container-gutter)] text-red-700">
               <h2 className="type-heading-md">
-                Could not load leads.
+                Could not load project intakes.
               </h2>
               <p className="type-text-md mt-heading-body-sm">{error.message}</p>
             </Card>
           ) : null}
 
           {!error ? (
-            <LeadDashboard
-              leads={leads}
-              savedLeadId={savedLeadId}
-              saveState={saveState}
+            <ProjectIntakeDashboard
+              intakeSaveState={intakeSaveState}
+              projectIntakes={projectIntakes}
+              savedIntakeId={savedIntakeId}
               statusOptions={statusOptions}
-              updateLead={updateLead}
+              updateProjectIntake={updateProjectIntake}
             />
           ) : null}
         </Container>

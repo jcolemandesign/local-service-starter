@@ -17,6 +17,11 @@
           "description": "Compose, swap, and review page section recipes."
         },
         {
+          "label": "Owner dashboard",
+          "href": "/dev/dashboard",
+          "description": "Internal view for reviewing leads and client-intake submissions."
+        },
+        {
           "label": "Content Editor",
           "href": "/dev/content-editor",
           "description": "Map page copy and image fields into editable content forms."
@@ -62,11 +67,6 @@
           "description": "Intake flow for estimate, project, and larger job businesses."
         },
         {
-          "label": "Property service intake",
-          "href": "/client-intake/property-services",
-          "description": "Intake flow for recurring, upkeep, and route-based services."
-        },
-        {
           "label": "Appointment-based intake",
           "href": "/client-intake/appointment-based",
           "description": "Intake flow for booking, visit, and appointment-led businesses."
@@ -84,7 +84,7 @@
         {
           "label": "Dashboard",
           "href": "/dashboard",
-          "description": "Lead dashboard route for authenticated workflows."
+          "description": "Reusable client-site lead dashboard route for authenticated workflows."
         },
         {
           "label": "Admin",

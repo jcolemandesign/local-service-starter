@@ -4,6 +4,13 @@ import { useMemo, useState } from "react";
 import { Card } from "@/components/primitives";
 
 type LeadValue = boolean | number | string | null | undefined;
+type JsonValue =
+  | boolean
+  | number
+  | string
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
 
 export type Lead = {
   id: number | string;
@@ -37,6 +44,24 @@ export type Lead = {
   [key: string]: LeadValue;
 };
 
+export type ProjectIntake = {
+  id: string;
+  business_name?: LeadValue;
+  business_type?: LeadValue;
+  contact_email?: LeadValue;
+  contact_name?: LeadValue;
+  contact_phone?: LeadValue;
+  created_at?: LeadValue;
+  main_services?: string[] | null;
+  payload?: JsonValue;
+  preferred_cta?: string[] | null;
+  priority_services?: LeadValue;
+  service_area?: LeadValue;
+  source?: LeadValue;
+  status?: LeadValue;
+  website?: LeadValue;
+};
+
 type SortOption =
   | "created_at"
   | "oldest"
@@ -44,16 +69,21 @@ type SortOption =
   | "status"
   | "urgency";
 
-type DashboardView = "all" | "booked";
+type DashboardView = "all" | "booked" | "intakes";
 
 type BookedTiming = "needs-date" | "upcoming" | "past";
 
 type LeadDashboardProps = {
+  intakeSaveState?: string | null;
   leads: Lead[];
+  projectIntakes?: ProjectIntake[];
+  savedIntakeId?: string | null;
   savedLeadId: string | null;
   saveState: string | null;
+  showProjectIntakes?: boolean;
   statusOptions: string[];
   updateLead: (formData: FormData) => void;
+  updateProjectIntake?: (formData: FormData) => void;
 };
 
 const urgencyOrder = [
@@ -96,25 +126,33 @@ const leadFields = {
 };
 
 const fieldClass =
-  "h-11 rounded-md border border-service-border bg-white px-3 text-base text-service-ink outline-none transition placeholder:text-service-muted/55 focus:border-service-accent focus:ring-4 focus:ring-service-accent/15";
+  "radius-button min-h-12 border border-service-border bg-white px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent";
 
 const filterFieldClass =
-  "h-11 rounded-md border border-service-border bg-white px-3 text-sm text-service-ink outline-none transition placeholder:text-service-muted/55 focus:border-service-accent focus:ring-4 focus:ring-service-accent/15";
+  "radius-button min-h-12 border border-service-border bg-white px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent";
 
 const labelClass =
-  "grid gap-2 text-sm font-semibold uppercase tracking-widest text-service-ink";
+  "grid gap-2 type-caption font-semibold text-service-ink";
 
 const secondaryButtonClass =
-  "inline-flex min-h-11 w-full items-center justify-center whitespace-nowrap rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-full sm:w-auto";
+  "radius-button inline-flex min-h-12 w-full items-center justify-center whitespace-nowrap border border-service-border bg-white px-5 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-full sm:w-auto";
 
 const primaryButtonClass =
-  "inline-flex min-h-11 w-full items-center justify-center whitespace-nowrap rounded-md bg-service-accent px-4 text-sm font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-full sm:w-auto";
+  "radius-button inline-flex min-h-12 w-full items-center justify-center whitespace-nowrap border border-service-accent bg-service-accent px-5 type-caption font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-full sm:w-auto";
 
 const compactSecondaryButtonClass =
-  "inline-flex min-h-10 w-full items-center justify-center whitespace-nowrap rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-full sm:w-auto";
+  "radius-button inline-flex min-h-12 w-full items-center justify-center whitespace-nowrap border border-service-border bg-white px-5 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-full sm:w-auto";
 
 const compactPrimaryButtonClass =
-  "inline-flex min-h-10 w-full items-center justify-center whitespace-nowrap rounded-md bg-service-accent px-4 text-sm font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-full sm:w-auto";
+  "radius-button inline-flex min-h-12 w-full items-center justify-center whitespace-nowrap border border-service-accent bg-service-accent px-5 type-caption font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-full sm:w-auto";
+
+const dashboardCardPaddingClass = "p-[var(--container-gutter)]";
+const dashboardPanelClass =
+  "radius-medium border border-service-border bg-service-surface p-[var(--container-gutter)]";
+const dashboardToggleClass =
+  "flex w-full cursor-pointer items-center justify-between border-t border-service-border pt-4 text-left type-label text-service-accent";
+const dashboardMutedLabelClass = "type-label text-service-muted";
+const dashboardAccentLabelClass = "type-label text-service-accent";
 
 const statusPillClassByStatus: Record<string, string> = {
   booked: "bg-green-600 text-white",
@@ -181,6 +219,14 @@ function displayValue(value: LeadValue) {
   }
 
   return String(value);
+}
+
+function displayStringList(value: string[] | null | undefined) {
+  if (!Array.isArray(value) || value.length === 0) {
+    return "Not provided";
+  }
+
+  return value.filter(Boolean).join(", ") || "Not provided";
 }
 
 function isBookedStatus(value: LeadValue) {
@@ -350,6 +396,55 @@ function exportLeadsToCsv(leads: Lead[]) {
   URL.revokeObjectURL(url);
 }
 
+function escapeProjectIntakeCsvValue(value: JsonValue | LeadValue | string[]) {
+  if (Array.isArray(value)) {
+    return escapeCsvValue(value.join(", "));
+  }
+
+  if (value && typeof value === "object") {
+    return escapeCsvValue(JSON.stringify(value));
+  }
+
+  return escapeCsvValue(value as LeadValue);
+}
+
+function exportProjectIntakesToCsv(projectIntakes: ProjectIntake[]) {
+  const columns: Array<keyof ProjectIntake> = [
+    "id",
+    "business_name",
+    "business_type",
+    "contact_name",
+    "contact_email",
+    "contact_phone",
+    "website",
+    "main_services",
+    "priority_services",
+    "service_area",
+    "preferred_cta",
+    "status",
+    "source",
+    "created_at",
+    "payload",
+  ];
+  const header = columns.map((column) => escapeCsvValue(column)).join(",");
+  const rows = projectIntakes.map((intake) =>
+    columns
+      .map((column) => escapeProjectIntakeCsvValue(intake[column]))
+      .join(","),
+  );
+  const csv = [header, ...rows].join("\r\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = `project-intakes-export-${formatFileDate(new Date())}.csv`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
 function compareText(a: string | null, b: string | null) {
   return (a ?? "").localeCompare(b ?? "");
 }
@@ -384,12 +479,42 @@ function matchesSearch(lead: Lead, searchTerm: string) {
   );
 }
 
+function matchesProjectIntake(intake: ProjectIntake, searchTerm: string) {
+  if (!searchTerm) {
+    return true;
+  }
+
+  const searchableFields = [
+    intake.business_name,
+    intake.business_type,
+    intake.contact_name,
+    intake.contact_email,
+    intake.contact_phone,
+    intake.website,
+    intake.priority_services,
+    intake.service_area,
+    intake.status,
+    intake.source,
+    displayStringList(intake.main_services),
+    displayStringList(intake.preferred_cta),
+  ];
+
+  return searchableFields.some((value) =>
+    String(value ?? "").toLowerCase().includes(searchTerm),
+  );
+}
+
 export function LeadDashboard({
+  intakeSaveState = null,
   leads,
+  projectIntakes = [],
+  savedIntakeId = null,
   savedLeadId,
   saveState,
+  showProjectIntakes = false,
   statusOptions,
   updateLead,
+  updateProjectIntake,
 }: LeadDashboardProps) {
   const [statusFilter, setStatusFilter] = useState("");
   const [urgencyFilter, setUrgencyFilter] = useState("");
@@ -547,12 +672,14 @@ export function LeadDashboard({
       <Card className="mb-6 border-0 bg-service-surface p-2 shadow-none">
         <div
           aria-label="Dashboard views"
-          className="grid gap-2 rounded-lg bg-service-surface max-md:grid-cols-1 md:grid-cols-2"
+          className={`grid gap-2 radius-medium bg-service-surface max-md:grid-cols-1 ${
+            showProjectIntakes ? "md:grid-cols-3" : "md:grid-cols-2"
+          }`}
           role="tablist"
         >
           <button
             aria-selected={activeView === "all"}
-            className={`min-h-12 cursor-pointer rounded-md px-5 text-left text-sm font-semibold transition-colors ${
+            className={`radius-button min-h-12 cursor-pointer px-5 text-left type-caption font-semibold transition-colors ${
               activeView === "all"
                 ? "bg-service-ink text-white"
                 : "bg-white text-service-ink hover:bg-service-surface"
@@ -565,7 +692,7 @@ export function LeadDashboard({
           </button>
           <button
             aria-selected={activeView === "booked"}
-            className={`min-h-12 cursor-pointer rounded-md px-5 text-left text-sm font-semibold transition-colors ${
+            className={`radius-button min-h-12 cursor-pointer px-5 text-left type-caption font-semibold transition-colors ${
               activeView === "booked"
                 ? "bg-service-ink text-white"
                 : "bg-white text-service-ink hover:bg-service-surface"
@@ -577,6 +704,24 @@ export function LeadDashboard({
             Booked jobs
             <span className="ml-2 text-current/65">({bookedLeads.length})</span>
           </button>
+          {showProjectIntakes ? (
+            <button
+              aria-selected={activeView === "intakes"}
+              className={`radius-button min-h-12 cursor-pointer px-5 text-left type-caption font-semibold transition-colors ${
+                activeView === "intakes"
+                  ? "bg-service-ink text-white"
+                  : "bg-white text-service-ink hover:bg-service-surface"
+              }`}
+              onClick={() => setActiveView("intakes")}
+              role="tab"
+              type="button"
+            >
+              Client intakes
+              <span className="ml-2 text-current/65">
+                ({projectIntakes.length})
+              </span>
+            </button>
+          ) : null}
         </div>
       </Card>
 
@@ -584,10 +729,20 @@ export function LeadDashboard({
         <BookedJobsView bookedCounts={bookedCounts} leads={bookedLeads} />
       ) : null}
 
+      {showProjectIntakes && updateProjectIntake && activeView === "intakes" ? (
+        <ProjectIntakeDashboard
+          intakeSaveState={intakeSaveState}
+          projectIntakes={projectIntakes}
+          savedIntakeId={savedIntakeId}
+          statusOptions={statusOptions}
+          updateProjectIntake={updateProjectIntake}
+        />
+      ) : null}
+
       {activeView === "all" ? (
         <>
-      <Card className="p-6">
-        <div className="grid gap-4 max-lg:grid-cols-2 max-md:grid-cols-1 lg:grid-cols-[1fr_0.7fr_0.7fr_0.8fr_0.7fr] lg:items-end">
+      <Card className={dashboardCardPaddingClass}>
+        <div className="grid card-grid-gap-med max-lg:grid-cols-2 max-md:grid-cols-1 lg:grid-cols-[1fr_0.7fr_0.7fr_0.8fr_0.7fr] lg:items-end">
           <label className={labelClass}>
             Search
             <input
@@ -634,7 +789,7 @@ export function LeadDashboard({
           </label>
         </div>
 
-        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-end">
+        <div className="mt-body-actions-sm flex flex-col inline-gap-med sm:flex-row sm:justify-end">
           <button
             className={compactSecondaryButtonClass}
             disabled={!hasActiveFilters}
@@ -660,35 +815,35 @@ export function LeadDashboard({
           </button>
         </div>
 
-        <p className="mt-5 text-sm font-semibold uppercase tracking-widest text-service-muted">
+        <p className="mt-heading-body-md type-label text-service-muted">
           Showing {visibleLeads.length} of {leads.length} leads
         </p>
       </Card>
 
       {leads.length === 0 ? (
-        <Card className="mt-6 p-8 text-center">
-          <h2 className="text-2xl font-semibold leading-tight text-service-ink">
+        <Card className="mt-body-actions-md p-[var(--container-gutter)] text-center">
+          <h2 className="type-heading-md text-service-ink">
             No leads yet
           </h2>
-          <p className="mt-3 text-base leading-7 text-service-muted">
+          <p className="type-text-md mx-auto mt-heading-body-sm text-service-muted">
             New website contact requests will appear here after they are saved.
           </p>
         </Card>
       ) : null}
 
       {leads.length > 0 && visibleLeads.length === 0 ? (
-        <Card className="mt-6 p-8 text-center">
-          <h2 className="text-2xl font-semibold leading-tight text-service-ink">
+        <Card className="mt-body-actions-md p-[var(--container-gutter)] text-center">
+          <h2 className="type-heading-md text-service-ink">
             No matching leads
           </h2>
-          <p className="mt-3 text-base leading-7 text-service-muted">
+          <p className="type-text-md mx-auto mt-heading-body-sm text-service-muted">
             Clear filters or adjust your search to see more submissions.
           </p>
         </Card>
       ) : null}
 
       {visibleLeads.length > 0 ? (
-        <div className="mt-6 grid gap-5">
+        <div className="mt-body-actions-md grid card-grid-gap-med">
           {visibleLeads.map((lead) => {
             const leadId = String(lead.id);
             const isDetailsOpen = openLeadIds.has(leadId);
@@ -696,15 +851,15 @@ export function LeadDashboard({
             const isBooked = isBookedStatus(status);
 
             return (
-              <Card className="p-6" key={lead.id}>
-                <div className="grid gap-4 max-lg:grid-cols-1 lg:grid-cols-[1fr_auto] lg:items-start">
+              <Card className={dashboardCardPaddingClass} key={lead.id}>
+                <div className="grid layout-gap-med max-lg:grid-cols-1 lg:grid-cols-[1fr_auto] lg:items-start">
                   <div>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <h2 className="text-2xl font-semibold leading-tight text-service-ink">
+                    <div className="flex flex-wrap items-center inline-gap-med">
+                      <h2 className="type-heading-md text-service-ink">
                         {displayValue(readLeadValue(lead, leadFields.name))}
                       </h2>
                       <span
-                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-semibold uppercase tracking-widest ${getStatusPillClass(status)}`}
+                        className={`radius-round inline-flex items-center gap-2 px-3 py-1 type-caption font-semibold ${getStatusPillClass(status)}`}
                       >
                         {isBooked ? (
                           <svg
@@ -725,11 +880,11 @@ export function LeadDashboard({
                         {displayValue(status)}
                       </span>
                     </div>
-                    <p className="mt-2 text-sm font-semibold uppercase tracking-widest text-service-muted">
+                    <p className="mt-heading-body-sm type-caption font-semibold text-service-muted">
                       {formatDate(lead.created_at)}
                     </p>
                   </div>
-                  <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
+                  <div className="flex flex-col inline-gap-med sm:flex-row lg:justify-end">
                     {readLeadText(lead, leadFields.phone) ? (
                       <a
                         className={primaryButtonClass}
@@ -751,7 +906,7 @@ export function LeadDashboard({
 
                 <button
                   aria-expanded={isDetailsOpen}
-                  className="mt-5 flex w-full cursor-pointer items-center justify-between border-t border-service-border pt-4 text-left text-sm font-semibold uppercase tracking-widest text-service-accent md:hidden"
+                  className={`${dashboardToggleClass} mt-heading-body-md md:hidden`}
                   onClick={() => toggleLeadDetails(leadId)}
                   type="button"
                 >
@@ -762,7 +917,7 @@ export function LeadDashboard({
                 </button>
 
                 <div
-                  className={`${isDetailsOpen ? "grid" : "hidden"} mt-5 gap-x-5 gap-y-4 border-t border-service-border pt-5 md:grid md:grid-cols-2 xl:grid-cols-4`}
+                  className={`${isDetailsOpen ? "grid" : "hidden"} mt-heading-body-md card-grid-gap-med border-t border-service-border pt-5 md:grid md:grid-cols-2 xl:grid-cols-4`}
                 >
                   <LeadDetail label="Phone" value={readLeadValue(lead, leadFields.phone)} />
                   <LeadDetail label="Email" value={readLeadValue(lead, leadFields.email)} />
@@ -802,19 +957,19 @@ export function LeadDashboard({
                 </div>
 
                 <div
-                  className={`${isDetailsOpen ? "block" : "hidden"} mt-5 rounded-lg border border-service-border bg-service-surface p-4 md:block`}
+                  className={`${isDetailsOpen ? "block" : "hidden"} mt-heading-body-md ${dashboardPanelClass} md:block`}
                 >
-                  <p className="text-sm font-semibold uppercase tracking-widest text-service-muted">
+                  <p className={dashboardMutedLabelClass}>
                     Description
                   </p>
-                  <p className="mt-2 text-base leading-7 text-service-muted">
+                  <p className="type-text-md mt-heading-body-sm text-service-muted">
                     {displayValue(readLeadValue(lead, leadFields.description))}
                   </p>
                 </div>
 
                 <form
                   action={updateLead}
-                  className="mt-5 grid gap-4 rounded-lg border border-service-border bg-service-surface p-4 max-lg:grid-cols-1 lg:grid-cols-[0.35fr_1fr_auto] lg:items-end"
+                  className={`mt-heading-body-md grid card-grid-gap-med ${dashboardPanelClass} max-lg:grid-cols-1 lg:grid-cols-[0.35fr_1fr_auto] lg:items-end`}
                 >
                   <input name="leadId" type="hidden" value={leadId} />
                   <label className={labelClass}>
@@ -850,12 +1005,12 @@ export function LeadDashboard({
                       Save
                     </button>
                     {savedLeadId === leadId && saveState === "success" ? (
-                      <p className="mt-2 text-sm font-semibold text-service-accent">
+                      <p className="type-caption mt-heading-body-sm font-semibold text-service-accent">
                         Lead saved.
                       </p>
                     ) : null}
                     {savedLeadId === leadId && saveState === "error" ? (
-                      <p className="mt-2 text-sm font-semibold text-red-700">
+                      <p className="type-caption mt-heading-body-sm font-semibold text-red-700">
                         Could not save.
                       </p>
                     ) : null}
@@ -868,7 +1023,7 @@ export function LeadDashboard({
       ) : null}
 
       <button
-        className="fixed bottom-5 right-5 z-40 inline-flex min-h-10 cursor-pointer items-center justify-center rounded-md border border-service-border bg-white/95 px-4 text-sm font-semibold text-service-ink shadow-service transition-colors hover:border-service-accent hover:text-service-accent"
+        className="radius-button fixed bottom-5 right-5 z-40 inline-flex min-h-12 cursor-pointer items-center justify-center border border-service-border bg-white/95 px-5 type-caption font-semibold text-service-ink shadow-service transition-colors hover:border-service-accent hover:text-service-accent"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         type="button"
       >
@@ -880,6 +1035,386 @@ export function LeadDashboard({
   );
 }
 
+export function ProjectIntakeDashboard({
+  intakeSaveState,
+  projectIntakes,
+  savedIntakeId,
+  statusOptions,
+  updateProjectIntake,
+}: {
+  intakeSaveState: string | null;
+  projectIntakes: ProjectIntake[];
+  savedIntakeId: string | null;
+  statusOptions: string[];
+  updateProjectIntake: (formData: FormData) => void;
+}) {
+  const [statusFilter, setStatusFilter] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"created_at" | "oldest" | "business">(
+    "created_at",
+  );
+  const [openIntakeIds, setOpenIntakeIds] = useState<Set<string>>(new Set());
+
+  const statusFilterOptions = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          projectIntakes
+            .map((intake) =>
+              typeof intake.status === "string" ? intake.status : null,
+            )
+            .filter((value): value is string => Boolean(value)),
+        ),
+      ).filter((status) => statusOptions.includes(status)),
+    [projectIntakes, statusOptions],
+  );
+
+  const visibleIntakes = useMemo(() => {
+    const normalizedSearch = searchQuery.trim().toLowerCase();
+    const filteredIntakes = projectIntakes
+      .filter((intake) =>
+        statusFilter ? intake.status === statusFilter : true,
+      )
+      .filter((intake) => matchesProjectIntake(intake, normalizedSearch));
+
+    return [...filteredIntakes].sort((a, b) => {
+      if (sortBy === "oldest") {
+        return getDateTime(a.created_at) - getDateTime(b.created_at);
+      }
+
+      if (sortBy === "business") {
+        return compareText(
+          String(a.business_name ?? ""),
+          String(b.business_name ?? ""),
+        );
+      }
+
+      return getDateTime(b.created_at) - getDateTime(a.created_at);
+    });
+  }, [projectIntakes, searchQuery, sortBy, statusFilter]);
+
+  const hasActiveFilters = statusFilter || searchQuery || sortBy !== "created_at";
+
+  function toggleIntakeDetails(intakeId: string) {
+    setOpenIntakeIds((current) => {
+      const next = new Set(current);
+
+      if (next.has(intakeId)) {
+        next.delete(intakeId);
+      } else {
+        next.add(intakeId);
+      }
+
+      return next;
+    });
+  }
+
+  return (
+    <>
+      <Card className={dashboardCardPaddingClass}>
+        <div className="grid card-grid-gap-med max-lg:grid-cols-2 max-md:grid-cols-1 lg:grid-cols-[1fr_0.65fr_0.65fr] lg:items-end">
+          <label className={labelClass}>
+            Search
+            <input
+              className={filterFieldClass}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Business, contact, email, phone, services, area"
+              type="search"
+              value={searchQuery}
+            />
+          </label>
+
+          <FilterSelect
+            label="Status"
+            onChange={setStatusFilter}
+            options={statusFilterOptions}
+            value={statusFilter}
+          />
+
+          <label className={labelClass}>
+            Sort
+            <select
+              className={filterFieldClass}
+              onChange={(event) =>
+                setSortBy(event.target.value as "created_at" | "oldest" | "business")
+              }
+              value={sortBy}
+            >
+              <option value="created_at">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="business">Business name</option>
+            </select>
+          </label>
+        </div>
+
+        <div className="mt-body-actions-sm flex flex-col inline-gap-med sm:flex-row sm:justify-end">
+          <button
+            className={compactSecondaryButtonClass}
+            disabled={!hasActiveFilters}
+            onClick={() => {
+              setStatusFilter("");
+              setSearchQuery("");
+              setSortBy("created_at");
+            }}
+            type="button"
+          >
+            Clear filters
+          </button>
+
+          <button
+            className={compactPrimaryButtonClass}
+            disabled={visibleIntakes.length === 0}
+            onClick={() => exportProjectIntakesToCsv(visibleIntakes)}
+            type="button"
+          >
+            Export CSV
+          </button>
+        </div>
+
+        <p className="mt-heading-body-md type-label text-service-muted">
+          Showing {visibleIntakes.length} of {projectIntakes.length} intakes
+        </p>
+      </Card>
+
+      {projectIntakes.length === 0 ? (
+        <Card className="mt-body-actions-md p-[var(--container-gutter)] text-center">
+          <h2 className="type-heading-md text-service-ink">
+            No client intakes yet
+          </h2>
+          <p className="type-text-md mx-auto mt-heading-body-sm text-service-muted">
+            Completed client-intake wizard submissions will appear here.
+          </p>
+        </Card>
+      ) : null}
+
+      {projectIntakes.length > 0 && visibleIntakes.length === 0 ? (
+        <Card className="mt-body-actions-md p-[var(--container-gutter)] text-center">
+          <h2 className="type-heading-md text-service-ink">
+            No matching intakes
+          </h2>
+          <p className="type-text-md mx-auto mt-heading-body-sm text-service-muted">
+            Clear filters or adjust your search to see more project briefs.
+          </p>
+        </Card>
+      ) : null}
+
+      {visibleIntakes.length > 0 ? (
+        <div className="mt-body-actions-md grid card-grid-gap-med">
+          {visibleIntakes.map((intake) => {
+            const intakeId = String(intake.id);
+            const isDetailsOpen = openIntakeIds.has(intakeId);
+            const status = intake.status ?? "New";
+
+            return (
+              <Card className={dashboardCardPaddingClass} key={intake.id}>
+                <div className="grid layout-gap-med max-lg:grid-cols-1 lg:grid-cols-[1fr_auto] lg:items-start">
+                  <div>
+                    <div className="flex flex-wrap items-center inline-gap-med">
+                      <h2 className="type-heading-md text-service-ink">
+                        {displayValue(intake.business_name)}
+                      </h2>
+                      <span
+                        className={`radius-round inline-flex items-center px-3 py-1 type-caption font-semibold ${getStatusPillClass(status)}`}
+                      >
+                        {displayValue(status)}
+                      </span>
+                    </div>
+                    <p className="mt-heading-body-sm type-caption font-semibold text-service-muted">
+                      {formatDate(intake.created_at)}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col inline-gap-med sm:flex-row lg:justify-end">
+                    {intake.contact_phone ? (
+                      <a
+                        className={primaryButtonClass}
+                        href={`tel:${String(intake.contact_phone)}`}
+                      >
+                        Call
+                      </a>
+                    ) : null}
+                    {intake.contact_email ? (
+                      <a
+                        className={secondaryButtonClass}
+                        href={`mailto:${String(intake.contact_email)}`}
+                      >
+                        Email
+                      </a>
+                    ) : null}
+                    {intake.website ? (
+                      <a
+                        className={secondaryButtonClass}
+                        href={String(intake.website)}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        Website
+                      </a>
+                    ) : null}
+                  </div>
+                </div>
+
+                <button
+                  aria-expanded={isDetailsOpen}
+                  className={`${dashboardToggleClass} mt-heading-body-md`}
+                  onClick={() => toggleIntakeDetails(intakeId)}
+                  type="button"
+                >
+                  <span>{isDetailsOpen ? "Hide answers" : "View answers"}</span>
+                  <span className="text-xl leading-none" aria-hidden="true">
+                    {isDetailsOpen ? "-" : "+"}
+                  </span>
+                </button>
+
+                <div className="mt-heading-body-md grid card-grid-gap-med border-t border-service-border pt-5 md:grid-cols-2 xl:grid-cols-4">
+                  <LeadDetail label="Contact" value={intake.contact_name} />
+                  <LeadDetail label="Email" value={intake.contact_email} />
+                  <LeadDetail label="Phone" value={intake.contact_phone} />
+                  <LeadDetail label="Business type" value={intake.business_type} />
+                  <LeadDetail
+                    label="Main services"
+                    value={displayStringList(intake.main_services)}
+                  />
+                  <LeadDetail
+                    label="Preferred CTA"
+                    value={displayStringList(intake.preferred_cta)}
+                  />
+                  <LeadDetail
+                    label="Priority services"
+                    value={intake.priority_services}
+                  />
+                  <LeadDetail label="Source" value={intake.source} />
+                </div>
+
+                <div className={`mt-heading-body-md ${dashboardPanelClass}`}>
+                  <p className={dashboardMutedLabelClass}>
+                    Service area
+                  </p>
+                  <p className="type-text-md mt-heading-body-sm whitespace-pre-line text-service-muted">
+                    {displayValue(intake.service_area)}
+                  </p>
+                </div>
+
+                {isDetailsOpen ? (
+                  <ProjectIntakePayloadView payload={intake.payload} />
+                ) : null}
+
+                <form
+                  action={updateProjectIntake}
+                  className={`mt-heading-body-md grid card-grid-gap-med ${dashboardPanelClass} max-lg:grid-cols-1 lg:grid-cols-[0.35fr_auto] lg:items-end`}
+                >
+                  <input name="intakeId" type="hidden" value={intakeId} />
+                  <label className={labelClass}>
+                    Status
+                    <select
+                      className={fieldClass}
+                      defaultValue={String(status)}
+                      name="status"
+                    >
+                      {statusOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <div>
+                    <button
+                      className={`${primaryButtonClass} lg:w-auto`}
+                      type="submit"
+                    >
+                      Save
+                    </button>
+                    {savedIntakeId === intakeId &&
+                    intakeSaveState === "success" ? (
+                      <p className="type-caption mt-heading-body-sm font-semibold text-service-accent">
+                        Intake saved.
+                      </p>
+                    ) : null}
+                    {savedIntakeId === intakeId && intakeSaveState === "error" ? (
+                      <p className="type-caption mt-heading-body-sm font-semibold text-red-700">
+                        Could not save.
+                      </p>
+                    ) : null}
+                  </div>
+                </form>
+              </Card>
+            );
+          })}
+        </div>
+      ) : null}
+    </>
+  );
+}
+
+function ProjectIntakePayloadView({ payload }: { payload?: JsonValue }) {
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+    return null;
+  }
+
+  const sections = Object.entries(payload).filter(
+    ([key, value]) => key !== "variant" && value && typeof value === "object",
+  );
+
+  if (sections.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="mt-heading-body-md grid card-grid-gap-med">
+      {sections.map(([sectionName, sectionValue]) => (
+        <div
+          className="radius-medium border border-service-border bg-white p-[var(--container-gutter)]"
+          key={sectionName}
+        >
+          <h3 className={dashboardAccentLabelClass}>
+            {formatAnswerLabel(sectionName)}
+          </h3>
+          <div className="mt-heading-body-md grid card-grid-gap-med md:grid-cols-2">
+            {Object.entries(sectionValue as Record<string, JsonValue>).map(
+              ([answerKey, answerValue]) => (
+                <LeadDetail
+                  key={answerKey}
+                  label={formatAnswerLabel(answerKey)}
+                  value={formatAnswerValue(answerValue)}
+                />
+              ),
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function formatAnswerLabel(value: string) {
+  return value
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function formatAnswerValue(value: JsonValue): string {
+  if (Array.isArray(value)) {
+    return value.map(formatAnswerValue).filter(Boolean).join(", ");
+  }
+
+  if (value && typeof value === "object") {
+    return JSON.stringify(value);
+  }
+
+  if (typeof value === "boolean") {
+    return value ? "Yes" : "No";
+  }
+
+  if (value === null || value === "") {
+    return "Not provided";
+  }
+
+  return String(value);
+}
+
 function BookedJobsView({
   bookedCounts,
   leads,
@@ -888,8 +1423,8 @@ function BookedJobsView({
   leads: Lead[];
 }) {
   return (
-    <div className="grid gap-6">
-      <div className="grid gap-4 max-lg:grid-cols-1 lg:grid-cols-3">
+    <div className="grid layout-gap-med">
+      <div className="grid card-grid-gap-med max-lg:grid-cols-1 lg:grid-cols-3">
         <BookedCountCard
           body="Booked jobs that still need a scheduled visit date."
           count={bookedCounts["needs-date"]}
@@ -915,16 +1450,16 @@ function BookedJobsView({
       </div>
 
       {leads.length === 0 ? (
-        <Card className="p-8 text-center">
-          <h2 className="text-2xl font-semibold leading-tight text-service-ink">
+        <Card className="p-[var(--container-gutter)] text-center">
+          <h2 className="type-heading-md text-service-ink">
             No booked jobs yet
           </h2>
-          <p className="mt-3 text-base leading-7 text-service-muted">
+          <p className="type-text-md mx-auto mt-heading-body-sm text-service-muted">
             Change a lead status to Booked and it will appear in this view.
           </p>
         </Card>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid card-grid-gap-med">
           {leads.map((lead) => (
             <BookedJobCard key={lead.id} lead={lead} />
           ))}
@@ -949,21 +1484,21 @@ function BookedCountCard({
 
   return (
     <Card
-      className={`border p-6 ${
+      className={`border p-[var(--container-gutter)] ${
         isClearPastDueState
           ? "flex min-h-48 flex-col items-center justify-center bg-green-50 text-center text-green-900"
           : getBookedTimingCardClass(tone)
       }`}
     >
-      <p className="text-sm font-semibold uppercase tracking-widest opacity-75">
+      <p className="type-label opacity-75">
         {label}
       </p>
       {isClearPastDueState ? (
-        <p className="mt-4 text-3xl font-semibold leading-tight">On schedule</p>
+        <p className="type-heading-md mt-heading-body-sm">On schedule</p>
       ) : (
-        <p className="mt-4 text-5xl font-semibold leading-none">{count}</p>
+        <p className="type-display-lg mt-heading-body-sm">{count}</p>
       )}
-      <p className="mt-4 text-base leading-7 opacity-75">{body}</p>
+      <p className="type-text-md mt-heading-body-sm opacity-75">{body}</p>
     </Card>
   );
 }
@@ -980,27 +1515,27 @@ function BookedJobCard({ lead }: { lead: Lead }) {
     >
       <div className="grid min-h-40 grid-cols-[minmax(0,0.36fr)_minmax(0,1fr)] max-lg:grid-cols-1">
         <div
-          className={`flex flex-col justify-between border-r border-service-border p-5 max-lg:border-b max-lg:border-r-0 ${getBookedTimingCardClass(timing)}`}
+          className={`flex flex-col justify-between border-r border-service-border p-[var(--container-gutter)] max-lg:border-b max-lg:border-r-0 ${getBookedTimingCardClass(timing)}`}
         >
           <span
-            className={`w-fit rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest ${getBookedTimingPillClass(timing)}`}
+            className={`radius-round w-fit px-3 py-1 type-caption font-semibold ${getBookedTimingPillClass(timing)}`}
           >
             {getBookedTimingLabel(timing)}
           </span>
-          <p className="mt-8 text-2xl font-semibold leading-tight">
+          <p className="type-heading-md mt-body-actions-md">
             {timing === "needs-date" ? "Schedule next" : formatDate(scheduledValue)}
           </p>
         </div>
 
-        <div className="grid gap-5 p-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
+        <div className="grid layout-gap-med p-[var(--container-gutter)] md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
           <div className="min-w-0">
-            <h2 className="text-2xl font-semibold leading-tight text-service-ink">
+            <h2 className="type-heading-md text-service-ink">
               {displayValue(readLeadValue(lead, leadFields.name))}
             </h2>
-            <p className="mt-2 text-sm font-semibold uppercase tracking-widest text-service-muted">
+            <p className="mt-heading-body-sm type-caption font-semibold text-service-muted">
               Booked from {formatDate(lead.created_at)}
             </p>
-            <div className="mt-5 grid gap-x-5 gap-y-3 md:grid-cols-2 xl:grid-cols-4">
+            <div className="mt-heading-body-md grid card-grid-gap-med md:grid-cols-2 xl:grid-cols-4">
               <LeadDetail
                 label="Service"
                 value={readLeadValue(lead, leadFields.service)}
@@ -1020,7 +1555,7 @@ function BookedJobCard({ lead }: { lead: Lead }) {
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row md:flex-col">
+          <div className="flex flex-col inline-gap-med sm:flex-row md:flex-col">
             {readLeadText(lead, leadFields.phone) ? (
               <a
                 className={primaryButtonClass}
@@ -1089,10 +1624,10 @@ function LeadDetail({
 }) {
   return (
     <div className="min-w-0">
-      <p className="text-sm font-semibold uppercase tracking-widest text-service-muted">
+      <p className={dashboardMutedLabelClass}>
         {label}
       </p>
-      <p className="mt-1 break-words text-base leading-7 text-service-ink">
+      <p className="type-text-sm mt-paragraph-paragraph break-words text-service-ink">
         {displayValue(value)}
       </p>
     </div>
