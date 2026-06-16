@@ -40,11 +40,11 @@ export function TestimonialsMasonrySectionV3({
       <SevenColumnGrid className="section-min-none" padding="med">
         <SevenColumnGridItem
           alignX="center"
-          className="col-span-3 col-start-3 max-lg:col-span-7 max-lg:col-start-1"
+          className="col-span-7"
         >
           <div className="fluid-type-frame mx-auto w-full text-center">
             <p className="type-label text-service-accent">{eyebrow}</p>
-            <h2 className="type-heading-xl mx-auto mt-5 text-service-ink">
+            <h2 className="type-heading-xl mx-auto mt-5 max-w-none whitespace-nowrap text-service-ink max-lg:whitespace-normal">
               {title}
             </h2>
             <p className="type-text-lg wrap-pretty mx-auto mt-6 text-service-muted">

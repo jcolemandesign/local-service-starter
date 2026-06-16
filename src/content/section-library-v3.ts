@@ -854,8 +854,27 @@ export const sectionLibraryV3Content = {
 
 export const sectionLibraryV3Collections = [
   {
+    title: "Navigation",
+    items: [
+      { label: "Primary navigation", component: "nav-primary-v2" },
+      { label: "Center logo navigation", component: "nav-center-logo-v2" },
+      { label: "Floating bento navigation", component: "nav-floating-bento-v2" },
+    ],
+  },
+  {
     title: "Hero",
     items: [
+      { label: "Bento hero", component: "hero-bento-v2" },
+      { label: "Fullscreen hero", component: "hero-fullscreen-v2" },
+      {
+        label: "Centered hero with floaters",
+        component: "hero-centered-floaters-v2",
+      },
+      { label: "Grid mosaic hero", component: "hero-grid-mosaic-v2" },
+      {
+        label: "Content top, image bottom hero",
+        component: "hero-content-top-image-bottom-v2",
+      },
       {
         label: "Split content and image",
         component: "hero-split-full-height-v3",
@@ -866,6 +885,46 @@ export const sectionLibraryV3Collections = [
     title: "Content",
     items: [
       {
+        label: "Positioning split",
+        component: "content-positioning-split-v2",
+      },
+      {
+        label: "Reveal paragraph",
+        component: "content-reveal-paragraph-v2",
+      },
+      {
+        label: "Scroll written reveal",
+        component: "content-scroll-written-reveal-v2",
+      },
+      {
+        label: "Sticky card stream",
+        component: "content-sticky-card-stream-v2",
+      },
+      {
+        label: "Sticky ideas",
+        component: "content-sticky-ideas-v2",
+      },
+      {
+        label: "About company",
+        component: "content-about-company-v2",
+      },
+      {
+        label: "Split headline image",
+        component: "content-split-headline-image-v2",
+      },
+      {
+        label: "Rule header",
+        component: "content-rule-header-v2",
+      },
+      {
+        label: "Horizontal card carousel",
+        component: "content-horizontal-card-carousel-v2",
+      },
+      {
+        label: "Four column scroll",
+        component: "content-four-column-scroll-v2",
+      },
+      {
         label: "3 service cards right",
         component: "services-three-cards-right-v3",
       },
@@ -874,19 +933,30 @@ export const sectionLibraryV3Collections = [
   {
     title: "Trust",
     items: [
+      { label: "Legacy trust bar", component: "trust-bar-legacy" },
       { label: "Trust bar", component: "trust-bar-v3" },
       {
         label: "Floating bento trust bar",
         component: "trust-bar-floating-bento-v3",
       },
+      { label: "Legacy trust marquee", component: "trust-marquee-legacy" },
       { label: "Trust marquee", component: "trust-marquee-v3" },
+      {
+        label: "Legacy trust logo marquee",
+        component: "trust-logo-marquee-legacy",
+      },
       { label: "Trust logo marquee", component: "trust-logo-marquee-v3" },
+      { label: "Legacy trust logo grid", component: "trust-logo-grid-legacy" },
       { label: "Static trust logo grid", component: "trust-logo-grid-v3" },
     ],
   },
   {
     title: "Effects",
     items: [
+      {
+        label: "Fixed cover fade",
+        component: "content-fixed-cover-fade-v2",
+      },
       {
         label: "Sticky image panel content",
         component: "content-sticky-image-panel-v3",
@@ -909,6 +979,7 @@ export const sectionLibraryV3Collections = [
   {
     title: "Process",
     items: [
+      { label: "Process steps V2", component: "process-steps-v2" },
       { label: "Process steps", component: "process-steps-v3" },
       {
         label: "Image checklist process",
@@ -919,7 +990,12 @@ export const sectionLibraryV3Collections = [
   {
     title: "Testimonials",
     items: [
+      { label: "Testimonials V2", component: "testimonials-v2" },
       { label: "Testimonials", component: "testimonials-v3" },
+      {
+        label: "Carousel testimonials V2",
+        component: "testimonials-carousel-v2",
+      },
       {
         label: "Carousel testimonials",
         component: "testimonials-carousel-v3",
@@ -933,13 +1009,16 @@ export const sectionLibraryV3Collections = [
   {
     title: "FAQ",
     items: [
+      { label: "FAQ V2", component: "faq-v2" },
       { label: "FAQ", component: "faq-v3" },
+      { label: "FAQ accordion V2", component: "faq-accordion-v2" },
       { label: "FAQ accordion", component: "faq-accordion-v3" },
     ],
   },
   {
     title: "Conversion",
     items: [
+      { label: "CTA V2", component: "cta-v2" },
       { label: "CTA", component: "cta-v3" },
       { label: "Fullscreen conversion", component: "cta-fullscreen-v3" },
       {
@@ -955,5 +1034,14 @@ export const sectionLibraryV3Collections = [
   {
     title: "Footer",
     items: [{ label: "Footer", component: "footer-v3" }],
+  },
+  {
+    title: "Services",
+    items: [
+      { label: "Services grid", component: "services-grid-v2" },
+      { label: "Services bento cards", component: "services-bento-cards-v2" },
+      { label: "Services hover panel", component: "services-hover-panel-v2" },
+      { label: "Services scroll cards", component: "services-scroll-cards-v2" },
+    ],
   },
 ] as const;
