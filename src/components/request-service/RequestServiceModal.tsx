@@ -108,6 +108,14 @@ const appointmentWindowOptions = [
   "Just getting information",
 ];
 
+const modalFieldClass =
+  "radius-button min-h-12 border border-service-border bg-white px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent";
+
+const modalLabelClass = "grid gap-2 type-caption font-semibold text-service-ink";
+
+const modalButtonClass =
+  "radius-button inline-flex min-h-10 cursor-pointer items-center justify-center px-5 type-caption font-semibold transition-colors disabled:cursor-not-allowed";
+
 const problemOptionsBySelection: Record<
   SystemType,
   Record<RequestType, string[]>
@@ -258,7 +266,7 @@ function OptionButton({
 }) {
   return (
     <button
-      className={`radius-button min-h-12 cursor-pointer border px-4 py-3 text-left text-sm font-semibold transition-colors ${
+      className={`radius-button min-h-12 cursor-pointer border px-4 py-3 text-left type-caption font-semibold transition-colors ${
         isSelected
           ? "border-service-accent bg-service-accent text-white"
           : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent"
@@ -290,7 +298,7 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
           >
             <span
               aria-current={isActive ? "step" : undefined}
-              className={`flex size-8 items-center justify-center rounded-full border text-sm font-semibold transition-colors ${
+              className={`radius-round flex size-7 items-center justify-center border type-caption font-semibold transition-colors ${
                 isActive
                   ? "border-service-accent bg-service-accent text-white"
                   : isComplete
@@ -303,7 +311,7 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
             {stepNumber < 3 ? (
               <span
                 aria-hidden="true"
-                className={`h-px w-10 transition-colors max-sm:w-7 ${
+                className={`h-px w-8 transition-colors max-sm:w-6 ${
                   currentStep > stepNumber
                     ? "bg-service-accent"
                     : "bg-service-border"
@@ -344,7 +352,7 @@ export function RequestServiceButton({
 
   return (
     <button
-      className={`radius-button inline-flex min-h-12 cursor-pointer items-center justify-center whitespace-nowrap px-6 text-sm font-semibold transition-colors ${styles} ${className}`}
+      className={`radius-button inline-flex min-h-12 cursor-pointer items-center justify-center whitespace-nowrap px-6 type-caption font-semibold transition-colors ${styles} ${className}`}
       type="button"
       onClick={(event) => {
         onClick?.(event);
@@ -628,7 +636,7 @@ function RequestServiceModal({
     >
       {isOpen ? (
         <motion.div
-          className="fixed inset-0 z-[100] grid h-dvh bg-service-ink/55 p-4 backdrop-blur-sm max-md:p-0"
+          className="fixed inset-0 z-[100] grid h-dvh bg-service-ink/55 p-6 backdrop-blur-sm max-md:p-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -647,7 +655,7 @@ function RequestServiceModal({
               ref={dialogRef}
               aria-labelledby="request-service-title"
               aria-modal="true"
-              className="m-auto flex max-h-[calc(100dvh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white text-service-ink shadow-service outline-none max-md:h-dvh max-md:max-h-dvh max-md:rounded-none"
+              className="radius-medium m-auto flex min-h-[42rem] max-h-[calc(100dvh-3rem)] w-full max-w-4xl flex-col overflow-hidden bg-bg-page text-service-ink shadow-service outline-none max-md:h-dvh max-md:min-h-0 max-md:max-h-dvh max-md:rounded-none"
               role="dialog"
               tabIndex={-1}
               initial={{ scale: 0.98 }}
@@ -655,12 +663,12 @@ function RequestServiceModal({
               exit={{ scale: 0.98 }}
               transition={{ duration: 0.25, ease: "easeInOut" }}
             >
-              <div className="flex shrink-0 items-start justify-between gap-5 border-b border-service-border px-6 py-5 max-md:px-5">
-          <div>
+              <div className="flex shrink-0 items-center justify-between gap-4 border-b border-service-border px-[var(--container-gutter)] py-4 max-md:px-5 max-md:py-3">
+          <div className="fluid-type-frame min-w-0 flex-1">
             <StepIndicator currentStep={step} />
             <h2
               id="request-service-title"
-              className="mt-2 text-2xl font-semibold leading-tight text-service-ink"
+              className="type-heading-sm mt-eyebrow-heading-sm max-w-none text-service-ink"
             >
               {step === 1
                 ? "What do you need help with?"
@@ -671,7 +679,7 @@ function RequestServiceModal({
           </div>
           <button
             aria-label="Close request service modal"
-            className="radius-button flex size-11 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-white text-xl leading-none text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+            className="radius-button flex size-10 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-white type-caption text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
             type="button"
             onClick={onClose}
           >
@@ -679,14 +687,15 @@ function RequestServiceModal({
           </button>
               </div>
 
-              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-6 max-md:px-5">
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-[var(--container-gutter)] max-md:p-5">
           {step === 1 ? (
-            <div className="grid gap-8">
-              <div>
-                <h3 className="text-xl font-semibold leading-tight">
+            <div className="flex min-h-full items-center">
+              <div className="grid w-full layout-gap-xlrg md:grid-cols-2">
+              <div className="fluid-type-frame min-w-0">
+                <h3 className="type-heading-sm text-service-ink">
                   What system needs help?
                 </h3>
-                <div className="mt-4 grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+                <div className="mt-heading-body-md grid grid-cols-2 card-grid-gap-med max-sm:grid-cols-1">
                   {systemOptions.map((option) => (
                     <OptionButton
                       isSelected={systemType === option.value}
@@ -701,11 +710,11 @@ function RequestServiceModal({
                 </div>
               </div>
 
-              <div>
-                <h3 className="text-xl font-semibold leading-tight">
+              <div className="fluid-type-frame min-w-0">
+                <h3 className="type-heading-sm text-service-ink">
                   What do you need?
                 </h3>
-                <div className="mt-4 grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+                <div className="mt-heading-body-md grid grid-cols-2 card-grid-gap-med max-sm:grid-cols-1">
                   {requestOptions.map((option) => (
                     <OptionButton
                       isSelected={requestType === option.value}
@@ -719,15 +728,16 @@ function RequestServiceModal({
                   ))}
                 </div>
               </div>
+              </div>
             </div>
           ) : null}
 
           {step === 2 ? (
-            <div>
-              <h3 className="text-xl font-semibold leading-tight">
+            <div className="fluid-type-frame">
+              <h3 className="type-heading-sm text-service-ink">
                 What is going on?
               </h3>
-              <div className="mt-4 grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+              <div className="mt-heading-body-md grid grid-cols-2 card-grid-gap-med max-sm:grid-cols-1">
                 {problemOptions.map((option) => (
                   <OptionButton
                     isSelected={problemType === option}
@@ -738,10 +748,10 @@ function RequestServiceModal({
                 ))}
               </div>
 
-              <label className="mt-6 grid gap-2 text-sm font-semibold text-service-ink">
+              <label className={`${modalLabelClass} mt-body-actions-md`}>
                 Anything else we should know?
                 <textarea
-                  className="min-h-32 rounded-md border border-service-border px-4 py-3 text-base font-normal outline-none transition focus:border-service-accent focus:ring-4 focus:ring-service-accent/15"
+                  className={`${modalFieldClass} min-h-40 resize-y py-3 font-normal`}
                   placeholder="Tell us what's happening, when it started, or anything unusual you've noticed."
                   value={description}
                   onChange={(event) => setDescription(event.target.value)}
@@ -751,12 +761,12 @@ function RequestServiceModal({
           ) : null}
 
           {step === 3 ? (
-            <div className="grid gap-5">
-              <label className="grid gap-2 text-sm font-semibold text-service-ink">
+            <div className="grid card-grid-gap-med md:grid-cols-2">
+              <label className={modalLabelClass}>
                 Name
                 <input
                   autoComplete="name"
-                  className="min-h-12 rounded-md border border-service-border px-4 text-base font-normal outline-none transition focus:border-service-accent focus:ring-4 focus:ring-service-accent/15"
+                  className={`${modalFieldClass} font-normal`}
                   required
                   type="text"
                   value={name}
@@ -764,11 +774,11 @@ function RequestServiceModal({
                 />
               </label>
 
-              <label className="grid gap-2 text-sm font-semibold text-service-ink">
+              <label className={modalLabelClass}>
                 Phone
                 <input
                   autoComplete="tel"
-                  className="min-h-12 rounded-md border border-service-border px-4 text-base font-normal outline-none transition focus:border-service-accent focus:ring-4 focus:ring-service-accent/15"
+                  className={`${modalFieldClass} font-normal`}
                   required
                   type="tel"
                   value={phone}
@@ -776,25 +786,25 @@ function RequestServiceModal({
                 />
               </label>
 
-              <label className="grid gap-2 text-sm font-semibold text-service-ink">
+              <label className={modalLabelClass}>
                 Email
-                <span className="text-xs font-medium text-service-muted">
+                <span className="type-caption font-medium text-service-muted">
                   Optional, but recommended.
                 </span>
                 <input
                   autoComplete="email"
-                  className="min-h-12 rounded-md border border-service-border px-4 text-base font-normal outline-none transition focus:border-service-accent focus:ring-4 focus:ring-service-accent/15"
+                  className={`${modalFieldClass} font-normal`}
                   type="email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                 />
               </label>
 
-              <label className="grid gap-2 text-sm font-semibold text-service-ink">
+              <label className={modalLabelClass}>
                 ZIP code
                 <input
                   autoComplete="postal-code"
-                  className="min-h-12 rounded-md border border-service-border px-4 text-base font-normal outline-none transition focus:border-service-accent focus:ring-4 focus:ring-service-accent/15"
+                  className={`${modalFieldClass} font-normal`}
                   inputMode="numeric"
                   type="text"
                   value={zipCode}
@@ -802,22 +812,22 @@ function RequestServiceModal({
                 />
               </label>
 
-              <label className="grid gap-2 text-sm font-semibold text-service-ink">
+              <label className="grid gap-2 type-caption font-semibold text-service-ink md:col-span-2">
                 Street address
                 <input
                   autoComplete="street-address"
-                  className="min-h-12 rounded-md border border-service-border px-4 text-base font-normal outline-none transition focus:border-service-accent focus:ring-4 focus:ring-service-accent/15"
+                  className={`${modalFieldClass} font-normal`}
                   type="text"
                   value={streetAddress}
                   onChange={(event) => setStreetAddress(event.target.value)}
                 />
               </label>
 
-              <div>
-                <p className="text-sm font-semibold text-service-ink">
+              <div className="md:col-span-2">
+                <p className="type-caption font-semibold text-service-ink">
                   What type of property is this?
                 </p>
-                <div className="mt-3 grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+                <div className="mt-heading-body-sm grid grid-cols-2 card-grid-gap-med max-sm:grid-cols-1">
                   {propertyTypeOptions.map((option) => (
                     <OptionButton
                       isSelected={propertyType === option}
@@ -829,11 +839,11 @@ function RequestServiceModal({
                 </div>
               </div>
 
-              <div>
-                <p className="text-sm font-semibold text-service-ink">
+              <div className="md:col-span-2">
+                <p className="type-caption font-semibold text-service-ink">
                   When would you like help?
                 </p>
-                <div className="mt-3 grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+                <div className="mt-heading-body-sm grid grid-cols-2 card-grid-gap-med max-sm:grid-cols-1">
                   {appointmentWindowOptions.map((option) => (
                     <OptionButton
                       isSelected={appointmentWindow === option}
@@ -845,11 +855,11 @@ function RequestServiceModal({
                 </div>
               </div>
 
-              <div>
-                <p className="text-sm font-semibold text-service-ink">
+              <div className="md:col-span-2">
+                <p className="type-caption font-semibold text-service-ink">
                   How should we contact you?
                 </p>
-                <div className="mt-3 grid grid-cols-3 gap-3 max-sm:grid-cols-1">
+                <div className="mt-heading-body-sm grid grid-cols-3 card-grid-gap-med max-sm:grid-cols-1">
                   {contactOptions.map((option) => (
                     <OptionButton
                       isSelected={preferredContactMethod === option.value}
@@ -861,9 +871,9 @@ function RequestServiceModal({
                 </div>
               </div>
 
-              <label className="flex gap-3 rounded-md border border-service-border bg-service-surface p-4 text-sm font-medium leading-6 text-service-ink">
+              <label className="radius-medium flex gap-3 border border-service-border bg-service-surface p-4 type-text-sm font-medium text-service-ink md:col-span-2">
                 <input
-                  className="mt-1 size-4 accent-service-accent"
+                  className="mt-1 size-4 shrink-0 accent-service-accent"
                   required
                   type="checkbox"
                   checked={contactConsent}
@@ -874,7 +884,7 @@ function RequestServiceModal({
 
               {submitError ? (
                 <p
-                  className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-700"
+                  className="radius-medium border border-red-200 bg-red-50 px-4 py-3 type-text-sm text-red-700 md:col-span-2"
                   role="alert"
                 >
                   {submitError}
@@ -884,9 +894,9 @@ function RequestServiceModal({
           ) : null}
               </div>
 
-              <div className="flex shrink-0 items-center justify-between gap-3 border-t border-service-border px-6 py-5 max-md:px-5">
+              <div className="flex shrink-0 items-center justify-between inline-gap-med border-t border-service-border px-[var(--container-gutter)] py-4 max-md:px-5 max-md:py-3">
           <button
-            className="radius-button inline-flex min-h-12 cursor-pointer items-center justify-center border border-service-border bg-white px-5 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-45"
+            className={`${modalButtonClass} border border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent disabled:opacity-45`}
             disabled={step === 1 || isSubmitting}
             type="button"
             onClick={() => setStep((currentStep) => Math.max(1, currentStep - 1))}
@@ -896,7 +906,7 @@ function RequestServiceModal({
 
           {step < 3 ? (
             <button
-              className="radius-button inline-flex min-h-12 cursor-pointer items-center justify-center bg-service-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-not-allowed disabled:bg-service-muted"
+              className={`${modalButtonClass} border border-service-accent bg-service-accent text-white hover:bg-service-ink disabled:bg-service-muted`}
               disabled={!canContinue}
               type="button"
               onClick={() => setStep((currentStep) => currentStep + 1)}
@@ -905,7 +915,7 @@ function RequestServiceModal({
             </button>
           ) : (
             <button
-              className="radius-button inline-flex min-h-12 cursor-pointer items-center justify-center bg-service-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-wait disabled:bg-service-muted"
+              className={`${modalButtonClass} border border-service-accent bg-service-accent text-white hover:bg-service-ink disabled:cursor-wait disabled:bg-service-muted`}
               disabled={!canContinue || isSubmitting}
               type="button"
               onClick={handleSubmit}

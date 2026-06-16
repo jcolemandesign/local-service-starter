@@ -145,24 +145,31 @@ export function TrustBarFloatingBentoSectionV3({
 
 export function TrustMarqueeSectionV3({ items, label }: TrustItemsProps) {
   return (
-    <section className="bg-bg-page">
+    <section className="overflow-hidden bg-bg-page">
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem
           className="col-span-3 max-lg:col-span-7"
+          alignY="middle"
           measure="copy"
         >
-          <div className="content-padding radius-medium h-full rounded-b-none border border-b-0 border-service-border bg-service-surface max-lg:rounded-b-md max-lg:border-b">
-            <p className="type-text-md wrap-pretty font-semibold text-service-ink">
-              {label}
-            </p>
-          </div>
+          <p className="type-text-md wrap-pretty font-semibold text-service-ink">
+            {label}
+          </p>
         </SevenColumnGridItem>
 
         <SevenColumnGridItem
           className="col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1"
           alignY="stretch"
         >
-          <div className="content-padding-y radius-medium h-full overflow-hidden rounded-tl-none border border-service-border bg-service-surface max-lg:rounded-t-md">
+          <div className="content-padding-y relative -mr-[var(--site-grid-inset-inline)] h-full overflow-hidden max-lg:mr-0">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 bg-linear-to-r from-bg-page to-bg-page/0 max-md:w-16"
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 right-0 z-10 w-72 bg-linear-to-l from-bg-page to-bg-page/0 max-lg:w-28 max-md:w-16"
+            />
             <div className="flex w-max animate-trust-marquee motion-reduce:animate-none">
               <TextMarqueeItems items={items} />
               <TextMarqueeItems hidden items={items} />

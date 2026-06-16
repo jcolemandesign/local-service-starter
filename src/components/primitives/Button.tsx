@@ -108,7 +108,7 @@ export function WrappingArrowButton({
   return (
     <a
       className={cx(
-        "group/button radius-button relative isolate inline-flex min-h-12 cursor-pointer items-center overflow-hidden border border-service-ink bg-service-ink px-6 py-2 pr-16 text-sm font-semibold text-service-accent transition-colors duration-300 ease-out hover:text-service-ink",
+        "group/button radius-button relative isolate inline-flex min-h-12 cursor-pointer items-center overflow-hidden border border-bg-dark bg-bg-dark px-6 py-2 pr-16 text-sm font-semibold text-text-inverse transition-colors duration-300 ease-out hover:text-white",
         buttonFocusClassName,
         className,
       )}
@@ -116,12 +116,12 @@ export function WrappingArrowButton({
     >
       <span
         aria-hidden="true"
-        className="radius-button absolute right-1.5 top-1/2 -z-10 h-9 w-9 -translate-y-1/2 bg-service-accent transition-all duration-300 ease-out group-hover/button:right-0 group-hover/button:h-full group-hover/button:w-full"
+        className="radius-button absolute right-1.5 top-1/2 -z-10 h-9 w-9 -translate-y-1/2 bg-accent transition-all duration-300 ease-out group-hover/button:right-0 group-hover/button:h-full group-hover/button:w-full"
       />
       <span>{children}</span>
       <span
         aria-hidden="true"
-        className="radius-button absolute right-1.5 top-1/2 grid h-9 w-9 -translate-y-1/2 overflow-hidden bg-service-accent text-service-ink transition-transform duration-300 ease-out group-hover/button:-translate-x-1"
+        className="radius-button absolute right-1.5 top-1/2 grid h-9 w-9 -translate-y-1/2 overflow-hidden bg-accent text-white transition-transform duration-300 ease-out group-hover/button:-translate-x-1"
       >
         <span className="absolute inset-0 grid place-items-center transition-transform duration-300 ease-out group-hover/button:translate-x-full">
           -&gt;

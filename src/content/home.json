@@ -57,21 +57,6 @@
           "description": "Choose an intake path for different local business types."
         },
         {
-          "label": "Home service intake",
-          "href": "/client-intake/home-services",
-          "description": "Intake flow for repair-first local service businesses."
-        },
-        {
-          "label": "Contractor intake",
-          "href": "/client-intake/contractors",
-          "description": "Intake flow for estimate, project, and larger job businesses."
-        },
-        {
-          "label": "Appointment-based intake",
-          "href": "/client-intake/appointment-based",
-          "description": "Intake flow for booking, visit, and appointment-led businesses."
-        },
-        {
           "label": "Staged Pages",
           "href": "/dev/website-pages",
           "description": "Review baked pages that are eligible to become public pages."
