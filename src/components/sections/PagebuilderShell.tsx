@@ -23,8 +23,53 @@ function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+type PreviewVariableStyle = CSSProperties & Record<`--${string}`, string>;
+
 const normalSpacingClassName = "pagebuilder-density-normal";
-const previewStyle: CSSProperties = {};
+
+function readPagebuilderPreviewVariables(): PreviewVariableStyle {
+  if (typeof window === "undefined") {
+    return {};
+  }
+
+  const computedStyle = window.getComputedStyle(document.documentElement);
+  const previewVariables: PreviewVariableStyle = {};
+  const variablePrefixes = [
+    "--border-",
+    "--card-",
+    "--color-",
+    "--container-",
+    "--inline-",
+    "--layout-",
+    "--live-",
+    "--radius-",
+    "--section-",
+    "--semantic-",
+    "--shadow-",
+    "--site-",
+    "--type-",
+  ];
+
+  for (const propertyName of computedStyle) {
+    if (
+      variablePrefixes.some((prefix) => propertyName.startsWith(prefix))
+    ) {
+      previewVariables[propertyName as `--${string}`] = computedStyle
+        .getPropertyValue(propertyName)
+        .trim();
+    }
+  }
+
+  return previewVariables;
+}
+
+function isPreviewNavigationSection(section: WorkingSection) {
+  return section.mode === "Navigation";
+}
+
+function isPreviewHeroSection(section: WorkingSection | undefined) {
+  return section?.mode === "Hero";
+}
 
 const viewportOptions = [
   {
@@ -519,6 +564,9 @@ export function PagebuilderShell({
   );
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isRenderedPreviewOpen, setIsRenderedPreviewOpen] = useState(false);
+  const [previewRefreshKey, setPreviewRefreshKey] = useState(0);
+  const [previewVariableStyle, setPreviewVariableStyle] =
+    useState<PreviewVariableStyle>({});
 
   const activeRecipeIndex = Math.max(
     recipes.findIndex((recipe) => recipe.id === activeRecipeId),
@@ -567,6 +615,19 @@ export function PagebuilderShell({
       });
     })
     .join("\n\n---\n\n");
+
+  useEffect(() => {
+    function syncPreviewVariables() {
+      setPreviewVariableStyle(readPagebuilderPreviewVariables());
+    }
+
+    syncPreviewVariables();
+    window.addEventListener("focus", syncPreviewVariables);
+
+    return () => {
+      window.removeEventListener("focus", syncPreviewVariables);
+    };
+  }, []);
 
   function updateActiveStack(updater: (stack: WorkingSection[]) => WorkingSection[]) {
     setWorkingStacks((currentStacks) =>
@@ -705,60 +766,99 @@ export function PagebuilderShell({
     await navigator.clipboard.writeText(allLayoutInstructions);
   }
 
+  function refreshPreviewStyles() {
+    setPreviewVariableStyle(readPagebuilderPreviewVariables());
+    setPreviewRefreshKey((currentKey) => currentKey + 1);
+  }
+
   function renderPreviewWindow() {
+    const visibleSections = activeStack.filter((section) => section.included);
+
+    function renderSectionFrame(
+      section: WorkingSection,
+      options: { className?: string } = {},
+    ) {
+      const isSelected = section.id === selectedSectionId;
+
+      return (
+        <div
+          className={cx(
+            "group/pagebuilder-section relative cursor-pointer outline outline-0 outline-offset-0 transition-shadow",
+            options.className,
+            isSelected &&
+              "z-10 shadow-[0_0_0_3px_var(--color-service-accent)]",
+          )}
+          data-pagebuilder-section-id={section.id}
+          key={section.id}
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            setSelectedSectionId(section.id);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              setSelectedSectionId(section.id);
+            }
+          }}
+          role="button"
+          tabIndex={0}
+        >
+          <div className="pagebuilder-section-marker pointer-events-none absolute left-3 top-3 z-30 max-w-[calc(100%-1.5rem)] rounded border border-service-border bg-white/90 px-3 py-2 text-service-ink shadow-service backdrop-blur">
+            <p className="type-caption font-semibold text-service-accent">
+              {section.mode}
+            </p>
+            <p className="mt-1 text-xs font-semibold">{section.name}</p>
+          </div>
+          {previewCatalog[section.component] ??
+            previewSections[activeRecipeIndex]?.[
+              section.originalIndex
+            ] ??
+            null}
+        </div>
+      );
+    }
+
     return (
       <PagebuilderPreviewWindow
         activePageLabel={activePageLabel}
         contentClassName={selectedViewport.contentClassName}
         frameClassName={selectedViewport.frameClassName}
-        previewStyle={previewStyle}
+        key={`${activeRecipe.id}-${selectedViewport.id}-${previewRefreshKey}`}
+        previewStyle={previewVariableStyle}
         screenClassName={selectedViewport.screenClassName}
         showSectionMarkers={activeDesignStyle.showSectionMarkers}
         sizeLabel={selectedViewport.sizeLabel}
         spacingClassName={normalSpacingClassName}
       >
-        {activeStack
-          .filter((section) => section.included)
-          .map((section) => {
-            const isSelected = section.id === selectedSectionId;
+        {visibleSections.map((section, index) => {
+          const nextSection = visibleSections[index + 1];
+          const previousSection = visibleSections[index - 1];
 
+          if (
+            isPreviewNavigationSection(section) &&
+            isPreviewHeroSection(nextSection)
+          ) {
             return (
-              <div
-                className={cx(
-                  "group/pagebuilder-section relative cursor-pointer outline outline-0 outline-offset-0 transition-shadow",
-                  isSelected &&
-                    "z-10 shadow-[0_0_0_3px_var(--color-service-accent)]",
-                )}
-                data-pagebuilder-section-id={section.id}
-                key={section.id}
-                onClick={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  setSelectedSectionId(section.id);
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    setSelectedSectionId(section.id);
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-              >
-                <div className="pagebuilder-section-marker pointer-events-none absolute left-3 top-3 z-30 max-w-[calc(100%-1.5rem)] rounded border border-service-border bg-white/90 px-3 py-2 text-service-ink shadow-service backdrop-blur">
-                  <p className="type-caption font-semibold text-service-accent">
-                    {section.mode}
-                  </p>
-                  <p className="mt-1 text-xs font-semibold">{section.name}</p>
-                </div>
-                {previewCatalog[section.component] ??
-                  previewSections[activeRecipeIndex]?.[
-                    section.originalIndex
-                  ] ??
-                  null}
+              <div className="relative" key={`${section.id}-${nextSection.id}`}>
+                {renderSectionFrame(section, {
+                  className: "absolute inset-x-0 top-0 z-20",
+                })}
+                {renderSectionFrame(nextSection)}
               </div>
             );
-          })}
+          }
+
+          if (
+            isPreviewHeroSection(section) &&
+            previousSection &&
+            isPreviewNavigationSection(previousSection)
+          ) {
+            return null;
+          }
+
+          return renderSectionFrame(section);
+        })}
       </PagebuilderPreviewWindow>
     );
   }
@@ -769,9 +869,8 @@ export function PagebuilderShell({
         <div className="grid h-full min-h-0 grid-cols-[22rem_minmax(0,1fr)] items-stretch gap-5 max-lg:h-auto max-lg:grid-cols-1">
           <aside className="grid h-full min-h-0 content-start gap-4 overflow-y-auto overscroll-contain pr-1 max-lg:h-auto max-lg:overflow-visible max-lg:pr-0">
             <div className="radius-medium order-1 border border-service-border bg-white p-5 shadow-service">
-              <p className="type-label text-service-accent">Pagebuilder</p>
-              <h1 className="type-heading-lg mt-eyebrow-heading-md text-service-ink">
-                Homepage section builder
+              <h1 className="type-heading-lg text-service-ink">
+                Page Builder
               </h1>
               <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
                 Choose, swap, reorder, and preview homepage sections while the
@@ -995,6 +1094,13 @@ export function PagebuilderShell({
                       type="button"
                     >
                       Focus Preview
+                    </button>
+                    <button
+                      className="radius-4 min-h-11 shrink-0 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                      onClick={refreshPreviewStyles}
+                      type="button"
+                    >
+                      Refresh Styles
                     </button>
                   </div>
 
@@ -1388,6 +1494,13 @@ export function PagebuilderShell({
                   );
                 })}
               </div>
+              <button
+                className="min-h-10 shrink-0 rounded border border-service-border bg-service-surface px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                onClick={refreshPreviewStyles}
+                type="button"
+              >
+                Refresh Styles
+              </button>
               <button
                 aria-label="Close preview"
                 className="flex size-10 shrink-0 items-center justify-center rounded border border-service-border bg-service-surface text-xl font-semibold leading-none text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"

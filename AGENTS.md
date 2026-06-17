@@ -88,6 +88,13 @@ Typography should scale smoothly where appropriate using responsive values or `c
 
 ---
 
+## Agent Skill Docs
+
+For task-specific workflows, reference files in `.agents/skills/`.
+
+- Intake analysis → `.agents/skills/intake-to-website-content-map.md`
+---
+
 ## Motion / Animation Rules
 
 Use CSS/Tailwind transitions for simple hover, color, opacity, and transform effects.

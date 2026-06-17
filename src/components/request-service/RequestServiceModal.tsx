@@ -111,7 +111,11 @@ const appointmentWindowOptions = [
 const modalFieldClass =
   "radius-button min-h-12 border border-service-border bg-white px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent";
 
-const modalLabelClass = "grid gap-2 type-caption font-semibold text-service-ink";
+const modalLabelClass =
+  "grid content-start gap-2 type-caption font-semibold text-service-ink";
+
+const modalSelectClass =
+  "radius-button min-h-12 border border-service-border bg-service-surface px-4 type-text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent";
 
 const modalButtonClass =
   "radius-button inline-flex min-h-10 cursor-pointer items-center justify-center px-5 type-caption font-semibold transition-colors disabled:cursor-not-allowed";
@@ -668,7 +672,7 @@ function RequestServiceModal({
             <StepIndicator currentStep={step} />
             <h2
               id="request-service-title"
-              className="type-heading-sm mt-eyebrow-heading-sm max-w-none text-service-ink"
+              className="type-heading-xl mt-eyebrow-heading-sm max-w-none text-service-ink"
             >
               {step === 1
                 ? "What do you need help with?"
@@ -687,15 +691,15 @@ function RequestServiceModal({
           </button>
               </div>
 
-              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-[var(--container-gutter)] max-md:p-5">
+              <div className="grid min-h-0 flex-1 place-items-center overflow-y-auto overscroll-contain p-[var(--container-gutter)] max-md:p-5">
           {step === 1 ? (
-            <div className="flex min-h-full items-center">
-              <div className="grid w-full layout-gap-xlrg md:grid-cols-2">
-              <div className="fluid-type-frame min-w-0">
-                <h3 className="type-heading-sm text-service-ink">
+            <div className="flex w-full justify-center">
+              <div className="grid w-full max-w-xl justify-items-center layout-gap-lrg">
+              <div className="fluid-type-frame w-full max-w-md">
+                <h3 className="sr-only">
                   What system needs help?
                 </h3>
-                <div className="mt-heading-body-md grid grid-cols-2 card-grid-gap-med max-sm:grid-cols-1">
+                <div className="grid grid-cols-2 card-grid-gap-med max-sm:grid-cols-1">
                   {systemOptions.map((option) => (
                     <OptionButton
                       isSelected={systemType === option.value}
@@ -710,11 +714,11 @@ function RequestServiceModal({
                 </div>
               </div>
 
-              <div className="fluid-type-frame min-w-0">
-                <h3 className="type-heading-sm text-service-ink">
+              <div className="fluid-type-frame w-full max-w-md">
+                <h3 className="sr-only">
                   What do you need?
                 </h3>
-                <div className="mt-heading-body-md grid grid-cols-2 card-grid-gap-med max-sm:grid-cols-1">
+                <div className="grid grid-cols-2 card-grid-gap-med max-sm:grid-cols-1">
                   {requestOptions.map((option) => (
                     <OptionButton
                       isSelected={requestType === option.value}
@@ -733,11 +737,11 @@ function RequestServiceModal({
           ) : null}
 
           {step === 2 ? (
-            <div className="fluid-type-frame">
-              <h3 className="type-heading-sm text-service-ink">
+            <div className="fluid-type-frame w-full max-w-3xl">
+              <h3 className="sr-only">
                 What is going on?
               </h3>
-              <div className="mt-heading-body-md grid grid-cols-2 card-grid-gap-med max-sm:grid-cols-1">
+              <div className="grid grid-cols-2 card-grid-gap-med max-sm:grid-cols-1">
                 {problemOptions.map((option) => (
                   <OptionButton
                     isSelected={problemType === option}
@@ -761,7 +765,7 @@ function RequestServiceModal({
           ) : null}
 
           {step === 3 ? (
-            <div className="grid card-grid-gap-med md:grid-cols-2">
+            <div className="grid w-full max-w-3xl card-grid-gap-med md:grid-cols-2">
               <label className={modalLabelClass}>
                 Name
                 <input
@@ -788,9 +792,6 @@ function RequestServiceModal({
 
               <label className={modalLabelClass}>
                 Email
-                <span className="type-caption font-medium text-service-muted">
-                  Optional, but recommended.
-                </span>
                 <input
                   autoComplete="email"
                   className={`${modalFieldClass} font-normal`}
@@ -804,15 +805,16 @@ function RequestServiceModal({
                 ZIP code
                 <input
                   autoComplete="postal-code"
-                  className={`${modalFieldClass} font-normal`}
+                  className={`${modalFieldClass} w-full max-w-44 font-normal`}
                   inputMode="numeric"
+                  maxLength={10}
                   type="text"
                   value={zipCode}
                   onChange={(event) => setZipCode(event.target.value)}
                 />
               </label>
 
-              <label className="grid gap-2 type-caption font-semibold text-service-ink md:col-span-2">
+              <label className={modalLabelClass}>
                 Street address
                 <input
                   autoComplete="street-address"
@@ -823,64 +825,80 @@ function RequestServiceModal({
                 />
               </label>
 
-              <div className="md:col-span-2">
-                <p className="type-caption font-semibold text-service-ink">
-                  What type of property is this?
-                </p>
-                <div className="mt-heading-body-sm grid grid-cols-2 card-grid-gap-med max-sm:grid-cols-1">
+              <label className={modalLabelClass}>
+                What type of property is this?
+                <select
+                  className={modalSelectClass}
+                  value={propertyType}
+                  onChange={(event) => setPropertyType(event.target.value)}
+                >
+                  <option value="">Select property type</option>
                   {propertyTypeOptions.map((option) => (
-                    <OptionButton
-                      isSelected={propertyType === option}
-                      key={option}
-                      label={option}
-                      onClick={() => setPropertyType(option)}
-                    />
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
                   ))}
-                </div>
-              </div>
-
-              <div className="md:col-span-2">
-                <p className="type-caption font-semibold text-service-ink">
-                  When would you like help?
-                </p>
-                <div className="mt-heading-body-sm grid grid-cols-2 card-grid-gap-med max-sm:grid-cols-1">
-                  {appointmentWindowOptions.map((option) => (
-                    <OptionButton
-                      isSelected={appointmentWindow === option}
-                      key={option}
-                      label={option}
-                      onClick={() => setAppointmentWindow(option)}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="md:col-span-2">
-                <p className="type-caption font-semibold text-service-ink">
-                  How should we contact you?
-                </p>
-                <div className="mt-heading-body-sm grid grid-cols-3 card-grid-gap-med max-sm:grid-cols-1">
-                  {contactOptions.map((option) => (
-                    <OptionButton
-                      isSelected={preferredContactMethod === option.value}
-                      key={option.value}
-                      label={option.label}
-                      onClick={() => setPreferredContactMethod(option.value)}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <label className="radius-medium flex gap-3 border border-service-border bg-service-surface p-4 type-text-sm font-medium text-service-ink md:col-span-2">
-                <input
-                  className="mt-1 size-4 shrink-0 accent-service-accent"
-                  required
-                  type="checkbox"
-                  checked={contactConsent}
-                  onChange={(event) => setContactConsent(event.target.checked)}
-                />
-                I agree to be contacted about my service request.
+                </select>
               </label>
+
+              <label className={modalLabelClass}>
+                When would you like help?
+                <select
+                  className={modalSelectClass}
+                  value={appointmentWindow}
+                  onChange={(event) => setAppointmentWindow(event.target.value)}
+                >
+                  <option value="">Select timing</option>
+                  {appointmentWindowOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <div className="flex flex-wrap items-end gap-x-6 gap-y-3 md:col-span-2">
+                <div>
+                  <p className="type-caption font-semibold text-service-ink">
+                    Preferred contact method
+                  </p>
+                  <div className="mt-heading-body-sm flex flex-wrap gap-2">
+                    {contactOptions.map((option) => (
+                      <label
+                        className={`radius-button inline-flex min-h-9 cursor-pointer items-center gap-2 border px-3 type-caption font-semibold transition-colors ${
+                          preferredContactMethod === option.value
+                            ? "border-service-accent bg-service-accent text-white"
+                            : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent"
+                        }`}
+                        key={option.value}
+                      >
+                        <input
+                          checked={preferredContactMethod === option.value}
+                          className="size-3.5 shrink-0 accent-current"
+                          type="checkbox"
+                          onChange={(event) =>
+                            setPreferredContactMethod(
+                              event.target.checked ? option.value : "",
+                            )
+                          }
+                        />
+                        {option.label}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <label className="radius-button inline-flex min-h-9 cursor-pointer items-center gap-2 border border-service-border bg-white px-3 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent">
+                  <input
+                    checked={contactConsent}
+                    className="size-3.5 shrink-0 accent-service-accent"
+                    required
+                    type="checkbox"
+                    onChange={(event) => setContactConsent(event.target.checked)}
+                  />
+                  I agree to be contacted about my service request.
+                </label>
+              </div>
 
               {submitError ? (
                 <p
