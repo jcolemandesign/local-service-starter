@@ -135,8 +135,8 @@ export default async function OwnerDashboardPage({
   const latestIntakeDate = projectIntakes[0]?.created_at ?? null;
 
   return (
-    <main className="min-h-screen bg-bg-page text-service-ink">
-      <header className="sticky top-0 z-50 border-b border-service-border bg-white/95 backdrop-blur">
+    <main className="min-h-screen bg-service-surface text-service-ink">
+      <header className="sticky top-0 z-50 border-b border-service-border bg-bg-page/92 backdrop-blur">
         <Container>
           <div className="flex min-h-16 items-center justify-between layout-gap-med py-4 max-md:flex-col max-md:items-start">
             <Link
@@ -167,60 +167,78 @@ export default async function OwnerDashboardPage({
 
       <Section className="pb-12">
         <Container>
-          <p className="type-label text-service-accent">
-            Owner dashboard
-          </p>
-          <div className="mt-eyebrow-heading-lg grid layout-gap-xlrg max-lg:grid-cols-1 lg:grid-cols-[1fr_auto] lg:items-end">
-            <div className="fluid-type-frame">
-              <h1 className="type-heading-xl text-service-ink">
-                Client intake submissions
-              </h1>
-              <p className="type-text-lg mt-heading-body-md text-service-muted">
-                Review the project briefs submitted through the reusable client
-                intake flow.
-              </p>
+          <div className="radius-surface overflow-hidden border border-service-border bg-white shadow-service">
+            <div className="grid layout-gap-xlrg bg-service-ink p-[var(--container-gutter)] text-white max-lg:grid-cols-1 lg:grid-cols-[1fr_auto] lg:items-end">
+              <div className="fluid-type-frame">
+                <p className="type-label text-white/70">
+                  Owner dashboard
+                </p>
+                <h1 className="type-heading-xl mt-eyebrow-heading-lg">
+                  Client intake submissions
+                </h1>
+                <p className="type-text-lg mt-heading-body-md max-w-3xl text-white/72">
+                  Review, prioritize, and promote project briefs from the
+                  reusable client intake flow.
+                </p>
+              </div>
+              <Link
+                className="radius-button inline-flex min-h-12 w-fit items-center justify-center border border-white bg-white px-6 type-caption font-semibold text-service-ink transition-colors hover:bg-service-surface"
+                href="/client-intake"
+                rel="noreferrer"
+                target="_blank"
+              >
+                View intake flow
+              </Link>
             </div>
-            <Link
-              className="radius-button inline-flex min-h-12 w-fit items-center justify-center border border-service-border bg-white px-6 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-              href="/client-intake"
-              rel="noreferrer"
-              target="_blank"
-            >
-              View intake flow
-            </Link>
-          </div>
 
-          <div className="mt-body-actions-lg grid card-grid-gap-med max-md:grid-cols-1 md:grid-cols-3">
-            <DashboardStat label="Total intakes" value={String(totalIntakes)} />
-            <DashboardStat label="Needs review" value={String(newIntakes)} />
-            <DashboardStat
-              label="Latest intake date"
-              value={formatDate(latestIntakeDate)}
-            />
+            <div className="grid border-t border-service-border bg-white max-md:grid-cols-1 md:grid-cols-3">
+              <DashboardStat label="Total intakes" value={String(totalIntakes)} />
+              <DashboardStat label="Needs review" value={String(newIntakes)} />
+              <DashboardStat
+                label="Latest intake date"
+                value={formatDate(latestIntakeDate)}
+              />
+            </div>
           </div>
         </Container>
       </Section>
 
       <section className="pb-24 max-lg:pb-20 max-md:pb-16">
         <Container>
-          {error ? (
-            <Card className="border-red-200 bg-red-50 p-[var(--container-gutter)] text-red-700">
-              <h2 className="type-heading-md">
-                Could not load project intakes.
+          <div className="grid layout-gap-lrg max-lg:grid-cols-1 lg:grid-cols-[0.28fr_1fr] lg:items-start">
+            <div className="fluid-type-frame">
+              <p className="type-label text-service-accent">Pipeline</p>
+              <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                Promoted briefs need a cleaner read.
               </h2>
-              <p className="type-text-md mt-heading-body-sm">{error.message}</p>
-            </Card>
-          ) : null}
+              <p className="type-text-md mt-heading-body-sm text-service-muted">
+                Filters, contact details, answers, and status updates now follow
+                the same card, spacing, and type hierarchy as the style guide.
+              </p>
+            </div>
+            <div>
+              {error ? (
+                <Card className="border-red-200 bg-red-50 p-[var(--container-gutter)] text-red-700">
+                  <h2 className="type-heading-md">
+                    Could not load project intakes.
+                  </h2>
+                  <p className="type-text-md mt-heading-body-sm">
+                    {error.message}
+                  </p>
+                </Card>
+              ) : null}
 
-          {!error ? (
-            <ProjectIntakeDashboard
-              intakeSaveState={intakeSaveState}
-              projectIntakes={projectIntakes}
-              savedIntakeId={savedIntakeId}
-              statusOptions={statusOptions}
-              updateProjectIntake={updateProjectIntake}
-            />
-          ) : null}
+              {!error ? (
+                <ProjectIntakeDashboard
+                  intakeSaveState={intakeSaveState}
+                  projectIntakes={projectIntakes}
+                  savedIntakeId={savedIntakeId}
+                  statusOptions={statusOptions}
+                  updateProjectIntake={updateProjectIntake}
+                />
+              ) : null}
+            </div>
+          </div>
         </Container>
       </section>
     </main>
@@ -235,13 +253,13 @@ function DashboardStat({
   value: string;
 }) {
   return (
-    <Card className="p-[var(--container-gutter)]">
-      <p className="type-label text-service-accent">
+    <div className="p-[var(--container-gutter)] [&+&]:border-l [&+&]:border-service-border max-md:[&+&]:border-l-0 max-md:[&+&]:border-t">
+      <p className="type-label text-service-muted">
         {label}
       </p>
       <p className="type-heading-lg mt-heading-body-sm text-service-ink">
         {value}
       </p>
-    </Card>
+    </div>
   );
 }

@@ -10,14 +10,14 @@ const menuEase = [0.22, 1, 0.36, 1] as const;
 
 type NavLink = {
   label: string;
-  items?: string[];
+  items?: readonly string[];
 };
 
 type NavPrimarySectionV2Props = {
   logoLabel: string;
   phone: string;
   action: string;
-  links: NavLink[];
+  links: readonly NavLink[];
 };
 
 type NavPrimaryLayout = "default" | "centerLogo";
@@ -110,6 +110,7 @@ function NavPrimaryLayoutSection({
   links,
   layout,
 }: NavPrimarySectionV2Props & { layout: NavPrimaryLayout }) {
+  const phoneHref = `tel:${phone.replace(/\D/g, "")}`;
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [lockActive, setLockActive] = useState(false);
@@ -269,7 +270,7 @@ function NavPrimaryLayoutSection({
         </button>
 
         <div className="flex shrink-0 items-center gap-3 justify-self-end max-lg:hidden">
-          <Button className="gap-2 px-5" href="tel:5550142250" variant="secondary">
+          <Button className="gap-2 px-5" href={phoneHref} variant="secondary">
             <PhoneIcon />
             {phone}
           </Button>
@@ -329,7 +330,7 @@ function NavPrimaryLayoutSection({
                       "radius-medium",
                       "inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 whitespace-nowrap border border-white/25 bg-transparent px-5 text-sm font-semibold text-white transition-colors hover:border-white hover:text-white",
                     )}
-                    href="tel:5550142250"
+                    href={phoneHref}
                   >
                     <PhoneIcon />
                     {phone}

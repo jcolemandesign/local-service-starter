@@ -111,11 +111,11 @@ const sectionSwapOptions = [
     name: "Floating bento navigation",
   },
   {
-    component: "HeroBentoSectionV2",
+    component: "HeroSplitFullHeightSectionV3",
     instruction:
       "Use h1, one primary booking CTA, one services CTA, and three compact trust stats beside a full-height image column.",
     mode: "Hero",
-    name: "Split hero image right full height",
+    name: "Split content and image",
   },
   {
     component: "HeroFullscreenSectionV2",
@@ -989,6 +989,13 @@ export function PagebuilderShell({
                         {activeRecipe.positioning}
                       </p>
                     </div>
+                    <button
+                      className="radius-4 min-h-11 shrink-0 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent"
+                      onClick={() => setIsPreviewOpen(true)}
+                      type="button"
+                    >
+                      Focus Preview
+                    </button>
                   </div>
 
                   <div className="mt-3 flex flex-wrap gap-1.5">
@@ -1062,7 +1069,7 @@ export function PagebuilderShell({
                       id="pagebuilder-rendered-preview-panel"
                       role="region"
                     >
-                      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 rounded border border-service-border bg-service-surface p-4 max-md:grid-cols-1">
+                      <div className="rounded border border-service-border bg-service-surface p-4">
                         <div className="min-w-0">
                           <p className="text-sm font-semibold text-service-ink">
                             {selectedViewport.sizeLabel}
@@ -1072,13 +1079,6 @@ export function PagebuilderShell({
                             reorder, or toggle them from the controls.
                           </p>
                         </div>
-                        <button
-                          className="radius-4 min-h-11 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent"
-                          onClick={() => setIsPreviewOpen(true)}
-                          type="button"
-                        >
-                          Focus Preview
-                        </button>
                       </div>
 
                       <div className="mt-4 h-[72svh] min-h-[36rem] overflow-hidden rounded border border-service-border bg-service-surface p-3 max-md:h-[68svh] max-md:min-h-[28rem] max-sm:min-h-[24rem]">

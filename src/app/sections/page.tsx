@@ -3,13 +3,11 @@ import { Container } from "@/components/primitives";
 import {
   ContentAboutCompanySectionV2,
   ContentFixedCoverFadeSectionV2,
-  ContentFourColumnScrollSectionV2,
   ContentHorizontalCardCarouselSectionV2,
   ContentPositioningSplitSectionV2,
   ContentRevealParagraphSectionV2,
   ContentRuleHeaderSectionV2,
   ContentScrollWrittenRevealSectionV2,
-  ContentStickyImagePanelSectionV3,
   ContentStickyCardStreamSectionV2,
   ContentStickyIdeasSectionV2,
   ContentSplitHeadlineImageSectionV2,
@@ -25,7 +23,6 @@ import {
   FeatureOverlapRowsSectionV3,
   FeaturePortraitParagraphSectionV3,
   FooterSectionV3,
-  HeroBentoSectionV2,
   HeroCenteredFloatersSectionV2,
   HeroContentTopImageBottomSectionV2,
   HeroFullscreenSectionV2,
@@ -48,13 +45,10 @@ import {
   TestimonialsMasonrySectionV3,
   TestimonialsSectionV2,
   TestimonialsSectionV3,
-  TrustBarSection,
   TrustBarFloatingBentoSectionV3,
   TrustBarSectionV3,
   TrustLogoGridSection,
   TrustLogoGridSectionV3,
-  TrustLogoMarqueeSection,
-  TrustLogoMarqueeSectionV3,
   TrustMarqueeSection,
   TrustMarqueeSectionV3,
 } from "@/components/sections";
@@ -63,6 +57,7 @@ import {
   sectionLibraryV3Collections,
   sectionLibraryV3Content,
 } from "@/content/section-library-v3";
+import { StyleGuideCloseAllButton } from "@/components/sections/StyleGuideCloseAllButton";
 import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 
 export const metadata: Metadata = {
@@ -80,12 +75,6 @@ const sectionElements = {
   ),
   "nav-floating-bento-v2": (
     <NavFloatingBentoSectionV2 {...sectionLibraryV3Content.navPrimary} />
-  ),
-  "hero-bento-v2": (
-    <HeroBentoSectionV2
-      {...sectionLibraryV3Content.hero}
-      headingLevel={2}
-    />
   ),
   "hero-fullscreen-v2": (
     <HeroFullscreenSectionV2
@@ -109,11 +98,6 @@ const sectionElements = {
     <HeroContentTopImageBottomSectionV2
       {...sectionLibraryV3Content.hero}
       headingLevel={2}
-    />
-  ),
-  "content-sticky-image-panel-v3": (
-    <ContentStickyImagePanelSectionV3
-      {...sectionLibraryV3Content.contentStickyImagePanel}
     />
   ),
   "content-positioning-split-v2": (
@@ -159,11 +143,6 @@ const sectionElements = {
   "content-horizontal-card-carousel-v2": (
     <ContentHorizontalCardCarouselSectionV2
       {...sectionLibraryV3Content.contentHorizontalCardCarousel}
-    />
-  ),
-  "content-four-column-scroll-v2": (
-    <ContentFourColumnScrollSectionV2
-      {...sectionLibraryV3Content.contentFourColumnScroll}
     />
   ),
   "content-fixed-cover-fade-v2": (
@@ -254,9 +233,6 @@ const sectionElements = {
   ),
   "contact-v3": <ContactSectionV3 {...sectionLibraryV3Content.contact} />,
   "footer-v3": <FooterSectionV3 {...sectionLibraryV3Content.footer} />,
-  "trust-bar-legacy": (
-    <TrustBarSection {...sectionLibraryV3Content.trustBar} />
-  ),
   "trust-bar-v3": (
     <TrustBarSectionV3 {...sectionLibraryV3Content.trustBar} />
   ),
@@ -270,14 +246,6 @@ const sectionElements = {
   ),
   "trust-marquee-legacy": (
     <TrustMarqueeSection {...sectionLibraryV3Content.trustMarquee} />
-  ),
-  "trust-logo-marquee-legacy": (
-    <TrustLogoMarqueeSection {...sectionLibraryV3Content.trustLogoMarquee} />
-  ),
-  "trust-logo-marquee-v3": (
-    <TrustLogoMarqueeSectionV3
-      {...sectionLibraryV3Content.trustLogoMarquee}
-    />
   ),
   "trust-logo-grid-legacy": (
     <TrustLogoGridSection {...sectionLibraryV3Content.trustLogoMarquee} />
@@ -335,6 +303,7 @@ export default function SectionsV3Page() {
         </section>
 
         <SectionLibraryV3Accordions collections={collections} />
+        <StyleGuideCloseAllButton />
       </main>
     </StyleGuidePreviewSurface>
   );

@@ -49,7 +49,7 @@ export function HeroBentoSectionV2({
         <SevenColumnGridItem
           alignX="left"
           alignY="middle"
-          className="col-span-3 row-start-1 h-full min-h-0 bg-service-surface p-8 text-service-ink max-lg:col-span-7 max-lg:row-auto max-md:p-6"
+          className="radius-medium col-span-3 row-start-1 h-full min-h-0 bg-service-surface p-8 text-service-ink max-lg:col-span-7 max-lg:row-auto max-md:p-6"
         >
           <div className="fluid-type-frame w-full measure-copy-wide">
             <p className="type-label text-service-accent">{eyebrow}</p>

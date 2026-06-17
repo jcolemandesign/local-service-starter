@@ -229,55 +229,20 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
-  contentFourColumnScroll: {
-    items: [
-      {
-        symbol: "+",
-        title: "Clear request path",
-        body: "Keep the next step visible without making the page feel loud or urgent.",
-      },
-      {
-        symbol: "+",
-        title: "Proof sits close to the promise",
-        body: "Use the wider columns for details that need a little more room, like process notes, trust points, or practical expectations.",
-      },
-      {
-        symbol: "+",
-        title: "Quiet visual weight",
-        body: "Small symbols give the card rhythm without turning the section into an icon set.",
-      },
-      {
-        symbol: "+",
-        title: "A mid-page pause with enough structure to scan",
-        body: "The full rounded container creates a contained moment between heavier sections while the uneven columns keep the layout from feeling too uniform.",
-      },
-    ],
-  },
-  contentStickyImagePanel: {
-    eyebrow: "Field notes",
-    title: "One focused message travels inside a full-height image.",
-    body: "Use this pattern when an image should carry the atmosphere of the section while a compact square content block stays readable through the scroll.",
-    imageLabel: "Full-height service image",
-    points: [
-      "Sticky within image bounds",
-      "Offset near the right edge",
-      "Releases at the image bottom",
-    ],
-  },
   contentFixedCoverFade: {
-    backgroundEyebrow: "Transition",
-    backgroundTitle: "A fixed idea gives way to the next layer.",
+    backgroundEyebrow: "Ready when you are",
+    backgroundTitle: "Let the final message hold before the request path rises.",
     backgroundBody:
-      "Use this pattern when one atmospheric message should hold the viewport while the next section rises up and takes over the page.",
-    backgroundLabel: "Fixed background",
-    foregroundEyebrow: "Next section",
-    foregroundTitle: "The follow-up content slides above the scene.",
+      "Use this conversion pattern when the page needs a cinematic close: one steady promise, then a contact form that covers the scene and turns attention into action.",
+    backgroundLabel: "Closing CTA",
+    foregroundEyebrow: "Contact",
+    foregroundTitle: "Tell us what you need and we will follow up clearly.",
     foregroundBody:
-      "As the lower section covers the background, the original message fades back so the transition feels intentional instead of abrupt.",
+      "A compact final request moment for service pages that need a stronger close than a standard contact block.",
     items: [
-      "Sticky full-viewport background",
-      "Foreground section naturally covers it",
-      "Background copy fades with scroll",
+      "(555) 014-2250",
+      "hello@examplelocal.com",
+      "Mon-Fri, 8am-6pm",
     ],
   },
   contentPositioningSplit: {
@@ -864,7 +829,6 @@ export const sectionLibraryV3Collections = [
   {
     title: "Hero",
     items: [
-      { label: "Bento hero", component: "hero-bento-v2" },
       { label: "Fullscreen hero", component: "hero-fullscreen-v2" },
       {
         label: "Centered hero with floaters",
@@ -921,10 +885,6 @@ export const sectionLibraryV3Collections = [
         component: "content-horizontal-card-carousel-v2",
       },
       {
-        label: "Four column scroll",
-        component: "content-four-column-scroll-v2",
-      },
-      {
         label: "3 service cards right",
         component: "services-three-cards-right-v3",
       },
@@ -933,41 +893,22 @@ export const sectionLibraryV3Collections = [
   {
     title: "Trust",
     items: [
-      { label: "Legacy trust bar", component: "trust-bar-legacy" },
       { label: "Trust bar", component: "trust-bar-v3" },
       {
         label: "Floating bento trust bar",
         component: "trust-bar-floating-bento-v3",
       },
-      { label: "Legacy trust marquee", component: "trust-marquee-legacy" },
+      { label: "Marquee card", component: "trust-marquee-legacy" },
       { label: "Trust marquee", component: "trust-marquee-v3" },
-      {
-        label: "Legacy trust logo marquee",
-        component: "trust-logo-marquee-legacy",
-      },
-      { label: "Trust logo marquee", component: "trust-logo-marquee-v3" },
       { label: "Legacy trust logo grid", component: "trust-logo-grid-legacy" },
       { label: "Static trust logo grid", component: "trust-logo-grid-v3" },
-    ],
-  },
-  {
-    title: "Effects",
-    items: [
-      {
-        label: "Fixed cover fade",
-        component: "content-fixed-cover-fade-v2",
-      },
-      {
-        label: "Sticky image panel content",
-        component: "content-sticky-image-panel-v3",
-      },
     ],
   },
   {
     title: "Features",
     items: [
       {
-        label: "Large portrait image, large paragraph",
+        label: "Editorial portrait",
         component: "feature-portrait-paragraph-v3",
       },
       {
@@ -1024,6 +965,10 @@ export const sectionLibraryV3Collections = [
       {
         label: "Scroll reveal offer conversion",
         component: "cta-scroll-reveal-offer-v3",
+      },
+      {
+        label: "Fixed cover fade",
+        component: "content-fixed-cover-fade-v2",
       },
     ],
   },

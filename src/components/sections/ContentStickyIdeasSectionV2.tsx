@@ -9,8 +9,8 @@ import {
 type ContentStickyIdeasSectionV2Props = {
   eyebrow: string;
   title: string;
-  paragraphs: string[];
-  ideas: string[];
+  paragraphs: readonly string[];
+  ideas: readonly string[];
 };
 
 function cx(...classes: Array<string | undefined>) {
@@ -24,7 +24,7 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-function ImportantIdeasBoxV2({ ideas }: { ideas: string[] }) {
+function ImportantIdeasBoxV2({ ideas }: { ideas: readonly string[] }) {
   const boxRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<number | null>(null);
   const [offset, setOffset] = useState(0);

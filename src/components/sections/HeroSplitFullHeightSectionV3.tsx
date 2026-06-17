@@ -14,6 +14,7 @@ export type HeroSplitFullHeightVariant =
 type HeroSplitFullHeightSectionV3Props = {
   body: string;
   eyebrow: string;
+  headingLevel?: 1 | 2;
   imageAlt: string;
   imageSrc: string;
   primaryAction: string;
@@ -87,6 +88,7 @@ function cx(...classes: Array<string | undefined>) {
 export function HeroSplitFullHeightSectionV3({
   body,
   eyebrow,
+  headingLevel = 1,
   imageAlt,
   imageSrc,
   primaryAction,
@@ -96,6 +98,7 @@ export function HeroSplitFullHeightSectionV3({
   variant = "text-3-image-4-right",
 }: HeroSplitFullHeightSectionV3Props) {
   const config = variantConfig[variant];
+  const HeadingTag = `h${headingLevel}` as const;
   const isTextFourImageThree = variant === "text-4-image-3-right";
 
   return (
@@ -111,14 +114,14 @@ export function HeroSplitFullHeightSectionV3({
         >
           <div className="fluid-type-frame w-full">
             <p className="type-label text-service-accent">{eyebrow}</p>
-            <h2
+            <HeadingTag
               className={cx(
                 "mt-eyebrow-display text-service-ink",
                 isTextFourImageThree ? "type-display-xl" : "type-display-lg",
               )}
             >
               {title}
-            </h2>
+            </HeadingTag>
             <p
               className={cx(
                 "type-text-xl wrap-pretty mt-display-body text-service-muted",

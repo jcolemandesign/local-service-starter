@@ -72,39 +72,94 @@ export function ContentFixedCoverFadeSectionV2({
             alignY="middle"
             className="col-span-3 max-lg:col-span-7"
           >
-          <div className="fluid-type-frame">
-            <p className="type-label text-service-accent">
-              {foregroundEyebrow}
-            </p>
-            <h3 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
-              {foregroundTitle}
-            </h3>
-          </div>
+            <div className="fluid-type-frame">
+              <p className="type-label text-service-accent">
+                {foregroundEyebrow}
+              </p>
+              <h3 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
+                {foregroundTitle}
+              </h3>
+              <p className="type-text-xl measure-copy wrap-pretty mt-display-body text-service-muted">
+                {foregroundBody}
+              </p>
+              <ul className="mt-body-actions-md grid card-grid-gap-sml">
+                {items.map((item) => (
+                  <li
+                    className="type-text-sm border-l border-service-border pl-4 font-semibold text-service-ink"
+                    key={item}
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </SevenColumnGridItem>
 
           <SevenColumnGridItem
             alignY="middle"
             className="col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1"
           >
-          <div className="fluid-type-frame">
-            <p className="type-text-xl measure-lead wrap-pretty text-service-muted">
-              {foregroundBody}
-            </p>
-            <ul className="mt-body-actions-lg grid card-grid-gap-med">
-              {items.map((item) => (
-                <li
+            <form
+              className="fluid-type-frame radius-medium grid card-grid-gap-med border border-service-border bg-service-surface p-8 shadow-service max-md:p-6"
+            >
+              <label
+                className={cx(
+                  "type-text-sm",
+                  "grid gap-2 font-semibold text-service-ink",
+                )}
+              >
+                Name
+                <input
                   className={cx(
-                    "radius-medium",
-                    "border border-service-border bg-service-surface p-5",
-                    "type-text-md font-medium text-service-ink",
+                    "radius-4",
+                    "min-h-12 border border-service-border bg-white px-4 text-base font-normal outline-none transition-colors focus:border-service-accent",
                   )}
-                  key={item}
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
+                  placeholder="Jane Smith"
+                  type="text"
+                />
+              </label>
+              <label
+                className={cx(
+                  "type-text-sm",
+                  "grid gap-2 font-semibold text-service-ink",
+                )}
+              >
+                Service needed
+                <input
+                  className={cx(
+                    "radius-4",
+                    "min-h-12 border border-service-border bg-white px-4 text-base font-normal outline-none transition-colors focus:border-service-accent",
+                  )}
+                  placeholder="Repair, installation, maintenance"
+                  type="text"
+                />
+              </label>
+              <label
+                className={cx(
+                  "type-text-sm",
+                  "grid gap-2 font-semibold text-service-ink",
+                )}
+              >
+                Message
+                <textarea
+                  className={cx(
+                    "radius-4",
+                    "min-h-36 border border-service-border bg-white px-4 py-3 text-base font-normal outline-none transition-colors focus:border-service-accent",
+                  )}
+                  placeholder="Briefly describe the issue"
+                />
+              </label>
+              <button
+                className={cx(
+                  "radius-button",
+                  "type-label",
+                  "min-h-12 cursor-pointer bg-service-accent px-6 text-white transition-colors hover:bg-service-ink",
+                )}
+                type="button"
+              >
+                Request service
+              </button>
+            </form>
           </SevenColumnGridItem>
         </SevenColumnGrid>
       </div>

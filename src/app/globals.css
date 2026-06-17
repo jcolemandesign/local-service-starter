@@ -37,6 +37,7 @@
   --section-min-tall: 72rem;
   --section-min-screen: 100svh;
   --section-min-story: 140svh;
+  --section-min-sticky: 180svh;
   --card-min-short: 14rem;
   --card-min-medium: 20rem;
   --card-min-tall: 28rem;
@@ -233,6 +234,10 @@ body {
 
   .section-min-story {
     min-height: var(--section-min-story);
+  }
+
+  .section-min-sticky {
+    min-height: var(--section-min-sticky);
   }
 
   .section-min-active {
@@ -950,24 +955,24 @@ body {
   --radius-round-token: 9999px;
   --radius-surface-token: 24px;
   --radius-button-token: 8px;
-  --section-min-active: 100svh;
-  --section-space-vsml: 1.5rem;
-  --section-space-sml: 3rem;
-  --section-space-med: 4rem;
-  --section-space-lrg: 5rem;
-  --section-space-vsml-tablet: 1.5rem;
-  --section-space-sml-tablet: 3rem;
-  --section-space-med-tablet: 3.75rem;
-  --section-space-lrg-tablet: 4.5rem;
-  --section-space-vsml-mobile: 1.5rem;
-  --section-space-sml-mobile: 2.75rem;
-  --section-space-med-mobile: 3rem;
-  --section-space-lrg-mobile: 3rem;
+  --section-min-active: 140svh;
+  --section-space-vsml: 3rem;
+  --section-space-sml: 6rem;
+  --section-space-med: 9rem;
+  --section-space-lrg: 12rem;
+  --section-space-vsml-tablet: 2.5rem;
+  --section-space-sml-tablet: 5rem;
+  --section-space-med-tablet: 7rem;
+  --section-space-lrg-tablet: 8rem;
+  --section-space-vsml-mobile: 2.5rem;
+  --section-space-sml-mobile: 5rem;
+  --section-space-med-mobile: 5rem;
+  --section-space-lrg-mobile: 5.5rem;
   --semantic-spacing-scale: 1.5;
-  --container-gutter: clamp(1.5rem, 3vw, 2.5rem);
-  --site-grid-inset-block: clamp(2rem, 4vw, 7rem);
-  --site-grid-inset-inline: clamp(0.5rem, 3vw, 6rem);
-  --site-grid-gap: clamp(0.75rem, 1vw, 1.5rem);
+  --container-gutter: clamp(1rem, 2vw, 1.25rem);
+  --site-grid-inset-block: clamp(3rem, 6vw, 10rem);
+  --site-grid-inset-inline: clamp(1rem, 5vw, 10rem);
+  --site-grid-gap: clamp(0.375rem, 0.55vw, 0.75rem);
   --shadow-service: 3px 12px 43px rgb(168 141 122 / 0.07);
   --type-display-xl-font: "Zalando Sans SemiExpanded", var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --type-display-xl-size: clamp(3.5rem, calc(4.8611cqw + 2.3333rem), 7rem);

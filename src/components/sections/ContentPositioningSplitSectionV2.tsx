@@ -72,7 +72,7 @@ export function ContentPositioningSplitSectionV2({
                   "radius-medium",
                   "mt-10 inline-flex min-h-12 w-fit cursor-pointer items-center justify-center whitespace-nowrap border border-service-ink bg-transparent px-6 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent",
                 )}
-                href="#about"
+                href="#contact"
               >
                 {action}
               </a>

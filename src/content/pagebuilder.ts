@@ -122,8 +122,8 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
           "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
       },
       {
-        name: "Split hero image right full height",
-        component: "HeroBentoSectionV2",
+        name: "Split content and image",
+        component: "HeroSplitFullHeightSectionV3",
         mode: "Hero",
         instruction:
           "Use h1, one primary booking CTA, one services CTA, and three compact trust stats beside a full-height image column.",

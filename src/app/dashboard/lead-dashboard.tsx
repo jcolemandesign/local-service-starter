@@ -126,10 +126,10 @@ const leadFields = {
 };
 
 const fieldClass =
-  "radius-button min-h-12 border border-service-border bg-white px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent";
+  "radius-button min-h-12 border border-service-border bg-white px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent focus:bg-white";
 
 const filterFieldClass =
-  "radius-button min-h-12 border border-service-border bg-white px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent";
+  "radius-button min-h-12 border border-service-border bg-white px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent focus:bg-white";
 
 const labelClass =
   "grid gap-2 type-caption font-semibold text-service-ink";
@@ -146,13 +146,13 @@ const compactSecondaryButtonClass =
 const compactPrimaryButtonClass =
   "radius-button inline-flex min-h-12 w-full items-center justify-center whitespace-nowrap border border-service-accent bg-service-accent px-5 type-caption font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-full sm:w-auto";
 
-const dashboardCardPaddingClass = "p-[var(--container-gutter)]";
+const dashboardCardPaddingClass =
+  "border-service-border bg-white p-[var(--container-gutter)] shadow-service";
 const dashboardPanelClass =
   "radius-medium border border-service-border bg-service-surface p-[var(--container-gutter)]";
 const dashboardToggleClass =
-  "flex w-full cursor-pointer items-center justify-between border-t border-service-border pt-4 text-left type-label text-service-accent";
+  "flex w-full cursor-pointer items-center justify-between border-t border-service-border pt-4 text-left type-label text-service-accent transition-colors hover:text-service-ink";
 const dashboardMutedLabelClass = "type-label text-service-muted";
-const dashboardAccentLabelClass = "type-label text-service-accent";
 
 const statusPillClassByStatus: Record<string, string> = {
   booked: "bg-green-600 text-white",
@@ -227,6 +227,14 @@ function displayStringList(value: string[] | null | undefined) {
   }
 
   return value.filter(Boolean).join(", ") || "Not provided";
+}
+
+function displayStringItems(value: string[] | null | undefined) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter(Boolean);
 }
 
 function isBookedStatus(value: LeadValue) {
@@ -1053,6 +1061,7 @@ export function ProjectIntakeDashboard({
   const [sortBy, setSortBy] = useState<"created_at" | "oldest" | "business">(
     "created_at",
   );
+  const [copiedIntakeId, setCopiedIntakeId] = useState<string | null>(null);
   const [openIntakeIds, setOpenIntakeIds] = useState<Set<string>>(new Set());
 
   const statusFilterOptions = useMemo(
@@ -1109,9 +1118,41 @@ export function ProjectIntakeDashboard({
     });
   }
 
+  async function copyIntakeBrief(intake: ProjectIntake) {
+    const intakeId = String(intake.id);
+    const brief = formatProjectIntakeBrief(intake);
+
+    try {
+      if (!navigator.clipboard?.writeText) {
+        throw new Error("Clipboard API unavailable");
+      }
+
+      await navigator.clipboard.writeText(brief);
+    } catch {
+      copyTextWithTextareaFallback(brief);
+    }
+
+    setCopiedIntakeId(intakeId);
+    window.setTimeout(() => {
+      setCopiedIntakeId((current) => (current === intakeId ? null : current));
+    }, 1800);
+  }
+
   return (
     <>
       <Card className={dashboardCardPaddingClass}>
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-4 border-b border-service-border pb-5">
+          <div>
+            <p className="type-label text-service-accent">Controls</p>
+            <h2 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
+              Find the right project brief.
+            </h2>
+          </div>
+          <p className="type-caption font-semibold text-service-muted">
+            Showing {visibleIntakes.length} of {projectIntakes.length}
+          </p>
+        </div>
+
         <div className="grid card-grid-gap-med max-lg:grid-cols-2 max-md:grid-cols-1 lg:grid-cols-[1fr_0.65fr_0.65fr] lg:items-end">
           <label className={labelClass}>
             Search
@@ -1171,8 +1212,8 @@ export function ProjectIntakeDashboard({
           </button>
         </div>
 
-        <p className="mt-heading-body-md type-label text-service-muted">
-          Showing {visibleIntakes.length} of {projectIntakes.length} intakes
+        <p className="mt-heading-body-md type-caption font-semibold text-service-muted">
+          Filters apply to the intake cards below.
         </p>
       </Card>
 
@@ -1199,14 +1240,18 @@ export function ProjectIntakeDashboard({
       ) : null}
 
       {visibleIntakes.length > 0 ? (
-        <div className="mt-body-actions-md grid card-grid-gap-med">
+        <div className="mt-body-actions-md grid card-grid-gap-lrg">
           {visibleIntakes.map((intake) => {
             const intakeId = String(intake.id);
             const isDetailsOpen = openIntakeIds.has(intakeId);
+            const isCopied = copiedIntakeId === intakeId;
             const status = intake.status ?? "New";
 
             return (
-              <Card className={dashboardCardPaddingClass} key={intake.id}>
+              <Card
+                className={`${dashboardCardPaddingClass} overflow-hidden`}
+                key={intake.id}
+              >
                 <div className="grid layout-gap-med max-lg:grid-cols-1 lg:grid-cols-[1fr_auto] lg:items-start">
                   <div>
                     <div className="flex flex-wrap items-center inline-gap-med">
@@ -1225,6 +1270,13 @@ export function ProjectIntakeDashboard({
                   </div>
 
                   <div className="flex flex-col inline-gap-med sm:flex-row lg:justify-end">
+                    <button
+                      className={secondaryButtonClass}
+                      onClick={() => void copyIntakeBrief(intake)}
+                      type="button"
+                    >
+                      {isCopied ? "Copied" : "Copy brief"}
+                    </button>
                     {intake.contact_phone ? (
                       <a
                         className={primaryButtonClass}
@@ -1266,42 +1318,43 @@ export function ProjectIntakeDashboard({
                   </span>
                 </button>
 
-                <div className="mt-heading-body-md grid card-grid-gap-med border-t border-service-border pt-5 md:grid-cols-2 xl:grid-cols-4">
+                {isDetailsOpen ? (
+                  <ProjectIntakePayloadView payload={intake.payload} />
+                ) : null}
+
+                <div className="mt-heading-body-md grid card-grid-gap-med rounded-[var(--radius-md-token)] bg-service-surface p-5 md:grid-cols-2 xl:grid-cols-4">
                   <LeadDetail label="Contact" value={intake.contact_name} />
                   <LeadDetail label="Email" value={intake.contact_email} />
                   <LeadDetail label="Phone" value={intake.contact_phone} />
                   <LeadDetail label="Business type" value={intake.business_type} />
-                  <LeadDetail
+                  <LeadListDetail
+                    items={displayStringItems(intake.main_services)}
                     label="Main services"
-                    value={displayStringList(intake.main_services)}
                   />
-                  <LeadDetail
+                  <LeadListDetail
+                    items={displayStringItems(intake.preferred_cta)}
                     label="Preferred CTA"
-                    value={displayStringList(intake.preferred_cta)}
                   />
                   <LeadDetail
+                    className="md:col-span-2 xl:col-span-2"
                     label="Priority services"
                     value={intake.priority_services}
                   />
                   <LeadDetail label="Source" value={intake.source} />
                 </div>
 
-                <div className={`mt-heading-body-md ${dashboardPanelClass}`}>
+                <div className="mt-heading-body-md rounded-[var(--radius-md-token)] bg-service-surface p-5">
                   <p className={dashboardMutedLabelClass}>
                     Service area
                   </p>
-                  <p className="type-text-md mt-heading-body-sm whitespace-pre-line text-service-muted">
+                  <p className="type-text-sm mt-1 whitespace-pre-line text-service-ink">
                     {displayValue(intake.service_area)}
                   </p>
                 </div>
 
-                {isDetailsOpen ? (
-                  <ProjectIntakePayloadView payload={intake.payload} />
-                ) : null}
-
                 <form
                   action={updateProjectIntake}
-                  className={`mt-heading-body-md grid card-grid-gap-med ${dashboardPanelClass} max-lg:grid-cols-1 lg:grid-cols-[0.35fr_auto] lg:items-end`}
+                  className="mt-heading-body-md grid card-grid-gap-med rounded-[var(--radius-md-token)] border border-service-border bg-white p-5 max-lg:grid-cols-1 lg:grid-cols-[0.35fr_auto] lg:items-end"
                 >
                   <input name="intakeId" type="hidden" value={intakeId} />
                   <label className={labelClass}>
@@ -1362,29 +1415,199 @@ function ProjectIntakePayloadView({ payload }: { payload?: JsonValue }) {
   }
 
   return (
-    <div className="mt-heading-body-md grid card-grid-gap-med">
+    <div className={`mt-2 ${dashboardPanelClass}`}>
       {sections.map(([sectionName, sectionValue]) => (
-        <div
-          className="radius-medium border border-service-border bg-white p-[var(--container-gutter)]"
+        <section
+          className="border-b border-service-border pb-6 last:border-b-0 last:pb-0 [&+section]:mt-6"
           key={sectionName}
         >
-          <h3 className={dashboardAccentLabelClass}>
+          <h3 className="type-text-sm font-semibold text-service-ink">
             {formatAnswerLabel(sectionName)}
           </h3>
-          <div className="mt-heading-body-md grid card-grid-gap-med md:grid-cols-2">
+          <div className="mt-1 grid gap-x-6 gap-y-4 md:grid-cols-2">
             {Object.entries(sectionValue as Record<string, JsonValue>).map(
               ([answerKey, answerValue]) => (
-                <LeadDetail
+                <ProjectIntakeAnswerDetail
                   key={answerKey}
                   label={formatAnswerLabel(answerKey)}
-                  value={formatAnswerValue(answerValue)}
+                  value={answerValue}
                 />
               ),
             )}
           </div>
-        </div>
+        </section>
       ))}
     </div>
+  );
+}
+
+function formatProjectIntakeBrief(intake: ProjectIntake) {
+  const lines: string[] = [];
+
+  lines.push("CLIENT INTAKE BRIEF");
+  addBriefLine(lines, "Business", intake.business_name);
+  addBriefLine(lines, "Status", intake.status);
+  addBriefLine(lines, "Submitted", formatDate(intake.created_at));
+  addBriefLine(lines, "Contact", intake.contact_name);
+  addBriefLine(lines, "Email", intake.contact_email);
+  addBriefLine(lines, "Phone", intake.contact_phone);
+  addBriefLine(lines, "Website", intake.website);
+  addBriefLine(lines, "Business type", intake.business_type);
+  addBriefLine(lines, "Main services", displayStringList(intake.main_services));
+  addBriefLine(lines, "Preferred CTA", displayStringList(intake.preferred_cta));
+  addBriefLine(lines, "Priority services", intake.priority_services);
+  addBriefLine(lines, "Service area", intake.service_area);
+  addBriefLine(lines, "Source", intake.source);
+
+  const payloadLines = formatProjectIntakePayloadForCopy(intake.payload);
+
+  if (payloadLines.length > 0) {
+    lines.push("", "INTAKE ANSWERS", ...payloadLines);
+  }
+
+  return lines.join("\n");
+}
+
+function addBriefLine(
+  lines: string[],
+  label: string,
+  value: LeadValue | string,
+) {
+  const formatted = displayValue(value);
+
+  if (formatted === "Not provided") {
+    return;
+  }
+
+  lines.push(`${label}: ${formatted}`);
+}
+
+function formatProjectIntakePayloadForCopy(payload?: JsonValue) {
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+    return [];
+  }
+
+  const lines: string[] = [];
+
+  Object.entries(payload).forEach(([sectionName, sectionValue]) => {
+    if (
+      sectionName === "variant" ||
+      !sectionValue ||
+      typeof sectionValue !== "object" ||
+      Array.isArray(sectionValue)
+    ) {
+      return;
+    }
+
+    const answers = Object.entries(sectionValue)
+      .map(([answerKey, answerValue]) => {
+        const formatted = formatAnswerValue(answerValue);
+
+        if (formatted === "Not provided") {
+          return null;
+        }
+
+        return `- ${formatAnswerLabel(answerKey)}: ${formatted}`;
+      })
+      .filter((line): line is string => Boolean(line));
+
+    if (answers.length === 0) {
+      return;
+    }
+
+    if (lines.length > 0) {
+      lines.push("");
+    }
+
+    lines.push(`${formatAnswerLabel(sectionName)}:`, ...answers);
+  });
+
+  return lines;
+}
+
+function copyTextWithTextareaFallback(value: string) {
+  const textarea = document.createElement("textarea");
+
+  textarea.value = value;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.left = "-9999px";
+  textarea.style.top = "0";
+
+  document.body.append(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
+}
+
+function ProjectIntakeAnswerDetail({
+  label,
+  value,
+}: {
+  label: string;
+  value: JsonValue;
+}) {
+  const listItems = Array.isArray(value)
+    ? value.map(formatAnswerValue).filter(Boolean)
+    : [];
+  const renderedValue = formatAnswerValue(value);
+  const isBodyAnswer = renderedValue.length > 80;
+
+  return (
+    <div className={`min-w-0 ${isBodyAnswer || listItems.length > 0 ? "md:col-span-2" : ""}`}>
+      <p className="type-caption font-semibold text-service-muted">{label}</p>
+      {listItems.length > 0 ? (
+        <TokenList items={listItems} />
+      ) : (
+        <p
+          className={
+            isBodyAnswer
+              ? "type-text-sm mt-1 max-w-3xl break-words leading-relaxed text-service-ink"
+              : "type-text-sm mt-0.5 break-words text-service-ink"
+          }
+        >
+          {renderedValue}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function LeadListDetail({
+  items,
+  label,
+}: {
+  items: string[];
+  label: string;
+}) {
+  return (
+    <div className="min-w-0">
+      <p className={dashboardMutedLabelClass}>{label}</p>
+      <TokenList items={items} />
+    </div>
+  );
+}
+
+function TokenList({ items }: { items: string[] }) {
+  if (items.length === 0) {
+    return (
+      <p className="type-text-sm mt-1 break-words text-service-ink">
+        Not provided
+      </p>
+    );
+  }
+
+  return (
+    <ul className="mt-2 flex flex-wrap gap-2">
+      {items.map((item, index) => (
+        <li
+          className="radius-round bg-white px-3 py-1 type-text-sm text-service-ink"
+          key={`${item}-${index}`}
+        >
+          {item}
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -1616,19 +1839,25 @@ function FilterSelect({
 }
 
 function LeadDetail({
+  className = "",
   label,
   value,
+  valueClassName,
 }: {
+  className?: string;
   label: string;
   value: LeadValue;
+  valueClassName?: string;
 }) {
+  const renderedValue = displayValue(value);
+
   return (
-    <div className="min-w-0">
+    <div className={`min-w-0 ${className}`}>
       <p className={dashboardMutedLabelClass}>
         {label}
       </p>
-      <p className="type-text-sm mt-paragraph-paragraph break-words text-service-ink">
-        {displayValue(value)}
+      <p className={valueClassName ?? "type-text-sm mt-1 break-words text-service-ink"}>
+        {renderedValue}
       </p>
     </div>
   );

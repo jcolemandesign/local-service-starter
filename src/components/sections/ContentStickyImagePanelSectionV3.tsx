@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
@@ -6,19 +7,41 @@ import {
 type ContentStickyImagePanelSectionV3Props = {
   body: string;
   eyebrow: string;
+  imageAlt?: string;
   imageLabel: string;
+  imageSrc?: string;
   points: readonly string[];
   title: string;
 };
 
-function FullBleedImage({ label }: { label: string }) {
+function FullBleedImage({
+  alt,
+  label,
+  src,
+}: {
+  alt?: string;
+  label: string;
+  src?: string;
+}) {
   return (
     <div
-      aria-label={`${label} image placeholder`}
+      aria-label={`${label} image`}
       className="absolute inset-0 overflow-hidden bg-service-border"
     >
-      <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(23_33_29_/_0.18),rgb(31_122_90_/_0.06)),linear-gradient(45deg,rgb(255_255_255_/_0.2)_0_1px,transparent_1px_20px)]" />
-      <div className="absolute inset-0 bg-service-accent/15" />
+      {src ? (
+        <Image
+          alt={alt ?? ""}
+          className="object-cover"
+          fill
+          sizes="100vw"
+          src={src}
+        />
+      ) : (
+        <>
+          <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(23_33_29_/_0.18),rgb(31_122_90_/_0.06)),linear-gradient(45deg,rgb(255_255_255_/_0.2)_0_1px,transparent_1px_20px)]" />
+          <div className="absolute inset-0 bg-service-accent/15" />
+        </>
+      )}
       <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-service-ink/30 to-transparent" />
       <span className="type-label absolute bottom-[var(--site-grid-inset-block)] left-[var(--site-grid-inset-inline)] text-white/70">
         {label}
@@ -30,15 +53,17 @@ function FullBleedImage({ label }: { label: string }) {
 export function ContentStickyImagePanelSectionV3({
   body,
   eyebrow,
+  imageAlt,
   imageLabel,
+  imageSrc,
   points,
   title,
 }: ContentStickyImagePanelSectionV3Props) {
   return (
-    <section className="relative bg-service-ink text-service-ink">
-      <FullBleedImage label={imageLabel} />
+    <section className="relative section-min-sticky bg-service-ink text-service-ink max-md:section-min-screen">
+      <FullBleedImage alt={imageAlt} label={imageLabel} src={imageSrc} />
 
-      <SevenColumnGrid className="relative section-min-story items-start max-md:section-min-screen">
+      <SevenColumnGrid className="relative section-min-sticky items-start max-md:section-min-screen">
         <SevenColumnGridItem
           alignX="stretch"
           alignY="stretch"

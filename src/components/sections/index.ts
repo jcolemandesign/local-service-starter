@@ -5,7 +5,6 @@ export { ContentAboutCompanySection } from "./ContentAboutCompanySection";
 export { ContentAboutCompanySectionV2 } from "./ContentAboutCompanySectionV2";
 export { ContentEditorSection } from "./ContentEditorSection";
 export { ContentFixedCoverFadeSectionV2 } from "./ContentFixedCoverFadeSectionV2";
-export { ContentFourColumnScrollSectionV2 } from "./ContentFourColumnScrollSectionV2";
 export { ContentHorizontalCardCarouselSectionV2 } from "./ContentHorizontalCardCarouselSectionV2";
 export { ContentPositioningSplitSection } from "./ContentPositioningSplitSection";
 export { ContentPositioningSplitSectionV2 } from "./ContentPositioningSplitSectionV2";
@@ -53,8 +52,6 @@ export { FeatureSplitSectionV2 } from "./FeatureSplitSectionV2";
 export { FooterSection } from "./FooterSection";
 export { FooterSectionV2 } from "./FooterSectionV2";
 export { HomeIndexSection } from "./HomeIndexSection";
-export { HeroBentoSection } from "./HeroBentoSection";
-export { HeroBentoSectionV2 } from "./HeroBentoSectionV2";
 export { HeroCenteredFloatersSectionV2 } from "./HeroCenteredFloatersSectionV2";
 export { HeroContentTopImageBottomSectionV2 } from "./HeroContentTopImageBottomSectionV2";
 export { HeroFullscreenSection } from "./HeroFullscreenSection";
@@ -95,16 +92,11 @@ export { TestimonialsMasonrySectionV3 } from "./TestimonialsMasonrySectionV3";
 export { TestimonialsSection } from "./TestimonialsSection";
 export { TestimonialsSectionV2 } from "./TestimonialsSectionV2";
 export { TrustBarFloatingBentoSectionV2 } from "./TrustBarFloatingBentoSectionV2";
-export { TrustBarSection } from "./TrustBarSection";
 export {
   TrustBarFloatingBentoSectionV3,
   TrustBarSectionV3,
   TrustLogoGridSectionV3,
-  TrustLogoMarqueeSectionV3,
   TrustMarqueeSectionV3,
 } from "./TrustSectionsV3";
-export {
-  TrustLogoGridSection,
-  TrustLogoMarqueeSection,
-} from "./TrustLogoMarqueeSection";
+export { TrustLogoGridSection } from "./TrustLogoMarqueeSection";
 export { TrustMarqueeSection } from "./TrustMarqueeSection";

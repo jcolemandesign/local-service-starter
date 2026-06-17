@@ -18,11 +18,11 @@ import {
 } from "@/components/sections/FAQConversionContactFooterSectionsV3";
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
 import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
-import { HeroBentoSectionV2 } from "@/components/sections/HeroBentoSectionV2";
 import { HeroCenteredFloatersSectionV2 } from "@/components/sections/HeroCenteredFloatersSectionV2";
 import { HeroContentTopImageBottomSectionV2 } from "@/components/sections/HeroContentTopImageBottomSectionV2";
 import { HeroFullscreenSectionV2 } from "@/components/sections/HeroFullscreenSectionV2";
 import { HeroGridMosaicSectionV2 } from "@/components/sections/HeroGridMosaicSectionV2";
+import { HeroSplitFullHeightSectionV3 } from "@/components/sections/HeroSplitFullHeightSectionV3";
 import { FooterSectionV2 } from "@/components/sections/FooterSectionV2";
 import {
   NavCenterLogoSectionV2,
@@ -38,7 +38,6 @@ import { TestimonialsCarouselSectionV2 } from "@/components/sections/Testimonial
 import { TestimonialsCarouselSectionV3 } from "@/components/sections/TestimonialsCarouselSectionV3";
 import { TestimonialsMasonrySectionV2 } from "@/components/sections/TestimonialsMasonrySectionV2";
 import { TestimonialsMasonrySectionV3 } from "@/components/sections/TestimonialsMasonrySectionV3";
-import { TrustBarSection } from "@/components/sections/TrustBarSection";
 import { TrustLogoGridSection } from "@/components/sections/TrustLogoMarqueeSection";
 import { TrustMarqueeSection } from "@/components/sections/TrustMarqueeSection";
 import {
@@ -74,10 +73,10 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return <NavCenterLogoSectionV2 {...sectionLibraryV3Content.navPrimary} />;
     case "NavFloatingBentoSectionV2":
       return <NavFloatingBentoSectionV2 {...sectionLibraryV3Content.navPrimary} />;
-    case "HeroBentoSectionV2":
+    case "HeroSplitFullHeightSectionV3":
       return (
-        <HeroBentoSectionV2
-          {...sectionLibraryV3Content.hero}
+        <HeroSplitFullHeightSectionV3
+          {...sectionLibraryV3Content.heroSplitFullHeight}
           headingLevel={headingLevel}
         />
       );
@@ -109,8 +108,6 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           headingLevel={headingLevel}
         />
       );
-    case "TrustBarSection":
-      return <TrustBarSection {...sectionLibraryV3Content.trustBar} />;
     case "TrustBarSectionV3":
       return <TrustBarSectionV3 {...sectionLibraryV3Content.trustBar} />;
     case "TrustMarqueeSection":
@@ -302,14 +299,14 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    HeroBentoSectionV2: (
-      <div key="HeroBentoSectionV2">
+    HeroSplitFullHeightSectionV3: (
+      <div key="HeroSplitFullHeightSectionV3">
         {renderPreviewSection(
           {
-            component: "HeroBentoSectionV2",
+            component: "HeroSplitFullHeightSectionV3",
             instruction: "",
             mode: "Hero",
-            name: "Split hero image right full height",
+            name: "Split content and image",
           },
           1,
         )}
