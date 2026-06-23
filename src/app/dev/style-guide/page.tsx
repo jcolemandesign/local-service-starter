@@ -807,6 +807,7 @@ const styleGuideToc = [
   { href: "#shape", label: "Shape" },
   { href: "#spacing", label: "Spacing" },
   { href: "#buttons", label: "Buttons" },
+  { href: "#lists-controls", label: "Lists" },
   { href: "#styles-in-context", label: "Context" },
 ];
 
@@ -1080,6 +1081,106 @@ function TokenMeta({ name, value }: { name: string; value: string }) {
       </code>
       <span className="type-caption text-service-muted">{value}</span>
     </div>
+  );
+}
+
+function StyleGuideListControlSamples() {
+  const checklistItems = [
+    "Use semantic type utilities for every list item and option label.",
+    "Keep list rhythm tied to shared gap tokens instead of local spacing.",
+    "Use the same control card treatment for checkbox and radio groups.",
+  ];
+
+  return (
+    <SevenColumnGrid minHeight="none" padding="none">
+      <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+        <div className="radius-medium grid h-full gap-6 border border-service-border bg-white p-6">
+          <div className="fluid-type-frame">
+            <p className="type-label text-service-accent">Text lists</p>
+            <h3 className="type-heading-sm mt-label-heading-sm text-service-ink">
+              Standard content list
+            </h3>
+            <p className="type-text-sm mt-heading-body-sm text-service-muted">
+              Use these classes for organic bullets in service copy, FAQs, and
+              content blocks.
+            </p>
+          </div>
+
+          <ul className="grid card-grid-gap-sml">
+            {checklistItems.map((item) => (
+              <li
+                className="type-text-sm flex gap-3 text-service-ink"
+                key={item}
+              >
+                <span className="mt-2 size-1.5 shrink-0 rounded-full bg-service-accent" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </SevenColumnGridItem>
+
+      <SevenColumnGridItem className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+        <div className="radius-medium grid h-full gap-6 border border-service-border bg-white p-6">
+          <div className="fluid-type-frame">
+            <p className="type-label text-service-accent">Ordered lists</p>
+            <h3 className="type-heading-sm mt-label-heading-sm text-service-ink">
+              Process rhythm
+            </h3>
+          </div>
+
+          <ol className="grid card-grid-gap-sml">
+            {["Confirm scope", "Collect assets", "Write first pass"].map(
+              (item, index) => (
+                <li className="flex gap-3" key={item}>
+                  <span className="type-caption radius-4 flex size-8 shrink-0 items-center justify-center bg-service-surface font-semibold text-service-accent">
+                    {index + 1}
+                  </span>
+                  <span className="type-text-sm pt-1 font-semibold text-service-ink">
+                    {item}
+                  </span>
+                </li>
+              ),
+            )}
+          </ol>
+        </div>
+      </SevenColumnGridItem>
+
+      <SevenColumnGridItem className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+        <div className="radius-medium grid h-full gap-6 border border-service-border bg-white p-6">
+          <div className="fluid-type-frame">
+            <p className="type-label text-service-accent">Input lists</p>
+            <h3 className="type-heading-sm mt-label-heading-sm text-service-ink">
+              Checkbox cards
+            </h3>
+          </div>
+
+          <div className="grid gap-2">
+            {["Call now", "Request a quote", "Book online"].map(
+              (item, index) => (
+                <label
+                  className={cx(
+                    "type-text-sm radius-button flex min-h-12 cursor-pointer items-center gap-3 border px-3 py-2 font-semibold transition-colors",
+                    index === 0
+                      ? "border-service-accent bg-service-accent text-white"
+                      : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent",
+                  )}
+                  key={item}
+                >
+                  <input
+                    checked={index === 0}
+                    className="size-4 accent-service-accent"
+                    readOnly
+                    type="checkbox"
+                  />
+                  <span>{item}</span>
+                </label>
+              ),
+            )}
+          </div>
+        </div>
+      </SevenColumnGridItem>
+    </SevenColumnGrid>
   );
 }
 
@@ -2151,6 +2252,15 @@ export default function StyleGuidePage() {
         body="Shared CTA primitives, standard variants, and special treatments from the sections page gathered into one place."
       >
         <StyleGuideButtonControls />
+      </GuideSection>
+
+      <GuideSection
+        eyebrow="Lists"
+        id="lists-controls"
+        title="Lists and Controls"
+        body="Reusable list, step, and checkbox patterns should use semantic type utilities so they inherit the active typography profile."
+      >
+        <StyleGuideListControlSamples />
       </GuideSection>
 
       <GuideSection

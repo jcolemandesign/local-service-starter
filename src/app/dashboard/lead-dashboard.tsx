@@ -1580,10 +1580,14 @@ function LeadListDetail({
   items: string[];
   label: string;
 }) {
+  const renderedValue = items.length > 0 ? items.join(", ") : "Not provided";
+
   return (
     <div className="min-w-0">
       <p className={dashboardMutedLabelClass}>{label}</p>
-      <TokenList items={items} />
+      <p className="type-text-sm mt-1 break-words text-service-ink">
+        {renderedValue}
+      </p>
     </div>
   );
 }

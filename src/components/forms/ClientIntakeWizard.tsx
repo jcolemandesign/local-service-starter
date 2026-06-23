@@ -1,6 +1,6 @@
 "use client";
 
-import type { FormEvent, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import {
   type IntakeVariantKey,
@@ -349,7 +349,7 @@ function TextField({
         {help}
       </span>
       <input
-        className="radius-button min-h-12 border border-service-border bg-white px-4 text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent"
+        className="type-text-sm radius-button min-h-12 border border-service-border bg-white px-4 text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent"
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         type={type}
@@ -378,7 +378,7 @@ function TextAreaField({
         {label}
       </span>
       <textarea
-        className="radius-medium min-h-28 resize-y border border-service-border bg-white px-4 py-3 text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent"
+        className="type-text-sm radius-medium min-h-28 resize-y border border-service-border bg-white px-4 py-3 text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent"
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         rows={rows}
@@ -391,10 +391,10 @@ function TextAreaField({
 function HelpPopup() {
   return (
     <details className="relative">
-      <summary className="grid size-5 cursor-pointer list-none place-items-center rounded-full border border-service-border bg-service-surface text-xs font-bold text-service-muted transition-colors hover:border-service-accent hover:text-service-accent">
+      <summary className="type-caption grid size-5 cursor-pointer list-none place-items-center rounded-full border border-service-border bg-service-surface font-bold text-service-muted transition-colors hover:border-service-accent hover:text-service-accent">
         ?
       </summary>
-      <div className="radius-medium absolute left-0 top-7 z-20 w-72 border border-service-border bg-white p-3 text-xs leading-5 text-service-muted shadow-service">
+      <div className="type-text-xs radius-medium absolute left-0 top-7 z-20 w-72 border border-service-border bg-white p-3 text-service-muted shadow-service">
         Open your Google Business Profile, use the share button, then paste the
         profile link here.
       </div>
@@ -414,7 +414,7 @@ function CheckboxCard({
   return (
     <label
       className={cx(
-        "radius-button flex min-h-12 cursor-pointer items-center gap-3 border px-3 py-2 text-sm font-semibold transition-colors",
+        "type-text-sm radius-button flex min-h-12 cursor-pointer items-center gap-3 border px-3 py-2 font-semibold transition-colors",
         checked
           ? "border-service-accent bg-service-accent text-white"
           : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent",
@@ -445,7 +445,7 @@ function RadioCard({
   return (
     <label
       className={cx(
-        "radius-button flex min-h-12 cursor-pointer items-center gap-3 border px-3 py-2 text-sm font-semibold transition-colors",
+        "type-text-sm radius-button flex min-h-12 cursor-pointer items-center gap-3 border px-3 py-2 font-semibold transition-colors",
         checked
           ? "border-service-accent bg-service-accent text-white"
           : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent",
@@ -622,10 +622,8 @@ export function ClientIntakeWizard({
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    if (!isReviewStep) {
+  async function submitIntake() {
+    if (!isReviewStep || submitState === "submitting") {
       return;
     }
 
@@ -676,7 +674,7 @@ export function ClientIntakeWizard({
             </p>
             <div>
               <button
-                className="radius-button min-h-12 border border-service-accent bg-service-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-service-ink"
+                className="type-text-sm radius-button min-h-12 border border-service-accent bg-service-accent px-6 font-semibold text-white transition-colors hover:bg-service-ink"
                 onClick={() => {
                   setPayload(createDefaultPayload(variant));
                   setCurrentStep(1);
@@ -696,7 +694,7 @@ export function ClientIntakeWizard({
   return (
     <form
       className="min-h-screen bg-bg-page text-service-ink"
-      onSubmit={handleSubmit}
+      onSubmit={(event) => event.preventDefault()}
     >
       <header className="fixed inset-x-0 top-0 z-30 border-b border-service-border bg-bg-page/95 backdrop-blur">
         <div className="container-site grid gap-3 py-4">
@@ -788,6 +786,7 @@ export function ClientIntakeWizard({
             {currentStep === 9 ? (
               <ReviewStep
                 mainServices={mainServices}
+                onEditStep={goToStep}
                 payload={payload}
                 variantLabel={variantConfig.label}
               />
@@ -805,7 +804,7 @@ export function ClientIntakeWizard({
       <footer className="fixed inset-x-0 bottom-0 z-30 border-t border-service-border bg-bg-page/95 backdrop-blur">
         <div className="container-site flex items-center justify-between gap-3 py-4 max-sm:flex-col max-sm:items-stretch">
           <button
-            className="radius-button min-h-12 border border-service-border bg-white px-5 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-45"
+            className="type-text-sm radius-button min-h-12 border border-service-border bg-white px-5 font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-45"
             disabled={currentStep === 1 || submitState === "submitting"}
             onClick={() => goToStep(currentStep - 1)}
             type="button"
@@ -819,15 +818,16 @@ export function ClientIntakeWizard({
 
           {isReviewStep ? (
             <button
-              className="radius-button min-h-12 border border-service-accent bg-service-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-wait disabled:opacity-70"
+              className="type-text-sm radius-button min-h-12 border border-service-accent bg-service-accent px-6 font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-wait disabled:opacity-70"
               disabled={submitState === "submitting"}
-              type="submit"
+              onClick={() => void submitIntake()}
+              type="button"
             >
               {submitState === "submitting" ? "Submitting..." : "Submit intake"}
             </button>
           ) : (
             <button
-              className="radius-button min-h-12 border border-service-accent bg-service-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-service-ink"
+              className="type-text-sm radius-button min-h-12 border border-service-accent bg-service-accent px-6 font-semibold text-white transition-colors hover:bg-service-ink"
               onClick={() => goToStep(currentStep + 1)}
               type="button"
             >
@@ -1275,17 +1275,19 @@ function FinalNotesStep({
 
 function ReviewStep({
   mainServices,
+  onEditStep,
   payload,
   variantLabel,
 }: {
   mainServices: string[];
+  onEditStep: (step: number) => void;
   payload: ClientIntakePayload;
   variantLabel: string;
 }) {
   return (
     <div className="grid layout-gap-med">
       <div className="grid grid-cols-2 gap-5 max-md:grid-cols-1">
-        <ReviewCard title="Business basics">
+        <ReviewCard onEdit={() => onEditStep(1)} title="Business basics">
           <SummaryRow label="Business type" value={variantLabel} />
           <SummaryRow label="Business" value={payload.businessBasics.businessName} />
           <SummaryRow
@@ -1306,7 +1308,7 @@ function ReviewStep({
           />
         </ReviewCard>
 
-        <ReviewCard title="Main services">
+        <ReviewCard onEdit={() => onEditStep(2)} title="Main services">
           <SummaryRow label="Selected services" value={mainServices} />
           <SummaryRow
             label="Priority services"
@@ -1314,7 +1316,7 @@ function ReviewStep({
           />
         </ReviewCard>
 
-        <ReviewCard title="Service area">
+        <ReviewCard onEdit={() => onEditStep(3)} title="Service area">
           <SummaryRow label="Service area" value={payload.serviceArea.townsCities} />
           <SummaryRow
             label="Priority areas"
@@ -1329,7 +1331,7 @@ function ReviewStep({
           />
         </ReviewCard>
 
-        <ReviewCard title="Preferred contact flow">
+        <ReviewCard onEdit={() => onEditStep(4)} title="Preferred contact flow">
           <SummaryRow
             label="Current process"
             value={payload.leadFlow.currentProcess}
@@ -1342,7 +1344,7 @@ function ReviewStep({
           <SummaryRow label="Response speed" value={payload.leadFlow.responseTime} />
         </ReviewCard>
 
-        <ReviewCard title="Trust points">
+        <ReviewCard onEdit={() => onEditStep(5)} title="Trust points">
           <SummaryRow label="Trust signals" value={payload.trust.signals} />
           <SummaryRow label="Compliments" value={payload.trust.compliments} />
           <SummaryRow
@@ -1351,7 +1353,7 @@ function ReviewStep({
           />
         </ReviewCard>
 
-        <ReviewCard title="Common customer questions">
+        <ReviewCard onEdit={() => onEditStep(6)} title="Common customer questions">
           <SummaryRow
             label="Before contacting"
             value={payload.customerQuestions.beforeContact}
@@ -1366,7 +1368,7 @@ function ReviewStep({
           />
         </ReviewCard>
 
-        <ReviewCard title="Asset folder / references">
+        <ReviewCard onEdit={() => onEditStep(7)} title="Asset folder / references">
           <SummaryRow label="Folder link" value={payload.assets.folderLink} />
           <SummaryRow label="Folder includes" value={payload.assets.folderIncludes} />
           <SummaryRow label="Promo" value={payload.assets.promoOffer} />
@@ -1376,7 +1378,7 @@ function ReviewStep({
           />
         </ReviewCard>
 
-        <ReviewCard title="Final notes">
+        <ReviewCard onEdit={() => onEditStep(8)} title="Final notes">
           <SummaryRow label="Must include" value={payload.finalNotes.mustInclude} />
           <SummaryRow label="Avoid saying" value={payload.finalNotes.avoidSaying} />
           <SummaryRow
@@ -1399,14 +1401,25 @@ function ReviewStep({
 
 function ReviewCard({
   children,
+  onEdit,
   title,
 }: {
   children: ReactNode;
+  onEdit: () => void;
   title: string;
 }) {
   return (
     <section className="radius-medium border border-service-border bg-service-surface p-5">
-      <h3 className="type-heading-sm text-service-ink">{title}</h3>
+      <div className="flex items-start justify-between gap-4">
+        <h3 className="type-heading-sm text-service-ink">{title}</h3>
+        <button
+          className="type-caption radius-button min-h-9 shrink-0 border border-service-border bg-white px-3 font-semibold text-service-muted transition-colors hover:border-service-accent hover:text-service-accent"
+          onClick={onEdit}
+          type="button"
+        >
+          Edit
+        </button>
+      </div>
       <dl className="mt-3">{children}</dl>
     </section>
   );
