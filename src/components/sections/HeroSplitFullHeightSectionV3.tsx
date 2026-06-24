@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import {
   Button,
@@ -36,30 +37,34 @@ const variantConfig: Record<HeroSplitFullHeightVariant, HeroVariantConfig> = {
     textClassName: "col-span-3 col-start-1",
     imageClassName: "col-span-4 col-start-4",
     imagePanelClassName:
-      "left-0 right-[calc(0px_-_var(--site-grid-inset-inline))] max-lg:left-[calc(0px_-_var(--site-grid-inset-inline))]",
+      "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
     imageSlotLabel: "Image area: columns 4-7",
   },
   "text-4-image-3-right": {
     textClassName: "col-span-4 col-start-1",
     imageClassName: "col-span-3 col-start-5",
     imagePanelClassName:
-      "left-0 right-[calc(0px_-_var(--site-grid-inset-inline))] max-lg:left-[calc(0px_-_var(--site-grid-inset-inline))]",
+      "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
     imageSlotLabel: "Image area: columns 5-7",
   },
   "image-3-left-text-4": {
     textClassName: "col-span-4 col-start-4",
     imageClassName: "col-span-3 col-start-1",
     imagePanelClassName:
-      "left-[calc(0px_-_var(--site-grid-inset-inline))] right-0 max-lg:right-[calc(0px_-_var(--site-grid-inset-inline))]",
+      "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
     imageSlotLabel: "Image area: columns 1-3",
   },
   "image-4-left-text-3": {
     textClassName: "col-span-3 col-start-5",
     imageClassName: "col-span-4 col-start-1",
     imagePanelClassName:
-      "left-[calc(0px_-_var(--site-grid-inset-inline))] right-0 max-lg:right-[calc(0px_-_var(--site-grid-inset-inline))]",
+      "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
     imageSlotLabel: "Image area: columns 1-4",
   },
+};
+
+const fullBleedImagePanelStyle: CSSProperties = {
+  width: "calc(100% + var(--site-grid-inset-inline))",
 };
 
 function SampleImagePanel({
@@ -76,9 +81,10 @@ function SampleImagePanel({
   return (
     <div
       className={cx(
-        "absolute bottom-[calc(0px_-_var(--site-grid-inset-block))] top-[calc(0px_-_var(--site-grid-inset-block))] !w-auto overflow-hidden bg-service-surface max-md:relative max-md:inset-auto max-md:h-full max-md:min-h-[var(--media-min-medium)] max-md:!w-full",
+        "absolute bottom-[calc(0px_-_var(--site-grid-inset-block))] top-[calc(0px_-_var(--site-grid-inset-block))] overflow-hidden bg-service-surface max-md:relative max-md:inset-auto max-md:h-full max-md:min-h-[var(--media-min-medium)] max-md:!w-full",
         className,
       )}
+      style={fullBleedImagePanelStyle}
     >
       <Image
         alt={imageAlt}

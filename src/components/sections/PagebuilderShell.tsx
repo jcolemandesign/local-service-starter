@@ -1,8 +1,7 @@
 "use client";
 
 import type { CSSProperties, ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useState } from "react";
 import {
   HeroSplitFixedImageSectionV3,
   type HeroSplitFixedImageRatio,
@@ -585,54 +584,6 @@ function PagebuilderPreviewWindow({
   sizeLabel,
   spacingClassName,
 }: PagebuilderPreviewWindowProps) {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
-
-  useEffect(() => {
-    const iframe = iframeRef.current;
-    const iframeDocument = iframe?.contentDocument;
-
-    if (!iframe || !iframeDocument) {
-      return;
-    }
-
-    const headMarkup = Array.from(
-      document.head.querySelectorAll('link[rel="stylesheet"], style'),
-    )
-      .map((node) => node.outerHTML)
-      .join("");
-
-    iframeDocument.open();
-    iframeDocument.write(`<!doctype html>
-<html>
-  <head>
-    <base target="_parent" />
-    ${headMarkup}
-    <style>
-      html,
-      body,
-      #pagebuilder-preview-root {
-        min-height: 100%;
-        margin: 0;
-        background: white;
-      }
-
-      body {
-        overflow-x: hidden;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="pagebuilder-preview-root"></div>
-  </body>
-</html>`);
-    iframeDocument.close();
-
-    setPortalRoot(
-      iframeDocument.getElementById("pagebuilder-preview-root"),
-    );
-  }, []);
-
   return (
     <div
       className={cx(
@@ -660,34 +611,24 @@ function PagebuilderPreviewWindow({
         </div>
       </div>
 
-      <div className={cx("min-h-0 bg-white", screenClassName)}>
-        <iframe
-          className="block h-full w-full bg-white"
-          ref={iframeRef}
-          title={`${sizeLabel} preview`}
-        />
-        {portalRoot
-          ? createPortal(
-              <div
-                className={cx(
-                  "min-h-full w-full bg-white",
-                  spacingClassName,
-                  !showSectionMarkers && "pagebuilder-hide-markers",
-                )}
-                style={previewStyle}
-              >
-                <div
-                  className={cx(
-                    "fluid-type-frame mx-auto min-h-full w-full bg-white",
-                    contentClassName,
-                  )}
-                >
-                  {children}
-                </div>
-              </div>,
-              portalRoot,
-            )
-          : null}
+      <div className={cx("min-h-0 overflow-auto bg-white", screenClassName)}>
+        <div
+          className={cx(
+            "min-h-full w-full bg-white",
+            spacingClassName,
+            !showSectionMarkers && "pagebuilder-hide-markers",
+          )}
+          style={previewStyle}
+        >
+          <div
+            className={cx(
+              "fluid-type-frame mx-auto min-h-full w-full bg-white",
+              contentClassName,
+            )}
+          >
+            {children}
+          </div>
+        </div>
       </div>
     </div>
   );
