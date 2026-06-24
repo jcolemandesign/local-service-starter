@@ -840,8 +840,12 @@ export const sectionLibraryV3Collections = [
         component: "hero-content-top-image-bottom-v2",
       },
       {
-        label: "Split content and image",
+        label: "Split content and full image",
         component: "hero-split-full-height-v3",
+      },
+      {
+        label: "Fixed-ratio split image",
+        component: "hero-split-fixed-image-v3",
       },
     ],
   },

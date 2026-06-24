@@ -115,6 +115,23 @@ body {
 }
 
 @layer utilities {
+  .library-surface {
+    background-color: #f8f3ea;
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.34), rgb(255 255 255 / 0.34)),
+      repeating-linear-gradient(
+        90deg,
+        rgb(70 53 32 / 0.018) 0,
+        rgb(70 53 32 / 0.018) 1px,
+        transparent 1px,
+        transparent 11px
+      );
+  }
+
+  .library-surface-hover:hover {
+    background-color: #fffaf2;
+  }
+
   .fluid-type-frame {
     container-type: inline-size;
   }

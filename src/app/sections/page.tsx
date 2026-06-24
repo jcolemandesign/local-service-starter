@@ -52,6 +52,7 @@ import {
   TrustMarqueeSection,
   TrustMarqueeSectionV3,
 } from "@/components/sections";
+import { HeroSplitFixedImageSectionLibraryDemo } from "@/components/sections/HeroSplitFixedImageSectionLibraryDemo";
 import type { HeroSplitFullHeightVariant } from "@/components/sections/HeroSplitFullHeightSectionV3";
 import {
   sectionLibraryV3Collections,
@@ -97,6 +98,12 @@ const sectionElements = {
   "hero-content-top-image-bottom-v2": (
     <HeroContentTopImageBottomSectionV2
       {...sectionLibraryV3Content.hero}
+      headingLevel={2}
+    />
+  ),
+  "hero-split-fixed-image-v3": (
+    <HeroSplitFixedImageSectionLibraryDemo
+      {...sectionLibraryV3Content.heroSplitFullHeight}
       headingLevel={2}
     />
   ),
@@ -287,7 +294,7 @@ const collections = sectionLibraryV3Collections.map((collection) => ({
 export default function SectionsV3Page() {
   return (
     <StyleGuidePreviewSurface>
-      <main className="bg-bg-page">
+      <main className="library-surface">
         <section className="section-space-sml bg-service-ink text-white">
           <Container>
             <p className="type-label text-white/65">

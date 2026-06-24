@@ -25,6 +25,7 @@ type HeroSplitFullHeightSectionV3Props = {
 };
 
 type HeroVariantConfig = {
+  imageBleedClassName: string;
   imageClassName: string;
   imageSlotLabel: string;
   textClassName: string;
@@ -34,21 +35,29 @@ const variantConfig: Record<HeroSplitFullHeightVariant, HeroVariantConfig> = {
   "text-3-image-4-right": {
     textClassName: "col-span-3 col-start-1",
     imageClassName: "col-span-4 col-start-4",
+    imageBleedClassName:
+      "-my-[var(--site-grid-inset-block)] -mr-[var(--site-grid-inset-inline)] max-lg:-mx-[var(--site-grid-inset-inline)]",
     imageSlotLabel: "Image area: columns 4-7",
   },
   "text-4-image-3-right": {
     textClassName: "col-span-4 col-start-1",
     imageClassName: "col-span-3 col-start-5",
+    imageBleedClassName:
+      "-my-[var(--site-grid-inset-block)] -mr-[var(--site-grid-inset-inline)] max-lg:-mx-[var(--site-grid-inset-inline)]",
     imageSlotLabel: "Image area: columns 5-7",
   },
   "image-3-left-text-4": {
     textClassName: "col-span-4 col-start-4",
     imageClassName: "col-span-3 col-start-1",
+    imageBleedClassName:
+      "-my-[var(--site-grid-inset-block)] -ml-[var(--site-grid-inset-inline)] max-lg:-mx-[var(--site-grid-inset-inline)]",
     imageSlotLabel: "Image area: columns 1-3",
   },
   "image-4-left-text-3": {
     textClassName: "col-span-3 col-start-5",
     imageClassName: "col-span-4 col-start-1",
+    imageBleedClassName:
+      "-my-[var(--site-grid-inset-block)] -ml-[var(--site-grid-inset-inline)] max-lg:-mx-[var(--site-grid-inset-inline)]",
     imageSlotLabel: "Image area: columns 1-4",
   },
 };
@@ -165,8 +174,9 @@ export function HeroSplitFullHeightSectionV3({
           alignX="stretch"
           alignY="stretch"
           className={cx(
-            "radius-medium row-start-1 h-full min-h-0 overflow-hidden max-lg:media-min-medium max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto",
+            "row-start-1 h-full min-h-0 overflow-hidden max-lg:media-min-medium max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto",
             config.imageClassName,
+            config.imageBleedClassName,
           )}
         >
           <SampleImagePanel

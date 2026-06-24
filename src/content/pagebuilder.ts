@@ -10,6 +10,7 @@ export type PagebuilderRecipeSection = {
   component: string;
   mode: string;
   instruction: string;
+  ratio?: string;
   variant?: string;
 };
 
@@ -123,11 +124,11 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
           "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
       },
       {
-        name: "Split content and image",
+        name: "Split content and full image",
         component: "HeroSplitFullHeightSectionV3",
         mode: "Hero",
         instruction:
-          "Use h1, one primary booking CTA, one services CTA, and three compact trust stats beside a full-height image column.",
+          "Use h1, one primary booking CTA, one services CTA, and three compact trust stats beside a full-bleed image column.",
       },
       {
         name: "Trust bar",

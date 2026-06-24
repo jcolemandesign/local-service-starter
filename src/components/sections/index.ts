@@ -62,6 +62,7 @@ export { HeroImageTopContentBottomSectionV2 } from "./HeroImageTopContentBottomS
 export { HeroLogoStatementSection } from "./HeroLogoStatementSection";
 export { HeroSection } from "./HeroSection";
 export { HeroSectionV2 } from "./HeroSectionV2";
+export { HeroSplitFixedImageSectionV3 } from "./HeroSplitFixedImageSectionV3";
 export { HeroSplitFullHeightSectionV3 } from "./HeroSplitFullHeightSectionV3";
 export { HeroStackedHeaderImageSectionV2 } from "./HeroStackedHeaderImageSectionV2";
 export { NavFloatingBentoSection } from "./NavFloatingBentoSection";

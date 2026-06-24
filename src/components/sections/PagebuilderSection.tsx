@@ -20,6 +20,11 @@ import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRe
 import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
 import { HeroCenteredFloatersSectionV2 } from "@/components/sections/HeroCenteredFloatersSectionV2";
 import { HeroContentTopImageBottomSectionV2 } from "@/components/sections/HeroContentTopImageBottomSectionV2";
+import {
+  HeroSplitFixedImageSectionV3,
+  type HeroSplitFixedImageRatio,
+  type HeroSplitFixedImageVariant,
+} from "@/components/sections/HeroSplitFixedImageSectionV3";
 import { HeroFullscreenSectionV2 } from "@/components/sections/HeroFullscreenSectionV2";
 import { HeroGridMosaicSectionV2 } from "@/components/sections/HeroGridMosaicSectionV2";
 import {
@@ -65,6 +70,34 @@ function getHeroSplitFullHeightVariant(section: PagebuilderRecipeSection) {
     : undefined;
 }
 
+const heroSplitFixedImageVariants = new Set<string>([
+  "text-3-image-4-right",
+  "text-4-image-3-right",
+  "image-3-left-text-4",
+  "image-4-left-text-3",
+]);
+
+const heroSplitFixedImageRatios = new Set<string>([
+  "3-2",
+  "2-3",
+  "4-3",
+  "3-4",
+  "5-4",
+  "4-5",
+]);
+
+function getHeroSplitFixedImageVariant(section: PagebuilderRecipeSection) {
+  return heroSplitFixedImageVariants.has(section.variant ?? "")
+    ? (section.variant as HeroSplitFixedImageVariant)
+    : undefined;
+}
+
+function getHeroSplitFixedImageRatio(section: PagebuilderRecipeSection) {
+  return heroSplitFixedImageRatios.has(section.ratio ?? "")
+    ? (section.ratio as HeroSplitFixedImageRatio)
+    : undefined;
+}
+
 function UnknownSection({ section }: { section: PagebuilderRecipeSection }) {
   return (
     <section className="bg-service-surface p-8 text-service-ink">
@@ -94,6 +127,15 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.heroSplitFullHeight}
           headingLevel={headingLevel}
           variant={getHeroSplitFullHeightVariant(section)}
+        />
+      );
+    case "HeroSplitFixedImageSectionV3":
+      return (
+        <HeroSplitFixedImageSectionV3
+          {...sectionLibraryV3Content.heroSplitFullHeight}
+          headingLevel={headingLevel}
+          ratio={getHeroSplitFixedImageRatio(section)}
+          variant={getHeroSplitFixedImageVariant(section)}
         />
       );
     case "HeroFullscreenSectionV2":
@@ -318,6 +360,13 @@ export function PagebuilderSection() {
     HeroSplitFullHeightSectionV3: (
       <HeroSplitFullHeightSectionV3
         key="HeroSplitFullHeightSectionV3"
+        {...sectionLibraryV3Content.heroSplitFullHeight}
+        headingLevel={1}
+      />
+    ),
+    HeroSplitFixedImageSectionV3: (
+      <HeroSplitFixedImageSectionV3
+        key="HeroSplitFixedImageSectionV3"
         {...sectionLibraryV3Content.heroSplitFullHeight}
         headingLevel={1}
       />

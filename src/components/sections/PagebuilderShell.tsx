@@ -4,6 +4,11 @@ import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
+  HeroSplitFixedImageSectionV3,
+  type HeroSplitFixedImageRatio,
+  type HeroSplitFixedImageVariant,
+} from "@/components/sections/HeroSplitFixedImageSectionV3";
+import {
   HeroSplitFullHeightSectionV3,
   type HeroSplitFullHeightVariant,
 } from "@/components/sections/HeroSplitFullHeightSectionV3";
@@ -32,6 +37,7 @@ type PreviewVariableStyle = CSSProperties & Record<`--${string}`, string>;
 
 const normalSpacingClassName = "pagebuilder-density-normal";
 const splitContentImageComponent = "HeroSplitFullHeightSectionV3";
+const fixedRatioSplitComponent = "HeroSplitFixedImageSectionV3";
 const splitContentImageVariantOptions = [
   {
     label: "Text 3 / Image 4",
@@ -53,6 +59,40 @@ const splitContentImageVariantOptions = [
 
 type SplitContentImageVariant =
   (typeof splitContentImageVariantOptions)[number]["value"];
+
+const fixedRatioSplitVariantOptions = [
+  {
+    label: "Text 3 / Image 4",
+    value: "text-3-image-4-right",
+  },
+  {
+    label: "Text 4 / Image 3",
+    value: "text-4-image-3-right",
+  },
+  {
+    label: "Image 3 / Text 4",
+    value: "image-3-left-text-4",
+  },
+  {
+    label: "Image 4 / Text 3",
+    value: "image-4-left-text-3",
+  },
+] as const;
+
+const fixedRatioSplitRatioOptions = [
+  { label: "3:2", value: "3-2" },
+  { label: "2:3", value: "2-3" },
+  { label: "4:3", value: "4-3" },
+  { label: "3:4", value: "3-4" },
+  { label: "5:4", value: "5-4" },
+  { label: "4:5", value: "4-5" },
+] as const;
+
+type FixedRatioSplitVariant =
+  (typeof fixedRatioSplitVariantOptions)[number]["value"];
+
+type FixedRatioSplitRatio =
+  (typeof fixedRatioSplitRatioOptions)[number]["value"];
 
 function readPagebuilderPreviewVariables(): PreviewVariableStyle {
   if (typeof window === "undefined") {
@@ -164,10 +204,25 @@ function isSplitContentImageSection(section: WorkingSection) {
   return section.component === splitContentImageComponent;
 }
 
+function isFixedRatioSplitSection(section: WorkingSection) {
+  return section.component === fixedRatioSplitComponent;
+}
+
 function getSplitContentImageVariantLabel(variant: string | undefined) {
   return splitContentImageVariantOptions.find(
     (option) => option.value === variant,
   )?.label;
+}
+
+function getFixedRatioSplitVariantLabel(variant: string | undefined) {
+  return fixedRatioSplitVariantOptions.find(
+    (option) => option.value === variant,
+  )?.label;
+}
+
+function getFixedRatioSplitRatioLabel(ratio: string | undefined) {
+  return fixedRatioSplitRatioOptions.find((option) => option.value === ratio)
+    ?.label;
 }
 
 const sectionSwapOptions = [
@@ -195,9 +250,16 @@ const sectionSwapOptions = [
   {
     component: "HeroSplitFullHeightSectionV3",
     instruction:
-      "Use h1, one primary booking CTA, one services CTA, and three compact trust stats beside a full-height image column.",
+      "Use h1, one primary booking CTA, one services CTA, and three compact trust stats beside a full-bleed image column.",
     mode: "Hero",
-    name: "Split content and image",
+    name: "Split content and full image",
+  },
+  {
+    component: "HeroSplitFixedImageSectionV3",
+    instruction:
+      "Use a split hero with a bounded fixed-ratio image frame instead of a full-screen image.",
+    mode: "Hero",
+    name: "Fixed-ratio split image",
   },
   {
     component: "HeroFullscreenSectionV2",
@@ -410,6 +472,15 @@ function buildPageInstruction({
            getSplitContentImageVariantLabel(section.variant) ??
            splitContentImageVariantOptions[0].label
          } (${section.variant ?? splitContentImageVariantOptions[0].value})`
+       : isFixedRatioSplitSection(section)
+         ? `Variant: ${
+             getFixedRatioSplitVariantLabel(section.variant) ??
+             fixedRatioSplitVariantOptions[0].label
+           } (${section.variant ?? fixedRatioSplitVariantOptions[0].value})
+   Image ratio: ${
+     getFixedRatioSplitRatioLabel(section.ratio) ??
+     fixedRatioSplitRatioOptions[0].label
+   } (${section.ratio ?? fixedRatioSplitRatioOptions[0].value})`
        : "Variant: default"
    }
    Instruction: ${section.instruction}
@@ -593,9 +664,15 @@ export function PagebuilderShell({
         included: true,
         originalComponent: section.component,
         originalIndex: index,
+        ratio:
+          section.component === fixedRatioSplitComponent
+            ? section.ratio ?? fixedRatioSplitRatioOptions[0].value
+            : section.ratio,
         variant:
           section.component === splitContentImageComponent
             ? section.variant ?? splitContentImageVariantOptions[0].value
+            : section.component === fixedRatioSplitComponent
+              ? section.variant ?? fixedRatioSplitVariantOptions[0].value
             : section.variant,
       })),
     ),
@@ -747,9 +824,15 @@ export function PagebuilderShell({
               instruction: nextOption.instruction,
               mode: nextOption.mode,
               name: nextOption.name,
+              ratio:
+                nextOption.component === fixedRatioSplitComponent
+                  ? section.ratio ?? fixedRatioSplitRatioOptions[0].value
+                  : undefined,
               variant:
                 nextOption.component === splitContentImageComponent
                   ? section.variant ?? splitContentImageVariantOptions[0].value
+                  : nextOption.component === fixedRatioSplitComponent
+                    ? section.variant ?? fixedRatioSplitVariantOptions[0].value
                   : undefined,
             }
           : section,
@@ -775,6 +858,40 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateFixedRatioSplitVariant(
+    sectionId: string,
+    variant: FixedRatioSplitVariant,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && isFixedRatioSplitSection(section)
+          ? {
+              ...section,
+              variant,
+            }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
+  function updateFixedRatioSplitRatio(
+    sectionId: string,
+    ratio: FixedRatioSplitRatio,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && isFixedRatioSplitSection(section)
+          ? {
+              ...section,
+              ratio,
+            }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function addSection(component: string) {
     const nextOption = sectionSwapOptions.find(
       (option) => option.component === component,
@@ -793,9 +910,15 @@ export function PagebuilderShell({
       name: nextOption.name,
       originalComponent: nextOption.component,
       originalIndex: -1,
+      ratio:
+        nextOption.component === fixedRatioSplitComponent
+          ? fixedRatioSplitRatioOptions[0].value
+          : undefined,
       variant:
         nextOption.component === splitContentImageComponent
           ? splitContentImageVariantOptions[0].value
+          : nextOption.component === fixedRatioSplitComponent
+            ? fixedRatioSplitVariantOptions[0].value
           : undefined,
     };
 
@@ -836,20 +959,34 @@ export function PagebuilderShell({
       );
       const headingLevel = sectionIndex === 1 ? 1 : 2;
       const renderedSectionPreview = isSplitContentImageSection(section) ? (
-        <HeroSplitFullHeightSectionV3
-          {...sectionLibraryV3Content.heroSplitFullHeight}
-          headingLevel={headingLevel}
-          variant={
-            (section.variant ??
-              splitContentImageVariantOptions[0]
-                .value) as HeroSplitFullHeightVariant
-          }
-        />
-      ) : (
-        previewCatalog[section.component] ??
-        previewSections[activeRecipeIndex]?.[section.originalIndex] ??
-        null
-      );
+          <HeroSplitFullHeightSectionV3
+            {...sectionLibraryV3Content.heroSplitFullHeight}
+            headingLevel={headingLevel}
+            variant={
+              (section.variant ??
+                splitContentImageVariantOptions[0]
+                  .value) as HeroSplitFullHeightVariant
+            }
+          />
+        ) : isFixedRatioSplitSection(section) ? (
+          <HeroSplitFixedImageSectionV3
+            {...sectionLibraryV3Content.heroSplitFullHeight}
+            headingLevel={headingLevel}
+            ratio={
+              (section.ratio ??
+                fixedRatioSplitRatioOptions[0].value) as HeroSplitFixedImageRatio
+            }
+            variant={
+              (section.variant ??
+                fixedRatioSplitVariantOptions[0]
+                  .value) as HeroSplitFixedImageVariant
+            }
+          />
+        ) : (
+          previewCatalog[section.component] ??
+          previewSections[activeRecipeIndex]?.[section.originalIndex] ??
+          null
+        );
 
       return (
         <div
@@ -1151,6 +1288,86 @@ export function PagebuilderShell({
                         hero.
                       </p>
                     </fieldset>
+                  ) : null}
+
+                  {isFixedRatioSplitSection(selectedSection) ? (
+                    <div className="grid gap-4">
+                      <fieldset className="grid gap-2">
+                        <legend className="type-caption font-semibold text-white">
+                          Fixed-ratio Layout
+                        </legend>
+                        <div className="grid gap-2">
+                          {fixedRatioSplitVariantOptions.map((option) => {
+                            const isActive =
+                              (selectedSection.variant ??
+                                fixedRatioSplitVariantOptions[0].value) ===
+                              option.value;
+
+                            return (
+                              <button
+                                aria-pressed={isActive}
+                                className={cx(
+                                  "radius-4 min-h-10 border px-3 text-left text-xs font-semibold transition-colors",
+                                  isActive
+                                    ? "border-white bg-white text-service-ink"
+                                    : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                                )}
+                                key={option.value}
+                                onClick={() =>
+                                  updateFixedRatioSplitVariant(
+                                    selectedSection.id,
+                                    option.value,
+                                  )
+                                }
+                                type="button"
+                              >
+                                {option.label}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </fieldset>
+
+                      <fieldset className="grid gap-2">
+                        <legend className="type-caption font-semibold text-white">
+                          Image Ratio
+                        </legend>
+                        <div className="grid grid-cols-4 gap-2">
+                          {fixedRatioSplitRatioOptions.map((option) => {
+                            const isActive =
+                              (selectedSection.ratio ??
+                                fixedRatioSplitRatioOptions[0].value) ===
+                              option.value;
+
+                            return (
+                              <button
+                                aria-pressed={isActive}
+                                className={cx(
+                                  "radius-4 min-h-9 border px-2 text-center text-xs font-semibold transition-colors",
+                                  isActive
+                                    ? "border-white bg-white text-service-ink"
+                                    : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                                )}
+                                key={option.value}
+                                onClick={() =>
+                                  updateFixedRatioSplitRatio(
+                                    selectedSection.id,
+                                    option.value,
+                                  )
+                                }
+                                type="button"
+                              >
+                                {option.label}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        <p className="type-caption text-white/60">
+                          Sets the image frame to one of the preferred
+                          landscape or portrait ratios.
+                        </p>
+                      </fieldset>
+                    </div>
                   ) : null}
 
                   <button
