@@ -499,6 +499,19 @@ body {
     min-height: 42rem;
   }
 
+  .pagebuilder-density-normal
+    [data-pagebuilder-section-mode="Navigation"]
+    section,
+  .pagebuilder-density-normal [data-pagebuilder-section-mode="Hero"] section {
+    padding-block: 0;
+  }
+
+  .pagebuilder-density-normal
+    [data-pagebuilder-section-component="HeroFullscreenSectionV2"]
+    .section-min-screen {
+    min-height: 100svh;
+  }
+
   .pagebuilder-hide-markers .pagebuilder-section-marker {
     display: none;
   }

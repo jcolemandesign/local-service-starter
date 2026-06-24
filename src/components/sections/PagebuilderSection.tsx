@@ -22,7 +22,10 @@ import { HeroCenteredFloatersSectionV2 } from "@/components/sections/HeroCentere
 import { HeroContentTopImageBottomSectionV2 } from "@/components/sections/HeroContentTopImageBottomSectionV2";
 import { HeroFullscreenSectionV2 } from "@/components/sections/HeroFullscreenSectionV2";
 import { HeroGridMosaicSectionV2 } from "@/components/sections/HeroGridMosaicSectionV2";
-import { HeroSplitFullHeightSectionV3 } from "@/components/sections/HeroSplitFullHeightSectionV3";
+import {
+  HeroSplitFullHeightSectionV3,
+  type HeroSplitFullHeightVariant,
+} from "@/components/sections/HeroSplitFullHeightSectionV3";
 import { FooterSectionV2 } from "@/components/sections/FooterSectionV2";
 import {
   NavCenterLogoSectionV2,
@@ -49,6 +52,18 @@ import { PagebuilderShell } from "@/components/sections/PagebuilderShell";
 import { pagebuilderRecipes, sectionModes } from "@/content/pagebuilder";
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
 import type { PagebuilderRecipeSection } from "@/content/pagebuilder";
+
+const heroSplitFullHeightVariants = new Set<string>(
+  sectionLibraryV3Content.heroSplitFullHeight.variants.map(
+    (option) => option.variant,
+  ),
+);
+
+function getHeroSplitFullHeightVariant(section: PagebuilderRecipeSection) {
+  return heroSplitFullHeightVariants.has(section.variant ?? "")
+    ? (section.variant as HeroSplitFullHeightVariant)
+    : undefined;
+}
 
 function UnknownSection({ section }: { section: PagebuilderRecipeSection }) {
   return (
@@ -78,6 +93,7 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
         <HeroSplitFullHeightSectionV3
           {...sectionLibraryV3Content.heroSplitFullHeight}
           headingLevel={headingLevel}
+          variant={getHeroSplitFullHeightVariant(section)}
         />
       );
     case "HeroFullscreenSectionV2":
@@ -300,17 +316,11 @@ export function PagebuilderSection() {
       </div>
     ),
     HeroSplitFullHeightSectionV3: (
-      <div key="HeroSplitFullHeightSectionV3">
-        {renderPreviewSection(
-          {
-            component: "HeroSplitFullHeightSectionV3",
-            instruction: "",
-            mode: "Hero",
-            name: "Split content and image",
-          },
-          1,
-        )}
-      </div>
+      <HeroSplitFullHeightSectionV3
+        key="HeroSplitFullHeightSectionV3"
+        {...sectionLibraryV3Content.heroSplitFullHeight}
+        headingLevel={1}
+      />
     ),
     HeroFullscreenSectionV2: (
       <div key="HeroFullscreenSectionV2">

@@ -10,6 +10,7 @@ export type PagebuilderRecipeSection = {
   component: string;
   mode: string;
   instruction: string;
+  variant?: string;
 };
 
 export type PagebuilderRecipe = {
@@ -162,74 +163,6 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
         mode: "Utility",
         instruction:
           "Close with phone, email, hours, and a simple form or request path.",
-      },
-    ],
-  },
-  {
-    id: "premium-trust",
-    name: "homepage2",
-    positioning: "More editorial, image-led, and confidence-focused.",
-    styleRules: [
-      "Use the corresponding Style Guide typography profile for type decisions.",
-      "Keep section spacing open and deliberate.",
-      "Use proof in fewer, stronger moments instead of many small badges.",
-    ],
-    sectionStack: [
-      {
-        name: "Floating bento navigation",
-        component: "NavFloatingBentoSectionV2",
-        mode: "Navigation",
-        instruction:
-          "Use the floating nav when the fullscreen image hero needs a polished first-viewport frame.",
-      },
-      {
-        name: "Fullscreen image hero",
-        component: "HeroFullscreenSectionV2",
-        mode: "Hero",
-        instruction:
-          "Use a strong image, calm h1, review proof, and one visible request path.",
-      },
-      {
-        name: "Reveal paragraph",
-        component: "ContentRevealParagraphSectionV2",
-        mode: "Narrative",
-        instruction:
-          "Use a short editorial thesis to slow the page down and explain what makes the service feel premium.",
-      },
-      {
-        name: "Split headline image content",
-        component: "ContentSplitHeadlineImageSectionV2",
-        mode: "Narrative",
-        instruction:
-          "Translate regular content into an image-led editorial texture with one large positioning line.",
-      },
-      {
-        name: "Scroll service cards",
-        component: "ServicesScrollCardsSectionV2",
-        mode: "Scan",
-        instruction:
-          "Use motion and card scale to make premium services feel browsable without turning the page into a dense grid.",
-      },
-      {
-        name: "Customer stories",
-        component: "TestimonialsCarouselSectionV3",
-        mode: "Proof",
-        instruction:
-          "Use longer stories only if they contain useful service detail.",
-      },
-      {
-        name: "Process image checklist",
-        component: "ProcessImageChecklistSectionV3",
-        mode: "Decision",
-        instruction:
-          "Turn process uncertainty into clear expectations before contact.",
-      },
-      {
-        name: "Fullscreen conversion",
-        component: "CTAFullscreenSectionV3",
-        mode: "Action",
-        instruction:
-          "Use the strongest special-button treatment here if the page needs a memorable final booking moment.",
       },
     ],
   },

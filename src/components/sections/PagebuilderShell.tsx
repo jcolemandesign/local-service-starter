@@ -3,7 +3,12 @@
 import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import {
+  HeroSplitFullHeightSectionV3,
+  type HeroSplitFullHeightVariant,
+} from "@/components/sections/HeroSplitFullHeightSectionV3";
 import type { PagebuilderRecipe, SectionMode } from "@/content/pagebuilder";
+import { sectionLibraryV3Content } from "@/content/section-library-v3";
 
 type PagebuilderShellProps = {
   previewCatalog: Record<string, ReactNode>;
@@ -26,6 +31,28 @@ function cx(...classes: Array<string | false | undefined>) {
 type PreviewVariableStyle = CSSProperties & Record<`--${string}`, string>;
 
 const normalSpacingClassName = "pagebuilder-density-normal";
+const splitContentImageComponent = "HeroSplitFullHeightSectionV3";
+const splitContentImageVariantOptions = [
+  {
+    label: "Text 3 / Image 4",
+    value: "text-3-image-4-right",
+  },
+  {
+    label: "Text 4 / Image 3",
+    value: "text-4-image-3-right",
+  },
+  {
+    label: "Image 3 / Text 4",
+    value: "image-3-left-text-4",
+  },
+  {
+    label: "Image 4 / Text 3",
+    value: "image-4-left-text-3",
+  },
+] as const;
+
+type SplitContentImageVariant =
+  (typeof splitContentImageVariantOptions)[number]["value"];
 
 function readPagebuilderPreviewVariables(): PreviewVariableStyle {
   if (typeof window === "undefined") {
@@ -132,6 +159,16 @@ type PageInstructionInput = {
   recipe: PagebuilderRecipe;
   selectedViewport: (typeof viewportOptions)[number];
 };
+
+function isSplitContentImageSection(section: WorkingSection) {
+  return section.component === splitContentImageComponent;
+}
+
+function getSplitContentImageVariantLabel(variant: string | undefined) {
+  return splitContentImageVariantOptions.find(
+    (option) => option.value === variant,
+  )?.label;
+}
 
 const sectionSwapOptions = [
   {
@@ -367,6 +404,14 @@ function buildPageInstruction({
         `${index + 1}. ${section.component}
    Name: ${section.name}
    Mode: ${section.mode}
+   ${
+     isSplitContentImageSection(section)
+       ? `Variant: ${
+           getSplitContentImageVariantLabel(section.variant) ??
+           splitContentImageVariantOptions[0].label
+         } (${section.variant ?? splitContentImageVariantOptions[0].value})`
+       : "Variant: default"
+   }
    Instruction: ${section.instruction}
    Origin: ${
      section.originalComponent !== section.component
@@ -548,15 +593,19 @@ export function PagebuilderShell({
         included: true,
         originalComponent: section.component,
         originalIndex: index,
+        variant:
+          section.component === splitContentImageComponent
+            ? section.variant ?? splitContentImageVariantOptions[0].value
+            : section.variant,
       })),
     ),
   );
   const [designStyleSettings, setDesignStyleSettings] = useState<
     DesignStyleSettings[]
   >(() =>
-    recipes.map((_, index) => ({
-      showSectionMarkers: true,
-      viewportId: index === 0 ? "main" : "wide",
+    recipes.map(() => ({
+      showSectionMarkers: false,
+      viewportId: "main",
     })),
   );
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(
@@ -577,9 +626,9 @@ export function PagebuilderShell({
   const activeDesignStyle =
     designStyleSettings[activeRecipeIndex] ??
     designStyleSettings[0] ?? {
-      showSectionMarkers: true,
+      showSectionMarkers: false,
       viewportId: "main",
-    };
+  };
   const activeStack = workingStacks[activeRecipeIndex] ?? [];
   const selectedSection =
     activeStack.find((section) => section.id === selectedSectionId) ?? null;
@@ -647,20 +696,6 @@ export function PagebuilderShell({
     );
   }
 
-  function toggleSelectedSection() {
-    if (!selectedSection) {
-      return;
-    }
-
-    updateActiveStack((stack) =>
-      stack.map((section) =>
-        section.id === selectedSection.id
-          ? { ...section, included: !section.included }
-          : section,
-      ),
-    );
-  }
-
   function moveSection(sectionId: string, direction: -1 | 1) {
     updateActiveStack((stack) => {
       const currentIndex = stack.findIndex(
@@ -683,14 +718,6 @@ export function PagebuilderShell({
     });
   }
 
-  function moveSelectedSection(direction: -1 | 1) {
-    if (!selectedSection) {
-      return;
-    }
-
-    moveSection(selectedSection.id, direction);
-  }
-
   function deleteSection(sectionId: string) {
     updateActiveStack((stack) =>
       stack.filter((section) => section.id !== sectionId),
@@ -701,28 +728,51 @@ export function PagebuilderShell({
     }
   }
 
-  function swapSelectedSection(component: string) {
+  function swapSection(sectionId: string, component: string) {
     const nextOption = sectionSwapOptions.find(
       (option) => option.component === component,
     );
+    const currentSection = activeStack.find((section) => section.id === sectionId);
 
-    if (!selectedSection || !nextOption) {
+    if (!currentSection || !nextOption || nextOption.mode !== currentSection.mode) {
       return;
     }
 
     updateActiveStack((stack) =>
       stack.map((section) =>
-        section.id === selectedSection.id
+        section.id === sectionId
           ? {
               ...section,
               component: nextOption.component,
               instruction: nextOption.instruction,
               mode: nextOption.mode,
               name: nextOption.name,
+              variant:
+                nextOption.component === splitContentImageComponent
+                  ? section.variant ?? splitContentImageVariantOptions[0].value
+                  : undefined,
             }
           : section,
       ),
     );
+    setSelectedSectionId(sectionId);
+  }
+
+  function updateSplitContentImageVariant(
+    sectionId: string,
+    variant: SplitContentImageVariant,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && isSplitContentImageSection(section)
+          ? {
+              ...section,
+              variant,
+            }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
   }
 
   function addSection(component: string) {
@@ -743,6 +793,10 @@ export function PagebuilderShell({
       name: nextOption.name,
       originalComponent: nextOption.component,
       originalIndex: -1,
+      variant:
+        nextOption.component === splitContentImageComponent
+          ? splitContentImageVariantOptions[0].value
+          : undefined,
     };
 
     updateActiveStack((stack) => {
@@ -772,49 +826,52 @@ export function PagebuilderShell({
   }
 
   function renderPreviewWindow() {
-    const visibleSections = activeStack.filter((section) => section.included);
-
     function renderSectionFrame(
       section: WorkingSection,
-      options: { className?: string } = {},
+      options: { className?: string; isOverlay?: boolean } = {},
     ) {
       const isSelected = section.id === selectedSectionId;
+      const sectionIndex = includedSections.findIndex(
+        (includedSection) => includedSection.id === section.id,
+      );
+      const headingLevel = sectionIndex === 1 ? 1 : 2;
+      const renderedSectionPreview = isSplitContentImageSection(section) ? (
+        <HeroSplitFullHeightSectionV3
+          {...sectionLibraryV3Content.heroSplitFullHeight}
+          headingLevel={headingLevel}
+          variant={
+            (section.variant ??
+              splitContentImageVariantOptions[0]
+                .value) as HeroSplitFullHeightVariant
+          }
+        />
+      ) : (
+        previewCatalog[section.component] ??
+        previewSections[activeRecipeIndex]?.[section.originalIndex] ??
+        null
+      );
 
       return (
         <div
           className={cx(
-            "group/pagebuilder-section relative cursor-pointer outline outline-0 outline-offset-0 transition-shadow",
+            "group/pagebuilder-section cursor-pointer outline outline-0 outline-offset-0 transition-shadow",
+            options.isOverlay ? "absolute" : "relative",
+            options.isOverlay && "pointer-events-none",
             options.className,
             isSelected &&
               "z-10 shadow-[0_0_0_3px_var(--color-service-accent)]",
           )}
           data-pagebuilder-section-id={section.id}
+          data-pagebuilder-section-component={section.component}
+          data-pagebuilder-section-mode={section.mode}
           key={section.id}
           onClick={(event) => {
             event.preventDefault();
             event.stopPropagation();
             setSelectedSectionId(section.id);
           }}
-          onKeyDown={(event) => {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              setSelectedSectionId(section.id);
-            }
-          }}
-          role="button"
-          tabIndex={0}
         >
-          <div className="pagebuilder-section-marker pointer-events-none absolute left-3 top-3 z-30 max-w-[calc(100%-1.5rem)] rounded border border-service-border bg-white/90 px-3 py-2 text-service-ink shadow-service backdrop-blur">
-            <p className="type-caption font-semibold text-service-accent">
-              {section.mode}
-            </p>
-            <p className="mt-1 text-xs font-semibold">{section.name}</p>
-          </div>
-          {previewCatalog[section.component] ??
-            previewSections[activeRecipeIndex]?.[
-              section.originalIndex
-            ] ??
-            null}
+          {renderedSectionPreview}
         </div>
       );
     }
@@ -831,18 +888,22 @@ export function PagebuilderShell({
         sizeLabel={selectedViewport.sizeLabel}
         spacingClassName={normalSpacingClassName}
       >
-        {visibleSections.map((section, index) => {
-          const nextSection = visibleSections[index + 1];
-          const previousSection = visibleSections[index - 1];
+        {includedSections.map((section, index) => {
+          const nextSection = includedSections[index + 1];
+          const previousSection = includedSections[index - 1];
 
           if (
             isPreviewNavigationSection(section) &&
             isPreviewHeroSection(nextSection)
           ) {
             return (
-              <div className="relative" key={`${section.id}-${nextSection.id}`}>
+              <div
+                className="pagebuilder-nav-hero-pair relative"
+                key={`${section.id}-${nextSection.id}`}
+              >
                 {renderSectionFrame(section, {
-                  className: "absolute inset-x-0 top-0 z-20",
+                  className: "inset-x-0 top-0 z-20",
+                  isOverlay: true,
                 })}
                 {renderSectionFrame(nextSection)}
               </div>
@@ -864,27 +925,91 @@ export function PagebuilderShell({
   }
 
   return (
-    <section className="h-svh overflow-hidden bg-service-surface text-service-ink max-lg:h-auto max-lg:min-h-svh max-lg:overflow-visible">
+    <section className="h-svh overflow-hidden bg-service-ink text-white max-lg:h-auto max-lg:min-h-svh max-lg:overflow-visible">
       <div className="h-full w-full px-4 py-4 max-md:px-3">
         <div className="grid h-full min-h-0 grid-cols-[22rem_minmax(0,1fr)] items-stretch gap-5 max-lg:h-auto max-lg:grid-cols-1">
           <aside className="grid h-full min-h-0 content-start gap-4 overflow-y-auto overscroll-contain pr-1 max-lg:h-auto max-lg:overflow-visible max-lg:pr-0">
-            <div className="radius-medium order-1 border border-service-border bg-white p-5 shadow-service">
-              <h1 className="type-heading-lg text-service-ink">
+            <div className="radius-medium order-1 border border-white/10 bg-white/8 p-5 shadow-service">
+              <h1 className="type-heading-lg text-white">
                 Page Builder
               </h1>
-              <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
+              <p className="type-text-sm wrap-pretty mt-heading-body-sm text-white/68">
                 Choose, swap, reorder, and preview homepage sections while the
                 implementation brief updates with the live stack.
               </p>
             </div>
 
-            <div className="radius-medium order-3 border border-service-border bg-white p-5 shadow-service">
-              <h2 className="type-heading-sm text-service-ink">
+            <div className="radius-medium order-2 border border-white/10 bg-white/8 p-5 shadow-service">
+              <h2 className="type-heading-sm text-white">
+                Page Layouts
+              </h2>
+              <div className="mt-4 grid gap-2" role="list">
+                {recipes.map((recipe) => {
+                  const isActive = recipe.id === activeRecipe.id;
+
+                  return (
+                    <button
+                      aria-current={isActive ? "page" : undefined}
+                      className={cx(
+                        "radius-4 min-h-11 border px-3 text-left type-text-sm font-semibold transition-colors",
+                        isActive
+                          ? "border-white bg-white text-service-ink"
+                          : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                      )}
+                      key={recipe.id}
+                      onClick={() => {
+                        setActiveRecipeId(recipe.id);
+                        setSelectedSectionId(null);
+                      }}
+                      type="button"
+                    >
+                      {recipe.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="radius-medium order-4 border border-white/10 bg-white/8 p-5 shadow-service">
+              <h2 className="type-heading-sm text-white">
+                Sections
+              </h2>
+              <div className="mt-4 grid max-h-72 gap-2 overflow-y-auto pr-1">
+                {includedSections.map((section) => {
+                  const isActive = section.id === selectedSectionId;
+
+                  return (
+                    <button
+                      aria-current={isActive ? "true" : undefined}
+                      className={cx(
+                        "radius-4 min-h-12 border px-3 py-2 text-left transition-colors",
+                        isActive
+                          ? "border-white bg-white text-service-ink"
+                          : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                      )}
+                      key={section.id}
+                      onClick={() => setSelectedSectionId(section.id)}
+                      type="button"
+                    >
+                      <span className="type-caption block font-semibold text-current/70">
+                        {section.mode}
+                      </span>
+                      <span className="mt-1 block truncate text-sm font-semibold">
+                        {section.name}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="radius-medium order-5 border border-white/10 bg-white/8 p-5 shadow-service">
+              <h2 className="type-heading-sm text-white">
                 Preview Controls
               </h2>
               <div className="mt-4 grid gap-4">
                 <div className="grid gap-2">
-                  <span className="type-caption font-semibold text-service-ink">
+                  <span className="type-caption font-semibold text-white">
                     Preview Width
                   </span>
                   <div className="grid grid-cols-2 gap-2">
@@ -896,8 +1021,8 @@ export function PagebuilderShell({
                           className={cx(
                             "radius-4 min-h-10 min-w-20 border px-3 text-sm font-semibold transition-colors max-sm:min-w-0 max-sm:px-2",
                             isActive
-                              ? "border-service-ink bg-service-ink text-white"
-                              : "border-service-border bg-service-surface text-service-ink hover:border-service-accent hover:text-service-accent",
+                              ? "border-white bg-white text-service-ink"
+                              : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
                           )}
                           key={option.id}
                           onClick={() =>
@@ -913,67 +1038,62 @@ export function PagebuilderShell({
                       );
                     })}
                   </div>
-                  <span className="type-caption text-service-muted">
+                  <span className="type-caption text-white/60">
                     Changes the rendered preview frame width.
                   </span>
                 </div>
 
-                <label className="flex items-start gap-3 rounded border border-service-border bg-service-surface p-3">
-                  <input
-                    checked={activeDesignStyle.showSectionMarkers}
-                    className="mt-1 size-4 accent-service-accent"
-                    onChange={(event) =>
-                      updateActiveDesignStyle((settings) => ({
-                        ...settings,
-                        showSectionMarkers: event.target.checked,
-                      }))
-                    }
-                    type="checkbox"
-                  />
-                  <span>
-                    <span className="block text-sm font-semibold text-service-ink">
-                      Show section markers
-                    </span>
-                    <span className="type-caption mt-1 block text-service-muted">
-                      Labels each rendered section in the preview.
-                    </span>
-                  </span>
-                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    className="radius-4 min-h-10 border border-white bg-white px-3 text-sm font-semibold text-service-ink transition-colors hover:border-white/80 hover:bg-white/88"
+                    onClick={() => setIsPreviewOpen(true)}
+                    type="button"
+                  >
+                    Focus
+                  </button>
+                  <button
+                    className="radius-4 min-h-10 border border-white/10 bg-white/8 px-3 text-sm font-semibold text-white transition-colors hover:border-white/45 hover:bg-white/14"
+                    onClick={refreshPreviewStyles}
+                    type="button"
+                  >
+                    Refresh
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div className="radius-medium sticky top-0 z-20 order-2 border border-service-border bg-white p-5 shadow-service max-lg:static">
-              <h2 className="type-heading-sm text-service-ink">
+            <div className="radius-medium order-3 border border-white/10 bg-white/8 p-5 shadow-service">
+              <h2 className="type-heading-sm text-white">
                 Selected Section
               </h2>
               {selectedSection ? (
                 <div className="mt-4 grid gap-4">
-                  <div className="rounded border border-service-border bg-service-surface p-3">
-                    <p className="text-sm font-semibold text-service-ink">
+                  <div className="rounded border border-white/10 bg-white/8 p-3">
+                    <p className="text-sm font-semibold text-white">
                       {selectedSection.name}
                     </p>
-                    <p className="type-caption mt-1 text-service-muted">
+                    <p className="type-caption mt-1 text-white/60">
                       {selectedSection.component}
                     </p>
-                          <span className="mt-3 inline-flex rounded-full border border-service-border bg-white px-3 py-1 text-xs font-semibold text-service-muted">
+                          <span className="mt-3 inline-flex rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">
                             {selectedSection.mode}
                           </span>
                           {selectedSection.component !==
                             selectedSection.originalComponent && (
-                            <span className="ml-2 mt-3 inline-flex rounded-full border border-service-accent bg-white px-3 py-1 text-xs font-semibold text-service-accent">
+                            <span className="ml-2 mt-3 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white">
                               swapped
                             </span>
                           )}
                         </div>
 
                   <label className="grid gap-2">
-                    <span className="type-caption font-semibold text-service-ink">
-                      Swap Within Mode
+                    <span className="type-caption font-semibold text-white">
+                      Alternate
                     </span>
                     <select
                       className="radius-4 min-h-11 border border-service-border bg-service-surface px-3 text-sm font-semibold text-service-ink"
                       onChange={(event) =>
-                        swapSelectedSection(event.target.value)
+                        swapSection(selectedSection.id, event.target.value)
                       }
                       value={selectedSection.component}
                     >
@@ -986,53 +1106,122 @@ export function PagebuilderShell({
                         </option>
                       ))}
                     </select>
-                    <span className="type-caption text-service-muted">
-                      Keeps the section role while changing the rendered pattern.
+                    <span className="type-caption text-white/60">
+                      Swaps to another section with the same function.
                     </span>
                   </label>
 
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      className="radius-4 min-h-10 border border-service-border bg-service-surface px-3 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-                      onClick={() => moveSelectedSection(-1)}
-                      type="button"
-                    >
-                      Move Up
-                    </button>
-                    <button
-                      className="radius-4 min-h-10 border border-service-border bg-service-surface px-3 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-                      onClick={() => moveSelectedSection(1)}
-                      type="button"
-                    >
-                      Move Down
-                    </button>
-                  </div>
+                  {isSplitContentImageSection(selectedSection) ? (
+                    <fieldset className="grid gap-2">
+                      <legend className="type-caption font-semibold text-white">
+                        Split Version
+                      </legend>
+                      <div className="grid grid-cols-2 gap-2">
+                        {splitContentImageVariantOptions.map((option) => {
+                          const isActive =
+                            (selectedSection.variant ??
+                              splitContentImageVariantOptions[0].value) ===
+                            option.value;
+
+                          return (
+                            <button
+                              aria-pressed={isActive}
+                              className={cx(
+                                "radius-4 min-h-10 border px-3 text-left text-xs font-semibold transition-colors",
+                                isActive
+                                  ? "border-white bg-white text-service-ink"
+                                  : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                              )}
+                              key={option.value}
+                              onClick={() =>
+                                updateSplitContentImageVariant(
+                                  selectedSection.id,
+                                  option.value,
+                                )
+                              }
+                              type="button"
+                            >
+                              {option.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <p className="type-caption text-white/60">
+                        Choose the text/image column balance for this split
+                        hero.
+                      </p>
+                    </fieldset>
+                  ) : null}
 
                   <button
-                    className={cx(
-                      "radius-4 min-h-11 border px-3 text-sm font-semibold transition-colors",
-                      selectedSection.included
-                        ? "border-service-border bg-service-surface text-service-ink hover:border-service-accent hover:text-service-accent"
-                        : "border-service-accent bg-service-accent text-white",
-                    )}
-                    onClick={toggleSelectedSection}
+                    className="radius-4 min-h-10 border border-white/10 bg-white/8 px-3 text-sm font-semibold text-white transition-colors hover:border-white/45 hover:bg-white/14"
+                    onClick={() => deleteSection(selectedSection.id)}
                     type="button"
                   >
-                    {selectedSection.included
-                      ? "Exclude From Preview"
-                      : "Include In Preview"}
+                    Delete Section
                   </button>
                 </div>
               ) : (
-                <p className="type-caption mt-4 rounded border border-service-border bg-service-surface p-3 text-service-muted">
+                <p className="type-caption mt-4 rounded border border-white/10 bg-white/8 p-3 text-white/60">
                   Click a section in the rendered preview to inspect and adjust
                   it.
                 </p>
               )}
             </div>
+
+            <div className="radius-medium order-6 border border-white/10 bg-white/8 p-5 shadow-service">
+              <h2 className="type-heading-sm text-white">
+                Add Section
+              </h2>
+              <label className="mt-4 grid gap-2">
+                <span className="type-caption font-semibold text-white">
+                  Template
+                </span>
+                <select
+                  className="radius-4 min-h-11 border border-service-border bg-service-surface px-3 text-sm font-semibold text-service-ink"
+                  onChange={(event) => {
+                    addSection(event.target.value);
+                    event.currentTarget.value = "";
+                  }}
+                  value=""
+                >
+                  <option value="">Choose a section...</option>
+                  {sectionModes.map((mode) => {
+                    const options = sectionSwapOptions.filter(
+                      (option) => option.mode === mode.name,
+                    );
+
+                    if (options.length === 0) {
+                      return null;
+                    }
+
+                    return (
+                      <optgroup key={mode.id} label={mode.name}>
+                        {options.map((option) => (
+                          <option
+                            key={option.component}
+                            value={option.component}
+                          >
+                            {option.name}
+                          </option>
+                        ))}
+                      </optgroup>
+                    );
+                  })}
+                </select>
+              </label>
+              <p className="type-caption mt-3 text-white/60">
+                Adds after the selected section, or at the bottom.
+              </p>
+            </div>
           </aside>
 
-          <div className="grid h-full min-h-0 content-start gap-4 overflow-y-auto overscroll-contain pr-1 max-lg:h-auto max-lg:overflow-visible max-lg:pr-0">
+          <div className="grid h-full min-h-0 overflow-hidden rounded border border-white/10 bg-white/10 p-2 shadow-service max-lg:h-[78svh]">
+            <div className="grid h-full min-h-0 place-items-stretch overflow-hidden">
+              {renderPreviewWindow()}
+            </div>
+
+            <div className="hidden">
             <div className="radius-medium border border-service-border bg-white p-1.5 shadow-service">
               <div
                 aria-label="Pagebuilder design tabs"
@@ -1438,6 +1627,7 @@ export function PagebuilderShell({
                   </div>
                 </details>
               </div>
+            </div>
             </div>
           </div>
         </div>
