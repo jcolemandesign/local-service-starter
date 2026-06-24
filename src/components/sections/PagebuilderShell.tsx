@@ -192,6 +192,12 @@ type DesignStyleSettings = {
   viewportId: (typeof viewportOptions)[number]["id"];
 };
 
+type PageLayoutSlot = {
+  designStyle: DesignStyleSettings;
+  name: string;
+  stack: WorkingSection[];
+};
+
 type PageInstructionInput = {
   designLabel: string;
   excludedSections: WorkingSection[];
@@ -223,6 +229,44 @@ function getFixedRatioSplitVariantLabel(variant: string | undefined) {
 function getFixedRatioSplitRatioLabel(ratio: string | undefined) {
   return fixedRatioSplitRatioOptions.find((option) => option.value === ratio)
     ?.label;
+}
+
+function createInitialDesignStyle(): DesignStyleSettings {
+  return {
+    showSectionMarkers: false,
+    viewportId: "main",
+  };
+}
+
+function createInitialWorkingStack(
+  recipe: PagebuilderRecipe,
+  slotIndex: number,
+) {
+  return recipe.sectionStack.map((section, index) => ({
+    ...section,
+    id: `${recipe.id}-slot-${slotIndex + 1}-${section.component}-${index}`,
+    included: true,
+    originalComponent: section.component,
+    originalIndex: index,
+    ratio:
+      section.component === fixedRatioSplitComponent
+        ? section.ratio ?? fixedRatioSplitRatioOptions[0].value
+        : section.ratio,
+    variant:
+      section.component === splitContentImageComponent
+        ? section.variant ?? splitContentImageVariantOptions[0].value
+        : section.component === fixedRatioSplitComponent
+          ? section.variant ?? fixedRatioSplitVariantOptions[0].value
+          : section.variant,
+  }));
+}
+
+function createInitialLayoutSlots(recipe: PagebuilderRecipe) {
+  return Array.from({ length: 3 }, (_, index) => ({
+    designStyle: createInitialDesignStyle(),
+    name: `Option ${index + 1}`,
+    stack: createInitialWorkingStack(recipe, index),
+  }));
 }
 
 const sectionSwapOptions = [
@@ -656,35 +700,12 @@ export function PagebuilderShell({
   sectionModes,
 }: PagebuilderShellProps) {
   const [activeRecipeId, setActiveRecipeId] = useState(recipes[0]?.id ?? "");
-  const [workingStacks, setWorkingStacks] = useState<WorkingSection[][]>(() =>
-    recipes.map((recipe) =>
-      recipe.sectionStack.map((section, index) => ({
-        ...section,
-        id: `${recipe.id}-${section.component}-${index}`,
-        included: true,
-        originalComponent: section.component,
-        originalIndex: index,
-        ratio:
-          section.component === fixedRatioSplitComponent
-            ? section.ratio ?? fixedRatioSplitRatioOptions[0].value
-            : section.ratio,
-        variant:
-          section.component === splitContentImageComponent
-            ? section.variant ?? splitContentImageVariantOptions[0].value
-            : section.component === fixedRatioSplitComponent
-              ? section.variant ?? fixedRatioSplitVariantOptions[0].value
-            : section.variant,
-      })),
-    ),
+  const [layoutSlots, setLayoutSlots] = useState<PageLayoutSlot[][]>(() =>
+    recipes.map((recipe) => createInitialLayoutSlots(recipe)),
   );
-  const [designStyleSettings, setDesignStyleSettings] = useState<
-    DesignStyleSettings[]
-  >(() =>
-    recipes.map(() => ({
-      showSectionMarkers: false,
-      viewportId: "main",
-    })),
-  );
+  const [activeLayoutSlotIndexes, setActiveLayoutSlotIndexes] = useState<
+    number[]
+  >(() => recipes.map(() => 0));
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(
     null,
   );
@@ -699,14 +720,16 @@ export function PagebuilderShell({
     0,
   );
   const activeRecipe = recipes[activeRecipeIndex] ?? recipes[0];
+  const activeLayoutSlotIndex =
+    activeLayoutSlotIndexes[activeRecipeIndex] ?? 0;
+  const activeLayoutSlots = layoutSlots[activeRecipeIndex] ?? [];
+  const activeLayoutSlot =
+    activeLayoutSlots[activeLayoutSlotIndex] ?? activeLayoutSlots[0];
   const activePageLabel = activeRecipe?.name ?? `Page ${activeRecipeIndex + 1}`;
   const activeDesignStyle =
-    designStyleSettings[activeRecipeIndex] ??
-    designStyleSettings[0] ?? {
-      showSectionMarkers: false,
-      viewportId: "main",
-  };
-  const activeStack = workingStacks[activeRecipeIndex] ?? [];
+    activeLayoutSlot?.designStyle ?? createInitialDesignStyle();
+  const activeStack = activeLayoutSlot?.stack ?? [];
+  const activeSlotLabel = activeLayoutSlot?.name ?? "Option 1";
   const selectedSection =
     activeStack.find((section) => section.id === selectedSectionId) ?? null;
   const selectedSwapOptions = selectedSection
@@ -718,7 +741,7 @@ export function PagebuilderShell({
   const includedSections = activeStack.filter((section) => section.included);
   const excludedSections = activeStack.filter((section) => !section.included);
   const pageInstruction = buildPageInstruction({
-    designLabel: activePageLabel,
+    designLabel: `${activePageLabel} - ${activeSlotLabel}`,
     excludedSections,
     includedSections,
     recipe: activeRecipe,
@@ -726,14 +749,16 @@ export function PagebuilderShell({
   });
   const allLayoutInstructions = recipes
     .map((recipe, index) => {
-      const stack = workingStacks[index] ?? [];
-      const settings = designStyleSettings[index] ?? designStyleSettings[0];
+      const slotIndex = activeLayoutSlotIndexes[index] ?? 0;
+      const slot = layoutSlots[index]?.[slotIndex] ?? layoutSlots[index]?.[0];
+      const stack = slot?.stack ?? [];
+      const settings = slot?.designStyle ?? createInitialDesignStyle();
       const viewport =
         viewportOptions.find((option) => option.id === settings?.viewportId) ??
         viewportOptions[0];
 
       return buildPageInstruction({
-        designLabel: recipe.name,
+        designLabel: `${recipe.name} - ${slot?.name ?? "Option 1"}`,
         excludedSections: stack.filter((section) => !section.included),
         includedSections: stack.filter((section) => section.included),
         recipe,
@@ -756,9 +781,18 @@ export function PagebuilderShell({
   }, []);
 
   function updateActiveStack(updater: (stack: WorkingSection[]) => WorkingSection[]) {
-    setWorkingStacks((currentStacks) =>
-      currentStacks.map((stack, index) =>
-        index === activeRecipeIndex ? updater(stack) : stack,
+    setLayoutSlots((currentSlots) =>
+      currentSlots.map((recipeSlots, recipeIndex) =>
+        recipeIndex === activeRecipeIndex
+          ? recipeSlots.map((slot, slotIndex) =>
+              slotIndex === activeLayoutSlotIndex
+                ? {
+                    ...slot,
+                    stack: updater(slot.stack),
+                  }
+                : slot,
+            )
+          : recipeSlots,
       ),
     );
   }
@@ -766,11 +800,29 @@ export function PagebuilderShell({
   function updateActiveDesignStyle(
     updater: (settings: DesignStyleSettings) => DesignStyleSettings,
   ) {
-    setDesignStyleSettings((currentSettings) =>
-      currentSettings.map((settings, index) =>
-        index === activeRecipeIndex ? updater(settings) : settings,
+    setLayoutSlots((currentSlots) =>
+      currentSlots.map((recipeSlots, recipeIndex) =>
+        recipeIndex === activeRecipeIndex
+          ? recipeSlots.map((slot, slotIndex) =>
+              slotIndex === activeLayoutSlotIndex
+                ? {
+                    ...slot,
+                    designStyle: updater(slot.designStyle),
+                  }
+                : slot,
+            )
+          : recipeSlots,
       ),
     );
+  }
+
+  function switchLayoutSlot(recipeIndex: number, slotIndex: number) {
+    setActiveLayoutSlotIndexes((currentIndexes) =>
+      currentIndexes.map((currentIndex, index) =>
+        index === recipeIndex ? slotIndex : currentIndex,
+      ),
+    );
+    setSelectedSectionId(null);
   }
 
   function moveSection(sectionId: string, direction: -1 | 1) {
@@ -1015,10 +1067,10 @@ export function PagebuilderShell({
 
     return (
       <PagebuilderPreviewWindow
-        activePageLabel={activePageLabel}
+        activePageLabel={`${activePageLabel} / ${activeSlotLabel}`}
         contentClassName={selectedViewport.contentClassName}
         frameClassName={selectedViewport.frameClassName}
-        key={`${activeRecipe.id}-${selectedViewport.id}-${previewRefreshKey}`}
+        key={`${activeRecipe.id}-${activeLayoutSlotIndex}-${selectedViewport.id}-${previewRefreshKey}`}
         previewStyle={previewVariableStyle}
         screenClassName={selectedViewport.screenClassName}
         showSectionMarkers={activeDesignStyle.showSectionMarkers}
@@ -1080,28 +1132,71 @@ export function PagebuilderShell({
               <h2 className="type-heading-sm text-white">
                 Page Layouts
               </h2>
-              <div className="mt-4 grid gap-2" role="list">
-                {recipes.map((recipe) => {
+              <div className="mt-4 grid gap-3" role="list">
+                {recipes.map((recipe, recipeIndex) => {
                   const isActive = recipe.id === activeRecipe.id;
+                  const recipeSlotIndex =
+                    activeLayoutSlotIndexes[recipeIndex] ?? 0;
+                  const recipeSlots = layoutSlots[recipeIndex] ?? [];
 
                   return (
-                    <button
-                      aria-current={isActive ? "page" : undefined}
-                      className={cx(
-                        "radius-4 min-h-11 border px-3 text-left type-text-sm font-semibold transition-colors",
-                        isActive
-                          ? "border-white bg-white text-service-ink"
-                          : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
-                      )}
-                      key={recipe.id}
-                      onClick={() => {
-                        setActiveRecipeId(recipe.id);
-                        setSelectedSectionId(null);
-                      }}
-                      type="button"
-                    >
-                      {recipe.name}
-                    </button>
+                    <div className="grid gap-2" key={recipe.id}>
+                      <button
+                        aria-current={isActive ? "page" : undefined}
+                        className={cx(
+                          "radius-4 min-h-11 border px-3 text-left type-text-sm font-semibold transition-colors",
+                          isActive
+                            ? "border-white bg-white text-service-ink"
+                            : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                        )}
+                        onClick={() => {
+                          setActiveRecipeId(recipe.id);
+                          setSelectedSectionId(null);
+                        }}
+                        type="button"
+                      >
+                        <span>{recipe.name}</span>
+                        <span
+                          className={cx(
+                            "mt-1 block text-xs font-semibold",
+                            isActive ? "text-service-muted" : "text-white/55",
+                          )}
+                        >
+                          {recipeSlots[recipeSlotIndex]?.name ?? "Option 1"}
+                        </span>
+                      </button>
+
+                      {isActive ? (
+                        <div
+                          aria-label={`${recipe.name} stored layout options`}
+                          className="grid grid-cols-3 gap-1.5"
+                        >
+                          {recipeSlots.map((slot, slotIndex) => {
+                            const isSlotActive =
+                              slotIndex === recipeSlotIndex;
+
+                            return (
+                              <button
+                                aria-pressed={isSlotActive}
+                                className={cx(
+                                  "radius-4 min-h-8 border px-2 text-xs font-semibold transition-colors",
+                                  isSlotActive
+                                    ? "border-white bg-white text-service-ink"
+                                    : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                                )}
+                                key={slot.name}
+                                onClick={() =>
+                                  switchLayoutSlot(recipeIndex, slotIndex)
+                                }
+                                type="button"
+                              >
+                                {slot.name}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      ) : null}
+                    </div>
                   );
                 })}
               </div>
@@ -1512,6 +1607,7 @@ export function PagebuilderShell({
 
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {[
+                      `Option: ${activeSlotLabel}`,
                       `Viewport: ${selectedViewport.label}`,
                       `Sections: ${includedSections.length}`,
                       "Normal spacing",
@@ -1547,7 +1643,7 @@ export function PagebuilderShell({
                         Rendered Preview
                       </span>
                       <span className="type-heading-sm mt-2 block text-service-ink">
-                        {activePageLabel} page body
+                        {activePageLabel} / {activeSlotLabel} page body
                       </span>
                     </span>
                     <span className="flex flex-wrap justify-end gap-2">
@@ -1756,7 +1852,7 @@ export function PagebuilderShell({
                     </div>
                     <div className="rounded border border-service-border bg-service-surface p-4">
                       <p className="type-caption font-semibold text-service-ink">
-                        Use {activePageLabel}
+                        Use {activePageLabel} / {activeSlotLabel}
                       </p>
                       <p className="type-caption mt-2 text-service-muted">
                         {activeRecipe.positioning}
@@ -1865,7 +1961,7 @@ export function PagebuilderShell({
             <div className="flex flex-wrap items-center justify-between gap-3 rounded border border-white/15 bg-white px-3 py-2 shadow-service">
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-service-ink">
-                  {activePageLabel}
+                  {activePageLabel} / {activeSlotLabel}
                 </p>
                 <p className="type-caption truncate text-service-muted">
                   {selectedViewport.sizeLabel} preview

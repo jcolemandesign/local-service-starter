@@ -27,7 +27,6 @@ import {
   HeroContentTopImageBottomSectionV2,
   HeroFullscreenSectionV2,
   HeroGridMosaicSectionV2,
-  HeroSplitFullHeightSectionV3,
   NavCenterLogoSectionV2,
   NavFloatingBentoSectionV2,
   NavPrimarySectionV2,
@@ -53,7 +52,7 @@ import {
   TrustMarqueeSectionV3,
 } from "@/components/sections";
 import { HeroSplitFixedImageSectionLibraryDemo } from "@/components/sections/HeroSplitFixedImageSectionLibraryDemo";
-import type { HeroSplitFullHeightVariant } from "@/components/sections/HeroSplitFullHeightSectionV3";
+import { HeroSplitFullImageSectionLibraryDemo } from "@/components/sections/HeroSplitFullImageSectionLibraryDemo";
 import {
   sectionLibraryV3Collections,
   sectionLibraryV3Content,
@@ -98,6 +97,12 @@ const sectionElements = {
   "hero-content-top-image-bottom-v2": (
     <HeroContentTopImageBottomSectionV2
       {...sectionLibraryV3Content.hero}
+      headingLevel={2}
+    />
+  ),
+  "hero-split-full-height-v3": (
+    <HeroSplitFullImageSectionLibraryDemo
+      {...sectionLibraryV3Content.heroSplitFullHeight}
       headingLevel={2}
     />
   ),
@@ -264,30 +269,11 @@ const sectionElements = {
   ),
 } as const;
 
-const heroSplitVariants = sectionLibraryV3Content.heroSplitFullHeight.variants.map(
-  ({ label, variant }) => ({
-    label,
-    element: (
-      <HeroSplitFullHeightSectionV3
-        {...sectionLibraryV3Content.heroSplitFullHeight}
-        variant={variant as HeroSplitFullHeightVariant}
-      />
-    ),
-  }),
-);
-
 const collections = sectionLibraryV3Collections.map((collection) => ({
   ...collection,
   items: collection.items.map((item) => ({
     label: item.label,
-    variants:
-      item.component === "hero-split-full-height-v3"
-        ? heroSplitVariants
-        : undefined,
-    element:
-      item.component !== "hero-split-full-height-v3"
-        ? sectionElements[item.component as keyof typeof sectionElements]
-        : undefined,
+    element: sectionElements[item.component as keyof typeof sectionElements],
   })),
 }));
 

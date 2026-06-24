@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ComponentProps } from "react";
+import { Container } from "@/components/primitives";
 import {
   HeroSplitFixedImageSectionV3,
   type HeroSplitFixedImageRatio,
@@ -63,7 +64,7 @@ export function HeroSplitFixedImageSectionLibraryDemo(
   return (
     <div>
       <div className="library-surface border-b border-service-border">
-        <div className="site-grid-frame section-min-none grid gap-4 py-5">
+        <Container className="grid gap-4 py-5">
           <fieldset className="grid gap-2">
             <legend className="text-[0.6875rem] font-semibold uppercase tracking-widest text-service-muted">
               Layout
@@ -119,7 +120,7 @@ export function HeroSplitFixedImageSectionLibraryDemo(
               })}
             </div>
           </fieldset>
-        </div>
+        </Container>
       </div>
 
       <HeroSplitFixedImageSectionV3

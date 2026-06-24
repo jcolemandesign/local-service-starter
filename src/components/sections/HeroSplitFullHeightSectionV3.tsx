@@ -36,28 +36,28 @@ const variantConfig: Record<HeroSplitFullHeightVariant, HeroVariantConfig> = {
     textClassName: "col-span-3 col-start-1",
     imageClassName: "col-span-4 col-start-4",
     imagePanelClassName:
-      "left-0 right-[calc(var(--site-grid-inset-inline)*-1)] max-lg:left-[calc(var(--site-grid-inset-inline)*-1)]",
+      "left-0 right-[calc(0px_-_var(--site-grid-inset-inline))] max-lg:left-[calc(0px_-_var(--site-grid-inset-inline))]",
     imageSlotLabel: "Image area: columns 4-7",
   },
   "text-4-image-3-right": {
     textClassName: "col-span-4 col-start-1",
     imageClassName: "col-span-3 col-start-5",
     imagePanelClassName:
-      "left-0 right-[calc(var(--site-grid-inset-inline)*-1)] max-lg:left-[calc(var(--site-grid-inset-inline)*-1)]",
+      "left-0 right-[calc(0px_-_var(--site-grid-inset-inline))] max-lg:left-[calc(0px_-_var(--site-grid-inset-inline))]",
     imageSlotLabel: "Image area: columns 5-7",
   },
   "image-3-left-text-4": {
     textClassName: "col-span-4 col-start-4",
     imageClassName: "col-span-3 col-start-1",
     imagePanelClassName:
-      "left-[calc(var(--site-grid-inset-inline)*-1)] right-0 max-lg:right-[calc(var(--site-grid-inset-inline)*-1)]",
+      "left-[calc(0px_-_var(--site-grid-inset-inline))] right-0 max-lg:right-[calc(0px_-_var(--site-grid-inset-inline))]",
     imageSlotLabel: "Image area: columns 1-3",
   },
   "image-4-left-text-3": {
     textClassName: "col-span-3 col-start-5",
     imageClassName: "col-span-4 col-start-1",
     imagePanelClassName:
-      "left-[calc(var(--site-grid-inset-inline)*-1)] right-0 max-lg:right-[calc(var(--site-grid-inset-inline)*-1)]",
+      "left-[calc(0px_-_var(--site-grid-inset-inline))] right-0 max-lg:right-[calc(0px_-_var(--site-grid-inset-inline))]",
     imageSlotLabel: "Image area: columns 1-4",
   },
 };
@@ -76,7 +76,7 @@ function SampleImagePanel({
   return (
     <div
       className={cx(
-        "absolute bottom-[calc(var(--site-grid-inset-block)*-1)] top-[calc(var(--site-grid-inset-block)*-1)] overflow-hidden bg-service-surface max-md:relative max-md:inset-auto max-md:h-full max-md:min-h-[var(--media-min-medium)]",
+        "absolute bottom-[calc(0px_-_var(--site-grid-inset-block))] top-[calc(0px_-_var(--site-grid-inset-block))] !w-auto overflow-hidden bg-service-surface max-md:relative max-md:inset-auto max-md:h-full max-md:min-h-[var(--media-min-medium)] max-md:!w-full",
         className,
       )}
     >
