@@ -4,7 +4,6 @@ import {
   ContentAboutCompanySectionV2,
   ContentFixedCoverFadeSectionV2,
   ContentHorizontalCardCarouselSectionV2,
-  ContentPositioningSplitSectionV2,
   ContentRevealParagraphSectionV2,
   ContentRuleHeaderSectionV2,
   ContentScrollWrittenRevealSectionV2,
@@ -110,11 +109,6 @@ const sectionElements = {
     <HeroSplitFixedImageSectionLibraryDemo
       {...sectionLibraryV3Content.heroSplitFullHeight}
       headingLevel={2}
-    />
-  ),
-  "content-positioning-split-v2": (
-    <ContentPositioningSplitSectionV2
-      {...sectionLibraryV3Content.contentPositioningSplit}
     />
   ),
   "content-reveal-paragraph-v2": (

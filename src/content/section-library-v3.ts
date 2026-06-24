@@ -245,12 +245,6 @@ export const sectionLibraryV3Content = {
       "Mon-Fri, 8am-6pm",
     ],
   },
-  contentPositioningSplit: {
-    title: "Clear help, close by.",
-    body: "Use this positioning section for a concise about message, service philosophy, or the clearest reason customers should feel comfortable reaching out.",
-    action: "About us",
-    imageLabel: "Image",
-  },
   contentAboutCompany: {
     eyebrow: "About the company",
     statement:
@@ -852,10 +846,6 @@ export const sectionLibraryV3Collections = [
   {
     title: "Content",
     items: [
-      {
-        label: "Positioning split",
-        component: "content-positioning-split-v2",
-      },
       {
         label: "Reveal paragraph",
         component: "content-reveal-paragraph-v2",

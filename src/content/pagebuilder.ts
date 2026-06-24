@@ -145,13 +145,6 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
           "Show three to six top-level services with consistent title and body length.",
       },
       {
-        name: "General editorial texture",
-        component: "ContentPositioningSplitSectionV2",
-        mode: "Narrative",
-        instruction:
-          "Use this as regular mid-page content: one useful positioning idea, a calm image field, and a clear about or process path.",
-      },
-      {
         name: "FAQ",
         component: "FAQSectionV3",
         mode: "Decision",

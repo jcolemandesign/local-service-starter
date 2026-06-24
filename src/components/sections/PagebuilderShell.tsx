@@ -333,6 +333,27 @@ const sectionSwapOptions = [
     name: "Content top image bottom",
   },
   {
+    component: "ServicesGridSectionV2",
+    instruction:
+      "Use a straightforward services grid when the page needs familiar scan-and-compare service cards.",
+    mode: "Scan",
+    name: "Services grid",
+  },
+  {
+    component: "ServicesBentoCardsSectionV2",
+    instruction:
+      "Use bento-style service cards when the services need a richer visual scan pattern.",
+    mode: "Scan",
+    name: "Services bento cards",
+  },
+  {
+    component: "ServicesHoverPanelSectionV2",
+    instruction:
+      "Use a hover panel when a compact service list should reveal more detail and visual emphasis.",
+    mode: "Scan",
+    name: "Services hover panel",
+  },
+  {
     component: "ServicesThreeCardsRightSectionV3",
     instruction:
       "Show top-level services with consistent title and body length.",
@@ -345,13 +366,6 @@ const sectionSwapOptions = [
       "Use a service rail when there are more service paths than a small grid can handle gracefully.",
     mode: "Scan",
     name: "Scroll service cards",
-  },
-  {
-    component: "ContentPositioningSplitSectionV2",
-    instruction:
-      "Use as regular mid-page content: one positioning idea, a calm image field, and a clear path.",
-    mode: "Narrative",
-    name: "General editorial texture",
   },
   {
     component: "ContentRevealParagraphSectionV2",
@@ -673,9 +687,6 @@ export function PagebuilderShell({
   const activeSlotLabel = activeLayoutSlot?.name ?? "Option 1";
   const selectedSection =
     activeStack.find((section) => section.id === selectedSectionId) ?? null;
-  const selectedSwapOptions = selectedSection
-    ? sectionSwapOptions.filter((option) => option.mode === selectedSection.mode)
-    : [];
   const selectedViewport =
     viewportOptions.find((option) => option.id === activeDesignStyle.viewportId) ??
     viewportOptions[0];
@@ -1087,7 +1098,7 @@ export function PagebuilderShell({
                         className={cx(
                           "radius-4 min-h-11 border px-3 text-left type-text-sm font-semibold transition-colors",
                           isActive
-                            ? "border-white bg-white text-service-ink"
+                            ? "border-white/45 bg-white/14 text-white"
                             : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
                         )}
                         onClick={() => {
@@ -1122,7 +1133,7 @@ export function PagebuilderShell({
                                 className={cx(
                                   "radius-4 min-h-8 border px-2 text-xs font-semibold transition-colors",
                                   isSlotActive
-                                    ? "border-white bg-white text-service-ink"
+                                    ? "border-white/45 bg-white/14 text-white"
                                     : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
                                 )}
                                 key={slot.name}
@@ -1143,34 +1154,235 @@ export function PagebuilderShell({
               </div>
             </div>
 
-            <div className="radius-medium order-4 border border-white/10 bg-white/8 p-5 shadow-service">
+            <div className="radius-medium order-3 border border-white/10 bg-white/8 p-5 shadow-service">
               <h2 className="type-heading-sm text-white">
                 Sections
               </h2>
-              <div className="mt-4 grid max-h-72 gap-2 overflow-y-auto pr-1">
+              <div className="mt-4 grid gap-2">
                 {includedSections.map((section) => {
                   const isActive = section.id === selectedSectionId;
+                  const sectionSwapOptionsForMode = sectionSwapOptions.filter(
+                    (option) => option.mode === section.mode,
+                  );
 
                   return (
-                    <button
-                      aria-current={isActive ? "true" : undefined}
+                    <div
                       className={cx(
-                        "radius-4 min-h-12 border px-3 py-2 text-left transition-colors",
+                        "radius-4 overflow-hidden border transition-colors",
                         isActive
-                          ? "border-white bg-white text-service-ink"
-                          : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                          ? "border-white/35 bg-white/12 text-white"
+                          : "border-white/10 bg-white/8 text-white",
                       )}
                       key={section.id}
-                      onClick={() => setSelectedSectionId(section.id)}
-                      type="button"
                     >
-                      <span className="type-caption block font-semibold text-current/70">
-                        {section.mode}
-                      </span>
-                      <span className="mt-1 block truncate text-sm font-semibold">
-                        {section.name}
-                      </span>
-                    </button>
+                      <button
+                        aria-expanded={isActive}
+                        className={cx(
+                          "flex min-h-12 w-full items-start justify-between gap-3 px-3 py-2 text-left transition-colors",
+                          !isActive && "hover:border-white/45 hover:bg-white/14",
+                        )}
+                        onClick={() =>
+                          setSelectedSectionId(isActive ? null : section.id)
+                        }
+                        type="button"
+                      >
+                        <span className="min-w-0">
+                          <span className="type-caption block font-semibold text-current/70">
+                            {section.mode}
+                          </span>
+                          <span className="mt-1 block truncate text-sm font-semibold">
+                            {section.name}
+                          </span>
+                        </span>
+                        <span
+                          aria-hidden="true"
+                          className={cx(
+                            "mt-1 flex size-7 shrink-0 items-center justify-center rounded-sm border text-sm leading-none transition-transform",
+                            isActive
+                              ? "rotate-180 border-white/25 text-white"
+                              : "border-white/10 text-white/60",
+                          )}
+                        >
+                          v
+                        </span>
+                      </button>
+
+                      {isActive ? (
+                        <div className="grid gap-4 border-t border-current/10 p-3">
+                          <div className="rounded border border-current/10 bg-white/8 p-3">
+                            <p className="text-sm font-semibold text-current">
+                              {section.name}
+                            </p>
+                            <p className="type-caption mt-1 text-current/60">
+                              {section.component}
+                            </p>
+                            <span className="mt-3 inline-flex rounded-full border border-current/10 bg-white/10 px-3 py-1 text-xs font-semibold text-current/70">
+                              {section.mode}
+                            </span>
+                            {section.component !== section.originalComponent && (
+                              <span className="ml-2 mt-3 inline-flex rounded-full border border-current/20 bg-white/10 px-3 py-1 text-xs font-semibold text-current">
+                                swapped
+                              </span>
+                            )}
+                          </div>
+
+                          <label className="grid gap-2">
+                            <span className="type-caption font-semibold text-current">
+                              Alternate
+                            </span>
+                            <select
+                              className="radius-4 min-h-11 border border-white/15 bg-service-ink px-3 text-sm font-semibold text-white outline-none focus:border-white/45"
+                              onChange={(event) =>
+                                swapSection(section.id, event.target.value)
+                              }
+                              value={section.component}
+                            >
+                              {sectionSwapOptionsForMode.map((option) => (
+                                <option
+                                  key={option.component}
+                                  value={option.component}
+                                >
+                                  {option.name}
+                                </option>
+                              ))}
+                            </select>
+                            <span className="type-caption text-current/60">
+                              Swaps to another section with the same function.
+                            </span>
+                          </label>
+
+                          {isSplitContentImageSection(section) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Split Version
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {splitContentImageVariantOptions.map((option) => {
+                                  const optionIsActive =
+                                    (section.variant ??
+                                      splitContentImageVariantOptions[0]
+                                        .value) === option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "radius-4 min-h-10 border px-3 text-left text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "border-white/45 bg-white/16 text-white"
+                                          : "border-white/15 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateSplitContentImageVariant(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Choose the text/image column balance for this
+                                split hero.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
+                          {isFixedRatioSplitSection(section) ? (
+                            <div className="grid gap-4">
+                              <fieldset className="grid gap-2">
+                                <legend className="type-caption font-semibold text-current">
+                                  Fixed-ratio Layout
+                                </legend>
+                                <div className="grid gap-2">
+                                  {fixedRatioSplitVariantOptions.map((option) => {
+                                    const optionIsActive =
+                                      (section.variant ??
+                                        fixedRatioSplitVariantOptions[0]
+                                          .value) === option.value;
+
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "radius-4 min-h-10 border px-3 text-left text-xs font-semibold transition-colors",
+                                          optionIsActive
+                                            ? "border-white/45 bg-white/16 text-white"
+                                            : "border-white/15 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateFixedRatioSplitVariant(
+                                            section.id,
+                                            option.value,
+                                          )
+                                        }
+                                        type="button"
+                                      >
+                                        {option.label}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </fieldset>
+
+                              <fieldset className="grid gap-2">
+                                <legend className="type-caption font-semibold text-current">
+                                  Image Ratio
+                                </legend>
+                                <div className="grid grid-cols-3 gap-2">
+                                  {fixedRatioSplitRatioOptions.map((option) => {
+                                    const optionIsActive =
+                                      (section.ratio ??
+                                        fixedRatioSplitRatioOptions[0].value) ===
+                                      option.value;
+
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "radius-4 min-h-9 border px-2 text-center text-xs font-semibold transition-colors",
+                                          optionIsActive
+                                            ? "border-white/45 bg-white/16 text-white"
+                                            : "border-white/15 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateFixedRatioSplitRatio(
+                                            section.id,
+                                            option.value,
+                                          )
+                                        }
+                                        type="button"
+                                      >
+                                        {option.label}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                                <p className="type-caption text-current/60">
+                                  Sets the image frame to one of the preferred
+                                  landscape or portrait ratios.
+                                </p>
+                              </fieldset>
+                            </div>
+                          ) : null}
+
+                          <button
+                            className="radius-4 min-h-10 border border-current/10 bg-white/8 px-3 text-sm font-semibold text-current transition-colors hover:border-current/30 hover:bg-white/14"
+                            onClick={() => deleteSection(section.id)}
+                            type="button"
+                          >
+                            Delete Section
+                          </button>
+                        </div>
+                      ) : null}
+                    </div>
                   );
                 })}
               </div>
@@ -1194,7 +1406,7 @@ export function PagebuilderShell({
                           className={cx(
                             "radius-4 min-h-10 min-w-20 border px-3 text-sm font-semibold transition-colors max-sm:min-w-0 max-sm:px-2",
                             isActive
-                              ? "border-white bg-white text-service-ink"
+                              ? "border-white/45 bg-white/14 text-white"
                               : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
                           )}
                           key={option.id}
@@ -1218,7 +1430,7 @@ export function PagebuilderShell({
 
                 <div className="grid grid-cols-2 gap-2">
                   <button
-                    className="radius-4 min-h-10 border border-white bg-white px-3 text-sm font-semibold text-service-ink transition-colors hover:border-white/80 hover:bg-white/88"
+                    className="radius-4 min-h-10 border border-white/35 bg-white/14 px-3 text-sm font-semibold text-white transition-colors hover:border-white/55 hover:bg-white/20"
                     onClick={() => setIsPreviewOpen(true)}
                     type="button"
                   >
@@ -1235,193 +1447,6 @@ export function PagebuilderShell({
               </div>
             </div>
 
-            <div className="radius-medium order-3 border border-white/10 bg-white/8 p-5 shadow-service">
-              <h2 className="type-heading-sm text-white">
-                Selected Section
-              </h2>
-              {selectedSection ? (
-                <div className="mt-4 grid gap-4">
-                  <div className="rounded border border-white/10 bg-white/8 p-3">
-                    <p className="text-sm font-semibold text-white">
-                      {selectedSection.name}
-                    </p>
-                    <p className="type-caption mt-1 text-white/60">
-                      {selectedSection.component}
-                    </p>
-                          <span className="mt-3 inline-flex rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">
-                            {selectedSection.mode}
-                          </span>
-                          {selectedSection.component !==
-                            selectedSection.originalComponent && (
-                            <span className="ml-2 mt-3 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white">
-                              swapped
-                            </span>
-                          )}
-                        </div>
-
-                  <label className="grid gap-2">
-                    <span className="type-caption font-semibold text-white">
-                      Alternate
-                    </span>
-                    <select
-                      className="radius-4 min-h-11 border border-service-border bg-service-surface px-3 text-sm font-semibold text-service-ink"
-                      onChange={(event) =>
-                        swapSection(selectedSection.id, event.target.value)
-                      }
-                      value={selectedSection.component}
-                    >
-                      {selectedSwapOptions.map((option) => (
-                        <option
-                          key={option.component}
-                          value={option.component}
-                        >
-                          {option.name}
-                        </option>
-                      ))}
-                    </select>
-                    <span className="type-caption text-white/60">
-                      Swaps to another section with the same function.
-                    </span>
-                  </label>
-
-                  {isSplitContentImageSection(selectedSection) ? (
-                    <fieldset className="grid gap-2">
-                      <legend className="type-caption font-semibold text-white">
-                        Split Version
-                      </legend>
-                      <div className="grid grid-cols-2 gap-2">
-                        {splitContentImageVariantOptions.map((option) => {
-                          const isActive =
-                            (selectedSection.variant ??
-                              splitContentImageVariantOptions[0].value) ===
-                            option.value;
-
-                          return (
-                            <button
-                              aria-pressed={isActive}
-                              className={cx(
-                                "radius-4 min-h-10 border px-3 text-left text-xs font-semibold transition-colors",
-                                isActive
-                                  ? "border-white bg-white text-service-ink"
-                                  : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
-                              )}
-                              key={option.value}
-                              onClick={() =>
-                                updateSplitContentImageVariant(
-                                  selectedSection.id,
-                                  option.value,
-                                )
-                              }
-                              type="button"
-                            >
-                              {option.label}
-                            </button>
-                          );
-                        })}
-                      </div>
-                      <p className="type-caption text-white/60">
-                        Choose the text/image column balance for this split
-                        hero.
-                      </p>
-                    </fieldset>
-                  ) : null}
-
-                  {isFixedRatioSplitSection(selectedSection) ? (
-                    <div className="grid gap-4">
-                      <fieldset className="grid gap-2">
-                        <legend className="type-caption font-semibold text-white">
-                          Fixed-ratio Layout
-                        </legend>
-                        <div className="grid gap-2">
-                          {fixedRatioSplitVariantOptions.map((option) => {
-                            const isActive =
-                              (selectedSection.variant ??
-                                fixedRatioSplitVariantOptions[0].value) ===
-                              option.value;
-
-                            return (
-                              <button
-                                aria-pressed={isActive}
-                                className={cx(
-                                  "radius-4 min-h-10 border px-3 text-left text-xs font-semibold transition-colors",
-                                  isActive
-                                    ? "border-white bg-white text-service-ink"
-                                    : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
-                                )}
-                                key={option.value}
-                                onClick={() =>
-                                  updateFixedRatioSplitVariant(
-                                    selectedSection.id,
-                                    option.value,
-                                  )
-                                }
-                                type="button"
-                              >
-                                {option.label}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </fieldset>
-
-                      <fieldset className="grid gap-2">
-                        <legend className="type-caption font-semibold text-white">
-                          Image Ratio
-                        </legend>
-                        <div className="grid grid-cols-4 gap-2">
-                          {fixedRatioSplitRatioOptions.map((option) => {
-                            const isActive =
-                              (selectedSection.ratio ??
-                                fixedRatioSplitRatioOptions[0].value) ===
-                              option.value;
-
-                            return (
-                              <button
-                                aria-pressed={isActive}
-                                className={cx(
-                                  "radius-4 min-h-9 border px-2 text-center text-xs font-semibold transition-colors",
-                                  isActive
-                                    ? "border-white bg-white text-service-ink"
-                                    : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
-                                )}
-                                key={option.value}
-                                onClick={() =>
-                                  updateFixedRatioSplitRatio(
-                                    selectedSection.id,
-                                    option.value,
-                                  )
-                                }
-                                type="button"
-                              >
-                                {option.label}
-                              </button>
-                            );
-                          })}
-                        </div>
-                        <p className="type-caption text-white/60">
-                          Sets the image frame to one of the preferred
-                          landscape or portrait ratios.
-                        </p>
-                      </fieldset>
-                    </div>
-                  ) : null}
-
-                  <button
-                    className="radius-4 min-h-10 border border-white/10 bg-white/8 px-3 text-sm font-semibold text-white transition-colors hover:border-white/45 hover:bg-white/14"
-                    onClick={() => deleteSection(selectedSection.id)}
-                    type="button"
-                  >
-                    Delete Section
-                  </button>
-                </div>
-              ) : (
-                <p className="type-caption mt-4 rounded border border-white/10 bg-white/8 p-3 text-white/60">
-                  Click a section in the rendered preview to inspect and adjust
-                  it.
-                </p>
-              )}
-            </div>
-
             <div className="radius-medium order-6 border border-white/10 bg-white/8 p-5 shadow-service">
               <h2 className="type-heading-sm text-white">
                 Add Section
@@ -1431,7 +1456,7 @@ export function PagebuilderShell({
                   Template
                 </span>
                 <select
-                  className="radius-4 min-h-11 border border-service-border bg-service-surface px-3 text-sm font-semibold text-service-ink"
+                  className="radius-4 min-h-11 border border-white/15 bg-service-ink px-3 text-sm font-semibold text-white outline-none focus:border-white/45"
                   onChange={(event) => {
                     addSection(event.target.value);
                     event.currentTarget.value = "";

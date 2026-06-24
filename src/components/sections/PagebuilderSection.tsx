@@ -2,7 +2,6 @@ import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAbout
 import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
 import { CTAFullscreenSectionV2 } from "@/components/sections/CTAFullscreenSectionV2";
 import { CTAScrollRevealOfferSectionV2 } from "@/components/sections/CTAScrollRevealOfferSectionV2";
-import { ContentPositioningSplitSectionV2 } from "@/components/sections/ContentPositioningSplitSectionV2";
 import { ContentRevealParagraphSectionV2 } from "@/components/sections/ContentRevealParagraphSectionV2";
 import { ContentRuleHeaderSectionV2 } from "@/components/sections/ContentRuleHeaderSectionV2";
 import { ContentStickyCardStreamSectionV2 } from "@/components/sections/ContentStickyCardStreamSectionV2";
@@ -39,7 +38,9 @@ import {
 import { NavFloatingBentoSectionV2 } from "@/components/sections/NavFloatingBentoSectionV2";
 import { ProcessImageChecklistSectionV2 } from "@/components/sections/ProcessImageChecklistSectionV2";
 import { ProcessImageChecklistSectionV3 } from "@/components/sections/ProcessImageChecklistSectionV3";
+import { ServicesBentoCardsSectionV2 } from "@/components/sections/ServicesBentoCardsSectionV2";
 import { ServicesGridSectionV2 } from "@/components/sections/ServicesGridSectionV2";
+import { ServicesHoverPanelSectionV2 } from "@/components/sections/ServicesHoverPanelSectionV2";
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/ServicesThreeCardsRightSectionV3";
 import { TestimonialsCarouselSectionV2 } from "@/components/sections/TestimonialsCarouselSectionV2";
@@ -182,6 +183,18 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       );
     case "ServicesGridSectionV2":
       return <ServicesGridSectionV2 {...sectionLibraryV3Content.services} />;
+    case "ServicesBentoCardsSectionV2":
+      return (
+        <ServicesBentoCardsSectionV2
+          {...sectionLibraryV3Content.servicesBento}
+        />
+      );
+    case "ServicesHoverPanelSectionV2":
+      return (
+        <ServicesHoverPanelSectionV2
+          {...sectionLibraryV3Content.servicesHoverPanel}
+        />
+      );
     case "ServicesThreeCardsRightSectionV3":
       return (
         <ServicesThreeCardsRightSectionV3
@@ -192,12 +205,6 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <ServicesScrollCardsSectionV2
           {...sectionLibraryV3Content.servicesScrollCards}
-        />
-      );
-    case "ContentPositioningSplitSectionV2":
-      return (
-        <ContentPositioningSplitSectionV2
-          {...sectionLibraryV3Content.contentPositioningSplit}
         />
       );
     case "ContentRevealParagraphSectionV2":
@@ -462,6 +469,45 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
+    ServicesGridSectionV2: (
+      <div key="ServicesGridSectionV2">
+        {renderPreviewSection(
+          {
+            component: "ServicesGridSectionV2",
+            instruction: "",
+            mode: "Scan",
+            name: "Services grid",
+          },
+          3,
+        )}
+      </div>
+    ),
+    ServicesBentoCardsSectionV2: (
+      <div key="ServicesBentoCardsSectionV2">
+        {renderPreviewSection(
+          {
+            component: "ServicesBentoCardsSectionV2",
+            instruction: "",
+            mode: "Scan",
+            name: "Services bento cards",
+          },
+          3,
+        )}
+      </div>
+    ),
+    ServicesHoverPanelSectionV2: (
+      <div key="ServicesHoverPanelSectionV2">
+        {renderPreviewSection(
+          {
+            component: "ServicesHoverPanelSectionV2",
+            instruction: "",
+            mode: "Scan",
+            name: "Services hover panel",
+          },
+          3,
+        )}
+      </div>
+    ),
     ServicesThreeCardsRightSectionV3: (
       <div key="ServicesThreeCardsRightSectionV3">
         {renderPreviewSection(
@@ -485,19 +531,6 @@ export function PagebuilderSection() {
             name: "Scroll service cards",
           },
           3,
-        )}
-      </div>
-    ),
-    ContentPositioningSplitSectionV2: (
-      <div key="ContentPositioningSplitSectionV2">
-        {renderPreviewSection(
-          {
-            component: "ContentPositioningSplitSectionV2",
-            instruction: "",
-            mode: "Narrative",
-            name: "General editorial texture",
-          },
-          4,
         )}
       </div>
     ),
