@@ -25,8 +25,8 @@ type HeroSplitFullHeightSectionV3Props = {
 };
 
 type HeroVariantConfig = {
-  imageBleedClassName: string;
   imageClassName: string;
+  imagePanelClassName: string;
   imageSlotLabel: string;
   textClassName: string;
 };
@@ -35,44 +35,51 @@ const variantConfig: Record<HeroSplitFullHeightVariant, HeroVariantConfig> = {
   "text-3-image-4-right": {
     textClassName: "col-span-3 col-start-1",
     imageClassName: "col-span-4 col-start-4",
-    imageBleedClassName:
-      "-my-[var(--site-grid-inset-block)] -mr-[var(--site-grid-inset-inline)] max-lg:-mx-[var(--site-grid-inset-inline)]",
+    imagePanelClassName:
+      "left-0 right-[calc(var(--site-grid-inset-inline)*-1)] max-lg:left-[calc(var(--site-grid-inset-inline)*-1)]",
     imageSlotLabel: "Image area: columns 4-7",
   },
   "text-4-image-3-right": {
     textClassName: "col-span-4 col-start-1",
     imageClassName: "col-span-3 col-start-5",
-    imageBleedClassName:
-      "-my-[var(--site-grid-inset-block)] -mr-[var(--site-grid-inset-inline)] max-lg:-mx-[var(--site-grid-inset-inline)]",
+    imagePanelClassName:
+      "left-0 right-[calc(var(--site-grid-inset-inline)*-1)] max-lg:left-[calc(var(--site-grid-inset-inline)*-1)]",
     imageSlotLabel: "Image area: columns 5-7",
   },
   "image-3-left-text-4": {
     textClassName: "col-span-4 col-start-4",
     imageClassName: "col-span-3 col-start-1",
-    imageBleedClassName:
-      "-my-[var(--site-grid-inset-block)] -ml-[var(--site-grid-inset-inline)] max-lg:-mx-[var(--site-grid-inset-inline)]",
+    imagePanelClassName:
+      "left-[calc(var(--site-grid-inset-inline)*-1)] right-0 max-lg:right-[calc(var(--site-grid-inset-inline)*-1)]",
     imageSlotLabel: "Image area: columns 1-3",
   },
   "image-4-left-text-3": {
     textClassName: "col-span-3 col-start-5",
     imageClassName: "col-span-4 col-start-1",
-    imageBleedClassName:
-      "-my-[var(--site-grid-inset-block)] -ml-[var(--site-grid-inset-inline)] max-lg:-mx-[var(--site-grid-inset-inline)]",
+    imagePanelClassName:
+      "left-[calc(var(--site-grid-inset-inline)*-1)] right-0 max-lg:right-[calc(var(--site-grid-inset-inline)*-1)]",
     imageSlotLabel: "Image area: columns 1-4",
   },
 };
 
 function SampleImagePanel({
+  className,
   imageAlt,
   imageSrc,
   slotLabel,
 }: {
+  className?: string;
   imageAlt: string;
   imageSrc: string;
   slotLabel: string;
 }) {
   return (
-    <div className="relative h-full min-h-0 w-full overflow-hidden bg-service-surface">
+    <div
+      className={cx(
+        "absolute bottom-[calc(var(--site-grid-inset-block)*-1)] top-[calc(var(--site-grid-inset-block)*-1)] overflow-hidden bg-service-surface max-md:relative max-md:inset-auto max-md:h-full max-md:min-h-[var(--media-min-medium)]",
+        className,
+      )}
+    >
       <Image
         alt={imageAlt}
         className="object-cover"
@@ -112,7 +119,7 @@ export function HeroSplitFullHeightSectionV3({
 
   return (
     <section className="bg-bg-page">
-      <SevenColumnGrid className="section-min-screen grid-rows-[minmax(0,1fr)] max-lg:grid-rows-none">
+      <SevenColumnGrid className="section-min-screen h-[var(--section-min-screen)] grid-rows-[minmax(0,1fr)] max-lg:grid-rows-none max-md:h-auto">
         <SevenColumnGridItem
           alignX="left"
           alignY="middle"
@@ -174,12 +181,12 @@ export function HeroSplitFullHeightSectionV3({
           alignX="stretch"
           alignY="stretch"
           className={cx(
-            "row-start-1 h-full min-h-0 overflow-hidden max-lg:media-min-medium max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto",
+            "relative row-start-1 h-full min-h-0 overflow-visible max-lg:media-min-medium max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto max-md:h-auto",
             config.imageClassName,
-            config.imageBleedClassName,
           )}
         >
           <SampleImagePanel
+            className={config.imagePanelClassName}
             imageAlt={imageAlt}
             imageSrc={imageSrc}
             slotLabel={config.imageSlotLabel}
