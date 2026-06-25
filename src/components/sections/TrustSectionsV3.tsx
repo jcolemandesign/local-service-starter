@@ -8,10 +8,18 @@ type TrustItemsProps = {
   label: string;
 };
 
+type TrustBarSectionV3Props = TrustItemsProps & {
+  className?: string;
+};
+
 type TrustLogosProps = {
   label: string;
   logos: readonly string[];
 };
+
+function cx(...classes: Array<string | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
 
 function LogoPlaceholder({ name }: { name: string }) {
   return (
@@ -69,9 +77,13 @@ function LogoTrack({
   );
 }
 
-export function TrustBarSectionV3({ items, label }: TrustItemsProps) {
+export function TrustBarSectionV3({
+  className,
+  items,
+  label,
+}: TrustBarSectionV3Props) {
   return (
-    <section className="bg-bg-page">
+    <section className={cx(className ?? "bg-bg-page")}>
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem
           className="content-padding-y col-span-3 border-y border-service-border max-lg:col-span-7"

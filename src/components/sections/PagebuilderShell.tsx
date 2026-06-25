@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties, ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   HeroSplitFixedImageSectionV3,
   type HeroSplitFixedImageRatio,
@@ -669,6 +669,7 @@ export function PagebuilderShell({
   const [previewRefreshKey, setPreviewRefreshKey] = useState(0);
   const [previewVariableStyle, setPreviewVariableStyle] =
     useState<PreviewVariableStyle>({});
+  const addedSectionIdCounterRef = useRef(0);
 
   const activeRecipeIndex = Math.max(
     recipes.findIndex((recipe) => recipe.id === activeRecipeId),
@@ -905,9 +906,11 @@ export function PagebuilderShell({
       return;
     }
 
+    addedSectionIdCounterRef.current += 1;
+
     const nextSection: WorkingSection = {
       component: nextOption.component,
-      id: `${activeRecipe.id}-${nextOption.component}-added-${Date.now()}`,
+      id: `${activeRecipe.id}-${nextOption.component}-added-${addedSectionIdCounterRef.current}`,
       included: true,
       instruction: nextOption.instruction,
       mode: nextOption.mode,
@@ -1154,10 +1157,23 @@ export function PagebuilderShell({
               </div>
             </div>
 
-            <div className="radius-medium order-3 border border-white/10 bg-white/8 p-5 shadow-service">
-              <h2 className="type-heading-sm text-white">
-                Sections
-              </h2>
+            <div
+              className="radius-medium order-3 border border-white/30 p-5 shadow-[inset_0_1px_0_rgb(255_255_255_/_0.16),inset_0_0_0_1px_rgb(255_255_255_/_0.045),0_16px_48px_rgb(0_0_0_/_0.16)] ring-1 ring-white/8"
+              style={{
+                backgroundColor: "#26332f",
+                backgroundImage:
+                  "linear-gradient(135deg, rgb(255 255 255 / 0.055) 0%, rgb(255 255 255 / 0.038) 24%, rgb(255 255 255 / 0.018) 45%, transparent 62%, rgb(255 255 255 / 0.018) 80%, rgb(255 255 255 / 0.035) 100%), linear-gradient(180deg, rgb(255 255 255 / 0.03), rgb(255 255 255 / 0.008))",
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <span
+                  aria-hidden="true"
+                  className="h-5 w-px bg-white/45"
+                />
+                <h2 className="type-heading-sm text-white">
+                  Sections
+                </h2>
+              </div>
               <div className="mt-4 grid gap-2">
                 {includedSections.map((section) => {
                   const isActive = section.id === selectedSectionId;
@@ -1451,50 +1467,44 @@ export function PagebuilderShell({
               <h2 className="type-heading-sm text-white">
                 Add Section
               </h2>
-              <label className="mt-4 grid gap-2">
-                <span className="type-caption font-semibold text-white">
-                  Template
-                </span>
-                <select
-                  className="radius-4 min-h-11 border border-white/15 bg-service-ink px-3 text-sm font-semibold text-white outline-none focus:border-white/45"
-                  onChange={(event) => {
-                    addSection(event.target.value);
-                    event.currentTarget.value = "";
-                  }}
-                  value=""
-                >
-                  <option value="">Choose a section...</option>
-                  {sectionModes.map((mode) => {
-                    const options = sectionSwapOptions.filter(
-                      (option) => option.mode === mode.name,
-                    );
+              <div className="mt-4 grid gap-4">
+                {sectionModes.map((mode) => {
+                  const options = sectionSwapOptions.filter(
+                    (option) => option.mode === mode.name,
+                  );
 
-                    if (options.length === 0) {
-                      return null;
-                    }
+                  if (options.length === 0) {
+                    return null;
+                  }
 
-                    return (
-                      <optgroup key={mode.id} label={mode.name}>
+                  return (
+                    <div className="grid gap-2" key={mode.id}>
+                      <p className="type-caption font-semibold text-white/72">
+                        {mode.name}
+                      </p>
+                      <div className="grid gap-1.5">
                         {options.map((option) => (
-                          <option
+                          <button
+                            className="radius-4 min-h-10 border border-white/10 bg-white/8 px-3 text-left text-sm font-semibold text-white transition-colors hover:border-white/45 hover:bg-white/14"
                             key={option.component}
-                            value={option.component}
+                            onClick={() => addSection(option.component)}
+                            type="button"
                           >
                             {option.name}
-                          </option>
+                          </button>
                         ))}
-                      </optgroup>
-                    );
-                  })}
-                </select>
-              </label>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
               <p className="type-caption mt-3 text-white/60">
                 Adds after the selected section, or at the bottom.
               </p>
             </div>
           </aside>
 
-          <div className="grid h-full min-h-0 overflow-hidden rounded border border-white/10 bg-white/10 p-2 shadow-service max-lg:h-[78svh]">
+          <div className="grid h-full min-h-0 overflow-hidden rounded border border-white/10 bg-service-ink p-2 shadow-service max-lg:h-[78svh]">
             <div className="grid h-full min-h-0 place-items-stretch overflow-hidden">
               {renderPreviewWindow()}
             </div>
@@ -1669,47 +1679,44 @@ export function PagebuilderShell({
                     Section Stack
                   </summary>
                   <div className="mt-5 grid gap-2 rounded border border-service-border bg-service-surface p-3">
-                    <label className="grid gap-2">
-                      <span className="type-caption font-semibold text-service-ink">
+                    <div className="grid gap-3">
+                      <p className="type-caption font-semibold text-service-ink">
                         Add Section Template
-                      </span>
-                      <select
-                        className="radius-4 min-h-11 border border-service-border bg-white px-3 text-sm font-semibold text-service-ink"
-                        onChange={(event) => {
-                          addSection(event.target.value);
-                          event.currentTarget.value = "";
-                        }}
-                        value=""
-                      >
-                        <option value="">Choose a section to add...</option>
-                        {sectionModes.map((mode) => {
-                          const options = sectionSwapOptions.filter(
-                            (option) => option.mode === mode.name,
-                          );
+                      </p>
+                      {sectionModes.map((mode) => {
+                        const options = sectionSwapOptions.filter(
+                          (option) => option.mode === mode.name,
+                        );
 
-                          if (options.length === 0) {
-                            return null;
-                          }
+                        if (options.length === 0) {
+                          return null;
+                        }
 
-                          return (
-                            <optgroup key={mode.id} label={mode.name}>
+                        return (
+                          <div className="grid gap-2" key={mode.id}>
+                            <p className="type-caption font-semibold text-service-muted">
+                              {mode.name}
+                            </p>
+                            <div className="grid grid-cols-2 gap-2 max-md:grid-cols-1">
                               {options.map((option) => (
-                                <option
+                                <button
+                                  className="radius-4 min-h-10 border border-service-border bg-white px-3 text-left text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
                                   key={option.component}
-                                  value={option.component}
+                                  onClick={() => addSection(option.component)}
+                                  type="button"
                                 >
                                   {option.name}
-                                </option>
+                                </button>
                               ))}
-                            </optgroup>
-                          );
-                        })}
-                      </select>
+                            </div>
+                          </div>
+                        );
+                      })}
                       <span className="type-caption text-service-muted">
                         Adds after the selected section, or at the bottom if
                         nothing is selected.
                       </span>
-                    </label>
+                    </div>
                   </div>
                   <ol className="mt-5 grid gap-3">
                     {activeStack.map((section, index) => (

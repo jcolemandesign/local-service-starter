@@ -34,7 +34,10 @@ export default function HvacServicePreviewPage() {
           {...northStarHvacContent.hero}
           variant="text-4-image-3-right"
         />
-        <TrustBarSectionV3 {...northStarHvacContent.trust} />
+        <TrustBarSectionV3
+          {...northStarHvacContent.trust}
+          className="bg-accent/15"
+        />
         <div id="services">
           <ServicesThreeCardsRightSectionV3
             {...northStarHvacContent.services}
