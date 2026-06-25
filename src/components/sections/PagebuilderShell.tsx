@@ -1042,7 +1042,7 @@ export function PagebuilderShell({
           ) {
             return (
               <div
-                className="pagebuilder-nav-hero-pair relative"
+                className="pagebuilder-nav-hero-pair relative pt-[var(--section-space-sml)]"
                 key={`${section.id}-${nextSection.id}`}
               >
                 {renderSectionFrame(section, {
@@ -1060,6 +1060,16 @@ export function PagebuilderShell({
             isPreviewNavigationSection(previousSection)
           ) {
             return null;
+          }
+
+          if (
+            isPreviewNavigationSection(section) &&
+            nextSection &&
+            !isPreviewHeroSection(nextSection)
+          ) {
+            return renderSectionFrame(section, {
+              className: "mb-[var(--section-space-sml)]",
+            });
           }
 
           return renderSectionFrame(section);

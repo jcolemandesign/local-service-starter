@@ -2,6 +2,10 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
+import {
+  SevenColumnGrid,
+  SevenColumnGridItem,
+} from "@/components/primitives";
 
 const servicePanelEase = [0.22, 1, 0.36, 1] as const;
 
@@ -43,24 +47,36 @@ export function ServicesHoverPanelSectionV2({
   const panelTransition = shouldReduceMotion
     ? { duration: 0 }
     : { duration: 0.26, ease: servicePanelEase };
+  const textTransition = shouldReduceMotion
+    ? { duration: 0 }
+    : { duration: 0.1, ease: servicePanelEase };
 
   return (
-    <section className="bg-service-surface py-24 max-lg:py-20 max-md:py-16">
-      <div className="container-site grid grid-cols-[minmax(18rem,0.9fr)_minmax(0,3.1fr)] gap-6 max-lg:grid-cols-1">
-        <div className="fluid-type-frame">
+    <section className="bg-bg-page">
+      <SevenColumnGrid className="section-min-none items-start" padding="med">
+        <SevenColumnGridItem
+          alignX="left"
+          alignY="top"
+          className="col-span-3 max-lg:col-span-7"
+          measure="copy"
+        >
+          <div className="fluid-type-frame">
           <p className={cx("type-label", "text-service-accent")}>
             {eyebrow}
           </p>
           <h2
             className={cx(
-              "type-heading-md",
-              "mt-4 text-service-ink",
+              "type-heading-lg",
+              "mt-eyebrow-display text-service-ink",
             )}
           >
             {title}
           </h2>
+          <p className="type-text-md wrap-pretty mt-display-body text-service-muted">
+            {body}
+          </p>
 
-          <ul className="mt-8 grid gap-2">
+          <ul className="mt-body-actions-md grid gap-2">
             {items.map((item, index) => {
               const isActive = index === activeIndex;
 
@@ -70,10 +86,10 @@ export function ServicesHoverPanelSectionV2({
                     type="button"
                     className={cx(
                       "radius-medium",
-                      "group/service-link flex min-h-14 w-full cursor-pointer items-center justify-between overflow-hidden border text-left text-base font-semibold transition-colors",
+                      "group/service-link flex min-h-14 w-full cursor-pointer items-center justify-between overflow-hidden border text-left text-sm font-semibold transition-colors",
                       isActive
                         ? "border-service-accent bg-white text-service-accent"
-                        : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent",
+                        : "border-service-border bg-service-surface text-service-ink hover:border-service-accent hover:bg-white hover:text-service-accent",
                     )}
                     onFocus={() => setActiveIndex(index)}
                     onMouseEnter={() => setActiveIndex(index)}
@@ -94,48 +110,71 @@ export function ServicesHoverPanelSectionV2({
               );
             })}
           </ul>
-        </div>
+          </div>
+        </SevenColumnGridItem>
 
-        <div
+        <SevenColumnGridItem
+          alignX="stretch"
+          alignY="stretch"
           className={cx(
-            "radius-medium",
-            "min-h-[560px] overflow-hidden border border-service-border bg-service-surface shadow-service max-md:min-h-[520px]",
+            "col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1",
           )}
         >
-          <div className="relative grid h-full min-h-[560px] max-md:min-h-[520px]">
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.article
-                key={activeItem.title}
-                className="relative col-start-1 row-start-1 flex h-full min-h-[560px] items-end overflow-hidden bg-service-ink p-10 text-white max-md:min-h-[520px] max-md:p-6"
-                initial={{
-                  opacity: 0,
-                  x: shouldReduceMotion ? 0 : 10,
-                }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{
-                  opacity: 0,
-                  x: shouldReduceMotion ? 0 : -6,
-                }}
-                transition={panelTransition}
-              >
-                <PlaceholderBackground />
-                <div className="absolute inset-0 bg-service-ink/45" aria-hidden="true" />
-                <div
-                  className="absolute inset-0 bg-linear-to-t from-service-ink via-service-ink/45 to-transparent"
-                  aria-hidden="true"
-                />
-                <div
+          <div
+            className={cx(
+              "radius-medium",
+              "media-min-tall relative grid h-full overflow-hidden border border-service-border shadow-service max-lg:media-min-medium",
+            )}
+          >
+            <article className="content-padding relative col-start-1 row-start-1 flex h-full items-end overflow-hidden bg-service-ink text-white">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={`${activeItem.title}-background`}
+                  className="absolute inset-0"
+                  initial={{
+                    opacity: 0,
+                    x: shouldReduceMotion ? 0 : 10,
+                  }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{
+                    opacity: 0,
+                    x: shouldReduceMotion ? 0 : -6,
+                  }}
+                  transition={panelTransition}
+                >
+                  <PlaceholderBackground />
+                  <div className="absolute inset-0 bg-service-ink/45" aria-hidden="true" />
+                  <div
+                    className="absolute inset-0 bg-linear-to-t from-service-ink via-service-ink/45 to-transparent"
+                    aria-hidden="true"
+                  />
+                </motion.div>
+              </AnimatePresence>
+
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={`${activeItem.title}-text`}
                   className={cx(
                     "relative z-10 w-full max-w-3xl",
                     "fluid-type-frame",
                   )}
+                  initial={{
+                    opacity: 0,
+                    y: shouldReduceMotion ? 0 : 4,
+                  }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{
+                    opacity: 0,
+                    y: shouldReduceMotion ? 0 : -2,
+                  }}
+                  transition={textTransition}
                 >
                   <p className={cx("type-label", "text-white/70")}>
                     Service focus
                   </p>
                   <h3
                     className={cx(
-                      "type-heading-xl",
+                      "type-heading-lg",
                       "mt-5 text-white",
                     )}
                   >
@@ -143,7 +182,7 @@ export function ServicesHoverPanelSectionV2({
                   </h3>
                   <p
                     className={cx(
-                      "type-text-xl",
+                      "type-text-lg",
                       "measure-copy",
                       "wrap-pretty",
                       "mt-6 text-white/80",
@@ -153,7 +192,7 @@ export function ServicesHoverPanelSectionV2({
                   </p>
                   <p
                     className={cx(
-                      "type-text-md",
+                      "type-text-sm",
                       "measure-copy",
                       "wrap-pretty",
                       "mt-8 text-white/70",
@@ -161,12 +200,12 @@ export function ServicesHoverPanelSectionV2({
                   >
                     {body}
                   </p>
-                </div>
-              </motion.article>
-            </AnimatePresence>
+                </motion.div>
+              </AnimatePresence>
+            </article>
           </div>
-        </div>
-      </div>
+        </SevenColumnGridItem>
+      </SevenColumnGrid>
     </section>
   );
 }

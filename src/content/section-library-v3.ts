@@ -39,15 +39,15 @@ export const sectionLibraryV3Content = {
     trustSignals: [
       {
         value: "4.9",
-        label: "Average rating from verified local service visits",
+        label: "Average rating",
       },
       {
         value: "2,400+",
-        label: "Completed jobs across repairs, installs, and maintenance",
+        label: "Completed jobs",
       },
       {
         value: "Same-week",
-        label: "Scheduling options for urgent and planned work",
+        label: "Scheduling",
       },
     ],
     services: [
@@ -886,6 +886,10 @@ export const sectionLibraryV3Collections = [
       {
         label: "Split headline image",
         component: "content-split-headline-image-v2",
+      },
+      {
+        label: "Split content with fixed image",
+        component: "content-split-fixed-image-v3",
       },
       {
         label: "Rule header",

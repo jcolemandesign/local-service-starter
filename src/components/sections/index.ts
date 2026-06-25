@@ -15,6 +15,7 @@ export { ContentScrollWrittenRevealSectionV2 } from "./ContentScrollWrittenRevea
 export { ServicesThreeCardsRightSectionV3 } from "./ServicesThreeCardsRightSectionV3";
 export { ContentSplitHeadlineImageSection } from "./ContentSplitHeadlineImageSection";
 export { ContentSplitHeadlineImageSectionV2 } from "./ContentSplitHeadlineImageSectionV2";
+export { ContentSplitFixedImageSectionV3 } from "./ContentSplitFixedImageSectionV3";
 export { ContentStickyIdeasSection } from "./ContentStickyIdeasSection";
 export { ContentStickyCardStreamSectionV2 } from "./ContentStickyCardStreamSectionV2";
 export { ContentStickyImagePanelSectionV2 } from "./ContentStickyImagePanelSectionV2";

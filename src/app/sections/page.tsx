@@ -52,6 +52,7 @@ import {
 } from "@/components/sections";
 import { HeroSplitFixedImageSectionLibraryDemo } from "@/components/sections/HeroSplitFixedImageSectionLibraryDemo";
 import { HeroSplitFullImageSectionLibraryDemo } from "@/components/sections/HeroSplitFullImageSectionLibraryDemo";
+import { ContentSplitFixedImageSectionLibraryDemo } from "@/components/sections/ContentSplitFixedImageSectionLibraryDemo";
 import {
   sectionLibraryV3Collections,
   sectionLibraryV3Content,
@@ -139,6 +140,12 @@ const sectionElements = {
   "content-split-headline-image-v2": (
     <ContentSplitHeadlineImageSectionV2
       {...sectionLibraryV3Content.contentSplitHeadlineImage}
+    />
+  ),
+  "content-split-fixed-image-v3": (
+    <ContentSplitFixedImageSectionLibraryDemo
+      {...sectionLibraryV3Content.heroSplitFullHeight}
+      headingLevel={2}
     />
   ),
   "content-rule-header-v2": (

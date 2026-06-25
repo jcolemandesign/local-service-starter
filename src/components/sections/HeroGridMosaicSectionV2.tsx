@@ -30,12 +30,19 @@ function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-function PlaceholderImagePanel({ label }: { label: string }) {
+function PlaceholderImagePanel({
+  className,
+  label,
+}: {
+  className?: string;
+  label: string;
+}) {
   return (
     <div
       className={cx(
         "radius-medium",
         "relative h-full min-h-64 overflow-hidden bg-service-border",
+        className,
       )}
       aria-label={`${label} image placeholder`}
     >
@@ -74,12 +81,12 @@ export function HeroGridMosaicSectionV2({
 
   return (
     <section className="bg-service-surface">
-      <SevenColumnGrid className="section-min-screen grid-rows-6 max-lg:grid-rows-none">
+      <SevenColumnGrid className="[--site-grid-gap:clamp(0.75rem,1vw,1.5rem)] [--site-grid-inset-inline:clamp(1.5rem,4vw,6rem)] [--site-grid-row-gap:clamp(1.5rem,2.5vw,2.5rem)] grid-rows-6 max-lg:grid-rows-none">
         <article
           className={cx(
             "fluid-type-frame",
             "radius-medium",
-            "col-span-4 row-span-3 flex w-full min-w-0 flex-col justify-between bg-white p-8 shadow-service [&>*]:min-w-0 max-lg:col-span-7 max-lg:row-auto max-md:p-6",
+            "col-span-4 row-span-2 flex h-full w-full min-w-0 flex-col justify-between bg-white p-8 shadow-service [&>*]:min-w-0 max-lg:col-span-7 max-lg:h-auto max-lg:row-auto max-md:p-6",
           )}
         >
           <div>
@@ -112,17 +119,20 @@ export function HeroGridMosaicSectionV2({
           </div>
         </article>
 
-        <div className="col-span-3 col-start-5 row-span-3 row-start-1 w-full min-w-0 max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto">
-          <PlaceholderImagePanel label={images[0] ?? "Image"} />
+        <div className="col-span-3 col-start-5 row-span-2 row-start-1 w-full min-w-0 max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto">
+          <PlaceholderImagePanel
+            className="aspect-[3/2] h-auto min-h-0"
+            label={images[0] ?? "Image"}
+          />
         </div>
 
-        <div className="col-span-1 col-start-7 row-span-3 row-start-4 grid w-full min-w-0 grid-rows-3 gap-[var(--site-grid-gap)] max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto max-lg:grid-rows-none">
+        <div className="col-span-1 col-start-7 row-span-4 row-start-3 grid w-full min-w-0 content-start gap-[var(--site-grid-gap)] max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto">
           {trustSignals.slice(0, 3).map((signal) => (
             <div
               className={cx(
                 "fluid-type-frame",
                 "radius-medium",
-                "flex flex-col justify-end bg-service-ink p-6 text-white max-md:p-5",
+                "flex flex-col bg-service-ink p-6 text-white max-md:p-5",
               )}
               key={signal.label}
             >
@@ -145,7 +155,7 @@ export function HeroGridMosaicSectionV2({
             className={cx(
               "fluid-type-frame",
               "radius-medium",
-              "col-span-2 row-span-3 row-start-4 flex w-full min-w-0 flex-col justify-between border border-service-border bg-white p-6 transition-transform duration-300 ease-out hover:-translate-y-1 [&>*]:min-w-0 max-lg:col-span-7 max-lg:row-auto",
+              "col-span-2 row-span-3 row-start-3 flex w-full min-w-0 flex-col justify-between border border-service-border bg-white p-6 transition-transform duration-300 ease-out hover:-translate-y-1 [&>*]:min-w-0 max-lg:col-span-7 max-lg:row-auto",
             )}
             key={service.title}
           >
