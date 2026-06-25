@@ -1,10 +1,13 @@
 import {
+  Button,
   Section,
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
 
 type TrustMarqueeSectionProps = {
+  actionHref?: string;
+  actionLabel?: string;
   label: string;
   items: string[];
 };
@@ -41,19 +44,21 @@ function MarqueeItems({
   );
 }
 
-export function TrustMarqueeSection({ label, items }: TrustMarqueeSectionProps) {
+export function TrustMarqueeSection({
+  actionHref = "/contact",
+  actionLabel = "Request service",
+  label,
+  items,
+}: TrustMarqueeSectionProps) {
   return (
     <Section className="overflow-hidden bg-white py-12 max-md:py-10">
-      <SevenColumnGrid
-        className="mx-auto w-full max-w-[var(--site-grid-max)] px-[var(--site-grid-inset-inline)]"
-        frame="none"
-      >
-        <SevenColumnGridItem className="col-span-4 max-lg:col-span-3 max-md:col-span-3 max-sm:col-span-1">
+      <SevenColumnGrid className="section-min-none items-stretch" padding="none">
+        <SevenColumnGridItem className="col-span-4 max-lg:col-span-7">
           <div
             className={cx(
-              "relative z-10 -mb-px translate-y-px",
+              "relative z-10 -mb-px h-full translate-y-px",
               "fluid-type-frame",
-              "rounded-t-[var(--radius-medium-token)] bg-service-surface px-7 py-5",
+              "rounded-t-[var(--radius-medium-token)] bg-service-surface px-7 py-5 max-md:px-5",
             )}
           >
             <p
@@ -67,21 +72,27 @@ export function TrustMarqueeSection({ label, items }: TrustMarqueeSectionProps) 
             </p>
           </div>
         </SevenColumnGridItem>
+
+        <SevenColumnGridItem
+          alignY="stretch"
+          className="col-span-3 col-start-5 max-lg:col-span-7 max-lg:col-start-1"
+        >
+          <div className="relative z-10 -mb-px flex h-full translate-y-px items-center justify-center px-7 py-5 max-md:px-5">
+            <Button href={actionHref} treatment="text-lift">
+              {actionLabel}
+            </Button>
+          </div>
+        </SevenColumnGridItem>
       </SevenColumnGrid>
 
       <div className="relative left-1/2 w-screen -translate-x-1/2">
-        <div
-          className={cx(
-            "overflow-hidden bg-service-surface py-4",
-          )}
-        >
+        <div className="overflow-hidden bg-service-surface py-4">
           <div className="flex w-max animate-trust-marquee motion-reduce:animate-none">
             <MarqueeItems items={items} />
             <MarqueeItems items={items} hidden />
           </div>
         </div>
       </div>
-
     </Section>
   );
 }

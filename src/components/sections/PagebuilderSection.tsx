@@ -1,9 +1,14 @@
 import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAboutCompanySectionV2";
+import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
+import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
 import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
+import { CTASectionV2 } from "@/components/sections/CTASectionV2";
 import { CTAFullscreenSectionV2 } from "@/components/sections/CTAFullscreenSectionV2";
 import { CTAScrollRevealOfferSectionV2 } from "@/components/sections/CTAScrollRevealOfferSectionV2";
 import { ContentRevealParagraphSectionV2 } from "@/components/sections/ContentRevealParagraphSectionV2";
 import { ContentRuleHeaderSectionV2 } from "@/components/sections/ContentRuleHeaderSectionV2";
+import { ContentScrollWrittenRevealSectionV2 } from "@/components/sections/ContentScrollWrittenRevealSectionV2";
+import { ContentSplitFixedImageSectionV3 } from "@/components/sections/ContentSplitFixedImageSectionV3";
 import { ContentStickyCardStreamSectionV2 } from "@/components/sections/ContentStickyCardStreamSectionV2";
 import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
 import { ContentStickyIdeasSectionV2 } from "@/components/sections/ContentStickyIdeasSectionV2";
@@ -11,10 +16,17 @@ import { FAQAccordionSectionV2 } from "@/components/sections/FAQAccordionSection
 import { FAQSectionV2 } from "@/components/sections/FAQSectionV2";
 import {
   ContactSectionV3,
+  CTASectionV3,
   CTAFullscreenSectionV3,
   FooterSectionV3,
   FAQSectionV3,
 } from "@/components/sections/FAQConversionContactFooterSectionsV3";
+import {
+  FeatureOverlapRowsSectionV3,
+  ProcessStepsSectionV3,
+  TestimonialsSectionV3,
+} from "@/components/sections/FeatureProcessTestimonialsSectionsV3";
+import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
 import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
 import { HeroCenteredFloatersSectionV2 } from "@/components/sections/HeroCenteredFloatersSectionV2";
@@ -38,11 +50,13 @@ import {
 import { NavFloatingBentoSectionV2 } from "@/components/sections/NavFloatingBentoSectionV2";
 import { ProcessImageChecklistSectionV2 } from "@/components/sections/ProcessImageChecklistSectionV2";
 import { ProcessImageChecklistSectionV3 } from "@/components/sections/ProcessImageChecklistSectionV3";
+import { ProcessStepsSectionV2 } from "@/components/sections/ProcessStepsSectionV2";
 import { ServicesBentoCardsSectionV2 } from "@/components/sections/ServicesBentoCardsSectionV2";
 import { ServicesGridSectionV2 } from "@/components/sections/ServicesGridSectionV2";
 import { ServicesHoverPanelSectionV2 } from "@/components/sections/ServicesHoverPanelSectionV2";
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/ServicesThreeCardsRightSectionV3";
+import { TestimonialsSectionV2 } from "@/components/sections/TestimonialsSectionV2";
 import { TestimonialsCarouselSectionV2 } from "@/components/sections/TestimonialsCarouselSectionV2";
 import { TestimonialsCarouselSectionV3 } from "@/components/sections/TestimonialsCarouselSectionV3";
 import { TestimonialsMasonrySectionV2 } from "@/components/sections/TestimonialsMasonrySectionV2";
@@ -50,6 +64,7 @@ import { TestimonialsMasonrySectionV3 } from "@/components/sections/Testimonials
 import { TrustLogoGridSection } from "@/components/sections/TrustLogoMarqueeSection";
 import { TrustMarqueeSection } from "@/components/sections/TrustMarqueeSection";
 import {
+  TrustBarFloatingBentoSectionV3,
   TrustBarSectionV3,
   TrustLogoGridSectionV3,
   TrustMarqueeSectionV3,
@@ -169,6 +184,12 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       );
     case "TrustBarSectionV3":
       return <TrustBarSectionV3 {...sectionLibraryV3Content.trustBar} />;
+    case "TrustBarFloatingBentoSectionV3":
+      return (
+        <TrustBarFloatingBentoSectionV3
+          {...sectionLibraryV3Content.trustBar}
+        />
+      );
     case "TrustMarqueeSection":
       return <TrustMarqueeSection {...sectionLibraryV3Content.trustMarquee} />;
     case "TrustMarqueeSectionV3":
@@ -207,16 +228,35 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.servicesScrollCards}
         />
       );
+    case "ContentHorizontalCardCarouselSectionV2":
+      return (
+        <ContentHorizontalCardCarouselSectionV2
+          {...sectionLibraryV3Content.contentHorizontalCardCarousel}
+        />
+      );
     case "ContentRevealParagraphSectionV2":
       return (
         <ContentRevealParagraphSectionV2
           {...sectionLibraryV3Content.contentRevealParagraph}
         />
       );
+    case "ContentScrollWrittenRevealSectionV2":
+      return (
+        <ContentScrollWrittenRevealSectionV2
+          {...sectionLibraryV3Content.contentScrollWrittenReveal}
+        />
+      );
     case "ContentSplitHeadlineImageSectionV2":
       return (
         <ContentSplitHeadlineImageSectionV2
           {...sectionLibraryV3Content.contentSplitHeadlineImage}
+        />
+      );
+    case "ContentSplitFixedImageSectionV3":
+      return (
+        <ContentSplitFixedImageSectionV3
+          {...sectionLibraryV3Content.heroSplitFullHeight}
+          headingLevel={headingLevel}
         />
       );
     case "ContentStickyCardStreamSectionV2":
@@ -243,6 +283,18 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.contentRuleHeader}
         />
       );
+    case "FeaturePortraitParagraphSectionV3":
+      return (
+        <FeaturePortraitParagraphSectionV3
+          {...sectionLibraryV3Content.featurePortraitParagraph}
+        />
+      );
+    case "FeatureOverlapRowsSectionV3":
+      return (
+        <FeatureOverlapRowsSectionV3
+          {...sectionLibraryV3Content.featureOverlapRows}
+        />
+      );
     case "FAQSectionV2":
       return <FAQSectionV2 {...sectionLibraryV3Content.faq} />;
     case "FAQSectionV3":
@@ -251,6 +303,10 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return <FAQAccordionSectionV2 {...sectionLibraryV3Content.faqAccordion} />;
     case "FAQAccordionSectionV3":
       return <FAQAccordionSectionV3 {...sectionLibraryV3Content.faqAccordion} />;
+    case "TestimonialsSectionV2":
+      return <TestimonialsSectionV2 {...sectionLibraryV3Content.testimonials} />;
+    case "TestimonialsSectionV3":
+      return <TestimonialsSectionV3 {...sectionLibraryV3Content.testimonials} />;
     case "TestimonialsCarouselSectionV2":
       return (
         <TestimonialsCarouselSectionV2
@@ -287,6 +343,14 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.processImageChecklist}
         />
       );
+    case "ProcessStepsSectionV2":
+      return <ProcessStepsSectionV2 {...sectionLibraryV3Content.process} />;
+    case "ProcessStepsSectionV3":
+      return <ProcessStepsSectionV3 {...sectionLibraryV3Content.process} />;
+    case "CTASectionV2":
+      return <CTASectionV2 {...sectionLibraryV3Content.cta} />;
+    case "CTASectionV3":
+      return <CTASectionV3 {...sectionLibraryV3Content.cta} />;
     case "CTAFullscreenSectionV2":
       return <CTAFullscreenSectionV2 {...sectionLibraryV3Content.ctaFullscreen} />;
     case "CTAFullscreenSectionV3":
@@ -301,6 +365,12 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <CTAScrollRevealOfferSectionV3
           {...sectionLibraryV3Content.ctaScrollRevealOffer}
+        />
+      );
+    case "ContentFixedCoverFadeSectionV2":
+      return (
+        <ContentFixedCoverFadeSectionV2
+          {...sectionLibraryV3Content.contentFixedCoverFade}
         />
       );
     case "ContactSectionV2":
@@ -324,6 +394,27 @@ export function PagebuilderSection() {
       </div>,
     ),
   );
+  function previewCatalogEntry(
+    component: string,
+    mode: PagebuilderRecipeSection["mode"],
+    name: string,
+    index: number,
+  ) {
+    return (
+      <div key={component}>
+        {renderPreviewSection(
+          {
+            component,
+            instruction: "",
+            mode,
+            name,
+          },
+          index,
+        )}
+      </div>
+    );
+  }
+
   const previewCatalog = {
     NavPrimarySectionV2: (
       <div key="NavPrimarySectionV2">
@@ -443,6 +534,18 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
+    TrustBarFloatingBentoSectionV3: previewCatalogEntry(
+      "TrustBarFloatingBentoSectionV3",
+      "Proof",
+      "Floating bento trust bar",
+      2,
+    ),
+    TrustMarqueeSection: previewCatalogEntry(
+      "TrustMarqueeSection",
+      "Action",
+      "Headline with Scrolling Banner",
+      7,
+    ),
     TrustMarqueeSectionV3: (
       <div key="TrustMarqueeSectionV3">
         {renderPreviewSection(
@@ -455,6 +558,12 @@ export function PagebuilderSection() {
           2,
         )}
       </div>
+    ),
+    TrustLogoGridSection: previewCatalogEntry(
+      "TrustLogoGridSection",
+      "Proof",
+      "Legacy trust logo grid",
+      2,
     ),
     TrustLogoGridSectionV3: (
       <div key="TrustLogoGridSectionV3">
@@ -534,6 +643,12 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
+    ContentHorizontalCardCarouselSectionV2: previewCatalogEntry(
+      "ContentHorizontalCardCarouselSectionV2",
+      "Scan",
+      "Horizontal card carousel",
+      3,
+    ),
     ContentRevealParagraphSectionV2: (
       <div key="ContentRevealParagraphSectionV2">
         {renderPreviewSection(
@@ -547,6 +662,12 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
+    ContentScrollWrittenRevealSectionV2: previewCatalogEntry(
+      "ContentScrollWrittenRevealSectionV2",
+      "Narrative",
+      "Scroll written reveal",
+      4,
+    ),
     ContentSplitHeadlineImageSectionV2: (
       <div key="ContentSplitHeadlineImageSectionV2">
         {renderPreviewSection(
@@ -559,6 +680,12 @@ export function PagebuilderSection() {
           4,
         )}
       </div>
+    ),
+    ContentSplitFixedImageSectionV3: previewCatalogEntry(
+      "ContentSplitFixedImageSectionV3",
+      "Narrative",
+      "Split content with fixed image",
+      4,
     ),
     ContentStickyCardStreamSectionV2: (
       <div key="ContentStickyCardStreamSectionV2">
@@ -612,6 +739,19 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
+    FeaturePortraitParagraphSectionV3: previewCatalogEntry(
+      "FeaturePortraitParagraphSectionV3",
+      "Narrative",
+      "Portrait paragraph feature",
+      4,
+    ),
+    FeatureOverlapRowsSectionV3: previewCatalogEntry(
+      "FeatureOverlapRowsSectionV3",
+      "Narrative",
+      "Overlap feature rows",
+      4,
+    ),
+    FAQSectionV2: previewCatalogEntry("FAQSectionV2", "Decision", "FAQ", 6),
     FAQSectionV3: (
       <div key="FAQSectionV3">
         {renderPreviewSection(
@@ -625,6 +765,12 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
+    FAQAccordionSectionV2: previewCatalogEntry(
+      "FAQAccordionSectionV2",
+      "Decision",
+      "FAQ accordion",
+      6,
+    ),
     FAQAccordionSectionV3: (
       <div key="FAQAccordionSectionV3">
         {renderPreviewSection(
@@ -637,6 +783,24 @@ export function PagebuilderSection() {
           6,
         )}
       </div>
+    ),
+    TestimonialsSectionV2: previewCatalogEntry(
+      "TestimonialsSectionV2",
+      "Proof",
+      "Testimonials",
+      5,
+    ),
+    TestimonialsSectionV3: previewCatalogEntry(
+      "TestimonialsSectionV3",
+      "Proof",
+      "Testimonials",
+      5,
+    ),
+    TestimonialsCarouselSectionV2: previewCatalogEntry(
+      "TestimonialsCarouselSectionV2",
+      "Proof",
+      "Customer stories",
+      5,
     ),
     TestimonialsCarouselSectionV3: (
       <div key="TestimonialsCarouselSectionV3">
@@ -664,6 +828,18 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
+    ProcessStepsSectionV2: previewCatalogEntry(
+      "ProcessStepsSectionV2",
+      "Decision",
+      "Process steps",
+      6,
+    ),
+    ProcessStepsSectionV3: previewCatalogEntry(
+      "ProcessStepsSectionV3",
+      "Decision",
+      "Process steps",
+      6,
+    ),
     ProcessImageChecklistSectionV3: (
       <div key="ProcessImageChecklistSectionV3">
         {renderPreviewSection(
@@ -677,6 +853,8 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
+    CTASectionV2: previewCatalogEntry("CTASectionV2", "Action", "CTA", 7),
+    CTASectionV3: previewCatalogEntry("CTASectionV3", "Action", "CTA", 7),
     CTAFullscreenSectionV3: (
       <div key="CTAFullscreenSectionV3">
         {renderPreviewSection(
@@ -702,6 +880,12 @@ export function PagebuilderSection() {
           7,
         )}
       </div>
+    ),
+    ContentFixedCoverFadeSectionV2: previewCatalogEntry(
+      "ContentFixedCoverFadeSectionV2",
+      "Action",
+      "Fixed cover fade",
+      7,
     ),
     ContactSectionV3: (
       <div key="ContactSectionV3">

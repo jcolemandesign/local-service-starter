@@ -279,6 +279,8 @@ export const sectionLibraryV3Content = {
   trustMarquee: {
     label:
       "Trusted by homeowners, property managers, and small businesses across the metro area",
+    actionLabel: "Request service",
+    actionHref: "/contact",
     items: [
       "4.9 average rating",
       "2,400+ jobs completed",
@@ -913,7 +915,6 @@ export const sectionLibraryV3Collections = [
         label: "Floating bento trust bar",
         component: "trust-bar-floating-bento-v3",
       },
-      { label: "Marquee card", component: "trust-marquee-legacy" },
       { label: "Trust marquee", component: "trust-marquee-v3" },
       { label: "Legacy trust logo grid", component: "trust-logo-grid-legacy" },
       { label: "Static trust logo grid", component: "trust-logo-grid-v3" },
@@ -958,6 +959,10 @@ export const sectionLibraryV3Collections = [
   {
     title: "Action",
     items: [
+      {
+        label: "Headline with Scrolling Banner",
+        component: "trust-marquee-legacy",
+      },
       { label: "CTA V2", component: "cta-v2" },
       { label: "CTA", component: "cta-v3" },
       { label: "Fullscreen conversion", component: "cta-fullscreen-v3" },

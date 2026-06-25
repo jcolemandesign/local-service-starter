@@ -368,6 +368,13 @@ const sectionSwapOptions = [
     name: "Scroll service cards",
   },
   {
+    component: "ContentHorizontalCardCarouselSectionV2",
+    instruction:
+      "Use a horizontal card carousel when scan content needs a compact browseable sequence.",
+    mode: "Scan",
+    name: "Horizontal card carousel",
+  },
+  {
     component: "ContentRevealParagraphSectionV2",
     instruction:
       "Use a short editorial thesis to slow the page down and frame the service promise.",
@@ -375,11 +382,25 @@ const sectionSwapOptions = [
     name: "Reveal paragraph",
   },
   {
+    component: "ContentScrollWrittenRevealSectionV2",
+    instruction:
+      "Use written reveal copy when a narrative point should build in short, readable beats.",
+    mode: "Narrative",
+    name: "Scroll written reveal",
+  },
+  {
     component: "ContentSplitHeadlineImageSectionV2",
     instruction:
       "Translate regular content into an image-led editorial texture with one large positioning line.",
     mode: "Narrative",
     name: "Split headline image content",
+  },
+  {
+    component: "ContentSplitFixedImageSectionV3",
+    instruction:
+      "Use a content-height split layout when the section needs fixed-ratio imagery without hero-scale height.",
+    mode: "Narrative",
+    name: "Split content with fixed image",
   },
   {
     component: "ContentStickyCardStreamSectionV2",
@@ -410,11 +431,39 @@ const sectionSwapOptions = [
     name: "Rule header content",
   },
   {
+    component: "FeaturePortraitParagraphSectionV3",
+    instruction:
+      "Use an editorial portrait and focused paragraph when a section needs human context or point-of-view.",
+    mode: "Narrative",
+    name: "Portrait paragraph feature",
+  },
+  {
+    component: "FeatureOverlapRowsSectionV3",
+    instruction:
+      "Use overlapping feature rows when multiple narrative points need visual momentum without becoming service cards.",
+    mode: "Narrative",
+    name: "Overlap feature rows",
+  },
+  {
     component: "TrustBarSectionV3",
     instruction:
       "Validate the promise immediately with rating, volume, team, and locality claims.",
     mode: "Proof",
     name: "Trust bar",
+  },
+  {
+    component: "TrustBarFloatingBentoSectionV3",
+    instruction:
+      "Use floating trust proof when compact stats should feel more dimensional than a straight bar.",
+    mode: "Proof",
+    name: "Floating bento trust bar",
+  },
+  {
+    component: "TrustMarqueeSection",
+    instruction:
+      "Use a headline with a scrolling banner when proof points should move beside a stronger editorial claim.",
+    mode: "Action",
+    name: "Headline with Scrolling Banner",
   },
   {
     component: "TrustMarqueeSectionV3",
@@ -424,11 +473,39 @@ const sectionSwapOptions = [
     name: "Trust marquee",
   },
   {
+    component: "TrustLogoGridSection",
+    instruction:
+      "Use the legacy trust logo grid only when an older static proof treatment is needed.",
+    mode: "Proof",
+    name: "Legacy trust logo grid",
+  },
+  {
     component: "TrustLogoGridSectionV3",
     instruction:
       "Use static logos or associations when motion would distract from reading.",
     mode: "Proof",
     name: "Static trust logo grid",
+  },
+  {
+    component: "TestimonialsSectionV2",
+    instruction:
+      "Use the compact testimonial section when short quotes should support a decision without taking over the page.",
+    mode: "Proof",
+    name: "Testimonials",
+  },
+  {
+    component: "TestimonialsSectionV3",
+    instruction:
+      "Use the current testimonial section when proof needs a polished structured presentation.",
+    mode: "Proof",
+    name: "Testimonials",
+  },
+  {
+    component: "TestimonialsCarouselSectionV2",
+    instruction:
+      "Use the legacy carousel when an older testimonial slider treatment fits the recipe.",
+    mode: "Proof",
+    name: "Customer stories",
   },
   {
     component: "TestimonialsCarouselSectionV3",
@@ -445,9 +522,30 @@ const sectionSwapOptions = [
     name: "Masonry testimonials",
   },
   {
+    component: "ProcessStepsSectionV2",
+    instruction:
+      "Use simple process steps when the decision support should stay direct and lightweight.",
+    mode: "Decision",
+    name: "Process steps",
+  },
+  {
+    component: "ProcessStepsSectionV3",
+    instruction:
+      "Use current process steps when the page needs a clearer, more styled decision sequence.",
+    mode: "Decision",
+    name: "Process steps",
+  },
+  {
     component: "FAQSectionV3",
     instruction:
       "Include only the questions that affect whether someone contacts you.",
+    mode: "Decision",
+    name: "FAQ",
+  },
+  {
+    component: "FAQSectionV2",
+    instruction:
+      "Use the legacy FAQ when a simpler non-accordion question block fits the page.",
     mode: "Decision",
     name: "FAQ",
   },
@@ -459,11 +557,32 @@ const sectionSwapOptions = [
     name: "FAQ accordion",
   },
   {
+    component: "FAQAccordionSectionV2",
+    instruction:
+      "Use the legacy accordion when matching an older decision section treatment.",
+    mode: "Decision",
+    name: "FAQ accordion",
+  },
+  {
     component: "ProcessImageChecklistSectionV3",
     instruction:
       "Turn process uncertainty into clear expectations before contact.",
     mode: "Decision",
     name: "Process image checklist",
+  },
+  {
+    component: "CTASectionV2",
+    instruction:
+      "Use a simple conversion band when the page needs a direct next step without a large final scene.",
+    mode: "Action",
+    name: "CTA",
+  },
+  {
+    component: "CTASectionV3",
+    instruction:
+      "Use the current conversion band when the page needs a polished direct next step.",
+    mode: "Action",
+    name: "CTA",
   },
   {
     component: "CTAFullscreenSectionV3",
@@ -478,6 +597,13 @@ const sectionSwapOptions = [
       "Use a discovered offer or next-step reveal to transition from trust into action.",
     mode: "Action",
     name: "Scroll reveal offer conversion",
+  },
+  {
+    component: "ContentFixedCoverFadeSectionV2",
+    instruction:
+      "Use a fixed-cover fade when the action moment should feel immersive and image-led.",
+    mode: "Action",
+    name: "Fixed cover fade",
   },
   {
     component: "ContactSectionV3",
@@ -1082,7 +1208,7 @@ export function PagebuilderShell({
     <section className="h-svh overflow-hidden bg-service-ink text-white max-lg:h-auto max-lg:min-h-svh max-lg:overflow-visible">
       <div className="h-full w-full px-4 py-4 max-md:px-3">
         <div className="grid h-full min-h-0 grid-cols-[22rem_minmax(0,1fr)] items-stretch gap-5 max-lg:h-auto max-lg:grid-cols-1">
-          <aside className="grid h-full min-h-0 content-start gap-4 overflow-y-auto overscroll-contain pr-1 max-lg:h-auto max-lg:overflow-visible max-lg:pr-0">
+          <aside className="grid h-full min-h-0 content-start gap-4 overflow-y-auto overscroll-contain pb-10 pr-1 max-lg:h-auto max-lg:overflow-visible max-lg:pb-0 max-lg:pr-0">
             <div className="radius-medium order-1 border border-white/10 bg-white/8 p-5 shadow-service">
               <h1 className="type-heading-lg text-white">
                 Page Builder
@@ -1473,10 +1599,18 @@ export function PagebuilderShell({
               </div>
             </div>
 
-            <div className="radius-medium order-6 border border-white/10 bg-white/8 p-5 shadow-service">
-              <h2 className="type-heading-sm text-white">
-                Add Section
-              </h2>
+            <details className="radius-medium group order-6 border border-white/10 bg-white/8 p-5 shadow-service">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left">
+                <h2 className="type-heading-sm text-white">
+                  Add Section
+                </h2>
+                <span
+                  aria-hidden="true"
+                  className="flex size-8 shrink-0 items-center justify-center border border-white/15 text-lg leading-none text-white/80 transition-transform group-open:rotate-180"
+                >
+                  v
+                </span>
+              </summary>
               <div className="mt-4 grid gap-4">
                 {sectionModes.map((mode) => {
                   const options = sectionSwapOptions.filter(
@@ -1511,7 +1645,7 @@ export function PagebuilderShell({
               <p className="type-caption mt-3 text-white/60">
                 Adds after the selected section, or at the bottom.
               </p>
-            </div>
+            </details>
           </aside>
 
           <div className="grid h-full min-h-0 overflow-hidden rounded border border-white/10 bg-service-ink p-2 shadow-service max-lg:h-[78svh]">
