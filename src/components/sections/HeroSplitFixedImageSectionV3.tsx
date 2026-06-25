@@ -158,7 +158,7 @@ export function HeroSplitFixedImageSectionV3({
           alignX="left"
           alignY="middle"
           className={cx(
-            "content-padding radius-medium row-start-1 h-full min-h-0 bg-service-surface text-service-ink max-md:h-auto max-md:row-auto",
+            "content-padding radius-medium row-start-1 h-full min-h-0 text-service-ink max-md:h-auto max-md:row-auto",
             config.textClassName,
           )}
         >

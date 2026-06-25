@@ -947,10 +947,10 @@ body {
   --live-service-ink: #17211d;
   --live-service-muted: #5e626e;
   --live-service-accent: #8f1414;
-  --live-service-surface: #d9ddde;
+  --live-service-surface: #ebebeb;
   --live-service-border: #c6cad2;
-  --live-bg-page: #c5c8c9;
-  --live-bg-surface: #d9ddde;
+  --live-bg-page: #e3e3e3;
+  --live-bg-surface: #ebebeb;
   --live-bg-muted: #c6cad2;
   --live-bg-dark: #22385d;
   --live-text-main: #17211d;
@@ -962,10 +962,10 @@ body {
   --color-service-ink: #17211d;
   --color-service-muted: #5e626e;
   --color-service-accent: #8f1414;
-  --color-service-surface: #d9ddde;
+  --color-service-surface: #ebebeb;
   --color-service-border: #c6cad2;
-  --color-bg-page: #c5c8c9;
-  --color-bg-surface: #d9ddde;
+  --color-bg-page: #e3e3e3;
+  --color-bg-surface: #ebebeb;
   --color-bg-muted: #c6cad2;
   --color-bg-dark: #22385d;
   --color-text-main: #17211d;

@@ -271,20 +271,22 @@ const collections = sectionLibraryV3Collections.map((collection) => ({
   })),
 }));
 
+const sectionTemplateCount = sectionLibraryV3Collections.reduce(
+  (total, collection) => total + collection.items.length,
+  0,
+);
+
 export default function SectionsV3Page() {
   return (
     <StyleGuidePreviewSurface>
       <main className="library-surface">
         <section className="section-space-sml bg-service-ink text-white">
           <Container>
-            <p className="type-label text-white/65">
-              Internal preview
-            </p>
-            <h1 className="type-display-lg mt-eyebrow-display">
+            <h1 className="type-display-lg">
               Section Library
             </h1>
             <p className="type-text-xl measure-copy wrap-pretty mt-display-body text-white/75">
-              Current seven-column section templates for the local service starter.
+              {sectionTemplateCount} reusable section templates.
             </p>
           </Container>
         </section>

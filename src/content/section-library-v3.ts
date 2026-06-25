@@ -844,7 +844,24 @@ export const sectionLibraryV3Collections = [
     ],
   },
   {
-    title: "Content",
+    title: "Scan",
+    items: [
+      {
+        label: "Horizontal card carousel",
+        component: "content-horizontal-card-carousel-v2",
+      },
+      {
+        label: "3 service cards right",
+        component: "services-three-cards-right-v3",
+      },
+      { label: "Services grid", component: "services-grid-v2" },
+      { label: "Services bento cards", component: "services-bento-cards-v2" },
+      { label: "Services hover panel", component: "services-hover-panel-v2" },
+      { label: "Services scroll cards", component: "services-scroll-cards-v2" },
+    ],
+  },
+  {
+    title: "Narrative",
     items: [
       {
         label: "Reveal paragraph",
@@ -875,33 +892,6 @@ export const sectionLibraryV3Collections = [
         component: "content-rule-header-v2",
       },
       {
-        label: "Horizontal card carousel",
-        component: "content-horizontal-card-carousel-v2",
-      },
-      {
-        label: "3 service cards right",
-        component: "services-three-cards-right-v3",
-      },
-    ],
-  },
-  {
-    title: "Trust",
-    items: [
-      { label: "Trust bar", component: "trust-bar-v3" },
-      {
-        label: "Floating bento trust bar",
-        component: "trust-bar-floating-bento-v3",
-      },
-      { label: "Marquee card", component: "trust-marquee-legacy" },
-      { label: "Trust marquee", component: "trust-marquee-v3" },
-      { label: "Legacy trust logo grid", component: "trust-logo-grid-legacy" },
-      { label: "Static trust logo grid", component: "trust-logo-grid-v3" },
-    ],
-  },
-  {
-    title: "Features",
-    items: [
-      {
         label: "Editorial portrait",
         component: "feature-portrait-paragraph-v3",
       },
@@ -912,19 +902,17 @@ export const sectionLibraryV3Collections = [
     ],
   },
   {
-    title: "Process",
+    title: "Proof",
     items: [
-      { label: "Process steps V2", component: "process-steps-v2" },
-      { label: "Process steps", component: "process-steps-v3" },
+      { label: "Trust bar", component: "trust-bar-v3" },
       {
-        label: "Image checklist process",
-        component: "process-image-checklist-v3",
+        label: "Floating bento trust bar",
+        component: "trust-bar-floating-bento-v3",
       },
-    ],
-  },
-  {
-    title: "Testimonials",
-    items: [
+      { label: "Marquee card", component: "trust-marquee-legacy" },
+      { label: "Trust marquee", component: "trust-marquee-v3" },
+      { label: "Legacy trust logo grid", component: "trust-logo-grid-legacy" },
+      { label: "Static trust logo grid", component: "trust-logo-grid-v3" },
       { label: "Testimonials V2", component: "testimonials-v2" },
       { label: "Testimonials", component: "testimonials-v3" },
       {
@@ -942,8 +930,14 @@ export const sectionLibraryV3Collections = [
     ],
   },
   {
-    title: "FAQ",
+    title: "Decision",
     items: [
+      { label: "Process steps V2", component: "process-steps-v2" },
+      { label: "Process steps", component: "process-steps-v3" },
+      {
+        label: "Image checklist process",
+        component: "process-image-checklist-v3",
+      },
       { label: "FAQ V2", component: "faq-v2" },
       { label: "FAQ", component: "faq-v3" },
       { label: "FAQ accordion V2", component: "faq-accordion-v2" },
@@ -951,7 +945,14 @@ export const sectionLibraryV3Collections = [
     ],
   },
   {
-    title: "Conversion",
+    title: "Utility",
+    items: [
+      { label: "Contact section", component: "contact-v3" },
+      { label: "Footer", component: "footer-v3" },
+    ],
+  },
+  {
+    title: "Action",
     items: [
       { label: "CTA V2", component: "cta-v2" },
       { label: "CTA", component: "cta-v3" },
@@ -960,27 +961,7 @@ export const sectionLibraryV3Collections = [
         label: "Scroll reveal offer conversion",
         component: "cta-scroll-reveal-offer-v3",
       },
-      {
-        label: "Fixed cover fade",
-        component: "content-fixed-cover-fade-v2",
-      },
-    ],
-  },
-  {
-    title: "Contact",
-    items: [{ label: "Contact section", component: "contact-v3" }],
-  },
-  {
-    title: "Footer",
-    items: [{ label: "Footer", component: "footer-v3" }],
-  },
-  {
-    title: "Services",
-    items: [
-      { label: "Services grid", component: "services-grid-v2" },
-      { label: "Services bento cards", component: "services-bento-cards-v2" },
-      { label: "Services hover panel", component: "services-hover-panel-v2" },
-      { label: "Services scroll cards", component: "services-scroll-cards-v2" },
+      { label: "Fixed cover fade", component: "content-fixed-cover-fade-v2" },
     ],
   },
 ] as const;

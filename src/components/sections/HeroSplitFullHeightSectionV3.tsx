@@ -130,7 +130,7 @@ export function HeroSplitFullHeightSectionV3({
           alignX="left"
           alignY="middle"
           className={cx(
-            "content-padding radius-medium row-start-1 h-full min-h-0 bg-service-surface text-service-ink max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto",
+            "content-padding radius-medium row-start-1 h-full min-h-0 text-service-ink max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto",
             config.textClassName,
           )}
         >
