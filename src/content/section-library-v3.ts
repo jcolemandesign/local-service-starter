@@ -918,12 +918,7 @@ export const sectionLibraryV3Collections = [
       { label: "Trust marquee", component: "trust-marquee-v3" },
       { label: "Legacy trust logo grid", component: "trust-logo-grid-legacy" },
       { label: "Static trust logo grid", component: "trust-logo-grid-v3" },
-      { label: "Testimonials V2", component: "testimonials-v2" },
       { label: "Testimonials", component: "testimonials-v3" },
-      {
-        label: "Carousel testimonials V2",
-        component: "testimonials-carousel-v2",
-      },
       {
         label: "Carousel testimonials",
         component: "testimonials-carousel-v3",
@@ -937,15 +932,12 @@ export const sectionLibraryV3Collections = [
   {
     title: "Decision",
     items: [
-      { label: "Process steps V2", component: "process-steps-v2" },
       { label: "Process steps", component: "process-steps-v3" },
       {
         label: "Image checklist process",
         component: "process-image-checklist-v3",
       },
-      { label: "FAQ V2", component: "faq-v2" },
       { label: "FAQ", component: "faq-v3" },
-      { label: "FAQ accordion V2", component: "faq-accordion-v2" },
       { label: "FAQ accordion", component: "faq-accordion-v3" },
     ],
   },
@@ -963,7 +955,6 @@ export const sectionLibraryV3Collections = [
         label: "Headline with Scrolling Banner",
         component: "trust-marquee-legacy",
       },
-      { label: "CTA V2", component: "cta-v2" },
       { label: "CTA", component: "cta-v3" },
       { label: "Fullscreen conversion", component: "cta-fullscreen-v3" },
       {

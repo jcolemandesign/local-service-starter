@@ -142,8 +142,8 @@ const viewportOptions = [
     id: "wide",
     label: "Wide",
     contentClassName: "max-w-full",
-    frameClassName: "w-full max-w-[min(100%,calc((100svh-7rem)*1.777))]",
-    screenClassName: "aspect-[16/9]",
+    frameClassName: "h-full w-full max-w-full",
+    screenClassName: "h-full flex-1",
     sizeLabel: "Fluid browser",
     brief: "Review the template in a wide browser-style viewport.",
   },
@@ -153,7 +153,7 @@ const viewportOptions = [
     contentClassName: "max-w-full",
     frameClassName: "h-full w-full max-w-[90rem]",
     screenClassName: "h-full flex-1",
-    sizeLabel: "Main container",
+    sizeLabel: "1440px site canvas",
     brief:
       "Review the template in the 1440px main container with preserved page scrolling.",
   },
@@ -185,6 +185,24 @@ const viewportOptions = [
     brief: "Review the template in a phone-shaped window with responsive simplification.",
   },
 ] as const;
+
+function getPreviewResponsiveClassName(
+  viewportId: (typeof viewportOptions)[number]["id"],
+) {
+  if (viewportId === "desktop") {
+    return "pagebuilder-responsive-xl";
+  }
+
+  if (viewportId === "tablet") {
+    return "pagebuilder-responsive-xl pagebuilder-responsive-lg pagebuilder-responsive-md";
+  }
+
+  if (viewportId === "mobile") {
+    return "pagebuilder-responsive-xl pagebuilder-responsive-lg pagebuilder-responsive-md pagebuilder-responsive-sm";
+  }
+
+  return "";
+}
 
 type DesignStyleSettings = {
   showSectionMarkers: boolean;
@@ -487,25 +505,11 @@ const sectionSwapOptions = [
     name: "Static trust logo grid",
   },
   {
-    component: "TestimonialsSectionV2",
-    instruction:
-      "Use the compact testimonial section when short quotes should support a decision without taking over the page.",
-    mode: "Proof",
-    name: "Testimonials",
-  },
-  {
     component: "TestimonialsSectionV3",
     instruction:
       "Use the current testimonial section when proof needs a polished structured presentation.",
     mode: "Proof",
     name: "Testimonials",
-  },
-  {
-    component: "TestimonialsCarouselSectionV2",
-    instruction:
-      "Use the legacy carousel when an older testimonial slider treatment fits the recipe.",
-    mode: "Proof",
-    name: "Customer stories",
   },
   {
     component: "TestimonialsCarouselSectionV3",
@@ -522,13 +526,6 @@ const sectionSwapOptions = [
     name: "Masonry testimonials",
   },
   {
-    component: "ProcessStepsSectionV2",
-    instruction:
-      "Use simple process steps when the decision support should stay direct and lightweight.",
-    mode: "Decision",
-    name: "Process steps",
-  },
-  {
     component: "ProcessStepsSectionV3",
     instruction:
       "Use current process steps when the page needs a clearer, more styled decision sequence.",
@@ -543,23 +540,9 @@ const sectionSwapOptions = [
     name: "FAQ",
   },
   {
-    component: "FAQSectionV2",
-    instruction:
-      "Use the legacy FAQ when a simpler non-accordion question block fits the page.",
-    mode: "Decision",
-    name: "FAQ",
-  },
-  {
     component: "FAQAccordionSectionV3",
     instruction:
       "Handle objections with expandable answers and no vague copy.",
-    mode: "Decision",
-    name: "FAQ accordion",
-  },
-  {
-    component: "FAQAccordionSectionV2",
-    instruction:
-      "Use the legacy accordion when matching an older decision section treatment.",
     mode: "Decision",
     name: "FAQ accordion",
   },
@@ -569,13 +552,6 @@ const sectionSwapOptions = [
       "Turn process uncertainty into clear expectations before contact.",
     mode: "Decision",
     name: "Process image checklist",
-  },
-  {
-    component: "CTASectionV2",
-    instruction:
-      "Use a simple conversion band when the page needs a direct next step without a large final scene.",
-    mode: "Action",
-    name: "CTA",
   },
   {
     component: "CTASectionV3",
@@ -707,6 +683,7 @@ type PagebuilderPreviewWindowProps = {
   contentClassName: string;
   frameClassName: string;
   previewStyle: CSSProperties;
+  responsiveClassName: string;
   screenClassName: string;
   showSectionMarkers: boolean;
   sizeLabel: string;
@@ -719,6 +696,7 @@ function PagebuilderPreviewWindow({
   contentClassName,
   frameClassName,
   previewStyle,
+  responsiveClassName,
   screenClassName,
   showSectionMarkers,
   sizeLabel,
@@ -756,6 +734,7 @@ function PagebuilderPreviewWindow({
           className={cx(
             "min-h-full w-full bg-white",
             spacingClassName,
+            responsiveClassName,
             !showSectionMarkers && "pagebuilder-hide-markers",
           )}
           style={previewStyle}
@@ -1153,6 +1132,7 @@ export function PagebuilderShell({
         frameClassName={selectedViewport.frameClassName}
         key={`${activeRecipe.id}-${activeLayoutSlotIndex}-${selectedViewport.id}-${previewRefreshKey}`}
         previewStyle={previewVariableStyle}
+        responsiveClassName={getPreviewResponsiveClassName(selectedViewport.id)}
         screenClassName={selectedViewport.screenClassName}
         showSectionMarkers={activeDesignStyle.showSectionMarkers}
         sizeLabel={selectedViewport.sizeLabel}

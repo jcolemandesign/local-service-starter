@@ -17,11 +17,6 @@
           "description": "Compose, swap, and review page section recipes."
         },
         {
-          "label": "Owner dashboard",
-          "href": "/dev/dashboard",
-          "description": "Internal view for reviewing leads and client-intake submissions."
-        },
-        {
           "label": "Content Editor",
           "href": "/dev/content-editor",
           "description": "Map page copy and image fields into editable content forms."
@@ -44,7 +39,7 @@
       ]
     },
     {
-      "title": "Website pages",
+      "title": "Created pages",
       "links": [
         {
           "label": "HVAC service",
@@ -52,14 +47,24 @@
           "description": "Current public example service page using the shared section system."
         },
         {
-          "label": "Client intake",
-          "href": "/client-intake",
-          "description": "Choose an intake path for different local business types."
-        },
-        {
           "label": "Staged Pages",
           "href": "/dev/website-pages",
           "description": "Review baked pages that are eligible to become public pages."
+        }
+      ]
+    },
+    {
+      "title": "Admin",
+      "links": [
+        {
+          "label": "My Dashboard",
+          "href": "/dev/dashboard",
+          "description": "Internal view for reviewing leads and client-intake submissions."
+        },
+        {
+          "label": "Client intake",
+          "href": "/client-intake",
+          "description": "Choose an intake path for different local business types."
         }
       ]
     },

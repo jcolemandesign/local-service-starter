@@ -2,7 +2,6 @@ import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAbout
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
 import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
-import { CTASectionV2 } from "@/components/sections/CTASectionV2";
 import { CTAFullscreenSectionV2 } from "@/components/sections/CTAFullscreenSectionV2";
 import { CTAScrollRevealOfferSectionV2 } from "@/components/sections/CTAScrollRevealOfferSectionV2";
 import { ContentRevealParagraphSectionV2 } from "@/components/sections/ContentRevealParagraphSectionV2";
@@ -12,8 +11,6 @@ import { ContentSplitFixedImageSectionV3 } from "@/components/sections/ContentSp
 import { ContentStickyCardStreamSectionV2 } from "@/components/sections/ContentStickyCardStreamSectionV2";
 import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
 import { ContentStickyIdeasSectionV2 } from "@/components/sections/ContentStickyIdeasSectionV2";
-import { FAQAccordionSectionV2 } from "@/components/sections/FAQAccordionSectionV2";
-import { FAQSectionV2 } from "@/components/sections/FAQSectionV2";
 import {
   ContactSectionV3,
   CTASectionV3,
@@ -50,14 +47,11 @@ import {
 import { NavFloatingBentoSectionV2 } from "@/components/sections/NavFloatingBentoSectionV2";
 import { ProcessImageChecklistSectionV2 } from "@/components/sections/ProcessImageChecklistSectionV2";
 import { ProcessImageChecklistSectionV3 } from "@/components/sections/ProcessImageChecklistSectionV3";
-import { ProcessStepsSectionV2 } from "@/components/sections/ProcessStepsSectionV2";
 import { ServicesBentoCardsSectionV2 } from "@/components/sections/ServicesBentoCardsSectionV2";
 import { ServicesGridSectionV2 } from "@/components/sections/ServicesGridSectionV2";
 import { ServicesHoverPanelSectionV2 } from "@/components/sections/ServicesHoverPanelSectionV2";
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/ServicesThreeCardsRightSectionV3";
-import { TestimonialsSectionV2 } from "@/components/sections/TestimonialsSectionV2";
-import { TestimonialsCarouselSectionV2 } from "@/components/sections/TestimonialsCarouselSectionV2";
 import { TestimonialsCarouselSectionV3 } from "@/components/sections/TestimonialsCarouselSectionV3";
 import { TestimonialsMasonrySectionV2 } from "@/components/sections/TestimonialsMasonrySectionV2";
 import { TestimonialsMasonrySectionV3 } from "@/components/sections/TestimonialsMasonrySectionV3";
@@ -295,24 +289,12 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.featureOverlapRows}
         />
       );
-    case "FAQSectionV2":
-      return <FAQSectionV2 {...sectionLibraryV3Content.faq} />;
     case "FAQSectionV3":
       return <FAQSectionV3 {...sectionLibraryV3Content.faq} />;
-    case "FAQAccordionSectionV2":
-      return <FAQAccordionSectionV2 {...sectionLibraryV3Content.faqAccordion} />;
     case "FAQAccordionSectionV3":
       return <FAQAccordionSectionV3 {...sectionLibraryV3Content.faqAccordion} />;
-    case "TestimonialsSectionV2":
-      return <TestimonialsSectionV2 {...sectionLibraryV3Content.testimonials} />;
     case "TestimonialsSectionV3":
       return <TestimonialsSectionV3 {...sectionLibraryV3Content.testimonials} />;
-    case "TestimonialsCarouselSectionV2":
-      return (
-        <TestimonialsCarouselSectionV2
-          {...sectionLibraryV3Content.testimonialsCarousel}
-        />
-      );
     case "TestimonialsCarouselSectionV3":
       return (
         <TestimonialsCarouselSectionV3
@@ -343,12 +325,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.processImageChecklist}
         />
       );
-    case "ProcessStepsSectionV2":
-      return <ProcessStepsSectionV2 {...sectionLibraryV3Content.process} />;
     case "ProcessStepsSectionV3":
       return <ProcessStepsSectionV3 {...sectionLibraryV3Content.process} />;
-    case "CTASectionV2":
-      return <CTASectionV2 {...sectionLibraryV3Content.cta} />;
     case "CTASectionV3":
       return <CTASectionV3 {...sectionLibraryV3Content.cta} />;
     case "CTAFullscreenSectionV2":
@@ -751,7 +729,6 @@ export function PagebuilderSection() {
       "Overlap feature rows",
       4,
     ),
-    FAQSectionV2: previewCatalogEntry("FAQSectionV2", "Decision", "FAQ", 6),
     FAQSectionV3: (
       <div key="FAQSectionV3">
         {renderPreviewSection(
@@ -764,12 +741,6 @@ export function PagebuilderSection() {
           6,
         )}
       </div>
-    ),
-    FAQAccordionSectionV2: previewCatalogEntry(
-      "FAQAccordionSectionV2",
-      "Decision",
-      "FAQ accordion",
-      6,
     ),
     FAQAccordionSectionV3: (
       <div key="FAQAccordionSectionV3">
@@ -784,22 +755,10 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    TestimonialsSectionV2: previewCatalogEntry(
-      "TestimonialsSectionV2",
-      "Proof",
-      "Testimonials",
-      5,
-    ),
     TestimonialsSectionV3: previewCatalogEntry(
       "TestimonialsSectionV3",
       "Proof",
       "Testimonials",
-      5,
-    ),
-    TestimonialsCarouselSectionV2: previewCatalogEntry(
-      "TestimonialsCarouselSectionV2",
-      "Proof",
-      "Customer stories",
       5,
     ),
     TestimonialsCarouselSectionV3: (
@@ -828,12 +787,6 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    ProcessStepsSectionV2: previewCatalogEntry(
-      "ProcessStepsSectionV2",
-      "Decision",
-      "Process steps",
-      6,
-    ),
     ProcessStepsSectionV3: previewCatalogEntry(
       "ProcessStepsSectionV3",
       "Decision",
@@ -853,7 +806,6 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    CTASectionV2: previewCatalogEntry("CTASectionV2", "Action", "CTA", 7),
     CTASectionV3: previewCatalogEntry("CTASectionV3", "Action", "CTA", 7),
     CTAFullscreenSectionV3: (
       <div key="CTAFullscreenSectionV3">

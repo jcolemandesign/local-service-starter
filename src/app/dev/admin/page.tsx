@@ -18,7 +18,13 @@ const linkGroups = [
       { label: "Section Library", href: "/sections" },
       { label: "Style Guide", href: "/dev/style-guide" },
       { label: "Pagebuilder", href: "/dev/pagebuilder" },
-      { label: "Owner Dashboard", href: "/dev/dashboard" },
+    ],
+  },
+  {
+    title: "Admin",
+    links: [
+      { label: "My Dashboard", href: "/dev/dashboard" },
+      { label: "Client Intake", href: "/client-intake" },
     ],
   },
   {

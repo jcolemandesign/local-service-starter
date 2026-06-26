@@ -40,6 +40,11 @@ const cardSizeClasses: Record<HorizontalCardSize, string> = {
   large: "w-[min(86vw,36rem)] min-h-[32rem]",
 };
 
+const grabCursor =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath fill='%23fff' stroke='%23141b18' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M15 27V15.5a3.2 3.2 0 0 1 6.4 0V26 10.5a3.2 3.2 0 0 1 6.4 0V26 13a3.2 3.2 0 0 1 6.4 0v13-8.4a3.2 3.2 0 0 1 6.4 0v15.2c0 5.8-4.7 10.5-10.5 10.5H22c-3.6 0-6.9-1.9-8.7-5L6.9 27.1a3.4 3.4 0 0 1 5.9-3.4L15 27Z'/%3E%3C/svg%3E\") 20 20, grab";
+const grabbingCursor =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath fill='%23fff' stroke='%23141b18' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M15 29v-8a3.1 3.1 0 0 1 6.2 0v7.3-9.8a3.1 3.1 0 0 1 6.2 0v9.8-8.4a3.1 3.1 0 0 1 6.2 0v8.4-5.7a3.1 3.1 0 0 1 6.2 0v10c0 5.8-4.7 10.5-10.5 10.5h-7.4c-3.7 0-7.1-2-8.9-5.3L7.7 28a3.4 3.4 0 0 1 5.9-3.4L15 29Z'/%3E%3C/svg%3E\") 20 20, grabbing";
+
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
@@ -60,7 +65,7 @@ function ArrowButton({
   return (
     <button
       aria-label={direction === "previous" ? "Previous cards" : "Next cards"}
-      className="flex size-10 items-center justify-center border border-service-border bg-white text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-service-border disabled:hover:bg-white disabled:hover:text-service-ink"
+      className="flex size-24 items-center justify-center rounded-full border border-white/80 bg-white text-3xl font-semibold leading-none text-service-ink shadow-[0_14px_34px_rgb(20_27_24_/_0.1),0_0_0_1px_rgb(20_27_24_/_0.045)] transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-white/80 disabled:hover:bg-white disabled:hover:text-service-ink max-md:size-16 max-md:text-2xl"
       disabled={disabled}
       onClick={onClick}
       onPointerEnter={onPointerEnter}
@@ -431,7 +436,7 @@ export function ContentHorizontalCardCarouselSectionV2({
               </p>
             </div>
 
-            <div className="flex shrink-0 items-center gap-2">
+            <div className="flex shrink-0 items-center self-end justify-self-end inline-gap-sml">
               <ArrowButton
                 direction="previous"
                 disabled={!canScrollPrevious}
@@ -475,6 +480,7 @@ export function ContentHorizontalCardCarouselSectionV2({
               onScroll={updateScrollState}
               ref={scrollerRef}
               role="region"
+              style={{ cursor: isFreeScrolling ? grabbingCursor : grabCursor }}
               tabIndex={0}
             >
               <ul className="flex w-max card-grid-gap-med pb-12 pt-2">

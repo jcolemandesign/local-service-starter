@@ -11,13 +11,10 @@ import {
   ContentStickyIdeasSectionV2,
   ContentSplitHeadlineImageSectionV2,
   ContactSectionV3,
-  CTASectionV2,
   CTAFullscreenSectionV3,
   CTASectionV3,
   CTAScrollRevealOfferSectionV3,
-  FAQAccordionSectionV2,
   FAQAccordionSectionV3,
-  FAQSectionV2,
   FAQSectionV3,
   FeatureOverlapRowsSectionV3,
   FeaturePortraitParagraphSectionV3,
@@ -30,7 +27,6 @@ import {
   NavFloatingBentoSectionV2,
   NavPrimarySectionV2,
   ProcessImageChecklistSectionV3,
-  ProcessStepsSectionV2,
   ProcessStepsSectionV3,
   ServicesBentoCardsSectionV2,
   ServicesGridSectionV2,
@@ -38,10 +34,8 @@ import {
   ServicesScrollCardsSectionV2,
   SectionLibraryV3Accordions,
   ServicesThreeCardsRightSectionV3,
-  TestimonialsCarouselSectionV2,
   TestimonialsCarouselSectionV3,
   TestimonialsMasonrySectionV3,
-  TestimonialsSectionV2,
   TestimonialsSectionV3,
   TrustBarFloatingBentoSectionV3,
   TrustBarSectionV3,
@@ -194,9 +188,6 @@ const sectionElements = {
       {...sectionLibraryV3Content.servicesScrollCards}
     />
   ),
-  "process-steps-v2": (
-    <ProcessStepsSectionV2 {...sectionLibraryV3Content.process} />
-  ),
   "process-steps-v3": (
     <ProcessStepsSectionV3 {...sectionLibraryV3Content.process} />
   ),
@@ -205,16 +196,8 @@ const sectionElements = {
       {...sectionLibraryV3Content.processImageChecklist}
     />
   ),
-  "testimonials-v2": (
-    <TestimonialsSectionV2 {...sectionLibraryV3Content.testimonials} />
-  ),
   "testimonials-v3": (
     <TestimonialsSectionV3 {...sectionLibraryV3Content.testimonials} />
-  ),
-  "testimonials-carousel-v2": (
-    <TestimonialsCarouselSectionV2
-      {...sectionLibraryV3Content.testimonialsCarousel}
-    />
   ),
   "testimonials-carousel-v3": (
     <TestimonialsCarouselSectionV3
@@ -226,15 +209,10 @@ const sectionElements = {
       {...sectionLibraryV3Content.testimonialsMasonry}
     />
   ),
-  "faq-v2": <FAQSectionV2 {...sectionLibraryV3Content.faq} />,
   "faq-v3": <FAQSectionV3 {...sectionLibraryV3Content.faq} />,
-  "faq-accordion-v2": (
-    <FAQAccordionSectionV2 {...sectionLibraryV3Content.faqAccordion} />
-  ),
   "faq-accordion-v3": (
     <FAQAccordionSectionV3 {...sectionLibraryV3Content.faqAccordion} />
   ),
-  "cta-v2": <CTASectionV2 {...sectionLibraryV3Content.cta} />,
   "cta-v3": <CTASectionV3 {...sectionLibraryV3Content.cta} />,
   "cta-fullscreen-v3": (
     <CTAFullscreenSectionV3 {...sectionLibraryV3Content.ctaFullscreen} />
