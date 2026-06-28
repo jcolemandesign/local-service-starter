@@ -442,6 +442,34 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
+  featureAsymmetricCards: {
+    eyebrow: "Why choose us",
+    title: "Straightforward service without the runaround.",
+    body: "Use this asymmetrical feature section to pair a three-column intro with four compact proof points.",
+    actionLabel: "About the team",
+    cards: [
+      {
+        iconLabel: "01",
+        title: "Clear Recommendations",
+        body: "Repair, maintenance, and replacement guidance based on the home, budget, and timing.",
+      },
+      {
+        iconLabel: "02",
+        title: "Repair-First Approach",
+        body: "Explain what is happening, what can wait, and what needs attention now.",
+      },
+      {
+        iconLabel: "03",
+        title: "Fast Response",
+        body: "Keep scheduling practical with clear next steps and responsive appointment windows.",
+      },
+      {
+        iconLabel: "04",
+        title: "Local Team",
+        body: "Ground the experience in nearby service areas, familiar homes, and steady follow-through.",
+      },
+    ],
+  },
   process: {
     eyebrow: "Process",
     title: "A simple path from request to resolved.",
@@ -856,7 +884,6 @@ export const sectionLibraryV3Collections = [
         label: "3 service cards right",
         component: "services-three-cards-right-v3",
       },
-      { label: "Services grid", component: "services-grid-v2" },
       { label: "Services bento cards", component: "services-bento-cards-v2" },
       { label: "Services hover panel", component: "services-hover-panel-v2" },
       { label: "Services scroll cards", component: "services-scroll-cards-v2" },
@@ -905,6 +932,10 @@ export const sectionLibraryV3Collections = [
         label: "Overlapping feature rows",
         component: "feature-overlap-rows-v3",
       },
+      {
+        label: "Asymmetric feature cards",
+        component: "feature-asymmetric-cards-v3",
+      },
     ],
   },
   {
@@ -916,6 +947,7 @@ export const sectionLibraryV3Collections = [
         component: "trust-bar-floating-bento-v3",
       },
       { label: "Trust marquee", component: "trust-marquee-v3" },
+      { label: "Logo marquee", component: "trust-logo-marquee-v3" },
       { label: "Legacy trust logo grid", component: "trust-logo-grid-legacy" },
       { label: "Static trust logo grid", component: "trust-logo-grid-v3" },
       { label: "Testimonials", component: "testimonials-v3" },

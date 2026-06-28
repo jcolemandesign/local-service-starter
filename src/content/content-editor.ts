@@ -1,3 +1,5 @@
+import contentEditorPagesData from "./content-editor-pages.json";
+
 export type ContentEditorFieldKind = "copy" | "image" | "link";
 
 export type ContentEditorField = {
@@ -23,6 +25,13 @@ export type ContentEditorPage = {
 };
 
 type ContentRecord = Record<string, unknown>;
+type ContentEditorPagesFile = {
+  pages?: ContentEditorPage[];
+};
+
+const generatedContentEditorPages = (
+  contentEditorPagesData as ContentEditorPagesFile
+).pages ?? [];
 
 const contentPageSources: Array<{
   content: ContentRecord;
@@ -31,8 +40,9 @@ const contentPageSources: Array<{
   label: string;
 }> = [];
 
-export const contentEditorPages: ContentEditorPage[] = contentPageSources.map(
-  (page) => {
+export const contentEditorPages: ContentEditorPage[] = [
+  ...generatedContentEditorPages,
+  ...contentPageSources.map((page) => {
     const content = page.content as ContentRecord;
     const source = content.source as ContentRecord | undefined;
     const sections = Object.entries(content)
@@ -55,10 +65,12 @@ export const contentEditorPages: ContentEditorPage[] = contentPageSources.map(
       label: page.label,
       sections,
       sourceRecipe:
-        typeof source?.sourceRecipe === "string" ? source.sourceRecipe : "unknown",
+        typeof source?.sourceRecipe === "string"
+          ? source.sourceRecipe
+          : "unknown",
     };
-  },
-);
+  }),
+];
 
 function collectFields({
   pageId,

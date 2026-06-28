@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useLayoutEffect, useRef, useState } from "react";
+import { SevenColumnGrid, SevenColumnGridItem } from "@/components/primitives";
 
 type ScrollServiceItem = {
   title: string;
@@ -195,27 +196,36 @@ export function ServicesScrollCardsSectionV2({
     >
       <div className="sticky top-0 flex min-h-svh items-center overflow-hidden py-16 max-lg:static max-lg:min-h-0 max-lg:overflow-visible">
         <div className="w-full">
-          <div className="container-site">
-            <div className={cx("max-w-4xl", "fluid-type-frame")}>
-              <p className={cx("type-label", "text-service-accent")}>
-                {eyebrow}
-              </p>
-              <h2
-                className={cx(
-                  "type-heading-xl",
-                  "mt-5 text-service-ink",
-                )}
-              >
-                {title}
-              </h2>
-            </div>
-          </div>
+          <SevenColumnGrid
+            className="px-[var(--site-grid-inset-inline)]"
+            frame="none"
+            minHeight="none"
+          >
+            <SevenColumnGridItem
+              className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+              measure="copyWide"
+            >
+              <div className="fluid-type-frame">
+                <p className={cx("type-label", "text-service-accent")}>
+                  {eyebrow}
+                </p>
+                <h2
+                  className={cx(
+                    "type-heading-xl",
+                    "mt-5 text-service-ink",
+                  )}
+                >
+                  {title}
+                </h2>
+              </div>
+            </SevenColumnGridItem>
+          </SevenColumnGrid>
 
           <div
             className="mt-14 overflow-hidden max-lg:overflow-visible"
             ref={railViewportRef}
           >
-            <div className="container-site max-lg:grid max-lg:gap-4">
+            <div className="px-[var(--site-grid-inset-inline)] max-lg:grid max-lg:gap-4">
               <motion.div
                 ref={railRef}
                 className="flex w-max gap-4 will-change-transform max-lg:w-full max-lg:flex-col max-lg:![transform:none]"

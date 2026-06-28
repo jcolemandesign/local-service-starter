@@ -45,6 +45,7 @@ export {
   ProcessStepsSectionV3,
   TestimonialsSectionV3,
 } from "./FeatureProcessTestimonialsSectionsV3";
+export { FeatureAsymmetricCardsSectionV3 } from "./FeatureAsymmetricCardsSectionV3";
 export { FeatureOverlapRowsSection } from "./FeatureOverlapRowsSection";
 export { FeatureOverlapRowsSectionV2 } from "./FeatureOverlapRowsSectionV2";
 export { FeaturePortraitParagraphSectionV3 } from "./FeaturePortraitParagraphSectionV3";
@@ -78,7 +79,6 @@ export { ProcessStepsSectionV2 } from "./ProcessStepsSectionV2";
 export { ServicesBentoCardsSection } from "./ServicesBentoCardsSection";
 export { ServicesBentoCardsSectionV2 } from "./ServicesBentoCardsSectionV2";
 export { ServicesGridSection } from "./ServicesGridSection";
-export { ServicesGridSectionV2 } from "./ServicesGridSectionV2";
 export { ServicesHoverPanelSection } from "./ServicesHoverPanelSection";
 export { ServicesHoverPanelSectionV2 } from "./ServicesHoverPanelSectionV2";
 export { ServicesScrollCardsSection } from "./ServicesScrollCardsSection";
@@ -93,11 +93,16 @@ export { TestimonialsMasonrySectionV2 } from "./TestimonialsMasonrySectionV2";
 export { TestimonialsMasonrySectionV3 } from "./TestimonialsMasonrySectionV3";
 export { TestimonialsSection } from "./TestimonialsSection";
 export { TestimonialsSectionV2 } from "./TestimonialsSectionV2";
+export {
+  TemplateLibrarySection,
+  type PageTemplateSummary,
+} from "./TemplateLibrarySection";
 export { TrustBarFloatingBentoSectionV2 } from "./TrustBarFloatingBentoSectionV2";
 export {
   TrustBarFloatingBentoSectionV3,
   TrustBarSectionV3,
   TrustLogoGridSectionV3,
+  TrustLogoMarqueeSectionV3,
   TrustMarqueeSectionV3,
 } from "./TrustSectionsV3";
 export { TrustLogoGridSection } from "./TrustLogoMarqueeSection";

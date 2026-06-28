@@ -23,6 +23,7 @@ import {
   ProcessStepsSectionV3,
   TestimonialsSectionV3,
 } from "@/components/sections/FeatureProcessTestimonialsSectionsV3";
+import { FeatureAsymmetricCardsSectionV3 } from "@/components/sections/FeatureAsymmetricCardsSectionV3";
 import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
 import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
@@ -48,7 +49,6 @@ import { NavFloatingBentoSectionV2 } from "@/components/sections/NavFloatingBent
 import { ProcessImageChecklistSectionV2 } from "@/components/sections/ProcessImageChecklistSectionV2";
 import { ProcessImageChecklistSectionV3 } from "@/components/sections/ProcessImageChecklistSectionV3";
 import { ServicesBentoCardsSectionV2 } from "@/components/sections/ServicesBentoCardsSectionV2";
-import { ServicesGridSectionV2 } from "@/components/sections/ServicesGridSectionV2";
 import { ServicesHoverPanelSectionV2 } from "@/components/sections/ServicesHoverPanelSectionV2";
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/ServicesThreeCardsRightSectionV3";
@@ -61,6 +61,7 @@ import {
   TrustBarFloatingBentoSectionV3,
   TrustBarSectionV3,
   TrustLogoGridSectionV3,
+  TrustLogoMarqueeSectionV3,
   TrustMarqueeSectionV3,
 } from "@/components/sections/TrustSectionsV3";
 import { PagebuilderShell } from "@/components/sections/PagebuilderShell";
@@ -190,14 +191,18 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return <TrustMarqueeSectionV3 {...sectionLibraryV3Content.trustMarquee} />;
     case "TrustLogoGridSection":
       return <TrustLogoGridSection {...sectionLibraryV3Content.trustLogoMarquee} />;
+    case "TrustLogoMarqueeSectionV3":
+      return (
+        <TrustLogoMarqueeSectionV3
+          {...sectionLibraryV3Content.trustLogoMarquee}
+        />
+      );
     case "TrustLogoGridSectionV3":
       return (
         <TrustLogoGridSectionV3
           {...sectionLibraryV3Content.trustLogoMarquee}
         />
       );
-    case "ServicesGridSectionV2":
-      return <ServicesGridSectionV2 {...sectionLibraryV3Content.services} />;
     case "ServicesBentoCardsSectionV2":
       return (
         <ServicesBentoCardsSectionV2
@@ -287,6 +292,12 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <FeatureOverlapRowsSectionV3
           {...sectionLibraryV3Content.featureOverlapRows}
+        />
+      );
+    case "FeatureAsymmetricCardsSectionV3":
+      return (
+        <FeatureAsymmetricCardsSectionV3
+          {...sectionLibraryV3Content.featureAsymmetricCards}
         />
       );
     case "FAQSectionV3":
@@ -543,6 +554,19 @@ export function PagebuilderSection() {
       "Legacy trust logo grid",
       2,
     ),
+    TrustLogoMarqueeSectionV3: (
+      <div key="TrustLogoMarqueeSectionV3">
+        {renderPreviewSection(
+          {
+            component: "TrustLogoMarqueeSectionV3",
+            instruction: "",
+            mode: "Proof",
+            name: "Logo marquee",
+          },
+          2,
+        )}
+      </div>
+    ),
     TrustLogoGridSectionV3: (
       <div key="TrustLogoGridSectionV3">
         {renderPreviewSection(
@@ -553,19 +577,6 @@ export function PagebuilderSection() {
             name: "Static trust logo grid",
           },
           2,
-        )}
-      </div>
-    ),
-    ServicesGridSectionV2: (
-      <div key="ServicesGridSectionV2">
-        {renderPreviewSection(
-          {
-            component: "ServicesGridSectionV2",
-            instruction: "",
-            mode: "Scan",
-            name: "Services grid",
-          },
-          3,
         )}
       </div>
     ),
@@ -727,6 +738,12 @@ export function PagebuilderSection() {
       "FeatureOverlapRowsSectionV3",
       "Narrative",
       "Overlap feature rows",
+      4,
+    ),
+    FeatureAsymmetricCardsSectionV3: previewCatalogEntry(
+      "FeatureAsymmetricCardsSectionV3",
+      "Narrative",
+      "Asymmetric feature cards",
       4,
     ),
     FAQSectionV3: (

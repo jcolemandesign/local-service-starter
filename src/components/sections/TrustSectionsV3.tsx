@@ -155,82 +155,46 @@ export function TrustBarFloatingBentoSectionV3({
   );
 }
 
-export function TrustMarqueeSectionV3({ items, label }: TrustItemsProps) {
+export function TrustMarqueeSectionV3({ items }: TrustItemsProps) {
   return (
-    <section className="overflow-hidden bg-bg-page">
-      <SevenColumnGrid className="section-min-none" padding="sml">
-        <SevenColumnGridItem
-          className="col-span-3 max-lg:col-span-7"
-          alignY="middle"
-          measure="copy"
-        >
-          <p className="type-text-md wrap-pretty font-semibold text-service-ink">
-            {label}
-          </p>
-        </SevenColumnGridItem>
-
-        <SevenColumnGridItem
-          className="col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1"
-          alignY="stretch"
-        >
-          <div className="content-padding-y relative -mr-[var(--site-grid-inset-inline)] h-full overflow-hidden max-lg:mr-0">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 bg-linear-to-r from-bg-page to-bg-page/0 max-md:w-16"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 right-0 z-10 w-72 bg-linear-to-l from-bg-page to-bg-page/0 max-lg:w-28 max-md:w-16"
-            />
-            <div className="flex w-max animate-trust-marquee motion-reduce:animate-none">
-              <TextMarqueeItems items={items} />
-              <TextMarqueeItems hidden items={items} />
-            </div>
-          </div>
-        </SevenColumnGridItem>
-      </SevenColumnGrid>
+    <section className="section-min-none overflow-hidden bg-bg-page py-8 max-md:py-6">
+      <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[18vw] bg-gradient-to-r from-bg-page via-bg-page/90 to-transparent max-md:w-20"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-[18vw] bg-gradient-to-l from-bg-page via-bg-page/90 to-transparent max-md:w-20"
+        />
+        <div className="flex w-max animate-trust-marquee motion-reduce:animate-none">
+          <TextMarqueeItems items={items} />
+          <TextMarqueeItems hidden items={items} />
+        </div>
+      </div>
     </section>
   );
 }
 
 export function TrustLogoMarqueeSectionV3({
-  label,
   logos,
 }: TrustLogosProps) {
   return (
-    <section className="bg-bg-page">
-      <SevenColumnGrid className="section-min-none" padding="sml">
-        <SevenColumnGridItem
-          className="col-span-2 max-lg:col-span-7"
-          measure="caption"
-        >
-          <div className="content-padding radius-medium flex h-full items-center border border-service-border bg-service-surface">
-            <p className="type-text-xl wrap-balance font-semibold text-service-ink">
-              {label}
-            </p>
-          </div>
-        </SevenColumnGridItem>
-
-        <SevenColumnGridItem
-          className="col-span-5 col-start-3 max-lg:col-span-7 max-lg:col-start-1"
-          alignY="stretch"
-        >
-          <div className="content-padding-y radius-medium relative h-full min-w-0 overflow-hidden border border-service-border bg-service-surface">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-linear-to-r from-service-surface to-service-surface/0"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-linear-to-l from-service-surface to-service-surface/0"
-            />
-            <div className="flex w-max animate-trust-marquee motion-reduce:animate-none">
-              <LogoTrack logos={logos} />
-              <LogoTrack hidden logos={logos} />
-            </div>
-          </div>
-        </SevenColumnGridItem>
-      </SevenColumnGrid>
+    <section className="section-min-none overflow-hidden bg-bg-page py-8 max-md:py-6">
+      <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[18vw] bg-gradient-to-r from-bg-page via-bg-page/90 to-transparent max-md:w-20"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-[18vw] bg-gradient-to-l from-bg-page via-bg-page/90 to-transparent max-md:w-20"
+        />
+        <div className="flex w-max animate-trust-marquee motion-reduce:animate-none">
+          <LogoTrack logos={logos} />
+          <LogoTrack hidden logos={logos} />
+        </div>
+      </div>
     </section>
   );
 }

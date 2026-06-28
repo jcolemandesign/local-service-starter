@@ -108,7 +108,7 @@ export const sectionModes: SectionMode[] = [
 export const pagebuilderRecipes: PagebuilderRecipe[] = [
   {
     id: "classic-service",
-    name: "homepage1",
+    name: "homepage",
     positioning: "Balanced homepage for a broad local service business.",
     styleRules: [
       "Use the corresponding Style Guide typography profile for type decisions.",

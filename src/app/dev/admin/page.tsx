@@ -18,6 +18,7 @@ const linkGroups = [
       { label: "Section Library", href: "/sections" },
       { label: "Style Guide", href: "/dev/style-guide" },
       { label: "Pagebuilder", href: "/dev/pagebuilder" },
+      { label: "Template Library", href: "/dev/templates" },
     ],
   },
   {

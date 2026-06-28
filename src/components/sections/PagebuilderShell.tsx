@@ -215,6 +215,42 @@ type PageLayoutSlot = {
   stack: WorkingSection[];
 };
 
+type TemplatePromotionResponse =
+  | {
+      ok: true;
+      template: {
+        id: string;
+        name: string;
+        sectionCount: number;
+      };
+    }
+  | { ok: false; error: string };
+
+type SavedPagebuilderOption = {
+  designStyle: DesignStyleSettings;
+  optionIndex: number;
+  optionName: string;
+  recipeId: string;
+  recipeName: string;
+  savedAt: string;
+  sectionCount: number;
+  sections: WorkingSection[];
+};
+
+type SavedPagebuilderOptionsResponse =
+  | {
+      ok: true;
+      options: SavedPagebuilderOption[];
+    }
+  | { ok: false; error: string };
+
+type SavedPagebuilderOptionResponse =
+  | {
+      ok: true;
+      option: SavedPagebuilderOption;
+    }
+  | { ok: false; error: string };
+
 type PageInstructionInput = {
   designLabel: string;
   excludedSections: WorkingSection[];
@@ -286,6 +322,70 @@ function createInitialLayoutSlots(recipe: PagebuilderRecipe) {
   }));
 }
 
+function serializeWorkingSection(section: WorkingSection) {
+  return {
+    component: section.component,
+    id: section.id,
+    included: section.included,
+    instruction: section.instruction,
+    mode: section.mode,
+    name: section.name,
+    originalComponent: section.originalComponent,
+    originalIndex: section.originalIndex,
+    ratio: section.ratio,
+    variant: section.variant,
+  };
+}
+
+function applySavedOptionsToLayoutSlots(
+  currentSlots: PageLayoutSlot[][],
+  recipes: PagebuilderRecipe[],
+  savedOptions: SavedPagebuilderOption[],
+) {
+  return currentSlots.map((recipeSlots, recipeIndex) =>
+    recipeSlots.map((slot, slotIndex) => {
+      const recipe = recipes[recipeIndex];
+      const savedOption = savedOptions.find(
+        (option) =>
+          option.recipeId === recipe?.id &&
+          option.optionIndex === slotIndex &&
+          option.optionName === slot.name,
+      );
+
+      if (!savedOption) {
+        return slot;
+      }
+
+      return {
+        ...slot,
+        designStyle: {
+          showSectionMarkers: Boolean(
+            savedOption.designStyle.showSectionMarkers,
+          ),
+          viewportId: savedOption.designStyle.viewportId,
+        },
+        stack: savedOption.sections.map((section, index) => ({
+          ...section,
+          id: section.id || `${savedOption.recipeId}-saved-${slotIndex}-${index}`,
+          included: Boolean(section.included),
+          originalComponent: section.originalComponent || section.component,
+          originalIndex: Number.isFinite(section.originalIndex)
+            ? section.originalIndex
+            : index,
+        })),
+      };
+    }),
+  );
+}
+
+function slugifyTemplateName(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 const sectionSwapOptions = [
   {
     component: "NavPrimarySectionV2",
@@ -349,13 +449,6 @@ const sectionSwapOptions = [
       "Lead with direct copy first, then use the image below to keep the page useful and quick to understand.",
     mode: "Hero",
     name: "Content top image bottom",
-  },
-  {
-    component: "ServicesGridSectionV2",
-    instruction:
-      "Use a straightforward services grid when the page needs familiar scan-and-compare service cards.",
-    mode: "Scan",
-    name: "Services grid",
   },
   {
     component: "ServicesBentoCardsSectionV2",
@@ -463,6 +556,13 @@ const sectionSwapOptions = [
     name: "Overlap feature rows",
   },
   {
+    component: "FeatureAsymmetricCardsSectionV3",
+    instruction:
+      "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points.",
+    mode: "Narrative",
+    name: "Asymmetric feature cards",
+  },
+  {
     component: "TrustBarSectionV3",
     instruction:
       "Validate the promise immediately with rating, volume, team, and locality claims.",
@@ -489,6 +589,13 @@ const sectionSwapOptions = [
       "Use short repeated claims when there are many small proof points.",
     mode: "Proof",
     name: "Trust marquee",
+  },
+  {
+    component: "TrustLogoMarqueeSectionV3",
+    instruction:
+      "Use scrolling logo proof for affiliations, certifications, training, manufacturer badges, or partner networks.",
+    mode: "Proof",
+    name: "Logo marquee",
   },
   {
     component: "TrustLogoGridSection",
@@ -769,8 +876,25 @@ export function PagebuilderShell({
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(
     null,
   );
+  const [draggedSectionId, setDraggedSectionId] = useState<string | null>(null);
+  const [dragOverSectionId, setDragOverSectionId] = useState<string | null>(
+    null,
+  );
+  const [dragDropPosition, setDragDropPosition] = useState<"before" | "after">(
+    "before",
+  );
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isRenderedPreviewOpen, setIsRenderedPreviewOpen] = useState(false);
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+  const [isPromotingTemplate, setIsPromotingTemplate] = useState(false);
+  const [isSavingOption, setIsSavingOption] = useState(false);
+  const [templateName, setTemplateName] = useState("");
+  const [templateSlug, setTemplateSlug] = useState("");
+  const [templateNotes, setTemplateNotes] = useState("");
+  const [optionSaveStatus, setOptionSaveStatus] = useState("");
+  const [optionSaveError, setOptionSaveError] = useState("");
+  const [templateStatus, setTemplateStatus] = useState("");
+  const [templateError, setTemplateError] = useState("");
   const [previewRefreshKey, setPreviewRefreshKey] = useState(0);
   const [previewVariableStyle, setPreviewVariableStyle] =
     useState<PreviewVariableStyle>({});
@@ -838,6 +962,40 @@ export function PagebuilderShell({
     };
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadSavedOptions() {
+      try {
+        const response = await fetch("/api/pagebuilder-options");
+        const result =
+          (await response.json()) as SavedPagebuilderOptionsResponse;
+
+        if (!isMounted || !response.ok || !result.ok) {
+          return;
+        }
+
+        setLayoutSlots((currentSlots) =>
+          applySavedOptionsToLayoutSlots(
+            currentSlots,
+            recipes,
+            result.options,
+          ),
+        );
+      } catch {
+        if (isMounted) {
+          setOptionSaveError("Saved options could not be loaded.");
+        }
+      }
+    }
+
+    void loadSavedOptions();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [recipes]);
+
   function updateActiveStack(updater: (stack: WorkingSection[]) => WorkingSection[]) {
     setLayoutSlots((currentSlots) =>
       currentSlots.map((recipeSlots, recipeIndex) =>
@@ -903,6 +1061,48 @@ export function PagebuilderShell({
       nextStack.splice(nextIndex, 0, item);
       return nextStack;
     });
+  }
+
+  function reorderSection(
+    draggedId: string,
+    targetId: string,
+    position: "before" | "after",
+  ) {
+    if (!draggedId || draggedId === targetId) {
+      setDraggedSectionId(null);
+      setDragOverSectionId(null);
+      return;
+    }
+
+    updateActiveStack((stack) => {
+      const nextStack = [...stack];
+      const draggedIndex = nextStack.findIndex(
+        (section) => section.id === draggedId,
+      );
+
+      if (draggedIndex < 0) {
+        return stack;
+      }
+
+      const [item] = nextStack.splice(draggedIndex, 1);
+      const targetStackIndex = nextStack.findIndex(
+        (section) => section.id === targetId,
+      );
+
+      if (targetStackIndex < 0) {
+        return stack;
+      }
+
+      nextStack.splice(
+        position === "before" ? targetStackIndex : targetStackIndex + 1,
+        0,
+        item,
+      );
+
+      return nextStack;
+    });
+    setDraggedSectionId(null);
+    setDragOverSectionId(null);
   }
 
   function deleteSection(sectionId: string) {
@@ -1053,6 +1253,116 @@ export function PagebuilderShell({
 
   async function copyAllLayoutInstructions() {
     await navigator.clipboard.writeText(allLayoutInstructions);
+  }
+
+  async function saveActiveOption() {
+    setIsSavingOption(true);
+    setOptionSaveError("");
+    setOptionSaveStatus("");
+
+    try {
+      const response = await fetch("/api/pagebuilder-options", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          designStyle: activeDesignStyle,
+          optionIndex: activeLayoutSlotIndex,
+          optionName: activeSlotLabel,
+          recipeId: activeRecipe.id,
+          recipeName: activeRecipe.name,
+          sections: activeStack.map(serializeWorkingSection),
+        }),
+      });
+      const result = (await response.json()) as SavedPagebuilderOptionResponse;
+
+      if (!response.ok || !result.ok) {
+        setOptionSaveError(
+          result.ok ? "Pagebuilder option save failed." : result.error,
+        );
+        return;
+      }
+
+      setOptionSaveStatus(
+        `Saved ${activePageLabel} / ${activeSlotLabel} with ${result.option.sectionCount} included sections.`,
+      );
+    } catch {
+      setOptionSaveError("Pagebuilder option save failed.");
+    } finally {
+      setIsSavingOption(false);
+    }
+  }
+
+  function openTemplateModal() {
+    const defaultName = `${activePageLabel} - ${activeSlotLabel}`;
+
+    setTemplateName(defaultName);
+    setTemplateSlug(slugifyTemplateName(defaultName));
+    setTemplateNotes("");
+    setTemplateStatus("");
+    setTemplateError("");
+    setIsTemplateModalOpen(true);
+  }
+
+  function closeTemplateModal() {
+    if (isPromotingTemplate) {
+      return;
+    }
+
+    setIsTemplateModalOpen(false);
+    setTemplateError("");
+  }
+
+  async function promoteActiveOptionToTemplate() {
+    if (includedSections.length === 0) {
+      setTemplateError("Templates need at least one included section.");
+      return;
+    }
+
+    setIsPromotingTemplate(true);
+    setTemplateError("");
+    setTemplateStatus("");
+
+    try {
+      const response = await fetch("/api/page-templates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          designStyle: activeDesignStyle,
+          id: templateSlug,
+          name: templateName,
+          notes: templateNotes,
+          pageType: activeRecipe.name,
+          sections: includedSections.map((section) => ({
+            component: section.component,
+            instruction: section.instruction,
+            mode: section.mode,
+            name: section.name,
+            originalComponent: section.originalComponent,
+            originalIndex: section.originalIndex,
+            ratio: section.ratio,
+            variant: section.variant,
+          })),
+          sourceOptionName: activeSlotLabel,
+          sourceRecipeId: activeRecipe.id,
+          sourceRecipeName: activeRecipe.name,
+        }),
+      });
+      const result = (await response.json()) as TemplatePromotionResponse;
+
+      if (!response.ok || !result.ok) {
+        setTemplateError(result.ok ? "Template promotion failed." : result.error);
+        return;
+      }
+
+      setTemplateStatus(
+        `Promoted ${result.template.name} with ${result.template.sectionCount} sections.`,
+      );
+      setIsTemplateModalOpen(false);
+    } catch {
+      setTemplateError("Template promotion failed.");
+    } finally {
+      setIsPromotingTemplate(false);
+    }
   }
 
   function refreshPreviewStyles() {
@@ -1227,44 +1537,67 @@ export function PagebuilderShell({
                         type="button"
                       >
                         <span>{recipe.name}</span>
-                        <span
-                          className={cx(
-                            "mt-1 block text-xs font-semibold",
-                            isActive ? "text-service-muted" : "text-white/55",
-                          )}
-                        >
-                          {recipeSlots[recipeSlotIndex]?.name ?? "Option 1"}
-                        </span>
                       </button>
 
                       {isActive ? (
-                        <div
-                          aria-label={`${recipe.name} stored layout options`}
-                          className="grid grid-cols-3 gap-1.5"
-                        >
-                          {recipeSlots.map((slot, slotIndex) => {
-                            const isSlotActive =
-                              slotIndex === recipeSlotIndex;
+                        <div className="grid gap-2">
+                          <div
+                            aria-label={`${recipe.name} stored layout options`}
+                            className="grid grid-cols-3 gap-1.5"
+                          >
+                            {recipeSlots.map((slot, slotIndex) => {
+                              const isSlotActive =
+                                slotIndex === recipeSlotIndex;
 
-                            return (
-                              <button
-                                aria-pressed={isSlotActive}
-                                className={cx(
-                                  "radius-4 min-h-8 border px-2 text-xs font-semibold transition-colors",
-                                  isSlotActive
-                                    ? "border-white/45 bg-white/14 text-white"
-                                    : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
-                                )}
-                                key={slot.name}
-                                onClick={() =>
-                                  switchLayoutSlot(recipeIndex, slotIndex)
-                                }
-                                type="button"
-                              >
-                                {slot.name}
-                              </button>
-                            );
-                          })}
+                              return (
+                                <button
+                                  aria-pressed={isSlotActive}
+                                  className={cx(
+                                    "radius-4 min-h-8 border px-2 text-left text-xs font-semibold transition-colors",
+                                    isSlotActive
+                                      ? "border-white/55 bg-white/20 text-white shadow-[inset_0_1px_0_rgb(255_255_255_/_0.12)]"
+                                      : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                                  )}
+                                  key={slot.name}
+                                  onClick={() =>
+                                    switchLayoutSlot(recipeIndex, slotIndex)
+                                  }
+                                  type="button"
+                                >
+                                  {slot.name}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            <button
+                              className="radius-4 min-h-9 border border-white/35 bg-white px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-60"
+                              disabled={isSavingOption}
+                              onClick={() => void saveActiveOption()}
+                              type="button"
+                            >
+                              {isSavingOption ? "Saving..." : "Save Option"}
+                            </button>
+                            <button
+                              className="radius-4 min-h-9 border border-white/20 bg-white/10 px-2.5 text-xs font-semibold text-white transition-colors hover:border-white/45 hover:bg-white/16"
+                              onClick={openTemplateModal}
+                              type="button"
+                            >
+                              Promote Option to Template
+                            </button>
+                          </div>
+                          {optionSaveStatus || optionSaveError ? (
+                            <p
+                              className={cx(
+                                "type-caption rounded-sm border px-3 py-2",
+                                optionSaveError
+                                  ? "border-red-300/60 bg-red-950/30 text-red-100"
+                                  : "border-white/10 bg-white/8 text-white/64",
+                              )}
+                            >
+                              {optionSaveError || optionSaveStatus}
+                            </p>
+                          ) : null}
                         </div>
                       ) : null}
                     </div>
@@ -1291,7 +1624,7 @@ export function PagebuilderShell({
                 </h2>
               </div>
               <div className="mt-4 grid gap-2">
-                {includedSections.map((section) => {
+                {includedSections.map((section, index) => {
                   const isActive = section.id === selectedSectionId;
                   const sectionSwapOptionsForMode = sectionSwapOptions.filter(
                     (option) => option.mode === section.mode,
@@ -1300,44 +1633,105 @@ export function PagebuilderShell({
                   return (
                     <div
                       className={cx(
-                        "radius-4 overflow-hidden border transition-colors",
+                        "radius-4 relative overflow-hidden border transition-colors",
                         isActive
                           ? "border-white/35 bg-white/12 text-white"
                           : "border-white/10 bg-white/8 text-white",
+                        section.id === draggedSectionId && "opacity-35",
+                        section.id === dragOverSectionId && "border-white/60",
                       )}
                       key={section.id}
-                    >
-                      <button
-                        aria-expanded={isActive}
-                        className={cx(
-                          "flex min-h-12 w-full items-start justify-between gap-3 px-3 py-2 text-left transition-colors",
-                          !isActive && "hover:border-white/45 hover:bg-white/14",
-                        )}
-                        onClick={() =>
-                          setSelectedSectionId(isActive ? null : section.id)
+                      onDragOver={(event) => {
+                        event.preventDefault();
+                        event.dataTransfer.dropEffect = "move";
+                        const bounds =
+                          event.currentTarget.getBoundingClientRect();
+                        const nextPosition =
+                          event.clientY < bounds.top + bounds.height / 2
+                            ? "before"
+                            : "after";
+
+                        setDragOverSectionId(section.id);
+                        setDragDropPosition(nextPosition);
+                      }}
+                      onDrop={(event) => {
+                        event.preventDefault();
+                        const droppedSectionId =
+                          event.dataTransfer.getData("text/plain") ||
+                          draggedSectionId;
+
+                        if (droppedSectionId) {
+                          reorderSection(
+                            droppedSectionId,
+                            section.id,
+                            dragDropPosition,
+                          );
                         }
-                        type="button"
-                      >
-                        <span className="min-w-0">
-                          <span className="type-caption block font-semibold text-current/70">
-                            {section.mode}
-                          </span>
-                          <span className="mt-1 block truncate text-sm font-semibold">
-                            {section.name}
-                          </span>
-                        </span>
+                      }}
+                    >
+                      {section.id === dragOverSectionId ? (
                         <span
                           aria-hidden="true"
                           className={cx(
-                            "mt-1 flex size-7 shrink-0 items-center justify-center rounded-sm border text-sm leading-none transition-transform",
-                            isActive
-                              ? "rotate-180 border-white/25 text-white"
-                              : "border-white/10 text-white/60",
+                            "absolute left-2 right-2 z-10 h-0.5 rounded-full bg-white",
+                            dragDropPosition === "before"
+                              ? "top-0"
+                              : "bottom-0",
                           )}
+                        />
+                      ) : null}
+                      <div className="flex min-h-12 items-stretch">
+                        <button
+                          aria-label={`Drag ${section.name} section`}
+                          className="flex w-14 shrink-0 cursor-grab items-center justify-center border-r border-current/10 text-[0.65rem] font-semibold uppercase tracking-normal text-current/65 transition-colors hover:bg-white/10 active:cursor-grabbing"
+                          draggable
+                          onDragEnd={() => {
+                            setDraggedSectionId(null);
+                            setDragOverSectionId(null);
+                          }}
+                          onDragStart={(event) => {
+                            event.dataTransfer.effectAllowed = "move";
+                            event.dataTransfer.setData("text/plain", section.id);
+                            setDraggedSectionId(section.id);
+                          }}
+                          title="Drag to reorder"
+                          type="button"
                         >
-                          v
-                        </span>
-                      </button>
+                          Drag
+                        </button>
+                        <button
+                          aria-expanded={isActive}
+                          className={cx(
+                            "flex min-h-12 min-w-0 flex-1 items-start justify-between gap-3 px-3 py-2 text-left transition-colors",
+                            !isActive &&
+                              "hover:border-white/45 hover:bg-white/14",
+                          )}
+                          onClick={() =>
+                            setSelectedSectionId(isActive ? null : section.id)
+                          }
+                          type="button"
+                        >
+                          <span className="min-w-0">
+                            <span className="type-caption block font-semibold text-current/70">
+                              {index + 1}. {section.mode}
+                            </span>
+                            <span className="mt-1 block truncate text-sm font-semibold">
+                              {section.name}
+                            </span>
+                          </span>
+                          <span
+                            aria-hidden="true"
+                            className={cx(
+                              "mt-1 flex size-7 shrink-0 items-center justify-center rounded-sm border text-sm leading-none transition-transform",
+                              isActive
+                                ? "rotate-180 border-white/25 text-white"
+                                : "border-white/10 text-white/60",
+                            )}
+                          >
+                            v
+                          </span>
+                        </button>
+                      </div>
 
                       {isActive ? (
                         <div className="grid gap-4 border-t border-current/10 p-3">
@@ -1703,6 +2097,21 @@ export function PagebuilderShell({
                     >
                       Refresh Styles
                     </button>
+                    <button
+                      className="radius-4 min-h-11 shrink-0 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent disabled:cursor-not-allowed disabled:opacity-60"
+                      disabled={isSavingOption}
+                      onClick={() => void saveActiveOption()}
+                      type="button"
+                    >
+                      {isSavingOption ? "Saving..." : "Save Option"}
+                    </button>
+                    <button
+                      className="radius-4 min-h-11 shrink-0 border border-service-border bg-white px-3 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                      onClick={openTemplateModal}
+                      type="button"
+                    >
+                      Promote Option to Template
+                    </button>
                   </div>
 
                   <div className="mt-3 flex flex-wrap gap-1.5">
@@ -1720,6 +2129,23 @@ export function PagebuilderShell({
                       </span>
                     ))}
                   </div>
+                  {templateStatus ? (
+                    <p className="type-caption mt-3 rounded-sm border border-service-border bg-service-surface px-3 py-2 text-service-muted">
+                      {templateStatus}
+                    </p>
+                  ) : null}
+                  {optionSaveStatus || optionSaveError ? (
+                    <p
+                      className={cx(
+                        "type-caption mt-3 rounded-sm border px-3 py-2",
+                        optionSaveError
+                          ? "border-red-200 bg-red-50 text-red-700"
+                          : "border-service-border bg-service-surface text-service-muted",
+                      )}
+                    >
+                      {optionSaveError || optionSaveStatus}
+                    </p>
+                  ) : null}
                 </section>
 
                 <section
@@ -1846,14 +2272,67 @@ export function PagebuilderShell({
                     {activeStack.map((section, index) => (
                       <li
                         className={cx(
-                          "grid grid-cols-[2.5rem_minmax(0,1fr)_auto] gap-4 rounded border border-service-border bg-service-surface p-4 transition-shadow max-md:grid-cols-[2.5rem_minmax(0,1fr)]",
+                          "relative grid grid-cols-[2.5rem_minmax(0,1fr)_auto] gap-4 rounded border border-service-border bg-service-surface p-4 transition-shadow max-md:grid-cols-[2.5rem_minmax(0,1fr)]",
                           section.id === selectedSectionId &&
                             "shadow-[0_0_0_2px_var(--color-service-accent)]",
+                          section.id === draggedSectionId && "opacity-35",
+                          section.id === dragOverSectionId &&
+                            "border-service-accent",
                           !section.included && "opacity-50",
                         )}
+                        draggable
+                        onDragEnd={() => {
+                          setDraggedSectionId(null);
+                          setDragOverSectionId(null);
+                        }}
+                        onDragOver={(event) => {
+                          event.preventDefault();
+                          const bounds =
+                            event.currentTarget.getBoundingClientRect();
+                          const nextPosition =
+                            event.clientY < bounds.top + bounds.height / 2
+                              ? "before"
+                              : "after";
+
+                          setDragOverSectionId(section.id);
+                          setDragDropPosition(nextPosition);
+                        }}
+                        onDragStart={(event) => {
+                          event.dataTransfer.effectAllowed = "move";
+                          event.dataTransfer.setData(
+                            "text/plain",
+                            section.id,
+                          );
+                          setDraggedSectionId(section.id);
+                        }}
+                        onDrop={(event) => {
+                          event.preventDefault();
+                          const droppedSectionId =
+                            event.dataTransfer.getData("text/plain") ||
+                            draggedSectionId;
+
+                          if (droppedSectionId) {
+                            reorderSection(
+                              droppedSectionId,
+                              section.id,
+                              dragDropPosition,
+                            );
+                          }
+                        }}
                         key={section.id}
                       >
-                        <span className="flex size-10 items-center justify-center rounded bg-white text-sm font-semibold text-service-accent">
+                        {section.id === dragOverSectionId ? (
+                          <span
+                            aria-hidden="true"
+                            className={cx(
+                              "absolute left-3 right-3 h-0.5 rounded-full bg-service-accent",
+                              dragDropPosition === "before"
+                                ? "top-0"
+                                : "bottom-0",
+                            )}
+                          />
+                        ) : null}
+                        <span className="flex size-10 cursor-grab items-center justify-center rounded bg-white text-sm font-semibold text-service-accent active:cursor-grabbing">
                           {index + 1}
                         </span>
                         <div className="min-w-0">
@@ -2042,6 +2521,106 @@ export function PagebuilderShell({
           </div>
         </div>
       </div>
+      {isTemplateModalOpen ? (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-service-ink/40 px-4 py-8"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              closeTemplateModal();
+            }
+          }}
+        >
+          <div
+            aria-labelledby="pagebuilder-template-promotion-title"
+            aria-modal="true"
+            className="w-full max-w-lg rounded-md border border-service-border bg-white p-6 text-service-ink shadow-service"
+            role="dialog"
+          >
+            <p className="type-label text-service-accent">
+              Promote option to template
+            </p>
+            <h3
+              className="type-heading-sm mt-3 text-service-ink"
+              id="pagebuilder-template-promotion-title"
+            >
+              Save {activePageLabel} / {activeSlotLabel}
+            </h3>
+            <p className="type-text-sm mt-3 text-service-muted">
+              This saves the active option as a reusable page template with its
+              current included section order, swaps, variants, and layout
+              settings.
+            </p>
+            <label className="type-caption mt-6 block font-semibold text-service-ink">
+              Template name
+              <input
+                className="mt-2 block min-h-11 w-full rounded-sm border border-service-border px-3 text-sm font-normal text-service-ink outline-none focus:border-service-accent"
+                value={templateName}
+                onChange={(event) => {
+                  const nextName = event.target.value;
+                  setTemplateName(nextName);
+                  setTemplateSlug(slugifyTemplateName(nextName));
+                }}
+              />
+            </label>
+            <label className="type-caption mt-4 block font-semibold text-service-ink">
+              Template slug
+              <input
+                className="mt-2 block min-h-11 w-full rounded-sm border border-service-border px-3 text-sm font-normal text-service-ink outline-none focus:border-service-accent"
+                value={templateSlug}
+                onChange={(event) =>
+                  setTemplateSlug(slugifyTemplateName(event.target.value))
+                }
+              />
+            </label>
+            <label className="type-caption mt-4 block font-semibold text-service-ink">
+              Notes
+              <textarea
+                className="mt-2 block min-h-24 w-full resize-y rounded-sm border border-service-border px-3 py-2 text-sm font-normal text-service-ink outline-none focus:border-service-accent"
+                placeholder="Best use case, business type, or page intent."
+                value={templateNotes}
+                onChange={(event) => setTemplateNotes(event.target.value)}
+              />
+            </label>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
+                {includedSections.length} sections
+              </span>
+              <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
+                {activeRecipe.name}
+              </span>
+              <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
+                {activeSlotLabel}
+              </span>
+            </div>
+            {templateError ? (
+              <p className="type-caption mt-4 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-red-700">
+                {templateError}
+              </p>
+            ) : null}
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                className="inline-flex min-h-10 items-center justify-center rounded-sm border border-service-border px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={isPromotingTemplate}
+                onClick={closeTemplateModal}
+                type="button"
+              >
+                Cancel
+              </button>
+              <button
+                className="inline-flex min-h-10 items-center justify-center rounded-sm bg-service-accent px-4 text-sm font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={isPromotingTemplate}
+                onClick={() => void promoteActiveOptionToTemplate()}
+                type="button"
+              >
+                {isPromotingTemplate
+                  ? "Promoting..."
+                  : "Promote Option to Template"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
       {isPreviewOpen && (
         <div
           aria-modal="true"

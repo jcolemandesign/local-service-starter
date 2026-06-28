@@ -1,0 +1,79 @@
+{
+  "options": [
+    {
+      "designStyle": {
+        "showSectionMarkers": false,
+        "viewportId": "main"
+      },
+      "optionIndex": 0,
+      "optionName": "Option 1",
+      "recipeId": "classic-service",
+      "recipeName": "homepage",
+      "savedAt": "2026-06-28T19:04:05.728Z",
+      "sectionCount": 6,
+      "sections": [
+        {
+          "component": "NavPrimarySectionV2",
+          "id": "classic-service-slot-1-NavPrimarySectionV2-0",
+          "included": true,
+          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
+          "mode": "Navigation",
+          "name": "Primary navigation",
+          "originalComponent": "NavPrimarySectionV2",
+          "originalIndex": 0
+        },
+        {
+          "component": "HeroSplitFullHeightSectionV3",
+          "id": "classic-service-slot-1-HeroSplitFullHeightSectionV3-1",
+          "included": true,
+          "instruction": "Use h1, one primary booking CTA, one services CTA, and three compact trust stats beside a full-bleed image column.",
+          "mode": "Hero",
+          "name": "Split content and full image",
+          "originalComponent": "HeroSplitFullHeightSectionV3",
+          "originalIndex": 1,
+          "variant": "text-3-image-4-right"
+        },
+        {
+          "component": "TrustBarSectionV3",
+          "id": "classic-service-slot-1-TrustBarSectionV3-2",
+          "included": true,
+          "instruction": "Validate the promise immediately with rating, volume, team, and local ownership claims.",
+          "mode": "Proof",
+          "name": "Trust bar",
+          "originalComponent": "TrustBarSectionV3",
+          "originalIndex": 2
+        },
+        {
+          "component": "ServicesThreeCardsRightSectionV3",
+          "id": "classic-service-slot-1-ServicesThreeCardsRightSectionV3-3",
+          "included": true,
+          "instruction": "Show three to six top-level services with consistent title and body length.",
+          "mode": "Scan",
+          "name": "Services grid",
+          "originalComponent": "ServicesThreeCardsRightSectionV3",
+          "originalIndex": 3
+        },
+        {
+          "component": "FAQSectionV3",
+          "id": "classic-service-slot-1-FAQSectionV3-4",
+          "included": true,
+          "instruction": "Answer estimates, timing, service area, and maintenance questions.",
+          "mode": "Decision",
+          "name": "FAQ",
+          "originalComponent": "FAQSectionV3",
+          "originalIndex": 4
+        },
+        {
+          "component": "ContactSectionV3",
+          "id": "classic-service-slot-1-ContactSectionV3-5",
+          "included": true,
+          "instruction": "Close with phone, email, hours, and a simple form or request path.",
+          "mode": "Utility",
+          "name": "Contact section",
+          "originalComponent": "ContactSectionV3",
+          "originalIndex": 5
+        }
+      ]
+    }
+  ]
+}

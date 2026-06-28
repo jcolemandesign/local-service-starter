@@ -16,6 +16,7 @@ import {
   CTAScrollRevealOfferSectionV3,
   FAQAccordionSectionV3,
   FAQSectionV3,
+  FeatureAsymmetricCardsSectionV3,
   FeatureOverlapRowsSectionV3,
   FeaturePortraitParagraphSectionV3,
   FooterSectionV3,
@@ -29,7 +30,6 @@ import {
   ProcessImageChecklistSectionV3,
   ProcessStepsSectionV3,
   ServicesBentoCardsSectionV2,
-  ServicesGridSectionV2,
   ServicesHoverPanelSectionV2,
   ServicesScrollCardsSectionV2,
   SectionLibraryV3Accordions,
@@ -41,6 +41,7 @@ import {
   TrustBarSectionV3,
   TrustLogoGridSection,
   TrustLogoGridSectionV3,
+  TrustLogoMarqueeSectionV3,
   TrustMarqueeSection,
   TrustMarqueeSectionV3,
 } from "@/components/sections";
@@ -167,13 +168,15 @@ const sectionElements = {
       {...sectionLibraryV3Content.featureOverlapRows}
     />
   ),
+  "feature-asymmetric-cards-v3": (
+    <FeatureAsymmetricCardsSectionV3
+      {...sectionLibraryV3Content.featureAsymmetricCards}
+    />
+  ),
   "services-three-cards-right-v3": (
     <ServicesThreeCardsRightSectionV3
       {...sectionLibraryV3Content.servicesThreeCardsRight}
     />
-  ),
-  "services-grid-v2": (
-    <ServicesGridSectionV2 {...sectionLibraryV3Content.services} />
   ),
   "services-bento-cards-v2": (
     <ServicesBentoCardsSectionV2 {...sectionLibraryV3Content.servicesBento} />
@@ -237,6 +240,11 @@ const sectionElements = {
   ),
   "trust-marquee-legacy": (
     <TrustMarqueeSection {...sectionLibraryV3Content.trustMarquee} />
+  ),
+  "trust-logo-marquee-v3": (
+    <TrustLogoMarqueeSectionV3
+      {...sectionLibraryV3Content.trustLogoMarquee}
+    />
   ),
   "trust-logo-grid-legacy": (
     <TrustLogoGridSection {...sectionLibraryV3Content.trustLogoMarquee} />

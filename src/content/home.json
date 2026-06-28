@@ -4,13 +4,23 @@
   "body": "Quick links for reviewing the reusable starter, section library, and development workspaces while the dev server is running.",
   "groups": [
     {
-      "title": "Design tools",
+      "title": "Libraries",
       "links": [
         {
           "label": "Section library",
           "href": "/sections",
           "description": "Browse the current reusable section collection."
         },
+        {
+          "label": "Template Library",
+          "href": "/dev/templates",
+          "description": "Browse reusable page layouts promoted from Pagebuilder options."
+        }
+      ]
+    },
+    {
+      "title": "Building Tools",
+      "links": [
         {
           "label": "Pagebuilder",
           "href": "/dev/pagebuilder",
@@ -25,16 +35,6 @@
           "label": "Style guide",
           "href": "/dev/style-guide",
           "description": "Review shared visual tokens and section defaults."
-        },
-        {
-          "label": "Type test",
-          "href": "/dev/type-test",
-          "description": "Review typography hierarchy, text measures, and wrapping behavior."
-        },
-        {
-          "label": "Style guide sample page",
-          "href": "/dev/style-guide/previews/hvac-service",
-          "description": "Review the live HVAC example page correlated with Style Guide tokens."
         }
       ]
     },
