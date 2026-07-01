@@ -1,3 +1,1177 @@
 {
-  "pages": []
+  "pages": [
+    {
+      "fields": [
+        {
+          "id": "homepage-option-1.01-primary-navigation.logoImageSrc",
+          "kind": "image",
+          "path": "01-primary-navigation.logoImageSrc",
+          "value": ""
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.logoLabel",
+          "kind": "copy",
+          "path": "01-primary-navigation.logoLabel",
+          "value": "Logo"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.logoHref",
+          "kind": "link",
+          "path": "01-primary-navigation.logoHref",
+          "value": "/"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.phone",
+          "kind": "copy",
+          "path": "01-primary-navigation.phone",
+          "value": "(555) 014-2250"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.phoneHref",
+          "kind": "link",
+          "path": "01-primary-navigation.phoneHref",
+          "value": "tel:5550142250"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.actionLabel",
+          "kind": "copy",
+          "path": "01-primary-navigation.actionLabel",
+          "value": "Schedule now"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.actionHref",
+          "kind": "link",
+          "path": "01-primary-navigation.actionHref",
+          "value": "#contact"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.1.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.1.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.1.label",
+          "kind": "link",
+          "path": "01-primary-navigation.links.1.label",
+          "value": "Services"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.1.items.1.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.1.items.1.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.1.items.1.label",
+          "kind": "link",
+          "path": "01-primary-navigation.links.1.items.1.label",
+          "value": "Service 1"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.1.items.2.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.1.items.2.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.1.items.2.label",
+          "kind": "link",
+          "path": "01-primary-navigation.links.1.items.2.label",
+          "value": "Service 2"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.1.items.3.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.1.items.3.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.1.items.3.label",
+          "kind": "link",
+          "path": "01-primary-navigation.links.1.items.3.label",
+          "value": "Service 3"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.1.items.4.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.1.items.4.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.1.items.4.label",
+          "kind": "link",
+          "path": "01-primary-navigation.links.1.items.4.label",
+          "value": "Service 4"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.2.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.2.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.2.label",
+          "kind": "link",
+          "path": "01-primary-navigation.links.2.label",
+          "value": "Service areas"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.2.items.1.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.2.items.1.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.2.items.1.label",
+          "kind": "link",
+          "path": "01-primary-navigation.links.2.items.1.label",
+          "value": "Service area 1"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.2.items.2.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.2.items.2.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.2.items.2.label",
+          "kind": "link",
+          "path": "01-primary-navigation.links.2.items.2.label",
+          "value": "Service area 2"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.2.items.3.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.2.items.3.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.2.items.3.label",
+          "kind": "link",
+          "path": "01-primary-navigation.links.2.items.3.label",
+          "value": "Service area 3"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.2.items.4.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.2.items.4.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.2.items.4.label",
+          "kind": "link",
+          "path": "01-primary-navigation.links.2.items.4.label",
+          "value": "Service area 4"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.3.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.3.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.3.label",
+          "kind": "link",
+          "path": "01-primary-navigation.links.3.label",
+          "value": "About"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.4.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.4.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.4.label",
+          "kind": "link",
+          "path": "01-primary-navigation.links.4.label",
+          "value": "Reviews"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.eyebrow",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.eyebrow",
+          "value": "Local service starter"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.title",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.title",
+          "value": "Reliable home services built around your skeedule"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.body",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.body",
+          "value": "A polished hero pattern for local service companies, with a clear value proposition, supporting proof, and two focused calls to action."
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.imageAlt",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.imageAlt",
+          "value": "FPO image placeholder"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.imageSrc",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.imageSrc",
+          "value": "/images/fpo-image.svg"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.primaryAction",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.primaryAction",
+          "value": "Request service"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.secondaryAction",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.secondaryAction",
+          "value": "View services"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.stats.1",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.stats.1",
+          "value": "Same-week visits"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.stats.2",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.stats.2",
+          "value": "Licensed pros"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.stats.3",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.stats.3",
+          "value": "Clear estimates"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.variants.1.label",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.variants.1.label",
+          "value": "Text 3 / Image 4"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.variants.1.variant",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.variants.1.variant",
+          "value": "text-3-image-4-right"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.variants.2.label",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.variants.2.label",
+          "value": "Text 4 / Image 3"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.variants.2.variant",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.variants.2.variant",
+          "value": "text-4-image-3-right"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.variants.3.label",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.variants.3.label",
+          "value": "Image 3 / Text 4"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.variants.3.variant",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.variants.3.variant",
+          "value": "image-3-left-text-4"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.variants.4.label",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.variants.4.label",
+          "value": "Image 4 / Text 3"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.variants.4.variant",
+          "kind": "image",
+          "path": "02-split-content-and-full-image.variants.4.variant",
+          "value": "image-4-left-text-3"
+        },
+        {
+          "id": "homepage-option-1.02-split-content-and-full-image.variant",
+          "kind": "copy",
+          "path": "02-split-content-and-full-image.variant",
+          "value": "text-3-image-4-right"
+        },
+        {
+          "id": "homepage-option-1.03-trust-marquee.label",
+          "kind": "copy",
+          "path": "03-trust-marquee.label",
+          "value": "Trusted by homeowners, property managers, and small businesses across the metro area"
+        },
+        {
+          "id": "homepage-option-1.03-trust-marquee.actionLabel",
+          "kind": "copy",
+          "path": "03-trust-marquee.actionLabel",
+          "value": "Request service"
+        },
+        {
+          "id": "homepage-option-1.03-trust-marquee.actionHref",
+          "kind": "link",
+          "path": "03-trust-marquee.actionHref",
+          "value": "/contact"
+        },
+        {
+          "id": "homepage-option-1.03-trust-marquee.items.1",
+          "kind": "copy",
+          "path": "03-trust-marquee.items.1",
+          "value": "4.9 average rating"
+        },
+        {
+          "id": "homepage-option-1.03-trust-marquee.items.2",
+          "kind": "copy",
+          "path": "03-trust-marquee.items.2",
+          "value": "2,400+ jobs completed"
+        },
+        {
+          "id": "homepage-option-1.03-trust-marquee.items.3",
+          "kind": "copy",
+          "path": "03-trust-marquee.items.3",
+          "value": "Background-checked team"
+        },
+        {
+          "id": "homepage-option-1.03-trust-marquee.items.4",
+          "kind": "copy",
+          "path": "03-trust-marquee.items.4",
+          "value": "Locally owned"
+        },
+        {
+          "id": "homepage-option-1.03-trust-marquee.items.5",
+          "kind": "copy",
+          "path": "03-trust-marquee.items.5",
+          "value": "Same-week appointments"
+        },
+        {
+          "id": "homepage-option-1.03-trust-marquee.items.6",
+          "kind": "copy",
+          "path": "03-trust-marquee.items.6",
+          "value": "Licensed and insured"
+        },
+        {
+          "id": "homepage-option-1.03-trust-marquee.items.7",
+          "kind": "copy",
+          "path": "03-trust-marquee.items.7",
+          "value": "Upfront estimates"
+        },
+        {
+          "id": "homepage-option-1.03-trust-marquee.items.8",
+          "kind": "copy",
+          "path": "03-trust-marquee.items.8",
+          "value": "Photo-backed recommendations"
+        },
+        {
+          "id": "homepage-option-1.03-trust-marquee.items.9",
+          "kind": "copy",
+          "path": "03-trust-marquee.items.9",
+          "value": "Clean job sites"
+        },
+        {
+          "id": "homepage-option-1.03-trust-marquee.items.10",
+          "kind": "copy",
+          "path": "03-trust-marquee.items.10",
+          "value": "Friendly follow-up"
+        },
+        {
+          "id": "homepage-option-1.03-trust-marquee.items.11",
+          "kind": "copy",
+          "path": "03-trust-marquee.items.11",
+          "value": "Maintenance plans"
+        },
+        {
+          "id": "homepage-option-1.03-trust-marquee.items.12",
+          "kind": "copy",
+          "path": "03-trust-marquee.items.12",
+          "value": "Emergency availability"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.eyebrow",
+          "kind": "copy",
+          "path": "04-services-bento-cards.eyebrow",
+          "value": "Services"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.title",
+          "kind": "copy",
+          "path": "04-services-bento-cards.title",
+          "value": "Focused service paths for the work customers need most."
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.body",
+          "kind": "copy",
+          "path": "04-services-bento-cards.body",
+          "value": "A larger image-led service card pattern for showing primary offers with more visual weight."
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.1.title",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.1.title",
+          "value": "Emergency repairs"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.1.body",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.1.body",
+          "value": "Fast help for urgent issues that need an experienced technician and a clear path to resolution."
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.1.imageLabel",
+          "kind": "image",
+          "path": "04-services-bento-cards.items.1.imageLabel",
+          "value": "Repair"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.2.title",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.2.title",
+          "value": "Preventive maintenance"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.2.body",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.2.body",
+          "value": "Seasonal tune-ups, inspection notes, and practical recommendations that reduce surprises."
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.2.imageLabel",
+          "kind": "image",
+          "path": "04-services-bento-cards.items.2.imageLabel",
+          "value": "Care"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.3.title",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.3.title",
+          "value": "Installation"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.3.body",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.3.body",
+          "value": "Clean, documented installs for new systems, fixtures, and upgrades with tidy closeout."
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.3.imageLabel",
+          "kind": "image",
+          "path": "04-services-bento-cards.items.3.imageLabel",
+          "value": "Install"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.4.title",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.4.title",
+          "value": "Inspections"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.4.body",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.4.body",
+          "value": "Detailed checks with photo-backed notes, priority guidance, and simple recommendations customers can understand."
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.4.imageLabel",
+          "kind": "image",
+          "path": "04-services-bento-cards.items.4.imageLabel",
+          "value": "Inspect"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.5.title",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.5.title",
+          "value": "Commercial service"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.5.body",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.5.body",
+          "value": "Responsive support for offices, shops, and small facilities that need reliable communication."
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.5.imageLabel",
+          "kind": "image",
+          "path": "04-services-bento-cards.items.5.imageLabel",
+          "value": "Biz"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.6.title",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.6.title",
+          "value": "Consultations"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.6.body",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.6.body",
+          "value": "Helpful planning for customers comparing options, budgets, timelines, and future service needs."
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.6.imageLabel",
+          "kind": "image",
+          "path": "04-services-bento-cards.items.6.imageLabel",
+          "value": "Plan"
+        },
+        {
+          "id": "homepage-option-1.05-asymmetric-feature-cards.eyebrow",
+          "kind": "copy",
+          "path": "05-asymmetric-feature-cards.eyebrow",
+          "value": "Why choose us"
+        },
+        {
+          "id": "homepage-option-1.05-asymmetric-feature-cards.title",
+          "kind": "copy",
+          "path": "05-asymmetric-feature-cards.title",
+          "value": "Straightforward service without the runaround."
+        },
+        {
+          "id": "homepage-option-1.05-asymmetric-feature-cards.body",
+          "kind": "copy",
+          "path": "05-asymmetric-feature-cards.body",
+          "value": "Use this asymmetrical feature section to pair a three-column intro with four compact proof points."
+        },
+        {
+          "id": "homepage-option-1.05-asymmetric-feature-cards.actionLabel",
+          "kind": "copy",
+          "path": "05-asymmetric-feature-cards.actionLabel",
+          "value": "About the team"
+        },
+        {
+          "id": "homepage-option-1.05-asymmetric-feature-cards.cards.1.iconLabel",
+          "kind": "copy",
+          "path": "05-asymmetric-feature-cards.cards.1.iconLabel",
+          "value": "01"
+        },
+        {
+          "id": "homepage-option-1.05-asymmetric-feature-cards.cards.1.title",
+          "kind": "copy",
+          "path": "05-asymmetric-feature-cards.cards.1.title",
+          "value": "Clear Recommendations"
+        },
+        {
+          "id": "homepage-option-1.05-asymmetric-feature-cards.cards.1.body",
+          "kind": "copy",
+          "path": "05-asymmetric-feature-cards.cards.1.body",
+          "value": "Repair, maintenance, and replacement guidance based on the home, budget, and timing."
+        },
+        {
+          "id": "homepage-option-1.05-asymmetric-feature-cards.cards.2.iconLabel",
+          "kind": "copy",
+          "path": "05-asymmetric-feature-cards.cards.2.iconLabel",
+          "value": "02"
+        },
+        {
+          "id": "homepage-option-1.05-asymmetric-feature-cards.cards.2.title",
+          "kind": "copy",
+          "path": "05-asymmetric-feature-cards.cards.2.title",
+          "value": "Repair-First Approach"
+        },
+        {
+          "id": "homepage-option-1.05-asymmetric-feature-cards.cards.2.body",
+          "kind": "copy",
+          "path": "05-asymmetric-feature-cards.cards.2.body",
+          "value": "Explain what is happening, what can wait, and what needs attention now."
+        },
+        {
+          "id": "homepage-option-1.05-asymmetric-feature-cards.cards.3.iconLabel",
+          "kind": "copy",
+          "path": "05-asymmetric-feature-cards.cards.3.iconLabel",
+          "value": "03"
+        },
+        {
+          "id": "homepage-option-1.05-asymmetric-feature-cards.cards.3.title",
+          "kind": "copy",
+          "path": "05-asymmetric-feature-cards.cards.3.title",
+          "value": "Fast Response"
+        },
+        {
+          "id": "homepage-option-1.05-asymmetric-feature-cards.cards.3.body",
+          "kind": "copy",
+          "path": "05-asymmetric-feature-cards.cards.3.body",
+          "value": "Keep scheduling practical with clear next steps and responsive appointment windows."
+        },
+        {
+          "id": "homepage-option-1.05-asymmetric-feature-cards.cards.4.iconLabel",
+          "kind": "copy",
+          "path": "05-asymmetric-feature-cards.cards.4.iconLabel",
+          "value": "04"
+        },
+        {
+          "id": "homepage-option-1.05-asymmetric-feature-cards.cards.4.title",
+          "kind": "copy",
+          "path": "05-asymmetric-feature-cards.cards.4.title",
+          "value": "Local Team"
+        },
+        {
+          "id": "homepage-option-1.05-asymmetric-feature-cards.cards.4.body",
+          "kind": "copy",
+          "path": "05-asymmetric-feature-cards.cards.4.body",
+          "value": "Ground the experience in nearby service areas, familiar homes, and steady follow-through."
+        },
+        {
+          "id": "homepage-option-1.06-customer-stories.eyebrow",
+          "kind": "copy",
+          "path": "06-customer-stories.eyebrow",
+          "value": "Customer stories"
+        },
+        {
+          "id": "homepage-option-1.06-customer-stories.title",
+          "kind": "copy",
+          "path": "06-customer-stories.title",
+          "value": "Longer proof for high-trust service pages."
+        },
+        {
+          "id": "homepage-option-1.06-customer-stories.body",
+          "kind": "copy",
+          "path": "06-customer-stories.body",
+          "value": "A centered testimonial carousel for pages that need a stronger customer story after the introductory copy."
+        },
+        {
+          "id": "homepage-option-1.06-customer-stories.items.1.quote",
+          "kind": "copy",
+          "path": "06-customer-stories.items.1.quote",
+          "value": "From the first call to the final walkthrough, the team made a stressful repair feel completely manageable. They explained the issue clearly, showed me the options, and left the house cleaner than they found it."
+        },
+        {
+          "id": "homepage-option-1.06-customer-stories.items.1.author",
+          "kind": "copy",
+          "path": "06-customer-stories.items.1.author",
+          "value": "Amanda Reeves"
+        },
+        {
+          "id": "homepage-option-1.06-customer-stories.items.1.city",
+          "kind": "copy",
+          "path": "06-customer-stories.items.1.city",
+          "value": "Franklin"
+        },
+        {
+          "id": "homepage-option-1.06-customer-stories.items.1.service",
+          "kind": "copy",
+          "path": "06-customer-stories.items.1.service",
+          "value": "Emergency repair"
+        },
+        {
+          "id": "homepage-option-1.06-customer-stories.items.2.quote",
+          "kind": "copy",
+          "path": "06-customer-stories.items.2.quote",
+          "value": "We had put off replacing our old system because every estimate felt confusing. This team gave us a straightforward plan, arrived exactly when they said they would, and finished the installation without disrupting our workday."
+        },
+        {
+          "id": "homepage-option-1.06-customer-stories.items.2.author",
+          "kind": "copy",
+          "path": "06-customer-stories.items.2.author",
+          "value": "Marcus Bennett"
+        },
+        {
+          "id": "homepage-option-1.06-customer-stories.items.2.city",
+          "kind": "copy",
+          "path": "06-customer-stories.items.2.city",
+          "value": "Brentwood"
+        },
+        {
+          "id": "homepage-option-1.06-customer-stories.items.2.service",
+          "kind": "copy",
+          "path": "06-customer-stories.items.2.service",
+          "value": "System installation"
+        },
+        {
+          "id": "homepage-option-1.06-customer-stories.items.3.quote",
+          "kind": "copy",
+          "path": "06-customer-stories.items.3.quote",
+          "value": "The maintenance visit caught two small problems before they became expensive ones. I appreciated how practical the recommendations were, and I never felt pushed into work we did not actually need."
+        },
+        {
+          "id": "homepage-option-1.06-customer-stories.items.3.author",
+          "kind": "copy",
+          "path": "06-customer-stories.items.3.author",
+          "value": "Elena Walsh"
+        },
+        {
+          "id": "homepage-option-1.06-customer-stories.items.3.city",
+          "kind": "copy",
+          "path": "06-customer-stories.items.3.city",
+          "value": "Nashville"
+        },
+        {
+          "id": "homepage-option-1.06-customer-stories.items.3.service",
+          "kind": "copy",
+          "path": "06-customer-stories.items.3.service",
+          "value": "Preventive maintenance"
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.eyebrow",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.eyebrow",
+          "value": "Service areas"
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.title",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.title",
+          "value": "Serving Huntersville and nearby North Charlotte communities."
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.body",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.body",
+          "value": "Give visitors a quick way to confirm coverage before they start a service request."
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.prompt",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.prompt",
+          "value": "Not sure if we service your area?"
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.inputLabel",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.inputLabel",
+          "value": "ZIP code lookup"
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.inputPlaceholder",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.inputPlaceholder",
+          "value": "Enter ZIP code"
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.submitLabel",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.submitLabel",
+          "value": "Check"
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.successTitle",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.successTitle",
+          "value": "We service your area."
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.successBody",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.successBody",
+          "value": "Send the request and the team will confirm timing."
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.successActionLabel",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.successActionLabel",
+          "value": "Request service"
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.successActionHref",
+          "kind": "link",
+          "path": "07-service-area-zip-lookup.successActionHref",
+          "value": "/contact"
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.mapLabel",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.mapLabel",
+          "value": "Local coverage map"
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.columns.1.1",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.columns.1.1",
+          "value": "Huntersville"
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.columns.1.2",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.columns.1.2",
+          "value": "Cornelius"
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.columns.1.3",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.columns.1.3",
+          "value": "Davidson"
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.columns.2.1",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.columns.2.1",
+          "value": "Concord"
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.columns.2.2",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.columns.2.2",
+          "value": "North Charlotte"
+        },
+        {
+          "id": "homepage-option-1.07-service-area-zip-lookup.columns.2.3",
+          "kind": "copy",
+          "path": "07-service-area-zip-lookup.columns.2.3",
+          "value": "Lake Norman Area"
+        },
+        {
+          "id": "homepage-option-1.08-headline-with-scrolling-banner.label",
+          "kind": "copy",
+          "path": "08-headline-with-scrolling-banner.label",
+          "value": "Trusted by homeowners, property managers, and small businesses across the metro area"
+        },
+        {
+          "id": "homepage-option-1.08-headline-with-scrolling-banner.actionLabel",
+          "kind": "copy",
+          "path": "08-headline-with-scrolling-banner.actionLabel",
+          "value": "Request service"
+        },
+        {
+          "id": "homepage-option-1.08-headline-with-scrolling-banner.actionHref",
+          "kind": "link",
+          "path": "08-headline-with-scrolling-banner.actionHref",
+          "value": "/contact"
+        },
+        {
+          "id": "homepage-option-1.08-headline-with-scrolling-banner.items.1",
+          "kind": "copy",
+          "path": "08-headline-with-scrolling-banner.items.1",
+          "value": "4.9 average rating"
+        },
+        {
+          "id": "homepage-option-1.08-headline-with-scrolling-banner.items.2",
+          "kind": "copy",
+          "path": "08-headline-with-scrolling-banner.items.2",
+          "value": "2,400+ jobs completed"
+        },
+        {
+          "id": "homepage-option-1.08-headline-with-scrolling-banner.items.3",
+          "kind": "copy",
+          "path": "08-headline-with-scrolling-banner.items.3",
+          "value": "Background-checked team"
+        },
+        {
+          "id": "homepage-option-1.08-headline-with-scrolling-banner.items.4",
+          "kind": "copy",
+          "path": "08-headline-with-scrolling-banner.items.4",
+          "value": "Locally owned"
+        },
+        {
+          "id": "homepage-option-1.08-headline-with-scrolling-banner.items.5",
+          "kind": "copy",
+          "path": "08-headline-with-scrolling-banner.items.5",
+          "value": "Same-week appointments"
+        },
+        {
+          "id": "homepage-option-1.08-headline-with-scrolling-banner.items.6",
+          "kind": "copy",
+          "path": "08-headline-with-scrolling-banner.items.6",
+          "value": "Licensed and insured"
+        },
+        {
+          "id": "homepage-option-1.08-headline-with-scrolling-banner.items.7",
+          "kind": "copy",
+          "path": "08-headline-with-scrolling-banner.items.7",
+          "value": "Upfront estimates"
+        },
+        {
+          "id": "homepage-option-1.08-headline-with-scrolling-banner.items.8",
+          "kind": "copy",
+          "path": "08-headline-with-scrolling-banner.items.8",
+          "value": "Photo-backed recommendations"
+        },
+        {
+          "id": "homepage-option-1.08-headline-with-scrolling-banner.items.9",
+          "kind": "copy",
+          "path": "08-headline-with-scrolling-banner.items.9",
+          "value": "Clean job sites"
+        },
+        {
+          "id": "homepage-option-1.08-headline-with-scrolling-banner.items.10",
+          "kind": "copy",
+          "path": "08-headline-with-scrolling-banner.items.10",
+          "value": "Friendly follow-up"
+        },
+        {
+          "id": "homepage-option-1.08-headline-with-scrolling-banner.items.11",
+          "kind": "copy",
+          "path": "08-headline-with-scrolling-banner.items.11",
+          "value": "Maintenance plans"
+        },
+        {
+          "id": "homepage-option-1.08-headline-with-scrolling-banner.items.12",
+          "kind": "copy",
+          "path": "08-headline-with-scrolling-banner.items.12",
+          "value": "Emergency availability"
+        },
+        {
+          "id": "homepage-option-1.09-footer.businessName",
+          "kind": "copy",
+          "path": "09-footer.businessName",
+          "value": "Example Local Service"
+        },
+        {
+          "id": "homepage-option-1.09-footer.description",
+          "kind": "copy",
+          "path": "09-footer.description",
+          "value": "Reusable footer structure for local service starters, with clear navigation, service coverage, and contact details in one calm close."
+        },
+        {
+          "id": "homepage-option-1.09-footer.quickLinks.1.label",
+          "kind": "link",
+          "path": "09-footer.quickLinks.1.label",
+          "value": "Home"
+        },
+        {
+          "id": "homepage-option-1.09-footer.quickLinks.1.href",
+          "kind": "link",
+          "path": "09-footer.quickLinks.1.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.09-footer.quickLinks.2.label",
+          "kind": "link",
+          "path": "09-footer.quickLinks.2.label",
+          "value": "About us"
+        },
+        {
+          "id": "homepage-option-1.09-footer.quickLinks.2.href",
+          "kind": "link",
+          "path": "09-footer.quickLinks.2.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.09-footer.quickLinks.3.label",
+          "kind": "link",
+          "path": "09-footer.quickLinks.3.label",
+          "value": "Services"
+        },
+        {
+          "id": "homepage-option-1.09-footer.quickLinks.3.href",
+          "kind": "link",
+          "path": "09-footer.quickLinks.3.href",
+          "value": "#services"
+        },
+        {
+          "id": "homepage-option-1.09-footer.quickLinks.4.label",
+          "kind": "link",
+          "path": "09-footer.quickLinks.4.label",
+          "value": "Contact us"
+        },
+        {
+          "id": "homepage-option-1.09-footer.quickLinks.4.href",
+          "kind": "link",
+          "path": "09-footer.quickLinks.4.href",
+          "value": "#contact"
+        },
+        {
+          "id": "homepage-option-1.09-footer.services.1.label",
+          "kind": "copy",
+          "path": "09-footer.services.1.label",
+          "value": "Emergency repairs"
+        },
+        {
+          "id": "homepage-option-1.09-footer.services.1.href",
+          "kind": "link",
+          "path": "09-footer.services.1.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.09-footer.services.2.label",
+          "kind": "copy",
+          "path": "09-footer.services.2.label",
+          "value": "Preventive maintenance"
+        },
+        {
+          "id": "homepage-option-1.09-footer.services.2.href",
+          "kind": "link",
+          "path": "09-footer.services.2.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.09-footer.services.3.label",
+          "kind": "copy",
+          "path": "09-footer.services.3.label",
+          "value": "Installation"
+        },
+        {
+          "id": "homepage-option-1.09-footer.services.3.href",
+          "kind": "link",
+          "path": "09-footer.services.3.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.09-footer.services.4.label",
+          "kind": "copy",
+          "path": "09-footer.services.4.label",
+          "value": "Inspections"
+        },
+        {
+          "id": "homepage-option-1.09-footer.services.4.href",
+          "kind": "link",
+          "path": "09-footer.services.4.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.09-footer.serviceAreas.1.label",
+          "kind": "copy",
+          "path": "09-footer.serviceAreas.1.label",
+          "value": "Nashville"
+        },
+        {
+          "id": "homepage-option-1.09-footer.serviceAreas.1.href",
+          "kind": "link",
+          "path": "09-footer.serviceAreas.1.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.09-footer.serviceAreas.2.label",
+          "kind": "copy",
+          "path": "09-footer.serviceAreas.2.label",
+          "value": "Franklin"
+        },
+        {
+          "id": "homepage-option-1.09-footer.serviceAreas.2.href",
+          "kind": "link",
+          "path": "09-footer.serviceAreas.2.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.09-footer.serviceAreas.3.label",
+          "kind": "copy",
+          "path": "09-footer.serviceAreas.3.label",
+          "value": "Brentwood"
+        },
+        {
+          "id": "homepage-option-1.09-footer.serviceAreas.3.href",
+          "kind": "link",
+          "path": "09-footer.serviceAreas.3.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.09-footer.serviceAreas.4.label",
+          "kind": "copy",
+          "path": "09-footer.serviceAreas.4.label",
+          "value": "Murfreesboro"
+        },
+        {
+          "id": "homepage-option-1.09-footer.serviceAreas.4.href",
+          "kind": "link",
+          "path": "09-footer.serviceAreas.4.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.09-footer.contact.name",
+          "kind": "copy",
+          "path": "09-footer.contact.name",
+          "value": "Example Local Service"
+        },
+        {
+          "id": "homepage-option-1.09-footer.contact.address",
+          "kind": "copy",
+          "path": "09-footer.contact.address",
+          "value": "123 Main Street, Nashville, TN 37201"
+        },
+        {
+          "id": "homepage-option-1.09-footer.contact.phone",
+          "kind": "copy",
+          "path": "09-footer.contact.phone",
+          "value": "(555) 014-2250"
+        },
+        {
+          "id": "homepage-option-1.09-footer.contact.email",
+          "kind": "copy",
+          "path": "09-footer.contact.email",
+          "value": "hello@examplelocal.com"
+        },
+        {
+          "id": "homepage-option-1.09-footer.socialLinks.1.label",
+          "kind": "link",
+          "path": "09-footer.socialLinks.1.label",
+          "value": "Facebook"
+        },
+        {
+          "id": "homepage-option-1.09-footer.socialLinks.1.href",
+          "kind": "link",
+          "path": "09-footer.socialLinks.1.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.09-footer.socialLinks.2.label",
+          "kind": "link",
+          "path": "09-footer.socialLinks.2.label",
+          "value": "Instagram"
+        },
+        {
+          "id": "homepage-option-1.09-footer.socialLinks.2.href",
+          "kind": "link",
+          "path": "09-footer.socialLinks.2.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.09-footer.socialLinks.3.label",
+          "kind": "link",
+          "path": "09-footer.socialLinks.3.label",
+          "value": "LinkedIn"
+        },
+        {
+          "id": "homepage-option-1.09-footer.socialLinks.3.href",
+          "kind": "link",
+          "path": "09-footer.socialLinks.3.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.09-footer.reviewLink.label",
+          "kind": "link",
+          "path": "09-footer.reviewLink.label",
+          "value": "Read our Google reviews"
+        },
+        {
+          "id": "homepage-option-1.09-footer.reviewLink.href",
+          "kind": "link",
+          "path": "09-footer.reviewLink.href",
+          "value": "#"
+        },
+        {
+          "id": "homepage-option-1.09-footer.copyright",
+          "kind": "copy",
+          "path": "09-footer.copyright",
+          "value": "(c) 2026 Example Local Service. All rights reserved."
+        },
+        {
+          "id": "homepage-option-1.09-footer.privacyLink.label",
+          "kind": "link",
+          "path": "09-footer.privacyLink.label",
+          "value": "Privacy Policy"
+        },
+        {
+          "id": "homepage-option-1.09-footer.privacyLink.href",
+          "kind": "link",
+          "path": "09-footer.privacyLink.href",
+          "value": "/privacy-policy"
+        },
+        {
+          "id": "homepage-option-1.09-footer.termsLink.label",
+          "kind": "link",
+          "path": "09-footer.termsLink.label",
+          "value": "Terms"
+        },
+        {
+          "id": "homepage-option-1.09-footer.termsLink.href",
+          "kind": "link",
+          "path": "09-footer.termsLink.href",
+          "value": "/terms"
+        }
+      ],
+      "fieldCounts": {
+        "copy": 110,
+        "image": 25,
+        "link": 58
+      },
+      "pageHref": "/homepage-option-1",
+      "pageId": "homepage-option-1",
+      "pageLabel": "homepage - Option 1",
+      "promotedAt": "2026-06-30T01:59:49.517Z",
+      "sourceStage": "content-editor",
+      "status": "staged"
+    }
+  ]
 }

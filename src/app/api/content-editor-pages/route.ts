@@ -1,6 +1,10 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import type { ContentEditorPage } from "@/content/content-editor";
+import type {
+  ContentEditorField,
+  ContentEditorPage,
+} from "@/content/content-editor";
+import { sectionLibraryV3Content } from "../../../content/section-library-v3";
 
 export const runtime = "nodejs";
 
@@ -39,6 +43,9 @@ type PageTemplatesFile = {
 type ContentEditorPagesFile = {
   pages?: ContentEditorPage[];
 };
+
+type ContentFieldKind = "copy" | "image" | "link" | "meta";
+type ContentSourceValue = unknown;
 
 type CreateContentEditorPageRequest = {
   pageLabel: string;
@@ -191,80 +198,281 @@ function buildContentEditorSection({
     section.name || section.component,
   )}`;
   const baseId = `${pageId}.${sectionId}`;
-  const fields = [
-    contentField({
-      id: `${baseId}.sectionName`,
-      label: "Section name",
-      path: `${sectionId}.sectionName`,
-      value: section.name,
-    }),
-    contentField({
-      id: `${baseId}.component`,
-      label: "Component",
-      path: `${sectionId}.component`,
-      value: section.component,
-    }),
-    contentField({
-      id: `${baseId}.mode`,
-      label: "Mode",
-      path: `${sectionId}.mode`,
-      value: section.mode,
-    }),
-    contentField({
-      id: `${baseId}.instruction`,
-      label: "Section instruction",
-      path: `${sectionId}.instruction`,
-      value: section.instruction,
-    }),
-    contentField({
-      id: `${baseId}.copyDirection`,
-      label: "Copy direction",
-      path: `${sectionId}.copyDirection`,
-      value: "",
-    }),
-    contentField({
-      id: `${baseId}.imageNotes`,
-      kind: "image",
-      label: "Image notes",
-      path: `${sectionId}.imageNotes`,
-      value: "",
-    }),
-    contentField({
-      id: `${baseId}.ctaNotes`,
-      kind: "link",
-      label: "CTA / link notes",
-      path: `${sectionId}.ctaNotes`,
-      value: "",
-    }),
-  ];
-
-  if (section.variant) {
-    fields.push(
-      contentField({
-        id: `${baseId}.variant`,
-        label: "Variant",
-        path: `${sectionId}.variant`,
-        value: section.variant,
-      }),
-    );
-  }
-
-  if (section.ratio) {
-    fields.push(
-      contentField({
-        id: `${baseId}.ratio`,
-        label: "Ratio",
-        path: `${sectionId}.ratio`,
-        value: section.ratio,
-      }),
-    );
-  }
+  const sectionContent = getSectionContent(section.component);
+  const fields = sectionContent
+    ? extractContentFields({
+        baseId,
+        pathParts: [sectionId],
+        sectionContent,
+      })
+    : [];
 
   return {
-    fields,
+    fields:
+      fields.length > 0
+        ? fields
+        : [
+            contentField({
+              id: `${baseId}.contentDirection`,
+              label: "Content direction",
+              path: `${sectionId}.contentDirection`,
+              value: section.instruction,
+            }),
+          ],
     id: sectionId,
     label: section.name,
   };
+}
+
+function getSectionContent(component: string): ContentSourceValue | null {
+  const contentByComponent: Record<string, ContentSourceValue> = {
+    ContactSectionV2: sectionLibraryV3Content.contact,
+    ContactSectionV3: sectionLibraryV3Content.contact,
+    ContentAboutCompanySectionV2: sectionLibraryV3Content.contentAboutCompany,
+    ContentFixedCoverFadeSectionV2: sectionLibraryV3Content.contentFixedCoverFade,
+    ContentHorizontalCardCarouselSectionV2:
+      sectionLibraryV3Content.contentHorizontalCardCarousel,
+    ContentRevealParagraphSectionV2: sectionLibraryV3Content.contentRevealParagraph,
+    ContentRuleHeaderSectionV2: sectionLibraryV3Content.contentRuleHeader,
+    ContentScrollWrittenRevealSectionV2:
+      sectionLibraryV3Content.contentScrollWrittenReveal,
+    ContentSplitFixedImageSectionV3: sectionLibraryV3Content.heroSplitFullHeight,
+    ContentSplitHeadlineImageSectionV2:
+      sectionLibraryV3Content.contentSplitHeadlineImage,
+    ContentStickyCardStreamSectionV2:
+      sectionLibraryV3Content.contentStickyCardStream,
+    ContentStickyIdeasSectionV2: sectionLibraryV3Content.contentStickyIdeas,
+    CTAFullscreenSectionV3: sectionLibraryV3Content.ctaFullscreen,
+    CTASectionV3: sectionLibraryV3Content.cta,
+    CTAScrollRevealOfferSectionV3: sectionLibraryV3Content.ctaScrollRevealOffer,
+    FAQAccordionSectionV3: sectionLibraryV3Content.faqAccordion,
+    FAQSectionV3: sectionLibraryV3Content.faq,
+    FeatureAsymmetricCardsSectionV3:
+      sectionLibraryV3Content.featureAsymmetricCards,
+    FeatureOverlapRowsSectionV3: sectionLibraryV3Content.featureOverlapRows,
+    FeaturePortraitParagraphSectionV3:
+      sectionLibraryV3Content.featurePortraitParagraph,
+    FooterSectionV3: sectionLibraryV3Content.footer,
+    HeroCenteredFloatersSectionV2: sectionLibraryV3Content.hero,
+    HeroContentTopImageBottomSectionV2: sectionLibraryV3Content.hero,
+    HeroFullscreenSectionV2: sectionLibraryV3Content.heroFullscreen,
+    HeroGridMosaicSectionV2: sectionLibraryV3Content.heroGridMosaic,
+    HeroSplitFixedImageSectionV3: sectionLibraryV3Content.heroSplitFullHeight,
+    HeroSplitFullHeightSectionV3: sectionLibraryV3Content.heroSplitFullHeight,
+    NavCenterLogoSectionV2: getNavigationContent(),
+    NavFloatingBentoSectionV2: getNavigationContent(),
+    NavPrimarySectionV2: getNavigationContent(),
+    ProcessImageChecklistSectionV3: sectionLibraryV3Content.processImageChecklist,
+    ProcessStepsSectionV3: sectionLibraryV3Content.process,
+    ServiceAreaZipLookupSectionV3: sectionLibraryV3Content.serviceAreaZipLookup,
+    ServicesBentoCardsSectionV2: sectionLibraryV3Content.servicesBento,
+    ServicesHoverPanelSectionV2: sectionLibraryV3Content.servicesHoverPanel,
+    ServicesScrollCardsSectionV2: sectionLibraryV3Content.servicesScrollCards,
+    ServicesThreeCardsRightSectionV3:
+      sectionLibraryV3Content.servicesThreeCardsRight,
+    TestimonialsCarouselSectionV3: sectionLibraryV3Content.testimonialsCarousel,
+    TestimonialsMasonrySectionV3: sectionLibraryV3Content.testimonialsMasonry,
+    TestimonialsSectionV3: sectionLibraryV3Content.testimonials,
+    TrustBarFloatingBentoSectionV3: sectionLibraryV3Content.trustBar,
+    TrustBarSectionV3: sectionLibraryV3Content.trustBar,
+    TrustLogoGridSectionV3: sectionLibraryV3Content.trustLogoMarquee,
+    TrustLogoMarqueeSectionV3: sectionLibraryV3Content.trustLogoMarquee,
+    TrustMarqueeSection: sectionLibraryV3Content.trustMarquee,
+    TrustMarqueeSectionV3: getTrustMarqueeV3Content(),
+  };
+
+  return contentByComponent[component] ?? null;
+}
+
+function getNavigationContent(): ContentSourceValue {
+  const nav = sectionLibraryV3Content.navPrimary;
+
+  return {
+    logoImageSrc: "",
+    logoLabel: nav.logoLabel,
+    logoHref: "/",
+    phone: nav.phone,
+    phoneHref: `tel:${nav.phone.replace(/\D/g, "")}`,
+    actionLabel: nav.action,
+    actionHref: "#contact",
+    links: createNavigationLinkSlots(nav.links, 10),
+  };
+}
+
+function createNavigationLinkSlots(
+  links: Array<{ href?: string; label: string }>,
+  slotCount: number,
+) {
+  return Array.from({ length: slotCount }, (_, index) => {
+    const link = links[index];
+
+    return {
+      href: link?.href ?? (link ? `#${sanitizeSlug(link.label)}` : ""),
+      label: link?.label ?? "",
+    };
+  });
+}
+
+function getTrustMarqueeV3Content(): ContentSourceValue {
+  return {
+    items: sectionLibraryV3Content.trustMarquee.items,
+  };
+}
+
+function extractContentFields({
+  baseId,
+  pathParts,
+  sectionContent,
+}: {
+  baseId: string;
+  pathParts: string[];
+  sectionContent: ContentSourceValue;
+}): ContentEditorField[] {
+  if (typeof sectionContent === "string") {
+    return [
+      contentField({
+        id: `${baseId}.${pathParts.slice(1).join(".")}`,
+        kind: inferFieldKind(pathParts),
+        label: humanizePath(pathParts.slice(1)),
+        path: pathParts.join("."),
+        value: sectionContent,
+      }),
+    ];
+  }
+
+  if (typeof sectionContent === "number" || typeof sectionContent === "boolean") {
+    return [
+      contentField({
+        id: `${baseId}.${pathParts.slice(1).join(".")}`,
+        kind: inferFieldKind(pathParts),
+        label: humanizePath(pathParts.slice(1)),
+        path: pathParts.join("."),
+        value: String(sectionContent),
+      }),
+    ];
+  }
+
+  if (!sectionContent) {
+    return [];
+  }
+
+  if (Array.isArray(sectionContent)) {
+    return sectionContent.flatMap((item, index) =>
+      extractContentFields({
+        baseId,
+        pathParts: [...pathParts, String(index + 1)],
+        sectionContent: item,
+      }),
+    );
+  }
+
+  return Object.entries(sectionContent).flatMap(([key, value]) =>
+    shouldExposeContentKey(key)
+      ? extractContentFields({
+          baseId,
+          pathParts: [...pathParts, key],
+          sectionContent: value,
+        })
+      : [],
+  );
+}
+
+function shouldExposeContentKey(key: string) {
+  const normalizedKey = key.toLowerCase();
+
+  return ![
+    "ratio",
+    "size",
+    "variant",
+    "variants",
+  ].includes(normalizedKey);
+}
+
+function inferFieldKind(pathParts: string[]): ContentFieldKind {
+  const fieldKey = pathParts.at(-1)?.toLowerCase() ?? "";
+
+  if (fieldKey === "href" || fieldKey === "url" || fieldKey.endsWith("href")) {
+    return "link";
+  }
+
+  if (
+    fieldKey === "alt" ||
+    fieldKey.endsWith("alt") ||
+    fieldKey === "imagelabel" ||
+    fieldKey.endsWith("imagelabel") ||
+    fieldKey.includes("caption") ||
+    fieldKey.includes("note")
+  ) {
+    return "meta";
+  }
+
+  if (
+    fieldKey === "src" ||
+    fieldKey.endsWith("src") ||
+    fieldKey.includes("image")
+  ) {
+    return "image";
+  }
+
+  return "copy";
+}
+
+function humanizePath(pathParts: string[]) {
+  if (pathParts.length === 0) {
+    return "Content";
+  }
+
+  const labels: string[] = [];
+
+  for (let index = 0; index < pathParts.length; index += 1) {
+    const part = pathParts[index];
+    const nextPart = pathParts[index + 1];
+    const collectionLabel = getCollectionItemLabel(part);
+
+    if (collectionLabel && nextPart && /^\d+$/.test(nextPart)) {
+      labels.push(`${collectionLabel} ${nextPart}`);
+      index += 1;
+      continue;
+    }
+
+    labels.push(humanize(part));
+  }
+
+  return labels.join(" / ");
+}
+
+function humanize(value: string) {
+  const labelOverrides: Record<string, string> = {
+    logoHref: "Logo Destination",
+    logoImageSrc: "Logo Image Src",
+    logoLabel: "Logo Text",
+  };
+
+  if (labelOverrides[value]) {
+    return labelOverrides[value];
+  }
+
+  const normalizedValue = /^\d+$/.test(value) ? `Item ${value}` : value;
+
+  return normalizedValue
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/[-_]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/^./, (letter) => letter.toUpperCase());
+}
+
+function getCollectionItemLabel(value: string) {
+  const labelsByCollection: Record<string, string> = {
+    cards: "Card",
+    items: "Item",
+    links: "Link",
+    points: "Point",
+    services: "Service",
+    stats: "Stat",
+  };
+
+  return labelsByCollection[value] ?? "";
 }
 
 function contentField({
@@ -275,7 +483,7 @@ function contentField({
   value,
 }: {
   id: string;
-  kind?: "copy" | "image" | "link";
+  kind?: ContentFieldKind;
   label: string;
   path: string;
   value: string;

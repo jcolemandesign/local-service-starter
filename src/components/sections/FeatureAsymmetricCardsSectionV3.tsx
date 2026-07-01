@@ -17,17 +17,6 @@ type FeatureAsymmetricCardsSectionV3Props = {
   title: string;
 };
 
-const cardPositions = [
-  "col-start-1 row-start-1",
-  "col-start-3 row-start-1 mt-12 max-lg:mt-0",
-  "col-start-1 row-start-2 mt-10 max-lg:mt-0",
-  "col-start-3 row-start-2 -mt-2 max-lg:mt-0",
-];
-
-function cx(...classes: Array<string | undefined>) {
-  return classes.filter(Boolean).join(" ");
-}
-
 function FeatureIconPlaceholder({ label }: { label: string }) {
   return (
     <div
@@ -81,23 +70,27 @@ export function FeatureAsymmetricCardsSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-4 col-start-4 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1">
-          <div className="grid grid-cols-4 gap-[var(--site-grid-gap)] max-md:grid-cols-1">
-            {cards.slice(0, 4).map((card, index) => (
-              <article
-                className={cx(
-                  "fluid-type-frame col-span-2 min-h-72 py-5 text-service-ink max-md:col-span-1 max-md:col-start-1 max-md:row-auto max-md:min-h-0",
-                  cardPositions[index],
-                )}
-                key={card.title}
+          <div className="grid gap-[var(--site-grid-gap)]">
+            {[cards.slice(0, 2), cards.slice(2, 4)].map((row, rowIndex) => (
+              <div
+                className="grid grid-cols-2 items-start gap-[var(--site-grid-gap)] max-md:grid-cols-1"
+                key={`feature-asymmetric-row-${rowIndex}`}
               >
-                <FeatureIconPlaceholder label={card.iconLabel} />
-                <h3 className="type-heading-sm mt-body-actions-md text-service-ink">
-                  {card.title}
-                </h3>
-                <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
-                  {card.body}
-                </p>
-              </article>
+                {row.map((card) => (
+                  <article
+                    className="fluid-type-frame min-h-72 py-5 text-service-ink max-md:min-h-0"
+                    key={card.title}
+                  >
+                    <FeatureIconPlaceholder label={card.iconLabel} />
+                    <h3 className="type-heading-sm mt-body-actions-md text-service-ink">
+                      {card.title}
+                    </h3>
+                    <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
+                      {card.body}
+                    </p>
+                  </article>
+                ))}
+              </div>
             ))}
           </div>
         </SevenColumnGridItem>

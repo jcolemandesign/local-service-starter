@@ -9,11 +9,13 @@ import { useScrollLock } from "@/hooks/useScrollLock";
 const menuEase = [0.22, 1, 0.36, 1] as const;
 
 type NavLink = {
+  href?: string;
   label: string;
   items?: readonly string[];
 };
 
 type NavPrimarySectionV2Props = {
+  logoHref?: string;
   logoLabel: string;
   phone: string;
   action: string;
@@ -47,8 +49,10 @@ function PhoneIcon() {
 
 function Logo({
   isMenuOpen,
+  href = "#",
   label,
 }: {
+  href?: string;
   isMenuOpen: boolean;
   label: string;
 }) {
@@ -62,7 +66,7 @@ function Logo({
           ? "border-white/20 bg-white/5 text-white"
           : "border-service-border bg-service-surface text-service-muted hover:border-service-accent hover:text-service-accent",
       )}
-      href="#"
+      href={href}
     >
       {label}
     </a>
@@ -70,6 +74,7 @@ function Logo({
 }
 
 export function NavPrimarySectionV2({
+  logoHref,
   logoLabel,
   phone,
   action,
@@ -80,6 +85,7 @@ export function NavPrimarySectionV2({
       action={action}
       layout="default"
       links={links}
+      logoHref={logoHref}
       logoLabel={logoLabel}
       phone={phone}
     />
@@ -87,6 +93,7 @@ export function NavPrimarySectionV2({
 }
 
 export function NavCenterLogoSectionV2({
+  logoHref,
   logoLabel,
   phone,
   action,
@@ -97,6 +104,7 @@ export function NavCenterLogoSectionV2({
       action={action}
       layout="centerLogo"
       links={links}
+      logoHref={logoHref}
       logoLabel={logoLabel}
       phone={phone}
     />
@@ -104,6 +112,7 @@ export function NavCenterLogoSectionV2({
 }
 
 function NavPrimaryLayoutSection({
+  logoHref,
   logoLabel,
   phone,
   action,
@@ -147,7 +156,7 @@ function NavPrimaryLayoutSection({
           }
         >
           {!isCenterLogo ? (
-            <Logo isMenuOpen={isMenuOpen} label={logoLabel} />
+            <Logo href={logoHref} isMenuOpen={isMenuOpen} label={logoLabel} />
           ) : null}
 
           <ul
@@ -231,7 +240,7 @@ function NavPrimaryLayoutSection({
                   ) : (
                     <a
                       className="block cursor-pointer py-3 transition-colors hover:text-service-accent"
-                      href="#"
+                      href={link.href ?? "#"}
                     >
                       {link.label}
                     </a>
@@ -243,7 +252,7 @@ function NavPrimaryLayoutSection({
         </div>
 
         {isCenterLogo ? (
-          <Logo isMenuOpen={isMenuOpen} label={logoLabel} />
+          <Logo href={logoHref} isMenuOpen={isMenuOpen} label={logoLabel} />
         ) : null}
 
         <button
@@ -300,7 +309,7 @@ function NavPrimaryLayoutSection({
                     <li key={link.label}>
                       <a
                         className="cursor-pointer text-5xl font-semibold leading-none transition-colors hover:text-service-accent max-md:text-4xl"
-                        href="#"
+                        href={link.href ?? "#"}
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {link.label}

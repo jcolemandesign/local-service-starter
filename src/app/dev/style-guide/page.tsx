@@ -6,6 +6,7 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 import { StyleGuideLiveSurface } from "@/components/sections/StyleGuideLiveSurface";
+import { StyleGuideControlBoard } from "@/components/sections/StyleGuideControlBoard";
 import { StyleGuideRadiusCard } from "@/components/sections/StyleGuideRadiusCard";
 import { StyleGuideSectionMinControl } from "@/components/sections/StyleGuideSectionMinControl";
 import { StyleGuideGridTokenControl } from "@/components/sections/StyleGuideGridTokenControl";
@@ -26,6 +27,7 @@ import { StyleGuideGapCard } from "@/components/sections/StyleGuideGapCard";
 import { StyleGuideColorSwatch } from "@/components/sections/StyleGuideColorSwatch";
 import { StyleGuideColorResetButton } from "@/components/sections/StyleGuideColorResetButton";
 import { StyleGuidePromoteTokensButton } from "@/components/sections/StyleGuidePromoteTokensButton";
+import { StyleGuideResetButton } from "@/components/sections/StyleGuideResetButton";
 import { StyleGuideCloseAllButton } from "@/components/sections/StyleGuideCloseAllButton";
 import { StyleGuideButtonControls } from "@/components/sections/StyleGuideButtonControls";
 import { StyleGuideSurfaceControls } from "@/components/sections/StyleGuideSurfaceControls";
@@ -597,34 +599,6 @@ const gapTokens = [
     kind: "layout",
   },
 ] as const;
-
-const editorialStressTests = [
-  {
-    title: "Long Service Heading",
-    label: "Type hierarchy",
-    heading:
-      "Emergency repair scheduling for older homes, mixed systems, and urgent customer expectations",
-    body:
-      "This stress test checks whether the heading can wrap naturally without crowding the body copy, action row, or surrounding card chrome.",
-    className: "type-heading-xl",
-  },
-  {
-    title: "Dense Support Copy",
-    label: "Editorial body",
-    heading: "A paragraph that needs to stay readable inside a real section.",
-    body:
-      "Customers may arrive with a messy problem, partial information, an old estimate, and a short window for scheduling. The copy needs enough line height, measure, and contrast to stay calm while still carrying useful details about timing, proof, service area, and next steps.",
-    className: "type-heading-lg",
-  },
-  {
-    title: "Compact Card Stack",
-    label: "Card rhythm",
-    heading: "Repair, document, explain, follow up.",
-    body:
-      "Small cards need to preserve hierarchy with less room, especially when a label, title, body, and action all compete for attention.",
-    className: "type-heading-sm",
-  },
-];
 
 const colorRoleCombinations = [
   {
@@ -1206,6 +1180,7 @@ export default function StyleGuidePage() {
         </div>
 
         <div className="ml-auto flex shrink-0 items-center gap-3 border-l border-service-border pl-5">
+          <StyleGuideResetButton />
           <StyleGuidePromoteTokensButton />
           <span className="type-caption font-semibold uppercase text-service-muted">
             Preview pages
@@ -1224,11 +1199,70 @@ export default function StyleGuidePage() {
         </div>
       </nav>
 
+      <StyleGuideControlBoard
+        colors={colors}
+        contentFrameOptions={contentFrameOptions}
+        gapTokens={gapTokens}
+        radii={radii}
+        sectionMinTokens={sectionMinTokens}
+        sectionPaddingOptions={sectionPaddingOptions}
+        siteGridFrameOptions={siteGridFrameOptions}
+        siteGridGapOptions={siteGridGapOptions}
+      />
+
+      <GuideSection
+        eyebrow="Type + Grid"
+        id="typographic-hierarchy"
+        title="Typographic Hierarchy"
+        titleAs="h1"
+        body="One live specimen per typography role, placed on a seven-column row so the text can occupy the main track while the token metadata stays fixed."
+      >
+        <SevenColumnGrid minHeight="none" padding="none">
+          <SevenColumnGridItem className="sticky top-16 col-span-2 self-start max-lg:col-span-5 max-md:col-span-3 max-sm:static max-sm:col-span-1">
+            <StyleGuideTypographyControls />
+          </SevenColumnGridItem>
+
+          <SevenColumnGridItem className="col-span-5 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+            <div className="grid gap-3">
+              {typeTokens.map((token) => (
+                <div
+                  className="fluid-type-frame grid grid-cols-7 gap-4 border-t border-service-border py-6 max-lg:grid-cols-5 max-md:grid-cols-3 max-sm:grid-cols-1"
+                  key={`grid-row-${token.name}`}
+                >
+                  <div className="col-span-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+                    <code className="radius-4 inline-flex bg-service-surface px-2 py-1 text-xs font-semibold text-service-ink">
+                      {token.name}
+                    </code>
+                    <p className="type-caption mt-2 text-service-muted">
+                      {token.role}
+                    </p>
+                    <p className="type-caption mt-2 font-semibold text-service-muted">
+                      <StyleGuideTypeSpec tokenName={token.name} />
+                    </p>
+                    <StyleGuideResetFontButton tokenName={token.name} />
+                  </div>
+                  <StyleGuideTypeSample
+                    className={cx(
+                      token.typeClass,
+                      token.measureClass,
+                      token.wrapClass,
+                      "col-span-6 text-service-ink max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
+                    )}
+                    tokenName={token.name}
+                  >
+                    {token.sample}
+                  </StyleGuideTypeSample>
+                </div>
+              ))}
+            </div>
+          </SevenColumnGridItem>
+        </SevenColumnGrid>
+</GuideSection>
+
       <GuideSection
         eyebrow="Layout"
         id="seven-column-grid"
         title="Layout System"
-        titleAs="h1"
         body="SevenColumnGrid is the current section frame. It keeps column count stable while frame inset, gap, vertical padding, item alignment, and copy measures move through tokens."
       >
         <div className="grid gap-5">
@@ -1594,91 +1628,6 @@ export default function StyleGuidePage() {
             </SevenColumnGrid>
           </Card>
 
-        </div>
-      </GuideSection>
-
-      <GuideSection
-        eyebrow="Type + Grid"
-        id="typographic-hierarchy"
-        title="Typographic Hierarchy"
-        body="One live specimen per typography role, placed on a seven-column row so the text can occupy the main track while the token metadata stays fixed."
-      >
-        <SevenColumnGrid minHeight="none" padding="none">
-          <SevenColumnGridItem className="sticky top-16 col-span-2 self-start max-lg:col-span-5 max-md:col-span-3 max-sm:static max-sm:col-span-1">
-            <StyleGuideTypographyControls />
-          </SevenColumnGridItem>
-
-          <SevenColumnGridItem className="col-span-5 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-            <div className="grid gap-3">
-              {typeTokens.map((token) => (
-                <div
-                  className="fluid-type-frame grid grid-cols-7 gap-4 border-t border-service-border py-6 max-lg:grid-cols-5 max-md:grid-cols-3 max-sm:grid-cols-1"
-                  key={`grid-row-${token.name}`}
-                >
-                  <div className="col-span-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-                    <code className="radius-4 inline-flex bg-service-surface px-2 py-1 text-xs font-semibold text-service-ink">
-                      {token.name}
-                    </code>
-                    <p className="type-caption mt-2 text-service-muted">
-                      {token.role}
-                    </p>
-                    <p className="type-caption mt-2 font-semibold text-service-muted">
-                      <StyleGuideTypeSpec tokenName={token.name} />
-                    </p>
-                    <StyleGuideResetFontButton tokenName={token.name} />
-                  </div>
-                  <StyleGuideTypeSample
-                    className={cx(
-                      token.typeClass,
-                      token.measureClass,
-                      token.wrapClass,
-                      "col-span-6 text-service-ink max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
-                    )}
-                    tokenName={token.name}
-                  >
-                    {token.sample}
-                  </StyleGuideTypeSample>
-                </div>
-              ))}
-            </div>
-          </SevenColumnGridItem>
-        </SevenColumnGrid>
-
-        <div className="mt-10 border-t border-service-border pt-10">
-          <div className="fluid-type-frame mb-6">
-            <p className="type-label text-service-accent">Stress tests</p>
-            <h3 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
-              Editorial Stress Tests
-            </h3>
-            <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
-              Stress cases for long headings, dense copy, compact card rhythm,
-              and repeated action patterns.
-            </p>
-          </div>
-          <SevenColumnGrid minHeight="none" padding="none">
-            {editorialStressTests.map((test) => (
-              <SevenColumnGridItem
-                className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
-                key={test.title}
-              >
-                <Card className="fluid-type-frame h-full p-6 shadow-none">
-                  <p className="type-label text-service-accent">{test.label}</p>
-                  <h3 className={cx(test.className, "mt-eyebrow-heading-md text-service-ink")}>
-                    {test.heading}
-                  </h3>
-                  <p className="type-text-md wrap-pretty mt-heading-body-md text-service-muted">
-                    {test.body}
-                  </p>
-                  <div className="mt-body-actions-md flex flex-wrap gap-3">
-                    <Button href="#">Primary action</Button>
-                    <Button href="#" variant="secondary">
-                      Secondary
-                    </Button>
-                  </div>
-                </Card>
-              </SevenColumnGridItem>
-            ))}
-          </SevenColumnGrid>
         </div>
       </GuideSection>
 

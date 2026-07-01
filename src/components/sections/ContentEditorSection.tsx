@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type {
   ContentEditorField,
   ContentEditorPage,
@@ -36,21 +36,41 @@ type PromotionResponse =
   | { ok: true; page: PromotionSnapshot }
   | { ok: false; error: string };
 
+type FieldFilter = "all" | ContentEditorField["kind"];
+
 const draftStorageKey = "pageworks-content-editor-draft-v1";
 const promotionStorageKey = "pageworks-content-editor-promotion-v1";
+const fieldFilterOptions: Array<{ label: string; value: FieldFilter }> = [
+  { label: "All fields", value: "all" },
+  { label: "Copy + items", value: "copy" },
+  { label: "Images", value: "image" },
+  { label: "Meta", value: "meta" },
+  { label: "Links", value: "link" },
+];
 
 export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
   const [activePageId, setActivePageId] = useState(pages[0]?.id ?? "");
   const originalValues = useMemo(() => getOriginalValues(pages), [pages]);
-  const [initialDraft] = useState(() => readStoredDraft(originalValues));
   const [values, setValues] = useState<Record<string, string>>(
-    initialDraft.values,
+    originalValues,
   );
-  const [savedAt, setSavedAt] = useState(initialDraft.savedAt);
+  const [savedAt, setSavedAt] = useState("");
   const [promotedAt, setPromotedAt] = useState("");
   const [status, setStatus] = useState("");
   const [isPromoting, setIsPromoting] = useState(false);
   const [openSectionIds, setOpenSectionIds] = useState<string[]>([]);
+  const [fieldFilter, setFieldFilter] = useState<FieldFilter>("all");
+
+  useEffect(() => {
+    const frameId = window.requestAnimationFrame(() => {
+      const storedDraft = readStoredDraft(originalValues);
+
+      setValues(storedDraft.values);
+      setSavedAt(storedDraft.savedAt);
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [originalValues]);
 
   const activePage = pages.find((page) => page.id === activePageId) ?? pages[0];
   const allFields = pages.flatMap((page) =>
@@ -65,6 +85,10 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
     dirtyFieldIds.includes(field.id),
   ).length;
   const fieldCounts = getFieldCounts(activeFields);
+  const visibleActiveFieldCount =
+    fieldFilter === "all"
+      ? activeFields.length
+      : activeFields.filter((field) => field.kind === fieldFilter).length;
 
   function updateField(fieldId: string, value: string) {
     setValues((currentValues) => ({
@@ -230,9 +254,37 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
                   <div className="mt-4 flex flex-wrap gap-2">
                     <StatusPill label={`${fieldCounts.copy} copy`} />
                     <StatusPill label={`${fieldCounts.image} image`} />
+                    <StatusPill label={`${fieldCounts.meta} meta`} />
                     <StatusPill label={`${fieldCounts.link} link`} />
                     <StatusPill label={`${activeDirtyCount} edited`} />
                   </div>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {fieldFilterOptions.map((option) => {
+                      const isActive = option.value === fieldFilter;
+
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          className={`radius-4 min-h-9 border px-3 type-caption font-semibold transition-colors ${
+                            isActive
+                              ? "border-service-ink bg-service-ink text-white"
+                              : "border-service-border bg-service-surface text-service-muted hover:border-service-accent hover:text-service-accent"
+                          }`}
+                          onClick={() => setFieldFilter(option.value)}
+                        >
+                          {option.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {fieldFilter !== "all" ? (
+                    <p className="type-caption mt-3 rounded-sm border border-service-border bg-service-surface px-3 py-2 text-service-muted">
+                      Showing {visibleActiveFieldCount} of{" "}
+                      {activeFields.length} fields. Switch to All fields to see
+                      hidden copy, media, and links together.
+                    </p>
+                  ) : null}
                 </div>
                 <div className="flex flex-wrap items-start justify-end gap-2 max-md:justify-start">
                   <ActionButton onClick={saveDraft}>Save Draft</ActionButton>
@@ -257,6 +309,12 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
               <div className="grid gap-5">
                 {activePage.sections.map((section) => {
                   const isOpen = openSectionIds.includes(section.id);
+                  const visibleFields =
+                    fieldFilter === "all"
+                      ? section.fields
+                      : section.fields.filter(
+                          (field) => field.kind === fieldFilter,
+                        );
                   const sectionDirtyCount = section.fields.filter((field) =>
                     dirtyFieldIds.includes(field.id),
                   ).length;
@@ -289,7 +347,13 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
                             <StatusPill label={`${section.fields.length} fields`} />
                             <StatusPill label={`${sectionFieldCounts.copy} copy`} />
                             <StatusPill label={`${sectionFieldCounts.image} image`} />
+                            <StatusPill label={`${sectionFieldCounts.meta} meta`} />
                             <StatusPill label={`${sectionFieldCounts.link} link`} />
+                            {fieldFilter !== "all" ? (
+                              <StatusPill
+                                label={`${visibleFields.length} shown`}
+                              />
+                            ) : null}
                             <StatusPill label={`${sectionDirtyCount} edited`} />
                           </span>
                         </span>
@@ -308,19 +372,35 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
                           id={panelId}
                           role="region"
                           aria-labelledby={buttonId}
-                          className="grid grid-cols-4 gap-4 border-t border-service-border p-5 max-2xl:grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1"
+                          className="grid gap-3 border-t border-service-border p-5"
                         >
-                          {section.fields.map((field) => (
-                            <FieldEditor
-                              key={field.id}
-                              field={field}
-                              value={values[field.id] ?? field.value}
-                              originalValue={originalValues[field.id] ?? field.value}
-                              onChange={(nextValue) =>
-                                updateField(field.id, nextValue)
-                              }
-                            />
-                          ))}
+                          {fieldFilter !== "all" ? (
+                            <p className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-2 text-service-muted">
+                              This section is filtered to{" "}
+                              {getFieldFilterLabel(fieldFilter)}. Switch to All
+                              fields to see hidden copy, media, and links
+                              together.
+                            </p>
+                          ) : null}
+                          {visibleFields.length > 0 ? (
+                            visibleFields.map((field) => (
+                              <FieldEditor
+                                key={field.id}
+                                field={field}
+                                value={values[field.id] ?? field.value}
+                                originalValue={
+                                  originalValues[field.id] ?? field.value
+                                }
+                                onChange={(nextValue) =>
+                                  updateField(field.id, nextValue)
+                                }
+                              />
+                            ))
+                          ) : (
+                            <p className="type-text-sm rounded-sm border border-service-border bg-service-surface p-4 text-service-muted">
+                              No {fieldFilter} fields in this section.
+                            </p>
+                          )}
                         </div>
                       ) : null}
                     </section>
@@ -358,34 +438,45 @@ function FieldEditor({
   value: string;
 }) {
   const isDirty = value !== originalValue;
-  const isLongCopy = field.kind === "copy" && value.length > 72;
+  const useTextarea = field.kind === "copy" || value.length > 72;
 
   return (
-    <label className="grid gap-2 rounded-sm border border-service-border bg-service-surface p-4">
-      <span className="flex flex-wrap items-center justify-between gap-2">
-        <span className="type-caption font-semibold text-service-ink">
+    <label className="grid grid-cols-[minmax(12rem,18rem)_minmax(0,1fr)] gap-4 rounded-sm border border-service-border bg-white p-4 shadow-sm max-lg:grid-cols-1">
+      <span className="grid content-start gap-2">
+        <span className="flex flex-wrap items-center gap-2">
+          <span
+            className={`type-caption rounded-sm px-2 py-0.5 font-semibold ${
+              isDirty
+                ? "bg-service-accent text-white"
+                : "border border-service-border bg-white text-service-muted"
+            }`}
+          >
+            {field.kind}
+          </span>
+          {isDirty ? (
+            <span className="type-caption font-semibold text-service-accent">
+              edited
+            </span>
+          ) : null}
+        </span>
+        <span className="type-text-sm font-semibold text-service-ink">
           {field.label}
         </span>
         <span
-          className={`type-caption rounded-sm px-2 py-0.5 font-semibold ${
-            isDirty
-              ? "bg-service-accent text-white"
-              : "border border-service-border bg-white text-service-muted"
-          }`}
+          className="type-caption break-words text-service-muted"
         >
-          {field.kind}
+          {field.path}
         </span>
       </span>
-      <span className="type-caption text-service-muted">{field.path}</span>
-      {isLongCopy ? (
+      {useTextarea ? (
         <textarea
-          className="min-h-32 resize-y rounded-sm border border-service-border bg-white px-3 py-3 text-sm leading-6 text-service-ink outline-none transition-colors focus:border-service-accent"
+          className="min-h-36 resize-y rounded-sm border border-service-border bg-white px-4 py-3 text-base leading-7 text-service-ink outline-none transition-colors focus:border-service-accent max-md:text-sm"
           value={value}
           onChange={(event) => onChange(event.target.value)}
         />
       ) : (
         <input
-          className="min-h-11 rounded-sm border border-service-border bg-white px-3 text-sm text-service-ink outline-none transition-colors focus:border-service-accent"
+          className="min-h-12 rounded-sm border border-service-border bg-white px-4 text-base text-service-ink outline-none transition-colors focus:border-service-accent max-md:text-sm"
           value={value}
           onChange={(event) => onChange(event.target.value)}
         />
@@ -426,6 +517,13 @@ function StatusPill({ label }: { label: string }) {
     <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
       {label}
     </span>
+  );
+}
+
+function getFieldFilterLabel(fieldFilter: FieldFilter) {
+  return (
+    fieldFilterOptions.find((option) => option.value === fieldFilter)?.label ??
+    "All fields"
   );
 }
 
@@ -477,7 +575,7 @@ function getFieldCounts(fields: ContentEditorField[]) {
       ...counts,
       [field.kind]: counts[field.kind] + 1,
     }),
-    { copy: 0, image: 0, link: 0 },
+    { copy: 0, image: 0, link: 0, meta: 0 },
   );
 }
 

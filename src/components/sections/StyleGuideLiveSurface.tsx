@@ -72,6 +72,7 @@ type StyleGuideLiveSurfaceProps = {
 
 type StyleGuideTokenContextValue = {
   draft: StyleGuideTokenDraft;
+  resetDraft: () => void;
   updateDraft: <K extends keyof StyleGuideTokenDraft>(
     key: K,
     value: StyleGuideTokenDraft[K],
@@ -90,7 +91,7 @@ export const defaultStyleGuideTokenDraft: StyleGuideTokenDraft = {
   activeButtonRadiusValue: "4px",
   activeSurfaceRadiusName: "radius-md / radius-medium",
   activeSurfaceRadiusValue: "8px",
-  activeBorderWidthName: "border-bold",
+  activeBorderWidthName: "border-default",
   activeBorderWidthValue: "2px",
   activeCardGapName: "card-grid-gap-med",
   activeCardGapValue: "1rem",
@@ -245,7 +246,10 @@ export function useStyleGuideTokens() {
 export function buildStyleVariables(
   draft: StyleGuideTokenDraft,
 ): StyleVariableProperties {
-  const serviceShadow = `${draft.shadowX}px ${draft.shadowY}px ${draft.shadowBlur}px rgb(${hexToRgbChannels(draft.shadowColor)} / ${draft.shadowAlpha})`;
+  const serviceShadow =
+    draft.shadowX === 0 && draft.shadowY === 0 && draft.shadowBlur === 0
+      ? "none"
+      : `${draft.shadowX}px ${draft.shadowY}px ${draft.shadowBlur}px rgb(${hexToRgbChannels(draft.shadowColor)} / ${draft.shadowAlpha})`;
 
   return {
     "--live-accent": draft.accent,
@@ -342,8 +346,13 @@ export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) 
     }));
   }
 
+  function resetDraft() {
+    setDraft(defaultStyleGuideTokenDraft);
+    window.localStorage.removeItem(styleGuideStorageKey);
+  }
+
   return (
-    <StyleGuideTokenContext.Provider value={{ draft, updateDraft }}>
+    <StyleGuideTokenContext.Provider value={{ draft, resetDraft, updateDraft }}>
       <div style={previewStyle}>{children}</div>
     </StyleGuideTokenContext.Provider>
   );

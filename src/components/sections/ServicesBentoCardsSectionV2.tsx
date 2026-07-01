@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
@@ -6,7 +8,9 @@ import {
 type ServiceBentoItem = {
   title: string;
   body: string;
+  cardSize?: string;
   imageLabel: string;
+  imageSrc?: string;
 };
 
 type ServicesBentoCardsSectionV2Props = {
@@ -20,7 +24,27 @@ function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-function ServiceImagePlaceholder() {
+function ServiceImage({
+  label,
+  src,
+}: {
+  label: string;
+  src?: string;
+}) {
+  if (src) {
+    return (
+      <div className="relative aspect-square overflow-hidden bg-service-border">
+        <Image
+          alt={label}
+          className="object-cover"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 60vw, 34vw"
+          src={src}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="relative aspect-square overflow-hidden bg-service-border" aria-hidden="true">
       <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.26),rgb(23_33_29_/_0.05)),linear-gradient(45deg,rgb(255_255_255_/_0.22)_0_1px,transparent_1px_18px)]" />
@@ -29,10 +53,13 @@ function ServiceImagePlaceholder() {
   );
 }
 
-const serviceCardGridClasses = [
+const bentoCardSpanPattern = [
   "col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
   "col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
   "col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
+  "col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
+  "col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
+  "col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
 ];
 
 export function ServicesBentoCardsSectionV2({
@@ -81,13 +108,11 @@ export function ServicesBentoCardsSectionV2({
                   "fluid-type-frame",
                   "radius-medium",
                   "group/service-card relative flex h-full cursor-pointer flex-col overflow-hidden border border-service-border bg-white shadow-service transition-transform duration-300 ease-out hover:scale-[1.015]",
-                  serviceCardGridClasses[
-                    index % serviceCardGridClasses.length
-                  ],
+                  bentoCardSpanPattern[index % bentoCardSpanPattern.length],
                 )}
                 key={item.title}
               >
-                <ServiceImagePlaceholder />
+                <ServiceImage label={item.imageLabel} src={item.imageSrc} />
                 <div
                   className={cx(
                     "radius-medium",

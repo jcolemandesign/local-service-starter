@@ -1,3 +1,94 @@
 {
-  "templates": []
+  "templates": [
+    {
+      "designStyle": {
+        "showSectionMarkers": false,
+        "viewportId": "main"
+      },
+      "id": "homepage-option-1",
+      "name": "homepage - Option 1",
+      "notes": "",
+      "pageType": "homepage",
+      "promotedAt": "2026-06-29T21:25:23.126Z",
+      "sectionCount": 9,
+      "sections": [
+        {
+          "component": "NavPrimarySectionV2",
+          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
+          "mode": "Navigation",
+          "name": "Primary navigation",
+          "originalComponent": "NavPrimarySectionV2",
+          "originalIndex": 0
+        },
+        {
+          "component": "HeroSplitFullHeightSectionV3",
+          "instruction": "Use h1, one primary booking CTA, one services CTA, and three compact trust stats beside a full-bleed image column.",
+          "mode": "Hero",
+          "name": "Split content and full image",
+          "originalComponent": "HeroSplitFullHeightSectionV3",
+          "originalIndex": 1,
+          "variant": "text-3-image-4-right"
+        },
+        {
+          "component": "TrustMarqueeSectionV3",
+          "instruction": "Use short repeated claims when there are many small proof points.",
+          "mode": "Proof",
+          "name": "Trust marquee",
+          "originalComponent": "TrustBarSectionV3",
+          "originalIndex": 2
+        },
+        {
+          "component": "ServicesBentoCardsSectionV2",
+          "instruction": "Use bento-style service cards when the services need a richer visual scan pattern.",
+          "mode": "Scan",
+          "name": "Services bento cards",
+          "originalComponent": "ServicesThreeCardsRightSectionV3",
+          "originalIndex": 3
+        },
+        {
+          "component": "FeatureAsymmetricCardsSectionV3",
+          "instruction": "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points.",
+          "mode": "Narrative",
+          "name": "Asymmetric feature cards",
+          "originalComponent": "FeatureAsymmetricCardsSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "TestimonialsCarouselSectionV3",
+          "instruction": "Use longer customer stories only if they contain useful service detail.",
+          "mode": "Proof",
+          "name": "Customer stories",
+          "originalComponent": "TestimonialsMasonrySectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "ServiceAreaZipLookupSectionV3",
+          "instruction": "Use when visitors need to confirm service coverage before starting a request.",
+          "mode": "Utility",
+          "name": "Service area zip lookup",
+          "originalComponent": "ServiceAreaZipLookupSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "TrustMarqueeSection",
+          "instruction": "Use a headline with a scrolling banner when proof points should move beside a stronger editorial claim.",
+          "mode": "Action",
+          "name": "Headline with Scrolling Banner",
+          "originalComponent": "ContentFixedCoverFadeSectionV2",
+          "originalIndex": -1
+        },
+        {
+          "component": "FooterSectionV3",
+          "instruction": "End with service links, areas, contact details, and legal links.",
+          "mode": "Utility",
+          "name": "Footer",
+          "originalComponent": "FooterSectionV3",
+          "originalIndex": -1
+        }
+      ],
+      "sourceOptionName": "Option 1",
+      "sourceRecipeId": "classic-service",
+      "sourceRecipeName": "homepage"
+    }
+  ]
 }

@@ -336,17 +336,44 @@ export const sectionLibraryV3Content = {
       {
         title: "Emergency repairs",
         body: "Fast help for urgent issues that need an experienced technician and a clear path to resolution.",
+        cardSize: "Large card",
         imageLabel: "Repair",
+        imageSrc: "/images/fpo-image.svg",
       },
       {
         title: "Preventive maintenance",
         body: "Seasonal tune-ups, inspection notes, and practical recommendations that reduce surprises.",
+        cardSize: "Small card",
         imageLabel: "Care",
+        imageSrc: "/images/fpo-image.svg",
       },
       {
         title: "Installation",
         body: "Clean, documented installs for new systems, fixtures, and upgrades with tidy closeout.",
+        cardSize: "Small card",
         imageLabel: "Install",
+        imageSrc: "/images/fpo-image.svg",
+      },
+      {
+        title: "Inspections",
+        body: "Detailed checks with photo-backed notes, priority guidance, and simple recommendations customers can understand.",
+        cardSize: "Small card",
+        imageLabel: "Inspect",
+        imageSrc: "/images/fpo-image.svg",
+      },
+      {
+        title: "Commercial service",
+        body: "Responsive support for offices, shops, and small facilities that need reliable communication.",
+        cardSize: "Small card",
+        imageLabel: "Biz",
+        imageSrc: "/images/fpo-image.svg",
+      },
+      {
+        title: "Consultations",
+        body: "Helpful planning for customers comparing options, budgets, timelines, and future service needs.",
+        cardSize: "Large card",
+        imageLabel: "Plan",
+        imageSrc: "/images/fpo-image.svg",
       },
     ],
   },
@@ -688,6 +715,24 @@ export const sectionLibraryV3Content = {
     closeBody:
       "Use the closing panel for reassurance, eligibility details, or a softer transition back into services, testimonials, or FAQ content.",
   },
+  serviceAreaZipLookup: {
+    eyebrow: "Service areas",
+    title: "Serving Huntersville and nearby North Charlotte communities.",
+    body: "Give visitors a quick way to confirm coverage before they start a service request.",
+    prompt: "Not sure if we service your area?",
+    inputLabel: "ZIP code lookup",
+    inputPlaceholder: "Enter ZIP code",
+    submitLabel: "Check",
+    successTitle: "We service your area.",
+    successBody: "Send the request and the team will confirm timing.",
+    successActionLabel: "Request service",
+    successActionHref: "/contact",
+    mapLabel: "Local coverage map",
+    columns: [
+      ["Huntersville", "Cornelius", "Davidson"],
+      ["Concord", "North Charlotte", "Lake Norman Area"],
+    ],
+  },
   contact: {
     eyebrow: "Contact",
     title: "Make it easy for customers to reach the team.",
@@ -976,6 +1021,10 @@ export const sectionLibraryV3Collections = [
   {
     title: "Utility",
     items: [
+      {
+        label: "Service area zip lookup",
+        component: "service-area-zip-lookup-v3",
+      },
       { label: "Contact section", component: "contact-v3" },
       { label: "Footer", component: "footer-v3" },
     ],

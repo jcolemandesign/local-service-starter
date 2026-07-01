@@ -33,6 +33,7 @@ import {
   ServicesHoverPanelSectionV2,
   ServicesScrollCardsSectionV2,
   SectionLibraryV3Accordions,
+  ServiceAreaZipLookupSectionV3,
   ServicesThreeCardsRightSectionV3,
   TestimonialsCarouselSectionV3,
   TestimonialsMasonrySectionV3,
@@ -223,6 +224,11 @@ const sectionElements = {
   "cta-scroll-reveal-offer-v3": (
     <CTAScrollRevealOfferSectionV3
       {...sectionLibraryV3Content.ctaScrollRevealOffer}
+    />
+  ),
+  "service-area-zip-lookup-v3": (
+    <ServiceAreaZipLookupSectionV3
+      {...sectionLibraryV3Content.serviceAreaZipLookup}
     />
   ),
   "contact-v3": <ContactSectionV3 {...sectionLibraryV3Content.contact} />,

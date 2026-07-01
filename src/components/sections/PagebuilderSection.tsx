@@ -51,6 +51,7 @@ import { ProcessImageChecklistSectionV3 } from "@/components/sections/ProcessIma
 import { ServicesBentoCardsSectionV2 } from "@/components/sections/ServicesBentoCardsSectionV2";
 import { ServicesHoverPanelSectionV2 } from "@/components/sections/ServicesHoverPanelSectionV2";
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
+import { ServiceAreaZipLookupSectionV3 } from "@/components/sections/ServiceAreaZipLookupSectionV3";
 import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/ServicesThreeCardsRightSectionV3";
 import { TestimonialsCarouselSectionV3 } from "@/components/sections/TestimonialsCarouselSectionV3";
 import { TestimonialsMasonrySectionV2 } from "@/components/sections/TestimonialsMasonrySectionV2";
@@ -364,6 +365,12 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       );
     case "ContactSectionV2":
       return <ContactSectionV2 {...sectionLibraryV3Content.contact} />;
+    case "ServiceAreaZipLookupSectionV3":
+      return (
+        <ServiceAreaZipLookupSectionV3
+          {...sectionLibraryV3Content.serviceAreaZipLookup}
+        />
+      );
     case "ContactSectionV3":
       return <ContactSectionV3 {...sectionLibraryV3Content.contact} />;
     case "FooterSectionV2":
@@ -854,6 +861,12 @@ export function PagebuilderSection() {
       "ContentFixedCoverFadeSectionV2",
       "Action",
       "Fixed cover fade",
+      7,
+    ),
+    ServiceAreaZipLookupSectionV3: previewCatalogEntry(
+      "ServiceAreaZipLookupSectionV3",
+      "Utility",
+      "Service area zip lookup",
       7,
     ),
     ContactSectionV3: (

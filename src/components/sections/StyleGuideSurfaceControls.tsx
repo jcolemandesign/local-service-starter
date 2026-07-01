@@ -5,9 +5,9 @@ import { useStyleGuideTokens } from "@/components/sections/StyleGuideLiveSurface
 
 const borderWidthOptions = [
   { label: "None", name: "border-none", value: "0px" },
-  { label: "Fine", name: "border-fine", value: "0.5px" },
-  { label: "Bold", name: "border-bold", value: "2px" },
-  { label: "Heavy", name: "border-heavy", value: "3px" },
+  { label: "Fine", name: "border-fine", value: "1px" },
+  { label: "Default", name: "border-default", value: "2px" },
+  { label: "Bold", name: "border-bold", value: "3px" },
 ] as const;
 
 function cx(...classes: Array<string | false | undefined>) {

@@ -9,8 +9,8 @@
       "optionName": "Option 1",
       "recipeId": "classic-service",
       "recipeName": "homepage",
-      "savedAt": "2026-06-28T19:04:05.728Z",
-      "sectionCount": 6,
+      "savedAt": "2026-06-29T19:57:46.935Z",
+      "sectionCount": 10,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
@@ -34,44 +34,84 @@
           "variant": "text-3-image-4-right"
         },
         {
-          "component": "TrustBarSectionV3",
+          "component": "TrustMarqueeSectionV3",
           "id": "classic-service-slot-1-TrustBarSectionV3-2",
           "included": true,
-          "instruction": "Validate the promise immediately with rating, volume, team, and local ownership claims.",
+          "instruction": "Use short repeated claims when there are many small proof points.",
           "mode": "Proof",
-          "name": "Trust bar",
+          "name": "Trust marquee",
           "originalComponent": "TrustBarSectionV3",
           "originalIndex": 2
         },
         {
-          "component": "ServicesThreeCardsRightSectionV3",
+          "component": "ServicesBentoCardsSectionV2",
           "id": "classic-service-slot-1-ServicesThreeCardsRightSectionV3-3",
           "included": true,
-          "instruction": "Show three to six top-level services with consistent title and body length.",
+          "instruction": "Use bento-style service cards when the services need a richer visual scan pattern.",
           "mode": "Scan",
-          "name": "Services grid",
+          "name": "Services bento cards",
           "originalComponent": "ServicesThreeCardsRightSectionV3",
           "originalIndex": 3
         },
         {
-          "component": "FAQSectionV3",
-          "id": "classic-service-slot-1-FAQSectionV3-4",
+          "component": "FeatureAsymmetricCardsSectionV3",
+          "id": "classic-service-FeatureAsymmetricCardsSectionV3-added-1",
           "included": true,
-          "instruction": "Answer estimates, timing, service area, and maintenance questions.",
-          "mode": "Decision",
-          "name": "FAQ",
-          "originalComponent": "FAQSectionV3",
-          "originalIndex": 4
+          "instruction": "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points.",
+          "mode": "Narrative",
+          "name": "Asymmetric feature cards",
+          "originalComponent": "FeatureAsymmetricCardsSectionV3",
+          "originalIndex": -1
         },
         {
-          "component": "ContactSectionV3",
-          "id": "classic-service-slot-1-ContactSectionV3-5",
+          "component": "TestimonialsCarouselSectionV3",
+          "id": "classic-service-TestimonialsMasonrySectionV3-added-2",
           "included": true,
-          "instruction": "Close with phone, email, hours, and a simple form or request path.",
+          "instruction": "Use longer customer stories only if they contain useful service detail.",
+          "mode": "Proof",
+          "name": "Customer stories",
+          "originalComponent": "TestimonialsMasonrySectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "ServiceAreaZipLookupSectionV3",
+          "id": "classic-service-ServiceAreaZipLookupSectionV3-added-7",
+          "included": true,
+          "instruction": "Use when visitors need to confirm service coverage before starting a request.",
           "mode": "Utility",
-          "name": "Contact section",
-          "originalComponent": "ContactSectionV3",
-          "originalIndex": 5
+          "name": "Service area zip lookup",
+          "originalComponent": "ServiceAreaZipLookupSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "FAQAccordionSectionV3",
+          "id": "classic-service-FAQAccordionSectionV3-added-8",
+          "included": true,
+          "instruction": "Handle objections with expandable answers and no vague copy.",
+          "mode": "Decision",
+          "name": "FAQ accordion",
+          "originalComponent": "FAQAccordionSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "TrustMarqueeSection",
+          "id": "classic-service-ContentFixedCoverFadeSectionV2-added-9",
+          "included": true,
+          "instruction": "Use a headline with a scrolling banner when proof points should move beside a stronger editorial claim.",
+          "mode": "Action",
+          "name": "Headline with Scrolling Banner",
+          "originalComponent": "ContentFixedCoverFadeSectionV2",
+          "originalIndex": -1
+        },
+        {
+          "component": "FooterSectionV3",
+          "id": "classic-service-FooterSectionV3-added-10",
+          "included": true,
+          "instruction": "End with service links, areas, contact details, and legal links.",
+          "mode": "Utility",
+          "name": "Footer",
+          "originalComponent": "FooterSectionV3",
+          "originalIndex": -1
         }
       ]
     }

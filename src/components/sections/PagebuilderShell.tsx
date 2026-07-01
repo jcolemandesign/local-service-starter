@@ -139,15 +139,6 @@ function isPreviewHeroSection(section: WorkingSection | undefined) {
 
 const viewportOptions = [
   {
-    id: "wide",
-    label: "Wide",
-    contentClassName: "max-w-full",
-    frameClassName: "h-full w-full max-w-full",
-    screenClassName: "h-full flex-1",
-    sizeLabel: "Fluid browser",
-    brief: "Review the template in a wide browser-style viewport.",
-  },
-  {
     id: "main",
     label: "Main",
     contentClassName: "max-w-full",
@@ -157,50 +148,12 @@ const viewportOptions = [
     brief:
       "Review the template in the 1440px main container with preserved page scrolling.",
   },
-  {
-    id: "desktop",
-    label: "Desktop",
-    contentClassName: "max-w-full",
-    frameClassName: "w-full max-w-[min(72rem,calc((100svh-7rem)*1.6))]",
-    screenClassName: "aspect-[16/10]",
-    sizeLabel: "Desktop window",
-    brief: "Review the template in a proportional desktop window.",
-  },
-  {
-    id: "tablet",
-    label: "Tablet",
-    contentClassName: "max-w-full",
-    frameClassName: "w-full max-w-[min(42rem,calc((100svh-7rem)*0.75))]",
-    screenClassName: "aspect-[3/4]",
-    sizeLabel: "Tablet window",
-    brief: "Review the template in a tablet-shaped window with responsive simplification.",
-  },
-  {
-    id: "mobile",
-    label: "Mobile",
-    contentClassName: "max-w-full",
-    frameClassName: "w-full max-w-[min(24rem,calc((100svh-7rem)*0.5625))]",
-    screenClassName: "aspect-[9/16]",
-    sizeLabel: "Mobile window",
-    brief: "Review the template in a phone-shaped window with responsive simplification.",
-  },
 ] as const;
 
 function getPreviewResponsiveClassName(
   viewportId: (typeof viewportOptions)[number]["id"],
 ) {
-  if (viewportId === "desktop") {
-    return "pagebuilder-responsive-xl";
-  }
-
-  if (viewportId === "tablet") {
-    return "pagebuilder-responsive-xl pagebuilder-responsive-lg pagebuilder-responsive-md";
-  }
-
-  if (viewportId === "mobile") {
-    return "pagebuilder-responsive-xl pagebuilder-responsive-lg pagebuilder-responsive-md pagebuilder-responsive-sm";
-  }
-
+  void viewportId;
   return "";
 }
 
@@ -362,7 +315,7 @@ function applySavedOptionsToLayoutSlots(
           showSectionMarkers: Boolean(
             savedOption.designStyle.showSectionMarkers,
           ),
-          viewportId: savedOption.designStyle.viewportId,
+          viewportId: "main" as const,
         },
         stack: savedOption.sections.map((section, index) => ({
           ...section,
@@ -689,6 +642,13 @@ const sectionSwapOptions = [
     name: "Fixed cover fade",
   },
   {
+    component: "ServiceAreaZipLookupSectionV3",
+    instruction:
+      "Use when visitors need to confirm service coverage before starting a request.",
+    mode: "Utility",
+    name: "Service area zip lookup",
+  },
+  {
     component: "ContactSectionV3",
     instruction:
       "Close with phone, email, hours, and a simple form or request path.",
@@ -1005,25 +965,6 @@ export function PagebuilderShell({
                 ? {
                     ...slot,
                     stack: updater(slot.stack),
-                  }
-                : slot,
-            )
-          : recipeSlots,
-      ),
-    );
-  }
-
-  function updateActiveDesignStyle(
-    updater: (settings: DesignStyleSettings) => DesignStyleSettings,
-  ) {
-    setLayoutSlots((currentSlots) =>
-      currentSlots.map((recipeSlots, recipeIndex) =>
-        recipeIndex === activeRecipeIndex
-          ? recipeSlots.map((slot, slotIndex) =>
-              slotIndex === activeLayoutSlotIndex
-                ? {
-                    ...slot,
-                    designStyle: updater(slot.designStyle),
                   }
                 : slot,
             )
@@ -1921,36 +1862,19 @@ export function PagebuilderShell({
               <div className="mt-4 grid gap-4">
                 <div className="grid gap-2">
                   <span className="type-caption font-semibold text-white">
-                    Preview Width
+                    Preview Canvas
                   </span>
-                  <div className="grid grid-cols-2 gap-2">
-                    {viewportOptions.map((option) => {
-                      const isActive = option.id === selectedViewport.id;
-
-                      return (
-                        <button
-                          className={cx(
-                            "radius-4 min-h-10 min-w-20 border px-3 text-sm font-semibold transition-colors max-sm:min-w-0 max-sm:px-2",
-                            isActive
-                              ? "border-white/45 bg-white/14 text-white"
-                              : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
-                          )}
-                          key={option.id}
-                          onClick={() =>
-                            updateActiveDesignStyle((settings) => ({
-                              ...settings,
-                              viewportId: option.id,
-                            }))
-                          }
-                          type="button"
-                        >
-                          {option.label}
-                        </button>
-                      );
-                    })}
+                  <div className="radius-4 border border-white/20 bg-white/10 px-3 py-3">
+                    <p className="text-sm font-semibold text-white">
+                      {selectedViewport.label}
+                    </p>
+                    <p className="type-caption mt-1 text-white/60">
+                      {selectedViewport.sizeLabel}
+                    </p>
                   </div>
                   <span className="type-caption text-white/60">
-                    Changes the rendered preview frame width.
+                    All pagebuilder previews use this fixed canvas for
+                    agreement and consistency.
                   </span>
                 </div>
 
@@ -2643,35 +2567,10 @@ export function PagebuilderShell({
                   {selectedViewport.sizeLabel} preview
                 </p>
               </div>
-              <div
-                aria-label="Preview viewport"
-                className="flex max-w-full flex-wrap gap-1 rounded border border-service-border bg-service-surface p-1"
-                role="group"
-              >
-                {viewportOptions.map((option) => {
-                  const isActive = option.id === selectedViewport.id;
-
-                  return (
-                    <button
-                      className={cx(
-                        "radius-4 min-h-8 min-w-16 px-3 text-xs font-semibold transition-colors max-sm:min-w-0 max-sm:px-2",
-                        isActive
-                          ? "bg-service-ink text-white"
-                          : "text-service-muted hover:bg-white hover:text-service-accent",
-                      )}
-                      key={option.id}
-                      onClick={() =>
-                        updateActiveDesignStyle((settings) => ({
-                          ...settings,
-                          viewportId: option.id,
-                        }))
-                      }
-                      type="button"
-                    >
-                      {option.label}
-                    </button>
-                  );
-                })}
+              <div className="rounded border border-service-border bg-service-surface px-3 py-2">
+                <p className="text-xs font-semibold text-service-ink">
+                  {selectedViewport.label}
+                </p>
               </div>
               <button
                 className="min-h-10 shrink-0 rounded border border-service-border bg-service-surface px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"

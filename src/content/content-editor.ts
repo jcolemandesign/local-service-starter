@@ -1,6 +1,6 @@
 import contentEditorPagesData from "./content-editor-pages.json";
 
-export type ContentEditorFieldKind = "copy" | "image" | "link";
+export type ContentEditorFieldKind = "copy" | "image" | "link" | "meta";
 
 export type ContentEditorField = {
   id: string;
@@ -123,6 +123,15 @@ function collectFields({
 
 function inferFieldKind(path: Array<string | number>): ContentEditorFieldKind {
   const normalizedPath = path.join(".").toLowerCase();
+
+  if (
+    normalizedPath.includes("alt") ||
+    normalizedPath.includes("caption") ||
+    normalizedPath.includes("imagelabel") ||
+    normalizedPath.includes("note")
+  ) {
+    return "meta";
+  }
 
   if (
     normalizedPath.includes("image") ||

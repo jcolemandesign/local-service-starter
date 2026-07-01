@@ -3,7 +3,7 @@ import path from "node:path";
 
 export const runtime = "nodejs";
 
-type ContentFieldKind = "copy" | "image" | "link";
+type ContentFieldKind = "copy" | "image" | "link" | "meta";
 
 type PromotionField = {
   id: string;
@@ -37,7 +37,12 @@ const stagedPagesPath = path.join(
   "staged-pages.json",
 );
 const pageIdPattern = /^[a-z0-9-]+$/;
-const allowedKinds = new Set<ContentFieldKind>(["copy", "image", "link"]);
+const allowedKinds = new Set<ContentFieldKind>([
+  "copy",
+  "image",
+  "link",
+  "meta",
+]);
 
 export async function POST(request: Request) {
   if (
@@ -115,7 +120,7 @@ function normalizePromotion(body: PromotionRequest): StagedPage {
         ...counts,
         [field.kind]: counts[field.kind] + 1,
       }),
-      { copy: 0, image: 0, link: 0 },
+      { copy: 0, image: 0, link: 0, meta: 0 },
     ),
     pageHref: body.pageHref,
     pageId: body.pageId,
