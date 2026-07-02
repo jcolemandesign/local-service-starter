@@ -18,6 +18,12 @@ type IntakePayload = {
     otherMainServices?: unknown;
     priorityServices?: unknown;
   };
+  serviceStrategy?: {
+    service_treatment?: unknown;
+    service_priority_notes?: unknown;
+    emergency_service_availability?: unknown;
+    emergency_service_limitations?: unknown;
+  };
   serviceArea?: {
     townsCities?: unknown;
     priorityAreas?: unknown;
@@ -25,6 +31,19 @@ type IntakePayload = {
   leadFlow?: {
     preferredActions?: unknown;
     primaryAction?: unknown;
+  };
+  pricingProcess?: {
+    pricing_process_signals?: unknown;
+    pricing_language_notes?: unknown;
+  };
+  finalNotes?: {
+    bad_fit_customers?: unknown;
+    contact_form_must_include?: unknown;
+    future_offer_visibility?: unknown;
+    future_offers?: unknown;
+    global_avoid_emphasis?: unknown;
+    homepage_must_include?: unknown;
+    services_page_must_include?: unknown;
   };
 };
 
@@ -115,6 +134,7 @@ export async function POST(request: Request) {
 
   const businessBasics = payload.businessBasics ?? {};
   const services = payload.services ?? {};
+  const serviceStrategy = payload.serviceStrategy ?? {};
   const serviceArea = payload.serviceArea ?? {};
   const leadFlow = payload.leadFlow ?? {};
 
@@ -145,6 +165,12 @@ export async function POST(request: Request) {
   ]
     .filter(Boolean)
     .join("\n\n");
+  const priorityServicesSummary = [
+    readString(services.priorityServices),
+    readString(serviceStrategy.service_priority_notes),
+  ]
+    .filter(Boolean)
+    .join("\n\n");
 
   try {
     const supabase = getSupabaseClient();
@@ -159,7 +185,7 @@ export async function POST(request: Request) {
       main_services: mainServices,
       payload,
       preferred_cta: preferredCta,
-      priority_services: readString(services.priorityServices),
+      priority_services: priorityServicesSummary,
       service_area: serviceAreaSummary,
       source: "Client Intake Wizard",
       status: "New",

@@ -60,10 +60,14 @@ function createUnconfiguredClient() {
         },
         delete() {
           return {
-            async eq() {
+            eq() {
               return {
-                data: null,
-                error: missingConfigError,
+                async select() {
+                  return {
+                    data: null,
+                    error: missingConfigError,
+                  };
+                },
               };
             },
           };

@@ -1,6 +1,679 @@
 {
   "pages": [
     {
+      "href": "/about-option-1",
+      "id": "about-option-1",
+      "label": "about - Option 1",
+      "sections": [
+        {
+          "fields": [
+            {
+              "id": "about-option-1.01-center-logo-navigation.logoImageSrc",
+              "kind": "image",
+              "label": "Logo Image Src",
+              "path": "01-center-logo-navigation.logoImageSrc",
+              "value": ""
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.logoLabel",
+              "kind": "copy",
+              "label": "Logo Text",
+              "path": "01-center-logo-navigation.logoLabel",
+              "value": "Logo"
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.logoHref",
+              "kind": "link",
+              "label": "Logo Destination",
+              "path": "01-center-logo-navigation.logoHref",
+              "value": "/"
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.phone",
+              "kind": "copy",
+              "label": "Phone",
+              "path": "01-center-logo-navigation.phone",
+              "value": "(555) 014-2250"
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.phoneHref",
+              "kind": "link",
+              "label": "Phone Href",
+              "path": "01-center-logo-navigation.phoneHref",
+              "value": "tel:5550142250"
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.actionLabel",
+              "kind": "copy",
+              "label": "Action Label",
+              "path": "01-center-logo-navigation.actionLabel",
+              "value": "Schedule now"
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.actionHref",
+              "kind": "link",
+              "label": "Action Href",
+              "path": "01-center-logo-navigation.actionHref",
+              "value": "#contact"
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.1.href",
+              "kind": "link",
+              "label": "Link 1 / Href",
+              "path": "01-center-logo-navigation.links.1.href",
+              "value": "#services"
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.1.label",
+              "kind": "copy",
+              "label": "Link 1 / Label",
+              "path": "01-center-logo-navigation.links.1.label",
+              "value": "Services"
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.2.href",
+              "kind": "link",
+              "label": "Link 2 / Href",
+              "path": "01-center-logo-navigation.links.2.href",
+              "value": "#service-areas"
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.2.label",
+              "kind": "copy",
+              "label": "Link 2 / Label",
+              "path": "01-center-logo-navigation.links.2.label",
+              "value": "Service areas"
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.3.href",
+              "kind": "link",
+              "label": "Link 3 / Href",
+              "path": "01-center-logo-navigation.links.3.href",
+              "value": "#about"
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.3.label",
+              "kind": "copy",
+              "label": "Link 3 / Label",
+              "path": "01-center-logo-navigation.links.3.label",
+              "value": "About"
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.4.href",
+              "kind": "link",
+              "label": "Link 4 / Href",
+              "path": "01-center-logo-navigation.links.4.href",
+              "value": "#reviews"
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.4.label",
+              "kind": "copy",
+              "label": "Link 4 / Label",
+              "path": "01-center-logo-navigation.links.4.label",
+              "value": "Reviews"
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.5.href",
+              "kind": "link",
+              "label": "Link 5 / Href",
+              "path": "01-center-logo-navigation.links.5.href",
+              "value": ""
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.5.label",
+              "kind": "copy",
+              "label": "Link 5 / Label",
+              "path": "01-center-logo-navigation.links.5.label",
+              "value": ""
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.6.href",
+              "kind": "link",
+              "label": "Link 6 / Href",
+              "path": "01-center-logo-navigation.links.6.href",
+              "value": ""
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.6.label",
+              "kind": "copy",
+              "label": "Link 6 / Label",
+              "path": "01-center-logo-navigation.links.6.label",
+              "value": ""
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.7.href",
+              "kind": "link",
+              "label": "Link 7 / Href",
+              "path": "01-center-logo-navigation.links.7.href",
+              "value": ""
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.7.label",
+              "kind": "copy",
+              "label": "Link 7 / Label",
+              "path": "01-center-logo-navigation.links.7.label",
+              "value": ""
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.8.href",
+              "kind": "link",
+              "label": "Link 8 / Href",
+              "path": "01-center-logo-navigation.links.8.href",
+              "value": ""
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.8.label",
+              "kind": "copy",
+              "label": "Link 8 / Label",
+              "path": "01-center-logo-navigation.links.8.label",
+              "value": ""
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.9.href",
+              "kind": "link",
+              "label": "Link 9 / Href",
+              "path": "01-center-logo-navigation.links.9.href",
+              "value": ""
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.9.label",
+              "kind": "copy",
+              "label": "Link 9 / Label",
+              "path": "01-center-logo-navigation.links.9.label",
+              "value": ""
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.10.href",
+              "kind": "link",
+              "label": "Link 10 / Href",
+              "path": "01-center-logo-navigation.links.10.href",
+              "value": ""
+            },
+            {
+              "id": "about-option-1.01-center-logo-navigation.links.10.label",
+              "kind": "copy",
+              "label": "Link 10 / Label",
+              "path": "01-center-logo-navigation.links.10.label",
+              "value": ""
+            }
+          ],
+          "id": "01-center-logo-navigation",
+          "label": "Center logo navigation"
+        },
+        {
+          "fields": [
+            {
+              "id": "about-option-1.02-centered-with-left-right-floaters.eyebrow",
+              "kind": "copy",
+              "label": "Eyebrow",
+              "path": "02-centered-with-left-right-floaters.eyebrow",
+              "value": "Local service starter"
+            },
+            {
+              "id": "about-option-1.02-centered-with-left-right-floaters.title",
+              "kind": "copy",
+              "label": "Title",
+              "path": "02-centered-with-left-right-floaters.title",
+              "value": "Reliable home services built around your schedule."
+            },
+            {
+              "id": "about-option-1.02-centered-with-left-right-floaters.body",
+              "kind": "copy",
+              "label": "Body",
+              "path": "02-centered-with-left-right-floaters.body",
+              "value": "A polished hero pattern for local service companies, with a clear value proposition, supporting proof, and two focused calls to action."
+            },
+            {
+              "id": "about-option-1.02-centered-with-left-right-floaters.primaryAction",
+              "kind": "copy",
+              "label": "Primary Action",
+              "path": "02-centered-with-left-right-floaters.primaryAction",
+              "value": "Request service"
+            },
+            {
+              "id": "about-option-1.02-centered-with-left-right-floaters.secondaryAction",
+              "kind": "copy",
+              "label": "Secondary Action",
+              "path": "02-centered-with-left-right-floaters.secondaryAction",
+              "value": "View services"
+            },
+            {
+              "id": "about-option-1.02-centered-with-left-right-floaters.stats.1",
+              "kind": "copy",
+              "label": "Stat 1",
+              "path": "02-centered-with-left-right-floaters.stats.1",
+              "value": "Same-week visits"
+            },
+            {
+              "id": "about-option-1.02-centered-with-left-right-floaters.stats.2",
+              "kind": "copy",
+              "label": "Stat 2",
+              "path": "02-centered-with-left-right-floaters.stats.2",
+              "value": "Licensed pros"
+            },
+            {
+              "id": "about-option-1.02-centered-with-left-right-floaters.stats.3",
+              "kind": "copy",
+              "label": "Stat 3",
+              "path": "02-centered-with-left-right-floaters.stats.3",
+              "value": "Clear estimates"
+            }
+          ],
+          "id": "02-centered-with-left-right-floaters",
+          "label": "Centered with left right floaters"
+        },
+        {
+          "fields": [
+            {
+              "id": "about-option-1.03-trust-bar.label",
+              "kind": "copy",
+              "label": "Label",
+              "path": "03-trust-bar.label",
+              "value": "Trusted by homeowners and small businesses across the metro area"
+            },
+            {
+              "id": "about-option-1.03-trust-bar.items.1",
+              "kind": "copy",
+              "label": "Item 1",
+              "path": "03-trust-bar.items.1",
+              "value": "4.9 average rating"
+            },
+            {
+              "id": "about-option-1.03-trust-bar.items.2",
+              "kind": "copy",
+              "label": "Item 2",
+              "path": "03-trust-bar.items.2",
+              "value": "2,400+ jobs completed"
+            },
+            {
+              "id": "about-option-1.03-trust-bar.items.3",
+              "kind": "copy",
+              "label": "Item 3",
+              "path": "03-trust-bar.items.3",
+              "value": "Background-checked team"
+            },
+            {
+              "id": "about-option-1.03-trust-bar.items.4",
+              "kind": "copy",
+              "label": "Item 4",
+              "path": "03-trust-bar.items.4",
+              "value": "Locally owned"
+            }
+          ],
+          "id": "03-trust-bar",
+          "label": "Trust bar"
+        },
+        {
+          "fields": [
+            {
+              "id": "about-option-1.04-scroll-service-cards.eyebrow",
+              "kind": "copy",
+              "label": "Eyebrow",
+              "path": "04-scroll-service-cards.eyebrow",
+              "value": "Services"
+            },
+            {
+              "id": "about-option-1.04-scroll-service-cards.title",
+              "kind": "copy",
+              "label": "Title",
+              "path": "04-scroll-service-cards.title",
+              "value": "Service categories that move with the page."
+            },
+            {
+              "id": "about-option-1.04-scroll-service-cards.viewAllLabel",
+              "kind": "copy",
+              "label": "View All Label",
+              "path": "04-scroll-service-cards.viewAllLabel",
+              "value": "View all services"
+            },
+            {
+              "id": "about-option-1.04-scroll-service-cards.items.1.title",
+              "kind": "copy",
+              "label": "Item 1 / Title",
+              "path": "04-scroll-service-cards.items.1.title",
+              "value": "Emergency repairs"
+            },
+            {
+              "id": "about-option-1.04-scroll-service-cards.items.1.imageLabel",
+              "kind": "meta",
+              "label": "Item 1 / Image Label",
+              "path": "04-scroll-service-cards.items.1.imageLabel",
+              "value": "Repair"
+            },
+            {
+              "id": "about-option-1.04-scroll-service-cards.items.2.title",
+              "kind": "copy",
+              "label": "Item 2 / Title",
+              "path": "04-scroll-service-cards.items.2.title",
+              "value": "Maintenance plans"
+            },
+            {
+              "id": "about-option-1.04-scroll-service-cards.items.2.imageLabel",
+              "kind": "meta",
+              "label": "Item 2 / Image Label",
+              "path": "04-scroll-service-cards.items.2.imageLabel",
+              "value": "Care"
+            },
+            {
+              "id": "about-option-1.04-scroll-service-cards.items.3.title",
+              "kind": "copy",
+              "label": "Item 3 / Title",
+              "path": "04-scroll-service-cards.items.3.title",
+              "value": "System installation"
+            },
+            {
+              "id": "about-option-1.04-scroll-service-cards.items.3.imageLabel",
+              "kind": "meta",
+              "label": "Item 3 / Image Label",
+              "path": "04-scroll-service-cards.items.3.imageLabel",
+              "value": "Install"
+            },
+            {
+              "id": "about-option-1.04-scroll-service-cards.items.4.title",
+              "kind": "copy",
+              "label": "Item 4 / Title",
+              "path": "04-scroll-service-cards.items.4.title",
+              "value": "Inspections"
+            },
+            {
+              "id": "about-option-1.04-scroll-service-cards.items.4.imageLabel",
+              "kind": "meta",
+              "label": "Item 4 / Image Label",
+              "path": "04-scroll-service-cards.items.4.imageLabel",
+              "value": "Inspect"
+            },
+            {
+              "id": "about-option-1.04-scroll-service-cards.items.5.title",
+              "kind": "copy",
+              "label": "Item 5 / Title",
+              "path": "04-scroll-service-cards.items.5.title",
+              "value": "Commercial service"
+            },
+            {
+              "id": "about-option-1.04-scroll-service-cards.items.5.imageLabel",
+              "kind": "meta",
+              "label": "Item 5 / Image Label",
+              "path": "04-scroll-service-cards.items.5.imageLabel",
+              "value": "Biz"
+            },
+            {
+              "id": "about-option-1.04-scroll-service-cards.items.6.title",
+              "kind": "copy",
+              "label": "Item 6 / Title",
+              "path": "04-scroll-service-cards.items.6.title",
+              "value": "Consultations"
+            },
+            {
+              "id": "about-option-1.04-scroll-service-cards.items.6.imageLabel",
+              "kind": "meta",
+              "label": "Item 6 / Image Label",
+              "path": "04-scroll-service-cards.items.6.imageLabel",
+              "value": "Plan"
+            }
+          ],
+          "id": "04-scroll-service-cards",
+          "label": "Scroll service cards"
+        },
+        {
+          "fields": [
+            {
+              "id": "about-option-1.05-sticky-card-stream-content.eyebrow",
+              "kind": "copy",
+              "label": "Eyebrow",
+              "path": "05-sticky-card-stream-content.eyebrow",
+              "value": "Service clarity"
+            },
+            {
+              "id": "about-option-1.05-sticky-card-stream-content.title",
+              "kind": "copy",
+              "label": "Title",
+              "path": "05-sticky-card-stream-content.title",
+              "value": "A steady message beside a moving proof stream."
+            },
+            {
+              "id": "about-option-1.05-sticky-card-stream-content.body",
+              "kind": "copy",
+              "label": "Body",
+              "path": "05-sticky-card-stream-content.body",
+              "value": "Use this section when the page needs one persistent idea while supporting details, proof points, or service moments move through the reader's attention."
+            },
+            {
+              "id": "about-option-1.05-sticky-card-stream-content.cards.1.eyebrow",
+              "kind": "copy",
+              "label": "Card 1 / Eyebrow",
+              "path": "05-sticky-card-stream-content.cards.1.eyebrow",
+              "value": "First response"
+            },
+            {
+              "id": "about-option-1.05-sticky-card-stream-content.cards.1.title",
+              "kind": "copy",
+              "label": "Card 1 / Title",
+              "path": "05-sticky-card-stream-content.cards.1.title",
+              "value": "The request path stays obvious while details unfold."
+            },
+            {
+              "id": "about-option-1.05-sticky-card-stream-content.cards.1.body",
+              "kind": "copy",
+              "label": "Card 1 / Body",
+              "path": "05-sticky-card-stream-content.cards.1.body",
+              "value": "A sticky message can hold the main promise in place while the supporting column explains what happens after a homeowner reaches out."
+            },
+            {
+              "id": "about-option-1.05-sticky-card-stream-content.cards.2.eyebrow",
+              "kind": "copy",
+              "label": "Card 2 / Eyebrow",
+              "path": "05-sticky-card-stream-content.cards.2.eyebrow",
+              "value": "Visit prep"
+            },
+            {
+              "id": "about-option-1.05-sticky-card-stream-content.cards.2.title",
+              "kind": "copy",
+              "label": "Card 2 / Title",
+              "path": "05-sticky-card-stream-content.cards.2.title",
+              "value": "Each card can carry a focused operational proof point."
+            },
+            {
+              "id": "about-option-1.05-sticky-card-stream-content.cards.2.body",
+              "kind": "copy",
+              "label": "Card 2 / Body",
+              "path": "05-sticky-card-stream-content.cards.2.body",
+              "value": "Use the stream for arrival windows, diagnostic steps, photo-backed notes, or practical expectations that make the service feel organized."
+            },
+            {
+              "id": "about-option-1.05-sticky-card-stream-content.cards.3.eyebrow",
+              "kind": "copy",
+              "label": "Card 3 / Eyebrow",
+              "path": "05-sticky-card-stream-content.cards.3.eyebrow",
+              "value": "Clear options"
+            },
+            {
+              "id": "about-option-1.05-sticky-card-stream-content.cards.3.title",
+              "kind": "copy",
+              "label": "Card 3 / Title",
+              "path": "05-sticky-card-stream-content.cards.3.title",
+              "value": "Complex service decisions become easier to scan."
+            },
+            {
+              "id": "about-option-1.05-sticky-card-stream-content.cards.3.body",
+              "kind": "copy",
+              "label": "Card 3 / Body",
+              "path": "05-sticky-card-stream-content.cards.3.body",
+              "value": "The section can slow the page down without becoming static, giving each idea enough room to land as the visitor scrolls."
+            },
+            {
+              "id": "about-option-1.05-sticky-card-stream-content.cards.4.eyebrow",
+              "kind": "copy",
+              "label": "Card 4 / Eyebrow",
+              "path": "05-sticky-card-stream-content.cards.4.eyebrow",
+              "value": "Follow-through"
+            },
+            {
+              "id": "about-option-1.05-sticky-card-stream-content.cards.4.title",
+              "kind": "copy",
+              "label": "Card 4 / Title",
+              "path": "05-sticky-card-stream-content.cards.4.title",
+              "value": "The final card can reinforce confidence before conversion."
+            },
+            {
+              "id": "about-option-1.05-sticky-card-stream-content.cards.4.body",
+              "kind": "copy",
+              "label": "Card 4 / Body",
+              "path": "05-sticky-card-stream-content.cards.4.body",
+              "value": "Close the stream with cleanup, documentation, follow-up, or another trust point that makes the next action feel low-friction."
+            }
+          ],
+          "id": "05-sticky-card-stream-content",
+          "label": "Sticky card stream content"
+        },
+        {
+          "fields": [
+            {
+              "id": "about-option-1.06-faq-accordion.eyebrow",
+              "kind": "copy",
+              "label": "Eyebrow",
+              "path": "06-faq-accordion.eyebrow",
+              "value": "FAQ"
+            },
+            {
+              "id": "about-option-1.06-faq-accordion.title",
+              "kind": "copy",
+              "label": "Title",
+              "path": "06-faq-accordion.title",
+              "value": "Clear answers before customers reach out."
+            },
+            {
+              "id": "about-option-1.06-faq-accordion.body",
+              "kind": "copy",
+              "label": "Body",
+              "path": "06-faq-accordion.body",
+              "value": "A full-width accordion pattern for service pages that need organized answers without overwhelming the layout."
+            },
+            {
+              "id": "about-option-1.06-faq-accordion.items.1.question",
+              "kind": "copy",
+              "label": "Item 1 / Question",
+              "path": "06-faq-accordion.items.1.question",
+              "value": "Do you provide estimates before work begins?"
+            },
+            {
+              "id": "about-option-1.06-faq-accordion.items.1.answer",
+              "kind": "copy",
+              "label": "Item 1 / Answer",
+              "path": "06-faq-accordion.items.1.answer",
+              "value": "Yes. Customers receive a clear scope, pricing guidance, and an approval point before paid work starts. If the work changes once we are on site, we explain the reason and confirm the next step first."
+            },
+            {
+              "id": "about-option-1.06-faq-accordion.items.2.question",
+              "kind": "copy",
+              "label": "Item 2 / Question",
+              "path": "06-faq-accordion.items.2.question",
+              "value": "What areas do you serve?"
+            },
+            {
+              "id": "about-option-1.06-faq-accordion.items.2.answer",
+              "kind": "copy",
+              "label": "Item 2 / Answer",
+              "path": "06-faq-accordion.items.2.answer",
+              "value": "This placeholder can be adapted for city, county, or neighborhood coverage. It works well for businesses that serve a defined metro area and want to make location fit obvious before someone contacts the team."
+            },
+            {
+              "id": "about-option-1.06-faq-accordion.items.3.question",
+              "kind": "copy",
+              "label": "Item 3 / Question",
+              "path": "06-faq-accordion.items.3.question",
+              "value": "Can customers book recurring maintenance?"
+            },
+            {
+              "id": "about-option-1.06-faq-accordion.items.3.answer",
+              "kind": "copy",
+              "label": "Item 3 / Answer",
+              "path": "06-faq-accordion.items.3.answer",
+              "value": "Yes. This pattern supports one-time visits and recurring service plans, with room to explain seasonal tune-ups, reminder schedules, and what is included in each maintenance appointment."
+            },
+            {
+              "id": "about-option-1.06-faq-accordion.items.4.question",
+              "kind": "copy",
+              "label": "Item 4 / Question",
+              "path": "06-faq-accordion.items.4.question",
+              "value": "How quickly can someone schedule service?"
+            },
+            {
+              "id": "about-option-1.06-faq-accordion.items.4.answer",
+              "kind": "copy",
+              "label": "Item 4 / Answer",
+              "path": "06-faq-accordion.items.4.answer",
+              "value": "Availability depends on the service type and current schedule, but this section can communicate standard response windows, same-week availability, emergency support, and what customers should expect after submitting a request."
+            },
+            {
+              "id": "about-option-1.06-faq-accordion.items.5.question",
+              "kind": "copy",
+              "label": "Item 5 / Question",
+              "path": "06-faq-accordion.items.5.question",
+              "value": "Are your technicians licensed and insured?"
+            },
+            {
+              "id": "about-option-1.06-faq-accordion.items.5.answer",
+              "kind": "copy",
+              "label": "Item 5 / Answer",
+              "path": "06-faq-accordion.items.5.answer",
+              "value": "Yes. Use this answer to reinforce credentials, insurance coverage, background checks, training, or any local certifications that help customers feel confident before inviting the team into their home or business."
+            }
+          ],
+          "id": "06-faq-accordion",
+          "label": "FAQ accordion"
+        },
+        {
+          "fields": [
+            {
+              "id": "about-option-1.07-contact-section.eyebrow",
+              "kind": "copy",
+              "label": "Eyebrow",
+              "path": "07-contact-section.eyebrow",
+              "value": "Contact"
+            },
+            {
+              "id": "about-option-1.07-contact-section.title",
+              "kind": "copy",
+              "label": "Title",
+              "path": "07-contact-section.title",
+              "value": "Make it easy for customers to reach the team."
+            },
+            {
+              "id": "about-option-1.07-contact-section.body",
+              "kind": "copy",
+              "label": "Body",
+              "path": "07-contact-section.body",
+              "value": "A reusable contact section placeholder for phone, email, hours, and a simple form preview."
+            },
+            {
+              "id": "about-option-1.07-contact-section.details.1",
+              "kind": "copy",
+              "label": "Details / Item 1",
+              "path": "07-contact-section.details.1",
+              "value": "(555) 014-2250"
+            },
+            {
+              "id": "about-option-1.07-contact-section.details.2",
+              "kind": "copy",
+              "label": "Details / Item 2",
+              "path": "07-contact-section.details.2",
+              "value": "hello@examplelocal.com"
+            },
+            {
+              "id": "about-option-1.07-contact-section.details.3",
+              "kind": "copy",
+              "label": "Details / Item 3",
+              "path": "07-contact-section.details.3",
+              "value": "Mon-Fri, 8am-6pm"
+            }
+          ],
+          "id": "07-contact-section",
+          "label": "Contact section"
+        }
+      ],
+      "sourceRecipe": "about / Option 1"
+    },
+    {
       "href": "/homepage-option-1",
       "id": "homepage-option-1",
       "label": "homepage - Option 1",

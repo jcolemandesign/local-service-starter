@@ -1235,6 +1235,12 @@ export function ProjectIntakeDashboard({
             Could not delete intake.
           </p>
         ) : null}
+        {intakeSaveState === "delete-config-error" ? (
+          <p className="mt-heading-body-sm type-caption font-semibold text-red-700">
+            Could not delete intake. Add SUPABASE_SERVICE_ROLE_KEY to the local
+            environment and restart the dev server.
+          </p>
+        ) : null}
       </Card>
 
       {projectIntakes.length === 0 ? (
@@ -1703,7 +1709,18 @@ function formatAnswerValue(value: JsonValue): string {
   }
 
   if (value && typeof value === "object") {
-    return JSON.stringify(value);
+    return Object.entries(value)
+      .map(([key, nestedValue]) => {
+        const formatted = formatAnswerValue(nestedValue);
+
+        if (formatted === "Not provided") {
+          return null;
+        }
+
+        return `${formatAnswerLabel(key)}: ${formatted}`;
+      })
+      .filter((line): line is string => Boolean(line))
+      .join("; ");
   }
 
   if (typeof value === "boolean") {

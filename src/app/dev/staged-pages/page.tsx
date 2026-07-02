@@ -4,7 +4,7 @@ import path from "node:path";
 import { Button, Card, SevenColumnGrid, SevenColumnGridItem } from "@/components/primitives";
 
 export const metadata: Metadata = {
-  title: "Website Pages",
+  title: "Staged Pages",
   description: "Staged pages eligible for public promotion.",
 };
 
@@ -41,7 +41,7 @@ const stagedPagesPath = path.join(
   "staged-pages.json",
 );
 
-export default async function WebsitePagesPage() {
+export default async function StagedPagesPage() {
   const stagedPages = await readStagedPages();
 
   return (
@@ -50,7 +50,7 @@ export default async function WebsitePagesPage() {
         <SevenColumnGridItem className="col-start-2 col-span-4 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <p className="type-label text-service-accent">Pageworks Pipeline</p>
           <h1 className="type-display-lg mt-eyebrow-display text-service-ink">
-            Website Pages
+            Staged Pages
           </h1>
           <p className="type-text-xl wrap-pretty mt-display-body text-service-muted">
             Staged pages promoted from Content Editor. These are eligible for

@@ -24,6 +24,19 @@ type ServicesAnswers = {
   priorityServices: string;
 };
 
+type ServiceTreatment =
+  | "Promote heavily"
+  | "Include normally"
+  | "Mention only if relevant"
+  | "Do not promote";
+
+type ServiceStrategyAnswers = {
+  service_treatment: Record<string, ServiceTreatment>;
+  service_priority_notes: string;
+  emergency_service_availability: string;
+  emergency_service_limitations: string;
+};
+
 type ServiceAreaAnswers = {
   townsCities: string;
   priorityAreas: string;
@@ -36,6 +49,11 @@ type LeadFlowAnswers = {
   primaryAction: string;
   afterFormSubmit: string[];
   responseTime: string;
+};
+
+type PricingProcessAnswers = {
+  pricing_process_signals: string[];
+  pricing_language_notes: string;
 };
 
 type TrustAnswers = {
@@ -60,19 +78,28 @@ type AssetAnswers = {
 };
 
 type FinalNotesAnswers = {
-  mustInclude: string;
-  avoidSaying: string;
-  servicesToAvoid: string;
-  customerTypesToAvoid: string;
+  future_offers: string;
+  future_offer_visibility: string;
+  homepage_must_include: string;
+  services_page_must_include: string;
+  contact_form_must_include: string;
+  global_avoid_emphasis: string;
+  bad_fit_customers: string;
   upcomingChanges: string;
+  mustInclude?: string;
+  avoidSaying?: string;
+  servicesToAvoid?: string;
+  customerTypesToAvoid?: string;
 };
 
 export type ClientIntakePayload = {
   variant: IntakeVariantKey;
   businessBasics: BusinessBasics;
   services: ServicesAnswers;
+  serviceStrategy: ServiceStrategyAnswers;
   serviceArea: ServiceAreaAnswers;
   leadFlow: LeadFlowAnswers;
+  pricingProcess: PricingProcessAnswers;
   trust: TrustAnswers;
   customerQuestions: CustomerQuestionsAnswers;
   assets: AssetAnswers;
@@ -97,39 +124,52 @@ const baseStorageKey = "client-intake-wizard-draft-v2";
 
 const steps: WizardStep[] = [
   { eyebrow: "Step 1", title: "Business basics" },
-  { eyebrow: "Step 2", title: "Main services" },
-  { eyebrow: "Step 3", title: "Service area" },
+  { eyebrow: "Step 2", title: "Services offered" },
   {
-    eyebrow: "Step 4",
+    eyebrow: "Step 3",
+    title: "Service priorities and boundaries",
+    subhead:
+      "This helps the site know what to push, what to include quietly, and what to avoid promoting.",
+  },
+  { eyebrow: "Step 4", title: "Service area" },
+  {
+    eyebrow: "Step 5",
     title: "How new customers contact you",
     subhead:
       "This helps us make the website match how your business actually handles new inquiries.",
   },
   {
-    eyebrow: "Step 5",
+    eyebrow: "Step 6",
+    title: "Pricing, estimates, and process",
+    subhead:
+      "Use this to keep pricing language accurate without overpromising before diagnosis or qualification.",
+  },
+  {
+    eyebrow: "Step 7",
     title: "Why customers choose you",
     subhead:
       "Select anything that is true, important, and okay to say publicly on the website.",
   },
   {
-    eyebrow: "Step 6",
+    eyebrow: "Step 8",
     title: "Common customer questions",
     subhead:
       "These help us write better FAQs, contact sections, and service page copy.",
   },
   {
-    eyebrow: "Step 7",
+    eyebrow: "Step 9",
     title: "Photos, logo, references, and offers",
     subhead:
       "The easiest option is to send one Google Drive or Dropbox folder with anything useful.",
   },
   {
-    eyebrow: "Step 8",
-    title: "Final details",
-    subhead: "Anything we should know before writing and building the site?",
+    eyebrow: "Step 10",
+    title: "Final notes and future offers",
+    subhead:
+      "Capture must-have page notes, future offers, and anything the site should not emphasize.",
   },
   {
-    eyebrow: "Step 9",
+    eyebrow: "Step 11",
     title: "Review your intake",
     subhead: "Take a quick look before submitting. You can go back and edit anything.",
   },
@@ -172,6 +212,36 @@ const responseTimeOptions = [
   "Within 2-3 business days",
   "It depends on the request",
   "This is something we need to improve",
+];
+
+const serviceTreatmentOptions: ServiceTreatment[] = [
+  "Promote heavily",
+  "Include normally",
+  "Mention only if relevant",
+  "Do not promote",
+];
+
+const emergencyAvailabilityOptions = [
+  "Yes",
+  "No",
+  "Limited / depends on availability",
+];
+
+const pricingProcessSignalOptions = [
+  "Free estimates",
+  "Diagnostic fee applies",
+  "Diagnostic fee may be credited toward approved work",
+  "Upfront pricing after diagnosis",
+  "Financing available",
+  "Do not mention pricing online",
+  "Do not quote exact prices before diagnosis",
+];
+
+const futureOfferVisibilityOptions = [
+  "Do not mention yet",
+  "Mention lightly",
+  "Create a placeholder section",
+  "Make it a major website focus",
 ];
 
 const trustSignalOptions = [
@@ -225,6 +295,12 @@ function createDefaultPayload(variant: IntakeVariantKey): ClientIntakePayload {
       otherMainServices: "",
       priorityServices: "",
     },
+    serviceStrategy: {
+      service_treatment: {},
+      service_priority_notes: "",
+      emergency_service_availability: "",
+      emergency_service_limitations: "",
+    },
     serviceArea: {
       townsCities: "",
       priorityAreas: "",
@@ -236,6 +312,10 @@ function createDefaultPayload(variant: IntakeVariantKey): ClientIntakePayload {
       primaryAction: "",
       afterFormSubmit: [],
       responseTime: "",
+    },
+    pricingProcess: {
+      pricing_process_signals: [],
+      pricing_language_notes: "",
     },
     trust: {
       signals: [],
@@ -256,10 +336,13 @@ function createDefaultPayload(variant: IntakeVariantKey): ClientIntakePayload {
       competitorReferences: "",
     },
     finalNotes: {
-      mustInclude: "",
-      avoidSaying: "",
-      servicesToAvoid: "",
-      customerTypesToAvoid: "",
+      future_offers: "",
+      future_offer_visibility: "",
+      homepage_must_include: "",
+      services_page_must_include: "",
+      contact_form_must_include: "",
+      global_avoid_emphasis: "",
+      bad_fit_customers: "",
       upcomingChanges: "",
     },
   };
@@ -291,6 +374,14 @@ function mergePayload(
       ...defaultPayload.services,
       ...draft.services,
     },
+    serviceStrategy: {
+      ...defaultPayload.serviceStrategy,
+      ...draft.serviceStrategy,
+      service_treatment: {
+        ...defaultPayload.serviceStrategy.service_treatment,
+        ...draft.serviceStrategy?.service_treatment,
+      },
+    },
     serviceArea: {
       ...defaultPayload.serviceArea,
       ...draft.serviceArea,
@@ -298,6 +389,10 @@ function mergePayload(
     leadFlow: {
       ...defaultPayload.leadFlow,
       ...draft.leadFlow,
+    },
+    pricingProcess: {
+      ...defaultPayload.pricingProcess,
+      ...draft.pricingProcess,
     },
     trust: {
       ...defaultPayload.trust,
@@ -314,6 +409,19 @@ function mergePayload(
     finalNotes: {
       ...defaultPayload.finalNotes,
       ...draft.finalNotes,
+      bad_fit_customers:
+        draft.finalNotes?.bad_fit_customers ??
+        draft.finalNotes?.customerTypesToAvoid ??
+        "",
+      global_avoid_emphasis:
+        draft.finalNotes?.global_avoid_emphasis ??
+        draft.finalNotes?.avoidSaying ??
+        draft.finalNotes?.servicesToAvoid ??
+        "",
+      homepage_must_include:
+        draft.finalNotes?.homepage_must_include ??
+        draft.finalNotes?.mustInclude ??
+        "",
     },
     variant,
   };
@@ -744,46 +852,59 @@ export function ClientIntakeWizard({
               />
             ) : null}
             {currentStep === 3 ? (
+              <ServiceStrategyStep
+                payload={payload.serviceStrategy}
+                selectedServices={mainServices}
+                update={(value) => updatePayload("serviceStrategy", value)}
+              />
+            ) : null}
+            {currentStep === 4 ? (
               <ServiceAreaStep
                 payload={payload.serviceArea}
                 update={(value) => updatePayload("serviceArea", value)}
                 variant={variantConfig}
               />
             ) : null}
-            {currentStep === 4 ? (
+            {currentStep === 5 ? (
               <LeadFlowStep
                 payload={payload.leadFlow}
                 update={(value) => updatePayload("leadFlow", value)}
                 variant={variantConfig}
               />
             ) : null}
-            {currentStep === 5 ? (
+            {currentStep === 6 ? (
+              <PricingProcessStep
+                payload={payload.pricingProcess}
+                update={(value) => updatePayload("pricingProcess", value)}
+              />
+            ) : null}
+            {currentStep === 7 ? (
               <TrustStep
                 payload={payload.trust}
                 update={(value) => updatePayload("trust", value)}
               />
             ) : null}
-            {currentStep === 6 ? (
+            {currentStep === 8 ? (
               <CustomerQuestionsStep
                 payload={payload.customerQuestions}
                 update={(value) => updatePayload("customerQuestions", value)}
                 placeholders={variantConfig.customerQuestionPlaceholders}
               />
             ) : null}
-            {currentStep === 7 ? (
+            {currentStep === 9 ? (
               <AssetsStep
                 payload={payload.assets}
                 update={(value) => updatePayload("assets", value)}
                 variant={variantConfig}
               />
             ) : null}
-            {currentStep === 8 ? (
+            {currentStep === 10 ? (
               <FinalNotesStep
                 payload={payload.finalNotes}
                 update={(value) => updatePayload("finalNotes", value)}
               />
             ) : null}
-            {currentStep === 9 ? (
+            {currentStep === 11 ? (
               <ReviewStep
                 mainServices={mainServices}
                 onEditStep={goToStep}
@@ -954,6 +1075,110 @@ function ServicesStep({
   );
 }
 
+function ServiceStrategyStep({
+  payload,
+  selectedServices,
+  update,
+}: {
+  payload: ServiceStrategyAnswers;
+  selectedServices: string[];
+  update: (value: Partial<ServiceStrategyAnswers>) => void;
+}) {
+  const needsEmergencyLimits =
+    payload.emergency_service_availability === "Yes" ||
+    payload.emergency_service_availability ===
+      "Limited / depends on availability";
+
+  function updateServiceTreatment(
+    service: string,
+    treatment: ServiceTreatment,
+  ) {
+    update({
+      service_treatment: {
+        ...payload.service_treatment,
+        [service]: treatment,
+      },
+    });
+  }
+
+  return (
+    <div className="grid layout-gap-lrg">
+      <QuestionBlock
+        description="For each selected service, choose how strongly the website should position it."
+        title="How should the website treat each service?"
+      >
+        {selectedServices.length > 0 ? (
+          <div className="grid gap-4">
+            {selectedServices.map((service) => (
+              <div
+                className="radius-medium border border-service-border bg-service-surface p-4"
+                key={service}
+              >
+                <p className="type-caption font-semibold text-service-ink">
+                  {service}
+                </p>
+                <div className="mt-3 grid grid-cols-2 gap-2 max-sm:grid-cols-1">
+                  {serviceTreatmentOptions.map((option) => (
+                    <RadioCard
+                      checked={payload.service_treatment[service] === option}
+                      key={option}
+                      label={option}
+                      name={`service-treatment-${service}`}
+                      onChange={() => updateServiceTreatment(service, option)}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="type-text-sm text-service-muted">
+            Select services in the previous step, then classify how the website
+            should treat each one.
+          </p>
+        )}
+      </QuestionBlock>
+
+      <TextAreaField
+        label="Service priority notes or nuance"
+        onChange={(service_priority_notes) =>
+          update({ service_priority_notes })
+        }
+        placeholder="Example: Replacement is a priority, repair is still important, commercial work exists but should not be emphasized."
+        rows={4}
+        value={payload.service_priority_notes}
+      />
+
+      <QuestionBlock title="Do you offer emergency or after-hours service?">
+        <div className="grid grid-cols-3 gap-2 max-md:grid-cols-1">
+          {emergencyAvailabilityOptions.map((option) => (
+            <RadioCard
+              checked={payload.emergency_service_availability === option}
+              key={option}
+              label={option}
+              name="emergency-service-availability"
+              onChange={() =>
+                update({ emergency_service_availability: option })
+              }
+            />
+          ))}
+        </div>
+        {needsEmergencyLimits ? (
+          <TextAreaField
+            label="What should the website avoid promising about emergency service?"
+            onChange={(emergency_service_limitations) =>
+              update({ emergency_service_limitations })
+            }
+            placeholder="Example: Do not guarantee same-day service for every request. Availability may depend on distance, schedule, or technician availability."
+            rows={4}
+            value={payload.emergency_service_limitations}
+          />
+        ) : null}
+      </QuestionBlock>
+    </div>
+  );
+}
+
 function ServiceAreaStep({
   payload,
   update,
@@ -1076,6 +1301,48 @@ function LeadFlowStep({
           ))}
         </div>
       </QuestionBlock>
+    </div>
+  );
+}
+
+function PricingProcessStep({
+  payload,
+  update,
+}: {
+  payload: PricingProcessAnswers;
+  update: (value: Partial<PricingProcessAnswers>) => void;
+}) {
+  return (
+    <div className="grid layout-gap-lrg">
+      <QuestionBlock title="What can we safely say about pricing, estimates, or diagnostic fees?">
+        <div className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
+          {pricingProcessSignalOptions.map((option) => (
+            <CheckboxCard
+              checked={payload.pricing_process_signals.includes(option)}
+              key={option}
+              label={option}
+              onChange={() =>
+                update({
+                  pricing_process_signals: updateArrayValue(
+                    payload.pricing_process_signals,
+                    option,
+                  ),
+                })
+              }
+            />
+          ))}
+        </div>
+      </QuestionBlock>
+
+      <TextAreaField
+        label="Any pricing language we should use or avoid?"
+        onChange={(pricing_language_notes) =>
+          update({ pricing_language_notes })
+        }
+        placeholder="Example: A standard diagnostic fee applies. The fee may be credited toward repair or replacement if the customer moves forward. Do not promise exact pricing before diagnosis."
+        rows={4}
+        value={payload.pricing_language_notes}
+      />
     </div>
   );
 }
@@ -1236,31 +1503,68 @@ function FinalNotesStep({
   update: (value: Partial<FinalNotesAnswers>) => void;
 }) {
   return (
-    <QuestionBlock title="Final checks before review.">
-      <div className="grid layout-gap-med">
+    <div className="grid layout-gap-lrg">
+      <QuestionBlock title="Are there any services, plans, memberships, or offers you want the site to leave room for later?">
         <TextAreaField
-          label="Anything that absolutely needs to be included?"
-          onChange={(mustInclude) => update({ mustInclude })}
+          label="Future offer name or description"
+          onChange={(future_offers) => update({ future_offers })}
+          placeholder="Example: Maintenance membership, seasonal tune-up plan, commercial service package, financing offer."
           rows={3}
-          value={payload.mustInclude}
+          value={payload.future_offers}
+        />
+        <div className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
+          {futureOfferVisibilityOptions.map((option) => (
+            <RadioCard
+              checked={payload.future_offer_visibility === option}
+              key={option}
+              label={option}
+              name="future-offer-visibility"
+              onChange={() => update({ future_offer_visibility: option })}
+            />
+          ))}
+        </div>
+      </QuestionBlock>
+
+      <QuestionBlock title="Final page notes">
+        <TextAreaField
+          label="Anything that must appear on the homepage?"
+          onChange={(homepage_must_include) =>
+            update({ homepage_must_include })
+          }
+          rows={3}
+          value={payload.homepage_must_include}
         />
         <TextAreaField
-          label="Anything we should avoid saying?"
-          onChange={(avoidSaying) => update({ avoidSaying })}
+          label="Anything that must appear on the services page?"
+          onChange={(services_page_must_include) =>
+            update({ services_page_must_include })
+          }
           rows={3}
-          value={payload.avoidSaying}
+          value={payload.services_page_must_include}
         />
         <TextAreaField
-          label="Any services you do not want to advertise?"
-          onChange={(servicesToAvoid) => update({ servicesToAvoid })}
+          label="Anything that must appear near the contact/request quote form?"
+          onChange={(contact_form_must_include) =>
+            update({ contact_form_must_include })
+          }
           rows={3}
-          value={payload.servicesToAvoid}
+          value={payload.contact_form_must_include}
         />
         <TextAreaField
-          label="Any customer types you do not want to attract?"
-          onChange={(customerTypesToAvoid) => update({ customerTypesToAvoid })}
+          label="Anything we should avoid emphasizing anywhere?"
+          onChange={(global_avoid_emphasis) =>
+            update({ global_avoid_emphasis })
+          }
+          placeholder="Services, claims, audiences, offers, guarantees, or language that should stay quiet."
           rows={3}
-          value={payload.customerTypesToAvoid}
+          value={payload.global_avoid_emphasis}
+        />
+        <TextAreaField
+          label="Who is not a good fit?"
+          onChange={(bad_fit_customers) => update({ bad_fit_customers })}
+          placeholder="Examples: customers outside the service area, price-only shoppers, services we technically offer but do not want more of, emergency requests too far away, commercial jobs, jobs below our minimum."
+          rows={3}
+          value={payload.bad_fit_customers}
         />
         <TextAreaField
           label="Any important business changes coming soon?"
@@ -1268,8 +1572,8 @@ function FinalNotesStep({
           rows={3}
           value={payload.upcomingChanges}
         />
-      </div>
-    </QuestionBlock>
+      </QuestionBlock>
+    </div>
   );
 }
 
@@ -1316,7 +1620,28 @@ function ReviewStep({
           />
         </ReviewCard>
 
-        <ReviewCard onEdit={() => onEditStep(3)} title="Service area">
+        <ReviewCard onEdit={() => onEditStep(3)} title="Service priorities">
+          <SummaryRow
+            label="Service treatment"
+            value={formatServiceTreatmentSummary(
+              payload.serviceStrategy.service_treatment,
+            )}
+          />
+          <SummaryRow
+            label="Service nuance"
+            value={payload.serviceStrategy.service_priority_notes}
+          />
+          <SummaryRow
+            label="Emergency / after-hours"
+            value={payload.serviceStrategy.emergency_service_availability}
+          />
+          <SummaryRow
+            label="Emergency limitations"
+            value={payload.serviceStrategy.emergency_service_limitations}
+          />
+        </ReviewCard>
+
+        <ReviewCard onEdit={() => onEditStep(4)} title="Service area">
           <SummaryRow label="Service area" value={payload.serviceArea.townsCities} />
           <SummaryRow
             label="Priority areas"
@@ -1331,7 +1656,7 @@ function ReviewStep({
           />
         </ReviewCard>
 
-        <ReviewCard onEdit={() => onEditStep(4)} title="Preferred contact flow">
+        <ReviewCard onEdit={() => onEditStep(5)} title="Preferred contact flow">
           <SummaryRow
             label="Current process"
             value={payload.leadFlow.currentProcess}
@@ -1344,7 +1669,18 @@ function ReviewStep({
           <SummaryRow label="Response speed" value={payload.leadFlow.responseTime} />
         </ReviewCard>
 
-        <ReviewCard onEdit={() => onEditStep(5)} title="Trust points">
+        <ReviewCard onEdit={() => onEditStep(6)} title="Pricing and process">
+          <SummaryRow
+            label="Pricing signals"
+            value={payload.pricingProcess.pricing_process_signals}
+          />
+          <SummaryRow
+            label="Pricing language"
+            value={payload.pricingProcess.pricing_language_notes}
+          />
+        </ReviewCard>
+
+        <ReviewCard onEdit={() => onEditStep(7)} title="Trust points">
           <SummaryRow label="Trust signals" value={payload.trust.signals} />
           <SummaryRow label="Compliments" value={payload.trust.compliments} />
           <SummaryRow
@@ -1353,7 +1689,7 @@ function ReviewStep({
           />
         </ReviewCard>
 
-        <ReviewCard onEdit={() => onEditStep(6)} title="Common customer questions">
+        <ReviewCard onEdit={() => onEditStep(8)} title="Common customer questions">
           <SummaryRow
             label="Before contacting"
             value={payload.customerQuestions.beforeContact}
@@ -1368,7 +1704,7 @@ function ReviewStep({
           />
         </ReviewCard>
 
-        <ReviewCard onEdit={() => onEditStep(7)} title="Asset folder / references">
+        <ReviewCard onEdit={() => onEditStep(9)} title="Asset folder / references">
           <SummaryRow label="Folder link" value={payload.assets.folderLink} />
           <SummaryRow label="Folder includes" value={payload.assets.folderIncludes} />
           <SummaryRow label="Promo" value={payload.assets.promoOffer} />
@@ -1378,16 +1714,34 @@ function ReviewStep({
           />
         </ReviewCard>
 
-        <ReviewCard onEdit={() => onEditStep(8)} title="Final notes">
-          <SummaryRow label="Must include" value={payload.finalNotes.mustInclude} />
-          <SummaryRow label="Avoid saying" value={payload.finalNotes.avoidSaying} />
+        <ReviewCard onEdit={() => onEditStep(10)} title="Final notes">
           <SummaryRow
-            label="Do not advertise"
-            value={payload.finalNotes.servicesToAvoid}
+            label="Future offers"
+            value={payload.finalNotes.future_offers}
           />
           <SummaryRow
-            label="Avoid attracting"
-            value={payload.finalNotes.customerTypesToAvoid}
+            label="Future offer visibility"
+            value={payload.finalNotes.future_offer_visibility}
+          />
+          <SummaryRow
+            label="Homepage must include"
+            value={payload.finalNotes.homepage_must_include}
+          />
+          <SummaryRow
+            label="Services page must include"
+            value={payload.finalNotes.services_page_must_include}
+          />
+          <SummaryRow
+            label="Contact form must include"
+            value={payload.finalNotes.contact_form_must_include}
+          />
+          <SummaryRow
+            label="Avoid emphasizing"
+            value={payload.finalNotes.global_avoid_emphasis}
+          />
+          <SummaryRow
+            label="Who is not a good fit"
+            value={payload.finalNotes.bad_fit_customers}
           />
           <SummaryRow
             label="Upcoming changes"
@@ -1396,6 +1750,14 @@ function ReviewStep({
         </ReviewCard>
       </div>
     </div>
+  );
+}
+
+function formatServiceTreatmentSummary(
+  serviceTreatment: Record<string, ServiceTreatment>,
+) {
+  return Object.entries(serviceTreatment).map(
+    ([service, treatment]) => `${service}: ${treatment}`,
   );
 }
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { createClient as createSupabaseServiceClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import Link from "next/link";
@@ -58,6 +59,21 @@ async function getAuthenticatedSupabase() {
   return supabase;
 }
 
+function getServiceRoleSupabase() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseServiceRoleKey) {
+    return null;
+  }
+
+  return createSupabaseServiceClient(supabaseUrl, supabaseServiceRoleKey, {
+    auth: {
+      persistSession: false,
+    },
+  });
+}
+
 async function getProjectIntakes() {
   const supabase = await getAuthenticatedSupabase();
 
@@ -105,25 +121,40 @@ async function updateProjectIntake(formData: FormData) {
 async function deleteProjectIntake(formData: FormData) {
   "use server";
 
-  const supabase = await getAuthenticatedSupabase();
+  await getAuthenticatedSupabase();
   const intakeId = getFormString(formData, "intakeId");
 
   if (!intakeId) {
     redirect("/dev/dashboard?intakeSave=delete-error");
   }
 
-  const { error } = await supabase
+  const serviceRoleSupabase = getServiceRoleSupabase();
+
+  if (!serviceRoleSupabase) {
+    console.error("Supabase project intake delete failed", {
+      intakeId,
+      message: "Missing SUPABASE_SERVICE_ROLE_KEY.",
+    });
+
+    redirect(
+      `/dev/dashboard?intakeSave=delete-config-error&intake=${encodeURIComponent(intakeId)}`,
+    );
+  }
+
+  const { data: deletedIntakes, error } = await serviceRoleSupabase
     .from("project_intakes")
     .delete()
-    .eq("id", intakeId);
+    .eq("id", intakeId)
+    .select("id");
 
-  if (error) {
+  if (error || !deletedIntakes || deletedIntakes.length === 0) {
     console.error("Supabase project intake delete failed", {
-      code: "code" in error ? error.code : undefined,
-      details: "details" in error ? error.details : undefined,
-      hint: "hint" in error ? error.hint : undefined,
+      code: error && "code" in error ? error.code : undefined,
+      deletedCount: deletedIntakes?.length ?? 0,
+      details: error && "details" in error ? error.details : undefined,
+      hint: error && "hint" in error ? error.hint : undefined,
       intakeId,
-      message: error.message,
+      message: error?.message ?? "No matching intake was deleted.",
     });
 
     redirect(

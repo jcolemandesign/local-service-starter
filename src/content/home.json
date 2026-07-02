@@ -48,7 +48,7 @@
         },
         {
           "label": "Staged Pages",
-          "href": "/dev/website-pages",
+          "href": "/dev/staged-pages",
           "description": "Review baked pages that are eligible to become public pages."
         }
       ]
