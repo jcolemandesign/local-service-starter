@@ -61,11 +61,19 @@ async function getAuthenticatedSupabase() {
 
 function getServiceRoleSupabase() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseServiceRoleKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SECRET_KEY;
 
   if (!supabaseUrl || !supabaseServiceRoleKey) {
     return null;
   }
+
+  console.info("Supabase project intake delete config loaded", {
+    keySource: process.env.SUPABASE_SERVICE_ROLE_KEY
+      ? "SUPABASE_SERVICE_ROLE_KEY"
+      : "SUPABASE_SECRET_KEY",
+    supabaseUrlHost: new URL(supabaseUrl).host,
+  });
 
   return createSupabaseServiceClient(supabaseUrl, supabaseServiceRoleKey, {
     auth: {
@@ -133,7 +141,11 @@ async function deleteProjectIntake(formData: FormData) {
   if (!serviceRoleSupabase) {
     console.error("Supabase project intake delete failed", {
       intakeId,
-      message: "Missing SUPABASE_SERVICE_ROLE_KEY.",
+      hasSupabaseSecretKey: Boolean(process.env.SUPABASE_SECRET_KEY),
+      hasSupabaseServiceRoleKey: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
+      hasSupabaseUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
+      message:
+        "Missing NEXT_PUBLIC_SUPABASE_URL and/or a server Supabase key.",
     });
 
     redirect(

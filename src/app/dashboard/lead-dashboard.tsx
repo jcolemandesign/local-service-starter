@@ -1232,13 +1232,15 @@ export function ProjectIntakeDashboard({
         ) : null}
         {intakeSaveState === "delete-error" ? (
           <p className="mt-heading-body-sm type-caption font-semibold text-red-700">
-            Could not delete intake.
+            Could not delete intake. Check the dev server console for the
+            Supabase error details.
           </p>
         ) : null}
         {intakeSaveState === "delete-config-error" ? (
           <p className="mt-heading-body-sm type-caption font-semibold text-red-700">
-            Could not delete intake. Add SUPABASE_SERVICE_ROLE_KEY to the local
-            environment and restart the dev server.
+            Could not delete intake. Add SUPABASE_SERVICE_ROLE_KEY or
+            SUPABASE_SECRET_KEY to the local environment and restart the dev
+            server.
           </p>
         ) : null}
       </Card>
