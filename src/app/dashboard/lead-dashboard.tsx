@@ -74,6 +74,7 @@ type DashboardView = "all" | "booked" | "intakes";
 type BookedTiming = "needs-date" | "upcoming" | "past";
 
 type LeadDashboardProps = {
+  deleteProjectIntake?: (formData: FormData) => void;
   intakeSaveState?: string | null;
   leads: Lead[];
   projectIntakes?: ProjectIntake[];
@@ -136,6 +137,9 @@ const labelClass =
 
 const secondaryButtonClass =
   "radius-button inline-flex min-h-12 w-full items-center justify-center whitespace-nowrap border border-service-border bg-white px-5 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-full sm:w-auto";
+
+const destructiveButtonClass =
+  "radius-button inline-flex min-h-12 w-full items-center justify-center whitespace-nowrap border border-red-200 bg-red-50 px-5 type-caption font-semibold text-red-700 transition-colors hover:border-red-700 hover:bg-red-700 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-full sm:w-auto";
 
 const primaryButtonClass =
   "radius-button inline-flex min-h-12 w-full items-center justify-center whitespace-nowrap border border-service-accent bg-service-accent px-5 type-caption font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-full sm:w-auto";
@@ -513,6 +517,7 @@ function matchesProjectIntake(intake: ProjectIntake, searchTerm: string) {
 }
 
 export function LeadDashboard({
+  deleteProjectIntake,
   intakeSaveState = null,
   leads,
   projectIntakes = [],
@@ -739,6 +744,7 @@ export function LeadDashboard({
 
       {showProjectIntakes && updateProjectIntake && activeView === "intakes" ? (
         <ProjectIntakeDashboard
+          deleteProjectIntake={deleteProjectIntake}
           intakeSaveState={intakeSaveState}
           projectIntakes={projectIntakes}
           savedIntakeId={savedIntakeId}
@@ -1044,12 +1050,14 @@ export function LeadDashboard({
 }
 
 export function ProjectIntakeDashboard({
+  deleteProjectIntake,
   intakeSaveState,
   projectIntakes,
   savedIntakeId,
   statusOptions,
   updateProjectIntake,
 }: {
+  deleteProjectIntake?: (formData: FormData) => void;
   intakeSaveState: string | null;
   projectIntakes: ProjectIntake[];
   savedIntakeId: string | null;
@@ -1063,6 +1071,8 @@ export function ProjectIntakeDashboard({
   );
   const [copiedIntakeId, setCopiedIntakeId] = useState<string | null>(null);
   const [openIntakeIds, setOpenIntakeIds] = useState<Set<string>>(new Set());
+  const [pendingDeleteIntake, setPendingDeleteIntake] =
+    useState<ProjectIntake | null>(null);
 
   const statusFilterOptions = useMemo(
     () =>
@@ -1215,6 +1225,16 @@ export function ProjectIntakeDashboard({
         <p className="mt-heading-body-md type-caption font-semibold text-service-muted">
           Filters apply to the intake cards below.
         </p>
+        {intakeSaveState === "deleted" ? (
+          <p className="mt-heading-body-sm type-caption font-semibold text-service-accent">
+            Intake deleted.
+          </p>
+        ) : null}
+        {intakeSaveState === "delete-error" ? (
+          <p className="mt-heading-body-sm type-caption font-semibold text-red-700">
+            Could not delete intake.
+          </p>
+        ) : null}
       </Card>
 
       {projectIntakes.length === 0 ? (
@@ -1302,6 +1322,15 @@ export function ProjectIntakeDashboard({
                       >
                         Website
                       </a>
+                    ) : null}
+                    {deleteProjectIntake ? (
+                      <button
+                        className={destructiveButtonClass}
+                        onClick={() => setPendingDeleteIntake(intake)}
+                        type="button"
+                      >
+                        Delete
+                      </button>
                     ) : null}
                   </div>
                 </div>
@@ -1395,6 +1424,52 @@ export function ProjectIntakeDashboard({
               </Card>
             );
           })}
+        </div>
+      ) : null}
+
+      {pendingDeleteIntake && deleteProjectIntake ? (
+        <div
+          aria-labelledby="delete-intake-title"
+          aria-modal="true"
+          className="fixed inset-0 z-50 grid place-items-center bg-service-ink/55 p-[var(--container-gutter)] backdrop-blur-sm"
+          role="dialog"
+        >
+          <Card className="w-full max-w-lg border-service-border bg-white p-[var(--container-gutter)] shadow-service">
+            <p className="type-label text-red-700">Delete intake</p>
+            <h2
+              className="type-heading-md mt-eyebrow-heading-sm text-service-ink"
+              id="delete-intake-title"
+            >
+              Are you sure?
+            </h2>
+            <p className="type-text-md mt-heading-body-sm text-service-muted">
+              This will permanently delete the intake for{" "}
+              <span className="font-semibold text-service-ink">
+                {displayValue(pendingDeleteIntake.business_name)}
+              </span>
+              .
+            </p>
+            <form
+              action={deleteProjectIntake}
+              className="mt-body-actions-md flex flex-col inline-gap-med sm:flex-row sm:justify-end"
+            >
+              <input
+                name="intakeId"
+                type="hidden"
+                value={String(pendingDeleteIntake.id)}
+              />
+              <button
+                className={secondaryButtonClass}
+                onClick={() => setPendingDeleteIntake(null)}
+                type="button"
+              >
+                Cancel
+              </button>
+              <button className={destructiveButtonClass} type="submit">
+                Delete intake
+              </button>
+            </form>
+          </Card>
         </div>
       ) : null}
     </>

@@ -58,6 +58,16 @@ function createUnconfiguredClient() {
             },
           };
         },
+        delete() {
+          return {
+            async eq() {
+              return {
+                data: null,
+                error: missingConfigError,
+              };
+            },
+          };
+        },
       };
     },
   };

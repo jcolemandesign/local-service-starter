@@ -52,57 +52,9 @@
         },
         {
           "id": "homepage-option-1.01-primary-navigation.links.1.label",
-          "kind": "link",
+          "kind": "copy",
           "path": "01-primary-navigation.links.1.label",
           "value": "Services"
-        },
-        {
-          "id": "homepage-option-1.01-primary-navigation.links.1.items.1.href",
-          "kind": "link",
-          "path": "01-primary-navigation.links.1.items.1.href",
-          "value": "#"
-        },
-        {
-          "id": "homepage-option-1.01-primary-navigation.links.1.items.1.label",
-          "kind": "link",
-          "path": "01-primary-navigation.links.1.items.1.label",
-          "value": "Service 1"
-        },
-        {
-          "id": "homepage-option-1.01-primary-navigation.links.1.items.2.href",
-          "kind": "link",
-          "path": "01-primary-navigation.links.1.items.2.href",
-          "value": "#"
-        },
-        {
-          "id": "homepage-option-1.01-primary-navigation.links.1.items.2.label",
-          "kind": "link",
-          "path": "01-primary-navigation.links.1.items.2.label",
-          "value": "Service 2"
-        },
-        {
-          "id": "homepage-option-1.01-primary-navigation.links.1.items.3.href",
-          "kind": "link",
-          "path": "01-primary-navigation.links.1.items.3.href",
-          "value": "#"
-        },
-        {
-          "id": "homepage-option-1.01-primary-navigation.links.1.items.3.label",
-          "kind": "link",
-          "path": "01-primary-navigation.links.1.items.3.label",
-          "value": "Service 3"
-        },
-        {
-          "id": "homepage-option-1.01-primary-navigation.links.1.items.4.href",
-          "kind": "link",
-          "path": "01-primary-navigation.links.1.items.4.href",
-          "value": "#"
-        },
-        {
-          "id": "homepage-option-1.01-primary-navigation.links.1.items.4.label",
-          "kind": "link",
-          "path": "01-primary-navigation.links.1.items.4.label",
-          "value": "Service 4"
         },
         {
           "id": "homepage-option-1.01-primary-navigation.links.2.href",
@@ -112,57 +64,9 @@
         },
         {
           "id": "homepage-option-1.01-primary-navigation.links.2.label",
-          "kind": "link",
+          "kind": "copy",
           "path": "01-primary-navigation.links.2.label",
           "value": "Service areas"
-        },
-        {
-          "id": "homepage-option-1.01-primary-navigation.links.2.items.1.href",
-          "kind": "link",
-          "path": "01-primary-navigation.links.2.items.1.href",
-          "value": "#"
-        },
-        {
-          "id": "homepage-option-1.01-primary-navigation.links.2.items.1.label",
-          "kind": "link",
-          "path": "01-primary-navigation.links.2.items.1.label",
-          "value": "Service area 1"
-        },
-        {
-          "id": "homepage-option-1.01-primary-navigation.links.2.items.2.href",
-          "kind": "link",
-          "path": "01-primary-navigation.links.2.items.2.href",
-          "value": "#"
-        },
-        {
-          "id": "homepage-option-1.01-primary-navigation.links.2.items.2.label",
-          "kind": "link",
-          "path": "01-primary-navigation.links.2.items.2.label",
-          "value": "Service area 2"
-        },
-        {
-          "id": "homepage-option-1.01-primary-navigation.links.2.items.3.href",
-          "kind": "link",
-          "path": "01-primary-navigation.links.2.items.3.href",
-          "value": "#"
-        },
-        {
-          "id": "homepage-option-1.01-primary-navigation.links.2.items.3.label",
-          "kind": "link",
-          "path": "01-primary-navigation.links.2.items.3.label",
-          "value": "Service area 3"
-        },
-        {
-          "id": "homepage-option-1.01-primary-navigation.links.2.items.4.href",
-          "kind": "link",
-          "path": "01-primary-navigation.links.2.items.4.href",
-          "value": "#"
-        },
-        {
-          "id": "homepage-option-1.01-primary-navigation.links.2.items.4.label",
-          "kind": "link",
-          "path": "01-primary-navigation.links.2.items.4.label",
-          "value": "Service area 4"
         },
         {
           "id": "homepage-option-1.01-primary-navigation.links.3.href",
@@ -172,7 +76,7 @@
         },
         {
           "id": "homepage-option-1.01-primary-navigation.links.3.label",
-          "kind": "link",
+          "kind": "copy",
           "path": "01-primary-navigation.links.3.label",
           "value": "About"
         },
@@ -184,31 +88,103 @@
         },
         {
           "id": "homepage-option-1.01-primary-navigation.links.4.label",
-          "kind": "link",
+          "kind": "copy",
           "path": "01-primary-navigation.links.4.label",
           "value": "Reviews"
         },
         {
+          "id": "homepage-option-1.01-primary-navigation.links.5.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.5.href",
+          "value": ""
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.5.label",
+          "kind": "copy",
+          "path": "01-primary-navigation.links.5.label",
+          "value": ""
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.6.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.6.href",
+          "value": ""
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.6.label",
+          "kind": "copy",
+          "path": "01-primary-navigation.links.6.label",
+          "value": ""
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.7.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.7.href",
+          "value": ""
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.7.label",
+          "kind": "copy",
+          "path": "01-primary-navigation.links.7.label",
+          "value": ""
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.8.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.8.href",
+          "value": ""
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.8.label",
+          "kind": "copy",
+          "path": "01-primary-navigation.links.8.label",
+          "value": ""
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.9.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.9.href",
+          "value": ""
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.9.label",
+          "kind": "copy",
+          "path": "01-primary-navigation.links.9.label",
+          "value": ""
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.10.href",
+          "kind": "link",
+          "path": "01-primary-navigation.links.10.href",
+          "value": ""
+        },
+        {
+          "id": "homepage-option-1.01-primary-navigation.links.10.label",
+          "kind": "copy",
+          "path": "01-primary-navigation.links.10.label",
+          "value": ""
+        },
+        {
           "id": "homepage-option-1.02-split-content-and-full-image.eyebrow",
-          "kind": "image",
+          "kind": "copy",
           "path": "02-split-content-and-full-image.eyebrow",
           "value": "Local service starter"
         },
         {
           "id": "homepage-option-1.02-split-content-and-full-image.title",
-          "kind": "image",
+          "kind": "copy",
           "path": "02-split-content-and-full-image.title",
           "value": "Reliable home services built around your skeedule"
         },
         {
           "id": "homepage-option-1.02-split-content-and-full-image.body",
-          "kind": "image",
+          "kind": "copy",
           "path": "02-split-content-and-full-image.body",
           "value": "A polished hero pattern for local service companies, with a clear value proposition, supporting proof, and two focused calls to action."
         },
         {
           "id": "homepage-option-1.02-split-content-and-full-image.imageAlt",
-          "kind": "image",
+          "kind": "meta",
           "path": "02-split-content-and-full-image.imageAlt",
           "value": "FPO image placeholder"
         },
@@ -220,105 +196,33 @@
         },
         {
           "id": "homepage-option-1.02-split-content-and-full-image.primaryAction",
-          "kind": "image",
+          "kind": "copy",
           "path": "02-split-content-and-full-image.primaryAction",
           "value": "Request service"
         },
         {
           "id": "homepage-option-1.02-split-content-and-full-image.secondaryAction",
-          "kind": "image",
+          "kind": "copy",
           "path": "02-split-content-and-full-image.secondaryAction",
           "value": "View services"
         },
         {
           "id": "homepage-option-1.02-split-content-and-full-image.stats.1",
-          "kind": "image",
+          "kind": "copy",
           "path": "02-split-content-and-full-image.stats.1",
           "value": "Same-week visits"
         },
         {
           "id": "homepage-option-1.02-split-content-and-full-image.stats.2",
-          "kind": "image",
+          "kind": "copy",
           "path": "02-split-content-and-full-image.stats.2",
           "value": "Licensed pros"
         },
         {
           "id": "homepage-option-1.02-split-content-and-full-image.stats.3",
-          "kind": "image",
+          "kind": "copy",
           "path": "02-split-content-and-full-image.stats.3",
           "value": "Clear estimates"
-        },
-        {
-          "id": "homepage-option-1.02-split-content-and-full-image.variants.1.label",
-          "kind": "image",
-          "path": "02-split-content-and-full-image.variants.1.label",
-          "value": "Text 3 / Image 4"
-        },
-        {
-          "id": "homepage-option-1.02-split-content-and-full-image.variants.1.variant",
-          "kind": "image",
-          "path": "02-split-content-and-full-image.variants.1.variant",
-          "value": "text-3-image-4-right"
-        },
-        {
-          "id": "homepage-option-1.02-split-content-and-full-image.variants.2.label",
-          "kind": "image",
-          "path": "02-split-content-and-full-image.variants.2.label",
-          "value": "Text 4 / Image 3"
-        },
-        {
-          "id": "homepage-option-1.02-split-content-and-full-image.variants.2.variant",
-          "kind": "image",
-          "path": "02-split-content-and-full-image.variants.2.variant",
-          "value": "text-4-image-3-right"
-        },
-        {
-          "id": "homepage-option-1.02-split-content-and-full-image.variants.3.label",
-          "kind": "image",
-          "path": "02-split-content-and-full-image.variants.3.label",
-          "value": "Image 3 / Text 4"
-        },
-        {
-          "id": "homepage-option-1.02-split-content-and-full-image.variants.3.variant",
-          "kind": "image",
-          "path": "02-split-content-and-full-image.variants.3.variant",
-          "value": "image-3-left-text-4"
-        },
-        {
-          "id": "homepage-option-1.02-split-content-and-full-image.variants.4.label",
-          "kind": "image",
-          "path": "02-split-content-and-full-image.variants.4.label",
-          "value": "Image 4 / Text 3"
-        },
-        {
-          "id": "homepage-option-1.02-split-content-and-full-image.variants.4.variant",
-          "kind": "image",
-          "path": "02-split-content-and-full-image.variants.4.variant",
-          "value": "image-4-left-text-3"
-        },
-        {
-          "id": "homepage-option-1.02-split-content-and-full-image.variant",
-          "kind": "copy",
-          "path": "02-split-content-and-full-image.variant",
-          "value": "text-3-image-4-right"
-        },
-        {
-          "id": "homepage-option-1.03-trust-marquee.label",
-          "kind": "copy",
-          "path": "03-trust-marquee.label",
-          "value": "Trusted by homeowners, property managers, and small businesses across the metro area"
-        },
-        {
-          "id": "homepage-option-1.03-trust-marquee.actionLabel",
-          "kind": "copy",
-          "path": "03-trust-marquee.actionLabel",
-          "value": "Request service"
-        },
-        {
-          "id": "homepage-option-1.03-trust-marquee.actionHref",
-          "kind": "link",
-          "path": "03-trust-marquee.actionHref",
-          "value": "/contact"
         },
         {
           "id": "homepage-option-1.03-trust-marquee.items.1",
@@ -423,10 +327,22 @@
           "value": "Fast help for urgent issues that need an experienced technician and a clear path to resolution."
         },
         {
+          "id": "homepage-option-1.04-services-bento-cards.items.1.cardSize",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.1.cardSize",
+          "value": "Large card"
+        },
+        {
           "id": "homepage-option-1.04-services-bento-cards.items.1.imageLabel",
-          "kind": "image",
+          "kind": "meta",
           "path": "04-services-bento-cards.items.1.imageLabel",
           "value": "Repair"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.1.imageSrc",
+          "kind": "image",
+          "path": "04-services-bento-cards.items.1.imageSrc",
+          "value": "/images/fpo-image.svg"
         },
         {
           "id": "homepage-option-1.04-services-bento-cards.items.2.title",
@@ -441,10 +357,22 @@
           "value": "Seasonal tune-ups, inspection notes, and practical recommendations that reduce surprises."
         },
         {
+          "id": "homepage-option-1.04-services-bento-cards.items.2.cardSize",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.2.cardSize",
+          "value": "Small card"
+        },
+        {
           "id": "homepage-option-1.04-services-bento-cards.items.2.imageLabel",
-          "kind": "image",
+          "kind": "meta",
           "path": "04-services-bento-cards.items.2.imageLabel",
           "value": "Care"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.2.imageSrc",
+          "kind": "image",
+          "path": "04-services-bento-cards.items.2.imageSrc",
+          "value": "/images/fpo-image.svg"
         },
         {
           "id": "homepage-option-1.04-services-bento-cards.items.3.title",
@@ -459,10 +387,22 @@
           "value": "Clean, documented installs for new systems, fixtures, and upgrades with tidy closeout."
         },
         {
+          "id": "homepage-option-1.04-services-bento-cards.items.3.cardSize",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.3.cardSize",
+          "value": "Small card"
+        },
+        {
           "id": "homepage-option-1.04-services-bento-cards.items.3.imageLabel",
-          "kind": "image",
+          "kind": "meta",
           "path": "04-services-bento-cards.items.3.imageLabel",
           "value": "Install"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.3.imageSrc",
+          "kind": "image",
+          "path": "04-services-bento-cards.items.3.imageSrc",
+          "value": "/images/fpo-image.svg"
         },
         {
           "id": "homepage-option-1.04-services-bento-cards.items.4.title",
@@ -477,10 +417,22 @@
           "value": "Detailed checks with photo-backed notes, priority guidance, and simple recommendations customers can understand."
         },
         {
+          "id": "homepage-option-1.04-services-bento-cards.items.4.cardSize",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.4.cardSize",
+          "value": "Small card"
+        },
+        {
           "id": "homepage-option-1.04-services-bento-cards.items.4.imageLabel",
-          "kind": "image",
+          "kind": "meta",
           "path": "04-services-bento-cards.items.4.imageLabel",
           "value": "Inspect"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.4.imageSrc",
+          "kind": "image",
+          "path": "04-services-bento-cards.items.4.imageSrc",
+          "value": "/images/fpo-image.svg"
         },
         {
           "id": "homepage-option-1.04-services-bento-cards.items.5.title",
@@ -495,10 +447,22 @@
           "value": "Responsive support for offices, shops, and small facilities that need reliable communication."
         },
         {
+          "id": "homepage-option-1.04-services-bento-cards.items.5.cardSize",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.5.cardSize",
+          "value": "Small card"
+        },
+        {
           "id": "homepage-option-1.04-services-bento-cards.items.5.imageLabel",
-          "kind": "image",
+          "kind": "meta",
           "path": "04-services-bento-cards.items.5.imageLabel",
           "value": "Biz"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.5.imageSrc",
+          "kind": "image",
+          "path": "04-services-bento-cards.items.5.imageSrc",
+          "value": "/images/fpo-image.svg"
         },
         {
           "id": "homepage-option-1.04-services-bento-cards.items.6.title",
@@ -513,10 +477,22 @@
           "value": "Helpful planning for customers comparing options, budgets, timelines, and future service needs."
         },
         {
+          "id": "homepage-option-1.04-services-bento-cards.items.6.cardSize",
+          "kind": "copy",
+          "path": "04-services-bento-cards.items.6.cardSize",
+          "value": "Large card"
+        },
+        {
           "id": "homepage-option-1.04-services-bento-cards.items.6.imageLabel",
-          "kind": "image",
+          "kind": "meta",
           "path": "04-services-bento-cards.items.6.imageLabel",
           "value": "Plan"
+        },
+        {
+          "id": "homepage-option-1.04-services-bento-cards.items.6.imageSrc",
+          "kind": "image",
+          "path": "04-services-bento-cards.items.6.imageSrc",
+          "value": "/images/fpo-image.svg"
         },
         {
           "id": "homepage-option-1.05-asymmetric-feature-cards.eyebrow",
@@ -916,7 +892,7 @@
         },
         {
           "id": "homepage-option-1.09-footer.quickLinks.1.label",
-          "kind": "link",
+          "kind": "copy",
           "path": "09-footer.quickLinks.1.label",
           "value": "Home"
         },
@@ -928,7 +904,7 @@
         },
         {
           "id": "homepage-option-1.09-footer.quickLinks.2.label",
-          "kind": "link",
+          "kind": "copy",
           "path": "09-footer.quickLinks.2.label",
           "value": "About us"
         },
@@ -940,7 +916,7 @@
         },
         {
           "id": "homepage-option-1.09-footer.quickLinks.3.label",
-          "kind": "link",
+          "kind": "copy",
           "path": "09-footer.quickLinks.3.label",
           "value": "Services"
         },
@@ -952,7 +928,7 @@
         },
         {
           "id": "homepage-option-1.09-footer.quickLinks.4.label",
-          "kind": "link",
+          "kind": "copy",
           "path": "09-footer.quickLinks.4.label",
           "value": "Contact us"
         },
@@ -1084,7 +1060,7 @@
         },
         {
           "id": "homepage-option-1.09-footer.socialLinks.1.label",
-          "kind": "link",
+          "kind": "copy",
           "path": "09-footer.socialLinks.1.label",
           "value": "Facebook"
         },
@@ -1096,7 +1072,7 @@
         },
         {
           "id": "homepage-option-1.09-footer.socialLinks.2.label",
-          "kind": "link",
+          "kind": "copy",
           "path": "09-footer.socialLinks.2.label",
           "value": "Instagram"
         },
@@ -1108,7 +1084,7 @@
         },
         {
           "id": "homepage-option-1.09-footer.socialLinks.3.label",
-          "kind": "link",
+          "kind": "copy",
           "path": "09-footer.socialLinks.3.label",
           "value": "LinkedIn"
         },
@@ -1120,7 +1096,7 @@
         },
         {
           "id": "homepage-option-1.09-footer.reviewLink.label",
-          "kind": "link",
+          "kind": "copy",
           "path": "09-footer.reviewLink.label",
           "value": "Read our Google reviews"
         },
@@ -1138,7 +1114,7 @@
         },
         {
           "id": "homepage-option-1.09-footer.privacyLink.label",
-          "kind": "link",
+          "kind": "copy",
           "path": "09-footer.privacyLink.label",
           "value": "Privacy Policy"
         },
@@ -1150,7 +1126,7 @@
         },
         {
           "id": "homepage-option-1.09-footer.termsLink.label",
-          "kind": "link",
+          "kind": "copy",
           "path": "09-footer.termsLink.label",
           "value": "Terms"
         },
@@ -1162,14 +1138,15 @@
         }
       ],
       "fieldCounts": {
-        "copy": 110,
-        "image": 25,
-        "link": 58
+        "copy": 141,
+        "image": 8,
+        "link": 33,
+        "meta": 7
       },
       "pageHref": "/homepage-option-1",
       "pageId": "homepage-option-1",
       "pageLabel": "homepage - Option 1",
-      "promotedAt": "2026-06-30T01:59:49.517Z",
+      "promotedAt": "2026-07-01T19:51:57.246Z",
       "sourceStage": "content-editor",
       "status": "staged"
     }

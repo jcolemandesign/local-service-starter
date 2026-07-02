@@ -102,6 +102,39 @@ async function updateProjectIntake(formData: FormData) {
   );
 }
 
+async function deleteProjectIntake(formData: FormData) {
+  "use server";
+
+  const supabase = await getAuthenticatedSupabase();
+  const intakeId = getFormString(formData, "intakeId");
+
+  if (!intakeId) {
+    redirect("/dev/dashboard?intakeSave=delete-error");
+  }
+
+  const { error } = await supabase
+    .from("project_intakes")
+    .delete()
+    .eq("id", intakeId);
+
+  if (error) {
+    console.error("Supabase project intake delete failed", {
+      code: "code" in error ? error.code : undefined,
+      details: "details" in error ? error.details : undefined,
+      hint: "hint" in error ? error.hint : undefined,
+      intakeId,
+      message: error.message,
+    });
+
+    redirect(
+      `/dev/dashboard?intakeSave=delete-error&intake=${encodeURIComponent(intakeId)}`,
+    );
+  }
+
+  revalidatePath("/dev/dashboard");
+  redirect("/dev/dashboard?intakeSave=deleted");
+}
+
 async function logout() {
   "use server";
 
@@ -230,6 +263,7 @@ export default async function OwnerDashboardPage({
 
               {!error ? (
                 <ProjectIntakeDashboard
+                  deleteProjectIntake={deleteProjectIntake}
                   intakeSaveState={intakeSaveState}
                   projectIntakes={projectIntakes}
                   savedIntakeId={savedIntakeId}

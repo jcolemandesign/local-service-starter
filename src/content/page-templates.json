@@ -5,6 +5,79 @@
         "showSectionMarkers": false,
         "viewportId": "main"
       },
+      "id": "about-option-1",
+      "name": "about - Option 1",
+      "notes": "",
+      "pageType": "about",
+      "promotedAt": "2026-07-01T21:13:54.005Z",
+      "sectionCount": 7,
+      "sections": [
+        {
+          "component": "NavCenterLogoSectionV2",
+          "instruction": "Use the centered logo nav when the page needs a simple brand anchor with service links and direct contact access.",
+          "mode": "Navigation",
+          "name": "Center logo navigation",
+          "originalComponent": "NavCenterLogoSectionV2",
+          "originalIndex": 0
+        },
+        {
+          "component": "HeroCenteredFloatersSectionV2",
+          "instruction": "Use the centered message for urgency while floaters carry immediate proof, service cues, or conversion nudges.",
+          "mode": "Hero",
+          "name": "Centered with left right floaters",
+          "originalComponent": "HeroCenteredFloatersSectionV2",
+          "originalIndex": 1
+        },
+        {
+          "component": "TrustBarSectionV3",
+          "instruction": "Use four short claims that validate speed, safety, rating, and locality.",
+          "mode": "Proof",
+          "name": "Trust bar",
+          "originalComponent": "TrustBarSectionV3",
+          "originalIndex": 2
+        },
+        {
+          "component": "ServicesScrollCardsSectionV2",
+          "instruction": "Surface urgent service paths quickly and let visitors scan the most relevant offer without leaving the page.",
+          "mode": "Scan",
+          "name": "Scroll service cards",
+          "originalComponent": "ServicesScrollCardsSectionV2",
+          "originalIndex": 3
+        },
+        {
+          "component": "ContentStickyCardStreamSectionV2",
+          "instruction": "Use this as useful content that keeps the promise fixed while response, diagnosis, options, and follow-up details move through.",
+          "mode": "Narrative",
+          "name": "Sticky card stream content",
+          "originalComponent": "ContentStickyCardStreamSectionV2",
+          "originalIndex": 4
+        },
+        {
+          "component": "FAQAccordionSectionV3",
+          "instruction": "Handle urgent objections with expandable answers and no vague copy.",
+          "mode": "Decision",
+          "name": "FAQ accordion",
+          "originalComponent": "FAQAccordionSectionV3",
+          "originalIndex": 5
+        },
+        {
+          "component": "ContactSectionV3",
+          "instruction": "Show phone, email, hours, and form in a direct conversion area with a stronger primary button if urgency needs it.",
+          "mode": "Utility",
+          "name": "Contact section",
+          "originalComponent": "ContactSectionV3",
+          "originalIndex": 6
+        }
+      ],
+      "sourceOptionName": "Option 1",
+      "sourceRecipeId": "conversion-heavy",
+      "sourceRecipeName": "about"
+    },
+    {
+      "designStyle": {
+        "showSectionMarkers": false,
+        "viewportId": "main"
+      },
       "id": "homepage-option-1",
       "name": "homepage - Option 1",
       "notes": "",
