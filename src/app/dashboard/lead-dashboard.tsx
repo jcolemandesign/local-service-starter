@@ -173,6 +173,7 @@ const statusPillClassByStatus: Record<string, string> = {
   lost: "bg-red-50 text-red-700",
   new: "bg-service-surface text-service-accent",
   "not responding": "bg-red-50 text-red-700",
+  "packet created": "bg-green-50 text-green-700",
   quoted: "bg-blue-600 text-white",
   spam: "bg-red-600 text-white",
 };
@@ -184,6 +185,7 @@ const statusOptionClassByStatus: Record<string, string> = {
   lost: "bg-red-50 text-red-700",
   new: "bg-service-surface text-service-accent",
   "not responding": "bg-red-50 text-red-700",
+  "packet created": "bg-green-50 text-green-700",
   quoted: "bg-blue-600 text-white",
   spam: "bg-red-600 text-white",
 };
@@ -1300,26 +1302,36 @@ export function ProjectIntakeDashboard({
           </p>
         ) : null}
         {intakeSaveState === "source-packet-success" ? (
-          <div className="mt-heading-body-sm grid card-grid-gap-sm rounded-[var(--radius-md-token)] border border-service-border bg-white p-4">
-            <p className="type-caption font-semibold text-service-accent">
-              Source packet generated.
-            </p>
-            {sourcePacketPath ? (
-              <p className="type-caption text-service-muted">
-                File path:{" "}
-                <span className="font-semibold text-service-ink">
-                  {sourcePacketPath}
-                </span>
+          <div className="mt-heading-body-sm grid card-grid-gap-med rounded-[var(--radius-md-token)] border border-service-border bg-white p-5">
+            <div className="grid card-grid-gap-sm">
+              <p className="type-text-sm font-semibold text-service-accent">
+                Packet created.
               </p>
+              {sourcePacketPath ? (
+                <div className="grid gap-1">
+                  <p className={dashboardMutedLabelClass}>Saved file</p>
+                  <p className="type-text-sm break-all rounded-[var(--radius-sm-token)] bg-service-surface px-3 py-2 font-mono text-service-ink">
+                    {sourcePacketPath}
+                  </p>
+                </div>
+              ) : null}
+            </div>
+            {sourcePacketPath ? (
+              <div className="sr-only">File path: {sourcePacketPath}</div>
             ) : null}
             {sourcePacketStats && sourcePacketStats.length > 0 ? (
-              <dl className="grid gap-2 type-caption text-service-muted sm:grid-cols-2 lg:grid-cols-4">
+              <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 {sourcePacketStats.map((stat) => (
-                  <div key={stat.label}>
-                    <dt className="font-semibold text-service-ink">
+                  <div
+                    className="rounded-[var(--radius-sm-token)] bg-service-surface p-3"
+                    key={stat.label}
+                  >
+                    <dt className="type-caption font-semibold text-service-muted">
                       {stat.label}
                     </dt>
-                    <dd>{stat.value}</dd>
+                    <dd className="type-text-sm mt-1 font-semibold text-service-ink">
+                      {stat.value}
+                    </dd>
                   </div>
                 ))}
               </dl>
@@ -1365,6 +1377,9 @@ export function ProjectIntakeDashboard({
             const serviceAreaDetails =
               getProjectIntakeServiceAreaDetails(intake);
             const status = intake.status ?? "New";
+            const hasCreatedPacket =
+              typeof status === "string" &&
+              status.toLowerCase() === "packet created";
 
             return (
               <Card
@@ -1394,13 +1409,15 @@ export function ProjectIntakeDashboard({
                       onClick={() => void copyIntakeBrief(intake)}
                       type="button"
                     >
-                      {isCopied ? "Copied" : "Copy brief"}
+                      {isCopied ? "Copied" : "Copy intake"}
                     </button>
                     {generateProjectIntakeSourcePacket ? (
                       <form action={generateProjectIntakeSourcePacket}>
                         <input name="intakeId" type="hidden" value={intakeId} />
                         <button className={secondaryButtonClass} type="submit">
-                          Generate packet
+                          {hasCreatedPacket
+                            ? "Regenerate packet"
+                            : "Generate packet"}
                         </button>
                       </form>
                     ) : null}

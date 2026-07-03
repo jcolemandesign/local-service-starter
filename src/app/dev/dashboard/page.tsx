@@ -26,6 +26,7 @@ export const metadata: Metadata = {
 const statusOptions = [
   "New",
   "Contacted",
+  "Packet created",
   "Quoted",
   "Booked",
   "Completed",
@@ -230,6 +231,25 @@ async function generateProjectIntakeSourcePacket(formData: FormData) {
     );
   }
 
+  const { error: statusError } = await supabase
+    .from("project_intakes")
+    .update({ status: "Packet created" })
+    .eq("id", intakeId);
+
+  if (statusError) {
+    console.error("Project intake packet status update failed", {
+      code: "code" in statusError ? statusError.code : undefined,
+      details: "details" in statusError ? statusError.details : undefined,
+      hint: "hint" in statusError ? statusError.hint : undefined,
+      intakeId,
+      message: statusError.message,
+    });
+
+    redirect(
+      `/dev/dashboard?intakeSave=source-packet-error&intake=${encodeURIComponent(intakeId)}`,
+    );
+  }
+
   const { counts } = result.packet;
   const query = new URLSearchParams({
     intake: intakeId,
@@ -245,6 +265,7 @@ async function generateProjectIntakeSourcePacket(formData: FormData) {
     sourcePacketVerified: String(counts.verified_quote_items),
   });
 
+  revalidatePath("/dev/dashboard");
   redirect(`/dev/dashboard?${query.toString()}`);
 }
 

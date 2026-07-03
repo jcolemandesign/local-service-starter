@@ -1,0 +1,2605 @@
+{
+  "client_slug": "north-star-hvac",
+  "counts": {
+    "conflict_items": 2,
+    "failed_quote_candidates": 0,
+    "missing_info_items": 9,
+    "normalized_candidate_items": 0,
+    "structured_field_items": 27,
+    "structured_selection_items": 73,
+    "total_source_items": 157,
+    "verified_quote_items": 46
+  },
+  "generator": "deterministic-intake-source-packet",
+  "generator_version": 1,
+  "high_risk_claim_watchlist": [
+    "exact prices",
+    "dollar amounts",
+    "diagnostic fee amounts",
+    "review counts",
+    "star ratings",
+    "best",
+    "#1",
+    "cheapest",
+    "guaranteed",
+    "same-day",
+    "24/7",
+    "free estimate",
+    "licensed",
+    "insured",
+    "certified",
+    "warranty",
+    "satisfaction guarantee",
+    "financing",
+    "unsupported service areas",
+    "services marked do-not-promote"
+  ],
+  "output_path": "src/content/projects/north-star-hvac/source-packet.json",
+  "quote_candidates_failed_verification": [],
+  "schema_version": "source-packet.v1",
+  "sections": {
+    "Assets": [
+      "ass_001",
+      "ass_002",
+      "ass_003",
+      "ass_004",
+      "ass_005",
+      "ass_006",
+      "ass_007",
+      "ass_008",
+      "ass_009",
+      "ass_010",
+      "ass_011",
+      "ass_012",
+      "ass_013",
+      "ass_014"
+    ],
+    "Business Identity": [
+      "bus_ide_001",
+      "bus_ide_002",
+      "bus_ide_003",
+      "bus_ide_004",
+      "bus_ide_005",
+      "bus_ide_006",
+      "bus_ide_007",
+      "bus_ide_008",
+      "bus_ide_009",
+      "bus_ide_010",
+      "bus_ide_011",
+      "bus_ide_012",
+      "bus_ide_013",
+      "bus_ide_014",
+      "bus_ide_015",
+      "bus_ide_016",
+      "bus_ide_017",
+      "bus_ide_018",
+      "bus_ide_019"
+    ],
+    "Claims / Copy Guardrails": [
+      "cla_cop_gua_001",
+      "cla_cop_gua_002",
+      "cla_cop_gua_003",
+      "cla_cop_gua_004",
+      "cla_cop_gua_005",
+      "cla_cop_gua_006",
+      "cla_cop_gua_007",
+      "cla_cop_gua_008",
+      "cla_cop_gua_009",
+      "cla_cop_gua_010",
+      "cla_cop_gua_011",
+      "cla_cop_gua_012",
+      "cla_cop_gua_013",
+      "cla_cop_gua_014",
+      "cla_cop_gua_015"
+    ],
+    "Conflicts": [
+      "con_001",
+      "con_002"
+    ],
+    "Customer Questions": [
+      "cus_que_001",
+      "cus_que_002",
+      "cus_que_003"
+    ],
+    "Emergency / Availability": [
+      "eme_ava_001",
+      "eme_ava_002",
+      "eme_ava_003"
+    ],
+    "Future Offers": [
+      "fut_off_001",
+      "fut_off_002",
+      "fut_off_003",
+      "fut_off_004"
+    ],
+    "Lead Flow / CTA": [
+      "lea_flo_cta_001",
+      "lea_flo_cta_002",
+      "lea_flo_cta_003",
+      "lea_flo_cta_004",
+      "lea_flo_cta_005",
+      "lea_flo_cta_006",
+      "lea_flo_cta_007",
+      "lea_flo_cta_008",
+      "lea_flo_cta_009",
+      "lea_flo_cta_010",
+      "lea_flo_cta_011",
+      "lea_flo_cta_012",
+      "lea_flo_cta_013"
+    ],
+    "Missing Info / Must Confirm": [
+      "mis_inf_001",
+      "mis_inf_002",
+      "mis_inf_003",
+      "mis_inf_004",
+      "mis_inf_005",
+      "mis_inf_006",
+      "mis_inf_007",
+      "mis_inf_008",
+      "mis_inf_009"
+    ],
+    "Normalized Candidates": [],
+    "Pricing / Process": [
+      "pri_pro_001",
+      "pri_pro_002",
+      "pri_pro_003",
+      "pri_pro_004",
+      "pri_pro_005",
+      "pri_pro_006",
+      "pri_pro_007",
+      "pri_pro_008",
+      "pri_pro_009",
+      "pri_pro_010",
+      "pri_pro_011"
+    ],
+    "Service Area": [
+      "ser_are_001",
+      "ser_are_002",
+      "ser_are_003",
+      "ser_are_004",
+      "ser_are_005",
+      "ser_are_006",
+      "ser_are_007"
+    ],
+    "Services Offered": [
+      "ser_off_001",
+      "ser_off_002",
+      "ser_off_003",
+      "ser_off_004",
+      "ser_off_005",
+      "ser_off_006",
+      "ser_off_007",
+      "ser_off_008",
+      "ser_off_009",
+      "ser_off_010",
+      "ser_off_011",
+      "ser_off_012",
+      "ser_off_013",
+      "ser_off_014",
+      "ser_off_015",
+      "ser_off_016",
+      "ser_off_017",
+      "ser_off_018",
+      "ser_off_019",
+      "ser_off_020",
+      "ser_off_021",
+      "ser_off_022",
+      "ser_off_023",
+      "ser_off_024",
+      "ser_off_025",
+      "ser_off_026",
+      "ser_off_027",
+      "ser_off_028",
+      "ser_off_029",
+      "ser_off_030",
+      "ser_off_031",
+      "ser_off_032",
+      "ser_off_033",
+      "ser_off_034",
+      "ser_off_035",
+      "ser_off_036"
+    ],
+    "Trust Signals": [
+      "tru_sig_001",
+      "tru_sig_002",
+      "tru_sig_003",
+      "tru_sig_004",
+      "tru_sig_005",
+      "tru_sig_006",
+      "tru_sig_007",
+      "tru_sig_008",
+      "tru_sig_009",
+      "tru_sig_010",
+      "tru_sig_011",
+      "tru_sig_012",
+      "tru_sig_013",
+      "tru_sig_014",
+      "tru_sig_015",
+      "tru_sig_016",
+      "tru_sig_017",
+      "tru_sig_018",
+      "tru_sig_019",
+      "tru_sig_020",
+      "tru_sig_021"
+    ]
+  },
+  "source_intake_id": "aa932f25-6a14-48da-a618-b14951d8b303",
+  "source_items": [
+    {
+      "id": "bus_ide_001",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "id",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "aa932f25-6a14-48da-a618-b14951d8b303",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_002",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "business_name",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "North Star HVAC",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_003",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "business_type",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "home-services",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_004",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "website",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "https://northstarhvac.com",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_005",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "contact_name",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Mike Reynolds",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_006",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "contact_email",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "mike@northstarhvac.com",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_007",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "contact_phone",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "704-555-0184",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_008",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "created_at",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "2026-07-03T20:55:05.270299+00:00",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_009",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "status",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "New",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_010",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "source",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Client Intake Wizard",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_011",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.variant",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "home-services",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_012",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.businessBasics.businessName",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "North Star HVAC",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_013",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.businessBasics.contactName",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Mike Reynolds",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_014",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.businessBasics.contactEmail",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "mike@northstarhvac.com",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_015",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.businessBasics.contactPhone",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "704-555-0184",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_016",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.businessBasics.website",
+      "source_support": [],
+      "source_type": "intake",
+      "value": " https://northstarhvac.com",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_017",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.businessBasics.googleBusinessProfile",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Not available yet",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_018",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.businessBasics.businessAddress",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Huntersville, NC — service-area business serving customers at their homes and businesses across the Lake Norman area.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "bus_ide_019",
+      "category": "business_identity",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.businessBasics.businessHours",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Monday–Friday, 8am–6pm. Limited emergency service available after hours depending on availability.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_001",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "priority_services",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "System replacement, heat pump service, seasonal tune-ups, and maintenance plans should be prioritized. We still want repair calls, but replacement and ongoing maintenance are the biggest priorities.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_are_001",
+      "category": "service_area",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "service_area",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Huntersville, Cornelius, Davidson, Mooresville, North Charlotte, Denver, and the Lake Norman area.\n\nHuntersville, Cornelius, Davidson, and Mooresville.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "lea_flo_cta_001",
+      "category": "lead_flow_cta",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.leadFlow.primaryAction",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Request a quote",
+      "verified_verbatim": true
+    },
+    {
+      "id": "lea_flo_cta_002",
+      "category": "lead_flow_cta",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.leadFlow.responseTime",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Same day",
+      "verified_verbatim": true
+    },
+    {
+      "id": "eme_ava_001",
+      "category": "emergency_availability",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceStrategy.emergency_service_availability",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Limited / depends on availability",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_001",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.yearsInBusiness",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "12 years",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ass_001",
+      "category": "assets",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.assets.folderLink",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "https://drive.google.com/drive/folders/1Q4cqdsctrsJPDS0IyXCmqTThZnsVz2KY?usp=sharing",
+      "verified_verbatim": true
+    },
+    {
+      "id": "fut_off_001",
+      "category": "future_offers",
+      "confidence": 1,
+      "item_type": "structured_field",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.finalNotes.future_offer_visibility",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Mention lightly",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_002",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "main_services",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Installation",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_003",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "main_services",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Replacement",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_004",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "main_services",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Maintenance",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_005",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "main_services",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Emergency service",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_006",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "main_services",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Inspection / diagnosis",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_007",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "main_services",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Tune-up / seasonal service",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_008",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "main_services",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Financing available",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_009",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "main_services",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Repair",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_010",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "main_services",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Heat pump service",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_011",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "main_services",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "indoor air quality",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_012",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "main_services",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "smart thermostat installation",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_013",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "main_services",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "ductless mini-split service.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_014",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.services.mainServices",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Installation",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_015",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.services.mainServices",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Replacement",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_016",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.services.mainServices",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Maintenance",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_017",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.services.mainServices",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Emergency service",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_018",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.services.mainServices",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Inspection / diagnosis",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_019",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.services.mainServices",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Tune-up / seasonal service",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_020",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.services.mainServices",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Financing available",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_021",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.services.mainServices",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Repair",
+      "verified_verbatim": true
+    },
+    {
+      "id": "lea_flo_cta_003",
+      "category": "lead_flow_cta",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "preferred_cta",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Request a quote",
+      "verified_verbatim": true
+    },
+    {
+      "id": "lea_flo_cta_004",
+      "category": "lead_flow_cta",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "preferred_cta",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Call now",
+      "verified_verbatim": true
+    },
+    {
+      "id": "lea_flo_cta_005",
+      "category": "lead_flow_cta",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.leadFlow.currentProcess",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "They call and we answer live",
+      "verified_verbatim": true
+    },
+    {
+      "id": "lea_flo_cta_006",
+      "category": "lead_flow_cta",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.leadFlow.currentProcess",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "They call and leave a voicemail",
+      "verified_verbatim": true
+    },
+    {
+      "id": "lea_flo_cta_007",
+      "category": "lead_flow_cta",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.leadFlow.currentProcess",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "They fill out a form",
+      "verified_verbatim": true
+    },
+    {
+      "id": "lea_flo_cta_008",
+      "category": "lead_flow_cta",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.leadFlow.currentProcess",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "They message us through Google / social media",
+      "verified_verbatim": true
+    },
+    {
+      "id": "lea_flo_cta_009",
+      "category": "lead_flow_cta",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.leadFlow.currentProcess",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "It depends",
+      "verified_verbatim": true
+    },
+    {
+      "id": "lea_flo_cta_010",
+      "category": "lead_flow_cta",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.leadFlow.afterFormSubmit",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "We call them back",
+      "verified_verbatim": true
+    },
+    {
+      "id": "lea_flo_cta_011",
+      "category": "lead_flow_cta",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.leadFlow.afterFormSubmit",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "We text them",
+      "verified_verbatim": true
+    },
+    {
+      "id": "lea_flo_cta_012",
+      "category": "lead_flow_cta",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.leadFlow.afterFormSubmit",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "We schedule an appointment",
+      "verified_verbatim": true
+    },
+    {
+      "id": "lea_flo_cta_013",
+      "category": "lead_flow_cta",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.leadFlow.afterFormSubmit",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "We qualify the lead first",
+      "verified_verbatim": true
+    },
+    {
+      "id": "pri_pro_001",
+      "category": "pricing_process",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.pricingProcess.pricing_process_signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Free estimates",
+      "verified_verbatim": true
+    },
+    {
+      "id": "pri_pro_002",
+      "category": "pricing_process",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.pricingProcess.pricing_process_signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Diagnostic fee applies",
+      "verified_verbatim": true
+    },
+    {
+      "id": "pri_pro_003",
+      "category": "pricing_process",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.pricingProcess.pricing_process_signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Diagnostic fee may be credited toward approved work",
+      "verified_verbatim": true
+    },
+    {
+      "id": "pri_pro_004",
+      "category": "pricing_process",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.pricingProcess.pricing_process_signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Upfront pricing after diagnosis",
+      "verified_verbatim": true
+    },
+    {
+      "id": "pri_pro_005",
+      "category": "pricing_process",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.pricingProcess.pricing_process_signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Financing available",
+      "verified_verbatim": true
+    },
+    {
+      "id": "pri_pro_006",
+      "category": "pricing_process",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.pricingProcess.pricing_process_signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Do not quote exact prices before diagnosis",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_002",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Licensed / insured",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_003",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Locally owned",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_004",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Family-owned",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_005",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Same-day availability",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_006",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Emergency service",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_007",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Free estimates",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_008",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Upfront pricing",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_009",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Financing available",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_010",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Warranty or guarantee",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_011",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Certified technicians / providers",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_012",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Clean, respectful, professional service",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_013",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Real project photos available",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_014",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Strong Google reviews",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_015",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Maintenance plans or memberships",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_016",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.signals",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Satisfaction guarantee",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ass_002",
+      "category": "assets",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.assets.folderIncludes",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Logo files",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ass_003",
+      "category": "assets",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.assets.folderIncludes",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Team photos",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ass_004",
+      "category": "assets",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.assets.folderIncludes",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Project photos",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ass_005",
+      "category": "assets",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.assets.folderIncludes",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Before / after photos",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ass_006",
+      "category": "assets",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.assets.folderIncludes",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Existing flyers or brochures",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ass_007",
+      "category": "assets",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.assets.folderIncludes",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Testimonials or review screenshots",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ass_008",
+      "category": "assets",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.assets.folderIncludes",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Service list or pricing sheets",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ass_009",
+      "category": "assets",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.assets.folderIncludes",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Current offer or seasonal promotion",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ass_010",
+      "category": "assets",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.assets.folderIncludes",
+      "source_support": [],
+      "source_type": "intake",
+      "value": "Brand or truck photos",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_022",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceStrategy.service_treatment",
+      "source_support": [],
+      "source_type": "intake",
+      "value": {
+        "service": "ductless mini-split service.",
+        "treatment": "Non-priority"
+      },
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_023",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceStrategy.service_treatment",
+      "source_support": [],
+      "source_type": "intake",
+      "value": {
+        "service": "Emergency service",
+        "treatment": "Standard Service"
+      },
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_024",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceStrategy.service_treatment",
+      "source_support": [],
+      "source_type": "intake",
+      "value": {
+        "service": "Financing available",
+        "treatment": "Standard Service"
+      },
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_025",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceStrategy.service_treatment",
+      "source_support": [],
+      "source_type": "intake",
+      "value": {
+        "service": "Heat pump service",
+        "treatment": "Feature heavily"
+      },
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_026",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceStrategy.service_treatment",
+      "source_support": [],
+      "source_type": "intake",
+      "value": {
+        "service": "indoor air quality",
+        "treatment": "Standard Service"
+      },
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_027",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceStrategy.service_treatment",
+      "source_support": [],
+      "source_type": "intake",
+      "value": {
+        "service": "Inspection / diagnosis",
+        "treatment": "Standard Service"
+      },
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_028",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceStrategy.service_treatment",
+      "source_support": [],
+      "source_type": "intake",
+      "value": {
+        "service": "Installation",
+        "treatment": "Standard Service"
+      },
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_029",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceStrategy.service_treatment",
+      "source_support": [],
+      "source_type": "intake",
+      "value": {
+        "service": "Maintenance",
+        "treatment": "Feature heavily"
+      },
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_030",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceStrategy.service_treatment",
+      "source_support": [],
+      "source_type": "intake",
+      "value": {
+        "service": "Repair",
+        "treatment": "Feature heavily"
+      },
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_031",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceStrategy.service_treatment",
+      "source_support": [],
+      "source_type": "intake",
+      "value": {
+        "service": "Replacement",
+        "treatment": "Feature heavily"
+      },
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_032",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceStrategy.service_treatment",
+      "source_support": [],
+      "source_type": "intake",
+      "value": {
+        "service": "smart thermostat installation",
+        "treatment": "Standard Service"
+      },
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_033",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "structured_selection",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceStrategy.service_treatment",
+      "source_support": [],
+      "source_type": "intake",
+      "value": {
+        "service": "Tune-up / seasonal service",
+        "treatment": "Feature heavily"
+      },
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_034",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.services.otherMainServices",
+      "source_support": [
+        "payload.services.otherMainServices"
+      ],
+      "source_type": "intake",
+      "value": "Heat pump service, indoor air quality, smart thermostat installation, ductless mini-split service.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_035",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.services.priorityServices",
+      "source_support": [
+        "payload.services.priorityServices"
+      ],
+      "source_type": "intake",
+      "value": "System replacement, heat pump service, seasonal tune-ups, and maintenance plans should be prioritized.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_off_036",
+      "category": "services_offered",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "ser_off_035",
+        "ser_off_036"
+      ],
+      "source_field": "payload.services.priorityServices",
+      "source_support": [
+        "payload.services.priorityServices"
+      ],
+      "source_type": "intake",
+      "value": "We still want repair calls, but replacement and ongoing maintenance are the biggest priorities.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "eme_ava_002",
+      "category": "emergency_availability",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceStrategy.emergency_service_limitations",
+      "source_support": [
+        "payload.serviceStrategy.emergency_service_limitations"
+      ],
+      "source_type": "intake",
+      "value": "Do not promise 24/7 availability, guaranteed same-day service, exact arrival times, or emergency coverage for every service area.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "eme_ava_003",
+      "category": "emergency_availability",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "eme_ava_002",
+        "eme_ava_003"
+      ],
+      "source_field": "payload.serviceStrategy.emergency_service_limitations",
+      "source_support": [
+        "payload.serviceStrategy.emergency_service_limitations"
+      ],
+      "source_type": "intake",
+      "value": "The site can say urgent heating and cooling issues should call directly, and emergency service may be available depending on schedule, distance, and technician availability.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_are_002",
+      "category": "service_area",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceArea.townsCities",
+      "source_support": [
+        "payload.serviceArea.townsCities"
+      ],
+      "source_type": "intake",
+      "value": "Huntersville, Cornelius, Davidson, Mooresville, North Charlotte, Denver, and the Lake Norman area.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_are_003",
+      "category": "service_area",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceArea.priorityAreas",
+      "source_support": [
+        "payload.serviceArea.priorityAreas"
+      ],
+      "source_type": "intake",
+      "value": "Huntersville, Cornelius, Davidson, and Mooresville.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_are_004",
+      "category": "service_area",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceArea.serviceRadius",
+      "source_support": [
+        "payload.serviceArea.serviceRadius"
+      ],
+      "source_type": "intake",
+      "value": "About 25–30 miles from Huntersville for regular service.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_are_005",
+      "category": "service_area",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "ser_are_004",
+        "ser_are_005"
+      ],
+      "source_field": "payload.serviceArea.serviceRadius",
+      "source_support": [
+        "payload.serviceArea.serviceRadius"
+      ],
+      "source_type": "intake",
+      "value": "Emergency calls may depend on availability and distance.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_are_006",
+      "category": "service_area",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.serviceArea.locationLimits",
+      "source_support": [
+        "payload.serviceArea.locationLimits"
+      ],
+      "source_type": "intake",
+      "value": "A standard diagnostic fee applies for repair visits.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ser_are_007",
+      "category": "service_area",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "ser_are_006",
+        "ser_are_007"
+      ],
+      "source_field": "payload.serviceArea.locationLimits",
+      "source_support": [
+        "payload.serviceArea.locationLimits"
+      ],
+      "source_type": "intake",
+      "value": "The fee may be credited toward the repair or replacement if the customer moves forward with recommended work.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "pri_pro_007",
+      "category": "pricing_process",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.pricingProcess.pricing_language_notes",
+      "source_support": [
+        "payload.pricingProcess.pricing_language_notes"
+      ],
+      "source_type": "intake",
+      "value": "We can mention free estimates for replacement projects and maintenance plan discussions.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "pri_pro_008",
+      "category": "pricing_process",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "pri_pro_007",
+        "pri_pro_008",
+        "pri_pro_009",
+        "pri_pro_010",
+        "pri_pro_011"
+      ],
+      "source_field": "payload.pricingProcess.pricing_language_notes",
+      "source_support": [
+        "payload.pricingProcess.pricing_language_notes"
+      ],
+      "source_type": "intake",
+      "value": "Repair visits usually require a diagnostic fee.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "pri_pro_009",
+      "category": "pricing_process",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "pri_pro_007",
+        "pri_pro_008",
+        "pri_pro_009",
+        "pri_pro_010",
+        "pri_pro_011"
+      ],
+      "source_field": "payload.pricingProcess.pricing_language_notes",
+      "source_support": [
+        "payload.pricingProcess.pricing_language_notes"
+      ],
+      "source_type": "intake",
+      "value": "Avoid listing exact repair prices online before diagnosis.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "pri_pro_010",
+      "category": "pricing_process",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "pri_pro_007",
+        "pri_pro_008",
+        "pri_pro_009",
+        "pri_pro_010",
+        "pri_pro_011"
+      ],
+      "source_field": "payload.pricingProcess.pricing_language_notes",
+      "source_support": [
+        "payload.pricingProcess.pricing_language_notes"
+      ],
+      "source_type": "intake",
+      "value": "Avoid saying we are the cheapest.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "pri_pro_011",
+      "category": "pricing_process",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "pri_pro_007",
+        "pri_pro_008",
+        "pri_pro_009",
+        "pri_pro_010",
+        "pri_pro_011"
+      ],
+      "source_field": "payload.pricingProcess.pricing_language_notes",
+      "source_support": [
+        "payload.pricingProcess.pricing_language_notes"
+      ],
+      "source_type": "intake",
+      "value": "It is okay to say we provide clear options and upfront recommendations after inspecting the system.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_017",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.compliments",
+      "source_support": [
+        "payload.trust.compliments"
+      ],
+      "source_type": "intake",
+      "value": "showing up when we say we will, explaining the issue clearly, keeping the work area clean, and giving honest recommendations without pressuring them into the most expensive option.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_018",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.competitorDifference",
+      "source_support": [
+        "payload.trust.competitorDifference"
+      ],
+      "source_type": "intake",
+      "value": "focus on practical options instead of scare tactics.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_019",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "tru_sig_018",
+        "tru_sig_019",
+        "tru_sig_020",
+        "tru_sig_021"
+      ],
+      "source_field": "payload.trust.competitorDifference",
+      "source_support": [
+        "payload.trust.competitorDifference"
+      ],
+      "source_type": "intake",
+      "value": "If a repair makes sense, we explain it.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_020",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "tru_sig_018",
+        "tru_sig_019",
+        "tru_sig_020",
+        "tru_sig_021"
+      ],
+      "source_field": "payload.trust.competitorDifference",
+      "source_support": [
+        "payload.trust.competitorDifference"
+      ],
+      "source_type": "intake",
+      "value": "If replacement is the better long-term move, we walk the customer through why.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "tru_sig_021",
+      "category": "trust_signals",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "tru_sig_018",
+        "tru_sig_019",
+        "tru_sig_020",
+        "tru_sig_021"
+      ],
+      "source_field": "payload.trust.competitorDifference",
+      "source_support": [
+        "payload.trust.competitorDifference"
+      ],
+      "source_type": "intake",
+      "value": "We try to make heating and cooling decisions easier to understand.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cla_cop_gua_001",
+      "category": "claims_copy_guardrails",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.trust.claimsToAvoid",
+      "source_support": [
+        "payload.trust.claimsToAvoid"
+      ],
+      "source_type": "intake",
+      "value": "Do not say we are the cheapest.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cla_cop_gua_002",
+      "category": "claims_copy_guardrails",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "cla_cop_gua_001",
+        "cla_cop_gua_002",
+        "cla_cop_gua_003",
+        "cla_cop_gua_004"
+      ],
+      "source_field": "payload.trust.claimsToAvoid",
+      "source_support": [
+        "payload.trust.claimsToAvoid"
+      ],
+      "source_type": "intake",
+      "value": "Do not guarantee same-day service for every request.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cla_cop_gua_003",
+      "category": "claims_copy_guardrails",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "cla_cop_gua_001",
+        "cla_cop_gua_002",
+        "cla_cop_gua_003",
+        "cla_cop_gua_004"
+      ],
+      "source_field": "payload.trust.claimsToAvoid",
+      "source_support": [
+        "payload.trust.claimsToAvoid"
+      ],
+      "source_type": "intake",
+      "value": "Do not promise exact pricing before diagnosis.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cla_cop_gua_004",
+      "category": "claims_copy_guardrails",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "cla_cop_gua_001",
+        "cla_cop_gua_002",
+        "cla_cop_gua_003",
+        "cla_cop_gua_004"
+      ],
+      "source_field": "payload.trust.claimsToAvoid",
+      "source_support": [
+        "payload.trust.claimsToAvoid"
+      ],
+      "source_type": "intake",
+      "value": "Do not imply every old system needs to be replaced.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cus_que_001",
+      "category": "customer_questions",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.customerQuestions.beforeContact",
+      "source_support": [
+        "payload.customerQuestions.beforeContact"
+      ],
+      "source_type": "intake",
+      "value": "How quickly can you come out if my AC or heat stops working?",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cus_que_002",
+      "category": "customer_questions",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.customerQuestions.pricingTimingProcess",
+      "source_support": [
+        "payload.customerQuestions.pricingTimingProcess"
+      ],
+      "source_type": "intake",
+      "value": "How much does a repair visit usually cost, and does the diagnostic fee go toward the repair?",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cus_que_003",
+      "category": "customer_questions",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.customerQuestions.competitorComparison",
+      "source_support": [
+        "payload.customerQuestions.competitorComparison"
+      ],
+      "source_type": "intake",
+      "value": "How do I know if I should repair my current system or replace it?",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ass_011",
+      "category": "assets",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.assets.promoOffer",
+      "source_support": [
+        "payload.assets.promoOffer"
+      ],
+      "source_type": "intake",
+      "value": "Spring AC Tune-Up Special — includes thermostat check, filter check, airflow review, outdoor unit inspection, and general system performance check.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ass_012",
+      "category": "assets",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.assets.competitorReferences",
+      "source_support": [
+        "payload.assets.competitorReferences"
+      ],
+      "source_type": "intake",
+      "value": "We like local HVAC websites that feel clean, trustworthy, and easy to use.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ass_013",
+      "category": "assets",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "ass_012",
+        "ass_013",
+        "ass_014"
+      ],
+      "source_field": "payload.assets.competitorReferences",
+      "source_support": [
+        "payload.assets.competitorReferences"
+      ],
+      "source_type": "intake",
+      "value": "Prefer sites with clear service buttons, simple quote forms, real photos, and strong reviews near the top.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "ass_014",
+      "category": "assets",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "ass_012",
+        "ass_013",
+        "ass_014"
+      ],
+      "source_field": "payload.assets.competitorReferences",
+      "source_support": [
+        "payload.assets.competitorReferences"
+      ],
+      "source_type": "intake",
+      "value": "Avoid sites that feel too corporate, too stock-photo heavy, too cluttered, or too aggressive with popups.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "fut_off_002",
+      "category": "future_offers",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.finalNotes.future_offers",
+      "source_support": [
+        "payload.finalNotes.future_offers"
+      ],
+      "source_type": "intake",
+      "value": "Yes.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "fut_off_003",
+      "category": "future_offers",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "fut_off_002",
+        "fut_off_003"
+      ],
+      "source_field": "payload.finalNotes.future_offers",
+      "source_support": [
+        "payload.finalNotes.future_offers"
+      ],
+      "source_type": "intake",
+      "value": "We may be adding or promoting a maintenance membership plan this year.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cla_cop_gua_005",
+      "category": "claims_copy_guardrails",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.finalNotes.homepage_must_include",
+      "source_support": [
+        "payload.finalNotes.homepage_must_include"
+      ],
+      "source_type": "intake",
+      "value": "Phone number should be easy to find.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cla_cop_gua_006",
+      "category": "claims_copy_guardrails",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "cla_cop_gua_005",
+        "cla_cop_gua_006",
+        "cla_cop_gua_007"
+      ],
+      "source_field": "payload.finalNotes.homepage_must_include",
+      "source_support": [
+        "payload.finalNotes.homepage_must_include"
+      ],
+      "source_type": "intake",
+      "value": "The homepage should clearly show HVAC repair, replacement, maintenance, heat pump service, emergency service, and the Lake Norman service area.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cla_cop_gua_007",
+      "category": "claims_copy_guardrails",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "cla_cop_gua_005",
+        "cla_cop_gua_006",
+        "cla_cop_gua_007"
+      ],
+      "source_field": "payload.finalNotes.homepage_must_include",
+      "source_support": [
+        "payload.finalNotes.homepage_must_include"
+      ],
+      "source_type": "intake",
+      "value": "Maintenance plans should be mentioned as a future or light priority",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cla_cop_gua_008",
+      "category": "claims_copy_guardrails",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.finalNotes.services_page_must_include",
+      "source_support": [
+        "payload.finalNotes.services_page_must_include"
+      ],
+      "source_type": "intake",
+      "value": "Separate sections for AC repair, heating repair, heat pump service, system replacement, maintenance, tune-ups, and emergency HVAC service.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cla_cop_gua_009",
+      "category": "claims_copy_guardrails",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.finalNotes.contact_form_must_include",
+      "source_support": [
+        "payload.finalNotes.contact_form_must_include"
+      ],
+      "source_type": "intake",
+      "value": "Urgent heating or cooling issues should call directly.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cla_cop_gua_010",
+      "category": "claims_copy_guardrails",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "cla_cop_gua_009",
+        "cla_cop_gua_010",
+        "cla_cop_gua_011"
+      ],
+      "source_field": "payload.finalNotes.contact_form_must_include",
+      "source_support": [
+        "payload.finalNotes.contact_form_must_include"
+      ],
+      "source_type": "intake",
+      "value": "Non-urgent quote requests, maintenance requests, and replacement questions can use the form.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cla_cop_gua_011",
+      "category": "claims_copy_guardrails",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "cla_cop_gua_009",
+        "cla_cop_gua_010",
+        "cla_cop_gua_011"
+      ],
+      "source_field": "payload.finalNotes.contact_form_must_include",
+      "source_support": [
+        "payload.finalNotes.contact_form_must_include"
+      ],
+      "source_type": "intake",
+      "value": "Include a note that we try to respond the same day.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cla_cop_gua_012",
+      "category": "claims_copy_guardrails",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.finalNotes.global_avoid_emphasis",
+      "source_support": [
+        "payload.finalNotes.global_avoid_emphasis"
+      ],
+      "source_type": "intake",
+      "value": "Do not heavily promote duct cleaning or large commercial HVAC.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cla_cop_gua_013",
+      "category": "claims_copy_guardrails",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "cla_cop_gua_012",
+        "cla_cop_gua_013",
+        "cla_cop_gua_014"
+      ],
+      "source_field": "payload.finalNotes.global_avoid_emphasis",
+      "source_support": [
+        "payload.finalNotes.global_avoid_emphasis"
+      ],
+      "source_type": "intake",
+      "value": "Do not make emergency service sound guaranteed for every request.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cla_cop_gua_014",
+      "category": "claims_copy_guardrails",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [
+        "cla_cop_gua_012",
+        "cla_cop_gua_013",
+        "cla_cop_gua_014"
+      ],
+      "source_field": "payload.finalNotes.global_avoid_emphasis",
+      "source_support": [
+        "payload.finalNotes.global_avoid_emphasis"
+      ],
+      "source_type": "intake",
+      "value": "Do not lead with “cheap” or “lowest price.”",
+      "verified_verbatim": true
+    },
+    {
+      "id": "cla_cop_gua_015",
+      "category": "claims_copy_guardrails",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.finalNotes.bad_fit_customers",
+      "source_support": [
+        "payload.finalNotes.bad_fit_customers"
+      ],
+      "source_type": "intake",
+      "value": "Customers far outside our service area, people only looking for the absolute cheapest option, and emergency requests too far away for us to respond to realistically.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "fut_off_004",
+      "category": "future_offers",
+      "confidence": 1,
+      "item_type": "verified_quote",
+      "notes": "",
+      "related_items": [],
+      "source_field": "payload.finalNotes.upcomingChanges",
+      "source_support": [
+        "payload.finalNotes.upcomingChanges"
+      ],
+      "source_type": "intake",
+      "value": "We may be adding a maintenance membership plan and want the website to support that later.",
+      "verified_verbatim": true
+    },
+    {
+      "id": "con_001",
+      "category": "conflicts",
+      "confidence": 1,
+      "item_type": "conflict",
+      "notes": "Emergency language needs approval because emergency availability is qualified by distance, schedule, or other limitations.",
+      "related_items": [
+        "tru_sig_006",
+        "eme_ava_001",
+        "eme_ava_002",
+        "eme_ava_003"
+      ],
+      "source_field": "payload.trust.signals + payload.serviceStrategy.emergency_service_limitations",
+      "source_support": [
+        "payload.trust.signals",
+        "payload.serviceStrategy.emergency_service_limitations"
+      ],
+      "source_type": "derived_rule",
+      "value": "Emergency service is selected, but emergency limitations were provided.",
+      "verified_verbatim": false
+    },
+    {
+      "id": "mis_inf_001",
+      "category": "missing_info",
+      "confidence": 1,
+      "item_type": "missing_info",
+      "notes": "Confirm exact emergency and same-day language before final copy.",
+      "related_items": [
+        "eme_ava_001",
+        "eme_ava_002",
+        "eme_ava_003"
+      ],
+      "source_field": "derived_missing_info_rule",
+      "source_support": [
+        "eme_ava_001",
+        "eme_ava_002",
+        "eme_ava_003"
+      ],
+      "source_type": "derived_rule",
+      "value": "approved emergency/same-day wording",
+      "verified_verbatim": false
+    },
+    {
+      "id": "con_002",
+      "category": "conflicts",
+      "confidence": 1,
+      "item_type": "conflict",
+      "notes": "Pricing may be referenced only with approved language. Do not invent exact prices or dollar amounts.",
+      "related_items": [
+        "pri_pro_001",
+        "pri_pro_002",
+        "pri_pro_003",
+        "pri_pro_004",
+        "pri_pro_005",
+        "pri_pro_006",
+        "pri_pro_007",
+        "pri_pro_008",
+        "pri_pro_009",
+        "pri_pro_010",
+        "pri_pro_011",
+        "cla_cop_gua_001",
+        "cla_cop_gua_002",
+        "cla_cop_gua_003",
+        "cla_cop_gua_004",
+        "cla_cop_gua_012",
+        "cla_cop_gua_013",
+        "cla_cop_gua_014"
+      ],
+      "source_field": "payload.pricingProcess + guardrail fields",
+      "source_support": [
+        "payload.pricingProcess.pricing_process_signals",
+        "payload.pricingProcess.pricing_language_notes",
+        "guardrail fields"
+      ],
+      "source_type": "derived_rule",
+      "value": "Pricing is referenced, but exact pricing is restricted or prohibited.",
+      "verified_verbatim": false
+    },
+    {
+      "id": "mis_inf_002",
+      "category": "missing_info",
+      "confidence": 1,
+      "item_type": "missing_info",
+      "notes": "Confirm approved pricing, estimate, and diagnostic-fee language before final copy.",
+      "related_items": [
+        "pri_pro_001",
+        "pri_pro_002",
+        "pri_pro_003",
+        "pri_pro_004",
+        "pri_pro_005",
+        "pri_pro_006",
+        "pri_pro_007",
+        "pri_pro_008",
+        "pri_pro_009",
+        "pri_pro_010",
+        "pri_pro_011"
+      ],
+      "source_field": "derived_missing_info_rule",
+      "source_support": [
+        "pri_pro_001",
+        "pri_pro_002",
+        "pri_pro_003",
+        "pri_pro_004",
+        "pri_pro_005",
+        "pri_pro_006",
+        "pri_pro_007",
+        "pri_pro_008",
+        "pri_pro_009",
+        "pri_pro_010",
+        "pri_pro_011"
+      ],
+      "source_type": "derived_rule",
+      "value": "approved pricing language",
+      "verified_verbatim": false
+    },
+    {
+      "id": "mis_inf_003",
+      "category": "missing_info",
+      "confidence": 1,
+      "item_type": "missing_info",
+      "notes": "Diagnostic fee is referenced, but the exact amount is not verified.",
+      "related_items": [
+        "pri_pro_002"
+      ],
+      "source_field": "derived_missing_info_rule",
+      "source_support": [
+        "pri_pro_002"
+      ],
+      "source_type": "derived_rule",
+      "value": "exact diagnostic fee amount",
+      "verified_verbatim": false
+    },
+    {
+      "id": "mis_inf_004",
+      "category": "missing_info",
+      "confidence": 1,
+      "item_type": "missing_info",
+      "notes": "A warranty or guarantee is referenced, but exact terms were not provided.",
+      "related_items": [
+        "tru_sig_010",
+        "tru_sig_016"
+      ],
+      "source_field": "derived_missing_info_rule",
+      "source_support": [
+        "tru_sig_010",
+        "tru_sig_016"
+      ],
+      "source_type": "derived_rule",
+      "value": "exact warranty/guarantee language",
+      "verified_verbatim": false
+    },
+    {
+      "id": "mis_inf_005",
+      "category": "missing_info",
+      "confidence": 1,
+      "item_type": "missing_info",
+      "notes": "Financing is referenced, but provider, eligibility, and term language are not verified.",
+      "related_items": [
+        "pri_pro_005",
+        "tru_sig_009",
+        "fut_off_002",
+        "fut_off_003"
+      ],
+      "source_field": "derived_missing_info_rule",
+      "source_support": [
+        "pri_pro_005",
+        "tru_sig_009",
+        "fut_off_002",
+        "fut_off_003"
+      ],
+      "source_type": "derived_rule",
+      "value": "financing provider/terms",
+      "verified_verbatim": false
+    },
+    {
+      "id": "mis_inf_006",
+      "category": "missing_info",
+      "confidence": 1,
+      "item_type": "missing_info",
+      "notes": "Certification or credential language is selected, but exact approved wording is not verified.",
+      "related_items": [
+        "tru_sig_011"
+      ],
+      "source_field": "derived_missing_info_rule",
+      "source_support": [
+        "tru_sig_011"
+      ],
+      "source_type": "derived_rule",
+      "value": "exact certification wording",
+      "verified_verbatim": false
+    },
+    {
+      "id": "mis_inf_007",
+      "category": "missing_info",
+      "confidence": 1,
+      "item_type": "missing_info",
+      "notes": "Licensed/insured is selected, but exact license, insurance, or required disclaimer wording is not verified.",
+      "related_items": [
+        "tru_sig_002"
+      ],
+      "source_field": "derived_missing_info_rule",
+      "source_support": [
+        "tru_sig_002"
+      ],
+      "source_type": "derived_rule",
+      "value": "exact license/insurance wording",
+      "verified_verbatim": false
+    },
+    {
+      "id": "mis_inf_008",
+      "category": "missing_info",
+      "confidence": 1,
+      "item_type": "missing_info",
+      "notes": "Reviews are referenced, but exact count, star rating, and approved excerpts are not verified.",
+      "related_items": [
+        "tru_sig_014",
+        "ass_007"
+      ],
+      "source_field": "derived_missing_info_rule",
+      "source_support": [
+        "tru_sig_014",
+        "ass_007"
+      ],
+      "source_type": "derived_rule",
+      "value": "review count/rating/excerpts",
+      "verified_verbatim": false
+    },
+    {
+      "id": "mis_inf_009",
+      "category": "missing_info",
+      "confidence": 1,
+      "item_type": "missing_info",
+      "notes": "Maintenance plan or membership is referenced; confirm name, inclusions, exclusions, and visibility.",
+      "related_items": [
+        "tru_sig_015",
+        "fut_off_002",
+        "fut_off_003"
+      ],
+      "source_field": "derived_missing_info_rule",
+      "source_support": [
+        "tru_sig_015",
+        "fut_off_002",
+        "fut_off_003"
+      ],
+      "source_type": "derived_rule",
+      "value": "maintenance plan details",
+      "verified_verbatim": false
+    }
+  ],
+  "source_type": "project_intake"
+}
