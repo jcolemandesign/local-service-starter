@@ -16,18 +16,20 @@ type BusinessBasics = {
   googleBusinessProfile: string;
   businessAddress: string;
   businessHours: string;
+  additionalNotes: string;
 };
 
 type ServicesAnswers = {
   mainServices: string[];
   otherMainServices: string;
   priorityServices: string;
+  additionalNotes: string;
 };
 
 type ServiceTreatment =
-  | "Promote heavily"
-  | "Include normally"
-  | "Mention only if relevant"
+  | "Feature heavily"
+  | "Standard Service"
+  | "Non-priority"
   | "Do not promote";
 
 type ServiceStrategyAnswers = {
@@ -35,6 +37,7 @@ type ServiceStrategyAnswers = {
   service_priority_notes: string;
   emergency_service_availability: string;
   emergency_service_limitations: string;
+  additionalNotes: string;
 };
 
 type ServiceAreaAnswers = {
@@ -42,18 +45,22 @@ type ServiceAreaAnswers = {
   priorityAreas: string;
   serviceRadius: string;
   locationLimits: string;
+  additionalNotes: string;
 };
 
 type LeadFlowAnswers = {
   currentProcess: string[];
   primaryAction: string;
+  secondaryAction: string;
   afterFormSubmit: string[];
   responseTime: string;
+  additionalNotes: string;
 };
 
 type PricingProcessAnswers = {
   pricing_process_signals: string[];
   pricing_language_notes: string;
+  additionalNotes: string;
 };
 
 type TrustAnswers = {
@@ -62,12 +69,14 @@ type TrustAnswers = {
   compliments: string;
   competitorDifference: string;
   claimsToAvoid: string;
+  additionalNotes: string;
 };
 
 type CustomerQuestionsAnswers = {
   beforeContact: string;
   pricingTimingProcess: string;
   competitorComparison: string;
+  additionalNotes: string;
 };
 
 type AssetAnswers = {
@@ -75,6 +84,7 @@ type AssetAnswers = {
   folderIncludes: string[];
   promoOffer: string;
   competitorReferences: string;
+  additionalNotes: string;
 };
 
 type FinalNotesAnswers = {
@@ -86,6 +96,7 @@ type FinalNotesAnswers = {
   global_avoid_emphasis: string;
   bad_fit_customers: string;
   upcomingChanges: string;
+  additionalNotes: string;
   mustInclude?: string;
   avoidSaying?: string;
   servicesToAvoid?: string;
@@ -215,9 +226,9 @@ const responseTimeOptions = [
 ];
 
 const serviceTreatmentOptions: ServiceTreatment[] = [
-  "Promote heavily",
-  "Include normally",
-  "Mention only if relevant",
+  "Feature heavily",
+  "Standard Service",
+  "Non-priority",
   "Do not promote",
 ];
 
@@ -289,33 +300,40 @@ function createDefaultPayload(variant: IntakeVariantKey): ClientIntakePayload {
       googleBusinessProfile: "",
       businessAddress: "",
       businessHours: "",
+      additionalNotes: "",
     },
     services: {
       mainServices: [],
       otherMainServices: "",
       priorityServices: "",
+      additionalNotes: "",
     },
     serviceStrategy: {
       service_treatment: {},
       service_priority_notes: "",
       emergency_service_availability: "",
       emergency_service_limitations: "",
+      additionalNotes: "",
     },
     serviceArea: {
       townsCities: "",
       priorityAreas: "",
       serviceRadius: "",
       locationLimits: "",
+      additionalNotes: "",
     },
     leadFlow: {
       currentProcess: [],
       primaryAction: "",
+      secondaryAction: "",
       afterFormSubmit: [],
       responseTime: "",
+      additionalNotes: "",
     },
     pricingProcess: {
       pricing_process_signals: [],
       pricing_language_notes: "",
+      additionalNotes: "",
     },
     trust: {
       signals: [],
@@ -323,17 +341,20 @@ function createDefaultPayload(variant: IntakeVariantKey): ClientIntakePayload {
       compliments: "",
       competitorDifference: "",
       claimsToAvoid: "",
+      additionalNotes: "",
     },
     customerQuestions: {
       beforeContact: "",
       pricingTimingProcess: "",
       competitorComparison: "",
+      additionalNotes: "",
     },
     assets: {
       folderLink: "",
       folderIncludes: [],
       promoOffer: "",
       competitorReferences: "",
+      additionalNotes: "",
     },
     finalNotes: {
       future_offers: "",
@@ -344,6 +365,7 @@ function createDefaultPayload(variant: IntakeVariantKey): ClientIntakePayload {
       global_avoid_emphasis: "",
       bad_fit_customers: "",
       upcomingChanges: "",
+      additionalNotes: "",
     },
   };
 }
@@ -379,7 +401,9 @@ function mergePayload(
       ...draft.serviceStrategy,
       service_treatment: {
         ...defaultPayload.serviceStrategy.service_treatment,
-        ...draft.serviceStrategy?.service_treatment,
+        ...normalizeServiceTreatmentRecord(
+          draft.serviceStrategy?.service_treatment,
+        ),
       },
     },
     serviceArea: {
@@ -431,6 +455,50 @@ function updateArrayValue(values: string[], value: string) {
   return values.includes(value)
     ? values.filter((item) => item !== value)
     : [...values, value];
+}
+
+function parseCommaList(value: string) {
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function normalizeServiceTreatment(
+  treatment:
+    | ServiceTreatment
+    | "Promote heavily"
+    | "Include normally"
+    | "Mention only if relevant",
+): ServiceTreatment {
+  if (treatment === "Promote heavily") {
+    return "Feature heavily";
+  }
+
+  if (treatment === "Include normally") {
+    return "Standard Service";
+  }
+
+  if (treatment === "Mention only if relevant") {
+    return "Non-priority";
+  }
+
+  return treatment;
+}
+
+function normalizeServiceTreatmentRecord(
+  serviceTreatment: Record<string, ServiceTreatment> | undefined,
+) {
+  if (!serviceTreatment) {
+    return {};
+  }
+
+  return Object.fromEntries(
+    Object.entries(serviceTreatment).map(([service, treatment]) => [
+      service,
+      normalizeServiceTreatment(treatment),
+    ]),
+  );
 }
 
 function TextField({
@@ -630,9 +698,9 @@ function SummaryRow({
   value,
 }: {
   label: string;
-  value: string | string[];
+  value?: string | string[] | null;
 }) {
-  const text = Array.isArray(value) ? value.filter(Boolean).join(", ") : value;
+  const text = Array.isArray(value) ? value.filter(Boolean).join(", ") : value ?? "";
 
   return (
     <div className="grid gap-1 border-b border-service-border py-3 last:border-b-0">
@@ -705,7 +773,10 @@ export function ClientIntakeWizard({
   const isReviewStep = currentStep === steps.length;
   const mainServices = useMemo(
     () =>
-      [...payload.services.mainServices, payload.services.otherMainServices]
+      [
+        ...payload.services.mainServices,
+        ...parseCommaList(payload.services.otherMainServices),
+      ]
         .map((item) => item.trim())
         .filter(Boolean),
     [payload.services.mainServices, payload.services.otherMainServices],
@@ -1028,6 +1099,10 @@ function BusinessBasicsStep({
           rows={2}
           value={payload.businessHours}
         />
+        <AdditionalNotesField
+          onChange={(additionalNotes) => update({ additionalNotes })}
+          value={payload.additionalNotes}
+        />
       </div>
     </QuestionBlock>
   );
@@ -1058,10 +1133,11 @@ function ServicesStep({
           />
         ))}
       </div>
-      <TextField
-        label="Other"
+      <TextAreaField
+        label="Other services"
         onChange={(otherMainServices) => update({ otherMainServices })}
-        placeholder="Add services that are not listed above"
+        placeholder="Add services that are not listed above. Separate each service with a comma."
+        rows={4}
         value={payload.otherMainServices}
       />
       <TextAreaField
@@ -1070,6 +1146,10 @@ function ServicesStep({
         placeholder="List the services, jobs, packages, or requests you most want."
         rows={4}
         value={payload.priorityServices}
+      />
+      <AdditionalNotesField
+        onChange={(additionalNotes) => update({ additionalNotes })}
+        value={payload.additionalNotes}
       />
     </QuestionBlock>
   );
@@ -1139,16 +1219,6 @@ function ServiceStrategyStep({
         )}
       </QuestionBlock>
 
-      <TextAreaField
-        label="Service priority notes or nuance"
-        onChange={(service_priority_notes) =>
-          update({ service_priority_notes })
-        }
-        placeholder="Example: Replacement is a priority, repair is still important, commercial work exists but should not be emphasized."
-        rows={4}
-        value={payload.service_priority_notes}
-      />
-
       <QuestionBlock title="Do you offer emergency or after-hours service?">
         <div className="grid grid-cols-3 gap-2 max-md:grid-cols-1">
           {emergencyAvailabilityOptions.map((option) => (
@@ -1175,7 +1245,46 @@ function ServiceStrategyStep({
           />
         ) : null}
       </QuestionBlock>
+
+      <AdditionalNotesField
+        onChange={(additionalNotes) => update({ additionalNotes })}
+        value={payload.additionalNotes}
+      />
     </div>
+  );
+}
+
+function OptionalSummaryRow({
+  label,
+  value,
+}: {
+  label: string;
+  value?: string | string[] | null;
+}) {
+  const text = Array.isArray(value) ? value.filter(Boolean).join(", ") : value ?? "";
+
+  if (!text.trim()) {
+    return null;
+  }
+
+  return <SummaryRow label={label} value={text} />;
+}
+
+function AdditionalNotesField({
+  onChange,
+  value,
+}: {
+  onChange: (value: string) => void;
+  value: string;
+}) {
+  return (
+    <TextAreaField
+      label="Additional notes"
+      onChange={onChange}
+      placeholder="Add anything that needs clarification, context, or special handling for this step."
+      rows={3}
+      value={value}
+    />
   );
 }
 
@@ -1214,6 +1323,10 @@ function ServiceAreaStep({
           onChange={(locationLimits) => update({ locationLimits })}
           rows={3}
           value={payload.locationLimits}
+        />
+        <AdditionalNotesField
+          onChange={(additionalNotes) => update({ additionalNotes })}
+          value={payload.additionalNotes}
         />
       </div>
     </QuestionBlock>
@@ -1268,6 +1381,20 @@ function LeadFlowStep({
         </div>
       </QuestionBlock>
 
+      <QuestionBlock title="What should the secondary call to action be?">
+        <div className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
+          {primaryActionOptions.map((option) => (
+            <RadioCard
+              checked={payload.secondaryAction === option}
+              key={option}
+              label={option}
+              name="secondary-action"
+              onChange={() => update({ secondaryAction: option })}
+            />
+          ))}
+        </div>
+      </QuestionBlock>
+
       <QuestionBlock title="What should happen after someone submits a form?">
         <div className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
           {afterFormSubmitOptions.map((option) => (
@@ -1301,6 +1428,11 @@ function LeadFlowStep({
           ))}
         </div>
       </QuestionBlock>
+
+      <AdditionalNotesField
+        onChange={(additionalNotes) => update({ additionalNotes })}
+        value={payload.additionalNotes}
+      />
     </div>
   );
 }
@@ -1342,6 +1474,10 @@ function PricingProcessStep({
         placeholder="Example: A standard diagnostic fee applies. The fee may be credited toward repair or replacement if the customer moves forward. Do not promise exact pricing before diagnosis."
         rows={4}
         value={payload.pricing_language_notes}
+      />
+      <AdditionalNotesField
+        onChange={(additionalNotes) => update({ additionalNotes })}
+        value={payload.additionalNotes}
       />
     </div>
   );
@@ -1395,6 +1531,10 @@ function TrustStep({
           rows={3}
           value={payload.claimsToAvoid}
         />
+        <AdditionalNotesField
+          onChange={(additionalNotes) => update({ additionalNotes })}
+          value={payload.additionalNotes}
+        />
       </div>
     </QuestionBlock>
   );
@@ -1429,6 +1569,10 @@ function CustomerQuestionsStep({
           onChange={(competitorComparison) => update({ competitorComparison })}
           placeholder={placeholders[2]}
           value={payload.competitorComparison}
+        />
+        <AdditionalNotesField
+          onChange={(additionalNotes) => update({ additionalNotes })}
+          value={payload.additionalNotes}
         />
       </div>
     </QuestionBlock>
@@ -1489,6 +1633,10 @@ function AssetsStep({
           placeholder="Names or notes are fine; links are optional."
           rows={3}
           value={payload.competitorReferences}
+        />
+        <AdditionalNotesField
+          onChange={(additionalNotes) => update({ additionalNotes })}
+          value={payload.additionalNotes}
         />
       </div>
     </div>
@@ -1572,6 +1720,10 @@ function FinalNotesStep({
           rows={3}
           value={payload.upcomingChanges}
         />
+        <AdditionalNotesField
+          onChange={(additionalNotes) => update({ additionalNotes })}
+          value={payload.additionalNotes}
+        />
       </QuestionBlock>
     </div>
   );
@@ -1610,6 +1762,10 @@ function ReviewStep({
               payload.businessBasics.businessHours,
             ]}
           />
+          <OptionalSummaryRow
+            label="Additional notes"
+            value={payload.businessBasics.additionalNotes}
+          />
         </ReviewCard>
 
         <ReviewCard onEdit={() => onEditStep(2)} title="Main services">
@@ -1617,6 +1773,10 @@ function ReviewStep({
           <SummaryRow
             label="Priority services"
             value={payload.services.priorityServices}
+          />
+          <OptionalSummaryRow
+            label="Additional notes"
+            value={payload.services.additionalNotes}
           />
         </ReviewCard>
 
@@ -1628,16 +1788,16 @@ function ReviewStep({
             )}
           />
           <SummaryRow
-            label="Service nuance"
-            value={payload.serviceStrategy.service_priority_notes}
-          />
-          <SummaryRow
             label="Emergency / after-hours"
             value={payload.serviceStrategy.emergency_service_availability}
           />
           <SummaryRow
             label="Emergency limitations"
             value={payload.serviceStrategy.emergency_service_limitations}
+          />
+          <OptionalSummaryRow
+            label="Additional notes"
+            value={payload.serviceStrategy.additionalNotes}
           />
         </ReviewCard>
 
@@ -1654,6 +1814,10 @@ function ReviewStep({
               payload.serviceArea.locationLimits,
             ]}
           />
+          <OptionalSummaryRow
+            label="Additional notes"
+            value={payload.serviceArea.additionalNotes}
+          />
         </ReviewCard>
 
         <ReviewCard onEdit={() => onEditStep(5)} title="Preferred contact flow">
@@ -1663,10 +1827,18 @@ function ReviewStep({
           />
           <SummaryRow label="Primary action" value={payload.leadFlow.primaryAction} />
           <SummaryRow
+            label="Secondary action"
+            value={payload.leadFlow.secondaryAction}
+          />
+          <SummaryRow
             label="After submit"
             value={payload.leadFlow.afterFormSubmit}
           />
           <SummaryRow label="Response speed" value={payload.leadFlow.responseTime} />
+          <OptionalSummaryRow
+            label="Additional notes"
+            value={payload.leadFlow.additionalNotes}
+          />
         </ReviewCard>
 
         <ReviewCard onEdit={() => onEditStep(6)} title="Pricing and process">
@@ -1678,6 +1850,10 @@ function ReviewStep({
             label="Pricing language"
             value={payload.pricingProcess.pricing_language_notes}
           />
+          <OptionalSummaryRow
+            label="Additional notes"
+            value={payload.pricingProcess.additionalNotes}
+          />
         </ReviewCard>
 
         <ReviewCard onEdit={() => onEditStep(7)} title="Trust points">
@@ -1686,6 +1862,10 @@ function ReviewStep({
           <SummaryRow
             label="Competitor difference"
             value={payload.trust.competitorDifference}
+          />
+          <OptionalSummaryRow
+            label="Additional notes"
+            value={payload.trust.additionalNotes}
           />
         </ReviewCard>
 
@@ -1702,6 +1882,10 @@ function ReviewStep({
             label="Comparison"
             value={payload.customerQuestions.competitorComparison}
           />
+          <OptionalSummaryRow
+            label="Additional notes"
+            value={payload.customerQuestions.additionalNotes}
+          />
         </ReviewCard>
 
         <ReviewCard onEdit={() => onEditStep(9)} title="Asset folder / references">
@@ -1711,6 +1895,10 @@ function ReviewStep({
           <SummaryRow
             label="References"
             value={payload.assets.competitorReferences}
+          />
+          <OptionalSummaryRow
+            label="Additional notes"
+            value={payload.assets.additionalNotes}
           />
         </ReviewCard>
 
@@ -1746,6 +1934,10 @@ function ReviewStep({
           <SummaryRow
             label="Upcoming changes"
             value={payload.finalNotes.upcomingChanges}
+          />
+          <OptionalSummaryRow
+            label="Additional notes"
+            value={payload.finalNotes.additionalNotes}
           />
         </ReviewCard>
       </div>

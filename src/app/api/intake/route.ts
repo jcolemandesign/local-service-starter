@@ -31,6 +31,7 @@ type IntakePayload = {
   leadFlow?: {
     preferredActions?: unknown;
     primaryAction?: unknown;
+    secondaryAction?: unknown;
   };
   pricingProcess?: {
     pricing_process_signals?: unknown;
@@ -61,15 +62,20 @@ function readStringArray(value: unknown) {
     : [];
 }
 
+function readCommaSeparatedStrings(value: unknown) {
+  return readString(value)
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 function jsonError(message: string, status: number) {
   return Response.json({ error: message }, { status });
 }
 
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey =
-    process.env.SUPABASE_SERVICE_ROLE_KEY ??
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
     throw new Error("Missing Supabase configuration.");
@@ -153,15 +159,18 @@ export async function POST(request: Request) {
   const id = randomUUID();
   const mainServices = [
     ...readStringArray(services.mainServices),
-    readString(services.otherMainServices),
+    ...readCommaSeparatedStrings(services.otherMainServices),
   ].filter(Boolean);
   const primaryAction = readString(leadFlow.primaryAction);
+  const secondaryAction = readString(leadFlow.secondaryAction);
   const preferredCta = primaryAction
-    ? [primaryAction]
+    ? [primaryAction, secondaryAction].filter(Boolean)
     : readStringArray(leadFlow.preferredActions);
+  const allServiceAreas = readString(serviceArea.townsCities);
+  const priorityServiceAreas = readString(serviceArea.priorityAreas);
   const serviceAreaSummary = [
-    readString(serviceArea.townsCities),
-    readString(serviceArea.priorityAreas),
+    allServiceAreas ? `All service areas: ${allServiceAreas}` : "",
+    priorityServiceAreas ? `Priority service areas: ${priorityServiceAreas}` : "",
   ]
     .filter(Boolean)
     .join("\n\n");

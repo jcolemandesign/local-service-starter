@@ -249,6 +249,42 @@ function displayStringItems(value: string[] | null | undefined) {
   return value.filter(Boolean);
 }
 
+function readJsonObject(value: JsonValue | undefined) {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, JsonValue>)
+    : null;
+}
+
+function readPayloadString(
+  payload: JsonValue | undefined,
+  sectionKey: string,
+  answerKey: string,
+) {
+  const root = readJsonObject(payload);
+  const section = readJsonObject(root?.[sectionKey]);
+  const value = section?.[answerKey];
+
+  return typeof value === "string" && value.trim() ? value.trim() : null;
+}
+
+function getProjectIntakeServiceAreaDetails(intake: ProjectIntake) {
+  const allServiceAreas = readPayloadString(
+    intake.payload,
+    "serviceArea",
+    "townsCities",
+  );
+  const priorityServiceAreas = readPayloadString(
+    intake.payload,
+    "serviceArea",
+    "priorityAreas",
+  );
+
+  return {
+    allServiceAreas: allServiceAreas ?? intake.service_area ?? null,
+    priorityServiceAreas,
+  };
+}
+
 function isBookedStatus(value: LeadValue) {
   return typeof value === "string" && value.toLowerCase() === "booked";
 }
@@ -1326,6 +1362,8 @@ export function ProjectIntakeDashboard({
             const intakeId = String(intake.id);
             const isDetailsOpen = openIntakeIds.has(intakeId);
             const isCopied = copiedIntakeId === intakeId;
+            const serviceAreaDetails =
+              getProjectIntakeServiceAreaDetails(intake);
             const status = intake.status ?? "New";
 
             return (
@@ -1420,34 +1458,44 @@ export function ProjectIntakeDashboard({
                   <ProjectIntakePayloadView payload={intake.payload} />
                 ) : null}
 
-                <div className="mt-heading-body-md grid card-grid-gap-med rounded-[var(--radius-md-token)] bg-service-surface p-5 md:grid-cols-2 xl:grid-cols-4">
-                  <LeadDetail label="Contact" value={intake.contact_name} />
-                  <LeadDetail label="Email" value={intake.contact_email} />
-                  <LeadDetail label="Phone" value={intake.contact_phone} />
-                  <LeadDetail label="Business type" value={intake.business_type} />
-                  <LeadListDetail
-                    items={displayStringItems(intake.main_services)}
-                    label="Main services"
-                  />
-                  <LeadListDetail
-                    items={displayStringItems(intake.preferred_cta)}
-                    label="Preferred CTA"
-                  />
-                  <LeadDetail
-                    className="md:col-span-2 xl:col-span-2"
-                    label="Priority services"
-                    value={intake.priority_services}
-                  />
-                  <LeadDetail label="Source" value={intake.source} />
-                </div>
+                <div className="mt-heading-body-md grid card-grid-gap-med rounded-[var(--radius-md-token)] bg-service-surface p-5">
+                  <div className="grid card-grid-gap-med md:grid-cols-2 xl:grid-cols-4">
+                    <LeadDetail label="Contact" value={intake.contact_name} />
+                    <LeadDetail label="Email" value={intake.contact_email} />
+                    <LeadDetail label="Phone" value={intake.contact_phone} />
+                    <LeadDetail label="Business type" value={intake.business_type} />
+                    <LeadListDetail
+                      items={displayStringItems(intake.preferred_cta)}
+                      label="Preferred CTA"
+                    />
+                    <LeadDetail label="Source" value={intake.source} />
+                  </div>
 
-                <div className="mt-heading-body-md rounded-[var(--radius-md-token)] bg-service-surface p-5">
-                  <p className={dashboardMutedLabelClass}>
-                    Service area
-                  </p>
-                  <p className="type-text-sm mt-1 whitespace-pre-line text-service-ink">
-                    {displayValue(intake.service_area)}
-                  </p>
+                  <div className="grid card-grid-gap-med border-t border-service-border pt-5 md:grid-cols-2">
+                    <div className="grid card-grid-gap-med content-start">
+                      <LeadListDetail
+                        items={displayStringItems(intake.main_services)}
+                        label="Main services"
+                      />
+                      <LeadDetail
+                        label="Priority services"
+                        value={intake.priority_services}
+                      />
+                    </div>
+
+                    <div className="grid card-grid-gap-med content-start">
+                      <LeadDetail
+                        label="All service areas"
+                        value={serviceAreaDetails.allServiceAreas}
+                        valueClassName="type-text-sm mt-1 whitespace-pre-line break-words text-service-ink"
+                      />
+                      <LeadDetail
+                        label="Priority service areas"
+                        value={serviceAreaDetails.priorityServiceAreas}
+                        valueClassName="type-text-sm mt-1 whitespace-pre-line break-words text-service-ink"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <form
@@ -1587,6 +1635,7 @@ function ProjectIntakePayloadView({ payload }: { payload?: JsonValue }) {
 
 function formatProjectIntakeBrief(intake: ProjectIntake) {
   const lines: string[] = [];
+  const serviceAreaDetails = getProjectIntakeServiceAreaDetails(intake);
 
   lines.push("CLIENT INTAKE BRIEF");
   addBriefLine(lines, "Business", intake.business_name);
@@ -1600,7 +1649,12 @@ function formatProjectIntakeBrief(intake: ProjectIntake) {
   addBriefLine(lines, "Main services", displayStringList(intake.main_services));
   addBriefLine(lines, "Preferred CTA", displayStringList(intake.preferred_cta));
   addBriefLine(lines, "Priority services", intake.priority_services);
-  addBriefLine(lines, "Service area", intake.service_area);
+  addBriefLine(lines, "All service areas", serviceAreaDetails.allServiceAreas);
+  addBriefLine(
+    lines,
+    "Priority service areas",
+    serviceAreaDetails.priorityServiceAreas,
+  );
   addBriefLine(lines, "Source", intake.source);
 
   const payloadLines = formatProjectIntakePayloadForCopy(intake.payload);
