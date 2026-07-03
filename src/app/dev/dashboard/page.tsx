@@ -7,11 +7,16 @@ import { redirect } from "next/navigation";
 import { Card, Container, Section } from "@/components/primitives";
 import { createClient } from "@/utils/supabase/server";
 import {
+  type ProjectIntakeSourceRecord,
+  writeProjectIntakeSourcePacket,
+} from "@/utils/source-packet";
+import {
   ProjectIntakeDashboard,
   type ProjectIntake,
 } from "../../dashboard/lead-dashboard";
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 export const metadata: Metadata = {
   title: "Owner Dashboard | Local Service Starter",
@@ -178,6 +183,71 @@ async function deleteProjectIntake(formData: FormData) {
   redirect("/dev/dashboard?intakeSave=deleted");
 }
 
+async function generateProjectIntakeSourcePacket(formData: FormData) {
+  "use server";
+
+  const supabase = await getAuthenticatedSupabase();
+  const intakeId = getFormString(formData, "intakeId");
+
+  if (!intakeId) {
+    redirect("/dev/dashboard?intakeSave=source-packet-error");
+  }
+
+  const { data, error } = await supabase
+    .from("project_intakes")
+    .select("*")
+    .eq("id", intakeId)
+    .single();
+
+  if (error || !data) {
+    console.error("Project intake source packet load failed", {
+      code: error && "code" in error ? error.code : undefined,
+      details: error && "details" in error ? error.details : undefined,
+      hint: error && "hint" in error ? error.hint : undefined,
+      intakeId,
+      message: error?.message ?? "No intake was found.",
+    });
+
+    redirect(
+      `/dev/dashboard?intakeSave=source-packet-error&intake=${encodeURIComponent(intakeId)}`,
+    );
+  }
+
+  let result;
+
+  try {
+    result = await writeProjectIntakeSourcePacket(
+      data as ProjectIntakeSourceRecord,
+    );
+  } catch (error) {
+    console.error("Project intake source packet write failed", {
+      error,
+      intakeId,
+    });
+
+    redirect(
+      `/dev/dashboard?intakeSave=source-packet-error&intake=${encodeURIComponent(intakeId)}`,
+    );
+  }
+
+  const { counts } = result.packet;
+  const query = new URLSearchParams({
+    intake: intakeId,
+    intakeSave: "source-packet-success",
+    sourcePacketConflict: String(counts.conflict_items),
+    sourcePacketFailed: String(counts.failed_quote_candidates),
+    sourcePacketMissing: String(counts.missing_info_items),
+    sourcePacketNormalized: String(counts.normalized_candidate_items),
+    sourcePacketPath: result.outputPath,
+    sourcePacketSelection: String(counts.structured_selection_items),
+    sourcePacketStructured: String(counts.structured_field_items),
+    sourcePacketTotal: String(counts.total_source_items),
+    sourcePacketVerified: String(counts.verified_quote_items),
+  });
+
+  redirect(`/dev/dashboard?${query.toString()}`);
+}
+
 async function logout() {
   "use server";
 
@@ -191,6 +261,15 @@ type OwnerDashboardPageProps = {
   searchParams?: Promise<{
     intake?: string | string[];
     intakeSave?: string | string[];
+    sourcePacketConflict?: string | string[];
+    sourcePacketFailed?: string | string[];
+    sourcePacketMissing?: string | string[];
+    sourcePacketNormalized?: string | string[];
+    sourcePacketPath?: string | string[];
+    sourcePacketSelection?: string | string[];
+    sourcePacketStructured?: string | string[];
+    sourcePacketTotal?: string | string[];
+    sourcePacketVerified?: string | string[];
   }>;
 };
 
@@ -202,6 +281,20 @@ export default async function OwnerDashboardPage({
     typeof params?.intakeSave === "string" ? params.intakeSave : null;
   const savedIntakeId =
     typeof params?.intake === "string" ? params.intake : null;
+  const sourcePacketPath =
+    typeof params?.sourcePacketPath === "string" ? params.sourcePacketPath : null;
+  const sourcePacketStats = [
+    ["Total source items", params?.sourcePacketTotal],
+    ["Verified quote items", params?.sourcePacketVerified],
+    ["Structured field items", params?.sourcePacketStructured],
+    ["Structured selection items", params?.sourcePacketSelection],
+    ["Normalized candidate items", params?.sourcePacketNormalized],
+    ["Conflict items", params?.sourcePacketConflict],
+    ["Missing info items", params?.sourcePacketMissing],
+    ["Failed quote candidates", params?.sourcePacketFailed],
+  ]
+    .filter((entry): entry is [string, string] => typeof entry[1] === "string")
+    .map(([label, value]) => ({ label, value }));
   const { data, error } = await getProjectIntakes();
   const projectIntakes = Array.isArray(data) ? (data as ProjectIntake[]) : [];
   const totalIntakes = projectIntakes.length;
@@ -307,9 +400,14 @@ export default async function OwnerDashboardPage({
               {!error ? (
                 <ProjectIntakeDashboard
                   deleteProjectIntake={deleteProjectIntake}
+                  generateProjectIntakeSourcePacket={
+                    generateProjectIntakeSourcePacket
+                  }
                   intakeSaveState={intakeSaveState}
                   projectIntakes={projectIntakes}
                   savedIntakeId={savedIntakeId}
+                  sourcePacketPath={sourcePacketPath}
+                  sourcePacketStats={sourcePacketStats}
                   statusOptions={statusOptions}
                   updateProjectIntake={updateProjectIntake}
                 />

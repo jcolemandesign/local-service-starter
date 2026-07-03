@@ -75,6 +75,7 @@ type BookedTiming = "needs-date" | "upcoming" | "past";
 
 type LeadDashboardProps = {
   deleteProjectIntake?: (formData: FormData) => void;
+  generateProjectIntakeSourcePacket?: (formData: FormData) => void;
   intakeSaveState?: string | null;
   leads: Lead[];
   projectIntakes?: ProjectIntake[];
@@ -82,9 +83,16 @@ type LeadDashboardProps = {
   savedLeadId: string | null;
   saveState: string | null;
   showProjectIntakes?: boolean;
+  sourcePacketPath?: string | null;
+  sourcePacketStats?: SourcePacketStat[];
   statusOptions: string[];
   updateLead: (formData: FormData) => void;
   updateProjectIntake?: (formData: FormData) => void;
+};
+
+type SourcePacketStat = {
+  label: string;
+  value: string;
 };
 
 const urgencyOrder = [
@@ -518,6 +526,7 @@ function matchesProjectIntake(intake: ProjectIntake, searchTerm: string) {
 
 export function LeadDashboard({
   deleteProjectIntake,
+  generateProjectIntakeSourcePacket,
   intakeSaveState = null,
   leads,
   projectIntakes = [],
@@ -525,6 +534,8 @@ export function LeadDashboard({
   savedLeadId,
   saveState,
   showProjectIntakes = false,
+  sourcePacketPath = null,
+  sourcePacketStats = [],
   statusOptions,
   updateLead,
   updateProjectIntake,
@@ -745,9 +756,12 @@ export function LeadDashboard({
       {showProjectIntakes && updateProjectIntake && activeView === "intakes" ? (
         <ProjectIntakeDashboard
           deleteProjectIntake={deleteProjectIntake}
+          generateProjectIntakeSourcePacket={generateProjectIntakeSourcePacket}
           intakeSaveState={intakeSaveState}
           projectIntakes={projectIntakes}
           savedIntakeId={savedIntakeId}
+          sourcePacketPath={sourcePacketPath}
+          sourcePacketStats={sourcePacketStats}
           statusOptions={statusOptions}
           updateProjectIntake={updateProjectIntake}
         />
@@ -1051,16 +1065,22 @@ export function LeadDashboard({
 
 export function ProjectIntakeDashboard({
   deleteProjectIntake,
+  generateProjectIntakeSourcePacket,
   intakeSaveState,
   projectIntakes,
   savedIntakeId,
+  sourcePacketPath,
+  sourcePacketStats,
   statusOptions,
   updateProjectIntake,
 }: {
   deleteProjectIntake?: (formData: FormData) => void;
+  generateProjectIntakeSourcePacket?: (formData: FormData) => void;
   intakeSaveState: string | null;
   projectIntakes: ProjectIntake[];
   savedIntakeId: string | null;
+  sourcePacketPath?: string | null;
+  sourcePacketStats?: SourcePacketStat[];
   statusOptions: string[];
   updateProjectIntake: (formData: FormData) => void;
 }) {
@@ -1243,6 +1263,39 @@ export function ProjectIntakeDashboard({
             server.
           </p>
         ) : null}
+        {intakeSaveState === "source-packet-success" ? (
+          <div className="mt-heading-body-sm grid card-grid-gap-sm rounded-[var(--radius-md-token)] border border-service-border bg-white p-4">
+            <p className="type-caption font-semibold text-service-accent">
+              Source packet generated.
+            </p>
+            {sourcePacketPath ? (
+              <p className="type-caption text-service-muted">
+                File path:{" "}
+                <span className="font-semibold text-service-ink">
+                  {sourcePacketPath}
+                </span>
+              </p>
+            ) : null}
+            {sourcePacketStats && sourcePacketStats.length > 0 ? (
+              <dl className="grid gap-2 type-caption text-service-muted sm:grid-cols-2 lg:grid-cols-4">
+                {sourcePacketStats.map((stat) => (
+                  <div key={stat.label}>
+                    <dt className="font-semibold text-service-ink">
+                      {stat.label}
+                    </dt>
+                    <dd>{stat.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : null}
+          </div>
+        ) : null}
+        {intakeSaveState === "source-packet-error" ? (
+          <p className="mt-heading-body-sm type-caption font-semibold text-red-700">
+            Could not generate source packet. Check the dev server console for
+            details.
+          </p>
+        ) : null}
       </Card>
 
       {projectIntakes.length === 0 ? (
@@ -1305,6 +1358,14 @@ export function ProjectIntakeDashboard({
                     >
                       {isCopied ? "Copied" : "Copy brief"}
                     </button>
+                    {generateProjectIntakeSourcePacket ? (
+                      <form action={generateProjectIntakeSourcePacket}>
+                        <input name="intakeId" type="hidden" value={intakeId} />
+                        <button className={secondaryButtonClass} type="submit">
+                          Generate packet
+                        </button>
+                      </form>
+                    ) : null}
                     {intake.contact_phone ? (
                       <a
                         className={primaryButtonClass}

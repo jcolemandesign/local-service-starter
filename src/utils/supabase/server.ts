@@ -46,6 +46,16 @@ function createUnconfiguredClient() {
                 error: missingConfigError,
               };
             },
+            eq() {
+              return {
+                async single() {
+                  return {
+                    data: null,
+                    error: missingConfigError,
+                  };
+                },
+              };
+            },
           };
         },
         update() {
