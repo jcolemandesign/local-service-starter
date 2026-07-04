@@ -20,6 +20,7 @@ const linkGroups = [
       { label: "Pagebuilder", href: "/dev/pagebuilder" },
       { label: "Template Library", href: "/dev/templates" },
       { label: "Copy Machine", href: "/dev/copy-machine" },
+      { label: "Strategy Workspaces", href: "/dev/projects" },
     ],
   },
   {

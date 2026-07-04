@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Card } from "@/components/primitives";
 
@@ -241,6 +242,18 @@ function displayStringList(value: string[] | null | undefined) {
   }
 
   return value.filter(Boolean).join(", ") || "Not provided";
+}
+
+function createProjectSlug(value: unknown, fallback: string) {
+  const source = typeof value === "string" && value.trim() ? value : fallback;
+  const slug = source
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+
+  return slug || "client-intake";
 }
 
 function displayStringItems(value: string[] | null | undefined) {
@@ -1380,6 +1393,10 @@ export function ProjectIntakeDashboard({
             const hasCreatedPacket =
               typeof status === "string" &&
               status.toLowerCase() === "packet created";
+            const strategyHref = `/dev/projects/${createProjectSlug(
+              intake.business_name,
+              intakeId,
+            )}/strategy`;
 
             return (
               <Card
@@ -1420,6 +1437,11 @@ export function ProjectIntakeDashboard({
                             : "Generate packet"}
                         </button>
                       </form>
+                    ) : null}
+                    {hasCreatedPacket ? (
+                      <Link className={secondaryButtonClass} href={strategyHref}>
+                        Open strategy
+                      </Link>
                     ) : null}
                     {intake.contact_phone ? (
                       <a

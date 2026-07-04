@@ -37,6 +37,11 @@
           "description": "Copy the packet-based prompt set for strategy, content planning, and final page copy."
         },
         {
+          "label": "Strategy Workspaces",
+          "href": "/dev/projects",
+          "description": "Open local project folders with packets, saved strategy work, and page-copy outputs."
+        },
+        {
           "label": "Style guide",
           "href": "/dev/style-guide",
           "description": "Review shared visual tokens and section defaults."
