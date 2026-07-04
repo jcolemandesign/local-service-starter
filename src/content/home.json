@@ -32,6 +32,11 @@
           "description": "Map page copy and image fields into editable content forms."
         },
         {
+          "label": "Copy Machine",
+          "href": "/dev/copy-machine",
+          "description": "Copy the packet-based prompt set for strategy, content planning, and final page copy."
+        },
+        {
           "label": "Style guide",
           "href": "/dev/style-guide",
           "description": "Review shared visual tokens and section defaults."
