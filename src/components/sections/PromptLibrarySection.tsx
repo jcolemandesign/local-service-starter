@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { Card, Container, Section } from "@/components/primitives";
 import {
-  copyMachinePrompts,
-  copyMachineWorkflow,
-  type CopyMachinePrompt,
-} from "@/content/copy-machine-prompts";
+  promptLibraryPrompts,
+  promptLibraryWorkflow,
+  type PromptLibraryPrompt,
+} from "@/content/prompt-library-prompts";
 
 function copyWithFallback(value: string) {
   const textarea = document.createElement("textarea");
@@ -20,10 +20,10 @@ function copyWithFallback(value: string) {
   document.body.removeChild(textarea);
 }
 
-export function CopyMachineSection() {
+export function PromptLibrarySection() {
   const [copiedPromptId, setCopiedPromptId] = useState("");
 
-  async function copyPrompt(prompt: CopyMachinePrompt) {
+  async function copyPrompt(prompt: PromptLibraryPrompt) {
     try {
       if (!navigator.clipboard?.writeText) {
         throw new Error("Clipboard API unavailable");
@@ -46,7 +46,7 @@ export function CopyMachineSection() {
         <div className="grid layout-gap-lrg">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,0.85fr)_minmax(320px,0.45fr)] lg:items-end">
             <div className="fluid-type-frame">
-              <p className="type-label text-service-accent">Copy Machine</p>
+              <p className="type-label text-service-accent">Prompt Library</p>
               <h1 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
                 Prompt Library
               </h1>
@@ -59,7 +59,7 @@ export function CopyMachineSection() {
             <Card className="p-5">
               <p className="type-label text-service-accent">Workflow</p>
               <ol className="mt-4 grid gap-3">
-                {copyMachineWorkflow.map((step, index) => (
+                {promptLibraryWorkflow.map((step, index) => (
                   <li className="flex gap-3" key={step}>
                     <span className="radius-round flex size-7 shrink-0 items-center justify-center bg-service-accent type-caption font-semibold text-white">
                       {index + 1}
@@ -74,7 +74,7 @@ export function CopyMachineSection() {
           </div>
 
           <div className="grid card-grid-gap-med">
-            {copyMachinePrompts.map((prompt, index) => {
+            {promptLibraryPrompts.map((prompt, index) => {
               const isCopied = copiedPromptId === prompt.id;
 
               return (

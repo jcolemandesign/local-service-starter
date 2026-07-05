@@ -19,7 +19,7 @@ export function ProjectWorkspacesSection({
               Strategy workspaces
             </h1>
             <p className="type-text-lg wrap-pretty mt-heading-body-md text-service-muted">
-              Local project folders with source packets and saved copy-machine
+              Local project folders with source packets and saved prompt-library
               workspace files.
             </p>
           </div>

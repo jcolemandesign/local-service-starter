@@ -252,7 +252,7 @@ export function StrategyWorkspaceSection({
                   </details>
                 ) : null}
                 <div className="flex flex-wrap gap-2">
-                  <Link className={secondaryButtonClass} href="/dev/copy-machine">
+                  <Link className={secondaryButtonClass} href="/dev/prompt-library">
                     Prompt library
                   </Link>
                   <button

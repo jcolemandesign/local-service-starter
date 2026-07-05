@@ -1,4 +1,4 @@
-export type CopyMachinePrompt = {
+export type PromptLibraryPrompt = {
   id: string;
   title: string;
   description: string;
@@ -6,7 +6,7 @@ export type CopyMachinePrompt = {
   prompt: string;
 };
 
-export const copyMachineWorkflow = [
+export const promptLibraryWorkflow = [
   "Generate the source packet from the client intake.",
   "Paste the source packet plus any research into Prompt 1.",
   "Paste the Strategy Brief plus source packet into Prompt 2.",
@@ -14,7 +14,7 @@ export const copyMachineWorkflow = [
   "Move approved final copy into the project content files.",
 ];
 
-export const copyMachinePrompts: CopyMachinePrompt[] = [
+export const promptLibraryPrompts: PromptLibraryPrompt[] = [
   {
     id: "strategy-brief",
     title: "Prompt 1 - Source Packet to Website Strategy Brief",

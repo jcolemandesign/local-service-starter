@@ -32,8 +32,8 @@
           "description": "Map page copy and image fields into editable content forms."
         },
         {
-          "label": "Copy Machine",
-          "href": "/dev/copy-machine",
+          "label": "Prompt Library",
+          "href": "/dev/prompt-library",
           "description": "Copy the packet-based prompt set for strategy, content planning, and final page copy."
         },
         {
