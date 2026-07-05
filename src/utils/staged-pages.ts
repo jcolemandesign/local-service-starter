@@ -100,6 +100,25 @@ export async function writeStagedPage(page: StagedPage) {
   return nextPages;
 }
 
+export async function deleteStagedPage(pageId: string) {
+  const normalizedPageId = slugify(pageId);
+
+  if (!normalizedPageId) {
+    throw new Error("Missing staged page id.");
+  }
+
+  const pages = await readStagedPages();
+  const nextPages = pages.filter((page) => page.pageId !== normalizedPageId);
+
+  await mkdir(path.dirname(stagedPagesPath), { recursive: true });
+  await writeFile(
+    stagedPagesPath,
+    `${JSON.stringify({ pages: nextPages }, null, 2)}\n`,
+  );
+
+  return nextPages;
+}
+
 export function buildStrategyTemplateStagedPage({
   pageLabel,
   pageSlug,

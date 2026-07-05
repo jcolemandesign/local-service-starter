@@ -135,6 +135,8 @@ export function StrategyWorkspaceSection({
   const [digestCopyState, setDigestCopyState] = useState<
     "idle" | "copied" | "error"
   >("idle");
+  const [copiedFieldKey, setCopiedFieldKey] =
+    useState<keyof StrategyWorkspaceFields | null>(null);
   const [updatedAt, setUpdatedAt] = useState(initialWorkspace.updatedAt);
 
   const filledCount = useMemo(
@@ -223,6 +225,24 @@ export function StrategyWorkspaceSection({
       setPacketCopyState("copied");
     } catch {
       setPacketCopyState("error");
+    }
+  }
+
+  async function copyWorkspaceField(key: keyof StrategyWorkspaceFields) {
+    const value = fields[key].trim();
+
+    if (!value) {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopiedFieldKey(key);
+      window.setTimeout(() => {
+        setCopiedFieldKey((currentKey) => (currentKey === key ? null : currentKey));
+      }, 1600);
+    } catch {
+      setCopiedFieldKey(null);
     }
   }
 
@@ -485,14 +505,35 @@ export function StrategyWorkspaceSection({
                   </div>
 
                   <div className="grid gap-5">
-                    {group.fields.map((field) => (
-                      <label
-                        className="grid max-w-none gap-2 text-sm font-semibold text-service-ink"
-                        key={field.key}
-                      >
-                        {field.label}
+                    {group.fields.map((field) => {
+                      const fieldId = `${clientSlug}-${field.key}`;
+                      const hasValue = fields[field.key].trim().length > 0;
+                      const isCopied = copiedFieldKey === field.key;
+
+                      return (
+                        <div
+                          className="mx-auto grid w-full max-w-5xl gap-2"
+                          key={field.key}
+                        >
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <label
+                              className="text-sm font-semibold text-service-ink"
+                              htmlFor={fieldId}
+                            >
+                              {field.label}
+                            </label>
+                            <button
+                              className="radius-button inline-flex min-h-9 items-center justify-center border border-service-border bg-white px-3 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-45"
+                              disabled={!hasValue}
+                              onClick={() => void copyWorkspaceField(field.key)}
+                              type="button"
+                            >
+                              {isCopied ? "Copied" : "Copy"}
+                            </button>
+                          </div>
                         <textarea
-                          className="min-h-48 w-full max-w-none rounded-[var(--radius-md-token)] border border-service-border bg-white p-4 text-sm font-normal leading-relaxed text-service-ink outline-none transition-colors placeholder:text-service-muted focus:border-service-accent"
+                          id={fieldId}
+                          className="min-h-48 w-full rounded-[var(--radius-md-token)] border border-service-border bg-white p-4 text-sm font-normal leading-relaxed text-service-ink outline-none transition-colors placeholder:text-service-muted focus:border-service-accent"
                           onChange={(event) =>
                             updateField(field.key, event.currentTarget.value)
                           }
@@ -500,8 +541,9 @@ export function StrategyWorkspaceSection({
                           rows={field.minRows}
                           value={fields[field.key]}
                         />
-                      </label>
-                    ))}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </Card>

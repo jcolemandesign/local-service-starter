@@ -850,7 +850,7 @@ export function PagebuilderSection() {
           {
             component: "CTAScrollRevealOfferSectionV3",
             instruction: "",
-            mode: "Action",
+            mode: "Offer",
             name: "Scroll reveal offer conversion",
           },
           7,

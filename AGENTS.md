@@ -30,6 +30,51 @@ Do not invent local type styles, spacing systems, component patterns, or one-off
 
 If a new reusable primitive, token, or pattern appears necessary, propose it first and explain why it belongs in the system before creating it.
 
+### Semantic section labels
+
+Section selection, pre-staging, page assembly, and new section creation should use the project’s semantic section labels as the source of truth.
+
+Current semantic labels:
+
+```txt
+Navigation
+Hero
+Scan
+Narrative
+Proof
+Decision
+Offer
+Action
+Utility
+```
+
+These labels describe the job of a section, not just its visual style.
+
+- `Navigation` — site orientation, service discovery, contact paths, primary nav.
+- `Hero` — first viewport promise, H1, primary action, first proof.
+- `Scan` — fast comprehension through cards, lists, service grids, comparison blocks.
+- `Narrative` — richer explanation, positioning, story, process context, about-style content.
+- `Proof` — testimonials, reviews, stats, logos, credentials, trust signals.
+- `Decision` — FAQs, process clarity, pricing concerns, objections, repair-vs-replace guidance.
+- `Offer` — seasonal campaigns, coupons, specials, rebates, tune-up promos, financing hooks.
+- `Action` — generic conversion moments, final CTA, request/contact prompts, booking momentum.
+- `Utility` — forms, contact details, service area tools, maps, footer, practical site information.
+
+When choosing sections for pre-staging, match each strategy snapshot/page-copy section to one of these labels first, then choose a section primitive or template variant from that label group.
+
+When creating a new reusable section, assign it to one of these labels by default. Only introduce a new semantic label if the section’s purpose cannot cleanly fit any existing label, and explain why the new label belongs in the system before adding it.
+
+Generated copy may use looser strategy language such as “Conversion,” “Trust,” “Education,” or “Seasonal Promo.” Normalize those terms into the semantic labels above before selecting sections.
+
+```txt
+Conversion -> Hero or Action, depending on placement
+Seasonal Promo / Special / Campaign -> Offer
+Trust / Reviews / Credentials -> Proof
+Education / Guidance / How it works -> Decision or Narrative
+Services / Service list / What we do -> Scan
+Contact / Service area / Footer -> Utility
+```
+
 Spacing inside sections should follow the shared `Section` primitive and spacing conventions — not arbitrary padding values.
 
 Business-specific content should live in `src/content/` so component shells stay clean, reusable, and portable.

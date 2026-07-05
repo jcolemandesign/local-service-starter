@@ -98,6 +98,7 @@ export {
   TemplateLibrarySection,
   type PageTemplateSummary,
 } from "./TemplateLibrarySection";
+export { SemanticPrestageSection } from "./SemanticPrestageSection";
 export { TrustBarFloatingBentoSectionV2 } from "./TrustBarFloatingBentoSectionV2";
 export {
   TrustBarFloatingBentoSectionV3,

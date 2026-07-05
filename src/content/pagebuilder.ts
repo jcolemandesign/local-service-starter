@@ -84,6 +84,16 @@ export const sectionModes: SectionMode[] = [
     ],
   },
   {
+    id: "offer",
+    name: "Offer",
+    intent: "A specific promotion, seasonal campaign, package, or timely reason to act.",
+    rules: [
+      "Use for tune-up specials, seasonal savings, financing hooks, rebates, coupons, or limited-time campaigns.",
+      "Keep the offer details concrete, but avoid unsupported pricing, urgency, or eligibility claims.",
+      "Pair the offer with a clear next step without replacing the final conversion section.",
+    ],
+  },
+  {
     id: "utility",
     name: "Utility",
     intent: "Practical information and conversion support.",
@@ -285,7 +295,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       {
         name: "Scroll reveal offer conversion",
         component: "CTAScrollRevealOfferSectionV3",
-        mode: "Action",
+        mode: "Offer",
         instruction:
           "Use a discovered offer or next-step reveal to transition from editorial trust into action.",
       },

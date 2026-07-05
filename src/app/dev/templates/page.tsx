@@ -1,51 +1,34 @@
 import type { Metadata } from "next";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
+import { SemanticPrestageSection } from "@/components/sections";
+import { semanticSectionOptions } from "@/content/semantic-section-options";
 import {
-  TemplateLibrarySection,
-  type PageTemplateSummary,
-} from "@/components/sections";
-import { listLatestStrategySnapshotSummaries } from "@/utils/strategy-snapshots";
+  listLatestStrategySnapshotSummaries,
+  readLatestProjectStrategySnapshot,
+} from "@/utils/strategy-snapshots";
 
 export const metadata: Metadata = {
-  title: "Template Library",
-  description: "Reusable page layouts promoted from Pagebuilder options.",
+  title: "Semantic Pre-Stage",
+  description: "Build staged pages from saved strategy copy and semantic labels.",
 };
 
 export const dynamic = "force-dynamic";
 
-type PageTemplatesFile = {
-  templates?: PageTemplateSummary[];
-};
-
-const pageTemplatesPath = path.join(
-  process.cwd(),
-  "src",
-  "content",
-  "page-templates.json",
-);
-
 export default async function TemplatesPage() {
-  const templates = await readPageTemplates();
-  const strategySnapshots = await listLatestStrategySnapshotSummaries();
+  const strategySnapshotSummaries = await listLatestStrategySnapshotSummaries();
+  const strategySnapshots = (
+    await Promise.all(
+      strategySnapshotSummaries.map((snapshot) =>
+        readLatestProjectStrategySnapshot(snapshot.clientSlug),
+      ),
+    )
+  ).filter((snapshot) => snapshot !== null);
 
   return (
     <main>
-      <TemplateLibrarySection
-        strategySnapshots={strategySnapshots}
-        templates={templates}
+      <SemanticPrestageSection
+        sectionOptions={semanticSectionOptions}
+        snapshots={strategySnapshots}
       />
     </main>
   );
-}
-
-async function readPageTemplates() {
-  try {
-    const contents = await readFile(pageTemplatesPath, "utf8");
-    const parsed = JSON.parse(contents) as PageTemplatesFile;
-
-    return Array.isArray(parsed.templates) ? parsed.templates : [];
-  } catch {
-    return [];
-  }
 }

@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { notFound, redirect } from "next/navigation";
 import {
   Button,
   Card,
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
-import { readStagedPages, type StagedPage } from "@/utils/staged-pages";
+import {
+  deleteStagedPage,
+  readStagedPages,
+  type StagedPage,
+} from "@/utils/staged-pages";
 
 export const metadata: Metadata = {
   title: "Staged Page Preview",
@@ -15,6 +20,20 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = "force-dynamic";
+
+async function removeStagedPage(formData: FormData) {
+  "use server";
+
+  const pageId = formData.get("pageId");
+
+  if (typeof pageId === "string") {
+    await deleteStagedPage(pageId);
+    revalidatePath("/dev/staged-pages");
+    revalidatePath(`/dev/staged-pages/${pageId}`);
+  }
+
+  redirect("/dev/staged-pages");
+}
 
 type StagedPagePreviewProps = {
   params: Promise<{
@@ -80,8 +99,17 @@ export default async function StagedPagePreview({
           <p className="type-text-xl wrap-pretty mt-display-body text-service-muted">
             {formatPreviewMeta(page)}
           </p>
-          <div className="mt-body-actions-md">
+          <div className="mt-body-actions-md flex flex-wrap gap-2">
             <Button href={getContentEditorHref(page)}>Edit Content</Button>
+            <form action={removeStagedPage}>
+              <input name="pageId" type="hidden" value={page.pageId} />
+              <button
+                className="radius-button inline-flex min-h-12 cursor-pointer items-center justify-center whitespace-nowrap border border-red-200 bg-white px-6 py-2 text-sm font-semibold text-red-700 transition duration-200 ease-out hover:border-red-400 hover:bg-red-50"
+                type="submit"
+              >
+                Remove Staged Page
+              </button>
+            </form>
           </div>
         </SevenColumnGridItem>
 

@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
+import { revalidatePath } from "next/cache";
 import { Button, Card, SevenColumnGrid, SevenColumnGridItem } from "@/components/primitives";
-import { readStagedPages, type StagedPage } from "@/utils/staged-pages";
+import {
+  deleteStagedPage,
+  readStagedPages,
+  type StagedPage,
+} from "@/utils/staged-pages";
 
 export const metadata: Metadata = {
   title: "Staged Pages",
@@ -8,6 +13,19 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = "force-dynamic";
+
+async function removeStagedPage(formData: FormData) {
+  "use server";
+
+  const pageId = formData.get("pageId");
+
+  if (typeof pageId !== "string") {
+    return;
+  }
+
+  await deleteStagedPage(pageId);
+  revalidatePath("/dev/staged-pages");
+}
 
 export default async function StagedPagesPage() {
   const stagedPages = await readStagedPages();
@@ -53,6 +71,15 @@ export default async function StagedPagesPage() {
                         <Button href={getContentEditorHref(page)}>
                           Edit Content
                         </Button>
+                        <form action={removeStagedPage}>
+                          <input name="pageId" type="hidden" value={page.pageId} />
+                          <button
+                            className="radius-button inline-flex min-h-12 cursor-pointer items-center justify-center whitespace-nowrap border border-red-200 bg-white px-6 py-2 text-sm font-semibold text-red-700 transition duration-200 ease-out hover:border-red-400 hover:bg-red-50"
+                            type="submit"
+                          >
+                            Remove
+                          </button>
+                        </form>
                       </div>
                     </div>
                   </div>

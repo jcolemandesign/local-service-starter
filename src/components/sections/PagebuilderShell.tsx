@@ -631,7 +631,7 @@ const sectionSwapOptions = [
     component: "CTAScrollRevealOfferSectionV3",
     instruction:
       "Use a discovered offer or next-step reveal to transition from trust into action.",
-    mode: "Action",
+    mode: "Offer",
     name: "Scroll reveal offer conversion",
   },
   {

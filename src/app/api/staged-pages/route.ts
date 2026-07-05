@@ -4,8 +4,10 @@ import {
   buildStrategyTemplateStagedPage,
   writeStagedPage,
   type StagedPageTemplate,
+  type StagedPageTemplateSection,
 } from "@/utils/staged-pages";
 import { readLatestStrategySnapshot } from "@/utils/strategy-snapshots";
+import { semanticSectionOptions } from "@/content/semantic-section-options";
 
 export const runtime = "nodejs";
 
@@ -13,7 +15,10 @@ type StagePageRequest = {
   clientSlug?: string;
   pageLabel?: string;
   pageSlug?: string;
+  pageType?: string;
+  sections?: StagedPageTemplateSection[];
   templateId?: string;
+  templateName?: string;
 };
 
 type PageTemplatesFile = {
@@ -44,7 +49,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const template = await findTemplate(body.templateId);
+    const template = await resolveTemplate(body);
     const snapshot = await readLatestStrategySnapshot(body.clientSlug);
 
     if (!snapshot) {
@@ -68,6 +73,14 @@ export async function POST(request: Request) {
   }
 }
 
+async function resolveTemplate(body: StagePageRequest) {
+  if (Array.isArray(body.sections) && body.sections.length > 0) {
+    return buildSemanticTemplate(body);
+  }
+
+  return findTemplate(body.templateId);
+}
+
 async function findTemplate(templateId: unknown) {
   const normalizedTemplateId = sanitizeSlug(templateId);
 
@@ -85,6 +98,48 @@ async function findTemplate(templateId: unknown) {
   }
 
   return template;
+}
+
+function buildSemanticTemplate(body: StagePageRequest): StagedPageTemplate {
+  const pageType = sanitizeSlug(body.pageType) || sanitizeSlug(body.pageSlug);
+  const templateName = sanitizeText(body.templateName) || "Semantic page blueprint";
+  const allowedComponents = new Set(
+    semanticSectionOptions.map((option) => option.component),
+  );
+  const sections = (body.sections ?? [])
+    .filter((section) => allowedComponents.has(section.component))
+    .map((section) => ({
+      component: section.component,
+      instruction: sanitizeText(section.instruction),
+      mode: sanitizeText(section.mode),
+      name: sanitizeText(section.name),
+      originalComponent: section.originalComponent,
+      originalIndex: section.originalIndex,
+      ratio: section.ratio,
+      variant: section.variant,
+    }))
+    .filter((section) => section.mode && section.name);
+
+  if (!pageType) {
+    throw new Error("Missing page type.");
+  }
+
+  if (sections.length === 0) {
+    throw new Error("Choose at least one semantic section.");
+  }
+
+  return {
+    id: `semantic-${pageType}`,
+    name: templateName,
+    pageType,
+    sections,
+    sourceOptionName: "Semantic page blueprint",
+    sourceRecipeName: "Strategy snapshot",
+  };
+}
+
+function sanitizeText(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
 }
 
 async function readPageTemplates() {
