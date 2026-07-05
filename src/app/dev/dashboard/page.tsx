@@ -263,6 +263,7 @@ async function generateProjectIntakeSourcePacket(formData: FormData) {
     sourcePacketStructured: String(counts.structured_field_items),
     sourcePacketTotal: String(counts.total_source_items),
     sourcePacketVerified: String(counts.verified_quote_items),
+    strategyDigestPath: result.digestOutputPath,
   });
 
   revalidatePath("/dev/dashboard");
@@ -291,6 +292,7 @@ type OwnerDashboardPageProps = {
     sourcePacketStructured?: string | string[];
     sourcePacketTotal?: string | string[];
     sourcePacketVerified?: string | string[];
+    strategyDigestPath?: string | string[];
   }>;
 };
 
@@ -304,6 +306,10 @@ export default async function OwnerDashboardPage({
     typeof params?.intake === "string" ? params.intake : null;
   const sourcePacketPath =
     typeof params?.sourcePacketPath === "string" ? params.sourcePacketPath : null;
+  const strategyDigestPath =
+    typeof params?.strategyDigestPath === "string"
+      ? params.strategyDigestPath
+      : null;
   const sourcePacketStats = [
     ["Total source items", params?.sourcePacketTotal],
     ["Verified quote items", params?.sourcePacketVerified],
@@ -430,6 +436,7 @@ export default async function OwnerDashboardPage({
                   sourcePacketPath={sourcePacketPath}
                   sourcePacketStats={sourcePacketStats}
                   statusOptions={statusOptions}
+                  strategyDigestPath={strategyDigestPath}
                   updateProjectIntake={updateProjectIntake}
                 />
               ) : null}

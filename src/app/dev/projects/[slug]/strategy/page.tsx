@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { StrategyWorkspaceSection } from "@/components/sections/StrategyWorkspaceSection";
+import { readStrategyDigestText } from "@/utils/strategy-digest";
 import {
+  readSourcePacketText,
   readStrategyWorkspace,
   readStrategyWorkspacePacketSummary,
   sanitizeClientSlug,
@@ -36,9 +38,12 @@ export default async function StrategyWorkspacePage({
     redirect(`/dev/projects/${clientSlug}/strategy`);
   }
 
-  const [workspace, packetSummary] = await Promise.all([
+  const [workspace, packetSummary, sourcePacketText, strategyDigestText] =
+    await Promise.all([
     readStrategyWorkspace(clientSlug),
     readStrategyWorkspacePacketSummary(clientSlug),
+    readSourcePacketText(clientSlug),
+    readStrategyDigestText(clientSlug),
   ]);
 
   return (
@@ -47,6 +52,8 @@ export default async function StrategyWorkspacePage({
         clientSlug={clientSlug}
         initialWorkspace={workspace}
         packetSummary={packetSummary}
+        strategyDigestText={strategyDigestText}
+        sourcePacketText={sourcePacketText}
       />
     </main>
   );

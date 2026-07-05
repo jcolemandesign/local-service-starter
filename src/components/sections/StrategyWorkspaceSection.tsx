@@ -21,6 +21,8 @@ type StrategyWorkspaceSectionProps = {
   clientSlug: string;
   initialWorkspace: StrategyWorkspace;
   packetSummary: StrategyWorkspacePacketSummary;
+  strategyDigestText: string;
+  sourcePacketText: string;
 };
 
 const fieldGroups: {
@@ -34,68 +36,69 @@ const fieldGroups: {
   title: string;
 }[] = [
   {
-    description: "Drop in GBP notes, current website notes, competitor notes, and other research before running Prompt 1.",
+    description:
+      "Optional internal research to copy alongside the strategy digest when running Phase 2.",
     fields: [
       {
         key: "supplementalResearch",
         label: "Supplemental research",
         minRows: 10,
         placeholder:
-          "Paste research from GBP, the current website, calls, notes, competitor checks, or other source material.",
+          "Paste optional context like GBP notes, current website research, call notes, competitor observations, or other source material. Copy this together with the strategy digest when running Phase 2.",
       },
     ],
     title: "Inputs",
   },
   {
-    description: "Paste the output from Prompt 1 and Prompt 2 here so each next step has a durable local source.",
+    description: "Paste the output from Phase 2 and Phase 3 here so each next step has a durable local source.",
     fields: [
       {
         key: "strategyBrief",
         label: "Website Strategy Brief",
         minRows: 14,
-        placeholder: "Paste Prompt 1 output here.",
+        placeholder: "Paste Phase 2 output here.",
       },
       {
         key: "contentPlan",
         label: "Website Content Plan",
         minRows: 14,
-        placeholder: "Paste Prompt 2 output here.",
+        placeholder: "Paste Phase 3 output here.",
       },
     ],
     title: "Planning Outputs",
   },
   {
-    description: "Run Prompt 3 once per page, then paste each result into the matching page slot.",
+    description: "Run Phase 4 once per page, then paste each result into the matching page slot.",
     fields: [
       {
         key: "homepageCopy",
         label: "Homepage copy",
         minRows: 12,
-        placeholder: "Paste Prompt 3 homepage output here.",
+        placeholder: "Paste Phase 4 homepage output here.",
       },
       {
         key: "servicesCopy",
         label: "Services page copy",
         minRows: 12,
-        placeholder: "Paste Prompt 3 services page output here.",
+        placeholder: "Paste Phase 4 services page output here.",
       },
       {
         key: "aboutCopy",
         label: "About page copy",
         minRows: 10,
-        placeholder: "Paste Prompt 3 about page output here.",
+        placeholder: "Paste Phase 4 about page output here.",
       },
       {
         key: "contactCopy",
         label: "Contact page copy",
         minRows: 10,
-        placeholder: "Paste Prompt 3 contact page output here.",
+        placeholder: "Paste Phase 4 contact page output here.",
       },
       {
         key: "thankYouCopy",
         label: "Thank you page copy",
         minRows: 8,
-        placeholder: "Paste Prompt 3 thank-you page output here.",
+        placeholder: "Paste Phase 4 thank-you page output here.",
       },
     ],
     title: "Page Copy",
@@ -118,12 +121,20 @@ export function StrategyWorkspaceSection({
   clientSlug,
   initialWorkspace,
   packetSummary,
+  strategyDigestText,
+  sourcePacketText,
 }: StrategyWorkspaceSectionProps) {
   const [fields, setFields] = useState<StrategyWorkspaceFields>(
     initialWorkspace.fields,
   );
   const [snapshot, setSnapshot] = useState<StrategySnapshot | null>(null);
   const [saveState, setSaveState] = useState<SaveState>("idle");
+  const [packetCopyState, setPacketCopyState] = useState<
+    "idle" | "copied" | "error"
+  >("idle");
+  const [digestCopyState, setDigestCopyState] = useState<
+    "idle" | "copied" | "error"
+  >("idle");
   const [updatedAt, setUpdatedAt] = useState(initialWorkspace.updatedAt);
 
   const filledCount = useMemo(
@@ -187,6 +198,34 @@ export function StrategyWorkspaceSection({
     }
   }
 
+  async function copyStrategyDigest() {
+    if (!strategyDigestText) {
+      setDigestCopyState("error");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(strategyDigestText);
+      setDigestCopyState("copied");
+    } catch {
+      setDigestCopyState("error");
+    }
+  }
+
+  async function copySourcePacket() {
+    if (!sourcePacketText) {
+      setPacketCopyState("error");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(sourcePacketText);
+      setPacketCopyState("copied");
+    } catch {
+      setPacketCopyState("error");
+    }
+  }
+
   return (
     <Section className="min-h-svh bg-service-surface text-service-ink">
       <div className="w-full px-[var(--container-gutter)]">
@@ -208,10 +247,10 @@ export function StrategyWorkspaceSection({
             <Card className="p-5">
               <div className="grid gap-4">
                 <div>
-                  <p className="type-label text-service-accent">Packet</p>
+                  <p className="type-label text-service-accent">Strategy Inputs</p>
                   <p className="type-text-sm mt-heading-body-sm text-service-muted">
                     {packetSummary.exists
-                      ? "Source packet found."
+                      ? "Source packet found. Strategy digest is the prompt-ready version."
                       : "No source packet found for this project slug."}
                   </p>
                 </div>
@@ -219,6 +258,73 @@ export function StrategyWorkspaceSection({
                   <span className="break-all rounded-[var(--radius-md-token)] bg-service-surface px-3 py-2 font-mono text-service-ink">
                     {packetSummary.outputPath}
                   </span>
+                  <span className="break-all rounded-[var(--radius-md-token)] bg-service-surface px-3 py-2 font-mono text-service-ink">
+                    src/content/projects/{clientSlug}/strategy-digest.md
+                  </span>
+                  {strategyDigestText ? (
+                    <details className="rounded-[var(--radius-md-token)] border border-service-border bg-white">
+                      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-3 font-semibold text-service-ink marker:hidden">
+                        <span>Strategy digest</span>
+                        <span className="text-service-muted">Open</span>
+                      </summary>
+                      <div className="grid gap-3 border-t border-service-border p-3">
+                        <button
+                          className={secondaryButtonClass}
+                          onClick={() => void copyStrategyDigest()}
+                          type="button"
+                        >
+                          Copy strategy digest
+                        </button>
+                        {digestCopyState === "copied" ? (
+                          <p className="font-semibold text-green-700">
+                            Strategy digest copied.
+                          </p>
+                        ) : null}
+                        {digestCopyState === "error" ? (
+                          <p className="font-semibold text-red-700">
+                            Could not copy strategy digest.
+                          </p>
+                        ) : null}
+                        <textarea
+                          className="min-h-48 w-full resize-y rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-3 font-mono text-xs leading-relaxed text-service-ink"
+                          readOnly
+                          value={strategyDigestText}
+                        />
+                      </div>
+                    </details>
+                  ) : null}
+                  {sourcePacketText ? (
+                    <details className="rounded-[var(--radius-md-token)] border border-service-border bg-white">
+                      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-3 font-semibold text-service-ink marker:hidden">
+                        <span>Source packet audit text</span>
+                        <span className="text-service-muted">Open</span>
+                      </summary>
+                      <div className="grid gap-3 border-t border-service-border p-3">
+                        <button
+                          className={secondaryButtonClass}
+                          onClick={() => void copySourcePacket()}
+                          type="button"
+                        >
+                          Copy source packet
+                        </button>
+                        {packetCopyState === "copied" ? (
+                          <p className="font-semibold text-green-700">
+                            Source packet copied.
+                          </p>
+                        ) : null}
+                        {packetCopyState === "error" ? (
+                          <p className="font-semibold text-red-700">
+                            Could not copy source packet.
+                          </p>
+                        ) : null}
+                        <textarea
+                          className="min-h-48 w-full resize-y rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-3 font-mono text-xs leading-relaxed text-service-ink"
+                          readOnly
+                          value={sourcePacketText}
+                        />
+                      </div>
+                    </details>
+                  ) : null}
                   <span>{filledCount} saved workspace sections started</span>
                   {updatedAt ? (
                     <span>Last saved {formatDate(updatedAt)}</span>
@@ -270,7 +376,10 @@ export function StrategyWorkspaceSection({
                   </details>
                 ) : null}
                 <div className="flex flex-wrap gap-2">
-                  <Link className={secondaryButtonClass} href="/dev/prompt-library">
+                  <Link
+                    className={secondaryButtonClass}
+                    href={`/dev/prompt-library?project=${clientSlug}`}
+                  >
                     Prompt library
                   </Link>
                   <button
@@ -300,14 +409,14 @@ export function StrategyWorkspaceSection({
             <Card className="p-5 shadow-none">
               <div className="grid gap-5">
                 <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div className="fluid-type-frame">
+                  <div className="fluid-type-frame min-w-0 flex-1">
                     <p className="type-label text-service-accent">
                       Site Assembly Overview
                     </p>
                     <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
                       {detectedPageCount} pages detected from the saved strategy
                     </h2>
-                    <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
+                    <p className="type-text-sm wrap-pretty mt-heading-body-sm max-w-none text-service-muted">
                       Use templates to stage these pages from snapshot
                       {snapshot ? ` ${snapshot.id}` : ""}. Content Editor edits
                       can then sit on top as manual overrides.

@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { writeStrategyDigestFromPacket } from "@/utils/strategy-digest";
 
 type ScalarValue = boolean | number | string | null | undefined;
 type JsonValue =
@@ -84,6 +85,7 @@ export type SourcePacketCounts = {
 export type SourcePacketWriteResult = {
   absolutePath: string;
   clientSlug: string;
+  digestOutputPath: string;
   failedQuoteCandidates: SourcePacket["quote_candidates_failed_verification"];
   outputPath: string;
   packet: SourcePacket;
@@ -265,10 +267,12 @@ export async function writeProjectIntakeSourcePacket(
 
   await mkdir(absoluteDir, { recursive: true });
   await writeFile(absolutePath, `${JSON.stringify(packet, null, 2)}\n`, "utf8");
+  const digest = await writeStrategyDigestFromPacket(packet);
 
   return {
     absolutePath,
     clientSlug: packet.client_slug,
+    digestOutputPath: digest.outputPath,
     failedQuoteCandidates: packet.quote_candidates_failed_verification,
     outputPath: packet.output_path,
     packet,

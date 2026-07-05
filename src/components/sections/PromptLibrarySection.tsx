@@ -8,6 +8,11 @@ import {
   type PromptLibraryPrompt,
 } from "@/content/prompt-library-prompts";
 
+const strategyDigestPlaceholders = [
+  "[paste strategy-digest.md here]",
+  "[paste strategy digest here]",
+];
+
 function copyWithFallback(value: string) {
   const textarea = document.createElement("textarea");
   textarea.value = value;
@@ -20,18 +25,26 @@ function copyWithFallback(value: string) {
   document.body.removeChild(textarea);
 }
 
-export function PromptLibrarySection() {
+type PromptLibrarySectionProps = {
+  strategyDigestText: string;
+};
+
+export function PromptLibrarySection({
+  strategyDigestText,
+}: PromptLibrarySectionProps) {
   const [copiedPromptId, setCopiedPromptId] = useState("");
 
   async function copyPrompt(prompt: PromptLibraryPrompt) {
+    const clipboardPrompt = buildClipboardPrompt(prompt, strategyDigestText);
+
     try {
       if (!navigator.clipboard?.writeText) {
         throw new Error("Clipboard API unavailable");
       }
 
-      await navigator.clipboard.writeText(prompt.prompt);
+      await navigator.clipboard.writeText(clipboardPrompt);
     } catch {
-      copyWithFallback(prompt.prompt);
+      copyWithFallback(clipboardPrompt);
     }
 
     setCopiedPromptId(prompt.id);
@@ -51,7 +64,7 @@ export function PromptLibrarySection() {
                 Prompt Library
               </h1>
               <p className="type-text-lg wrap-pretty mt-heading-body-md text-service-muted">
-                Canonical prompts for turning a generated source packet into a
+                Canonical prompts for turning a generated strategy digest into a
                 strategy brief, content plan, and final page copy.
               </p>
             </div>
@@ -139,5 +152,22 @@ export function PromptLibrarySection() {
         </div>
       </Container>
     </Section>
+  );
+}
+
+function buildClipboardPrompt(
+  prompt: PromptLibraryPrompt,
+  strategyDigestText: string,
+) {
+  const trimmedStrategyDigest = strategyDigestText.trim();
+
+  if (!trimmedStrategyDigest) {
+    return prompt.prompt;
+  }
+
+  return strategyDigestPlaceholders.reduce(
+    (clipboardPrompt, placeholder) =>
+      clipboardPrompt.replaceAll(placeholder, trimmedStrategyDigest),
+    prompt.prompt,
   );
 }

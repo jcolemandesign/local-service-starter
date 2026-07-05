@@ -111,6 +111,14 @@ export async function readStrategyWorkspace(
   }
 }
 
+export async function readSourcePacketText(clientSlug: string) {
+  try {
+    return await readFile(getSourcePacketPath(clientSlug), "utf8");
+  } catch {
+    return "";
+  }
+}
+
 export async function listProjectWorkspaces(): Promise<ProjectWorkspaceSummary[]> {
   let entries;
 

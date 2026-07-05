@@ -7,28 +7,28 @@ export type PromptLibraryPrompt = {
 };
 
 export const promptLibraryWorkflow = [
-  "Generate the source packet from the client intake.",
-  "Run Prompt 0 when the client has an existing website, then paste its output into Supplemental research.",
-  "Paste the source packet plus Supplemental research into Prompt 1.",
-  "Paste the Strategy Brief plus source packet into Prompt 2.",
-  "Run Prompt 3 once per page using the source packet, Strategy Brief, and Content Plan.",
+  "Generate the source packet and strategy digest from the client intake.",
+  "Run Phase 1 when the client has an existing website, then paste its output into Supplemental research.",
+  "Paste the strategy digest plus Supplemental research into Phase 2.",
+  "Paste the Strategy Brief plus strategy digest into Phase 3.",
+  "Run Phase 4 once per page using the strategy digest, Strategy Brief, and Content Plan.",
   "Move approved final copy into the project content files.",
 ];
 
 export const promptLibraryPrompts: PromptLibraryPrompt[] = [
   {
     id: "current-website-scrape",
-    title: "Prompt 0 - Current Website to Strategy Workspace Notes",
+    title: "Current Website Research Notes",
     description:
       "Scrapes the client's existing website for factual inputs to paste into the Strategy Workspace before writing strategy.",
     inputs: [
       "Client website URL",
-      "Optional source packet JSON or intake notes",
+      "Optional strategy digest or intake notes",
       "Optional list of priority pages to inspect",
     ],
     prompt: String.raw`You are researching a local service business's existing website so the strategy workspace can be filled with accurate, supported information.
 
-Use the client's current website as a factual source. If a source packet or intake notes are provided, use them only to understand context and identify conflicts. Do not invent claims or fill gaps from assumptions.
+Use the client's current website as a factual source. If a strategy digest or intake notes are provided, use them only to understand context and identify conflicts. Do not invent claims or fill gaps from assumptions.
 
 Visit and inspect the homepage plus any important public pages you can find, especially:
 
@@ -257,7 +257,7 @@ Include:
 - Claims that appear risky or legally sensitive
 - Broken links or inaccessible pages
 
-If source packet or intake notes conflict with the website, call that out clearly.
+If strategy digest or intake notes conflict with the website, call that out clearly.
 
 ## 11. Suggested Strategy Workspace Placement
 
@@ -290,25 +290,25 @@ List all URLs reviewed with a one-line summary of what each contributed. This is
   },
   {
     id: "strategy-brief",
-    title: "Prompt 1 - Source Packet to Website Strategy Brief",
+    title: "Strategy Digest to Website Strategy Brief",
     description:
-      "Turns the generated source packet and optional research into the strategy layer.",
+      "Turns the generated strategy digest and optional research into the strategy layer.",
     inputs: [
-      "Source packet JSON",
+      "Strategy digest",
       "Optional website, GBP, review, competitor, or asset notes",
     ],
     prompt: String.raw`You are creating a website strategy brief for a local service business.
 
 Use the provided source material:
 
-- Generated source packet from the client intake
+- Generated strategy digest from the client intake source packet
 - Existing website notes or scraped content, if provided
 - Google Business Profile details, if provided
 - Reviews/testimonials, if provided
 - Competitor references, if provided
 - Asset notes, if provided
 
-Treat the generated source packet as the primary factual source of truth.
+Treat the generated strategy digest as the primary factual source of truth.
 
 Use public/existing materials only to:
 
@@ -323,7 +323,7 @@ Do not write final polished website copy yet.
 
 Your job is to translate the source material into a concise, practical website strategy brief that can guide the sitemap, homepage plan, service content, lead capture flow, and later copywriting.
 
-If the source packet marks something as missing, conflicted, risky, uncertain, "Non-priority," or "Do not promote," handle it carefully and call that out in the appropriate section.
+If the strategy digest marks something as missing, conflicted, risky, uncertain, "Non-priority," or "Do not promote," handle it carefully and call that out in the appropriate section.
 
 ---
 
@@ -361,7 +361,7 @@ Keep this concise and practical.
 
 ## 3. Service Strategy
 
-Group the services using the same treatment language as the source packet:
+Group the services using the same treatment language as the strategy digest:
 
 ### Feature heavily
 
@@ -379,9 +379,9 @@ Services that exist but should not dominate the site.
 
 Services the business does not want to advertise or attract more of.
 
-For each category, briefly explain why based on the source packet.
+For each category, briefly explain why based on the strategy digest.
 
-Do not upgrade a service into a higher-priority category unless the source packet clearly supports it.
+Do not upgrade a service into a higher-priority category unless the strategy digest clearly supports it.
 
 ---
 
@@ -486,7 +486,7 @@ Include:
 
 List practical opportunities for later website content.
 
-Include only ideas supported by the source packet or provided source material.
+Include only ideas supported by the strategy digest or provided source material.
 
 Examples:
 
@@ -558,9 +558,9 @@ Keep the output clear, concise, and website-focused. Do not over-explain. Do not
 
 ---
 
-Source Packet:
+Strategy Digest:
 
-[paste source-packet.json here]
+[paste strategy-digest.md here]
 
 ---
 
@@ -570,19 +570,19 @@ Optional Existing/Public Materials:
   },
   {
     id: "content-plan",
-    title: "Prompt 2 - Source Packet + Strategy Brief to Website Content Plan",
+    title: "Strategy Digest + Strategy Brief to Website Content Plan",
     description:
       "Turns the strategy brief into a sitemap, homepage flow, page map, and copy plan.",
-    inputs: ["Source packet JSON", "Website Strategy Brief"],
+    inputs: ["Strategy digest", "Website Strategy Brief"],
     prompt: String.raw`You are creating a practical website content plan for a local service business.
 
 Use the Website Strategy Brief as the planning guide.
 
-Use the source packet as the factual boundary.
+Use the strategy digest as the factual boundary.
 
-If the Website Strategy Brief conflicts with the source packet, follow the source packet and flag the conflict.
+If the Website Strategy Brief conflicts with the strategy digest, follow the strategy digest and flag the conflict.
 
-Do not re-invent the strategy. Do not add unsupported claims, certifications, pricing, guarantees, review counts, emergency availability, service areas, financing, warranties, years in business, credentials, or proof points unless they are clearly supported by the source packet.
+Do not re-invent the strategy. Do not add unsupported claims, certifications, pricing, guarantees, review counts, emergency availability, service areas, financing, warranties, years in business, credentials, or proof points unless they are clearly supported by the strategy digest.
 
 Do not write final polished website copy yet. This is a planning document for building the website, choosing sections, and writing final copy later.
 
@@ -628,7 +628,7 @@ Always include:
 - Contact / Request Quote
 - Thank You
 
-Also recommend optional pages if they make sense based on the brief and source packet:
+Also recommend optional pages if they make sense based on the brief and strategy digest:
 
 - Priority service pages
 - Location/service-area pages
@@ -728,7 +728,7 @@ Use concise bullets.
 
 ## 5. Core Messaging
 
-Create practical messaging options based on the brief and source packet.
+Create practical messaging options based on the brief and strategy digest.
 
 Include:
 
@@ -744,7 +744,7 @@ Avoid generic hype like:
 - "Quality you can trust"
 - "Your comfort is our priority"
 
-Unless the source packet strongly supports that kind of phrasing.
+Unless the strategy digest strongly supports that kind of phrasing.
 
 ### Homepage subhead options
 
@@ -778,7 +778,7 @@ Keep CTA labels short, usually 2-4 words.
 
 Create a service content plan.
 
-Use the source packet's service treatment categories as the boundary:
+Use the strategy digest's service treatment categories as the boundary:
 
 - Feature heavily
 - Standard Service
@@ -862,7 +862,7 @@ For form fields, separate into:
 
 ## 9. Visual / Asset Direction
 
-Based on the strategy brief and source packet, recommend:
+Based on the strategy brief and strategy digest, recommend:
 
 - Best image types
 - Where real photos should be used
@@ -948,9 +948,9 @@ Keep this section concise and implementation-minded.
 
 ---
 
-Source Packet:
+Strategy Digest:
 
-[paste source-packet.json here]
+[paste strategy-digest.md here]
 
 ---
 
@@ -961,11 +961,11 @@ Website Strategy Brief:
   {
     id: "final-page-copy",
     title:
-      "Prompt 3 - Source Packet + Strategy Brief + Content Plan to Final Page Copy",
+      "Strategy Digest + Strategy Brief + Content Plan to Final Page Copy",
     description:
       "Writes polished final copy for one selected page at a time.",
     inputs: [
-      "Source packet JSON",
+      "Strategy digest",
       "Website Strategy Brief",
       "Website Content Plan",
       "Selected page to write",
@@ -974,9 +974,9 @@ Website Strategy Brief:
 
 Use the Website Strategy Brief and Website Content Plan as the planning guide.
 
-Use the source packet as the factual boundary.
+Use the strategy digest as the factual boundary.
 
-If the Website Strategy Brief or Website Content Plan conflicts with the source packet, follow the source packet and flag the conflict.
+If the Website Strategy Brief or Website Content Plan conflicts with the strategy digest, follow the strategy digest and flag the conflict.
 
 Write polished, ready-to-use copy for this page only:
 
@@ -1135,9 +1135,9 @@ End with a short QA checklist:
 
 ---
 
-Source Packet:
+Strategy Digest:
 
-[paste source-packet.json here]
+[paste strategy-digest.md here]
 
 ---
 

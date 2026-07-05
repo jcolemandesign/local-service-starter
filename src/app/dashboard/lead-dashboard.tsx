@@ -87,6 +87,7 @@ type LeadDashboardProps = {
   sourcePacketPath?: string | null;
   sourcePacketStats?: SourcePacketStat[];
   statusOptions: string[];
+  strategyDigestPath?: string | null;
   updateLead: (formData: FormData) => void;
   updateProjectIntake?: (formData: FormData) => void;
 };
@@ -588,6 +589,7 @@ export function LeadDashboard({
   sourcePacketPath = null,
   sourcePacketStats = [],
   statusOptions,
+  strategyDigestPath = null,
   updateLead,
   updateProjectIntake,
 }: LeadDashboardProps) {
@@ -805,17 +807,18 @@ export function LeadDashboard({
       ) : null}
 
       {showProjectIntakes && updateProjectIntake && activeView === "intakes" ? (
-        <ProjectIntakeDashboard
-          deleteProjectIntake={deleteProjectIntake}
-          generateProjectIntakeSourcePacket={generateProjectIntakeSourcePacket}
-          intakeSaveState={intakeSaveState}
-          projectIntakes={projectIntakes}
-          savedIntakeId={savedIntakeId}
-          sourcePacketPath={sourcePacketPath}
-          sourcePacketStats={sourcePacketStats}
-          statusOptions={statusOptions}
-          updateProjectIntake={updateProjectIntake}
-        />
+          <ProjectIntakeDashboard
+            deleteProjectIntake={deleteProjectIntake}
+            generateProjectIntakeSourcePacket={generateProjectIntakeSourcePacket}
+            intakeSaveState={intakeSaveState}
+            projectIntakes={projectIntakes}
+            savedIntakeId={savedIntakeId}
+            sourcePacketPath={sourcePacketPath}
+            sourcePacketStats={sourcePacketStats}
+            statusOptions={statusOptions}
+            strategyDigestPath={strategyDigestPath}
+            updateProjectIntake={updateProjectIntake}
+          />
       ) : null}
 
       {activeView === "all" ? (
@@ -1123,6 +1126,7 @@ export function ProjectIntakeDashboard({
   sourcePacketPath,
   sourcePacketStats,
   statusOptions,
+  strategyDigestPath,
   updateProjectIntake,
 }: {
   deleteProjectIntake?: (formData: FormData) => void;
@@ -1133,6 +1137,7 @@ export function ProjectIntakeDashboard({
   sourcePacketPath?: string | null;
   sourcePacketStats?: SourcePacketStat[];
   statusOptions: string[];
+  strategyDigestPath?: string | null;
   updateProjectIntake: (formData: FormData) => void;
 }) {
   const [statusFilter, setStatusFilter] = useState("");
@@ -1318,13 +1323,21 @@ export function ProjectIntakeDashboard({
           <div className="mt-heading-body-sm grid card-grid-gap-med rounded-[var(--radius-md-token)] border border-service-border bg-white p-5">
             <div className="grid card-grid-gap-sm">
               <p className="type-text-sm font-semibold text-service-accent">
-                Packet created.
+                Packet and strategy digest created.
               </p>
               {sourcePacketPath ? (
                 <div className="grid gap-1">
-                  <p className={dashboardMutedLabelClass}>Saved file</p>
+                  <p className={dashboardMutedLabelClass}>Source packet</p>
                   <p className="type-text-sm break-all rounded-[var(--radius-sm-token)] bg-service-surface px-3 py-2 font-mono text-service-ink">
                     {sourcePacketPath}
+                  </p>
+                </div>
+              ) : null}
+              {strategyDigestPath ? (
+                <div className="grid gap-1">
+                  <p className={dashboardMutedLabelClass}>Strategy digest</p>
+                  <p className="type-text-sm break-all rounded-[var(--radius-sm-token)] bg-service-surface px-3 py-2 font-mono text-service-ink">
+                    {strategyDigestPath}
                   </p>
                 </div>
               ) : null}
@@ -1353,8 +1366,8 @@ export function ProjectIntakeDashboard({
         ) : null}
         {intakeSaveState === "source-packet-error" ? (
           <p className="mt-heading-body-sm type-caption font-semibold text-red-700">
-            Could not generate source packet. Check the dev server console for
-            details.
+            Could not generate source packet and strategy digest. Check the dev
+            server console for details.
           </p>
         ) : null}
       </Card>
