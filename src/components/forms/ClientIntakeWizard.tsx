@@ -13,7 +13,6 @@ type BusinessBasics = {
   contactEmail: string;
   contactPhone: string;
   website: string;
-  googleBusinessProfile: string;
   businessAddress: string;
   businessHours: string;
   additionalNotes: string;
@@ -297,7 +296,6 @@ function createDefaultPayload(variant: IntakeVariantKey): ClientIntakePayload {
       contactEmail: "",
       contactPhone: "",
       website: "",
-      googleBusinessProfile: "",
       businessAddress: "",
       businessHours: "",
       additionalNotes: "",
@@ -561,20 +559,6 @@ function TextAreaField({
         value={value}
       />
     </label>
-  );
-}
-
-function HelpPopup() {
-  return (
-    <details className="relative">
-      <summary className="type-caption grid size-5 cursor-pointer list-none place-items-center rounded-full border border-service-border bg-service-surface font-bold text-service-muted transition-colors hover:border-service-accent hover:text-service-accent">
-        ?
-      </summary>
-      <div className="type-text-xs radius-medium absolute left-0 top-7 z-20 w-72 border border-service-border bg-white p-3 text-service-muted shadow-service">
-        Open your Google Business Profile, use the share button, then paste the
-        profile link here.
-      </div>
-    </details>
   );
 }
 
@@ -1045,23 +1029,27 @@ function BusinessBasicsStep({
         <TextField
           label="Business name"
           onChange={(businessName) => update({ businessName })}
+          placeholder="The public business name customers know you by"
           value={payload.businessName}
         />
         <div className="layout-gap-med grid grid-cols-3 max-lg:grid-cols-1">
           <TextField
             label="Main contact name"
             onChange={(contactName) => update({ contactName })}
+            placeholder="Who should we contact with website questions?"
             value={payload.contactName}
           />
           <TextField
             label="Contact email"
             onChange={(contactEmail) => update({ contactEmail })}
+            placeholder="name@example.com"
             type="email"
             value={payload.contactEmail}
           />
           <TextField
             label="Contact phone"
             onChange={(contactPhone) => update({ contactPhone })}
+            placeholder="Best phone number for project follow-up"
             type="tel"
             value={payload.contactPhone}
           />
@@ -1070,38 +1058,24 @@ function BusinessBasicsStep({
           <TextField
             label="Current website"
             onChange={(website) => update({ website })}
-            placeholder="https://"
+            placeholder="https://your-current-website.com"
             type="url"
             value={payload.website}
-          />
-          <TextField
-            help={<HelpPopup />}
-            label="Google Business Profile link"
-            onChange={(googleBusinessProfile) =>
-              update({ googleBusinessProfile })
-            }
-            placeholder="https://"
-            type="url"
-            value={payload.googleBusinessProfile}
           />
         </div>
         <TextAreaField
           label="Business address"
           onChange={(businessAddress) => update({ businessAddress })}
-          placeholder="Street address, city, state, ZIP, or service-area note"
+          placeholder="Street address, city, state, ZIP, or a note like service-area business with no public storefront"
           rows={2}
           value={payload.businessAddress}
         />
         <TextAreaField
           label="Business hours"
           onChange={(businessHours) => update({ businessHours })}
-          placeholder="Example: Mon-Fri 8-5, emergency calls 24/7"
+          placeholder="Public hours, phone hours, appointment hours, or emergency/after-hours availability if true"
           rows={2}
           value={payload.businessHours}
-        />
-        <AdditionalNotesField
-          onChange={(additionalNotes) => update({ additionalNotes })}
-          value={payload.additionalNotes}
         />
       </div>
     </QuestionBlock>
@@ -1149,6 +1123,7 @@ function ServicesStep({
       />
       <AdditionalNotesField
         onChange={(additionalNotes) => update({ additionalNotes })}
+        placeholder="Add any services, packages, or job types that were not covered by the checkboxes, especially ones you want the website to mention clearly."
         value={payload.additionalNotes}
       />
     </QuestionBlock>
@@ -1239,7 +1214,7 @@ function ServiceStrategyStep({
             onChange={(emergency_service_limitations) =>
               update({ emergency_service_limitations })
             }
-            placeholder="Example: Do not guarantee same-day service for every request. Availability may depend on distance, schedule, or technician availability."
+            placeholder="Clarify what the website should not promise about emergency, same-day, after-hours, distance, schedule, or technician availability."
             rows={4}
             value={payload.emergency_service_limitations}
           />
@@ -1248,6 +1223,7 @@ function ServiceStrategyStep({
 
       <AdditionalNotesField
         onChange={(additionalNotes) => update({ additionalNotes })}
+        placeholder="Add any service priority notes that the options above did not capture, like seasonal work, jobs you only take sometimes, or services you want handled carefully."
         value={payload.additionalNotes}
       />
     </div>
@@ -1272,16 +1248,18 @@ function OptionalSummaryRow({
 
 function AdditionalNotesField({
   onChange,
+  placeholder,
   value,
 }: {
   onChange: (value: string) => void;
+  placeholder: string;
   value: string;
 }) {
   return (
     <TextAreaField
       label="Additional notes"
       onChange={onChange}
-      placeholder="Add anything that needs clarification, context, or special handling for this step."
+      placeholder={placeholder}
       rows={3}
       value={value}
     />
@@ -1303,29 +1281,34 @@ function ServiceAreaStep({
         <TextAreaField
           label="What towns, cities, or neighborhoods do you serve?"
           onChange={(townsCities) => update({ townsCities })}
+          placeholder="List the areas customers should see on the website, including neighborhoods or nearby cities if they matter."
           rows={3}
           value={payload.townsCities}
         />
         <TextAreaField
           label="Which areas are most important to promote?"
           onChange={(priorityAreas) => update({ priorityAreas })}
+          placeholder="Add the areas you most want calls from, or the places that should be emphasized first."
           rows={3}
           value={payload.priorityAreas}
         />
         <TextAreaField
           label="Do you have a service radius or travel limit?"
           onChange={(serviceRadius) => update({ serviceRadius })}
+          placeholder="Mention drive-time limits, mileage, county boundaries, or how far you go for different job types."
           rows={2}
           value={payload.serviceRadius}
         />
         <TextAreaField
           label="Are there any minimum job sizes, trip fees, or location limits customers should know about?"
           onChange={(locationLimits) => update({ locationLimits })}
+          placeholder="Add location-based limits, travel fees, minimum job rules, or areas where availability is different."
           rows={3}
           value={payload.locationLimits}
         />
         <AdditionalNotesField
           onChange={(additionalNotes) => update({ additionalNotes })}
+          placeholder="Add any service-area details that were not covered above, like neighborhoods to emphasize, towns to avoid, travel limits, or area-specific exceptions."
           value={payload.additionalNotes}
         />
       </div>
@@ -1431,6 +1414,7 @@ function LeadFlowStep({
 
       <AdditionalNotesField
         onChange={(additionalNotes) => update({ additionalNotes })}
+        placeholder="Add any lead-flow details the checkboxes missed, like who answers calls, booking tools, follow-up preferences, or situations where customers should call instead of filling out a form."
         value={payload.additionalNotes}
       />
     </div>
@@ -1471,12 +1455,13 @@ function PricingProcessStep({
         onChange={(pricing_language_notes) =>
           update({ pricing_language_notes })
         }
-        placeholder="Example: A standard diagnostic fee applies. The fee may be credited toward repair or replacement if the customer moves forward. Do not promise exact pricing before diagnosis."
+        placeholder="Add diagnostic fees, estimate language, price ranges, quote requirements, or pricing claims the website should avoid before diagnosis."
         rows={4}
         value={payload.pricing_language_notes}
       />
       <AdditionalNotesField
         onChange={(additionalNotes) => update({ additionalNotes })}
+        placeholder="Add any pricing, estimate, diagnostic, or process details that should be explained carefully on the website but were not covered above."
         value={payload.additionalNotes}
       />
     </div>
@@ -1508,31 +1493,35 @@ function TrustStep({
       </div>
       <div className="grid layout-gap-med">
         <TextField
-          label="Years in business, if needed"
+          label="Years in business"
           onChange={(yearsInBusiness) => update({ yearsInBusiness })}
-          placeholder="Example: 18 years"
+          placeholder="Only enter this if it is accurate and okay to mention publicly."
           value={payload.yearsInBusiness}
         />
         <TextAreaField
           label="What do customers usually compliment you for?"
           onChange={(compliments) => update({ compliments })}
+          placeholder="Mention common praise from customers, reviews, referrals, or repeat clients."
           rows={3}
           value={payload.compliments}
         />
         <TextAreaField
           label="What do you do differently from competitors?"
           onChange={(competitorDifference) => update({ competitorDifference })}
+          placeholder="Describe real differences in service, communication, pricing approach, quality, speed, experience, or specialization."
           rows={3}
           value={payload.competitorDifference}
         />
         <TextAreaField
           label="Are there any claims we should avoid making?"
           onChange={(claimsToAvoid) => update({ claimsToAvoid })}
+          placeholder="List credentials, guarantees, availability, pricing, awards, or claims that should not appear unless verified."
           rows={3}
           value={payload.claimsToAvoid}
         />
         <AdditionalNotesField
           onChange={(additionalNotes) => update({ additionalNotes })}
+          placeholder="Add any trust signals, customer compliments, credentials, awards, proof points, or claims to avoid that were not represented by the options above."
           value={payload.additionalNotes}
         />
       </div>
@@ -1572,6 +1561,7 @@ function CustomerQuestionsStep({
         />
         <AdditionalNotesField
           onChange={(additionalNotes) => update({ additionalNotes })}
+          placeholder="Add any customer questions, concerns, objections, or comparison points that the fields above did not capture."
           value={payload.additionalNotes}
         />
       </div>
@@ -1594,7 +1584,7 @@ function AssetsStep({
         <TextField
           label="Google Drive / Dropbox folder link"
           onChange={(folderLink) => update({ folderLink })}
-          placeholder="https://"
+          placeholder="Paste a folder link with photos, logo files, brand assets, or project examples."
           type="url"
           value={payload.folderLink}
         />
@@ -1624,18 +1614,20 @@ function AssetsStep({
         <TextAreaField
           label="Do you have a current promo, special, or seasonal offer?"
           onChange={(promoOffer) => update({ promoOffer })}
+          placeholder="Describe any offer that is active now, seasonal, or important to mention soon."
           rows={3}
           value={payload.promoOffer}
         />
         <TextAreaField
           label="Are there any competitors or websites you like?"
           onChange={(competitorReferences) => update({ competitorReferences })}
-          placeholder="Names or notes are fine; links are optional."
+          placeholder="Add competitor names, website links, or notes about layouts, wording, offers, or visuals you like or dislike."
           rows={3}
           value={payload.competitorReferences}
         />
         <AdditionalNotesField
           onChange={(additionalNotes) => update({ additionalNotes })}
+          placeholder="Add any asset notes the checkboxes missed, like where photos live, which images are outdated, logo concerns, or examples of sites/assets you want us to reference."
           value={payload.additionalNotes}
         />
       </div>
@@ -1656,7 +1648,7 @@ function FinalNotesStep({
         <TextAreaField
           label="Future offer name or description"
           onChange={(future_offers) => update({ future_offers })}
-          placeholder="Example: Maintenance membership, seasonal tune-up plan, commercial service package, financing offer."
+          placeholder="Add future memberships, seasonal offers, plans, packages, financing, or services the site should leave room for."
           rows={3}
           value={payload.future_offers}
         />
@@ -1679,6 +1671,7 @@ function FinalNotesStep({
           onChange={(homepage_must_include) =>
             update({ homepage_must_include })
           }
+          placeholder="Mention homepage must-haves like priority services, service areas, phone-first CTA, proof points, or urgent messaging."
           rows={3}
           value={payload.homepage_must_include}
         />
@@ -1687,6 +1680,7 @@ function FinalNotesStep({
           onChange={(services_page_must_include) =>
             update({ services_page_must_include })
           }
+          placeholder="Mention services page must-haves like specific services, packages, service categories, exclusions, or how services should be grouped."
           rows={3}
           value={payload.services_page_must_include}
         />
@@ -1695,6 +1689,7 @@ function FinalNotesStep({
           onChange={(contact_form_must_include) =>
             update({ contact_form_must_include })
           }
+          placeholder="Mention form-area details like response expectations, required fields, phone alternatives, scheduling notes, or what happens next."
           rows={3}
           value={payload.contact_form_must_include}
         />
@@ -1710,18 +1705,20 @@ function FinalNotesStep({
         <TextAreaField
           label="Who is not a good fit?"
           onChange={(bad_fit_customers) => update({ bad_fit_customers })}
-          placeholder="Examples: customers outside the service area, price-only shoppers, services we technically offer but do not want more of, emergency requests too far away, commercial jobs, jobs below our minimum."
+          placeholder="Name customers, job types, locations, budgets, timelines, or requests the website should quietly discourage."
           rows={3}
           value={payload.bad_fit_customers}
         />
         <TextAreaField
           label="Any important business changes coming soon?"
           onChange={(upcomingChanges) => update({ upcomingChanges })}
+          placeholder="Mention upcoming service changes, staff changes, new offers, moving locations, rebrands, seasonality, or timing-sensitive updates."
           rows={3}
           value={payload.upcomingChanges}
         />
         <AdditionalNotesField
           onChange={(additionalNotes) => update({ additionalNotes })}
+          placeholder="Add any final website notes, upcoming changes, must-include details, or things the site should avoid emphasizing that were not covered above."
           value={payload.additionalNotes}
         />
       </QuestionBlock>
@@ -1761,10 +1758,6 @@ function ReviewStep({
               payload.businessBasics.businessAddress,
               payload.businessBasics.businessHours,
             ]}
-          />
-          <OptionalSummaryRow
-            label="Additional notes"
-            value={payload.businessBasics.additionalNotes}
           />
         </ReviewCard>
 

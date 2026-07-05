@@ -8,13 +8,286 @@ export type PromptLibraryPrompt = {
 
 export const promptLibraryWorkflow = [
   "Generate the source packet from the client intake.",
-  "Paste the source packet plus any research into Prompt 1.",
+  "Run Prompt 0 when the client has an existing website, then paste its output into Supplemental research.",
+  "Paste the source packet plus Supplemental research into Prompt 1.",
   "Paste the Strategy Brief plus source packet into Prompt 2.",
   "Run Prompt 3 once per page using the source packet, Strategy Brief, and Content Plan.",
   "Move approved final copy into the project content files.",
 ];
 
 export const promptLibraryPrompts: PromptLibraryPrompt[] = [
+  {
+    id: "current-website-scrape",
+    title: "Prompt 0 - Current Website to Strategy Workspace Notes",
+    description:
+      "Scrapes the client's existing website for factual inputs to paste into the Strategy Workspace before writing strategy.",
+    inputs: [
+      "Client website URL",
+      "Optional source packet JSON or intake notes",
+      "Optional list of priority pages to inspect",
+    ],
+    prompt: String.raw`You are researching a local service business's existing website so the strategy workspace can be filled with accurate, supported information.
+
+Use the client's current website as a factual source. If a source packet or intake notes are provided, use them only to understand context and identify conflicts. Do not invent claims or fill gaps from assumptions.
+
+Visit and inspect the homepage plus any important public pages you can find, especially:
+
+- Services
+- Service detail pages
+- About
+- Contact
+- Service areas / locations
+- Financing, warranties, memberships, coupons, specials, or guarantees
+- Reviews/testimonials
+- FAQ
+- Blog/resource pages only if they contain current business facts
+
+If the website is very large, prioritize pages that affect website strategy, conversion, service positioning, proof, contact flow, and sitemap/content planning.
+
+---
+
+# Output Format
+
+Return concise notes that can be pasted into the Strategy Workspace Supplemental research field.
+
+Do not write final website copy.
+Do not recommend templates.
+Do not rewrite the brand.
+Do not add unsupported facts.
+Add source URLs next to important facts, not only in the source list at the end.
+Separate facts the site explicitly states from strategy observations the site merely suggests.
+Only summarize reviews/testimonials that are visible on the business's own website. Do not scrape or summarize Google, Yelp, Facebook, Angi, BBB, or other third-party review platforms unless the client separately provides that material.
+
+Use this exact structure:
+
+## Current Website Research Notes
+
+Website URL:
+
+Date reviewed:
+
+## 1. Business Facts Found
+
+List only facts explicitly supported by the website.
+
+Include:
+
+- Business name
+- Business type
+- Primary services
+- Secondary services
+- Service area / locations
+- Phone
+- Email
+- Address
+- Hours
+- License numbers, credentials, certifications, affiliations, or insurance claims
+- Years in business or founding date
+- Financing, warranties, guarantees, memberships, coupons, specials, or discounts
+
+For each important fact, include the source URL in parentheses immediately after the fact.
+
+Example:
+
+- Licensed and insured. (Source: https://example.com/about)
+
+If a fact is not found, write "Not found."
+
+## 2. Current Site Structure
+
+List the visible sitemap or important pages.
+
+For each page include:
+
+- Page title / nav label
+- URL
+- Purpose of page
+- Any important content or conversion points
+
+## 3. Old URLs Worth Preserving
+
+List existing URLs that should probably be preserved, redirected, or reviewed during rebuild/migration.
+
+Include:
+
+- Homepage and primary nav URLs
+- High-value service pages
+- Location/service-area pages
+- Contact/booking pages
+- Pages that may have backlinks or search value
+- URLs with clear conversion or ranking importance
+- Any URLs that look outdated but may still need redirects
+
+For each URL include:
+
+- URL
+- Why it may matter
+- Recommended handling: preserve, redirect, merge, or verify
+
+## 4. Service Inventory
+
+Group the services mentioned on the site.
+
+Use these groups:
+
+### Prominent services
+
+Services that are featured in navigation, homepage sections, hero copy, major cards, or repeated calls to action.
+
+### Supporting services
+
+Services that are present but less emphasized.
+
+### Lightly mentioned or buried services
+
+Services mentioned only briefly, in lists, footers, FAQs, or older resource content.
+
+For each service, include the page URL(s) where it appears.
+
+Separate:
+
+- Site says: explicit service language or claim from the site, with source URL
+- Site suggests: strategy observation based on prominence, repetition, nav position, or page depth
+
+Example:
+
+- Site says: "24/7 emergency AC repair" appears on the AC repair page. (Source: URL)
+- Site suggests: AC repair appears prominent because it is in the main nav and homepage hero.
+
+## 5. Positioning And Differentiators
+
+Extract the real positioning language from the website.
+
+Include:
+
+- Taglines or repeated claims
+- Differentiators
+- Tone/personality
+- Customer promises
+- Proof points
+- Review/testimonial themes
+- Local/community language
+
+Quote only short phrases when useful. Keep quotes brief.
+
+For each important claim or differentiator, include the source URL.
+
+## 6. Conversion Flow
+
+Describe how the current website asks visitors to take action.
+
+Include:
+
+- Primary CTA text
+- Secondary CTA text
+- Phone/call path
+- Booking/scheduling path
+- Contact form path
+- Form fields requested
+- Emergency/urgent service path, only if explicitly stated
+- Thank-you or confirmation messaging, if visible
+
+## 7. Mobile And CTA Friction
+
+Review the site like a conversion audit, especially on mobile if possible.
+
+Call out:
+
+- Buried or unclear phone/call CTA
+- Missing sticky call path
+- Weak or inconsistent primary CTA
+- Confusing nav labels
+- Contact form hard to find
+- Too many form fields
+- Unclear service area before contacting
+- Important proof hidden too low
+- Emergency/urgent path missing or unclear
+- Mobile header problems
+- Tap targets, readability, or spacing issues
+
+Separate:
+
+- Confirmed issue: directly visible problem
+- Strategy observation: likely conversion improvement to consider
+
+## 8. Trust And Proof
+
+List trust signals found on the site.
+
+Include only supported:
+
+- Reviews/testimonials visible on the business's own site
+- Review platform mentions
+- Certifications
+- Awards
+- Associations
+- Before/after examples
+- Project photos
+- Team photos
+- Guarantees/warranties
+- Financing/payment options
+- Safety/background/license language
+
+Do not visit, scrape, or summarize third-party review pages. If the business website links to Google/Yelp/etc., note only that the link exists and include the page URL where the link appears.
+
+## 9. Customer Questions The Site Already Answers
+
+List questions the current website answers clearly.
+
+Examples:
+
+- What services do they offer?
+- Where do they work?
+- How do I book?
+- Do they offer emergency service?
+- Do they provide financing?
+- What happens after I submit a form?
+
+## 10. Gaps, Risks, And Conflicts
+
+List anything that should be verified before using it in strategy or copy.
+
+Include:
+
+- Missing contact/service area details
+- Outdated pages or offers
+- Conflicting claims
+- Unsupported credentials
+- Unclear service priorities
+- Claims that appear risky or legally sensitive
+- Broken links or inaccessible pages
+
+If source packet or intake notes conflict with the website, call that out clearly.
+
+## 11. Suggested Strategy Workspace Placement
+
+Tell the user where to paste or use the findings.
+
+Use:
+
+- Supplemental research:
+- Strategy brief facts to consider:
+- Content plan facts to consider:
+- Page copy facts to consider:
+- Items requiring verification:
+
+## 12. Source URL Notes
+
+List all URLs reviewed with a one-line summary of what each contributed. This is a complete source log, but important facts above should still have source URLs beside them.
+
+---
+
+# Accuracy Rules
+
+- Preserve the business's real facts and terminology.
+- Distinguish "site says" confirmed facts from "site suggests" strategy observations.
+- Do not infer licenses, guarantees, emergency availability, service areas, financing, pricing, or years in business unless explicitly stated.
+- Treat "emergency service" as confirmed only when the website explicitly says emergency, 24/7, same-day urgent service, after-hours, or equivalent language.
+- If information appears in an image and cannot be read reliably, mark it as uncertain.
+- If pages cannot be accessed, list them under gaps.
+- Do not use third-party review platforms as review sources in this prompt.
+- Keep the output practical and compact enough to paste into a strategy workspace.`,
+  },
   {
     id: "strategy-brief",
     title: "Prompt 1 - Source Packet to Website Strategy Brief",
