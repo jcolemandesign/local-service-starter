@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type {
   ContentEditorField,
@@ -11,6 +12,7 @@ import {
 } from "@/components/primitives/SevenColumnGrid";
 
 type ContentEditorSectionProps = {
+  initialPageId?: string;
   pages: ContentEditorPage[];
 };
 
@@ -19,27 +21,9 @@ type StoredDraft = {
   values: Record<string, string>;
 };
 
-type PromotionSnapshot = {
-  fields: Array<{
-    id: string;
-    kind: ContentEditorField["kind"];
-    path: string;
-    value: string;
-  }>;
-  pageHref: string;
-  pageId: string;
-  pageLabel: string;
-  promotedAt: string;
-};
-
-type PromotionResponse =
-  | { ok: true; page: PromotionSnapshot }
-  | { ok: false; error: string };
-
 type FieldFilter = "all" | ContentEditorField["kind"];
 
 const draftStorageKey = "pageworks-content-editor-draft-v1";
-const promotionStorageKey = "pageworks-content-editor-promotion-v1";
 const fieldFilterOptions: Array<{ label: string; value: FieldFilter }> = [
   { label: "All fields", value: "all" },
   { label: "Copy + items", value: "copy" },
@@ -48,16 +32,21 @@ const fieldFilterOptions: Array<{ label: string; value: FieldFilter }> = [
   { label: "Links", value: "link" },
 ];
 
-export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
-  const [activePageId, setActivePageId] = useState(pages[0]?.id ?? "");
+export function ContentEditorSection({
+  initialPageId,
+  pages,
+}: ContentEditorSectionProps) {
+  const [activePageId, setActivePageId] = useState(() =>
+    pages.some((page) => page.id === initialPageId)
+      ? (initialPageId ?? "")
+      : (pages[0]?.id ?? ""),
+  );
   const originalValues = useMemo(() => getOriginalValues(pages), [pages]);
   const [values, setValues] = useState<Record<string, string>>(
     originalValues,
   );
   const [savedAt, setSavedAt] = useState("");
-  const [promotedAt, setPromotedAt] = useState("");
   const [status, setStatus] = useState("");
-  const [isPromoting, setIsPromoting] = useState(false);
   const [openSectionIds, setOpenSectionIds] = useState<string[]>([]);
   const [fieldFilter, setFieldFilter] = useState<FieldFilter>("all");
 
@@ -139,53 +128,7 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
 
     window.localStorage.setItem(draftStorageKey, JSON.stringify(draft));
     setSavedAt(nextSavedAt);
-    setStatus("Draft saved.");
-  }
-
-  async function promoteActivePage() {
-    if (!activePage) {
-      return;
-    }
-
-    setIsPromoting(true);
-    setStatus("");
-
-    const snapshot = {
-      fields: activeFields.map((field) => ({
-        id: field.id,
-        kind: field.kind,
-        path: field.path,
-        value: values[field.id] ?? field.value,
-      })),
-      pageHref: activePage.href,
-      pageId: activePage.id,
-      pageLabel: activePage.label,
-    };
-
-    try {
-      const response = await fetch("/api/content-editor-promotions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(snapshot),
-      });
-      const result = (await response.json()) as PromotionResponse;
-
-      if (!response.ok || !result.ok) {
-        setStatus(result.ok ? "Promotion failed." : result.error);
-        return;
-      }
-
-      window.localStorage.setItem(
-        promotionStorageKey,
-        JSON.stringify(result.page, null, 2),
-      );
-      setPromotedAt(result.page.promotedAt);
-      setStatus("Staged content promoted.");
-    } catch {
-      setStatus("Promotion failed.");
-    } finally {
-      setIsPromoting(false);
-    }
+    setStatus("Overrides saved.");
   }
 
   return (
@@ -197,8 +140,8 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
             Content Editor
           </h1>
           <p className="type-text-xl wrap-pretty mt-display-body text-service-muted">
-            Template Builder copy and image-placement fields will appear here
-            once clean generated pages are ready for editing.
+            Edit staged page fields manually after a page has been assembled
+            from a saved strategy snapshot and template.
           </p>
         </SevenColumnGridItem>
 
@@ -287,21 +230,18 @@ export function ContentEditorSection({ pages }: ContentEditorSectionProps) {
                   ) : null}
                 </div>
                 <div className="flex flex-wrap items-start justify-end gap-2 max-md:justify-start">
-                  <ActionButton onClick={saveDraft}>Save Draft</ActionButton>
-                  <ActionButton onClick={promoteActivePage} tone="dark">
-                    {isPromoting ? "Promoting..." : "Promote To Staged"}
-                  </ActionButton>
+                  <ActionButton onClick={saveDraft}>Save Overrides</ActionButton>
+                  <ActionLink href={getStagedPreviewHref(activePage.id)}>
+                    View Staged Page
+                  </ActionLink>
                   <ActionButton onClick={resetActivePage} tone="quiet">
                     Reset Page
                   </ActionButton>
                 </div>
-                {status || savedAt || promotedAt ? (
+                {status || savedAt ? (
                   <div className="type-caption col-span-2 flex flex-wrap gap-3 border-t border-service-border pt-4 text-service-muted max-md:col-span-1">
                     {status ? <span>{status}</span> : null}
                     {savedAt ? <span>Saved {formatDate(savedAt)}</span> : null}
-                    {promotedAt ? (
-                      <span>Promoted {formatDate(promotedAt)}</span>
-                    ) : null}
                   </div>
                 ) : null}
               </div>
@@ -512,12 +452,33 @@ function ActionButton({
   );
 }
 
+function ActionLink({
+  children,
+  href,
+}: {
+  children: React.ReactNode;
+  href: string;
+}) {
+  return (
+    <Link
+      className="inline-flex min-h-10 items-center justify-center rounded-sm border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent"
+      href={href}
+    >
+      {children}
+    </Link>
+  );
+}
+
 function StatusPill({ label }: { label: string }) {
   return (
     <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
       {label}
     </span>
   );
+}
+
+function getStagedPreviewHref(pageId: string) {
+  return `/dev/staged-pages/${encodeURIComponent(pageId)}`;
 }
 
 function getFieldFilterLabel(fieldFilter: FieldFilter) {

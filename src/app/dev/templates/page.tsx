@@ -5,6 +5,7 @@ import {
   TemplateLibrarySection,
   type PageTemplateSummary,
 } from "@/components/sections";
+import { listLatestStrategySnapshotSummaries } from "@/utils/strategy-snapshots";
 
 export const metadata: Metadata = {
   title: "Template Library",
@@ -26,10 +27,14 @@ const pageTemplatesPath = path.join(
 
 export default async function TemplatesPage() {
   const templates = await readPageTemplates();
+  const strategySnapshots = await listLatestStrategySnapshotSummaries();
 
   return (
     <main>
-      <TemplateLibrarySection templates={templates} />
+      <TemplateLibrarySection
+        strategySnapshots={strategySnapshots}
+        templates={templates}
+      />
     </main>
   );
 }

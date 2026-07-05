@@ -7,10 +7,24 @@ export const metadata: Metadata = {
   description: "Pageworks content inventory and editing surface.",
 };
 
-export default function ContentEditorPage() {
+type ContentEditorPageProps = {
+  searchParams: Promise<{
+    page?: string | string[];
+  }>;
+};
+
+export default async function ContentEditorPage({
+  searchParams,
+}: ContentEditorPageProps) {
+  const pageParam = (await searchParams).page;
+  const initialPageId = Array.isArray(pageParam) ? pageParam[0] : pageParam;
+
   return (
     <main>
-      <ContentEditorSection pages={contentEditorPages} />
+      <ContentEditorSection
+        initialPageId={initialPageId}
+        pages={contentEditorPages}
+      />
     </main>
   );
 }

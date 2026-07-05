@@ -1,4 +1,5 @@
 import contentEditorPagesData from "./content-editor-pages.json";
+import stagedPagesData from "./staged-pages.json";
 
 export type ContentEditorFieldKind = "copy" | "image" | "link" | "meta";
 
@@ -28,10 +29,43 @@ type ContentRecord = Record<string, unknown>;
 type ContentEditorPagesFile = {
   pages?: ContentEditorPage[];
 };
+type StagedEditorField = {
+  id: string;
+  kind: ContentEditorFieldKind;
+  path: string;
+  value: string;
+};
+type StagedEditorPage = {
+  fields?: StagedEditorField[];
+  pageHref?: string;
+  pageId?: string;
+  pageLabel?: string;
+  snapshot?: {
+    clientSlug?: string;
+    version?: number;
+  };
+  sourceStage?: string;
+  template?: {
+    name?: string;
+  };
+};
+type StagedPagesFile = {
+  pages?: StagedEditorPage[];
+};
 
 const generatedContentEditorPages = (
   contentEditorPagesData as ContentEditorPagesFile
 ).pages ?? [];
+const stagedContentEditorPages = (stagedPagesData as StagedPagesFile).pages ?? [];
+const mappedStagedContentEditorPages = stagedContentEditorPages.map(
+  mapStagedPageToContentEditorPage,
+);
+const stagedContentEditorPageIds = new Set(
+  mappedStagedContentEditorPages.map((page) => page.id),
+);
+const dedupedGeneratedContentEditorPages = generatedContentEditorPages.filter(
+  (page) => !stagedContentEditorPageIds.has(page.id),
+);
 
 const contentPageSources: Array<{
   content: ContentRecord;
@@ -41,7 +75,8 @@ const contentPageSources: Array<{
 }> = [];
 
 export const contentEditorPages: ContentEditorPage[] = [
-  ...generatedContentEditorPages,
+  ...mappedStagedContentEditorPages,
+  ...dedupedGeneratedContentEditorPages,
   ...contentPageSources.map((page) => {
     const content = page.content as ContentRecord;
     const source = content.source as ContentRecord | undefined;
@@ -71,6 +106,62 @@ export const contentEditorPages: ContentEditorPage[] = [
     };
   }),
 ];
+
+function mapStagedPageToContentEditorPage(
+  page: StagedEditorPage,
+): ContentEditorPage {
+  const pageId = page.pageId || "staged-page";
+  const fields = Array.isArray(page.fields) ? page.fields : [];
+  const sectionsById = fields.reduce<Record<string, ContentEditorField[]>>(
+    (sections, field) => {
+      const sectionId = getSectionIdFromFieldPath(field.path);
+
+      return {
+        ...sections,
+        [sectionId]: [
+          ...(sections[sectionId] ?? []),
+          {
+            id: field.id,
+            kind: field.kind,
+            label: humanizePath(field.path.split(".").slice(1)),
+            path: field.path,
+            value: field.value,
+          },
+        ],
+      };
+    },
+    {},
+  );
+
+  return {
+    href: page.pageHref ?? `/${pageId}`,
+    id: pageId,
+    label: page.pageLabel ?? humanize(pageId),
+    sections: Object.entries(sectionsById).map(([sectionId, sectionFields]) => ({
+      fields: sectionFields,
+      id: sectionId,
+      label: humanize(sectionId),
+    })),
+    sourceRecipe: formatStagedSource(page),
+  };
+}
+
+function getSectionIdFromFieldPath(fieldPath: string) {
+  return fieldPath.split(".")[0] || "strategy";
+}
+
+function formatStagedSource(page: StagedEditorPage) {
+  if (page.sourceStage === "strategy-template") {
+    const snapshotLabel = page.snapshot
+      ? `${page.snapshot.clientSlug ?? "strategy"} v${page.snapshot.version ?? "?"}`
+      : "strategy snapshot";
+    const templateLabel = page.template?.name ?? "template";
+
+    return `${snapshotLabel} / ${templateLabel}`;
+  }
+
+  return page.sourceStage ?? "staged page";
+}
 
 function collectFields({
   pageId,

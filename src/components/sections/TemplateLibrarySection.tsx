@@ -7,6 +7,12 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives/SevenColumnGrid";
+import {
+  getDefaultPageLabel,
+  getDefaultPageSlug,
+  slugify,
+} from "@/utils/strategy-site-map";
+import type { StrategySnapshotSummary } from "@/utils/strategy-snapshots";
 
 export type PageTemplateSummary = {
   id: string;
@@ -25,6 +31,7 @@ export type PageTemplateSummary = {
 };
 
 type TemplateLibrarySectionProps = {
+  strategySnapshots: StrategySnapshotSummary[];
   templates: PageTemplateSummary[];
 };
 
@@ -32,12 +39,12 @@ type CreatePageResponse =
   | {
       ok: true;
       page: {
-        href: string;
-        id: string;
-        label: string;
+        pageId: string;
+        pageLabel: string;
+        previewHref: string;
       };
     }
-  | { ok: false; error: string };
+  | { ok: false; error?: string };
 
 type TemplateDraft = {
   label: string;
@@ -45,15 +52,19 @@ type TemplateDraft = {
 };
 
 export function TemplateLibrarySection({
+  strategySnapshots,
   templates,
 }: TemplateLibrarySectionProps) {
+  const [selectedClientSlug, setSelectedClientSlug] = useState(
+    strategySnapshots[0]?.clientSlug ?? "",
+  );
   const [drafts, setDrafts] = useState<Record<string, TemplateDraft>>(() =>
     Object.fromEntries(
       templates.map((template) => [
         template.id,
         {
-          label: template.name,
-          slug: slugify(template.name),
+          label: getDefaultPageLabel(template.pageType, template.name),
+          slug: getDefaultPageSlug(template.pageType, template.name),
         },
       ]),
     ),
@@ -79,7 +90,7 @@ export function TemplateLibrarySection({
     setError("");
   }
 
-  async function createContentEditorPage(template: PageTemplateSummary) {
+  async function stageTemplate(template: PageTemplateSummary) {
     const draft = drafts[template.id];
 
     setSubmittingTemplateId(template.id);
@@ -87,25 +98,31 @@ export function TemplateLibrarySection({
     setError("");
 
     try {
-      const response = await fetch("/api/content-editor-pages", {
+      const response = await fetch("/api/staged-pages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          clientSlug: selectedClientSlug,
           pageLabel: draft?.label ?? template.name,
-          pageSlug: draft?.slug ?? slugify(template.name),
+          pageSlug:
+            draft?.slug ?? getDefaultPageSlug(template.pageType, template.name),
           templateId: template.id,
         }),
       });
       const result = (await response.json()) as CreatePageResponse;
 
       if (!response.ok || !result.ok) {
-        setError(result.ok ? "Page creation failed." : result.error);
+        setError(
+          result.ok ? "Page staging failed." : result.error ?? "Page staging failed.",
+        );
         return;
       }
 
-      setStatus(`${result.page.label} is ready in Content Editor.`);
+      setStatus(
+        `Template applied. ${result.page.pageLabel} is now staged and ready to edit.`,
+      );
     } catch {
-      setError("Page creation failed.");
+      setError("Page staging failed.");
     } finally {
       setSubmittingTemplateId("");
     }
@@ -120,17 +137,47 @@ export function TemplateLibrarySection({
             Template Library
           </h1>
           <p className="type-text-xl wrap-pretty mt-display-body text-service-muted">
-            Reusable page layouts promoted from Pagebuilder options. Create a
-            Content Editor page from a template when a client copy deck is ready
-            to become editable page content.
+            Reusable page layouts promoted from Pagebuilder options. Use a
+            template to stage a page from the latest saved strategy snapshot.
           </p>
           <div className="mt-body-actions-md flex flex-wrap gap-2">
             <StatusPill label={`${templates.length} templates`} />
             <StatusPill label={`${totalSections} saved sections`} />
+            {strategySnapshots[0] ? (
+              <StatusPill
+                label={`Latest strategy ${strategySnapshots[0].clientSlug} v${strategySnapshots[0].version}`}
+              />
+            ) : (
+              <StatusPill label="No saved strategy snapshot" />
+            )}
           </div>
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-start-2 col-span-5 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+          {strategySnapshots.length > 0 ? (
+            <Card className="mb-5 p-5 shadow-none">
+              <label className="type-caption font-semibold text-service-ink">
+                Strategy snapshot
+                <select
+                  className="mt-2 block min-h-11 w-full max-w-lg rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
+                  value={selectedClientSlug}
+                  onChange={(event) => {
+                    setSelectedClientSlug(event.target.value);
+                    setStatus("");
+                    setError("");
+                  }}
+                >
+                  {strategySnapshots.map((snapshot) => (
+                    <option key={snapshot.id} value={snapshot.clientSlug}>
+                      {snapshot.clientSlug} v{snapshot.version} -{" "}
+                      {snapshot.pageCount} pages
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </Card>
+          ) : null}
+
           {status || error ? (
             <div
               className={`mb-5 rounded-sm border px-4 py-3 ${
@@ -143,8 +190,8 @@ export function TemplateLibrarySection({
               <p className="type-caption">{error || status}</p>
               {status ? (
                 <div className="mt-3">
-                  <Button href="/dev/content-editor" variant="secondary">
-                    Open Content Editor
+                  <Button href="/dev/staged-pages" variant="secondary">
+                    Open Staged Pages
                   </Button>
                 </div>
               ) : null}
@@ -155,8 +202,8 @@ export function TemplateLibrarySection({
             <div className="grid grid-cols-2 gap-5 max-lg:grid-cols-1">
               {templates.map((template) => {
                 const draft = drafts[template.id] ?? {
-                  label: template.name,
-                  slug: slugify(template.name),
+                  label: getDefaultPageLabel(template.pageType, template.name),
+                  slug: getDefaultPageSlug(template.pageType, template.name),
                 };
                 const isSubmitting = submittingTemplateId === template.id;
 
@@ -210,7 +257,7 @@ export function TemplateLibrarySection({
 
                       <div className="grid gap-3 border-t border-service-border pt-5">
                         <label className="type-caption font-semibold text-service-ink">
-                          Content Editor page name
+                          Staged page name
                           <input
                             className="mt-2 block min-h-11 w-full rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
                             value={draft.label}
@@ -238,13 +285,11 @@ export function TemplateLibrarySection({
                         </label>
                         <button
                           className="radius-4 min-h-11 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent disabled:cursor-not-allowed disabled:opacity-60"
-                          disabled={isSubmitting}
-                          onClick={() => void createContentEditorPage(template)}
+                          disabled={isSubmitting || !selectedClientSlug}
+                          onClick={() => void stageTemplate(template)}
                           type="button"
                         >
-                          {isSubmitting
-                            ? "Creating..."
-                            : "Create Content Editor Page"}
+                          {isSubmitting ? "Staging..." : "Use Template"}
                         </button>
                       </div>
                     </div>
@@ -279,14 +324,6 @@ function StatusPill({ label }: { label: string }) {
       {label}
     </span>
   );
-}
-
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
 }
 
 function formatDate(value: string) {

@@ -3,12 +3,17 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Card, Section } from "@/components/primitives";
+import {
+  buildStrategyNavigation,
+  deriveStrategyPagesFromFields,
+} from "@/utils/strategy-site-map";
 import type {
   StrategyWorkspace,
   StrategyWorkspaceFields,
   StrategyWorkspacePacketIssue,
   StrategyWorkspacePacketSummary,
 } from "@/utils/strategy-workspace";
+import type { StrategySnapshot } from "@/utils/strategy-snapshots";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 
@@ -117,6 +122,7 @@ export function StrategyWorkspaceSection({
   const [fields, setFields] = useState<StrategyWorkspaceFields>(
     initialWorkspace.fields,
   );
+  const [snapshot, setSnapshot] = useState<StrategySnapshot | null>(null);
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [updatedAt, setUpdatedAt] = useState(initialWorkspace.updatedAt);
 
@@ -125,6 +131,16 @@ export function StrategyWorkspaceSection({
       Object.values(fields).filter((value) => value.trim().length > 0).length,
     [fields],
   );
+  const strategyPages = useMemo(
+    () => deriveStrategyPagesFromFields(fields),
+    [fields],
+  );
+  const navigation = useMemo(
+    () => buildStrategyNavigation(strategyPages),
+    [strategyPages],
+  );
+  const detectedPageCount = strategyPages.filter((page) => page.detected).length;
+  const showAssemblyOverview = Boolean(updatedAt) || saveState === "saved";
 
   function updateField(key: keyof StrategyWorkspaceFields, value: string) {
     setFields((currentFields) => ({
@@ -154,6 +170,7 @@ export function StrategyWorkspaceSection({
       const result = (await response.json()) as {
         message?: string;
         ok?: boolean;
+        snapshot?: StrategySnapshot;
         workspace?: StrategyWorkspace;
       };
 
@@ -162,6 +179,7 @@ export function StrategyWorkspaceSection({
       }
 
       setFields(result.workspace.fields);
+      setSnapshot(result.snapshot ?? null);
       setUpdatedAt(result.workspace.updatedAt);
       setSaveState("saved");
     } catch {
@@ -266,7 +284,7 @@ export function StrategyWorkspaceSection({
                 </div>
                 {saveState === "saved" ? (
                   <p className="type-caption font-semibold text-green-700">
-                    Workspace saved.
+                    Workspace saved. Strategy snapshot frozen.
                   </p>
                 ) : null}
                 {saveState === "error" ? (
@@ -277,6 +295,72 @@ export function StrategyWorkspaceSection({
               </div>
             </Card>
           </div>
+
+          {showAssemblyOverview ? (
+            <Card className="p-5 shadow-none">
+              <div className="grid gap-5">
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="fluid-type-frame">
+                    <p className="type-label text-service-accent">
+                      Site Assembly Overview
+                    </p>
+                    <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                      {detectedPageCount} pages detected from the saved strategy
+                    </h2>
+                    <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
+                      Use templates to stage these pages from snapshot
+                      {snapshot ? ` ${snapshot.id}` : ""}. Content Editor edits
+                      can then sit on top as manual overrides.
+                    </p>
+                  </div>
+                  <Link className={secondaryButtonClass} href="/dev/templates">
+                    Choose templates
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-5 gap-3 max-lg:grid-cols-2 max-sm:grid-cols-1">
+                  {strategyPages.map((page) => (
+                    <div
+                      className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-3"
+                      key={page.id}
+                    >
+                      <p className="type-caption font-semibold text-service-accent">
+                        {page.detected ? "Needs Template" : "No Copy Yet"}
+                      </p>
+                      <h3 className="mt-2 text-base font-semibold text-service-ink">
+                        {page.label}
+                      </h3>
+                      <p className="type-caption mt-1 text-service-muted">
+                        {page.path}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="rounded-[var(--radius-md-token)] border border-service-border bg-white p-4">
+                  <p className="type-caption font-semibold text-service-accent">
+                    Navigation
+                  </p>
+                  {navigation.length > 0 ? (
+                    <nav className="mt-3 flex flex-wrap gap-2" aria-label="Strategy sitemap">
+                      {navigation.map((item) => (
+                        <span
+                          className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted"
+                          key={item.pageId}
+                        >
+                          {item.label} {item.href}
+                        </span>
+                      ))}
+                    </nav>
+                  ) : (
+                    <p className="type-text-sm mt-2 text-service-muted">
+                      Add page copy to populate the staged-site navigation.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </Card>
+          ) : null}
 
           <div className="grid card-grid-gap-lrg">
             {fieldGroups.map((group) => (

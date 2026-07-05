@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { Button, Card, SevenColumnGrid, SevenColumnGridItem } from "@/components/primitives";
+import { readStagedPages, type StagedPage } from "@/utils/staged-pages";
 
 export const metadata: Metadata = {
   title: "Staged Pages",
@@ -9,37 +8,6 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = "force-dynamic";
-
-type StagedPage = {
-  fieldCounts: {
-    copy: number;
-    image: number;
-    link: number;
-  };
-  fields: Array<{
-    id: string;
-    kind: "copy" | "image" | "link";
-    path: string;
-    value: string;
-  }>;
-  pageHref: string;
-  pageId: string;
-  pageLabel: string;
-  promotedAt: string;
-  sourceStage: string;
-  status: string;
-};
-
-type StagedPagesFile = {
-  pages: StagedPage[];
-};
-
-const stagedPagesPath = path.join(
-  process.cwd(),
-  "src",
-  "content",
-  "staged-pages.json",
-);
 
 export default async function StagedPagesPage() {
   const stagedPages = await readStagedPages();
@@ -53,9 +21,9 @@ export default async function StagedPagesPage() {
             Staged Pages
           </h1>
           <p className="type-text-xl wrap-pretty mt-display-body text-service-muted">
-            Staged pages promoted from Content Editor. These are eligible for
-            public route promotion after style, content, and page structure are
-            approved.
+            Staged pages assembled from saved strategy snapshots and selected
+            templates. Review the linked staged site before public route
+            promotion.
           </p>
         </SevenColumnGridItem>
 
@@ -64,8 +32,8 @@ export default async function StagedPagesPage() {
             <div className="grid grid-cols-2 gap-5 max-lg:grid-cols-1">
               {stagedPages.map((page) => (
                 <Card className="p-5 shadow-none" key={page.pageId}>
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div className="fluid-type-frame">
+                  <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 max-sm:grid-cols-1">
+                    <div className="min-w-0">
                       <p className="type-label text-service-accent">
                         {page.status}
                       </p>
@@ -73,20 +41,29 @@ export default async function StagedPagesPage() {
                         {page.pageLabel}
                       </h2>
                       <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
-                        Promoted {formatDate(page.promotedAt)} from{" "}
-                        {page.sourceStage}.
+                        Staged {formatDate(page.promotedAt)} from{" "}
+                        {formatSource(page)}.
                       </p>
                     </div>
-                    <Button href={page.pageHref} target="_blank" variant="secondary">
-                      Review Page
-                    </Button>
+                    <div className="justify-self-end max-sm:justify-self-start">
+                      <div className="flex flex-wrap justify-end gap-2 max-sm:justify-start">
+                        <Button href={getPreviewHref(page)} variant="secondary">
+                          Review Page
+                        </Button>
+                        <Button href={getContentEditorHref(page)}>
+                          Edit Content
+                        </Button>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="mt-5 flex flex-wrap gap-2">
                     <StatusPill label={`${page.fieldCounts.copy} copy`} />
-                    <StatusPill label={`${page.fieldCounts.image} image`} />
-                    <StatusPill label={`${page.fieldCounts.link} link`} />
+                    <StatusPill label={`${page.fieldCounts.image ?? 0} image`} />
+                    <StatusPill label={`${page.fieldCounts.link ?? 0} link`} />
+                    <StatusPill label={`${page.fieldCounts.meta ?? 0} meta`} />
                     <StatusPill label={`${page.fields.length} total`} />
+                    <StatusPill label={page.pageHref} />
                   </div>
 
                   <div className="mt-5 grid gap-2 border-t border-service-border pt-5">
@@ -116,14 +93,14 @@ export default async function StagedPagesPage() {
             <Card className="p-6 shadow-none">
               <p className="type-label text-service-accent">No staged pages</p>
               <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
-                Promote content from the Content Editor first.
+                Save a strategy snapshot and use a template first.
               </h2>
               <p className="type-text-md wrap-pretty mt-heading-body-md text-service-muted">
-                Staged pages will appear here after clean template output is
-                promoted from the Content Editor.
+                Staged pages appear here after a template is applied to a saved
+                strategy snapshot.
               </p>
               <div className="mt-body-actions-md">
-                <Button href="/dev/content-editor">Open Content Editor</Button>
+                <Button href="/dev/templates">Open Template Library</Button>
               </div>
             </Card>
           )}
@@ -133,23 +110,28 @@ export default async function StagedPagesPage() {
   );
 }
 
-async function readStagedPages() {
-  try {
-    const contents = await readFile(stagedPagesPath, "utf8");
-    const parsed = JSON.parse(contents) as Partial<StagedPagesFile>;
-
-    return Array.isArray(parsed.pages) ? parsed.pages : [];
-  } catch {
-    return [];
-  }
-}
-
 function StatusPill({ label }: { label: string }) {
   return (
     <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
       {label}
     </span>
   );
+}
+
+function getPreviewHref(page: StagedPage) {
+  return page.previewHref ?? `/dev/staged-pages/${page.pageId}`;
+}
+
+function getContentEditorHref(page: StagedPage) {
+  return `/dev/content-editor?page=${encodeURIComponent(page.pageId)}`;
+}
+
+function formatSource(page: StagedPage) {
+  if (page.sourceStage === "strategy-template" && page.snapshot) {
+    return `${page.snapshot.clientSlug} v${page.snapshot.version}`;
+  }
+
+  return page.sourceStage;
 }
 
 function formatDate(value: string) {

@@ -3,6 +3,7 @@ import {
   writeStrategyWorkspace,
   type StrategyWorkspaceFields,
 } from "@/utils/strategy-workspace";
+import { writeStrategySnapshot } from "@/utils/strategy-snapshots";
 
 export const runtime = "nodejs";
 
@@ -35,9 +36,11 @@ export async function POST(request: Request) {
 
   try {
     const workspace = await writeStrategyWorkspace(clientSlug, body.fields ?? {});
+    const snapshot = await writeStrategySnapshot(workspace);
 
     return Response.json({
       ok: true,
+      snapshot,
       workspace,
     });
   } catch (error) {
