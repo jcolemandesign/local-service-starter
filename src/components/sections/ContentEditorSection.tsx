@@ -86,6 +86,21 @@ export function ContentEditorSection({
     isEmptyEditableField(field, values[field.id] ?? field.value),
   ).length;
   const fieldCounts = getFieldCounts(activeFields);
+  const activeSectionIds = activePage?.sections.map((section) => section.id) ?? [];
+  const activeCopySectionIds =
+    activePage?.sections
+      .filter((section) =>
+        section.fields.some((field) => field.kind === "copy"),
+      )
+      .map((section) => section.id) ?? [];
+  const activeEmptySectionIds =
+    activePage?.sections
+      .filter((section) =>
+        section.fields.some((field) =>
+          isEmptyEditableField(field, values[field.id] ?? field.value),
+        ),
+      )
+      .map((section) => section.id) ?? [];
   const visibleActiveFieldCount =
     fieldFilter === "all"
       ? activeFields.length
@@ -112,6 +127,10 @@ export function ContentEditorSection({
           )
         : [...currentSectionIds, sectionId],
     );
+  }
+
+  function openSections(sectionIds: string[]) {
+    setOpenSectionIds(sectionIds);
   }
 
   function resetActivePage() {
@@ -280,6 +299,23 @@ export function ContentEditorSection({
                       hidden copy, media, and links together.
                     </p>
                   ) : null}
+                  <div className="mt-4 flex flex-wrap gap-2 border-t border-service-border pt-4">
+                    <ControlButton onClick={() => openSections(activeSectionIds)}>
+                      Open All
+                    </ControlButton>
+                    <ControlButton
+                      disabled={activeEmptySectionIds.length === 0}
+                      onClick={() => openSections(activeEmptySectionIds)}
+                    >
+                      Open Empty
+                    </ControlButton>
+                    <ControlButton onClick={() => openSections(activeCopySectionIds)}>
+                      Open Copy
+                    </ControlButton>
+                    <ControlButton onClick={() => openSections([])}>
+                      Close All
+                    </ControlButton>
+                  </div>
                 </div>
                 <div className="flex flex-wrap items-start justify-end gap-2 max-md:justify-start">
                   <ActionButton disabled={isSavingPage} onClick={() => void savePage()}>
@@ -528,6 +564,27 @@ function ActionButton({
       disabled={disabled}
       onClick={onClick}
       className={`inline-flex min-h-10 items-center justify-center rounded-sm border px-4 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${toneClass}`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function ControlButton({
+  children,
+  disabled = false,
+  onClick,
+}: {
+  children: React.ReactNode;
+  disabled?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+      className="inline-flex min-h-9 items-center justify-center rounded-sm border border-service-border bg-white px-3 text-xs font-semibold text-service-muted transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-50"
     >
       {children}
     </button>
