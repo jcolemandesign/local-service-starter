@@ -35,8 +35,8 @@ export default async function StagedPagePreview({
 
   const navigation = getNavigation(page, stagedPages);
   const pageCopy = page.fields.find((field) => field.path === "strategy.pageCopy");
-  const sectionFields = page.fields.filter((field) =>
-    field.path.endsWith(".contentDirection"),
+  const sectionFields = page.fields.filter(
+    (field) => !field.path.startsWith("strategy."),
   );
 
   return (
@@ -95,18 +95,23 @@ export default async function StagedPagePreview({
             </Card>
 
             <Card className="p-5 shadow-none">
-              <p className="type-label text-service-accent">Template Sections</p>
+              <p className="type-label text-service-accent">Template Fields</p>
               <div className="mt-5 grid gap-3">
                 {sectionFields.map((field) => (
                   <div
                     className="rounded-sm border border-service-border bg-service-surface p-4"
                     key={field.id}
                   >
-                    <p className="type-caption font-semibold text-service-accent">
-                      {field.path.replace(".contentDirection", "")}
-                    </p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="type-caption font-semibold text-service-accent">
+                        {field.path}
+                      </p>
+                      <span className="type-caption rounded-sm border border-service-border bg-white px-2 py-0.5 text-service-muted">
+                        {field.kind}
+                      </span>
+                    </div>
                     <p className="type-text-sm mt-2 whitespace-pre-wrap text-service-muted">
-                      {field.value}
+                      {field.value || "Empty. Add reviewed copy in Content Editor."}
                     </p>
                   </div>
                 ))}

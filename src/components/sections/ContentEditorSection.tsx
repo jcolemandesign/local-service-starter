@@ -22,6 +22,14 @@ type StoredDraft = {
 };
 
 type FieldFilter = "all" | ContentEditorField["kind"];
+type SaveStagedPageResponse =
+  | {
+      ok: true;
+    }
+  | {
+      error?: string;
+      ok: false;
+    };
 
 const draftStorageKey = "pageworks-content-editor-draft-v1";
 const fieldFilterOptions: Array<{ label: string; value: FieldFilter }> = [
@@ -45,6 +53,7 @@ export function ContentEditorSection({
   const [values, setValues] = useState<Record<string, string>>(
     originalValues,
   );
+  const [isSavingPage, setIsSavingPage] = useState(false);
   const [savedAt, setSavedAt] = useState("");
   const [status, setStatus] = useState("");
   const [openSectionIds, setOpenSectionIds] = useState<string[]>([]);
@@ -119,16 +128,50 @@ export function ContentEditorSection({
     setStatus("Page reset.");
   }
 
-  function saveDraft() {
+  async function savePage() {
+    if (!activePage) {
+      return;
+    }
+
     const nextSavedAt = new Date().toISOString();
     const draft: StoredDraft = {
       savedAt: nextSavedAt,
       values,
     };
 
-    window.localStorage.setItem(draftStorageKey, JSON.stringify(draft));
-    setSavedAt(nextSavedAt);
-    setStatus("Overrides saved.");
+    setIsSavingPage(true);
+    setStatus("");
+
+    try {
+      const fields = activeFields.map((field) => ({
+        id: field.id,
+        kind: field.kind,
+        path: field.path,
+        value: values[field.id] ?? "",
+      }));
+      const response = await fetch("/api/staged-pages", {
+        body: JSON.stringify({
+          fields,
+          pageId: activePage.id,
+        }),
+        headers: { "Content-Type": "application/json" },
+        method: "PATCH",
+      });
+      const result = (await response.json()) as SaveStagedPageResponse;
+
+      if (!response.ok || !result.ok) {
+        setStatus(result.ok ? "Page save failed." : result.error ?? "Page save failed.");
+        return;
+      }
+
+      window.localStorage.setItem(draftStorageKey, JSON.stringify(draft));
+      setSavedAt(nextSavedAt);
+      setStatus("Staged page saved.");
+    } catch {
+      setStatus("Page save failed.");
+    } finally {
+      setIsSavingPage(false);
+    }
   }
 
   return (
@@ -230,7 +273,9 @@ export function ContentEditorSection({
                   ) : null}
                 </div>
                 <div className="flex flex-wrap items-start justify-end gap-2 max-md:justify-start">
-                  <ActionButton onClick={saveDraft}>Save Overrides</ActionButton>
+                  <ActionButton disabled={isSavingPage} onClick={() => void savePage()}>
+                    {isSavingPage ? "Saving..." : "Save Staged Page"}
+                  </ActionButton>
                   <ActionLink href={getStagedPreviewHref(activePage.id)}>
                     View Staged Page
                   </ActionLink>
@@ -427,10 +472,12 @@ function FieldEditor({
 
 function ActionButton({
   children,
+  disabled = false,
   onClick,
   tone = "default",
 }: {
   children: React.ReactNode;
+  disabled?: boolean;
   onClick: () => void;
   tone?: "dark" | "default" | "quiet";
 }) {
@@ -444,8 +491,9 @@ function ActionButton({
   return (
     <button
       type="button"
+      disabled={disabled}
       onClick={onClick}
-      className={`inline-flex min-h-10 items-center justify-center rounded-sm border px-4 text-sm font-semibold transition-colors ${toneClass}`}
+      className={`inline-flex min-h-10 items-center justify-center rounded-sm border px-4 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${toneClass}`}
     >
       {children}
     </button>

@@ -2,7 +2,9 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import {
   buildStrategyTemplateStagedPage,
+  updateStagedPageFields,
   writeStagedPage,
+  type StagedPageField,
   type StagedPageTemplate,
 } from "@/utils/staged-pages";
 import { readLatestStrategySnapshot } from "@/utils/strategy-snapshots";
@@ -14,6 +16,11 @@ type StagePageRequest = {
   pageLabel?: string;
   pageSlug?: string;
   templateId?: string;
+};
+
+type UpdateStagedPageRequest = {
+  fields?: StagedPageField[];
+  pageId?: string;
 };
 
 type PageTemplatesFile = {
@@ -68,6 +75,45 @@ export async function POST(request: Request) {
   }
 }
 
+export async function PATCH(request: Request) {
+  if (
+    process.env.NODE_ENV === "production" &&
+    process.env.ENABLE_DEV_ROUTES !== "true"
+  ) {
+    return jsonError("Page staging is disabled in production.", 403);
+  }
+
+  let body: UpdateStagedPageRequest;
+
+  try {
+    body = (await request.json()) as UpdateStagedPageRequest;
+  } catch {
+    return jsonError("Invalid request body.", 400);
+  }
+
+  try {
+    const pageId = sanitizeSlug(body.pageId);
+
+    if (!pageId) {
+      throw new Error("Missing page id.");
+    }
+
+    if (!Array.isArray(body.fields)) {
+      throw new Error("Missing staged fields.");
+    }
+
+    const fields = body.fields.map(normalizeField);
+    const result = await updateStagedPageFields(pageId, fields);
+
+    return Response.json({ ok: true, ...result });
+  } catch (error) {
+    return jsonError(
+      error instanceof Error ? error.message : "Page update failed.",
+      400,
+    );
+  }
+}
+
 async function findTemplate(templateId: unknown) {
   const normalizedTemplateId = sanitizeSlug(templateId);
 
@@ -108,6 +154,33 @@ function sanitizeSlug(value: unknown) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function normalizeField(field: StagedPageField) {
+  const allowedKinds = new Set(["copy", "image", "link", "meta"]);
+
+  if (typeof field?.id !== "string" || field.id.trim().length === 0) {
+    throw new Error("Invalid field id.");
+  }
+
+  if (!allowedKinds.has(field.kind)) {
+    throw new Error("Invalid field kind.");
+  }
+
+  if (typeof field.path !== "string" || field.path.trim().length === 0) {
+    throw new Error("Invalid field path.");
+  }
+
+  if (typeof field.value !== "string") {
+    throw new Error("Invalid field value.");
+  }
+
+  return {
+    id: field.id,
+    kind: field.kind,
+    path: field.path,
+    value: field.value,
+  };
 }
 
 function jsonError(error: string, status: number) {

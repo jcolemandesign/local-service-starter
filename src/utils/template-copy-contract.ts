@@ -28,13 +28,13 @@ type BuildTemplateCopyContractInput = {
   template: TemplateCopyContractTemplate;
 };
 
-type FieldSpec = {
+export type TemplateCopyFieldSpec = {
   name: string;
   purpose: string;
   target: string;
 };
 
-const fallbackFields: FieldSpec[] = [
+const fallbackFields: TemplateCopyFieldSpec[] = [
   {
     name: "eyebrow",
     purpose: "Short context label if the section design uses one.",
@@ -107,7 +107,7 @@ export function buildTemplateCopyContract({
 
   template.sections.forEach((section, index) => {
     const sectionId = `${String(index + 1).padStart(2, "0")}-${slugify(section.name || section.mode || section.component)}`;
-    const fields = getFieldsForSection(section);
+    const fields = getTemplateCopyFieldsForSection(section);
 
     lines.push(
       "",
@@ -139,7 +139,9 @@ export function buildTemplateCopyContract({
   return lines.join("\n");
 }
 
-function getFieldsForSection(section: TemplateCopyContractSection) {
+export function getTemplateCopyFieldsForSection(
+  section: TemplateCopyContractSection,
+) {
   const component = section.component.toLowerCase();
   const mode = section.mode.toLowerCase();
   const sectionName = section.name.toLowerCase();

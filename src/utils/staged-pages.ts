@@ -7,6 +7,7 @@ import {
   type StrategyNavigationItem,
 } from "@/utils/strategy-site-map";
 import type { StrategySnapshot } from "@/utils/strategy-snapshots";
+import { getTemplateCopyFieldsForSection } from "@/utils/template-copy-contract";
 
 export type ContentFieldKind = "copy" | "image" | "link" | "meta";
 
@@ -100,6 +101,53 @@ export async function writeStagedPage(page: StagedPage) {
   return nextPages;
 }
 
+export async function updateStagedPageFields(
+  pageId: string,
+  fields: StagedPageField[],
+) {
+  const pages = await readStagedPages();
+  const page = pages.find((currentPage) => currentPage.pageId === pageId);
+
+  if (!page) {
+    throw new Error("Staged page not found.");
+  }
+
+  const fieldsById = new Map(fields.map((field) => [field.id, field]));
+  const nextFields = page.fields.map((field) => {
+    const nextField = fieldsById.get(field.id);
+
+    return nextField
+      ? stagedField({
+          id: field.id,
+          kind: field.kind,
+          path: field.path,
+          value: nextField.value,
+        })
+      : field;
+  });
+  const nextPage: StagedPage = {
+    ...page,
+    fieldCounts: countFields(nextFields),
+    fields: nextFields,
+    status: "staged",
+  };
+  const nextPages = [
+    nextPage,
+    ...pages.filter((currentPage) => currentPage.pageId !== pageId),
+  ];
+
+  await mkdir(path.dirname(stagedPagesPath), { recursive: true });
+  await writeFile(
+    stagedPagesPath,
+    `${JSON.stringify({ pages: nextPages }, null, 2)}\n`,
+  );
+
+  return {
+    page: nextPage,
+    pages: nextPages,
+  };
+}
+
 export function buildStrategyTemplateStagedPage({
   pageLabel,
   pageSlug,
@@ -146,17 +194,28 @@ export function buildStrategyTemplateStagedPage({
       path: "strategy.strategyBrief",
       value: snapshot.fields.strategyBrief,
     }),
-    ...template.sections.map((section, index) => {
+    ...template.sections.flatMap((section, index) => {
       const sectionId = `${String(index + 1).padStart(2, "0")}-${slugify(
         section.name || section.component,
       )}`;
+      const templateFields = getTemplateCopyFieldsForSection(section);
 
-      return stagedField({
-        id: `${pageId}.${sectionId}.contentDirection`,
-        kind: "copy",
-        path: `${sectionId}.contentDirection`,
-        value: section.instruction,
-      });
+      return [
+        stagedField({
+          id: `${pageId}.${sectionId}.contentDirection`,
+          kind: "meta",
+          path: `${sectionId}.contentDirection`,
+          value: section.instruction,
+        }),
+        ...templateFields.map((field) =>
+          stagedField({
+            id: `${pageId}.${sectionId}.${field.name}`,
+            kind: "copy",
+            path: `${sectionId}.${field.name}`,
+            value: "",
+          }),
+        ),
+      ];
     }),
   ];
 
