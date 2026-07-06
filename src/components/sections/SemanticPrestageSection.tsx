@@ -7,6 +7,7 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives/SevenColumnGrid";
+import { SectionPreviewCanvas } from "@/components/sections/SectionPreviewCanvas";
 import type {
   SemanticSectionLabel,
   SemanticSectionOption,
@@ -227,68 +228,80 @@ export function SemanticPrestageSection({
                       </button>
                     </div>
 
-                    <div className="grid gap-3">
-                      {page.sections.map((section, index) => {
-                        const options = getOptionsForMode(
-                          section.mode,
-                          sectionOptions,
-                        );
-                        const selectedOption = getSelectedOption(
-                          page.pageId,
-                          section,
-                          selectedComponents,
-                          sectionOptions,
-                        );
+                    <div className="grid grid-cols-[minmax(0,1fr)_minmax(24rem,34rem)] gap-5 max-xl:grid-cols-1">
+                      <div className="grid content-start gap-3">
+                        {page.sections.map((section, index) => {
+                          const options = getOptionsForMode(
+                            section.mode,
+                            sectionOptions,
+                          );
+                          const selectedOption = getSelectedOption(
+                            page.pageId,
+                            section,
+                            selectedComponents,
+                            sectionOptions,
+                          );
 
-                        return (
-                          <div
-                            className="grid grid-cols-[8rem_minmax(0,1fr)_minmax(15rem,18rem)] gap-4 rounded-sm border border-service-border bg-service-surface p-3 max-lg:grid-cols-1"
-                            key={section.id}
-                          >
-                            <div>
-                              <p className="type-caption font-semibold text-service-accent">
-                                {index + 1}. {section.mode}
-                              </p>
-                              {section.sourceRole ? (
-                                <p className="type-caption mt-1 text-service-muted">
-                                  Source: {section.sourceRole}
+                          return (
+                            <div
+                              className="grid gap-4 rounded-sm border border-service-border bg-service-surface p-3"
+                              key={section.id}
+                            >
+                              <div className="min-w-0">
+                                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                                  <p className="type-caption font-semibold text-service-accent">
+                                    {index + 1}. {section.mode}
+                                  </p>
+                                  {section.sourceRole ? (
+                                    <p className="type-caption text-service-muted">
+                                      Source: {section.sourceRole}
+                                    </p>
+                                  ) : null}
+                                </div>
+                                <h3 className="mt-2 text-base font-semibold text-service-ink">
+                                  {section.title}
+                                </h3>
+                                <p className="type-caption mt-2 line-clamp-3 text-service-muted">
+                                  {section.summary || selectedOption?.instruction}
                                 </p>
-                              ) : null}
+                              </div>
+                              <label className="type-caption font-semibold text-service-ink">
+                                Layout
+                                <select
+                                  className="mt-2 block min-h-11 w-full rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
+                                  value={selectedOption?.component ?? ""}
+                                  onChange={(event) =>
+                                    updateSelectedComponent(
+                                      page.pageId,
+                                      section.id,
+                                      event.target.value,
+                                    )
+                                  }
+                                >
+                                  {options.map((option) => (
+                                    <option
+                                      key={option.component}
+                                      value={option.component}
+                                    >
+                                      {option.name}
+                                    </option>
+                                  ))}
+                                </select>
+                              </label>
                             </div>
-                            <div className="min-w-0">
-                              <h3 className="text-base font-semibold text-service-ink">
-                                {section.title}
-                              </h3>
-                              <p className="type-caption mt-2 line-clamp-3 text-service-muted">
-                                {section.summary || selectedOption?.instruction}
-                              </p>
-                            </div>
-                            <label className="type-caption font-semibold text-service-ink">
-                              Layout
-                              <select
-                                className="mt-2 block min-h-11 w-full rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
-                                value={selectedOption?.component ?? ""}
-                                onChange={(event) =>
-                                  updateSelectedComponent(
-                                    page.pageId,
-                                    section.id,
-                                    event.target.value,
-                                  )
-                                }
-                              >
-                                {options.map((option) => (
-                                  <option
-                                    key={option.component}
-                                    value={option.component}
-                                  >
-                                    {option.name}
-                                  </option>
-                                ))}
-                              </select>
-                            </label>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
+                      <div className="sticky top-4 self-start max-xl:static">
+                        <SectionPreviewCanvas
+                          pageLabel={page.label}
+                          sections={buildPreviewSections(
+                            page,
+                            selectedComponents,
+                            sectionOptions,
+                          )}
+                        />
+                      </div>
                     </div>
                   </div>
                 </Card>
@@ -358,6 +371,27 @@ function buildSelectedSection(
     originalComponent: option?.component,
     originalIndex: index,
   };
+}
+
+function buildPreviewSections(
+  page: PageBlueprint,
+  selectedComponents: SelectedComponents,
+  sectionOptions: SemanticSectionOption[],
+) {
+  return page.sections.map((section) => {
+    const option = getSelectedOption(
+      page.pageId,
+      section,
+      selectedComponents,
+      sectionOptions,
+    );
+
+    return {
+      component: option?.component ?? "",
+      mode: section.mode,
+      name: section.title,
+    };
+  });
 }
 
 function getSelectedOption(
