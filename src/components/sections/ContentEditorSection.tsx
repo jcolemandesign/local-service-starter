@@ -163,6 +163,25 @@ export function ContentEditorSection({
     setStatus("");
   }
 
+  async function copyBulkPasteSkeleton() {
+    if (!activePage) {
+      return;
+    }
+
+    const skeleton = buildBulkPasteSkeleton(activePage);
+
+    try {
+      await window.navigator.clipboard.writeText(skeleton);
+      setBulkPasteText(skeleton);
+      setBulkPasteStatus("Bulk paste skeleton copied.");
+    } catch {
+      setBulkPasteText(skeleton);
+      setBulkPasteStatus(
+        "Skeleton loaded below. Select and copy it from the field.",
+      );
+    }
+  }
+
   function resetActivePage() {
     if (!activePage) {
       return;
@@ -389,6 +408,12 @@ export function ContentEditorSection({
                     </p>
                   </div>
                   <div className="flex flex-wrap justify-end gap-2 max-md:justify-start">
+                    <ActionButton
+                      onClick={() => void copyBulkPasteSkeleton()}
+                      tone="quiet"
+                    >
+                      Copy Skeleton
+                    </ActionButton>
                     <ActionButton onClick={applyBulkPaste}>
                       Apply Copy
                     </ActionButton>
@@ -796,6 +821,26 @@ function parseBulkCopyPaste(text: string, fields: ContentEditorField[]) {
       (key) => !matchedKeys.has(key),
     ),
   };
+}
+
+function buildBulkPasteSkeleton(page: ContentEditorPage) {
+  const lines = ["# Bulk Paste Copy"];
+
+  for (const section of page.sections) {
+    const copyFields = section.fields.filter((field) => field.kind === "copy");
+
+    if (copyFields.length === 0) {
+      continue;
+    }
+
+    lines.push("", `### ${section.id}`);
+
+    for (const field of copyFields) {
+      lines.push(`${field.path.split(".").at(-1) ?? field.label}: `);
+    }
+  }
+
+  return lines.join("\n").trim();
 }
 
 function parseKeyedCopyValues(text: string) {
