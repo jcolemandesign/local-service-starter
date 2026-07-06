@@ -13,6 +13,7 @@ import {
   slugify,
 } from "@/utils/strategy-site-map";
 import type { StrategySnapshotSummary } from "@/utils/strategy-snapshots";
+import { buildTemplateCopyContract } from "@/utils/template-copy-contract";
 
 export type PageTemplateSummary = {
   id: string;
@@ -23,8 +24,10 @@ export type PageTemplateSummary = {
   sectionCount: number;
   sections: Array<{
     component: string;
+    instruction?: string;
     mode: string;
     name: string;
+    variant?: string;
   }>;
   sourceOptionName: string;
   sourceRecipeName: string;
@@ -70,6 +73,8 @@ export function TemplateLibrarySection({
     ),
   );
   const [submittingTemplateId, setSubmittingTemplateId] = useState("");
+  const [openContractTemplateId, setOpenContractTemplateId] = useState("");
+  const [copiedContractTemplateId, setCopiedContractTemplateId] = useState("");
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
 
@@ -88,6 +93,45 @@ export function TemplateLibrarySection({
     }));
     setStatus("");
     setError("");
+  }
+
+  async function copyTemplateContract(template: PageTemplateSummary) {
+    const contract = getTemplateContract(template);
+
+    setCopiedContractTemplateId("");
+    setStatus("");
+    setError("");
+
+    if (!navigator.clipboard?.writeText) {
+      setError("Clipboard access is unavailable in this browser.");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(contract);
+      setCopiedContractTemplateId(template.id);
+      setOpenContractTemplateId(template.id);
+      setStatus(`Template copy contract copied for ${template.name}.`);
+    } catch {
+      setError("Template copy contract could not be copied.");
+    }
+  }
+
+  function getTemplateContract(template: PageTemplateSummary) {
+    const draft = drafts[template.id] ?? {
+      label: getDefaultPageLabel(template.pageType, template.name),
+      slug: getDefaultPageSlug(template.pageType, template.name),
+    };
+    const selectedSnapshot = strategySnapshots.find(
+      (snapshot) => snapshot.clientSlug === selectedClientSlug,
+    );
+
+    return buildTemplateCopyContract({
+      pageLabel: draft.label,
+      pageSlug: draft.slug,
+      strategySnapshot: selectedSnapshot,
+      template,
+    });
   }
 
   async function stageTemplate(template: PageTemplateSummary) {
@@ -206,6 +250,9 @@ export function TemplateLibrarySection({
                   slug: getDefaultPageSlug(template.pageType, template.name),
                 };
                 const isSubmitting = submittingTemplateId === template.id;
+                const isContractOpen = openContractTemplateId === template.id;
+                const isContractCopied = copiedContractTemplateId === template.id;
+                const contract = isContractOpen ? getTemplateContract(template) : "";
 
                 return (
                   <Card className="p-5 shadow-none" key={template.id}>
@@ -283,6 +330,36 @@ export function TemplateLibrarySection({
                             }
                           />
                         </label>
+                        <div className="grid grid-cols-2 gap-2 max-md:grid-cols-1">
+                          <button
+                            className="radius-4 min-h-11 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                            onClick={() => {
+                              setOpenContractTemplateId(
+                                isContractOpen ? "" : template.id,
+                              );
+                              setStatus("");
+                              setError("");
+                            }}
+                            type="button"
+                          >
+                            {isContractOpen ? "Hide Contract" : "Show Contract"}
+                          </button>
+                          <button
+                            className="radius-4 min-h-11 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                            onClick={() => void copyTemplateContract(template)}
+                            type="button"
+                          >
+                            {isContractCopied ? "Copied" : "Copy Contract"}
+                          </button>
+                        </div>
+                        {isContractOpen ? (
+                          <textarea
+                            className="min-h-72 resize-y rounded-sm border border-service-border bg-service-surface px-3 py-3 font-mono text-xs leading-5 text-service-ink outline-none focus:border-service-accent"
+                            onFocus={(event) => event.currentTarget.select()}
+                            readOnly
+                            value={contract}
+                          />
+                        ) : null}
                         <button
                           className="radius-4 min-h-11 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent disabled:cursor-not-allowed disabled:opacity-60"
                           disabled={isSubmitting || !selectedClientSlug}

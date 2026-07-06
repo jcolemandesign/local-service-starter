@@ -68,7 +68,7 @@ const fieldGroups: {
     title: "Planning Outputs",
   },
   {
-    description: "Run Phase 4 once per page, then paste each result into the matching page slot.",
+    description: "After choosing page templates, run Phase 4 with each Template Copy Contract and paste the reviewed output into the matching page slot.",
     fields: [
       {
         key: "homepageCopy",

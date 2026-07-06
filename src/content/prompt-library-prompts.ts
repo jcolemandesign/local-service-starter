@@ -11,8 +11,9 @@ export const promptLibraryWorkflow = [
   "Run Phase 1 when the client has an existing website, then paste its output into Supplemental research.",
   "Paste the strategy digest plus Supplemental research into Phase 2.",
   "Paste the Strategy Brief plus strategy digest into Phase 3.",
-  "Run Phase 4 once per page using the strategy digest, Strategy Brief, and Content Plan.",
-  "Move approved final copy into the project content files.",
+  "Choose a page template, then copy its Template Copy Contract from the Template Library.",
+  "Run Phase 4 once per page using the strategy digest, page plan, and Template Copy Contract.",
+  "Review the output manually, move approved fields into the page content editor, then stage the page.",
 ];
 
 export const promptLibraryPrompts: PromptLibraryPrompt[] = [
@@ -961,28 +962,33 @@ Website Strategy Brief:
   {
     id: "final-page-copy",
     title:
-      "Strategy Digest + Strategy Brief + Content Plan to Final Page Copy",
+      "Strategy Digest + Page Plan + Template Contract to Page Copy",
     description:
-      "Writes polished final copy for one selected page at a time.",
+      "Writes field-level copy for one selected page template at a time.",
     inputs: [
       "Strategy digest",
       "Website Strategy Brief",
-      "Website Content Plan",
-      "Selected page to write",
+      "Page-specific plan from the sitemap/content plan",
+      "Template Copy Contract",
+      "Manual editor notes, if any",
     ],
-    prompt: String.raw`You are writing final website copy for a local service business.
+    prompt: String.raw`You are writing template-fitted website copy for one local service business page.
 
-Use the Website Strategy Brief and Website Content Plan as the planning guide.
+Use the Strategy Digest as the factual boundary.
+Use the Website Strategy Brief and page-specific plan as strategic direction.
+Use the Template Copy Contract as the required page structure.
 
-Use the strategy digest as the factual boundary.
+If the Website Strategy Brief, page plan, manual notes, or Template Copy Contract conflict with the Strategy Digest, follow the Strategy Digest and flag the conflict.
 
-If the Website Strategy Brief or Website Content Plan conflicts with the strategy digest, follow the strategy digest and flag the conflict.
-
-Write polished, ready-to-use copy for this page only:
+Write copy for this page only:
 
 Page to write:
 
 [Homepage / Services / About / Contact / Thank You / Specific service page / Landing page]
+
+Selected template:
+
+[paste selected template name here]
 
 Do not invent unsupported claims, certifications, pricing, guarantees, review counts, emergency availability, financing, warranties, years in business, service areas, credentials, or proof points.
 
@@ -1002,9 +1008,15 @@ Write copy that sounds like a real business a homeowner or local customer could 
 
 If important information is missing, use cautious wording, a placeholder, or a note for confirmation instead of inventing the detail.
 
+The page template has already been chosen. Do not redesign the page, recommend alternate sections, add new sections, remove sections, or change the section order.
+
+Write to the fields in the Template Copy Contract. Preserve every section ID and field name exactly.
+
+If a field is not appropriate for the available source material, write NEEDS REVIEW and explain the missing detail briefly.
+
 ---
 
-# Final Page Copy
+# Template-Fitted Page Copy
 
 ## 1. Page Goal
 
@@ -1025,52 +1037,35 @@ Do not keyword-stuff.
 
 ---
 
-## 3. Section-by-Section Copy
+## 3. Field-Level Section Copy
 
-Write the page copy section by section.
+Write copy section by section using the Template Copy Contract.
 
 For each section, include:
 
+- Section ID
 - Section name
 - Semantic role
-- Eyebrow, if useful
-- Headline
-- Body copy
-- Bullets/cards, if useful
-- CTA label, if useful
+- Template intent
+- Every requested field from the contract
 - Image/content note, if useful
 
-Use the section structure from the Website Content Plan unless there is a clear reason to improve the flow.
+Use this format for every section:
 
-For the homepage, use this general order unless the plan says otherwise:
+### [section-id]
+Section name:
+Semantic role:
+Template intent:
 
-1. Navigation / header copy notes
-2. Hero
-3. Trust bar / proof strip
-4. Main services
-5. Priority service or offer section
-6. Why choose us
-7. Process / how it works
-8. Service area
-9. FAQ
-10. Final CTA
-11. Footer notes
+fieldName:
+[copy]
 
-For service pages, use this general order:
+fieldName:
+[copy]
 
-1. Hero
-2. Common problem / customer need
-3. What the service includes
-4. Signs you may need this service
-5. Repair/replacement/process guidance, if relevant
-6. Trust/proof section
-7. Service area mention
-8. FAQ
-9. Final CTA
+Image/content note:
 
-For contact/request quote pages, prioritize clarity, reassurance, low-friction form guidance, urgent call path, and what happens after submission.
-
-For thank-you pages, prioritize confirmation, next steps, urgent path, and expectation setting.
+Keep copy sized to the field targets in the Template Copy Contract.
 
 ---
 
@@ -1108,7 +1103,7 @@ Keep answers helpful, specific, and cautious. Do not overpromise.
 
 ## 7. Reusable Copy Blocks
 
-Pull out any copy blocks that could be reused elsewhere, such as:
+Pull out any copy blocks that could be reused elsewhere or repeated in multiple fields, such as:
 
 - Trust bullets
 - Service area blurb
@@ -1132,6 +1127,8 @@ End with a short QA checklist:
 - Services marked "Non-priority" or "Do not promote" not overpromoted?
 - CTA clear?
 - Mobile visitor needs considered?
+- Template field targets followed?
+- Every section ID preserved?
 
 ---
 
@@ -1147,8 +1144,20 @@ Website Strategy Brief:
 
 ---
 
-Website Content Plan:
+Page-Specific Plan:
 
-[paste Website Content Plan here]`,
+[paste page-specific plan from sitemap/content plan here]
+
+---
+
+Template Copy Contract:
+
+[paste Template Copy Contract here]
+
+---
+
+Manual Editor Notes:
+
+[paste optional manual notes here]`,
   },
 ];
