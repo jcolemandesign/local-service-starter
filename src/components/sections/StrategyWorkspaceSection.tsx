@@ -135,6 +135,9 @@ export function StrategyWorkspaceSection({
   const [digestCopyState, setDigestCopyState] = useState<
     "idle" | "copied" | "error"
   >("idle");
+  const [fieldCopyState, setFieldCopyState] = useState<
+    Partial<Record<keyof StrategyWorkspaceFields, "copied" | "error">>
+  >({});
   const [updatedAt, setUpdatedAt] = useState(initialWorkspace.updatedAt);
 
   const filledCount = useMemo(
@@ -157,6 +160,10 @@ export function StrategyWorkspaceSection({
     setFields((currentFields) => ({
       ...currentFields,
       [key]: value,
+    }));
+    setFieldCopyState((currentState) => ({
+      ...currentState,
+      [key]: undefined,
     }));
 
     if (saveState !== "idle") {
@@ -223,6 +230,31 @@ export function StrategyWorkspaceSection({
       setPacketCopyState("copied");
     } catch {
       setPacketCopyState("error");
+    }
+  }
+
+  async function copyWorkspaceField(key: keyof StrategyWorkspaceFields) {
+    const value = fields[key];
+
+    if (!value) {
+      setFieldCopyState((currentState) => ({
+        ...currentState,
+        [key]: "error",
+      }));
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(value);
+      setFieldCopyState((currentState) => ({
+        ...currentState,
+        [key]: "copied",
+      }));
+    } catch {
+      setFieldCopyState((currentState) => ({
+        ...currentState,
+        [key]: "error",
+      }));
     }
   }
 
@@ -486,13 +518,40 @@ export function StrategyWorkspaceSection({
 
                   <div className="grid gap-5">
                     {group.fields.map((field) => (
-                      <label
-                        className="grid max-w-none gap-2 text-sm font-semibold text-service-ink"
+                      <div
+                        className="grid gap-2 rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-4"
                         key={field.key}
                       >
-                        {field.label}
+                        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-3">
+                          <label
+                            className="text-sm font-semibold text-service-ink"
+                            htmlFor={`strategy-field-${field.key}`}
+                          >
+                            {field.label}
+                          </label>
+                          <div className="flex flex-wrap items-center gap-2">
+                            {fieldCopyState[field.key] === "copied" ? (
+                              <span className="type-caption font-semibold text-green-700">
+                                Copied.
+                              </span>
+                            ) : null}
+                            {fieldCopyState[field.key] === "error" ? (
+                              <span className="type-caption font-semibold text-red-700">
+                                Nothing to copy.
+                              </span>
+                            ) : null}
+                            <button
+                              className={secondaryButtonClass}
+                              onClick={() => void copyWorkspaceField(field.key)}
+                              type="button"
+                            >
+                              Copy field
+                            </button>
+                          </div>
+                        </div>
                         <textarea
-                          className="min-h-48 w-full max-w-none rounded-[var(--radius-md-token)] border border-service-border bg-white p-4 text-sm font-normal leading-relaxed text-service-ink outline-none transition-colors placeholder:text-service-muted focus:border-service-accent"
+                          className="mx-auto min-h-48 w-full max-w-5xl rounded-[var(--radius-md-token)] border border-service-border bg-white p-4 text-sm font-normal leading-relaxed text-service-ink outline-none transition-colors placeholder:text-service-muted focus:border-service-accent"
+                          id={`strategy-field-${field.key}`}
                           onChange={(event) =>
                             updateField(field.key, event.currentTarget.value)
                           }
@@ -500,7 +559,7 @@ export function StrategyWorkspaceSection({
                           rows={field.minRows}
                           value={fields[field.key]}
                         />
-                      </label>
+                      </div>
                     ))}
                   </div>
                 </div>

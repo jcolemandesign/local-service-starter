@@ -7,10 +7,41 @@ import {
   promptLibraryWorkflow,
   type PromptLibraryPrompt,
 } from "@/content/prompt-library-prompts";
+import type { StrategyWorkspaceFields } from "@/utils/strategy-workspace";
 
 const strategyDigestPlaceholders = [
   "[paste strategy-digest.md here]",
   "[paste strategy digest here]",
+];
+
+const workspacePromptPlaceholders: Array<{
+  key: keyof StrategyWorkspaceFields;
+  placeholders: string[];
+}> = [
+  {
+    key: "supplementalResearch",
+    placeholders: [
+      "[paste existing site notes, GBP notes, reviews, competitor notes, or asset notes here if available]",
+    ],
+  },
+  {
+    key: "strategyBrief",
+    placeholders: [
+      "[paste Website Strategy Brief here]",
+    ],
+  },
+  {
+    key: "contentPlan",
+    placeholders: [
+      "[paste page-specific plan from sitemap/content plan here]",
+    ],
+  },
+  {
+    key: "generalNotes",
+    placeholders: [
+      "[paste optional manual notes here]",
+    ],
+  },
 ];
 
 function copyWithFallback(value: string) {
@@ -27,15 +58,21 @@ function copyWithFallback(value: string) {
 
 type PromptLibrarySectionProps = {
   strategyDigestText: string;
+  strategyWorkspaceFields: StrategyWorkspaceFields | null;
 };
 
 export function PromptLibrarySection({
   strategyDigestText,
+  strategyWorkspaceFields,
 }: PromptLibrarySectionProps) {
   const [copiedPromptId, setCopiedPromptId] = useState("");
 
   async function copyPrompt(prompt: PromptLibraryPrompt) {
-    const clipboardPrompt = buildClipboardPrompt(prompt, strategyDigestText);
+    const clipboardPrompt = buildClipboardPrompt({
+      prompt,
+      strategyDigestText,
+      strategyWorkspaceFields,
+    });
 
     try {
       if (!navigator.clipboard?.writeText) {
@@ -83,6 +120,39 @@ export function PromptLibrarySection({
                   </li>
                 ))}
               </ol>
+              <div className="mt-5 grid gap-2 border-t border-service-border pt-4">
+                <p className="type-label text-service-accent">
+                  Auto-filled on copy
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <HydrationPill
+                    isFilled={Boolean(strategyDigestText.trim())}
+                    label="Strategy digest"
+                  />
+                  <HydrationPill
+                    isFilled={Boolean(
+                      strategyWorkspaceFields?.supplementalResearch.trim(),
+                    )}
+                    label="Supplemental research"
+                  />
+                  <HydrationPill
+                    isFilled={Boolean(
+                      strategyWorkspaceFields?.strategyBrief.trim(),
+                    )}
+                    label="Strategy brief"
+                  />
+                  <HydrationPill
+                    isFilled={Boolean(
+                      strategyWorkspaceFields?.contentPlan.trim(),
+                    )}
+                    label="Content plan"
+                  />
+                  <HydrationPill
+                    isFilled={Boolean(strategyWorkspaceFields?.generalNotes.trim())}
+                    label="Manual notes"
+                  />
+                </div>
+              </div>
             </Card>
           </div>
 
@@ -155,19 +225,62 @@ export function PromptLibrarySection({
   );
 }
 
+function HydrationPill({
+  isFilled,
+  label,
+}: {
+  isFilled: boolean;
+  label: string;
+}) {
+  return (
+    <span
+      className={`radius-round border px-3 py-1 type-caption font-semibold ${
+        isFilled
+          ? "border-service-accent bg-white text-service-accent"
+          : "border-service-border bg-service-surface text-service-muted"
+      }`}
+    >
+      {label}: {isFilled ? "ready" : "empty"}
+    </span>
+  );
+}
+
 function buildClipboardPrompt(
-  prompt: PromptLibraryPrompt,
-  strategyDigestText: string,
+  {
+    prompt,
+    strategyDigestText,
+    strategyWorkspaceFields,
+  }: {
+    prompt: PromptLibraryPrompt;
+    strategyDigestText: string;
+    strategyWorkspaceFields: StrategyWorkspaceFields | null;
+  },
 ) {
   const trimmedStrategyDigest = strategyDigestText.trim();
+  let clipboardPrompt = prompt.prompt;
 
-  if (!trimmedStrategyDigest) {
-    return prompt.prompt;
+  if (trimmedStrategyDigest) {
+    clipboardPrompt = strategyDigestPlaceholders.reduce(
+      (currentPrompt, placeholder) =>
+        currentPrompt.replaceAll(placeholder, trimmedStrategyDigest),
+      clipboardPrompt,
+    );
   }
 
-  return strategyDigestPlaceholders.reduce(
-    (clipboardPrompt, placeholder) =>
-      clipboardPrompt.replaceAll(placeholder, trimmedStrategyDigest),
-    prompt.prompt,
-  );
+  if (!strategyWorkspaceFields) {
+    return clipboardPrompt;
+  }
+
+  return workspacePromptPlaceholders.reduce((currentPrompt, replacement) => {
+    const fieldValue = strategyWorkspaceFields[replacement.key].trim();
+
+    if (!fieldValue) {
+      return currentPrompt;
+    }
+
+    return replacement.placeholders.reduce(
+      (nextPrompt, placeholder) => nextPrompt.replaceAll(placeholder, fieldValue),
+      currentPrompt,
+    );
+  }, clipboardPrompt);
 }

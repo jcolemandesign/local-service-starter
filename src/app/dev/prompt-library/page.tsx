@@ -3,6 +3,7 @@ import { PromptLibrarySection } from "@/components/sections/PromptLibrarySection
 import { readStrategyDigestText } from "@/utils/strategy-digest";
 import {
   listProjectWorkspaces,
+  readStrategyWorkspace,
   sanitizeClientSlug,
 } from "@/utils/strategy-workspace";
 
@@ -37,11 +38,15 @@ export default async function PromptLibraryPage({
   const strategyDigestText = selectedProject?.hasSourcePacket
     ? await readStrategyDigestText(selectedProject.clientSlug)
     : "";
+  const strategyWorkspace = selectedProject
+    ? await readStrategyWorkspace(selectedProject.clientSlug)
+    : null;
 
   return (
     <main>
       <PromptLibrarySection
         strategyDigestText={strategyDigestText}
+        strategyWorkspaceFields={strategyWorkspace?.fields ?? null}
       />
     </main>
   );
