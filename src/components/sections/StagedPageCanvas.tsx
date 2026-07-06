@@ -68,7 +68,11 @@ function PreviewSection({ section }: { section: RenderSection }) {
 }
 
 function NavigationPreview({ section }: { section: RenderSection }) {
-  const links = splitItems(getValue(section, "navLinks", "Services, About, Reviews, Contact"));
+  const links = getRepeatedValues(section, "links", "label");
+  const navLinks =
+    links.length > 0
+      ? links
+      : splitItems(getValue(section, "navLinks", "Services, About, Reviews, Contact"));
 
   return (
     <section className="border-b border-service-border bg-white px-8 py-5 max-md:px-5">
@@ -77,7 +81,7 @@ function NavigationPreview({ section }: { section: RenderSection }) {
           {getValue(section, "logoLabel", "Logo")}
         </div>
         <nav className="flex flex-wrap items-center justify-center gap-5 text-sm text-service-ink">
-          {links.map((link) => (
+          {navLinks.map((link) => (
             <span key={link}>{link}</span>
           ))}
         </nav>
@@ -86,7 +90,7 @@ function NavigationPreview({ section }: { section: RenderSection }) {
             {getValue(section, "phone", "Phone")}
           </span>
           <span className="rounded-sm bg-service-accent px-4 py-2 text-sm font-semibold text-white">
-            {getValue(section, "primaryAction", "Request service")}
+            {getValue(section, "primaryAction", getValue(section, "actionLabel", "Request service"))}
           </span>
         </div>
       </div>
@@ -103,10 +107,10 @@ function HeroPreview({ section }: { section: RenderSection }) {
             {getValue(section, "eyebrow", "Local service")}
           </p>
           <h2 className="mt-4 text-5xl font-semibold leading-[1.02] text-service-ink max-md:text-4xl">
-            {getValue(section, "h1", getValue(section, "heading", "Page headline goes here"))}
+            {getValue(section, "h1", getHeading(section, "Page headline goes here"))}
           </h2>
           <p className="mt-6 max-w-xl text-lg leading-8 text-service-muted">
-            {getValue(section, "intro", getValue(section, "body", "Reviewed page copy will appear here after you save it in Content Editor."))}
+            {getBody(section, "Reviewed page copy will appear here after you save it in Content Editor.")}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <span className="rounded-sm bg-service-accent px-5 py-3 text-sm font-semibold text-white">
@@ -117,7 +121,7 @@ function HeroPreview({ section }: { section: RenderSection }) {
             </span>
           </div>
           <div className="mt-8 flex flex-wrap gap-2">
-            {splitItems(getValue(section, "proofPoints", "Clear estimates, Local service, Helpful guidance")).map((item) => (
+            {getListValues(section, ["proofPoints", "stats", "items"], "Clear estimates, Local service, Helpful guidance").map((item) => (
               <span
                 className="rounded-sm border border-service-border bg-service-surface px-3 py-2 type-caption text-service-muted"
                 key={item}
@@ -134,7 +138,16 @@ function HeroPreview({ section }: { section: RenderSection }) {
 }
 
 function ServicesPreview({ section }: { section: RenderSection }) {
-  const items = splitItems(getValue(section, "serviceItems", getValue(section, "items", "Service one\nService two\nService three")));
+  const cards = getRepeatedRecords(section, ["serviceItems", "items", "cards"]);
+  const items = cards.length > 0
+    ? cards
+    : splitItems(
+        getValue(
+          section,
+          "serviceItems",
+          getValue(section, "items", "Service one\nService two\nService three"),
+        ),
+      ).map((title) => ({ body: "", title }));
 
   return (
     <section className="bg-service-surface px-12 py-16 max-md:px-6">
@@ -143,17 +156,17 @@ function ServicesPreview({ section }: { section: RenderSection }) {
           {getValue(section, "eyebrow", section.mode)}
         </p>
         <h2 className="mt-3 max-w-3xl text-4xl font-semibold text-service-ink">
-          {getValue(section, "heading", section.name)}
+          {getHeading(section, section.name)}
         </h2>
         <p className="mt-4 max-w-2xl text-base leading-7 text-service-muted">
-          {getValue(section, "intro", section.instruction)}
+          {getBody(section, section.instruction)}
         </p>
         <div className="mt-8 grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
           {items.slice(0, 6).map((item, index) => (
-            <div className="rounded-sm border border-service-border bg-white p-5" key={`${item}-${index}`}>
-              <p className="text-lg font-semibold text-service-ink">{item}</p>
+            <div className="rounded-sm border border-service-border bg-white p-5" key={`${item.title}-${index}`}>
+              <p className="text-lg font-semibold text-service-ink">{item.title}</p>
               <p className="mt-3 type-text-sm text-service-muted">
-                Add reviewed supporting copy in Content Editor.
+                {item.body || "Add reviewed supporting copy in Content Editor."}
               </p>
             </div>
           ))}
@@ -164,13 +177,22 @@ function ServicesPreview({ section }: { section: RenderSection }) {
 }
 
 function ProofPreview({ section }: { section: RenderSection }) {
-  const items = splitItems(getValue(section, "proofItems", getValue(section, "testimonials", "Trusted local service\nClear communication\nRespectful work")));
+  const testimonialItems = getRepeatedRecords(section, ["testimonials", "items"]);
+  const items = testimonialItems.length > 0
+    ? testimonialItems.map((item) =>
+        [item.quote || item.title, item.author, item.city].filter(Boolean).join(" - "),
+      )
+    : getListValues(
+        section,
+        ["proofItems", "testimonials", "items"],
+        "Trusted local service\nClear communication\nRespectful work",
+      );
 
   return (
     <section className="bg-white px-12 py-12 max-md:px-6">
       <div className="mx-auto max-w-7xl">
         <h2 className="text-3xl font-semibold text-service-ink">
-          {getValue(section, "heading", section.name)}
+          {getHeading(section, section.name)}
         </h2>
         <div className="mt-6 grid grid-cols-3 gap-3 max-md:grid-cols-1">
           {items.slice(0, 6).map((item, index) => (
@@ -190,10 +212,10 @@ function ActionPreview({ section }: { section: RenderSection }) {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-8 max-lg:flex-col max-lg:items-start">
         <div>
           <h2 className="max-w-3xl text-4xl font-semibold">
-            {getValue(section, "heading", section.name)}
+            {getHeading(section, section.name)}
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-white/75">
-            {getValue(section, "body", section.instruction)}
+            {getBody(section, section.instruction)}
           </p>
         </div>
         <span className="rounded-sm bg-service-accent px-5 py-3 text-sm font-semibold text-white">
@@ -205,17 +227,24 @@ function ActionPreview({ section }: { section: RenderSection }) {
 }
 
 function FooterPreview({ section }: { section: RenderSection }) {
+  const contactDetails = [
+    getValue(section, "contactDetails", ""),
+    getValue(section, "address", ""),
+    getValue(section, "phone", ""),
+    getValue(section, "email", ""),
+  ].filter(Boolean);
+
   return (
     <footer className="bg-service-ink px-12 py-10 text-white max-md:px-6">
       <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] gap-8 max-md:grid-cols-1">
         <div>
           <p className="text-lg font-semibold">{getValue(section, "businessSummary", "Business footer summary")}</p>
           <p className="mt-3 max-w-2xl type-text-sm text-white/70">
-            {getValue(section, "contactDetails", "Contact details")}
+            {contactDetails.length > 0 ? contactDetails.join(" / ") : "Contact details"}
           </p>
         </div>
         <p className="type-caption text-white/60">
-          {getValue(section, "legalLine", "Copyright")}
+          {getValue(section, "legalLine", getValue(section, "copyright", "Copyright"))}
         </p>
       </div>
     </footer>
@@ -223,14 +252,14 @@ function FooterPreview({ section }: { section: RenderSection }) {
 }
 
 function GenericPreview({ section }: { section: RenderSection }) {
-  const body = getValue(section, "body", getValue(section, "intro", section.instruction));
+  const body = getBody(section, section.instruction);
 
   return (
     <section className="border-t border-service-border bg-white px-12 py-14 max-md:px-6">
       <div className="mx-auto max-w-7xl">
         <p className="type-label text-service-accent">{section.mode}</p>
         <h2 className="mt-3 max-w-3xl text-3xl font-semibold text-service-ink">
-          {getValue(section, "heading", section.name)}
+          {getHeading(section, section.name)}
         </h2>
         <p className="mt-4 max-w-3xl text-base leading-7 text-service-muted">
           {body}
@@ -272,7 +301,7 @@ function getRenderSections(page: StagedPage): RenderSection[] {
     id: sectionId,
     instruction:
       fields.find((field) => field.path.endsWith(".contentDirection"))?.value ?? "",
-    mode: "Section",
+    mode: inferFallbackMode(sectionId),
     name: humanize(sectionId),
   }));
 }
@@ -285,8 +314,101 @@ function getSectionId(section: StagedPageTemplateSection, index: number) {
 
 function getValue(section: RenderSection, fieldName: string, fallback: string) {
   return (
-    section.fields.find((field) => field.path.endsWith(`.${fieldName}`))?.value.trim() ||
+    section.fields.find((field) => {
+      const fieldPath = field.path.toLowerCase();
+      const normalizedFieldName = fieldName.toLowerCase();
+
+      return (
+        fieldPath.endsWith(`.${normalizedFieldName}`) ||
+        fieldPath.endsWith(normalizedFieldName)
+      );
+    })?.value.trim() ||
     fallback
+  );
+}
+
+function getHeading(section: RenderSection, fallback: string) {
+  return getValue(section, "heading", getValue(section, "title", fallback));
+}
+
+function getBody(section: RenderSection, fallback: string) {
+  return getValue(section, "body", getValue(section, "intro", fallback));
+}
+
+function getListValues(
+  section: RenderSection,
+  fieldNames: string[],
+  fallback: string,
+) {
+  for (const fieldName of fieldNames) {
+    const repeatedValues = getRepeatedValues(section, fieldName);
+
+    if (repeatedValues.length > 0) {
+      return repeatedValues;
+    }
+
+    const singleValue = getValue(section, fieldName, "");
+
+    if (singleValue) {
+      return splitItems(singleValue);
+    }
+  }
+
+  return splitItems(fallback);
+}
+
+function getRepeatedValues(
+  section: RenderSection,
+  collectionName: string,
+  valueKey?: string,
+) {
+  const collectionPrefix = `.${collectionName.toLowerCase()}.`;
+
+  return section.fields
+    .filter((field) => {
+      const fieldPath = field.path.toLowerCase();
+
+      return (
+        field.kind === "copy" &&
+        field.value.trim().length > 0 &&
+        fieldPath.includes(collectionPrefix) &&
+        (!valueKey || fieldPath.endsWith(`.${valueKey.toLowerCase()}`))
+      );
+    })
+    .map((field) => field.value.trim());
+}
+
+function getRepeatedRecords(section: RenderSection, collectionNames: string[]) {
+  const recordsByKey = new Map<string, Record<string, string>>();
+
+  section.fields.forEach((field) => {
+    if (field.value.trim().length === 0) {
+      return;
+    }
+
+    const parts = field.path.split(".");
+    const collectionIndex = parts.findIndex((part) =>
+      collectionNames.includes(part),
+    );
+
+    if (collectionIndex < 0 || collectionIndex + 2 >= parts.length) {
+      return;
+    }
+
+    const collectionName = parts[collectionIndex];
+    const itemIndex = parts[collectionIndex + 1];
+    const fieldKey = parts.slice(collectionIndex + 2).join(".");
+    const recordKey = `${collectionName}.${itemIndex}`;
+    const currentRecord = recordsByKey.get(recordKey) ?? {};
+
+    recordsByKey.set(recordKey, {
+      ...currentRecord,
+      [fieldKey]: field.value.trim(),
+    });
+  });
+
+  return Array.from(recordsByKey.values()).filter(
+    (record) => record.title || record.body || record.quote,
   );
 }
 
@@ -303,6 +425,49 @@ function slugify(value: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function inferFallbackMode(sectionId: string) {
+  const normalized = sectionId.toLowerCase();
+
+  if (normalized.includes("nav")) {
+    return "Navigation";
+  }
+
+  if (
+    normalized.includes("hero") ||
+    normalized.includes("split-content") ||
+    normalized.includes("full-image")
+  ) {
+    return "Hero";
+  }
+
+  if (
+    normalized.includes("trust") ||
+    normalized.includes("proof") ||
+    normalized.includes("stories") ||
+    normalized.includes("testimonial")
+  ) {
+    return "Proof";
+  }
+
+  if (normalized.includes("services")) {
+    return "Scan";
+  }
+
+  if (normalized.includes("feature") || normalized.includes("about")) {
+    return "Narrative";
+  }
+
+  if (normalized.includes("area") || normalized.includes("contact")) {
+    return "Utility";
+  }
+
+  if (normalized.includes("footer")) {
+    return "Footer";
+  }
+
+  return "Section";
 }
 
 function humanize(value: string) {
