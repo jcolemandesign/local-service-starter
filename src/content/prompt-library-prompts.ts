@@ -964,7 +964,7 @@ Website Strategy Brief:
     title:
       "Strategy Digest + Page Plan + Template Contract to Page Copy",
     description:
-      "Writes field-level copy for one selected page template at a time.",
+      "Writes paste-ready field-level copy for one selected page template at a time.",
     inputs: [
       "Strategy digest",
       "Website Strategy Brief",
@@ -1012,110 +1012,86 @@ The page template has already been chosen. Do not redesign the page, recommend a
 
 Write to the fields in the Template Copy Contract. Preserve every section ID and field name exactly.
 
+The primary output must be paste-ready for the Content Editor Bulk Paste Copy box.
+
 If a field is not appropriate for the available source material, write NEEDS REVIEW and explain the missing detail briefly.
 
 ---
 
 # Template-Fitted Page Copy
 
-## 1. Page Goal
+Return the response in this order:
 
-Briefly state what this page needs to accomplish.
+1. Bulk Paste Copy
+2. Copy Notes
+3. Copy QA
 
----
-
-## 2. SEO Basics
-
-Create:
-
-- Suggested page title
-- Suggested meta description
-- Suggested H1
-- Suggested URL slug
-
-Do not keyword-stuff.
+Only the Bulk Paste Copy section should be pasted into the Content Editor.
 
 ---
 
-## 3. Field-Level Section Copy
+# Bulk Paste Copy
 
 Write copy section by section using the Template Copy Contract.
 
-For each section, include:
-
-- Section ID
-- Section name
-- Semantic role
-- Template intent
-- Every requested field from the contract
-- Image/content note, if useful
-
-Use this format for every section:
+Use this exact structure so it can be pasted directly into the Content Editor Bulk Paste Copy box:
 
 ### [section-id]
-Section name:
-Semantic role:
-Template intent:
+fieldName: [copy]
+fieldName: [copy]
 
-fieldName:
-[copy]
+Rules:
 
-fieldName:
-[copy]
+- Use the exact section IDs from the Template Copy Contract.
+- Use the exact field names from the Template Copy Contract.
+- Do not include Section name, Semantic role, Template intent, Image/content note, or any other labels inside the Bulk Paste Copy section.
+- Do not add bullets before field names.
+- Do not wrap the Bulk Paste Copy section in a code fence.
+- Multi-sentence or multi-line field copy is allowed under the field label.
+- Every requested copy field from the contract must appear once.
+- If a field cannot be safely written from the source material, write NEEDS REVIEW: [missing detail].
 
-Image/content note:
+Example:
+
+### 02-hero
+eyebrow: Serving Huntersville and the Lake Norman Area
+heading: HVAC Repair, Replacement, and Maintenance in the Lake Norman Area
+body: North Star HVAC helps local homeowners understand repair, replacement, and maintenance options clearly, without pressure.
+primaryAction: Request a Quote
+
+### 03-proof
+heading: Local service with clear recommendations
+items: 12 years in business
+Licensed and insured
+Clean, respectful service
 
 Keep copy sized to the field targets in the Template Copy Contract.
 
 ---
 
-## 4. CTA Pattern
+## Copy Notes
 
-List the primary and secondary CTAs used on this page.
+Briefly state what this page needs to accomplish.
 
-Include where they should appear.
+Then provide concise notes that should not be pasted into Content Editor:
 
----
+- Suggested page title
+- Suggested meta description
+- Suggested H1
+- Suggested URL slug
+- Primary CTA pattern
+- Secondary CTA pattern
+- Form or interaction notes, if relevant
+- FAQ notes, if relevant
+- Reusable copy blocks, if useful
 
-## 5. Form / Interaction Copy
+Do not keyword-stuff.
 
-If this page includes a form, write:
-
-- Form headline
-- Form helper text
-- Field labels
-- Placeholder text, if useful
-- Submit button label
-- Success/thank-you message
-- Urgent request note
-
-Keep the form low-friction.
+Do not use markdown headings that look like section IDs in this notes area.
 
 ---
 
-## 6. FAQ Copy
-
-If this page includes FAQs, write polished FAQ questions and answers.
-
-Keep answers helpful, specific, and cautious. Do not overpromise.
-
----
-
-## 7. Reusable Copy Blocks
-
-Pull out any copy blocks that could be reused elsewhere or repeated in multiple fields, such as:
-
-- Trust bullets
-- Service area blurb
-- Emergency service note
-- Financing note
-- Maintenance plan note
-- Repair vs. replacement explanation
-- Final CTA block
-
----
-
-## 8. Copy QA
+## Copy QA
 
 End with a short QA checklist:
 
