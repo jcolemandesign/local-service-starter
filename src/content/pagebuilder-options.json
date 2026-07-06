@@ -108,7 +108,7 @@
           "id": "classic-service-FooterSectionV3-added-10",
           "included": true,
           "instruction": "End with service links, areas, contact details, and legal links.",
-          "mode": "Utility",
+          "mode": "Footer",
           "name": "Footer",
           "originalComponent": "FooterSectionV3",
           "originalIndex": -1

@@ -7,7 +7,8 @@ export type SemanticSectionLabel =
   | "Decision"
   | "Offer"
   | "Action"
-  | "Utility";
+  | "Utility"
+  | "Footer";
 
 export type SemanticSectionOption = {
   component: string;
@@ -26,6 +27,7 @@ export const semanticSectionLabels: SemanticSectionLabel[] = [
   "Offer",
   "Action",
   "Utility",
+  "Footer",
 ];
 
 export const semanticSectionOptions: SemanticSectionOption[] = [
@@ -339,7 +341,7 @@ export const semanticSectionOptions: SemanticSectionOption[] = [
   {
     component: "FooterSectionV3",
     instruction: "End with service links, areas, contact details, and legal links.",
-    mode: "Utility",
+    mode: "Footer",
     name: "Footer",
   },
 ];

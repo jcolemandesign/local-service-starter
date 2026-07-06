@@ -659,7 +659,7 @@ const sectionSwapOptions = [
     component: "FooterSectionV3",
     instruction:
       "End with service links, areas, contact details, and legal links.",
-    mode: "Utility",
+    mode: "Footer",
     name: "Footer",
   },
 ] as const;

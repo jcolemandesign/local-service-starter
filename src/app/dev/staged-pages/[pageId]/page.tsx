@@ -13,6 +13,12 @@ import {
   readStagedPages,
   type StagedPage,
 } from "@/utils/staged-pages";
+import {
+  SectionPreviewCanvas,
+  type PreviewCanvasSection,
+} from "@/components/sections/SectionPreviewCanvas";
+import { semanticSectionOptions } from "@/content/semantic-section-options";
+import { buildSemanticPageBlueprint } from "@/utils/semantic-page-blueprint";
 
 export const metadata: Metadata = {
   title: "Staged Page Preview",
@@ -53,10 +59,7 @@ export default async function StagedPagePreview({
   }
 
   const navigation = getNavigation(page, stagedPages);
-  const pageCopy = page.fields.find((field) => field.path === "strategy.pageCopy");
-  const sectionFields = page.fields.filter((field) =>
-    field.path.endsWith(".contentDirection"),
-  );
+  const previewSections = buildStagedPreviewSections(page);
 
   return (
     <main className="min-h-svh bg-bg-surface text-service-ink">
@@ -84,7 +87,7 @@ export default async function StagedPagePreview({
                   className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted opacity-60"
                   key={item.pageId}
                 >
-                  {item.label} needs template
+                  {item.label} not staged
                 </span>
               ),
             )}
@@ -115,29 +118,34 @@ export default async function StagedPagePreview({
 
         <SevenColumnGridItem className="col-start-2 col-span-5 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <div className="grid gap-5">
-            <Card className="p-5 shadow-none">
-              <p className="type-label text-service-accent">Strategy Copy</p>
-              <div className="type-text-md mt-heading-body-md whitespace-pre-wrap text-service-ink">
-                {pageCopy?.value || "No strategy copy was found for this page."}
-              </div>
-            </Card>
+            {previewSections.length > 0 ? (
+              <SectionPreviewCanvas
+                eyebrow="Staged Visual Preview"
+                pageLabel={page.pageLabel}
+                sections={previewSections}
+              />
+            ) : (
+              <Card className="p-5 shadow-none">
+                <p className="type-label text-service-accent">Preview unavailable</p>
+                <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                  Restage this page from Layout Preview.
+                </h2>
+                <p className="type-text-md wrap-pretty mt-heading-body-md text-service-muted">
+                  This staged page does not include enough saved section copy to
+                  render a visual review.
+                </p>
+                <div className="mt-body-actions-md">
+                  <Button href="/dev/templates">Open Layout Preview</Button>
+                </div>
+              </Card>
+            )}
 
             <Card className="p-5 shadow-none">
-              <p className="type-label text-service-accent">Template Sections</p>
-              <div className="mt-5 grid gap-3">
-                {sectionFields.map((field) => (
-                  <div
-                    className="rounded-sm border border-service-border bg-service-surface p-4"
-                    key={field.id}
-                  >
-                    <p className="type-caption font-semibold text-service-accent">
-                      {field.path.replace(".contentDirection", "")}
-                    </p>
-                    <p className="type-text-sm mt-2 whitespace-pre-wrap text-service-muted">
-                      {field.value}
-                    </p>
-                  </div>
-                ))}
+              <p className="type-label text-service-accent">Staged Details</p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <StatusPill label={`${previewSections.length} visual sections`} />
+                <StatusPill label={`${page.fields.length} editable fields`} />
+                <StatusPill label={formatSourceLabel(page)} />
               </div>
             </Card>
           </div>
@@ -174,6 +182,10 @@ function getNavigation(page: StagedPage, stagedPages: StagedPage[]) {
 }
 
 function formatPreviewMeta(page: StagedPage) {
+  if (isLayoutPreviewPage(page) && page.snapshot) {
+    return `${page.pageHref} staged from ${page.snapshot.clientSlug} v${page.snapshot.version} via Layout Preview.`;
+  }
+
   if (page.sourceStage === "strategy-template" && page.snapshot && page.template) {
     return `${page.pageHref} staged from ${page.snapshot.clientSlug} v${page.snapshot.version} using ${page.template.name}.`;
   }
@@ -183,4 +195,91 @@ function formatPreviewMeta(page: StagedPage) {
 
 function getContentEditorHref(page: StagedPage) {
   return `/dev/content-editor?page=${encodeURIComponent(page.pageId)}`;
+}
+
+function buildStagedPreviewSections(page: StagedPage): PreviewCanvasSection[] {
+  if (page.sections?.length) {
+    return page.sections
+      .filter((section) => section.component && section.mode && section.name)
+      .map((section) => ({
+        body: section.body ?? getSectionBodyFallback(page, section.name),
+        component: section.component,
+        mode: section.mode,
+        name: section.name,
+        ratio: section.ratio,
+        sourceRole: section.sourceRole ?? section.mode,
+        summary: section.summary ?? section.instruction,
+        variant: section.variant,
+      }));
+  }
+
+  const pageCopy = page.fields.find((field) => field.path === "strategy.pageCopy");
+
+  if (!pageCopy?.value) {
+    return [];
+  }
+
+  return buildSemanticPageBlueprint(pageCopy.value).sections.map((section) => {
+    const option =
+      semanticSectionOptions.find(
+        (currentOption) => currentOption.mode === section.mode,
+      ) ?? semanticSectionOptions[0];
+
+    return {
+      body: section.body,
+      component: option.component,
+      mode: section.mode,
+      name: section.title,
+      sourceRole: section.sourceRole,
+      summary: section.summary,
+    };
+  });
+}
+
+function getSectionBodyFallback(page: StagedPage, sectionName: string) {
+  const normalizedName = normalizeText(sectionName);
+  const pageCopy = page.fields.find((field) => field.path === "strategy.pageCopy");
+
+  if (!pageCopy?.value) {
+    return "";
+  }
+
+  return (
+    buildSemanticPageBlueprint(pageCopy.value).sections.find(
+      (section) => normalizeText(section.title) === normalizedName,
+    )?.body ?? ""
+  );
+}
+
+function formatSourceLabel(page: StagedPage) {
+  if (isLayoutPreviewPage(page)) {
+    return "Layout Preview";
+  }
+
+  if (page.sourceStage === "strategy-template") {
+    return "Template Library";
+  }
+
+  return page.sourceStage;
+}
+
+function isLayoutPreviewPage(page: StagedPage) {
+  return (
+    page.sourceStage === "layout-preview" ||
+    page.template?.id?.startsWith("semantic-") ||
+    page.template?.name?.toLowerCase().includes("layout preview") ||
+    page.template?.name?.toLowerCase().includes("semantic blueprint")
+  );
+}
+
+function normalizeText(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function StatusPill({ label }: { label: string }) {
+  return (
+    <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
+      {label}
+    </span>
+  );
 }

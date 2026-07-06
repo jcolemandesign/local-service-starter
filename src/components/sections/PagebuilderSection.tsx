@@ -888,7 +888,7 @@ export function PagebuilderSection() {
           {
             component: "FooterSectionV3",
             instruction: "",
-            mode: "Utility",
+            mode: "Footer",
             name: "Footer",
           },
           7,

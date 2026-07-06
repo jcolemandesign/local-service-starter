@@ -46,6 +46,7 @@ Decision
 Offer
 Action
 Utility
+Footer
 ```
 
 These labels describe the job of a section, not just its visual style.
@@ -58,7 +59,8 @@ These labels describe the job of a section, not just its visual style.
 - `Decision` — FAQs, process clarity, pricing concerns, objections, repair-vs-replace guidance.
 - `Offer` — seasonal campaigns, coupons, specials, rebates, tune-up promos, financing hooks.
 - `Action` — generic conversion moments, final CTA, request/contact prompts, booking momentum.
-- `Utility` — forms, contact details, service area tools, maps, footer, practical site information.
+- `Utility` — forms, contact details, service area tools, maps, and practical site information.
+- `Footer` — terminal site footer, legal links, service-area footer links, business contact recap.
 
 When choosing sections for pre-staging, match each strategy snapshot/page-copy section to one of these labels first, then choose a section primitive or template variant from that label group.
 
@@ -72,7 +74,8 @@ Seasonal Promo / Special / Campaign -> Offer
 Trust / Reviews / Credentials -> Proof
 Education / Guidance / How it works -> Decision or Narrative
 Services / Service list / What we do -> Scan
-Contact / Service area / Footer -> Utility
+Contact / Service area -> Utility
+Footer / Legal footer / Site footer -> Footer
 ```
 
 Spacing inside sections should follow the shared `Section` primitive and spacing conventions — not arbitrary padding values.

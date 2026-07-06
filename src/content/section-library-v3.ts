@@ -1026,6 +1026,11 @@ export const sectionLibraryV3Collections = [
         component: "service-area-zip-lookup-v3",
       },
       { label: "Contact section", component: "contact-v3" },
+    ],
+  },
+  {
+    title: "Footer",
+    items: [
       { label: "Footer", component: "footer-v3" },
     ],
   },

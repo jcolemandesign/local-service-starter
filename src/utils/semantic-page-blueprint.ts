@@ -5,6 +5,7 @@ import {
 import { slugify } from "@/utils/strategy-site-map";
 
 export type SemanticBlueprintSection = {
+  body: string;
   id: string;
   mode: SemanticSectionLabel;
   sourceRole: string;
@@ -32,6 +33,7 @@ export function buildSemanticPageBlueprint(pageCopy: string): SemanticPageBluepr
       const id = `${String(index + 1).padStart(2, "0")}-${slugify(section.title)}`;
 
       return {
+        body: section.body,
         id,
         mode,
         sourceRole,
@@ -97,8 +99,8 @@ function normalizeSemanticLabel({
     return "Offer";
   }
 
-  if (hasAny(titleText, ["footer"])) {
-    return "Utility";
+  if (hasAny(combined, ["footer"])) {
+    return "Footer";
   }
 
   if (hasAny(titleText, ["hero"]) || (index === 0 && roleText.includes("conversion"))) {

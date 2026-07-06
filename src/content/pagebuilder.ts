@@ -104,6 +104,16 @@ export const sectionModes: SectionMode[] = [
     ],
   },
   {
+    id: "footer",
+    name: "Footer",
+    intent: "Terminal site footer with persistent navigation, contact recap, and legal paths.",
+    rules: [
+      "Use only footer components here, not generic contact, map, or lookup sections.",
+      "Include practical site links, legal links, service area references, and business contact recap.",
+      "Keep it predictable and compact enough to close the page without becoming another CTA section.",
+    ],
+  },
+  {
     id: "action",
     name: "Action",
     intent: "Conversion emphasis and final next-step momentum.",
@@ -357,7 +367,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       {
         name: "Footer",
         component: "FooterSectionV3",
-        mode: "Utility",
+        mode: "Footer",
         instruction:
           "End with service links, areas, contact details, and legal links.",
       },

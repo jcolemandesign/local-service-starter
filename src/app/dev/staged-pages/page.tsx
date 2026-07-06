@@ -9,7 +9,7 @@ import {
 
 export const metadata: Metadata = {
   title: "Staged Pages",
-  description: "Staged pages eligible for public promotion.",
+  description: "Saved visual page previews assembled from Layout Preview.",
 };
 
 export const dynamic = "force-dynamic";
@@ -39,9 +39,9 @@ export default async function StagedPagesPage() {
             Staged Pages
           </h1>
           <p className="type-text-xl wrap-pretty mt-display-body text-service-muted">
-            Staged pages assembled from saved strategy snapshots and selected
-            templates. Review the linked staged site before public route
-            promotion.
+            Staged pages are saved from Layout Preview after strategy copy has
+            been matched to section layouts. Review the visual page, then use
+            Content Editor only for manual copy overrides.
           </p>
         </SevenColumnGridItem>
 
@@ -66,7 +66,7 @@ export default async function StagedPagesPage() {
                     <div className="justify-self-end max-sm:justify-self-start">
                       <div className="flex flex-wrap justify-end gap-2 max-sm:justify-start">
                         <Button href={getPreviewHref(page)} variant="secondary">
-                          Review Page
+                          Visual Review
                         </Button>
                         <Button href={getContentEditorHref(page)}>
                           Edit Content
@@ -120,14 +120,14 @@ export default async function StagedPagesPage() {
             <Card className="p-6 shadow-none">
               <p className="type-label text-service-accent">No staged pages</p>
               <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
-                Save a strategy snapshot and use a template first.
+                Save strategy copy, then stage from Layout Preview.
               </h2>
               <p className="type-text-md wrap-pretty mt-heading-body-md text-service-muted">
-                Staged pages appear here after a template is applied to a saved
-                strategy snapshot.
+                Staged pages appear here after you open Layout Preview, choose
+                section layouts, and stage the page.
               </p>
               <div className="mt-body-actions-md">
-                <Button href="/dev/templates">Open Template Library</Button>
+                <Button href="/dev/templates">Open Layout Preview</Button>
               </div>
             </Card>
           )}
@@ -154,11 +154,26 @@ function getContentEditorHref(page: StagedPage) {
 }
 
 function formatSource(page: StagedPage) {
+  if (isLayoutPreviewPage(page)) {
+    return page.snapshot
+      ? `${page.snapshot.clientSlug} v${page.snapshot.version} via Layout Preview`
+      : "Layout Preview";
+  }
+
   if (page.sourceStage === "strategy-template" && page.snapshot) {
-    return `${page.snapshot.clientSlug} v${page.snapshot.version}`;
+    return `${page.snapshot.clientSlug} v${page.snapshot.version} via Template Library`;
   }
 
   return page.sourceStage;
+}
+
+function isLayoutPreviewPage(page: StagedPage) {
+  return (
+    page.sourceStage === "layout-preview" ||
+    page.template?.id?.startsWith("semantic-") ||
+    page.template?.name?.toLowerCase().includes("layout preview") ||
+    page.template?.name?.toLowerCase().includes("semantic blueprint")
+  );
 }
 
 function formatDate(value: string) {

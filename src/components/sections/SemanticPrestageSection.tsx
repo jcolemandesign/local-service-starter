@@ -42,6 +42,8 @@ type PageBlueprint = {
 };
 
 type SelectedComponents = Record<string, Record<string, string>>;
+type OpenSections = Record<string, boolean>;
+type OpenPages = Record<string, boolean>;
 
 export function SemanticPrestageSection({
   sectionOptions,
@@ -52,6 +54,8 @@ export function SemanticPrestageSection({
   );
   const [selectedComponents, setSelectedComponents] =
     useState<SelectedComponents>({});
+  const [openSections, setOpenSections] = useState<OpenSections>({});
+  const [openPages, setOpenPages] = useState<OpenPages>({});
   const [stagingPageId, setStagingPageId] = useState("");
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
@@ -84,6 +88,22 @@ export function SemanticPrestageSection({
     setError("");
   }
 
+  function togglePage(pageId: string) {
+    setOpenPages((currentOpenPages) => ({
+      ...currentOpenPages,
+      [pageId]: !currentOpenPages[pageId],
+    }));
+  }
+
+  function toggleSection(pageId: string, sectionId: string) {
+    const expansionId = getSectionExpansionId(pageId, sectionId);
+
+    setOpenSections((currentOpenSections) => ({
+      ...currentOpenSections,
+      [expansionId]: !currentOpenSections[expansionId],
+    }));
+  }
+
   async function stagePage(page: PageBlueprint) {
     if (!selectedSnapshot) {
       setError("Save a strategy snapshot before staging pages.");
@@ -112,7 +132,7 @@ export function SemanticPrestageSection({
               sectionOptions,
             ),
           ),
-          templateName: `${page.label} semantic blueprint`,
+          templateName: `${page.label} layout preview`,
         }),
       });
       const result = (await response.json()) as StagePageResponse;
@@ -126,7 +146,7 @@ export function SemanticPrestageSection({
         return;
       }
 
-      setStatus(`${result.page.pageLabel} is staged from its semantic blueprint.`);
+      setStatus(`${result.page.pageLabel} is staged from its layout preview.`);
     } catch {
       setError("Page staging failed.");
     } finally {
@@ -138,22 +158,22 @@ export function SemanticPrestageSection({
     <section className="min-h-svh bg-bg-surface text-service-ink">
       <SevenColumnGrid minHeight="none" padding="med">
         <SevenColumnGridItem className="col-start-2 col-span-4 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-          <p className="type-label text-service-accent">Pageworks Pre-Stage</p>
+          <p className="type-label text-service-accent">Pageworks</p>
           <h1 className="type-display-lg mt-eyebrow-display text-service-ink">
-            Semantic Page Blueprint
+            Layout Preview
           </h1>
           <p className="type-text-xl wrap-pretty mt-display-body text-service-muted">
-            Turn saved strategy and page copy into semantic page blueprints,
+            Turn saved strategy and page copy into live layout previews,
             choose layouts section by section, then stage the final page.
           </p>
           <div className="mt-body-actions-md flex flex-wrap gap-2">
             <StatusPill label={`${pageBlueprints.length} pages`} />
-            <StatusPill label={`${totalSections} blueprint sections`} />
+            <StatusPill label={`${totalSections} preview sections`} />
             <StatusPill label={`${sectionOptions.length} layout options`} />
           </div>
         </SevenColumnGridItem>
 
-        <SevenColumnGridItem className="col-start-2 col-span-5 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+        <SevenColumnGridItem className="col-span-7 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           {snapshots.length > 0 ? (
             <Card className="mb-5 p-5 shadow-none">
               <label className="type-caption font-semibold text-service-ink">
@@ -163,6 +183,8 @@ export function SemanticPrestageSection({
                   value={selectedClientSlug}
                   onChange={(event) => {
                     setSelectedClientSlug(event.target.value);
+                    setOpenPages({});
+                    setOpenSections({});
                     setStatus("");
                     setError("");
                   }}
@@ -200,7 +222,11 @@ export function SemanticPrestageSection({
 
           {pageBlueprints.length > 0 ? (
             <div className="grid gap-6">
-              {pageBlueprints.map((page) => (
+              {pageBlueprints.map((page) => {
+                const pageExpansionId = getPageExpansionId(page.pageId);
+                const isPageOpen = Boolean(openPages[page.pageId]);
+
+                return (
                 <Card className="p-5 shadow-none" key={page.pageId}>
                   <div className="grid gap-5">
                     <div className="flex flex-wrap items-start justify-between gap-4">
@@ -216,20 +242,35 @@ export function SemanticPrestageSection({
                           from saved page copy.
                         </p>
                       </div>
-                      <button
-                        className="radius-button inline-flex min-h-12 cursor-pointer items-center justify-center whitespace-nowrap border border-service-accent bg-service-accent px-6 py-2 text-sm font-semibold text-white transition duration-200 ease-out hover:bg-service-accent-strong disabled:cursor-wait disabled:opacity-60"
-                        disabled={stagingPageId === page.pageId}
-                        onClick={() => stagePage(page)}
-                        type="button"
-                      >
-                        {stagingPageId === page.pageId
-                          ? "Staging..."
-                          : "Stage Page"}
-                      </button>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          aria-controls={pageExpansionId}
+                          aria-expanded={isPageOpen}
+                          className="radius-button inline-flex min-h-12 cursor-pointer items-center justify-center whitespace-nowrap border border-service-border bg-white px-5 py-2 text-sm font-semibold text-service-ink transition duration-200 ease-out hover:border-service-accent hover:text-service-accent"
+                          onClick={() => togglePage(page.pageId)}
+                          type="button"
+                        >
+                          {isPageOpen ? "Close Page" : "Open Page"}
+                        </button>
+                        <button
+                          className="radius-button inline-flex min-h-12 cursor-pointer items-center justify-center whitespace-nowrap border border-service-accent bg-service-accent px-6 py-2 text-sm font-semibold text-white transition duration-200 ease-out hover:bg-service-accent-strong disabled:cursor-wait disabled:opacity-60"
+                          disabled={stagingPageId === page.pageId}
+                          onClick={() => stagePage(page)}
+                          type="button"
+                        >
+                          {stagingPageId === page.pageId
+                            ? "Staging..."
+                            : "Stage Page"}
+                        </button>
+                      </div>
                     </div>
 
-                    <div className="grid grid-cols-[minmax(0,1fr)_minmax(24rem,34rem)] gap-5 max-xl:grid-cols-1">
-                      <div className="grid content-start gap-3">
+                    {isPageOpen ? (
+                    <div
+                      className="grid grid-cols-[minmax(17rem,20rem)_minmax(48rem,1fr)] gap-5 max-xl:grid-cols-1"
+                      id={pageExpansionId}
+                    >
+                      <div className="grid w-full max-w-[20rem] content-start gap-3 max-xl:max-w-none">
                         {page.sections.map((section, index) => {
                           const options = getOptionsForMode(
                             section.mode,
@@ -241,58 +282,87 @@ export function SemanticPrestageSection({
                             selectedComponents,
                             sectionOptions,
                           );
+                          const expansionId = getSectionExpansionId(
+                            page.pageId,
+                            section.id,
+                          );
+                          const isSectionOpen = Boolean(
+                            openSections[expansionId],
+                          );
 
                           return (
                             <div
-                              className="grid gap-4 rounded-sm border border-service-border bg-service-surface p-3"
+                              className="grid gap-3 rounded-sm border border-service-border bg-service-surface p-3"
                               key={section.id}
                             >
-                              <div className="min-w-0">
-                                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                                  <p className="type-caption font-semibold text-service-accent">
-                                    {index + 1}. {section.mode}
-                                  </p>
-                                  {section.sourceRole ? (
-                                    <p className="type-caption text-service-muted">
-                                      Source: {section.sourceRole}
+                              <div className="flex min-w-0 items-start justify-between gap-3">
+                                <div className="min-w-0">
+                                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                                    <p className="type-caption font-semibold text-service-accent">
+                                      {index + 1}. {section.mode}
                                     </p>
-                                  ) : null}
+                                    {section.sourceRole ? (
+                                      <p className="type-caption text-service-muted">
+                                        Source: {section.sourceRole}
+                                      </p>
+                                    ) : null}
+                                  </div>
+                                  <h3 className="mt-2 text-base font-semibold text-service-ink">
+                                    {section.title}
+                                  </h3>
+                                  <p className="type-caption mt-1 truncate text-service-muted">
+                                    Layout: {selectedOption?.name ?? "None"}
+                                  </p>
                                 </div>
-                                <h3 className="mt-2 text-base font-semibold text-service-ink">
-                                  {section.title}
-                                </h3>
-                                <p className="type-caption mt-2 line-clamp-3 text-service-muted">
-                                  {section.summary || selectedOption?.instruction}
-                                </p>
-                              </div>
-                              <label className="type-caption font-semibold text-service-ink">
-                                Layout
-                                <select
-                                  className="mt-2 block min-h-11 w-full rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
-                                  value={selectedOption?.component ?? ""}
-                                  onChange={(event) =>
-                                    updateSelectedComponent(
-                                      page.pageId,
-                                      section.id,
-                                      event.target.value,
-                                    )
+                                <button
+                                  aria-controls={expansionId}
+                                  aria-expanded={isSectionOpen}
+                                  className="rounded-sm border border-service-border bg-white px-3 py-1.5 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                                  onClick={() =>
+                                    toggleSection(page.pageId, section.id)
                                   }
+                                  type="button"
                                 >
-                                  {options.map((option) => (
-                                    <option
-                                      key={option.component}
-                                      value={option.component}
+                                  {isSectionOpen ? "Close" : "Open"}
+                                </button>
+                              </div>
+
+                              {isSectionOpen ? (
+                                <div className="grid gap-4" id={expansionId}>
+                                  <p className="type-caption line-clamp-3 text-service-muted">
+                                    {section.summary ||
+                                      selectedOption?.instruction}
+                                  </p>
+                                  <label className="type-caption font-semibold text-service-ink">
+                                    Layout
+                                    <select
+                                      className="mt-2 block min-h-11 w-full rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
+                                      value={selectedOption?.component ?? ""}
+                                      onChange={(event) =>
+                                        updateSelectedComponent(
+                                          page.pageId,
+                                          section.id,
+                                          event.target.value,
+                                        )
+                                      }
                                     >
-                                      {option.name}
-                                    </option>
-                                  ))}
-                                </select>
-                              </label>
+                                      {options.map((option) => (
+                                        <option
+                                          key={option.component}
+                                          value={option.component}
+                                        >
+                                          {option.name}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </label>
+                                </div>
+                              ) : null}
                             </div>
                           );
                         })}
                       </div>
-                      <div className="sticky top-4 self-start max-xl:static">
+                      <div className="sticky top-4 min-w-0 self-start max-xl:static">
                         <SectionPreviewCanvas
                           pageLabel={page.label}
                           sections={buildPreviewSections(
@@ -303,9 +373,11 @@ export function SemanticPrestageSection({
                         />
                       </div>
                     </div>
+                    ) : null}
                   </div>
                 </Card>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <Card className="p-6 shadow-none">
@@ -364,12 +436,15 @@ function buildSelectedSection(
   );
 
   return {
+    body: section.body,
     component: option?.component ?? "",
     instruction: [section.summary, option?.instruction].filter(Boolean).join("\n\n"),
     mode: section.mode,
     name: section.title,
     originalComponent: option?.component,
     originalIndex: index,
+    sourceRole: section.sourceRole,
+    summary: section.summary,
   };
 }
 
@@ -387,9 +462,12 @@ function buildPreviewSections(
     );
 
     return {
+      body: section.body,
       component: option?.component ?? "",
       mode: section.mode,
       name: section.title,
+      sourceRole: section.sourceRole,
+      summary: section.summary,
     };
   });
 }
@@ -419,6 +497,14 @@ function getOptionsForMode(
 
 function getPageType(pageId: string) {
   return pageId === "home" ? "homepage" : pageId;
+}
+
+function getPageExpansionId(pageId: string) {
+  return `template-page-${pageId}`;
+}
+
+function getSectionExpansionId(pageId: string, sectionId: string) {
+  return `template-section-${pageId}-${sectionId}`;
 }
 
 function StatusPill({ label }: { label: string }) {

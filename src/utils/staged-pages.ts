@@ -18,6 +18,7 @@ export type StagedPageField = {
 };
 
 export type StagedPageTemplateSection = {
+  body?: string;
   component: string;
   instruction: string;
   mode: string;
@@ -25,6 +26,8 @@ export type StagedPageTemplateSection = {
   originalComponent?: string;
   originalIndex?: number;
   ratio?: string;
+  sourceRole?: string;
+  summary?: string;
   variant?: string;
 };
 
@@ -52,7 +55,8 @@ export type StagedPage = {
     id: string;
     version: number;
   };
-  sourceStage: "content-editor" | "strategy-template";
+  sections?: StagedPageTemplateSection[];
+  sourceStage: "content-editor" | "layout-preview" | "strategy-template";
   status: "staged" | "ready";
   template: {
     id: string;
@@ -146,6 +150,10 @@ export function buildStrategyTemplateStagedPage({
     pageId,
     template.pageType,
   );
+  const isLayoutPreview =
+    template.id.startsWith("semantic-") ||
+    template.sourceOptionName.toLowerCase().includes("layout preview") ||
+    template.sourceOptionName.toLowerCase().includes("semantic page blueprint");
   const fields = [
     stagedField({
       id: `${pageId}.strategy.pageCopy`,
@@ -194,7 +202,8 @@ export function buildStrategyTemplateStagedPage({
       id: snapshot.id,
       version: snapshot.version,
     },
-    sourceStage: "strategy-template",
+    sections: template.sections,
+    sourceStage: isLayoutPreview ? "layout-preview" : "strategy-template",
     status: "staged",
     template: {
       id: template.id,

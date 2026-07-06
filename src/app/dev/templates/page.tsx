@@ -7,8 +7,8 @@ import {
 } from "@/utils/strategy-snapshots";
 
 export const metadata: Metadata = {
-  title: "Semantic Pre-Stage",
-  description: "Build staged pages from saved strategy copy and semantic labels.",
+  title: "Layout Preview",
+  description: "Preview staged page layouts from saved strategy copy and semantic labels.",
 };
 
 export const dynamic = "force-dynamic";

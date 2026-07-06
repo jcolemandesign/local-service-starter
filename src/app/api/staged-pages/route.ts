@@ -102,7 +102,7 @@ async function findTemplate(templateId: unknown) {
 
 function buildSemanticTemplate(body: StagePageRequest): StagedPageTemplate {
   const pageType = sanitizeSlug(body.pageType) || sanitizeSlug(body.pageSlug);
-  const templateName = sanitizeText(body.templateName) || "Semantic page blueprint";
+  const templateName = sanitizeText(body.templateName) || "Layout Preview";
   const allowedComponents = new Set(
     semanticSectionOptions.map((option) => option.component),
   );
@@ -110,12 +110,15 @@ function buildSemanticTemplate(body: StagePageRequest): StagedPageTemplate {
     .filter((section) => allowedComponents.has(section.component))
     .map((section) => ({
       component: section.component,
+      body: sanitizeText(section.body),
       instruction: sanitizeText(section.instruction),
       mode: sanitizeText(section.mode),
       name: sanitizeText(section.name),
       originalComponent: section.originalComponent,
       originalIndex: section.originalIndex,
       ratio: section.ratio,
+      sourceRole: sanitizeText(section.sourceRole),
+      summary: sanitizeText(section.summary),
       variant: section.variant,
     }))
     .filter((section) => section.mode && section.name);
@@ -133,7 +136,7 @@ function buildSemanticTemplate(body: StagePageRequest): StagedPageTemplate {
     name: templateName,
     pageType,
     sections,
-    sourceOptionName: "Semantic page blueprint",
+    sourceOptionName: "Layout Preview",
     sourceRecipeName: "Strategy snapshot",
   };
 }
