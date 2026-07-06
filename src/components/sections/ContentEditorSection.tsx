@@ -82,6 +82,9 @@ export function ContentEditorSection({
   const activeDirtyCount = activeFields.filter((field) =>
     dirtyFieldIds.includes(field.id),
   ).length;
+  const activeEmptyCount = activeFields.filter((field) =>
+    isEmptyEditableField(field, values[field.id] ?? field.value),
+  ).length;
   const fieldCounts = getFieldCounts(activeFields);
   const visibleActiveFieldCount =
     fieldFilter === "all"
@@ -183,8 +186,9 @@ export function ContentEditorSection({
             Content Editor
           </h1>
           <p className="type-text-xl wrap-pretty mt-display-body text-service-muted">
-            Edit staged page fields manually after a page has been assembled
-            from a saved strategy snapshot and template.
+            Fill the selected page template with reviewed copy. Use the
+            template directions as reference, edit only the fields that need
+            human judgment, then save back to the staged preview.
           </p>
         </SevenColumnGridItem>
 
@@ -243,7 +247,12 @@ export function ContentEditorSection({
                     <StatusPill label={`${fieldCounts.meta} meta`} />
                     <StatusPill label={`${fieldCounts.link} link`} />
                     <StatusPill label={`${activeDirtyCount} edited`} />
+                    <StatusPill label={`${activeEmptyCount} empty`} />
                   </div>
+                  <p className="type-caption mt-3 rounded-sm border border-service-border bg-service-surface px-3 py-2 text-service-muted">
+                    Start with copy fields. Meta fields explain the template
+                    intent and should usually be left alone.
+                  </p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     {fieldFilterOptions.map((option) => {
                       const isActive = option.value === fieldFilter;
@@ -303,6 +312,9 @@ export function ContentEditorSection({
                   const sectionDirtyCount = section.fields.filter((field) =>
                     dirtyFieldIds.includes(field.id),
                   ).length;
+                  const sectionEmptyCount = section.fields.filter((field) =>
+                    isEmptyEditableField(field, values[field.id] ?? field.value),
+                  ).length;
                   const sectionFieldCounts = getFieldCounts(section.fields);
                   const panelId = `content-editor-${activePage.id}-${section.id}-panel`;
                   const buttonId = `content-editor-${activePage.id}-${section.id}-button`;
@@ -334,6 +346,7 @@ export function ContentEditorSection({
                             <StatusPill label={`${sectionFieldCounts.image} image`} />
                             <StatusPill label={`${sectionFieldCounts.meta} meta`} />
                             <StatusPill label={`${sectionFieldCounts.link} link`} />
+                            <StatusPill label={`${sectionEmptyCount} empty`} />
                             {fieldFilter !== "all" ? (
                               <StatusPill
                                 label={`${visibleFields.length} shown`}
@@ -423,10 +436,16 @@ function FieldEditor({
   value: string;
 }) {
   const isDirty = value !== originalValue;
+  const isEmpty = isEmptyEditableField(field, value);
+  const helperText = getFieldHelperText(field);
   const useTextarea = field.kind === "copy" || value.length > 72;
 
   return (
-    <label className="grid grid-cols-[minmax(12rem,18rem)_minmax(0,1fr)] gap-4 rounded-sm border border-service-border bg-white p-4 shadow-sm max-lg:grid-cols-1">
+    <label
+      className={`grid grid-cols-[minmax(12rem,18rem)_minmax(0,1fr)] gap-4 rounded-sm border bg-white p-4 shadow-sm max-lg:grid-cols-1 ${
+        isEmpty ? "border-service-accent" : "border-service-border"
+      }`}
+    >
       <span className="grid content-start gap-2">
         <span className="flex flex-wrap items-center gap-2">
           <span
@@ -443,10 +462,16 @@ function FieldEditor({
               edited
             </span>
           ) : null}
+          {isEmpty ? (
+            <span className="type-caption rounded-sm bg-service-accent px-2 py-0.5 font-semibold text-white">
+              empty
+            </span>
+          ) : null}
         </span>
         <span className="type-text-sm font-semibold text-service-ink">
           {field.label}
         </span>
+        <span className="type-caption text-service-muted">{helperText}</span>
         <span
           className="type-caption break-words text-service-muted"
         >
@@ -456,12 +481,14 @@ function FieldEditor({
       {useTextarea ? (
         <textarea
           className="min-h-36 resize-y rounded-sm border border-service-border bg-white px-4 py-3 text-base leading-7 text-service-ink outline-none transition-colors focus:border-service-accent max-md:text-sm"
+          placeholder={helperText}
           value={value}
           onChange={(event) => onChange(event.target.value)}
         />
       ) : (
         <input
           className="min-h-12 rounded-sm border border-service-border bg-white px-4 text-base text-service-ink outline-none transition-colors focus:border-service-accent max-md:text-sm"
+          placeholder={helperText}
           value={value}
           onChange={(event) => onChange(event.target.value)}
         />
@@ -534,6 +561,52 @@ function getFieldFilterLabel(fieldFilter: FieldFilter) {
     fieldFilterOptions.find((option) => option.value === fieldFilter)?.label ??
     "All fields"
   );
+}
+
+function isEmptyEditableField(field: ContentEditorField, value: string) {
+  return field.kind === "copy" && value.trim().length === 0;
+}
+
+function getFieldHelperText(field: ContentEditorField) {
+  const normalizedPath = field.path.toLowerCase();
+
+  if (normalizedPath.endsWith(".contentdirection")) {
+    return "Template intent reference. Use this to guide nearby copy fields.";
+  }
+
+  if (field.kind === "meta") {
+    return "Reference information for this staged page.";
+  }
+
+  if (field.kind === "image") {
+    return "Image source, alt text, caption, or visual placeholder.";
+  }
+
+  if (field.kind === "link") {
+    return "Destination path, URL, phone link, or CTA href.";
+  }
+
+  if (normalizedPath.includes(".links.")) {
+    return "Navigation or footer link label.";
+  }
+
+  if (normalizedPath.includes(".items.") || normalizedPath.includes(".cards.")) {
+    return "Repeated card, bullet, testimonial, service, or proof item.";
+  }
+
+  if (normalizedPath.endsWith(".title") || normalizedPath.endsWith(".heading")) {
+    return "Section headline sized to the selected template.";
+  }
+
+  if (normalizedPath.endsWith(".body") || normalizedPath.endsWith(".intro")) {
+    return "Supporting copy for this section. Keep it close to the template length.";
+  }
+
+  if (normalizedPath.includes("action")) {
+    return "Short CTA label or action copy.";
+  }
+
+  return "Reviewed page copy for this template field.";
 }
 
 function getOriginalValues(pages: ContentEditorPage[]) {
