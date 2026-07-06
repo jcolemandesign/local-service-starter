@@ -168,7 +168,11 @@ export function ContentEditorSection({
       return;
     }
 
-    const skeleton = buildBulkPasteSkeleton(activePage);
+    const skeleton = buildBulkPasteText({
+      page: activePage,
+      values,
+      variant: "blank",
+    });
 
     try {
       await window.navigator.clipboard.writeText(skeleton);
@@ -178,6 +182,29 @@ export function ContentEditorSection({
       setBulkPasteText(skeleton);
       setBulkPasteStatus(
         "Skeleton loaded below. Select and copy it from the field.",
+      );
+    }
+  }
+
+  async function copyCurrentCopy() {
+    if (!activePage) {
+      return;
+    }
+
+    const currentCopy = buildBulkPasteText({
+      page: activePage,
+      values,
+      variant: "current",
+    });
+
+    try {
+      await window.navigator.clipboard.writeText(currentCopy);
+      setBulkPasteText(currentCopy);
+      setBulkPasteStatus("Current copy exported and copied.");
+    } catch {
+      setBulkPasteText(currentCopy);
+      setBulkPasteStatus(
+        "Current copy loaded below. Select and copy it from the field.",
       );
     }
   }
@@ -413,6 +440,12 @@ export function ContentEditorSection({
                       tone="quiet"
                     >
                       Copy Skeleton
+                    </ActionButton>
+                    <ActionButton
+                      onClick={() => void copyCurrentCopy()}
+                      tone="quiet"
+                    >
+                      Copy Current Copy
                     </ActionButton>
                     <ActionButton onClick={applyBulkPaste}>
                       Apply Copy
@@ -823,7 +856,15 @@ function parseBulkCopyPaste(text: string, fields: ContentEditorField[]) {
   };
 }
 
-function buildBulkPasteSkeleton(page: ContentEditorPage) {
+function buildBulkPasteText({
+  page,
+  values,
+  variant,
+}: {
+  page: ContentEditorPage;
+  values: Record<string, string>;
+  variant: "blank" | "current";
+}) {
   const lines = ["# Bulk Paste Copy"];
 
   for (const section of page.sections) {
@@ -836,7 +877,11 @@ function buildBulkPasteSkeleton(page: ContentEditorPage) {
     lines.push("", `### ${section.id}`);
 
     for (const field of copyFields) {
-      lines.push(`${field.path.split(".").at(-1) ?? field.label}: `);
+      const fieldName = field.path.split(".").at(-1) ?? field.label;
+      const value =
+        variant === "current" ? (values[field.id] ?? field.value).trim() : "";
+
+      lines.push(`${fieldName}: ${value}`);
     }
   }
 
