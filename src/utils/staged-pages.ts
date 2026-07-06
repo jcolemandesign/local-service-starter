@@ -55,11 +55,12 @@ export type StagedPage = {
   };
   sourceStage: "content-editor" | "strategy-template";
   status: "staged" | "ready";
-  template: {
+  template?: {
     id: string;
     name: string;
     pageType: string;
     sectionCount: number;
+    sections?: StagedPageTemplateSection[];
   };
 };
 
@@ -241,6 +242,7 @@ export function buildStrategyTemplateStagedPage({
       name: template.name,
       pageType: template.pageType,
       sectionCount: template.sections.length,
+      sections: template.sections,
     },
   } satisfies StagedPage;
 }

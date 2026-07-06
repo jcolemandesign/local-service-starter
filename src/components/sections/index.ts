@@ -86,6 +86,7 @@ export { ServicesScrollCardsSectionV2 } from "./ServicesScrollCardsSectionV2";
 export { ServiceAreaZipLookupSectionV3 } from "./ServiceAreaZipLookupSectionV3";
 export { SectionLibraryCollections } from "./SectionLibraryCollections";
 export { SectionLibraryV3Accordions } from "./SectionLibraryV3Accordions";
+export { StagedPageCanvas } from "./StagedPageCanvas";
 export { TestimonialsCarouselSection } from "./TestimonialsCarouselSection";
 export { TestimonialsCarouselSectionV2 } from "./TestimonialsCarouselSectionV2";
 export { TestimonialsCarouselSectionV3 } from "./TestimonialsCarouselSectionV3";
