@@ -102,6 +102,23 @@ export async function writeStagedPage(page: StagedPage) {
   return nextPages;
 }
 
+export async function removeStagedPage(pageId: string) {
+  const pages = await readStagedPages();
+  const nextPages = pages.filter((page) => page.pageId !== pageId);
+
+  if (nextPages.length === pages.length) {
+    throw new Error("Staged page not found.");
+  }
+
+  await mkdir(path.dirname(stagedPagesPath), { recursive: true });
+  await writeFile(
+    stagedPagesPath,
+    `${JSON.stringify({ pages: nextPages }, null, 2)}\n`,
+  );
+
+  return nextPages;
+}
+
 export async function updateStagedPageFields(
   pageId: string,
   fields: StagedPageField[],

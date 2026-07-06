@@ -285,8 +285,15 @@ export function ContentEditorSection({
                   <ActionButton disabled={isSavingPage} onClick={() => void savePage()}>
                     {isSavingPage ? "Saving..." : "Save Staged Page"}
                   </ActionButton>
-                  <ActionLink href={getStagedPreviewHref(activePage.id)}>
+                  <ActionLink
+                    href={getStagedPreviewHref(activePage.id)}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
                     View Staged Page
+                  </ActionLink>
+                  <ActionLink href="/dev/staged-pages" tone="quiet">
+                    Staged Pages
                   </ActionLink>
                   <ActionButton onClick={resetActivePage} tone="quiet">
                     Reset Page
@@ -530,14 +537,27 @@ function ActionButton({
 function ActionLink({
   children,
   href,
+  rel,
+  target,
+  tone = "dark",
 }: {
   children: React.ReactNode;
   href: string;
+  rel?: string;
+  target?: string;
+  tone?: "dark" | "quiet";
 }) {
+  const toneClass =
+    tone === "quiet"
+      ? "border-service-border bg-white text-service-muted hover:border-service-accent hover:text-service-accent"
+      : "border-service-ink bg-service-ink text-white hover:border-service-accent hover:bg-service-accent";
+
   return (
     <Link
-      className="inline-flex min-h-10 items-center justify-center rounded-sm border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent"
+      className={`inline-flex min-h-10 items-center justify-center rounded-sm border px-4 text-sm font-semibold transition-colors ${toneClass}`}
       href={href}
+      rel={rel}
+      target={target}
     >
       {children}
     </Link>

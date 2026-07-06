@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import {
   buildStrategyTemplateStagedPage,
+  removeStagedPage,
   updateStagedPageFields,
   writeStagedPage,
   type StagedPageField,
@@ -20,6 +21,10 @@ type StagePageRequest = {
 
 type UpdateStagedPageRequest = {
   fields?: StagedPageField[];
+  pageId?: string;
+};
+
+type DeleteStagedPageRequest = {
   pageId?: string;
 };
 
@@ -109,6 +114,40 @@ export async function PATCH(request: Request) {
   } catch (error) {
     return jsonError(
       error instanceof Error ? error.message : "Page update failed.",
+      400,
+    );
+  }
+}
+
+export async function DELETE(request: Request) {
+  if (
+    process.env.NODE_ENV === "production" &&
+    process.env.ENABLE_DEV_ROUTES !== "true"
+  ) {
+    return jsonError("Page staging is disabled in production.", 403);
+  }
+
+  let body: DeleteStagedPageRequest;
+
+  try {
+    body = (await request.json()) as DeleteStagedPageRequest;
+  } catch {
+    return jsonError("Invalid request body.", 400);
+  }
+
+  try {
+    const pageId = sanitizeSlug(body.pageId);
+
+    if (!pageId) {
+      throw new Error("Missing page id.");
+    }
+
+    const pages = await removeStagedPage(pageId);
+
+    return Response.json({ ok: true, pages });
+  } catch (error) {
+    return jsonError(
+      error instanceof Error ? error.message : "Page removal failed.",
       400,
     );
   }
