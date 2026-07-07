@@ -1014,7 +1014,7 @@ Write to the fields in the Template Copy Contract. Preserve every section ID and
 
 The output must be structured enough for a bulk importer to read safely. Treat every field name as a real destination field, not as a loose writing suggestion.
 
-The primary output must be paste-ready for the matching page copy field in the Strategy Workspace or the Content Editor Bulk Paste Copy box.
+The primary output must be paste-ready for the matching page copy field in the Strategy Workspace.
 
 If a field is not appropriate for the available source material, write NEEDS REVIEW and explain the missing detail briefly.
 
@@ -1028,7 +1028,7 @@ Return the response in this order:
 2. Copy Notes
 3. Copy QA
 
-Only the Bulk Paste Copy section should be pasted into the Strategy Workspace page copy field or Content Editor. Copy Notes and Copy QA are for human review only.
+Only the Bulk Paste Copy section should be pasted into the Strategy Workspace page copy field. Copy Notes and Copy QA are for human review only.
 
 ---
 
@@ -1036,7 +1036,7 @@ Only the Bulk Paste Copy section should be pasted into the Strategy Workspace pa
 
 Write copy section by section using the Template Copy Contract.
 
-Use this exact structure so it can be pasted directly into the Content Editor Bulk Paste Copy box:
+Use this exact structure so it can be pasted directly into the matching Strategy Workspace page copy field:
 
 ### [section-id]
 fieldName: [copy]

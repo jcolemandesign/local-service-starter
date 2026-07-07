@@ -98,6 +98,9 @@ export default async function StagedPagesPage() {
                         <Button href={getContentEditorHref(page)}>
                           Edit Content
                         </Button>
+                        <Button href={`${getPreviewHref(page)}/debug`} variant="secondary">
+                          Debug
+                        </Button>
                         <StagedPageRemoveButton
                           pageId={page.pageId}
                           pageLabel={page.pageLabel}

@@ -23,10 +23,8 @@ type ServiceAreaZipLookupSectionV3Props = {
 };
 
 function ServiceAreaMapPlaceholder({
-  areas,
   label,
 }: {
-  areas: readonly string[];
   label: string;
 }) {
   return (
@@ -39,17 +37,10 @@ function ServiceAreaMapPlaceholder({
         aria-hidden="true"
         className="absolute inset-y-0 left-1/2 -z-10 w-px bg-service-border"
       />
-      <div className="grid h-full grid-cols-3 content-between gap-4 max-md:grid-cols-2">
-        {areas.map((area, index) => (
-          <span
-            key={area}
-            className={`radius-button min-h-11 border border-service-border bg-white px-4 py-3 type-caption font-semibold text-service-ink shadow-sm ${
-              index % 3 === 1 ? "self-center" : ""
-            } ${index % 3 === 2 ? "self-end" : ""}`}
-          >
-            {area}
-          </span>
-        ))}
+      <div className="grid h-full place-items-center">
+        <span className="radius-button border border-service-border bg-white/80 px-5 py-3 type-caption font-semibold text-service-muted shadow-sm">
+          FPO map
+        </span>
       </div>
       <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between gap-4 border-t border-service-border pt-4">
         <span className="type-label text-service-accent">{label}</span>
@@ -77,7 +68,6 @@ export function ServiceAreaZipLookupSectionV3({
 }: ServiceAreaZipLookupSectionV3Props) {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const inputId = useId();
-  const areas = columns.flat();
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -100,9 +90,9 @@ export function ServiceAreaZipLookupSectionV3({
           <div className="content-padding radius-surface grid h-full content-between border border-service-border bg-white shadow-service">
             <div>
               <p className="type-label text-service-accent">Service area</p>
-              <div className="mt-heading-body-md grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+              <div className="mt-heading-body-md grid grid-cols-2 items-start gap-x-6 gap-y-3 max-sm:grid-cols-1">
                 {columns.map((column, columnIndex) => (
-                  <ul key={columnIndex} className="grid gap-3">
+                  <ul key={columnIndex} className="grid content-start gap-3">
                     {column.map((area) => (
                       <li
                         key={area}
@@ -171,7 +161,7 @@ export function ServiceAreaZipLookupSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-          <ServiceAreaMapPlaceholder areas={areas} label={mapLabel} />
+          <ServiceAreaMapPlaceholder label={mapLabel} />
         </SevenColumnGridItem>
       </SevenColumnGrid>
     </section>

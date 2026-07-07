@@ -139,7 +139,7 @@ export async function updateStagedPageFields(
           id: field.id,
           kind: field.kind,
           path: field.path,
-          value: nextField.value,
+          value: sanitizeStagedFieldValue(field, nextField.value),
         })
       : field;
   });
@@ -368,6 +368,25 @@ function stagedField(field: StagedPageField) {
   return field;
 }
 
+function sanitizeStagedFieldValue(field: StagedPageField, value: string) {
+  if (shouldStripHumanReviewSections(field.path, value)) {
+    return stripHumanReviewSections(value);
+  }
+
+  return value;
+}
+
+function shouldStripHumanReviewSections(fieldPath: string, value: string) {
+  const normalizedPath = fieldPath.toLowerCase();
+
+  return (
+    hasHumanReviewSection(value) &&
+    !normalizedPath.startsWith("strategy.") &&
+    (normalizedPath.endsWith(".legalline") ||
+      normalizedPath.endsWith(".copyright"))
+  );
+}
+
 function seedFieldsFromStrategyCopy(
   fields: StagedPageField[],
   strategyCopy: string,
@@ -402,7 +421,8 @@ function seedFieldsFromStrategyCopy(
       options.overwriteExistingCopy &&
       previousValue &&
       field.value.trim() &&
-      field.value.trim() !== previousValue
+      field.value.trim() !== previousValue &&
+      !hasHumanReviewSection(field.value)
     ) {
       return field;
     }
@@ -558,6 +578,10 @@ function stripHumanReviewSections(text: string) {
   return (reviewStartIndex >= 0 ? lines.slice(0, reviewStartIndex) : lines)
     .join("\n")
     .trim();
+}
+
+function hasHumanReviewSection(text: string) {
+  return text.split(/\r?\n/).some(isHumanReviewHeading);
 }
 
 function isHumanReviewHeading(line: string) {

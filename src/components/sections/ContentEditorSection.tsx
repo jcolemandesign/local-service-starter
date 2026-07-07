@@ -58,8 +58,6 @@ export function ContentEditorSection({
   const [status, setStatus] = useState("");
   const [openSectionIds, setOpenSectionIds] = useState<string[]>([]);
   const [fieldFilter, setFieldFilter] = useState<FieldFilter>("all");
-  const [bulkPasteText, setBulkPasteText] = useState("");
-  const [bulkPasteStatus, setBulkPasteStatus] = useState("");
 
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => {
@@ -133,80 +131,6 @@ export function ContentEditorSection({
 
   function openSections(sectionIds: string[]) {
     setOpenSectionIds(sectionIds);
-  }
-
-  function applyBulkPaste() {
-    if (!activePage) {
-      return;
-    }
-
-    const result = parseBulkCopyPaste(bulkPasteText, activeFields);
-
-    if (result.matches.length === 0) {
-      setBulkPasteStatus(
-        "No matching copy fields found. Use section.field labels or section headings with field labels.",
-      );
-      return;
-    }
-
-    setValues((currentValues) => ({
-      ...currentValues,
-      ...Object.fromEntries(
-        result.matches.map((match) => [match.fieldId, match.value]),
-      ),
-    }));
-    setOpenSectionIds(result.sectionIds);
-    setFieldFilter("copy");
-    setBulkPasteStatus(
-      `Applied ${result.matches.length} copy fields. ${result.unmatchedKeys.length} unmatched labels.`,
-    );
-    setStatus("");
-  }
-
-  async function copyBulkPasteSkeleton() {
-    if (!activePage) {
-      return;
-    }
-
-    const skeleton = buildBulkPasteText({
-      page: activePage,
-      values,
-      variant: "blank",
-    });
-
-    try {
-      await window.navigator.clipboard.writeText(skeleton);
-      setBulkPasteText(skeleton);
-      setBulkPasteStatus("Bulk paste skeleton copied.");
-    } catch {
-      setBulkPasteText(skeleton);
-      setBulkPasteStatus(
-        "Skeleton loaded below. Select and copy it from the field.",
-      );
-    }
-  }
-
-  async function copyCurrentCopy() {
-    if (!activePage) {
-      return;
-    }
-
-    const currentCopy = buildBulkPasteText({
-      page: activePage,
-      values,
-      variant: "current",
-    });
-
-    try {
-      await window.navigator.clipboard.writeText(currentCopy);
-      setBulkPasteText(currentCopy);
-      setBulkPasteStatus("Current copy exported and copied.");
-    } catch {
-      setBulkPasteText(currentCopy);
-      setBulkPasteStatus(
-        "Current copy loaded below. Select and copy it from the field.",
-      );
-    }
   }
 
   function resetActivePage() {
@@ -416,64 +340,6 @@ export function ContentEditorSection({
                     {status ? <span>{status}</span> : null}
                     {savedAt ? <span>Saved {formatDate(savedAt)}</span> : null}
                   </div>
-                ) : null}
-              </div>
-
-              <div className="grid gap-4 rounded-sm border border-service-border bg-white p-5 shadow-service">
-                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 max-md:grid-cols-1">
-                  <div>
-                    <p className="type-label text-service-accent">
-                      Bulk Paste Copy
-                    </p>
-                    <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
-                      Paste template-fitted copy into matching fields.
-                    </h3>
-                    <p className="type-caption mt-2 text-service-muted">
-                      Matches copy fields from labels like
-                      section.fieldName, or markdown sections with fieldName:
-                      value lines.
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap justify-end gap-2 max-md:justify-start">
-                    <ActionButton
-                      onClick={() => void copyBulkPasteSkeleton()}
-                      tone="quiet"
-                    >
-                      Copy Skeleton
-                    </ActionButton>
-                    <ActionButton
-                      onClick={() => void copyCurrentCopy()}
-                      tone="quiet"
-                    >
-                      Copy Current Copy
-                    </ActionButton>
-                    <ActionButton onClick={applyBulkPaste}>
-                      Apply Copy
-                    </ActionButton>
-                    <ActionButton
-                      onClick={() => {
-                        setBulkPasteText("");
-                        setBulkPasteStatus("");
-                      }}
-                      tone="quiet"
-                    >
-                      Clear
-                    </ActionButton>
-                  </div>
-                </div>
-                <textarea
-                  className="min-h-48 resize-y rounded-sm border border-service-border bg-white px-4 py-3 text-sm leading-7 text-service-ink outline-none transition-colors focus:border-service-accent"
-                  placeholder={`Example:\n### 02-hero\nheading: Clear HVAC help for Lake Norman homes.\nbody: Practical repair, replacement, and maintenance guidance without pressure.`}
-                  value={bulkPasteText}
-                  onChange={(event) => {
-                    setBulkPasteText(event.target.value);
-                    setBulkPasteStatus("");
-                  }}
-                />
-                {bulkPasteStatus ? (
-                  <p className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-2 text-service-muted">
-                    {bulkPasteStatus}
-                  </p>
                 ) : null}
               </div>
 
@@ -820,216 +686,6 @@ function getFieldHelperText(field: ContentEditorField) {
   return "Reviewed page copy for this template field.";
 }
 
-function parseBulkCopyPaste(text: string, fields: ContentEditorField[]) {
-  const copyFields = fields.filter((field) => field.kind === "copy");
-  const keyedValues = parseKeyedCopyValues(text);
-  const matches: Array<{ fieldId: string; sectionId: string; value: string }> = [];
-  const matchedKeys = new Set<string>();
-
-  for (const field of copyFields) {
-    const key = getBulkPasteMatchKey(field, keyedValues);
-
-    if (!key) {
-      continue;
-    }
-
-    const value = keyedValues.get(key);
-
-    if (!value) {
-      continue;
-    }
-
-    matches.push({
-      fieldId: field.id,
-      sectionId: getSectionIdFromPath(field.path),
-      value,
-    });
-    matchedKeys.add(key);
-  }
-
-  return {
-    matches,
-    sectionIds: Array.from(new Set(matches.map((match) => match.sectionId))),
-    unmatchedKeys: Array.from(keyedValues.keys()).filter(
-      (key) => !matchedKeys.has(key),
-    ),
-  };
-}
-
-function buildBulkPasteText({
-  page,
-  values,
-  variant,
-}: {
-  page: ContentEditorPage;
-  values: Record<string, string>;
-  variant: "blank" | "current";
-}) {
-  const lines = ["# Bulk Paste Copy"];
-
-  for (const section of page.sections) {
-    const copyFields = section.fields.filter((field) => field.kind === "copy");
-
-    if (copyFields.length === 0) {
-      continue;
-    }
-
-    lines.push("", `### ${section.id}`);
-
-    for (const field of copyFields) {
-      const fieldName = field.path.split(".").at(-1) ?? field.label;
-      const value =
-        variant === "current" ? (values[field.id] ?? field.value).trim() : "";
-
-      lines.push(`${fieldName}: ${value}`);
-    }
-  }
-
-  return lines.join("\n").trim();
-}
-
-function parseKeyedCopyValues(text: string) {
-  const trimmedText = text.trim();
-
-  if (!trimmedText) {
-    return new Map<string, string>();
-  }
-
-  const jsonValues = parseJsonCopyValues(trimmedText);
-
-  if (jsonValues.size > 0) {
-    return jsonValues;
-  }
-
-  return parseMarkdownCopyValues(trimmedText);
-}
-
-function parseJsonCopyValues(text: string) {
-  const values = new Map<string, string>();
-
-  try {
-    flattenCopyValue(JSON.parse(text), [], values);
-  } catch {
-    return values;
-  }
-
-  return values;
-}
-
-function flattenCopyValue(
-  value: unknown,
-  path: string[],
-  values: Map<string, string>,
-) {
-  if (typeof value === "string") {
-    values.set(normalizeBulkPasteKey(path.join(".")), value.trim());
-    return;
-  }
-
-  if (Array.isArray(value)) {
-    values.set(
-      normalizeBulkPasteKey(path.join(".")),
-      value
-        .map((item) =>
-          typeof item === "string" ? item : JSON.stringify(item, null, 2),
-        )
-        .join("\n"),
-    );
-    return;
-  }
-
-  if (value && typeof value === "object") {
-    Object.entries(value as Record<string, unknown>).forEach(([key, child]) => {
-      flattenCopyValue(child, [...path, key], values);
-    });
-  }
-}
-
-function parseMarkdownCopyValues(text: string) {
-  const values = new Map<string, string>();
-  const lines = text.split(/\r?\n/);
-  let currentSection = "";
-  let currentKey = "";
-  let currentValueLines: string[] = [];
-
-  function commitCurrentValue() {
-    if (!currentKey) {
-      return;
-    }
-
-    const value = currentValueLines.join("\n").trim();
-
-    if (value) {
-      values.set(normalizeBulkPasteKey(currentKey), value);
-    }
-
-    currentKey = "";
-    currentValueLines = [];
-  }
-
-  for (const rawLine of lines) {
-    const line = rawLine.trimEnd();
-    const headingMatch = line.match(/^#{2,4}\s+(.+)$/);
-
-    if (headingMatch) {
-      commitCurrentValue();
-      currentSection = headingMatch[1].trim().split(/\s+/)[0] ?? "";
-      continue;
-    }
-
-    const keyedMatch = line.match(/^\s*(?:[-*]\s*)?`?([A-Za-z0-9_.-]+)`?\s*:\s*(.*)$/);
-
-    if (keyedMatch) {
-      commitCurrentValue();
-      const rawKey = keyedMatch[1].trim();
-      const fieldKey = rawKey.includes(".")
-        ? rawKey
-        : [currentSection, rawKey].filter(Boolean).join(".");
-
-      currentKey = fieldKey;
-      currentValueLines = [keyedMatch[2] ?? ""];
-      continue;
-    }
-
-    if (currentKey) {
-      currentValueLines.push(line);
-    }
-  }
-
-  commitCurrentValue();
-
-  return values;
-}
-
-function getBulkPasteMatchKey(
-  field: ContentEditorField,
-  keyedValues: Map<string, string>,
-) {
-  const sectionId = getSectionIdFromPath(field.path);
-  const fieldName = field.path.split(".").at(-1) ?? field.path;
-  const candidates = [
-    field.path,
-    `${sectionId}.${fieldName}`,
-    `${sectionId}.${field.label}`,
-    field.id,
-  ].map(normalizeBulkPasteKey);
-
-  return candidates.find((candidate) => keyedValues.has(candidate));
-}
-
-function getSectionIdFromPath(path: string) {
-  return path.split(".")[0] || "strategy";
-}
-
-function normalizeBulkPasteKey(value: string) {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[`"'[\]]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/[:]+$/g, "");
-}
-
 function getOriginalValues(pages: ContentEditorPage[]) {
   return Object.fromEntries(
     pages.flatMap((page) =>
@@ -1062,7 +718,7 @@ function readStoredDraft(originalValues: Record<string, string>): StoredDraft {
 
     return {
       savedAt: draft.savedAt ?? "",
-      values: { ...originalValues, ...(draft.values ?? {}) },
+      values: sanitizeDraftValues(originalValues, draft.values ?? {}),
     };
   } catch {
     return {
@@ -1070,6 +726,47 @@ function readStoredDraft(originalValues: Record<string, string>): StoredDraft {
       values: originalValues,
     };
   }
+}
+
+function sanitizeDraftValues(
+  originalValues: Record<string, string>,
+  draftValues: Record<string, string>,
+) {
+  return Object.fromEntries(
+    Object.entries({ ...originalValues, ...draftValues }).map(([key, value]) => [
+      key,
+      shouldStripDraftValue(key, value) ? stripHumanReviewSections(value) : value,
+    ]),
+  );
+}
+
+function shouldStripDraftValue(fieldId: string, value: string) {
+  const normalizedFieldId = fieldId.toLowerCase();
+
+  return (
+    hasHumanReviewSection(value) &&
+    (normalizedFieldId.endsWith(".legalline") ||
+      normalizedFieldId.endsWith(".copyright"))
+  );
+}
+
+function stripHumanReviewSections(text: string) {
+  const lines = text.split(/\r?\n/);
+  const reviewStartIndex = lines.findIndex(isHumanReviewHeading);
+
+  return (reviewStartIndex >= 0 ? lines.slice(0, reviewStartIndex) : lines)
+    .join("\n")
+    .trim();
+}
+
+function hasHumanReviewSection(text: string) {
+  return text.split(/\r?\n/).some(isHumanReviewHeading);
+}
+
+function isHumanReviewHeading(line: string) {
+  return /^(?:#{1,3}\s+|\d+\.\s+)?(?:Copy Notes|Copy QA)\s*$/i.test(
+    line.trim(),
+  );
 }
 
 function getFieldCounts(fields: ContentEditorField[]) {

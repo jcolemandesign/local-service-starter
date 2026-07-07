@@ -1,0 +1,1348 @@
+import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAboutCompanySectionV2";
+import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
+import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
+import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
+import { CTAFullscreenSectionV2 } from "@/components/sections/CTAFullscreenSectionV2";
+import { CTAScrollRevealOfferSectionV2 } from "@/components/sections/CTAScrollRevealOfferSectionV2";
+import { ContentRevealParagraphSectionV2 } from "@/components/sections/ContentRevealParagraphSectionV2";
+import { ContentRuleHeaderSectionV2 } from "@/components/sections/ContentRuleHeaderSectionV2";
+import { ContentScrollWrittenRevealSectionV2 } from "@/components/sections/ContentScrollWrittenRevealSectionV2";
+import { ContentSplitFixedImageSectionV3 } from "@/components/sections/ContentSplitFixedImageSectionV3";
+import { ContentStickyCardStreamSectionV2 } from "@/components/sections/ContentStickyCardStreamSectionV2";
+import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
+import { ContentStickyIdeasSectionV2 } from "@/components/sections/ContentStickyIdeasSectionV2";
+import {
+  ContactSectionV3,
+  CTASectionV3,
+  CTAFullscreenSectionV3,
+  FAQSectionV3,
+  FooterSectionV3,
+} from "@/components/sections/FAQConversionContactFooterSectionsV3";
+import {
+  FeatureOverlapRowsSectionV3,
+  ProcessStepsSectionV3,
+  TestimonialsSectionV3,
+} from "@/components/sections/FeatureProcessTestimonialsSectionsV3";
+import { FeatureAsymmetricCardsSectionV3 } from "@/components/sections/FeatureAsymmetricCardsSectionV3";
+import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
+import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
+import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
+import { HeroCenteredFloatersSectionV2 } from "@/components/sections/HeroCenteredFloatersSectionV2";
+import { HeroContentTopImageBottomSectionV2 } from "@/components/sections/HeroContentTopImageBottomSectionV2";
+import {
+  HeroSplitFixedImageSectionV3,
+  type HeroSplitFixedImageRatio,
+  type HeroSplitFixedImageVariant,
+} from "@/components/sections/HeroSplitFixedImageSectionV3";
+import { HeroFullscreenSectionV2 } from "@/components/sections/HeroFullscreenSectionV2";
+import { HeroGridMosaicSectionV2 } from "@/components/sections/HeroGridMosaicSectionV2";
+import {
+  HeroSplitFullHeightSectionV3,
+  type HeroSplitFullHeightVariant,
+} from "@/components/sections/HeroSplitFullHeightSectionV3";
+import { FooterSectionV2 } from "@/components/sections/FooterSectionV2";
+import {
+  NavCenterLogoSectionV2,
+  NavPrimarySectionV2,
+} from "@/components/sections/NavPrimarySectionV2";
+import { NavFloatingBentoSectionV2 } from "@/components/sections/NavFloatingBentoSectionV2";
+import { ProcessImageChecklistSectionV2 } from "@/components/sections/ProcessImageChecklistSectionV2";
+import { ProcessImageChecklistSectionV3 } from "@/components/sections/ProcessImageChecklistSectionV3";
+import { ServicesBentoCardsSectionV2 } from "@/components/sections/ServicesBentoCardsSectionV2";
+import { ServicesHoverPanelSectionV2 } from "@/components/sections/ServicesHoverPanelSectionV2";
+import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
+import { ServiceAreaZipLookupSectionV3 } from "@/components/sections/ServiceAreaZipLookupSectionV3";
+import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/ServicesThreeCardsRightSectionV3";
+import { TestimonialsCarouselSectionV3 } from "@/components/sections/TestimonialsCarouselSectionV3";
+import { TestimonialsMasonrySectionV2 } from "@/components/sections/TestimonialsMasonrySectionV2";
+import { TestimonialsMasonrySectionV3 } from "@/components/sections/TestimonialsMasonrySectionV3";
+import { TrustLogoGridSection } from "@/components/sections/TrustLogoMarqueeSection";
+import { TrustMarqueeSection } from "@/components/sections/TrustMarqueeSection";
+import {
+  TrustBarFloatingBentoSectionV3,
+  TrustBarSectionV3,
+  TrustLogoGridSectionV3,
+  TrustLogoMarqueeSectionV3,
+  TrustMarqueeSectionV3,
+} from "@/components/sections/TrustSectionsV3";
+import { sectionLibraryV3Content } from "@/content/section-library-v3";
+import type { StagedPageField } from "@/utils/staged-pages";
+
+export type PageTemplatePreviewSection = {
+  component: string;
+  id?: string;
+  instruction: string;
+  mode: string;
+  name: string;
+  ratio?: string;
+  variant?: string;
+};
+
+type PageTemplatePreviewProps = {
+  fieldsBySection?: Record<string, StagedPageField[]>;
+  sections: PageTemplatePreviewSection[];
+};
+
+type FieldSection = {
+  fields: StagedPageField[];
+};
+
+const heroSplitFullHeightVariants = new Set<string>(
+  sectionLibraryV3Content.heroSplitFullHeight.variants.map(
+    (option) => option.variant,
+  ),
+);
+
+const heroSplitFixedImageVariants = new Set<string>([
+  "text-3-image-4-right",
+  "text-4-image-3-right",
+  "image-3-left-text-4",
+  "image-4-left-text-3",
+]);
+
+const heroSplitFixedImageRatios = new Set<string>([
+  "3-2",
+  "2-3",
+  "4-3",
+  "3-4",
+  "5-4",
+  "4-5",
+]);
+
+function cx(...classes: Array<string | false | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
+
+function isNavigationSection(section: PageTemplatePreviewSection) {
+  return section.mode === "Navigation";
+}
+
+function isHeroSection(section: PageTemplatePreviewSection | undefined) {
+  return section?.mode === "Hero";
+}
+
+export function PageTemplatePreview({
+  fieldsBySection = {},
+  sections,
+}: PageTemplatePreviewProps) {
+  const includedSections = sections.filter(Boolean);
+
+  return (
+    <div className="pagebuilder-density-normal pagebuilder-hide-markers min-h-full w-full bg-white">
+      <div className="fluid-type-frame mx-auto min-h-full w-full max-w-full bg-white">
+        {includedSections.map((section, index) => {
+          const nextSection = includedSections[index + 1];
+          const previousSection = includedSections[index - 1];
+
+          if (isNavigationSection(section) && isHeroSection(nextSection)) {
+            return (
+              <div
+                className="pagebuilder-nav-hero-pair relative pt-[var(--section-space-sml)]"
+                key={`${section.id ?? index}-${nextSection.id ?? index + 1}`}
+              >
+                <TemplateSectionFrame className="inset-x-0 top-0 z-20" isOverlay>
+                  {renderPageTemplateSection(
+                    section,
+                    index,
+                    fieldsBySection[section.id ?? ""],
+                  )}
+                </TemplateSectionFrame>
+                <TemplateSectionFrame>
+                  {renderPageTemplateSection(
+                    nextSection,
+                    index + 1,
+                    fieldsBySection[nextSection.id ?? ""],
+                  )}
+                </TemplateSectionFrame>
+              </div>
+            );
+          }
+
+          if (isHeroSection(section) && isNavigationSection(previousSection)) {
+            return null;
+          }
+
+          if (isNavigationSection(section) && nextSection && !isHeroSection(nextSection)) {
+            return (
+              <TemplateSectionFrame
+                className="mb-[var(--section-space-sml)]"
+                key={section.id ?? index}
+              >
+                {renderPageTemplateSection(
+                  section,
+                  index,
+                  fieldsBySection[section.id ?? ""],
+                )}
+              </TemplateSectionFrame>
+            );
+          }
+
+          return (
+            <TemplateSectionFrame key={section.id ?? index}>
+              {renderPageTemplateSection(
+                section,
+                index,
+                fieldsBySection[section.id ?? ""],
+              )}
+            </TemplateSectionFrame>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function TemplateSectionFrame({
+  children,
+  className,
+  isOverlay = false,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  isOverlay?: boolean;
+}) {
+  return (
+    <div
+      className={cx(
+        "group/pagebuilder-section outline outline-0 outline-offset-0 transition-shadow",
+        isOverlay ? "absolute" : "relative",
+        isOverlay && "pointer-events-none",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
+export function renderPageTemplateSection(
+  section: PageTemplatePreviewSection,
+  index: number,
+  fields: StagedPageField[] = [],
+) {
+  const headingLevel = index === 1 ? 1 : 2;
+  const fieldSection = { fields };
+
+  switch (section.component) {
+    case "NavPrimarySectionV2":
+      return <NavPrimarySectionV2 {...navProps(fieldSection)} />;
+    case "NavCenterLogoSectionV2":
+      return <NavCenterLogoSectionV2 {...navProps(fieldSection)} />;
+    case "NavFloatingBentoSectionV2":
+      return <NavFloatingBentoSectionV2 {...navProps(fieldSection)} />;
+    case "HeroSplitFullHeightSectionV3":
+      return (
+        <HeroSplitFullHeightSectionV3
+          {...heroSplitProps(fieldSection)}
+          headingLevel={headingLevel}
+          variant={getHeroSplitFullHeightVariant(section)}
+        />
+      );
+    case "HeroSplitFixedImageSectionV3":
+      return (
+        <HeroSplitFixedImageSectionV3
+          {...heroSplitProps(fieldSection)}
+          headingLevel={headingLevel}
+          ratio={getHeroSplitFixedImageRatio(section)}
+          variant={getHeroSplitFixedImageVariant(section)}
+        />
+      );
+    case "HeroFullscreenSectionV2":
+      return (
+        <HeroFullscreenSectionV2
+          {...heroFullscreenProps(fieldSection)}
+          headingLevel={headingLevel}
+        />
+      );
+    case "HeroCenteredFloatersSectionV2":
+      return (
+        <HeroCenteredFloatersSectionV2
+          {...heroBasicProps(fieldSection)}
+          headingLevel={headingLevel}
+        />
+      );
+    case "HeroGridMosaicSectionV2":
+      return (
+        <HeroGridMosaicSectionV2
+          {...heroGridProps(fieldSection)}
+          headingLevel={headingLevel}
+        />
+      );
+    case "HeroContentTopImageBottomSectionV2":
+      return (
+        <HeroContentTopImageBottomSectionV2
+          {...heroBasicProps(fieldSection)}
+          headingLevel={headingLevel}
+        />
+      );
+    case "TrustBarSectionV3":
+      return <TrustBarSectionV3 {...trustBarProps(fieldSection)} />;
+    case "TrustBarFloatingBentoSectionV3":
+      return <TrustBarFloatingBentoSectionV3 {...trustBarProps(fieldSection)} />;
+    case "TrustMarqueeSection":
+      return <TrustMarqueeSection {...trustMarqueeProps(fieldSection)} />;
+    case "TrustMarqueeSectionV3":
+      return <TrustMarqueeSectionV3 {...trustMarqueeProps(fieldSection)} />;
+    case "TrustLogoGridSection":
+      return <TrustLogoGridSection {...sectionLibraryV3Content.trustLogoMarquee} />;
+    case "TrustLogoMarqueeSectionV3":
+      return <TrustLogoMarqueeSectionV3 {...sectionLibraryV3Content.trustLogoMarquee} />;
+    case "TrustLogoGridSectionV3":
+      return <TrustLogoGridSectionV3 {...sectionLibraryV3Content.trustLogoMarquee} />;
+    case "ServicesBentoCardsSectionV2":
+      return <ServicesBentoCardsSectionV2 {...servicesBentoProps(fieldSection)} />;
+    case "ServicesHoverPanelSectionV2":
+      return <ServicesHoverPanelSectionV2 {...servicesHoverProps(fieldSection)} />;
+    case "ServicesThreeCardsRightSectionV3":
+      return <ServicesThreeCardsRightSectionV3 {...servicesThreeCardsProps(fieldSection)} />;
+    case "ServicesScrollCardsSectionV2":
+      return <ServicesScrollCardsSectionV2 {...servicesScrollCardsProps(fieldSection)} />;
+    case "ContentHorizontalCardCarouselSectionV2":
+      return (
+        <ContentHorizontalCardCarouselSectionV2
+          {...horizontalCardsProps(fieldSection)}
+        />
+      );
+    case "ContentRevealParagraphSectionV2":
+      return <ContentRevealParagraphSectionV2 {...revealParagraphProps(fieldSection)} />;
+    case "ContentScrollWrittenRevealSectionV2":
+      return (
+        <ContentScrollWrittenRevealSectionV2
+          {...scrollWrittenRevealProps(fieldSection)}
+        />
+      );
+    case "ContentSplitHeadlineImageSectionV2":
+      return (
+        <ContentSplitHeadlineImageSectionV2
+          {...splitHeadlineImageProps(fieldSection)}
+        />
+      );
+    case "ContentSplitFixedImageSectionV3":
+      return (
+        <ContentSplitFixedImageSectionV3
+          {...heroSplitProps(fieldSection)}
+          headingLevel={headingLevel}
+        />
+      );
+    case "ContentStickyCardStreamSectionV2":
+      return (
+        <ContentStickyCardStreamSectionV2
+          {...stickyCardStreamProps(fieldSection)}
+        />
+      );
+    case "ContentStickyIdeasSectionV2":
+      return <ContentStickyIdeasSectionV2 {...stickyIdeasProps(fieldSection)} />;
+    case "ContentAboutCompanySectionV2":
+      return <ContentAboutCompanySectionV2 {...aboutCompanyProps(fieldSection)} />;
+    case "ContentRuleHeaderSectionV2":
+      return <ContentRuleHeaderSectionV2 {...ruleHeaderProps(fieldSection)} />;
+    case "FeaturePortraitParagraphSectionV3":
+      return (
+        <FeaturePortraitParagraphSectionV3
+          {...featurePortraitProps(fieldSection)}
+        />
+      );
+    case "FeatureOverlapRowsSectionV3":
+      return <FeatureOverlapRowsSectionV3 {...featureOverlapRowsProps(fieldSection)} />;
+    case "FeatureAsymmetricCardsSectionV3":
+      return <FeatureAsymmetricCardsSectionV3 {...featureAsymmetricProps(fieldSection)} />;
+    case "FAQSectionV3":
+      return <FAQSectionV3 {...faqProps(fieldSection)} />;
+    case "FAQAccordionSectionV3":
+      return <FAQAccordionSectionV3 {...faqAccordionProps(fieldSection)} />;
+    case "TestimonialsSectionV3":
+      return <TestimonialsSectionV3 {...testimonialsProps(fieldSection)} />;
+    case "TestimonialsCarouselSectionV3":
+      return <TestimonialsCarouselSectionV3 {...testimonialsCarouselProps(fieldSection)} />;
+    case "TestimonialsMasonrySectionV2":
+      return <TestimonialsMasonrySectionV2 {...testimonialsMasonryProps(fieldSection)} />;
+    case "TestimonialsMasonrySectionV3":
+      return <TestimonialsMasonrySectionV3 {...testimonialsMasonryProps(fieldSection)} />;
+    case "ProcessImageChecklistSectionV2":
+      return <ProcessImageChecklistSectionV2 {...processImageChecklistProps(fieldSection)} />;
+    case "ProcessImageChecklistSectionV3":
+      return <ProcessImageChecklistSectionV3 {...processImageChecklistProps(fieldSection)} />;
+    case "ProcessStepsSectionV3":
+      return <ProcessStepsSectionV3 {...processProps(fieldSection)} />;
+    case "CTASectionV3":
+      return <CTASectionV3 {...ctaProps(fieldSection)} />;
+    case "CTAFullscreenSectionV2":
+      return <CTAFullscreenSectionV2 {...ctaFullscreenProps(fieldSection)} />;
+    case "CTAFullscreenSectionV3":
+      return <CTAFullscreenSectionV3 {...ctaFullscreenProps(fieldSection)} />;
+    case "CTAScrollRevealOfferSectionV2":
+      return <CTAScrollRevealOfferSectionV2 {...scrollRevealOfferProps(fieldSection)} />;
+    case "CTAScrollRevealOfferSectionV3":
+      return <CTAScrollRevealOfferSectionV3 {...scrollRevealOfferProps(fieldSection)} />;
+    case "ContentFixedCoverFadeSectionV2":
+      return <ContentFixedCoverFadeSectionV2 {...fixedCoverFadeProps(fieldSection)} />;
+    case "ContactSectionV2":
+      return <ContactSectionV2 {...contactProps(fieldSection)} />;
+    case "ServiceAreaZipLookupSectionV3":
+      return <ServiceAreaZipLookupSectionV3 {...serviceAreaProps(fieldSection)} />;
+    case "ContactSectionV3":
+      return <ContactSectionV3 {...contactProps(fieldSection)} />;
+    case "FooterSectionV2":
+      return <FooterSectionV2 {...footerProps(fieldSection)} />;
+    case "FooterSectionV3":
+      return <FooterSectionV3 {...footerProps(fieldSection)} />;
+    default:
+      return <UnknownSection section={section} />;
+  }
+}
+
+function navProps(section: FieldSection) {
+  const links = getListValues(section, ["navLinks", "footerLinks"], "").map(
+    parseLink,
+  );
+
+  return {
+    ...sectionLibraryV3Content.navPrimary,
+    action: getValue(
+      section,
+      "primaryAction",
+      getValue(section, "action", sectionLibraryV3Content.navPrimary.action),
+    ),
+    links: links.length > 0 ? links : sectionLibraryV3Content.navPrimary.links,
+    logoLabel: getValue(
+      section,
+      "logoLabel",
+      sectionLibraryV3Content.navPrimary.logoLabel,
+    ),
+    phone: getValue(section, "phone", sectionLibraryV3Content.navPrimary.phone),
+  };
+}
+
+function heroSplitProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.heroSplitFullHeight,
+    body: getBody(section, sectionLibraryV3Content.heroSplitFullHeight.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.heroSplitFullHeight.eyebrow,
+    ),
+    primaryAction: getValue(
+      section,
+      "primaryAction",
+      sectionLibraryV3Content.heroSplitFullHeight.primaryAction,
+    ),
+    secondaryAction: getValue(
+      section,
+      "secondaryAction",
+      sectionLibraryV3Content.heroSplitFullHeight.secondaryAction,
+    ),
+    stats: getListValues(
+      section,
+      ["proofPoints", "stats", "items"],
+      sectionLibraryV3Content.heroSplitFullHeight.stats.join("\n"),
+    ).slice(0, 3),
+    title: getTitle(section, sectionLibraryV3Content.heroSplitFullHeight.title),
+  };
+}
+
+function heroBasicProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.hero,
+    body: getBody(section, sectionLibraryV3Content.hero.body),
+    eyebrow: getValue(section, "eyebrow", sectionLibraryV3Content.hero.eyebrow),
+    primaryAction: getValue(
+      section,
+      "primaryAction",
+      sectionLibraryV3Content.hero.primaryAction,
+    ),
+    secondaryAction: getValue(
+      section,
+      "secondaryAction",
+      sectionLibraryV3Content.hero.secondaryAction,
+    ),
+    stats: getListValues(
+      section,
+      ["proofPoints", "stats", "items"],
+      sectionLibraryV3Content.hero.stats.join("\n"),
+    ).slice(0, 3),
+    title: getTitle(section, sectionLibraryV3Content.hero.title),
+  };
+}
+
+function heroFullscreenProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.heroFullscreen,
+    body: getBody(section, sectionLibraryV3Content.heroFullscreen.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.heroFullscreen.eyebrow,
+    ),
+    primaryAction: getValue(
+      section,
+      "primaryAction",
+      sectionLibraryV3Content.heroFullscreen.primaryAction,
+    ),
+    secondaryAction: getValue(
+      section,
+      "secondaryAction",
+      sectionLibraryV3Content.heroFullscreen.secondaryAction,
+    ),
+    title: getTitle(section, sectionLibraryV3Content.heroFullscreen.title),
+  };
+}
+
+function heroGridProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.heroGridMosaic,
+    body: getBody(section, sectionLibraryV3Content.heroGridMosaic.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.heroGridMosaic.eyebrow,
+    ),
+    primaryAction: getValue(
+      section,
+      "primaryAction",
+      sectionLibraryV3Content.heroGridMosaic.primaryAction,
+    ),
+    secondaryAction: getValue(
+      section,
+      "secondaryAction",
+      sectionLibraryV3Content.heroGridMosaic.secondaryAction,
+    ),
+    services: cardItems(section, ["serviceItems", "items"]).slice(0, 3),
+    title: getTitle(section, sectionLibraryV3Content.heroGridMosaic.title),
+  };
+}
+
+function servicesBentoProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.servicesBento,
+    body: getBody(section, sectionLibraryV3Content.servicesBento.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.servicesBento.eyebrow,
+    ),
+    items: cardItems(section, ["serviceItems", "items", "cards"]).map(
+      (item, index) => ({
+        ...sectionLibraryV3Content.servicesBento.items[
+          index % sectionLibraryV3Content.servicesBento.items.length
+        ],
+        ...item,
+      }),
+    ),
+    title: getTitle(section, sectionLibraryV3Content.servicesBento.title),
+  };
+}
+
+function servicesHoverProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.servicesHoverPanel,
+    body: getBody(section, sectionLibraryV3Content.servicesHoverPanel.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.servicesHoverPanel.eyebrow,
+    ),
+    items: cardItems(section, ["serviceItems", "items", "cards"]).map(
+      (item, index) => ({
+        ...sectionLibraryV3Content.servicesHoverPanel.items[
+          index % sectionLibraryV3Content.servicesHoverPanel.items.length
+        ],
+        ...item,
+      }),
+    ),
+    title: getTitle(section, sectionLibraryV3Content.servicesHoverPanel.title),
+  };
+}
+
+function servicesThreeCardsProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.servicesThreeCardsRight,
+    cards: cardItems(section, ["serviceItems", "items", "cards"]).slice(0, 3),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.servicesThreeCardsRight.eyebrow,
+    ),
+    title: getTitle(section, sectionLibraryV3Content.servicesThreeCardsRight.title),
+  };
+}
+
+function servicesScrollCardsProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.servicesScrollCards,
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.servicesScrollCards.eyebrow,
+    ),
+    items: cardItems(section, ["serviceItems", "items", "cards"]).map(
+      (item, index) => ({
+        ...sectionLibraryV3Content.servicesScrollCards.items[
+          index % sectionLibraryV3Content.servicesScrollCards.items.length
+        ],
+        title: item.title,
+      }),
+    ),
+    title: getTitle(section, sectionLibraryV3Content.servicesScrollCards.title),
+    viewAllLabel: getValue(
+      section,
+      "sectionAction",
+      sectionLibraryV3Content.servicesScrollCards.viewAllLabel,
+    ),
+  };
+}
+
+function trustBarProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.trustBar,
+    items: getListValues(
+      section,
+      ["proofItems", "items", "proofPoints"],
+      sectionLibraryV3Content.trustBar.items.join("\n"),
+    ),
+    label: getTitle(section, sectionLibraryV3Content.trustBar.label),
+  };
+}
+
+function trustMarqueeProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.trustMarquee,
+    actionLabel: getValue(
+      section,
+      "sectionAction",
+      getValue(
+        section,
+        "primaryAction",
+        sectionLibraryV3Content.trustMarquee.actionLabel,
+      ),
+    ),
+    items: getListValues(
+      section,
+      ["proofItems", "items", "proofPoints"],
+      sectionLibraryV3Content.trustMarquee.items.join("\n"),
+    ),
+    label: getTitle(section, sectionLibraryV3Content.trustMarquee.label),
+  };
+}
+
+function featureAsymmetricProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.featureAsymmetricCards,
+    actionLabel: getValue(
+      section,
+      "sectionAction",
+      sectionLibraryV3Content.featureAsymmetricCards.actionLabel,
+    ),
+    body: getBody(section, sectionLibraryV3Content.featureAsymmetricCards.body),
+    cards: cardItems(section, ["supportingItems", "cards", "items"]).map(
+      (item, index) => ({
+        body: item.body,
+        iconLabel: String(index + 1).padStart(2, "0"),
+        title: item.title,
+      }),
+    ),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.featureAsymmetricCards.eyebrow,
+    ),
+    title: getTitle(section, sectionLibraryV3Content.featureAsymmetricCards.title),
+  };
+}
+
+function testimonialsProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.testimonials,
+    body: getBody(section, sectionLibraryV3Content.testimonials.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.testimonials.eyebrow,
+    ),
+    items: testimonialItems(section).slice(0, 2),
+    title: getTitle(section, sectionLibraryV3Content.testimonials.title),
+  };
+}
+
+function testimonialsCarouselProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.testimonialsCarousel,
+    body: getBody(section, sectionLibraryV3Content.testimonialsCarousel.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.testimonialsCarousel.eyebrow,
+    ),
+    items: testimonialItems(section),
+    title: getTitle(section, sectionLibraryV3Content.testimonialsCarousel.title),
+  };
+}
+
+function testimonialsMasonryProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.testimonialsMasonry,
+    body: getBody(section, sectionLibraryV3Content.testimonialsMasonry.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.testimonialsMasonry.eyebrow,
+    ),
+    items: testimonialItems(section),
+    title: getTitle(section, sectionLibraryV3Content.testimonialsMasonry.title),
+  };
+}
+
+function faqProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.faq,
+    body: getBody(section, sectionLibraryV3Content.faq.body),
+    eyebrow: getValue(section, "eyebrow", sectionLibraryV3Content.faq.eyebrow),
+    items: faqItems(section).slice(0, 3),
+    title: getTitle(section, sectionLibraryV3Content.faq.title),
+  };
+}
+
+function faqAccordionProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.faqAccordion,
+    body: getBody(section, sectionLibraryV3Content.faqAccordion.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.faqAccordion.eyebrow,
+    ),
+    items: faqItems(section),
+    title: getTitle(section, sectionLibraryV3Content.faqAccordion.title),
+  };
+}
+
+function ctaProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.cta,
+    action: getValue(
+      section,
+      "primaryAction",
+      getValue(section, "sectionAction", sectionLibraryV3Content.cta.action),
+    ),
+    body: getBody(section, sectionLibraryV3Content.cta.body),
+    title: getTitle(section, sectionLibraryV3Content.cta.title),
+  };
+}
+
+function ctaFullscreenProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.ctaFullscreen,
+    action: getValue(
+      section,
+      "primaryAction",
+      getValue(
+        section,
+        "sectionAction",
+        sectionLibraryV3Content.ctaFullscreen.action,
+      ),
+    ),
+    body: getBody(section, sectionLibraryV3Content.ctaFullscreen.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.ctaFullscreen.eyebrow,
+    ),
+    title: getTitle(section, sectionLibraryV3Content.ctaFullscreen.title),
+  };
+}
+
+function contactProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.contact,
+    body: getBody(section, sectionLibraryV3Content.contact.body),
+    details: getListValues(
+      section,
+      ["contactDetails", "details", "items"],
+      sectionLibraryV3Content.contact.details.join("\n"),
+    ),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.contact.eyebrow,
+    ),
+    title: getTitle(section, sectionLibraryV3Content.contact.title),
+  };
+}
+
+function footerProps(section: FieldSection) {
+  const footerLinks = getListValues(section, ["footerLinks", "links"], "").map(
+    parseLink,
+  );
+  const contactDetails = getListValues(section, ["contactDetails", "details"], "");
+  const phone = contactDetails.find((item) => /phone/i.test(item)) ?? "";
+  const email = contactDetails.find((item) => /@/.test(item)) ?? "";
+  const address =
+    contactDetails.find((item) => /based|address|serving/i.test(item)) ?? "";
+
+  return {
+    ...sectionLibraryV3Content.footer,
+    businessName: getValue(
+      section,
+      "businessName",
+      getValue(section, "logoLabel", sectionLibraryV3Content.footer.businessName),
+    ),
+    contact: {
+      ...sectionLibraryV3Content.footer.contact,
+      address: stripLabel(address) || sectionLibraryV3Content.footer.contact.address,
+      email: stripLabel(email) || sectionLibraryV3Content.footer.contact.email,
+      name: getValue(
+        section,
+        "businessName",
+        sectionLibraryV3Content.footer.contact.name,
+      ),
+      phone: stripLabel(phone) || sectionLibraryV3Content.footer.contact.phone,
+    },
+    copyright: getValue(
+      section,
+      "legalLine",
+      getValue(section, "copyright", sectionLibraryV3Content.footer.copyright),
+    ),
+    description: getValue(
+      section,
+      "businessSummary",
+      sectionLibraryV3Content.footer.description,
+    ),
+    quickLinks:
+      footerLinks.length > 0
+        ? footerLinks.slice(0, 5)
+        : sectionLibraryV3Content.footer.quickLinks,
+    services:
+      footerLinks.length > 0
+        ? footerLinks.slice(0, 5)
+        : sectionLibraryV3Content.footer.services,
+    serviceAreas: sectionLibraryV3Content.footer.serviceAreas,
+  };
+}
+
+function processProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.process,
+    body: getBody(section, sectionLibraryV3Content.process.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.process.eyebrow,
+    ),
+    steps: cardItems(section, ["steps", "items", "supportingItems"]).slice(0, 3),
+    title: getTitle(section, sectionLibraryV3Content.process.title),
+  };
+}
+
+function processImageChecklistProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.processImageChecklist,
+    body: getBody(section, sectionLibraryV3Content.processImageChecklist.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.processImageChecklist.eyebrow,
+    ),
+    items: getListValues(
+      section,
+      ["items", "proofItems", "supportingItems"],
+      sectionLibraryV3Content.processImageChecklist.items.join("\n"),
+    ),
+    title: getTitle(section, sectionLibraryV3Content.processImageChecklist.title),
+  };
+}
+
+function serviceAreaProps(section: FieldSection) {
+  const towns = getListValues(section, ["serviceItems", "items", "areas"], "")
+    .flatMap(extractServiceAreaNames)
+    .filter(Boolean);
+
+  return {
+    ...sectionLibraryV3Content.serviceAreaZipLookup,
+    body: getBody(section, sectionLibraryV3Content.serviceAreaZipLookup.body),
+    columns:
+      towns.length > 0
+        ? [towns.slice(0, Math.ceil(towns.length / 2)), towns.slice(Math.ceil(towns.length / 2))]
+        : sectionLibraryV3Content.serviceAreaZipLookup.columns,
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.serviceAreaZipLookup.eyebrow,
+    ),
+    title: getTitle(section, sectionLibraryV3Content.serviceAreaZipLookup.title),
+  };
+}
+
+function extractServiceAreaNames(value: string) {
+  const normalizedValue = value.trim();
+  const [label, ...descriptionParts] = normalizedValue.split(/\s+[—-]\s+/);
+  const description = descriptionParts.join(" - ").trim();
+  const lookup = `${label} ${description}`.toLowerCase();
+
+  if (
+    lookup.includes("radius") ||
+    lookup.includes("urgent") ||
+    lookup.includes("emergency") ||
+    lookup.includes("schedule") ||
+    lookup.includes("availability")
+  ) {
+    return [];
+  }
+
+  const areaText = description || normalizedValue;
+  const trimmedAreaText = areaText
+    .replace(/\b(?:are|is)\s+(?:listed|included|served|covered).*$/i, "")
+    .replace(/\bservice also includes\s+/i, "")
+    .replace(/\bpriority areas?\s*/i, "")
+    .replace(/\bthe broader\b/gi, "")
+    .trim();
+
+  return trimmedAreaText
+    .split(/,|\band\b/i)
+    .map((item) => item.trim().replace(/[.]+$/g, ""))
+    .filter((item) => item.length > 1);
+}
+
+function horizontalCardsProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.contentHorizontalCardCarousel,
+    body: getBody(section, sectionLibraryV3Content.contentHorizontalCardCarousel.body),
+    cards: cardItems(section, ["cards", "items", "serviceItems"]).map(
+      (item, index) => ({
+        ...sectionLibraryV3Content.contentHorizontalCardCarousel.cards[
+          index % sectionLibraryV3Content.contentHorizontalCardCarousel.cards.length
+        ],
+        ...item,
+      }),
+    ),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.contentHorizontalCardCarousel.eyebrow,
+    ),
+    title: getTitle(
+      section,
+      sectionLibraryV3Content.contentHorizontalCardCarousel.title,
+    ),
+  };
+}
+
+function revealParagraphProps(section: FieldSection) {
+  const body = getBody(section, "");
+
+  return {
+    ...sectionLibraryV3Content.contentRevealParagraph,
+    lines: body ? splitItems(body) : sectionLibraryV3Content.contentRevealParagraph.lines,
+  };
+}
+
+function scrollWrittenRevealProps(section: FieldSection) {
+  const body = getBody(section, "");
+
+  return {
+    ...sectionLibraryV3Content.contentScrollWrittenReveal,
+    lines: body
+      ? splitItems(body)
+      : sectionLibraryV3Content.contentScrollWrittenReveal.lines,
+  };
+}
+
+function splitHeadlineImageProps(section: FieldSection) {
+  const title = getTitle(section, "");
+  const [headlineTop, ...headlineRest] = title.split(/[,.]/);
+
+  return {
+    ...sectionLibraryV3Content.contentSplitHeadlineImage,
+    body: getBody(section, sectionLibraryV3Content.contentSplitHeadlineImage.body),
+    headlineBottom:
+      headlineRest.join(" ").trim() ||
+      sectionLibraryV3Content.contentSplitHeadlineImage.headlineBottom,
+    headlineTop:
+      headlineTop.trim() ||
+      sectionLibraryV3Content.contentSplitHeadlineImage.headlineTop,
+  };
+}
+
+function stickyCardStreamProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.contentStickyCardStream,
+    body: getBody(section, sectionLibraryV3Content.contentStickyCardStream.body),
+    cards: cardItems(section, ["cards", "items", "supportingItems"]).map(
+      (item, index) => ({
+        ...sectionLibraryV3Content.contentStickyCardStream.cards[
+          index % sectionLibraryV3Content.contentStickyCardStream.cards.length
+        ],
+        ...item,
+      }),
+    ),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.contentStickyCardStream.eyebrow,
+    ),
+    title: getTitle(section, sectionLibraryV3Content.contentStickyCardStream.title),
+  };
+}
+
+function stickyIdeasProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.contentStickyIdeas,
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.contentStickyIdeas.eyebrow,
+    ),
+    ideas: getListValues(
+      section,
+      ["proofItems", "items", "supportingItems"],
+      sectionLibraryV3Content.contentStickyIdeas.ideas.join("\n"),
+    ).slice(0, 4),
+    paragraphs: splitItems(
+      getBody(section, sectionLibraryV3Content.contentStickyIdeas.paragraphs.join("\n")),
+    ),
+    title: getTitle(section, sectionLibraryV3Content.contentStickyIdeas.title),
+  };
+}
+
+function aboutCompanyProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.contentAboutCompany,
+    action: getValue(
+      section,
+      "sectionAction",
+      sectionLibraryV3Content.contentAboutCompany.action,
+    ),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.contentAboutCompany.eyebrow,
+    ),
+    statement: getTitle(section, sectionLibraryV3Content.contentAboutCompany.statement),
+    summary: getBody(section, sectionLibraryV3Content.contentAboutCompany.summary),
+  };
+}
+
+function ruleHeaderProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.contentRuleHeader,
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.contentRuleHeader.eyebrow,
+    ),
+    title: getTitle(section, sectionLibraryV3Content.contentRuleHeader.title),
+  };
+}
+
+function featurePortraitProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.featurePortraitParagraph,
+    body: getBody(section, sectionLibraryV3Content.featurePortraitParagraph.body),
+  };
+}
+
+function featureOverlapRowsProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.featureOverlapRows,
+    items: cardItems(section, ["items", "supportingItems", "cards"]).map(
+      (item, index) => ({
+        ...sectionLibraryV3Content.featureOverlapRows.items[
+          index % sectionLibraryV3Content.featureOverlapRows.items.length
+        ],
+        ...item,
+      }),
+    ),
+  };
+}
+
+function scrollRevealOfferProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.ctaScrollRevealOffer,
+    action: getValue(
+      section,
+      "primaryAction",
+      sectionLibraryV3Content.ctaScrollRevealOffer.action,
+    ),
+    offerBody: getBody(section, sectionLibraryV3Content.ctaScrollRevealOffer.offerBody),
+    offerEyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.ctaScrollRevealOffer.offerEyebrow,
+    ),
+    offerTitle: getTitle(section, sectionLibraryV3Content.ctaScrollRevealOffer.offerTitle),
+  };
+}
+
+function fixedCoverFadeProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.contentFixedCoverFade,
+    foregroundBody: getBody(
+      section,
+      sectionLibraryV3Content.contentFixedCoverFade.foregroundBody,
+    ),
+    foregroundEyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.contentFixedCoverFade.foregroundEyebrow,
+    ),
+    foregroundTitle: getTitle(
+      section,
+      sectionLibraryV3Content.contentFixedCoverFade.foregroundTitle,
+    ),
+    items: getListValues(
+      section,
+      ["contactDetails", "items"],
+      sectionLibraryV3Content.contentFixedCoverFade.items.join("\n"),
+    ),
+  };
+}
+
+function UnknownSection({
+  section,
+}: {
+  section: PageTemplatePreviewSection;
+}) {
+  return (
+    <section className="bg-service-surface p-8 text-service-ink">
+      <p className="type-label text-service-accent">Preview unavailable</p>
+      <h3 className="type-heading-sm mt-3">{section.name}</h3>
+      <p className="type-text-sm measure-copy mt-3 text-service-muted">
+        {section.component} is listed in the template but has not been wired
+        into the shared preview renderer yet.
+      </p>
+    </section>
+  );
+}
+
+function getHeroSplitFullHeightVariant(section: PageTemplatePreviewSection) {
+  return heroSplitFullHeightVariants.has(section.variant ?? "")
+    ? (section.variant as HeroSplitFullHeightVariant)
+    : undefined;
+}
+
+function getHeroSplitFixedImageVariant(section: PageTemplatePreviewSection) {
+  return heroSplitFixedImageVariants.has(section.variant ?? "")
+    ? (section.variant as HeroSplitFixedImageVariant)
+    : undefined;
+}
+
+function getHeroSplitFixedImageRatio(section: PageTemplatePreviewSection) {
+  return heroSplitFixedImageRatios.has(section.ratio ?? "")
+    ? (section.ratio as HeroSplitFixedImageRatio)
+    : undefined;
+}
+
+function getValue(section: FieldSection, fieldName: string, fallback: string) {
+  return (
+    section.fields.find((field) => {
+      const fieldPath = field.path.toLowerCase();
+      const normalizedFieldName = fieldName.toLowerCase();
+
+      return (
+        fieldPath.endsWith(`.${normalizedFieldName}`) ||
+        fieldPath.endsWith(normalizedFieldName)
+      );
+    })?.value.trim() ||
+    fallback
+  );
+}
+
+function getTitle(section: FieldSection, fallback: string) {
+  return getValue(
+    section,
+    "h1",
+    getValue(section, "headline", getValue(section, "heading", getValue(section, "title", fallback))),
+  );
+}
+
+function getBody(section: FieldSection, fallback: string) {
+  return getValue(
+    section,
+    "body",
+    getValue(section, "intro", getValue(section, "description", fallback)),
+  );
+}
+
+function getListValues(
+  section: FieldSection,
+  fieldNames: string[],
+  fallback: string,
+) {
+  for (const fieldName of fieldNames) {
+    const repeatedValues = getRepeatedValues(section, fieldName);
+
+    if (repeatedValues.length > 0) {
+      return repeatedValues;
+    }
+
+    const singleValue = getValue(section, fieldName, "");
+
+    if (singleValue) {
+      return splitItems(singleValue);
+    }
+  }
+
+  return splitItems(fallback);
+}
+
+function getRepeatedValues(
+  section: FieldSection,
+  collectionName: string,
+  valueKey?: string,
+) {
+  const collectionPrefix = `.${collectionName.toLowerCase()}.`;
+
+  return section.fields
+    .filter((field) => {
+      const fieldPath = field.path.toLowerCase();
+
+      return (
+        field.kind === "copy" &&
+        field.value.trim().length > 0 &&
+        fieldPath.includes(collectionPrefix) &&
+        (!valueKey || fieldPath.endsWith(`.${valueKey.toLowerCase()}`))
+      );
+    })
+    .map((field) => field.value.trim());
+}
+
+function getRepeatedRecords(section: FieldSection, collectionNames: string[]) {
+  const normalizedCollectionNames = collectionNames.map((name) =>
+    name.toLowerCase(),
+  );
+  const recordsByKey = new Map<string, Record<string, string>>();
+
+  section.fields.forEach((field) => {
+    if (field.value.trim().length === 0) {
+      return;
+    }
+
+    const parts = field.path.split(".");
+    const collectionIndex = parts.findIndex((part) =>
+      normalizedCollectionNames.includes(part.toLowerCase()),
+    );
+
+    if (collectionIndex < 0 || collectionIndex + 2 >= parts.length) {
+      return;
+    }
+
+    const collectionName = parts[collectionIndex];
+    const itemIndex = parts[collectionIndex + 1];
+    const fieldKey = parts.slice(collectionIndex + 2).join(".");
+    const recordKey = `${collectionName}.${itemIndex}`;
+    const currentRecord = recordsByKey.get(recordKey) ?? {};
+
+    recordsByKey.set(recordKey, {
+      ...currentRecord,
+      [fieldKey]: field.value.trim(),
+    });
+  });
+
+  return Array.from(recordsByKey.values()).filter(
+    (record) => record.title || record.body || record.quote,
+  );
+}
+
+function cardItems(section: FieldSection, fieldNames: string[]) {
+  const records = getRepeatedRecords(section, fieldNames);
+
+  if (records.length > 0) {
+    return records.map((record) => ({
+      body: record.body ?? record.description ?? "",
+      imageLabel: record.imageLabel ?? record.title ?? "Service",
+      title: record.title ?? record.heading ?? "Service",
+    }));
+  }
+
+  for (const fieldName of fieldNames) {
+    const value = getValue(section, fieldName, "");
+
+    if (value) {
+      return splitItems(value).map(parseCardItem);
+    }
+  }
+
+  return [];
+}
+
+function testimonialItems(section: FieldSection) {
+  const records = getRepeatedRecords(section, ["testimonials", "items"]);
+
+  if (records.length > 0) {
+    return records.map((record, index) => ({
+      author: record.author ?? `Customer ${index + 1}`,
+      city: record.city ?? record.detail ?? "",
+      detail: record.detail ?? record.city ?? "",
+      quote: record.quote ?? record.title ?? "",
+      service: record.service ?? record.detail ?? "",
+    }));
+  }
+
+  const values = getListValues(section, ["testimonials", "items"], "");
+
+  return values.length > 0
+    ? values.map((value, index) => ({
+        author: `Customer ${index + 1}`,
+        city: "",
+        detail: "",
+        quote: value,
+        service: "",
+      }))
+    : sectionLibraryV3Content.testimonialsMasonry.items.map((item) => ({
+        ...item,
+        city: "",
+        service: item.detail,
+      }));
+}
+
+function faqItems(section: FieldSection) {
+  const records = getRepeatedRecords(section, ["faqs", "faqItems", "items"]);
+
+  if (records.length > 0) {
+    return records.map((record) => ({
+      answer: record.answer ?? record.body ?? "",
+      question: record.question ?? record.title ?? "",
+    }));
+  }
+
+  return sectionLibraryV3Content.faqAccordion.items;
+}
+
+function parseCardItem(value: string) {
+  const [title, ...bodyParts] = value.split(/\s+[—-]\s+/);
+  const body = bodyParts.join(" - ").trim();
+
+  return {
+    body,
+    imageLabel: title.trim(),
+    title: title.trim(),
+  };
+}
+
+function parseLink(value: string) {
+  const [label, href] = value.split(/\s*->\s*/);
+
+  return {
+    href: href?.trim() || "#",
+    label: label?.trim() || value,
+  };
+}
+
+function splitItems(value: string) {
+  const normalizedValue = value.trim();
+
+  if (!normalizedValue) {
+    return [];
+  }
+
+  const hasLineBreaks = /\r?\n/.test(normalizedValue);
+  const separator = hasLineBreaks ? /\r?\n/ : /,|;/;
+
+  return normalizedValue
+    .split(separator)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function stripLabel(value: string) {
+  return value.replace(/^[^:]+:\s*/, "").trim();
+}
