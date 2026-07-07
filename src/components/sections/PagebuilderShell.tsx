@@ -268,9 +268,9 @@ function createInitialWorkingStack(
 }
 
 function createInitialLayoutSlots(recipe: PagebuilderRecipe) {
-  return Array.from({ length: 3 }, (_, index) => ({
+  return Array.from({ length: 1 }, (_, index) => ({
     designStyle: createInitialDesignStyle(),
-    name: `Option ${index + 1}`,
+    name: "Page Layout",
     stack: createInitialWorkingStack(recipe, index),
   }));
 }
@@ -301,8 +301,7 @@ function applySavedOptionsToLayoutSlots(
       const savedOption = savedOptions.find(
         (option) =>
           option.recipeId === recipe?.id &&
-          option.optionIndex === slotIndex &&
-          option.optionName === slot.name,
+          option.optionIndex === slotIndex,
       );
 
       if (!savedOption) {
@@ -830,9 +829,9 @@ export function PagebuilderShell({
   const [layoutSlots, setLayoutSlots] = useState<PageLayoutSlot[][]>(() =>
     recipes.map((recipe) => createInitialLayoutSlots(recipe)),
   );
-  const [activeLayoutSlotIndexes, setActiveLayoutSlotIndexes] = useState<
-    number[]
-  >(() => recipes.map(() => 0));
+  const [activeLayoutSlotIndexes] = useState<number[]>(() =>
+    recipes.map(() => 0),
+  );
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(
     null,
   );
@@ -874,7 +873,7 @@ export function PagebuilderShell({
   const activeDesignStyle =
     activeLayoutSlot?.designStyle ?? createInitialDesignStyle();
   const activeStack = activeLayoutSlot?.stack ?? [];
-  const activeSlotLabel = activeLayoutSlot?.name ?? "Option 1";
+  const activeSlotLabel = activeLayoutSlot?.name ?? "Page Layout";
   const selectedSection =
     activeStack.find((section) => section.id === selectedSectionId) ?? null;
   const selectedViewport =
@@ -883,7 +882,7 @@ export function PagebuilderShell({
   const includedSections = activeStack.filter((section) => section.included);
   const excludedSections = activeStack.filter((section) => !section.included);
   const pageInstruction = buildPageInstruction({
-    designLabel: `${activePageLabel} - ${activeSlotLabel}`,
+    designLabel: activePageLabel,
     excludedSections,
     includedSections,
     recipe: activeRecipe,
@@ -900,7 +899,7 @@ export function PagebuilderShell({
         viewportOptions[0];
 
       return buildPageInstruction({
-        designLabel: `${recipe.name} - ${slot?.name ?? "Option 1"}`,
+        designLabel: recipe.name,
         excludedSections: stack.filter((section) => !section.included),
         includedSections: stack.filter((section) => section.included),
         recipe,
@@ -971,15 +970,6 @@ export function PagebuilderShell({
           : recipeSlots,
       ),
     );
-  }
-
-  function switchLayoutSlot(recipeIndex: number, slotIndex: number) {
-    setActiveLayoutSlotIndexes((currentIndexes) =>
-      currentIndexes.map((currentIndex, index) =>
-        index === recipeIndex ? slotIndex : currentIndex,
-      ),
-    );
-    setSelectedSectionId(null);
   }
 
   function moveSection(sectionId: string, direction: -1 | 1) {
@@ -1218,23 +1208,23 @@ export function PagebuilderShell({
 
       if (!response.ok || !result.ok) {
         setOptionSaveError(
-          result.ok ? "Pagebuilder option save failed." : result.error,
+          result.ok ? "Pagebuilder layout save failed." : result.error,
         );
         return;
       }
 
       setOptionSaveStatus(
-        `Saved ${activePageLabel} / ${activeSlotLabel} with ${result.option.sectionCount} included sections.`,
+        `Saved ${activePageLabel} layout with ${result.option.sectionCount} included sections.`,
       );
     } catch {
-      setOptionSaveError("Pagebuilder option save failed.");
+      setOptionSaveError("Pagebuilder layout save failed.");
     } finally {
       setIsSavingOption(false);
     }
   }
 
   function openTemplateModal() {
-    const defaultName = `${activePageLabel} - ${activeSlotLabel}`;
+    const defaultName = `${activePageLabel} Template`;
 
     setTemplateName(defaultName);
     setTemplateSlug(slugifyTemplateName(defaultName));
@@ -1378,7 +1368,7 @@ export function PagebuilderShell({
 
     return (
       <PagebuilderPreviewWindow
-        activePageLabel={`${activePageLabel} / ${activeSlotLabel}`}
+        activePageLabel={activePageLabel}
         contentClassName={selectedViewport.contentClassName}
         frameClassName={selectedViewport.frameClassName}
         key={`${activeRecipe.id}-${activeLayoutSlotIndex}-${selectedViewport.id}-${previewRefreshKey}`}
@@ -1445,7 +1435,7 @@ export function PagebuilderShell({
                 Page Builder
               </h1>
               <p className="type-text-sm wrap-pretty mt-heading-body-sm text-white/68">
-                Choose, swap, reorder, and preview homepage sections while the
+                Choose, swap, reorder, and preview page sections while the
                 implementation brief updates with the live stack.
               </p>
             </div>
@@ -1455,11 +1445,8 @@ export function PagebuilderShell({
                 Page Layouts
               </h2>
               <div className="mt-4 grid gap-3" role="list">
-                {recipes.map((recipe, recipeIndex) => {
+                {recipes.map((recipe) => {
                   const isActive = recipe.id === activeRecipe.id;
-                  const recipeSlotIndex =
-                    activeLayoutSlotIndexes[recipeIndex] ?? 0;
-                  const recipeSlots = layoutSlots[recipeIndex] ?? [];
 
                   return (
                     <div className="grid gap-2" key={recipe.id}>
@@ -1482,34 +1469,6 @@ export function PagebuilderShell({
 
                       {isActive ? (
                         <div className="grid gap-2">
-                          <div
-                            aria-label={`${recipe.name} stored layout options`}
-                            className="grid grid-cols-3 gap-1.5"
-                          >
-                            {recipeSlots.map((slot, slotIndex) => {
-                              const isSlotActive =
-                                slotIndex === recipeSlotIndex;
-
-                              return (
-                                <button
-                                  aria-pressed={isSlotActive}
-                                  className={cx(
-                                    "radius-4 min-h-8 border px-2 text-left text-xs font-semibold transition-colors",
-                                    isSlotActive
-                                      ? "border-white/55 bg-white/20 text-white shadow-[inset_0_1px_0_rgb(255_255_255_/_0.12)]"
-                                      : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
-                                  )}
-                                  key={slot.name}
-                                  onClick={() =>
-                                    switchLayoutSlot(recipeIndex, slotIndex)
-                                  }
-                                  type="button"
-                                >
-                                  {slot.name}
-                                </button>
-                              );
-                            })}
-                          </div>
                           <div className="flex flex-wrap gap-2">
                             <button
                               className="radius-4 min-h-9 border border-white/35 bg-white px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-60"
@@ -1517,14 +1476,14 @@ export function PagebuilderShell({
                               onClick={() => void saveActiveOption()}
                               type="button"
                             >
-                              {isSavingOption ? "Saving..." : "Save Option"}
+                              {isSavingOption ? "Saving..." : "Save Layout"}
                             </button>
                             <button
                               className="radius-4 min-h-9 border border-white/20 bg-white/10 px-2.5 text-xs font-semibold text-white transition-colors hover:border-white/45 hover:bg-white/16"
                               onClick={openTemplateModal}
                               type="button"
                             >
-                              Promote Option to Template
+                              Promote Layout
                             </button>
                           </div>
                           {optionSaveStatus || optionSaveError ? (
@@ -2027,20 +1986,20 @@ export function PagebuilderShell({
                       onClick={() => void saveActiveOption()}
                       type="button"
                     >
-                      {isSavingOption ? "Saving..." : "Save Option"}
+                      {isSavingOption ? "Saving..." : "Save Layout"}
                     </button>
                     <button
                       className="radius-4 min-h-11 shrink-0 border border-service-border bg-white px-3 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
                       onClick={openTemplateModal}
                       type="button"
                     >
-                      Promote Option to Template
+                      Promote Layout to Template
                     </button>
                   </div>
 
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {[
-                      `Option: ${activeSlotLabel}`,
+                      `Layout: ${activeSlotLabel}`,
                       `Viewport: ${selectedViewport.label}`,
                       `Sections: ${includedSections.length}`,
                       "Normal spacing",
@@ -2093,7 +2052,7 @@ export function PagebuilderShell({
                         Rendered Preview
                       </span>
                       <span className="type-heading-sm mt-2 block text-service-ink">
-                        {activePageLabel} / {activeSlotLabel} page body
+                        {activePageLabel} page body
                       </span>
                     </span>
                     <span className="flex flex-wrap justify-end gap-2">
@@ -2346,13 +2305,13 @@ export function PagebuilderShell({
                           onClick={copyAllLayoutInstructions}
                           type="button"
                         >
-                          Copy All Layouts
+                          Copy All Page Instructions
                         </button>
                       </div>
                     </div>
                     <div className="rounded border border-service-border bg-service-surface p-4">
                       <p className="type-caption font-semibold text-service-ink">
-                        Use {activePageLabel} / {activeSlotLabel}
+                        Use {activePageLabel}
                       </p>
                       <p className="type-caption mt-2 text-service-muted">
                         {activeRecipe.positioning}
@@ -2462,16 +2421,16 @@ export function PagebuilderShell({
             role="dialog"
           >
             <p className="type-label text-service-accent">
-              Promote option to template
+              Promote layout to template
             </p>
             <h3
               className="type-heading-sm mt-3 text-service-ink"
               id="pagebuilder-template-promotion-title"
             >
-              Save {activePageLabel} / {activeSlotLabel}
+              Save {activePageLabel}
             </h3>
             <p className="type-text-sm mt-3 text-service-muted">
-              This saves the active option as a reusable page template with its
+              This saves the active page layout as a reusable page template with its
               current included section order, swaps, variants, and layout
               settings.
             </p>
@@ -2539,7 +2498,7 @@ export function PagebuilderShell({
               >
                 {isPromotingTemplate
                   ? "Promoting..."
-                  : "Promote Option to Template"}
+                  : "Promote Layout to Template"}
               </button>
             </div>
           </div>
@@ -2561,7 +2520,7 @@ export function PagebuilderShell({
             <div className="flex flex-wrap items-center justify-between gap-3 rounded border border-white/15 bg-white px-3 py-2 shadow-service">
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-service-ink">
-                  {activePageLabel} / {activeSlotLabel}
+                  {activePageLabel}
                 </p>
                 <p className="type-caption truncate text-service-muted">
                   {selectedViewport.sizeLabel} preview

@@ -98,7 +98,36 @@ export function getDefaultPageSlug(pageType: string, templateName: string) {
     return "home";
   }
 
-  if (normalized.includes("service")) {
+  if (normalized.includes("service area")) {
+    return "service-area";
+  }
+
+  if (normalized.includes("service plan")) {
+    return "service-plan";
+  }
+
+  if (
+    normalized.includes("special") ||
+    normalized.includes("offer")
+  ) {
+    return "specials";
+  }
+
+  if (normalized.includes("financing")) {
+    return "financing";
+  }
+
+  if (
+    normalized.includes("individual service") ||
+    normalized.includes("service detail")
+  ) {
+    return "service";
+  }
+
+  if (
+    normalized.includes("services overview") ||
+    normalized.includes("services")
+  ) {
     return "services";
   }
 
@@ -112,6 +141,27 @@ export function getDefaultPageSlug(pageType: string, templateName: string) {
 
   if (normalized.includes("thank")) {
     return "thank-you";
+  }
+
+  if (
+    normalized.includes("blog index") ||
+    normalized.includes("blog listing")
+  ) {
+    return "blog";
+  }
+
+  if (
+    normalized.includes("blog post") ||
+    normalized.includes("individual blog")
+  ) {
+    return "blog-post";
+  }
+
+  if (
+    normalized.includes("product listing") ||
+    normalized.includes("products")
+  ) {
+    return "products";
   }
 
   return slugify(templateName);

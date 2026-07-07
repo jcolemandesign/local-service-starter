@@ -108,7 +108,7 @@ export const sectionModes: SectionMode[] = [
 export const pagebuilderRecipes: PagebuilderRecipe[] = [
   {
     id: "classic-service",
-    name: "homepage",
+    name: "Home",
     positioning: "Balanced homepage for a broad local service business.",
     styleRules: [
       "Use the corresponding Style Guide typography profile for type decisions.",
@@ -162,7 +162,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
   },
   {
     id: "conversion-heavy",
-    name: "about",
+    name: "About",
     positioning:
       "About page for explaining trust, process, credibility, and the business story without losing clear contact paths.",
     styleRules: [
@@ -224,7 +224,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
   },
   {
     id: "editorial-local",
-    name: "services",
+    name: "Services Overview",
     positioning:
       "Services overview page for helping visitors compare core offers, understand fit, and move toward the right next step.",
     styleRules: [
@@ -293,7 +293,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
   },
   {
     id: "compact-utility",
-    name: "individual service page",
+    name: "Individual Service",
     positioning:
       "Individual service page for making one offer easy to understand, trust, and act on.",
     styleRules: [
@@ -350,6 +350,411 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
         mode: "Utility",
         instruction:
           "End with service links, areas, contact details, and legal links.",
+      },
+    ],
+  },
+  {
+    id: "service-area",
+    name: "Service Area",
+    positioning:
+      "Service area page for confirming coverage, reinforcing local relevance, and routing visitors into a request path.",
+    styleRules: [
+      "Keep area confirmation and contact paths close together.",
+      "Use local proof without turning the page into thin location SEO copy.",
+      "Make service boundaries clear without overpromising urgent availability.",
+    ],
+    sectionStack: [
+      {
+        name: "Primary navigation",
+        component: "NavPrimarySectionV2",
+        mode: "Navigation",
+        instruction:
+          "Use the standard nav so local coverage visitors can still reach services, phone, and contact paths quickly.",
+      },
+      {
+        name: "Split content and full image",
+        component: "HeroSplitFullHeightSectionV3",
+        mode: "Hero",
+        instruction:
+          "Lead with the service area promise, primary towns, one request CTA, and one service CTA.",
+      },
+      {
+        name: "Service area zip lookup",
+        component: "ServiceAreaZipLookupSectionV3",
+        mode: "Utility",
+        instruction:
+          "List priority service areas and keep the map visual as an FPO coverage placeholder.",
+      },
+      {
+        name: "Services grid",
+        component: "ServicesThreeCardsRightSectionV3",
+        mode: "Scan",
+        instruction:
+          "Show the core services available across the coverage area with consistent short descriptions.",
+      },
+      {
+        name: "FAQ",
+        component: "FAQSectionV3",
+        mode: "Decision",
+        instruction:
+          "Answer coverage, timing, urgent availability, and nearby-town questions without guaranteeing service everywhere.",
+      },
+      {
+        name: "Contact section",
+        component: "ContactSectionV3",
+        mode: "Utility",
+        instruction:
+          "Close with phone, form, and a reminder that urgent issues should call directly.",
+      },
+    ],
+  },
+  {
+    id: "service-plan",
+    name: "Service Plan",
+    positioning:
+      "Service plan page for explaining memberships, maintenance plans, recurring care, and plan-fit decisions.",
+    styleRules: [
+      "Make inclusions, exclusions, and next steps easy to compare.",
+      "Use proof and FAQ to reduce skepticism around recurring plans.",
+      "Avoid exact pricing or terms unless they are confirmed.",
+    ],
+    sectionStack: [
+      {
+        name: "Primary navigation",
+        component: "NavPrimarySectionV2",
+        mode: "Navigation",
+        instruction:
+          "Use predictable service, plan, and contact paths for maintenance-plan shoppers.",
+      },
+      {
+        name: "Content top image bottom",
+        component: "HeroContentTopImageBottomSectionV2",
+        mode: "Hero",
+        instruction:
+          "Introduce the plan promise, who it is for, and one clear request path without inventing terms.",
+      },
+      {
+        name: "Process image checklist",
+        component: "ProcessImageChecklistSectionV3",
+        mode: "Decision",
+        instruction:
+          "Show what the plan may include, what needs confirmation, and how the visit cadence works.",
+      },
+      {
+        name: "Asymmetric feature cards",
+        component: "FeatureAsymmetricCardsSectionV3",
+        mode: "Narrative",
+        instruction:
+          "Explain plan benefits such as fewer surprises, seasonal reminders, priority scheduling, and clear records.",
+      },
+      {
+        name: "FAQ accordion",
+        component: "FAQAccordionSectionV3",
+        mode: "Decision",
+        instruction:
+          "Handle questions about pricing, cancellation, inclusions, emergency priority, and plan fit.",
+      },
+      {
+        name: "CTA",
+        component: "CTASectionV3",
+        mode: "Action",
+        instruction:
+          "Move visitors toward asking about the service plan or scheduling maintenance.",
+      },
+    ],
+  },
+  {
+    id: "specials-offers",
+    name: "Specials / Offers",
+    positioning:
+      "Offers page for current specials, seasonal promotions, and limited-time conversion moments.",
+    styleRules: [
+      "Keep eligibility and terms visible.",
+      "Do not imply expired or unverified offers are active.",
+      "Use offer urgency carefully and without pressure-heavy copy.",
+    ],
+    sectionStack: [
+      {
+        name: "Primary navigation",
+        component: "NavPrimarySectionV2",
+        mode: "Navigation",
+        instruction:
+          "Keep services, contact, and phone available while visitors inspect the offer.",
+      },
+      {
+        name: "Fullscreen image hero",
+        component: "HeroFullscreenSectionV2",
+        mode: "Hero",
+        instruction:
+          "Lead with the offer category, eligibility note, and one claim path without unsupported savings details.",
+      },
+      {
+        name: "Scroll reveal offer conversion",
+        component: "CTAScrollRevealOfferSectionV3",
+        mode: "Action",
+        instruction:
+          "Feature the current offer, terms, and request action in a high-clarity conversion treatment.",
+      },
+      {
+        name: "FAQ accordion",
+        component: "FAQAccordionSectionV3",
+        mode: "Decision",
+        instruction:
+          "Answer offer eligibility, expiration, service fit, and financing/payment questions.",
+      },
+      {
+        name: "Contact section",
+        component: "ContactSectionV3",
+        mode: "Utility",
+        instruction:
+          "Close with a simple request form and phone path for offer questions.",
+      },
+    ],
+  },
+  {
+    id: "financing",
+    name: "Financing",
+    positioning:
+      "Financing page for replacement or larger-ticket service decisions where visitors need cautious terms and next steps.",
+    styleRules: [
+      "Avoid exact terms, rates, or approval claims unless verified.",
+      "Pair financing copy with replacement and estimate context.",
+      "Keep disclosures and qualification caveats visible.",
+    ],
+    sectionStack: [
+      {
+        name: "Center logo navigation",
+        component: "NavCenterLogoSectionV2",
+        mode: "Navigation",
+        instruction:
+          "Use a calm nav for a high-consideration decision page with easy contact access.",
+      },
+      {
+        name: "Split content and full image",
+        component: "HeroSplitFullHeightSectionV3",
+        mode: "Hero",
+        instruction:
+          "Explain financing availability cautiously with one estimate CTA and one services/replacement path.",
+      },
+      {
+        name: "Process steps",
+        component: "ProcessStepsSectionV3",
+        mode: "Decision",
+        instruction:
+          "Show the basic path from estimate to application/approval to installation without inventing provider details.",
+      },
+      {
+        name: "FAQ accordion",
+        component: "FAQAccordionSectionV3",
+        mode: "Decision",
+        instruction:
+          "Answer eligibility, terms, credit, payment timing, and what must be confirmed before final copy.",
+      },
+      {
+        name: "CTA",
+        component: "CTASectionV3",
+        mode: "Action",
+        instruction:
+          "Prompt visitors to request a replacement estimate or ask about financing options.",
+      },
+    ],
+  },
+  {
+    id: "contact",
+    name: "Contact",
+    positioning:
+      "Contact page for turning service intent into a clear request, phone call, or quote path.",
+    styleRules: [
+      "Keep phone, form, hours, and service area visible.",
+      "Separate urgent call behavior from non-urgent request behavior.",
+      "Avoid adding extra content that distracts from contact completion.",
+    ],
+    sectionStack: [
+      {
+        name: "Primary navigation",
+        component: "NavPrimarySectionV2",
+        mode: "Navigation",
+        instruction:
+          "Use the standard nav with phone and request action visible.",
+      },
+      {
+        name: "Content top image bottom",
+        component: "HeroContentTopImageBottomSectionV2",
+        mode: "Hero",
+        instruction:
+          "State how to contact the business, when to call, and what happens after the form is submitted.",
+      },
+      {
+        name: "Contact section",
+        component: "ContactSectionV3",
+        mode: "Utility",
+        instruction:
+          "Show phone, hours, email if approved, service area, and a concise request form.",
+      },
+      {
+        name: "Service area zip lookup",
+        component: "ServiceAreaZipLookupSectionV3",
+        mode: "Utility",
+        instruction:
+          "Let visitors confirm whether they are in the service area before submitting.",
+      },
+      {
+        name: "FAQ",
+        component: "FAQSectionV3",
+        mode: "Decision",
+        instruction:
+          "Answer response timing, urgent issues, service area, and what information to include.",
+      },
+    ],
+  },
+  {
+    id: "blog-index",
+    name: "Blog Index",
+    positioning:
+      "Blog index page for organizing educational posts, seasonal advice, and service guidance.",
+    styleRules: [
+      "Keep browsing scannable and category-led.",
+      "Use content cards without overpowering service conversion paths.",
+      "Route readers back to service and contact pages when useful.",
+    ],
+    sectionStack: [
+      {
+        name: "Primary navigation",
+        component: "NavPrimarySectionV2",
+        mode: "Navigation",
+        instruction:
+          "Use standard navigation so education content still connects to service paths.",
+      },
+      {
+        name: "Grid mosaic hero",
+        component: "HeroGridMosaicSectionV2",
+        mode: "Hero",
+        instruction:
+          "Introduce the resource center and highlight the most useful seasonal or service topics.",
+      },
+      {
+        name: "Horizontal card carousel",
+        component: "ContentHorizontalCardCarouselSectionV2",
+        mode: "Scan",
+        instruction:
+          "Show featured posts, categories, or seasonal topics as browseable cards.",
+      },
+      {
+        name: "Services grid",
+        component: "ServicesThreeCardsRightSectionV3",
+        mode: "Scan",
+        instruction:
+          "Connect common article categories back to the related service paths.",
+      },
+      {
+        name: "CTA",
+        component: "CTASectionV3",
+        mode: "Action",
+        instruction:
+          "Invite visitors who need help now to request service instead of continuing to browse.",
+      },
+    ],
+  },
+  {
+    id: "blog-post",
+    name: "Blog Post",
+    positioning:
+      "Individual blog page for one educational article with useful service context and a soft conversion path.",
+    styleRules: [
+      "Prioritize readable article pacing.",
+      "Avoid making the article feel like a sales page.",
+      "Place related services and contact paths after the useful answer.",
+    ],
+    sectionStack: [
+      {
+        name: "Primary navigation",
+        component: "NavPrimarySectionV2",
+        mode: "Navigation",
+        instruction:
+          "Keep service and contact navigation visible above the article.",
+      },
+      {
+        name: "Content top image bottom",
+        component: "HeroContentTopImageBottomSectionV2",
+        mode: "Hero",
+        instruction:
+          "Use the article title as the h1 with a concise summary and supporting image.",
+      },
+      {
+        name: "Sticky ideas content",
+        component: "ContentStickyIdeasSectionV2",
+        mode: "Narrative",
+        instruction:
+          "Hold the core article takeaways beside readable explanatory copy.",
+      },
+      {
+        name: "FAQ accordion",
+        component: "FAQAccordionSectionV3",
+        mode: "Decision",
+        instruction:
+          "Answer related questions that naturally follow the article topic.",
+      },
+      {
+        name: "CTA",
+        component: "CTASectionV3",
+        mode: "Action",
+        instruction:
+          "Offer a soft next step for readers who realize they need service help.",
+      },
+    ],
+  },
+  {
+    id: "product-listing",
+    name: "Product Listing",
+    positioning:
+      "Product listing page for equipment, systems, or packaged options that need comparison before contact.",
+    styleRules: [
+      "Keep product claims factual and easy to compare.",
+      "Use cards for options and FAQ for fit questions.",
+      "Avoid exact specs, rebates, or warranty claims unless verified.",
+    ],
+    sectionStack: [
+      {
+        name: "Primary navigation",
+        component: "NavPrimarySectionV2",
+        mode: "Navigation",
+        instruction:
+          "Keep service, financing, and contact paths visible while visitors compare options.",
+      },
+      {
+        name: "Grid mosaic hero",
+        component: "HeroGridMosaicSectionV2",
+        mode: "Hero",
+        instruction:
+          "Frame the product category, comparison need, and request-estimate action.",
+      },
+      {
+        name: "Services bento cards",
+        component: "ServicesBentoCardsSectionV2",
+        mode: "Scan",
+        instruction:
+          "Use cards as product or system option tiles with short fit-focused descriptions.",
+      },
+      {
+        name: "Process steps",
+        component: "ProcessStepsSectionV3",
+        mode: "Decision",
+        instruction:
+          "Explain how visitors move from product interest to recommendation, estimate, and installation.",
+      },
+      {
+        name: "FAQ accordion",
+        component: "FAQAccordionSectionV3",
+        mode: "Decision",
+        instruction:
+          "Answer sizing, compatibility, financing, warranty, and estimate questions cautiously.",
+      },
+      {
+        name: "Contact section",
+        component: "ContactSectionV3",
+        mode: "Utility",
+        instruction:
+          "Close with a request path for help choosing the right product or system.",
       },
     ],
   },
