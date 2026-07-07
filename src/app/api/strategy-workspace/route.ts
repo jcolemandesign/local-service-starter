@@ -1,4 +1,5 @@
 import {
+  readStrategyWorkspace,
   sanitizeClientSlug,
   writeStrategyWorkspace,
   type StrategyWorkspaceFields,
@@ -11,6 +12,36 @@ type StrategyWorkspaceSaveRequest = {
   clientSlug?: unknown;
   fields?: Partial<StrategyWorkspaceFields>;
 };
+
+export async function GET(request: Request) {
+  if (
+    process.env.NODE_ENV === "production" &&
+    process.env.ENABLE_DEV_ROUTES !== "true"
+  ) {
+    return jsonError("Strategy workspace reads are disabled in production.", 403);
+  }
+
+  const url = new URL(request.url);
+  const clientSlug = sanitizeClientSlug(url.searchParams.get("clientSlug"));
+
+  if (!clientSlug) {
+    return jsonError("Missing project slug.", 400);
+  }
+
+  try {
+    const workspace = await readStrategyWorkspace(clientSlug);
+
+    return Response.json({
+      ok: true,
+      workspace,
+    });
+  } catch (error) {
+    return jsonError(
+      error instanceof Error ? error.message : "Strategy workspace read failed.",
+      400,
+    );
+  }
+}
 
 export async function POST(request: Request) {
   if (

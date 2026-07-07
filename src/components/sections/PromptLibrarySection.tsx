@@ -57,21 +57,111 @@ function copyWithFallback(value: string) {
 }
 
 type PromptLibrarySectionProps = {
+  clientSlug: string;
+  stagedPageContracts: StagedPageContract[];
   strategyDigestText: string;
   strategyWorkspaceFields: StrategyWorkspaceFields | null;
 };
 
+type StagedPageContract = {
+  contract: string;
+  pageHref: string;
+  pageId: string;
+  pageLabel: string;
+  pageType: string;
+  templateName: string;
+};
+
+type PromptLibraryWorkspaceResponse =
+  | {
+      ok: true;
+      workspace: {
+        fields: StrategyWorkspaceFields;
+      };
+    }
+  | {
+      ok: false;
+    };
+
+const finalPageOptions = [
+  {
+    fieldKey: "homepageCopy",
+    href: "/",
+    id: "homepage",
+    label: "Homepage",
+    pageType: "home",
+    promptValue: "Homepage",
+  },
+  {
+    fieldKey: "servicesCopy",
+    href: "/services",
+    id: "services",
+    label: "Services",
+    pageType: "services",
+    promptValue: "Services",
+  },
+  {
+    fieldKey: "aboutCopy",
+    href: "/about",
+    id: "about",
+    label: "About",
+    pageType: "about",
+    promptValue: "About",
+  },
+  {
+    fieldKey: "contactCopy",
+    href: "/contact",
+    id: "contact",
+    label: "Contact",
+    pageType: "contact",
+    promptValue: "Contact",
+  },
+  {
+    fieldKey: "thankYouCopy",
+    href: "/thank-you",
+    id: "thank-you",
+    label: "Thank You",
+    pageType: "thank-you",
+    promptValue: "Thank You",
+  },
+] satisfies Array<{
+  fieldKey: keyof StrategyWorkspaceFields;
+  href: string;
+  id: string;
+  label: string;
+  pageType: string;
+  promptValue: string;
+}>;
+
 export function PromptLibrarySection({
+  clientSlug,
+  stagedPageContracts,
   strategyDigestText,
   strategyWorkspaceFields,
 }: PromptLibrarySectionProps) {
   const [copiedPromptId, setCopiedPromptId] = useState("");
+  const [selectedFinalPageId, setSelectedFinalPageId] = useState(
+    finalPageOptions[0].id,
+  );
+  const selectedFinalPage =
+    finalPageOptions.find((page) => page.id === selectedFinalPageId) ??
+    finalPageOptions[0];
+  const selectedFinalPageContract = findStagedPageContract(
+    stagedPageContracts,
+    selectedFinalPage,
+  );
 
   async function copyPrompt(prompt: PromptLibraryPrompt) {
+    const freshWorkspaceFields = await readFreshWorkspaceFields({
+      clientSlug,
+      fallbackFields: strategyWorkspaceFields,
+    });
     const clipboardPrompt = buildClipboardPrompt({
       prompt,
+      selectedFinalPage,
+      selectedFinalPageContract,
       strategyDigestText,
-      strategyWorkspaceFields,
+      strategyWorkspaceFields: freshWorkspaceFields,
     });
 
     try {
@@ -177,6 +267,27 @@ export function PromptLibrarySection({
                       </div>
 
                       <div className="flex shrink-0 flex-wrap gap-2">
+                        {prompt.id === "final-page-copy" ? (
+                          <label
+                            className="type-caption grid gap-1 font-semibold text-service-muted"
+                            onClick={(event) => event.stopPropagation()}
+                          >
+                            Page
+                            <select
+                              className="min-h-11 rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
+                              value={selectedFinalPageId}
+                              onChange={(event) =>
+                                setSelectedFinalPageId(event.target.value)
+                              }
+                            >
+                              {finalPageOptions.map((page) => (
+                                <option key={page.id} value={page.id}>
+                                  {page.label}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                        ) : null}
                         <button
                           className="radius-button inline-flex min-h-11 items-center justify-center border border-service-border px-4 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent"
                           onClick={(event) => {
@@ -194,6 +305,22 @@ export function PromptLibrarySection({
                     </summary>
 
                     <div className="grid card-grid-gap-med border-t border-service-border bg-white p-5">
+                      {prompt.id === "final-page-copy" ? (
+                        <div className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-4">
+                          <p className="type-label text-service-accent">
+                            Phase 4 target
+                          </p>
+                          <p className="type-text-sm mt-2 text-service-muted">
+                            Copy Prompt will set Page to write to{" "}
+                            <span className="font-semibold text-service-ink">
+                              {selectedFinalPage.promptValue}
+                            </span>
+                            {selectedFinalPageContract
+                              ? ` and insert the staged template contract for ${selectedFinalPageContract.templateName}.`
+                              : ". No staged template contract is available for this page yet."}
+                          </p>
+                        </div>
+                      ) : null}
                       <div>
                         <p className="type-label text-service-muted">
                           Required inputs
@@ -248,10 +375,14 @@ function HydrationPill({
 function buildClipboardPrompt(
   {
     prompt,
+    selectedFinalPage,
+    selectedFinalPageContract,
     strategyDigestText,
     strategyWorkspaceFields,
   }: {
     prompt: PromptLibraryPrompt;
+    selectedFinalPage: (typeof finalPageOptions)[number];
+    selectedFinalPageContract: StagedPageContract | undefined;
     strategyDigestText: string;
     strategyWorkspaceFields: StrategyWorkspaceFields | null;
   },
@@ -268,10 +399,15 @@ function buildClipboardPrompt(
   }
 
   if (!strategyWorkspaceFields) {
-    return clipboardPrompt;
+    return hydrateFinalPagePrompt({
+      clipboardPrompt,
+      prompt,
+      selectedFinalPage,
+      selectedFinalPageContract,
+    });
   }
 
-  return workspacePromptPlaceholders.reduce((currentPrompt, replacement) => {
+  clipboardPrompt = workspacePromptPlaceholders.reduce((currentPrompt, replacement) => {
     const fieldValue = strategyWorkspaceFields[replacement.key].trim();
 
     if (!fieldValue) {
@@ -283,4 +419,96 @@ function buildClipboardPrompt(
       currentPrompt,
     );
   }, clipboardPrompt);
+
+  return hydrateFinalPagePrompt({
+    clipboardPrompt,
+    prompt,
+    selectedFinalPage,
+    selectedFinalPageContract,
+  });
+}
+
+function hydrateFinalPagePrompt({
+  clipboardPrompt,
+  prompt,
+  selectedFinalPage,
+  selectedFinalPageContract,
+}: {
+  clipboardPrompt: string;
+  prompt: PromptLibraryPrompt;
+  selectedFinalPage: (typeof finalPageOptions)[number];
+  selectedFinalPageContract: StagedPageContract | undefined;
+}) {
+  if (prompt.id !== "final-page-copy") {
+    return clipboardPrompt;
+  }
+
+  let hydratedPrompt = clipboardPrompt.replaceAll(
+    "[Homepage / Services / About / Contact / Thank You / Specific service page / Landing page]",
+    selectedFinalPage.promptValue,
+  );
+
+  if (selectedFinalPageContract?.contract.trim()) {
+    hydratedPrompt = hydratedPrompt.replaceAll(
+      "[paste Template Copy Contract here]",
+      selectedFinalPageContract.contract.trim(),
+    );
+    hydratedPrompt = hydratedPrompt.replaceAll(
+      "[paste selected template name here]",
+      selectedFinalPageContract.templateName,
+    );
+  }
+
+  return hydratedPrompt;
+}
+
+async function readFreshWorkspaceFields({
+  clientSlug,
+  fallbackFields,
+}: {
+  clientSlug: string;
+  fallbackFields: StrategyWorkspaceFields | null;
+}) {
+  if (!clientSlug) {
+    return fallbackFields;
+  }
+
+  try {
+    const response = await fetch(
+      `/api/strategy-workspace?clientSlug=${encodeURIComponent(clientSlug)}`,
+      { cache: "no-store" },
+    );
+    const result = (await response.json()) as PromptLibraryWorkspaceResponse;
+
+    if (!response.ok || !result.ok) {
+      return fallbackFields;
+    }
+
+    return result.workspace.fields;
+  } catch {
+    return fallbackFields;
+  }
+}
+
+function findStagedPageContract(
+  contracts: StagedPageContract[],
+  selectedPage: (typeof finalPageOptions)[number],
+) {
+  return contracts.find((contract) => {
+    const normalizedPageId = normalizePageKey(contract.pageId);
+    const normalizedPageLabel = normalizePageKey(contract.pageLabel);
+    const normalizedPageType = normalizePageKey(contract.pageType);
+
+    return (
+      contract.pageHref === selectedPage.href ||
+      normalizedPageId === selectedPage.id ||
+      normalizedPageLabel === normalizePageKey(selectedPage.label) ||
+      normalizedPageType === normalizePageKey(selectedPage.pageType) ||
+      normalizedPageId.includes(selectedPage.id)
+    );
+  });
+}
+
+function normalizePageKey(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
