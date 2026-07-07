@@ -16,11 +16,11 @@ export function ProjectWorkspacesSection({
           <div className="fluid-type-frame">
             <p className="type-label text-service-accent">Local Projects</p>
             <h1 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
-              Strategy workspaces
+              Workspace archive
             </h1>
             <p className="type-text-lg wrap-pretty mt-heading-body-md text-service-muted">
-              Local project folders with source packets and saved prompt-library
-              workspace files.
+              Saved local project folders with source packets, strategy files,
+              and version history.
             </p>
           </div>
 

@@ -12,7 +12,7 @@ export const promptLibraryWorkflow = [
   "Paste the strategy digest plus Supplemental research into Phase 2.",
   "Paste the Strategy Brief plus strategy digest into Phase 3.",
   "Choose a page template, then copy its Template Copy Contract from the Template Library.",
-  "Run Phase 4 once per page using the strategy digest, page plan, and Template Copy Contract.",
+  "Run Phase 4 once per page using the strategy digest, selected page context from the Strategy Workspace, and Template Copy Contract.",
   "Review the output manually, move approved fields into the page content editor, then stage the page.",
 ];
 
@@ -962,23 +962,23 @@ Website Strategy Brief:
   {
     id: "final-page-copy",
     title:
-      "Strategy Digest + Page Plan + Template Contract to Page Copy",
+      "Strategy Digest + Selected Page Context + Template Contract to Page Copy",
     description:
       "Writes paste-ready field-level copy for one selected page template at a time.",
     inputs: [
       "Strategy digest",
       "Website Strategy Brief",
-      "Page-specific plan from the sitemap/content plan",
+      "Selected page context from the Strategy Workspace",
       "Template Copy Contract",
       "Manual editor notes, if any",
     ],
     prompt: String.raw`You are writing template-fitted website copy for one local service business page.
 
 Use the Strategy Digest as the factual boundary.
-Use the Website Strategy Brief and page-specific plan as strategic direction.
-Use the Template Copy Contract as the required page structure.
+Use the Website Strategy Brief and selected page context from the Strategy Workspace as strategic direction.
+Use the Template Copy Contract as the required page structure and field contract.
 
-If the Website Strategy Brief, page plan, manual notes, or Template Copy Contract conflict with the Strategy Digest, follow the Strategy Digest and flag the conflict.
+If the Website Strategy Brief, selected page context, manual notes, or Template Copy Contract conflict with the Strategy Digest, follow the Strategy Digest and flag the conflict.
 
 Write copy for this page only:
 
@@ -1012,7 +1012,9 @@ The page template has already been chosen. Do not redesign the page, recommend a
 
 Write to the fields in the Template Copy Contract. Preserve every section ID and field name exactly.
 
-The primary output must be paste-ready for the Content Editor Bulk Paste Copy box.
+The output must be structured enough for a bulk importer to read safely. Treat every field name as a real destination field, not as a loose writing suggestion.
+
+The primary output must be paste-ready for the matching page copy field in the Strategy Workspace or the Content Editor Bulk Paste Copy box.
 
 If a field is not appropriate for the available source material, write NEEDS REVIEW and explain the missing detail briefly.
 
@@ -1026,7 +1028,7 @@ Return the response in this order:
 2. Copy Notes
 3. Copy QA
 
-Only the Bulk Paste Copy section should be pasted into the Content Editor.
+Only the Bulk Paste Copy section should be pasted into the Strategy Workspace page copy field or Content Editor. Copy Notes and Copy QA are for human review only.
 
 ---
 
@@ -1040,16 +1042,37 @@ Use this exact structure so it can be pasted directly into the Content Editor Bu
 fieldName: [copy]
 fieldName: [copy]
 
-Rules:
+Core rules:
 
 - Use the exact section IDs from the Template Copy Contract.
 - Use the exact field names from the Template Copy Contract.
 - Do not include Section name, Semantic role, Template intent, Image/content note, or any other labels inside the Bulk Paste Copy section.
 - Do not add bullets before field names.
 - Do not wrap the Bulk Paste Copy section in a code fence.
-- Multi-sentence or multi-line field copy is allowed under the field label.
 - Every requested copy field from the contract must appear once.
 - If a field cannot be safely written from the source material, write NEEDS REVIEW: [missing detail].
+- Do not put page titles, meta descriptions, SEO notes, CTA notes, internal rationale, QA notes, or strategy commentary inside rendered copy fields.
+- Do not use markdown headings inside field values.
+- Do not use comma-separated lists for repeatable content fields.
+
+Field formatting rules:
+
+- Each field must start at the beginning of a new line as fieldName: value.
+- Short text fields should stay on one line.
+- Longer body fields may use multiple sentences, but keep them under the same field label.
+- Repeatable list/card fields must use one item per line under the field label.
+- If a repeatable item has a title and description, format it as Title — Description.
+- If a repeatable item is only a short proof point, write one proof point per line.
+- Do not split one repeatable item across multiple lines.
+- Do not use semicolons or commas to separate repeatable items.
+
+Special field rules:
+
+- navLinks must use one link per line in this format: Label -> /url-slug
+- footerLinks must use one link group or link per line. Use Label -> /url-slug for direct links when possible.
+- legalLine must contain only the legal/copyright line. Never place Copy Notes, SEO notes, or page strategy notes in legalLine.
+- primaryAction and secondaryAction should be button labels only, unless the contract specifically asks for a URL too.
+- proofPoints, items, serviceItems, supportingItems, testimonials, faqItems, and similar repeatable fields should use the repeatable list/card rules above.
 
 Example:
 
@@ -1064,6 +1087,12 @@ heading: Local service with clear recommendations
 items: 12 years in business
 Licensed and insured
 Clean, respectful service
+
+### 04-services
+heading: Services for Lake Norman homes
+serviceItems: HVAC Repair — Get help diagnosing AC, heating, and system issues before choosing the next step.
+System Replacement — Compare repair and replacement options with clear recommendations.
+Maintenance & Tune-Ups — Keep heating and cooling systems checked before peak-season demand.
 
 Keep copy sized to the field targets in the Template Copy Contract.
 
@@ -1088,6 +1117,8 @@ Then provide concise notes that should not be pasted into Content Editor:
 Do not keyword-stuff.
 
 Do not use markdown headings that look like section IDs in this notes area.
+
+Do not repeat full Bulk Paste Copy fields in this notes area.
 
 ---
 

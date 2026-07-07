@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/primitives/Button";
 import { Card } from "@/components/primitives/Card";
@@ -54,6 +55,11 @@ type TemplateDraft = {
   slug: string;
 };
 
+type StagedTemplateFeedback = {
+  pageLabel: string;
+  previewHref: string;
+};
+
 export function TemplateLibrarySection({
   strategySnapshots,
   templates,
@@ -77,6 +83,11 @@ export function TemplateLibrarySection({
   const [copiedContractTemplateId, setCopiedContractTemplateId] = useState("");
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
+  const [stagedTemplateFeedback, setStagedTemplateFeedback] = useState<
+    Record<string, StagedTemplateFeedback>
+  >({});
+  const activeClientSlug =
+    selectedClientSlug || strategySnapshots[0]?.clientSlug || "";
 
   const totalSections = templates.reduce(
     (sectionCount, template) => sectionCount + template.sectionCount,
@@ -93,6 +104,12 @@ export function TemplateLibrarySection({
     }));
     setStatus("");
     setError("");
+    setStagedTemplateFeedback((currentFeedback) => {
+      const nextFeedback = { ...currentFeedback };
+      delete nextFeedback[templateId];
+
+      return nextFeedback;
+    });
   }
 
   async function copyTemplateContract(template: PageTemplateSummary) {
@@ -123,7 +140,7 @@ export function TemplateLibrarySection({
       slug: getDefaultPageSlug(template.pageType, template.name),
     };
     const selectedSnapshot = strategySnapshots.find(
-      (snapshot) => snapshot.clientSlug === selectedClientSlug,
+      (snapshot) => snapshot.clientSlug === activeClientSlug,
     );
 
     return buildTemplateCopyContract({
@@ -140,13 +157,19 @@ export function TemplateLibrarySection({
     setSubmittingTemplateId(template.id);
     setStatus("");
     setError("");
+    setStagedTemplateFeedback((currentFeedback) => {
+      const nextFeedback = { ...currentFeedback };
+      delete nextFeedback[template.id];
+
+      return nextFeedback;
+    });
 
     try {
       const response = await fetch("/api/staged-pages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          clientSlug: selectedClientSlug,
+          clientSlug: activeClientSlug,
           pageLabel: draft?.label ?? template.name,
           pageSlug:
             draft?.slug ?? getDefaultPageSlug(template.pageType, template.name),
@@ -165,6 +188,13 @@ export function TemplateLibrarySection({
       setStatus(
         `Template applied. ${result.page.pageLabel} is now staged and ready to edit.`,
       );
+      setStagedTemplateFeedback((currentFeedback) => ({
+        ...currentFeedback,
+        [template.id]: {
+          pageLabel: result.page.pageLabel,
+          previewHref: result.page.previewHref,
+        },
+      }));
     } catch {
       setError("Page staging failed.");
     } finally {
@@ -204,7 +234,7 @@ export function TemplateLibrarySection({
                 Strategy snapshot
                 <select
                   className="mt-2 block min-h-11 w-full max-w-lg rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
-                  value={selectedClientSlug}
+                  value={activeClientSlug}
                   onChange={(event) => {
                     setSelectedClientSlug(event.target.value);
                     setStatus("");
@@ -253,6 +283,7 @@ export function TemplateLibrarySection({
                 const isContractOpen = openContractTemplateId === template.id;
                 const isContractCopied = copiedContractTemplateId === template.id;
                 const contract = isContractOpen ? getTemplateContract(template) : "";
+                const stagedFeedback = stagedTemplateFeedback[template.id];
 
                 return (
                   <Card className="p-5 shadow-none" key={template.id}>
@@ -362,12 +393,37 @@ export function TemplateLibrarySection({
                         ) : null}
                         <button
                           className="radius-4 min-h-11 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent disabled:cursor-not-allowed disabled:opacity-60"
-                          disabled={isSubmitting || !selectedClientSlug}
+                          disabled={isSubmitting || !activeClientSlug}
                           onClick={() => void stageTemplate(template)}
                           type="button"
                         >
                           {isSubmitting ? "Staging..." : "Use Template"}
                         </button>
+                        {stagedFeedback ? (
+                          <div
+                            className="rounded-sm border border-green-200 bg-green-50 px-4 py-3 text-green-800"
+                            role="status"
+                          >
+                            <p className="type-caption font-semibold">
+                              Template applied. {stagedFeedback.pageLabel} is now
+                              staged and ready to edit.
+                            </p>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <Link
+                                className="radius-4 inline-flex min-h-10 items-center justify-center border border-green-300 bg-white px-4 text-sm font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
+                                href={stagedFeedback.previewHref}
+                              >
+                                Open staged page
+                              </Link>
+                              <Link
+                                className="radius-4 inline-flex min-h-10 items-center justify-center border border-green-300 bg-white px-4 text-sm font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
+                                href="/dev/staged-pages"
+                              >
+                                Open staged pages
+                              </Link>
+                            </div>
+                          </div>
+                        ) : null}
                       </div>
                     </div>
                   </Card>

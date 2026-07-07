@@ -6,6 +6,7 @@ import { Card, Section } from "@/components/primitives";
 import {
   buildStrategyNavigation,
   deriveStrategyPagesFromFields,
+  type StrategyPageStatus,
 } from "@/utils/strategy-site-map";
 import type {
   StrategyWorkspace,
@@ -21,8 +22,16 @@ type StrategyWorkspaceSectionProps = {
   clientSlug: string;
   initialWorkspace: StrategyWorkspace;
   packetSummary: StrategyWorkspacePacketSummary;
+  stagedPages: StagedStrategyPageSummary[];
   strategyDigestText: string;
   sourcePacketText: string;
+};
+
+type StagedStrategyPageSummary = {
+  pageId: string;
+  previewHref: string;
+  status: "staged" | "ready";
+  templateName: string;
 };
 
 const fieldGroups: {
@@ -41,7 +50,7 @@ const fieldGroups: {
     fields: [
       {
         key: "supplementalResearch",
-        label: "Supplemental research",
+        label: "Supplemental research (Phase 1 output)",
         minRows: 10,
         placeholder:
           "Paste optional context like GBP notes, current website research, call notes, competitor observations, or other source material. Copy this together with the strategy digest when running Phase 2.",
@@ -54,13 +63,13 @@ const fieldGroups: {
     fields: [
       {
         key: "strategyBrief",
-        label: "Website Strategy Brief",
+        label: "Website Strategy Brief (Phase 2 output)",
         minRows: 14,
         placeholder: "Paste Phase 2 output here.",
       },
       {
         key: "contentPlan",
-        label: "Website Content Plan",
+        label: "Website Content Plan (Phase 3 output)",
         minRows: 14,
         placeholder: "Paste Phase 3 output here.",
       },
@@ -121,6 +130,7 @@ export function StrategyWorkspaceSection({
   clientSlug,
   initialWorkspace,
   packetSummary,
+  stagedPages,
   strategyDigestText,
   sourcePacketText,
 }: StrategyWorkspaceSectionProps) {
@@ -148,6 +158,24 @@ export function StrategyWorkspaceSection({
   const strategyPages = useMemo(
     () => deriveStrategyPagesFromFields(fields),
     [fields],
+  );
+  const stagedPagesById = useMemo(
+    () => new Map(stagedPages.map((page) => [page.pageId, page])),
+    [stagedPages],
+  );
+  const assemblyPages = useMemo(
+    () =>
+      strategyPages.map((page) => {
+        const stagedPage = stagedPagesById.get(page.id);
+
+        return {
+          ...page,
+          previewHref: stagedPage?.previewHref ?? "",
+          status: stagedPage?.status ?? page.status,
+          templateName: stagedPage?.templateName ?? "",
+        };
+      }),
+    [stagedPagesById, strategyPages],
   );
   const navigation = useMemo(
     () => buildStrategyNavigation(strategyPages),
@@ -411,6 +439,8 @@ export function StrategyWorkspaceSection({
                   <Link
                     className={secondaryButtonClass}
                     href={`/dev/prompt-library?project=${clientSlug}`}
+                    rel="noreferrer"
+                    target="_blank"
                   >
                     Prompt library
                   </Link>
@@ -460,13 +490,18 @@ export function StrategyWorkspaceSection({
                 </div>
 
                 <div className="grid grid-cols-5 gap-3 max-lg:grid-cols-2 max-sm:grid-cols-1">
-                  {strategyPages.map((page) => (
+                  {assemblyPages.map((page) => (
                     <div
                       className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-3"
                       key={page.id}
                     >
-                      <p className="type-caption font-semibold text-service-accent">
-                        {page.detected ? "Needs Template" : "No Copy Yet"}
+                      <p
+                        className={`type-caption font-semibold ${getPageStatusClassName(
+                          page.detected,
+                          page.status,
+                        )}`}
+                      >
+                        {getPageStatusLabel(page.detected, page.status)}
                       </p>
                       <h3 className="mt-2 text-base font-semibold text-service-ink">
                         {page.label}
@@ -474,6 +509,19 @@ export function StrategyWorkspaceSection({
                       <p className="type-caption mt-1 text-service-muted">
                         {page.path}
                       </p>
+                      {page.templateName ? (
+                        <p className="type-caption mt-2 text-service-muted">
+                          {page.templateName}
+                        </p>
+                      ) : null}
+                      {page.previewHref ? (
+                        <Link
+                          className="type-caption mt-3 inline-flex font-semibold text-service-accent hover:text-service-ink"
+                          href={page.previewHref}
+                        >
+                          Open staged page
+                        </Link>
+                      ) : null}
                     </div>
                   ))}
                 </div>
@@ -649,6 +697,44 @@ function formatDate(value: string) {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date(value));
+}
+
+function getPageStatusLabel(
+  detected: boolean,
+  status: StrategyPageStatus,
+) {
+  if (!detected) {
+    return "No Copy Yet";
+  }
+
+  if (status === "ready") {
+    return "Ready";
+  }
+
+  if (status === "staged") {
+    return "Staged";
+  }
+
+  return "Needs Template";
+}
+
+function getPageStatusClassName(
+  detected: boolean,
+  status: StrategyPageStatus,
+) {
+  if (!detected) {
+    return "text-service-muted";
+  }
+
+  if (status === "ready") {
+    return "text-green-700";
+  }
+
+  if (status === "staged") {
+    return "text-service-accent";
+  }
+
+  return "text-amber-700";
 }
 
 const primaryButtonClass =

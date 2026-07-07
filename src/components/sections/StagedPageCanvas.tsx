@@ -82,7 +82,7 @@ function NavigationPreview({ section }: { section: RenderSection }) {
         </div>
         <nav className="flex flex-wrap items-center justify-center gap-5 text-sm text-service-ink">
           {navLinks.map((link) => (
-            <span key={link}>{link}</span>
+            <span key={link}>{getLinkLabel(link)}</span>
           ))}
         </nav>
         <div className="flex flex-wrap items-center gap-3">
@@ -147,7 +147,7 @@ function ServicesPreview({ section }: { section: RenderSection }) {
           "serviceItems",
           getValue(section, "items", "Service one\nService two\nService three"),
         ),
-      ).map((title) => ({ body: "", title }));
+      ).map(parseCardItem);
 
   return (
     <section className="bg-service-surface px-12 py-16 max-md:px-6">
@@ -413,10 +413,33 @@ function getRepeatedRecords(section: RenderSection, collectionNames: string[]) {
 }
 
 function splitItems(value: string) {
-  return value
-    .split(/\n|,|;/)
+  const normalizedValue = value.trim();
+
+  if (!normalizedValue) {
+    return [];
+  }
+
+  const hasLineBreaks = /\r?\n/.test(normalizedValue);
+  const separator = hasLineBreaks ? /\r?\n/ : /,|;/;
+
+  return normalizedValue
+    .split(separator)
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+function parseCardItem(value: string) {
+  const [title, ...bodyParts] = value.split(/\s+[—-]\s+/);
+  const body = bodyParts.join(" - ").trim();
+
+  return {
+    body,
+    title: title.trim(),
+  };
+}
+
+function getLinkLabel(value: string) {
+  return value.split(/\s*->\s*/)[0]?.trim() || value;
 }
 
 function slugify(value: string) {

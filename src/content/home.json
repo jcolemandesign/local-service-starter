@@ -37,9 +37,14 @@
           "description": "Copy the packet-based prompt set for strategy, content planning, and final page copy."
         },
         {
-          "label": "Strategy Workspaces",
+          "label": "Client Strategy",
+          "href": "/strategy",
+          "description": "Open the active client strategy workspace."
+        },
+        {
+          "label": "Workspace Archive",
           "href": "/dev/projects",
-          "description": "Open local project folders with packets, saved strategy work, and page-copy outputs."
+          "description": "Review saved project folders, packets, and workspace versions."
         },
         {
           "label": "Style guide",

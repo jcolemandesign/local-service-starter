@@ -20,7 +20,8 @@ const linkGroups = [
       { label: "Pagebuilder", href: "/dev/pagebuilder" },
       { label: "Template Library", href: "/dev/templates" },
       { label: "Prompt Library", href: "/dev/prompt-library" },
-      { label: "Strategy Workspaces", href: "/dev/projects" },
+      { label: "Client Strategy", href: "/strategy" },
+      { label: "Workspace Archive", href: "/dev/projects" },
     ],
   },
   {

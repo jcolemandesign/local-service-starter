@@ -8,7 +8,11 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 import { StagedPageCanvas } from "@/components/sections";
-import { readStagedPages, type StagedPage } from "@/utils/staged-pages";
+import {
+  extractBulkPasteCopy,
+  readStagedPages,
+  type StagedPage,
+} from "@/utils/staged-pages";
 
 export const metadata: Metadata = {
   title: "Staged Page Preview",
@@ -36,6 +40,9 @@ export default async function StagedPagePreview({
 
   const navigation = getNavigation(page, stagedPages);
   const pageCopy = page.fields.find((field) => field.path === "strategy.pageCopy");
+  const renderablePageCopy = pageCopy?.value
+    ? extractBulkPasteCopy(pageCopy.value)
+    : "";
   const sectionFields = page.fields.filter(
     (field) => !field.path.startsWith("strategy."),
   );
@@ -93,7 +100,7 @@ export default async function StagedPagePreview({
             <Card className="p-5 shadow-none">
               <p className="type-label text-service-accent">Strategy Copy</p>
               <div className="type-text-md mt-heading-body-md whitespace-pre-wrap text-service-ink">
-                {pageCopy?.value || "No strategy copy was found for this page."}
+                {renderablePageCopy || "No strategy copy was found for this page."}
               </div>
             </Card>
 

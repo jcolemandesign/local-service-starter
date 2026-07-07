@@ -6,9 +6,9 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export const metadata: Metadata = {
-  title: "Local Projects | Local Service Starter",
+  title: "Workspace Archive | Local Service Starter",
   description:
-    "Local project workspace index for generated packets and strategy workspaces.",
+    "Local project workspace archive for generated packets and saved strategy versions.",
 };
 
 export default async function ProjectWorkspacesPage() {

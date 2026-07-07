@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { StrategyWorkspaceSection } from "@/components/sections/StrategyWorkspaceSection";
+import { readStagedPages } from "@/utils/staged-pages";
 import { readStrategyDigestText } from "@/utils/strategy-digest";
 import {
   readSourcePacketText,
@@ -38,13 +39,28 @@ export default async function StrategyWorkspacePage({
     redirect(`/dev/projects/${clientSlug}/strategy`);
   }
 
-  const [workspace, packetSummary, sourcePacketText, strategyDigestText] =
+  const [
+    workspace,
+    packetSummary,
+    sourcePacketText,
+    strategyDigestText,
+    stagedPages,
+  ] =
     await Promise.all([
-    readStrategyWorkspace(clientSlug),
-    readStrategyWorkspacePacketSummary(clientSlug),
-    readSourcePacketText(clientSlug),
-    readStrategyDigestText(clientSlug),
-  ]);
+      readStrategyWorkspace(clientSlug),
+      readStrategyWorkspacePacketSummary(clientSlug),
+      readSourcePacketText(clientSlug),
+      readStrategyDigestText(clientSlug),
+      readStagedPages(),
+    ]);
+  const stagedPageSummaries = stagedPages
+    .filter((page) => page.snapshot.clientSlug === clientSlug)
+    .map((page) => ({
+      pageId: page.pageId,
+      previewHref: page.previewHref,
+      status: page.status,
+      templateName: page.template?.name ?? "",
+    }));
 
   return (
     <main>
@@ -52,6 +68,7 @@ export default async function StrategyWorkspacePage({
         clientSlug={clientSlug}
         initialWorkspace={workspace}
         packetSummary={packetSummary}
+        stagedPages={stagedPageSummaries}
         strategyDigestText={strategyDigestText}
         sourcePacketText={sourcePacketText}
       />
