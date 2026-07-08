@@ -7,8 +7,10 @@ export type StrategyPageSummary = {
   detected: boolean;
   id: string;
   label: string;
+  parentId?: string;
   pageType: string;
   path: string;
+  repeatable?: boolean;
   status: StrategyPageStatus;
 };
 
@@ -59,8 +61,10 @@ export const strategyPageSlots: StrategyPageDefinition[] = [
     copyField: "servicesCopy",
     id: "individual-service",
     label: "Individual Service",
+    parentId: "services",
     pageType: "Individual Service",
     path: "/services/[service]",
+    repeatable: true,
   },
   {
     aliases: ["service area", "service areas", "areas served", "coverage area"],
@@ -69,6 +73,7 @@ export const strategyPageSlots: StrategyPageDefinition[] = [
     label: "Service Area",
     pageType: "Service Area",
     path: "/service-area",
+    repeatable: true,
   },
   {
     aliases: [
@@ -143,8 +148,10 @@ export const strategyPageSlots: StrategyPageDefinition[] = [
     copyField: "contentPlan",
     id: "blog-post",
     label: "Blog Post",
+    parentId: "blog",
     pageType: "Blog Post",
     path: "/blog/[post]",
+    repeatable: true,
   },
   {
     aliases: [
@@ -159,6 +166,7 @@ export const strategyPageSlots: StrategyPageDefinition[] = [
     label: "Product Listing",
     pageType: "Product Listing",
     path: "/products",
+    repeatable: true,
   },
   {
     aliases: ["thank you", "thank-you", "confirmation page"],
@@ -180,8 +188,10 @@ export function deriveStrategyPagesFromFields(
     detected: detectedPageIds.has(slot.id),
     id: slot.id,
     label: slot.label,
+    parentId: slot.parentId,
     pageType: slot.pageType,
     path: slot.path,
+    repeatable: slot.repeatable,
     status: "needs-template",
   }));
 }
@@ -302,6 +312,68 @@ export function getPathFromSlug(slug: string) {
   return slug === "home" ? "/" : `/${slug}`;
 }
 
+export function getPathFromSlugForPageType(slug: string, pageType: string) {
+  const normalizedSlug = slugify(slug);
+  const normalizedPageType = normalizePageType(pageType);
+
+  if (!normalizedSlug || normalizedSlug === "home") {
+    return "/";
+  }
+
+  if (normalizedPageType === "individualservice") {
+    return `/services/${normalizedSlug}`;
+  }
+
+  if (
+    normalizedPageType === "servicearea" &&
+    normalizedSlug !== "service-area" &&
+    normalizedSlug !== "service-areas"
+  ) {
+    return `/service-area/${normalizedSlug}`;
+  }
+
+  if (normalizedPageType === "blogpost") {
+    return `/blog/${normalizedSlug}`;
+  }
+
+  if (
+    normalizedPageType === "productlisting" &&
+    normalizedSlug !== "products"
+  ) {
+    return `/products/${normalizedSlug}`;
+  }
+
+  return getPathFromSlug(normalizedSlug);
+}
+
+export function isRepeatablePageType(pageType: string) {
+  const matchingSlot = strategyPageSlots.find(
+    (slot) => normalizePageType(slot.pageType) === normalizePageType(pageType),
+  );
+
+  return Boolean(matchingSlot?.repeatable);
+}
+
+export function getPageTypeRelationshipLabel(pageType: string) {
+  const matchingSlot = strategyPageSlots.find(
+    (slot) => normalizePageType(slot.pageType) === normalizePageType(pageType),
+  );
+
+  if (!matchingSlot?.repeatable) {
+    return "Single page";
+  }
+
+  if (matchingSlot.parentId === "services") {
+    return "Repeatable child of Services";
+  }
+
+  if (matchingSlot.parentId === "blog") {
+    return "Repeatable child of Blog";
+  }
+
+  return "Repeatable page group";
+}
+
 export function slugify(value: string) {
   return value
     .toLowerCase()
@@ -355,4 +427,8 @@ function matchesPageDefinition(
 
 function normalizeSearchText(value: string) {
   return value.toLowerCase().replace(/[_/]+/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function normalizePageType(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "");
 }

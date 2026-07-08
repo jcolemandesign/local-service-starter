@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import {
-  getPathFromSlug,
+  getPathFromSlugForPageType,
   getStrategyCopyForPage,
   slugify,
   type StrategyNavigationItem,
@@ -331,7 +331,7 @@ export function buildStrategyTemplateStagedPage({
     fields,
     fieldCounts: countFields(fields),
     navigation: snapshot.navigation,
-    pageHref: getPathFromSlug(pageId),
+    pageHref: getPathFromSlugForPageType(pageId, template.pageType),
     pageId,
     pageLabel: label,
     previewHref: `/dev/staged-pages/${pageId}`,

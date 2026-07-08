@@ -6,6 +6,8 @@ import { Card, Section } from "@/components/primitives";
 import {
   buildStrategyNavigation,
   deriveStrategyPagesFromFields,
+  getPageTypeRelationshipLabel,
+  isRepeatablePageType,
   type StrategyPageStatus,
 } from "@/utils/strategy-site-map";
 import type {
@@ -28,7 +30,10 @@ type StrategyWorkspaceSectionProps = {
 };
 
 type StagedStrategyPageSummary = {
+  pageHref: string;
   pageId: string;
+  pageLabel: string;
+  pageType: string;
   previewHref: string;
   status: "staged" | "ready";
   templateName: string;
@@ -163,19 +168,29 @@ export function StrategyWorkspaceSection({
     () => new Map(stagedPages.map((page) => [page.pageId, page])),
     [stagedPages],
   );
+  const stagedPagesByPageType = useMemo(
+    () => groupStagedPagesByPageType(stagedPages),
+    [stagedPages],
+  );
   const assemblyPages = useMemo(
     () =>
       strategyPages.filter((page) => page.detected).map((page) => {
-        const stagedPage = stagedPagesById.get(page.id);
+        const matchingStagedPages = page.repeatable
+          ? stagedPagesByPageType.get(normalizePageType(page.pageType)) ?? []
+          : [];
+        const stagedPage = stagedPagesById.get(page.id) ?? matchingStagedPages[0];
+        const repeatableStatus =
+          matchingStagedPages.length > 0 ? "staged" : page.status;
 
         return {
           ...page,
+          childPages: matchingStagedPages,
           previewHref: stagedPage?.previewHref ?? "",
-          status: stagedPage?.status ?? page.status,
+          status: stagedPage?.status ?? repeatableStatus,
           templateName: stagedPage?.templateName ?? "",
         };
       }),
-    [stagedPagesById, strategyPages],
+    [stagedPagesById, stagedPagesByPageType, strategyPages],
   );
   const navigation = useMemo(
     () => buildStrategyNavigation(strategyPages),
@@ -509,10 +524,32 @@ export function StrategyWorkspaceSection({
                       <p className="type-caption mt-1 text-service-muted">
                         {page.path}
                       </p>
+                      <p className="type-caption mt-2 text-service-muted">
+                        {getPageTypeRelationshipLabel(page.pageType)}
+                      </p>
                       {page.templateName ? (
                         <p className="type-caption mt-2 text-service-muted">
                           {page.templateName}
                         </p>
+                      ) : null}
+                      {page.repeatable && page.childPages.length > 0 ? (
+                        <div className="mt-3 grid gap-2">
+                          <p className="type-caption font-semibold text-service-ink">
+                            {page.childPages.length} staged{" "}
+                            {page.childPages.length === 1 ? "page" : "pages"}
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {page.childPages.map((childPage) => (
+                              <Link
+                                className="type-caption rounded-sm border border-service-border bg-white px-2 py-1 font-semibold text-service-accent hover:text-service-ink"
+                                href={childPage.previewHref}
+                                key={childPage.pageId}
+                              >
+                                {childPage.pageLabel}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
                       ) : null}
                       {page.previewHref ? (
                         <Link
@@ -735,6 +772,25 @@ function getPageStatusClassName(
   }
 
   return "text-amber-700";
+}
+
+function groupStagedPagesByPageType(pages: StagedStrategyPageSummary[]) {
+  const groups = new Map<string, StagedStrategyPageSummary[]>();
+
+  for (const page of pages) {
+    if (!isRepeatablePageType(page.pageType)) {
+      continue;
+    }
+
+    const key = normalizePageType(page.pageType);
+    groups.set(key, [...(groups.get(key) ?? []), page]);
+  }
+
+  return groups;
+}
+
+function normalizePageType(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "");
 }
 
 const primaryButtonClass =

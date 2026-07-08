@@ -56,7 +56,10 @@ export default async function StrategyWorkspacePage({
   const stagedPageSummaries = stagedPages
     .filter((page) => page.snapshot.clientSlug === clientSlug)
     .map((page) => ({
+      pageHref: page.pageHref,
       pageId: page.pageId,
+      pageLabel: page.pageLabel,
+      pageType: page.template?.pageType ?? "",
       previewHref: page.previewHref,
       status: page.status,
       templateName: page.template?.name ?? "",

@@ -11,6 +11,8 @@ import {
 import {
   getDefaultPageLabel,
   getDefaultPageSlug,
+  getPageTypeRelationshipLabel,
+  isRepeatablePageType,
   slugify,
 } from "@/utils/strategy-site-map";
 import type { StrategySnapshotSummary } from "@/utils/strategy-snapshots";
@@ -113,9 +115,7 @@ export function TemplateLibrarySection({
   const activeAssignments = stagedTemplateAssignments.filter(
     (assignment) => assignment.clientSlug === activeClientSlug,
   );
-  const assignmentByTemplateId = new Map(
-    activeAssignments.map((assignment) => [assignment.templateId, assignment]),
-  );
+  const assignmentsByTemplateId = groupAssignmentsByTemplateId(activeAssignments);
   const templateGroups = useMemo(
     () => groupTemplatesByPageType(localTemplates),
     [localTemplates],
@@ -394,8 +394,12 @@ export function TemplateLibrarySection({
                         ? getTemplateContract(template)
                         : "";
                       const stagedFeedback = stagedTemplateFeedback[template.id];
-                      const activeAssignment = assignmentByTemplateId.get(
-                        template.id,
+                      const activeAssignmentsForTemplate =
+                        assignmentsByTemplateId.get(template.id) ?? [];
+                      const activeAssignment = activeAssignmentsForTemplate[0];
+                      const isRepeatable = isRepeatablePageType(template.pageType);
+                      const relationshipLabel = getPageTypeRelationshipLabel(
+                        template.pageType,
                       );
 
                       return (
@@ -413,7 +417,11 @@ export function TemplateLibrarySection({
                                 </div>
                                 {activeAssignment ? (
                                   <StatusPill
-                                    label={`Staged: ${activeAssignment.pageLabel}`}
+                                    label={
+                                      isRepeatable
+                                        ? `${activeAssignmentsForTemplate.length} staged`
+                                        : `Staged: ${activeAssignment.pageLabel}`
+                                    }
                                   />
                                 ) : null}
                               </div>
@@ -433,8 +441,9 @@ export function TemplateLibrarySection({
                               <StatusPill
                                 label={`${template.sectionCount} sections`}
                               />
+                              <StatusPill label={relationshipLabel} />
                               <StatusPill label={template.id} />
-                              {activeAssignment ? (
+                              {!isRepeatable && activeAssignment ? (
                                 <Link
                                   className="type-caption rounded-sm border border-green-200 bg-green-50 px-3 py-1 font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
                                   href={activeAssignment.previewHref}
@@ -443,6 +452,25 @@ export function TemplateLibrarySection({
                                 </Link>
                               ) : null}
                             </div>
+
+                            {isRepeatable && activeAssignmentsForTemplate.length > 0 ? (
+                              <div className="rounded-sm border border-green-200 bg-green-50 p-3">
+                                <p className="type-caption font-semibold text-green-800">
+                                  Staged pages using this repeatable template
+                                </p>
+                                <div className="mt-2 flex flex-wrap gap-2">
+                                  {activeAssignmentsForTemplate.map((assignment) => (
+                                    <Link
+                                      className="type-caption rounded-sm border border-green-200 bg-white px-3 py-1 font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
+                                      href={assignment.previewHref}
+                                      key={assignment.pageId}
+                                    >
+                                      {assignment.pageLabel}
+                                    </Link>
+                                  ))}
+                                </div>
+                              </div>
+                            ) : null}
 
                             <details className="rounded-sm border border-service-border bg-service-surface">
                               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 marker:hidden">
@@ -498,6 +526,13 @@ export function TemplateLibrarySection({
                                   }
                                 />
                               </label>
+                              {isRepeatable ? (
+                                <p className="type-caption rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 font-semibold text-amber-800">
+                                  Rename this for each real child page before staging,
+                                  for example AC Repair or Huntersville. Reusing the
+                                  same slug updates that existing staged page.
+                                </p>
+                              ) : null}
                               <div className="grid grid-cols-2 gap-2 max-md:grid-cols-1">
                                 <Link
                                   className="radius-4 inline-flex min-h-11 items-center justify-center border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
@@ -549,7 +584,11 @@ export function TemplateLibrarySection({
                                 onClick={() => void stageTemplate(template)}
                                 type="button"
                               >
-                                {isSubmitting ? "Staging..." : "Use Template"}
+                                {isSubmitting
+                                  ? "Staging..."
+                                  : isRepeatable
+                                    ? "Stage Page"
+                                    : "Use Template"}
                               </button>
                               {stagedFeedback ? (
                                 <div
@@ -668,6 +707,19 @@ function groupTemplatesByPageType(templates: PageTemplateSummary[]) {
       templates: groupTemplates,
     }))
     .sort((a, b) => a.pageType.localeCompare(b.pageType));
+}
+
+function groupAssignmentsByTemplateId(assignments: StagedTemplateAssignment[]) {
+  const groups = new Map<string, StagedTemplateAssignment[]>();
+
+  for (const assignment of assignments) {
+    groups.set(assignment.templateId, [
+      ...(groups.get(assignment.templateId) ?? []),
+      assignment,
+    ]);
+  }
+
+  return groups;
 }
 
 function StatusPill({ label }: { label: string }) {
