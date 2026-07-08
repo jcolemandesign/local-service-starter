@@ -5,6 +5,7 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import { StagedPageRemoveButton } from "@/components/sections/StagedPageRemoveButton";
 import { readStagedPages, type StagedPage } from "@/utils/staged-pages";
 
@@ -27,8 +28,9 @@ export default async function StagedPagesPage() {
   );
 
   return (
-    <main className="min-h-svh bg-bg-surface text-service-ink">
-      <SevenColumnGrid minHeight="none" padding="med">
+    <StyleGuidePreviewSurface>
+      <main className="min-h-svh bg-bg-surface text-service-ink">
+        <SevenColumnGrid minHeight="none" padding="med">
         <SevenColumnGridItem className="col-start-2 col-span-4 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <p className="type-label text-service-accent">Pageworks Pipeline</p>
           <h1 className="type-display-lg mt-eyebrow-display text-service-ink">
@@ -200,8 +202,9 @@ export default async function StagedPagesPage() {
             </Card>
           )}
         </SevenColumnGridItem>
-      </SevenColumnGrid>
-    </main>
+        </SevenColumnGrid>
+      </main>
+    </StyleGuidePreviewSurface>
   );
 }
 

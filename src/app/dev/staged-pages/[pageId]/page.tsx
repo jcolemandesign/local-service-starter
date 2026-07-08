@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { StagedPageCanvas } from "@/components/sections";
+import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import { readStagedPages } from "@/utils/staged-pages";
 
 export const metadata: Metadata = {
@@ -28,8 +29,10 @@ export default async function StagedPagePreview({
   }
 
   return (
-    <main className="min-h-svh bg-white text-service-ink">
-      <StagedPageCanvas allPages={stagedPages} chrome={false} page={page} />
-    </main>
+    <StyleGuidePreviewSurface>
+      <main className="min-h-svh bg-white text-service-ink">
+        <StagedPageCanvas allPages={stagedPages} chrome={false} page={page} />
+      </main>
+    </StyleGuidePreviewSurface>
   );
 }

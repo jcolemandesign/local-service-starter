@@ -148,26 +148,30 @@ export function PromptLibrarySection({
     strategyPages,
     stagedPageContracts,
   );
+  const phasePrompts = promptLibraryPrompts.filter(
+    (prompt) => prompt.id !== "final-page-copy",
+  );
+  const finalPagePrompt = promptLibraryPrompts.find(
+    (prompt) => prompt.id === "final-page-copy",
+  );
+  const finalPageGroups = groupFinalPageOptions(finalPageOptions);
   const [copiedPromptId, setCopiedPromptId] = useState("");
-  const [selectedFinalPageId, setSelectedFinalPageId] = useState(
-    finalPageOptions[0].id,
-  );
-  const selectedFinalPage =
-    finalPageOptions.find((page) => page.id === selectedFinalPageId) ??
-    finalPageOptions[0];
-  const selectedFinalPageContract = findStagedPageContract(
-    stagedPageContracts,
-    selectedFinalPage,
-  );
 
-  async function copyPrompt(prompt: PromptLibraryPrompt) {
+  async function copyPrompt(
+    prompt: PromptLibraryPrompt,
+    finalPageOption = finalPageOptions[0],
+  ) {
+    const selectedFinalPageContract = findStagedPageContract(
+      stagedPageContracts,
+      finalPageOption,
+    );
     const freshWorkspaceFields = await readFreshWorkspaceFields({
       clientSlug,
       fallbackFields: strategyWorkspaceFields,
     });
     const clipboardPrompt = buildClipboardPrompt({
       prompt,
-      selectedFinalPage,
+      selectedFinalPage: finalPageOption,
       selectedFinalPageContract,
       strategyDigestText,
       strategyWorkspaceFields: freshWorkspaceFields,
@@ -183,9 +187,13 @@ export function PromptLibrarySection({
       copyWithFallback(clipboardPrompt);
     }
 
-    setCopiedPromptId(prompt.id);
+    const copiedId =
+      prompt.id === "final-page-copy"
+        ? `${prompt.id}:${finalPageOption.id}`
+        : prompt.id;
+    setCopiedPromptId(copiedId);
     window.setTimeout(() => {
-      setCopiedPromptId((current) => (current === prompt.id ? "" : current));
+      setCopiedPromptId((current) => (current === copiedId ? "" : current));
     }, 1800);
   }
 
@@ -256,7 +264,7 @@ export function PromptLibrarySection({
           </div>
 
           <div className="grid card-grid-gap-med">
-            {promptLibraryPrompts.map((prompt, index) => {
+            {phasePrompts.map((prompt, index) => {
               const isCopied = copiedPromptId === prompt.id;
 
               return (
@@ -276,27 +284,6 @@ export function PromptLibrarySection({
                       </div>
 
                       <div className="flex shrink-0 flex-wrap gap-2">
-                        {prompt.id === "final-page-copy" ? (
-                          <label
-                            className="type-caption grid gap-1 font-semibold text-service-muted"
-                            onClick={(event) => event.stopPropagation()}
-                          >
-                            Page
-                            <select
-                              className="min-h-11 rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
-                              value={selectedFinalPageId}
-                              onChange={(event) =>
-                                setSelectedFinalPageId(event.target.value)
-                              }
-                            >
-                              {finalPageOptions.map((page) => (
-                                <option key={page.id} value={page.id}>
-                                  {page.label}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
-                        ) : null}
                         <button
                           className="radius-button inline-flex min-h-11 items-center justify-center border border-service-border px-4 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent"
                           onClick={(event) => {
@@ -314,22 +301,6 @@ export function PromptLibrarySection({
                     </summary>
 
                     <div className="grid card-grid-gap-med border-t border-service-border bg-white p-5">
-                      {prompt.id === "final-page-copy" ? (
-                        <div className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-4">
-                          <p className="type-label text-service-accent">
-                            Phase 4 target
-                          </p>
-                          <p className="type-text-sm mt-2 text-service-muted">
-                            Copy Prompt will set Page to write to{" "}
-                            <span className="font-semibold text-service-ink">
-                              {selectedFinalPage.promptValue}
-                            </span>
-                            {selectedFinalPageContract
-                              ? ` and insert the staged template contract for ${selectedFinalPageContract.templateName}.`
-                              : ". No staged template contract is available for this page yet."}
-                          </p>
-                        </div>
-                      ) : null}
                       <div>
                         <p className="type-label text-service-muted">
                           Required inputs
@@ -355,6 +326,144 @@ export function PromptLibrarySection({
               );
             })}
           </div>
+
+          {finalPagePrompt ? (
+            <div className="grid gap-6 border-t border-service-border pt-[var(--section-space-sml)]">
+              <div className="grid gap-4 lg:grid-cols-[minmax(0,0.72fr)_minmax(280px,0.28fr)] lg:items-end">
+                <div className="fluid-type-frame">
+                  <p className="type-label text-service-accent">Phase 4</p>
+                  <h2 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
+                    Page Copy Queue
+                  </h2>
+                  <p className="type-text-lg wrap-pretty mt-heading-body-md text-service-muted">
+                    Copy a page-specific prompt for each detected page from the
+                    saved strategy. Template contracts are inserted when that
+                    page has already been staged from a selected template.
+                  </p>
+                </div>
+                <Card className="p-5 shadow-none">
+                  <p className="type-label text-service-accent">Detected pages</p>
+                  <p className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                    {finalPageOptions.length}
+                  </p>
+                  <p className="type-caption mt-heading-body-sm text-service-muted">
+                    {stagedPageContracts.length} with staged template contracts
+                  </p>
+                </Card>
+              </div>
+
+              <div className="grid card-grid-gap-med">
+                {finalPageGroups.map((group) => (
+                  <details
+                    className="rounded-[var(--radius-md-token)] border border-service-border bg-white shadow-service"
+                    key={group.pageType}
+                    open
+                  >
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 marker:hidden">
+                      <span>
+                        <span className="type-label text-service-accent">
+                          {group.pageType}
+                        </span>
+                        <span className="type-heading-sm mt-1 block text-service-ink">
+                          {group.pages.length}{" "}
+                          {group.pages.length === 1 ? "page" : "pages"}
+                        </span>
+                      </span>
+                      <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
+                        Open group
+                      </span>
+                    </summary>
+                    <div className="grid gap-3 border-t border-service-border p-5">
+                      {group.pages.map((page) => {
+                        const contract = findStagedPageContract(
+                          stagedPageContracts,
+                          page,
+                        );
+                        const copiedId = `${finalPagePrompt.id}:${page.id}`;
+                        const isCopied = copiedPromptId === copiedId;
+
+                        return (
+                          <div
+                            className="grid gap-4 rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
+                            key={page.id}
+                          >
+                            <div className="min-w-0">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <h3 className="type-heading-sm text-service-ink">
+                                  {page.label}
+                                </h3>
+                                <StatusPill
+                                  label={
+                                    contract
+                                      ? `Template: ${contract.templateName}`
+                                      : "Needs template"
+                                  }
+                                  tone={contract ? "ready" : "warning"}
+                                />
+                              </div>
+                              <div className="mt-2 flex flex-wrap gap-2">
+                                <StatusPill label={page.pageType} />
+                                <StatusPill label={page.href} />
+                              </div>
+                            </div>
+
+                            <button
+                              className="radius-button inline-flex min-h-11 items-center justify-center border border-service-accent bg-service-accent px-4 type-caption font-semibold text-white transition-colors hover:border-service-ink hover:bg-service-ink disabled:cursor-not-allowed disabled:border-service-border disabled:bg-white disabled:text-service-muted"
+                              disabled={!contract}
+                              onClick={() => void copyPrompt(finalPagePrompt, page)}
+                              type="button"
+                            >
+                              {contract
+                                ? isCopied
+                                  ? "Copied"
+                                  : "Copy Prompt"
+                                : "Needs template"}
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </details>
+                ))}
+              </div>
+
+              <details className="rounded-[var(--radius-md-token)] border border-service-border bg-white shadow-service">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 marker:hidden">
+                  <span>
+                    <span className="type-label text-service-accent">
+                      Prompt reference
+                    </span>
+                    <span className="type-heading-sm mt-1 block text-service-ink">
+                      {finalPagePrompt.title}
+                    </span>
+                  </span>
+                  <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
+                    Review prompt
+                  </span>
+                </summary>
+                <div className="grid card-grid-gap-med border-t border-service-border p-5">
+                  <div>
+                    <p className="type-label text-service-muted">
+                      Required inputs
+                    </p>
+                    <ul className="mt-3 flex flex-wrap gap-2">
+                      {finalPagePrompt.inputs.map((input) => (
+                        <li
+                          className="radius-round bg-service-surface px-3 py-1 type-caption font-semibold text-service-accent"
+                          key={input}
+                        >
+                          {input}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <pre className="max-h-[560px] overflow-auto rounded-[var(--radius-md-token)] bg-service-surface p-4 type-caption leading-relaxed text-service-ink">
+                    <code>{finalPagePrompt.prompt}</code>
+                  </pre>
+                </div>
+              </details>
+            </div>
+          ) : null}
         </div>
       </Container>
     </Section>
@@ -377,6 +486,28 @@ function HydrationPill({
       }`}
     >
       {label}: {isFilled ? "ready" : "empty"}
+    </span>
+  );
+}
+
+function StatusPill({
+  label,
+  tone = "default",
+}: {
+  label: string;
+  tone?: "default" | "ready" | "warning";
+}) {
+  const toneClasses = {
+    default: "border-service-border bg-white text-service-muted",
+    ready: "border-service-accent bg-white text-service-accent",
+    warning: "border-amber-700 bg-amber-50 text-amber-900",
+  } as const;
+
+  return (
+    <span
+      className={`type-caption rounded-sm border px-3 py-1 font-semibold ${toneClasses[tone]}`}
+    >
+      {label}
     </span>
   );
 }
@@ -553,6 +684,19 @@ function createFinalPageOptions(
   const mergedOptions = Array.from(optionsById.values());
 
   return mergedOptions.length > 0 ? mergedOptions : fallbackFinalPageOptions;
+}
+
+function groupFinalPageOptions(options: FinalPageOption[]) {
+  const groups = new Map<string, FinalPageOption[]>();
+
+  for (const option of options) {
+    const pageType = option.pageType || "Page";
+    groups.set(pageType, [...(groups.get(pageType) ?? []), option]);
+  }
+
+  return Array.from(groups.entries())
+    .map(([pageType, pages]) => ({ pageType, pages }))
+    .sort((a, b) => a.pageType.localeCompare(b.pageType));
 }
 
 function getWorkspaceFieldForPageType(

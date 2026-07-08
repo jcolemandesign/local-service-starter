@@ -5,6 +5,7 @@ import {
   TemplateLibrarySection,
   type PageTemplateSummary,
 } from "@/components/sections";
+import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import { readStagedPages } from "@/utils/staged-pages";
 import { listLatestStrategySnapshotSummaries } from "@/utils/strategy-snapshots";
 
@@ -32,22 +33,24 @@ export default async function TemplatesPage() {
   const stagedPages = await readStagedPages();
 
   return (
-    <main>
-      <TemplateLibrarySection
-        stagedTemplateAssignments={stagedPages
-          .filter((page) => page.template?.id)
-          .map((page) => ({
-            clientSlug: page.snapshot.clientSlug,
-            pageHref: page.pageHref,
-            pageId: page.pageId,
-            pageLabel: page.pageLabel,
-            previewHref: page.previewHref,
-            templateId: page.template?.id ?? "",
-          }))}
-        strategySnapshots={strategySnapshots}
-        templates={templates}
-      />
-    </main>
+    <StyleGuidePreviewSurface>
+      <main>
+        <TemplateLibrarySection
+          stagedTemplateAssignments={stagedPages
+            .filter((page) => page.template?.id)
+            .map((page) => ({
+              clientSlug: page.snapshot.clientSlug,
+              pageHref: page.pageHref,
+              pageId: page.pageId,
+              pageLabel: page.pageLabel,
+              previewHref: page.previewHref,
+              templateId: page.template?.id ?? "",
+            }))}
+          strategySnapshots={strategySnapshots}
+          templates={templates}
+        />
+      </main>
+    </StyleGuidePreviewSurface>
   );
 }
 

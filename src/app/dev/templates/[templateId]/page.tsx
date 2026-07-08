@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { PageTemplatePreview } from "@/components/sections/PageTemplatePreview";
+import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import type { PageTemplateSummary } from "@/components/sections";
 
 export const dynamic = "force-dynamic";
@@ -41,15 +42,17 @@ export default async function TemplatePreviewPage({
   }
 
   return (
-    <main className="min-h-svh bg-white text-service-ink">
-      <PageTemplatePreview
-        fixedNavigation
-        sections={template.sections.map((section) => ({
-          ...section,
-          instruction: section.instruction ?? "",
-        }))}
-      />
-    </main>
+    <StyleGuidePreviewSurface>
+      <main className="min-h-svh bg-white text-service-ink">
+        <PageTemplatePreview
+          fixedNavigation
+          sections={template.sections.map((section) => ({
+            ...section,
+            instruction: section.instruction ?? "",
+          }))}
+        />
+      </main>
+    </StyleGuidePreviewSurface>
   );
 }
 

@@ -1416,9 +1416,9 @@ export function ProjectIntakeDashboard({
                 className={`${dashboardCardPaddingClass} overflow-hidden`}
                 key={intake.id}
               >
-                <div className="grid layout-gap-med max-lg:grid-cols-1 lg:grid-cols-[1fr_auto] lg:items-start">
-                  <div>
-                    <div className="flex flex-wrap items-center inline-gap-med">
+                <div className="grid card-grid-gap-med">
+                  <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+                    <div className="flex min-w-0 flex-wrap items-center inline-gap-med">
                       <h2 className="type-heading-md text-service-ink">
                         {displayValue(intake.business_name)}
                       </h2>
@@ -1428,12 +1428,12 @@ export function ProjectIntakeDashboard({
                         {displayValue(status)}
                       </span>
                     </div>
-                    <p className="mt-heading-body-sm type-caption font-semibold text-service-muted">
-                      {formatDate(intake.created_at)}
+                    <p className="type-caption shrink-0 font-semibold text-service-muted">
+                      Created {formatDate(intake.created_at)}
                     </p>
                   </div>
 
-                  <div className="flex flex-col inline-gap-med sm:flex-row lg:justify-end">
+                  <div className="flex flex-col inline-gap-med sm:flex-row sm:flex-wrap sm:justify-end">
                     <button
                       className={secondaryButtonClass}
                       onClick={() => void copyIntakeBrief(intake)}

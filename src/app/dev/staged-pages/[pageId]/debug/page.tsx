@@ -8,6 +8,7 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 import { StagedPageCanvas } from "@/components/sections";
+import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import {
   extractBulkPasteCopy,
   readStagedPages,
@@ -48,8 +49,9 @@ export default async function StagedPageDebug({
   );
 
   return (
-    <main className="min-h-svh bg-bg-surface text-service-ink">
-      <SevenColumnGrid minHeight="none" padding="med">
+    <StyleGuidePreviewSurface>
+      <main className="min-h-svh bg-bg-surface text-service-ink">
+        <SevenColumnGrid minHeight="none" padding="med">
         <SevenColumnGridItem className="col-start-2 col-span-5 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <nav
             aria-label="Staged site navigation"
@@ -132,8 +134,9 @@ export default async function StagedPageDebug({
             </Card>
           </div>
         </SevenColumnGridItem>
-      </SevenColumnGrid>
-    </main>
+        </SevenColumnGrid>
+      </main>
+    </StyleGuidePreviewSurface>
   );
 }
 
