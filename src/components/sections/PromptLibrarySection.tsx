@@ -144,7 +144,10 @@ export function PromptLibrarySection({
   strategyDigestText,
   strategyWorkspaceFields,
 }: PromptLibrarySectionProps) {
-  const finalPageOptions = createFinalPageOptions(strategyPages);
+  const finalPageOptions = createFinalPageOptions(
+    strategyPages,
+    stagedPageContracts,
+  );
   const [copiedPromptId, setCopiedPromptId] = useState("");
   const [selectedFinalPageId, setSelectedFinalPageId] = useState(
     finalPageOptions[0].id,
@@ -519,8 +522,11 @@ function normalizePageKey(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
 
-function createFinalPageOptions(strategyPages: StrategyPageSummary[]) {
-  const detectedOptions = strategyPages
+function createFinalPageOptions(
+  strategyPages: StrategyPageSummary[],
+  stagedPageContracts: StagedPageContract[],
+) {
+  const detectedOptions: FinalPageOption[] = strategyPages
     .filter((page) => page.detected)
     .map((page) => ({
       fieldKey: page.copyField,
@@ -530,6 +536,52 @@ function createFinalPageOptions(strategyPages: StrategyPageSummary[]) {
       pageType: page.pageType,
       promptValue: page.label,
     }));
+  const stagedOptions: FinalPageOption[] = stagedPageContracts.map((contract) => ({
+    fieldKey: getWorkspaceFieldForPageType(contract.pageType),
+    href: contract.pageHref,
+    id: contract.pageId,
+    label: `${contract.pageLabel} (${contract.pageType})`,
+    pageType: contract.pageType,
+    promptValue: `${contract.pageLabel} (${contract.pageType}) at ${contract.pageHref}`,
+  }));
+  const optionsById = new Map<string, FinalPageOption>();
 
-  return detectedOptions.length > 0 ? detectedOptions : fallbackFinalPageOptions;
+  for (const option of [...detectedOptions, ...stagedOptions]) {
+    optionsById.set(option.id, option);
+  }
+
+  const mergedOptions = Array.from(optionsById.values());
+
+  return mergedOptions.length > 0 ? mergedOptions : fallbackFinalPageOptions;
+}
+
+function getWorkspaceFieldForPageType(
+  pageType: string,
+): keyof StrategyWorkspaceFields {
+  const normalizedPageType = normalizePageKey(pageType);
+
+  if (normalizedPageType.includes("home")) {
+    return "homepageCopy";
+  }
+
+  if (
+    normalizedPageType.includes("service") ||
+    normalizedPageType.includes("product")
+  ) {
+    return "servicesCopy";
+  }
+
+  if (normalizedPageType.includes("about")) {
+    return "aboutCopy";
+  }
+
+  if (normalizedPageType.includes("contact")) {
+    return "contactCopy";
+  }
+
+  if (normalizedPageType.includes("thank")) {
+    return "thankYouCopy";
+  }
+
+  return "contentPlan";
 }

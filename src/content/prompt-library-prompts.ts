@@ -976,11 +976,11 @@ Website Strategy Brief:
 
 Use the Strategy Digest as the factual boundary.
 Use the Website Strategy Brief and selected page context from the Strategy Workspace as strategic direction.
-Use the Template Copy Contract as the required page structure and field contract.
+Use the Template Copy Contract as the required page structure, field contract, and exact staged page target.
 
 If the Website Strategy Brief, selected page context, manual notes, or Template Copy Contract conflict with the Strategy Digest, follow the Strategy Digest and flag the conflict.
 
-Write copy for this page only:
+Write copy for this exact staged page only:
 
 Page to write:
 
@@ -989,6 +989,12 @@ Page to write:
 Selected template:
 
 [paste selected template name here]
+
+If the selected page is a repeatable page type, such as an Individual Service page, Service Area page, Blog Post, or Product Listing, write copy for only the specific page label, route slug, and public path in the Template Copy Contract. Do not write a generic overview page and do not write copy for all sibling services, locations, posts, or products.
+
+For Individual Service pages, write for one service only. Example: if the page target is AC Repair, do not also write full sections for heating repair, heat pump service, maintenance, or replacement except as short contextual links if the template requires them.
+
+For Service Area pages, write for one location/service-area page only. Example: if the page target is Cornelius, do not write a generic all-locations service area page except for short nearby-area context if the template requires it.
 
 Do not invent unsupported claims, certifications, pricing, guarantees, review counts, emergency availability, financing, warranties, years in business, service areas, credentials, or proof points.
 
@@ -1011,6 +1017,8 @@ If important information is missing, use cautious wording, a placeholder, or a n
 The page template has already been chosen. Do not redesign the page, recommend alternate sections, add new sections, remove sections, or change the section order.
 
 Write to the fields in the Template Copy Contract. Preserve every section ID and field name exactly.
+
+Use the Page Target and Public Path in the Template Copy Contract as the source of truth for what page instance you are writing.
 
 The output must be structured enough for a bulk importer to read safely. Treat every field name as a real destination field, not as a loose writing suggestion.
 
@@ -1046,6 +1054,7 @@ Core rules:
 
 - Use the exact section IDs from the Template Copy Contract.
 - Use the exact field names from the Template Copy Contract.
+- Keep every field value specific to the exact Page Target in the Template Copy Contract.
 - Do not include Section name, Semantic role, Template intent, Image/content note, or any other labels inside the Bulk Paste Copy section.
 - Do not add bullets before field names.
 - Do not wrap the Bulk Paste Copy section in a code fence.

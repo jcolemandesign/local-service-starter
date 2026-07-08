@@ -1,3 +1,9 @@
+import {
+  getPathFromSlugForPageType,
+  getPageTypeRelationshipLabel,
+  isRepeatablePageType,
+} from "@/utils/strategy-site-map";
+
 export type TemplateCopyContractSection = {
   component: string;
   instruction?: string;
@@ -63,18 +69,45 @@ export function buildTemplateCopyContract({
   strategySnapshot,
   template,
 }: BuildTemplateCopyContractInput) {
+  const publicPath = getPathFromSlugForPageType(pageSlug, template.pageType);
+  const isRepeatable = isRepeatablePageType(template.pageType);
+  const relationshipLabel = getPageTypeRelationshipLabel(template.pageType);
   const lines = [
     "# Template Copy Contract",
     "",
-    "Use this contract with the template-fitted page copy prompt. Write copy for this exact page template and preserve the section IDs, field names, and order.",
+    "Use this contract with the template-fitted page copy prompt. Write copy for this exact staged page instance and preserve the section IDs, field names, and order.",
     "",
     "## Page Target",
     `Page label: ${pageLabel}`,
     `Route slug: ${pageSlug || "(not set)"}`,
+    `Public path: ${publicPath}`,
     `Selected template: ${template.name}`,
     `Template ID: ${template.id}`,
     `Page type: ${template.pageType}`,
+    `Page relationship: ${relationshipLabel}`,
   ];
+
+  if (isRepeatable) {
+    lines.push(
+      "",
+      "Repeatable page instruction:",
+      "- This contract is for one specific staged child page instance.",
+      "- Write copy only for the page label and public path above.",
+      "- Do not write a generic overview page unless the public path is the overview route.",
+    );
+
+    if (normalizePageType(template.pageType) === "individualservice") {
+      lines.push(
+        "- Treat this as one specific service page. Do not write copy for all services.",
+      );
+    }
+
+    if (normalizePageType(template.pageType) === "servicearea") {
+      lines.push(
+        "- Treat this as one specific location/service-area page. Do not write copy for every location unless this is the /service-area overview.",
+      );
+    }
+  }
 
   if (strategySnapshot) {
     lines.push(
@@ -97,6 +130,7 @@ export function buildTemplateCopyContract({
     "## Output Rules",
     "- Do not add new sections.",
     "- Do not skip sections unless the section is clearly decorative or global chrome.",
+    "- Write for the exact Page Target above, not for a broader page type.",
     "- Keep copy sized to the listed field targets.",
     "- Use cautious wording for unsupported claims.",
     "- If a field cannot be written from the provided source material, write NEEDS REVIEW with the missing detail.",
@@ -416,4 +450,8 @@ function slugify(value: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function normalizePageType(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "");
 }
