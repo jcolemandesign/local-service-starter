@@ -98,7 +98,7 @@ export default async function StagedPageDebug({
 
         <SevenColumnGridItem className="col-start-2 col-span-5 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <div className="grid gap-5">
-            <StagedPageCanvas page={page} />
+            <StagedPageCanvas allPages={stagedPages} page={page} />
 
             <Card className="p-5 shadow-none">
               <p className="type-label text-service-accent">Strategy Copy</p>

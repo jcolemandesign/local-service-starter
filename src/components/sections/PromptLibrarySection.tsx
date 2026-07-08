@@ -99,9 +99,9 @@ const fallbackFinalPageOptions = [
     fieldKey: "homepageCopy",
     href: "/",
     id: "homepage",
-    label: "Homepage",
+    label: "Home",
     pageType: "home",
-    promptValue: "Homepage",
+    promptValue: "Home",
   },
   {
     fieldKey: "servicesCopy",

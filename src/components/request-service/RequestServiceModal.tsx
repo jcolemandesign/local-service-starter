@@ -118,7 +118,7 @@ const modalSelectClass =
   "radius-button min-h-12 border border-service-border bg-service-surface px-4 type-text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent";
 
 const modalButtonClass =
-  "radius-button inline-flex min-h-10 cursor-pointer items-center justify-center px-5 type-caption font-semibold transition-colors disabled:cursor-not-allowed";
+  "radius-button inline-flex min-h-10 cursor-pointer items-center justify-center px-5 type-caption font-semibold transition-colors";
 
 const problemOptionsBySelection: Record<
   SystemType,
@@ -659,7 +659,7 @@ function RequestServiceModal({
               ref={dialogRef}
               aria-labelledby="request-service-title"
               aria-modal="true"
-              className="radius-medium m-auto flex min-h-[42rem] max-h-[calc(100dvh-3rem)] w-full max-w-4xl flex-col overflow-hidden bg-bg-page text-service-ink shadow-service outline-none max-md:h-dvh max-md:min-h-0 max-md:max-h-dvh max-md:rounded-none"
+              className="radius-medium m-auto flex h-[min(42rem,calc(100dvh-3rem))] max-h-[calc(100dvh-3rem)] w-full max-w-4xl flex-col overflow-hidden bg-bg-page text-service-ink shadow-service outline-none max-md:h-dvh max-md:min-h-0 max-md:max-h-dvh max-md:rounded-none"
               role="dialog"
               tabIndex={-1}
               initial={{ scale: 0.98 }}
@@ -924,10 +924,18 @@ function RequestServiceModal({
 
           {step < 3 ? (
             <button
-              className={`${modalButtonClass} border border-service-accent bg-service-accent text-white hover:bg-service-ink disabled:bg-service-muted`}
-              disabled={!canContinue}
+              aria-disabled={!canContinue}
+              className={`${modalButtonClass} border border-service-accent text-white hover:bg-service-ink ${
+                canContinue
+                  ? "bg-service-accent"
+                  : "bg-service-muted hover:bg-service-muted"
+              }`}
               type="button"
-              onClick={() => setStep((currentStep) => currentStep + 1)}
+              onClick={() => {
+                if (canContinue) {
+                  setStep((currentStep) => currentStep + 1);
+                }
+              }}
             >
               Continue
             </button>

@@ -80,11 +80,23 @@ export type PageTemplatePreviewSection = {
 
 type PageTemplatePreviewProps = {
   fieldsBySection?: Record<string, StagedPageField[]>;
+  fixedNavigation?: boolean;
+  homeHref?: string;
+  navigationLinks?: SiteNavigationLink[];
   sections: PageTemplatePreviewSection[];
 };
 
 type FieldSection = {
   fields: StagedPageField[];
+};
+
+export type SiteNavigationLink = {
+  href: string;
+  items?: Array<{
+    href: string;
+    label: string;
+  }>;
+  label: string;
 };
 
 const heroSplitFullHeightVariants = new Set<string>(
@@ -123,13 +135,16 @@ function isHeroSection(section: PageTemplatePreviewSection | undefined) {
 
 export function PageTemplatePreview({
   fieldsBySection = {},
+  fixedNavigation = false,
+  homeHref,
+  navigationLinks = [],
   sections,
 }: PageTemplatePreviewProps) {
   const includedSections = sections.filter(Boolean);
 
   return (
     <div className="pagebuilder-density-normal pagebuilder-hide-markers min-h-full w-full bg-white">
-      <div className="fluid-type-frame mx-auto min-h-full w-full max-w-full bg-white">
+      <div className="min-h-full w-full bg-white">
         {includedSections.map((section, index) => {
           const nextSection = includedSections[index + 1];
           const previousSection = includedSections[index - 1];
@@ -140,18 +155,31 @@ export function PageTemplatePreview({
                 className="pagebuilder-nav-hero-pair relative"
                 key={`${section.id ?? index}-${nextSection.id ?? index + 1}`}
               >
-                <TemplateSectionFrame className="inset-x-0 top-0 z-20" isOverlay>
+                <TemplateSectionFrame
+                  className={
+                    fixedNavigation
+                      ? "inset-x-0 top-0 z-50"
+                      : "inset-x-0 top-0 z-20"
+                  }
+                  isFixed={fixedNavigation}
+                  isOverlay={!fixedNavigation}
+                  section={section}
+                >
                   {renderPageTemplateSection(
                     section,
                     index,
                     fieldsBySection[section.id ?? ""],
+                    navigationLinks,
+                    homeHref,
                   )}
                 </TemplateSectionFrame>
-                <TemplateSectionFrame>
+                <TemplateSectionFrame section={nextSection}>
                   {renderPageTemplateSection(
                     nextSection,
                     index + 1,
                     fieldsBySection[nextSection.id ?? ""],
+                    navigationLinks,
+                    homeHref,
                   )}
                 </TemplateSectionFrame>
               </div>
@@ -167,22 +195,27 @@ export function PageTemplatePreview({
               <TemplateSectionFrame
                 className="mb-[var(--section-space-sml)]"
                 key={section.id ?? index}
+                section={section}
               >
                 {renderPageTemplateSection(
                   section,
                   index,
                   fieldsBySection[section.id ?? ""],
+                  navigationLinks,
+                  homeHref,
                 )}
               </TemplateSectionFrame>
             );
           }
 
           return (
-            <TemplateSectionFrame key={section.id ?? index}>
+            <TemplateSectionFrame key={section.id ?? index} section={section}>
               {renderPageTemplateSection(
                 section,
                 index,
                 fieldsBySection[section.id ?? ""],
+                navigationLinks,
+                homeHref,
               )}
             </TemplateSectionFrame>
           );
@@ -195,19 +228,25 @@ export function PageTemplatePreview({
 function TemplateSectionFrame({
   children,
   className,
+  isFixed = false,
   isOverlay = false,
+  section,
 }: {
   children: React.ReactNode;
   className?: string;
+  isFixed?: boolean;
   isOverlay?: boolean;
+  section: PageTemplatePreviewSection;
 }) {
   return (
     <div
       className={cx(
         "group/pagebuilder-section outline outline-0 outline-offset-0 transition-shadow",
-        isOverlay ? "absolute" : "relative",
+        isFixed ? "fixed" : isOverlay ? "absolute" : "relative",
         className,
       )}
+      data-pagebuilder-section-component={section.component}
+      data-pagebuilder-section-mode={section.mode}
     >
       {children}
     </div>
@@ -218,17 +257,19 @@ export function renderPageTemplateSection(
   section: PageTemplatePreviewSection,
   index: number,
   fields: StagedPageField[] = [],
+  navigationLinks: SiteNavigationLink[] = [],
+  homeHref?: string,
 ) {
   const headingLevel = index === 1 ? 1 : 2;
   const fieldSection = { fields };
 
   switch (section.component) {
     case "NavPrimarySectionV2":
-      return <NavPrimarySectionV2 {...navProps(fieldSection)} />;
+      return <NavPrimarySectionV2 {...navProps(fieldSection, navigationLinks, homeHref)} />;
     case "NavCenterLogoSectionV2":
-      return <NavCenterLogoSectionV2 {...navProps(fieldSection)} />;
+      return <NavCenterLogoSectionV2 {...navProps(fieldSection, navigationLinks, homeHref)} />;
     case "NavFloatingBentoSectionV2":
-      return <NavFloatingBentoSectionV2 {...navProps(fieldSection)} />;
+      return <NavFloatingBentoSectionV2 {...navProps(fieldSection, navigationLinks, homeHref)} />;
     case "HeroSplitFullHeightSectionV3":
       return (
         <HeroSplitFullHeightSectionV3
@@ -390,10 +431,18 @@ export function renderPageTemplateSection(
   }
 }
 
-function navProps(section: FieldSection) {
+function navProps(
+  section: FieldSection,
+  navigationLinks: SiteNavigationLink[] = [],
+  homeHref?: string,
+) {
   const links = getListValues(section, ["navLinks", "footerLinks"], "")
     .map(parseLink)
     .map(mergeNavLinkDropdown);
+  const stagedLinks =
+    navigationLinks.length > 0
+      ? navigationLinks.map((link) => mergeNavLinkDropdown(link))
+      : [];
 
   return {
     ...sectionLibraryV3Content.navPrimary,
@@ -402,12 +451,18 @@ function navProps(section: FieldSection) {
       "primaryAction",
       getValue(section, "action", sectionLibraryV3Content.navPrimary.action),
     ),
-    links: links.length > 0 ? links : sectionLibraryV3Content.navPrimary.links,
+    links:
+      stagedLinks.length > 0
+        ? stagedLinks
+        : links.length > 0
+          ? links
+          : sectionLibraryV3Content.navPrimary.links,
     logoLabel: getValue(
       section,
       "logoLabel",
       sectionLibraryV3Content.navPrimary.logoLabel,
     ),
+    logoHref: homeHref,
     phone: getValue(section, "phone", sectionLibraryV3Content.navPrimary.phone),
   };
 }
@@ -1271,7 +1326,14 @@ function getRepeatedRecords(section: FieldSection, collectionNames: string[]) {
   });
 
   return Array.from(recordsByKey.values()).filter(
-    (record) => record.title || record.body || record.quote,
+    (record) =>
+      record.title ||
+      record.heading ||
+      record.body ||
+      record.description ||
+      record.quote ||
+      record.question ||
+      record.answer,
   );
 }
 
@@ -1353,6 +1415,12 @@ function faqItems(section: FieldSection) {
     }));
   }
 
+  const values = getListValues(section, ["faqs", "faqItems", "items"], "");
+
+  if (values.length > 0) {
+    return values.map(parseFaqItem);
+  }
+
   return sectionLibraryV3Content.faqAccordion.items;
 }
 
@@ -1367,6 +1435,15 @@ function parseCardItem(value: string) {
   };
 }
 
+function parseFaqItem(value: string) {
+  const [question, ...answerParts] = value.split(/\s+[—-]\s+/);
+
+  return {
+    answer: answerParts.join(" - ").trim(),
+    question: question.trim(),
+  };
+}
+
 function parseLink(value: string) {
   const [labelAndItems, href] = value.split(/\s*->\s*/);
   const [label, itemsText] = labelAndItems.split(/\s*:\s*/);
@@ -1378,19 +1455,24 @@ function parseLink(value: string) {
   };
 }
 
-function mergeNavLinkDropdown(link: ReturnType<typeof parseLink>) {
+function mergeNavLinkDropdown(
+  link: ReturnType<typeof parseLink> | SiteNavigationLink,
+) {
   const fallbackLink = sectionLibraryV3Content.navPrimary.links.find(
     (item) => normalizeLabel(item.label) === normalizeLabel(link.label),
   );
 
   return {
     ...link,
-    items: link.items?.length ? link.items : fallbackLink?.items,
+    items: "items" in link ? link.items : fallbackLink?.items,
   };
 }
 
 function normalizeLabel(value: string) {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, "");
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "")
+    .replace(/s$/, "");
 }
 
 function splitItems(value: string) {

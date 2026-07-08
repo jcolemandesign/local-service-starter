@@ -159,14 +159,6 @@ export function TrustMarqueeSectionV3({ items }: TrustItemsProps) {
   return (
     <section className="section-min-none overflow-hidden bg-bg-page py-8 max-md:py-6">
       <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[18vw] bg-gradient-to-r from-bg-page via-bg-page/90 to-transparent max-md:w-20"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-[18vw] bg-gradient-to-l from-bg-page via-bg-page/90 to-transparent max-md:w-20"
-        />
         <div className="flex w-max animate-trust-marquee motion-reduce:animate-none">
           <TextMarqueeItems items={items} />
           <TextMarqueeItems hidden items={items} />
@@ -182,14 +174,6 @@ export function TrustLogoMarqueeSectionV3({
   return (
     <section className="section-min-none overflow-hidden bg-bg-page py-8 max-md:py-6">
       <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[18vw] bg-gradient-to-r from-bg-page via-bg-page/90 to-transparent max-md:w-20"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-[18vw] bg-gradient-to-l from-bg-page via-bg-page/90 to-transparent max-md:w-20"
-        />
         <div className="flex w-max animate-trust-marquee motion-reduce:animate-none">
           <LogoTrack logos={logos} />
           <LogoTrack hidden logos={logos} />

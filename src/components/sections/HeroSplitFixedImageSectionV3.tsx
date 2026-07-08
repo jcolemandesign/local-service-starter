@@ -5,6 +5,7 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import { RequestServiceButton } from "@/components/request-service";
 
 export type HeroSplitFixedImageVariant =
   | "text-3-image-4-right"
@@ -171,7 +172,7 @@ export function HeroSplitFixedImageSectionV3({
               {body}
             </p>
             <div className="mt-body-actions-md flex flex-wrap inline-gap-med">
-              <Button href="#contact">{primaryAction}</Button>
+              <RequestServiceButton>{primaryAction}</RequestServiceButton>
               <Button href="#services" variant="secondary">
                 {secondaryAction}
               </Button>

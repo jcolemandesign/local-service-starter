@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
@@ -43,25 +42,8 @@ export default async function TemplatePreviewPage({
 
   return (
     <main className="min-h-svh bg-service-surface text-service-ink">
-      <div className="border-b border-service-border bg-white px-5 py-4">
-        <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="type-label text-service-accent">
-              {template.pageType}
-            </p>
-            <h1 className="type-heading-sm mt-1 text-service-ink">
-              {template.name}
-            </h1>
-          </div>
-          <Link
-            className="radius-button inline-flex min-h-11 items-center justify-center border border-service-border bg-white px-4 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-            href="/dev/templates"
-          >
-            Back to templates
-          </Link>
-        </div>
-      </div>
       <PageTemplatePreview
+        fixedNavigation
         sections={template.sections.map((section) => ({
           ...section,
           instruction: section.instruction ?? "",

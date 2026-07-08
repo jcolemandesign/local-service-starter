@@ -29,7 +29,7 @@ export default async function StagedPagePreview({
 
   return (
     <main className="min-h-svh bg-white text-service-ink">
-      <StagedPageCanvas chrome={false} page={page} />
+      <StagedPageCanvas allPages={stagedPages} chrome={false} page={page} />
     </main>
   );
 }

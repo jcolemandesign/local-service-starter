@@ -5,6 +5,178 @@
         "showSectionMarkers": false,
         "viewportId": "main"
       },
+      "id": "service-area-template",
+      "name": "Service Area Template",
+      "notes": "",
+      "pageType": "Service Area",
+      "promotedAt": "2026-07-08T16:46:40.581Z",
+      "sectionCount": 6,
+      "sections": [
+        {
+          "component": "NavPrimarySectionV2",
+          "instruction": "Use the standard nav so local coverage visitors can still reach services, phone, and contact paths quickly.",
+          "mode": "Navigation",
+          "name": "Primary navigation",
+          "originalComponent": "NavPrimarySectionV2",
+          "originalIndex": 0
+        },
+        {
+          "component": "HeroSplitFullHeightSectionV3",
+          "instruction": "Lead with the service area promise, primary towns, one request CTA, and one service CTA.",
+          "mode": "Hero",
+          "name": "Split content and full image",
+          "originalComponent": "HeroSplitFullHeightSectionV3",
+          "originalIndex": 1,
+          "variant": "text-3-image-4-right"
+        },
+        {
+          "component": "ServiceAreaZipLookupSectionV3",
+          "instruction": "List priority service areas and keep the map visual as an FPO coverage placeholder.",
+          "mode": "Utility",
+          "name": "Service area zip lookup",
+          "originalComponent": "ServiceAreaZipLookupSectionV3",
+          "originalIndex": 2
+        },
+        {
+          "component": "ServicesThreeCardsRightSectionV3",
+          "instruction": "Show the core services available across the coverage area with consistent short descriptions.",
+          "mode": "Scan",
+          "name": "Services grid",
+          "originalComponent": "ServicesThreeCardsRightSectionV3",
+          "originalIndex": 3
+        },
+        {
+          "component": "FAQSectionV3",
+          "instruction": "Answer coverage, timing, urgent availability, and nearby-town questions without guaranteeing service everywhere.",
+          "mode": "Decision",
+          "name": "FAQ",
+          "originalComponent": "FAQSectionV3",
+          "originalIndex": 4
+        },
+        {
+          "component": "ContactSectionV3",
+          "instruction": "Close with phone, form, and a reminder that urgent issues should call directly.",
+          "mode": "Utility",
+          "name": "Contact section",
+          "originalComponent": "ContactSectionV3",
+          "originalIndex": 5
+        }
+      ],
+      "sourceOptionName": "Page Layout",
+      "sourceRecipeId": "service-area",
+      "sourceRecipeName": "Service Area"
+    },
+    {
+      "designStyle": {
+        "showSectionMarkers": false,
+        "viewportId": "main"
+      },
+      "id": "home-steps-test",
+      "name": "home steps test",
+      "notes": "",
+      "pageType": "Home",
+      "promotedAt": "2026-07-08T15:22:56.847Z",
+      "sectionCount": 11,
+      "sections": [
+        {
+          "component": "NavPrimarySectionV2",
+          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
+          "mode": "Navigation",
+          "name": "Primary navigation",
+          "originalComponent": "NavPrimarySectionV2",
+          "originalIndex": 0
+        },
+        {
+          "component": "HeroSplitFullHeightSectionV3",
+          "instruction": "Use h1, one primary booking CTA, one services CTA, and three compact trust stats beside a full-bleed image column.",
+          "mode": "Hero",
+          "name": "Split content and full image",
+          "originalComponent": "HeroSplitFullHeightSectionV3",
+          "originalIndex": 1,
+          "variant": "text-3-image-4-right"
+        },
+        {
+          "component": "TrustMarqueeSectionV3",
+          "instruction": "Use short repeated claims when there are many small proof points.",
+          "mode": "Proof",
+          "name": "Trust marquee",
+          "originalComponent": "TrustBarSectionV3",
+          "originalIndex": 2
+        },
+        {
+          "component": "ServicesBentoCardsSectionV2",
+          "instruction": "Use bento-style service cards when the services need a richer visual scan pattern.",
+          "mode": "Scan",
+          "name": "Services bento cards",
+          "originalComponent": "ServicesThreeCardsRightSectionV3",
+          "originalIndex": 3
+        },
+        {
+          "component": "ProcessStepsSectionV3",
+          "instruction": "Use current process steps when the page needs a clearer, more styled decision sequence.",
+          "mode": "Decision",
+          "name": "Process steps",
+          "originalComponent": "ProcessStepsSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "FeatureAsymmetricCardsSectionV3",
+          "instruction": "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points.",
+          "mode": "Narrative",
+          "name": "Asymmetric feature cards",
+          "originalComponent": "FeatureAsymmetricCardsSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "TestimonialsCarouselSectionV3",
+          "instruction": "Use longer customer stories only if they contain useful service detail.",
+          "mode": "Proof",
+          "name": "Customer stories",
+          "originalComponent": "TestimonialsMasonrySectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "ServiceAreaZipLookupSectionV3",
+          "instruction": "Use when visitors need to confirm service coverage before starting a request.",
+          "mode": "Utility",
+          "name": "Service area zip lookup",
+          "originalComponent": "ServiceAreaZipLookupSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "FAQAccordionSectionV3",
+          "instruction": "Handle objections with expandable answers and no vague copy.",
+          "mode": "Decision",
+          "name": "FAQ accordion",
+          "originalComponent": "FAQAccordionSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "TrustMarqueeSection",
+          "instruction": "Use a headline with a scrolling banner when proof points should move beside a stronger editorial claim.",
+          "mode": "Action",
+          "name": "Headline with Scrolling Banner",
+          "originalComponent": "ContentFixedCoverFadeSectionV2",
+          "originalIndex": -1
+        },
+        {
+          "component": "FooterSectionV3",
+          "instruction": "End with service links, areas, contact details, and legal links.",
+          "mode": "Utility",
+          "name": "Footer",
+          "originalComponent": "FooterSectionV3",
+          "originalIndex": -1
+        }
+      ],
+      "sourceOptionName": "Page Layout",
+      "sourceRecipeId": "classic-service",
+      "sourceRecipeName": "Home"
+    },
+    {
+      "designStyle": {
+        "showSectionMarkers": false,
+        "viewportId": "main"
+      },
       "id": "services-overview-template",
       "name": "Services Overview Template",
       "notes": "",
@@ -86,104 +258,6 @@
         "showSectionMarkers": false,
         "viewportId": "main"
       },
-      "id": "homepage-template-new",
-      "name": "Homepage Template New",
-      "notes": "",
-      "pageType": "homepage",
-      "promotedAt": "2026-07-07T19:19:36.291Z",
-      "sectionCount": 10,
-      "sections": [
-        {
-          "component": "NavPrimarySectionV2",
-          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
-          "mode": "Navigation",
-          "name": "Primary navigation",
-          "originalComponent": "NavPrimarySectionV2",
-          "originalIndex": 0
-        },
-        {
-          "component": "HeroSplitFullHeightSectionV3",
-          "instruction": "Use h1, one primary booking CTA, one services CTA, and three compact trust stats beside a full-bleed image column.",
-          "mode": "Hero",
-          "name": "Split content and full image",
-          "originalComponent": "HeroSplitFullHeightSectionV3",
-          "originalIndex": 1,
-          "variant": "text-3-image-4-right"
-        },
-        {
-          "component": "TrustMarqueeSectionV3",
-          "instruction": "Use short repeated claims when there are many small proof points.",
-          "mode": "Proof",
-          "name": "Trust marquee",
-          "originalComponent": "TrustBarSectionV3",
-          "originalIndex": 2
-        },
-        {
-          "component": "ServicesBentoCardsSectionV2",
-          "instruction": "Use bento-style service cards when the services need a richer visual scan pattern.",
-          "mode": "Scan",
-          "name": "Services bento cards",
-          "originalComponent": "ServicesThreeCardsRightSectionV3",
-          "originalIndex": 3
-        },
-        {
-          "component": "FeatureAsymmetricCardsSectionV3",
-          "instruction": "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points.",
-          "mode": "Narrative",
-          "name": "Asymmetric feature cards",
-          "originalComponent": "FeatureAsymmetricCardsSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "TestimonialsCarouselSectionV3",
-          "instruction": "Use longer customer stories only if they contain useful service detail.",
-          "mode": "Proof",
-          "name": "Customer stories",
-          "originalComponent": "TestimonialsMasonrySectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ServiceAreaZipLookupSectionV3",
-          "instruction": "Use when visitors need to confirm service coverage before starting a request.",
-          "mode": "Utility",
-          "name": "Service area zip lookup",
-          "originalComponent": "ServiceAreaZipLookupSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "FAQAccordionSectionV3",
-          "instruction": "Handle objections with expandable answers and no vague copy.",
-          "mode": "Decision",
-          "name": "FAQ accordion",
-          "originalComponent": "FAQAccordionSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "TrustMarqueeSection",
-          "instruction": "Use a headline with a scrolling banner when proof points should move beside a stronger editorial claim.",
-          "mode": "Action",
-          "name": "Headline with Scrolling Banner",
-          "originalComponent": "ContentFixedCoverFadeSectionV2",
-          "originalIndex": -1
-        },
-        {
-          "component": "FooterSectionV3",
-          "instruction": "End with service links, areas, contact details, and legal links.",
-          "mode": "Utility",
-          "name": "Footer",
-          "originalComponent": "FooterSectionV3",
-          "originalIndex": -1
-        }
-      ],
-      "sourceOptionName": "Option 1",
-      "sourceRecipeId": "classic-service",
-      "sourceRecipeName": "homepage"
-    },
-    {
-      "designStyle": {
-        "showSectionMarkers": false,
-        "viewportId": "main"
-      },
       "id": "about-option-1",
       "name": "about - Option 1",
       "notes": "",
@@ -251,96 +325,6 @@
       "sourceOptionName": "Option 1",
       "sourceRecipeId": "conversion-heavy",
       "sourceRecipeName": "about"
-    },
-    {
-      "designStyle": {
-        "showSectionMarkers": false,
-        "viewportId": "main"
-      },
-      "id": "homepage-option-1",
-      "name": "homepage - Option 1",
-      "notes": "",
-      "pageType": "homepage",
-      "promotedAt": "2026-06-29T21:25:23.126Z",
-      "sectionCount": 9,
-      "sections": [
-        {
-          "component": "NavPrimarySectionV2",
-          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
-          "mode": "Navigation",
-          "name": "Primary navigation",
-          "originalComponent": "NavPrimarySectionV2",
-          "originalIndex": 0
-        },
-        {
-          "component": "HeroSplitFullHeightSectionV3",
-          "instruction": "Use h1, one primary booking CTA, one services CTA, and three compact trust stats beside a full-bleed image column.",
-          "mode": "Hero",
-          "name": "Split content and full image",
-          "originalComponent": "HeroSplitFullHeightSectionV3",
-          "originalIndex": 1,
-          "variant": "text-3-image-4-right"
-        },
-        {
-          "component": "TrustMarqueeSectionV3",
-          "instruction": "Use short repeated claims when there are many small proof points.",
-          "mode": "Proof",
-          "name": "Trust marquee",
-          "originalComponent": "TrustBarSectionV3",
-          "originalIndex": 2
-        },
-        {
-          "component": "ServicesBentoCardsSectionV2",
-          "instruction": "Use bento-style service cards when the services need a richer visual scan pattern.",
-          "mode": "Scan",
-          "name": "Services bento cards",
-          "originalComponent": "ServicesThreeCardsRightSectionV3",
-          "originalIndex": 3
-        },
-        {
-          "component": "FeatureAsymmetricCardsSectionV3",
-          "instruction": "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points.",
-          "mode": "Narrative",
-          "name": "Asymmetric feature cards",
-          "originalComponent": "FeatureAsymmetricCardsSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "TestimonialsCarouselSectionV3",
-          "instruction": "Use longer customer stories only if they contain useful service detail.",
-          "mode": "Proof",
-          "name": "Customer stories",
-          "originalComponent": "TestimonialsMasonrySectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ServiceAreaZipLookupSectionV3",
-          "instruction": "Use when visitors need to confirm service coverage before starting a request.",
-          "mode": "Utility",
-          "name": "Service area zip lookup",
-          "originalComponent": "ServiceAreaZipLookupSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "TrustMarqueeSection",
-          "instruction": "Use a headline with a scrolling banner when proof points should move beside a stronger editorial claim.",
-          "mode": "Action",
-          "name": "Headline with Scrolling Banner",
-          "originalComponent": "ContentFixedCoverFadeSectionV2",
-          "originalIndex": -1
-        },
-        {
-          "component": "FooterSectionV3",
-          "instruction": "End with service links, areas, contact details, and legal links.",
-          "mode": "Utility",
-          "name": "Footer",
-          "originalComponent": "FooterSectionV3",
-          "originalIndex": -1
-        }
-      ],
-      "sourceOptionName": "Option 1",
-      "sourceRecipeId": "classic-service",
-      "sourceRecipeName": "homepage"
     }
   ]
 }

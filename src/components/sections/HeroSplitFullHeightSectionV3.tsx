@@ -5,6 +5,7 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import { RequestServiceButton } from "@/components/request-service";
 
 export type HeroSplitFullHeightVariant =
   | "text-3-image-4-right"
@@ -154,9 +155,9 @@ export function HeroSplitFullHeightSectionV3({
             <div
               className="mt-body-actions-md flex flex-wrap inline-gap-med"
             >
-              <Button href="#contact">
+              <RequestServiceButton>
                 {primaryAction}
-              </Button>
+              </RequestServiceButton>
               <Button href="#services" variant="secondary">
                 {secondaryAction}
               </Button>

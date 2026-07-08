@@ -8,12 +8,21 @@ import { useScrollLock } from "@/hooks/useScrollLock";
 
 const menuEase = [0.22, 1, 0.36, 1] as const;
 
+type NavDropdownItem =
+  | string
+  | {
+      href?: string;
+      label: string;
+    };
+
 type NavLink = {
+  href?: string;
   label: string;
-  items?: readonly string[];
+  items?: readonly NavDropdownItem[];
 };
 
 type NavFloatingBentoSectionV2Props = {
+  logoHref?: string;
   logoLabel: string;
   phone: string;
   action: string;
@@ -39,7 +48,7 @@ function PhoneIcon() {
   );
 }
 
-function FloatingLogo({ label }: { label: string }) {
+function FloatingLogo({ href = "#", label }: { href?: string; label: string }) {
   return (
     <a
       className={cx(
@@ -47,11 +56,23 @@ function FloatingLogo({ label }: { label: string }) {
         "radius-surface",
         "flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-white/90 p-1 text-service-muted shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:text-service-accent",
       )}
-      href="#"
+      href={href}
     >
       {label}
     </a>
   );
+}
+
+function getDropdownItemLabel(item: NavDropdownItem) {
+  return typeof item === "string" ? item : item.label;
+}
+
+function getDropdownItemHref(item: NavDropdownItem) {
+  return typeof item === "string" ? "#" : (item.href ?? "#");
+}
+
+function getDropdownItemKey(item: NavDropdownItem) {
+  return `${getDropdownItemLabel(item)}-${getDropdownItemHref(item)}`;
 }
 
 function ModalMenu({
@@ -99,16 +120,16 @@ function ModalMenu({
                     >
                       {link.label}
                     </a>
-                    {link.items ? (
+                    {link.items?.length ? (
                       <ul className="mt-heading-body-sm flex max-w-xl flex-wrap justify-center inline-gap-med text-sm font-semibold uppercase text-white/60">
                         {link.items.map((item) => (
-                          <li key={item}>
+                          <li key={getDropdownItemKey(item)}>
                             <a
                               className="cursor-pointer transition-colors hover:text-white"
-                              href="#"
+                              href={getDropdownItemHref(item)}
                               onClick={() => setIsOpen(false)}
                             >
-                              {item}
+                              {getDropdownItemLabel(item)}
                             </a>
                           </li>
                         ))}
@@ -142,6 +163,7 @@ function ModalMenu({
 }
 
 export function NavFloatingBentoSectionV2({
+  logoHref,
   logoLabel,
   phone,
   action,
@@ -169,7 +191,7 @@ export function NavFloatingBentoSectionV2({
       <nav aria-label="Floating bento v2 preview navigation">
         <div className="pointer-events-none relative z-30 grid grid-cols-[1fr_auto_1fr] items-center px-[var(--site-grid-inset-inline)] py-[var(--inline-gap-active)] max-lg:hidden">
           <div className="pointer-events-auto col-start-1 flex justify-self-start">
-            <FloatingLogo label={logoLabel} />
+            <FloatingLogo href={logoHref} label={logoLabel} />
           </div>
 
           <ul
@@ -237,15 +259,15 @@ export function NavFloatingBentoSectionV2({
                           >
                             <ul className="grid gap-1">
                               {link.items?.map((item) => (
-                                <li key={item}>
+                                <li key={getDropdownItemKey(item)}>
                                   <a
                                     className={cx(
                                       "radius-button",
                                       "block cursor-pointer px-4 py-3 text-sm font-semibold text-service-ink transition-colors hover:bg-service-surface hover:text-service-accent",
                                     )}
-                                    href="#"
+                                    href={getDropdownItemHref(item)}
                                   >
-                                    {item}
+                                    {getDropdownItemLabel(item)}
                                   </a>
                                 </li>
                               ))}
@@ -286,7 +308,7 @@ export function NavFloatingBentoSectionV2({
         </div>
 
         <div className="relative z-50 hidden items-center justify-between inline-gap-med px-[var(--site-grid-inset-inline)] py-[var(--inline-gap-active)] max-lg:flex">
-          <FloatingLogo label={logoLabel} />
+          <FloatingLogo href={logoHref} label={logoLabel} />
 
           <button
             aria-controls="floating-bento-v2-nav-menu"

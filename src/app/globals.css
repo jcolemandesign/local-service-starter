@@ -1096,7 +1096,7 @@ body {
 :root {
   --live-service-ink: #17211d;
   --live-service-muted: #5f6f68;
-  --live-service-accent: #1f7a5a;
+  --live-service-accent: #7a1f1f;
   --live-service-surface: #dde0dc;
   --live-service-border: #919191;
   --live-bg-page: #fbfaf6;
@@ -1105,13 +1105,13 @@ body {
   --live-bg-dark: #10141b;
   --live-text-main: #17211d;
   --live-text-muted: #5f6f68;
-  --live-text-accent: #1f7a5a;
+  --live-text-accent: #7a1f1f;
   --live-border-default: #919191;
   --live-accent: #c45a2c;
   --live-shadow-service: 3px 4px 29px rgb(0 0 0 / 0.03);
   --color-service-ink: #17211d;
   --color-service-muted: #5f6f68;
-  --color-service-accent: #1f7a5a;
+  --color-service-accent: #7a1f1f;
   --color-service-surface: #dde0dc;
   --color-service-border: #919191;
   --color-bg-page: #fbfaf6;
@@ -1121,7 +1121,7 @@ body {
   --color-text-main: #17211d;
   --color-text-muted: #5f6f68;
   --color-text-inverse: #ffffff;
-  --color-text-accent: #1f7a5a;
+  --color-text-accent: #7a1f1f;
   --color-border-default: #919191;
   --color-accent: #c45a2c;
   --card-grid-gap-active: 1.75rem;
@@ -1154,7 +1154,7 @@ body {
   --site-grid-inset-inline: clamp(0.5rem, 3vw, 6rem);
   --site-grid-gap: clamp(1.5rem, 2.15vw, 3.5rem);
   --shadow-service: 3px 4px 29px rgb(0 0 0 / 0.03);
-  --type-display-xl-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --type-display-xl-font: Times New Roman, Times, serif;
   --type-display-xl-size: clamp(3.5rem, calc(4.8611cqw + 2.3333rem), 7rem);
   --type-display-xl-leading: 0.92;
   --type-display-xl-measure: 14ch;
@@ -1162,7 +1162,7 @@ body {
   --type-display-xl-tracking: 0em;
   --type-display-xl-wrap: balance;
   --type-display-xl-transform: none;
-  --type-display-lg-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --type-display-lg-font: Times New Roman, Times, serif;
   --type-display-lg-size: clamp(2.75rem, calc(3.8194cqw + 1.8333rem), 5.5rem);
   --type-display-lg-leading: 0.95;
   --type-display-lg-measure: 18ch;
@@ -1170,7 +1170,7 @@ body {
   --type-display-lg-tracking: 0em;
   --type-display-lg-wrap: balance;
   --type-display-lg-transform: none;
-  --type-heading-xl-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --type-heading-xl-font: Times New Roman, Times, serif;
   --type-heading-xl-size: clamp(2.25rem, calc(2.4306cqw + 1.6667rem), 4rem);
   --type-heading-xl-leading: 1;
   --type-heading-xl-measure: 22ch;
@@ -1178,7 +1178,7 @@ body {
   --type-heading-xl-tracking: 0em;
   --type-heading-xl-wrap: balance;
   --type-heading-xl-transform: none;
-  --type-heading-lg-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --type-heading-lg-font: Times New Roman, Times, serif;
   --type-heading-lg-size: clamp(1.75rem, calc(1.3889cqw + 1.4167rem), 2.75rem);
   --type-heading-lg-leading: 1.05;
   --type-heading-lg-measure: 22ch;
@@ -1186,7 +1186,7 @@ body {
   --type-heading-lg-tracking: 0em;
   --type-heading-lg-wrap: balance;
   --type-heading-lg-transform: none;
-  --type-heading-md-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --type-heading-md-font: Times New Roman, Times, serif;
   --type-heading-md-size: clamp(1.375rem, calc(0.8681cqw + 1.1667rem), 2rem);
   --type-heading-md-leading: 1.15;
   --type-heading-md-measure: 28ch;
@@ -1194,7 +1194,7 @@ body {
   --type-heading-md-tracking: 0em;
   --type-heading-md-wrap: balance;
   --type-heading-md-transform: none;
-  --type-heading-sm-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --type-heading-sm-font: Times New Roman, Times, serif;
   --type-heading-sm-size: clamp(1.125rem, calc(0.3472cqw + 1.0417rem), 1.375rem);
   --type-heading-sm-leading: 1.25;
   --type-heading-sm-measure: 28ch;

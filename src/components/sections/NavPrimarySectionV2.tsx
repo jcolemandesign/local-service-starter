@@ -8,10 +8,17 @@ import { useScrollLock } from "@/hooks/useScrollLock";
 
 const menuEase = [0.22, 1, 0.36, 1] as const;
 
+type NavDropdownItem =
+  | string
+  | {
+      href?: string;
+      label: string;
+    };
+
 type NavLink = {
   href?: string;
   label: string;
-  items?: readonly string[];
+  items?: readonly NavDropdownItem[];
 };
 
 type NavPrimarySectionV2Props = {
@@ -45,6 +52,18 @@ function PhoneIcon() {
       />
     </svg>
   );
+}
+
+function getDropdownItemLabel(item: NavDropdownItem) {
+  return typeof item === "string" ? item : item.label;
+}
+
+function getDropdownItemHref(item: NavDropdownItem) {
+  return typeof item === "string" ? "#" : (item.href ?? "#");
+}
+
+function getDropdownItemKey(item: NavDropdownItem) {
+  return `${getDropdownItemLabel(item)}-${getDropdownItemHref(item)}`;
 }
 
 function Logo({
@@ -220,15 +239,15 @@ function NavPrimaryLayoutSection({
                           >
                             <ul className="grid gap-1">
                               {link.items?.map((item) => (
-                                <li key={item}>
+                                <li key={getDropdownItemKey(item)}>
                                   <a
                                     className={cx(
                                       "radius-4",
                                       "block cursor-pointer px-4 py-3 text-sm font-semibold text-service-ink transition-colors hover:bg-service-surface hover:text-service-accent",
                                     )}
-                                    href="#"
+                                    href={getDropdownItemHref(item)}
                                   >
-                                    {item}
+                                    {getDropdownItemLabel(item)}
                                   </a>
                                 </li>
                               ))}
@@ -314,16 +333,16 @@ function NavPrimaryLayoutSection({
                       >
                         {link.label}
                       </a>
-                      {link.items ? (
+                      {link.items?.length ? (
                         <ul className="mt-5 flex max-w-xl flex-wrap justify-center gap-x-5 gap-y-3 text-sm font-semibold uppercase text-white/60">
                           {link.items.map((item) => (
-                            <li key={item}>
+                            <li key={getDropdownItemKey(item)}>
                               <a
                                 className="cursor-pointer transition-colors hover:text-white"
-                                href="#"
+                                href={getDropdownItemHref(item)}
                                 onClick={() => setIsMenuOpen(false)}
                               >
-                                {item}
+                                {getDropdownItemLabel(item)}
                               </a>
                             </li>
                           ))}
