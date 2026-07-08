@@ -12,6 +12,7 @@ import {
   getDefaultPageLabel,
   getDefaultPageSlug,
   getPageTypeRelationshipLabel,
+  getPathFromSlugForPageType,
   isRepeatablePageType,
   slugify,
 } from "@/utils/strategy-site-map";
@@ -401,6 +402,15 @@ export function TemplateLibrarySection({
                       const relationshipLabel = getPageTypeRelationshipLabel(
                         template.pageType,
                       );
+                      const publicPath = getPathFromSlugForPageType(
+                        draft.slug,
+                        template.pageType,
+                      );
+                      const mismatchWarning = getRepeatableMismatchWarning(
+                        template.pageType,
+                        draft.label,
+                        draft.slug,
+                      );
 
                       return (
                         <Card className="p-5 shadow-none" key={template.id}>
@@ -526,12 +536,28 @@ export function TemplateLibrarySection({
                                   }
                                 />
                               </label>
-                              {isRepeatable ? (
-                                <p className="type-caption rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 font-semibold text-amber-800">
-                                  Rename this for each real child page before staging,
-                                  for example AC Repair or Huntersville. Reusing the
-                                  same slug updates that existing staged page.
+                              <div className="rounded-sm border border-service-border bg-service-surface px-3 py-2">
+                                <p className="type-caption font-semibold text-service-ink">
+                                  Public path preview
                                 </p>
+                                <p className="mt-1 break-all font-mono text-xs text-service-muted">
+                                  {publicPath}
+                                </p>
+                              </div>
+                              {isRepeatable ? (
+                                <div className="grid gap-2">
+                                  <p className="type-caption rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 font-semibold text-amber-800">
+                                    Stage this once per real{" "}
+                                    {getRepeatableInstanceLabel(template.pageType)}.
+                                    Reusing the same slug updates that existing
+                                    staged page.
+                                  </p>
+                                  {mismatchWarning ? (
+                                    <p className="type-caption rounded-sm border border-red-200 bg-red-50 px-3 py-2 font-semibold text-red-700">
+                                      {mismatchWarning}
+                                    </p>
+                                  ) : null}
+                                </div>
                               ) : null}
                               <div className="grid grid-cols-2 gap-2 max-md:grid-cols-1">
                                 <Link
@@ -587,7 +613,7 @@ export function TemplateLibrarySection({
                                 {isSubmitting
                                   ? "Staging..."
                                   : isRepeatable
-                                    ? "Stage Page"
+                                    ? "Stage Child Page"
                                     : "Use Template"}
                               </button>
                               {stagedFeedback ? (
@@ -721,6 +747,85 @@ function groupAssignmentsByTemplateId(assignments: StagedTemplateAssignment[]) {
 
   return groups;
 }
+
+function getRepeatableInstanceLabel(pageType: string) {
+  const normalizedPageType = normalizePageType(pageType);
+
+  if (normalizedPageType === "individualservice") {
+    return "service";
+  }
+
+  if (normalizedPageType === "servicearea") {
+    return "location";
+  }
+
+  if (normalizedPageType === "blogpost") {
+    return "article";
+  }
+
+  return "page";
+}
+
+function getRepeatableMismatchWarning(
+  pageType: string,
+  pageLabel: string,
+  pageSlug: string,
+) {
+  const normalizedPageType = normalizePageType(pageType);
+  const normalizedDraft = normalizeSearchText(`${pageLabel} ${pageSlug}`);
+
+  if (!normalizedDraft) {
+    return "";
+  }
+
+  if (
+    normalizedPageType === "servicearea" &&
+    serviceNameSignals.some((signal) => normalizedDraft.includes(signal))
+  ) {
+    return "This looks like a service name. Use an Individual Service template for service pages.";
+  }
+
+  if (
+    normalizedPageType === "individualservice" &&
+    locationNameSignals.some((signal) => normalizedDraft.includes(signal))
+  ) {
+    return "This looks like a location name. Use a Service Area template for location pages.";
+  }
+
+  return "";
+}
+
+function normalizePageType(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "");
+}
+
+function normalizeSearchText(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+const serviceNameSignals = [
+  "ac",
+  "air conditioning",
+  "cooling",
+  "furnace",
+  "heat pump",
+  "heating",
+  "hvac",
+  "maintenance",
+  "repair",
+  "replacement",
+  "tune up",
+];
+
+const locationNameSignals = [
+  "charlotte",
+  "cornelius",
+  "davidson",
+  "denver",
+  "huntersville",
+  "lake norman",
+  "mooresville",
+];
 
 function StatusPill({ label }: { label: string }) {
   return (
