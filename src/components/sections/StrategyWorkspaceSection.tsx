@@ -165,7 +165,7 @@ export function StrategyWorkspaceSection({
   );
   const assemblyPages = useMemo(
     () =>
-      strategyPages.map((page) => {
+      strategyPages.filter((page) => page.detected).map((page) => {
         const stagedPage = stagedPagesById.get(page.id);
 
         return {

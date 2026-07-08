@@ -7,6 +7,7 @@ import {
   promptLibraryWorkflow,
   type PromptLibraryPrompt,
 } from "@/content/prompt-library-prompts";
+import type { StrategyPageSummary } from "@/utils/strategy-site-map";
 import type { StrategyWorkspaceFields } from "@/utils/strategy-workspace";
 
 const strategyDigestPlaceholders = [
@@ -59,6 +60,7 @@ function copyWithFallback(value: string) {
 type PromptLibrarySectionProps = {
   clientSlug: string;
   stagedPageContracts: StagedPageContract[];
+  strategyPages: StrategyPageSummary[];
   strategyDigestText: string;
   strategyWorkspaceFields: StrategyWorkspaceFields | null;
 };
@@ -83,7 +85,16 @@ type PromptLibraryWorkspaceResponse =
       ok: false;
     };
 
-const finalPageOptions = [
+type FinalPageOption = {
+  fieldKey: keyof StrategyWorkspaceFields;
+  href: string;
+  id: string;
+  label: string;
+  pageType: string;
+  promptValue: string;
+};
+
+const fallbackFinalPageOptions = [
   {
     fieldKey: "homepageCopy",
     href: "/",
@@ -124,21 +135,16 @@ const finalPageOptions = [
     pageType: "thank-you",
     promptValue: "Thank You",
   },
-] satisfies Array<{
-  fieldKey: keyof StrategyWorkspaceFields;
-  href: string;
-  id: string;
-  label: string;
-  pageType: string;
-  promptValue: string;
-}>;
+] satisfies FinalPageOption[];
 
 export function PromptLibrarySection({
   clientSlug,
   stagedPageContracts,
+  strategyPages,
   strategyDigestText,
   strategyWorkspaceFields,
 }: PromptLibrarySectionProps) {
+  const finalPageOptions = createFinalPageOptions(strategyPages);
   const [copiedPromptId, setCopiedPromptId] = useState("");
   const [selectedFinalPageId, setSelectedFinalPageId] = useState(
     finalPageOptions[0].id,
@@ -381,7 +387,7 @@ function buildClipboardPrompt(
     strategyWorkspaceFields,
   }: {
     prompt: PromptLibraryPrompt;
-    selectedFinalPage: (typeof finalPageOptions)[number];
+    selectedFinalPage: FinalPageOption;
     selectedFinalPageContract: StagedPageContract | undefined;
     strategyDigestText: string;
     strategyWorkspaceFields: StrategyWorkspaceFields | null;
@@ -436,7 +442,7 @@ function hydrateFinalPagePrompt({
 }: {
   clipboardPrompt: string;
   prompt: PromptLibraryPrompt;
-  selectedFinalPage: (typeof finalPageOptions)[number];
+  selectedFinalPage: FinalPageOption;
   selectedFinalPageContract: StagedPageContract | undefined;
 }) {
   if (prompt.id !== "final-page-copy") {
@@ -492,7 +498,7 @@ async function readFreshWorkspaceFields({
 
 function findStagedPageContract(
   contracts: StagedPageContract[],
-  selectedPage: (typeof finalPageOptions)[number],
+  selectedPage: FinalPageOption,
 ) {
   return contracts.find((contract) => {
     const normalizedPageId = normalizePageKey(contract.pageId);
@@ -511,4 +517,19 @@ function findStagedPageContract(
 
 function normalizePageKey(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
+function createFinalPageOptions(strategyPages: StrategyPageSummary[]) {
+  const detectedOptions = strategyPages
+    .filter((page) => page.detected)
+    .map((page) => ({
+      fieldKey: page.copyField,
+      href: page.path,
+      id: page.id,
+      label: page.label,
+      pageType: page.pageType,
+      promptValue: page.label,
+    }));
+
+  return detectedOptions.length > 0 ? detectedOptions : fallbackFinalPageOptions;
 }

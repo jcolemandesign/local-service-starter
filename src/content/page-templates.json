@@ -5,6 +5,87 @@
         "showSectionMarkers": false,
         "viewportId": "main"
       },
+      "id": "services-overview-template",
+      "name": "Services Overview Template",
+      "notes": "",
+      "pageType": "Services Overview",
+      "promotedAt": "2026-07-07T22:20:23.094Z",
+      "sectionCount": 8,
+      "sections": [
+        {
+          "component": "NavPrimarySectionV2",
+          "instruction": "Use the standard nav so the slower editorial page still feels easy to operate.",
+          "mode": "Navigation",
+          "name": "Primary navigation",
+          "originalComponent": "NavPrimarySectionV2",
+          "originalIndex": 0
+        },
+        {
+          "component": "HeroGridMosaicSectionV2",
+          "instruction": "Use the mosaic to combine a clear h1, trust proof, service paths, and supporting visuals in one richer first view.",
+          "mode": "Hero",
+          "name": "Grid mosaic hero",
+          "originalComponent": "HeroGridMosaicSectionV2",
+          "originalIndex": 1
+        },
+        {
+          "component": "ContentRevealParagraphSectionV2",
+          "instruction": "Use a short editorial thesis that frames why the business is different.",
+          "mode": "Narrative",
+          "name": "Reveal paragraph",
+          "originalComponent": "ContentRevealParagraphSectionV2",
+          "originalIndex": 2
+        },
+        {
+          "component": "ContentStickyIdeasSectionV2",
+          "instruction": "Keep the core ideas visible while longer copy earns trust.",
+          "mode": "Narrative",
+          "name": "Sticky ideas content",
+          "originalComponent": "ContentStickyIdeasSectionV2",
+          "originalIndex": 3
+        },
+        {
+          "component": "ContentAboutCompanySectionV2",
+          "instruction": "Use this for regular about content with enough visual structure to feel useful instead of generic.",
+          "mode": "Narrative",
+          "name": "General editorial texture",
+          "originalComponent": "ContentAboutCompanySectionV2",
+          "originalIndex": 4
+        },
+        {
+          "component": "TrustLogoGridSectionV3",
+          "instruction": "Use static logos or associations when motion would distract from reading.",
+          "mode": "Proof",
+          "name": "Static trust logo grid",
+          "originalComponent": "TrustLogoGridSectionV3",
+          "originalIndex": 5
+        },
+        {
+          "component": "TestimonialsMasonrySectionV3",
+          "instruction": "Use varied quote lengths to create a fuller body of evidence.",
+          "mode": "Proof",
+          "name": "Masonry testimonials",
+          "originalComponent": "TestimonialsMasonrySectionV3",
+          "originalIndex": 6
+        },
+        {
+          "component": "CTAScrollRevealOfferSectionV3",
+          "instruction": "Use a discovered offer or next-step reveal to transition from editorial trust into action.",
+          "mode": "Action",
+          "name": "Scroll reveal offer conversion",
+          "originalComponent": "CTAScrollRevealOfferSectionV3",
+          "originalIndex": 7
+        }
+      ],
+      "sourceOptionName": "Page Layout",
+      "sourceRecipeId": "editorial-local",
+      "sourceRecipeName": "Services Overview"
+    },
+    {
+      "designStyle": {
+        "showSectionMarkers": false,
+        "viewportId": "main"
+      },
       "id": "homepage-template-new",
       "name": "Homepage Template New",
       "notes": "",

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PromptLibrarySection } from "@/components/sections/PromptLibrarySection";
 import { readStrategyDigestText } from "@/utils/strategy-digest";
+import { deriveStrategyPagesFromFields } from "@/utils/strategy-site-map";
 import { readStagedPages, type StagedPage } from "@/utils/staged-pages";
 import {
   listProjectWorkspaces,
@@ -47,12 +48,18 @@ export default async function PromptLibraryPage({
   const stagedPageContracts = selectedProject
     ? buildStagedPageContracts(stagedPages, selectedProject.clientSlug)
     : [];
+  const strategyPages = strategyWorkspace
+    ? deriveStrategyPagesFromFields(strategyWorkspace.fields).filter(
+        (page) => page.detected,
+      )
+    : [];
 
   return (
     <main>
       <PromptLibrarySection
         clientSlug={selectedProject?.clientSlug ?? ""}
         stagedPageContracts={stagedPageContracts}
+        strategyPages={strategyPages}
         strategyDigestText={strategyDigestText}
         strategyWorkspaceFields={strategyWorkspace?.fields ?? null}
       />

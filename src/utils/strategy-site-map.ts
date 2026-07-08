@@ -7,6 +7,7 @@ export type StrategyPageSummary = {
   detected: boolean;
   id: string;
   label: string;
+  pageType: string;
   path: string;
   status: StrategyPageStatus;
 };
@@ -17,37 +18,154 @@ export type StrategyNavigationItem = {
   pageId: string;
 };
 
-export const strategyPageSlots: Array<
-  Omit<StrategyPageSummary, "detected" | "status">
-> = [
+type StrategyPageDefinition = Omit<
+  StrategyPageSummary,
+  "detected" | "status"
+> & {
+  aliases: string[];
+};
+
+export const strategyPageSlots: StrategyPageDefinition[] = [
   {
+    aliases: ["home", "homepage", "home page"],
     copyField: "homepageCopy",
     id: "home",
     label: "Home",
+    pageType: "Home",
     path: "/",
   },
   {
+    aliases: [
+      "services overview",
+      "services page",
+      "main services",
+      "service overview",
+      "/services",
+    ],
     copyField: "servicesCopy",
     id: "services",
-    label: "Services",
+    label: "Services Overview",
+    pageType: "Services Overview",
     path: "/services",
   },
   {
+    aliases: [
+      "individual service",
+      "specific service",
+      "service detail",
+      "service detail page",
+      "individual services",
+    ],
+    copyField: "servicesCopy",
+    id: "individual-service",
+    label: "Individual Service",
+    pageType: "Individual Service",
+    path: "/services/[service]",
+  },
+  {
+    aliases: ["service area", "service areas", "areas served", "coverage area"],
+    copyField: "contentPlan",
+    id: "service-area",
+    label: "Service Area",
+    pageType: "Service Area",
+    path: "/service-area",
+  },
+  {
+    aliases: [
+      "service plan",
+      "service plans",
+      "maintenance plan",
+      "maintenance plans",
+      "membership",
+      "memberships",
+    ],
+    copyField: "contentPlan",
+    id: "service-plan",
+    label: "Service Plan",
+    pageType: "Service Plan",
+    path: "/service-plan",
+  },
+  {
+    aliases: [
+      "specials",
+      "offers",
+      "specials / offers",
+      "special offers",
+      "seasonal offer",
+      "promotion",
+      "promotions",
+    ],
+    copyField: "contentPlan",
+    id: "specials",
+    label: "Specials / Offers",
+    pageType: "Specials / Offers",
+    path: "/specials",
+  },
+  {
+    aliases: ["financing", "payment options", "financing page"],
+    copyField: "contentPlan",
+    id: "financing",
+    label: "Financing",
+    pageType: "Financing",
+    path: "/financing",
+  },
+  {
+    aliases: ["about", "about page", "about us", "company story"],
     copyField: "aboutCopy",
     id: "about",
     label: "About",
+    pageType: "About",
     path: "/about",
   },
   {
+    aliases: ["contact", "contact page", "request service", "schedule"],
     copyField: "contactCopy",
     id: "contact",
     label: "Contact",
+    pageType: "Contact",
     path: "/contact",
   },
   {
+    aliases: ["blog index", "blog", "articles", "resources", "resource center"],
+    copyField: "contentPlan",
+    id: "blog",
+    label: "Blog Index",
+    pageType: "Blog Index",
+    path: "/blog",
+  },
+  {
+    aliases: [
+      "blog post",
+      "individual blog",
+      "article page",
+      "individual article",
+    ],
+    copyField: "contentPlan",
+    id: "blog-post",
+    label: "Blog Post",
+    pageType: "Blog Post",
+    path: "/blog/[post]",
+  },
+  {
+    aliases: [
+      "product listing",
+      "products",
+      "equipment",
+      "system options",
+      "product page",
+    ],
+    copyField: "contentPlan",
+    id: "products",
+    label: "Product Listing",
+    pageType: "Product Listing",
+    path: "/products",
+  },
+  {
+    aliases: ["thank you", "thank-you", "confirmation page"],
     copyField: "thankYouCopy",
     id: "thank-you",
     label: "Thank You",
+    pageType: "Thank You",
     path: "/thank-you",
   },
 ];
@@ -55,9 +173,15 @@ export const strategyPageSlots: Array<
 export function deriveStrategyPagesFromFields(
   fields: StrategyWorkspaceFields,
 ): StrategyPageSummary[] {
+  const detectedPageIds = detectStrategyPageIds(fields);
+
   return strategyPageSlots.map((slot) => ({
-    ...slot,
-    detected: fields[slot.copyField].trim().length > 0,
+    copyField: slot.copyField,
+    detected: detectedPageIds.has(slot.id),
+    id: slot.id,
+    label: slot.label,
+    pageType: slot.pageType,
+    path: slot.path,
     status: "needs-template",
   }));
 }
@@ -121,7 +245,7 @@ export function getDefaultPageSlug(pageType: string, templateName: string) {
     normalized.includes("individual service") ||
     normalized.includes("service detail")
   ) {
-    return "service";
+    return "individual-service";
   }
 
   if (
@@ -184,4 +308,51 @@ export function slugify(value: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function detectStrategyPageIds(fields: StrategyWorkspaceFields) {
+  const detectedPageIds = new Set<string>();
+  const sourceText = [
+    fields.contentPlan,
+    fields.strategyBrief,
+    fields.generalNotes,
+  ].join("\n");
+
+  for (const slot of strategyPageSlots) {
+    if (fields[slot.copyField].trim().length > 0) {
+      detectedPageIds.add(slot.id);
+    }
+
+    if (matchesPageDefinition(sourceText, slot)) {
+      detectedPageIds.add(slot.id);
+    }
+  }
+
+  return detectedPageIds;
+}
+
+function matchesPageDefinition(
+  sourceText: string,
+  pageDefinition: StrategyPageDefinition,
+) {
+  const normalizedSourceText = normalizeSearchText(sourceText);
+
+  if (!normalizedSourceText) {
+    return false;
+  }
+
+  return pageDefinition.aliases.some((alias) => {
+    const normalizedAlias = normalizeSearchText(alias);
+    const escapedAlias = normalizedAlias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const aliasPattern = new RegExp(
+      `(^|[^a-z0-9])${escapedAlias}([^a-z0-9]|$)`,
+      "i",
+    );
+
+    return aliasPattern.test(normalizedSourceText);
+  });
+}
+
+function normalizeSearchText(value: string) {
+  return value.toLowerCase().replace(/[_/]+/g, " ").replace(/\s+/g, " ").trim();
 }
