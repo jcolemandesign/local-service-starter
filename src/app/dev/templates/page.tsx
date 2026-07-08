@@ -5,6 +5,7 @@ import {
   TemplateLibrarySection,
   type PageTemplateSummary,
 } from "@/components/sections";
+import { readStagedPages } from "@/utils/staged-pages";
 import { listLatestStrategySnapshotSummaries } from "@/utils/strategy-snapshots";
 
 export const metadata: Metadata = {
@@ -28,10 +29,21 @@ const pageTemplatesPath = path.join(
 export default async function TemplatesPage() {
   const templates = await readPageTemplates();
   const strategySnapshots = await listLatestStrategySnapshotSummaries();
+  const stagedPages = await readStagedPages();
 
   return (
     <main>
       <TemplateLibrarySection
+        stagedTemplateAssignments={stagedPages
+          .filter((page) => page.template?.id)
+          .map((page) => ({
+            clientSlug: page.snapshot.clientSlug,
+            pageHref: page.pageHref,
+            pageId: page.pageId,
+            pageLabel: page.pageLabel,
+            previewHref: page.previewHref,
+            templateId: page.template?.id ?? "",
+          }))}
         strategySnapshots={strategySnapshots}
         templates={templates}
       />

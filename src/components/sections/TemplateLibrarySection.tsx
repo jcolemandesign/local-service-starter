@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/primitives/Button";
 import { Card } from "@/components/primitives/Card";
 import {
@@ -35,6 +35,7 @@ export type PageTemplateSummary = {
 };
 
 type TemplateLibrarySectionProps = {
+  stagedTemplateAssignments: StagedTemplateAssignment[];
   strategySnapshots: StrategySnapshotSummary[];
   templates: PageTemplateSummary[];
 };
@@ -50,6 +51,13 @@ type CreatePageResponse =
     }
   | { ok: false; error?: string };
 
+type DeleteTemplateResponse =
+  | {
+      ok: true;
+      templateId: string;
+    }
+  | { ok: false; error?: string };
+
 type TemplateDraft = {
   label: string;
   slug: string;
@@ -60,16 +68,27 @@ type StagedTemplateFeedback = {
   previewHref: string;
 };
 
+type StagedTemplateAssignment = {
+  clientSlug: string;
+  pageHref: string;
+  pageId: string;
+  pageLabel: string;
+  previewHref: string;
+  templateId: string;
+};
+
 export function TemplateLibrarySection({
+  stagedTemplateAssignments,
   strategySnapshots,
   templates,
 }: TemplateLibrarySectionProps) {
+  const [localTemplates, setLocalTemplates] = useState(templates);
   const [selectedClientSlug, setSelectedClientSlug] = useState(
     strategySnapshots[0]?.clientSlug ?? "",
   );
   const [drafts, setDrafts] = useState<Record<string, TemplateDraft>>(() =>
     Object.fromEntries(
-      templates.map((template) => [
+      localTemplates.map((template) => [
         template.id,
         {
           label: getDefaultPageLabel(template.pageType, template.name),
@@ -81,6 +100,9 @@ export function TemplateLibrarySection({
   const [submittingTemplateId, setSubmittingTemplateId] = useState("");
   const [openContractTemplateId, setOpenContractTemplateId] = useState("");
   const [copiedContractTemplateId, setCopiedContractTemplateId] = useState("");
+  const [deleteCandidate, setDeleteCandidate] =
+    useState<PageTemplateSummary | null>(null);
+  const [deletingTemplateId, setDeletingTemplateId] = useState("");
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [stagedTemplateFeedback, setStagedTemplateFeedback] = useState<
@@ -88,8 +110,18 @@ export function TemplateLibrarySection({
   >({});
   const activeClientSlug =
     selectedClientSlug || strategySnapshots[0]?.clientSlug || "";
+  const activeAssignments = stagedTemplateAssignments.filter(
+    (assignment) => assignment.clientSlug === activeClientSlug,
+  );
+  const assignmentByTemplateId = new Map(
+    activeAssignments.map((assignment) => [assignment.templateId, assignment]),
+  );
+  const templateGroups = useMemo(
+    () => groupTemplatesByPageType(localTemplates),
+    [localTemplates],
+  );
 
-  const totalSections = templates.reduce(
+  const totalSections = localTemplates.reduce(
     (sectionCount, template) => sectionCount + template.sectionCount,
     0,
   );
@@ -202,6 +234,60 @@ export function TemplateLibrarySection({
     }
   }
 
+  async function deleteTemplate(template: PageTemplateSummary) {
+    setDeletingTemplateId(template.id);
+    setStatus("");
+    setError("");
+
+    try {
+      const response = await fetch("/api/page-templates", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          templateId: template.id,
+        }),
+      });
+      const result = (await response.json()) as DeleteTemplateResponse;
+
+      if (!response.ok || !result.ok) {
+        setError(
+          result.ok
+            ? "Template deletion failed."
+            : result.error ?? "Template deletion failed.",
+        );
+        return;
+      }
+
+      setLocalTemplates((currentTemplates) =>
+        currentTemplates.filter((currentTemplate) => currentTemplate.id !== template.id),
+      );
+      setDrafts((currentDrafts) => {
+        const nextDrafts = { ...currentDrafts };
+        delete nextDrafts[template.id];
+
+        return nextDrafts;
+      });
+      setOpenContractTemplateId((currentId) =>
+        currentId === template.id ? "" : currentId,
+      );
+      setCopiedContractTemplateId((currentId) =>
+        currentId === template.id ? "" : currentId,
+      );
+      setStagedTemplateFeedback((currentFeedback) => {
+        const nextFeedback = { ...currentFeedback };
+        delete nextFeedback[template.id];
+
+        return nextFeedback;
+      });
+      setDeleteCandidate(null);
+      setStatus(`Deleted template ${template.name}.`);
+    } catch {
+      setError("Template deletion failed.");
+    } finally {
+      setDeletingTemplateId("");
+    }
+  }
+
   return (
     <section className="min-h-svh bg-bg-surface text-service-ink">
       <SevenColumnGrid minHeight="none" padding="med">
@@ -215,7 +301,7 @@ export function TemplateLibrarySection({
             template to stage a page from the latest saved strategy snapshot.
           </p>
           <div className="mt-body-actions-md flex flex-wrap gap-2">
-            <StatusPill label={`${templates.length} templates`} />
+            <StatusPill label={`${localTemplates.length} templates`} />
             <StatusPill label={`${totalSections} saved sections`} />
             {strategySnapshots[0] ? (
               <StatusPill
@@ -272,172 +358,241 @@ export function TemplateLibrarySection({
             </div>
           ) : null}
 
-          {templates.length > 0 ? (
-            <div className="grid grid-cols-2 gap-5 max-lg:grid-cols-1">
-              {templates.map((template) => {
-                const draft = drafts[template.id] ?? {
-                  label: getDefaultPageLabel(template.pageType, template.name),
-                  slug: getDefaultPageSlug(template.pageType, template.name),
-                };
-                const isSubmitting = submittingTemplateId === template.id;
-                const isContractOpen = openContractTemplateId === template.id;
-                const isContractCopied = copiedContractTemplateId === template.id;
-                const contract = isContractOpen ? getTemplateContract(template) : "";
-                const stagedFeedback = stagedTemplateFeedback[template.id];
+          {localTemplates.length > 0 ? (
+            <div className="grid gap-5">
+              {templateGroups.map((group) => (
+                <details
+                  className="rounded-[var(--radius-md-token)] border border-service-border bg-white shadow-service"
+                  key={group.pageType}
+                  open
+                >
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 marker:hidden">
+                    <span>
+                      <span className="type-label text-service-accent">
+                        {group.pageType}
+                      </span>
+                      <span className="type-heading-sm mt-1 block text-service-ink">
+                        {group.templates.length}{" "}
+                        {group.templates.length === 1 ? "template" : "templates"}
+                      </span>
+                    </span>
+                    <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
+                      Expand
+                    </span>
+                  </summary>
+                  <div className="grid grid-cols-2 gap-5 border-t border-service-border p-5 max-lg:grid-cols-1">
+                    {group.templates.map((template) => {
+                      const draft = drafts[template.id] ?? {
+                        label: getDefaultPageLabel(template.pageType, template.name),
+                        slug: getDefaultPageSlug(template.pageType, template.name),
+                      };
+                      const isSubmitting = submittingTemplateId === template.id;
+                      const isContractOpen = openContractTemplateId === template.id;
+                      const isContractCopied =
+                        copiedContractTemplateId === template.id;
+                      const contract = isContractOpen
+                        ? getTemplateContract(template)
+                        : "";
+                      const stagedFeedback = stagedTemplateFeedback[template.id];
+                      const activeAssignment = assignmentByTemplateId.get(
+                        template.id,
+                      );
 
-                return (
-                  <Card className="p-5 shadow-none" key={template.id}>
-                    <div className="grid gap-5">
-                      <div className="fluid-type-frame">
-                        <p className="type-label text-service-accent">
-                          {template.pageType}
-                        </p>
-                        <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
-                          {template.name}
-                        </h2>
-                        <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
-                          Promoted from {template.sourceRecipeName} /{" "}
-                          {template.sourceOptionName} on{" "}
-                          {formatDate(template.promotedAt)}.
-                        </p>
-                        {template.notes ? (
-                          <p className="type-caption mt-3 text-service-muted">
-                            {template.notes}
-                          </p>
-                        ) : null}
-                      </div>
+                      return (
+                        <Card className="p-5 shadow-none" key={template.id}>
+                          <div className="grid gap-5">
+                            <div className="fluid-type-frame">
+                              <div className="flex flex-wrap items-start justify-between gap-3">
+                                <div className="min-w-0">
+                                  <p className="type-label text-service-accent">
+                                    {template.pageType}
+                                  </p>
+                                  <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                                    {template.name}
+                                  </h2>
+                                </div>
+                                {activeAssignment ? (
+                                  <StatusPill
+                                    label={`Staged: ${activeAssignment.pageLabel}`}
+                                  />
+                                ) : null}
+                              </div>
+                              <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
+                                Promoted from {template.sourceRecipeName} /{" "}
+                                {template.sourceOptionName} on{" "}
+                                {formatDate(template.promotedAt)}.
+                              </p>
+                              {template.notes ? (
+                                <p className="type-caption mt-3 text-service-muted">
+                                  {template.notes}
+                                </p>
+                              ) : null}
+                            </div>
 
-                      <div className="flex flex-wrap gap-2">
-                        <StatusPill label={`${template.sectionCount} sections`} />
-                        <StatusPill label={template.id} />
-                      </div>
+                            <div className="flex flex-wrap gap-2">
+                              <StatusPill
+                                label={`${template.sectionCount} sections`}
+                              />
+                              <StatusPill label={template.id} />
+                              {activeAssignment ? (
+                                <Link
+                                  className="type-caption rounded-sm border border-green-200 bg-green-50 px-3 py-1 font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
+                                  href={activeAssignment.previewHref}
+                                >
+                                  Open staged
+                                </Link>
+                              ) : null}
+                            </div>
 
-                      <div className="grid gap-2 border-t border-service-border pt-5">
-                        {template.sections.slice(0, 6).map((section, index) => (
-                          <div
-                            className="grid grid-cols-[8rem_minmax(0,1fr)] gap-3 rounded-sm border border-service-border bg-service-surface px-3 py-2 max-md:grid-cols-1"
-                            key={`${template.id}-${section.component}-${index}`}
-                          >
-                            <span className="type-caption font-semibold text-service-accent">
-                              {section.mode}
-                            </span>
-                            <span className="type-caption truncate text-service-muted">
-                              {section.name}
-                            </span>
-                          </div>
-                        ))}
-                        {template.sections.length > 6 ? (
-                          <p className="type-caption text-service-muted">
-                            + {template.sections.length - 6} more sections
-                          </p>
-                        ) : null}
-                      </div>
+                            <details className="rounded-sm border border-service-border bg-service-surface">
+                              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 marker:hidden">
+                                <span className="type-caption font-semibold text-service-ink">
+                                  Sections
+                                </span>
+                                <span className="type-caption text-service-muted">
+                                  {template.sections.length}
+                                </span>
+                              </summary>
+                              <div className="grid gap-2 border-t border-service-border p-3">
+                                {template.sections.map((section, index) => (
+                                  <div
+                                    className="grid grid-cols-[8rem_minmax(0,1fr)] gap-3 rounded-sm border border-service-border bg-white px-3 py-2 max-md:grid-cols-1"
+                                    key={`${template.id}-${section.component}-${index}`}
+                                  >
+                                    <span className="type-caption font-semibold text-service-accent">
+                                      {index + 1}. {section.mode}
+                                    </span>
+                                    <span className="type-caption text-service-muted">
+                                      {section.name}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            </details>
 
-                      <div className="grid gap-3 border-t border-service-border pt-5">
-                        <label className="type-caption font-semibold text-service-ink">
-                          Staged page name
-                          <input
-                            className="mt-2 block min-h-11 w-full rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
-                            value={draft.label}
-                            onChange={(event) => {
-                              const nextLabel = event.target.value;
+                            <div className="grid gap-3 border-t border-service-border pt-5">
+                              <label className="type-caption font-semibold text-service-ink">
+                                Staged page name
+                                <input
+                                  className="mt-2 block min-h-11 w-full rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
+                                  value={draft.label}
+                                  onChange={(event) => {
+                                    const nextLabel = event.target.value;
 
-                              updateDraft(template.id, {
-                                label: nextLabel,
-                                slug: slugify(nextLabel),
-                              });
-                            }}
-                          />
-                        </label>
-                        <label className="type-caption font-semibold text-service-ink">
-                          Intended route slug
-                          <input
-                            className="mt-2 block min-h-11 w-full rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
-                            value={draft.slug}
-                            onChange={(event) =>
-                              updateDraft(template.id, {
-                                slug: slugify(event.target.value),
-                              })
-                            }
-                          />
-                        </label>
-                        <div className="grid grid-cols-2 gap-2 max-md:grid-cols-1">
-                          <button
-                            className="radius-4 min-h-11 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-                            onClick={() => {
-                              setOpenContractTemplateId(
-                                isContractOpen ? "" : template.id,
-                              );
-                              setStatus("");
-                              setError("");
-                            }}
-                            type="button"
-                          >
-                            {isContractOpen ? "Hide Contract" : "Show Contract"}
-                          </button>
-                          <button
-                            className="radius-4 min-h-11 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-                            onClick={() => void copyTemplateContract(template)}
-                            type="button"
-                          >
-                            {isContractCopied ? "Copied" : "Copy Contract"}
-                          </button>
-                        </div>
-                        {isContractOpen ? (
-                          <textarea
-                            className="min-h-72 resize-y rounded-sm border border-service-border bg-service-surface px-3 py-3 font-mono text-xs leading-5 text-service-ink outline-none focus:border-service-accent"
-                            onFocus={(event) => event.currentTarget.select()}
-                            readOnly
-                            value={contract}
-                          />
-                        ) : null}
-                        <button
-                          className="radius-4 min-h-11 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent disabled:cursor-not-allowed disabled:opacity-60"
-                          disabled={isSubmitting || !activeClientSlug}
-                          onClick={() => void stageTemplate(template)}
-                          type="button"
-                        >
-                          {isSubmitting ? "Staging..." : "Use Template"}
-                        </button>
-                        {stagedFeedback ? (
-                          <div
-                            className="rounded-sm border border-green-200 bg-green-50 px-4 py-3 text-green-800"
-                            role="status"
-                          >
-                            <p className="type-caption font-semibold">
-                              Template applied. {stagedFeedback.pageLabel} is now
-                              staged and ready to edit.
-                            </p>
-                            <div className="mt-3 flex flex-wrap gap-2">
-                              <Link
-                                className="radius-4 inline-flex min-h-10 items-center justify-center border border-green-300 bg-white px-4 text-sm font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
-                                href={stagedFeedback.previewHref}
+                                    updateDraft(template.id, {
+                                      label: nextLabel,
+                                      slug: slugify(nextLabel),
+                                    });
+                                  }}
+                                />
+                              </label>
+                              <label className="type-caption font-semibold text-service-ink">
+                                Intended route slug
+                                <input
+                                  className="mt-2 block min-h-11 w-full rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
+                                  value={draft.slug}
+                                  onChange={(event) =>
+                                    updateDraft(template.id, {
+                                      slug: slugify(event.target.value),
+                                    })
+                                  }
+                                />
+                              </label>
+                              <div className="grid grid-cols-2 gap-2 max-md:grid-cols-1">
+                                <Link
+                                  className="radius-4 inline-flex min-h-11 items-center justify-center border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                                  href={`/dev/templates/${template.id}`}
+                                  target="_blank"
+                                >
+                                  Preview
+                                </Link>
+                                <button
+                                  className="radius-4 min-h-11 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                                  onClick={() => {
+                                    setOpenContractTemplateId(
+                                      isContractOpen ? "" : template.id,
+                                    );
+                                    setStatus("");
+                                    setError("");
+                                  }}
+                                  type="button"
+                                >
+                                  {isContractOpen ? "Hide Contract" : "Show Contract"}
+                                </button>
+                                <button
+                                  className="radius-4 min-h-11 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                                  onClick={() => void copyTemplateContract(template)}
+                                  type="button"
+                                >
+                                  {isContractCopied ? "Copied" : "Copy Contract"}
+                                </button>
+                                <button
+                                  className="radius-4 min-h-11 border border-red-200 bg-red-50 px-4 text-sm font-semibold text-red-700 transition-colors hover:border-red-700 hover:bg-red-700 hover:text-white disabled:cursor-wait disabled:opacity-60"
+                                  disabled={deletingTemplateId === template.id}
+                                  onClick={() => setDeleteCandidate(template)}
+                                  type="button"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                              {isContractOpen ? (
+                                <textarea
+                                  className="min-h-72 resize-y rounded-sm border border-service-border bg-service-surface px-3 py-3 font-mono text-xs leading-5 text-service-ink outline-none focus:border-service-accent"
+                                  onFocus={(event) => event.currentTarget.select()}
+                                  readOnly
+                                  value={contract}
+                                />
+                              ) : null}
+                              <button
+                                className="radius-4 min-h-11 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent disabled:cursor-wait disabled:opacity-60"
+                                disabled={isSubmitting || !activeClientSlug}
+                                onClick={() => void stageTemplate(template)}
+                                type="button"
                               >
-                                Open staged page
-                              </Link>
-                              <Link
-                                className="radius-4 inline-flex min-h-10 items-center justify-center border border-green-300 bg-white px-4 text-sm font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
-                                href="/dev/staged-pages"
-                              >
-                                Open staged pages
-                              </Link>
+                                {isSubmitting ? "Staging..." : "Use Template"}
+                              </button>
+                              {stagedFeedback ? (
+                                <div
+                                  className="rounded-sm border border-green-200 bg-green-50 px-4 py-3 text-green-800"
+                                  role="status"
+                                >
+                                  <p className="type-caption font-semibold">
+                                    Template applied. {stagedFeedback.pageLabel} is
+                                    now staged and ready to edit.
+                                  </p>
+                                  <div className="mt-3 flex flex-wrap gap-2">
+                                    <Link
+                                      className="radius-4 inline-flex min-h-10 items-center justify-center border border-green-300 bg-white px-4 text-sm font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
+                                      href={stagedFeedback.previewHref}
+                                    >
+                                      Open staged page
+                                    </Link>
+                                    <Link
+                                      className="radius-4 inline-flex min-h-10 items-center justify-center border border-green-300 bg-white px-4 text-sm font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
+                                      href="/dev/staged-pages"
+                                    >
+                                      Open staged pages
+                                    </Link>
+                                  </div>
+                                </div>
+                              ) : null}
                             </div>
                           </div>
-                        ) : null}
-                      </div>
-                    </div>
-                  </Card>
-                );
-              })}
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </details>
+              ))}
             </div>
           ) : (
             <Card className="p-6 shadow-none">
               <p className="type-label text-service-accent">No templates yet</p>
               <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
-                Promote a Pagebuilder option first.
+                Promote a Pagebuilder layout first.
               </h2>
               <p className="type-text-md wrap-pretty mt-heading-body-md text-service-muted">
-                Go to Pagebuilder, choose a recipe and option, then use Promote
+                Go to Pagebuilder, choose a page type, then use Promote
                 to Template. Promoted templates will appear here.
               </p>
               <div className="mt-body-actions-md">
@@ -447,8 +602,72 @@ export function TemplateLibrarySection({
           )}
         </SevenColumnGridItem>
       </SevenColumnGrid>
+      {deleteCandidate ? (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-service-ink/45 px-4 py-8"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setDeleteCandidate(null);
+            }
+          }}
+        >
+          <div
+            aria-labelledby="delete-template-title"
+            aria-modal="true"
+            className="w-full max-w-md rounded-md border border-service-border bg-white p-6 text-service-ink shadow-service"
+            role="dialog"
+          >
+            <p className="type-label text-red-700">Delete template</p>
+            <h2
+              className="type-heading-sm mt-eyebrow-heading-sm text-service-ink"
+              id="delete-template-title"
+            >
+              Delete {deleteCandidate.name}?
+            </h2>
+            <p className="type-text-sm mt-heading-body-sm text-service-muted">
+              This removes the saved template from the library. Staged pages that
+              already use it are not deleted.
+            </p>
+            <div className="mt-body-actions-md flex justify-end gap-3">
+              <button
+                className="radius-4 min-h-10 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                disabled={Boolean(deletingTemplateId)}
+                onClick={() => setDeleteCandidate(null)}
+                type="button"
+              >
+                Cancel
+              </button>
+              <button
+                className="radius-4 min-h-10 border border-red-700 bg-red-700 px-4 text-sm font-semibold text-white transition-colors hover:border-service-ink hover:bg-service-ink disabled:cursor-wait disabled:opacity-60"
+                disabled={Boolean(deletingTemplateId)}
+                onClick={() => void deleteTemplate(deleteCandidate)}
+                type="button"
+              >
+                {deletingTemplateId ? "Deleting..." : "Delete Template"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
+}
+
+function groupTemplatesByPageType(templates: PageTemplateSummary[]) {
+  const groups = new Map<string, PageTemplateSummary[]>();
+
+  for (const template of templates) {
+    const pageType = template.pageType || "Page";
+    groups.set(pageType, [...(groups.get(pageType) ?? []), template]);
+  }
+
+  return Array.from(groups.entries())
+    .map(([pageType, groupTemplates]) => ({
+      pageType,
+      templates: groupTemplates,
+    }))
+    .sort((a, b) => a.pageType.localeCompare(b.pageType));
 }
 
 function StatusPill({ label }: { label: string }) {

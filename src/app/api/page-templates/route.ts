@@ -91,6 +91,57 @@ export async function POST(request: Request) {
   }
 }
 
+export async function DELETE(request: Request) {
+  if (
+    process.env.NODE_ENV === "production" &&
+    process.env.ENABLE_DEV_ROUTES !== "true"
+  ) {
+    return jsonError("Template deletion is disabled in production.", 403);
+  }
+
+  let body: { templateId?: string };
+
+  try {
+    body = (await request.json()) as { templateId?: string };
+  } catch {
+    return jsonError("Invalid request body.", 400);
+  }
+
+  try {
+    const templateId = sanitizeSlug(body.templateId ?? "");
+
+    if (!templateId) {
+      return jsonError("Missing template id.", 400);
+    }
+
+    const templatesFile = await readTemplates();
+    const nextTemplates = templatesFile.templates.filter(
+      (template) => template.id !== templateId,
+    );
+
+    if (nextTemplates.length === templatesFile.templates.length) {
+      return jsonError("Template not found.", 404);
+    }
+
+    await mkdir(path.dirname(templatesPath), { recursive: true });
+    await writeFile(
+      templatesPath,
+      `${JSON.stringify({ templates: nextTemplates }, null, 2)}\n`,
+    );
+
+    return Response.json({
+      ok: true,
+      templateId,
+      templates: nextTemplates,
+    });
+  } catch (error) {
+    return jsonError(
+      error instanceof Error ? error.message : "Template deletion failed.",
+      400,
+    );
+  }
+}
+
 async function readTemplates(): Promise<PageTemplatesFile> {
   try {
     const contents = await readFile(templatesPath, "utf8");
