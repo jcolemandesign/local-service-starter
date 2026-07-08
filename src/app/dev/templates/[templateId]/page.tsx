@@ -41,7 +41,7 @@ export default async function TemplatePreviewPage({
   }
 
   return (
-    <main className="min-h-svh bg-service-surface text-service-ink">
+    <main className="min-h-svh bg-white text-service-ink">
       <PageTemplatePreview
         fixedNavigation
         sections={template.sections.map((section) => ({

@@ -126,6 +126,7 @@ export function TemplateLibrarySection({
     (sectionCount, template) => sectionCount + template.sectionCount,
     0,
   );
+  const stagedTemplateCount = assignmentsByTemplateId.size;
 
   function updateDraft(templateId: string, draft: Partial<TemplateDraft>) {
     setDrafts((currentDrafts) => ({
@@ -304,6 +305,7 @@ export function TemplateLibrarySection({
           <div className="mt-body-actions-md flex flex-wrap gap-2">
             <StatusPill label={`${localTemplates.length} templates`} />
             <StatusPill label={`${totalSections} saved sections`} />
+            <StatusPill label={`${stagedTemplateCount} active on staging`} />
             {strategySnapshots[0] ? (
               <StatusPill
                 label={`Latest strategy ${strategySnapshots[0].clientSlug} v${strategySnapshots[0].version}`}
@@ -365,7 +367,6 @@ export function TemplateLibrarySection({
                 <details
                   className="rounded-[var(--radius-md-token)] border border-service-border bg-white shadow-service"
                   key={group.pageType}
-                  open
                 >
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 marker:hidden">
                     <span>
@@ -376,9 +377,16 @@ export function TemplateLibrarySection({
                         {group.templates.length}{" "}
                         {group.templates.length === 1 ? "template" : "templates"}
                       </span>
+                      <span className="type-caption mt-2 block text-service-muted">
+                        {countAssignmentsForTemplates(
+                          group.templates,
+                          assignmentsByTemplateId,
+                        )}{" "}
+                        active on staging
+                      </span>
                     </span>
                     <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
-                      Expand
+                      Open group
                     </span>
                   </summary>
                   <div className="grid grid-cols-2 gap-5 border-t border-service-border p-5 max-lg:grid-cols-1">
@@ -430,7 +438,7 @@ export function TemplateLibrarySection({
                                     label={
                                       isRepeatable
                                         ? `${activeAssignmentsForTemplate.length} staged`
-                                        : `Staged: ${activeAssignment.pageLabel}`
+                                        : "Active on staging"
                                     }
                                   />
                                 ) : null}
@@ -458,7 +466,7 @@ export function TemplateLibrarySection({
                                   className="type-caption rounded-sm border border-green-200 bg-green-50 px-3 py-1 font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
                                   href={activeAssignment.previewHref}
                                 >
-                                  Open staged
+                                  Open {activeAssignment.pageLabel}
                                 </Link>
                               ) : null}
                             </div>
@@ -746,6 +754,17 @@ function groupAssignmentsByTemplateId(assignments: StagedTemplateAssignment[]) {
   }
 
   return groups;
+}
+
+function countAssignmentsForTemplates(
+  templates: PageTemplateSummary[],
+  assignmentsByTemplateId: Map<string, StagedTemplateAssignment[]>,
+) {
+  return templates.reduce(
+    (count, template) =>
+      count + (assignmentsByTemplateId.get(template.id)?.length ?? 0),
+    0,
+  );
 }
 
 function getRepeatableInstanceLabel(pageType: string) {
