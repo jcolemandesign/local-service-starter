@@ -94,6 +94,14 @@ type FinalPageOption = {
   promptValue: string;
 };
 
+type FinalPageGroup = {
+  description: string;
+  key: string;
+  label: string;
+  pages: FinalPageOption[];
+  sortOrder: number;
+};
+
 const fallbackFinalPageOptions = [
   {
     fieldKey: "homepageCopy",
@@ -155,6 +163,12 @@ export function PromptLibrarySection({
     (prompt) => prompt.id === "final-page-copy",
   );
   const finalPageGroups = groupFinalPageOptions(finalPageOptions);
+  const finalPageReadiness = getFinalPageReadiness({
+    finalPageOptions,
+    stagedPageContracts,
+    strategyDigestText,
+    strategyWorkspaceFields,
+  });
   const [copiedPromptId, setCopiedPromptId] = useState("");
 
   async function copyPrompt(
@@ -201,7 +215,7 @@ export function PromptLibrarySection({
     <Section className="min-h-svh bg-service-surface text-service-ink">
       <Container>
         <div className="grid layout-gap-lrg">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,0.85fr)_minmax(320px,0.45fr)] lg:items-end">
+          <div className="grid gap-5">
             <div className="fluid-type-frame">
               <p className="type-label text-service-accent">Prompt Library</p>
               <h1 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
@@ -213,52 +227,64 @@ export function PromptLibrarySection({
               </p>
             </div>
 
-            <Card className="p-5">
-              <p className="type-label text-service-accent">Workflow</p>
-              <ol className="mt-4 grid gap-3">
-                {promptLibraryWorkflow.map((step, index) => (
-                  <li className="flex gap-3" key={step}>
-                    <span className="radius-round flex size-7 shrink-0 items-center justify-center bg-service-accent type-caption font-semibold text-white">
-                      {index + 1}
-                    </span>
-                    <span className="type-text-sm text-service-muted">
-                      {step}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-              <div className="mt-5 grid gap-2 border-t border-service-border pt-4">
-                <p className="type-label text-service-accent">
-                  Auto-filled on copy
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <HydrationPill
-                    isFilled={Boolean(strategyDigestText.trim())}
-                    label="Strategy digest"
-                  />
-                  <HydrationPill
-                    isFilled={Boolean(
-                      strategyWorkspaceFields?.supplementalResearch.trim(),
-                    )}
-                    label="Supplemental research"
-                  />
-                  <HydrationPill
-                    isFilled={Boolean(
-                      strategyWorkspaceFields?.strategyBrief.trim(),
-                    )}
-                    label="Strategy brief"
-                  />
-                  <HydrationPill
-                    isFilled={Boolean(
-                      strategyWorkspaceFields?.contentPlan.trim(),
-                    )}
-                    label="Content plan"
-                  />
-                  <HydrationPill
-                    isFilled={Boolean(strategyWorkspaceFields?.generalNotes.trim())}
-                    label="Manual notes"
-                  />
+            <Card className="p-4 shadow-none">
+              <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+                <div className="min-w-0">
+                  <p className="type-label text-service-accent">
+                    Auto-filled on copy
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <HydrationPill
+                      isFilled={Boolean(strategyDigestText.trim())}
+                      label="Strategy digest"
+                    />
+                    <HydrationPill
+                      isFilled={Boolean(
+                        strategyWorkspaceFields?.supplementalResearch.trim(),
+                      )}
+                      label="Supplemental research"
+                    />
+                    <HydrationPill
+                      isFilled={Boolean(
+                        strategyWorkspaceFields?.strategyBrief.trim(),
+                      )}
+                      label="Strategy brief"
+                    />
+                    <HydrationPill
+                      isFilled={Boolean(
+                        strategyWorkspaceFields?.contentPlan.trim(),
+                      )}
+                      label="Content plan"
+                    />
+                    <HydrationPill
+                      isFilled={Boolean(strategyWorkspaceFields?.generalNotes.trim())}
+                      label="Manual notes"
+                    />
+                  </div>
                 </div>
+
+                <details className="rounded-[var(--radius-sm-token)] border border-service-border bg-service-surface">
+                  <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 marker:hidden">
+                    <span className="type-caption font-semibold text-service-ink">
+                      Workflow
+                    </span>
+                    <span className="type-caption text-service-muted">
+                      Open
+                    </span>
+                  </summary>
+                  <ol className="grid gap-3 border-t border-service-border p-4">
+                    {promptLibraryWorkflow.map((step, index) => (
+                      <li className="flex gap-3" key={step}>
+                        <span className="radius-round flex size-7 shrink-0 items-center justify-center bg-service-accent type-caption font-semibold text-white">
+                          {index + 1}
+                        </span>
+                        <span className="type-text-sm text-service-muted">
+                          {step}
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+                </details>
               </div>
             </Card>
           </div>
@@ -266,15 +292,23 @@ export function PromptLibrarySection({
           <div className="grid card-grid-gap-med">
             {phasePrompts.map((prompt, index) => {
               const isCopied = copiedPromptId === prompt.id;
+              const readiness = getPromptReadiness({
+                prompt,
+                strategyDigestText,
+                strategyWorkspaceFields,
+              });
 
               return (
                 <Card className="overflow-hidden" key={prompt.id}>
                   <details>
                     <summary className="flex cursor-pointer list-none flex-col gap-4 p-5 marker:hidden lg:flex-row lg:items-start lg:justify-between">
                       <div className="min-w-0">
-                        <p className="type-label text-service-accent">
-                          Phase {index + 1}
-                        </p>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="type-label text-service-accent">
+                            Phase {index + 1}
+                          </p>
+                          <ReadinessPill readiness={readiness} />
+                        </div>
                         <h2 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
                           {prompt.title}
                         </h2>
@@ -331,7 +365,10 @@ export function PromptLibrarySection({
             <div className="grid gap-6 border-t border-service-border pt-[var(--section-space-sml)]">
               <div className="grid gap-4 lg:grid-cols-[minmax(0,0.72fr)_minmax(280px,0.28fr)] lg:items-end">
                 <div className="fluid-type-frame">
-                  <p className="type-label text-service-accent">Phase 4</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="type-label text-service-accent">Phase 4</p>
+                    <ReadinessPill readiness={finalPageReadiness} />
+                  </div>
                   <h2 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
                     Page Copy Queue
                   </h2>
@@ -356,17 +393,20 @@ export function PromptLibrarySection({
                 {finalPageGroups.map((group) => (
                   <details
                     className="rounded-[var(--radius-md-token)] border border-service-border bg-white shadow-service"
-                    key={group.pageType}
+                    key={group.key}
                     open
                   >
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 marker:hidden">
                       <span>
                         <span className="type-label text-service-accent">
-                          {group.pageType}
+                          {group.label}
                         </span>
                         <span className="type-heading-sm mt-1 block text-service-ink">
                           {group.pages.length}{" "}
                           {group.pages.length === 1 ? "page" : "pages"}
+                        </span>
+                        <span className="type-caption mt-2 block max-w-2xl text-service-muted">
+                          {group.description}
                         </span>
                       </span>
                       <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
@@ -510,6 +550,120 @@ function StatusPill({
       {label}
     </span>
   );
+}
+
+type PromptReadiness = {
+  label: string;
+  tone: "manual" | "missing" | "ready" | "warning";
+};
+
+function ReadinessPill({ readiness }: { readiness: PromptReadiness }) {
+  const toneClasses = {
+    manual: "border-service-border bg-service-surface text-service-muted",
+    missing: "border-red-200 bg-red-50 text-red-700",
+    ready: "border-service-accent bg-white text-service-accent",
+    warning: "border-amber-700 bg-amber-50 text-amber-900",
+  } as const;
+
+  return (
+    <span
+      className={`type-caption rounded-sm border px-2 py-0.5 font-semibold ${toneClasses[readiness.tone]}`}
+    >
+      {readiness.label}
+    </span>
+  );
+}
+
+function getPromptReadiness({
+  prompt,
+  strategyDigestText,
+  strategyWorkspaceFields,
+}: {
+  prompt: PromptLibraryPrompt;
+  strategyDigestText: string;
+  strategyWorkspaceFields: StrategyWorkspaceFields | null;
+}): PromptReadiness {
+  if (prompt.id === "current-website-scrape") {
+    return {
+      label: "Manual URL",
+      tone: "manual",
+    };
+  }
+
+  if (prompt.id === "strategy-brief") {
+    return getFieldReadiness([
+      Boolean(strategyDigestText.trim()),
+      Boolean(strategyWorkspaceFields?.supplementalResearch.trim()),
+    ]);
+  }
+
+  if (prompt.id === "content-plan") {
+    return getFieldReadiness([
+      Boolean(strategyDigestText.trim()),
+      Boolean(strategyWorkspaceFields?.strategyBrief.trim()),
+    ]);
+  }
+
+  return {
+    label: "Ready",
+    tone: "ready",
+  };
+}
+
+function getFinalPageReadiness({
+  finalPageOptions,
+  stagedPageContracts,
+  strategyDigestText,
+  strategyWorkspaceFields,
+}: {
+  finalPageOptions: FinalPageOption[];
+  stagedPageContracts: StagedPageContract[];
+  strategyDigestText: string;
+  strategyWorkspaceFields: StrategyWorkspaceFields | null;
+}): PromptReadiness {
+  const hasRequiredStrategyFields =
+    Boolean(strategyDigestText.trim()) &&
+    Boolean(strategyWorkspaceFields?.strategyBrief.trim()) &&
+    Boolean(strategyWorkspaceFields?.contentPlan.trim());
+
+  if (!hasRequiredStrategyFields) {
+    return {
+      label: "Missing inputs",
+      tone: "missing",
+    };
+  }
+
+  const readyPageCount = finalPageOptions.filter((page) =>
+    findStagedPageContract(stagedPageContracts, page),
+  ).length;
+
+  if (readyPageCount === finalPageOptions.length) {
+    return {
+      label: "Ready",
+      tone: "ready",
+    };
+  }
+
+  return {
+    label: `${readyPageCount}/${finalPageOptions.length} ready`,
+    tone: readyPageCount > 0 ? "warning" : "missing",
+  };
+}
+
+function getFieldReadiness(isReadyValues: boolean[]): PromptReadiness {
+  const readyCount = isReadyValues.filter(Boolean).length;
+
+  if (readyCount === isReadyValues.length) {
+    return {
+      label: "Ready",
+      tone: "ready",
+    };
+  }
+
+  return {
+    label: `${readyCount}/${isReadyValues.length} ready`,
+    tone: readyCount > 0 ? "warning" : "missing",
+  };
 }
 
 function buildClipboardPrompt(
@@ -687,16 +841,116 @@ function createFinalPageOptions(
 }
 
 function groupFinalPageOptions(options: FinalPageOption[]) {
-  const groups = new Map<string, FinalPageOption[]>();
+  const groups = new Map<string, FinalPageGroup>();
 
   for (const option of options) {
-    const pageType = option.pageType || "Page";
-    groups.set(pageType, [...(groups.get(pageType) ?? []), option]);
+    const bucket = getFinalPageBucket(option);
+    const currentGroup = groups.get(bucket.key) ?? {
+      ...bucket,
+      pages: [],
+    };
+
+    groups.set(bucket.key, {
+      ...currentGroup,
+      pages: [...currentGroup.pages, option],
+    });
   }
 
-  return Array.from(groups.entries())
-    .map(([pageType, pages]) => ({ pageType, pages }))
-    .sort((a, b) => a.pageType.localeCompare(b.pageType));
+  return Array.from(groups.values())
+    .map((group) => ({
+      ...group,
+      pages: group.pages.toSorted((a, b) => sortFinalPageOptions(a, b, group.key)),
+    }))
+    .sort((a, b) => a.sortOrder - b.sortOrder);
+}
+
+function sortFinalPageOptions(
+  a: FinalPageOption,
+  b: FinalPageOption,
+  groupKey: string,
+) {
+  if (groupKey === "core") {
+    return getCorePageSortOrder(a) - getCorePageSortOrder(b);
+  }
+
+  return a.label.localeCompare(b.label);
+}
+
+function getCorePageSortOrder(option: FinalPageOption) {
+  const normalizedId = normalizePageKey(option.id);
+  const normalizedType = normalizePageKey(option.pageType);
+  const normalizedLabel = normalizePageKey(option.label);
+  const normalizedValues = [normalizedId, normalizedType, normalizedLabel];
+  const coreOrder = [
+    ["home", "homepage"],
+    ["about"],
+    ["services", "services-overview"],
+    ["contact"],
+  ];
+  const matchIndex = coreOrder.findIndex((aliases) =>
+    aliases.some((alias) => normalizedValues.includes(alias)),
+  );
+
+  return matchIndex === -1 ? coreOrder.length : matchIndex;
+}
+
+function getFinalPageBucket(option: FinalPageOption) {
+  const normalizedPageType = normalizePageKey(option.pageType);
+  const normalizedId = normalizePageKey(option.id);
+
+  if (
+    ["home", "services", "about", "contact"].includes(normalizedId) ||
+    ["home", "services-overview", "about", "contact"].includes(normalizedPageType)
+  ) {
+    return {
+      description:
+        "Primary site pages that shape the main navigation, trust path, and conversion path.",
+      key: "core",
+      label: "Core pages",
+      sortOrder: 10,
+    };
+  }
+
+  if (normalizedPageType === "individual-service") {
+    return {
+      description:
+        "Repeatable child pages that use one service template for each priority service.",
+      key: "repeatable-services",
+      label: "Repeatable service pages",
+      sortOrder: 20,
+    };
+  }
+
+  if (normalizedPageType === "service-area") {
+    return {
+      description:
+        "Coverage pages for the service area overview or individual location pages.",
+      key: "service-areas",
+      label: "Service area pages",
+      sortOrder: 30,
+    };
+  }
+
+  if (
+    normalizedPageType.includes("blog") ||
+    normalizedPageType.includes("product")
+  ) {
+    return {
+      description:
+        "Resource, article, or product-listing structures that usually come after the core site.",
+      key: "content-resources",
+      label: "Content and resource pages",
+      sortOrder: 40,
+    };
+  }
+
+  return {
+    description:
+      "Secondary conversion, offer, plan, financing, confirmation, or utility pages.",
+    key: "supporting",
+    label: "Supporting pages",
+    sortOrder: 50,
+  };
 }
 
 function getWorkspaceFieldForPageType(
