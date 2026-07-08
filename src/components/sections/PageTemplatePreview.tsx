@@ -91,7 +91,7 @@ type FieldSection = {
 };
 
 export type SiteNavigationLink = {
-  href: string;
+  href?: string;
   items?: Array<{
     href: string;
     label: string;

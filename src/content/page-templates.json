@@ -5,6 +5,71 @@
         "showSectionMarkers": false,
         "viewportId": "main"
       },
+      "id": "individual-service-template",
+      "name": "Individual Service Template",
+      "notes": "",
+      "pageType": "Individual Service",
+      "promotedAt": "2026-07-08T19:05:33.571Z",
+      "sectionCount": 6,
+      "sections": [
+        {
+          "component": "NavPrimarySectionV2",
+          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
+          "mode": "Navigation",
+          "name": "Primary navigation",
+          "originalComponent": "NavFloatingBentoSectionV2",
+          "originalIndex": 0
+        },
+        {
+          "component": "HeroGridMosaicSectionV2",
+          "instruction": "Use the mosaic to combine h1, trust proof, service paths, and supporting visuals.",
+          "mode": "Hero",
+          "name": "Grid mosaic hero",
+          "originalComponent": "HeroContentTopImageBottomSectionV2",
+          "originalIndex": 1
+        },
+        {
+          "component": "ServicesHoverPanelSectionV2",
+          "instruction": "Use a hover panel when a compact service list should reveal more detail and visual emphasis.",
+          "mode": "Scan",
+          "name": "Services hover panel",
+          "originalComponent": "ServicesScrollCardsSectionV2",
+          "originalIndex": 3
+        },
+        {
+          "component": "ContentSplitFixedImageSectionV3",
+          "instruction": "Use a content-height split layout when the section needs fixed-ratio imagery without hero-scale height.",
+          "mode": "Narrative",
+          "name": "Split content with fixed image",
+          "originalComponent": "ContentRuleHeaderSectionV2",
+          "originalIndex": 4
+        },
+        {
+          "component": "FAQSectionV3",
+          "instruction": "Include only the questions that affect whether someone contacts you.",
+          "mode": "Decision",
+          "name": "FAQ",
+          "originalComponent": "FAQSectionV3",
+          "originalIndex": 5
+        },
+        {
+          "component": "FooterSectionV3",
+          "instruction": "End with service links, areas, contact details, and legal links.",
+          "mode": "Utility",
+          "name": "Footer",
+          "originalComponent": "FooterSectionV3",
+          "originalIndex": 6
+        }
+      ],
+      "sourceOptionName": "Page Layout",
+      "sourceRecipeId": "compact-utility",
+      "sourceRecipeName": "Individual Service"
+    },
+    {
+      "designStyle": {
+        "showSectionMarkers": false,
+        "viewportId": "main"
+      },
       "id": "service-area-template",
       "name": "Service Area Template",
       "notes": "",

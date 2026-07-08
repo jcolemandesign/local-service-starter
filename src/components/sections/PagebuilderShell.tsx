@@ -290,6 +290,29 @@ function serializeWorkingSection(section: WorkingSection) {
   };
 }
 
+function updateSectionFromSwapOption(
+  section: WorkingSection,
+  nextOption: (typeof sectionSwapOptions)[number],
+): WorkingSection {
+  return {
+    ...section,
+    component: nextOption.component,
+    instruction: nextOption.instruction,
+    mode: nextOption.mode,
+    name: nextOption.name,
+    ratio:
+      nextOption.component === fixedRatioSplitComponent
+        ? section.ratio ?? fixedRatioSplitRatioOptions[0].value
+        : undefined,
+    variant:
+      nextOption.component === splitContentImageComponent
+        ? section.variant ?? splitContentImageVariantOptions[0].value
+        : nextOption.component === fixedRatioSplitComponent
+          ? section.variant ?? fixedRatioSplitVariantOptions[0].value
+          : undefined,
+  };
+}
+
 function applySavedOptionsToLayoutSlots(
   currentSlots: PageLayoutSlot[][],
   recipes: PagebuilderRecipe[],
@@ -1056,26 +1079,27 @@ export function PagebuilderShell({
       return;
     }
 
+    if (currentSection.mode === "Navigation") {
+      setLayoutSlots((currentSlots) =>
+        currentSlots.map((recipeSlots) =>
+          recipeSlots.map((slot) => ({
+            ...slot,
+            stack: slot.stack.map((section) =>
+              section.mode === "Navigation"
+                ? updateSectionFromSwapOption(section, nextOption)
+                : section,
+            ),
+          })),
+        ),
+      );
+      setSelectedSectionId(sectionId);
+      return;
+    }
+
     updateActiveStack((stack) =>
       stack.map((section) =>
         section.id === sectionId
-          ? {
-              ...section,
-              component: nextOption.component,
-              instruction: nextOption.instruction,
-              mode: nextOption.mode,
-              name: nextOption.name,
-              ratio:
-                nextOption.component === fixedRatioSplitComponent
-                  ? section.ratio ?? fixedRatioSplitRatioOptions[0].value
-                  : undefined,
-              variant:
-                nextOption.component === splitContentImageComponent
-                  ? section.variant ?? splitContentImageVariantOptions[0].value
-                  : nextOption.component === fixedRatioSplitComponent
-                    ? section.variant ?? fixedRatioSplitVariantOptions[0].value
-                  : undefined,
-            }
+          ? updateSectionFromSwapOption(section, nextOption)
           : section,
       ),
     );

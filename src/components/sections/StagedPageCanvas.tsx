@@ -155,11 +155,8 @@ function buildStagedNavigationLinks(pages: StagedPage[]) {
   const serviceOverviewPage = sortedPages.find(isServicesOverviewPage);
   const serviceAreaOverviewPage = sortedPages.find(isServiceAreaOverviewPage);
   const individualServicePages = sortedPages.filter(isIndividualServicePage);
-  const childServiceAreaPages = sortedPages.filter(
-    (page) => isServiceAreaPage(page) && page !== serviceAreaOverviewPage,
-  );
-
-  return sortedPages
+  const childServiceAreaPages = sortedPages.filter(isServiceAreaChildPage);
+  const navigationLinks = sortedPages
     .filter((stagedPage) => {
       if (isHomePage(stagedPage)) {
         return false;
@@ -169,7 +166,7 @@ function buildStagedNavigationLinks(pages: StagedPage[]) {
         return false;
       }
 
-      if (isServiceAreaPage(stagedPage) && stagedPage !== serviceAreaOverviewPage) {
+      if (isServiceAreaChildPage(stagedPage)) {
         return false;
       }
 
@@ -186,6 +183,32 @@ function buildStagedNavigationLinks(pages: StagedPage[]) {
 
       return toNavigationLink(stagedPage);
     });
+
+  if (!serviceAreaOverviewPage && childServiceAreaPages.length > 0) {
+    const servicesIndex = navigationLinks.findIndex(
+      (link) => link.label === "Services",
+    );
+    const serviceAreaLink = {
+      href: "#",
+      items: childServiceAreaPages.map((childPage) => ({
+        href: getStagedPageHref(childPage),
+        label: childPage.pageLabel,
+      })),
+      label: "Service Areas",
+    };
+
+    if (servicesIndex >= 0) {
+      return [
+        ...navigationLinks.slice(0, servicesIndex + 1),
+        serviceAreaLink,
+        ...navigationLinks.slice(servicesIndex + 1),
+      ];
+    }
+
+    return [serviceAreaLink, ...navigationLinks];
+  }
+
+  return navigationLinks;
 }
 
 function toNavigationLink(page: StagedPage, childPages: StagedPage[] = []) {
@@ -260,11 +283,15 @@ function isServicesOverviewPage(page: StagedPage) {
 function isIndividualServicePage(page: StagedPage) {
   const normalizedType = normalizePageType(page.template?.pageType ?? "");
 
+  if (normalizedType === "servicearea") {
+    return false;
+  }
+
   return (
     normalizedType === "individualservice" ||
     normalizedType === "service" ||
     normalizePageType(page.pageId).startsWith("service")
-  ) && !isServicesOverviewPage(page) && !isServiceAreaPage(page);
+  ) && !isServicesOverviewPage(page) && !isServiceAreaOverviewPage(page);
 }
 
 function isServiceAreaOverviewPage(page: StagedPage) {
@@ -272,14 +299,19 @@ function isServiceAreaOverviewPage(page: StagedPage) {
   const normalizedId = normalizePageType(`${page.pageId} ${page.pageLabel}`);
 
   return (
-    normalizedType === "servicearea" ||
-    normalizedId.includes("servicearea") ||
-    normalizedId.includes("serviceareas")
+    normalizedType === "servicearea" &&
+    (page.pageId === "service-area" ||
+      page.pageHref === "/service-area" ||
+      normalizedId === "serviceareaservicearea" ||
+      normalizedId === "serviceareas")
   );
 }
 
-function isServiceAreaPage(page: StagedPage) {
-  return isServiceAreaOverviewPage(page);
+function isServiceAreaChildPage(page: StagedPage) {
+  return (
+    normalizePageType(page.template?.pageType ?? "") === "servicearea" &&
+    !isServiceAreaOverviewPage(page)
+  );
 }
 
 function normalizePageType(value: string) {
