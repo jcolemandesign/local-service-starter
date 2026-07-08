@@ -137,7 +137,7 @@ export function PageTemplatePreview({
           if (isNavigationSection(section) && isHeroSection(nextSection)) {
             return (
               <div
-                className="pagebuilder-nav-hero-pair relative pt-[var(--section-space-sml)]"
+                className="pagebuilder-nav-hero-pair relative"
                 key={`${section.id ?? index}-${nextSection.id ?? index + 1}`}
               >
                 <TemplateSectionFrame className="inset-x-0 top-0 z-20" isOverlay>
@@ -206,7 +206,6 @@ function TemplateSectionFrame({
       className={cx(
         "group/pagebuilder-section outline outline-0 outline-offset-0 transition-shadow",
         isOverlay ? "absolute" : "relative",
-        isOverlay && "pointer-events-none",
         className,
       )}
     >
@@ -392,9 +391,9 @@ export function renderPageTemplateSection(
 }
 
 function navProps(section: FieldSection) {
-  const links = getListValues(section, ["navLinks", "footerLinks"], "").map(
-    parseLink,
-  );
+  const links = getListValues(section, ["navLinks", "footerLinks"], "")
+    .map(parseLink)
+    .map(mergeNavLinkDropdown);
 
   return {
     ...sectionLibraryV3Content.navPrimary,
@@ -489,6 +488,12 @@ function heroFullscreenProps(section: FieldSection) {
 }
 
 function heroGridProps(section: FieldSection) {
+  const serviceItems = cardItemsWithFallback(
+    section,
+    ["serviceItems", "items"],
+    sectionLibraryV3Content.heroGridMosaic.services,
+  );
+
   return {
     ...sectionLibraryV3Content.heroGridMosaic,
     body: getBody(section, sectionLibraryV3Content.heroGridMosaic.body),
@@ -507,12 +512,18 @@ function heroGridProps(section: FieldSection) {
       "secondaryAction",
       sectionLibraryV3Content.heroGridMosaic.secondaryAction,
     ),
-    services: cardItems(section, ["serviceItems", "items"]).slice(0, 3),
+    services: serviceItems,
     title: getTitle(section, sectionLibraryV3Content.heroGridMosaic.title),
   };
 }
 
 function servicesBentoProps(section: FieldSection) {
+  const serviceItems = cardItemsWithFallback(
+    section,
+    ["serviceItems", "items", "cards"],
+    sectionLibraryV3Content.servicesBento.items,
+  );
+
   return {
     ...sectionLibraryV3Content.servicesBento,
     body: getBody(section, sectionLibraryV3Content.servicesBento.body),
@@ -521,7 +532,7 @@ function servicesBentoProps(section: FieldSection) {
       "eyebrow",
       sectionLibraryV3Content.servicesBento.eyebrow,
     ),
-    items: cardItems(section, ["serviceItems", "items", "cards"]).map(
+    items: serviceItems.map(
       (item, index) => ({
         ...sectionLibraryV3Content.servicesBento.items[
           index % sectionLibraryV3Content.servicesBento.items.length
@@ -534,6 +545,12 @@ function servicesBentoProps(section: FieldSection) {
 }
 
 function servicesHoverProps(section: FieldSection) {
+  const serviceItems = cardItemsWithFallback(
+    section,
+    ["serviceItems", "items", "cards"],
+    sectionLibraryV3Content.servicesHoverPanel.items,
+  );
+
   return {
     ...sectionLibraryV3Content.servicesHoverPanel,
     body: getBody(section, sectionLibraryV3Content.servicesHoverPanel.body),
@@ -542,7 +559,7 @@ function servicesHoverProps(section: FieldSection) {
       "eyebrow",
       sectionLibraryV3Content.servicesHoverPanel.eyebrow,
     ),
-    items: cardItems(section, ["serviceItems", "items", "cards"]).map(
+    items: serviceItems.map(
       (item, index) => ({
         ...sectionLibraryV3Content.servicesHoverPanel.items[
           index % sectionLibraryV3Content.servicesHoverPanel.items.length
@@ -555,9 +572,15 @@ function servicesHoverProps(section: FieldSection) {
 }
 
 function servicesThreeCardsProps(section: FieldSection) {
+  const serviceItems = cardItemsWithFallback(
+    section,
+    ["serviceItems", "items", "cards"],
+    sectionLibraryV3Content.servicesThreeCardsRight.cards,
+  );
+
   return {
     ...sectionLibraryV3Content.servicesThreeCardsRight,
-    cards: cardItems(section, ["serviceItems", "items", "cards"]).slice(0, 3),
+    cards: serviceItems,
     eyebrow: getValue(
       section,
       "eyebrow",
@@ -568,6 +591,12 @@ function servicesThreeCardsProps(section: FieldSection) {
 }
 
 function servicesScrollCardsProps(section: FieldSection) {
+  const serviceItems = cardItemsWithFallback(
+    section,
+    ["serviceItems", "items", "cards"],
+    sectionLibraryV3Content.servicesScrollCards.items,
+  );
+
   return {
     ...sectionLibraryV3Content.servicesScrollCards,
     eyebrow: getValue(
@@ -575,7 +604,7 @@ function servicesScrollCardsProps(section: FieldSection) {
       "eyebrow",
       sectionLibraryV3Content.servicesScrollCards.eyebrow,
     ),
-    items: cardItems(section, ["serviceItems", "items", "cards"]).map(
+    items: serviceItems.map(
       (item, index) => ({
         ...sectionLibraryV3Content.servicesScrollCards.items[
           index % sectionLibraryV3Content.servicesScrollCards.items.length
@@ -659,7 +688,7 @@ function testimonialsProps(section: FieldSection) {
       "eyebrow",
       sectionLibraryV3Content.testimonials.eyebrow,
     ),
-    items: testimonialItems(section).slice(0, 2),
+    items: testimonialItems(section),
     title: getTitle(section, sectionLibraryV3Content.testimonials.title),
   };
 }
@@ -697,7 +726,7 @@ function faqProps(section: FieldSection) {
     ...sectionLibraryV3Content.faq,
     body: getBody(section, sectionLibraryV3Content.faq.body),
     eyebrow: getValue(section, "eyebrow", sectionLibraryV3Content.faq.eyebrow),
-    items: faqItems(section).slice(0, 3),
+    items: faqItems(section),
     title: getTitle(section, sectionLibraryV3Content.faq.title),
   };
 }
@@ -828,7 +857,11 @@ function processProps(section: FieldSection) {
       "eyebrow",
       sectionLibraryV3Content.process.eyebrow,
     ),
-    steps: cardItems(section, ["steps", "items", "supportingItems"]).slice(0, 3),
+    steps: cardItemsWithFallback(
+      section,
+      ["steps", "items", "supportingItems"],
+      sectionLibraryV3Content.process.steps,
+    ),
     title: getTitle(section, sectionLibraryV3Content.process.title),
   };
 }
@@ -1264,6 +1297,22 @@ function cardItems(section: FieldSection, fieldNames: string[]) {
   return [];
 }
 
+function cardItemsWithFallback(
+  section: FieldSection,
+  fieldNames: string[],
+  fallbackItems: ReadonlyArray<{ body?: string; imageLabel?: string; title: string }>,
+) {
+  const items = cardItems(section, fieldNames);
+
+  return items.length > 0
+    ? items
+    : fallbackItems.map((item) => ({
+        body: item.body ?? "",
+        imageLabel: item.imageLabel ?? item.title,
+        title: item.title,
+      }));
+}
+
 function testimonialItems(section: FieldSection) {
   const records = getRepeatedRecords(section, ["testimonials", "items"]);
 
@@ -1319,12 +1368,29 @@ function parseCardItem(value: string) {
 }
 
 function parseLink(value: string) {
-  const [label, href] = value.split(/\s*->\s*/);
+  const [labelAndItems, href] = value.split(/\s*->\s*/);
+  const [label, itemsText] = labelAndItems.split(/\s*:\s*/);
 
   return {
     href: href?.trim() || "#",
+    items: itemsText ? splitItems(itemsText) : undefined,
     label: label?.trim() || value,
   };
+}
+
+function mergeNavLinkDropdown(link: ReturnType<typeof parseLink>) {
+  const fallbackLink = sectionLibraryV3Content.navPrimary.links.find(
+    (item) => normalizeLabel(item.label) === normalizeLabel(link.label),
+  );
+
+  return {
+    ...link,
+    items: link.items?.length ? link.items : fallbackLink?.items,
+  };
+}
+
+function normalizeLabel(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "");
 }
 
 function splitItems(value: string) {

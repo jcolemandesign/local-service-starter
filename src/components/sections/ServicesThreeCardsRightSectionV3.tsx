@@ -42,30 +42,23 @@ export function ServicesThreeCardsRightSectionV3({
           className="col-span-1 col-start-1 row-start-2 max-md:hidden"
         />
 
-        {cards.slice(0, 3).map((card, index) => (
-          <SevenColumnGridItem
-            alignY="stretch"
-            className={[
-              "content-padding radius-medium card-min-short col-span-2 row-start-2 border border-service-border bg-service-surface shadow-service max-md:col-span-7 max-md:col-start-1 max-md:row-auto",
-              index === 0 ? "col-start-2" : undefined,
-              index === 1 ? "col-start-4" : undefined,
-              index === 2 ? "col-start-6" : undefined,
-            ]
-              .filter(Boolean)
-              .join(" ")}
-            key={card.title}
-            measure="copyWide"
-          >
-            <article className="flex h-full flex-col justify-between layout-gap-lrg">
-              <h3 className="type-heading-sm text-service-ink">
-                {card.title}
-              </h3>
-              <p className="type-text-sm wrap-pretty text-service-muted">
-                {card.body}
-              </p>
-            </article>
-          </SevenColumnGridItem>
-        ))}
+        <SevenColumnGridItem className="col-span-6 col-start-2 row-start-2 max-md:col-span-7 max-md:col-start-1 max-md:row-auto">
+          <div className="grid grid-cols-3 gap-[var(--inline-gap-active)] max-lg:grid-cols-2 max-md:grid-cols-1">
+            {cards.map((card) => (
+              <article
+                className="content-padding radius-medium card-min-short flex h-full flex-col justify-between border border-service-border bg-service-surface shadow-service layout-gap-lrg"
+                key={card.title}
+              >
+                <h3 className="type-heading-sm text-service-ink">
+                  {card.title}
+                </h3>
+                <p className="type-text-sm wrap-pretty text-service-muted">
+                  {card.body}
+                </p>
+              </article>
+            ))}
+          </div>
+        </SevenColumnGridItem>
       </SevenColumnGrid>
     </section>
   );
