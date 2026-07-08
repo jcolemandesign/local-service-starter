@@ -2,6 +2,149 @@
   "snapshots": [
     {
       "clientSlug": "north-star-hvac",
+      "createdAt": "2026-07-08T19:55:58.364Z",
+      "fields": {
+        "aboutCopy": "",
+        "contactCopy": "",
+        "contentPlan": "",
+        "generalNotes": "",
+        "homepageCopy": "",
+        "servicesCopy": "",
+        "strategyBrief": "",
+        "supplementalResearch": "",
+        "thankYouCopy": ""
+      },
+      "id": "north-star-hvac-v30",
+      "navigation": [],
+      "pages": [
+        {
+          "copyField": "homepageCopy",
+          "detected": false,
+          "id": "home",
+          "label": "Home",
+          "pageType": "Home",
+          "path": "/",
+          "status": "needs-template"
+        },
+        {
+          "copyField": "servicesCopy",
+          "detected": false,
+          "id": "services",
+          "label": "Services Overview",
+          "pageType": "Services Overview",
+          "path": "/services",
+          "status": "needs-template"
+        },
+        {
+          "copyField": "servicesCopy",
+          "detected": false,
+          "id": "individual-service",
+          "label": "Individual Service",
+          "parentId": "services",
+          "pageType": "Individual Service",
+          "path": "/services/[service]",
+          "repeatable": true,
+          "status": "needs-template"
+        },
+        {
+          "copyField": "contentPlan",
+          "detected": false,
+          "id": "service-area",
+          "label": "Service Area",
+          "pageType": "Service Area",
+          "path": "/service-area",
+          "repeatable": true,
+          "status": "needs-template"
+        },
+        {
+          "copyField": "contentPlan",
+          "detected": false,
+          "id": "service-plan",
+          "label": "Service Plan",
+          "pageType": "Service Plan",
+          "path": "/service-plan",
+          "status": "needs-template"
+        },
+        {
+          "copyField": "contentPlan",
+          "detected": false,
+          "id": "specials",
+          "label": "Specials / Offers",
+          "pageType": "Specials / Offers",
+          "path": "/specials",
+          "status": "needs-template"
+        },
+        {
+          "copyField": "contentPlan",
+          "detected": false,
+          "id": "financing",
+          "label": "Financing",
+          "pageType": "Financing",
+          "path": "/financing",
+          "status": "needs-template"
+        },
+        {
+          "copyField": "aboutCopy",
+          "detected": false,
+          "id": "about",
+          "label": "About",
+          "pageType": "About",
+          "path": "/about",
+          "status": "needs-template"
+        },
+        {
+          "copyField": "contactCopy",
+          "detected": false,
+          "id": "contact",
+          "label": "Contact",
+          "pageType": "Contact",
+          "path": "/contact",
+          "status": "needs-template"
+        },
+        {
+          "copyField": "contentPlan",
+          "detected": false,
+          "id": "blog",
+          "label": "Blog Index",
+          "pageType": "Blog Index",
+          "path": "/blog",
+          "status": "needs-template"
+        },
+        {
+          "copyField": "contentPlan",
+          "detected": false,
+          "id": "blog-post",
+          "label": "Blog Post",
+          "parentId": "blog",
+          "pageType": "Blog Post",
+          "path": "/blog/[post]",
+          "repeatable": true,
+          "status": "needs-template"
+        },
+        {
+          "copyField": "contentPlan",
+          "detected": false,
+          "id": "products",
+          "label": "Product Listing",
+          "pageType": "Product Listing",
+          "path": "/products",
+          "repeatable": true,
+          "status": "needs-template"
+        },
+        {
+          "copyField": "thankYouCopy",
+          "detected": false,
+          "id": "thank-you",
+          "label": "Thank You",
+          "pageType": "Thank You",
+          "path": "/thank-you",
+          "status": "needs-template"
+        }
+      ],
+      "version": 30
+    },
+    {
+      "clientSlug": "north-star-hvac",
       "createdAt": "2026-07-08T15:35:40.236Z",
       "fields": {
         "aboutCopy": "",

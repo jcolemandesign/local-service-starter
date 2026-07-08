@@ -1,4 +1,3 @@
-import contentEditorPagesData from "./content-editor-pages.json";
 import stagedPagesData from "./staged-pages.json";
 
 export type ContentEditorFieldKind = "copy" | "image" | "link" | "meta";
@@ -26,9 +25,6 @@ export type ContentEditorPage = {
 };
 
 type ContentRecord = Record<string, unknown>;
-type ContentEditorPagesFile = {
-  pages?: ContentEditorPage[];
-};
 type StagedEditorField = {
   id: string;
   kind: ContentEditorFieldKind;
@@ -53,18 +49,9 @@ type StagedPagesFile = {
   pages?: StagedEditorPage[];
 };
 
-const generatedContentEditorPages = (
-  contentEditorPagesData as ContentEditorPagesFile
-).pages ?? [];
 const stagedContentEditorPages = (stagedPagesData as StagedPagesFile).pages ?? [];
 const mappedStagedContentEditorPages = stagedContentEditorPages.map(
   mapStagedPageToContentEditorPage,
-);
-const stagedContentEditorPageIds = new Set(
-  mappedStagedContentEditorPages.map((page) => page.id),
-);
-const dedupedGeneratedContentEditorPages = generatedContentEditorPages.filter(
-  (page) => !stagedContentEditorPageIds.has(page.id),
 );
 
 const contentPageSources: Array<{
@@ -76,7 +63,6 @@ const contentPageSources: Array<{
 
 export const contentEditorPages: ContentEditorPage[] = [
   ...mappedStagedContentEditorPages,
-  ...dedupedGeneratedContentEditorPages,
   ...contentPageSources.map((page) => {
     const content = page.content as ContentRecord;
     const source = content.source as ContentRecord | undefined;
