@@ -19,6 +19,7 @@ import type {
 import type { StrategySnapshot } from "@/utils/strategy-snapshots";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
+type ContentPlanReferenceState = "idle" | "generated" | "error";
 
 type StrategyWorkspaceSectionProps = {
   clientSlug: string;
@@ -153,6 +154,11 @@ export function StrategyWorkspaceSection({
   const [fieldCopyState, setFieldCopyState] = useState<
     Partial<Record<keyof StrategyWorkspaceFields, "copied" | "error">>
   >({});
+  const [contentPlanReferenceState, setContentPlanReferenceState] =
+    useState<ContentPlanReferenceState>("idle");
+  const [openFieldGroups, setOpenFieldGroups] = useState<string[]>([
+    fieldGroups[0]?.title ?? "",
+  ]);
   const [updatedAt, setUpdatedAt] = useState(initialWorkspace.updatedAt);
 
   const filledCount = useMemo(
@@ -208,6 +214,10 @@ export function StrategyWorkspaceSection({
       ...currentState,
       [key]: undefined,
     }));
+
+    if (key === "contentPlan" && contentPlanReferenceState !== "idle") {
+      setContentPlanReferenceState("idle");
+    }
 
     if (saveState !== "idle") {
       setSaveState("idle");
@@ -299,6 +309,48 @@ export function StrategyWorkspaceSection({
         [key]: "error",
       }));
     }
+  }
+
+  function toggleFieldGroup(title: string) {
+    setOpenFieldGroups((currentGroups) =>
+      currentGroups.includes(title)
+        ? currentGroups.filter((groupTitle) => groupTitle !== title)
+        : [...currentGroups, title],
+    );
+  }
+
+  function openContentPlanReference() {
+    const contentPlan = fields.contentPlan.trim();
+
+    if (!contentPlan) {
+      setContentPlanReferenceState("error");
+      return;
+    }
+
+    const referenceBlob = new Blob(
+      [
+        buildContentPlanDocumentHtml({
+          clientSlug,
+          content: contentPlan,
+        }),
+      ],
+      { type: "text/html" },
+    );
+    const referenceUrl = URL.createObjectURL(referenceBlob);
+    const docWindow = window.open(referenceUrl, "_blank");
+
+    if (!docWindow) {
+      setContentPlanReferenceState("error");
+      return;
+    }
+
+    docWindow.opener = null;
+
+    window.setTimeout(() => {
+      URL.revokeObjectURL(referenceUrl);
+    }, 60_000);
+
+    setContentPlanReferenceState("generated");
   }
 
   return (
@@ -588,23 +640,46 @@ export function StrategyWorkspaceSection({
             </Card>
           ) : null}
 
-          <div className="grid card-grid-gap-lrg">
+          <div className="grid card-grid-gap-med">
             {fieldGroups.map((group) => (
-              <Card className="p-5" key={group.title}>
-                <div className="grid card-grid-gap-med">
-                  <div>
-                    <p className="type-label text-service-accent">
-                      {group.title}
-                    </p>
-                    <p className="type-text-sm mt-heading-body-sm text-service-muted">
-                      {group.description}
-                    </p>
-                  </div>
+              <Card className="overflow-hidden shadow-none" key={group.title}>
+                <details
+                  className="group"
+                  open={openFieldGroups.includes(group.title)}
+                >
+                  <summary
+                    className="flex cursor-pointer list-none items-center justify-between gap-5 p-5 marker:hidden max-md:items-start"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      toggleFieldGroup(group.title);
+                    }}
+                  >
+                    <div className="min-w-0">
+                      <p className="type-label text-service-accent">
+                        {group.title}
+                      </p>
+                      <p className="type-text-sm mt-heading-body-sm text-service-muted">
+                        {group.description}
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-3">
+                      <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 font-semibold text-service-muted">
+                        {group.fields.length}{" "}
+                        {group.fields.length === 1 ? "field" : "fields"}
+                      </span>
+                      <span
+                        className="flex size-10 items-center justify-center rounded-[var(--radius-md-token)] border border-service-border text-service-accent transition-transform group-open:rotate-180"
+                        aria-hidden="true"
+                      >
+                        v
+                      </span>
+                    </div>
+                  </summary>
 
-                  <div className="grid gap-5">
+                  <div className="grid gap-5 border-t border-service-border bg-service-surface p-5">
                     {group.fields.map((field) => (
                       <div
-                        className="grid gap-2 rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-4"
+                        className="grid gap-2 rounded-[var(--radius-md-token)] border border-service-border bg-white p-4"
                         key={field.key}
                       >
                         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-3">
@@ -625,6 +700,27 @@ export function StrategyWorkspaceSection({
                                 Nothing to copy.
                               </span>
                             ) : null}
+                            {field.key === "contentPlan" &&
+                            contentPlanReferenceState === "generated" ? (
+                              <span className="type-caption font-semibold text-green-700">
+                                Reference opened.
+                              </span>
+                            ) : null}
+                            {field.key === "contentPlan" &&
+                            contentPlanReferenceState === "error" ? (
+                              <span className="type-caption font-semibold text-red-700">
+                                Add Phase 3 output first.
+                              </span>
+                            ) : null}
+                            {field.key === "contentPlan" ? (
+                              <button
+                                className={secondaryButtonClass}
+                                onClick={openContentPlanReference}
+                                type="button"
+                              >
+                                Open reference
+                              </button>
+                            ) : null}
                             <button
                               className={secondaryButtonClass}
                               onClick={() => void copyWorkspaceField(field.key)}
@@ -635,7 +731,7 @@ export function StrategyWorkspaceSection({
                           </div>
                         </div>
                         <textarea
-                          className="mx-auto min-h-48 w-full max-w-5xl rounded-[var(--radius-md-token)] border border-service-border bg-white p-4 text-sm font-normal leading-relaxed text-service-ink outline-none transition-colors placeholder:text-service-muted focus:border-service-accent"
+                          className="mx-auto aspect-[4/5] min-h-96 w-full max-w-4xl resize-y rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-4 text-sm font-normal leading-relaxed text-service-ink outline-none transition-colors placeholder:text-service-muted focus:border-service-accent max-md:aspect-auto max-md:min-h-[32rem]"
                           id={`strategy-field-${field.key}`}
                           onChange={(event) =>
                             updateField(field.key, event.currentTarget.value)
@@ -647,7 +743,7 @@ export function StrategyWorkspaceSection({
                       </div>
                     ))}
                   </div>
-                </div>
+                </details>
               </Card>
             ))}
           </div>
@@ -727,6 +823,371 @@ function Metric({ label, value }: { label: string; value: number | null }) {
       </p>
     </div>
   );
+}
+
+function buildContentPlanDocumentHtml({
+  clientSlug,
+  content,
+}: {
+  clientSlug: string;
+  content: string;
+}) {
+  const title = `${clientSlug} Page-Building Reference`;
+  const generatedAt = new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date());
+
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>${escapeHtml(title)}</title>
+    <style>
+      :root {
+        color: #1d2520;
+        background: #f5f2eb;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #f5f2eb;
+      }
+
+      main {
+        width: min(880px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 56px 0 72px;
+      }
+
+      header {
+        border-bottom: 1px solid #d8d2c6;
+        margin-bottom: 32px;
+        padding-bottom: 28px;
+      }
+
+      .eyebrow {
+        color: #8a5f2d;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        margin: 0 0 12px;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        font-size: clamp(36px, 6vw, 64px);
+        line-height: 0.95;
+        margin: 0;
+      }
+
+      .intro {
+        color: #5b655e;
+        font-size: 16px;
+        line-height: 1.65;
+        margin: 18px 0 0;
+        max-width: 720px;
+      }
+
+      .meta {
+        color: #6d746f;
+        font-size: 13px;
+        margin-top: 16px;
+      }
+
+      h2 {
+        border-top: 1px solid #d8d2c6;
+        font-size: 28px;
+        line-height: 1.15;
+        margin: 36px 0 14px;
+        padding-top: 28px;
+      }
+
+      h3 {
+        color: #27342d;
+        font-size: 20px;
+        line-height: 1.25;
+        margin: 28px 0 10px;
+      }
+
+      p {
+        color: #3f4a43;
+        font-size: 16px;
+        line-height: 1.72;
+        margin: 0 0 14px;
+      }
+
+      ul,
+      ol {
+        color: #3f4a43;
+        font-size: 16px;
+        line-height: 1.62;
+        margin: 0 0 18px;
+        padding-left: 24px;
+      }
+
+      li {
+        margin: 6px 0;
+      }
+
+      strong {
+        color: #1d2520;
+        font-weight: 800;
+      }
+
+      .table-wrap {
+        border: 1px solid #d8d2c6;
+        border-radius: 8px;
+        margin: 22px 0 30px;
+        overflow: auto;
+        background: #fffdf8;
+      }
+
+      table {
+        border-collapse: collapse;
+        min-width: 760px;
+        width: 100%;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid #e4ded2;
+        padding: 14px 16px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        background: #eee7db;
+        color: #1d2520;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      td {
+        color: #3f4a43;
+        font-size: 15px;
+        line-height: 1.55;
+      }
+
+      td:first-child {
+        color: #1d2520;
+        font-weight: 800;
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .toolbar {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+      }
+
+      button {
+        background: #1d2520;
+        border: 1px solid #1d2520;
+        border-radius: 6px;
+        color: #fff;
+        cursor: pointer;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 800;
+        padding: 12px 16px;
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+
+        main {
+          padding: 0;
+          width: 100%;
+        }
+
+        .toolbar {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="toolbar">
+        <button type="button" onclick="window.print()">Print / Save PDF</button>
+      </div>
+      <header>
+        <p class="eyebrow">Phase 3 Reference</p>
+        <h1>${escapeHtml(title)}</h1>
+        <p class="intro">A formatted planning reference for page building. Use this to interpret structure, priorities, page intent, messaging notes, and content requirements while assembling the site.</p>
+        <p class="meta">Generated ${escapeHtml(generatedAt)}</p>
+      </header>
+      ${formatReferenceContent(content)}
+    </main>
+  </body>
+</html>`;
+}
+
+function formatReferenceContent(content: string) {
+  const lines = content.replace(/\r\n/g, "\n").split("\n");
+  const html: string[] = [];
+  let listType: "ol" | "ul" | null = null;
+
+  function closeList() {
+    if (!listType) {
+      return;
+    }
+
+    html.push(`</${listType}>`);
+    listType = null;
+  }
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const rawLine = lines[index];
+    const line = rawLine.trim();
+
+    if (!line) {
+      closeList();
+      continue;
+    }
+
+    if (
+      isMarkdownTableRow(line) &&
+      index + 1 < lines.length &&
+      isMarkdownTableSeparator(lines[index + 1].trim())
+    ) {
+      closeList();
+      const tableLines = [line];
+      index += 2;
+
+      while (
+        index < lines.length &&
+        isMarkdownTableRow(lines[index].trim())
+      ) {
+        tableLines.push(lines[index].trim());
+        index += 1;
+      }
+
+      index -= 1;
+      html.push(formatMarkdownTable(tableLines));
+      continue;
+    }
+
+    const headingMatch = /^(#{1,4})\s+(.+)$/.exec(line);
+    const unorderedMatch = /^[-*•]\s+(.+)$/.exec(line);
+    const orderedMatch = /^\d+[.)]\s+(.+)$/.exec(line);
+
+    if (headingMatch) {
+      closeList();
+      const level = Math.min(headingMatch[1].length + 1, 3);
+      html.push(
+        `<h${level}>${formatInlineText(headingMatch[2])}</h${level}>`,
+      );
+      continue;
+    }
+
+    if (orderedMatch || unorderedMatch) {
+      const nextListType = orderedMatch ? "ol" : "ul";
+
+      if (listType !== nextListType) {
+        closeList();
+        html.push(`<${nextListType}>`);
+        listType = nextListType;
+      }
+
+      html.push(`<li>${formatInlineText((orderedMatch ?? unorderedMatch)?.[1] ?? "")}</li>`);
+      continue;
+    }
+
+    if (line.endsWith(":") && line.length <= 90) {
+      closeList();
+      html.push(`<h2>${formatInlineText(line.replace(/:$/, ""))}</h2>`);
+      continue;
+    }
+
+    closeList();
+    html.push(`<p>${formatInlineText(line)}</p>`);
+  }
+
+  closeList();
+
+  return html.join("\n");
+}
+
+function formatMarkdownTable(tableLines: string[]) {
+  const [headerLine, ...bodyLines] = tableLines;
+  const headers = splitMarkdownTableRow(headerLine);
+  const rows = bodyLines
+    .map((line) => splitMarkdownTableRow(line))
+    .filter((row) => row.some((cell) => cell.length > 0));
+
+  return `<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>${headers
+        .map((header) => `<th>${formatInlineText(header)}</th>`)
+        .join("")}</tr>
+    </thead>
+    <tbody>
+      ${rows
+        .map(
+          (row) =>
+            `<tr>${headers
+              .map(
+                (_header, cellIndex) =>
+                  `<td>${formatInlineText(row[cellIndex] ?? "")}</td>`,
+              )
+              .join("")}</tr>`,
+        )
+        .join("\n")}
+    </tbody>
+  </table>
+</div>`;
+}
+
+function splitMarkdownTableRow(line: string) {
+  return line
+    .replace(/^\|/, "")
+    .replace(/\|$/, "")
+    .split("|")
+    .map((cell) => cell.trim());
+}
+
+function isMarkdownTableRow(line: string) {
+  return line.startsWith("|") && line.endsWith("|") && line.includes("|");
+}
+
+function isMarkdownTableSeparator(line: string) {
+  if (!isMarkdownTableRow(line)) {
+    return false;
+  }
+
+  return splitMarkdownTableRow(line).every((cell) => /^:?-{3,}:?$/.test(cell));
+}
+
+function formatInlineText(value: string) {
+  return escapeHtml(value)
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/__(.+?)__/g, "<strong>$1</strong>");
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function formatDate(value: string) {
