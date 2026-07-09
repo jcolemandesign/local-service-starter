@@ -9,8 +9,8 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-07-09T21:04:21.282Z",
-      "sectionCount": 4,
+      "savedAt": "2026-07-09T21:24:47.411Z",
+      "sectionCount": 6,
       "sections": [
         {
           "component": "NavFloatingBentoSectionV2",
@@ -50,6 +50,26 @@
           "mode": "Proof",
           "name": "Masonry testimonials",
           "originalComponent": "TestimonialsMasonrySectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "ContentFixedCoverFadeSectionV2",
+          "id": "classic-service-ContentFixedCoverFadeSectionV2-added-3",
+          "included": true,
+          "instruction": "Use a fixed-cover fade when the action moment should feel immersive and image-led.",
+          "mode": "Action",
+          "name": "Fixed cover fade",
+          "originalComponent": "ContentFixedCoverFadeSectionV2",
+          "originalIndex": -1
+        },
+        {
+          "component": "FooterCompactSectionV3",
+          "id": "classic-service-FooterSectionV3-added-4",
+          "included": true,
+          "instruction": "End with a simpler condensed footer where link groups sit inline and wrap beside their headings.",
+          "mode": "Utility",
+          "name": "Condensed footer",
+          "originalComponent": "FooterSectionV3",
           "originalIndex": -1
         }
       ]

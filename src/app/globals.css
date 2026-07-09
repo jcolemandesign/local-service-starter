@@ -519,7 +519,10 @@ body {
   .pagebuilder-density-normal
     [data-pagebuilder-section-mode="Navigation"]
     section,
-  .pagebuilder-density-normal [data-pagebuilder-section-mode="Hero"] section {
+  .pagebuilder-density-normal [data-pagebuilder-section-mode="Hero"] section,
+  .pagebuilder-density-normal
+    [data-pagebuilder-section-component="ContentFixedCoverFadeSectionV2"]
+    section {
     padding-block: 0;
   }
 

@@ -253,6 +253,7 @@ function getSectionContent(component: string): ContentSourceValue | null {
     FeaturePortraitParagraphSectionV3:
       sectionLibraryV3Content.featurePortraitParagraph,
     FooterSectionV3: sectionLibraryV3Content.footer,
+    FooterCompactSectionV3: sectionLibraryV3Content.footer,
     HeroCenteredFloatersSectionV2: sectionLibraryV3Content.hero,
     HeroContentTopImageBottomSectionV2: sectionLibraryV3Content.hero,
     HeroFullscreenSectionV2: sectionLibraryV3Content.heroFullscreen,

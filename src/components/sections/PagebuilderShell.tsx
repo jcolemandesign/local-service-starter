@@ -693,6 +693,13 @@ const sectionSwapOptions = [
     mode: "Utility",
     name: "Footer",
   },
+  {
+    component: "FooterCompactSectionV3",
+    instruction:
+      "End with a simpler condensed footer where link groups sit inline and wrap beside their headings.",
+    mode: "Utility",
+    name: "Condensed footer",
+  },
 ] as const;
 
 function buildPageInstruction({

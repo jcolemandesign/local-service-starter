@@ -38,6 +38,7 @@ export {
   CTAFullscreenSectionV3,
   CTASectionV3,
   FAQSectionV3,
+  FooterCompactSectionV3,
   FooterSectionV3,
 } from "./FAQConversionContactFooterSectionsV3";
 export {

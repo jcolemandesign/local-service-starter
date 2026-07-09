@@ -1027,6 +1027,7 @@ export const sectionLibraryV3Collections = [
       },
       { label: "Contact section", component: "contact-v3" },
       { label: "Footer", component: "footer-v3" },
+      { label: "Condensed footer", component: "footer-compact-v3" },
     ],
   },
   {

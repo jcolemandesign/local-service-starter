@@ -19,6 +19,7 @@ import {
   FeatureAsymmetricCardsSectionV3,
   FeatureOverlapRowsSectionV3,
   FeaturePortraitParagraphSectionV3,
+  FooterCompactSectionV3,
   FooterSectionV3,
   HeroCenteredFloatersSectionV2,
   HeroContentTopImageBottomSectionV2,
@@ -233,6 +234,9 @@ const sectionElements = {
   ),
   "contact-v3": <ContactSectionV3 {...sectionLibraryV3Content.contact} />,
   "footer-v3": <FooterSectionV3 {...sectionLibraryV3Content.footer} />,
+  "footer-compact-v3": (
+    <FooterCompactSectionV3 {...sectionLibraryV3Content.footer} />
+  ),
   "trust-bar-v3": (
     <TrustBarSectionV3 {...sectionLibraryV3Content.trustBar} />
   ),

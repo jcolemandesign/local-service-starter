@@ -16,6 +16,7 @@ import {
   CTASectionV3,
   CTAFullscreenSectionV3,
   FAQSectionV3,
+  FooterCompactSectionV3,
   FooterSectionV3,
 } from "@/components/sections/FAQConversionContactFooterSectionsV3";
 import {
@@ -426,6 +427,8 @@ export function renderPageTemplateSection(
       return <FooterSectionV2 {...footerProps(fieldSection)} />;
     case "FooterSectionV3":
       return <FooterSectionV3 {...footerProps(fieldSection)} />;
+    case "FooterCompactSectionV3":
+      return <FooterCompactSectionV3 {...footerProps(fieldSection)} />;
     default:
       return <UnknownSection section={section} />;
   }

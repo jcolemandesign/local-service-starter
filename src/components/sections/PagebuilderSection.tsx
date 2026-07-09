@@ -15,6 +15,7 @@ import {
   ContactSectionV3,
   CTASectionV3,
   CTAFullscreenSectionV3,
+  FooterCompactSectionV3,
   FooterSectionV3,
   FAQSectionV3,
 } from "@/components/sections/FAQConversionContactFooterSectionsV3";
@@ -377,6 +378,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return <FooterSectionV2 {...sectionLibraryV3Content.footer} />;
     case "FooterSectionV3":
       return <FooterSectionV3 {...sectionLibraryV3Content.footer} />;
+    case "FooterCompactSectionV3":
+      return <FooterCompactSectionV3 {...sectionLibraryV3Content.footer} />;
     default:
       return <UnknownSection section={section} />;
   }
@@ -890,6 +893,19 @@ export function PagebuilderSection() {
             instruction: "",
             mode: "Utility",
             name: "Footer",
+          },
+          7,
+        )}
+      </div>
+    ),
+    FooterCompactSectionV3: (
+      <div key="FooterCompactSectionV3">
+        {renderPreviewSection(
+          {
+            component: "FooterCompactSectionV3",
+            instruction: "",
+            mode: "Utility",
+            name: "Condensed footer",
           },
           7,
         )}
