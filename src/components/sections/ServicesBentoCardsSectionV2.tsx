@@ -33,7 +33,7 @@ function ServiceImage({
 }) {
   if (src) {
     return (
-      <div className="relative aspect-square overflow-hidden bg-service-border">
+      <div className="relative aspect-[5/4] overflow-hidden bg-service-border">
         <Image
           alt={label}
           className="object-cover"
@@ -46,7 +46,7 @@ function ServiceImage({
   }
 
   return (
-    <div className="relative aspect-square overflow-hidden bg-service-border" aria-hidden="true">
+    <div className="relative aspect-[5/4] overflow-hidden bg-service-border" aria-hidden="true">
       <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.26),rgb(23_33_29_/_0.05)),linear-gradient(45deg,rgb(255_255_255_/_0.22)_0_1px,transparent_1px_18px)]" />
       <div className="absolute inset-0 bg-service-accent/10" />
     </div>
@@ -101,13 +101,13 @@ export function ServicesBentoCardsSectionV2({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-7 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-          <div className="mt-16 grid grid-cols-7 items-stretch gap-3 max-md:mt-12 max-lg:grid-cols-5 max-md:grid-cols-3 max-sm:grid-cols-1">
+          <div className="mt-16 grid grid-cols-7 items-start gap-3 max-md:mt-12 max-lg:grid-cols-5 max-md:grid-cols-3 max-sm:grid-cols-1">
             {items.map((item, index) => (
               <article
                 className={cx(
                   "fluid-type-frame",
                   "radius-medium",
-                  "group/service-card relative flex h-full cursor-pointer flex-col overflow-hidden border border-service-border bg-white shadow-service transition-transform duration-300 ease-out hover:scale-[1.015]",
+                  "group/service-card relative flex cursor-pointer flex-col overflow-hidden border border-service-border bg-white shadow-service transition-transform duration-300 ease-out hover:scale-[1.015]",
                   bentoCardSpanPattern[index % bentoCardSpanPattern.length],
                 )}
                 key={item.title}

@@ -78,7 +78,7 @@ export const sectionModes: SectionMode[] = [
     name: "Decision",
     intent: "Objection handling before the visitor converts.",
     rules: [
-      "Use FAQs, pricing notes, guarantees, or process clarity.",
+      "Use pricing notes, guarantees, comparisons, or process clarity.",
       "Answer the concern in plain language before adding detail.",
       "Keep the next action available after the concern is resolved.",
     ],
@@ -88,7 +88,7 @@ export const sectionModes: SectionMode[] = [
     name: "Utility",
     intent: "Practical information and conversion support.",
     rules: [
-      "Use forms, contact details, hours, service areas, or maps.",
+      "Use FAQs, forms, contact details, hours, service areas, or maps.",
       "Keep interaction targets obvious and reachable.",
       "Do not bury phone, address, or scheduling details in prose.",
     ],
@@ -147,7 +147,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       {
         name: "FAQ",
         component: "FAQSectionV3",
-        mode: "Decision",
+        mode: "Utility",
         instruction:
           "Answer estimates, timing, service area, and maintenance questions.",
       },
@@ -209,7 +209,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       {
         name: "FAQ accordion",
         component: "FAQAccordionSectionV3",
-        mode: "Decision",
+        mode: "Utility",
         instruction:
           "Handle urgent objections with expandable answers and no vague copy.",
       },
@@ -340,7 +340,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       {
         name: "FAQ",
         component: "FAQSectionV3",
-        mode: "Decision",
+        mode: "Utility",
         instruction:
           "Include only the questions that affect whether someone contacts you.",
       },
@@ -395,7 +395,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       {
         name: "FAQ",
         component: "FAQSectionV3",
-        mode: "Decision",
+        mode: "Utility",
         instruction:
           "Answer coverage, timing, urgent availability, and nearby-town questions without guaranteeing service everywhere.",
       },
@@ -450,7 +450,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       {
         name: "FAQ accordion",
         component: "FAQAccordionSectionV3",
-        mode: "Decision",
+        mode: "Utility",
         instruction:
           "Handle questions about pricing, cancellation, inclusions, emergency priority, and plan fit.",
       },
@@ -498,7 +498,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       {
         name: "FAQ accordion",
         component: "FAQAccordionSectionV3",
-        mode: "Decision",
+        mode: "Utility",
         instruction:
           "Answer offer eligibility, expiration, service fit, and financing/payment questions.",
       },
@@ -546,7 +546,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       {
         name: "FAQ accordion",
         component: "FAQAccordionSectionV3",
-        mode: "Decision",
+        mode: "Utility",
         instruction:
           "Answer eligibility, terms, credit, payment timing, and what must be confirmed before final copy.",
       },
@@ -601,7 +601,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       {
         name: "FAQ",
         component: "FAQSectionV3",
-        mode: "Decision",
+        mode: "Utility",
         instruction:
           "Answer response timing, urgent issues, service area, and what information to include.",
       },
@@ -690,7 +690,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       {
         name: "FAQ accordion",
         component: "FAQAccordionSectionV3",
-        mode: "Decision",
+        mode: "Utility",
         instruction:
           "Answer related questions that naturally follow the article topic.",
       },
@@ -745,7 +745,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       {
         name: "FAQ accordion",
         component: "FAQAccordionSectionV3",
-        mode: "Decision",
+        mode: "Utility",
         instruction:
           "Answer sizing, compatibility, financing, warranty, and estimate questions cautiously.",
       },

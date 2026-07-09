@@ -31,9 +31,13 @@ export type PageTemplateSummary = {
     instruction?: string;
     mode: string;
     name: string;
+    originalComponent?: string;
+    originalIndex?: number;
+    ratio?: string;
     variant?: string;
   }>;
   sourceOptionName: string;
+  sourceRecipeId: string;
   sourceRecipeName: string;
 };
 
@@ -58,6 +62,15 @@ type DeleteTemplateResponse =
   | {
       ok: true;
       templateId: string;
+    }
+  | { ok: false; error?: string };
+
+type SendTemplateToPagebuilderResponse =
+  | {
+      ok: true;
+      option: {
+        sectionCount: number;
+      };
     }
   | { ok: false; error?: string };
 
@@ -105,7 +118,10 @@ export function TemplateLibrarySection({
   const [copiedContractTemplateId, setCopiedContractTemplateId] = useState("");
   const [deleteCandidate, setDeleteCandidate] =
     useState<PageTemplateSummary | null>(null);
+  const [pagebuilderCandidate, setPagebuilderCandidate] =
+    useState<PageTemplateSummary | null>(null);
   const [deletingTemplateId, setDeletingTemplateId] = useState("");
+  const [sendingTemplateId, setSendingTemplateId] = useState("");
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [stagedTemplateFeedback, setStagedTemplateFeedback] = useState<
@@ -290,6 +306,69 @@ export function TemplateLibrarySection({
     }
   }
 
+  async function sendTemplateToPagebuilder(template: PageTemplateSummary) {
+    if (!template.sourceRecipeId) {
+      setError("This template is missing its Pagebuilder source.");
+      return;
+    }
+
+    setSendingTemplateId(template.id);
+    setStatus("");
+    setError("");
+
+    try {
+      const response = await fetch("/api/pagebuilder-options", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          designStyle: {
+            showSectionMarkers: false,
+            viewportId: "main",
+          },
+          optionIndex: 0,
+          optionName: "Page Layout",
+          recipeId: template.sourceRecipeId,
+          recipeName: template.sourceRecipeName,
+          sections: template.sections.map((section, index) => ({
+            component: section.component,
+            id: `${template.sourceRecipeId}-template-${template.id}-${index}`,
+            included: true,
+            instruction: section.instruction ?? "",
+            mode: section.mode,
+            name: section.name,
+            originalComponent: section.originalComponent ?? section.component,
+            originalIndex:
+              typeof section.originalIndex === "number"
+                ? section.originalIndex
+                : index,
+            ratio: section.ratio,
+            variant: section.variant,
+          })),
+        }),
+      });
+      const result =
+        (await response.json()) as SendTemplateToPagebuilderResponse;
+
+      if (!response.ok || !result.ok) {
+        setError(
+          result.ok
+            ? "Template could not be sent to Pagebuilder."
+            : result.error ?? "Template could not be sent to Pagebuilder.",
+        );
+        return;
+      }
+
+      setStatus(
+        `${template.name} sent to Pagebuilder with ${result.option.sectionCount} sections.`,
+      );
+      setPagebuilderCandidate(null);
+    } catch {
+      setError("Template could not be sent to Pagebuilder.");
+    } finally {
+      setSendingTemplateId("");
+    }
+  }
+
   return (
     <section className="min-h-svh bg-bg-surface text-service-ink">
       <SevenColumnGrid minHeight="none" padding="med">
@@ -353,8 +432,17 @@ export function TemplateLibrarySection({
               <p className="type-caption">{error || status}</p>
               {status ? (
                 <div className="mt-3">
-                  <Button href="/dev/staged-pages" variant="secondary">
-                    Open Staged Pages
+                  <Button
+                    href={
+                      status.includes("Pagebuilder")
+                        ? "/dev/pagebuilder"
+                        : "/dev/staged-pages"
+                    }
+                    variant="secondary"
+                  >
+                    {status.includes("Pagebuilder")
+                      ? "Open Pagebuilder"
+                      : "Open Staged Pages"}
                   </Button>
                 </div>
               ) : null}
@@ -596,6 +684,20 @@ export function TemplateLibrarySection({
                                   {isContractCopied ? "Copied" : "Copy Contract"}
                                 </button>
                                 <button
+                                  className="radius-4 min-h-11 border border-service-accent bg-service-surface px-4 text-sm font-semibold text-service-accent transition-colors hover:border-service-ink hover:text-service-ink disabled:cursor-wait disabled:opacity-60"
+                                  disabled={sendingTemplateId === template.id}
+                                  onClick={() => {
+                                    setPagebuilderCandidate(template);
+                                    setStatus("");
+                                    setError("");
+                                  }}
+                                  type="button"
+                                >
+                                  {sendingTemplateId === template.id
+                                    ? "Sending..."
+                                    : "Send to Pagebuilder"}
+                                </button>
+                                <button
                                   className="radius-4 min-h-11 border border-red-200 bg-red-50 px-4 text-sm font-semibold text-red-700 transition-colors hover:border-red-700 hover:bg-red-700 hover:text-white disabled:cursor-wait disabled:opacity-60"
                                   disabled={deletingTemplateId === template.id}
                                   onClick={() => setDeleteCandidate(template)}
@@ -718,6 +820,63 @@ export function TemplateLibrarySection({
                 type="button"
               >
                 {deletingTemplateId ? "Deleting..." : "Delete Template"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {pagebuilderCandidate ? (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-service-ink/45 px-4 py-8"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !sendingTemplateId) {
+              setPagebuilderCandidate(null);
+            }
+          }}
+        >
+          <div
+            aria-labelledby="send-template-title"
+            aria-modal="true"
+            className="w-full max-w-lg rounded-md border border-service-border bg-white p-6 text-service-ink shadow-service"
+            role="dialog"
+          >
+            <p className="type-label text-service-accent">Send to Pagebuilder</p>
+            <h2
+              className="type-heading-sm mt-eyebrow-heading-sm text-service-ink"
+              id="send-template-title"
+            >
+              Replace Pagebuilder layout with {pagebuilderCandidate.name}?
+            </h2>
+            <p className="type-text-sm mt-heading-body-sm text-service-muted">
+              This will replace the current saved Pagebuilder layout for{" "}
+              {pagebuilderCandidate.sourceRecipeName}. The template section stack
+              will load as included sections so you can quickly swap or rearrange
+              from there.
+            </p>
+            <div className="mt-4 rounded-sm border border-service-border bg-service-surface px-3 py-2">
+              <p className="type-caption font-semibold text-service-ink">
+                {pagebuilderCandidate.sectionCount} sections will be sent.
+              </p>
+            </div>
+            <div className="mt-body-actions-md flex justify-end gap-3">
+              <button
+                className="radius-4 min-h-10 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                disabled={Boolean(sendingTemplateId)}
+                onClick={() => setPagebuilderCandidate(null)}
+                type="button"
+              >
+                Cancel
+              </button>
+              <button
+                className="radius-4 min-h-10 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent disabled:cursor-wait disabled:opacity-60"
+                disabled={Boolean(sendingTemplateId)}
+                onClick={() => void sendTemplateToPagebuilder(pagebuilderCandidate)}
+                type="button"
+              >
+                {sendingTemplateId
+                  ? "Sending..."
+                  : "Replace Pagebuilder Layout"}
               </button>
             </div>
           </div>

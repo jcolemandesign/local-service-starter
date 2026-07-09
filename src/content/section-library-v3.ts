@@ -1014,13 +1014,13 @@ export const sectionLibraryV3Collections = [
         label: "Image checklist process",
         component: "process-image-checklist-v3",
       },
-      { label: "FAQ", component: "faq-v3" },
-      { label: "FAQ accordion", component: "faq-accordion-v3" },
     ],
   },
   {
     title: "Utility",
     items: [
+      { label: "FAQ", component: "faq-v3" },
+      { label: "FAQ accordion", component: "faq-accordion-v3" },
       {
         label: "Service area zip lookup",
         component: "service-area-zip-lookup-v3",

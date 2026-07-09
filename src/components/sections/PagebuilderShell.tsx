@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties, ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   HeroSplitFixedImageSectionV3,
   type HeroSplitFixedImageRatio,
@@ -190,6 +190,15 @@ type SavedPagebuilderOption = {
   sections: WorkingSection[];
 };
 
+type SavePagebuilderOptionRequest = {
+  designStyle: DesignStyleSettings;
+  optionIndex: number;
+  optionName: string;
+  recipeId: string;
+  recipeName: string;
+  sections: ReturnType<typeof serializeWorkingSection>[];
+};
+
 type SavedPagebuilderOptionsResponse =
   | {
       ok: true;
@@ -251,7 +260,7 @@ function createInitialWorkingStack(
   return recipe.sectionStack.map((section, index) => ({
     ...section,
     id: `${recipe.id}-slot-${slotIndex + 1}-${section.component}-${index}`,
-    included: true,
+    included: false,
     originalComponent: section.component,
     originalIndex: index,
     ratio:
@@ -618,14 +627,14 @@ const sectionSwapOptions = [
     component: "FAQSectionV3",
     instruction:
       "Include only the questions that affect whether someone contacts you.",
-    mode: "Decision",
+    mode: "Utility",
     name: "FAQ",
   },
   {
     component: "FAQAccordionSectionV3",
     instruction:
       "Handle objections with expandable answers and no vague copy.",
-    mode: "Decision",
+    mode: "Utility",
     name: "FAQ accordion",
   },
   {
@@ -880,7 +889,10 @@ export function PagebuilderShell({
   const [previewRefreshKey, setPreviewRefreshKey] = useState(0);
   const [previewVariableStyle, setPreviewVariableStyle] =
     useState<PreviewVariableStyle>({});
+  const [savedOptionsLoaded, setSavedOptionsLoaded] = useState(false);
   const addedSectionIdCounterRef = useRef(0);
+  const autosaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autosaveSignaturesRef = useRef(new Map<string, string>());
 
   const activeRecipeIndex = Math.max(
     recipes.findIndex((recipe) => recipe.id === activeRecipeId),
@@ -893,9 +905,14 @@ export function PagebuilderShell({
   const activeLayoutSlot =
     activeLayoutSlots[activeLayoutSlotIndex] ?? activeLayoutSlots[0];
   const activePageLabel = activeRecipe?.name ?? `Page ${activeRecipeIndex + 1}`;
-  const activeDesignStyle =
-    activeLayoutSlot?.designStyle ?? createInitialDesignStyle();
-  const activeStack = activeLayoutSlot?.stack ?? [];
+  const activeDesignStyle = useMemo(
+    () => activeLayoutSlot?.designStyle ?? createInitialDesignStyle(),
+    [activeLayoutSlot?.designStyle],
+  );
+  const activeStack = useMemo(
+    () => activeLayoutSlot?.stack ?? [],
+    [activeLayoutSlot?.stack],
+  );
   const activeSlotLabel = activeLayoutSlot?.name ?? "Page Layout";
   const selectedSection =
     activeStack.find((section) => section.id === selectedSectionId) ?? null;
@@ -954,6 +971,9 @@ export function PagebuilderShell({
           (await response.json()) as SavedPagebuilderOptionsResponse;
 
         if (!isMounted || !response.ok || !result.ok) {
+          if (isMounted) {
+            setSavedOptionsLoaded(true);
+          }
           return;
         }
 
@@ -964,9 +984,11 @@ export function PagebuilderShell({
             result.options,
           ),
         );
+        setSavedOptionsLoaded(true);
       } catch {
         if (isMounted) {
           setOptionSaveError("Saved options could not be loaded.");
+          setSavedOptionsLoaded(true);
         }
       }
     }
@@ -977,6 +999,60 @@ export function PagebuilderShell({
       isMounted = false;
     };
   }, [recipes]);
+
+  useEffect(() => {
+    if (!savedOptionsLoaded || !activeRecipe.id) {
+      return;
+    }
+
+    const payload: SavePagebuilderOptionRequest = {
+      designStyle: activeDesignStyle,
+      optionIndex: activeLayoutSlotIndex,
+      optionName: activeSlotLabel,
+      recipeId: activeRecipe.id,
+      recipeName: activeRecipe.name,
+      sections: activeStack.map(serializeWorkingSection),
+    };
+    const signatureKey = `${payload.recipeId}:${payload.optionIndex}`;
+    const signature = JSON.stringify(payload);
+    const previousSignature = autosaveSignaturesRef.current.get(signatureKey);
+
+    if (!previousSignature) {
+      autosaveSignaturesRef.current.set(signatureKey, signature);
+      return;
+    }
+
+    if (previousSignature === signature) {
+      return;
+    }
+
+    if (autosaveTimeoutRef.current) {
+      clearTimeout(autosaveTimeoutRef.current);
+    }
+
+    autosaveTimeoutRef.current = setTimeout(async () => {
+      try {
+        await postPagebuilderOption(payload);
+        autosaveSignaturesRef.current.set(signatureKey, signature);
+      } catch {
+        setOptionSaveError("Pagebuilder autosave failed.");
+      }
+    }, 800);
+
+    return () => {
+      if (autosaveTimeoutRef.current) {
+        clearTimeout(autosaveTimeoutRef.current);
+      }
+    };
+  }, [
+    activeDesignStyle,
+    activeLayoutSlotIndex,
+    activeRecipe.id,
+    activeRecipe.name,
+    activeSlotLabel,
+    activeStack,
+    savedOptionsLoaded,
+  ]);
 
   function updateActiveStack(updater: (stack: WorkingSection[]) => WorkingSection[]) {
     setLayoutSlots((currentSlots) =>
@@ -1210,38 +1286,51 @@ export function PagebuilderShell({
     await navigator.clipboard.writeText(allLayoutInstructions);
   }
 
+  function buildActiveOptionSaveRequest(): SavePagebuilderOptionRequest {
+    return {
+      designStyle: activeDesignStyle,
+      optionIndex: activeLayoutSlotIndex,
+      optionName: activeSlotLabel,
+      recipeId: activeRecipe.id,
+      recipeName: activeRecipe.name,
+      sections: activeStack.map(serializeWorkingSection),
+    };
+  }
+
+  async function postPagebuilderOption(
+    payload: SavePagebuilderOptionRequest,
+  ) {
+    const response = await fetch("/api/pagebuilder-options", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const result = (await response.json()) as SavedPagebuilderOptionResponse;
+
+    if (!response.ok || !result.ok) {
+      throw new Error(
+        result.ok ? "Pagebuilder layout save failed." : result.error,
+      );
+    }
+
+    return result.option;
+  }
+
   async function saveActiveOption() {
     setIsSavingOption(true);
     setOptionSaveError("");
     setOptionSaveStatus("");
 
     try {
-      const response = await fetch("/api/pagebuilder-options", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          designStyle: activeDesignStyle,
-          optionIndex: activeLayoutSlotIndex,
-          optionName: activeSlotLabel,
-          recipeId: activeRecipe.id,
-          recipeName: activeRecipe.name,
-          sections: activeStack.map(serializeWorkingSection),
-        }),
-      });
-      const result = (await response.json()) as SavedPagebuilderOptionResponse;
-
-      if (!response.ok || !result.ok) {
-        setOptionSaveError(
-          result.ok ? "Pagebuilder layout save failed." : result.error,
-        );
-        return;
-      }
+      const option = await postPagebuilderOption(buildActiveOptionSaveRequest());
 
       setOptionSaveStatus(
-        `Saved ${activePageLabel} layout with ${result.option.sectionCount} included sections.`,
+        `Saved ${activePageLabel} layout with ${option.sectionCount} included sections.`,
       );
-    } catch {
-      setOptionSaveError("Pagebuilder layout save failed.");
+    } catch (error) {
+      setOptionSaveError(
+        error instanceof Error ? error.message : "Pagebuilder layout save failed.",
+      );
     } finally {
       setIsSavingOption(false);
     }

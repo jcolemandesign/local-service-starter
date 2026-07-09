@@ -759,7 +759,7 @@ export function PagebuilderSection() {
           {
             component: "FAQSectionV3",
             instruction: "",
-            mode: "Decision",
+            mode: "Utility",
             name: "FAQ",
           },
           6,
@@ -772,7 +772,7 @@ export function PagebuilderSection() {
           {
             component: "FAQAccordionSectionV3",
             instruction: "",
-            mode: "Decision",
+            mode: "Utility",
             name: "FAQ accordion",
           },
           6,

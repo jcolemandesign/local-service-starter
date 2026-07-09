@@ -5,11 +5,11 @@
         "showSectionMarkers": false,
         "viewportId": "main"
       },
-      "id": "basic-homepage",
-      "name": "Basic Homepage",
-      "notes": "Typical local service homepage",
+      "id": "simple-homepage",
+      "name": "Simple homepage",
+      "notes": "",
       "pageType": "Home",
-      "promotedAt": "2026-07-09T16:51:30.552Z",
+      "promotedAt": "2026-07-09T18:26:06.399Z",
       "sectionCount": 10,
       "sections": [
         {
@@ -54,10 +54,10 @@
           "originalIndex": -1
         },
         {
-          "component": "TestimonialsCarouselSectionV3",
-          "instruction": "Use longer customer stories only if they contain useful service detail.",
+          "component": "TestimonialsMasonrySectionV3",
+          "instruction": "Use varied quote lengths to create a fuller body of evidence.",
           "mode": "Proof",
-          "name": "Customer stories",
+          "name": "Masonry testimonials",
           "originalComponent": "TestimonialsMasonrySectionV3",
           "originalIndex": -1
         },
@@ -72,7 +72,7 @@
         {
           "component": "FAQAccordionSectionV3",
           "instruction": "Handle objections with expandable answers and no vague copy.",
-          "mode": "Decision",
+          "mode": "Utility",
           "name": "FAQ accordion",
           "originalComponent": "FAQAccordionSectionV3",
           "originalIndex": -1

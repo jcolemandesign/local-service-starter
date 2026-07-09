@@ -6,15 +6,15 @@
         "viewportId": "main"
       },
       "optionIndex": 0,
-      "optionName": "Option 1",
+      "optionName": "Page Layout",
       "recipeId": "classic-service",
-      "recipeName": "homepage",
-      "savedAt": "2026-06-29T19:57:46.935Z",
+      "recipeName": "Home",
+      "savedAt": "2026-07-09T20:50:40.506Z",
       "sectionCount": 10,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
-          "id": "classic-service-slot-1-NavPrimarySectionV2-0",
+          "id": "classic-service-template-simple-homepage-0",
           "included": true,
           "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
           "mode": "Navigation",
@@ -24,7 +24,7 @@
         },
         {
           "component": "HeroSplitFullHeightSectionV3",
-          "id": "classic-service-slot-1-HeroSplitFullHeightSectionV3-1",
+          "id": "classic-service-template-simple-homepage-1",
           "included": true,
           "instruction": "Use h1, one primary booking CTA, one services CTA, and three compact trust stats beside a full-bleed image column.",
           "mode": "Hero",
@@ -35,7 +35,7 @@
         },
         {
           "component": "TrustMarqueeSectionV3",
-          "id": "classic-service-slot-1-TrustBarSectionV3-2",
+          "id": "classic-service-template-simple-homepage-2",
           "included": true,
           "instruction": "Use short repeated claims when there are many small proof points.",
           "mode": "Proof",
@@ -45,7 +45,7 @@
         },
         {
           "component": "ServicesBentoCardsSectionV2",
-          "id": "classic-service-slot-1-ServicesThreeCardsRightSectionV3-3",
+          "id": "classic-service-template-simple-homepage-3",
           "included": true,
           "instruction": "Use bento-style service cards when the services need a richer visual scan pattern.",
           "mode": "Scan",
@@ -55,7 +55,7 @@
         },
         {
           "component": "FeatureAsymmetricCardsSectionV3",
-          "id": "classic-service-FeatureAsymmetricCardsSectionV3-added-1",
+          "id": "classic-service-template-simple-homepage-4",
           "included": true,
           "instruction": "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points.",
           "mode": "Narrative",
@@ -64,18 +64,18 @@
           "originalIndex": -1
         },
         {
-          "component": "TestimonialsCarouselSectionV3",
-          "id": "classic-service-TestimonialsMasonrySectionV3-added-2",
+          "component": "TestimonialsMasonrySectionV3",
+          "id": "classic-service-template-simple-homepage-5",
           "included": true,
-          "instruction": "Use longer customer stories only if they contain useful service detail.",
+          "instruction": "Use varied quote lengths to create a fuller body of evidence.",
           "mode": "Proof",
-          "name": "Customer stories",
+          "name": "Masonry testimonials",
           "originalComponent": "TestimonialsMasonrySectionV3",
           "originalIndex": -1
         },
         {
           "component": "ServiceAreaZipLookupSectionV3",
-          "id": "classic-service-ServiceAreaZipLookupSectionV3-added-7",
+          "id": "classic-service-template-simple-homepage-6",
           "included": true,
           "instruction": "Use when visitors need to confirm service coverage before starting a request.",
           "mode": "Utility",
@@ -85,27 +85,27 @@
         },
         {
           "component": "FAQAccordionSectionV3",
-          "id": "classic-service-FAQAccordionSectionV3-added-8",
+          "id": "classic-service-template-simple-homepage-7",
           "included": true,
           "instruction": "Handle objections with expandable answers and no vague copy.",
-          "mode": "Decision",
+          "mode": "Utility",
           "name": "FAQ accordion",
           "originalComponent": "FAQAccordionSectionV3",
           "originalIndex": -1
         },
         {
-          "component": "TrustMarqueeSection",
-          "id": "classic-service-ContentFixedCoverFadeSectionV2-added-9",
+          "component": "CTASectionV3",
+          "id": "classic-service-template-simple-homepage-8",
           "included": true,
-          "instruction": "Use a headline with a scrolling banner when proof points should move beside a stronger editorial claim.",
+          "instruction": "Use the current conversion band when the page needs a polished direct next step.",
           "mode": "Action",
-          "name": "Headline with Scrolling Banner",
+          "name": "CTA",
           "originalComponent": "ContentFixedCoverFadeSectionV2",
           "originalIndex": -1
         },
         {
           "component": "FooterSectionV3",
-          "id": "classic-service-FooterSectionV3-added-10",
+          "id": "classic-service-template-simple-homepage-9",
           "included": true,
           "instruction": "End with service links, areas, contact details, and legal links.",
           "mode": "Utility",
