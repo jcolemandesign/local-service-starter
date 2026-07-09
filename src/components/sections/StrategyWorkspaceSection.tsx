@@ -156,9 +156,7 @@ export function StrategyWorkspaceSection({
   >({});
   const [contentPlanReferenceState, setContentPlanReferenceState] =
     useState<ContentPlanReferenceState>("idle");
-  const [openFieldGroups, setOpenFieldGroups] = useState<string[]>([
-    fieldGroups[0]?.title ?? "",
-  ]);
+  const [openFieldGroups, setOpenFieldGroups] = useState<string[]>([]);
   const [updatedAt, setUpdatedAt] = useState(initialWorkspace.updatedAt);
 
   const filledCount = useMemo(

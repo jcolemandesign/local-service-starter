@@ -710,6 +710,12 @@ function trustMarqueeProps(section: FieldSection) {
 }
 
 function featureAsymmetricProps(section: FieldSection) {
+  const cards = cardItemsWithFallback(
+    section,
+    ["supportingItems", "cards", "items"],
+    sectionLibraryV3Content.featureAsymmetricCards.cards,
+  );
+
   return {
     ...sectionLibraryV3Content.featureAsymmetricCards,
     actionLabel: getValue(
@@ -718,13 +724,11 @@ function featureAsymmetricProps(section: FieldSection) {
       sectionLibraryV3Content.featureAsymmetricCards.actionLabel,
     ),
     body: getBody(section, sectionLibraryV3Content.featureAsymmetricCards.body),
-    cards: cardItems(section, ["supportingItems", "cards", "items"]).map(
-      (item, index) => ({
-        body: item.body,
-        iconLabel: String(index + 1).padStart(2, "0"),
-        title: item.title,
-      }),
-    ),
+    cards: cards.map((item, index) => ({
+      body: item.body,
+      iconLabel: String(index + 1).padStart(2, "0"),
+      title: item.title,
+    })),
     eyebrow: getValue(
       section,
       "eyebrow",
