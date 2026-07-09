@@ -38,7 +38,7 @@ function ServiceImage() {
   return (
     <div
       aria-hidden="true"
-      className="relative min-h-0 flex-1 overflow-hidden bg-service-border"
+      className="relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-service-border"
     >
       <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.24),rgb(23_33_29_/_0.05)),linear-gradient(45deg,rgb(255_255_255_/_0.22)_0_1px,transparent_1px_18px)]" />
       <div className="absolute inset-0 bg-service-accent/10" />
@@ -52,7 +52,7 @@ function ServiceScrollCard({ item }: { item: ScrollServiceItem }) {
       className={cx(
         "fluid-type-frame",
         "radius-medium",
-        "group/service-card flex h-[68svh] w-[min(34vw,430px)] shrink-0 cursor-pointer flex-col overflow-hidden border border-service-border bg-white shadow-service transition-transform duration-300 ease-out hover:-translate-y-2 max-lg:h-auto max-lg:min-h-[520px] max-lg:w-full",
+        "group/service-card flex w-[min(39vw,495px)] shrink-0 cursor-pointer flex-col overflow-hidden border border-service-border bg-white shadow-service transition-transform duration-300 ease-out hover:-translate-y-2 max-lg:w-full",
       )}
     >
       <div className="flex min-h-28 items-center justify-between gap-8 px-7 py-6">
@@ -77,7 +77,7 @@ function ViewAllCard({ label }: { label: string }) {
       className={cx(
         "fluid-type-frame",
         "radius-medium",
-        "group/service-card flex h-[68svh] w-[min(34vw,430px)] shrink-0 cursor-pointer flex-col border border-service-border bg-service-ink p-8 text-white shadow-service transition-transform duration-300 ease-out hover:-translate-y-2 max-lg:h-auto max-lg:min-h-[360px] max-lg:w-full",
+        "group/service-card flex h-[68svh] w-[min(39vw,495px)] shrink-0 cursor-pointer flex-col border border-service-border bg-service-ink p-8 text-white shadow-service transition-transform duration-300 ease-out hover:-translate-y-2 max-lg:h-auto max-lg:min-h-[360px] max-lg:w-full",
       )}
       href="#services"
     >
@@ -228,7 +228,7 @@ export function ServicesScrollCardsSectionV2({
             <div className="px-[var(--site-grid-inset-inline)] max-lg:grid max-lg:gap-4">
               <motion.div
                 ref={railRef}
-                className="flex w-max gap-4 will-change-transform max-lg:w-full max-lg:flex-col max-lg:![transform:none]"
+                className="flex w-max items-start gap-4 will-change-transform max-lg:w-full max-lg:flex-col max-lg:![transform:none]"
                 style={{ x }}
               >
                 {items.map((item) => (

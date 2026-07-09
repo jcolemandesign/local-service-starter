@@ -9,59 +9,38 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-07-09T20:50:40.506Z",
-      "sectionCount": 10,
+      "savedAt": "2026-07-09T21:04:21.282Z",
+      "sectionCount": 4,
       "sections": [
         {
-          "component": "NavPrimarySectionV2",
+          "component": "NavFloatingBentoSectionV2",
           "id": "classic-service-template-simple-homepage-0",
           "included": true,
-          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
+          "instruction": "Use the floating nav when the hero needs a polished first-viewport frame.",
           "mode": "Navigation",
-          "name": "Primary navigation",
+          "name": "Floating bento navigation",
           "originalComponent": "NavPrimarySectionV2",
           "originalIndex": 0
         },
         {
-          "component": "HeroSplitFullHeightSectionV3",
+          "component": "HeroFullscreenSectionV2",
           "id": "classic-service-template-simple-homepage-1",
           "included": true,
-          "instruction": "Use h1, one primary booking CTA, one services CTA, and three compact trust stats beside a full-bleed image column.",
+          "instruction": "Use a strong image, calm h1, review proof, and one visible request path.",
           "mode": "Hero",
-          "name": "Split content and full image",
+          "name": "Fullscreen image hero",
           "originalComponent": "HeroSplitFullHeightSectionV3",
-          "originalIndex": 1,
-          "variant": "text-3-image-4-right"
+          "originalIndex": 1
         },
         {
-          "component": "TrustMarqueeSectionV3",
-          "id": "classic-service-template-simple-homepage-2",
-          "included": true,
-          "instruction": "Use short repeated claims when there are many small proof points.",
-          "mode": "Proof",
-          "name": "Trust marquee",
-          "originalComponent": "TrustBarSectionV3",
-          "originalIndex": 2
-        },
-        {
-          "component": "ServicesBentoCardsSectionV2",
+          "component": "ServicesScrollCardsSectionV2",
           "id": "classic-service-template-simple-homepage-3",
           "included": true,
-          "instruction": "Use bento-style service cards when the services need a richer visual scan pattern.",
+          "instruction": "Use a service rail when there are more service paths than a small grid can handle gracefully.",
           "mode": "Scan",
-          "name": "Services bento cards",
+          "name": "Scroll service cards",
           "originalComponent": "ServicesThreeCardsRightSectionV3",
           "originalIndex": 3
-        },
-        {
-          "component": "FeatureAsymmetricCardsSectionV3",
-          "id": "classic-service-template-simple-homepage-4",
-          "included": true,
-          "instruction": "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points.",
-          "mode": "Narrative",
-          "name": "Asymmetric feature cards",
-          "originalComponent": "FeatureAsymmetricCardsSectionV3",
-          "originalIndex": -1
         },
         {
           "component": "TestimonialsMasonrySectionV3",
@@ -71,46 +50,6 @@
           "mode": "Proof",
           "name": "Masonry testimonials",
           "originalComponent": "TestimonialsMasonrySectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ServiceAreaZipLookupSectionV3",
-          "id": "classic-service-template-simple-homepage-6",
-          "included": true,
-          "instruction": "Use when visitors need to confirm service coverage before starting a request.",
-          "mode": "Utility",
-          "name": "Service area zip lookup",
-          "originalComponent": "ServiceAreaZipLookupSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "FAQAccordionSectionV3",
-          "id": "classic-service-template-simple-homepage-7",
-          "included": true,
-          "instruction": "Handle objections with expandable answers and no vague copy.",
-          "mode": "Utility",
-          "name": "FAQ accordion",
-          "originalComponent": "FAQAccordionSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "CTASectionV3",
-          "id": "classic-service-template-simple-homepage-8",
-          "included": true,
-          "instruction": "Use the current conversion band when the page needs a polished direct next step.",
-          "mode": "Action",
-          "name": "CTA",
-          "originalComponent": "ContentFixedCoverFadeSectionV2",
-          "originalIndex": -1
-        },
-        {
-          "component": "FooterSectionV3",
-          "id": "classic-service-template-simple-homepage-9",
-          "included": true,
-          "instruction": "End with service links, areas, contact details, and legal links.",
-          "mode": "Utility",
-          "name": "Footer",
-          "originalComponent": "FooterSectionV3",
           "originalIndex": -1
         }
       ]
