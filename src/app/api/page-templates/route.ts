@@ -46,6 +46,15 @@ const templatesPath = path.join(
 );
 const idPattern = /^[a-z0-9-]+$/;
 
+export async function GET() {
+  const templatesFile = await readTemplates();
+
+  return Response.json({
+    ok: true,
+    templates: templatesFile.templates,
+  });
+}
+
 export async function POST(request: Request) {
   if (
     process.env.NODE_ENV === "production" &&

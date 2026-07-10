@@ -1,6 +1,7 @@
 import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAboutCompanySectionV2";
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
+import { QuickPageLinksSectionV2 } from "@/components/sections/QuickPageLinksSectionV2";
 import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
 import { CTAFullscreenSectionV2 } from "@/components/sections/CTAFullscreenSectionV2";
 import { CTAScrollRevealOfferSectionV2 } from "@/components/sections/CTAScrollRevealOfferSectionV2";
@@ -16,6 +17,7 @@ import {
   CTASectionV3,
   CTAFullscreenSectionV3,
   FooterCompactSectionV3,
+  FooterHorizontalSectionV3,
   FooterSectionV3,
   FAQSectionV3,
 } from "@/components/sections/FAQConversionContactFooterSectionsV3";
@@ -57,7 +59,6 @@ import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/Services
 import { TestimonialsCarouselSectionV3 } from "@/components/sections/TestimonialsCarouselSectionV3";
 import { TestimonialsMasonrySectionV2 } from "@/components/sections/TestimonialsMasonrySectionV2";
 import { TestimonialsMasonrySectionV3 } from "@/components/sections/TestimonialsMasonrySectionV3";
-import { TrustLogoGridSection } from "@/components/sections/TrustLogoMarqueeSection";
 import { TrustMarqueeSection } from "@/components/sections/TrustMarqueeSection";
 import {
   TrustBarFloatingBentoSectionV3,
@@ -191,8 +192,6 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return <TrustMarqueeSection {...sectionLibraryV3Content.trustMarquee} />;
     case "TrustMarqueeSectionV3":
       return <TrustMarqueeSectionV3 {...sectionLibraryV3Content.trustMarquee} />;
-    case "TrustLogoGridSection":
-      return <TrustLogoGridSection {...sectionLibraryV3Content.trustLogoMarquee} />;
     case "TrustLogoMarqueeSectionV3":
       return (
         <TrustLogoMarqueeSectionV3
@@ -233,6 +232,12 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <ContentHorizontalCardCarouselSectionV2
           {...sectionLibraryV3Content.contentHorizontalCardCarousel}
+        />
+      );
+    case "QuickPageLinksSectionV2":
+      return (
+        <QuickPageLinksSectionV2
+          {...sectionLibraryV3Content.quickPageLinks}
         />
       );
     case "ContentRevealParagraphSectionV2":
@@ -378,6 +383,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return <FooterSectionV2 {...sectionLibraryV3Content.footer} />;
     case "FooterSectionV3":
       return <FooterSectionV3 {...sectionLibraryV3Content.footer} />;
+    case "FooterHorizontalSectionV3":
+      return <FooterHorizontalSectionV3 {...sectionLibraryV3Content.footer} />;
     case "FooterCompactSectionV3":
       return <FooterCompactSectionV3 {...sectionLibraryV3Content.footer} />;
     default:
@@ -558,12 +565,6 @@ export function PagebuilderSection() {
         )}
       </div>
     ),
-    TrustLogoGridSection: previewCatalogEntry(
-      "TrustLogoGridSection",
-      "Proof",
-      "Legacy trust logo grid",
-      2,
-    ),
     TrustLogoMarqueeSectionV3: (
       <div key="TrustLogoMarqueeSectionV3">
         {renderPreviewSection(
@@ -646,6 +647,12 @@ export function PagebuilderSection() {
       "ContentHorizontalCardCarouselSectionV2",
       "Scan",
       "Horizontal card carousel",
+      3,
+    ),
+    QuickPageLinksSectionV2: previewCatalogEntry(
+      "QuickPageLinksSectionV2",
+      "Scan",
+      "Quick page links",
       3,
     ),
     ContentRevealParagraphSectionV2: (
@@ -893,6 +900,19 @@ export function PagebuilderSection() {
             instruction: "",
             mode: "Utility",
             name: "Footer",
+          },
+          7,
+        )}
+      </div>
+    ),
+    FooterHorizontalSectionV3: (
+      <div key="FooterHorizontalSectionV3">
+        {renderPreviewSection(
+          {
+            component: "FooterHorizontalSectionV3",
+            instruction: "",
+            mode: "Utility",
+            name: "Horizontal footer",
           },
           7,
         )}

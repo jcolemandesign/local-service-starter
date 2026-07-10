@@ -30,20 +30,6 @@ function LogoPlaceholder({ name }: { name: string }) {
   );
 }
 
-function LogoGrid({ logos }: { logos: string[] }) {
-  return (
-    <ul
-      className="grid grid-cols-6 gap-4 max-lg:grid-cols-3 max-sm:grid-cols-2"
-    >
-      {logos.map((logo) => (
-        <li key={logo}>
-          <LogoPlaceholder name={logo} />
-        </li>
-      ))}
-    </ul>
-  );
-}
-
 function LogoTrack({
   logos,
   hidden = false,
@@ -113,48 +99,6 @@ export function TrustLogoMarqueeSection({
                 <LogoTrack logos={logos} />
                 <LogoTrack logos={logos} hidden />
               </div>
-            </div>
-          </div>
-        </div>
-      </Container>
-    </Section>
-  );
-}
-
-export function TrustLogoGridSection({
-  label,
-  logos,
-}: TrustLogoMarqueeSectionProps) {
-  return (
-    <Section className="bg-white py-16 max-md:py-12">
-      <Container>
-        <div
-          className={cx(
-            "radius-medium",
-            "border border-service-border bg-service-surface",
-          )}
-        >
-          <div
-            className={cx(
-              "fluid-type-frame",
-              "grid grid-cols-[minmax(14rem,0.28fr)_1fr] gap-10 px-10 py-12 max-lg:grid-cols-1 max-md:px-6 max-md:py-10",
-            )}
-          >
-            <div>
-              <p
-                className={cx(
-                  "type-text-xl",
-                  "measure-caption",
-                  "wrap-balance",
-                  "font-semibold text-service-ink",
-                )}
-              >
-                {label}
-              </p>
-            </div>
-
-            <div className="min-w-0">
-              <LogoGrid logos={logos} />
             </div>
           </div>
         </div>

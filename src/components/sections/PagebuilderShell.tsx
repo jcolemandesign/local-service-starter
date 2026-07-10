@@ -176,8 +176,31 @@ type TemplatePromotionResponse =
         name: string;
         sectionCount: number;
       };
+      templates: SavedPageTemplate[];
     }
   | { ok: false; error: string };
+
+type SavedPageTemplate = {
+  sections: Array<{
+    component: string;
+    mode: string;
+  }>;
+};
+
+type SavedPageTemplatesResponse =
+  | {
+      ok: true;
+      templates: SavedPageTemplate[];
+    }
+  | { ok: false; error: string };
+
+function isTemplateContentSection(section: SavedPageTemplate["sections"][number]) {
+  return (
+    section.mode !== "Navigation" &&
+    section.mode !== "Footer" &&
+    !section.component.startsWith("Footer")
+  );
+}
 
 type SavedPagebuilderOption = {
   designStyle: DesignStyleSettings;
@@ -470,6 +493,13 @@ const sectionSwapOptions = [
     name: "Horizontal card carousel",
   },
   {
+    component: "QuickPageLinksSectionV2",
+    instruction:
+      "Offer a small set of useful page paths for visitors who need more context before contacting.",
+    mode: "Scan",
+    name: "Quick page links",
+  },
+  {
     component: "ContentRevealParagraphSectionV2",
     instruction:
       "Use a short editorial thesis to slow the page down and frame the service promise.",
@@ -582,13 +612,6 @@ const sectionSwapOptions = [
     name: "Logo marquee",
   },
   {
-    component: "TrustLogoGridSection",
-    instruction:
-      "Use the legacy trust logo grid only when an older static proof treatment is needed.",
-    mode: "Proof",
-    name: "Legacy trust logo grid",
-  },
-  {
     component: "TrustLogoGridSectionV3",
     instruction:
       "Use static logos or associations when motion would distract from reading.",
@@ -694,9 +717,16 @@ const sectionSwapOptions = [
     name: "Footer",
   },
   {
+    component: "FooterHorizontalSectionV3",
+    instruction:
+      "End with a horizontal footer where link groups sit inline and wrap beside their headings.",
+    mode: "Utility",
+    name: "Horizontal footer",
+  },
+  {
     component: "FooterCompactSectionV3",
     instruction:
-      "End with a simpler condensed footer where link groups sit inline and wrap beside their headings.",
+      "End with top-level navigation links, a rule, contact info, social links, and legal links in a compact footer.",
     mode: "Utility",
     name: "Condensed footer",
   },
@@ -896,6 +926,9 @@ export function PagebuilderShell({
   const [previewRefreshKey, setPreviewRefreshKey] = useState(0);
   const [previewVariableStyle, setPreviewVariableStyle] =
     useState<PreviewVariableStyle>({});
+  const [savedPageTemplates, setSavedPageTemplates] = useState<
+    SavedPageTemplate[]
+  >([]);
   const [savedOptionsLoaded, setSavedOptionsLoaded] = useState(false);
   const addedSectionIdCounterRef = useRef(0);
   const autosaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -920,6 +953,22 @@ export function PagebuilderShell({
     () => activeLayoutSlot?.stack ?? [],
     [activeLayoutSlot?.stack],
   );
+  const sectionTemplateUsageCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+
+    for (const template of savedPageTemplates) {
+      for (const section of template.sections) {
+        if (isTemplateContentSection(section)) {
+          counts.set(
+            section.component,
+            (counts.get(section.component) ?? 0) + 1,
+          );
+        }
+      }
+    }
+
+    return counts;
+  }, [savedPageTemplates]);
   const activeSlotLabel = activeLayoutSlot?.name ?? "Page Layout";
   const selectedSection =
     activeStack.find((section) => section.id === selectedSectionId) ?? null;
@@ -1006,6 +1055,29 @@ export function PagebuilderShell({
       isMounted = false;
     };
   }, [recipes]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadSavedPageTemplates() {
+      try {
+        const response = await fetch("/api/page-templates");
+        const result = (await response.json()) as SavedPageTemplatesResponse;
+
+        if (isMounted && response.ok && result.ok) {
+          setSavedPageTemplates(result.templates);
+        }
+      } catch {
+        // Leave counts at zero when the local template registry is unavailable.
+      }
+    }
+
+    void loadSavedPageTemplates();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!savedOptionsLoaded || !activeRecipe.id) {
@@ -1408,6 +1480,7 @@ export function PagebuilderShell({
       setTemplateStatus(
         `Promoted ${result.template.name} with ${result.template.sectionCount} sections.`,
       );
+      setSavedPageTemplates(result.templates);
       setIsTemplateModalOpen(false);
     } catch {
       setTemplateError("Template promotion failed.");
@@ -2004,16 +2077,26 @@ export function PagebuilderShell({
                         {mode.name}
                       </p>
                       <div className="grid gap-1.5">
-                        {options.map((option) => (
-                          <button
-                            className="radius-4 min-h-10 border border-white/10 bg-white/8 px-3 text-left text-sm font-semibold text-white transition-colors hover:border-white/45 hover:bg-white/14"
-                            key={option.component}
-                            onClick={() => addSection(option.component)}
-                            type="button"
-                          >
-                            {option.name}
-                          </button>
-                        ))}
+                        {options.map((option) => {
+                          const templateUsageCount =
+                            sectionTemplateUsageCounts.get(option.component) ?? 0;
+
+                          return (
+                            <button
+                              className="radius-4 flex min-h-10 items-center justify-between gap-3 border border-white/10 bg-white/8 px-3 text-left text-sm font-semibold text-white transition-colors hover:border-white/45 hover:bg-white/14"
+                              key={option.component}
+                              onClick={() => addSection(option.component)}
+                              type="button"
+                            >
+                              <span>{option.name}</span>
+                              {templateUsageCount > 0 ? (
+                                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-semibold text-service-ink">
+                                  {templateUsageCount}
+                                </span>
+                              ) : null}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   );

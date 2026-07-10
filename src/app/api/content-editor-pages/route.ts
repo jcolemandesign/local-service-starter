@@ -232,6 +232,7 @@ function getSectionContent(component: string): ContentSourceValue | null {
     ContentFixedCoverFadeSectionV2: sectionLibraryV3Content.contentFixedCoverFade,
     ContentHorizontalCardCarouselSectionV2:
       sectionLibraryV3Content.contentHorizontalCardCarousel,
+    QuickPageLinksSectionV2: sectionLibraryV3Content.quickPageLinks,
     ContentRevealParagraphSectionV2: sectionLibraryV3Content.contentRevealParagraph,
     ContentRuleHeaderSectionV2: sectionLibraryV3Content.contentRuleHeader,
     ContentScrollWrittenRevealSectionV2:
@@ -253,6 +254,7 @@ function getSectionContent(component: string): ContentSourceValue | null {
     FeaturePortraitParagraphSectionV3:
       sectionLibraryV3Content.featurePortraitParagraph,
     FooterSectionV3: sectionLibraryV3Content.footer,
+    FooterHorizontalSectionV3: sectionLibraryV3Content.footer,
     FooterCompactSectionV3: sectionLibraryV3Content.footer,
     HeroCenteredFloatersSectionV2: sectionLibraryV3Content.hero,
     HeroContentTopImageBottomSectionV2: sectionLibraryV3Content.hero,

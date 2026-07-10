@@ -245,6 +245,30 @@ export const sectionLibraryV3Content = {
       "Mon-Fri, 8am-6pm",
     ],
   },
+  quickPageLinks: {
+    eyebrow: "Explore first",
+    title: "Useful next steps before starting a request.",
+    pageLinks: [
+      {
+        label: "Services",
+        title: "Compare service options",
+        body: "Browse the common request paths before starting a message.",
+        href: "#services",
+      },
+      {
+        label: "Process",
+        title: "See what happens next",
+        body: "Review the visit flow, timing, and how recommendations are made.",
+        href: "#process",
+      },
+      {
+        label: "Coverage",
+        title: "Check the service area",
+        body: "Confirm local fit before sending a request.",
+        href: "#service-area",
+      },
+    ],
+  },
   contentAboutCompany: {
     eyebrow: "About the company",
     statement:
@@ -926,6 +950,10 @@ export const sectionLibraryV3Collections = [
         component: "content-horizontal-card-carousel-v2",
       },
       {
+        label: "Quick page links",
+        component: "quick-page-links-v2",
+      },
+      {
         label: "3 service cards right",
         component: "services-three-cards-right-v3",
       },
@@ -993,7 +1021,6 @@ export const sectionLibraryV3Collections = [
       },
       { label: "Trust marquee", component: "trust-marquee-v3" },
       { label: "Logo marquee", component: "trust-logo-marquee-v3" },
-      { label: "Legacy trust logo grid", component: "trust-logo-grid-legacy" },
       { label: "Static trust logo grid", component: "trust-logo-grid-v3" },
       { label: "Testimonials", component: "testimonials-v3" },
       {
@@ -1027,6 +1054,7 @@ export const sectionLibraryV3Collections = [
       },
       { label: "Contact section", component: "contact-v3" },
       { label: "Footer", component: "footer-v3" },
+      { label: "Horizontal footer", component: "footer-horizontal-v3" },
       { label: "Condensed footer", component: "footer-compact-v3" },
     ],
   },

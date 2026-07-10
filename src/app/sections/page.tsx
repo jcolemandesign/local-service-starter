@@ -20,6 +20,7 @@ import {
   FeatureOverlapRowsSectionV3,
   FeaturePortraitParagraphSectionV3,
   FooterCompactSectionV3,
+  FooterHorizontalSectionV3,
   FooterSectionV3,
   HeroCenteredFloatersSectionV2,
   HeroContentTopImageBottomSectionV2,
@@ -30,6 +31,7 @@ import {
   NavPrimarySectionV2,
   ProcessImageChecklistSectionV3,
   ProcessStepsSectionV3,
+  QuickPageLinksSectionV2,
   ServicesBentoCardsSectionV2,
   ServicesHoverPanelSectionV2,
   ServicesScrollCardsSectionV2,
@@ -41,7 +43,6 @@ import {
   TestimonialsSectionV3,
   TrustBarFloatingBentoSectionV3,
   TrustBarSectionV3,
-  TrustLogoGridSection,
   TrustLogoGridSectionV3,
   TrustLogoMarqueeSectionV3,
   TrustMarqueeSection,
@@ -234,6 +235,12 @@ const sectionElements = {
   ),
   "contact-v3": <ContactSectionV3 {...sectionLibraryV3Content.contact} />,
   "footer-v3": <FooterSectionV3 {...sectionLibraryV3Content.footer} />,
+  "footer-horizontal-v3": (
+    <FooterHorizontalSectionV3 {...sectionLibraryV3Content.footer} />
+  ),
+  "quick-page-links-v2": (
+    <QuickPageLinksSectionV2 {...sectionLibraryV3Content.quickPageLinks} />
+  ),
   "footer-compact-v3": (
     <FooterCompactSectionV3 {...sectionLibraryV3Content.footer} />
   ),
@@ -255,9 +262,6 @@ const sectionElements = {
     <TrustLogoMarqueeSectionV3
       {...sectionLibraryV3Content.trustLogoMarquee}
     />
-  ),
-  "trust-logo-grid-legacy": (
-    <TrustLogoGridSection {...sectionLibraryV3Content.trustLogoMarquee} />
   ),
   "trust-logo-grid-v3": (
     <TrustLogoGridSectionV3

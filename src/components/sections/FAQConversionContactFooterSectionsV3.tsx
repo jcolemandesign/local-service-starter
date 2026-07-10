@@ -522,7 +522,7 @@ export function FooterSectionV3({
   );
 }
 
-export function FooterCompactSectionV3({
+export function FooterHorizontalSectionV3({
   businessName,
   contact,
   copyright,
@@ -565,7 +565,7 @@ export function FooterCompactSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-5 col-start-3 max-lg:col-span-7 max-lg:col-start-1">
-          <nav aria-label="Condensed footer navigation">
+          <nav aria-label="Horizontal footer navigation">
             <FooterInlineGroup title="Quick Links">
               <FooterInlineLinks links={quickLinks} />
             </FooterInlineGroup>
@@ -633,6 +633,115 @@ export function FooterCompactSectionV3({
             </ul>
           </nav>
         </div>
+      </SevenColumnGrid>
+    </footer>
+  );
+}
+
+export function FooterCompactSectionV3({
+  businessName,
+  contact,
+  copyright,
+  privacyLink,
+  quickLinks,
+  reviewLink,
+  socialLinks,
+  termsLink,
+}: FooterSectionV3Props) {
+  return (
+    <footer className="bg-service-ink text-white">
+      <SevenColumnGrid className="section-min-none" padding="sml">
+        <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
+          <div className="fluid-type-frame">
+            <a
+              className="radius-medium type-label inline-flex min-h-12 min-w-40 cursor-pointer items-center justify-center border border-white/15 bg-white/5 px-5 text-white"
+              href="#"
+            >
+              {businessName}
+            </a>
+            <ul
+              aria-label="Social links"
+              className="mt-body-actions-sm flex inline-gap-sml"
+            >
+              {socialLinks.map((link) => (
+                <li key={link.label}>
+                  <a
+                    aria-label={link.label}
+                    className="radius-medium flex size-10 cursor-pointer items-center justify-center border border-white/15 text-white/72 transition-colors hover:border-white/45 hover:text-white"
+                    href={link.href}
+                  >
+                    <SocialIcon label={link.label} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </SevenColumnGridItem>
+
+        <SevenColumnGridItem className="col-span-5 col-start-3 max-lg:col-span-7 max-lg:col-start-1">
+          <div className="grid gap-4">
+            <nav aria-label="Condensed footer navigation">
+              <FooterInlineLinks links={quickLinks} />
+            </nav>
+
+            <div className="border-t border-white/10 pt-4">
+              <address className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 not-italic">
+                <span className="type-text-sm font-medium text-white/72">
+                  {contact.name}
+                </span>
+                <span className="type-text-sm wrap-pretty font-medium text-white/72">
+                  {contact.address}
+                </span>
+                <a
+                  className="type-text-sm cursor-pointer font-medium text-white/72 transition-colors hover:text-white"
+                  href={`tel:${contact.phone.replace(/\D/g, "")}`}
+                >
+                  {contact.phone}
+                </a>
+                <a
+                  className="type-text-sm cursor-pointer font-medium text-white/72 transition-colors hover:text-white"
+                  href={`mailto:${contact.email}`}
+                >
+                  {contact.email}
+                </a>
+              </address>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-white/10 pt-4">
+              <a
+                className="type-text-sm cursor-pointer font-medium text-white/60 transition-colors hover:text-white"
+                href={reviewLink.href}
+              >
+                {reviewLink.label}
+              </a>
+              <p className="type-text-sm font-medium text-white/60">
+                {copyright}
+              </p>
+              <nav aria-label="Footer legal navigation">
+                <ul className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                  <li>
+                    <a
+                      className="type-text-sm cursor-pointer font-medium text-white/60 transition-colors hover:text-white"
+                      href={privacyLink.href}
+                    >
+                      {privacyLink.label}
+                    </a>
+                  </li>
+                  {termsLink ? (
+                    <li>
+                      <a
+                        className="type-text-sm cursor-pointer font-medium text-white/60 transition-colors hover:text-white"
+                        href={termsLink.href}
+                      >
+                        {termsLink.label}
+                      </a>
+                    </li>
+                  ) : null}
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </SevenColumnGridItem>
       </SevenColumnGrid>
     </footer>
   );

@@ -1,6 +1,7 @@
 import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAboutCompanySectionV2";
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
+import { QuickPageLinksSectionV2 } from "@/components/sections/QuickPageLinksSectionV2";
 import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
 import { CTAFullscreenSectionV2 } from "@/components/sections/CTAFullscreenSectionV2";
 import { CTAScrollRevealOfferSectionV2 } from "@/components/sections/CTAScrollRevealOfferSectionV2";
@@ -17,6 +18,7 @@ import {
   CTAFullscreenSectionV3,
   FAQSectionV3,
   FooterCompactSectionV3,
+  FooterHorizontalSectionV3,
   FooterSectionV3,
 } from "@/components/sections/FAQConversionContactFooterSectionsV3";
 import {
@@ -57,7 +59,6 @@ import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/Services
 import { TestimonialsCarouselSectionV3 } from "@/components/sections/TestimonialsCarouselSectionV3";
 import { TestimonialsMasonrySectionV2 } from "@/components/sections/TestimonialsMasonrySectionV2";
 import { TestimonialsMasonrySectionV3 } from "@/components/sections/TestimonialsMasonrySectionV3";
-import { TrustLogoGridSection } from "@/components/sections/TrustLogoMarqueeSection";
 import { TrustMarqueeSection } from "@/components/sections/TrustMarqueeSection";
 import {
   TrustBarFloatingBentoSectionV3,
@@ -324,8 +325,6 @@ export function renderPageTemplateSection(
       return <TrustMarqueeSection {...trustMarqueeProps(fieldSection)} />;
     case "TrustMarqueeSectionV3":
       return <TrustMarqueeSectionV3 {...trustMarqueeProps(fieldSection)} />;
-    case "TrustLogoGridSection":
-      return <TrustLogoGridSection {...sectionLibraryV3Content.trustLogoMarquee} />;
     case "TrustLogoMarqueeSectionV3":
       return <TrustLogoMarqueeSectionV3 {...sectionLibraryV3Content.trustLogoMarquee} />;
     case "TrustLogoGridSectionV3":
@@ -344,6 +343,8 @@ export function renderPageTemplateSection(
           {...horizontalCardsProps(fieldSection)}
         />
       );
+    case "QuickPageLinksSectionV2":
+      return <QuickPageLinksSectionV2 {...quickPageLinksProps(fieldSection)} />;
     case "ContentRevealParagraphSectionV2":
       return <ContentRevealParagraphSectionV2 {...revealParagraphProps(fieldSection)} />;
     case "ContentScrollWrittenRevealSectionV2":
@@ -427,6 +428,8 @@ export function renderPageTemplateSection(
       return <FooterSectionV2 {...footerProps(fieldSection)} />;
     case "FooterSectionV3":
       return <FooterSectionV3 {...footerProps(fieldSection)} />;
+    case "FooterHorizontalSectionV3":
+      return <FooterHorizontalSectionV3 {...footerProps(fieldSection)} />;
     case "FooterCompactSectionV3":
       return <FooterCompactSectionV3 {...footerProps(fieldSection)} />;
     default:
@@ -1191,6 +1194,19 @@ function fixedCoverFadeProps(section: FieldSection) {
   };
 }
 
+function quickPageLinksProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.quickPageLinks,
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.quickPageLinks.eyebrow,
+    ),
+    pageLinks: pageLinkItems(section),
+    title: getTitle(section, sectionLibraryV3Content.quickPageLinks.title),
+  };
+}
+
 function UnknownSection({
   section,
 }: {
@@ -1431,6 +1447,32 @@ function faqItems(section: FieldSection) {
   return sectionLibraryV3Content.faqAccordion.items;
 }
 
+function pageLinkItems(section: FieldSection) {
+  const records = getRepeatedRecords(section, ["pageLinks", "links", "cards"]);
+
+  if (records.length > 0) {
+    return records.map((record, index) => {
+      const fallback =
+        sectionLibraryV3Content.quickPageLinks.pageLinks[
+          index % sectionLibraryV3Content.quickPageLinks.pageLinks.length
+        ];
+
+      return {
+        body: record.body ?? record.description ?? fallback.body,
+        href: record.href ?? fallback.href,
+        label: record.label ?? fallback.label,
+        title: record.title ?? record.heading ?? fallback.title,
+      };
+    });
+  }
+
+  const values = getListValues(section, ["pageLinks", "links", "cards"], "");
+
+  return values.length > 0
+    ? values.map(parsePageLink)
+    : sectionLibraryV3Content.quickPageLinks.pageLinks;
+}
+
 function parseCardItem(value: string) {
   const [title, ...bodyParts] = value.split(/\s+[—-]\s+/);
   const body = bodyParts.join(" - ").trim();
@@ -1439,6 +1481,19 @@ function parseCardItem(value: string) {
     body,
     imageLabel: title.trim(),
     title: title.trim(),
+  };
+}
+
+function parsePageLink(value: string) {
+  const [content, href = "#"] = value.split(/\s*->\s*/);
+  const [labelAndTitle, ...bodyParts] = content.split(/\s+[—-]\s+/);
+  const [label, title] = labelAndTitle.split(/\s*:\s*/);
+
+  return {
+    body: bodyParts.join(" - ").trim(),
+    href: href.trim() || "#",
+    label: label?.trim() || "Page",
+    title: title?.trim() || label?.trim() || "Learn more",
   };
 }
 

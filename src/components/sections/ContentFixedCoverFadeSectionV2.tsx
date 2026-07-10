@@ -99,9 +99,7 @@ export function ContentFixedCoverFadeSectionV2({
             alignY="middle"
             className="col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1"
           >
-            <form
-              className="fluid-type-frame radius-medium grid card-grid-gap-med border border-service-border bg-service-surface p-8 shadow-service max-md:p-6"
-            >
+            <form className="fluid-type-frame radius-medium grid card-grid-gap-med border border-service-border bg-service-surface p-8 shadow-service max-md:p-6">
               <label
                 className={cx(
                   "type-text-sm",
@@ -162,6 +160,7 @@ export function ContentFixedCoverFadeSectionV2({
             </form>
           </SevenColumnGridItem>
         </SevenColumnGrid>
+
       </div>
     </section>
   );

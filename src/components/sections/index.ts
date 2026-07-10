@@ -6,6 +6,7 @@ export { ContentAboutCompanySectionV2 } from "./ContentAboutCompanySectionV2";
 export { ContentEditorSection } from "./ContentEditorSection";
 export { ContentFixedCoverFadeSectionV2 } from "./ContentFixedCoverFadeSectionV2";
 export { ContentHorizontalCardCarouselSectionV2 } from "./ContentHorizontalCardCarouselSectionV2";
+export { QuickPageLinksSectionV2 } from "./QuickPageLinksSectionV2";
 export { ContentPositioningSplitSection } from "./ContentPositioningSplitSection";
 export { ContentPositioningSplitSectionV2 } from "./ContentPositioningSplitSectionV2";
 export { ContentRevealParagraphSection } from "./ContentRevealParagraphSection";
@@ -39,6 +40,7 @@ export {
   CTASectionV3,
   FAQSectionV3,
   FooterCompactSectionV3,
+  FooterHorizontalSectionV3,
   FooterSectionV3,
 } from "./FAQConversionContactFooterSectionsV3";
 export {
@@ -108,5 +110,4 @@ export {
   TrustLogoMarqueeSectionV3,
   TrustMarqueeSectionV3,
 } from "./TrustSectionsV3";
-export { TrustLogoGridSection } from "./TrustLogoMarqueeSection";
 export { TrustMarqueeSection } from "./TrustMarqueeSection";

@@ -9,8 +9,8 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-07-09T21:24:47.411Z",
-      "sectionCount": 6,
+      "savedAt": "2026-07-10T16:04:56.622Z",
+      "sectionCount": 8,
       "sections": [
         {
           "component": "NavFloatingBentoSectionV2",
@@ -33,6 +33,16 @@
           "originalIndex": 1
         },
         {
+          "component": "TrustLogoMarqueeSectionV3",
+          "id": "classic-service-TrustLogoMarqueeSectionV3-added-4",
+          "included": true,
+          "instruction": "Use scrolling logo proof for affiliations, certifications, training, manufacturer badges, or partner networks.",
+          "mode": "Proof",
+          "name": "Logo marquee",
+          "originalComponent": "TrustLogoMarqueeSectionV3",
+          "originalIndex": -1
+        },
+        {
           "component": "ServicesScrollCardsSectionV2",
           "id": "classic-service-template-simple-homepage-3",
           "included": true,
@@ -53,6 +63,16 @@
           "originalIndex": -1
         },
         {
+          "component": "ContentStickyCardStreamSectionV2",
+          "id": "classic-service-ContentStickyCardStreamSectionV2-added-5",
+          "included": true,
+          "instruction": "Keep a promise fixed while supporting details move through response, diagnosis, options, and follow-up.",
+          "mode": "Narrative",
+          "name": "Sticky card stream content",
+          "originalComponent": "ContentStickyCardStreamSectionV2",
+          "originalIndex": -1
+        },
+        {
           "component": "ContentFixedCoverFadeSectionV2",
           "id": "classic-service-ContentFixedCoverFadeSectionV2-added-3",
           "included": true,
@@ -66,7 +86,7 @@
           "component": "FooterCompactSectionV3",
           "id": "classic-service-FooterSectionV3-added-4",
           "included": true,
-          "instruction": "End with a simpler condensed footer where link groups sit inline and wrap beside their headings.",
+          "instruction": "End with top-level navigation links, a rule, contact info, social links, and legal links in a compact footer.",
           "mode": "Utility",
           "name": "Condensed footer",
           "originalComponent": "FooterSectionV3",
