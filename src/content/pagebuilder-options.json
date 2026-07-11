@@ -9,88 +9,18 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-07-10T16:04:56.622Z",
-      "sectionCount": 8,
+      "savedAt": "2026-07-10T19:58:33.701Z",
+      "sectionCount": 1,
       "sections": [
         {
-          "component": "NavFloatingBentoSectionV2",
+          "component": "NavPrimarySectionV2",
           "id": "classic-service-template-simple-homepage-0",
           "included": true,
-          "instruction": "Use the floating nav when the hero needs a polished first-viewport frame.",
+          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
           "mode": "Navigation",
-          "name": "Floating bento navigation",
+          "name": "Primary navigation",
           "originalComponent": "NavPrimarySectionV2",
           "originalIndex": 0
-        },
-        {
-          "component": "HeroFullscreenSectionV2",
-          "id": "classic-service-template-simple-homepage-1",
-          "included": true,
-          "instruction": "Use a strong image, calm h1, review proof, and one visible request path.",
-          "mode": "Hero",
-          "name": "Fullscreen image hero",
-          "originalComponent": "HeroSplitFullHeightSectionV3",
-          "originalIndex": 1
-        },
-        {
-          "component": "TrustLogoMarqueeSectionV3",
-          "id": "classic-service-TrustLogoMarqueeSectionV3-added-4",
-          "included": true,
-          "instruction": "Use scrolling logo proof for affiliations, certifications, training, manufacturer badges, or partner networks.",
-          "mode": "Proof",
-          "name": "Logo marquee",
-          "originalComponent": "TrustLogoMarqueeSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ServicesScrollCardsSectionV2",
-          "id": "classic-service-template-simple-homepage-3",
-          "included": true,
-          "instruction": "Use a service rail when there are more service paths than a small grid can handle gracefully.",
-          "mode": "Scan",
-          "name": "Scroll service cards",
-          "originalComponent": "ServicesThreeCardsRightSectionV3",
-          "originalIndex": 3
-        },
-        {
-          "component": "TestimonialsMasonrySectionV3",
-          "id": "classic-service-template-simple-homepage-5",
-          "included": true,
-          "instruction": "Use varied quote lengths to create a fuller body of evidence.",
-          "mode": "Proof",
-          "name": "Masonry testimonials",
-          "originalComponent": "TestimonialsMasonrySectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ContentStickyCardStreamSectionV2",
-          "id": "classic-service-ContentStickyCardStreamSectionV2-added-5",
-          "included": true,
-          "instruction": "Keep a promise fixed while supporting details move through response, diagnosis, options, and follow-up.",
-          "mode": "Narrative",
-          "name": "Sticky card stream content",
-          "originalComponent": "ContentStickyCardStreamSectionV2",
-          "originalIndex": -1
-        },
-        {
-          "component": "ContentFixedCoverFadeSectionV2",
-          "id": "classic-service-ContentFixedCoverFadeSectionV2-added-3",
-          "included": true,
-          "instruction": "Use a fixed-cover fade when the action moment should feel immersive and image-led.",
-          "mode": "Action",
-          "name": "Fixed cover fade",
-          "originalComponent": "ContentFixedCoverFadeSectionV2",
-          "originalIndex": -1
-        },
-        {
-          "component": "FooterCompactSectionV3",
-          "id": "classic-service-FooterSectionV3-added-4",
-          "included": true,
-          "instruction": "End with top-level navigation links, a rule, contact info, social links, and legal links in a compact footer.",
-          "mode": "Utility",
-          "name": "Condensed footer",
-          "originalComponent": "FooterSectionV3",
-          "originalIndex": -1
         }
       ]
     }

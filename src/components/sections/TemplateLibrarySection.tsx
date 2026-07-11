@@ -477,7 +477,7 @@ export function TemplateLibrarySection({
                       Open group
                     </span>
                   </summary>
-                  <div className="grid grid-cols-2 gap-5 border-t border-service-border p-5 max-lg:grid-cols-1">
+                  <div className="grid grid-cols-2 items-start gap-5 border-t border-service-border p-5 max-lg:grid-cols-1">
                     {group.templates.map((template) => {
                       const draft = drafts[template.id] ?? {
                         label: getDefaultPageLabel(template.pageType, template.name),
@@ -509,223 +509,250 @@ export function TemplateLibrarySection({
                       );
 
                       return (
-                        <Card className="p-5 shadow-none" key={template.id}>
-                          <div className="grid gap-5">
-                            <div className="fluid-type-frame">
-                              <div className="flex flex-wrap items-start justify-between gap-3">
-                                <div className="min-w-0">
-                                  <p className="type-label text-service-accent">
-                                    {template.pageType}
-                                  </p>
-                                  <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
-                                    {template.name}
-                                  </h2>
-                                </div>
-                                {activeAssignment ? (
-                                  <StatusPill
-                                    label={
-                                      isRepeatable
-                                        ? `${activeAssignmentsForTemplate.length} staged`
-                                        : "Active on staging"
-                                    }
-                                  />
-                                ) : null}
-                              </div>
-                              <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
-                                Promoted from {template.sourceRecipeName} /{" "}
-                                {template.sourceOptionName} on{" "}
-                                {formatDate(template.promotedAt)}.
-                              </p>
-                              {template.notes ? (
-                                <p className="type-caption mt-3 text-service-muted">
-                                  {template.notes}
-                                </p>
-                              ) : null}
-                            </div>
-
-                            <div className="flex flex-wrap gap-2">
-                              <StatusPill
-                                label={`${template.sectionCount} sections`}
-                              />
-                              <StatusPill label={relationshipLabel} />
-                              <StatusPill label={template.id} />
-                              {!isRepeatable && activeAssignment ? (
-                                <Link
-                                  className="type-caption rounded-sm border border-green-200 bg-green-50 px-3 py-1 font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
-                                  href={activeAssignment.previewHref}
-                                >
-                                  Open {activeAssignment.pageLabel}
-                                </Link>
-                              ) : null}
-                            </div>
-
-                            {isRepeatable && activeAssignmentsForTemplate.length > 0 ? (
-                              <div className="rounded-sm border border-green-200 bg-green-50 p-3">
-                                <p className="type-caption font-semibold text-green-800">
-                                  Staged pages using this repeatable template
-                                </p>
-                                <div className="mt-2 flex flex-wrap gap-2">
-                                  {activeAssignmentsForTemplate.map((assignment) => (
-                                    <Link
-                                      className="type-caption rounded-sm border border-green-200 bg-white px-3 py-1 font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
-                                      href={assignment.previewHref}
-                                      key={assignment.pageId}
-                                    >
-                                      {assignment.pageLabel}
-                                    </Link>
-                                  ))}
-                                </div>
-                              </div>
-                            ) : null}
-
-                            <details className="rounded-sm border border-service-border bg-service-surface">
-                              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 marker:hidden">
-                                <span className="type-caption font-semibold text-service-ink">
-                                  Sections
+                        <Card className="overflow-hidden shadow-none" key={template.id}>
+                          <details className="group relative">
+                            <summary className="relative flex cursor-pointer list-none items-start justify-between gap-4 p-5 pr-14 marker:hidden">
+                              <span className="min-w-0">
+                                <span className="type-heading-sm block text-service-ink">
+                                  {template.name}
                                 </span>
-                                <span className="type-caption text-service-muted">
-                                  {template.sections.length}
-                                </span>
-                              </summary>
-                              <div className="grid gap-2 border-t border-service-border p-3">
-                                {template.sections.map((section, index) => (
-                                  <div
-                                    className="grid grid-cols-[8rem_minmax(0,1fr)] gap-3 rounded-sm border border-service-border bg-white px-3 py-2 max-md:grid-cols-1"
-                                    key={`${template.id}-${section.component}-${index}`}
-                                  >
-                                    <span className="type-caption font-semibold text-service-accent">
-                                      {index + 1}. {section.mode}
-                                    </span>
-                                    <span className="type-caption text-service-muted">
-                                      {section.name}
-                                    </span>
-                                  </div>
-                                ))}
-                              </div>
-                            </details>
+                              </span>
+                            </summary>
+                            <button
+                              aria-label={`Delete ${template.name}`}
+                              className="absolute right-4 top-4 z-10 flex size-9 items-center justify-center rounded-sm border border-red-200 bg-red-50 text-red-700 transition-colors hover:border-red-700 hover:bg-red-700 hover:text-white disabled:cursor-wait disabled:opacity-60"
+                              disabled={deletingTemplateId === template.id}
+                              onClick={() => setDeleteCandidate(template)}
+                              title="Delete template"
+                              type="button"
+                            >
+                              <TrashIcon />
+                            </button>
 
-                            <div className="grid gap-3 border-t border-service-border pt-5">
-                              <label className="type-caption font-semibold text-service-ink">
-                                Staged page name
-                                <input
-                                  className="mt-2 block min-h-11 w-full rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
-                                  value={draft.label}
-                                  onChange={(event) => {
-                                    const nextLabel = event.target.value;
-
-                                    updateDraft(template.id, {
-                                      label: nextLabel,
-                                      slug: slugify(nextLabel),
-                                    });
-                                  }}
-                                />
-                              </label>
-                              <label className="type-caption font-semibold text-service-ink">
-                                Intended route slug
-                                <input
-                                  className="mt-2 block min-h-11 w-full rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
-                                  value={draft.slug}
-                                  onChange={(event) =>
-                                    updateDraft(template.id, {
-                                      slug: slugify(event.target.value),
-                                    })
-                                  }
-                                />
-                              </label>
-                              <div className="rounded-sm border border-service-border bg-service-surface px-3 py-2">
-                                <p className="type-caption font-semibold text-service-ink">
-                                  Public path preview
-                                </p>
-                                <p className="mt-1 break-all font-mono text-xs text-service-muted">
-                                  {publicPath}
-                                </p>
-                              </div>
-                              {isRepeatable ? (
-                                <div className="grid gap-2">
-                                  <p className="type-caption rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 font-semibold text-amber-800">
-                                    Stage this once per real{" "}
-                                    {getRepeatableInstanceLabel(template.pageType)}.
-                                    Reusing the same slug updates that existing
-                                    staged page.
-                                  </p>
-                                  {mismatchWarning ? (
-                                    <p className="type-caption rounded-sm border border-red-200 bg-red-50 px-3 py-2 font-semibold text-red-700">
-                                      {mismatchWarning}
+                            <div className="grid gap-5 border-t border-service-border bg-service-surface p-5">
+                              <div className="grid gap-5">
+                                <div className="grid gap-5">
+                                  <div className="fluid-type-frame">
+                                    <div className="flex flex-wrap gap-2">
+                                      <StatusPill
+                                        label={`${template.sectionCount} sections`}
+                                      />
+                                      <StatusPill label={relationshipLabel} />
+                                      <StatusPill label={template.id} />
+                                      {activeAssignment ? (
+                                        <StatusPill
+                                          label={
+                                            isRepeatable
+                                              ? `${activeAssignmentsForTemplate.length} staged`
+                                              : "Active on staging"
+                                          }
+                                        />
+                                      ) : null}
+                                    </div>
+                                    <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
+                                      Promoted from {template.sourceRecipeName} /{" "}
+                                      {template.sourceOptionName} on{" "}
+                                      {formatDate(template.promotedAt)}.
                                     </p>
+                                    {template.notes ? (
+                                      <p className="type-caption mt-3 text-service-muted">
+                                        {template.notes}
+                                      </p>
+                                    ) : null}
+                                  </div>
+
+                                  {isRepeatable &&
+                                  activeAssignmentsForTemplate.length > 0 ? (
+                                    <div className="rounded-sm border border-green-200 bg-green-50 p-3">
+                                      <p className="type-caption font-semibold text-green-800">
+                                        Staged pages using this repeatable template
+                                      </p>
+                                      <div className="mt-2 flex flex-wrap gap-2">
+                                        {activeAssignmentsForTemplate.map(
+                                          (assignment) => (
+                                            <Link
+                                              className="type-caption rounded-sm border border-green-200 bg-white px-3 py-1 font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
+                                              href={assignment.previewHref}
+                                              key={assignment.pageId}
+                                            >
+                                              {assignment.pageLabel}
+                                            </Link>
+                                          ),
+                                        )}
+                                      </div>
+                                    </div>
                                   ) : null}
+
+                                  <details className="rounded-sm border border-service-border bg-white">
+                                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 marker:hidden">
+                                      <span className="type-caption font-semibold text-service-ink">
+                                        Sections
+                                      </span>
+                                      <span className="type-caption text-service-muted">
+                                        {template.sections.length}
+                                      </span>
+                                    </summary>
+                                    <div className="grid gap-2 border-t border-service-border p-3">
+                                      {template.sections.map((section, index) => (
+                                        <div
+                                          className="grid grid-cols-[8rem_minmax(0,1fr)] gap-3 rounded-sm border border-service-border bg-service-surface px-3 py-2 max-md:grid-cols-1"
+                                          key={`${template.id}-${section.component}-${index}`}
+                                        >
+                                          <span className="type-caption font-semibold text-service-accent">
+                                            {index + 1}. {section.mode}
+                                          </span>
+                                          <span className="type-caption text-service-muted">
+                                            {section.name}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </details>
+
+                                  <div className="grid gap-3 rounded-sm border border-service-border bg-white p-4">
+                                    <label className="type-caption font-semibold text-service-ink">
+                                      Staged page name
+                                      <input
+                                        className="mt-2 block min-h-11 w-full rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
+                                        value={draft.label}
+                                        onChange={(event) => {
+                                          const nextLabel = event.target.value;
+
+                                          updateDraft(template.id, {
+                                            label: nextLabel,
+                                            slug: slugify(nextLabel),
+                                          });
+                                        }}
+                                      />
+                                    </label>
+                                    <label className="type-caption font-semibold text-service-ink">
+                                      Intended route slug
+                                      <input
+                                        className="mt-2 block min-h-11 w-full rounded-sm border border-service-border bg-white px-3 text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent"
+                                        value={draft.slug}
+                                        onChange={(event) =>
+                                          updateDraft(template.id, {
+                                            slug: slugify(event.target.value),
+                                          })
+                                        }
+                                      />
+                                    </label>
+                                    <div className="rounded-sm border border-service-border bg-service-surface px-3 py-2">
+                                      <p className="type-caption font-semibold text-service-ink">
+                                        Public path preview
+                                      </p>
+                                      <p className="mt-1 break-all font-mono text-xs text-service-muted">
+                                        {publicPath}
+                                      </p>
+                                    </div>
+                                    {isRepeatable ? (
+                                      <div className="grid gap-2">
+                                        <p className="type-caption rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 font-semibold text-amber-800">
+                                          Stage this once per real{" "}
+                                          {getRepeatableInstanceLabel(
+                                            template.pageType,
+                                          )}. Reusing the same slug updates that
+                                          existing staged page.
+                                        </p>
+                                        {mismatchWarning ? (
+                                          <p className="type-caption rounded-sm border border-red-200 bg-red-50 px-3 py-2 font-semibold text-red-700">
+                                            {mismatchWarning}
+                                          </p>
+                                        ) : null}
+                                      </div>
+                                    ) : null}
+                                  </div>
+
+                                  <div className="grid gap-3 border-t border-service-border pt-5">
+                                    <div className="grid grid-cols-2 gap-2 max-md:grid-cols-1">
+                                      <div className="grid gap-2">
+                                        <button
+                                          className="radius-4 min-h-11 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                                          onClick={() => {
+                                            setOpenContractTemplateId(
+                                              isContractOpen ? "" : template.id,
+                                            );
+                                            setStatus("");
+                                            setError("");
+                                          }}
+                                          type="button"
+                                        >
+                                          {isContractOpen
+                                            ? "Hide Contract"
+                                            : "Show Contract"}
+                                        </button>
+                                        <button
+                                          className="radius-4 min-h-11 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                                          onClick={() =>
+                                            void copyTemplateContract(template)
+                                          }
+                                          type="button"
+                                        >
+                                          {isContractCopied
+                                            ? "Copied"
+                                            : "Copy Contract"}
+                                        </button>
+                                      </div>
+                                      <div className="grid gap-2">
+                                        <Link
+                                          className="radius-4 inline-flex min-h-11 items-center justify-center border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                                          href={`/dev/templates/${template.id}`}
+                                          target="_blank"
+                                        >
+                                          Preview
+                                        </Link>
+                                        <button
+                                          className="radius-4 min-h-11 border border-service-accent bg-white px-4 text-sm font-semibold text-service-accent transition-colors hover:border-service-ink hover:text-service-ink disabled:cursor-wait disabled:opacity-60"
+                                          disabled={
+                                            sendingTemplateId === template.id
+                                          }
+                                          onClick={() => {
+                                            setPagebuilderCandidate(template);
+                                            setStatus("");
+                                            setError("");
+                                          }}
+                                          type="button"
+                                        >
+                                          {sendingTemplateId === template.id
+                                            ? "Sending..."
+                                            : "Send to Pagebuilder"}
+                                        </button>
+                                      </div>
+                                    </div>
+                                    {!isRepeatable && activeAssignment ? (
+                                      <Link
+                                        className="radius-4 inline-flex min-h-11 items-center justify-center border border-green-200 bg-green-50 px-4 text-sm font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
+                                        href={activeAssignment.previewHref}
+                                      >
+                                        Open {activeAssignment.pageLabel}
+                                      </Link>
+                                    ) : null}
+                                    {isContractOpen ? (
+                                      <textarea
+                                        className="min-h-72 resize-y rounded-sm border border-service-border bg-white px-3 py-3 font-mono text-xs leading-5 text-service-ink outline-none focus:border-service-accent"
+                                        onFocus={(event) =>
+                                          event.currentTarget.select()
+                                        }
+                                        readOnly
+                                        value={contract}
+                                      />
+                                    ) : null}
+                                  <button
+                                    className="radius-4 min-h-11 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent disabled:cursor-wait disabled:opacity-60"
+                                    disabled={isSubmitting || !activeClientSlug}
+                                    onClick={() => void stageTemplate(template)}
+                                    type="button"
+                                  >
+                                    {isSubmitting
+                                      ? "Staging..."
+                                      : isRepeatable
+                                        ? "Stage Child Page"
+                                        : "Use Template"}
+                                  </button>
+                                  </div>
                                 </div>
-                              ) : null}
-                              <div className="grid grid-cols-2 gap-2 max-md:grid-cols-1">
-                                <Link
-                                  className="radius-4 inline-flex min-h-11 items-center justify-center border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-                                  href={`/dev/templates/${template.id}`}
-                                  target="_blank"
-                                >
-                                  Preview
-                                </Link>
-                                <button
-                                  className="radius-4 min-h-11 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-                                  onClick={() => {
-                                    setOpenContractTemplateId(
-                                      isContractOpen ? "" : template.id,
-                                    );
-                                    setStatus("");
-                                    setError("");
-                                  }}
-                                  type="button"
-                                >
-                                  {isContractOpen ? "Hide Contract" : "Show Contract"}
-                                </button>
-                                <button
-                                  className="radius-4 min-h-11 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-                                  onClick={() => void copyTemplateContract(template)}
-                                  type="button"
-                                >
-                                  {isContractCopied ? "Copied" : "Copy Contract"}
-                                </button>
-                                <button
-                                  className="radius-4 min-h-11 border border-service-accent bg-service-surface px-4 text-sm font-semibold text-service-accent transition-colors hover:border-service-ink hover:text-service-ink disabled:cursor-wait disabled:opacity-60"
-                                  disabled={sendingTemplateId === template.id}
-                                  onClick={() => {
-                                    setPagebuilderCandidate(template);
-                                    setStatus("");
-                                    setError("");
-                                  }}
-                                  type="button"
-                                >
-                                  {sendingTemplateId === template.id
-                                    ? "Sending..."
-                                    : "Send to Pagebuilder"}
-                                </button>
-                                <button
-                                  className="radius-4 min-h-11 border border-red-200 bg-red-50 px-4 text-sm font-semibold text-red-700 transition-colors hover:border-red-700 hover:bg-red-700 hover:text-white disabled:cursor-wait disabled:opacity-60"
-                                  disabled={deletingTemplateId === template.id}
-                                  onClick={() => setDeleteCandidate(template)}
-                                  type="button"
-                                >
-                                  Delete
-                                </button>
                               </div>
-                              {isContractOpen ? (
-                                <textarea
-                                  className="min-h-72 resize-y rounded-sm border border-service-border bg-service-surface px-3 py-3 font-mono text-xs leading-5 text-service-ink outline-none focus:border-service-accent"
-                                  onFocus={(event) => event.currentTarget.select()}
-                                  readOnly
-                                  value={contract}
-                                />
-                              ) : null}
-                              <button
-                                className="radius-4 min-h-11 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent disabled:cursor-wait disabled:opacity-60"
-                                disabled={isSubmitting || !activeClientSlug}
-                                onClick={() => void stageTemplate(template)}
-                                type="button"
-                              >
-                                {isSubmitting
-                                  ? "Staging..."
-                                  : isRepeatable
-                                    ? "Stage Child Page"
-                                    : "Use Template"}
-                              </button>
+
                               {stagedFeedback ? (
                                 <div
                                   className="rounded-sm border border-green-200 bg-green-50 px-4 py-3 text-green-800"
@@ -752,7 +779,7 @@ export function TemplateLibrarySection({
                                 </div>
                               ) : null}
                             </div>
-                          </div>
+                          </details>
                         </Card>
                       );
                     })}
@@ -1010,6 +1037,27 @@ function StatusPill({ label }: { label: string }) {
     <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
       {label}
     </span>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-4"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+      viewBox="0 0 24 24"
+    >
+      <path d="M4 7h16" />
+      <path d="M10 11v6" />
+      <path d="M14 11v6" />
+      <path d="M6 7l1 14h10l1-14" />
+      <path d="M9 7V4h6v3" />
+    </svg>
   );
 }
 

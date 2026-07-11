@@ -1633,10 +1633,15 @@ export function PagebuilderShell({
               </p>
             </div>
 
-            <div className="radius-medium order-2 border border-white/10 bg-white/8 p-5 shadow-service">
-              <h2 className="type-heading-sm text-white">
-                Page Layouts
-              </h2>
+            <details className="radius-medium order-2 border border-white/10 bg-white/8 p-5 shadow-service">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 marker:hidden">
+                <span className="type-heading-sm text-white">
+                  Page Layouts
+                </span>
+                <span className="type-caption rounded-sm border border-white/10 bg-white/8 px-3 py-1 text-white/64">
+                  Open
+                </span>
+              </summary>
               <div className="mt-4 grid gap-3" role="list">
                 {recipes.map((recipe) => {
                   const isActive = recipe.id === activeRecipe.id;
@@ -1697,7 +1702,7 @@ export function PagebuilderShell({
                   );
                 })}
               </div>
-            </div>
+            </details>
 
             <div
               className="radius-medium order-3 border border-white/30 p-5 shadow-[inset_0_1px_0_rgb(255_255_255_/_0.16),inset_0_0_0_1px_rgb(255_255_255_/_0.045),0_16px_48px_rgb(0_0_0_/_0.16)] ring-1 ring-white/8"

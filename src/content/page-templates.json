@@ -5,6 +5,87 @@
         "showSectionMarkers": false,
         "viewportId": "main"
       },
+      "id": "large-image-homepage",
+      "name": "Large image homepage",
+      "notes": "",
+      "pageType": "Home",
+      "promotedAt": "2026-07-10T19:36:35.996Z",
+      "sectionCount": 8,
+      "sections": [
+        {
+          "component": "NavFloatingBentoSectionV2",
+          "instruction": "Use the floating nav when the hero needs a polished first-viewport frame.",
+          "mode": "Navigation",
+          "name": "Floating bento navigation",
+          "originalComponent": "NavPrimarySectionV2",
+          "originalIndex": 0
+        },
+        {
+          "component": "HeroFullscreenSectionV2",
+          "instruction": "Use a strong image, calm h1, review proof, and one visible request path.",
+          "mode": "Hero",
+          "name": "Fullscreen image hero",
+          "originalComponent": "HeroSplitFullHeightSectionV3",
+          "originalIndex": 1
+        },
+        {
+          "component": "TrustLogoMarqueeSectionV3",
+          "instruction": "Use scrolling logo proof for affiliations, certifications, training, manufacturer badges, or partner networks.",
+          "mode": "Proof",
+          "name": "Logo marquee",
+          "originalComponent": "TrustLogoMarqueeSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "ServicesScrollCardsSectionV2",
+          "instruction": "Use a service rail when there are more service paths than a small grid can handle gracefully.",
+          "mode": "Scan",
+          "name": "Scroll service cards",
+          "originalComponent": "ServicesThreeCardsRightSectionV3",
+          "originalIndex": 3
+        },
+        {
+          "component": "TestimonialsMasonrySectionV3",
+          "instruction": "Use varied quote lengths to create a fuller body of evidence.",
+          "mode": "Proof",
+          "name": "Masonry testimonials",
+          "originalComponent": "TestimonialsMasonrySectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "ContentStickyCardStreamSectionV2",
+          "instruction": "Keep a promise fixed while supporting details move through response, diagnosis, options, and follow-up.",
+          "mode": "Narrative",
+          "name": "Sticky card stream content",
+          "originalComponent": "ContentStickyCardStreamSectionV2",
+          "originalIndex": -1
+        },
+        {
+          "component": "ContentFixedCoverFadeSectionV2",
+          "instruction": "Use a fixed-cover fade when the action moment should feel immersive and image-led.",
+          "mode": "Action",
+          "name": "Fixed cover fade",
+          "originalComponent": "ContentFixedCoverFadeSectionV2",
+          "originalIndex": -1
+        },
+        {
+          "component": "FooterCompactSectionV3",
+          "instruction": "End with top-level navigation links, a rule, contact info, social links, and legal links in a compact footer.",
+          "mode": "Utility",
+          "name": "Condensed footer",
+          "originalComponent": "FooterSectionV3",
+          "originalIndex": -1
+        }
+      ],
+      "sourceOptionName": "Page Layout",
+      "sourceRecipeId": "classic-service",
+      "sourceRecipeName": "Home"
+    },
+    {
+      "designStyle": {
+        "showSectionMarkers": false,
+        "viewportId": "main"
+      },
       "id": "simple-homepage",
       "name": "Simple homepage",
       "notes": "",

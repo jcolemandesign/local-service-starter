@@ -355,7 +355,7 @@ export function StrategyWorkspaceSection({
     <Section className="min-h-svh bg-service-surface text-service-ink">
       <div className="w-full px-[var(--container-gutter)]">
         <div className="grid layout-gap-lrg">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(320px,0.45fr)] lg:items-end">
+          <div className="grid gap-5">
             <div className="fluid-type-frame">
               <p className="type-label text-service-accent">
                 Strategy Workspace
@@ -369,30 +369,72 @@ export function StrategyWorkspaceSection({
               </p>
             </div>
 
-            <Card className="p-5">
-              <div className="grid gap-4">
-                <div>
-                  <p className="type-label text-service-accent">Strategy Inputs</p>
+            <Card className="p-4 shadow-none">
+              <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-start">
+                <div className="min-w-0">
+                  <p className="type-label text-service-accent">
+                    Strategy Inputs
+                  </p>
                   <p className="type-text-sm mt-heading-body-sm text-service-muted">
                     {packetSummary.exists
                       ? "Source packet found. Strategy digest is the prompt-ready version."
                       : "No source packet found for this project slug."}
                   </p>
+                  <div className="mt-3 flex flex-wrap gap-2 type-caption text-service-muted">
+                    <span className="break-all rounded-[var(--radius-md-token)] bg-service-surface px-3 py-2 font-mono text-service-ink">
+                      {packetSummary.outputPath}
+                    </span>
+                    <span className="break-all rounded-[var(--radius-md-token)] bg-service-surface px-3 py-2 font-mono text-service-ink">
+                      src/content/projects/{clientSlug}/strategy-digest.md
+                    </span>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2 type-caption text-service-muted">
+                    <span>{filledCount} saved workspace sections started</span>
+                    {updatedAt ? (
+                      <span>Last saved {formatDate(updatedAt)}</span>
+                    ) : (
+                      <span>Not saved yet</span>
+                    )}
+                  </div>
                 </div>
-                <div className="grid gap-2 type-caption text-service-muted">
-                  <span className="break-all rounded-[var(--radius-md-token)] bg-service-surface px-3 py-2 font-mono text-service-ink">
-                    {packetSummary.outputPath}
-                  </span>
-                  <span className="break-all rounded-[var(--radius-md-token)] bg-service-surface px-3 py-2 font-mono text-service-ink">
-                    src/content/projects/{clientSlug}/strategy-digest.md
-                  </span>
+
+                <div className="flex flex-wrap gap-2 xl:justify-end">
+                  <Link
+                    className={secondaryButtonClass}
+                    href={`/dev/prompt-library?project=${clientSlug}`}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    Prompt library
+                  </Link>
+                  <button
+                    className={primaryButtonClass}
+                    disabled={saveState === "saving"}
+                    onClick={() => void saveWorkspace()}
+                    type="button"
+                  >
+                    {saveState === "saving" ? "Saving" : "Save workspace"}
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-4 gap-3 xl:col-span-2 max-lg:grid-cols-2 max-sm:grid-cols-1">
+                  <Metric label="Source items" value={packetSummary.totalSourceItems} />
+                  <Metric
+                    label="Verified quotes"
+                    value={packetSummary.verifiedQuoteItems}
+                  />
+                  <Metric label="Conflicts" value={packetSummary.conflictItems} />
+                  <Metric label="Missing info" value={packetSummary.missingInfoItems} />
+                </div>
+
+                <div className="grid gap-3 xl:col-span-2 lg:grid-cols-2">
                   {strategyDigestText ? (
-                    <details className="rounded-[var(--radius-md-token)] border border-service-border bg-white">
-                      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-3 font-semibold text-service-ink marker:hidden">
+                    <details className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface">
+                      <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 type-caption font-semibold text-service-ink marker:hidden">
                         <span>Strategy digest</span>
                         <span className="text-service-muted">Open</span>
                       </summary>
-                      <div className="grid gap-3 border-t border-service-border p-3">
+                      <div className="grid gap-3 border-t border-service-border bg-white p-3">
                         <button
                           className={secondaryButtonClass}
                           onClick={() => void copyStrategyDigest()}
@@ -401,12 +443,12 @@ export function StrategyWorkspaceSection({
                           Copy strategy digest
                         </button>
                         {digestCopyState === "copied" ? (
-                          <p className="font-semibold text-green-700">
+                          <p className="type-caption font-semibold text-green-700">
                             Strategy digest copied.
                           </p>
                         ) : null}
                         {digestCopyState === "error" ? (
-                          <p className="font-semibold text-red-700">
+                          <p className="type-caption font-semibold text-red-700">
                             Could not copy strategy digest.
                           </p>
                         ) : null}
@@ -419,12 +461,12 @@ export function StrategyWorkspaceSection({
                     </details>
                   ) : null}
                   {sourcePacketText ? (
-                    <details className="rounded-[var(--radius-md-token)] border border-service-border bg-white">
-                      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-3 font-semibold text-service-ink marker:hidden">
+                    <details className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface">
+                      <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 type-caption font-semibold text-service-ink marker:hidden">
                         <span>Source packet audit text</span>
                         <span className="text-service-muted">Open</span>
                       </summary>
-                      <div className="grid gap-3 border-t border-service-border p-3">
+                      <div className="grid gap-3 border-t border-service-border bg-white p-3">
                         <button
                           className={secondaryButtonClass}
                           onClick={() => void copySourcePacket()}
@@ -433,12 +475,12 @@ export function StrategyWorkspaceSection({
                           Copy source packet
                         </button>
                         {packetCopyState === "copied" ? (
-                          <p className="font-semibold text-green-700">
+                          <p className="type-caption font-semibold text-green-700">
                             Source packet copied.
                           </p>
                         ) : null}
                         {packetCopyState === "error" ? (
-                          <p className="font-semibold text-red-700">
+                          <p className="type-caption font-semibold text-red-700">
                             Could not copy source packet.
                           </p>
                         ) : null}
@@ -450,25 +492,11 @@ export function StrategyWorkspaceSection({
                       </div>
                     </details>
                   ) : null}
-                  <span>{filledCount} saved workspace sections started</span>
-                  {updatedAt ? (
-                    <span>Last saved {formatDate(updatedAt)}</span>
-                  ) : (
-                    <span>Not saved yet</span>
-                  )}
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <Metric label="Source items" value={packetSummary.totalSourceItems} />
-                  <Metric
-                    label="Verified quotes"
-                    value={packetSummary.verifiedQuoteItems}
-                  />
-                  <Metric label="Conflicts" value={packetSummary.conflictItems} />
-                  <Metric label="Missing info" value={packetSummary.missingInfoItems} />
-                </div>
+
                 {(packetSummary.conflicts.length > 0 ||
                   packetSummary.missingInfo.length > 0) ? (
-                  <details className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface">
+                  <details className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface xl:col-span-2">
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-3 text-sm font-semibold text-service-ink marker:hidden">
                       <span>Review packet issues</span>
                       <span className="text-xs font-semibold text-service-muted">
@@ -500,31 +528,14 @@ export function StrategyWorkspaceSection({
                     </div>
                   </details>
                 ) : null}
-                <div className="flex flex-wrap gap-2">
-                  <Link
-                    className={secondaryButtonClass}
-                    href={`/dev/prompt-library?project=${clientSlug}`}
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    Prompt library
-                  </Link>
-                  <button
-                    className={primaryButtonClass}
-                    disabled={saveState === "saving"}
-                    onClick={() => void saveWorkspace()}
-                    type="button"
-                  >
-                    {saveState === "saving" ? "Saving" : "Save workspace"}
-                  </button>
-                </div>
+
                 {saveState === "saved" ? (
-                  <p className="type-caption font-semibold text-green-700">
+                  <p className="type-caption font-semibold text-green-700 xl:col-span-2">
                     Workspace saved. Strategy snapshot frozen.
                   </p>
                 ) : null}
                 {saveState === "error" ? (
-                  <p className="type-caption font-semibold text-red-700">
+                  <p className="type-caption font-semibold text-red-700 xl:col-span-2">
                     Unable to save workspace.
                   </p>
                 ) : null}
@@ -675,71 +686,105 @@ export function StrategyWorkspaceSection({
                   </summary>
 
                   <div className="grid gap-5 border-t border-service-border bg-service-surface p-5">
-                    {group.fields.map((field) => (
-                      <div
-                        className="grid gap-2 rounded-[var(--radius-md-token)] border border-service-border bg-white p-4"
-                        key={field.key}
-                      >
-                        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-3">
-                          <label
-                            className="text-sm font-semibold text-service-ink"
-                            htmlFor={`strategy-field-${field.key}`}
-                          >
-                            {field.label}
-                          </label>
-                          <div className="flex flex-wrap items-center gap-2">
-                            {fieldCopyState[field.key] === "copied" ? (
-                              <span className="type-caption font-semibold text-green-700">
-                                Copied.
-                              </span>
-                            ) : null}
-                            {fieldCopyState[field.key] === "error" ? (
-                              <span className="type-caption font-semibold text-red-700">
-                                Nothing to copy.
-                              </span>
-                            ) : null}
-                            {field.key === "contentPlan" &&
-                            contentPlanReferenceState === "generated" ? (
-                              <span className="type-caption font-semibold text-green-700">
-                                Reference opened.
-                              </span>
-                            ) : null}
-                            {field.key === "contentPlan" &&
-                            contentPlanReferenceState === "error" ? (
-                              <span className="type-caption font-semibold text-red-700">
-                                Add Phase 3 output first.
-                              </span>
-                            ) : null}
-                            {field.key === "contentPlan" ? (
+                    {group.fields.map((field) => {
+                      const isPageCopyField = group.title === "Page Copy";
+                      const fieldBlock = (
+                        <>
+                          <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-3">
+                            <label
+                              className={
+                                isPageCopyField
+                                  ? "sr-only"
+                                  : "text-sm font-semibold text-service-ink"
+                              }
+                              htmlFor={`strategy-field-${field.key}`}
+                            >
+                              {field.label}
+                            </label>
+                            <div className="flex flex-wrap items-center gap-2">
+                              {fieldCopyState[field.key] === "copied" ? (
+                                <span className="type-caption font-semibold text-green-700">
+                                  Copied.
+                                </span>
+                              ) : null}
+                              {fieldCopyState[field.key] === "error" ? (
+                                <span className="type-caption font-semibold text-red-700">
+                                  Nothing to copy.
+                                </span>
+                              ) : null}
+                              {field.key === "contentPlan" &&
+                              contentPlanReferenceState === "generated" ? (
+                                <span className="type-caption font-semibold text-green-700">
+                                  Reference opened.
+                                </span>
+                              ) : null}
+                              {field.key === "contentPlan" &&
+                              contentPlanReferenceState === "error" ? (
+                                <span className="type-caption font-semibold text-red-700">
+                                  Add Phase 3 output first.
+                                </span>
+                              ) : null}
+                              {field.key === "contentPlan" ? (
+                                <button
+                                  className={secondaryButtonClass}
+                                  onClick={openContentPlanReference}
+                                  type="button"
+                                >
+                                  Open reference
+                                </button>
+                              ) : null}
                               <button
                                 className={secondaryButtonClass}
-                                onClick={openContentPlanReference}
+                                onClick={() => void copyWorkspaceField(field.key)}
                                 type="button"
                               >
-                                Open reference
+                                Copy field
                               </button>
-                            ) : null}
-                            <button
-                              className={secondaryButtonClass}
-                              onClick={() => void copyWorkspaceField(field.key)}
-                              type="button"
-                            >
-                              Copy field
-                            </button>
+                            </div>
                           </div>
+                          <textarea
+                            className="mx-auto aspect-[4/5] min-h-96 w-full max-w-4xl resize-y rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-4 text-sm font-normal leading-relaxed text-service-ink outline-none transition-colors placeholder:text-service-muted focus:border-service-accent max-md:aspect-auto max-md:min-h-[32rem]"
+                            id={`strategy-field-${field.key}`}
+                            onChange={(event) =>
+                              updateField(field.key, event.currentTarget.value)
+                            }
+                            placeholder={field.placeholder}
+                            rows={field.minRows}
+                            value={fields[field.key]}
+                          />
+                        </>
+                      );
+
+                      if (isPageCopyField) {
+                        return (
+                          <details
+                            className="overflow-hidden rounded-[var(--radius-md-token)] border border-service-border bg-white"
+                            key={field.key}
+                          >
+                            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 marker:hidden max-md:items-start">
+                              <span className="text-sm font-semibold text-service-ink">
+                                {field.label}
+                              </span>
+                              <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 font-semibold text-service-muted">
+                                {fields[field.key].trim() ? "Started" : "Empty"}
+                              </span>
+                            </summary>
+                            <div className="grid gap-2 border-t border-service-border bg-white p-4">
+                              {fieldBlock}
+                            </div>
+                          </details>
+                        );
+                      }
+
+                      return (
+                        <div
+                          className="grid gap-2 rounded-[var(--radius-md-token)] border border-service-border bg-white p-4"
+                          key={field.key}
+                        >
+                          {fieldBlock}
                         </div>
-                        <textarea
-                          className="mx-auto aspect-[4/5] min-h-96 w-full max-w-4xl resize-y rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-4 text-sm font-normal leading-relaxed text-service-ink outline-none transition-colors placeholder:text-service-muted focus:border-service-accent max-md:aspect-auto max-md:min-h-[32rem]"
-                          id={`strategy-field-${field.key}`}
-                          onChange={(event) =>
-                            updateField(field.key, event.currentTarget.value)
-                          }
-                          placeholder={field.placeholder}
-                          rows={field.minRows}
-                          value={fields[field.key]}
-                        />
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </details>
               </Card>
