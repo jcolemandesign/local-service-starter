@@ -57,6 +57,7 @@ import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScro
 import { ServiceAreaZipLookupSectionV3 } from "@/components/sections/ServiceAreaZipLookupSectionV3";
 import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/ServicesThreeCardsRightSectionV3";
 import { TestimonialsCarouselSectionV3 } from "@/components/sections/TestimonialsCarouselSectionV3";
+import { TestimonialsCarouselCondensedSectionV3 } from "@/components/sections/TestimonialsCarouselCondensedSectionV3";
 import { TestimonialsMasonrySectionV2 } from "@/components/sections/TestimonialsMasonrySectionV2";
 import { TestimonialsMasonrySectionV3 } from "@/components/sections/TestimonialsMasonrySectionV3";
 import { TrustMarqueeSection } from "@/components/sections/TrustMarqueeSection";
@@ -396,6 +397,12 @@ export function renderPageTemplateSection(
       return <TestimonialsSectionV3 {...testimonialsProps(fieldSection)} />;
     case "TestimonialsCarouselSectionV3":
       return <TestimonialsCarouselSectionV3 {...testimonialsCarouselProps(fieldSection)} />;
+    case "TestimonialsCarouselCondensedSectionV3":
+      return (
+        <TestimonialsCarouselCondensedSectionV3
+          {...testimonialsCarouselProps(fieldSection)}
+        />
+      );
     case "TestimonialsMasonrySectionV2":
       return <TestimonialsMasonrySectionV2 {...testimonialsMasonryProps(fieldSection)} />;
     case "TestimonialsMasonrySectionV3":

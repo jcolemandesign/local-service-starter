@@ -633,6 +633,13 @@ const sectionSwapOptions = [
     name: "Customer stories",
   },
   {
+    component: "TestimonialsCarouselCondensedSectionV3",
+    instruction:
+      "Use condensed customer stories when the page needs three testimonial cards visible at once without introductory copy.",
+    mode: "Proof",
+    name: "Customer stories condensed",
+  },
+  {
     component: "TestimonialsMasonrySectionV3",
     instruction:
       "Use varied quote lengths to create a fuller body of evidence.",

@@ -91,6 +91,7 @@ export { SectionLibraryCollections } from "./SectionLibraryCollections";
 export { SectionLibraryV3Accordions } from "./SectionLibraryV3Accordions";
 export { StagedPageCanvas } from "./StagedPageCanvas";
 export { TestimonialsCarouselSection } from "./TestimonialsCarouselSection";
+export { TestimonialsCarouselCondensedSectionV3 } from "./TestimonialsCarouselCondensedSectionV3";
 export { TestimonialsCarouselSectionV2 } from "./TestimonialsCarouselSectionV2";
 export { TestimonialsCarouselSectionV3 } from "./TestimonialsCarouselSectionV3";
 export { TestimonialsMasonrySection } from "./TestimonialsMasonrySection";

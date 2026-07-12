@@ -9,8 +9,8 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-07-10T19:58:33.701Z",
-      "sectionCount": 1,
+      "savedAt": "2026-07-12T07:01:32.676Z",
+      "sectionCount": 5,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
@@ -21,6 +21,46 @@
           "name": "Primary navigation",
           "originalComponent": "NavPrimarySectionV2",
           "originalIndex": 0
+        },
+        {
+          "component": "HeroCenteredFloatersSectionV2",
+          "id": "classic-service-HeroSplitFixedImageSectionV3-added-1",
+          "included": true,
+          "instruction": "Use the centered message while floaters carry proof, service cues, or conversion nudges.",
+          "mode": "Hero",
+          "name": "Centered with left right floaters",
+          "originalComponent": "HeroSplitFixedImageSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "TrustBarSectionV3",
+          "id": "classic-service-TrustBarSectionV3-added-1",
+          "included": true,
+          "instruction": "Validate the promise immediately with rating, volume, team, and locality claims.",
+          "mode": "Proof",
+          "name": "Trust bar",
+          "originalComponent": "TrustBarSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "TestimonialsCarouselCondensedSectionV3",
+          "id": "classic-service-TestimonialsCarouselSectionV3-added-2",
+          "included": true,
+          "instruction": "Use condensed customer stories when the page needs three testimonial cards visible at once without introductory copy.",
+          "mode": "Proof",
+          "name": "Customer stories condensed",
+          "originalComponent": "TestimonialsCarouselSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "CTASectionV3",
+          "id": "classic-service-ContentFixedCoverFadeSectionV2-added-2",
+          "included": true,
+          "instruction": "Use the current conversion band when the page needs a polished direct next step.",
+          "mode": "Action",
+          "name": "CTA",
+          "originalComponent": "ContentFixedCoverFadeSectionV2",
+          "originalIndex": -1
         }
       ]
     }
