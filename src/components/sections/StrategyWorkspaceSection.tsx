@@ -467,7 +467,25 @@ export function StrategyWorkspaceSection({
 
   return (
     <Section className="min-h-svh bg-service-surface text-service-ink">
-      <div className="fixed right-[var(--container-gutter)] top-4 z-40 flex flex-wrap justify-end gap-2">
+      <div className="fixed right-[var(--container-gutter)] top-4 z-40 flex flex-wrap items-center justify-end gap-3">
+        <Link
+          className="type-caption font-semibold text-service-accent hover:text-service-ink"
+          href="/dev/pagebuilder"
+        >
+          Page Builder
+        </Link>
+        <Link
+          className="type-caption font-semibold text-service-accent hover:text-service-ink"
+          href="/sections"
+        >
+          Section Library
+        </Link>
+        <Link
+          className="type-caption font-semibold text-service-accent hover:text-service-ink"
+          href="/dev/style-guide"
+        >
+          Style Guide
+        </Link>
         <Link className={secondaryButtonClass} href="/dev/templates">
           Template library
         </Link>
@@ -667,7 +685,7 @@ export function StrategyWorkspaceSection({
                             }}
                             type="button"
                           >
-                            Open reference
+                            Open report
                           </button>
                         ) : null}
                         <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 font-semibold text-service-muted">
