@@ -467,6 +467,27 @@ export function StrategyWorkspaceSection({
 
   return (
     <Section className="min-h-svh bg-service-surface text-service-ink">
+      <div className="fixed right-[var(--container-gutter)] top-4 z-40 flex flex-wrap justify-end gap-2">
+        <Link className={secondaryButtonClass} href="/dev/templates">
+          Template library
+        </Link>
+        <Link
+          className={secondaryButtonClass}
+          href={`/dev/prompt-library?project=${clientSlug}`}
+          rel="noreferrer"
+          target="_blank"
+        >
+          Prompt library
+        </Link>
+        <button
+          className={primaryButtonClass}
+          disabled={saveState === "saving"}
+          onClick={() => void saveWorkspace()}
+          type="button"
+        >
+          {saveState === "saving" ? "Saving" : "Save workspace"}
+        </button>
+      </div>
       <div className="w-full px-[var(--container-gutter)]">
         <div className="grid layout-gap-lrg">
           <div className="grid gap-5">
@@ -482,179 +503,6 @@ export function StrategyWorkspaceSection({
                 planning, and page copy tied to this project.
               </p>
             </div>
-
-            <Card className="p-4 shadow-none">
-              <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-start">
-                <div className="min-w-0">
-                  <p className="type-label text-service-accent">
-                    Strategy Inputs
-                  </p>
-                  <p className="type-text-sm mt-heading-body-sm text-service-muted">
-                    {packetSummary.exists
-                      ? "Source packet found. Strategy digest is the prompt-ready version."
-                      : "No source packet found for this project slug."}
-                  </p>
-                  <div className="mt-3 flex flex-wrap gap-2 type-caption text-service-muted">
-                    <span className="break-all rounded-[var(--radius-md-token)] bg-service-surface px-3 py-2 font-mono text-service-ink">
-                      {packetSummary.outputPath}
-                    </span>
-                    <span className="break-all rounded-[var(--radius-md-token)] bg-service-surface px-3 py-2 font-mono text-service-ink">
-                      src/content/projects/{clientSlug}/strategy-digest.md
-                    </span>
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2 type-caption text-service-muted">
-                    <span>{filledCount} saved workspace sections started</span>
-                    {updatedAt ? (
-                      <span>Last saved {formatDate(updatedAt)}</span>
-                    ) : (
-                      <span>Not saved yet</span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-2 xl:justify-end">
-                  <Link
-                    className={secondaryButtonClass}
-                    href={`/dev/prompt-library?project=${clientSlug}`}
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    Prompt library
-                  </Link>
-                  <button
-                    className={primaryButtonClass}
-                    disabled={saveState === "saving"}
-                    onClick={() => void saveWorkspace()}
-                    type="button"
-                  >
-                    {saveState === "saving" ? "Saving" : "Save workspace"}
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-4 gap-3 xl:col-span-2 max-lg:grid-cols-2 max-sm:grid-cols-1">
-                  <Metric label="Source items" value={packetSummary.totalSourceItems} />
-                  <Metric
-                    label="Verified quotes"
-                    value={packetSummary.verifiedQuoteItems}
-                  />
-                  <Metric label="Conflicts" value={packetSummary.conflictItems} />
-                  <Metric label="Missing info" value={packetSummary.missingInfoItems} />
-                </div>
-
-                <div className="grid gap-3 xl:col-span-2 lg:grid-cols-2">
-                  {strategyDigestText ? (
-                    <details className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface">
-                      <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 type-caption font-semibold text-service-ink marker:hidden">
-                        <span>Strategy digest</span>
-                        <span className="text-service-muted">Open</span>
-                      </summary>
-                      <div className="grid gap-3 border-t border-service-border bg-white p-3">
-                        <button
-                          className={secondaryButtonClass}
-                          onClick={() => void copyStrategyDigest()}
-                          type="button"
-                        >
-                          Copy strategy digest
-                        </button>
-                        {digestCopyState === "copied" ? (
-                          <p className="type-caption font-semibold text-green-700">
-                            Strategy digest copied.
-                          </p>
-                        ) : null}
-                        {digestCopyState === "error" ? (
-                          <p className="type-caption font-semibold text-red-700">
-                            Could not copy strategy digest.
-                          </p>
-                        ) : null}
-                        <textarea
-                          className="min-h-48 w-full resize-y rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-3 font-mono text-xs leading-relaxed text-service-ink"
-                          readOnly
-                          value={strategyDigestText}
-                        />
-                      </div>
-                    </details>
-                  ) : null}
-                  {sourcePacketText ? (
-                    <details className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface">
-                      <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 type-caption font-semibold text-service-ink marker:hidden">
-                        <span>Source packet audit text</span>
-                        <span className="text-service-muted">Open</span>
-                      </summary>
-                      <div className="grid gap-3 border-t border-service-border bg-white p-3">
-                        <button
-                          className={secondaryButtonClass}
-                          onClick={() => void copySourcePacket()}
-                          type="button"
-                        >
-                          Copy source packet
-                        </button>
-                        {packetCopyState === "copied" ? (
-                          <p className="type-caption font-semibold text-green-700">
-                            Source packet copied.
-                          </p>
-                        ) : null}
-                        {packetCopyState === "error" ? (
-                          <p className="type-caption font-semibold text-red-700">
-                            Could not copy source packet.
-                          </p>
-                        ) : null}
-                        <textarea
-                          className="min-h-48 w-full resize-y rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-3 font-mono text-xs leading-relaxed text-service-ink"
-                          readOnly
-                          value={sourcePacketText}
-                        />
-                      </div>
-                    </details>
-                  ) : null}
-                </div>
-
-                {(packetSummary.conflicts.length > 0 ||
-                  packetSummary.missingInfo.length > 0) ? (
-                  <details className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface xl:col-span-2">
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-3 text-sm font-semibold text-service-ink marker:hidden">
-                      <span>Review packet issues</span>
-                      <span className="text-xs font-semibold text-service-muted">
-                        {packetSummary.conflicts.length} conflicts /{" "}
-                        {packetSummary.missingInfo.length} missing
-                      </span>
-                    </summary>
-                    <div className="grid gap-4 border-t border-service-border bg-white p-3">
-                      <p className="text-sm leading-relaxed text-service-muted">
-                        Verify these before using packet material in strategy,
-                        planning, or final website copy.
-                      </p>
-
-                      {packetSummary.conflicts.length > 0 ? (
-                        <IssueList
-                          items={packetSummary.conflicts}
-                          title="Conflicts"
-                          tone="warning"
-                        />
-                      ) : null}
-
-                      {packetSummary.missingInfo.length > 0 ? (
-                        <IssueList
-                          items={packetSummary.missingInfo}
-                          title="Missing info"
-                          tone="neutral"
-                        />
-                      ) : null}
-                    </div>
-                  </details>
-                ) : null}
-
-                {saveState === "saved" ? (
-                  <p className="type-caption font-semibold text-green-700 xl:col-span-2">
-                    Workspace saved. Strategy snapshot frozen.
-                  </p>
-                ) : null}
-                {saveState === "error" ? (
-                  <p className="type-caption font-semibold text-red-700 xl:col-span-2">
-                    Unable to save workspace.
-                  </p>
-                ) : null}
-              </div>
-            </Card>
           </div>
 
           {showAssemblyOverview ? (
@@ -668,15 +516,12 @@ export function StrategyWorkspaceSection({
                     <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
                       {detectedPageCount} pages detected from the saved strategy
                     </h2>
-                    <p className="type-text-sm wrap-pretty mt-heading-body-sm max-w-none text-service-muted">
-                      Use templates to stage these pages from snapshot
-                      {snapshot ? ` ${snapshot.id}` : ""}. Content Editor edits
-                      can then sit on top as manual overrides.
-                    </p>
-                  </div>
-                  <Link className={secondaryButtonClass} href="/dev/templates">
-                    Choose templates
-                  </Link>
+                  <p className="type-text-sm wrap-pretty mt-heading-body-sm max-w-none text-service-muted">
+                    Use templates to stage these pages from snapshot
+                    {snapshot ? ` ${snapshot.id}` : ""}. Content Editor edits
+                    can then sit on top as manual overrides.
+                  </p>
+                </div>
                 </div>
 
                 <div className="grid grid-cols-5 gap-3 max-lg:grid-cols-2 max-sm:grid-cols-1">
@@ -780,6 +625,9 @@ export function StrategyWorkspaceSection({
                 filledFields: 0,
                 totalFields: group.fields.length,
               };
+              const hasContentPlanReference = group.fields.some(
+                (field) => field.key === "contentPlan",
+              );
 
               return (
                 <Card className="overflow-hidden shadow-none" key={group.title}>
@@ -809,6 +657,19 @@ export function StrategyWorkspaceSection({
                         </p>
                       </div>
                       <div className="flex shrink-0 items-center gap-3">
+                        {hasContentPlanReference ? (
+                          <button
+                            className="type-caption inline-flex font-semibold text-service-accent hover:text-service-ink"
+                            onClick={(event) => {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              openContentPlanReference();
+                            }}
+                            type="button"
+                          >
+                            Open reference
+                          </button>
+                        ) : null}
                         <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 font-semibold text-service-muted">
                           {groupStatus.filledFields}/{groupStatus.totalFields}{" "}
                           filled
@@ -860,15 +721,6 @@ export function StrategyWorkspaceSection({
                                 <span className="type-caption font-semibold text-red-700">
                                   Add Phase 3 output first.
                                 </span>
-                              ) : null}
-                              {field.key === "contentPlan" ? (
-                                <button
-                                  className={secondaryButtonClass}
-                                  onClick={openContentPlanReference}
-                                  type="button"
-                                >
-                                  Open reference
-                                </button>
                               ) : null}
                               <button
                                 className={secondaryButtonClass}
@@ -929,6 +781,160 @@ export function StrategyWorkspaceSection({
               );
             })}
           </div>
+
+          <Card className="p-4 shadow-none">
+            <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-start">
+              <div className="min-w-0">
+                <p className="type-label text-service-accent">
+                  Strategy Inputs Report
+                </p>
+                <p className="type-text-sm mt-heading-body-sm text-service-muted">
+                  {packetSummary.exists
+                    ? "Source packet found. Strategy digest is the prompt-ready version."
+                    : "No source packet found for this project slug."}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2 type-caption text-service-muted">
+                  <span className="break-all rounded-[var(--radius-md-token)] bg-service-surface px-3 py-2 font-mono text-service-ink">
+                    {packetSummary.outputPath}
+                  </span>
+                  <span className="break-all rounded-[var(--radius-md-token)] bg-service-surface px-3 py-2 font-mono text-service-ink">
+                    src/content/projects/{clientSlug}/strategy-digest.md
+                  </span>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2 type-caption text-service-muted">
+                  <span>{filledCount} saved workspace sections started</span>
+                  {updatedAt ? (
+                    <span>Last saved {formatDate(updatedAt)}</span>
+                  ) : (
+                    <span>Not saved yet</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-4 gap-3 xl:col-span-2 max-lg:grid-cols-2 max-sm:grid-cols-1">
+                <Metric label="Source items" value={packetSummary.totalSourceItems} />
+                <Metric
+                  label="Verified quotes"
+                  value={packetSummary.verifiedQuoteItems}
+                />
+                <Metric label="Conflicts" value={packetSummary.conflictItems} />
+                <Metric label="Missing info" value={packetSummary.missingInfoItems} />
+              </div>
+
+              <div className="grid gap-3 xl:col-span-2 lg:grid-cols-2">
+                {strategyDigestText ? (
+                  <details className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface">
+                    <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 type-caption font-semibold text-service-ink marker:hidden">
+                      <span>Strategy digest</span>
+                      <span className="text-service-muted">Open</span>
+                    </summary>
+                    <div className="grid gap-3 border-t border-service-border bg-white p-3">
+                      <button
+                        className={secondaryButtonClass}
+                        onClick={() => void copyStrategyDigest()}
+                        type="button"
+                      >
+                        Copy strategy digest
+                      </button>
+                      {digestCopyState === "copied" ? (
+                        <p className="type-caption font-semibold text-green-700">
+                          Strategy digest copied.
+                        </p>
+                      ) : null}
+                      {digestCopyState === "error" ? (
+                        <p className="type-caption font-semibold text-red-700">
+                          Could not copy strategy digest.
+                        </p>
+                      ) : null}
+                      <textarea
+                        className="min-h-48 w-full resize-y rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-3 font-mono text-xs leading-relaxed text-service-ink"
+                        readOnly
+                        value={strategyDigestText}
+                      />
+                    </div>
+                  </details>
+                ) : null}
+                {sourcePacketText ? (
+                  <details className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface">
+                    <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 type-caption font-semibold text-service-ink marker:hidden">
+                      <span>Source packet audit text</span>
+                      <span className="text-service-muted">Open</span>
+                    </summary>
+                    <div className="grid gap-3 border-t border-service-border bg-white p-3">
+                      <button
+                        className={secondaryButtonClass}
+                        onClick={() => void copySourcePacket()}
+                        type="button"
+                      >
+                        Copy source packet
+                      </button>
+                      {packetCopyState === "copied" ? (
+                        <p className="type-caption font-semibold text-green-700">
+                          Source packet copied.
+                        </p>
+                      ) : null}
+                      {packetCopyState === "error" ? (
+                        <p className="type-caption font-semibold text-red-700">
+                          Could not copy source packet.
+                        </p>
+                      ) : null}
+                      <textarea
+                        className="min-h-48 w-full resize-y rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-3 font-mono text-xs leading-relaxed text-service-ink"
+                        readOnly
+                        value={sourcePacketText}
+                      />
+                    </div>
+                  </details>
+                ) : null}
+              </div>
+
+              {(packetSummary.conflicts.length > 0 ||
+                packetSummary.missingInfo.length > 0) ? (
+                <details className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface xl:col-span-2">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-3 text-sm font-semibold text-service-ink marker:hidden">
+                    <span>Review packet issues</span>
+                    <span className="text-xs font-semibold text-service-muted">
+                      {packetSummary.conflicts.length} conflicts /{" "}
+                      {packetSummary.missingInfo.length} missing
+                    </span>
+                  </summary>
+                  <div className="grid gap-4 border-t border-service-border bg-white p-3">
+                    <p className="text-sm leading-relaxed text-service-muted">
+                      Verify these before using packet material in strategy,
+                      planning, or final website copy.
+                    </p>
+
+                    {packetSummary.conflicts.length > 0 ? (
+                      <IssueList
+                        items={packetSummary.conflicts}
+                        title="Conflicts"
+                        tone="warning"
+                      />
+                    ) : null}
+
+                    {packetSummary.missingInfo.length > 0 ? (
+                      <IssueList
+                        items={packetSummary.missingInfo}
+                        title="Missing info"
+                        tone="neutral"
+                      />
+                    ) : null}
+                  </div>
+                </details>
+              ) : null}
+
+              {saveState === "saved" ? (
+                <p className="type-caption font-semibold text-green-700 xl:col-span-2">
+                  Workspace saved. Strategy snapshot frozen.
+                </p>
+              ) : null}
+              {saveState === "error" ? (
+                <p className="type-caption font-semibold text-red-700 xl:col-span-2">
+                  Unable to save workspace.
+                </p>
+              ) : null}
+            </div>
+          </Card>
         </div>
       </div>
       {templatePickerPage ? (

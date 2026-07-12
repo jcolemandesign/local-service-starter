@@ -101,10 +101,15 @@ export function ServicesScrollCardsSection({
   });
   const x = useTransform(
     scrollYProgress,
-    [0, 0.92, 1],
+    [0, 0.16, 0.92, 1],
     shouldReduceMotion
-      ? [0, 0, 0]
-      : [railMotion.startX, railMotion.endX, railMotion.endX],
+      ? [0, 0, 0, 0]
+      : [
+          railMotion.startX,
+          railMotion.startX,
+          railMotion.endX,
+          railMotion.endX,
+        ],
   );
 
   useLayoutEffect(() => {
@@ -194,6 +199,10 @@ export function ServicesScrollCardsSection({
                 className="flex w-max gap-4 will-change-transform max-lg:w-full max-lg:flex-col max-lg:![transform:none]"
                 style={{ x }}
               >
+                <div
+                  aria-hidden="true"
+                  className="w-[clamp(16rem,32vw,28rem)] shrink-0 max-lg:hidden"
+                />
                 {items.map((item) => (
                   <ServiceScrollCard item={item} key={item.title} />
                 ))}

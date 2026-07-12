@@ -1068,17 +1068,12 @@ function splitHeadlineImageProps(section: FieldSection) {
 }
 
 function stickyCardStreamProps(section: FieldSection) {
+  const cards = stickyCardStreamItems(section);
+
   return {
     ...sectionLibraryV3Content.contentStickyCardStream,
     body: getBody(section, sectionLibraryV3Content.contentStickyCardStream.body),
-    cards: cardItems(section, ["cards", "items", "supportingItems"]).map(
-      (item, index) => ({
-        ...sectionLibraryV3Content.contentStickyCardStream.cards[
-          index % sectionLibraryV3Content.contentStickyCardStream.cards.length
-        ],
-        ...item,
-      }),
-    ),
+    cards,
     eyebrow: getValue(
       section,
       "eyebrow",
@@ -1086,6 +1081,44 @@ function stickyCardStreamProps(section: FieldSection) {
     ),
     title: getTitle(section, sectionLibraryV3Content.contentStickyCardStream.title),
   };
+}
+
+function stickyCardStreamItems(section: FieldSection) {
+  const records = getRepeatedRecords(section, ["cards", "items", "supportingItems"]);
+
+  if (records.length > 0) {
+    return records.map((record, index) => {
+      const fallback =
+        sectionLibraryV3Content.contentStickyCardStream.cards[
+          index % sectionLibraryV3Content.contentStickyCardStream.cards.length
+        ];
+
+      return {
+        eyebrow: record.eyebrow ?? record.label ?? fallback.eyebrow,
+        title: record.title ?? record.heading ?? fallback.title,
+        body: record.body ?? record.description ?? fallback.body,
+      };
+    });
+  }
+
+  const cards = cardItemsWithFallback(
+    section,
+    ["cards", "items", "supportingItems"],
+    sectionLibraryV3Content.contentStickyCardStream.cards,
+  );
+
+  return cards.map((card, index) => {
+    const fallback =
+      sectionLibraryV3Content.contentStickyCardStream.cards[
+        index % sectionLibraryV3Content.contentStickyCardStream.cards.length
+      ];
+
+    return {
+      eyebrow: fallback.eyebrow,
+      title: card.title || fallback.title,
+      body: card.body || fallback.body,
+    };
+  });
 }
 
 function stickyIdeasProps(section: FieldSection) {

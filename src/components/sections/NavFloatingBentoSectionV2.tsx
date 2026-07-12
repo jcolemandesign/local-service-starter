@@ -184,7 +184,7 @@ export function NavFloatingBentoSectionV2({
       className={cx(
         fixed
           ? "fixed inset-x-0 top-0 z-50 bg-transparent"
-          : "relative min-h-20 bg-white",
+          : "relative min-h-20 bg-transparent",
         "fluid-type-frame",
       )}
     >

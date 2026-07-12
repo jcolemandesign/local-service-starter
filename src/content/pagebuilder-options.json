@@ -9,47 +9,17 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-07-12T16:56:59.173Z",
-      "sectionCount": 4,
+      "savedAt": "2026-07-12T18:40:36.447Z",
+      "sectionCount": 1,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
-          "id": "classic-service-template-simple-homepage-0",
+          "id": "classic-service-NavCenterLogoSectionV2-added-1",
           "included": true,
           "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
           "mode": "Navigation",
           "name": "Primary navigation",
-          "originalComponent": "NavPrimarySectionV2",
-          "originalIndex": 0
-        },
-        {
-          "component": "HeroCenteredFloatersSectionV2",
-          "id": "classic-service-HeroSplitFixedImageSectionV3-added-1",
-          "included": true,
-          "instruction": "Use the centered message while floaters carry proof, service cues, or conversion nudges.",
-          "mode": "Hero",
-          "name": "Centered with left right floaters",
-          "originalComponent": "HeroSplitFixedImageSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "TrustBarSectionV3",
-          "id": "classic-service-TrustBarSectionV3-added-1",
-          "included": true,
-          "instruction": "Validate the promise immediately with rating, volume, team, and locality claims.",
-          "mode": "Proof",
-          "name": "Trust bar",
-          "originalComponent": "TrustBarSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "CTASectionV3",
-          "id": "classic-service-ContentFixedCoverFadeSectionV2-added-2",
-          "included": true,
-          "instruction": "Use the current conversion band when the page needs a polished direct next step.",
-          "mode": "Action",
-          "name": "CTA",
-          "originalComponent": "ContentFixedCoverFadeSectionV2",
+          "originalComponent": "NavCenterLogoSectionV2",
           "originalIndex": -1
         }
       ]
