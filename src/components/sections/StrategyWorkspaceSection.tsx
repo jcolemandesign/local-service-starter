@@ -7,8 +7,10 @@ import type { PageTemplateSummary } from "@/components/sections/TemplateLibraryS
 import {
   buildStrategyNavigation,
   deriveStrategyPagesFromFields,
+  getStrategyPageCopyField,
   getPageTypeRelationshipLabel,
   isRepeatablePageType,
+  type StrategyPageSummary,
   type StrategyPageStatus,
 } from "@/utils/strategy-site-map";
 import type {
@@ -60,7 +62,7 @@ type StagePageResponse =
     }
   | { ok: false; error?: string };
 
-const fieldGroups: {
+const baseFieldGroups: {
   description: string;
   fields: {
     key: keyof StrategyWorkspaceFields;
@@ -103,42 +105,6 @@ const fieldGroups: {
     title: "Planning Outputs",
   },
   {
-    description: "After choosing page templates, run Phase 4 with each Template Copy Contract and paste the reviewed output into the matching page slot.",
-    fields: [
-      {
-        key: "homepageCopy",
-        label: "Homepage copy",
-        minRows: 12,
-        placeholder: "Paste Phase 4 homepage output here.",
-      },
-      {
-        key: "servicesCopy",
-        label: "Services page copy",
-        minRows: 12,
-        placeholder: "Paste Phase 4 services page output here.",
-      },
-      {
-        key: "aboutCopy",
-        label: "About page copy",
-        minRows: 10,
-        placeholder: "Paste Phase 4 about page output here.",
-      },
-      {
-        key: "contactCopy",
-        label: "Contact page copy",
-        minRows: 10,
-        placeholder: "Paste Phase 4 contact page output here.",
-      },
-      {
-        key: "thankYouCopy",
-        label: "Thank you page copy",
-        minRows: 8,
-        placeholder: "Paste Phase 4 thank-you page output here.",
-      },
-    ],
-    title: "Page Copy",
-  },
-  {
     description: "Use this for approvals, open questions, client comments, and final implementation notes.",
     fields: [
       {
@@ -151,6 +117,33 @@ const fieldGroups: {
     title: "Notes",
   },
 ];
+
+function createPageCopyFieldGroup(strategyPages: StrategyPageSummary[]) {
+  const detectedPages = strategyPages.filter((page) => page.detected);
+  const pageFields = detectedPages.map((page) => ({
+    key: getStrategyPageCopyField(page),
+    label: `${page.label} copy`,
+    minRows: page.id === "thank-you" ? 8 : 12,
+    placeholder: `Paste Phase 4 ${page.label} output here.`,
+  }));
+
+  return {
+    description:
+      "After choosing page templates, run Phase 4 with each Template Copy Contract and paste the reviewed output into the matching page slot.",
+    fields:
+      pageFields.length > 0
+        ? pageFields
+        : [
+            {
+              key: getStrategyPageCopyField({ id: "home" }),
+              label: "Home copy",
+              minRows: 12,
+              placeholder: "Paste Phase 4 Home output here.",
+            },
+          ],
+    title: "Page Copy",
+  };
+}
 
 export function StrategyWorkspaceSection({
   clientSlug,
@@ -173,7 +166,7 @@ export function StrategyWorkspaceSection({
     "idle" | "copied" | "error"
   >("idle");
   const [fieldCopyState, setFieldCopyState] = useState<
-    Partial<Record<keyof StrategyWorkspaceFields, "copied" | "error">>
+    Partial<Record<string, "copied" | "error">>
   >({});
   const [contentPlanReferenceState, setContentPlanReferenceState] =
     useState<ContentPlanReferenceState>("idle");
@@ -189,12 +182,24 @@ export function StrategyWorkspaceSection({
       Object.values(fields).filter((value) => value.trim().length > 0).length,
     [fields],
   );
+  const strategyPages = useMemo(
+    () => deriveStrategyPagesFromFields(fields),
+    [fields],
+  );
+  const fieldGroups = useMemo(
+    () => [
+      ...baseFieldGroups.slice(0, 2),
+      createPageCopyFieldGroup(strategyPages),
+      ...baseFieldGroups.slice(2),
+    ],
+    [strategyPages],
+  );
   const fieldGroupStatuses = useMemo(
     () =>
       new Map(
         fieldGroups.map((group) => {
           const filledFields = group.fields.filter(
-            (field) => fields[field.key].trim().length > 0,
+            (field) => (fields[field.key] ?? "").trim().length > 0,
           ).length;
 
           return [
@@ -206,11 +211,7 @@ export function StrategyWorkspaceSection({
           ];
         }),
       ),
-    [fields],
-  );
-  const strategyPages = useMemo(
-    () => deriveStrategyPagesFromFields(fields),
-    [fields],
+    [fieldGroups, fields],
   );
   const stagedPagesById = useMemo(
     () => new Map(localStagedPages.map((page) => [page.pageId, page])),
@@ -265,10 +266,7 @@ export function StrategyWorkspaceSection({
       ...currentFields,
       [key]: value,
     }));
-    setFieldCopyState((currentState) => ({
-      ...currentState,
-      [key]: undefined,
-    }));
+    clearWorkspaceFieldCopyState(key);
 
     if (key === "contentPlan" && contentPlanReferenceState !== "idle") {
       setContentPlanReferenceState("idle");
@@ -341,28 +339,39 @@ export function StrategyWorkspaceSection({
     }
   }
 
+  function clearWorkspaceFieldCopyState(key: keyof StrategyWorkspaceFields) {
+    setFieldCopyState((currentState) => {
+      const nextState = { ...currentState };
+
+      delete nextState[String(key)];
+
+      return nextState;
+    });
+  }
+
+  function setWorkspaceFieldCopyState(
+    key: keyof StrategyWorkspaceFields,
+    state: "copied" | "error",
+  ) {
+    setFieldCopyState((currentState) => ({
+      ...currentState,
+      [String(key)]: state,
+    }));
+  }
+
   async function copyWorkspaceField(key: keyof StrategyWorkspaceFields) {
-    const value = fields[key];
+    const value = fields[key] ?? "";
 
     if (!value) {
-      setFieldCopyState((currentState) => ({
-        ...currentState,
-        [key]: "error",
-      }));
+      setWorkspaceFieldCopyState(key, "error");
       return;
     }
 
     try {
       await navigator.clipboard.writeText(value);
-      setFieldCopyState((currentState) => ({
-        ...currentState,
-        [key]: "copied",
-      }));
+      setWorkspaceFieldCopyState(key, "copied");
     } catch {
-      setFieldCopyState((currentState) => ({
-        ...currentState,
-        [key]: "error",
-      }));
+      setWorkspaceFieldCopyState(key, "error");
     }
   }
 
@@ -471,22 +480,33 @@ export function StrategyWorkspaceSection({
         <Link
           className="type-caption font-semibold text-service-accent hover:text-service-ink"
           href="/dev/pagebuilder"
+          rel="noreferrer"
+          target="_blank"
         >
           Page Builder
         </Link>
         <Link
           className="type-caption font-semibold text-service-accent hover:text-service-ink"
           href="/sections"
+          rel="noreferrer"
+          target="_blank"
         >
           Section Library
         </Link>
         <Link
           className="type-caption font-semibold text-service-accent hover:text-service-ink"
           href="/dev/style-guide"
+          rel="noreferrer"
+          target="_blank"
         >
           Style Guide
         </Link>
-        <Link className={secondaryButtonClass} href="/dev/templates">
+        <Link
+          className={secondaryButtonClass}
+          href="/dev/templates"
+          rel="noreferrer"
+          target="_blank"
+        >
           Template library
         </Link>
         <Link
@@ -589,25 +609,27 @@ export function StrategyWorkspaceSection({
                           </div>
                         </div>
                       ) : null}
-                      {page.previewHref ? (
-                        <Link
-                          className="type-caption mt-3 inline-flex font-semibold text-service-accent hover:text-service-ink"
-                          href={page.previewHref}
+                      <div className="mt-3 flex flex-wrap items-center gap-3">
+                        {page.previewHref ? (
+                          <Link
+                            className="type-caption inline-flex font-semibold text-service-accent hover:text-service-ink"
+                            href={page.previewHref}
+                          >
+                            Open staged page
+                          </Link>
+                        ) : null}
+                        <button
+                          className={`type-caption inline-flex font-semibold ${
+                            !page.previewHref
+                              ? "text-service-accent hover:text-service-ink"
+                              : "text-service-muted hover:text-service-accent"
+                          }`}
+                          onClick={() => openTemplatePicker(page.id)}
+                          type="button"
                         >
-                          Open staged page
-                        </Link>
-                      ) : null}
-                      <button
-                        className={`type-caption mt-3 inline-flex font-semibold ${
-                          !page.previewHref
-                            ? "text-service-accent hover:text-service-ink"
-                            : "text-service-muted hover:text-service-accent"
-                        }`}
-                        onClick={() => openTemplatePicker(page.id)}
-                        type="button"
-                      >
-                        {page.previewHref ? "Change template" : "Choose template"}
-                      </button>
+                          {page.previewHref ? "Change template" : "Choose template"}
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -703,6 +725,7 @@ export function StrategyWorkspaceSection({
 
                     <div className="grid gap-5 border-t border-service-border bg-service-surface p-5">
                       {group.fields.map((field) => {
+                      const fieldValue = fields[field.key] ?? "";
                       const isPageCopyField = group.title === "Page Copy";
                       const fieldBlock = (
                         <>
@@ -757,13 +780,13 @@ export function StrategyWorkspaceSection({
                             }
                             placeholder={field.placeholder}
                             rows={field.minRows}
-                            value={fields[field.key]}
+                            value={fieldValue}
                           />
                         </>
                       );
 
                       if (isPageCopyField) {
-                        const hasFieldValue = fields[field.key].trim().length > 0;
+                        const hasFieldValue = fieldValue.trim().length > 0;
 
                         return (
                           <details

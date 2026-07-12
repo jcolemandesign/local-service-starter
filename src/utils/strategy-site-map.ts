@@ -3,7 +3,7 @@ import type { StrategyWorkspaceFields } from "@/utils/strategy-workspace";
 export type StrategyPageStatus = "needs-template" | "staged" | "ready";
 
 export type StrategyPageSummary = {
-  copyField: keyof StrategyWorkspaceFields;
+  copyField: string;
   detected: boolean;
   id: string;
   label: string;
@@ -302,9 +302,19 @@ export function getStrategyCopyForPage(
       normalized.includes(slot.label.toLowerCase()) ||
       normalized.includes(slot.copyField.replace("Copy", "").toLowerCase()),
   );
-  const copy = matchingSlot ? fields[matchingSlot.copyField].trim() : "";
+  const dynamicCopy = matchingSlot
+    ? (fields[getStrategyPageCopyField(matchingSlot)] ?? "").trim()
+    : "";
+  const copy =
+    dynamicCopy || (matchingSlot ? fields[matchingSlot.copyField].trim() : "");
 
   return copy || fields.contentPlan.trim() || fields.strategyBrief.trim();
+}
+
+export function getStrategyPageCopyField(
+  page: Pick<StrategyPageSummary, "id">,
+) {
+  return `pageCopy.${page.id}`;
 }
 
 export function getDefaultPageSlug(pageType: string, templateName: string) {

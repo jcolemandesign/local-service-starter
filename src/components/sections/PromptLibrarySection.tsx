@@ -8,6 +8,7 @@ import {
   type PromptLibraryPrompt,
 } from "@/content/prompt-library-prompts";
 import type { StrategyPageSummary } from "@/utils/strategy-site-map";
+import { getStrategyPageCopyField } from "@/utils/strategy-site-map";
 import type { StrategyWorkspaceFields } from "@/utils/strategy-workspace";
 
 const strategyDigestPlaceholders = [
@@ -205,6 +206,43 @@ export function PromptLibrarySection({
       prompt.id === "final-page-copy"
         ? `${prompt.id}:${finalPageOption.id}`
         : prompt.id;
+    setCopiedPromptId(copiedId);
+    window.setTimeout(() => {
+      setCopiedPromptId((current) => (current === copiedId ? "" : current));
+    }, 1800);
+  }
+
+  async function copyContract(finalPageOption: FinalPageOption) {
+    const selectedFinalPageContract = findStagedPageContract(
+      stagedPageContracts,
+      finalPageOption,
+    );
+
+    if (!selectedFinalPageContract?.contract.trim()) {
+      return;
+    }
+
+    const clipboardValue = [
+      `# ${selectedFinalPageContract.templateName}`,
+      "",
+      `Page: ${finalPageOption.promptValue}`,
+      "",
+      selectedFinalPageContract.contract.trim(),
+      "",
+      "Use this contract with the already-established site strategy and core-page copy direction. Keep naming, CTA language, service priorities, and proof language consistent unless this contract explicitly requires a difference.",
+    ].join("\n");
+
+    try {
+      if (!navigator.clipboard?.writeText) {
+        throw new Error("Clipboard API unavailable");
+      }
+
+      await navigator.clipboard.writeText(clipboardValue);
+    } catch {
+      copyWithFallback(clipboardValue);
+    }
+
+    const copiedId = `contract:${finalPageOption.id}`;
     setCopiedPromptId(copiedId);
     window.setTimeout(() => {
       setCopiedPromptId((current) => (current === copiedId ? "" : current));
@@ -420,7 +458,10 @@ export function PromptLibrarySection({
                           page,
                         );
                         const copiedId = `${finalPagePrompt.id}:${page.id}`;
+                        const copiedContractId = `contract:${page.id}`;
                         const isCopied = copiedPromptId === copiedId;
+                        const isContractCopied =
+                          copiedPromptId === copiedContractId;
 
                         return (
                           <div
@@ -447,18 +488,32 @@ export function PromptLibrarySection({
                               </div>
                             </div>
 
-                            <button
-                              className="radius-button inline-flex min-h-11 items-center justify-center border border-service-accent bg-service-accent px-4 type-caption font-semibold text-white transition-colors hover:border-service-ink hover:bg-service-ink disabled:cursor-not-allowed disabled:border-service-border disabled:bg-white disabled:text-service-muted"
-                              disabled={!contract}
-                              onClick={() => void copyPrompt(finalPagePrompt, page)}
-                              type="button"
-                            >
-                              {contract
-                                ? isCopied
-                                  ? "Copied"
-                                  : "Copy Prompt"
-                                : "Needs template"}
-                            </button>
+                            <div className="flex flex-wrap justify-end gap-2">
+                              <button
+                                className="radius-button inline-flex min-h-11 items-center justify-center border border-service-border bg-white px-4 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent disabled:cursor-not-allowed disabled:text-service-muted"
+                                disabled={!contract}
+                                onClick={() => void copyContract(page)}
+                                type="button"
+                              >
+                                {contract
+                                  ? isContractCopied
+                                    ? "Copied"
+                                    : "Copy contract"
+                                  : "Needs template"}
+                              </button>
+                              <button
+                                className="radius-button inline-flex min-h-11 items-center justify-center border border-service-accent bg-service-accent px-4 type-caption font-semibold text-white transition-colors hover:border-service-ink hover:bg-service-ink disabled:cursor-not-allowed disabled:border-service-border disabled:bg-white disabled:text-service-muted"
+                                disabled={!contract}
+                                onClick={() => void copyPrompt(finalPagePrompt, page)}
+                                type="button"
+                              >
+                                {contract
+                                  ? isCopied
+                                    ? "Copied"
+                                    : "Copy prompt"
+                                  : "Needs template"}
+                              </button>
+                            </div>
                           </div>
                         );
                       })}
@@ -814,7 +869,7 @@ function createFinalPageOptions(
   const detectedOptions: FinalPageOption[] = strategyPages
     .filter((page) => page.detected)
     .map((page) => ({
-      fieldKey: page.copyField,
+      fieldKey: getStrategyPageCopyField(page),
       href: page.path,
       id: page.id,
       label: page.label,
@@ -822,7 +877,7 @@ function createFinalPageOptions(
       promptValue: page.label,
     }));
   const stagedOptions: FinalPageOption[] = stagedPageContracts.map((contract) => ({
-    fieldKey: getWorkspaceFieldForPageType(contract.pageType),
+    fieldKey: getStrategyPageCopyField({ id: contract.pageId }),
     href: contract.pageHref,
     id: contract.pageId,
     label: `${contract.pageLabel} (${contract.pageType})`,
@@ -951,35 +1006,4 @@ function getFinalPageBucket(option: FinalPageOption) {
     label: "Supporting pages",
     sortOrder: 50,
   };
-}
-
-function getWorkspaceFieldForPageType(
-  pageType: string,
-): keyof StrategyWorkspaceFields {
-  const normalizedPageType = normalizePageKey(pageType);
-
-  if (normalizedPageType.includes("home")) {
-    return "homepageCopy";
-  }
-
-  if (
-    normalizedPageType.includes("service") ||
-    normalizedPageType.includes("product")
-  ) {
-    return "servicesCopy";
-  }
-
-  if (normalizedPageType.includes("about")) {
-    return "aboutCopy";
-  }
-
-  if (normalizedPageType.includes("contact")) {
-    return "contactCopy";
-  }
-
-  if (normalizedPageType.includes("thank")) {
-    return "thankYouCopy";
-  }
-
-  return "contentPlan";
 }

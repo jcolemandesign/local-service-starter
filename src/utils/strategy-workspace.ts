@@ -4,6 +4,7 @@ import path from "node:path";
 type JsonRecord = Record<string, unknown>;
 
 export type StrategyWorkspaceFields = {
+  [key: string]: string;
   supplementalResearch: string;
   strategyBrief: string;
   contentPlan: string;
@@ -232,12 +233,22 @@ function getSourcePacketPath(clientSlug: string) {
 function normalizeWorkspaceFields(
   fields: Partial<StrategyWorkspaceFields> | undefined,
 ) {
-  return Object.fromEntries(
+  const normalizedDefaults = Object.fromEntries(
     Object.keys(strategyWorkspaceFieldDefaults).map((key) => [
       key,
       readWorkspaceString(fields?.[key as keyof StrategyWorkspaceFields]),
     ]),
   ) as StrategyWorkspaceFields;
+  const extraFields = Object.fromEntries(
+    Object.entries(fields ?? {})
+      .filter(([key]) => !(key in strategyWorkspaceFieldDefaults))
+      .map(([key, value]) => [key, readWorkspaceString(value)]),
+  );
+
+  return {
+    ...normalizedDefaults,
+    ...extraFields,
+  } as StrategyWorkspaceFields;
 }
 
 function isRecord(value: unknown): value is JsonRecord {
