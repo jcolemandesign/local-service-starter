@@ -164,6 +164,25 @@ export function StrategyWorkspaceSection({
       Object.values(fields).filter((value) => value.trim().length > 0).length,
     [fields],
   );
+  const fieldGroupStatuses = useMemo(
+    () =>
+      new Map(
+        fieldGroups.map((group) => {
+          const filledFields = group.fields.filter(
+            (field) => fields[field.key].trim().length > 0,
+          ).length;
+
+          return [
+            group.title,
+            {
+              filledFields,
+              totalFields: group.fields.length,
+            },
+          ];
+        }),
+      ),
+    [fields],
+  );
   const strategyPages = useMemo(
     () => deriveStrategyPagesFromFields(fields),
     [fields],
@@ -650,43 +669,55 @@ export function StrategyWorkspaceSection({
           ) : null}
 
           <div className="grid card-grid-gap-med">
-            {fieldGroups.map((group) => (
-              <Card className="overflow-hidden shadow-none" key={group.title}>
-                <details
-                  className="group"
-                  open={openFieldGroups.includes(group.title)}
-                >
-                  <summary
-                    className="flex cursor-pointer list-none items-center justify-between gap-5 p-5 marker:hidden max-md:items-start"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      toggleFieldGroup(group.title);
-                    }}
-                  >
-                    <div className="min-w-0">
-                      <p className="type-label text-service-accent">
-                        {group.title}
-                      </p>
-                      <p className="type-text-sm mt-heading-body-sm text-service-muted">
-                        {group.description}
-                      </p>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-3">
-                      <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 font-semibold text-service-muted">
-                        {group.fields.length}{" "}
-                        {group.fields.length === 1 ? "field" : "fields"}
-                      </span>
-                      <span
-                        className="flex size-10 items-center justify-center rounded-[var(--radius-md-token)] border border-service-border text-service-accent transition-transform group-open:rotate-180"
-                        aria-hidden="true"
-                      >
-                        v
-                      </span>
-                    </div>
-                  </summary>
+            {fieldGroups.map((group) => {
+              const groupStatus = fieldGroupStatuses.get(group.title) ?? {
+                filledFields: 0,
+                totalFields: group.fields.length,
+              };
 
-                  <div className="grid gap-5 border-t border-service-border bg-service-surface p-5">
-                    {group.fields.map((field) => {
+              return (
+                <Card className="overflow-hidden shadow-none" key={group.title}>
+                  <details
+                    className="group"
+                    open={openFieldGroups.includes(group.title)}
+                  >
+                    <summary
+                      className="flex cursor-pointer list-none items-center justify-between gap-5 p-5 marker:hidden max-md:items-start"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        toggleFieldGroup(group.title);
+                      }}
+                    >
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-3">
+                          <InputStatusBadge
+                            filledCount={groupStatus.filledFields}
+                            totalCount={groupStatus.totalFields}
+                          />
+                          <p className="type-label text-service-accent">
+                            {group.title}
+                          </p>
+                        </div>
+                        <p className="type-text-sm mt-heading-body-sm text-service-muted">
+                          {group.description}
+                        </p>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-3">
+                        <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 font-semibold text-service-muted">
+                          {groupStatus.filledFields}/{groupStatus.totalFields}{" "}
+                          filled
+                        </span>
+                        <span
+                          className="flex size-10 items-center justify-center rounded-[var(--radius-md-token)] border border-service-border text-service-accent transition-transform group-open:rotate-180"
+                          aria-hidden="true"
+                        >
+                          v
+                        </span>
+                      </div>
+                    </summary>
+
+                    <div className="grid gap-5 border-t border-service-border bg-service-surface p-5">
+                      {group.fields.map((field) => {
                       const isPageCopyField = group.title === "Page Copy";
                       const fieldBlock = (
                         <>
@@ -756,18 +787,19 @@ export function StrategyWorkspaceSection({
                       );
 
                       if (isPageCopyField) {
+                        const hasFieldValue = fields[field.key].trim().length > 0;
+
                         return (
                           <details
                             className="overflow-hidden rounded-[var(--radius-md-token)] border border-service-border bg-white"
                             key={field.key}
                           >
                             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 marker:hidden max-md:items-start">
-                              <span className="text-sm font-semibold text-service-ink">
-                                {field.label}
+                              <span className="flex min-w-0 items-center gap-3 text-sm font-semibold text-service-ink">
+                                <InputStatusIcon isComplete={hasFieldValue} />
+                                <span className="min-w-0">{field.label}</span>
                               </span>
-                              <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 font-semibold text-service-muted">
-                                {fields[field.key].trim() ? "Started" : "Empty"}
-                              </span>
+                              <InputStatusPill isComplete={hasFieldValue} />
                             </summary>
                             <div className="grid gap-2 border-t border-service-border bg-white p-4">
                               {fieldBlock}
@@ -784,11 +816,12 @@ export function StrategyWorkspaceSection({
                           {fieldBlock}
                         </div>
                       );
-                    })}
-                  </div>
-                </details>
-              </Card>
-            ))}
+                      })}
+                    </div>
+                  </details>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -865,6 +898,85 @@ function Metric({ label, value }: { label: string; value: number | null }) {
         {value ?? "-"}
       </p>
     </div>
+  );
+}
+
+function InputStatusBadge({
+  filledCount,
+  totalCount,
+}: {
+  filledCount: number;
+  totalCount: number;
+}) {
+  const isComplete = filledCount === totalCount;
+  const hasStarted = filledCount > 0;
+  const label = isComplete
+    ? "All inputs filled"
+    : hasStarted
+      ? `${filledCount} of ${totalCount} inputs filled`
+      : "No inputs filled";
+
+  return (
+    <span
+      aria-label={label}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 type-caption font-semibold ${
+        isComplete
+          ? "border-green-200 bg-green-50 text-green-800"
+          : hasStarted
+            ? "border-amber-200 bg-amber-50 text-amber-800"
+            : "border-service-border bg-service-surface text-service-muted"
+      }`}
+      title={label}
+    >
+      <InputStatusIcon isComplete={isComplete} isStarted={hasStarted} />
+      <span>
+        {filledCount}/{totalCount}
+      </span>
+    </span>
+  );
+}
+
+function InputStatusPill({ isComplete }: { isComplete: boolean }) {
+  return (
+    <span
+      className={`type-caption rounded-sm border px-3 py-1 font-semibold ${
+        isComplete
+          ? "border-green-200 bg-green-50 text-green-800"
+          : "border-service-border bg-service-surface text-service-muted"
+      }`}
+    >
+      {isComplete ? "Filled" : "Empty"}
+    </span>
+  );
+}
+
+function InputStatusIcon({
+  isComplete,
+  isStarted = isComplete,
+}: {
+  isComplete: boolean;
+  isStarted?: boolean;
+}) {
+  const iconLabel = isComplete
+    ? "Filled"
+    : isStarted
+      ? "Partially filled"
+      : "Empty";
+
+  return (
+    <span
+      aria-hidden="true"
+      className={`inline-flex size-5 shrink-0 items-center justify-center rounded-full border text-[0.6875rem] font-bold leading-none ${
+        isComplete
+          ? "border-green-600 bg-green-600 text-white"
+          : isStarted
+            ? "border-amber-500 bg-amber-100 text-amber-800"
+            : "border-service-border bg-white text-service-muted"
+      }`}
+      title={iconLabel}
+    >
+      {isComplete ? "✓" : isStarted ? "•" : ""}
+    </span>
   );
 }
 

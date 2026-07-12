@@ -1028,6 +1028,10 @@ export const sectionLibraryV3Collections = [
         component: "testimonials-carousel-v3",
       },
       {
+        label: "Condensed carousel testimonials",
+        component: "testimonials-carousel-condensed-v3",
+      },
+      {
         label: "Masonry testimonials",
         component: "testimonials-masonry-v3",
       },

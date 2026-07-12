@@ -38,6 +38,7 @@ import {
   SectionLibraryV3Accordions,
   ServiceAreaZipLookupSectionV3,
   ServicesThreeCardsRightSectionV3,
+  TestimonialsCarouselCondensedSectionV3,
   TestimonialsCarouselSectionV3,
   TestimonialsMasonrySectionV3,
   TestimonialsSectionV3,
@@ -207,6 +208,11 @@ const sectionElements = {
   ),
   "testimonials-carousel-v3": (
     <TestimonialsCarouselSectionV3
+      {...sectionLibraryV3Content.testimonialsCarousel}
+    />
+  ),
+  "testimonials-carousel-condensed-v3": (
+    <TestimonialsCarouselCondensedSectionV3
       {...sectionLibraryV3Content.testimonialsCarousel}
     />
   ),
