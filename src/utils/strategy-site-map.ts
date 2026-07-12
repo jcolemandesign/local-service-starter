@@ -67,6 +67,90 @@ export const strategyPageSlots: StrategyPageDefinition[] = [
     repeatable: true,
   },
   {
+    aliases: [
+      "system replacement",
+      "hvac replacement",
+      "replacement page",
+      "/services/system-replacement",
+      "/system-replacement",
+    ],
+    copyField: "servicesCopy",
+    id: "system-replacement",
+    label: "System Replacement",
+    parentId: "services",
+    pageType: "Individual Service",
+    path: "/services/system-replacement",
+  },
+  {
+    aliases: [
+      "heat pump service",
+      "heat pump page",
+      "/services/heat-pump-service",
+      "/heat-pump-service",
+    ],
+    copyField: "servicesCopy",
+    id: "heat-pump-service",
+    label: "Heat Pump Service",
+    parentId: "services",
+    pageType: "Individual Service",
+    path: "/services/heat-pump-service",
+  },
+  {
+    aliases: [
+      "maintenance / tune-ups",
+      "maintenance & tune-ups",
+      "maintenance and tune ups",
+      "maintenance page",
+      "tune-up page",
+      "tune up page",
+      "/maintenance",
+    ],
+    copyField: "servicesCopy",
+    id: "maintenance",
+    label: "Maintenance / Tune-Ups",
+    parentId: "services",
+    pageType: "Individual Service",
+    path: "/maintenance",
+  },
+  {
+    aliases: ["ac repair", "cooling repair", "/services/ac-repair", "/ac-repair"],
+    copyField: "servicesCopy",
+    id: "ac-repair",
+    label: "AC Repair",
+    parentId: "services",
+    pageType: "Individual Service",
+    path: "/services/ac-repair",
+  },
+  {
+    aliases: [
+      "heating repair",
+      "heat repair",
+      "/services/heating-repair",
+      "/heating-repair",
+    ],
+    copyField: "servicesCopy",
+    id: "heating-repair",
+    label: "Heating Repair",
+    parentId: "services",
+    pageType: "Individual Service",
+    path: "/services/heating-repair",
+  },
+  {
+    aliases: [
+      "emergency hvac service",
+      "emergency hvac",
+      "urgent hvac",
+      "/services/emergency-hvac",
+      "/emergency-hvac",
+    ],
+    copyField: "servicesCopy",
+    id: "emergency-hvac",
+    label: "Emergency HVAC Service",
+    parentId: "services",
+    pageType: "Individual Service",
+    path: "/services/emergency-hvac",
+  },
+  {
     aliases: ["service area", "service areas", "areas served", "coverage area"],
     copyField: "contentPlan",
     id: "service-area",
@@ -156,9 +240,7 @@ export const strategyPageSlots: StrategyPageDefinition[] = [
   {
     aliases: [
       "product listing",
-      "products",
-      "equipment",
-      "system options",
+      "products page",
       "product page",
     ],
     copyField: "contentPlan",
@@ -321,6 +403,10 @@ export function getPathFromSlugForPageType(slug: string, pageType: string) {
   }
 
   if (normalizedPageType === "individualservice") {
+    if (normalizedSlug === "maintenance") {
+      return "/maintenance";
+    }
+
     return `/services/${normalizedSlug}`;
   }
 
@@ -391,7 +477,7 @@ function detectStrategyPageIds(fields: StrategyWorkspaceFields) {
   ].join("\n");
 
   for (const slot of strategyPageSlots) {
-    if (fields[slot.copyField].trim().length > 0) {
+    if (canCopyFieldDirectlyDetectPage(fields, slot)) {
       detectedPageIds.add(slot.id);
     }
 
@@ -401,6 +487,18 @@ function detectStrategyPageIds(fields: StrategyWorkspaceFields) {
   }
 
   return detectedPageIds;
+}
+
+function canCopyFieldDirectlyDetectPage(
+  fields: StrategyWorkspaceFields,
+  pageDefinition: StrategyPageDefinition,
+) {
+  return (
+    fields[pageDefinition.copyField].trim().length > 0 &&
+    pageDefinition.copyField !== "contentPlan" &&
+    !pageDefinition.parentId &&
+    pageDefinition.repeatable !== true
+  );
 }
 
 function matchesPageDefinition(

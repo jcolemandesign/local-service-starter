@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { notFound, redirect } from "next/navigation";
 import { StrategyWorkspaceSection } from "@/components/sections/StrategyWorkspaceSection";
+import type { PageTemplateSummary } from "@/components/sections/TemplateLibrarySection";
 import { readStagedPages } from "@/utils/staged-pages";
 import { readStrategyDigestText } from "@/utils/strategy-digest";
 import {
@@ -25,6 +28,17 @@ type StrategyWorkspacePageProps = {
   }>;
 };
 
+type PageTemplatesFile = {
+  templates?: PageTemplateSummary[];
+};
+
+const pageTemplatesPath = path.join(
+  process.cwd(),
+  "src",
+  "content",
+  "page-templates.json",
+);
+
 export default async function StrategyWorkspacePage({
   params,
 }: StrategyWorkspacePageProps) {
@@ -45,6 +59,7 @@ export default async function StrategyWorkspacePage({
     sourcePacketText,
     strategyDigestText,
     stagedPages,
+    templates,
   ] =
     await Promise.all([
       readStrategyWorkspace(clientSlug),
@@ -52,6 +67,7 @@ export default async function StrategyWorkspacePage({
       readSourcePacketText(clientSlug),
       readStrategyDigestText(clientSlug),
       readStagedPages(),
+      readPageTemplates(),
     ]);
   const stagedPageSummaries = stagedPages
     .filter((page) => page.snapshot.clientSlug === clientSlug)
@@ -73,8 +89,20 @@ export default async function StrategyWorkspacePage({
         packetSummary={packetSummary}
         stagedPages={stagedPageSummaries}
         strategyDigestText={strategyDigestText}
+        templates={templates}
         sourcePacketText={sourcePacketText}
       />
     </main>
   );
+}
+
+async function readPageTemplates() {
+  try {
+    const contents = await readFile(pageTemplatesPath, "utf8");
+    const parsed = JSON.parse(contents) as PageTemplatesFile;
+
+    return Array.isArray(parsed.templates) ? parsed.templates : [];
+  } catch {
+    return [];
+  }
 }

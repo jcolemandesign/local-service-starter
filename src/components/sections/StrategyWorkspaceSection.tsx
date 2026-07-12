@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Card, Section } from "@/components/primitives";
+import type { PageTemplateSummary } from "@/components/sections/TemplateLibrarySection";
 import {
   buildStrategyNavigation,
   deriveStrategyPagesFromFields,
@@ -27,6 +28,7 @@ type StrategyWorkspaceSectionProps = {
   packetSummary: StrategyWorkspacePacketSummary;
   stagedPages: StagedStrategyPageSummary[];
   strategyDigestText: string;
+  templates: PageTemplateSummary[];
   sourcePacketText: string;
 };
 
@@ -39,6 +41,24 @@ type StagedStrategyPageSummary = {
   status: "staged" | "ready";
   templateName: string;
 };
+
+type StagePageResponse =
+  | {
+      ok: true;
+      page: {
+        pageHref: string;
+        pageId: string;
+        pageLabel: string;
+        pageType?: string;
+        previewHref: string;
+        status: "staged" | "ready";
+        template?: {
+          name?: string;
+          pageType?: string;
+        };
+      };
+    }
+  | { ok: false; error?: string };
 
 const fieldGroups: {
   description: string;
@@ -138,6 +158,7 @@ export function StrategyWorkspaceSection({
   packetSummary,
   stagedPages,
   strategyDigestText,
+  templates,
   sourcePacketText,
 }: StrategyWorkspaceSectionProps) {
   const [fields, setFields] = useState<StrategyWorkspaceFields>(
@@ -157,6 +178,10 @@ export function StrategyWorkspaceSection({
   const [contentPlanReferenceState, setContentPlanReferenceState] =
     useState<ContentPlanReferenceState>("idle");
   const [openFieldGroups, setOpenFieldGroups] = useState<string[]>([]);
+  const [localStagedPages, setLocalStagedPages] = useState(stagedPages);
+  const [templatePickerPageId, setTemplatePickerPageId] = useState("");
+  const [stagingTemplateId, setStagingTemplateId] = useState("");
+  const [templatePickerError, setTemplatePickerError] = useState("");
   const [updatedAt, setUpdatedAt] = useState(initialWorkspace.updatedAt);
 
   const filledCount = useMemo(
@@ -188,12 +213,12 @@ export function StrategyWorkspaceSection({
     [fields],
   );
   const stagedPagesById = useMemo(
-    () => new Map(stagedPages.map((page) => [page.pageId, page])),
-    [stagedPages],
+    () => new Map(localStagedPages.map((page) => [page.pageId, page])),
+    [localStagedPages],
   );
   const stagedPagesByPageType = useMemo(
-    () => groupStagedPagesByPageType(stagedPages),
-    [stagedPages],
+    () => groupStagedPagesByPageType(localStagedPages),
+    [localStagedPages],
   );
   const assemblyPages = useMemo(
     () =>
@@ -220,6 +245,19 @@ export function StrategyWorkspaceSection({
     [strategyPages],
   );
   const detectedPageCount = strategyPages.filter((page) => page.detected).length;
+  const templatePickerPage =
+    assemblyPages.find((page) => page.id === templatePickerPageId) ?? null;
+  const matchingTemplates = useMemo(
+    () =>
+      templatePickerPage
+        ? templates.filter(
+            (template) =>
+              normalizePageType(template.pageType) ===
+              normalizePageType(templatePickerPage.pageType),
+          )
+        : [],
+    [templatePickerPage, templates],
+  );
   const showAssemblyOverview = Boolean(updatedAt) || saveState === "saved";
 
   function updateField(key: keyof StrategyWorkspaceFields, value: string) {
@@ -368,6 +406,63 @@ export function StrategyWorkspaceSection({
     }, 60_000);
 
     setContentPlanReferenceState("generated");
+  }
+
+  function openTemplatePicker(pageId: string) {
+    setTemplatePickerPageId(pageId);
+    setTemplatePickerError("");
+  }
+
+  async function stageTemplateForPage(template: PageTemplateSummary) {
+    if (!templatePickerPage) {
+      return;
+    }
+
+    setStagingTemplateId(template.id);
+    setTemplatePickerError("");
+
+    try {
+      const response = await fetch("/api/staged-pages", {
+        body: JSON.stringify({
+          clientSlug,
+          pageLabel: templatePickerPage.label,
+          pageSlug: templatePickerPage.id,
+          templateId: template.id,
+        }),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      });
+      const result = (await response.json()) as StagePageResponse;
+
+      if (!response.ok || !result.ok) {
+        setTemplatePickerError(
+          result.ok
+            ? "Template could not be applied."
+            : result.error ?? "Template could not be applied.",
+        );
+        return;
+      }
+
+      const nextPage: StagedStrategyPageSummary = {
+        pageHref: result.page.pageHref,
+        pageId: result.page.pageId,
+        pageLabel: result.page.pageLabel,
+        pageType: result.page.template?.pageType ?? template.pageType,
+        previewHref: result.page.previewHref,
+        status: result.page.status,
+        templateName: result.page.template?.name ?? template.name,
+      };
+
+      setLocalStagedPages((currentPages) => [
+        nextPage,
+        ...currentPages.filter((page) => page.pageId !== nextPage.pageId),
+      ]);
+      setTemplatePickerPageId("");
+    } catch {
+      setTemplatePickerError("Template could not be applied.");
+    } finally {
+      setStagingTemplateId("");
+    }
   }
 
   return (
@@ -639,6 +734,17 @@ export function StrategyWorkspaceSection({
                           Open staged page
                         </Link>
                       ) : null}
+                      <button
+                        className={`type-caption mt-3 inline-flex font-semibold ${
+                          !page.previewHref
+                            ? "text-service-accent hover:text-service-ink"
+                            : "text-service-muted hover:text-service-accent"
+                        }`}
+                        onClick={() => openTemplatePicker(page.id)}
+                        type="button"
+                      >
+                        {page.previewHref ? "Change template" : "Choose template"}
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -825,6 +931,149 @@ export function StrategyWorkspaceSection({
           </div>
         </div>
       </div>
+      {templatePickerPage ? (
+        <div
+          aria-labelledby="strategy-template-picker-title"
+          aria-modal="true"
+          className="fixed inset-0 z-50 grid place-items-center bg-service-ink/55 p-4"
+          role="dialog"
+        >
+          <div className="max-h-[min(90vh,52rem)] w-full max-w-5xl overflow-y-auto rounded-[var(--radius-md-token)] border border-service-border bg-white shadow-service">
+            <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-service-border bg-white p-5">
+              <div className="min-w-0">
+                <p className="type-label text-service-accent">
+                  Template selector
+                </p>
+                <h2
+                  className="type-heading-md mt-eyebrow-heading-sm text-service-ink"
+                  id="strategy-template-picker-title"
+                >
+                  {templatePickerPage.label}
+                </h2>
+                <p className="type-text-sm mt-heading-body-sm text-service-muted">
+                  {templatePickerPage.pageType} template for{" "}
+                  <span className="font-mono">{templatePickerPage.path}</span>
+                </p>
+              </div>
+              <button
+                aria-label="Close template selector"
+                className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-md-token)] border border-service-border text-service-muted transition-colors hover:border-service-accent hover:text-service-accent"
+                onClick={() => {
+                  setTemplatePickerPageId("");
+                  setTemplatePickerError("");
+                }}
+                type="button"
+              >
+                x
+              </button>
+            </div>
+
+            <div className="grid gap-4 p-5">
+              {templatePickerError ? (
+                <p className="type-caption rounded-sm border border-red-200 bg-red-50 px-3 py-2 font-semibold text-red-700">
+                  {templatePickerError}
+                </p>
+              ) : null}
+
+              {matchingTemplates.length > 0 ? (
+                <div className="grid grid-cols-2 gap-4 max-lg:grid-cols-1">
+                  {matchingTemplates.map((template) => {
+                    const isStaging = stagingTemplateId === template.id;
+
+                    return (
+                      <article
+                        className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-4"
+                        key={template.id}
+                      >
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <h3 className="type-heading-sm text-service-ink">
+                              {template.name}
+                            </h3>
+                            <p className="type-caption mt-2 text-service-muted">
+                              {template.sectionCount} sections from{" "}
+                              {template.sourceRecipeName}
+                            </p>
+                          </div>
+                          <span className="type-caption rounded-sm border border-service-border bg-white px-3 py-1 text-service-muted">
+                            {template.pageType}
+                          </span>
+                        </div>
+
+                        {template.notes ? (
+                          <p className="type-text-sm mt-3 text-service-muted">
+                            {template.notes}
+                          </p>
+                        ) : null}
+
+                        <details className="mt-4 rounded-sm border border-service-border bg-white">
+                          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 marker:hidden">
+                            <span className="type-caption font-semibold text-service-ink">
+                              Sections
+                            </span>
+                            <span className="type-caption text-service-muted">
+                              {template.sections.length}
+                            </span>
+                          </summary>
+                          <div className="grid gap-2 border-t border-service-border p-3">
+                            {template.sections.map((section, index) => (
+                              <div
+                                className="grid grid-cols-[6rem_minmax(0,1fr)] gap-3 rounded-sm border border-service-border bg-service-surface px-3 py-2 max-md:grid-cols-1"
+                                key={`${template.id}-${section.component}-${index}`}
+                              >
+                                <span className="type-caption font-semibold text-service-accent">
+                                  {index + 1}. {section.mode}
+                                </span>
+                                <span className="type-caption text-service-muted">
+                                  {section.name}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </details>
+
+                        <div className="mt-4 grid grid-cols-2 gap-2 max-sm:grid-cols-1">
+                          <Link
+                            className={secondaryButtonClass}
+                            href={`/dev/templates/${template.id}`}
+                            target="_blank"
+                          >
+                            Preview
+                          </Link>
+                          <button
+                            className={primaryButtonClass}
+                            disabled={Boolean(stagingTemplateId)}
+                            onClick={() => void stageTemplateForPage(template)}
+                            type="button"
+                          >
+                            {isStaging ? "Applying" : "Use template"}
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-5">
+                  <p className="type-heading-sm text-service-ink">
+                    No {templatePickerPage.pageType} templates yet.
+                  </p>
+                  <p className="type-text-sm mt-heading-body-sm text-service-muted">
+                    Promote a matching page layout from Pagebuilder, then return
+                    here to assign it to this detected page.
+                  </p>
+                  <Link
+                    className={`${secondaryButtonClass} mt-4`}
+                    href="/dev/pagebuilder"
+                  >
+                    Open Pagebuilder
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </Section>
   );
 }
