@@ -43,11 +43,14 @@ export {
   FooterHorizontalSectionV3,
   FooterSectionV3,
 } from "./FAQConversionContactFooterSectionsV3";
+export { FooterLinkPanelSectionV3 } from "./FooterLinkPanelSectionV3";
 export {
   FeatureOverlapRowsSectionV3,
   ProcessStepsSectionV3,
   TestimonialsSectionV3,
 } from "./FeatureProcessTestimonialsSectionsV3";
+export { DecisionSplitDecisionSectionV3 } from "./DecisionSplitDecisionSectionV3";
+export { DecisionSplitLargeCardsSectionV3 } from "./DecisionSplitLargeCardsSectionV3";
 export { FeatureAsymmetricCardsSectionV3 } from "./FeatureAsymmetricCardsSectionV3";
 export { FeatureOverlapRowsSection } from "./FeatureOverlapRowsSection";
 export { FeatureOverlapRowsSectionV2 } from "./FeatureOverlapRowsSectionV2";

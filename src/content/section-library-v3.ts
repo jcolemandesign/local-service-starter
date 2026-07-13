@@ -521,6 +521,40 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
+  decisionSplitDecision: {
+    eyebrow: "Repair or replace",
+    title: "Clear options before a bigger decision.",
+    body: "Use this compact decision section to explain how the team helps homeowners understand whether repair or replacement makes more sense after an inspection.",
+    actionLabel: "Talk through options",
+    cards: [
+      {
+        eyebrow: "Repair path",
+        title: "When repair still makes sense",
+        body: "Explain what can be fixed, what can wait, and how the homeowner can keep the system running without unnecessary work.",
+      },
+      {
+        eyebrow: "Replacement path",
+        title: "When replacement is worth pricing",
+        body: "Show when age, condition, recurring issues, or comfort goals may make a replacement estimate the more practical next step.",
+      },
+    ],
+  },
+  decisionSplitLargeCards: {
+    title: "Two clear paths after the inspection.",
+    actionLabel: "Compare options",
+    cards: [
+      {
+        eyebrow: "Repair",
+        title: "Stabilize the current system",
+        body: "Use this card for practical repair guidance, short-term reliability, and what the homeowner should watch after the visit.",
+      },
+      {
+        eyebrow: "Replace",
+        title: "Plan the longer-term move",
+        body: "Use this card for replacement fit, estimate timing, financing notes, and the conditions that make upgrade planning useful.",
+      },
+    ],
+  },
   process: {
     eyebrow: "Process",
     title: "A simple path from request to resolved.",
@@ -1041,6 +1075,8 @@ export const sectionLibraryV3Collections = [
   {
     title: "Decision",
     items: [
+      { label: "Split decision", component: "decision-split-decision-v3" },
+      { label: "Split large cards", component: "decision-split-large-cards-v3" },
       { label: "Process steps", component: "process-steps-v3" },
       {
         label: "Image checklist process",
@@ -1061,6 +1097,7 @@ export const sectionLibraryV3Collections = [
       { label: "Footer", component: "footer-v3" },
       { label: "Horizontal footer", component: "footer-horizontal-v3" },
       { label: "Condensed footer", component: "footer-compact-v3" },
+      { label: "Link panel footer", component: "footer-link-panel-v3" },
     ],
   },
   {

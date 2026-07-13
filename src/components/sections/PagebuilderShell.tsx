@@ -236,6 +236,29 @@ type SavedPagebuilderOptionResponse =
     }
   | { ok: false; error: string };
 
+function buildOptionSaveRequest(
+  recipe: PagebuilderRecipe,
+  slot: PageLayoutSlot,
+  optionIndex: number,
+): SavePagebuilderOptionRequest {
+  return {
+    designStyle: slot.designStyle,
+    optionIndex,
+    optionName: slot.name,
+    recipeId: recipe.id,
+    recipeName: recipe.name,
+    sections: slot.stack.map(serializeWorkingSection),
+  };
+}
+
+function getOptionSignatureKey(payload: SavePagebuilderOptionRequest) {
+  return `${payload.recipeId}:${payload.optionIndex}`;
+}
+
+function getOptionSignature(payload: SavePagebuilderOptionRequest) {
+  return JSON.stringify(payload);
+}
+
 type PageInstructionInput = {
   designLabel: string;
   excludedSections: WorkingSection[];
@@ -345,43 +368,94 @@ function updateSectionFromSwapOption(
   };
 }
 
+function copySharedNavigationSection(
+  section: WorkingSection,
+  sharedNavigation: WorkingSection,
+): WorkingSection {
+  return {
+    ...section,
+    component: sharedNavigation.component,
+    included: sharedNavigation.included,
+    instruction: sharedNavigation.instruction,
+    mode: sharedNavigation.mode,
+    name: sharedNavigation.name,
+    ratio: sharedNavigation.ratio,
+    variant: sharedNavigation.variant,
+  };
+}
+
+function findSharedNavigationSource(layoutSlots: PageLayoutSlot[][]) {
+  const navigationSections = layoutSlots.flatMap((recipeSlots) =>
+    recipeSlots.flatMap((slot) =>
+      slot.stack.filter((section) => section.mode === "Navigation"),
+    ),
+  );
+
+  return (
+    navigationSections.find((section) => section.included) ??
+    navigationSections[0]
+  );
+}
+
+function applySharedNavigationToLayoutSlots(layoutSlots: PageLayoutSlot[][]) {
+  const sharedNavigation = findSharedNavigationSource(layoutSlots);
+
+  if (!sharedNavigation) {
+    return layoutSlots;
+  }
+
+  return layoutSlots.map((recipeSlots) =>
+    recipeSlots.map((slot) => ({
+      ...slot,
+      stack: slot.stack.map((section) =>
+        section.mode === "Navigation"
+          ? copySharedNavigationSection(section, sharedNavigation)
+          : section,
+      ),
+    })),
+  );
+}
+
 function applySavedOptionsToLayoutSlots(
   currentSlots: PageLayoutSlot[][],
   recipes: PagebuilderRecipe[],
   savedOptions: SavedPagebuilderOption[],
 ) {
-  return currentSlots.map((recipeSlots, recipeIndex) =>
-    recipeSlots.map((slot, slotIndex) => {
-      const recipe = recipes[recipeIndex];
-      const savedOption = savedOptions.find(
-        (option) =>
-          option.recipeId === recipe?.id &&
-          option.optionIndex === slotIndex,
-      );
+  return applySharedNavigationToLayoutSlots(
+    currentSlots.map((recipeSlots, recipeIndex) =>
+      recipeSlots.map((slot, slotIndex) => {
+        const recipe = recipes[recipeIndex];
+        const savedOption = savedOptions.find(
+          (option) =>
+            option.recipeId === recipe?.id &&
+            option.optionIndex === slotIndex,
+        );
 
-      if (!savedOption) {
-        return slot;
-      }
+        if (!savedOption) {
+          return slot;
+        }
 
-      return {
-        ...slot,
-        designStyle: {
-          showSectionMarkers: Boolean(
-            savedOption.designStyle.showSectionMarkers,
-          ),
-          viewportId: "main" as const,
-        },
-        stack: savedOption.sections.map((section, index) => ({
-          ...section,
-          id: section.id || `${savedOption.recipeId}-saved-${slotIndex}-${index}`,
-          included: Boolean(section.included),
-          originalComponent: section.originalComponent || section.component,
-          originalIndex: Number.isFinite(section.originalIndex)
-            ? section.originalIndex
-            : index,
-        })),
-      };
-    }),
+        return {
+          ...slot,
+          designStyle: {
+            showSectionMarkers: Boolean(
+              savedOption.designStyle.showSectionMarkers,
+            ),
+            viewportId: "main" as const,
+          },
+          stack: savedOption.sections.map((section, index) => ({
+            ...section,
+            id:
+              section.id || `${savedOption.recipeId}-saved-${slotIndex}-${index}`,
+            included: Boolean(section.included),
+            originalComponent: section.originalComponent || section.component,
+            originalIndex: Number.isFinite(section.originalIndex)
+              ? section.originalIndex
+              : index,
+          })),
+        };
+      }),
+    ),
   );
 }
 
@@ -647,6 +721,20 @@ const sectionSwapOptions = [
     name: "Masonry testimonials",
   },
   {
+    component: "DecisionSplitDecisionSectionV3",
+    instruction:
+      "Use a compact two-card comparison when a homeowner needs help deciding whether repair or replacement makes more sense after inspection.",
+    mode: "Decision",
+    name: "Split decision",
+  },
+  {
+    component: "DecisionSplitLargeCardsSectionV3",
+    instruction:
+      "Use two large three-column decision cards with a simple left-aligned header and link above them.",
+    mode: "Decision",
+    name: "Split large cards",
+  },
+  {
     component: "ProcessStepsSectionV3",
     instruction:
       "Use current process steps when the page needs a clearer, more styled decision sequence.",
@@ -736,6 +824,13 @@ const sectionSwapOptions = [
       "End with top-level navigation links, a rule, contact info, social links, and legal links in a compact footer.",
     mode: "Utility",
     name: "Condensed footer",
+  },
+  {
+    component: "FooterLinkPanelSectionV3",
+    instruction:
+      "End with a large link-panel footer that groups service areas, services, contact paths, social links, and a back-to-top action.",
+    mode: "Utility",
+    name: "Link panel footer",
   },
 ] as const;
 
@@ -1091,16 +1186,13 @@ export function PagebuilderShell({
       return;
     }
 
-    const payload: SavePagebuilderOptionRequest = {
-      designStyle: activeDesignStyle,
-      optionIndex: activeLayoutSlotIndex,
-      optionName: activeSlotLabel,
-      recipeId: activeRecipe.id,
-      recipeName: activeRecipe.name,
-      sections: activeStack.map(serializeWorkingSection),
-    };
-    const signatureKey = `${payload.recipeId}:${payload.optionIndex}`;
-    const signature = JSON.stringify(payload);
+    const payload = buildOptionSaveRequest(
+      activeRecipe,
+      activeLayoutSlot,
+      activeLayoutSlotIndex,
+    );
+    const signatureKey = getOptionSignatureKey(payload);
+    const signature = getOptionSignature(payload);
     const previousSignature = autosaveSignaturesRef.current.get(signatureKey);
 
     if (!previousSignature) {
@@ -1119,7 +1211,7 @@ export function PagebuilderShell({
     autosaveTimeoutRef.current = setTimeout(async () => {
       try {
         await postPagebuilderOption(payload);
-        autosaveSignaturesRef.current.set(signatureKey, signature);
+        rememberOptionSaveSignature(payload);
       } catch {
         setOptionSaveError("Pagebuilder autosave failed.");
       }
@@ -1132,7 +1224,9 @@ export function PagebuilderShell({
     };
   }, [
     activeDesignStyle,
+    activeLayoutSlot,
     activeLayoutSlotIndex,
+    activeRecipe,
     activeRecipe.id,
     activeRecipe.name,
     activeSlotLabel,
@@ -1256,18 +1350,22 @@ export function PagebuilderShell({
     }
 
     if (currentSection.mode === "Navigation") {
-      setLayoutSlots((currentSlots) =>
-        currentSlots.map((recipeSlots) =>
-          recipeSlots.map((slot) => ({
-            ...slot,
-            stack: slot.stack.map((section) =>
-              section.mode === "Navigation"
-                ? updateSectionFromSwapOption(section, nextOption)
-                : section,
-            ),
-          })),
-        ),
+      const nextLayoutSlots = layoutSlots.map((recipeSlots) =>
+        recipeSlots.map((slot) => ({
+          ...slot,
+          stack: slot.stack.map((section) =>
+            section.mode === "Navigation"
+              ? {
+                  ...updateSectionFromSwapOption(section, nextOption),
+                  included: currentSection.included,
+                }
+              : section,
+          ),
+        })),
       );
+
+      setLayoutSlots(nextLayoutSlots);
+      void saveSharedNavigationOptions(nextLayoutSlots);
       setSelectedSectionId(sectionId);
       return;
     }
@@ -1387,14 +1485,11 @@ export function PagebuilderShell({
   }
 
   function buildActiveOptionSaveRequest(): SavePagebuilderOptionRequest {
-    return {
-      designStyle: activeDesignStyle,
-      optionIndex: activeLayoutSlotIndex,
-      optionName: activeSlotLabel,
-      recipeId: activeRecipe.id,
-      recipeName: activeRecipe.name,
-      sections: activeStack.map(serializeWorkingSection),
-    };
+    return buildOptionSaveRequest(
+      activeRecipe,
+      activeLayoutSlot,
+      activeLayoutSlotIndex,
+    );
   }
 
   async function postPagebuilderOption(
@@ -1416,13 +1511,56 @@ export function PagebuilderShell({
     return result.option;
   }
 
+  function rememberOptionSaveSignature(payload: SavePagebuilderOptionRequest) {
+    autosaveSignaturesRef.current.set(
+      getOptionSignatureKey(payload),
+      getOptionSignature(payload),
+    );
+  }
+
+  async function saveSharedNavigationOptions(nextSlots: PageLayoutSlot[][]) {
+    if (!savedOptionsLoaded) {
+      return;
+    }
+
+    const payloads = recipes.flatMap((recipe, recipeIndex) => {
+      const slotIndex = activeLayoutSlotIndexes[recipeIndex] ?? 0;
+      const slot = nextSlots[recipeIndex]?.[slotIndex] ?? nextSlots[recipeIndex]?.[0];
+
+      return slot ? [buildOptionSaveRequest(recipe, slot, slotIndex)] : [];
+    });
+
+    if (payloads.length === 0) {
+      return;
+    }
+
+    setOptionSaveError("");
+    setOptionSaveStatus("Saving shared navigation...");
+
+    try {
+      await Promise.all(payloads.map((payload) => postPagebuilderOption(payload)));
+      payloads.forEach(rememberOptionSaveSignature);
+      setOptionSaveStatus(
+        `Navigation applied to ${payloads.length} page layouts.`,
+      );
+    } catch (error) {
+      setOptionSaveError(
+        error instanceof Error
+          ? error.message
+          : "Shared navigation save failed.",
+      );
+    }
+  }
+
   async function saveActiveOption() {
     setIsSavingOption(true);
     setOptionSaveError("");
     setOptionSaveStatus("");
 
     try {
-      const option = await postPagebuilderOption(buildActiveOptionSaveRequest());
+      const payload = buildActiveOptionSaveRequest();
+      const option = await postPagebuilderOption(payload);
+      rememberOptionSaveSignature(payload);
 
       setOptionSaveStatus(
         `Saved ${activePageLabel} layout with ${option.sectionCount} included sections.`,

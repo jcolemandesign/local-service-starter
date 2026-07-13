@@ -501,6 +501,13 @@ export function StrategyWorkspaceSection({
         >
           Style Guide
         </Link>
+        <button
+          className="type-caption font-semibold text-service-accent hover:text-service-ink"
+          onClick={openContentPlanReference}
+          type="button"
+        >
+          Build plan
+        </button>
         <Link
           className={secondaryButtonClass}
           href="/dev/templates"
@@ -711,7 +718,7 @@ export function StrategyWorkspaceSection({
                             }}
                             type="button"
                           >
-                            Open report
+                            Build plan
                           </button>
                         ) : null}
                         <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 font-semibold text-service-muted">
@@ -1584,6 +1591,7 @@ function formatMarkdownTable(tableLines: string[]) {
   const headers = splitMarkdownTableRow(headerLine);
   const rows = bodyLines
     .map((line) => splitMarkdownTableRow(line))
+    .map((row) => normalizeContentPlanTableRow(headers, row))
     .filter((row) => row.some((cell) => cell.length > 0));
 
   return `<div class="table-wrap">
@@ -1608,6 +1616,31 @@ function formatMarkdownTable(tableLines: string[]) {
     </tbody>
   </table>
 </div>`;
+}
+
+function normalizeContentPlanTableRow(headers: string[], row: string[]) {
+  const sectionIndex = headers.findIndex((header) =>
+    /^section$/i.test(header),
+  );
+  const semanticRoleIndex = headers.findIndex((header) =>
+    /^semantic role$/i.test(header),
+  );
+
+  if (sectionIndex < 0 || semanticRoleIndex < 0) {
+    return row;
+  }
+
+  const sectionName = row[sectionIndex] ?? "";
+  const semanticRole = row[semanticRoleIndex] ?? "";
+
+  if (!/\bfaq\b/i.test(sectionName) || !/\bdecision\b/i.test(semanticRole)) {
+    return row;
+  }
+
+  const nextRow = [...row];
+  nextRow[semanticRoleIndex] = semanticRole.replace(/\bDecision\b/gi, "Utility");
+
+  return nextRow;
 }
 
 function splitMarkdownTableRow(line: string) {

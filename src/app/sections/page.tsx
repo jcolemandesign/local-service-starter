@@ -14,6 +14,8 @@ import {
   CTAFullscreenSectionV3,
   CTASectionV3,
   CTAScrollRevealOfferSectionV3,
+  DecisionSplitDecisionSectionV3,
+  DecisionSplitLargeCardsSectionV3,
   FAQAccordionSectionV3,
   FAQSectionV3,
   FeatureAsymmetricCardsSectionV3,
@@ -21,6 +23,7 @@ import {
   FeaturePortraitParagraphSectionV3,
   FooterCompactSectionV3,
   FooterHorizontalSectionV3,
+  FooterLinkPanelSectionV3,
   FooterSectionV3,
   HeroCenteredFloatersSectionV2,
   HeroContentTopImageBottomSectionV2,
@@ -177,6 +180,16 @@ const sectionElements = {
       {...sectionLibraryV3Content.featureAsymmetricCards}
     />
   ),
+  "decision-split-decision-v3": (
+    <DecisionSplitDecisionSectionV3
+      {...sectionLibraryV3Content.decisionSplitDecision}
+    />
+  ),
+  "decision-split-large-cards-v3": (
+    <DecisionSplitLargeCardsSectionV3
+      {...sectionLibraryV3Content.decisionSplitLargeCards}
+    />
+  ),
   "services-three-cards-right-v3": (
     <ServicesThreeCardsRightSectionV3
       {...sectionLibraryV3Content.servicesThreeCardsRight}
@@ -249,6 +262,9 @@ const sectionElements = {
   ),
   "footer-compact-v3": (
     <FooterCompactSectionV3 {...sectionLibraryV3Content.footer} />
+  ),
+  "footer-link-panel-v3": (
+    <FooterLinkPanelSectionV3 {...sectionLibraryV3Content.footer} />
   ),
   "trust-bar-v3": (
     <TrustBarSectionV3 {...sectionLibraryV3Content.trustBar} />

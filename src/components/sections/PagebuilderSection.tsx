@@ -27,6 +27,8 @@ import {
   TestimonialsSectionV3,
 } from "@/components/sections/FeatureProcessTestimonialsSectionsV3";
 import { FeatureAsymmetricCardsSectionV3 } from "@/components/sections/FeatureAsymmetricCardsSectionV3";
+import { DecisionSplitDecisionSectionV3 } from "@/components/sections/DecisionSplitDecisionSectionV3";
+import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
 import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
 import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
@@ -44,6 +46,7 @@ import {
   type HeroSplitFullHeightVariant,
 } from "@/components/sections/HeroSplitFullHeightSectionV3";
 import { FooterSectionV2 } from "@/components/sections/FooterSectionV2";
+import { FooterLinkPanelSectionV3 } from "@/components/sections/FooterLinkPanelSectionV3";
 import {
   NavCenterLogoSectionV2,
   NavPrimarySectionV2,
@@ -308,6 +311,18 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.featureAsymmetricCards}
         />
       );
+    case "DecisionSplitDecisionSectionV3":
+      return (
+        <DecisionSplitDecisionSectionV3
+          {...sectionLibraryV3Content.decisionSplitDecision}
+        />
+      );
+    case "DecisionSplitLargeCardsSectionV3":
+      return (
+        <DecisionSplitLargeCardsSectionV3
+          {...sectionLibraryV3Content.decisionSplitLargeCards}
+        />
+      );
     case "FAQSectionV3":
       return <FAQSectionV3 {...sectionLibraryV3Content.faq} />;
     case "FAQAccordionSectionV3":
@@ -394,6 +409,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return <FooterHorizontalSectionV3 {...sectionLibraryV3Content.footer} />;
     case "FooterCompactSectionV3":
       return <FooterCompactSectionV3 {...sectionLibraryV3Content.footer} />;
+    case "FooterLinkPanelSectionV3":
+      return <FooterLinkPanelSectionV3 {...sectionLibraryV3Content.footer} />;
     default:
       return <UnknownSection section={section} />;
   }
@@ -840,6 +857,18 @@ export function PagebuilderSection() {
       "Process steps",
       6,
     ),
+    DecisionSplitDecisionSectionV3: previewCatalogEntry(
+      "DecisionSplitDecisionSectionV3",
+      "Decision",
+      "Split decision",
+      6,
+    ),
+    DecisionSplitLargeCardsSectionV3: previewCatalogEntry(
+      "DecisionSplitLargeCardsSectionV3",
+      "Decision",
+      "Split large cards",
+      6,
+    ),
     ProcessImageChecklistSectionV3: (
       <div key="ProcessImageChecklistSectionV3">
         {renderPreviewSection(
@@ -939,6 +968,19 @@ export function PagebuilderSection() {
             instruction: "",
             mode: "Utility",
             name: "Condensed footer",
+          },
+          7,
+        )}
+      </div>
+    ),
+    FooterLinkPanelSectionV3: (
+      <div key="FooterLinkPanelSectionV3">
+        {renderPreviewSection(
+          {
+            component: "FooterLinkPanelSectionV3",
+            instruction: "",
+            mode: "Utility",
+            name: "Link panel footer",
           },
           7,
         )}

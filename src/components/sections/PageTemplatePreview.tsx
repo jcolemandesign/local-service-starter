@@ -27,6 +27,8 @@ import {
   TestimonialsSectionV3,
 } from "@/components/sections/FeatureProcessTestimonialsSectionsV3";
 import { FeatureAsymmetricCardsSectionV3 } from "@/components/sections/FeatureAsymmetricCardsSectionV3";
+import { DecisionSplitDecisionSectionV3 } from "@/components/sections/DecisionSplitDecisionSectionV3";
+import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
 import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
 import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
@@ -44,6 +46,7 @@ import {
   type HeroSplitFullHeightVariant,
 } from "@/components/sections/HeroSplitFullHeightSectionV3";
 import { FooterSectionV2 } from "@/components/sections/FooterSectionV2";
+import { FooterLinkPanelSectionV3 } from "@/components/sections/FooterLinkPanelSectionV3";
 import {
   NavCenterLogoSectionV2,
   NavPrimarySectionV2,
@@ -389,6 +392,10 @@ export function renderPageTemplateSection(
       return <FeatureOverlapRowsSectionV3 {...featureOverlapRowsProps(fieldSection)} />;
     case "FeatureAsymmetricCardsSectionV3":
       return <FeatureAsymmetricCardsSectionV3 {...featureAsymmetricProps(fieldSection)} />;
+    case "DecisionSplitDecisionSectionV3":
+      return <DecisionSplitDecisionSectionV3 {...splitDecisionProps(fieldSection)} />;
+    case "DecisionSplitLargeCardsSectionV3":
+      return <DecisionSplitLargeCardsSectionV3 {...splitLargeCardsProps(fieldSection)} />;
     case "FAQSectionV3":
       return <FAQSectionV3 {...faqProps(fieldSection)} />;
     case "FAQAccordionSectionV3":
@@ -439,6 +446,8 @@ export function renderPageTemplateSection(
       return <FooterHorizontalSectionV3 {...footerProps(fieldSection)} />;
     case "FooterCompactSectionV3":
       return <FooterCompactSectionV3 {...footerProps(fieldSection)} />;
+    case "FooterLinkPanelSectionV3":
+      return <FooterLinkPanelSectionV3 {...footerProps(fieldSection)} />;
     default:
       return <UnknownSection section={section} />;
   }
@@ -748,6 +757,74 @@ function featureAsymmetricProps(section: FieldSection) {
       sectionLibraryV3Content.featureAsymmetricCards.eyebrow,
     ),
     title: getTitle(section, sectionLibraryV3Content.featureAsymmetricCards.title),
+  };
+}
+
+function splitDecisionProps(section: FieldSection) {
+  const cards = cardItemsWithFallback(
+    section,
+    ["decisionItems", "supportingItems", "cards", "items"],
+    sectionLibraryV3Content.decisionSplitDecision.cards,
+  );
+
+  return {
+    ...sectionLibraryV3Content.decisionSplitDecision,
+    actionLabel: getValue(
+      section,
+      "sectionAction",
+      sectionLibraryV3Content.decisionSplitDecision.actionLabel,
+    ),
+    body: getBody(section, sectionLibraryV3Content.decisionSplitDecision.body),
+    cards: cards.slice(0, 2).map((item, index) => ({
+      body: item.body,
+      eyebrow:
+        "eyebrow" in item && typeof item.eyebrow === "string"
+          ? item.eyebrow
+          : sectionLibraryV3Content.decisionSplitDecision.cards[
+              index % sectionLibraryV3Content.decisionSplitDecision.cards.length
+            ].eyebrow,
+      title: item.title,
+    })),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.decisionSplitDecision.eyebrow,
+    ),
+    title: getTitle(
+      section,
+      sectionLibraryV3Content.decisionSplitDecision.title,
+    ),
+  };
+}
+
+function splitLargeCardsProps(section: FieldSection) {
+  const cards = cardItemsWithFallback(
+    section,
+    ["decisionItems", "supportingItems", "cards", "items"],
+    sectionLibraryV3Content.decisionSplitLargeCards.cards,
+  );
+
+  return {
+    ...sectionLibraryV3Content.decisionSplitLargeCards,
+    actionLabel: getValue(
+      section,
+      "sectionAction",
+      sectionLibraryV3Content.decisionSplitLargeCards.actionLabel,
+    ),
+    cards: cards.slice(0, 2).map((item, index) => ({
+      body: item.body,
+      eyebrow:
+        "eyebrow" in item && typeof item.eyebrow === "string"
+          ? item.eyebrow
+          : sectionLibraryV3Content.decisionSplitLargeCards.cards[
+              index % sectionLibraryV3Content.decisionSplitLargeCards.cards.length
+            ].eyebrow,
+      title: item.title,
+    })),
+    title: getTitle(
+      section,
+      sectionLibraryV3Content.decisionSplitLargeCards.title,
+    ),
   };
 }
 

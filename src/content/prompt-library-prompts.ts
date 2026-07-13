@@ -629,16 +629,21 @@ Always include:
 - Contact / Request Quote
 - Thank You
 
-Also recommend optional pages if they make sense based on the brief and strategy digest:
+Also recommend optional pages if they make sense based on the brief:
 
-- Priority service pages
-- Location/service-area pages
+- One Service Area Overview page
+- Individual Location Landing Pages only when there is enough unique,
+  first-party local content to justify each page
 - Seasonal promo pages
 - Maintenance/membership page
 - Emergency service page
 - Referral page
 - Booking page
-- Landing pages
+- Campaign landing pages
+
+Do not recommend individual city or town pages by default.
+Keep them out of the launch sitemap unless the strategy brief provides
+a specific business reason and enough unique local content for each page.
 
 For each page, include:
 
@@ -674,8 +679,11 @@ Use these semantic roles where useful:
 - Narrative
 - Proof
 - Decision
+- Utility
 - Conversion
 - Footer
+
+Use Utility for FAQ sections, contact details, forms, service-area lookup, maps, hours, and other practical support information. Do not label FAQ as Decision.
 
 Start with this practical local-service structure, then adjust if the brief suggests a better flow:
 
@@ -884,7 +892,7 @@ Include:
 - Homepage local language
 - Service area section direction
 - Recommended service pages
-- Recommended location pages, if appropriate
+- Service area overview direction and any individual location landing pages only if justified by unique first-party local content
 - Page title/meta direction
 - Internal linking opportunities
 - Google Business Profile alignment notes
