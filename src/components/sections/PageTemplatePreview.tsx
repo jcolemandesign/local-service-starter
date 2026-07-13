@@ -1407,6 +1407,7 @@ function cardItems(section: FieldSection, fieldNames: string[]) {
     return records.map((record) => ({
       body: record.body ?? record.description ?? "",
       imageLabel: record.imageLabel ?? record.title ?? "Service",
+      size: getCardSize(record.size ?? record.cardSize ?? record.featured),
       title: record.title ?? record.heading ?? "Service",
     }));
   }
@@ -1425,7 +1426,12 @@ function cardItems(section: FieldSection, fieldNames: string[]) {
 function cardItemsWithFallback(
   section: FieldSection,
   fieldNames: string[],
-  fallbackItems: ReadonlyArray<{ body?: string; imageLabel?: string; title: string }>,
+  fallbackItems: ReadonlyArray<{
+    body?: string;
+    imageLabel?: string;
+    size?: "large" | "medium" | "small";
+    title: string;
+  }>,
 ) {
   const items = cardItems(section, fieldNames);
 
@@ -1434,6 +1440,7 @@ function cardItemsWithFallback(
     : fallbackItems.map((item) => ({
         body: item.body ?? "",
         imageLabel: item.imageLabel ?? item.title,
+        size: item.size,
         title: item.title,
       }));
 }
@@ -1514,13 +1521,53 @@ function pageLinkItems(section: FieldSection) {
 }
 
 function parseCardItem(value: string) {
-  const [title, ...bodyParts] = value.split(/\s+[—-]\s+/);
+  const { cleanValue, size } = extractCardSize(value);
+  const [title, ...bodyParts] = cleanValue.split(/\s+[—-]\s+/);
   const body = bodyParts.join(" - ").trim();
 
   return {
     body,
     imageLabel: title.trim(),
+    size,
     title: title.trim(),
+  };
+}
+
+function getCardSize(value: string | undefined) {
+  if (!value) {
+    return undefined;
+  }
+
+  const normalizedValue = value.toLowerCase().trim();
+
+  if (
+    normalizedValue === "true" ||
+    normalizedValue === "featured" ||
+    normalizedValue === "large" ||
+    normalizedValue === "larger"
+  ) {
+    return "large" as const;
+  }
+
+  if (normalizedValue === "medium") {
+    return "medium" as const;
+  }
+
+  if (normalizedValue === "small") {
+    return "small" as const;
+  }
+
+  return undefined;
+}
+
+function extractCardSize(value: string) {
+  const sizePattern = /\[(large|larger|featured|medium|small)\]/i;
+  const match = value.match(sizePattern);
+  const size = getCardSize(match?.[1]);
+
+  return {
+    cleanValue: value.replace(sizePattern, "").trim(),
+    size,
   };
 }
 

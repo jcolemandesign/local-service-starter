@@ -1,3 +1,6 @@
+"use client";
+
+import { motion, useReducedMotion } from "motion/react";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
@@ -155,6 +158,8 @@ export function ProcessStepsSectionV3({
   steps,
   title,
 }: ProcessStepsSectionV3Props) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <section className="bg-service-surface">
       <SevenColumnGrid className="section-min-none" padding="med">
@@ -177,9 +182,14 @@ export function ProcessStepsSectionV3({
           className="col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1"
           alignY="top"
         >
-          <ol className="grid card-grid-gap-med">
+          <motion.ol
+            className="grid card-grid-gap-med"
+            initial={shouldReduceMotion ? false : "hidden"}
+            viewport={{ once: true, amount: 0.42 }}
+            whileInView="visible"
+          >
             {steps.map((step, index) => (
-              <li
+              <motion.li
                 className={cx(
                   "fluid-type-frame grid grid-cols-[auto_minmax(0,1fr)] items-center layout-gap-med bg-transparent py-7 text-service-ink max-md:grid-cols-1 max-md:items-start",
                   index === steps.length - 1
@@ -187,6 +197,15 @@ export function ProcessStepsSectionV3({
                     : "border-b border-service-border",
                 )}
                 key={step.title}
+                variants={{
+                  hidden: { opacity: 0, y: 18 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                transition={{
+                  delay: shouldReduceMotion ? 0 : 0.15 + index * 0.462,
+                  duration: shouldReduceMotion ? 0 : 0.44,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
               >
                 <div className="flex h-12 min-w-12 items-center justify-center text-sm font-semibold text-service-ink">
                   {String(index + 1).padStart(2, "0")}
@@ -199,9 +218,9 @@ export function ProcessStepsSectionV3({
                     {step.body}
                   </p>
                 </div>
-              </li>
+              </motion.li>
             ))}
-          </ol>
+          </motion.ol>
         </SevenColumnGridItem>
       </SevenColumnGrid>
     </section>

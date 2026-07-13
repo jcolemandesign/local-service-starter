@@ -133,6 +133,7 @@ export function buildTemplateCopyContract({
     "- Write for the exact Page Target above, not for a broader page type.",
     "- Keep copy sized to the listed field targets.",
     "- Use cautious wording for unsupported claims.",
+    "- For gridded card sections with mixed card sizes, mark larger cards in repeatable card fields with [large] or [featured] before the title. Example: [large] System Replacement — Compare repair and replacement options.",
     "- If a field cannot be written from the provided source material, write NEEDS REVIEW with the missing detail.",
     "- Return structured text by section ID, not prose paragraphs about the page.",
     "",
@@ -286,7 +287,10 @@ export function getTemplateCopyFieldsForSection(
       {
         name: "serviceItems",
         purpose: "Repeated service cards or bullets.",
-        target: "Match dummy item count. Each item needs title plus 1-2 sentence description.",
+        target:
+          sectionName.includes("service card grid")
+            ? "Match dummy item count. Use Title — Description. Prefix the larger card with [large] or [featured]; the marker controls layout and should not be visible copy."
+            : "Match dummy item count. Each item needs title plus 1-2 sentence description.",
       },
       {
         name: "sectionAction",

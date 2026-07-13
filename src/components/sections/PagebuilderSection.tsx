@@ -631,7 +631,7 @@ export function PagebuilderSection() {
             component: "ServicesThreeCardsRightSectionV3",
             instruction: "",
             mode: "Scan",
-            name: "Services grid",
+            name: "Services cards grid",
           },
           3,
         )}
@@ -653,7 +653,7 @@ export function PagebuilderSection() {
     ContentHorizontalCardCarouselSectionV2: previewCatalogEntry(
       "ContentHorizontalCardCarouselSectionV2",
       "Scan",
-      "Horizontal card carousel",
+      "Services card carousel",
       3,
     ),
     QuickPageLinksSectionV2: previewCatalogEntry(

@@ -32,7 +32,7 @@ export function ContentScrollWrittenRevealSectionV2({
   const [progress, setProgress] = useState(shouldReduceMotion ? 1 : 0);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start 44%", "end 62%"],
+    offset: ["start 92%", "start 18%"],
   });
 
   const words = useMemo(() => {
@@ -63,26 +63,25 @@ export function ContentScrollWrittenRevealSectionV2({
     }
   });
 
-  const revealStart = 0.16;
-  const revealEnd = 0.58;
+  const revealStart = 0.04;
+  const revealEnd = 0.82;
   const revealWindow = 0.035;
   const revealProgress = shouldReduceMotion
     ? 1
     : clamp((progress - revealStart) / (revealEnd - revealStart), 0, 1);
-  const driftY = shouldReduceMotion ? 0 : 128 * progress;
+  const driftY = 0;
 
   return (
     <section
-      className="section-min-story bg-white max-md:section-min-screen"
+      className="section-min-medium bg-white"
       ref={sectionRef}
     >
       <div
-        className="section-min-screen"
         style={{ transform: `translate3d(0, ${driftY}px, 0)` }}
       >
-        <SevenColumnGrid>
+        <SevenColumnGrid minHeight="none">
           <SevenColumnGridItem
-            alignY="middle"
+            alignY="top"
             className="col-span-6 max-lg:col-span-7"
           >
             <div className="fluid-type-frame">

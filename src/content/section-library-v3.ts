@@ -905,6 +905,7 @@ export const sectionLibraryV3Content = {
       {
         title: "Predictable flow",
         body: "Rows can be composed intentionally while still allowing section content to adapt inside its assigned columns.",
+        size: "large" as const,
       },
     ],
   },
@@ -946,7 +947,7 @@ export const sectionLibraryV3Collections = [
     title: "Scan",
     items: [
       {
-        label: "Horizontal card carousel",
+        label: "Services card carousel",
         component: "content-horizontal-card-carousel-v2",
       },
       {
@@ -954,7 +955,7 @@ export const sectionLibraryV3Collections = [
         component: "quick-page-links-v2",
       },
       {
-        label: "3 service cards right",
+        label: "Services cards grid",
         component: "services-three-cards-right-v3",
       },
       { label: "Services bento cards", component: "services-bento-cards-v2" },

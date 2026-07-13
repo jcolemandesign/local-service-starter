@@ -138,11 +138,11 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
           "Validate the promise immediately with rating, volume, team, and local ownership claims.",
       },
       {
-        name: "Services grid",
+        name: "Services cards grid",
         component: "ServicesThreeCardsRightSectionV3",
         mode: "Scan",
         instruction:
-          "Show three to six top-level services with consistent title and body length.",
+          "Show top-level service cards on the seven-column page grid, using explicit card size metadata when one card should be larger.",
       },
       {
         name: "FAQ",
@@ -386,11 +386,11 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
           "List priority service areas and keep the map visual as an FPO coverage placeholder.",
       },
       {
-        name: "Services grid",
+        name: "Services cards grid",
         component: "ServicesThreeCardsRightSectionV3",
         mode: "Scan",
         instruction:
-          "Show the core services available across the coverage area with consistent short descriptions.",
+          "Show the core services available across the coverage area on the seven-column page grid, using explicit card size metadata when one card should be larger.",
       },
       {
         name: "FAQ",
@@ -633,18 +633,18 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
           "Introduce the resource center and highlight the most useful seasonal or service topics.",
       },
       {
-        name: "Horizontal card carousel",
+        name: "Services card carousel",
         component: "ContentHorizontalCardCarouselSectionV2",
         mode: "Scan",
         instruction:
           "Show featured posts, categories, or seasonal topics as browseable cards.",
       },
       {
-        name: "Services grid",
+        name: "Services cards grid",
         component: "ServicesThreeCardsRightSectionV3",
         mode: "Scan",
         instruction:
-          "Connect common article categories back to the related service paths.",
+          "Connect common article categories back to the related service paths on the seven-column page grid.",
       },
       {
         name: "CTA",

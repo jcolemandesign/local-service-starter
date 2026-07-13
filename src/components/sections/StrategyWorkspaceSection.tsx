@@ -602,6 +602,8 @@ export function StrategyWorkspaceSection({
                                 className="type-caption rounded-sm border border-service-border bg-white px-2 py-1 font-semibold text-service-accent hover:text-service-ink"
                                 href={childPage.previewHref}
                                 key={childPage.pageId}
+                                rel="noreferrer"
+                                target="_blank"
                               >
                                 {childPage.pageLabel}
                               </Link>
@@ -614,6 +616,8 @@ export function StrategyWorkspaceSection({
                           <Link
                             className="type-caption inline-flex font-semibold text-service-accent hover:text-service-ink"
                             href={page.previewHref}
+                            rel="noreferrer"
+                            target="_blank"
                           >
                             Open staged page
                           </Link>

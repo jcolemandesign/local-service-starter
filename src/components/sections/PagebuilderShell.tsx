@@ -474,9 +474,9 @@ const sectionSwapOptions = [
   {
     component: "ServicesThreeCardsRightSectionV3",
     instruction:
-      "Show top-level services with consistent title and body length.",
+      "Show top-level service cards on the seven-column page grid, using explicit card size metadata when one card should be larger.",
     mode: "Scan",
-    name: "Services grid",
+    name: "Services cards grid",
   },
   {
     component: "ServicesScrollCardsSectionV2",
@@ -490,7 +490,7 @@ const sectionSwapOptions = [
     instruction:
       "Use a horizontal card carousel when scan content needs a compact browseable sequence.",
     mode: "Scan",
-    name: "Horizontal card carousel",
+    name: "Services card carousel",
   },
   {
     component: "QuickPageLinksSectionV2",
@@ -1229,6 +1229,20 @@ export function PagebuilderShell({
     if (sectionId === selectedSectionId) {
       setSelectedSectionId(null);
     }
+  }
+
+  function clearActiveBuildingSpace() {
+    updateActiveStack((stack) =>
+      stack.map((section) => ({
+        ...section,
+        included: false,
+      })),
+    );
+    setDraggedSectionId(null);
+    setDragOverSectionId(null);
+    setSelectedSectionId(null);
+    setOptionSaveError("");
+    setOptionSaveStatus("Building space cleared.");
   }
 
   function swapSection(sectionId: string, component: string) {
@@ -2326,6 +2340,32 @@ export function PagebuilderShell({
                   <summary className="cursor-pointer text-sm font-semibold text-service-ink">
                     Section Stack
                   </summary>
+                  <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded border border-service-border bg-service-surface p-3">
+                    <div className="min-w-0">
+                      <p className="type-caption font-semibold text-service-ink">
+                        Building Space
+                      </p>
+                      <p className="type-caption mt-1 text-service-muted">
+                        {includedSections.length} sections currently included.
+                      </p>
+                    </div>
+                    <button
+                      aria-label="Clear all sections from the building space"
+                      className="radius-4 inline-flex min-h-10 items-center gap-2 border border-service-border bg-white px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-40"
+                      disabled={includedSections.length === 0}
+                      onClick={clearActiveBuildingSpace}
+                      title="Clear building space"
+                      type="button"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="flex size-6 items-center justify-center rounded-sm border border-current text-sm leading-none"
+                      >
+                        X
+                      </span>
+                      <span>Clear</span>
+                    </button>
+                  </div>
                   <div className="mt-5 grid gap-2 rounded border border-service-border bg-service-surface p-3">
                     <div className="grid gap-3">
                       <p className="type-caption font-semibold text-service-ink">

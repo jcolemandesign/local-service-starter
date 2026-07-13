@@ -6,11 +6,16 @@ import {
 type ServicesThreeCardsRightSectionV3Props = {
   cards: ReadonlyArray<{
     body: string;
+    size?: "large" | "medium" | "small";
     title: string;
   }>;
   eyebrow: string;
   title: string;
 };
+
+function cx(...classes: Array<string | false | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
 
 export function ServicesThreeCardsRightSectionV3({
   cards,
@@ -19,7 +24,7 @@ export function ServicesThreeCardsRightSectionV3({
 }: ServicesThreeCardsRightSectionV3Props) {
   return (
     <section className="bg-bg-page">
-      <SevenColumnGrid className="section-min-short">
+      <SevenColumnGrid className="section-min-short [--site-grid-row-gap:var(--inline-gap-active)]">
         <SevenColumnGridItem
           alignX="left"
           alignY="top"
@@ -37,28 +42,31 @@ export function ServicesThreeCardsRightSectionV3({
           <h3 className="type-heading-lg text-service-ink">{title}</h3>
         </SevenColumnGridItem>
 
-        <div
-          aria-hidden="true"
-          className="col-span-1 col-start-1 row-start-2 max-md:hidden"
-        />
+        {cards.map((card, index) => {
+          const isLarge = card.size === "large" || (!card.size && index === 2);
 
-        <SevenColumnGridItem className="col-span-6 col-start-2 row-start-2 max-md:col-span-7 max-md:col-start-1 max-md:row-auto">
-          <div className="grid grid-cols-3 gap-[var(--inline-gap-active)] max-lg:grid-cols-2 max-md:grid-cols-1">
-            {cards.map((card) => (
-              <article
-                className="content-padding radius-medium card-min-short flex h-full flex-col justify-between border border-service-border bg-service-surface shadow-service layout-gap-lrg"
-                key={card.title}
-              >
-                <h3 className="type-heading-sm text-service-ink">
-                  {card.title}
-                </h3>
-                <p className="type-text-sm wrap-pretty text-service-muted">
-                  {card.body}
-                </p>
-              </article>
-            ))}
-          </div>
-        </SevenColumnGridItem>
+          return (
+            <article
+              className={cx(
+                "content-padding radius-medium row-start-2 flex h-full flex-col justify-between border border-service-border bg-service-surface shadow-service layout-gap-lrg max-md:row-auto",
+                isLarge
+                  ? "card-min-medium col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+                  : "card-min-short col-span-2 max-md:col-span-3 max-sm:col-span-1",
+                index === 0 && "col-start-1 max-lg:col-span-2",
+                index === 1 && "col-start-3 max-lg:col-span-3 max-lg:col-start-3 max-md:col-start-1",
+                index === 2 && "col-start-5 max-lg:col-start-1 max-lg:row-start-3 max-md:col-start-1",
+              )}
+              key={card.title}
+            >
+              <h3 className="type-heading-sm text-service-ink">
+                {card.title}
+              </h3>
+              <p className="type-text-sm wrap-pretty text-service-muted">
+                {card.body}
+              </p>
+            </article>
+          );
+        })}
       </SevenColumnGrid>
     </section>
   );

@@ -9,18 +9,40 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-07-12T18:40:36.447Z",
-      "sectionCount": 1,
+      "savedAt": "2026-07-13T01:43:24.049Z",
+      "sectionCount": 3,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
-          "id": "classic-service-NavCenterLogoSectionV2-added-1",
+          "id": "classic-service-template-simple-homepage-0",
           "included": true,
           "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
           "mode": "Navigation",
           "name": "Primary navigation",
-          "originalComponent": "NavCenterLogoSectionV2",
-          "originalIndex": -1
+          "originalComponent": "NavPrimarySectionV2",
+          "originalIndex": 0
+        },
+        {
+          "component": "HeroSplitFullHeightSectionV3",
+          "id": "classic-service-template-simple-homepage-1",
+          "included": true,
+          "instruction": "Use h1, one primary booking CTA, one services CTA, and three compact trust stats beside a full-bleed image column.",
+          "mode": "Hero",
+          "name": "Split content and full image",
+          "originalComponent": "HeroSplitFullHeightSectionV3",
+          "originalIndex": 1,
+          "variant": "text-3-image-4-right"
+        },
+        {
+          "component": "HeroSplitFullHeightSectionV3",
+          "id": "classic-service-HeroSplitFullHeightSectionV3-added-1",
+          "included": true,
+          "instruction": "Use h1, one primary booking CTA, one services CTA, and three compact trust stats beside a full-bleed image column.",
+          "mode": "Hero",
+          "name": "Split content and full image",
+          "originalComponent": "HeroSplitFullHeightSectionV3",
+          "originalIndex": -1,
+          "variant": "image-4-left-text-3"
         }
       ]
     }

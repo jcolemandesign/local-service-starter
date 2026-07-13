@@ -1071,6 +1071,7 @@ Field formatting rules:
 - Longer body fields may use multiple sentences, but keep them under the same field label.
 - Repeatable list/card fields must use one item per line under the field label.
 - If a repeatable item has a title and description, format it as Title — Description.
+- For gridded card sections with mixed card sizes, prefix the larger card item with [large] or [featured], then write Title — Description. The marker is layout metadata, not visible copy.
 - If a repeatable item is only a short proof point, write one proof point per line.
 - Do not split one repeatable item across multiple lines.
 - Do not use semicolons or commas to separate repeatable items.
