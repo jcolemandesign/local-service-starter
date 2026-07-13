@@ -2,6 +2,7 @@ import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAbout
 import { ContentAboutStorySectionV3 } from "@/components/sections/ContentAboutStorySectionV3";
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
+import { ContentPhotoGalleryCarouselSectionV3 } from "@/components/sections/ContentPhotoGalleryCarouselSectionV3";
 import { QuickPageLinksSectionV2 } from "@/components/sections/QuickPageLinksSectionV2";
 import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
 import { CTAFullscreenSectionV2 } from "@/components/sections/CTAFullscreenSectionV2";
@@ -244,6 +245,12 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <ContentHorizontalCardCarouselSectionV2
           {...sectionLibraryV3Content.contentHorizontalCardCarousel}
+        />
+      );
+    case "ContentPhotoGalleryCarouselSectionV3":
+      return (
+        <ContentPhotoGalleryCarouselSectionV3
+          {...sectionLibraryV3Content.contentPhotoGalleryCarousel}
         />
       );
     case "QuickPageLinksSectionV2":
@@ -692,6 +699,12 @@ export function PagebuilderSection() {
       "Scan",
       "Services card carousel",
       3,
+    ),
+    ContentPhotoGalleryCarouselSectionV3: previewCatalogEntry(
+      "ContentPhotoGalleryCarouselSectionV3",
+      "Narrative",
+      "Photo gallery carousel",
+      4,
     ),
     QuickPageLinksSectionV2: previewCatalogEntry(
       "QuickPageLinksSectionV2",

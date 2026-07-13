@@ -93,7 +93,7 @@ export function ContentRevealParagraphSectionV2({
           {
             vsml: "section-min-short",
             sml: "section-min-medium",
-            med: "section-min-screen",
+            med: "section-min-short",
             lrg: "section-min-story",
           }[sectionSpace]
         }

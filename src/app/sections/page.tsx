@@ -5,6 +5,7 @@ import {
   ContentAboutStorySectionV3,
   ContentFixedCoverFadeSectionV2,
   ContentHorizontalCardCarouselSectionV2,
+  ContentPhotoGalleryCarouselSectionV3,
   ContentRevealParagraphSectionV2,
   ContentRuleHeaderSectionV2,
   ContentScrollWrittenRevealSectionV2,
@@ -165,6 +166,11 @@ const sectionElements = {
   "content-horizontal-card-carousel-v2": (
     <ContentHorizontalCardCarouselSectionV2
       {...sectionLibraryV3Content.contentHorizontalCardCarousel}
+    />
+  ),
+  "content-photo-gallery-carousel-v3": (
+    <ContentPhotoGalleryCarouselSectionV3
+      {...sectionLibraryV3Content.contentPhotoGalleryCarousel}
     />
   ),
   "content-fixed-cover-fade-v2": (

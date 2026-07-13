@@ -2,6 +2,7 @@ import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAbout
 import { ContentAboutStorySectionV3 } from "@/components/sections/ContentAboutStorySectionV3";
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
+import { ContentPhotoGalleryCarouselSectionV3 } from "@/components/sections/ContentPhotoGalleryCarouselSectionV3";
 import { QuickPageLinksSectionV2 } from "@/components/sections/QuickPageLinksSectionV2";
 import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
 import { CTAFullscreenSectionV2 } from "@/components/sections/CTAFullscreenSectionV2";
@@ -349,6 +350,12 @@ export function renderPageTemplateSection(
       return (
         <ContentHorizontalCardCarouselSectionV2
           {...horizontalCardsProps(fieldSection)}
+        />
+      );
+    case "ContentPhotoGalleryCarouselSectionV3":
+      return (
+        <ContentPhotoGalleryCarouselSectionV3
+          {...photoGalleryProps(fieldSection)}
         />
       );
     case "QuickPageLinksSectionV2":
@@ -1114,6 +1121,47 @@ function horizontalCardsProps(section: FieldSection) {
   };
 }
 
+function photoGalleryProps(section: FieldSection) {
+  const records = getRepeatedRecords(section, ["images", "gallery", "items"]);
+  const fallbackImages = sectionLibraryV3Content.contentPhotoGalleryCarousel.images;
+
+  return {
+    ...sectionLibraryV3Content.contentPhotoGalleryCarousel,
+    body: getBody(section, sectionLibraryV3Content.contentPhotoGalleryCarousel.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.contentPhotoGalleryCarousel.eyebrow,
+    ),
+    images:
+      records.length > 0
+        ? records.map((record, index) => {
+            const fallback = fallbackImages[index % fallbackImages.length];
+
+            return {
+              alt: record.alt ?? record.title ?? fallback.alt,
+              caption:
+                record.caption ??
+                record.body ??
+                record.description ??
+                record.title ??
+                fallback.caption,
+              objectPosition:
+                record.objectPosition ??
+                record.position ??
+                fallback.objectPosition,
+              size: getGalleryImageSize(record.size ?? fallback.size),
+              src: record.src ?? record.imageSrc ?? fallback.src,
+            };
+          })
+        : fallbackImages,
+    title: getTitle(
+      section,
+      sectionLibraryV3Content.contentPhotoGalleryCarousel.title,
+    ),
+  };
+}
+
 function revealParagraphProps(section: FieldSection) {
   const body = getBody(section, "");
 
@@ -1526,6 +1574,10 @@ function getRepeatedRecords(section: FieldSection, collectionNames: string[]) {
       record.heading ||
       record.body ||
       record.description ||
+      record.caption ||
+      record.src ||
+      record.imageSrc ||
+      record.alt ||
       record.quote ||
       record.question ||
       record.answer,
@@ -1690,6 +1742,29 @@ function getCardSize(value: string | undefined) {
   }
 
   return undefined;
+}
+
+function getGalleryImageSize(value: string | undefined) {
+  if (!value) {
+    return undefined;
+  }
+
+  const normalizedValue = value.toLowerCase().trim();
+
+  switch (normalizedValue) {
+    case "small":
+      return "small" as const;
+    case "medium":
+      return "medium" as const;
+    case "large":
+      return "large" as const;
+    case "tall":
+      return "tall" as const;
+    case "wide":
+      return "wide" as const;
+    default:
+      return undefined;
+  }
 }
 
 function extractCardSize(value: string) {

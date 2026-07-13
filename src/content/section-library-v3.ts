@@ -229,6 +229,48 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
+  contentPhotoGalleryCarousel: {
+    eyebrow: "Field Notes",
+    title: "A flexible image rail for people, projects, and proof.",
+    body: "Use this gallery when the page needs a richer visual pass with mixed image sizes, captions, and enough motion to feel browsable without becoming a masonry wall.",
+    images: [
+      {
+        alt: "Technician working on indoor HVAC equipment",
+        caption: "Service details documented on site.",
+        objectPosition: "50% 40%",
+        size: "tall" as const,
+        src: "/images/bg-image-sample%201.jpg",
+      },
+      {
+        alt: "Technician speaking with a homeowner at the door",
+        caption: "Clear conversations before work begins.",
+        objectPosition: "42% 42%",
+        size: "medium" as const,
+        src: "/images/bg-image-sample%202.jpg",
+      },
+      {
+        alt: "HVAC unit staged near a service truck",
+        caption: "Replacement work with the right equipment ready.",
+        objectPosition: "22% 50%",
+        size: "wide" as const,
+        src: "/images/hvac-unit-truck-wide.png",
+      },
+      {
+        alt: "Service visit conversation at a home entry",
+        caption: "Local service moments that feel human.",
+        objectPosition: "58% 42%",
+        size: "large" as const,
+        src: "/images/bg-image-sample%202.1.jpg",
+      },
+      {
+        alt: "Close service detail from a residential visit",
+        caption: "A visual rhythm for trust and context.",
+        objectPosition: "50% 50%",
+        size: "small" as const,
+        src: "/images/bg-image-sample%202.jpg",
+      },
+    ],
+  },
   contentFixedCoverFade: {
     backgroundEyebrow: "Ready when you are",
     backgroundTitle: "Let the final message hold before the request path rises.",
@@ -1067,6 +1109,10 @@ export const sectionLibraryV3Collections = [
       {
         label: "Rule header",
         component: "content-rule-header-v2",
+      },
+      {
+        label: "Photo gallery carousel",
+        component: "content-photo-gallery-carousel-v3",
       },
       {
         label: "Editorial portrait",

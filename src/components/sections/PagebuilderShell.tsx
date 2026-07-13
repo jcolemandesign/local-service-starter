@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties, DragEvent, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   HeroSplitFixedImageSectionV3,
@@ -28,6 +28,8 @@ type WorkingSection = PagebuilderRecipe["sectionStack"][number] & {
   originalComponent: string;
   originalIndex: number;
 };
+
+type DragDropPosition = "before" | "after" | null;
 
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -638,6 +640,13 @@ const sectionSwapOptions = [
     name: "Rule header content",
   },
   {
+    component: "ContentPhotoGalleryCarouselSectionV3",
+    instruction:
+      "Use a mixed-size horizontal photo gallery when people, projects, or proof images should carry a narrative moment.",
+    mode: "Narrative",
+    name: "Photo gallery carousel",
+  },
+  {
     component: "FeaturePortraitParagraphSectionV3",
     instruction:
       "Use an editorial portrait and focused paragraph when a section needs human context or point-of-view.",
@@ -1081,9 +1090,8 @@ export function PagebuilderShell({
   const [dragOverSectionId, setDragOverSectionId] = useState<string | null>(
     null,
   );
-  const [dragDropPosition, setDragDropPosition] = useState<"before" | "after">(
-    "before",
-  );
+  const [dragDropPosition, setDragDropPosition] =
+    useState<DragDropPosition>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isRenderedPreviewOpen, setIsRenderedPreviewOpen] = useState(false);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
@@ -1352,6 +1360,7 @@ export function PagebuilderShell({
     if (!draggedId || draggedId === targetId) {
       setDraggedSectionId(null);
       setDragOverSectionId(null);
+      setDragDropPosition(null);
       return;
     }
 
@@ -1384,6 +1393,25 @@ export function PagebuilderShell({
     });
     setDraggedSectionId(null);
     setDragOverSectionId(null);
+    setDragDropPosition(null);
+  }
+
+  function getDragDropPosition(
+    event: DragEvent<HTMLElement>,
+  ): DragDropPosition {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const pointerRatio = (event.clientY - bounds.top) / bounds.height;
+    const inertBand = 0.08;
+
+    if (pointerRatio < 0.5 - inertBand) {
+      return "before";
+    }
+
+    if (pointerRatio > 0.5 + inertBand) {
+      return "after";
+    }
+
+    return null;
   }
 
   function deleteSection(sectionId: string) {
@@ -1966,38 +1994,40 @@ export function PagebuilderShell({
                           ? "border-white/35 bg-white/12 text-white"
                           : "border-white/10 bg-white/8 text-white",
                         section.id === draggedSectionId && "opacity-35",
-                        section.id === dragOverSectionId && "border-white/60",
+                        section.id === dragOverSectionId &&
+                          dragDropPosition !== null &&
+                          "border-white/60",
                       )}
                       key={section.id}
                       onDragOver={(event) => {
                         event.preventDefault();
                         event.dataTransfer.dropEffect = "move";
-                        const bounds =
-                          event.currentTarget.getBoundingClientRect();
-                        const nextPosition =
-                          event.clientY < bounds.top + bounds.height / 2
-                            ? "before"
-                            : "after";
+                        const nextPosition = getDragDropPosition(event);
 
                         setDragOverSectionId(section.id);
                         setDragDropPosition(nextPosition);
                       }}
                       onDrop={(event) => {
                         event.preventDefault();
+                        const dropPosition = getDragDropPosition(event);
                         const droppedSectionId =
                           event.dataTransfer.getData("text/plain") ||
                           draggedSectionId;
 
-                        if (droppedSectionId) {
+                        if (droppedSectionId && dropPosition) {
                           reorderSection(
                             droppedSectionId,
                             section.id,
-                            dragDropPosition,
+                            dropPosition,
                           );
+                        } else {
+                          setDraggedSectionId(null);
+                          setDragOverSectionId(null);
+                          setDragDropPosition(null);
                         }
                       }}
                     >
-                      {section.id === dragOverSectionId ? (
+                      {section.id === dragOverSectionId && dragDropPosition ? (
                         <span
                           aria-hidden="true"
                           className={cx(
@@ -2016,6 +2046,7 @@ export function PagebuilderShell({
                           onDragEnd={() => {
                             setDraggedSectionId(null);
                             setDragOverSectionId(null);
+                            setDragDropPosition(null);
                           }}
                           onDragStart={(event) => {
                             event.dataTransfer.effectAllowed = "move";
@@ -2689,6 +2720,7 @@ export function PagebuilderShell({
                             "shadow-[0_0_0_2px_var(--color-service-accent)]",
                           section.id === draggedSectionId && "opacity-35",
                           section.id === dragOverSectionId &&
+                            dragDropPosition !== null &&
                             "border-service-accent",
                           !section.included && "opacity-50",
                         )}
@@ -2696,15 +2728,12 @@ export function PagebuilderShell({
                         onDragEnd={() => {
                           setDraggedSectionId(null);
                           setDragOverSectionId(null);
+                          setDragDropPosition(null);
                         }}
                         onDragOver={(event) => {
                           event.preventDefault();
-                          const bounds =
-                            event.currentTarget.getBoundingClientRect();
-                          const nextPosition =
-                            event.clientY < bounds.top + bounds.height / 2
-                              ? "before"
-                              : "after";
+                          event.dataTransfer.dropEffect = "move";
+                          const nextPosition = getDragDropPosition(event);
 
                           setDragOverSectionId(section.id);
                           setDragDropPosition(nextPosition);
@@ -2719,21 +2748,26 @@ export function PagebuilderShell({
                         }}
                         onDrop={(event) => {
                           event.preventDefault();
+                          const dropPosition = getDragDropPosition(event);
                           const droppedSectionId =
                             event.dataTransfer.getData("text/plain") ||
                             draggedSectionId;
 
-                          if (droppedSectionId) {
+                          if (droppedSectionId && dropPosition) {
                             reorderSection(
                               droppedSectionId,
                               section.id,
-                              dragDropPosition,
+                              dropPosition,
                             );
+                          } else {
+                            setDraggedSectionId(null);
+                            setDragOverSectionId(null);
+                            setDragDropPosition(null);
                           }
                         }}
                         key={section.id}
                       >
-                        {section.id === dragOverSectionId ? (
+                        {section.id === dragOverSectionId && dragDropPosition ? (
                           <span
                             aria-hidden="true"
                             className={cx(

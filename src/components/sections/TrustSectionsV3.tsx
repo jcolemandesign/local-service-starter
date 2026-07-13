@@ -343,14 +343,17 @@ export function TrustLogoMarqueeSectionV3({
 }
 
 export function TrustLogoGridSectionV3({ label, logos }: TrustLogosProps) {
+  const visibleLogos = logos.slice(0, 5);
+
   return (
     <section className="bg-bg-page">
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem
+          alignY="middle"
           className="col-span-2 max-lg:col-span-7"
           measure="caption"
         >
-          <div className="content-padding radius-medium flex h-full items-start border border-service-border bg-service-surface">
+          <div className="content-padding radius-medium flex h-full items-center justify-center border border-service-border bg-service-surface text-center">
             <p className="type-text-xl wrap-balance font-semibold text-service-ink">
               {label}
             </p>
@@ -358,11 +361,12 @@ export function TrustLogoGridSectionV3({ label, logos }: TrustLogosProps) {
         </SevenColumnGridItem>
 
         <SevenColumnGridItem
+          alignY="middle"
           className="col-span-5 col-start-3 max-lg:col-span-7 max-lg:col-start-1"
         >
-          <ul className="grid grid-cols-5 site-grid-gap max-lg:grid-cols-3 max-sm:grid-cols-2">
-            {logos.map((logo) => (
-              <li key={logo}>
+          <ul className="grid grid-cols-5 justify-items-center site-grid-gap max-lg:grid-cols-3 max-sm:grid-cols-2">
+            {visibleLogos.map((logo) => (
+              <li className="w-full" key={logo}>
                 <LogoPlaceholder name={logo} />
               </li>
             ))}

@@ -9,8 +9,8 @@
       "optionName": "Page Layout",
       "recipeId": "conversion-heavy",
       "recipeName": "About",
-      "savedAt": "2026-07-13T20:26:48.811Z",
-      "sectionCount": 10,
+      "savedAt": "2026-07-13T21:30:18.876Z",
+      "sectionCount": 6,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
@@ -93,13 +93,23 @@
           "originalIndex": -1
         },
         {
-          "component": "ContentScrollWrittenRevealSectionV2",
-          "id": "conversion-heavy-ContentScrollWrittenRevealSectionV2-added-1",
+          "component": "TrustLogoGridSectionV3",
+          "id": "conversion-heavy-TrustLogoGridSectionV3-added-1",
           "included": true,
-          "instruction": "Use written reveal copy when a narrative point should build in short, readable beats.",
+          "instruction": "Use static logos or associations when motion would distract from reading.",
+          "mode": "Proof",
+          "name": "Static trust logo grid",
+          "originalComponent": "TrustLogoGridSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "ContentRevealParagraphSectionV2",
+          "id": "conversion-heavy-ContentRevealParagraphSectionV2-added-1",
+          "included": true,
+          "instruction": "Use a short editorial thesis to slow the page down and frame the service promise.",
           "mode": "Narrative",
-          "name": "Scroll written reveal",
-          "originalComponent": "ContentScrollWrittenRevealSectionV2",
+          "name": "Reveal paragraph",
+          "originalComponent": "ContentRevealParagraphSectionV2",
           "originalIndex": -1
         },
         {
@@ -113,63 +123,13 @@
           "originalIndex": -1
         },
         {
-          "component": "FeatureOverlapRowsSectionV3",
-          "id": "conversion-heavy-FeatureOverlapRowsSectionV3-added-7",
+          "component": "ContentPhotoGalleryCarouselSectionV3",
+          "id": "conversion-heavy-ContentPhotoGalleryCarouselSectionV3-added-2",
           "included": true,
-          "instruction": "Use overlapping feature rows when multiple narrative points need visual momentum without becoming service cards.",
+          "instruction": "Use a mixed-size horizontal photo gallery when people, projects, or proof images should carry a narrative moment.",
           "mode": "Narrative",
-          "name": "Overlap feature rows",
-          "originalComponent": "FeatureOverlapRowsSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ContentAboutStorySectionV3",
-          "id": "conversion-heavy-ContentAboutStorySectionV3-added-12",
-          "included": true,
-          "instruction": "Use for long-form about storytelling when the page needs local context, operating philosophy, and careful trust language.",
-          "mode": "Narrative",
-          "name": "About story",
-          "originalComponent": "ContentAboutStorySectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "FeaturePortraitParagraphSectionV3",
-          "id": "conversion-heavy-FeaturePortraitParagraphSectionV3-added-8",
-          "included": true,
-          "instruction": "Use an editorial portrait and focused paragraph when a section needs human context or point-of-view.",
-          "mode": "Narrative",
-          "name": "Portrait paragraph feature",
-          "originalComponent": "FeaturePortraitParagraphSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ContentSplitFixedImageSectionV3",
-          "id": "conversion-heavy-ContentSplitFixedImageSectionV3-added-9",
-          "included": true,
-          "instruction": "Use a content-height split layout when the section needs fixed-ratio imagery without hero-scale height.",
-          "mode": "Narrative",
-          "name": "Split content with fixed image",
-          "originalComponent": "ContentSplitFixedImageSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ContentSplitHeadlineImageSectionV2",
-          "id": "conversion-heavy-ContentSplitHeadlineImageSectionV2-added-10",
-          "included": true,
-          "instruction": "Translate regular content into an image-led editorial texture with one large positioning line.",
-          "mode": "Narrative",
-          "name": "Split headline image content",
-          "originalComponent": "ContentSplitHeadlineImageSectionV2",
-          "originalIndex": -1
-        },
-        {
-          "component": "ContentScrollWrittenRevealSectionV2",
-          "id": "conversion-heavy-ContentScrollWrittenRevealSectionV2-added-11",
-          "included": true,
-          "instruction": "Use written reveal copy when a narrative point should build in short, readable beats.",
-          "mode": "Narrative",
-          "name": "Scroll written reveal",
-          "originalComponent": "ContentScrollWrittenRevealSectionV2",
+          "name": "Photo gallery carousel",
+          "originalComponent": "ContentPhotoGalleryCarouselSectionV3",
           "originalIndex": -1
         }
       ]
@@ -183,7 +143,7 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-07-13T19:19:53.440Z",
+      "savedAt": "2026-07-13T21:20:04.565Z",
       "sectionCount": 11,
       "sections": [
         {
