@@ -3,6 +3,7 @@ export { ContactSectionV2 } from "./ContactSectionV2";
 export { ButtonStylesSectionV2 } from "./ButtonStylesSectionV2";
 export { ContentAboutCompanySection } from "./ContentAboutCompanySection";
 export { ContentAboutCompanySectionV2 } from "./ContentAboutCompanySectionV2";
+export { ContentAboutStorySectionV3 } from "./ContentAboutStorySectionV3";
 export { ContentEditorSection } from "./ContentEditorSection";
 export { ContentFixedCoverFadeSectionV2 } from "./ContentFixedCoverFadeSectionV2";
 export { ContentHorizontalCardCarouselSectionV2 } from "./ContentHorizontalCardCarouselSectionV2";
@@ -108,6 +109,7 @@ export {
 } from "./TemplateLibrarySection";
 export { TrustBarFloatingBentoSectionV2 } from "./TrustBarFloatingBentoSectionV2";
 export {
+  TrustBarBentoAboutSectionV3,
   TrustBarFloatingBentoSectionV3,
   TrustBarSectionV3,
   TrustLogoGridSectionV3,

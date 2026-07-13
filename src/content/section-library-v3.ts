@@ -285,6 +285,38 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
+  contentAboutStory: {
+    eyebrow: "About North Star",
+    title: "Clear HVAC guidance for Lake Norman homes.",
+    intro:
+      "North Star HVAC is built for homeowners who need practical heating and cooling help without pressure, scare tactics, or a confusing next step.",
+    paragraphs: [
+      "The work starts with a simple belief: a service visit should make the decision clearer. Whether the issue is a no-cool call, a heat pump that is struggling, or an older system that may be nearing replacement, the customer should understand what the technician is seeing and what the options mean.",
+      "That makes the company story less about a dramatic origin and more about how the work is handled day to day. Clear explanations, clean work areas, and practical repair-vs-replacement guidance are the details that turn a stressful home service moment into something manageable.",
+      "The service area matters too. North Star is positioned around Huntersville, Lake Norman, and nearby North Charlotte communities, so the site needs to feel local before it feels promotional. The copy should help people recognize that the team understands seasonal tune-ups, urgent comfort issues, replacement planning, and the questions that come with owning HVAC equipment here.",
+      "The strongest about message is steady and specific: repair when repair makes sense, replace when replacement is the better long-term move, and keep the path to a quote or call easy to find.",
+    ],
+    pullquote:
+      "Repair when it makes sense. Replace when it is the better long-term move.",
+    notes: [
+      {
+        label: "Local focus",
+        body: "Huntersville, Lake Norman, and nearby North Charlotte communities stay central to the story.",
+      },
+      {
+        label: "Primary work",
+        body: "Replacement, heat pump service, maintenance, tune-ups, and repair carry the most strategic weight.",
+      },
+      {
+        label: "Trust angle",
+        body: "Use over-a-decade experience, family-owned language, clear explanations, and respectful service without unsupported specifics.",
+      },
+      {
+        label: "Tone guardrail",
+        body: "Avoid cheap pricing, guaranteed emergency coverage, exact repair pricing, or unverified warranty and financing claims.",
+      },
+    ],
+  },
   contentSplitHeadlineImage: {
     headlineTop: "Useful service pages",
     headlineBottom: "feel calm first",
@@ -1021,6 +1053,10 @@ export const sectionLibraryV3Collections = [
         component: "content-about-company-v2",
       },
       {
+        label: "About story",
+        component: "content-about-story-v3",
+      },
+      {
         label: "Split headline image",
         component: "content-split-headline-image-v2",
       },
@@ -1053,6 +1089,10 @@ export const sectionLibraryV3Collections = [
       {
         label: "Floating bento trust bar",
         component: "trust-bar-floating-bento-v3",
+      },
+      {
+        label: "Bento about us bar",
+        component: "trust-bar-bento-about-v3",
       },
       { label: "Trust marquee", component: "trust-marquee-v3" },
       { label: "Logo marquee", component: "trust-logo-marquee-v3" },

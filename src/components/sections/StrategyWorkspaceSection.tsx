@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Card, Section } from "@/components/primitives";
+import { Card, DownArrowIcon, Section } from "@/components/primitives";
 import type { PageTemplateSummary } from "@/components/sections/TemplateLibrarySection";
 import {
   buildStrategyNavigation,
@@ -729,7 +729,7 @@ export function StrategyWorkspaceSection({
                           className="flex size-10 items-center justify-center rounded-[var(--radius-md-token)] border border-service-border text-service-accent transition-transform group-open:rotate-180"
                           aria-hidden="true"
                         >
-                          v
+                          <DownArrowIcon className="size-4" />
                         </span>
                       </div>
                     </summary>

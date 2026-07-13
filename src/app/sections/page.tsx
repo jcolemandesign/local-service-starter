@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/primitives";
 import {
   ContentAboutCompanySectionV2,
+  ContentAboutStorySectionV3,
   ContentFixedCoverFadeSectionV2,
   ContentHorizontalCardCarouselSectionV2,
   ContentRevealParagraphSectionV2,
@@ -45,6 +46,7 @@ import {
   TestimonialsCarouselSectionV3,
   TestimonialsMasonrySectionV3,
   TestimonialsSectionV3,
+  TrustBarBentoAboutSectionV3,
   TrustBarFloatingBentoSectionV3,
   TrustBarSectionV3,
   TrustLogoGridSectionV3,
@@ -137,6 +139,11 @@ const sectionElements = {
   "content-about-company-v2": (
     <ContentAboutCompanySectionV2
       {...sectionLibraryV3Content.contentAboutCompany}
+    />
+  ),
+  "content-about-story-v3": (
+    <ContentAboutStorySectionV3
+      {...sectionLibraryV3Content.contentAboutStory}
     />
   ),
   "content-split-headline-image-v2": (
@@ -271,6 +278,11 @@ const sectionElements = {
   ),
   "trust-bar-floating-bento-v3": (
     <TrustBarFloatingBentoSectionV3
+      {...sectionLibraryV3Content.trustBar}
+    />
+  ),
+  "trust-bar-bento-about-v3": (
+    <TrustBarBentoAboutSectionV3
       {...sectionLibraryV3Content.trustBar}
     />
   ),

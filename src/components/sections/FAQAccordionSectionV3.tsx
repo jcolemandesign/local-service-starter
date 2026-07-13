@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useId, useState } from "react";
 import {
+  DownArrowIcon,
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
@@ -79,9 +80,11 @@ export function FAQAccordionSectionV3({
                       <span className="type-heading-md">{item.question}</span>
                       <span
                         aria-hidden="true"
-                        className="radius-medium flex size-10 shrink-0 items-center justify-center border border-service-border text-lg font-semibold leading-none text-service-accent max-md:size-9"
+                        className={`radius-medium flex size-10 shrink-0 items-center justify-center border border-service-border text-service-accent transition-transform max-md:size-9 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
                       >
-                        {isOpen ? "^" : "v"}
+                        <DownArrowIcon className="size-4" />
                       </span>
                     </button>
                   </h3>

@@ -11,6 +11,7 @@ import {
   HeroSplitFullHeightSectionV3,
   type HeroSplitFullHeightVariant,
 } from "@/components/sections/HeroSplitFullHeightSectionV3";
+import { DownArrowIcon } from "@/components/primitives";
 import type { PagebuilderRecipe, SectionMode } from "@/content/pagebuilder";
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
 
@@ -623,6 +624,13 @@ const sectionSwapOptions = [
     name: "About company content",
   },
   {
+    component: "ContentAboutStorySectionV3",
+    instruction:
+      "Use for long-form about storytelling when the page needs local context, operating philosophy, and careful trust language.",
+    mode: "Narrative",
+    name: "About story",
+  },
+  {
     component: "ContentRuleHeaderSectionV2",
     instruction:
       "Use as lightweight editorial texture to introduce a practical idea without adding a heavy section.",
@@ -663,6 +671,13 @@ const sectionSwapOptions = [
       "Use floating trust proof when compact stats should feel more dimensional than a straight bar.",
     mode: "Proof",
     name: "Floating bento trust bar",
+  },
+  {
+    component: "TrustBarBentoAboutSectionV3",
+    instruction:
+      "Use crew images mixed with compact proof callouts when an about or trust moment should feel human and field-based.",
+    mode: "Proof",
+    name: "Bento about us bar",
   },
   {
     component: "TrustMarqueeSection",
@@ -833,6 +848,62 @@ const sectionSwapOptions = [
     name: "Link panel footer",
   },
 ] as const;
+
+type SectionSwapOption = (typeof sectionSwapOptions)[number];
+type ImageLayoutOptionSignifier = {
+  label: string;
+  pattern: "full" | "fixed";
+};
+
+const imageLayoutOptionSignifiers: Partial<
+  Record<SectionSwapOption["component"], ImageLayoutOptionSignifier>
+> = {
+  HeroSplitFullHeightSectionV3: {
+    label: "Full image split",
+    pattern: "full",
+  },
+  HeroSplitFixedImageSectionV3: {
+    label: "Fixed-ratio split",
+    pattern: "fixed",
+  },
+};
+
+function getImageLayoutOptionSignifier(component: SectionSwapOption["component"]) {
+  return imageLayoutOptionSignifiers[component];
+}
+
+function InnerLayoutPill({
+  signifier,
+  tone,
+}: {
+  signifier: ImageLayoutOptionSignifier;
+  tone: "dark" | "light";
+}) {
+  return (
+    <span
+      className={cx(
+        "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em]",
+        tone === "dark"
+          ? "border-white/15 bg-white/10 text-white/70"
+          : "border-service-border bg-service-surface text-service-muted",
+      )}
+    >
+      <span
+        aria-hidden="true"
+        className="grid h-3.5 w-5 grid-cols-2 overflow-hidden rounded-[2px] border border-current/40"
+      >
+        <span className="bg-current/25" />
+        <span
+          className={cx(
+            "bg-current",
+            signifier.pattern === "fixed" && "m-0.5 rounded-[1px]",
+          )}
+        />
+      </span>
+      {signifier.label}
+    </span>
+  );
+}
 
 function buildPageInstruction({
   designLabel,
@@ -1979,13 +2050,13 @@ export function PagebuilderShell({
                           <span
                             aria-hidden="true"
                             className={cx(
-                              "mt-1 flex size-7 shrink-0 items-center justify-center rounded-sm border text-sm leading-none transition-transform",
+                              "mt-1 flex size-7 shrink-0 items-center justify-center rounded-sm border transition-transform",
                               isActive
                                 ? "rotate-180 border-white/25 text-white"
                                 : "border-white/10 text-white/60",
                             )}
                           >
-                            v
+                            <DownArrowIcon className="size-3.5" />
                           </span>
                         </button>
                       </div>
@@ -2220,9 +2291,9 @@ export function PagebuilderShell({
                 </h2>
                 <span
                   aria-hidden="true"
-                  className="flex size-8 shrink-0 items-center justify-center border border-white/15 text-lg leading-none text-white/80 transition-transform group-open:rotate-180"
+                  className="flex size-8 shrink-0 items-center justify-center border border-white/15 text-white/80 transition-transform group-open:rotate-180"
                 >
-                  v
+                  <DownArrowIcon className="size-4" />
                 </span>
               </summary>
               <div className="mt-4 grid gap-4">
@@ -2236,33 +2307,63 @@ export function PagebuilderShell({
                   }
 
                   return (
-                    <div className="grid gap-2" key={mode.id}>
-                      <p className="type-caption font-semibold text-white/72">
-                        {mode.name}
-                      </p>
-                      <div className="grid gap-1.5">
+                    <details
+                      className="group/mode rounded border border-white/10 bg-white/6"
+                      key={mode.id}
+                    >
+                      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5 text-left">
+                        <span className="min-w-0">
+                          <span className="type-caption block font-semibold text-white">
+                            {mode.name}
+                          </span>
+                          <span className="type-caption mt-0.5 block text-white/55">
+                            {options.length} section options
+                          </span>
+                        </span>
+                        <span
+                          aria-hidden="true"
+                          className="flex size-7 shrink-0 items-center justify-center border border-white/15 text-white/75 transition-transform group-open/mode:rotate-180"
+                        >
+                          <DownArrowIcon className="size-3.5" />
+                        </span>
+                      </summary>
+                      <div className="grid gap-1.5 border-t border-white/10 p-2">
                         {options.map((option) => {
                           const templateUsageCount =
                             sectionTemplateUsageCounts.get(option.component) ?? 0;
+                          const imageLayoutSignifier =
+                            getImageLayoutOptionSignifier(option.component);
 
                           return (
                             <button
-                              className="radius-4 flex min-h-10 items-center justify-between gap-3 border border-white/10 bg-white/8 px-3 text-left text-sm font-semibold text-white transition-colors hover:border-white/45 hover:bg-white/14"
+                              className="radius-4 grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border border-white/10 bg-white/8 px-3 py-2 text-left text-sm font-semibold text-white transition-colors hover:border-white/45 hover:bg-white/14"
                               key={option.component}
                               onClick={() => addSection(option.component)}
                               type="button"
                             >
-                              <span>{option.name}</span>
-                              {templateUsageCount > 0 ? (
-                                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-semibold text-service-ink">
-                                  {templateUsageCount}
-                                </span>
-                              ) : null}
+                              <span className="min-w-0">
+                                {!imageLayoutSignifier ? (
+                                  <span className="block">{option.name}</span>
+                                ) : null}
+                                {imageLayoutSignifier ? (
+                                  <InnerLayoutPill
+                                    signifier={imageLayoutSignifier}
+                                    tone="dark"
+                                  />
+                                ) : null}
+                              </span>
+                              <span className="flex items-center gap-1.5">
+                                {templateUsageCount > 0 ? (
+                                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-semibold text-service-ink">
+                                    {templateUsageCount}
+                                  </span>
+                                ) : null}
+                              </span>
                             </button>
                           );
                         })}
                       </div>
-                    </div>
+                    </details>
                   );
                 })}
               </div>
@@ -2437,11 +2538,11 @@ export function PagebuilderShell({
                       ))}
                       <span
                         aria-hidden="true"
-                        className={`flex size-8 items-center justify-center rounded-sm border border-service-border text-lg leading-none text-service-accent transition-transform ${
+                        className={`flex size-8 items-center justify-center rounded-sm border border-service-border text-service-accent transition-transform ${
                           isRenderedPreviewOpen ? "rotate-180" : ""
                         }`}
                       >
-                        v
+                        <DownArrowIcon className="size-4" />
                       </span>
                     </span>
                   </button>
@@ -2519,23 +2620,58 @@ export function PagebuilderShell({
                         }
 
                         return (
-                          <div className="grid gap-2" key={mode.id}>
-                            <p className="type-caption font-semibold text-service-muted">
-                              {mode.name}
-                            </p>
-                            <div className="grid grid-cols-2 gap-2 max-md:grid-cols-1">
-                              {options.map((option) => (
-                                <button
-                                  className="radius-4 min-h-10 border border-service-border bg-white px-3 text-left text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-                                  key={option.component}
-                                  onClick={() => addSection(option.component)}
-                                  type="button"
-                                >
-                                  {option.name}
-                                </button>
-                              ))}
+                          <details
+                            className="group/template-mode rounded border border-service-border bg-white"
+                            key={mode.id}
+                          >
+                            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5 text-left">
+                              <span className="min-w-0">
+                                <span className="type-caption block font-semibold text-service-ink">
+                                  {mode.name}
+                                </span>
+                                <span className="type-caption mt-0.5 block text-service-muted">
+                                  {options.length} section options
+                                </span>
+                              </span>
+                              <span
+                                aria-hidden="true"
+                                className="flex size-7 shrink-0 items-center justify-center rounded-sm border border-service-border text-service-accent transition-transform group-open/template-mode:rotate-180"
+                              >
+                                <DownArrowIcon className="size-3.5" />
+                              </span>
+                            </summary>
+                            <div className="grid grid-cols-2 gap-2 border-t border-service-border p-2 max-md:grid-cols-1">
+                              {options.map((option) => {
+                                const imageLayoutSignifier =
+                                  getImageLayoutOptionSignifier(
+                                    option.component,
+                                  );
+
+                                return (
+                                  <button
+                                    className="radius-4 grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border border-service-border bg-white px-3 py-2 text-left text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                                    key={option.component}
+                                    onClick={() => addSection(option.component)}
+                                    type="button"
+                                  >
+                                    <span className="min-w-0">
+                                      {!imageLayoutSignifier ? (
+                                        <span className="block">
+                                          {option.name}
+                                        </span>
+                                      ) : null}
+                                      {imageLayoutSignifier ? (
+                                        <InnerLayoutPill
+                                          signifier={imageLayoutSignifier}
+                                          tone="light"
+                                        />
+                                      ) : null}
+                                    </span>
+                                  </button>
+                                );
+                              })}
                             </div>
-                          </div>
+                          </details>
                         );
                       })}
                       <span className="type-caption text-service-muted">

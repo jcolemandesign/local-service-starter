@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
-import { Button } from "@/components/primitives";
+import { Button, DownArrowIcon } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 import { useScrollLock } from "@/hooks/useScrollLock";
 
@@ -216,7 +216,15 @@ function NavPrimaryLayoutSection({
                         }
                       >
                         {link.label}
-                        <span aria-hidden="true">{isOpen ? "^" : "v"}</span>
+                        <span
+                          aria-hidden="true"
+                          className={cx(
+                            "inline-flex transition-transform",
+                            isOpen ? "rotate-180" : undefined,
+                          )}
+                        >
+                          <DownArrowIcon className="size-3.5" />
+                        </span>
                       </button>
                       <AnimatePresence initial={false}>
                         {isOpen ? (

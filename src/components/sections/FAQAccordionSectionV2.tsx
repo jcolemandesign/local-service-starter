@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useId, useState } from "react";
+import { DownArrowIcon } from "@/components/primitives";
 
 const accordionEase = [0.22, 1, 0.36, 1] as const;
 
@@ -94,11 +95,12 @@ export function FAQAccordionSectionV2({
                     <span
                       className={cx(
                         "radius-medium",
-                        "flex size-10 shrink-0 items-center justify-center border border-service-border text-lg font-semibold leading-none text-service-accent max-md:size-9",
+                        "flex size-10 shrink-0 items-center justify-center border border-service-border text-service-accent transition-transform max-md:size-9",
+                        isOpen ? "rotate-180" : undefined,
                       )}
                       aria-hidden="true"
                     >
-                      {isOpen ? "^" : "v"}
+                      <DownArrowIcon className="size-4" />
                     </span>
                   </button>
                 </h3>

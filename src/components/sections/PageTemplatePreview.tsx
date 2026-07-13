@@ -1,4 +1,5 @@
 import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAboutCompanySectionV2";
+import { ContentAboutStorySectionV3 } from "@/components/sections/ContentAboutStorySectionV3";
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
 import { QuickPageLinksSectionV2 } from "@/components/sections/QuickPageLinksSectionV2";
@@ -65,6 +66,7 @@ import { TestimonialsMasonrySectionV2 } from "@/components/sections/Testimonials
 import { TestimonialsMasonrySectionV3 } from "@/components/sections/TestimonialsMasonrySectionV3";
 import { TrustMarqueeSection } from "@/components/sections/TrustMarqueeSection";
 import {
+  TrustBarBentoAboutSectionV3,
   TrustBarFloatingBentoSectionV3,
   TrustBarSectionV3,
   TrustLogoGridSectionV3,
@@ -325,6 +327,8 @@ export function renderPageTemplateSection(
       return <TrustBarSectionV3 {...trustBarProps(fieldSection)} />;
     case "TrustBarFloatingBentoSectionV3":
       return <TrustBarFloatingBentoSectionV3 {...trustBarProps(fieldSection)} />;
+    case "TrustBarBentoAboutSectionV3":
+      return <TrustBarBentoAboutSectionV3 {...trustBarProps(fieldSection)} />;
     case "TrustMarqueeSection":
       return <TrustMarqueeSection {...trustMarqueeProps(fieldSection)} />;
     case "TrustMarqueeSectionV3":
@@ -380,6 +384,8 @@ export function renderPageTemplateSection(
       return <ContentStickyIdeasSectionV2 {...stickyIdeasProps(fieldSection)} />;
     case "ContentAboutCompanySectionV2":
       return <ContentAboutCompanySectionV2 {...aboutCompanyProps(fieldSection)} />;
+    case "ContentAboutStorySectionV3":
+      return <ContentAboutStorySectionV3 {...aboutStoryProps(fieldSection)} />;
     case "ContentRuleHeaderSectionV2":
       return <ContentRuleHeaderSectionV2 {...ruleHeaderProps(fieldSection)} />;
     case "FeaturePortraitParagraphSectionV3":
@@ -1233,6 +1239,55 @@ function aboutCompanyProps(section: FieldSection) {
     ),
     statement: getTitle(section, sectionLibraryV3Content.contentAboutCompany.statement),
     summary: getBody(section, sectionLibraryV3Content.contentAboutCompany.summary),
+  };
+}
+
+function aboutStoryProps(section: FieldSection) {
+  const noteRecords = getRepeatedRecords(section, [
+    "notes",
+    "supportingItems",
+    "items",
+  ]);
+  const fallbackNotes = sectionLibraryV3Content.contentAboutStory.notes;
+
+  return {
+    ...sectionLibraryV3Content.contentAboutStory,
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.contentAboutStory.eyebrow,
+    ),
+    intro: getBody(section, sectionLibraryV3Content.contentAboutStory.intro),
+    notes:
+      noteRecords.length > 0
+        ? noteRecords.map((record, index) => {
+            const fallback = fallbackNotes[index % fallbackNotes.length];
+
+            return {
+              label:
+                record.label ??
+                record.eyebrow ??
+                record.title ??
+                fallback.label,
+              body:
+                record.body ??
+                record.description ??
+                record.summary ??
+                fallback.body,
+            };
+          })
+        : fallbackNotes,
+    paragraphs: getListValues(
+      section,
+      ["paragraphs", "story", "bodySections"],
+      sectionLibraryV3Content.contentAboutStory.paragraphs.join("\n"),
+    ),
+    pullquote: getValue(
+      section,
+      "pullquote",
+      sectionLibraryV3Content.contentAboutStory.pullquote,
+    ),
+    title: getTitle(section, sectionLibraryV3Content.contentAboutStory.title),
   };
 }
 

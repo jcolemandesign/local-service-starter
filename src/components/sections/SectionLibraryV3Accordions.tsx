@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Container } from "@/components/primitives";
+import { Container, DownArrowIcon } from "@/components/primitives";
 
 type SectionLibraryV3Collection = {
   title: string;
@@ -46,9 +46,9 @@ function EmptySubAccordion({ item }: { item: SectionLibraryV3Item }) {
 
             <span
               aria-hidden="true"
-              className="flex size-8 shrink-0 items-center justify-center border border-service-border text-lg leading-none text-service-accent transition-transform group-open/item:rotate-180"
+              className="flex size-8 shrink-0 items-center justify-center border border-service-border text-service-accent transition-transform group-open/item:rotate-180"
             >
-              v
+              <DownArrowIcon className="size-3.5" />
             </span>
           </div>
 
@@ -121,9 +121,9 @@ function EmptyCollectionAccordion({
           </div>
           <span
             aria-hidden="true"
-            className="flex size-11 shrink-0 items-center justify-center border border-service-border text-2xl leading-none text-service-accent transition-transform group-open/collection:rotate-180 max-md:size-10"
+            className="flex size-11 shrink-0 items-center justify-center border border-service-border text-service-accent transition-transform group-open/collection:rotate-180 max-md:size-10"
           >
-            v
+            <DownArrowIcon className="size-4" />
           </span>
         </Container>
       </summary>

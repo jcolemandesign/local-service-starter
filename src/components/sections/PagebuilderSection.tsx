@@ -1,4 +1,5 @@
 import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAboutCompanySectionV2";
+import { ContentAboutStorySectionV3 } from "@/components/sections/ContentAboutStorySectionV3";
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
 import { QuickPageLinksSectionV2 } from "@/components/sections/QuickPageLinksSectionV2";
@@ -65,6 +66,7 @@ import { TestimonialsMasonrySectionV2 } from "@/components/sections/Testimonials
 import { TestimonialsMasonrySectionV3 } from "@/components/sections/TestimonialsMasonrySectionV3";
 import { TrustMarqueeSection } from "@/components/sections/TrustMarqueeSection";
 import {
+  TrustBarBentoAboutSectionV3,
   TrustBarFloatingBentoSectionV3,
   TrustBarSectionV3,
   TrustLogoGridSectionV3,
@@ -192,6 +194,12 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.trustBar}
         />
       );
+    case "TrustBarBentoAboutSectionV3":
+      return (
+        <TrustBarBentoAboutSectionV3
+          {...sectionLibraryV3Content.trustBar}
+        />
+      );
     case "TrustMarqueeSection":
       return <TrustMarqueeSection {...sectionLibraryV3Content.trustMarquee} />;
     case "TrustMarqueeSectionV3":
@@ -285,6 +293,12 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <ContentAboutCompanySectionV2
           {...sectionLibraryV3Content.contentAboutCompany}
+        />
+      );
+    case "ContentAboutStorySectionV3":
+      return (
+        <ContentAboutStorySectionV3
+          {...sectionLibraryV3Content.contentAboutStory}
         />
       );
     case "ContentRuleHeaderSectionV2":
@@ -570,6 +584,12 @@ export function PagebuilderSection() {
       "Floating bento trust bar",
       2,
     ),
+    TrustBarBentoAboutSectionV3: previewCatalogEntry(
+      "TrustBarBentoAboutSectionV3",
+      "Proof",
+      "Bento about us bar",
+      2,
+    ),
     TrustMarqueeSection: previewCatalogEntry(
       "TrustMarqueeSection",
       "Action",
@@ -755,6 +775,12 @@ export function PagebuilderSection() {
           4,
         )}
       </div>
+    ),
+    ContentAboutStorySectionV3: previewCatalogEntry(
+      "ContentAboutStorySectionV3",
+      "Narrative",
+      "About story",
+      4,
     ),
     ContentRuleHeaderSectionV2: (
       <div key="ContentRuleHeaderSectionV2">

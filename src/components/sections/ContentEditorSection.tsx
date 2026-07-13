@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { DownArrowIcon } from "@/components/primitives";
 import type {
   ContentEditorField,
   ContentEditorPage,
@@ -400,11 +401,11 @@ export function ContentEditorSection({
                         </span>
                         <span
                           aria-hidden="true"
-                          className={`mt-1 flex size-9 shrink-0 items-center justify-center rounded-sm border border-service-border text-xl leading-none text-service-accent transition-transform ${
+                          className={`mt-1 flex size-9 shrink-0 items-center justify-center rounded-sm border border-service-border text-service-accent transition-transform ${
                             isOpen ? "rotate-180" : ""
                           }`}
                         >
-                          v
+                          <DownArrowIcon className="size-4" />
                         </span>
                       </button>
 
