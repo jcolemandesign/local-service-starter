@@ -1,4 +1,9 @@
 
+import {
+  SevenColumnGrid,
+  SevenColumnGridItem,
+} from "@/components/primitives";
+
 type AboutImage = {
   label: string;
 };
@@ -47,14 +52,15 @@ export function ContentAboutCompanySectionV2({
   }[sectionSpace];
 
   return (
-    <section id="about" className={cx("bg-white", sectionSpaceClass)}>
-      <div className="container-site grid gap-6">
-        <div className="grid grid-cols-[minmax(10rem,1fr)_minmax(0,3fr)] gap-6 max-lg:grid-cols-1">
-          <div className="flex min-w-0 items-start">
-            <p className={cx("type-label", "text-service-accent")}>
-              {eyebrow}
-            </p>
-          </div>
+    <section id="about" className="bg-white">
+      <SevenColumnGrid className={cx("section-min-none", sectionSpaceClass)}>
+        <SevenColumnGridItem className="col-span-2 max-lg:col-span-5 max-md:col-span-3">
+          <p className={cx("type-label", "text-service-accent")}>
+            {eyebrow}
+          </p>
+        </SevenColumnGridItem>
+
+        <SevenColumnGridItem className="col-span-5 col-start-3 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3">
           <div className="fluid-type-frame">
             <h2
               className={cx(
@@ -66,18 +72,29 @@ export function ContentAboutCompanySectionV2({
               {statement}
             </h2>
           </div>
-        </div>
+        </SevenColumnGridItem>
 
-        <div className="grid grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(14rem,1fr)] gap-6 max-lg:grid-cols-2 max-md:grid-cols-1">
-          {images.slice(0, 2).map((image) => (
-            <BentoImage key={image.label} label={image.label} />
-          ))}
+        {images.slice(0, 2).map((image, index) => (
+          <SevenColumnGridItem
+            className={cx(
+              index === 0 ? "col-span-2" : "col-span-2 col-start-3",
+              "max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3",
+            )}
+            key={image.label}
+          >
+            <BentoImage label={image.label} />
+          </SevenColumnGridItem>
+        ))}
 
+        <SevenColumnGridItem
+          alignY="stretch"
+          className="col-span-3 col-start-5 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3"
+        >
           <div
             className={cx(
               "fluid-type-frame",
               "radius-medium",
-              "flex min-w-0 flex-col justify-between bg-service-surface p-7 max-lg:col-span-2 max-md:col-span-1 max-md:p-6",
+              "flex h-full min-w-0 flex-col justify-between bg-service-surface p-7 max-md:p-6",
             )}
           >
             <p
@@ -100,8 +117,8 @@ export function ContentAboutCompanySectionV2({
               {action}
             </a>
           </div>
-        </div>
-      </div>
+        </SevenColumnGridItem>
+      </SevenColumnGrid>
     </section>
   );
 }
