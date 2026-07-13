@@ -3,6 +3,11 @@
 import type { CSSProperties, DragEvent, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  ContentSplitFixedImageSectionV3,
+  type ContentSplitFixedImageRatio,
+  type ContentSplitFixedImageVariant,
+} from "@/components/sections/ContentSplitFixedImageSectionV3";
+import {
   HeroSplitFixedImageSectionV3,
   type HeroSplitFixedImageRatio,
   type HeroSplitFixedImageVariant,
@@ -11,6 +16,10 @@ import {
   HeroSplitFullHeightSectionV3,
   type HeroSplitFullHeightVariant,
 } from "@/components/sections/HeroSplitFullHeightSectionV3";
+import {
+  HeroCompactSectionV3,
+  type HeroCompactAlign,
+} from "@/components/sections/HeroCompactSectionV3";
 import { DownArrowIcon } from "@/components/primitives";
 import type { PagebuilderRecipe, SectionMode } from "@/content/pagebuilder";
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
@@ -40,6 +49,8 @@ type PreviewVariableStyle = CSSProperties & Record<`--${string}`, string>;
 const normalSpacingClassName = "pagebuilder-density-normal";
 const splitContentImageComponent = "HeroSplitFullHeightSectionV3";
 const fixedRatioSplitComponent = "HeroSplitFixedImageSectionV3";
+const contentFixedRatioSplitComponent = "ContentSplitFixedImageSectionV3";
+const heroCompactComponent = "HeroCompactSectionV3";
 const splitContentImageVariantOptions = [
   {
     label: "Text 3 / Image 4",
@@ -95,6 +106,16 @@ type FixedRatioSplitVariant =
 
 type FixedRatioSplitRatio =
   (typeof fixedRatioSplitRatioOptions)[number]["value"];
+
+const heroCompactAlignOptions = [
+  { label: "Left", value: "left" },
+  { label: "Center", value: "center" },
+  { label: "Right", value: "right" },
+] as const;
+
+const heroCompactAlignments = new Set<string>(
+  heroCompactAlignOptions.map((option) => option.value),
+);
 
 function readPagebuilderPreviewVariables(): PreviewVariableStyle {
   if (typeof window === "undefined") {
@@ -278,6 +299,20 @@ function isFixedRatioSplitSection(section: WorkingSection) {
   return section.component === fixedRatioSplitComponent;
 }
 
+function isContentFixedRatioSplitSection(section: WorkingSection) {
+  return section.component === contentFixedRatioSplitComponent;
+}
+
+function isAnyFixedRatioSplitSection(section: WorkingSection) {
+  return (
+    isFixedRatioSplitSection(section) || isContentFixedRatioSplitSection(section)
+  );
+}
+
+function isHeroCompactSection(section: WorkingSection) {
+  return section.component === heroCompactComponent;
+}
+
 function getSplitContentImageVariantLabel(variant: string | undefined) {
   return splitContentImageVariantOptions.find(
     (option) => option.value === variant,
@@ -293,6 +328,12 @@ function getFixedRatioSplitVariantLabel(variant: string | undefined) {
 function getFixedRatioSplitRatioLabel(ratio: string | undefined) {
   return fixedRatioSplitRatioOptions.find((option) => option.value === ratio)
     ?.label;
+}
+
+function getHeroCompactAlign(section: WorkingSection) {
+  return heroCompactAlignments.has(section.variant ?? "")
+    ? (section.variant as HeroCompactAlign)
+    : sectionLibraryV3Content.heroCompact.align;
 }
 
 function createInitialDesignStyle(): DesignStyleSettings {
@@ -313,7 +354,8 @@ function createInitialWorkingStack(
     originalComponent: section.component,
     originalIndex: index,
     ratio:
-      section.component === fixedRatioSplitComponent
+      section.component === fixedRatioSplitComponent ||
+      section.component === contentFixedRatioSplitComponent
         ? section.ratio ?? fixedRatioSplitRatioOptions[0].value
         : section.ratio,
     variant:
@@ -321,7 +363,11 @@ function createInitialWorkingStack(
         ? section.variant ?? splitContentImageVariantOptions[0].value
         : section.component === fixedRatioSplitComponent
           ? section.variant ?? fixedRatioSplitVariantOptions[0].value
-          : section.variant,
+          : section.component === contentFixedRatioSplitComponent
+            ? section.variant ?? fixedRatioSplitVariantOptions[0].value
+            : section.component === heroCompactComponent
+              ? section.variant ?? sectionLibraryV3Content.heroCompact.align
+              : section.variant,
   }));
 }
 
@@ -359,7 +405,8 @@ function updateSectionFromSwapOption(
     mode: nextOption.mode,
     name: nextOption.name,
     ratio:
-      nextOption.component === fixedRatioSplitComponent
+      nextOption.component === fixedRatioSplitComponent ||
+      nextOption.component === contentFixedRatioSplitComponent
         ? section.ratio ?? fixedRatioSplitRatioOptions[0].value
         : undefined,
     variant:
@@ -367,7 +414,11 @@ function updateSectionFromSwapOption(
         ? section.variant ?? splitContentImageVariantOptions[0].value
         : nextOption.component === fixedRatioSplitComponent
           ? section.variant ?? fixedRatioSplitVariantOptions[0].value
-          : undefined,
+          : nextOption.component === contentFixedRatioSplitComponent
+            ? section.variant ?? fixedRatioSplitVariantOptions[0].value
+            : nextOption.component === heroCompactComponent
+              ? sectionLibraryV3Content.heroCompact.align
+              : undefined,
   };
 }
 
@@ -533,6 +584,13 @@ const sectionSwapOptions = [
       "Lead with direct copy first, then use the image below to keep the page useful and quick to understand.",
     mode: "Hero",
     name: "Content top image bottom",
+  },
+  {
+    component: "HeroCompactSectionV3",
+    instruction:
+      "Use a compact page title, eyebrow, and short descriptor when the page needs a clear header without media or proof blocks.",
+    mode: "Hero",
+    name: "Compact page hero",
   },
   {
     component: "ServicesBentoCardsSectionV2",
@@ -859,13 +917,13 @@ const sectionSwapOptions = [
 ] as const;
 
 type SectionSwapOption = (typeof sectionSwapOptions)[number];
-type ImageLayoutOptionSignifier = {
+type InnerOptionSignifier = {
   label: string;
-  pattern: "full" | "fixed";
+  pattern: "align" | "full" | "fixed";
 };
 
-const imageLayoutOptionSignifiers: Partial<
-  Record<SectionSwapOption["component"], ImageLayoutOptionSignifier>
+const innerOptionSignifiers: Partial<
+  Record<SectionSwapOption["component"], InnerOptionSignifier>
 > = {
   HeroSplitFullHeightSectionV3: {
     label: "Full image split",
@@ -875,28 +933,38 @@ const imageLayoutOptionSignifiers: Partial<
     label: "Fixed-ratio split",
     pattern: "fixed",
   },
+  ContentSplitFixedImageSectionV3: {
+    label: "Fixed-ratio split",
+    pattern: "fixed",
+  },
+  HeroCompactSectionV3: {
+    label: "Alignment options",
+    pattern: "align",
+  },
 };
 
-function getImageLayoutOptionSignifier(component: SectionSwapOption["component"]) {
-  return imageLayoutOptionSignifiers[component];
+function getInnerOptionSignifier(component: string) {
+  return innerOptionSignifiers[component as SectionSwapOption["component"]];
 }
 
 function InnerLayoutPill({
   signifier,
   tone,
 }: {
-  signifier: ImageLayoutOptionSignifier;
+  signifier: InnerOptionSignifier;
   tone: "dark" | "light";
 }) {
-  return (
-    <span
-      className={cx(
-        "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em]",
-        tone === "dark"
-          ? "border-white/15 bg-white/10 text-white/70"
-          : "border-service-border bg-service-surface text-service-muted",
-      )}
-    >
+  const icon =
+    signifier.pattern === "align" ? (
+      <span
+        aria-hidden="true"
+        className="grid h-3.5 w-5 grid-cols-3 items-end gap-0.5 rounded-[2px] border border-current/40 px-0.5 py-0.5"
+      >
+        <span className="h-1.5 bg-current/35" />
+        <span className="h-2.5 bg-current" />
+        <span className="h-1.5 bg-current/35" />
+      </span>
+    ) : (
       <span
         aria-hidden="true"
         className="grid h-3.5 w-5 grid-cols-2 overflow-hidden rounded-[2px] border border-current/40"
@@ -909,6 +977,18 @@ function InnerLayoutPill({
           )}
         />
       </span>
+    );
+
+  return (
+    <span
+      className={cx(
+        "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em]",
+        tone === "dark"
+          ? "border-white/15 bg-white/10 text-white/70"
+          : "border-service-border bg-service-surface text-service-muted",
+      )}
+    >
+      {icon}
       {signifier.label}
     </span>
   );
@@ -948,7 +1028,7 @@ function buildPageInstruction({
            getSplitContentImageVariantLabel(section.variant) ??
            splitContentImageVariantOptions[0].label
          } (${section.variant ?? splitContentImageVariantOptions[0].value})`
-       : isFixedRatioSplitSection(section)
+       : isAnyFixedRatioSplitSection(section)
          ? `Variant: ${
              getFixedRatioSplitVariantLabel(section.variant) ??
              fixedRatioSplitVariantOptions[0].label
@@ -1502,10 +1582,27 @@ export function PagebuilderShell({
   ) {
     updateActiveStack((stack) =>
       stack.map((section) =>
-        section.id === sectionId && isFixedRatioSplitSection(section)
+        section.id === sectionId && isAnyFixedRatioSplitSection(section)
           ? {
               ...section,
               variant,
+            }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
+  function updateHeroCompactAlign(
+    sectionId: string,
+    align: HeroCompactAlign,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && isHeroCompactSection(section)
+          ? {
+              ...section,
+              variant: align,
             }
           : section,
       ),
@@ -1519,7 +1616,7 @@ export function PagebuilderShell({
   ) {
     updateActiveStack((stack) =>
       stack.map((section) =>
-        section.id === sectionId && isFixedRatioSplitSection(section)
+        section.id === sectionId && isAnyFixedRatioSplitSection(section)
           ? {
               ...section,
               ratio,
@@ -1551,7 +1648,8 @@ export function PagebuilderShell({
       originalComponent: nextOption.component,
       originalIndex: -1,
       ratio:
-        nextOption.component === fixedRatioSplitComponent
+        nextOption.component === fixedRatioSplitComponent ||
+        nextOption.component === contentFixedRatioSplitComponent
           ? fixedRatioSplitRatioOptions[0].value
           : undefined,
       variant:
@@ -1559,7 +1657,11 @@ export function PagebuilderShell({
           ? splitContentImageVariantOptions[0].value
           : nextOption.component === fixedRatioSplitComponent
             ? fixedRatioSplitVariantOptions[0].value
-          : undefined,
+            : nextOption.component === contentFixedRatioSplitComponent
+              ? fixedRatioSplitVariantOptions[0].value
+              : nextOption.component === heroCompactComponent
+                ? sectionLibraryV3Content.heroCompact.align
+                : undefined,
     };
 
     updateActiveStack((stack) => {
@@ -1786,6 +1888,27 @@ export function PagebuilderShell({
                   .value) as HeroSplitFixedImageVariant
             }
           />
+        ) : isContentFixedRatioSplitSection(section) ? (
+          <ContentSplitFixedImageSectionV3
+            {...sectionLibraryV3Content.heroSplitFullHeight}
+            headingLevel={headingLevel}
+            ratio={
+              (section.ratio ??
+                fixedRatioSplitRatioOptions[0]
+                  .value) as ContentSplitFixedImageRatio
+            }
+            variant={
+              (section.variant ??
+                fixedRatioSplitVariantOptions[0]
+                  .value) as ContentSplitFixedImageVariant
+            }
+          />
+        ) : isHeroCompactSection(section) ? (
+          <HeroCompactSectionV3
+            {...sectionLibraryV3Content.heroCompact}
+            align={getHeroCompactAlign(section)}
+            headingLevel={headingLevel}
+          />
         ) : (
           previewCatalog[section.component] ??
           previewSections[activeRecipeIndex]?.[section.originalIndex] ??
@@ -1982,6 +2105,9 @@ export function PagebuilderShell({
               <div className="mt-4 grid gap-2">
                 {includedSections.map((section, index) => {
                   const isActive = section.id === selectedSectionId;
+                  const innerOptionSignifier = getInnerOptionSignifier(
+                    section.component,
+                  );
                   const sectionSwapOptionsForMode = sectionSwapOptions.filter(
                     (option) => option.mode === section.mode,
                   );
@@ -2109,6 +2235,14 @@ export function PagebuilderShell({
                                 swapped
                               </span>
                             )}
+                            {innerOptionSignifier ? (
+                              <span className="ml-2 mt-3 inline-flex">
+                                <InnerLayoutPill
+                                  signifier={innerOptionSignifier}
+                                  tone="dark"
+                                />
+                              </span>
+                            ) : null}
                           </div>
 
                           <label className="grid gap-2">
@@ -2178,7 +2312,48 @@ export function PagebuilderShell({
                             </fieldset>
                           ) : null}
 
-                          {isFixedRatioSplitSection(section) ? (
+                          {isHeroCompactSection(section) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Alignment
+                              </legend>
+                              <div className="grid grid-cols-3 gap-2">
+                                {heroCompactAlignOptions.map((option) => {
+                                  const optionIsActive =
+                                    getHeroCompactAlign(section) ===
+                                    option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "radius-4 min-h-10 border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "border-white/45 bg-white/16 text-white"
+                                          : "border-white/15 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateHeroCompactAlign(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Choose where the compact title block sits on
+                                the seven-column grid.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
+                          {isAnyFixedRatioSplitSection(section) ? (
                             <div className="grid gap-4">
                               <fieldset className="grid gap-2">
                                 <legend className="type-caption font-semibold text-current">
@@ -2362,8 +2537,8 @@ export function PagebuilderShell({
                         {options.map((option) => {
                           const templateUsageCount =
                             sectionTemplateUsageCounts.get(option.component) ?? 0;
-                          const imageLayoutSignifier =
-                            getImageLayoutOptionSignifier(option.component);
+                          const innerOptionSignifier =
+                            getInnerOptionSignifier(option.component);
 
                           return (
                             <button
@@ -2373,19 +2548,19 @@ export function PagebuilderShell({
                               type="button"
                             >
                               <span className="min-w-0">
-                                {!imageLayoutSignifier ? (
+                                {!innerOptionSignifier ? (
                                   <span className="block">{option.name}</span>
                                 ) : null}
-                                {imageLayoutSignifier ? (
+                                {innerOptionSignifier ? (
                                   <InnerLayoutPill
-                                    signifier={imageLayoutSignifier}
+                                    signifier={innerOptionSignifier}
                                     tone="dark"
                                   />
                                 ) : null}
                               </span>
                               <span className="flex items-center gap-1.5">
                                 {templateUsageCount > 0 ? (
-                                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-semibold text-service-ink">
+                                  <span className="flex size-5 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/10 text-[0.625rem] font-semibold leading-none text-white/65">
                                     {templateUsageCount}
                                   </span>
                                 ) : null}
@@ -2673,10 +2848,8 @@ export function PagebuilderShell({
                             </summary>
                             <div className="grid grid-cols-2 gap-2 border-t border-service-border p-2 max-md:grid-cols-1">
                               {options.map((option) => {
-                                const imageLayoutSignifier =
-                                  getImageLayoutOptionSignifier(
-                                    option.component,
-                                  );
+                                const innerOptionSignifier =
+                                  getInnerOptionSignifier(option.component);
 
                                 return (
                                   <button
@@ -2686,14 +2859,14 @@ export function PagebuilderShell({
                                     type="button"
                                   >
                                     <span className="min-w-0">
-                                      {!imageLayoutSignifier ? (
+                                      {!innerOptionSignifier ? (
                                         <span className="block">
                                           {option.name}
                                         </span>
                                       ) : null}
-                                      {imageLayoutSignifier ? (
+                                      {innerOptionSignifier ? (
                                         <InnerLayoutPill
-                                          signifier={imageLayoutSignifier}
+                                          signifier={innerOptionSignifier}
                                           tone="light"
                                         />
                                       ) : null}

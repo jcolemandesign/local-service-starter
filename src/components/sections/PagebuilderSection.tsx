@@ -10,7 +10,11 @@ import { CTAScrollRevealOfferSectionV2 } from "@/components/sections/CTAScrollRe
 import { ContentRevealParagraphSectionV2 } from "@/components/sections/ContentRevealParagraphSectionV2";
 import { ContentRuleHeaderSectionV2 } from "@/components/sections/ContentRuleHeaderSectionV2";
 import { ContentScrollWrittenRevealSectionV2 } from "@/components/sections/ContentScrollWrittenRevealSectionV2";
-import { ContentSplitFixedImageSectionV3 } from "@/components/sections/ContentSplitFixedImageSectionV3";
+import {
+  ContentSplitFixedImageSectionV3,
+  type ContentSplitFixedImageRatio,
+  type ContentSplitFixedImageVariant,
+} from "@/components/sections/ContentSplitFixedImageSectionV3";
 import { ContentStickyCardStreamSectionV2 } from "@/components/sections/ContentStickyCardStreamSectionV2";
 import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
 import { ContentStickyIdeasSectionV2 } from "@/components/sections/ContentStickyIdeasSectionV2";
@@ -35,6 +39,10 @@ import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/Feature
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
 import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
 import { HeroCenteredFloatersSectionV2 } from "@/components/sections/HeroCenteredFloatersSectionV2";
+import {
+  HeroCompactSectionV3,
+  type HeroCompactAlign,
+} from "@/components/sections/HeroCompactSectionV3";
 import { HeroContentTopImageBottomSectionV2 } from "@/components/sections/HeroContentTopImageBottomSectionV2";
 import {
   HeroSplitFixedImageSectionV3,
@@ -107,6 +115,8 @@ const heroSplitFixedImageRatios = new Set<string>([
   "4-5",
 ]);
 
+const heroCompactAlignments = new Set<string>(["left", "center", "right"]);
+
 function getHeroSplitFixedImageVariant(section: PagebuilderRecipeSection) {
   return heroSplitFixedImageVariants.has(section.variant ?? "")
     ? (section.variant as HeroSplitFixedImageVariant)
@@ -117,6 +127,24 @@ function getHeroSplitFixedImageRatio(section: PagebuilderRecipeSection) {
   return heroSplitFixedImageRatios.has(section.ratio ?? "")
     ? (section.ratio as HeroSplitFixedImageRatio)
     : undefined;
+}
+
+function getContentSplitFixedImageVariant(section: PagebuilderRecipeSection) {
+  return heroSplitFixedImageVariants.has(section.variant ?? "")
+    ? (section.variant as ContentSplitFixedImageVariant)
+    : undefined;
+}
+
+function getContentSplitFixedImageRatio(section: PagebuilderRecipeSection) {
+  return heroSplitFixedImageRatios.has(section.ratio ?? "")
+    ? (section.ratio as ContentSplitFixedImageRatio)
+    : undefined;
+}
+
+function getHeroCompactAlign(section: PagebuilderRecipeSection) {
+  return heroCompactAlignments.has(section.variant ?? "")
+    ? (section.variant as HeroCompactAlign)
+    : sectionLibraryV3Content.heroCompact.align;
 }
 
 function UnknownSection({ section }: { section: PagebuilderRecipeSection }) {
@@ -184,6 +212,14 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <HeroContentTopImageBottomSectionV2
           {...sectionLibraryV3Content.hero}
+          headingLevel={headingLevel}
+        />
+      );
+    case "HeroCompactSectionV3":
+      return (
+        <HeroCompactSectionV3
+          {...sectionLibraryV3Content.heroCompact}
+          align={getHeroCompactAlign(section)}
           headingLevel={headingLevel}
         />
       );
@@ -282,6 +318,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
         <ContentSplitFixedImageSectionV3
           {...sectionLibraryV3Content.heroSplitFullHeight}
           headingLevel={headingLevel}
+          ratio={getContentSplitFixedImageRatio(section)}
+          variant={getContentSplitFixedImageVariant(section)}
         />
       );
     case "ContentStickyCardStreamSectionV2":
@@ -571,6 +609,12 @@ export function PagebuilderSection() {
           1,
         )}
       </div>
+    ),
+    HeroCompactSectionV3: previewCatalogEntry(
+      "HeroCompactSectionV3",
+      "Hero",
+      "Compact page hero",
+      1,
     ),
     TrustBarSectionV3: (
       <div key="TrustBarSectionV3">

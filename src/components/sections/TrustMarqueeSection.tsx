@@ -51,7 +51,7 @@ export function TrustMarqueeSection({
   items,
 }: TrustMarqueeSectionProps) {
   return (
-    <Section className="overflow-hidden bg-white py-12 max-md:py-10">
+    <Section className="overflow-hidden bg-service-surface py-12 max-md:py-10">
       <SevenColumnGrid className="section-min-none items-stretch" padding="none">
         <SevenColumnGridItem className="col-span-4 max-lg:col-span-7">
           <div

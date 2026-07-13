@@ -28,6 +28,7 @@ import {
   FooterLinkPanelSectionV3,
   FooterSectionV3,
   HeroCenteredFloatersSectionV2,
+  HeroCompactSectionV3,
   HeroContentTopImageBottomSectionV2,
   HeroFullscreenSectionV2,
   HeroGridMosaicSectionV2,
@@ -114,6 +115,12 @@ const sectionElements = {
   "hero-split-fixed-image-v3": (
     <HeroSplitFixedImageSectionLibraryDemo
       {...sectionLibraryV3Content.heroSplitFullHeight}
+      headingLevel={2}
+    />
+  ),
+  "hero-compact-v3": (
+    <HeroCompactSectionV3
+      {...sectionLibraryV3Content.heroCompact}
       headingLevel={2}
     />
   ),

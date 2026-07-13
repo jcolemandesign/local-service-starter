@@ -65,6 +65,12 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
+  heroCompact: {
+    align: "center" as const,
+    eyebrow: "Service area",
+    title: "Straightforward local service, organized for quick decisions.",
+    body: "A compact page header for secondary pages that need a clear title, short descriptor, and no extra visual system.",
+  },
   heroLogoStatement: {
     logoLabel: "Logo",
     statement:
@@ -1048,6 +1054,10 @@ export const sectionLibraryV3Collections = [
       {
         label: "Fixed-ratio split image",
         component: "hero-split-fixed-image-v3",
+      },
+      {
+        label: "Compact page hero",
+        component: "hero-compact-v3",
       },
     ],
   },

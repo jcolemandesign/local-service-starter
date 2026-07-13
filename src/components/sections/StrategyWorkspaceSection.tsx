@@ -570,79 +570,90 @@ export function StrategyWorkspaceSection({
                 </div>
 
                 <div className="grid grid-cols-5 gap-3 max-lg:grid-cols-2 max-sm:grid-cols-1">
-                  {assemblyPages.map((page) => (
-                    <div
-                      className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-3"
-                      key={page.id}
-                    >
-                      <p
-                        className={`type-caption font-semibold ${getPageStatusClassName(
-                          page.detected,
-                          page.status,
-                        )}`}
+                  {assemblyPages.map((page) => {
+                    const hasTemplateReady =
+                      Boolean(page.previewHref) ||
+                      Boolean(page.repeatable && page.childPages.length > 0);
+
+                    return (
+                      <div
+                        className={`relative rounded-[var(--radius-md-token)] border p-3 pr-12 transition-colors ${
+                          hasTemplateReady
+                            ? "border-service-accent/35 bg-white"
+                            : "border-service-border bg-service-surface"
+                        }`}
+                        key={page.id}
                       >
-                        {getPageStatusLabel(page.detected, page.status)}
-                      </p>
-                      <h3 className="mt-2 text-base font-semibold text-service-ink">
-                        {page.label}
-                      </h3>
-                      <p className="type-caption mt-1 text-service-muted">
-                        {page.path}
-                      </p>
-                      <p className="type-caption mt-2 text-service-muted">
-                        {getPageTypeRelationshipLabel(page.pageType)}
-                      </p>
-                      {page.templateName ? (
-                        <p className="type-caption mt-2 text-service-muted">
-                          {page.templateName}
-                        </p>
-                      ) : null}
-                      {page.repeatable && page.childPages.length > 0 ? (
-                        <div className="mt-3 grid gap-2">
-                          <p className="type-caption font-semibold text-service-ink">
-                            {page.childPages.length} staged{" "}
-                            {page.childPages.length === 1 ? "page" : "pages"}
-                          </p>
-                          <div className="flex flex-wrap gap-2">
-                            {page.childPages.map((childPage) => (
-                              <Link
-                                className="type-caption rounded-sm border border-service-border bg-white px-2 py-1 font-semibold text-service-accent hover:text-service-ink"
-                                href={childPage.previewHref}
-                                key={childPage.pageId}
-                                rel="noreferrer"
-                                target="_blank"
-                              >
-                                {childPage.pageLabel}
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-                      ) : null}
-                      <div className="mt-3 flex flex-wrap items-center gap-3">
-                        {page.previewHref ? (
-                          <Link
-                            className="type-caption inline-flex font-semibold text-service-accent hover:text-service-ink"
-                            href={page.previewHref}
-                            rel="noreferrer"
-                            target="_blank"
-                          >
-                            Open staged page
-                          </Link>
-                        ) : null}
-                        <button
-                          className={`type-caption inline-flex font-semibold ${
-                            !page.previewHref
-                              ? "text-service-accent hover:text-service-ink"
-                              : "text-service-muted hover:text-service-accent"
-                          }`}
-                          onClick={() => openTemplatePicker(page.id)}
-                          type="button"
+                        <TemplateReadyIcon isReady={hasTemplateReady} />
+                        <p
+                          className={`type-caption font-semibold ${getPageStatusClassName(
+                            page.detected,
+                            page.status,
+                          )}`}
                         >
-                          {page.previewHref ? "Change template" : "Choose template"}
-                        </button>
+                          {getPageStatusLabel(page.detected, page.status)}
+                        </p>
+                        <h3 className="mt-2 text-base font-semibold text-service-ink">
+                          {page.label}
+                        </h3>
+                        <p className="type-caption mt-1 text-service-muted">
+                          {page.path}
+                        </p>
+                        <p className="type-caption mt-2 text-service-muted">
+                          {getPageTypeRelationshipLabel(page.pageType)}
+                        </p>
+                        {page.templateName ? (
+                          <p className="type-caption mt-2 text-service-muted">
+                            {page.templateName}
+                          </p>
+                        ) : null}
+                        {page.repeatable && page.childPages.length > 0 ? (
+                          <div className="mt-3 grid gap-2">
+                            <p className="type-caption font-semibold text-service-ink">
+                              {page.childPages.length} staged{" "}
+                              {page.childPages.length === 1 ? "page" : "pages"}
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {page.childPages.map((childPage) => (
+                                <Link
+                                  className="type-caption rounded-sm border border-service-border bg-white px-2 py-1 font-semibold text-service-accent hover:text-service-ink"
+                                  href={childPage.previewHref}
+                                  key={childPage.pageId}
+                                  rel="noreferrer"
+                                  target="_blank"
+                                >
+                                  {childPage.pageLabel}
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        ) : null}
+                        <div className="mt-3 flex flex-wrap items-center gap-3">
+                          {page.previewHref ? (
+                            <Link
+                              className="type-caption inline-flex font-semibold text-service-accent hover:text-service-ink"
+                              href={page.previewHref}
+                              rel="noreferrer"
+                              target="_blank"
+                            >
+                              Open staged page
+                            </Link>
+                          ) : null}
+                          <button
+                            className={`type-caption inline-flex font-semibold ${
+                              !page.previewHref
+                                ? "text-service-accent hover:text-service-ink"
+                                : "text-service-muted hover:text-service-accent"
+                            }`}
+                            onClick={() => openTemplatePicker(page.id)}
+                            type="button"
+                          >
+                            {page.previewHref ? "Change template" : "Choose template"}
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <div className="rounded-[var(--radius-md-token)] border border-service-border bg-white p-4">
@@ -1194,6 +1205,35 @@ function IssueList({
         ))}
       </div>
     </div>
+  );
+}
+
+function TemplateReadyIcon({ isReady }: { isReady: boolean }) {
+  const label = isReady ? "Template ready" : "Waiting for template";
+
+  return (
+    <span
+      aria-label={label}
+      className={`absolute right-3 top-3 flex size-8 items-center justify-center rounded-full border ${
+        isReady
+          ? "border-service-accent/30 bg-service-accent/10 text-service-accent"
+          : "border-service-border bg-white/70 text-service-muted/55"
+      }`}
+      title={label}
+    >
+      <span
+        aria-hidden="true"
+        className="relative block h-4 w-3 rounded-[2px] border border-current"
+      >
+        <span className="absolute left-1 top-1 h-px w-1.5 bg-current" />
+        <span className="absolute left-1 top-2 h-px w-1.5 bg-current" />
+        {isReady ? (
+          <span className="absolute -bottom-1 -right-1 flex size-3 items-center justify-center rounded-full bg-current">
+            <span className="block size-1 rounded-full bg-white" />
+          </span>
+        ) : null}
+      </span>
+    </span>
   );
 }
 

@@ -1,9 +1,5 @@
 import Image from "next/image";
-import {
-  Button,
-  SevenColumnGrid,
-  SevenColumnGridItem,
-} from "@/components/primitives";
+import { SevenColumnGrid, SevenColumnGridItem } from "@/components/primitives";
 
 export type ContentSplitFixedImageVariant =
   | "text-3-image-4-right"
@@ -25,10 +21,10 @@ type ContentSplitFixedImageSectionV3Props = {
   headingLevel?: 1 | 2;
   imageAlt: string;
   imageSrc: string;
-  primaryAction: string;
+  primaryAction?: string;
   ratio?: ContentSplitFixedImageRatio;
-  secondaryAction: string;
-  stats: readonly string[];
+  secondaryAction?: string;
+  stats?: readonly string[];
   title: string;
   variant?: ContentSplitFixedImageVariant;
 };
@@ -44,27 +40,27 @@ const variantConfig: Record<
 > = {
   "text-3-image-4-right": {
     textClassName:
-      "col-span-3 col-start-1 max-lg:col-span-2 max-lg:col-start-1 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
+      "col-span-3 col-start-1 row-start-1 max-lg:col-span-2 max-lg:col-start-1 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
     imageClassName:
-      "col-span-4 col-start-4 max-lg:col-span-3 max-lg:col-start-3 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
+      "col-span-4 col-start-4 row-start-1 max-lg:col-span-3 max-lg:col-start-3 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
   },
   "text-4-image-3-right": {
     textClassName:
-      "col-span-4 col-start-1 max-lg:col-span-3 max-lg:col-start-1 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
+      "col-span-4 col-start-1 row-start-1 max-lg:col-span-3 max-lg:col-start-1 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
     imageClassName:
-      "col-span-3 col-start-5 max-lg:col-span-2 max-lg:col-start-4 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
+      "col-span-3 col-start-5 row-start-1 max-lg:col-span-2 max-lg:col-start-4 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
   },
   "image-3-left-text-4": {
     textClassName:
-      "col-span-4 col-start-4 max-lg:col-span-3 max-lg:col-start-3 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
+      "col-span-4 col-start-4 row-start-1 max-lg:col-span-3 max-lg:col-start-3 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
     imageClassName:
-      "col-span-3 col-start-1 max-lg:col-span-2 max-lg:col-start-1 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
+      "col-span-3 col-start-1 row-start-1 max-lg:col-span-2 max-lg:col-start-1 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
   },
   "image-4-left-text-3": {
     textClassName:
-      "col-span-3 col-start-5 max-lg:col-span-2 max-lg:col-start-4 max-md:col-span-3 max-md:col-start-1 max-sm:col-span-1",
+      "col-span-3 col-start-5 row-start-1 max-lg:col-span-2 max-lg:col-start-4 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
     imageClassName:
-      "col-span-4 col-start-1 max-lg:col-span-3 max-lg:col-start-1 max-md:col-span-3 max-md:col-start-1 max-sm:col-span-1",
+      "col-span-4 col-start-1 row-start-1 max-lg:col-span-3 max-lg:col-start-1 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
   },
 };
 
@@ -114,10 +110,7 @@ export function ContentSplitFixedImageSectionV3({
   headingLevel = 2,
   imageAlt,
   imageSrc,
-  primaryAction,
   ratio = "3-2",
-  secondaryAction,
-  stats,
   title,
   variant = "text-3-image-4-right",
 }: ContentSplitFixedImageSectionV3Props) {
@@ -141,22 +134,21 @@ export function ContentSplitFixedImageSectionV3({
             <p className="type-text-lg wrap-pretty mt-display-body text-service-muted">
               {body}
             </p>
-            <div className="mt-body-actions-md flex flex-wrap inline-gap-med">
-              <Button href="#contact">{primaryAction}</Button>
-              <Button href="#services" variant="secondary">
-                {secondaryAction}
-              </Button>
+            <div className="mt-body-actions-md grid gap-3">
+              <p className="type-label text-service-accent">
+                What this supports
+              </p>
+              <p className="type-text-md wrap-pretty text-service-muted">
+                Pair this section with a project photo, crew detail, or process
+                image, then use the copy to explain how the work is planned,
+                protected, and followed through.
+              </p>
+              <p className="type-text-sm wrap-pretty text-service-ink">
+                Best for capability notes, local context, and service standards
+                that need more room than a card but should still feel easy to
+                scan.
+              </p>
             </div>
-            <ul className="mt-body-actions-md grid grid-cols-3 card-grid-gap-med max-md:grid-cols-1">
-              {stats.map((stat) => (
-                <li
-                  className="type-text-sm border-l border-service-border pl-4 font-semibold text-service-ink max-md:border-l-0 max-md:border-t max-md:pl-0 max-md:pt-3"
-                  key={stat}
-                >
-                  {stat}
-                </li>
-              ))}
-            </ul>
           </div>
         </SevenColumnGridItem>
 

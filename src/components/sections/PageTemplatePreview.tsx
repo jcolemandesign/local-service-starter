@@ -10,7 +10,11 @@ import { CTAScrollRevealOfferSectionV2 } from "@/components/sections/CTAScrollRe
 import { ContentRevealParagraphSectionV2 } from "@/components/sections/ContentRevealParagraphSectionV2";
 import { ContentRuleHeaderSectionV2 } from "@/components/sections/ContentRuleHeaderSectionV2";
 import { ContentScrollWrittenRevealSectionV2 } from "@/components/sections/ContentScrollWrittenRevealSectionV2";
-import { ContentSplitFixedImageSectionV3 } from "@/components/sections/ContentSplitFixedImageSectionV3";
+import {
+  ContentSplitFixedImageSectionV3,
+  type ContentSplitFixedImageRatio,
+  type ContentSplitFixedImageVariant,
+} from "@/components/sections/ContentSplitFixedImageSectionV3";
 import { ContentStickyCardStreamSectionV2 } from "@/components/sections/ContentStickyCardStreamSectionV2";
 import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
 import { ContentStickyIdeasSectionV2 } from "@/components/sections/ContentStickyIdeasSectionV2";
@@ -35,6 +39,10 @@ import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/Feature
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
 import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
 import { HeroCenteredFloatersSectionV2 } from "@/components/sections/HeroCenteredFloatersSectionV2";
+import {
+  HeroCompactSectionV3,
+  type HeroCompactAlign,
+} from "@/components/sections/HeroCompactSectionV3";
 import { HeroContentTopImageBottomSectionV2 } from "@/components/sections/HeroContentTopImageBottomSectionV2";
 import {
   HeroSplitFixedImageSectionV3,
@@ -129,6 +137,8 @@ const heroSplitFixedImageRatios = new Set<string>([
   "5-4",
   "4-5",
 ]);
+
+const heroCompactAlignments = new Set<string>(["left", "center", "right"]);
 
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -324,6 +334,14 @@ export function renderPageTemplateSection(
           headingLevel={headingLevel}
         />
       );
+    case "HeroCompactSectionV3":
+      return (
+        <HeroCompactSectionV3
+          {...heroCompactProps(fieldSection)}
+          align={getHeroCompactAlign(section)}
+          headingLevel={headingLevel}
+        />
+      );
     case "TrustBarSectionV3":
       return <TrustBarSectionV3 {...trustBarProps(fieldSection)} />;
     case "TrustBarFloatingBentoSectionV3":
@@ -379,6 +397,8 @@ export function renderPageTemplateSection(
         <ContentSplitFixedImageSectionV3
           {...heroSplitProps(fieldSection)}
           headingLevel={headingLevel}
+          ratio={getContentSplitFixedImageRatio(section)}
+          variant={getContentSplitFixedImageVariant(section)}
         />
       );
     case "ContentStickyCardStreamSectionV2":
@@ -574,6 +594,19 @@ function heroFullscreenProps(section: FieldSection) {
       sectionLibraryV3Content.heroFullscreen.secondaryAction,
     ),
     title: getTitle(section, sectionLibraryV3Content.heroFullscreen.title),
+  };
+}
+
+function heroCompactProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.heroCompact,
+    body: getBody(section, sectionLibraryV3Content.heroCompact.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.heroCompact.eyebrow,
+    ),
+    title: getTitle(section, sectionLibraryV3Content.heroCompact.title),
   };
 }
 
@@ -1462,6 +1495,24 @@ function getHeroSplitFixedImageRatio(section: PageTemplatePreviewSection) {
     : undefined;
 }
 
+function getContentSplitFixedImageVariant(section: PageTemplatePreviewSection) {
+  return heroSplitFixedImageVariants.has(section.variant ?? "")
+    ? (section.variant as ContentSplitFixedImageVariant)
+    : undefined;
+}
+
+function getContentSplitFixedImageRatio(section: PageTemplatePreviewSection) {
+  return heroSplitFixedImageRatios.has(section.ratio ?? "")
+    ? (section.ratio as ContentSplitFixedImageRatio)
+    : undefined;
+}
+
+function getHeroCompactAlign(section: PageTemplatePreviewSection) {
+  return heroCompactAlignments.has(section.variant ?? "")
+    ? (section.variant as HeroCompactAlign)
+    : sectionLibraryV3Content.heroCompact.align;
+}
+
 function getValue(section: FieldSection, fieldName: string, fallback: string) {
   return (
     section.fields.find((field) => {
@@ -1728,7 +1779,12 @@ function getCardSize(value: string | undefined) {
     normalizedValue === "true" ||
     normalizedValue === "featured" ||
     normalizedValue === "large" ||
-    normalizedValue === "larger"
+    normalizedValue === "larger" ||
+    normalizedValue.includes("large") ||
+    normalizedValue.includes("featured") ||
+    normalizedValue.includes("3 col") ||
+    normalizedValue.includes("3-col") ||
+    normalizedValue.includes("three col")
   ) {
     return "large" as const;
   }
@@ -1768,7 +1824,7 @@ function getGalleryImageSize(value: string | undefined) {
 }
 
 function extractCardSize(value: string) {
-  const sizePattern = /\[(large|larger|featured|medium|small)\]/i;
+  const sizePattern = /\[(large|larger|featured|medium|small|3 col|3-col|three col)\]/i;
   const match = value.match(sizePattern);
   const size = getCardSize(match?.[1]);
 
