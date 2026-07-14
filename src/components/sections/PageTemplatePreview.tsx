@@ -26,6 +26,7 @@ import {
   ContactSectionV3,
   CTASectionV3,
   CTAFullscreenSectionV3,
+  CTAMutedSectionV3,
   FAQSectionV3,
   FooterCompactSectionV3,
   FooterHorizontalSectionV3,
@@ -480,6 +481,8 @@ export function renderPageTemplateSection(
       return <ProcessStepsSectionV3 {...processProps(fieldSection)} />;
     case "CTASectionV3":
       return <CTASectionV3 {...ctaProps(fieldSection)} />;
+    case "CTAMutedSectionV3":
+      return <CTAMutedSectionV3 {...ctaProps(fieldSection)} />;
     case "CTAFullscreenSectionV2":
       return <CTAFullscreenSectionV2 {...ctaFullscreenProps(fieldSection)} />;
     case "CTAFullscreenSectionV3":

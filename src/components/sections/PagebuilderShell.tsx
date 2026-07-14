@@ -424,6 +424,35 @@ function normalizeSectionMetadata(section: WorkingSection): WorkingSection {
   };
 }
 
+function createUniqueSectionId(baseId: string, usedSectionIds: Set<string>) {
+  if (!usedSectionIds.has(baseId)) {
+    usedSectionIds.add(baseId);
+    return baseId;
+  }
+
+  let suffix = 2;
+  let nextId = `${baseId}-duplicate-${suffix}`;
+
+  while (usedSectionIds.has(nextId)) {
+    suffix += 1;
+    nextId = `${baseId}-duplicate-${suffix}`;
+  }
+
+  usedSectionIds.add(nextId);
+  return nextId;
+}
+
+function dedupeWorkingStackIds(stack: WorkingSection[]) {
+  const usedSectionIds = new Set<string>();
+
+  return stack.map((section, index) => {
+    const baseId = section.id || `${section.component}-${index}`;
+    const nextId = createUniqueSectionId(baseId, usedSectionIds);
+
+    return nextId === section.id ? section : { ...section, id: nextId };
+  });
+}
+
 function updateSectionFromSwapOption(
   section: WorkingSection,
   nextOption: (typeof sectionSwapOptions)[number],
@@ -520,8 +549,6 @@ function applySavedOptionsToLayoutSlots(
           return slot;
         }
 
-        const usedSectionIds = new Set<string>();
-
         return {
           ...slot,
           designStyle: {
@@ -530,27 +557,24 @@ function applySavedOptionsToLayoutSlots(
             ),
             viewportId: "main" as const,
           },
-          stack: savedOption.sections.map((section, index) => {
-            const normalizedSection = normalizeSectionMetadata(section);
-            const baseId =
-              section.id || `${savedOption.recipeId}-saved-${slotIndex}-${index}`;
-            const nextId = usedSectionIds.has(baseId)
-              ? `${baseId}-duplicate-${index}`
-              : baseId;
+          stack: dedupeWorkingStackIds(
+            savedOption.sections.map((section, index) => {
+              const normalizedSection = normalizeSectionMetadata(section);
 
-            usedSectionIds.add(nextId);
-
-            return {
-              ...normalizedSection,
-              id: nextId,
-              included: Boolean(section.included),
-              originalComponent:
-                section.originalComponent || normalizedSection.component,
-              originalIndex: Number.isFinite(section.originalIndex)
-                ? section.originalIndex
-                : index,
-            };
-          }),
+              return {
+                ...normalizedSection,
+                id:
+                  section.id ||
+                  `${savedOption.recipeId}-saved-${slotIndex}-${index}`,
+                included: Boolean(section.included),
+                originalComponent:
+                  section.originalComponent || normalizedSection.component,
+                originalIndex: Number.isFinite(section.originalIndex)
+                  ? section.originalIndex
+                  : index,
+              };
+            }),
+          ),
         };
       }),
     ),
@@ -915,6 +939,13 @@ const sectionSwapOptions = [
       "Use the current conversion band when the page needs a polished direct next step.",
     mode: "Action",
     name: "CTA",
+  },
+  {
+    component: "CTAMutedSectionV3",
+    instruction:
+      "Use a quieter service-card CTA when the page needs a softer next step between content sections.",
+    mode: "Action",
+    name: "Muted CTA",
   },
   {
     component: "CTAFullscreenSectionV3",
@@ -1470,7 +1501,7 @@ export function PagebuilderShell({
               slotIndex === activeLayoutSlotIndex
                 ? {
                     ...slot,
-                    stack: updater(slot.stack),
+                    stack: dedupeWorkingStackIds(updater(slot.stack)),
                   }
                 : slot,
             )
@@ -1706,10 +1737,14 @@ export function PagebuilderShell({
     }
 
     addedSectionIdCounterRef.current += 1;
+    const nextSectionId = createUniqueSectionId(
+      `${activeRecipe.id}-${nextOption.component}-added-${addedSectionIdCounterRef.current}`,
+      new Set(activeStack.map((section) => section.id)),
+    );
 
     const nextSection: WorkingSection = {
       component: nextOption.component,
-      id: `${activeRecipe.id}-${nextOption.component}-added-${addedSectionIdCounterRef.current}`,
+      id: nextSectionId,
       included: true,
       instruction: nextOption.instruction,
       mode: nextOption.mode,

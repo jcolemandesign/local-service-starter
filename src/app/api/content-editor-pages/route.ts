@@ -247,6 +247,7 @@ function getSectionContent(component: string): ContentSourceValue | null {
       sectionLibraryV3Content.contentStickyCardStream,
     ContentStickyIdeasSectionV2: sectionLibraryV3Content.contentStickyIdeas,
     CTAFullscreenSectionV3: sectionLibraryV3Content.ctaFullscreen,
+    CTAMutedSectionV3: sectionLibraryV3Content.cta,
     CTASectionV3: sectionLibraryV3Content.cta,
     CTAScrollRevealOfferSectionV3: sectionLibraryV3Content.ctaScrollRevealOffer,
     FAQAccordionSectionV3: sectionLibraryV3Content.faqAccordion,

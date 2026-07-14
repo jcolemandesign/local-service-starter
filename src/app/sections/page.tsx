@@ -16,6 +16,7 @@ import {
   ImageStripSectionV3,
   ContactSectionV3,
   CTAFullscreenSectionV3,
+  CTAMutedSectionV3,
   CTASectionV3,
   CTAScrollRevealOfferSectionV3,
   DecisionSplitDecisionSectionV3,
@@ -276,6 +277,7 @@ const sectionElements = {
     <FAQAccordionSectionV3 {...sectionLibraryV3Content.faqAccordion} />
   ),
   "cta-v3": <CTASectionV3 {...sectionLibraryV3Content.cta} />,
+  "cta-muted-v3": <CTAMutedSectionV3 {...sectionLibraryV3Content.cta} />,
   "cta-fullscreen-v3": (
     <CTAFullscreenSectionV3 {...sectionLibraryV3Content.ctaFullscreen} />
   ),

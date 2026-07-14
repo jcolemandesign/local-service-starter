@@ -23,7 +23,7 @@ export function ServicesThreeCardsRightSectionV3({
   return (
     <section className="bg-bg-page">
       <SevenColumnGrid
-        className="[--site-grid-row-gap:var(--inline-gap-active)]"
+        className="services-three-cards-grid [--site-grid-row-gap:var(--inline-gap-active)]"
         minHeight="none"
       >
         {cards.map((card, index) => {
@@ -34,8 +34,8 @@ export function ServicesThreeCardsRightSectionV3({
               className={cx(
                 "content-padding radius-medium flex flex-col self-start border border-service-border bg-service-surface shadow-service max-md:row-auto",
                 isLarge
-                  ? "card-min-medium col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
-                  : "card-min-short col-span-2 max-md:col-span-3 max-sm:col-span-1",
+                  ? "col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+                  : "col-span-2 max-md:col-span-3 max-sm:col-span-1",
                 index === 0 && "max-lg:col-span-2",
                 index === 1 && "max-lg:col-span-3",
               )}

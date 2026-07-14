@@ -279,6 +279,33 @@ export function CTASectionV3({ action, body, title }: CTASectionV3Props) {
   );
 }
 
+export function CTAMutedSectionV3({ action, body, title }: CTASectionV3Props) {
+  return (
+    <section className="bg-bg-page">
+      <SevenColumnGrid className="section-min-none" padding="sml">
+        <SevenColumnGridItem className="col-span-5 max-lg:col-span-7">
+          <article className="content-padding radius-medium border border-service-border bg-service-surface text-service-ink shadow-service">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-8 gap-y-5 max-md:grid-cols-1">
+              <div className="fluid-type-frame">
+                <h2 className="type-heading-md text-service-ink">{title}</h2>
+                <p className="type-text-md wrap-pretty mt-heading-body-sm text-service-muted">
+                  {body}
+                </p>
+              </div>
+              <RequestServiceButton
+                className="w-auto shrink-0 border-service-border bg-bg-page text-service-ink hover:bg-service-surface max-md:w-full"
+                variant="secondary"
+              >
+                {action}
+              </RequestServiceButton>
+            </div>
+          </article>
+        </SevenColumnGridItem>
+      </SevenColumnGrid>
+    </section>
+  );
+}
+
 export function CTAFullscreenSectionV3({
   action,
   body,

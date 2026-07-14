@@ -1260,6 +1260,7 @@ export const sectionLibraryV3Collections = [
         component: "trust-marquee-legacy",
       },
       { label: "CTA", component: "cta-v3" },
+      { label: "Muted CTA", component: "cta-muted-v3" },
       { label: "Fullscreen conversion", component: "cta-fullscreen-v3" },
       {
         label: "Scroll reveal offer conversion",

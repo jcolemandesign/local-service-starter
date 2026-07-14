@@ -26,6 +26,7 @@ import {
   ContactSectionV3,
   CTASectionV3,
   CTAFullscreenSectionV3,
+  CTAMutedSectionV3,
   FooterCompactSectionV3,
   FooterHorizontalSectionV3,
   FooterSectionV3,
@@ -449,6 +450,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return <ProcessStepsSectionV3 {...sectionLibraryV3Content.process} />;
     case "CTASectionV3":
       return <CTASectionV3 {...sectionLibraryV3Content.cta} />;
+    case "CTAMutedSectionV3":
+      return <CTAMutedSectionV3 {...sectionLibraryV3Content.cta} />;
     case "CTAFullscreenSectionV2":
       return <CTAFullscreenSectionV2 {...sectionLibraryV3Content.ctaFullscreen} />;
     case "CTAFullscreenSectionV3":
@@ -1005,6 +1008,12 @@ export function PagebuilderSection() {
       </div>
     ),
     CTASectionV3: previewCatalogEntry("CTASectionV3", "Action", "CTA", 7),
+    CTAMutedSectionV3: previewCatalogEntry(
+      "CTAMutedSectionV3",
+      "Action",
+      "Muted CTA",
+      7,
+    ),
     CTAFullscreenSectionV3: (
       <div key="CTAFullscreenSectionV3">
         {renderPreviewSection(

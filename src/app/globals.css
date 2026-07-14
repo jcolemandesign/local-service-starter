@@ -364,6 +364,10 @@ body {
     padding: var(--site-grid-inset-block) var(--site-grid-inset-inline);
   }
 
+  .services-three-cards-grid.site-grid-frame {
+    min-height: 0;
+  }
+
   .site-grid-gap {
     column-gap: var(--site-grid-gap);
     row-gap: var(--site-grid-row-gap);
@@ -730,6 +734,12 @@ body {
   .pagebuilder-density-normal [data-pagebuilder-section-mode="Hero"] section,
   .pagebuilder-density-normal
     [data-pagebuilder-section-component="ContentFixedCoverFadeSectionV2"]
+    section {
+    padding-block: 0;
+  }
+
+  .pagebuilder-density-normal
+    [data-pagebuilder-section-component="ServicesThreeCardsRightSectionV3"]
     section {
     padding-block: 0;
   }
@@ -1313,7 +1323,7 @@ body {
 
 /* BEGIN PAGEWORKS STYLEGUIDE TOKEN OVERRIDES */
 :root {
-  --live-service-ink: #17211d;
+  --live-service-ink: #30403a;
   --live-service-muted: #5f6f68;
   --live-service-accent: #4376ad;
   --live-service-surface: #fafafa;
@@ -1321,14 +1331,14 @@ body {
   --live-bg-page: #e6e8ef;
   --live-bg-surface: #fafafa;
   --live-bg-muted: #dfe7e1;
-  --live-bg-dark: #10141b;
-  --live-text-main: #17211d;
+  --live-bg-dark: #1b212c;
+  --live-text-main: #30403a;
   --live-text-muted: #5f6f68;
   --live-text-accent: #4376ad;
   --live-border-default: #dfe7e1;
   --live-accent: #c45a2c;
   --live-shadow-service: 2px 3px 48px rgb(0 0 0 / 0.05);
-  --color-service-ink: #17211d;
+  --color-service-ink: #30403a;
   --color-service-muted: #5f6f68;
   --color-service-accent: #4376ad;
   --color-service-surface: #fafafa;
@@ -1336,8 +1346,8 @@ body {
   --color-bg-page: #e6e8ef;
   --color-bg-surface: #fafafa;
   --color-bg-muted: #dfe7e1;
-  --color-bg-dark: #10141b;
-  --color-text-main: #17211d;
+  --color-bg-dark: #1b212c;
+  --color-text-main: #30403a;
   --color-text-muted: #5f6f68;
   --color-text-inverse: #ffffff;
   --color-text-accent: #4376ad;
@@ -1355,18 +1365,18 @@ body {
   --radius-surface-token: 40px;
   --radius-button-token: 9999px;
   --section-min-active: 72rem;
-  --section-space-vsml: 3rem;
-  --section-space-sml: 6rem;
-  --section-space-med: 9rem;
-  --section-space-lrg: 12rem;
-  --section-space-vsml-tablet: 2.5rem;
-  --section-space-sml-tablet: 5rem;
-  --section-space-med-tablet: 7rem;
-  --section-space-lrg-tablet: 8rem;
-  --section-space-vsml-mobile: 2.5rem;
-  --section-space-sml-mobile: 5rem;
-  --section-space-med-mobile: 5rem;
-  --section-space-lrg-mobile: 5.5rem;
+  --section-space-vsml: 1.5rem;
+  --section-space-sml: 3rem;
+  --section-space-med: 4rem;
+  --section-space-lrg: 5rem;
+  --section-space-vsml-tablet: 1.5rem;
+  --section-space-sml-tablet: 3rem;
+  --section-space-med-tablet: 3.75rem;
+  --section-space-lrg-tablet: 4.5rem;
+  --section-space-vsml-mobile: 1.5rem;
+  --section-space-sml-mobile: 2.75rem;
+  --section-space-med-mobile: 3rem;
+  --section-space-lrg-mobile: 3rem;
   --semantic-spacing-scale: 0.9;
   --container-gutter: clamp(1.5rem, 3vw, 2.5rem);
   --site-grid-inset-block: clamp(2rem, 4vw, 7rem);

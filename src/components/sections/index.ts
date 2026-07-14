@@ -43,6 +43,7 @@ export { FAQSectionV2 } from "./FAQSectionV2";
 export {
   ContactSectionV3,
   CTAFullscreenSectionV3,
+  CTAMutedSectionV3,
   CTASectionV3,
   FAQSectionV3,
   FooterCompactSectionV3,
