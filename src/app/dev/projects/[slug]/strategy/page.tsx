@@ -79,6 +79,15 @@ export default async function StrategyWorkspacePage({
       pageType: page.template?.pageType ?? "",
       previewHref: page.previewHref,
       status: page.status,
+      template: page.template
+        ? {
+            id: page.template.id,
+            name: page.template.name,
+            pageType: page.template.pageType,
+            sectionCount: page.template.sectionCount,
+            sections: page.template.sections ?? [],
+          }
+        : undefined,
       templateId: page.template?.id ?? "",
       templateName: page.template?.name ?? "",
     }));

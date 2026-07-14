@@ -1150,7 +1150,7 @@ body {
   --live-service-accent: #4376ad;
   --live-service-surface: #ededed;
   --live-service-border: #dfe7e1;
-  --live-bg-page: #d9d9d9;
+  --live-bg-page: #e6e6e6;
   --live-bg-surface: #ededed;
   --live-bg-muted: #dfe7e1;
   --live-bg-dark: #10141b;
@@ -1159,13 +1159,13 @@ body {
   --live-text-accent: #4376ad;
   --live-border-default: #dfe7e1;
   --live-accent: #c45a2c;
-  --live-shadow-service: 2px 3px 75px rgb(0 0 0 / 0.02);
+  --live-shadow-service: 2px 3px 48px rgb(0 0 0 / 0.05);
   --color-service-ink: #17211d;
   --color-service-muted: #5f6f68;
   --color-service-accent: #4376ad;
   --color-service-surface: #ededed;
   --color-service-border: #dfe7e1;
-  --color-bg-page: #d9d9d9;
+  --color-bg-page: #e6e6e6;
   --color-bg-surface: #ededed;
   --color-bg-muted: #dfe7e1;
   --color-bg-dark: #10141b;
@@ -1204,7 +1204,7 @@ body {
   --site-grid-inset-block: clamp(2rem, 4vw, 7rem);
   --site-grid-inset-inline: clamp(0.5rem, 3vw, 6rem);
   --site-grid-gap: clamp(1.5rem, 2.15vw, 3.5rem);
-  --shadow-service: 2px 3px 75px rgb(0 0 0 / 0.02);
+  --shadow-service: 2px 3px 48px rgb(0 0 0 / 0.05);
   --type-display-xl-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --type-display-xl-size: clamp(3.5rem, calc(4.8611cqw + 2.3333rem), 7rem);
   --type-display-xl-leading: 0.92;

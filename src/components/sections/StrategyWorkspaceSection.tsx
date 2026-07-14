@@ -13,7 +13,10 @@ import {
   type StrategyPageSummary,
   type StrategyPageStatus,
 } from "@/utils/strategy-site-map";
-import { buildTemplateCopyContract } from "@/utils/template-copy-contract";
+import {
+  buildTemplateCopyContract,
+  type TemplateCopyContractTemplate,
+} from "@/utils/template-copy-contract";
 import type {
   StrategyWorkspace,
   StrategyWorkspaceFields,
@@ -43,6 +46,7 @@ type StagedStrategyPageSummary = {
   pageType: string;
   previewHref: string;
   status: "staged" | "ready";
+  template?: TemplateCopyContractTemplate;
   templateId: string;
   templateName: string;
 };
@@ -249,6 +253,7 @@ export function StrategyWorkspaceSection({
           status: stagedPage?.status ?? repeatableStatus,
           stagedPageId: stagedPage?.pageId ?? "",
           stagedPageLabel: stagedPage?.pageLabel ?? "",
+          stagedTemplate: stagedPage?.template,
           templateId: stagedPage?.templateId ?? "",
           templateName: stagedPage?.templateName ?? "",
         };
@@ -438,7 +443,9 @@ export function StrategyWorkspaceSection({
 
   async function copyPageTemplateContract(page: (typeof assemblyPages)[number]) {
     const copyKey = page.stagedPageId || page.id;
-    const template = templates.find((item) => item.id === page.templateId);
+    const template =
+      templates.find((item) => item.id === page.templateId) ??
+      page.stagedTemplate;
 
     if (!template || !navigator.clipboard?.writeText) {
       setContractCopyFeedback(copyKey, "error");
