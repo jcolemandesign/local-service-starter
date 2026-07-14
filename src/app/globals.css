@@ -714,14 +714,20 @@ body {
     gap: var(--inline-gap-active, 2.25rem);
   }
 
-  .pagebuilder-density-normal section {
-    padding-block: 4rem;
-  }
-
   .pagebuilder-density-normal .section-space-med,
   .pagebuilder-density-normal .section-space-lrg,
   .pagebuilder-density-normal .section-space-sml {
     padding-block: 4rem;
+  }
+
+  .pagebuilder-density-normal .pagebuilder-section-frame {
+    --pagebuilder-section-gap-before: 0;
+  }
+
+  .pagebuilder-density-normal
+    .pagebuilder-section-frame
+    + .pagebuilder-section-frame {
+    margin-top: var(--pagebuilder-section-gap-before);
   }
 
   .pagebuilder-density-normal .min-h-svh {
@@ -734,12 +740,6 @@ body {
   .pagebuilder-density-normal [data-pagebuilder-section-mode="Hero"] section,
   .pagebuilder-density-normal
     [data-pagebuilder-section-component="ContentFixedCoverFadeSectionV2"]
-    section {
-    padding-block: 0;
-  }
-
-  .pagebuilder-density-normal
-    [data-pagebuilder-section-component="ServicesThreeCardsRightSectionV3"]
     section {
     padding-block: 0;
   }

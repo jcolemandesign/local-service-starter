@@ -270,7 +270,7 @@ function TemplateSectionFrame({
   return (
     <div
       className={cx(
-        "group/pagebuilder-section outline outline-0 outline-offset-0 transition-shadow",
+        "pagebuilder-section-frame group/pagebuilder-section outline outline-0 outline-offset-0 transition-shadow",
         isFixed ? "fixed" : isOverlay ? "absolute" : "relative",
         className,
       )}

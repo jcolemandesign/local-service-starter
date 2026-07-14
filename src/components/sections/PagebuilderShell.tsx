@@ -2029,7 +2029,7 @@ export function PagebuilderShell({
       return (
         <div
           className={cx(
-            "group/pagebuilder-section cursor-pointer outline outline-0 outline-offset-0 transition-shadow",
+            "pagebuilder-section-frame group/pagebuilder-section cursor-pointer outline outline-0 outline-offset-0 transition-shadow",
             options.isOverlay ? "absolute" : "relative",
             options.isOverlay && "pointer-events-none",
             options.className,
