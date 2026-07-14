@@ -30,7 +30,7 @@ export function StagedPageCanvas({
   const renderData = getStagedPageRenderData(page, allPages ?? [page]);
 
   if (!chrome) {
-    return <PageTemplatePreview {...renderData} fixedNavigation />;
+    return <PageTemplatePreview {...renderData} overlayNavigation={false} />;
   }
 
   return (

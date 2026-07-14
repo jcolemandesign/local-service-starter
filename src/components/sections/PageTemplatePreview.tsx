@@ -105,6 +105,7 @@ type PageTemplatePreviewProps = {
   fixedNavigation?: boolean;
   homeHref?: string;
   navigationLinks?: SiteNavigationLink[];
+  overlayNavigation?: boolean;
   sections: PageTemplatePreviewSection[];
 };
 
@@ -162,6 +163,7 @@ export function PageTemplatePreview({
   fixedNavigation = false,
   homeHref,
   navigationLinks = [],
+  overlayNavigation = true,
   sections,
 }: PageTemplatePreviewProps) {
   const includedSections = sections.filter(Boolean);
@@ -183,10 +185,12 @@ export function PageTemplatePreview({
                   className={
                     fixedNavigation
                       ? "inset-x-0 top-0 z-50"
-                      : "inset-x-0 top-0 z-20"
+                      : overlayNavigation
+                        ? "inset-x-0 top-0 z-20"
+                        : undefined
                   }
                   isFixed={fixedNavigation}
-                  isOverlay={!fixedNavigation}
+                  isOverlay={!fixedNavigation && overlayNavigation}
                   section={section}
                 >
                   {renderPageTemplateSection(

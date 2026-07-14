@@ -81,7 +81,7 @@ function SliderButton({
   return (
     <button
       aria-label={label}
-      className="radius-button flex size-12 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-white text-xl font-semibold leading-none text-service-accent shadow-service transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white max-md:size-11"
+      className="radius-button flex size-12 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-bg-page text-xl font-semibold leading-none text-service-accent shadow-service transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white max-md:size-11"
       onClick={onClick}
       type="button"
     >
@@ -125,7 +125,7 @@ function TestimonialCard({
   return (
     <figure
       className={cx(
-        "content-padding radius-medium flex min-h-full flex-col justify-between border border-service-border bg-white shadow-service",
+        "content-padding radius-medium flex min-h-full flex-col justify-between border border-service-border bg-bg-page shadow-service",
         className,
       )}
     >

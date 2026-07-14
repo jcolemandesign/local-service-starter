@@ -26,12 +26,12 @@ function OfferBackground() {
   return (
     <div
       aria-hidden="true"
-      className="absolute inset-0 overflow-hidden bg-service-ink"
+      className="absolute inset-0 overflow-hidden bg-bg-dark"
     >
       <div className="absolute inset-0 bg-[linear-gradient(135deg,rgb(31_122_90_/_0.42),rgb(23_33_29_/_0.06)),linear-gradient(45deg,rgb(255_255_255_/_0.16)_0_1px,transparent_1px_24px)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_86%_10%,rgb(255_255_255_/_0.2),transparent_30%),radial-gradient(circle_at_14%_92%,rgb(196_90_44_/_0.28),transparent_34%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(128deg,rgb(0_0_0_/_0.78),rgb(0_0_0_/_0.34)_38%,rgb(0_0_0_/_0.06)_68%)]" />
-      <div className="absolute -left-24 -top-24 size-[38rem] rounded-full bg-black/42 blur-3xl" />
+      <div className="absolute -left-24 -top-24 size-[38rem] rounded-full bg-bg-dark/42 blur-3xl" />
     </div>
   );
 }
@@ -62,7 +62,7 @@ export function CTAScrollRevealOfferSectionV3({
       className="relative min-h-[260svh] bg-service-surface"
       ref={sectionRef}
     >
-      <div className="sticky top-0 min-h-svh overflow-hidden text-white">
+      <div className="sticky top-0 min-h-svh overflow-hidden text-text-inverse">
         <OfferBackground />
         <SevenColumnGrid className="relative z-10 min-h-svh" padding="med">
           <SevenColumnGridItem
@@ -73,21 +73,21 @@ export function CTAScrollRevealOfferSectionV3({
               className="fluid-type-frame w-full min-w-0"
               style={{ y: shouldReduceMotion ? 0 : offerY }}
             >
-              <p className="type-label text-white/68">{offerEyebrow}</p>
-              <h2 className="type-display-lg mt-eyebrow-display text-white">
+              <p className="type-label text-text-inverse/68">{offerEyebrow}</p>
+              <h2 className="type-display-lg mt-eyebrow-display text-text-inverse">
                 {offerTitle}
               </h2>
-              <p className="type-text-xl wrap-pretty mt-display-body text-white/78">
+              <p className="type-text-xl wrap-pretty mt-display-body text-text-inverse/78">
                 {offerBody}
               </p>
               <div className="mt-body-actions-lg flex flex-wrap items-center inline-gap-med">
                 <RequestServiceButton
-                  className="border-white bg-white text-service-ink hover:bg-service-surface"
+                  className="border-bg-page bg-bg-page text-service-ink hover:bg-service-surface"
                   variant="secondary"
                 >
                   {action}
                 </RequestServiceButton>
-              <p className="type-caption max-w-xs text-white/64">
+              <p className="type-caption max-w-xs text-text-inverse/64">
                 {offerDetail}
               </p>
               </div>
@@ -120,7 +120,7 @@ export function CTAScrollRevealOfferSectionV3({
 
         <div aria-hidden="true" className="min-h-[78svh]" />
 
-        <div className="min-h-svh bg-white shadow-[0_-36px_110px_rgb(23_33_29_/_0.22)]">
+        <div className="min-h-svh bg-bg-page shadow-[0_-36px_110px_rgb(23_33_29_/_0.22)]">
           <SevenColumnGrid className="min-h-svh" padding="med">
             <SevenColumnGridItem
               alignY="middle"

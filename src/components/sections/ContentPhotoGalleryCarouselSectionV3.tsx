@@ -82,7 +82,7 @@ function ArrowButton({
   return (
     <button
       aria-label={direction === "previous" ? "Previous images" : "Next images"}
-      className="flex size-16 items-center justify-center rounded-full border border-white/80 bg-white text-2xl font-semibold leading-none text-service-ink shadow-[0_10px_24px_rgb(20_27_24_/_0.09),0_0_0_1px_rgb(20_27_24_/_0.045)] transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-white/80 disabled:hover:bg-white disabled:hover:text-service-ink max-md:size-12 max-md:text-xl"
+      className="flex size-16 items-center justify-center rounded-full border border-service-border bg-bg-page text-2xl font-semibold leading-none text-service-ink shadow-[0_10px_24px_rgb(20_27_24_/_0.09),0_0_0_1px_rgb(20_27_24_/_0.045)] transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-service-border disabled:hover:bg-bg-page disabled:hover:text-service-ink max-md:size-12 max-md:text-xl"
       disabled={disabled}
       onClick={onClick}
       onPointerEnter={onPointerEnter}

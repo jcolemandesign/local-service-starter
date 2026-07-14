@@ -75,7 +75,7 @@ function FeatureOverlapCard({
   return (
     <article
       className={cx(
-        "fluid-type-frame radius-medium relative z-10 border border-service-border bg-white p-10 shadow-service max-md:p-6",
+        "fluid-type-frame radius-medium relative z-10 border border-service-border bg-bg-page p-10 shadow-service max-md:p-6",
         positionClass[item.position],
         mirrored ? "max-lg:translate-x-0 lg:-translate-x-10" : "max-lg:translate-x-0 lg:translate-x-10",
       )}
@@ -140,7 +140,7 @@ export function FeatureOverlapRowsSectionV3({
   items,
 }: FeatureOverlapRowsSectionV3Props) {
   return (
-    <section className="bg-white">
+    <section className="bg-bg-page">
       {items.map((item, index) => (
         <FeatureOverlapRow
           item={item}
@@ -234,7 +234,7 @@ export function TestimonialsSectionV3({
   title,
 }: TestimonialsSectionV3Props) {
   return (
-    <section className="bg-white">
+    <section className="bg-bg-page">
       <SevenColumnGrid className="section-min-none" padding="med">
         <SevenColumnGridItem
           className="col-span-3 max-lg:col-span-7"

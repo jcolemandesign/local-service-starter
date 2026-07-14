@@ -47,7 +47,7 @@ export function ContentSplitHeadlineImageSectionV2({
           className={cx(
             "fluid-type-frame",
             "radius-medium",
-            "grid gap-10 bg-white p-12 max-lg:p-8 max-md:p-6",
+            "grid gap-10 bg-bg-page p-12 max-lg:p-8 max-md:p-6",
           )}
         >
           <h2

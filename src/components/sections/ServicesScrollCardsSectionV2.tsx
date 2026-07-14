@@ -25,7 +25,7 @@ function ArrowMark({ className = "" }: { className?: string }) {
     <span
       aria-hidden="true"
       className={cx(
-        "flex items-center justify-center rounded-full border border-service-border bg-white text-service-accent transition-colors group-hover/service-card:border-service-accent group-hover/service-card:bg-service-accent group-hover/service-card:text-white",
+        "flex items-center justify-center rounded-full border border-service-border bg-bg-page text-service-accent transition-colors group-hover/service-card:border-service-accent group-hover/service-card:bg-service-accent group-hover/service-card:text-white",
         className,
       )}
     >
@@ -52,7 +52,7 @@ function ServiceScrollCard({ item }: { item: ScrollServiceItem }) {
       className={cx(
         "fluid-type-frame",
         "radius-medium",
-        "group/service-card flex w-[min(39vw,495px)] shrink-0 cursor-pointer flex-col overflow-hidden border border-service-border bg-white shadow-service transition-transform duration-300 ease-out hover:-translate-y-2 max-lg:w-full",
+        "group/service-card flex w-[min(39vw,495px)] shrink-0 cursor-pointer flex-col overflow-hidden border border-service-border bg-bg-page shadow-service transition-transform duration-300 ease-out hover:-translate-y-2 max-lg:w-full",
       )}
     >
       <div className="flex min-h-28 items-center justify-between gap-8 px-7 py-6">
@@ -95,7 +95,7 @@ function ViewAllCard({ label }: { label: string }) {
       <div className="flex flex-1 items-center justify-center">
         <span
           aria-hidden="true"
-          className="flex size-40 items-center justify-center rounded-full bg-white text-7xl leading-none text-black transition-transform duration-300 ease-out group-hover/service-card:scale-105 max-md:size-32 max-md:text-6xl"
+          className="flex size-40 items-center justify-center rounded-full bg-bg-page text-7xl leading-none text-service-ink transition-transform duration-300 ease-out group-hover/service-card:scale-105 max-md:size-32 max-md:text-6xl"
         >
           -&gt;
         </span>

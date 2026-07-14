@@ -153,7 +153,7 @@ export function FooterSection({
   termsLink,
 }: FooterSectionProps) {
   return (
-    <footer className="bg-service-ink py-16 text-white max-md:py-12">
+    <footer className="token-footer-inverse bg-bg-dark py-16 text-text-inverse max-md:py-12">
       <Container>
         <div className="grid grid-cols-6 gap-10 max-lg:grid-cols-3 max-md:grid-cols-1">
           <div className="col-span-2 max-lg:col-span-3 max-md:col-span-1">

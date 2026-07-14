@@ -150,7 +150,7 @@ function NavPrimaryLayoutSection({
   useScrollLock(lockActive);
 
   return (
-    <section className={cx("relative bg-white", "fluid-type-frame")}>
+    <section className={cx("relative bg-bg-page", "fluid-type-frame")}>
       <nav
         aria-label={
           isCenterLogo
@@ -164,7 +164,7 @@ function NavPrimaryLayoutSection({
           "relative z-30 min-h-20 w-full items-center gap-8 border-b px-8 max-md:px-6",
           isMenuOpen
             ? "border-transparent bg-transparent max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-50 max-lg:text-white"
-            : "border-service-border bg-white",
+            : "border-service-border bg-bg-page",
         )}
       >
         <div
@@ -232,7 +232,7 @@ function NavPrimaryLayoutSection({
                             id={menuId}
                             className={cx(
                               "radius-medium",
-                              "absolute left-0 top-[calc(100%+0.75rem)] z-40 w-56 border border-service-border bg-white p-2 shadow-service",
+                              "absolute left-0 top-[calc(100%+0.75rem)] z-40 w-56 border border-service-border bg-bg-page p-2 shadow-service",
                             )}
                             initial={{
                               opacity: 0,
@@ -290,7 +290,7 @@ function NavPrimaryLayoutSection({
             "hidden min-h-12 cursor-pointer items-center gap-3 border px-5 text-sm font-semibold transition-colors max-lg:flex",
             isMenuOpen
               ? "border-white/20 bg-white/5 text-white hover:border-white/45"
-              : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent",
+              : "border-service-border bg-bg-page text-service-ink hover:border-service-accent hover:text-service-accent",
           )}
           type="button"
           onClick={() => {

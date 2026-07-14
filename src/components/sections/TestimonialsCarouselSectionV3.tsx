@@ -35,7 +35,7 @@ function SliderButton({
   return (
     <button
       aria-label={label}
-      className="radius-button flex size-14 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-white text-2xl font-semibold leading-none text-service-accent shadow-service transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white max-md:size-12"
+      className="radius-button flex size-14 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-bg-page text-2xl font-semibold leading-none text-service-accent shadow-service transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white max-md:size-12"
       onClick={onClick}
       type="button"
     >
@@ -116,7 +116,7 @@ export function TestimonialsCarouselSectionV3({
                 {items.map((item) => (
                   <figure
                     aria-hidden="true"
-                    className="content-padding radius-medium invisible col-start-1 row-start-1 border border-service-border bg-white text-center shadow-service"
+                    className="content-padding radius-medium invisible col-start-1 row-start-1 border border-service-border bg-bg-page text-center shadow-service"
                     key={`${item.author}-size`}
                   >
                     <TestimonialCardContent item={item} />
@@ -126,7 +126,7 @@ export function TestimonialsCarouselSectionV3({
                 <AnimatePresence initial={false} mode="wait">
                   <motion.figure
                     aria-live="polite"
-                    className="content-padding radius-medium col-start-1 row-start-1 border border-service-border bg-white text-center shadow-service"
+                    className="content-padding radius-medium col-start-1 row-start-1 border border-service-border bg-bg-page text-center shadow-service"
                     key={activeItem.author}
                     initial={{
                       opacity: 0,

@@ -38,7 +38,7 @@ function ServiceAreaMapPlaceholder({
         className="absolute inset-y-0 left-1/2 -z-10 w-px bg-service-border"
       />
       <div className="grid h-full place-items-center">
-        <span className="radius-button border border-service-border bg-white/80 px-5 py-3 type-caption font-semibold text-service-muted shadow-sm">
+        <span className="radius-button border border-service-border bg-bg-page/80 px-5 py-3 type-caption font-semibold text-service-muted shadow-sm">
           FPO map
         </span>
       </div>
@@ -87,7 +87,7 @@ export function ServiceAreaZipLookupSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-          <div className="content-padding radius-surface grid h-full content-between border border-service-border bg-white shadow-service">
+          <div className="content-padding radius-surface grid h-full content-between border border-service-border bg-bg-page shadow-service">
             <div>
               <p className="type-label text-service-accent">Service area</p>
               <div className="mt-heading-body-md grid grid-cols-2 items-start gap-x-6 gap-y-3 max-sm:grid-cols-1">
@@ -126,7 +126,7 @@ export function ServiceAreaZipLookupSectionV3({
                     inputMode="numeric"
                     autoComplete="postal-code"
                     placeholder={inputPlaceholder}
-                    className="radius-button min-h-12 border border-service-border bg-service-surface px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent focus:bg-white"
+                    className="radius-button min-h-12 border border-service-border bg-service-surface px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent focus:bg-bg-page"
                   />
                   <button
                     type="submit"

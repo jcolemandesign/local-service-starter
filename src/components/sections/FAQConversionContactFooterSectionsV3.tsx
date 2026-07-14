@@ -231,7 +231,7 @@ export function FAQSectionV3({
           <div className="grid card-grid-gap-med">
             {items.map((item) => (
               <article
-                className="content-padding fluid-type-frame radius-medium border border-service-border bg-white shadow-service"
+                className="content-padding fluid-type-frame radius-medium border border-service-border bg-bg-page shadow-service"
                 key={item.question}
               >
                 <h3 className="type-heading-sm text-service-ink">
@@ -251,7 +251,7 @@ export function FAQSectionV3({
 
 export function CTASectionV3({ action, body, title }: CTASectionV3Props) {
   return (
-    <section className="bg-service-ink text-white">
+    <section className="bg-bg-dark text-text-inverse">
       <SevenColumnGrid className="section-min-none" padding="med">
         <SevenColumnGridItem className="col-span-5 max-lg:col-span-7">
           <div className="fluid-type-frame">
@@ -268,7 +268,7 @@ export function CTASectionV3({ action, body, title }: CTASectionV3Props) {
           className="col-span-2 col-start-6 max-lg:col-span-7 max-lg:col-start-1 max-lg:justify-items-start"
         >
           <RequestServiceButton
-            className="shrink-0 border-white bg-white text-service-ink hover:bg-service-surface"
+            className="shrink-0 border-bg-page bg-bg-page text-service-ink hover:bg-service-surface"
             variant="secondary"
           >
             {action}
@@ -286,9 +286,9 @@ export function CTAFullscreenSectionV3({
   title,
 }: CTAFullscreenSectionV3Props) {
   return (
-    <section className="relative overflow-hidden bg-service-ink text-white">
+    <section className="relative overflow-hidden bg-bg-dark text-text-inverse">
       <PlaceholderBackground />
-      <div aria-hidden="true" className="absolute inset-0 bg-service-ink/55" />
+      <div aria-hidden="true" className="absolute inset-0 bg-bg-dark/55" />
       <div
         aria-hidden="true"
         className="absolute inset-0 bg-linear-to-t from-service-ink via-service-ink/35 to-service-ink/10"
@@ -315,7 +315,7 @@ export function CTAFullscreenSectionV3({
         >
           <div className="flex w-full justify-center">
             <RequestServiceButton
-              className="w-auto max-w-max shrink-0 border-white bg-white text-service-ink hover:bg-service-surface"
+              className="w-auto max-w-max shrink-0 border-bg-page bg-bg-page text-service-ink hover:bg-service-surface"
               variant="secondary"
             >
               {action}
@@ -363,7 +363,7 @@ export function ContactSectionV3({
               <label className="type-text-sm grid card-grid-gap-sml font-semibold text-service-ink">
                 Name
                 <input
-                  className="radius-4 min-h-12 border border-service-border bg-white px-4 text-base font-normal outline-none transition-colors focus:border-service-accent"
+                  className="radius-4 min-h-12 border border-service-border bg-bg-page px-4 text-base font-normal outline-none transition-colors focus:border-service-accent"
                   placeholder="Jane Smith"
                   type="text"
                 />
@@ -371,7 +371,7 @@ export function ContactSectionV3({
               <label className="type-text-sm grid card-grid-gap-sml font-semibold text-service-ink">
                 Service needed
                 <input
-                  className="radius-4 min-h-12 border border-service-border bg-white px-4 text-base font-normal outline-none transition-colors focus:border-service-accent"
+                  className="radius-4 min-h-12 border border-service-border bg-bg-page px-4 text-base font-normal outline-none transition-colors focus:border-service-accent"
                   placeholder="Repair, installation, maintenance"
                   type="text"
                 />
@@ -379,12 +379,12 @@ export function ContactSectionV3({
               <label className="type-text-sm grid card-grid-gap-sml font-semibold text-service-ink">
                 Message
                 <textarea
-                  className="radius-4 min-h-32 border border-service-border bg-white px-4 py-3 text-base font-normal outline-none transition-colors focus:border-service-accent"
+                  className="radius-4 min-h-32 border border-service-border bg-bg-page px-4 py-3 text-base font-normal outline-none transition-colors focus:border-service-accent"
                   placeholder="Briefly describe the issue"
                 />
               </label>
               <button
-                className="radius-button type-label min-h-12 cursor-pointer bg-service-accent px-6 text-white transition-colors hover:bg-service-ink"
+                className="radius-button type-label min-h-12 cursor-pointer bg-service-accent px-6 text-text-inverse transition-colors hover:bg-bg-dark"
                 type="button"
               >
                 Submit preview
@@ -411,7 +411,7 @@ export function FooterSectionV3({
   termsLink,
 }: FooterSectionV3Props) {
   return (
-    <footer className="bg-service-ink text-white">
+    <footer className="token-footer-inverse bg-bg-dark text-text-inverse">
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
           <div className="fluid-type-frame">
@@ -535,7 +535,7 @@ export function FooterHorizontalSectionV3({
   termsLink,
 }: FooterSectionV3Props) {
   return (
-    <footer className="bg-service-ink text-white">
+    <footer className="token-footer-inverse bg-bg-dark text-text-inverse">
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
           <div className="fluid-type-frame">
@@ -649,7 +649,7 @@ export function FooterCompactSectionV3({
   termsLink,
 }: FooterSectionV3Props) {
   return (
-    <footer className="bg-service-ink text-white">
+    <footer className="token-footer-inverse bg-bg-dark text-text-inverse">
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
           <div className="fluid-type-frame">

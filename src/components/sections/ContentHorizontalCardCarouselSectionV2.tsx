@@ -65,7 +65,7 @@ function ArrowButton({
   return (
     <button
       aria-label={direction === "previous" ? "Previous cards" : "Next cards"}
-      className="flex size-24 items-center justify-center rounded-full border border-white/80 bg-white text-3xl font-semibold leading-none text-service-ink shadow-[0_14px_34px_rgb(20_27_24_/_0.1),0_0_0_1px_rgb(20_27_24_/_0.045)] transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-white/80 disabled:hover:bg-white disabled:hover:text-service-ink max-md:size-16 max-md:text-2xl"
+      className="flex size-24 items-center justify-center rounded-full border border-service-border bg-bg-page text-3xl font-semibold leading-none text-service-ink shadow-[0_14px_34px_rgb(20_27_24_/_0.1),0_0_0_1px_rgb(20_27_24_/_0.045)] transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-service-border disabled:hover:bg-bg-page disabled:hover:text-service-ink max-md:size-16 max-md:text-2xl"
       disabled={disabled}
       onClick={onClick}
       onPointerEnter={onPointerEnter}
@@ -96,7 +96,7 @@ function HorizontalCarouselCard({
           cardSizeClasses[size],
           isFeatured
             ? "border-service-ink bg-service-ink text-white"
-            : "border-service-border bg-white text-service-ink",
+            : "border-service-border bg-bg-page text-service-ink",
         )}
       >
         <div>

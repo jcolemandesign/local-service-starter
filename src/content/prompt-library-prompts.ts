@@ -599,6 +599,8 @@ Your job is to turn the strategy brief into:
 - Copywriting guardrails
 - Missing info checklist
 
+Use clear headings and substantive bullets. Do not use markdown tables in this output. For sitemap, homepage flow, services, FAQ, and page-by-page planning, use compact "cards" with labels instead of tables.
+
 ---
 
 # Website Content Plan
@@ -651,11 +653,18 @@ For each page, include:
 - Suggested URL slug
 - Purpose
 - Priority: Essential, Recommended Later, or Optional
+- Why it belongs in the plan
+- Launch note, redirect note, or verification need if relevant
 
 Use this format:
 
-| Page | Suggested URL | Priority | Purpose |
-| --- | --- | --- | --- |
+### Page Name
+
+- URL: /example
+- Priority: Essential, Recommended Later, or Optional
+- Purpose: one clear sentence explaining what this page does for the visitor and business
+- Why it belongs: one sentence tying the page to demand, conversion, trust, SEO, service clarity, or lead quality
+- Notes: launch priority, redirect/preservation note, verification need, or "None"
 
 ---
 
@@ -671,6 +680,8 @@ For each section, include:
 - Draft copy direction
 - Content needed
 - Suggested CTA, if relevant
+- Placement note explaining why this appears high, middle, or late on the page
+- Proof or source detail needed, if relevant
 
 Use these semantic roles where useful:
 
@@ -703,8 +714,14 @@ Make clear what should appear high on the page, what can appear later, and what 
 
 Use this format:
 
-| Order | Section | Semantic Role | Purpose | Copy Direction | Content Needed | CTA |
-| --- | --- | --- | --- | --- | --- | --- |
+### 1. Section Name
+
+- Semantic role: Scan, Narrative, Proof, Decision, Utility, Conversion, Navigation, or Footer
+- Purpose: one clear sentence explaining what the section must accomplish
+- Copy direction: 2-3 concrete bullets covering the message, tone, and visitor question this section answers
+- Content needed: specific fields, proof, images, service cards, FAQs, or data needed to build it
+- CTA: primary, secondary, or none
+- Placement note: why this belongs here in the homepage flow
 
 ---
 
@@ -730,8 +747,27 @@ For each page, include:
 - Copy angle
 - CTA direction
 - Notes / proof needed
+- Audience / visitor intent
+- Key messages to cover
+- Content assets or facts needed
+- Internal links to include
+- Risks / guardrails
 
-Use concise bullets.
+Use a heading for each page and substantive bullets. Do not use a table here. Each major page should include enough direction that a copywriter or pagebuilder can understand what to build without guessing.
+
+Use this format:
+
+### Page Name
+
+- Purpose: one clear sentence.
+- Visitor intent: who is landing here and what they need to decide.
+- Main sections: 5-8 section ideas in logical order.
+- Key messages: 3-5 bullets with the specific ideas the page should communicate.
+- Copy angle: the page's tone and positioning, including what to avoid.
+- CTA direction: primary and secondary CTA behavior.
+- Content/assets needed: facts, proof, photos, reviews, offers, service lists, or data required.
+- Internal links: pages this page should link to or receive links from.
+- Notes / proof needed: claims to confirm, missing details, or risk flags.
 
 ---
 
@@ -807,8 +843,14 @@ Do not overemphasize services marked as "Non-priority" or "Do not promote."
 
 Use this format:
 
-| Priority | Service | Website Treatment | Card / Section Direction | Dedicated Page? | Notes |
-| --- | --- | --- | --- | --- | --- |
+### 1. Service Name
+
+- Website treatment: Feature heavily, Standard Service, Non-priority, or Do not promote
+- Card / section direction: 1-2 sentences explaining how this should be presented on overview pages
+- Dedicated page: Yes, Recommended Later, Optional, or No
+- Homepage placement: where it should appear or whether it should stay secondary
+- Form/dropdown label: recommended visitor-facing label, if relevant
+- Notes: proof needed, claim limits, service-area caveats, or "None"
 
 ---
 
@@ -830,13 +872,18 @@ For each FAQ, include:
 
 - Question
 - Answer direction
+- Why it matters
+- CTA or internal link, if relevant
 
 Do not write overly polished final answers yet. Keep answers accurate and cautious.
 
 Use this format:
 
-| Question | Answer Direction |
-| --- | --- |
+### Question?
+
+- Why it matters: the objection, hesitation, or routing issue this answers
+- Answer direction: 2-4 bullets covering the facts, caveats, and tone to use later
+- CTA/link: relevant CTA or internal page link, or "None"
 
 ---
 

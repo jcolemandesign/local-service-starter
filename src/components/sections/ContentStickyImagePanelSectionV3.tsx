@@ -70,7 +70,7 @@ export function ContentStickyImagePanelSectionV3({
           className="col-span-3 col-start-5 h-full max-lg:col-span-4 max-lg:col-start-4 max-md:col-span-7 max-md:col-start-1"
         >
           <div className="sticky top-[var(--site-grid-inset-block)] max-md:static">
-            <article className="content-padding fluid-type-frame radius-medium card-min-medium flex max-h-[calc(100svh-(var(--site-grid-inset-block)*2))] w-full flex-col justify-between overflow-auto border border-white/45 bg-white shadow-service max-md:card-min-tall">
+            <article className="content-padding fluid-type-frame radius-medium card-min-medium flex max-h-[calc(100svh-(var(--site-grid-inset-block)*2))] w-full flex-col justify-between overflow-auto border border-service-border bg-bg-page shadow-service max-md:card-min-tall">
               <div>
                 <p className="type-label text-service-accent">{eyebrow}</p>
                 <h2 className="type-heading-lg mt-eyebrow-heading-md text-service-ink">

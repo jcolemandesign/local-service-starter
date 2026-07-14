@@ -25,7 +25,7 @@ export function ContentRuleHeaderSectionV2({
   const ruleScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
-    <section className="bg-white">
+    <section className="bg-bg-page">
       <SevenColumnGrid>
         <SevenColumnGridItem className="col-span-6 max-lg:col-span-7">
           <div

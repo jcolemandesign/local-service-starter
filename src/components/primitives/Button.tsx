@@ -20,9 +20,9 @@ const standardButtonBaseClassName =
 
 const standardButtonVariantClassNames = {
   primary:
-    "border-transparent bg-service-accent text-white hover:bg-service-ink",
+    "border-transparent bg-service-accent text-text-inverse hover:bg-bg-dark",
   secondary:
-    "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent",
+    "border-service-border bg-bg-page text-service-ink hover:border-service-accent hover:bg-service-surface hover:text-service-accent",
 } as const;
 
 export function Button({
@@ -79,7 +79,7 @@ export function ExpandingArrowButton({
   return (
     <a
       className={cx(
-        "group/button radius-button relative isolate inline-flex min-h-12 cursor-pointer items-center overflow-hidden border border-service-ink bg-service-ink px-6 py-2 pr-16 text-sm font-semibold text-service-accent transition-colors duration-300 ease-out hover:text-service-ink",
+        "group/button radius-button relative isolate inline-flex min-h-12 cursor-pointer items-center overflow-hidden border border-bg-dark bg-bg-dark px-6 py-2 pr-16 text-sm font-semibold text-service-accent transition-colors duration-300 ease-out hover:text-bg-dark",
         buttonFocusClassName,
         className,
       )}
@@ -92,7 +92,7 @@ export function ExpandingArrowButton({
       <span>{children}</span>
       <span
         aria-hidden="true"
-        className="absolute right-5 top-1/2 -translate-y-1/2 text-service-ink transition-transform duration-300 ease-out group-hover/button:-translate-x-1"
+        className="absolute right-5 top-1/2 -translate-y-1/2 text-bg-dark transition-transform duration-300 ease-out group-hover/button:-translate-x-1"
       >
         -&gt;
       </span>
@@ -108,7 +108,7 @@ export function WrappingArrowButton({
   return (
     <a
       className={cx(
-        "group/button radius-button relative isolate inline-flex min-h-12 cursor-pointer items-center overflow-hidden border border-bg-dark bg-bg-dark px-6 py-2 pr-16 text-sm font-semibold text-text-inverse transition-colors duration-300 ease-out hover:text-white",
+        "group/button radius-button relative isolate inline-flex min-h-12 cursor-pointer items-center overflow-hidden border border-bg-dark bg-bg-dark px-6 py-2 pr-16 text-sm font-semibold text-text-inverse transition-colors duration-300 ease-out hover:text-text-inverse",
         buttonFocusClassName,
         className,
       )}
@@ -142,7 +142,7 @@ export function TextLiftButton({
   return (
     <a
       className={cx(
-        "group/button radius-button relative inline-flex min-h-12 cursor-pointer items-center justify-center overflow-hidden border border-transparent bg-service-accent px-7 py-2 text-sm font-semibold text-white transition duration-200 ease-out hover:scale-[0.97] hover:bg-service-ink",
+        "group/button radius-button relative inline-flex min-h-12 cursor-pointer items-center justify-center overflow-hidden border border-transparent bg-service-accent px-7 py-2 text-sm font-semibold text-text-inverse transition duration-200 ease-out hover:scale-[0.97] hover:bg-bg-dark",
         buttonFocusClassName,
         className,
       )}

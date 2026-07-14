@@ -44,7 +44,7 @@ export function FAQAccordionSectionV3({
   }
 
   return (
-    <section className="bg-white">
+    <section className="bg-bg-page">
       <SevenColumnGrid className="section-min-none" padding="med">
         <SevenColumnGridItem
           alignX="center"

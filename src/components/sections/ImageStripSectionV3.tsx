@@ -41,8 +41,8 @@ export function ImageStripSectionV3({ images }: ImageStripSectionV3Props) {
             className={imageLayoutClasses[index]}
             key={`${image.src}-${index}`}
           >
-            <figure className="grid h-full min-h-[28rem] grid-rows-[minmax(0,1fr)_auto] overflow-hidden bg-white max-lg:min-h-[22rem] max-md:min-h-[18rem]">
-              <div className="relative h-full min-h-0 bg-white">
+            <figure className="grid h-full min-h-[28rem] grid-rows-[minmax(0,1fr)_auto] overflow-hidden bg-bg-page max-lg:min-h-[22rem] max-md:min-h-[18rem]">
+              <div className="relative h-full min-h-0 bg-bg-page">
                 <Image
                   alt={image.alt}
                   className="object-cover"
@@ -59,7 +59,7 @@ export function ImageStripSectionV3({ images }: ImageStripSectionV3Props) {
               {image.caption ? (
                 <figcaption
                   className={cx(
-                    "type-caption border-t border-service-border bg-white px-4 py-3 text-service-muted",
+                    "type-caption border-t border-service-border bg-bg-page px-4 py-3 text-service-muted",
                     index === 0 && "text-service-ink",
                   )}
                 >

@@ -22,7 +22,7 @@ export function QuickPageLinksSectionV2({
   title,
 }: QuickPageLinksSectionV2Props) {
   return (
-    <section className="bg-white text-service-ink">
+    <section className="bg-bg-page text-service-ink">
       <SevenColumnGrid minHeight="none" padding="sml">
         <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
           <div className="fluid-type-frame">
@@ -39,7 +39,7 @@ export function QuickPageLinksSectionV2({
           >
             {pageLinks.map((link) => (
               <a
-                className="radius-medium group/page-link grid min-h-28 content-between border border-service-border bg-service-surface/70 p-4 transition-colors hover:border-service-accent hover:bg-white"
+                className="radius-medium group/page-link grid min-h-28 content-between border border-service-border bg-service-surface/70 p-4 transition-colors hover:border-service-accent hover:bg-bg-page"
                 href={link.href}
                 key={link.label}
               >

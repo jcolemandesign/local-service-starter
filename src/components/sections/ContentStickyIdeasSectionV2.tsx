@@ -89,7 +89,7 @@ function ImportantIdeasBoxV2({ ideas }: { ideas: readonly string[] }) {
       className={cx(
         "radius-medium",
         "fluid-type-frame",
-        "border border-service-border bg-white p-7 shadow-service will-change-transform max-lg:will-change-auto",
+        "border border-service-border bg-bg-page p-7 shadow-service will-change-transform max-lg:will-change-auto",
       )}
       ref={boxRef}
       style={{ transform: `translate3d(0, ${offset}px, 0)` }}

@@ -65,7 +65,7 @@ export function DecisionSplitLargeCardsSectionV3({
 
 function SplitLargeCard({ card }: { card: SplitLargeCard }) {
   return (
-    <article className="fluid-type-frame min-h-64 rounded-[var(--radius-md-token)] border border-service-border bg-white p-6 text-service-ink shadow-none max-md:min-h-0">
+    <article className="fluid-type-frame min-h-64 rounded-[var(--radius-md-token)] border border-service-border bg-bg-page p-6 text-service-ink shadow-none max-md:min-h-0">
       <p className="type-label text-service-accent">{card.eyebrow}</p>
       <h3 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
         {card.title}

@@ -172,6 +172,174 @@ body {
     background-color: #fffaf2;
   }
 
+  .token-chrome {
+    --chrome-live-bg-page: var(--live-bg-page, var(--color-bg-page));
+    --chrome-live-bg-surface: var(--live-bg-surface, var(--color-bg-surface));
+    --chrome-live-bg-dark: var(--live-bg-dark, var(--color-bg-dark));
+    --chrome-live-border: var(--live-border-default, var(--color-border-default));
+    --chrome-live-accent: var(--live-service-accent, var(--color-service-accent));
+    --chrome-live-ink: var(--live-service-ink, var(--color-service-ink));
+    --chrome-bg: color-mix(in srgb, var(--chrome-live-bg-surface) 72%, var(--chrome-live-bg-page) 28%);
+    --chrome-panel: color-mix(in srgb, var(--chrome-live-bg-surface) 90%, var(--chrome-live-bg-page) 10%);
+    --chrome-panel-muted: color-mix(in srgb, var(--chrome-live-bg-surface) 76%, var(--chrome-live-bg-page) 24%);
+    --chrome-panel-strong: color-mix(in srgb, var(--chrome-live-accent) 14%, var(--chrome-panel) 86%);
+    --chrome-soft: color-mix(in srgb, var(--chrome-live-accent) 8%, var(--chrome-panel) 92%);
+    --chrome-hover: color-mix(in srgb, var(--chrome-live-accent) 12%, var(--chrome-panel) 88%);
+    --chrome-field-sheen:
+      linear-gradient(
+        145deg,
+        color-mix(in srgb, var(--chrome-live-bg-page) 7%, transparent) 0%,
+        color-mix(in srgb, var(--chrome-live-bg-page) 3.5%, transparent) 28%,
+        transparent 58%,
+        color-mix(in srgb, var(--chrome-live-accent) 3%, transparent) 100%
+      );
+    --chrome-border: color-mix(in srgb, var(--chrome-live-border) 80%, var(--chrome-live-ink) 20%);
+    --chrome-border-soft: color-mix(in srgb, var(--chrome-live-border) 86%, transparent);
+    --chrome-border-strong: color-mix(in srgb, var(--chrome-live-accent) 60%, var(--chrome-live-border) 40%);
+    --chrome-text: var(--live-text-main, var(--color-text-main));
+    --chrome-muted: var(--live-text-muted, var(--color-text-muted));
+    --chrome-accent: var(--chrome-live-accent);
+    --chrome-accent-text: var(--color-text-inverse);
+    background-color: var(--chrome-bg);
+    color: var(--chrome-text);
+  }
+
+  .token-chrome-panel {
+    border-color: var(--chrome-border-soft);
+    background-color: color-mix(in srgb, var(--chrome-panel) 92%, transparent);
+    color: var(--chrome-text);
+    box-shadow: var(--shadow-service);
+  }
+
+  .token-chrome-panel-strong {
+    border-color: var(--chrome-border);
+    background-color: var(--chrome-panel-strong);
+    background-image:
+      linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--chrome-live-bg-page) 8%, transparent) 0%,
+        color-mix(in srgb, var(--chrome-live-bg-page) 5%, transparent) 24%,
+        color-mix(in srgb, var(--chrome-live-bg-page) 2%, transparent) 45%,
+        transparent 62%,
+        color-mix(in srgb, var(--chrome-live-bg-page) 2%, transparent) 80%,
+        color-mix(in srgb, var(--chrome-live-bg-page) 5%, transparent) 100%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--chrome-live-bg-page) 4%, transparent),
+        color-mix(in srgb, var(--chrome-live-bg-dark) 2%, transparent)
+      );
+    color: var(--chrome-text);
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--chrome-live-bg-page) 18%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--chrome-live-bg-page) 5%, transparent),
+      var(--shadow-service);
+  }
+
+  .token-chrome-card {
+    border-color: var(--chrome-border-soft);
+    background-color: color-mix(in srgb, var(--chrome-panel) 82%, transparent);
+    background-image: var(--chrome-field-sheen);
+    color: var(--chrome-text);
+  }
+
+  .token-chrome-card:hover {
+    border-color: var(--chrome-border-strong);
+    background-color: var(--chrome-hover);
+    background-image: var(--chrome-field-sheen);
+  }
+
+  .token-chrome-card-active {
+    border-color: var(--chrome-border-strong);
+    background-color: color-mix(in srgb, var(--chrome-accent) 16%, var(--chrome-panel) 84%);
+    background-image: var(--chrome-field-sheen);
+    color: var(--chrome-text);
+  }
+
+  .token-chrome-control {
+    border-color: var(--chrome-border-soft);
+    background-color: color-mix(in srgb, var(--chrome-panel-muted) 86%, transparent);
+    background-image: var(--chrome-field-sheen);
+    color: var(--chrome-text);
+  }
+
+  .token-chrome-control:hover {
+    border-color: var(--chrome-border-strong);
+    background-color: var(--chrome-hover);
+    background-image: var(--chrome-field-sheen);
+    color: var(--chrome-accent);
+  }
+
+  .token-chrome-primary {
+    border-color: var(--chrome-accent);
+    background-color: var(--chrome-accent);
+    color: var(--chrome-accent-text);
+  }
+
+  .token-chrome-primary:hover {
+    border-color: var(--chrome-live-ink);
+    background-color: var(--chrome-live-ink);
+    color: var(--color-text-inverse);
+  }
+
+  .token-chrome-badge {
+    border-color: var(--chrome-border-soft);
+    background-color: color-mix(in srgb, var(--chrome-panel-muted) 78%, transparent);
+    background-image: var(--chrome-field-sheen);
+    color: var(--chrome-muted);
+  }
+
+  .token-chrome-select {
+    border-color: var(--chrome-border-soft);
+    background-color: var(--chrome-panel-muted);
+    background-image: var(--chrome-field-sheen);
+    color: var(--chrome-text);
+  }
+
+  .token-chrome-select:focus {
+    border-color: var(--chrome-border-strong);
+  }
+
+  .token-chrome-frame {
+    border-color: var(--chrome-border-soft);
+    background-color: color-mix(in srgb, var(--chrome-bg) 92%, var(--chrome-live-ink) 8%);
+    box-shadow: var(--shadow-service);
+  }
+
+  .token-chrome-muted {
+    color: var(--chrome-muted);
+  }
+
+  .token-chrome-accent {
+    color: var(--chrome-accent);
+  }
+
+  .token-footer-inverse {
+    background-color: var(--color-bg-dark) !important;
+    color: var(--color-text-inverse) !important;
+  }
+
+  .token-footer-inverse [class*="text-white"],
+  .token-footer-inverse [class*="text-text-inverse"] {
+    color: color-mix(in srgb, var(--color-text-inverse) 72%, transparent) !important;
+  }
+
+  .token-footer-inverse a[class*="text-white"],
+  .token-footer-inverse a[class*="text-text-inverse"],
+  .token-footer-inverse a:hover {
+    color: var(--color-text-inverse) !important;
+  }
+
+  .token-footer-inverse [class*="border-white"],
+  .token-footer-inverse [class*="border-text-inverse"] {
+    border-color: color-mix(in srgb, var(--color-text-inverse) 18%, transparent) !important;
+  }
+
+  .token-footer-inverse [class*="bg-white"],
+  .token-footer-inverse [class*="bg-text-inverse"] {
+    background-color: color-mix(in srgb, var(--color-text-inverse) 7%, transparent) !important;
+  }
+
   .fluid-type-frame {
     container-type: inline-size;
   }
@@ -1148,32 +1316,32 @@ body {
   --live-service-ink: #17211d;
   --live-service-muted: #5f6f68;
   --live-service-accent: #4376ad;
-  --live-service-surface: #e0e0e0;
-  --live-service-border: #8f9e93;
-  --live-bg-page: #e8e8e8;
-  --live-bg-surface: #e0e0e0;
-  --live-bg-muted: #8f9e93;
+  --live-service-surface: #fafafa;
+  --live-service-border: #dfe7e1;
+  --live-bg-page: #e6e8ef;
+  --live-bg-surface: #fafafa;
+  --live-bg-muted: #dfe7e1;
   --live-bg-dark: #10141b;
   --live-text-main: #17211d;
   --live-text-muted: #5f6f68;
   --live-text-accent: #4376ad;
-  --live-border-default: #8f9e93;
+  --live-border-default: #dfe7e1;
   --live-accent: #c45a2c;
   --live-shadow-service: 2px 3px 48px rgb(0 0 0 / 0.05);
   --color-service-ink: #17211d;
   --color-service-muted: #5f6f68;
   --color-service-accent: #4376ad;
-  --color-service-surface: #e0e0e0;
-  --color-service-border: #8f9e93;
-  --color-bg-page: #e8e8e8;
-  --color-bg-surface: #e0e0e0;
-  --color-bg-muted: #8f9e93;
+  --color-service-surface: #fafafa;
+  --color-service-border: #dfe7e1;
+  --color-bg-page: #e6e8ef;
+  --color-bg-surface: #fafafa;
+  --color-bg-muted: #dfe7e1;
   --color-bg-dark: #10141b;
   --color-text-main: #17211d;
   --color-text-muted: #5f6f68;
   --color-text-inverse: #ffffff;
   --color-text-accent: #4376ad;
-  --color-border-default: #8f9e93;
+  --color-border-default: #dfe7e1;
   --color-accent: #c45a2c;
   --card-grid-gap-active: 1.75rem;
   --inline-gap-active: 1rem;
@@ -1186,7 +1354,7 @@ body {
   --radius-round-token: 9999px;
   --radius-surface-token: 40px;
   --radius-button-token: 9999px;
-  --section-min-active: 54rem;
+  --section-min-active: 72rem;
   --section-space-vsml: 3rem;
   --section-space-sml: 6rem;
   --section-space-med: 9rem;

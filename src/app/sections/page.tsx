@@ -67,6 +67,7 @@ import {
   sectionLibraryV3Content,
 } from "@/content/section-library-v3";
 import { StyleGuideCloseAllButton } from "@/components/sections/StyleGuideCloseAllButton";
+import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 
 export const metadata: Metadata = {
   title: "Section Library",
@@ -348,19 +349,15 @@ const sectionTemplateCount = sectionLibraryV3Collections.reduce(
 
 export default function SectionsV3Page() {
   return (
-    <main className="min-h-svh bg-[#10141b] text-white">
+    <StyleGuidePreviewSurface>
+      <main className="token-chrome min-h-svh">
         <section
-          className="section-space-sml border-b border-white/10 text-white"
-          style={{
-            backgroundColor: "#26332f",
-            backgroundImage:
-              "linear-gradient(135deg, rgb(255 255 255 / 0.055) 0%, rgb(255 255 255 / 0.038) 24%, rgb(255 255 255 / 0.018) 45%, transparent 62%, rgb(255 255 255 / 0.018) 80%, rgb(255 255 255 / 0.035) 100%), linear-gradient(180deg, rgb(255 255 255 / 0.03), rgb(255 255 255 / 0.008))",
-          }}
+          className="token-chrome-panel-strong section-space-sml border-b"
         >
           <Container className="grid gap-4">
-            <p className="type-label text-white/55">Internal Library</p>
-            <h1 className="type-display-lg text-white">Section Library</h1>
-            <p className="type-text-xl measure-copy wrap-pretty text-white/72">
+            <p className="token-chrome-muted type-label">Internal Library</p>
+            <h1 className="type-display-lg">Section Library</h1>
+            <p className="token-chrome-muted type-text-xl measure-copy wrap-pretty">
               {sectionTemplateCount} reusable section templates grouped by
               pagebuilder mode.
             </p>
@@ -369,6 +366,7 @@ export default function SectionsV3Page() {
 
         <SectionLibraryV3Accordions collections={collections} />
         <StyleGuideCloseAllButton />
-    </main>
+      </main>
+    </StyleGuidePreviewSurface>
   );
 }

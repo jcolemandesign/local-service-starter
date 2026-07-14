@@ -61,7 +61,7 @@ export function ContentStickyCardStreamSectionV2({
                 className={cx(
                   "fluid-type-frame",
                   "radius-medium",
-                  "border border-service-border bg-white p-8 shadow-service max-md:p-6",
+                  "border border-service-border bg-bg-page p-8 shadow-service max-md:p-6",
                 )}
                 initial={
                   shouldReduceMotion ? false : { opacity: 0, y: 36 }

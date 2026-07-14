@@ -86,7 +86,7 @@ export function HeroGridMosaicSectionV2({
           className={cx(
             "fluid-type-frame",
             "radius-medium",
-            "col-span-4 row-span-2 flex h-full w-full min-w-0 flex-col justify-between bg-white p-8 shadow-service [&>*]:min-w-0 max-lg:col-span-7 max-lg:h-auto max-lg:row-auto max-md:p-6",
+            "col-span-4 row-span-2 flex h-full w-full min-w-0 flex-col justify-between bg-bg-page p-8 shadow-service [&>*]:min-w-0 max-lg:col-span-7 max-lg:h-auto max-lg:row-auto max-md:p-6",
           )}
         >
           <div>
@@ -155,7 +155,7 @@ export function HeroGridMosaicSectionV2({
             className={cx(
               "fluid-type-frame",
               "radius-medium",
-              "col-span-2 row-span-3 row-start-3 flex w-full min-w-0 flex-col justify-between border border-service-border bg-white p-6 transition-transform duration-300 ease-out hover:-translate-y-1 [&>*]:min-w-0 max-lg:col-span-7 max-lg:row-auto",
+              "col-span-2 row-span-3 row-start-3 flex w-full min-w-0 flex-col justify-between border border-service-border bg-bg-page p-6 transition-transform duration-300 ease-out hover:-translate-y-1 [&>*]:min-w-0 max-lg:col-span-7 max-lg:row-auto",
             )}
             key={service.title}
           >

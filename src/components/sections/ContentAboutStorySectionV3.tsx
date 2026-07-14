@@ -30,7 +30,7 @@ export function ContentAboutStorySectionV3({
   notes,
 }: ContentAboutStorySectionV3Props) {
   return (
-    <section className="bg-white">
+    <section className="bg-bg-page">
       <SevenColumnGrid
         className="section-min-medium items-start"
         gap="lrg"

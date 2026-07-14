@@ -12,7 +12,7 @@ function cx(...classes: Array<string | undefined>) {
 
 export function CTASectionV2({ title, body, action }: CTASectionV2Props) {
   return (
-    <section className="bg-service-ink py-24 text-white max-lg:py-20 max-md:py-16">
+    <section className="bg-bg-dark py-24 text-text-inverse max-lg:py-20 max-md:py-16">
       <div className="container-site">
         <div className={cx("fluid-type-frame", "flex items-center justify-between gap-10 max-lg:flex-col max-lg:items-start")}>
           <div>
@@ -28,7 +28,7 @@ export function CTASectionV2({ title, body, action }: CTASectionV2Props) {
                 "type-text-lg",
                 "measure-copy",
                 "wrap-pretty",
-                "mt-6 text-white/75",
+                "mt-6 text-text-inverse/75",
               )}
             >
               {body}
@@ -37,7 +37,7 @@ export function CTASectionV2({ title, body, action }: CTASectionV2Props) {
           <RequestServiceButton
             className={cx(
               "radius-4",
-              "shrink-0 border-white bg-white text-service-ink hover:bg-service-surface",
+              "shrink-0 border-bg-page bg-bg-page text-service-ink hover:bg-service-surface",
             )}
             variant="secondary"
           >

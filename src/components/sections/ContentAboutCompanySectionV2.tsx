@@ -52,7 +52,7 @@ export function ContentAboutCompanySectionV2({
   }[sectionSpace];
 
   return (
-    <section id="about" className="bg-white">
+    <section id="about" className="bg-bg-page">
       <SevenColumnGrid className={cx("section-min-none", sectionSpaceClass)}>
         <SevenColumnGridItem className="col-span-2 max-lg:col-span-5 max-md:col-span-3">
           <p className={cx("type-label", "text-service-accent")}>

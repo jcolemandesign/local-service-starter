@@ -20,7 +20,7 @@ export function FeaturePortraitParagraphSectionV3({
   imageLabel,
 }: FeaturePortraitParagraphSectionV3Props) {
   return (
-    <section className="bg-white">
+    <section className="bg-bg-page">
       <SevenColumnGrid>
         <SevenColumnGridItem
           className="col-span-3 max-md:col-span-7"

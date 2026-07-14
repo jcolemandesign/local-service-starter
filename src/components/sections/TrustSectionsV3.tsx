@@ -61,7 +61,7 @@ function LogoPlaceholder({
   return (
     <div
       className={cx(
-        "content-padding-x radius-medium flex items-center justify-center border border-service-border bg-white shadow-service",
+        "content-padding-x radius-medium flex items-center justify-center border border-service-border bg-bg-page shadow-service",
         compact ? "h-18" : "h-24",
       )}
     >
@@ -183,7 +183,7 @@ export function TrustBarFloatingBentoSectionV3({
           <ul className="grid h-full grid-cols-4 card-grid-gap-sml max-lg:grid-cols-2 max-sm:grid-cols-1">
             {items.map((item, index) => (
               <li
-                className="content-padding radius-medium flex min-h-32 flex-col justify-between border border-service-border bg-white shadow-service max-md:min-h-0"
+                className="content-padding radius-medium flex min-h-32 flex-col justify-between border border-service-border bg-bg-page shadow-service max-md:min-h-0"
                 key={item}
               >
                 <span className="type-caption text-service-muted">
@@ -241,7 +241,7 @@ function TrustCalloutCard({
   return (
     <div
       className={cx(
-        "content-padding radius-medium flex min-h-32 flex-col justify-between border border-service-border bg-white shadow-service max-md:min-h-0",
+        "content-padding radius-medium flex min-h-32 flex-col justify-between border border-service-border bg-bg-page shadow-service max-md:min-h-0",
         className,
       )}
     >
@@ -270,7 +270,7 @@ export function TrustBarBentoAboutSectionV3({
         <SevenColumnGridItem className="col-span-7">
           <div className="grid grid-cols-7 items-center card-grid-gap-sml max-lg:grid-cols-4 max-md:grid-cols-2 max-sm:grid-cols-1">
             <div className="col-span-2 grid grid-cols-2 card-grid-gap-sml max-lg:col-span-2 max-md:col-span-2 max-sm:col-span-1 max-sm:grid-cols-1">
-              <div className="content-padding radius-medium col-span-2 flex aspect-[2/1] items-end border border-service-border bg-white shadow-service max-sm:col-span-1 max-sm:aspect-auto max-sm:min-h-36">
+              <div className="content-padding radius-medium col-span-2 flex aspect-[2/1] items-end border border-service-border bg-bg-page shadow-service max-sm:col-span-1 max-sm:aspect-auto max-sm:min-h-36">
                 <p className="type-text-md wrap-pretty font-semibold text-service-ink">
                   {label}
                 </p>

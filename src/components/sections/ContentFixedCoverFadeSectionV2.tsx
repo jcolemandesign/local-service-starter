@@ -45,7 +45,7 @@ export function ContentFixedCoverFadeSectionV2({
   items,
 }: ContentFixedCoverFadeSectionV2Props) {
   return (
-    <section className="relative min-h-[200svh] bg-white">
+    <section className="relative min-h-[200svh] bg-bg-page">
       <div className="sticky top-0 section-min-screen overflow-hidden text-white">
         <BackgroundTexture label={backgroundLabel} />
         <SevenColumnGrid className="relative z-10">
@@ -66,7 +66,7 @@ export function ContentFixedCoverFadeSectionV2({
         </SevenColumnGrid>
       </div>
 
-      <div className="relative z-10 bg-white text-service-ink shadow-[0_-32px_90px_rgb(23_33_29_/_0.18)]">
+      <div className="relative z-10 bg-bg-page text-service-ink shadow-[0_-32px_90px_rgb(23_33_29_/_0.18)]">
         <SevenColumnGrid className="section-min-screen">
           <SevenColumnGridItem
             alignY="middle"
@@ -110,7 +110,7 @@ export function ContentFixedCoverFadeSectionV2({
                 <input
                   className={cx(
                     "radius-4",
-                    "min-h-12 border border-service-border bg-white px-4 text-base font-normal outline-none transition-colors focus:border-service-accent",
+                    "min-h-12 border border-service-border bg-bg-page px-4 text-base font-normal outline-none transition-colors focus:border-service-accent",
                   )}
                   placeholder="Jane Smith"
                   type="text"
@@ -126,7 +126,7 @@ export function ContentFixedCoverFadeSectionV2({
                 <input
                   className={cx(
                     "radius-4",
-                    "min-h-12 border border-service-border bg-white px-4 text-base font-normal outline-none transition-colors focus:border-service-accent",
+                    "min-h-12 border border-service-border bg-bg-page px-4 text-base font-normal outline-none transition-colors focus:border-service-accent",
                   )}
                   placeholder="Repair, installation, maintenance"
                   type="text"
@@ -142,7 +142,7 @@ export function ContentFixedCoverFadeSectionV2({
                 <textarea
                   className={cx(
                     "radius-4",
-                    "min-h-36 border border-service-border bg-white px-4 py-3 text-base font-normal outline-none transition-colors focus:border-service-accent",
+                    "min-h-36 border border-service-border bg-bg-page px-4 py-3 text-base font-normal outline-none transition-colors focus:border-service-accent",
                   )}
                   placeholder="Briefly describe the issue"
                 />

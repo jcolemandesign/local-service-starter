@@ -73,7 +73,7 @@ export function ContentScrollWrittenRevealSectionV2({
 
   return (
     <section
-      className="bg-white"
+      className="bg-bg-page"
       ref={sectionRef}
     >
       <SevenColumnGrid

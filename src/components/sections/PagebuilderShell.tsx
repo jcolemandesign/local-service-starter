@@ -1053,7 +1053,7 @@ function InnerLayoutPill({
       className={cx(
         "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em]",
         tone === "dark"
-          ? "border-white/15 bg-white/10 text-white/70"
+          ? "token-chrome-badge"
           : "border-service-border bg-service-surface text-service-muted",
       )}
     >
@@ -1171,7 +1171,7 @@ function PagebuilderPreviewWindow({
   return (
     <div
       className={cx(
-        "mx-auto flex max-h-full min-h-0 flex-col overflow-hidden rounded border border-service-border bg-white shadow-service transition-all duration-300",
+        "mx-auto flex max-h-full min-h-0 flex-col overflow-hidden rounded border border-service-border bg-bg-page shadow-service transition-all duration-300",
         frameClassName,
       )}
     >
@@ -1188,17 +1188,17 @@ function PagebuilderPreviewWindow({
           aria-hidden="true"
           className="size-2.5 rounded-full bg-service-accent"
         />
-        <div className="ml-2 flex min-w-0 flex-1 items-center rounded-full border border-service-border bg-white px-3 py-1">
+        <div className="ml-2 flex min-w-0 flex-1 items-center rounded-full border border-service-border bg-bg-page px-3 py-1">
           <span className="type-caption truncate font-semibold text-service-muted">
             {sizeLabel} / {activePageLabel}
           </span>
         </div>
       </div>
 
-      <div className={cx("min-h-0 overflow-auto bg-white", screenClassName)}>
+      <div className={cx("min-h-0 overflow-auto bg-bg-page", screenClassName)}>
         <div
           className={cx(
-            "min-h-full w-full bg-white",
+            "min-h-full w-full bg-bg-page",
             spacingClassName,
             responsiveClassName,
             !showSectionMarkers && "pagebuilder-hide-markers",
@@ -1207,7 +1207,7 @@ function PagebuilderPreviewWindow({
         >
           <div
             className={cx(
-              "fluid-type-frame mx-auto min-h-full w-full bg-white",
+              "fluid-type-frame mx-auto min-h-full w-full bg-bg-page",
               contentClassName,
             )}
           >
@@ -2076,27 +2076,36 @@ export function PagebuilderShell({
   }
 
   return (
-    <section className="h-svh overflow-hidden bg-[#10141b] text-white max-lg:h-auto max-lg:min-h-svh max-lg:overflow-visible">
+    <section className="token-chrome h-svh overflow-hidden max-lg:h-auto max-lg:min-h-svh max-lg:overflow-visible">
       <div className="h-full w-full px-4 py-4 max-md:px-3">
         <div className="grid h-full min-h-0 grid-cols-[22rem_minmax(0,1fr)] items-stretch gap-5 max-lg:h-auto max-lg:grid-cols-1">
           <aside className="grid h-full min-h-0 content-start gap-4 overflow-y-auto overscroll-contain pb-10 pr-1 max-lg:h-auto max-lg:overflow-visible max-lg:pb-0 max-lg:pr-0">
-            <div className="radius-medium order-1 border border-white/10 bg-white/8 p-5 shadow-service">
-              <h1 className="type-heading-lg text-white">
+            <div className="token-chrome-panel radius-medium order-1 border p-5">
+              <h1 className="type-heading-lg">
                 Page Builder
               </h1>
-              <p className="type-text-sm wrap-pretty mt-heading-body-sm text-white/68">
+              <p className="token-chrome-muted type-text-sm wrap-pretty mt-heading-body-sm">
                 Choose, swap, reorder, and preview page sections while the
                 implementation brief updates with the live stack.
               </p>
             </div>
 
-            <details className="radius-medium order-2 border border-white/10 bg-white/8 p-5 shadow-service">
+            <details className="token-chrome-panel radius-medium group/page-layouts order-2 border p-5">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 marker:hidden">
-                <span className="type-heading-sm text-white">
+                <span className="type-heading-sm">
                   Page Layouts
                 </span>
-                <span className="type-caption rounded-sm border border-white/10 bg-white/8 px-3 py-1 text-white/64">
-                  Open
+                <span className="flex shrink-0 items-center gap-2">
+                  <span className="token-chrome-muted type-caption font-semibold">
+                    <span className="group-open/page-layouts:hidden">Closed</span>
+                    <span className="hidden group-open/page-layouts:inline">Open</span>
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="token-chrome-badge flex size-8 shrink-0 items-center justify-center border transition-transform group-open/page-layouts:rotate-180"
+                  >
+                    <DownArrowIcon className="size-4" />
+                  </span>
                 </span>
               </summary>
               <div className="mt-4 grid gap-3" role="list">
@@ -2110,8 +2119,8 @@ export function PagebuilderShell({
                         className={cx(
                           "radius-4 min-h-11 border px-3 text-left type-text-sm font-semibold transition-colors",
                           isActive
-                            ? "border-white/45 bg-white/14 text-white"
-                            : "border-white/10 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                            ? "token-chrome-card-active"
+                            : "token-chrome-card",
                         )}
                         onClick={() => {
                           setActiveRecipeId(recipe.id);
@@ -2126,7 +2135,7 @@ export function PagebuilderShell({
                         <div className="grid gap-2">
                           <div className="flex flex-wrap gap-2">
                             <button
-                              className="radius-4 min-h-9 border border-white/35 bg-white px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-60"
+                              className="token-chrome-primary radius-4 min-h-9 border px-3 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                               disabled={isSavingOption}
                               onClick={() => void saveActiveOption()}
                               type="button"
@@ -2134,7 +2143,7 @@ export function PagebuilderShell({
                               {isSavingOption ? "Saving..." : "Save Layout"}
                             </button>
                             <button
-                              className="radius-4 min-h-9 border border-white/20 bg-white/10 px-2.5 text-xs font-semibold text-white transition-colors hover:border-white/45 hover:bg-white/16"
+                              className="token-chrome-control radius-4 min-h-9 border px-2.5 text-xs font-semibold transition-colors"
                               onClick={openTemplateModal}
                               type="button"
                             >
@@ -2142,7 +2151,7 @@ export function PagebuilderShell({
                             </button>
                             <button
                               aria-label="Clear page template"
-                              className="radius-4 inline-flex min-h-9 w-9 items-center justify-center border border-white/20 bg-white/10 text-white transition-colors hover:border-white/45 hover:bg-white/16 disabled:cursor-not-allowed disabled:opacity-40"
+                              className="token-chrome-control radius-4 inline-flex min-h-9 w-9 items-center justify-center border transition-colors disabled:cursor-not-allowed disabled:opacity-40"
                               disabled={includedSections.length === 0}
                               onClick={clearActiveBuildingSpace}
                               title="Clear page template"
@@ -2157,7 +2166,7 @@ export function PagebuilderShell({
                                 "type-caption rounded-sm border px-3 py-2",
                                 optionSaveError
                                   ? "border-red-300/60 bg-red-950/30 text-red-100"
-                                  : "border-white/10 bg-white/8 text-white/64",
+                                  : "token-chrome-badge",
                               )}
                             >
                               {optionSaveError || optionSaveStatus}
@@ -2172,19 +2181,14 @@ export function PagebuilderShell({
             </details>
 
             <div
-              className="radius-medium order-3 border border-white/30 p-5 shadow-[inset_0_1px_0_rgb(255_255_255_/_0.16),inset_0_0_0_1px_rgb(255_255_255_/_0.045),0_16px_48px_rgb(0_0_0_/_0.16)] ring-1 ring-white/8"
-              style={{
-                backgroundColor: "#26332f",
-                backgroundImage:
-                  "linear-gradient(135deg, rgb(255 255 255 / 0.055) 0%, rgb(255 255 255 / 0.038) 24%, rgb(255 255 255 / 0.018) 45%, transparent 62%, rgb(255 255 255 / 0.018) 80%, rgb(255 255 255 / 0.035) 100%), linear-gradient(180deg, rgb(255 255 255 / 0.03), rgb(255 255 255 / 0.008))",
-              }}
+              className="token-chrome-panel-strong radius-medium order-3 border p-5"
             >
               <div className="flex items-center gap-3">
                 <span
                   aria-hidden="true"
-                  className="h-5 w-px bg-white/45"
+                  className="h-5 w-px bg-[var(--chrome-border-strong)]"
                 />
-                <h2 className="type-heading-sm text-white">
+                <h2 className="type-heading-sm">
                   Sections
                 </h2>
               </div>
@@ -2203,12 +2207,12 @@ export function PagebuilderShell({
                       className={cx(
                         "radius-4 relative overflow-hidden border transition-colors",
                         isActive
-                          ? "border-white/35 bg-white/12 text-white"
-                          : "border-white/10 bg-white/8 text-white",
+                          ? "token-chrome-card-active"
+                          : "token-chrome-card",
                         section.id === draggedSectionId && "opacity-35",
                         section.id === dragOverSectionId &&
                           dragDropPosition !== null &&
-                          "border-white/60",
+                          "border-[var(--chrome-border-strong)]",
                       )}
                       key={section.id}
                       onDragOver={(event) => {
@@ -2243,7 +2247,7 @@ export function PagebuilderShell({
                         <span
                           aria-hidden="true"
                           className={cx(
-                            "absolute left-2 right-2 z-10 h-0.5 rounded-full bg-white",
+                            "absolute left-2 right-2 z-10 h-0.5 rounded-full bg-[var(--chrome-accent)]",
                             dragDropPosition === "before"
                               ? "top-0"
                               : "bottom-0",
@@ -2253,7 +2257,7 @@ export function PagebuilderShell({
                       <div className="flex min-h-12 items-stretch">
                         <button
                           aria-label={`Drag ${section.name} section`}
-                          className="flex w-14 shrink-0 cursor-grab items-center justify-center border-r border-current/10 text-[0.65rem] font-semibold uppercase tracking-normal text-current/65 transition-colors hover:bg-white/10 active:cursor-grabbing"
+                          className="flex w-14 shrink-0 cursor-grab items-center justify-center border-r border-current/10 text-[0.65rem] font-semibold uppercase tracking-normal text-current/65 transition-colors hover:bg-[var(--chrome-hover)] active:cursor-grabbing"
                           draggable
                           onDragEnd={() => {
                             setDraggedSectionId(null);
@@ -2275,7 +2279,7 @@ export function PagebuilderShell({
                           className={cx(
                             "flex min-h-12 min-w-0 flex-1 items-start justify-between gap-3 px-3 py-2 text-left transition-colors",
                             !isActive &&
-                              "hover:border-white/45 hover:bg-white/14",
+                              "hover:bg-[var(--chrome-hover)]",
                           )}
                           onClick={() =>
                             setSelectedSectionId(isActive ? null : section.id)
@@ -2295,8 +2299,8 @@ export function PagebuilderShell({
                             className={cx(
                               "mt-1 flex size-7 shrink-0 items-center justify-center rounded-sm border transition-transform",
                               isActive
-                                ? "rotate-180 border-white/25 text-white"
-                                : "border-white/10 text-white/60",
+                                ? "rotate-180 border-[var(--chrome-border-strong)] text-[var(--chrome-accent)]"
+                                : "token-chrome-badge",
                             )}
                           >
                             <DownArrowIcon className="size-3.5" />
@@ -2306,18 +2310,18 @@ export function PagebuilderShell({
 
                       {isActive ? (
                         <div className="grid gap-4 border-t border-current/10 p-3">
-                          <div className="rounded border border-current/10 bg-white/8 p-3">
+                          <div className="token-chrome-control rounded border p-3">
                             <p className="text-sm font-semibold text-current">
                               {section.name}
                             </p>
                             <p className="type-caption mt-1 text-current/60">
                               {section.component}
                             </p>
-                            <span className="mt-3 inline-flex rounded-full border border-current/10 bg-white/10 px-3 py-1 text-xs font-semibold text-current/70">
+                            <span className="token-chrome-badge mt-3 inline-flex rounded-full border px-3 py-1 text-xs font-semibold">
                               {section.mode}
                             </span>
                             {section.component !== section.originalComponent && (
-                              <span className="ml-2 mt-3 inline-flex rounded-full border border-current/20 bg-white/10 px-3 py-1 text-xs font-semibold text-current">
+                              <span className="token-chrome-badge ml-2 mt-3 inline-flex rounded-full border px-3 py-1 text-xs font-semibold">
                                 swapped
                               </span>
                             )}
@@ -2336,7 +2340,7 @@ export function PagebuilderShell({
                               Alternate
                             </span>
                             <select
-                              className="radius-4 min-h-11 border border-white/15 bg-[#10141b] px-3 text-sm font-semibold text-white outline-none focus:border-white/45"
+                              className="token-chrome-select radius-4 min-h-11 border px-3 text-sm font-semibold outline-none"
                               onChange={(event) =>
                                 swapSection(section.id, event.target.value)
                               }
@@ -2374,8 +2378,8 @@ export function PagebuilderShell({
                                       className={cx(
                                         "radius-4 min-h-10 border px-3 text-left text-xs font-semibold transition-colors",
                                         optionIsActive
-                                          ? "border-white/45 bg-white/16 text-white"
-                                          : "border-white/15 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
                                       )}
                                       key={option.value}
                                       onClick={() =>
@@ -2415,8 +2419,8 @@ export function PagebuilderShell({
                                       className={cx(
                                         "radius-4 min-h-10 border px-3 text-center text-xs font-semibold transition-colors",
                                         optionIsActive
-                                          ? "border-white/45 bg-white/16 text-white"
-                                          : "border-white/15 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
                                       )}
                                       key={option.value}
                                       onClick={() =>
@@ -2458,8 +2462,8 @@ export function PagebuilderShell({
                                         className={cx(
                                           "radius-4 min-h-10 border px-3 text-left text-xs font-semibold transition-colors",
                                           optionIsActive
-                                            ? "border-white/45 bg-white/16 text-white"
-                                            : "border-white/15 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                                            ? "token-chrome-card-active"
+                                            : "token-chrome-card",
                                         )}
                                         key={option.value}
                                         onClick={() =>
@@ -2494,8 +2498,8 @@ export function PagebuilderShell({
                                         className={cx(
                                           "radius-4 min-h-9 border px-2 text-center text-xs font-semibold transition-colors",
                                           optionIsActive
-                                            ? "border-white/45 bg-white/16 text-white"
-                                            : "border-white/15 bg-white/8 text-white hover:border-white/45 hover:bg-white/14",
+                                            ? "token-chrome-card-active"
+                                            : "token-chrome-card",
                                         )}
                                         key={option.value}
                                         onClick={() =>
@@ -2520,7 +2524,7 @@ export function PagebuilderShell({
                           ) : null}
 
                           <button
-                            className="radius-4 min-h-10 border border-current/10 bg-white/8 px-3 text-sm font-semibold text-current transition-colors hover:border-current/30 hover:bg-white/14"
+                            className="token-chrome-control radius-4 min-h-10 border px-3 text-sm font-semibold transition-colors"
                             onClick={() => deleteSection(section.id)}
                             type="button"
                           >
@@ -2534,24 +2538,24 @@ export function PagebuilderShell({
               </div>
             </div>
 
-            <div className="radius-medium order-5 border border-white/10 bg-white/8 p-5 shadow-service">
-              <h2 className="type-heading-sm text-white">
+            <div className="token-chrome-panel radius-medium order-5 border p-5">
+              <h2 className="type-heading-sm">
                 Preview Controls
               </h2>
               <div className="mt-4 grid gap-4">
                 <div className="grid gap-2">
-                  <span className="type-caption font-semibold text-white">
+                  <span className="type-caption font-semibold">
                     Preview Canvas
                   </span>
-                  <div className="radius-4 border border-white/20 bg-white/10 px-3 py-3">
-                    <p className="text-sm font-semibold text-white">
+                  <div className="token-chrome-control radius-4 border px-3 py-3">
+                    <p className="text-sm font-semibold">
                       {selectedViewport.label}
                     </p>
-                    <p className="type-caption mt-1 text-white/60">
+                    <p className="token-chrome-muted type-caption mt-1">
                       {selectedViewport.sizeLabel}
                     </p>
                   </div>
-                  <span className="type-caption text-white/60">
+                  <span className="token-chrome-muted type-caption">
                     All pagebuilder previews use this fixed canvas for
                     agreement and consistency.
                   </span>
@@ -2559,14 +2563,14 @@ export function PagebuilderShell({
 
                 <div className="grid grid-cols-2 gap-2">
                   <button
-                    className="radius-4 min-h-10 border border-white/35 bg-white/14 px-3 text-sm font-semibold text-white transition-colors hover:border-white/55 hover:bg-white/20"
+                    className="token-chrome-primary radius-4 min-h-10 border px-3 text-sm font-semibold transition-colors"
                     onClick={() => setIsPreviewOpen(true)}
                     type="button"
                   >
                     Focus
                   </button>
                   <button
-                    className="radius-4 min-h-10 border border-white/10 bg-white/8 px-3 text-sm font-semibold text-white transition-colors hover:border-white/45 hover:bg-white/14"
+                    className="token-chrome-control radius-4 min-h-10 border px-3 text-sm font-semibold transition-colors"
                     onClick={refreshPreviewStyles}
                     type="button"
                   >
@@ -2576,14 +2580,14 @@ export function PagebuilderShell({
               </div>
             </div>
 
-            <details className="radius-medium group order-6 border border-white/10 bg-white/8 p-5 shadow-service">
+            <details className="token-chrome-panel radius-medium group order-6 border p-5">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left">
-                <h2 className="type-heading-sm text-white">
+                <h2 className="type-heading-sm">
                   Add Section
                 </h2>
                 <span
                   aria-hidden="true"
-                  className="flex size-8 shrink-0 items-center justify-center border border-white/15 text-white/80 transition-transform group-open:rotate-180"
+                  className="token-chrome-badge flex size-8 shrink-0 items-center justify-center border transition-transform group-open:rotate-180"
                 >
                   <DownArrowIcon className="size-4" />
                 </span>
@@ -2600,26 +2604,26 @@ export function PagebuilderShell({
 
                   return (
                     <details
-                      className="group/mode rounded border border-white/10 bg-white/6"
+                      className="token-chrome-card group/mode rounded border"
                       key={mode.id}
                     >
                       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5 text-left">
                         <span className="min-w-0">
-                          <span className="type-caption block font-semibold text-white">
+                          <span className="type-caption block font-semibold">
                             {mode.name}
                           </span>
-                          <span className="type-caption mt-0.5 block text-white/55">
+                          <span className="token-chrome-muted type-caption mt-0.5 block">
                             {options.length} section options
                           </span>
                         </span>
                         <span
                           aria-hidden="true"
-                          className="flex size-7 shrink-0 items-center justify-center border border-white/15 text-white/75 transition-transform group-open/mode:rotate-180"
+                          className="token-chrome-badge flex size-7 shrink-0 items-center justify-center border transition-transform group-open/mode:rotate-180"
                         >
                           <DownArrowIcon className="size-3.5" />
                         </span>
                       </summary>
-                      <div className="grid gap-1.5 border-t border-white/10 p-2">
+                      <div className="grid gap-1.5 border-t border-[var(--chrome-border-soft)] p-2">
                         {options.map((option) => {
                           const templateUsageCount =
                             sectionTemplateUsageCounts.get(option.component) ?? 0;
@@ -2628,7 +2632,7 @@ export function PagebuilderShell({
 
                           return (
                             <button
-                              className="radius-4 grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border border-white/10 bg-white/8 px-3 py-2 text-left text-sm font-semibold text-white transition-colors hover:border-white/45 hover:bg-white/14"
+                              className="token-chrome-control radius-4 grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border px-3 py-2 text-left text-sm font-semibold transition-colors"
                               key={option.component}
                               onClick={() => addSection(option.component)}
                               type="button"
@@ -2646,7 +2650,7 @@ export function PagebuilderShell({
                               </span>
                               <span className="flex items-center gap-1.5">
                                 {templateUsageCount > 0 ? (
-                                  <span className="flex size-5 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/10 text-[0.625rem] font-semibold leading-none text-white/65">
+                                  <span className="token-chrome-badge flex size-5 shrink-0 items-center justify-center rounded-full border text-[0.625rem] font-semibold leading-none">
                                     {templateUsageCount}
                                   </span>
                                 ) : null}
@@ -2659,19 +2663,19 @@ export function PagebuilderShell({
                   );
                 })}
               </div>
-              <p className="type-caption mt-3 text-white/60">
+              <p className="token-chrome-muted type-caption mt-3">
                 Adds after the selected section, or at the bottom.
               </p>
             </details>
           </aside>
 
-          <div className="grid h-full min-h-0 overflow-hidden rounded border border-white/10 bg-[#10141b] p-2 shadow-service max-lg:h-[78svh]">
+          <div className="token-chrome-frame grid h-full min-h-0 overflow-hidden rounded border p-2 max-lg:h-[78svh]">
             <div className="grid h-full min-h-0 place-items-stretch overflow-hidden">
               {renderPreviewWindow()}
             </div>
 
             <div className="hidden">
-            <div className="radius-medium border border-service-border bg-white p-1.5 shadow-service">
+            <div className="radius-medium border border-service-border bg-bg-page p-1.5 shadow-service">
               <div
                 aria-label="Pagebuilder design tabs"
                 className="grid grid-cols-5 gap-1.5 max-xl:grid-cols-3 max-md:grid-cols-1"
@@ -2687,7 +2691,7 @@ export function PagebuilderShell({
                       className={cx(
                         "radius-4 min-h-9 px-2.5 text-left text-xs font-semibold transition-colors",
                         isActive
-                          ? "bg-service-ink text-white"
+                          ? "bg-bg-dark text-text-inverse"
                           : "border border-service-border bg-service-surface text-service-ink hover:border-service-accent hover:text-service-accent",
                       )}
                       id={`tab-${recipe.id}`}
@@ -2713,7 +2717,7 @@ export function PagebuilderShell({
               role="tabpanel"
             >
               <div className="grid w-full content-start gap-4">
-                <section className="radius-medium border border-service-border bg-white p-4 shadow-service">
+                <section className="radius-medium border border-service-border bg-bg-page p-4 shadow-service">
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div className="min-w-0">
                       <p className="type-label text-service-accent">
@@ -2727,21 +2731,21 @@ export function PagebuilderShell({
                       </p>
                     </div>
                     <button
-                      className="radius-4 min-h-11 shrink-0 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent"
+                      className="radius-4 min-h-11 shrink-0 border border-bg-dark bg-bg-dark px-4 text-sm font-semibold text-text-inverse transition-colors hover:border-service-accent hover:bg-service-accent"
                       onClick={() => setIsPreviewOpen(true)}
                       type="button"
                     >
                       Focus Preview
                     </button>
                     <button
-                      className="radius-4 min-h-11 shrink-0 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                      className="radius-4 min-h-11 shrink-0 border border-service-border bg-bg-page px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent"
                       onClick={refreshPreviewStyles}
                       type="button"
                     >
                       Refresh Styles
                     </button>
                     <button
-                      className="radius-4 min-h-11 shrink-0 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent disabled:cursor-not-allowed disabled:opacity-60"
+                      className="radius-4 min-h-11 shrink-0 border border-bg-dark bg-bg-dark px-4 text-sm font-semibold text-text-inverse transition-colors hover:border-service-accent hover:bg-service-accent disabled:cursor-not-allowed disabled:opacity-60"
                       disabled={isSavingOption}
                       onClick={() => void saveActiveOption()}
                       type="button"
@@ -2749,7 +2753,7 @@ export function PagebuilderShell({
                       {isSavingOption ? "Saving..." : "Save Layout"}
                     </button>
                     <button
-                      className="radius-4 min-h-11 shrink-0 border border-service-border bg-white px-3 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                      className="radius-4 min-h-11 shrink-0 border border-service-border bg-bg-page px-3 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent"
                       onClick={openTemplateModal}
                       type="button"
                     >
@@ -2793,7 +2797,7 @@ export function PagebuilderShell({
 
                 <section
                   aria-labelledby="pagebuilder-rendered-preview-button"
-                  className="radius-medium overflow-hidden border border-service-border bg-white shadow-service"
+                  className="radius-medium overflow-hidden border border-service-border bg-bg-page shadow-service"
                 >
                   <button
                     aria-controls="pagebuilder-rendered-preview-panel"
@@ -2867,7 +2871,7 @@ export function PagebuilderShell({
                   ) : null}
                 </section>
 
-                <details className="radius-medium border border-service-border bg-white p-5 shadow-service">
+                <details className="radius-medium border border-service-border bg-bg-page p-5 shadow-service">
                   <summary className="cursor-pointer text-sm font-semibold text-service-ink">
                     Section Stack
                   </summary>
@@ -2882,7 +2886,7 @@ export function PagebuilderShell({
                     </div>
                     <button
                       aria-label="Clear all sections from the building space"
-                      className="radius-4 inline-flex min-h-10 items-center gap-2 border border-service-border bg-white px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-40"
+                      className="radius-4 inline-flex min-h-10 items-center gap-2 border border-service-border bg-bg-page px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-40"
                       disabled={includedSections.length === 0}
                       onClick={clearActiveBuildingSpace}
                       title="Clear building space"
@@ -2913,7 +2917,7 @@ export function PagebuilderShell({
 
                         return (
                           <details
-                            className="group/template-mode rounded border border-service-border bg-white"
+                            className="group/template-mode rounded border border-service-border bg-bg-page"
                             key={mode.id}
                           >
                             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5 text-left">
@@ -2939,7 +2943,7 @@ export function PagebuilderShell({
 
                                 return (
                                   <button
-                                    className="radius-4 grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border border-service-border bg-white px-3 py-2 text-left text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                                    className="radius-4 grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border border-service-border bg-bg-page px-3 py-2 text-left text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent"
                                     key={option.component}
                                     onClick={() => addSection(option.component)}
                                     type="button"
@@ -3037,7 +3041,7 @@ export function PagebuilderShell({
                             )}
                           />
                         ) : null}
-                        <span className="flex size-10 cursor-grab items-center justify-center rounded bg-white text-sm font-semibold text-service-accent active:cursor-grabbing">
+                        <span className="flex size-10 cursor-grab items-center justify-center rounded bg-bg-page text-sm font-semibold text-service-accent active:cursor-grabbing">
                           {index + 1}
                         </span>
                         <div className="min-w-0">
@@ -3050,7 +3054,7 @@ export function PagebuilderShell({
                                 {section.component}
                               </p>
                             </div>
-                            <span className="rounded-full border border-service-border bg-white px-3 py-1 text-xs font-semibold text-service-muted">
+                            <span className="rounded-full border border-service-border bg-bg-page px-3 py-1 text-xs font-semibold text-service-muted">
                               {section.included
                                 ? section.mode
                                 : `${section.mode} / excluded`}
@@ -3062,7 +3066,7 @@ export function PagebuilderShell({
                         </div>
                         <div className="grid content-start gap-2 max-md:col-span-2 max-md:grid-cols-4">
                           <button
-                            className="radius-4 min-h-9 border border-service-border bg-white px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-40"
+                            className="radius-4 min-h-9 border border-service-border bg-bg-page px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-40"
                             disabled={index === 0}
                             onClick={() => {
                               setSelectedSectionId(section.id);
@@ -3073,7 +3077,7 @@ export function PagebuilderShell({
                             Up
                           </button>
                           <button
-                            className="radius-4 min-h-9 border border-service-border bg-white px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-40"
+                            className="radius-4 min-h-9 border border-service-border bg-bg-page px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-40"
                             disabled={index === activeStack.length - 1}
                             onClick={() => {
                               setSelectedSectionId(section.id);
@@ -3084,14 +3088,14 @@ export function PagebuilderShell({
                             Down
                           </button>
                           <button
-                            className="radius-4 min-h-9 border border-service-border bg-white px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                            className="radius-4 min-h-9 border border-service-border bg-bg-page px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent"
                             onClick={() => setSelectedSectionId(section.id)}
                             type="button"
                           >
                             Select
                           </button>
                           <button
-                            className="radius-4 min-h-9 border border-service-border bg-white px-3 text-xs font-semibold text-service-muted transition-colors hover:border-service-accent hover:text-service-accent"
+                            className="radius-4 min-h-9 border border-service-border bg-bg-page px-3 text-xs font-semibold text-service-muted transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent"
                             onClick={() => deleteSection(section.id)}
                             type="button"
                           >
@@ -3103,7 +3107,7 @@ export function PagebuilderShell({
                   </ol>
                 </details>
 
-                <details className="radius-medium border border-service-border bg-white p-5 shadow-service">
+                <details className="radius-medium border border-service-border bg-bg-page p-5 shadow-service">
                   <summary className="cursor-pointer text-sm font-semibold text-service-ink">
                     Page Instruction
                   </summary>
@@ -3116,14 +3120,14 @@ export function PagebuilderShell({
                       />
                       <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1">
                         <button
-                          className="radius-4 min-h-11 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent"
+                          className="radius-4 min-h-11 border border-bg-dark bg-bg-dark px-4 text-sm font-semibold text-text-inverse transition-colors hover:border-service-accent hover:bg-service-accent"
                           onClick={copyPageInstruction}
                           type="button"
                         >
                           Copy Page Instruction
                         </button>
                         <button
-                          className="radius-4 min-h-11 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                          className="radius-4 min-h-11 border border-service-border bg-bg-page px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent"
                           onClick={copyAllLayoutInstructions}
                           type="button"
                         >
@@ -3138,7 +3142,7 @@ export function PagebuilderShell({
                       <p className="type-caption mt-2 text-service-muted">
                         {activeRecipe.positioning}
                       </p>
-                      <div className="mt-3 grid gap-2 rounded border border-service-border bg-white p-3">
+                      <div className="mt-3 grid gap-2 rounded border border-service-border bg-bg-page p-3">
                         <p className="type-caption text-service-muted">
                           Sections:{" "}
                           <span className="font-semibold text-service-ink">
@@ -3158,7 +3162,7 @@ export function PagebuilderShell({
                           </span>
                         </p>
                       </div>
-                      <div className="mt-3 grid gap-2 rounded border border-service-border bg-white p-3">
+                      <div className="mt-3 grid gap-2 rounded border border-service-border bg-bg-page p-3">
                         {[
                           "Use the existing project typography and color tokens.",
                           "Keep section spacing on the normal shared density.",
@@ -3175,7 +3179,7 @@ export function PagebuilderShell({
                       <ol className="mt-3 grid gap-2">
                         {includedSections.map((section, index) => (
                           <li
-                            className="type-caption rounded border border-service-border bg-white p-3 text-service-muted"
+                            className="type-caption rounded border border-service-border bg-bg-page p-3 text-service-muted"
                             key={`${section.id}-brief`}
                           >
                             <span className="font-semibold text-service-ink">
@@ -3190,7 +3194,7 @@ export function PagebuilderShell({
                   </div>
                 </details>
 
-                <details className="radius-medium border border-service-border bg-white p-5 shadow-service">
+                <details className="radius-medium border border-service-border bg-bg-page p-5 shadow-service">
                   <summary className="cursor-pointer text-sm font-semibold text-service-ink">
                     Semantic Modes
                   </summary>
@@ -3228,7 +3232,7 @@ export function PagebuilderShell({
       </div>
       {isTemplateModalOpen ? (
         <div
-          className="fixed inset-0 z-50 grid place-items-center bg-service-ink/40 px-4 py-8"
+          className="fixed inset-0 z-50 grid place-items-center bg-bg-dark/40 px-4 py-8"
           role="presentation"
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) {
@@ -3239,7 +3243,7 @@ export function PagebuilderShell({
           <div
             aria-labelledby="pagebuilder-template-promotion-title"
             aria-modal="true"
-            className="w-full max-w-lg rounded-md border border-service-border bg-white p-6 text-service-ink shadow-service"
+            className="w-full max-w-lg rounded-md border border-service-border bg-bg-page p-6 text-service-ink shadow-service"
             role="dialog"
           >
             <p className="type-label text-service-accent">
@@ -3313,7 +3317,7 @@ export function PagebuilderShell({
                 Cancel
               </button>
               <button
-                className="inline-flex min-h-10 items-center justify-center rounded-sm bg-service-accent px-4 text-sm font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex min-h-10 items-center justify-center rounded-sm bg-service-accent px-4 text-sm font-semibold text-text-inverse transition-colors hover:bg-bg-dark disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={isPromotingTemplate}
                 onClick={() => void promoteActiveOptionToTemplate()}
                 type="button"
@@ -3329,7 +3333,7 @@ export function PagebuilderShell({
       {isPreviewOpen && (
         <div
           aria-modal="true"
-          className="fixed inset-0 z-50 grid bg-service-ink/82 p-4 backdrop-blur-sm max-md:p-3"
+          className="fixed inset-0 z-50 grid bg-bg-dark/82 p-4 backdrop-blur-sm max-md:p-3"
           role="dialog"
         >
           <button
@@ -3339,7 +3343,7 @@ export function PagebuilderShell({
             type="button"
           />
           <div className="relative z-10 grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-3">
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded border border-white/15 bg-white px-3 py-2 shadow-service">
+            <div className="token-chrome-panel flex flex-wrap items-center justify-between gap-3 rounded border px-3 py-2">
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-service-ink">
                   {activePageLabel}

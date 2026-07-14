@@ -87,7 +87,7 @@ export function ContentRevealParagraphSectionV2({
   }, []);
 
   return (
-    <section className="bg-white">
+    <section className="bg-bg-page">
       <SevenColumnGrid
         className={
           {

@@ -54,7 +54,7 @@ function FloatingLogo({ href = "#", label }: { href?: string; label: string }) {
       className={cx(
         "type-label",
         "radius-surface",
-        "flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-white/90 p-1 text-service-muted shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:text-service-accent",
+        "flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-bg-page/90 p-1 text-service-muted shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:text-service-accent",
       )}
       href={href}
     >
@@ -198,7 +198,7 @@ export function NavFloatingBentoSectionV2({
             className={cx(
               "type-text-sm",
               "radius-surface",
-              "pointer-events-auto col-start-2 flex min-h-12 items-center gap-1 border border-service-border bg-white/90 p-1 font-semibold text-service-ink shadow-service backdrop-blur-md",
+              "pointer-events-auto col-start-2 flex min-h-12 items-center gap-1 border border-service-border bg-bg-page/90 p-1 font-semibold text-service-ink shadow-service backdrop-blur-md",
             )}
           >
             {links.map((link) => {
@@ -252,7 +252,7 @@ export function NavFloatingBentoSectionV2({
                             id={menuId}
                             className={cx(
                               "radius-surface",
-                              "absolute left-0 top-[calc(100%+0.5rem)] z-40 w-56 border border-service-border bg-white p-2 shadow-service",
+                              "absolute left-0 top-[calc(100%+0.5rem)] z-40 w-56 border border-service-border bg-bg-page p-2 shadow-service",
                             )}
                             initial={{
                               opacity: 0,
@@ -323,7 +323,7 @@ export function NavFloatingBentoSectionV2({
             aria-expanded={isMenuOpen}
             className={cx(
               "radius-button",
-              "flex min-h-12 cursor-pointer items-center gap-3 border border-service-border bg-white/90 px-5 text-sm font-semibold text-service-ink shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:text-service-accent",
+              "flex min-h-12 cursor-pointer items-center gap-3 border border-service-border bg-bg-page/90 px-5 text-sm font-semibold text-service-ink shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:text-service-accent",
             )}
             type="button"
             onClick={() => {

@@ -157,7 +157,7 @@ export function FooterSectionV2({
   termsLink,
 }: FooterSectionV2Props) {
   return (
-    <footer className="bg-service-ink py-16 text-white max-md:py-12">
+    <footer className="token-footer-inverse bg-bg-dark py-16 text-text-inverse max-md:py-12">
       <div className="container-site">
         <div className="grid grid-cols-6 gap-10 max-lg:grid-cols-3 max-md:grid-cols-1">
           <div className={cx("fluid-type-frame", "col-span-2 max-lg:col-span-3 max-md:col-span-1")}>

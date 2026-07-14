@@ -51,12 +51,15 @@ export function TrustMarqueeSection({
   items,
 }: TrustMarqueeSectionProps) {
   return (
-    <Section className="overflow-hidden bg-service-surface py-8 max-md:py-6">
+    <Section
+      className="overflow-x-hidden bg-service-surface"
+      style={{ paddingBlock: "var(--section-space-vsml)" }}
+    >
       <SevenColumnGrid className="section-min-none items-stretch" padding="none">
         <SevenColumnGridItem className="col-span-4 max-lg:col-span-7">
           <div
             className={cx(
-              "relative z-10 -mb-px h-full translate-y-px",
+              "relative z-10 h-full",
               "fluid-type-frame",
               "rounded-t-[var(--radius-medium-token)] bg-service-surface px-7 py-4 max-md:px-5",
             )}
@@ -77,7 +80,7 @@ export function TrustMarqueeSection({
           alignY="stretch"
           className="col-span-3 col-start-5 max-lg:col-span-7 max-lg:col-start-1"
         >
-          <div className="relative z-10 -mb-px flex h-full translate-y-px items-center justify-center px-7 py-4 max-md:px-5">
+          <div className="relative z-10 flex h-full items-center justify-center px-7 py-4 max-md:px-5">
             <Button href={actionHref} treatment="text-lift">
               {actionLabel}
             </Button>
