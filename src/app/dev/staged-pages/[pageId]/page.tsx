@@ -30,7 +30,7 @@ export default async function StagedPagePreview({
 
   return (
     <StyleGuidePreviewSurface>
-      <main className="min-h-svh bg-white text-service-ink">
+      <main className="min-h-svh bg-bg-page text-service-ink">
         <StagedPageCanvas allPages={stagedPages} chrome={false} page={page} />
       </main>
     </StyleGuidePreviewSurface>
