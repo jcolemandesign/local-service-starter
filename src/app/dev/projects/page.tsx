@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ProjectWorkspacesSection } from "@/components/sections/ProjectWorkspacesSection";
+import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import { listProjectWorkspaces } from "@/utils/strategy-workspace";
 
 export const dynamic = "force-dynamic";
@@ -15,8 +16,10 @@ export default async function ProjectWorkspacesPage() {
   const projects = await listProjectWorkspaces();
 
   return (
-    <main>
-      <ProjectWorkspacesSection projects={projects} />
-    </main>
+    <StyleGuidePreviewSurface>
+      <main>
+        <ProjectWorkspacesSection projects={projects} />
+      </main>
+    </StyleGuidePreviewSurface>
   );
 }

@@ -370,7 +370,7 @@ export function TemplateLibrarySection({
   }
 
   return (
-    <section className="min-h-svh bg-bg-surface text-service-ink">
+    <section className="min-h-svh bg-bg-page text-service-ink">
       <SevenColumnGrid minHeight="none" padding="med">
         <SevenColumnGridItem className="col-start-2 col-span-4 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <p className="type-label text-service-accent">Pageworks Templates</p>
@@ -453,7 +453,7 @@ export function TemplateLibrarySection({
             <div className="grid gap-5">
               {templateGroups.map((group) => (
                 <details
-                  className="rounded-[var(--radius-md-token)] border border-service-border bg-white shadow-service"
+                  className="rounded-[var(--radius-md-token)] border border-service-border bg-bg-surface shadow-service"
                   key={group.pageType}
                 >
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 marker:hidden">

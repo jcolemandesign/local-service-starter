@@ -140,7 +140,7 @@ function SelectField({
         {label}
       </span>
       <select
-        className="min-h-11 rounded-md border border-service-border bg-white px-3 text-sm font-semibold text-service-ink outline-none transition-colors focus:border-service-accent"
+        className="min-h-11 rounded-md border border-service-border bg-bg-surface px-3 text-sm font-semibold text-service-ink outline-none transition-colors focus:border-service-accent"
         id={id}
         onChange={(event) => onChange(event.target.value)}
         value={value}
@@ -421,7 +421,7 @@ export function StyleGuideTypographyControls() {
               Custom family name
             </span>
             <input
-              className="min-h-11 rounded-md border border-service-border bg-white px-3 text-sm font-semibold text-service-ink outline-none transition-colors focus:border-service-accent"
+              className="min-h-11 rounded-md border border-service-border bg-bg-surface px-3 text-sm font-semibold text-service-ink outline-none transition-colors focus:border-service-accent"
               onChange={(event) =>
                 updateDraft("typeCustomFont", event.target.value)
               }
@@ -478,7 +478,7 @@ export function StyleGuideTypographyControls() {
             </div>
 
             <button
-              className="min-h-11 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-muted transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+              className="min-h-11 rounded-md border border-service-border bg-bg-surface px-4 text-sm font-semibold text-service-muted transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
               onClick={resetAssignedFonts}
               type="button"
             >
@@ -568,7 +568,7 @@ export function StyleGuideTypographyControls() {
             </div>
 
             <button
-              className="min-h-11 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+              className="min-h-11 rounded-md border border-service-border bg-bg-surface px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
               onClick={resetSelectedRole}
               type="button"
             >
@@ -576,7 +576,7 @@ export function StyleGuideTypographyControls() {
             </button>
 
             <button
-              className="min-h-11 rounded-md border border-service-border bg-service-surface px-4 text-sm font-semibold text-service-muted transition-colors hover:border-service-accent hover:bg-white hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+              className="min-h-11 rounded-md border border-service-border bg-service-surface px-4 text-sm font-semibold text-service-muted transition-colors hover:border-service-accent hover:bg-bg-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
               onClick={() => loadProfile(selectedProfileId)}
               type="button"
             >

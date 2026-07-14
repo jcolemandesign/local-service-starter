@@ -1577,7 +1577,7 @@ export function PagebuilderShell({
     setDragOverSectionId(null);
     setSelectedSectionId(null);
     setOptionSaveError("");
-    setOptionSaveStatus("Building space cleared.");
+    setOptionSaveStatus("Page template cleared.");
   }
 
   function swapSection(sectionId: string, component: string) {
@@ -2069,7 +2069,7 @@ export function PagebuilderShell({
   }
 
   return (
-    <section className="h-svh overflow-hidden bg-service-ink text-white max-lg:h-auto max-lg:min-h-svh max-lg:overflow-visible">
+    <section className="h-svh overflow-hidden bg-[#10141b] text-white max-lg:h-auto max-lg:min-h-svh max-lg:overflow-visible">
       <div className="h-full w-full px-4 py-4 max-md:px-3">
         <div className="grid h-full min-h-0 grid-cols-[22rem_minmax(0,1fr)] items-stretch gap-5 max-lg:h-auto max-lg:grid-cols-1">
           <aside className="grid h-full min-h-0 content-start gap-4 overflow-y-auto overscroll-contain pb-10 pr-1 max-lg:h-auto max-lg:overflow-visible max-lg:pb-0 max-lg:pr-0">
@@ -2132,6 +2132,16 @@ export function PagebuilderShell({
                               type="button"
                             >
                               Promote Layout
+                            </button>
+                            <button
+                              aria-label="Clear page template"
+                              className="radius-4 inline-flex min-h-9 w-9 items-center justify-center border border-white/20 bg-white/10 text-white transition-colors hover:border-white/45 hover:bg-white/16 disabled:cursor-not-allowed disabled:opacity-40"
+                              disabled={includedSections.length === 0}
+                              onClick={clearActiveBuildingSpace}
+                              title="Clear page template"
+                              type="button"
+                            >
+                              <TrashIcon />
                             </button>
                           </div>
                           {optionSaveStatus || optionSaveError ? (
@@ -2319,7 +2329,7 @@ export function PagebuilderShell({
                               Alternate
                             </span>
                             <select
-                              className="radius-4 min-h-11 border border-white/15 bg-service-ink px-3 text-sm font-semibold text-white outline-none focus:border-white/45"
+                              className="radius-4 min-h-11 border border-white/15 bg-[#10141b] px-3 text-sm font-semibold text-white outline-none focus:border-white/45"
                               onChange={(event) =>
                                 swapSection(section.id, event.target.value)
                               }
@@ -2648,7 +2658,7 @@ export function PagebuilderShell({
             </details>
           </aside>
 
-          <div className="grid h-full min-h-0 overflow-hidden rounded border border-white/10 bg-service-ink p-2 shadow-service max-lg:h-[78svh]">
+          <div className="grid h-full min-h-0 overflow-hidden rounded border border-white/10 bg-[#10141b] p-2 shadow-service max-lg:h-[78svh]">
             <div className="grid h-full min-h-0 place-items-stretch overflow-hidden">
               {renderPreviewWindow()}
             </div>
@@ -3359,5 +3369,26 @@ export function PagebuilderShell({
         </div>
       )}
     </section>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-4"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+      viewBox="0 0 24 24"
+    >
+      <path d="M4 7h16" />
+      <path d="M10 11v6" />
+      <path d="M14 11v6" />
+      <path d="M6 7l1 14h10l1-14" />
+      <path d="M9 7V4h6v3" />
+    </svg>
   );
 }

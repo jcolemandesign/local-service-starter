@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { notFound, redirect } from "next/navigation";
 import { StrategyWorkspaceSection } from "@/components/sections/StrategyWorkspaceSection";
+import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import type { PageTemplateSummary } from "@/components/sections/TemplateLibrarySection";
 import { readStagedPages } from "@/utils/staged-pages";
 import { readStrategyDigestText } from "@/utils/strategy-digest";
@@ -78,21 +79,24 @@ export default async function StrategyWorkspacePage({
       pageType: page.template?.pageType ?? "",
       previewHref: page.previewHref,
       status: page.status,
+      templateId: page.template?.id ?? "",
       templateName: page.template?.name ?? "",
     }));
 
   return (
-    <main>
-      <StrategyWorkspaceSection
-        clientSlug={clientSlug}
-        initialWorkspace={workspace}
-        packetSummary={packetSummary}
-        stagedPages={stagedPageSummaries}
-        strategyDigestText={strategyDigestText}
-        templates={templates}
-        sourcePacketText={sourcePacketText}
-      />
-    </main>
+    <StyleGuidePreviewSurface>
+      <main>
+        <StrategyWorkspaceSection
+          clientSlug={clientSlug}
+          initialWorkspace={workspace}
+          packetSummary={packetSummary}
+          stagedPages={stagedPageSummaries}
+          strategyDigestText={strategyDigestText}
+          templates={templates}
+          sourcePacketText={sourcePacketText}
+        />
+      </main>
+    </StyleGuidePreviewSurface>
   );
 }
 

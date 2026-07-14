@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { PagebuilderSection } from "@/components/sections/PagebuilderSection";
-import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 
 export const metadata: Metadata = {
   title: "Pagebuilder",
@@ -9,10 +8,8 @@ export const metadata: Metadata = {
 
 export default function PagebuilderPage() {
   return (
-    <StyleGuidePreviewSurface>
-      <main className="bg-service-surface text-service-ink">
-        <PagebuilderSection />
-      </main>
-    </StyleGuidePreviewSurface>
+    <main className="bg-[#10141b] text-white">
+      <PagebuilderSection />
+    </main>
   );
 }

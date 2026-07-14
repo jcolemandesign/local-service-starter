@@ -77,6 +77,7 @@ type StyleGuideTokenContextValue = {
     key: K,
     value: StyleGuideTokenDraft[K],
   ) => void;
+  updateDrafts: (updates: Partial<StyleGuideTokenDraft>) => void;
 };
 
 type StyleVariableProperties = CSSProperties & Record<`--${string}`, string>;
@@ -346,13 +347,22 @@ export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) 
     }));
   }
 
+  function updateDrafts(updates: Partial<StyleGuideTokenDraft>) {
+    setDraft((currentDraft) => ({
+      ...currentDraft,
+      ...updates,
+    }));
+  }
+
   function resetDraft() {
     setDraft(defaultStyleGuideTokenDraft);
     window.localStorage.removeItem(styleGuideStorageKey);
   }
 
   return (
-    <StyleGuideTokenContext.Provider value={{ draft, resetDraft, updateDraft }}>
+    <StyleGuideTokenContext.Provider
+      value={{ draft, resetDraft, updateDraft, updateDrafts }}
+    >
       <div style={previewStyle}>{children}</div>
     </StyleGuideTokenContext.Provider>
   );

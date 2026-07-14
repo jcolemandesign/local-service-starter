@@ -13,6 +13,7 @@ import {
   type StrategyPageSummary,
   type StrategyPageStatus,
 } from "@/utils/strategy-site-map";
+import { buildTemplateCopyContract } from "@/utils/template-copy-contract";
 import type {
   StrategyWorkspace,
   StrategyWorkspaceFields,
@@ -23,6 +24,7 @@ import type { StrategySnapshot } from "@/utils/strategy-snapshots";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 type ContentPlanReferenceState = "idle" | "generated" | "error";
+type ContractCopyState = "copied" | "error";
 
 type StrategyWorkspaceSectionProps = {
   clientSlug: string;
@@ -41,6 +43,7 @@ type StagedStrategyPageSummary = {
   pageType: string;
   previewHref: string;
   status: "staged" | "ready";
+  templateId: string;
   templateName: string;
 };
 
@@ -55,12 +58,17 @@ type StagePageResponse =
         previewHref: string;
         status: "staged" | "ready";
         template?: {
+          id?: string;
           name?: string;
           pageType?: string;
         };
       };
     }
   | { ok: false; error?: string };
+
+function cx(...classes: Array<false | string | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
 
 const baseFieldGroups: {
   description: string;
@@ -168,6 +176,9 @@ export function StrategyWorkspaceSection({
   const [fieldCopyState, setFieldCopyState] = useState<
     Partial<Record<string, "copied" | "error">>
   >({});
+  const [contractCopyState, setContractCopyState] = useState<
+    Partial<Record<string, ContractCopyState>>
+  >({});
   const [contentPlanReferenceState, setContentPlanReferenceState] =
     useState<ContentPlanReferenceState>("idle");
   const [openFieldGroups, setOpenFieldGroups] = useState<string[]>([]);
@@ -236,6 +247,9 @@ export function StrategyWorkspaceSection({
           childPages: matchingStagedPages,
           previewHref: stagedPage?.previewHref ?? "",
           status: stagedPage?.status ?? repeatableStatus,
+          stagedPageId: stagedPage?.pageId ?? "",
+          stagedPageLabel: stagedPage?.pageLabel ?? "",
+          templateId: stagedPage?.templateId ?? "",
           templateName: stagedPage?.templateName ?? "",
         };
       }),
@@ -422,6 +436,52 @@ export function StrategyWorkspaceSection({
     setTemplatePickerError("");
   }
 
+  async function copyPageTemplateContract(page: (typeof assemblyPages)[number]) {
+    const copyKey = page.stagedPageId || page.id;
+    const template = templates.find((item) => item.id === page.templateId);
+
+    if (!template || !navigator.clipboard?.writeText) {
+      setContractCopyFeedback(copyKey, "error");
+      return;
+    }
+
+    const contract = buildTemplateCopyContract({
+      pageLabel: page.stagedPageLabel || page.label,
+      pageSlug: page.stagedPageId || page.id,
+      strategySnapshot: snapshot
+        ? {
+            clientSlug: snapshot.clientSlug,
+            id: snapshot.id,
+            pageCount: detectedPageCount,
+            version: snapshot.version,
+          }
+        : undefined,
+      template,
+    });
+
+    try {
+      await navigator.clipboard.writeText(contract);
+      setContractCopyFeedback(copyKey, "copied");
+    } catch {
+      setContractCopyFeedback(copyKey, "error");
+    }
+  }
+
+  function setContractCopyFeedback(copyKey: string, state: ContractCopyState) {
+    setContractCopyState((currentState) => ({
+      ...currentState,
+      [copyKey]: state,
+    }));
+
+    window.setTimeout(() => {
+      setContractCopyState((currentState) => {
+        const nextState = { ...currentState };
+        delete nextState[copyKey];
+        return nextState;
+      });
+    }, 1600);
+  }
+
   async function stageTemplateForPage(template: PageTemplateSummary) {
     if (!templatePickerPage) {
       return;
@@ -459,6 +519,7 @@ export function StrategyWorkspaceSection({
         pageType: result.page.template?.pageType ?? template.pageType,
         previewHref: result.page.previewHref,
         status: result.page.status,
+        templateId: result.page.template?.id ?? template.id,
         templateName: result.page.template?.name ?? template.name,
       };
 
@@ -475,53 +536,59 @@ export function StrategyWorkspaceSection({
   }
 
   return (
-    <Section className="min-h-svh bg-service-surface text-service-ink">
-      <div className="fixed right-[var(--container-gutter)] top-4 z-40 flex flex-wrap items-center justify-end gap-3">
+    <Section className="min-h-svh bg-bg-page text-text-main">
+      <div className="fixed left-[var(--container-gutter)] right-[var(--container-gutter)] top-4 z-40 flex flex-wrap items-center justify-end gap-2">
         <Link
-          className="type-caption font-semibold text-service-accent hover:text-service-ink"
+          className={strategyNavButtonClass}
           href="/dev/pagebuilder"
           rel="noreferrer"
           target="_blank"
         >
+          <StrategyNavIcon icon="pagebuilder" />
           Page Builder
         </Link>
         <Link
-          className="type-caption font-semibold text-service-accent hover:text-service-ink"
+          className={strategyNavButtonClass}
           href="/sections"
           rel="noreferrer"
           target="_blank"
         >
+          <StrategyNavIcon icon="sections" />
           Section Library
         </Link>
         <Link
-          className="type-caption font-semibold text-service-accent hover:text-service-ink"
+          className={strategyNavButtonClass}
           href="/dev/style-guide"
           rel="noreferrer"
           target="_blank"
         >
+          <StrategyNavIcon icon="style" />
           Style Guide
         </Link>
         <button
-          className="type-caption font-semibold text-service-accent hover:text-service-ink"
+          className={strategyNavButtonClass}
           onClick={openContentPlanReference}
           type="button"
         >
+          <StrategyNavIcon icon="plan" />
           Build plan
         </button>
         <Link
-          className={secondaryButtonClass}
+          className={strategyNavButtonClass}
           href="/dev/templates"
           rel="noreferrer"
           target="_blank"
         >
+          <StrategyNavIcon icon="templates" />
           Template library
         </Link>
         <Link
-          className={secondaryButtonClass}
+          className={strategyNavButtonClass}
           href={`/dev/prompt-library?project=${clientSlug}`}
           rel="noreferrer"
           target="_blank"
         >
+          <StrategyNavIcon icon="prompts" />
           Prompt library
         </Link>
         <button
@@ -540,10 +607,10 @@ export function StrategyWorkspaceSection({
               <p className="type-label text-service-accent">
                 Strategy Workspace
               </p>
-              <h1 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
+              <h1 className="type-heading-xl mt-eyebrow-heading-lg text-text-main">
                 {clientSlug}
               </h1>
-              <p className="type-text-lg wrap-pretty mt-heading-body-md text-service-muted">
+              <p className="type-text-lg wrap-pretty mt-heading-body-md text-text-muted">
                 Local saved workspace for research, strategy outputs, content
                 planning, and page copy tied to this project.
               </p>
@@ -551,17 +618,17 @@ export function StrategyWorkspaceSection({
           </div>
 
           {showAssemblyOverview ? (
-            <Card className="p-5 shadow-none">
+            <div>
               <div className="grid gap-5">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="fluid-type-frame min-w-0 flex-1">
                     <p className="type-label text-service-accent">
                       Site Assembly Overview
                     </p>
-                    <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                    <h2 className="type-heading-md mt-eyebrow-heading-sm text-text-main">
                       {detectedPageCount} pages detected from the saved strategy
                     </h2>
-                  <p className="type-text-sm wrap-pretty mt-heading-body-sm max-w-none text-service-muted">
+                  <p className="type-text-sm wrap-pretty mt-heading-body-sm max-w-none text-text-muted">
                     Use templates to stage these pages from snapshot
                     {snapshot ? ` ${snapshot.id}` : ""}. Content Editor edits
                     can then sit on top as manual overrides.
@@ -574,17 +641,30 @@ export function StrategyWorkspaceSection({
                     const hasTemplateReady =
                       Boolean(page.previewHref) ||
                       Boolean(page.repeatable && page.childPages.length > 0);
+                    const pageCopyValue =
+                      fields[getStrategyPageCopyField(page)] ?? "";
+                    const hasPageCopy = pageCopyValue.trim().length > 0;
+                    const templateCopyKey = page.stagedPageId || page.id;
 
                     return (
                       <div
                         className={`relative rounded-[var(--radius-md-token)] border p-3 pr-12 transition-colors ${
                           hasTemplateReady
-                            ? "border-service-accent/35 bg-white"
+                            ? "border-service-accent/35 bg-bg-surface"
                             : "border-service-border bg-service-surface"
                         }`}
                         key={page.id}
                       >
-                        <TemplateReadyIcon isReady={hasTemplateReady} />
+                        <TemplateReadyIcon
+                          copyState={contractCopyState[templateCopyKey]}
+                          isReady={hasTemplateReady}
+                          onCopy={
+                            hasTemplateReady
+                              ? () => void copyPageTemplateContract(page)
+                              : undefined
+                          }
+                        />
+                        <PageCopyReadyIcon isReady={hasPageCopy} />
                         <p
                           className={`type-caption font-semibold ${getPageStatusClassName(
                             page.detected,
@@ -616,7 +696,7 @@ export function StrategyWorkspaceSection({
                             <div className="flex flex-wrap gap-2">
                               {page.childPages.map((childPage) => (
                                 <Link
-                                  className="type-caption rounded-sm border border-service-border bg-white px-2 py-1 font-semibold text-service-accent hover:text-service-ink"
+                                  className="type-caption rounded-sm border border-service-border bg-bg-surface px-2 py-1 font-semibold text-service-accent hover:text-service-ink"
                                   href={childPage.previewHref}
                                   key={childPage.pageId}
                                   rel="noreferrer"
@@ -656,7 +736,7 @@ export function StrategyWorkspaceSection({
                   })}
                 </div>
 
-                <div className="rounded-[var(--radius-md-token)] border border-service-border bg-white p-4">
+                <div className="rounded-[var(--radius-md-token)] border border-service-border bg-bg-surface p-4">
                   <p className="type-caption font-semibold text-service-accent">
                     Navigation
                   </p>
@@ -678,7 +758,7 @@ export function StrategyWorkspaceSection({
                   )}
                 </div>
               </div>
-            </Card>
+            </div>
           ) : null}
 
           <div className="grid card-grid-gap-med">
@@ -812,7 +892,7 @@ export function StrategyWorkspaceSection({
 
                         return (
                           <details
-                            className="overflow-hidden rounded-[var(--radius-md-token)] border border-service-border bg-white"
+                            className="overflow-hidden rounded-[var(--radius-md-token)] border border-service-border bg-bg-surface"
                             key={field.key}
                           >
                             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 marker:hidden max-md:items-start">
@@ -822,7 +902,7 @@ export function StrategyWorkspaceSection({
                               </span>
                               <InputStatusPill isComplete={hasFieldValue} />
                             </summary>
-                            <div className="grid gap-2 border-t border-service-border bg-white p-4">
+                            <div className="grid gap-2 border-t border-service-border bg-service-surface p-4">
                               {fieldBlock}
                             </div>
                           </details>
@@ -831,7 +911,7 @@ export function StrategyWorkspaceSection({
 
                       return (
                         <div
-                          className="grid gap-2 rounded-[var(--radius-md-token)] border border-service-border bg-white p-4"
+                          className="grid gap-2 rounded-[var(--radius-md-token)] border border-service-border bg-bg-surface p-4"
                           key={field.key}
                         >
                           {fieldBlock}
@@ -891,7 +971,7 @@ export function StrategyWorkspaceSection({
                       <span>Strategy digest</span>
                       <span className="text-service-muted">Open</span>
                     </summary>
-                    <div className="grid gap-3 border-t border-service-border bg-white p-3">
+                    <div className="grid gap-3 border-t border-service-border bg-service-surface p-3">
                       <button
                         className={secondaryButtonClass}
                         onClick={() => void copyStrategyDigest()}
@@ -923,7 +1003,7 @@ export function StrategyWorkspaceSection({
                       <span>Source packet audit text</span>
                       <span className="text-service-muted">Open</span>
                     </summary>
-                    <div className="grid gap-3 border-t border-service-border bg-white p-3">
+                    <div className="grid gap-3 border-t border-service-border bg-service-surface p-3">
                       <button
                         className={secondaryButtonClass}
                         onClick={() => void copySourcePacket()}
@@ -961,7 +1041,7 @@ export function StrategyWorkspaceSection({
                       {packetSummary.missingInfo.length} missing
                     </span>
                   </summary>
-                  <div className="grid gap-4 border-t border-service-border bg-white p-3">
+                  <div className="grid gap-4 border-t border-service-border bg-service-surface p-3">
                     <p className="text-sm leading-relaxed text-service-muted">
                       Verify these before using packet material in strategy,
                       planning, or final website copy.
@@ -1007,8 +1087,8 @@ export function StrategyWorkspaceSection({
           className="fixed inset-0 z-50 grid place-items-center bg-service-ink/55 p-4"
           role="dialog"
         >
-          <div className="max-h-[min(90vh,52rem)] w-full max-w-5xl overflow-y-auto rounded-[var(--radius-md-token)] border border-service-border bg-white shadow-service">
-            <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-service-border bg-white p-5">
+          <div className="max-h-[min(90vh,52rem)] w-full max-w-5xl overflow-y-auto rounded-[var(--radius-md-token)] border border-service-border bg-bg-surface shadow-service">
+            <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-service-border bg-bg-surface p-5">
               <div className="min-w-0">
                 <p className="type-label text-service-accent">
                   Template selector
@@ -1064,7 +1144,7 @@ export function StrategyWorkspaceSection({
                               {template.sourceRecipeName}
                             </p>
                           </div>
-                          <span className="type-caption rounded-sm border border-service-border bg-white px-3 py-1 text-service-muted">
+                          <span className="type-caption rounded-sm border border-service-border bg-bg-surface px-3 py-1 text-service-muted">
                             {template.pageType}
                           </span>
                         </div>
@@ -1075,7 +1155,7 @@ export function StrategyWorkspaceSection({
                           </p>
                         ) : null}
 
-                        <details className="mt-4 rounded-sm border border-service-border bg-white">
+                        <details className="mt-4 rounded-sm border border-service-border bg-bg-surface">
                           <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 marker:hidden">
                             <span className="type-caption font-semibold text-service-ink">
                               Sections
@@ -1171,7 +1251,7 @@ function IssueList({
             key={item.id}
           >
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-[var(--radius-sm-token)] border border-current/20 bg-white/70 px-2 py-1 text-xs font-semibold uppercase tracking-[0.08em]">
+              <span className="rounded-[var(--radius-sm-token)] border border-current/20 bg-bg-surface/70 px-2 py-1 text-xs font-semibold uppercase tracking-[0.08em]">
                 {item.id}
               </span>
               {item.sourceField ? (
@@ -1191,7 +1271,7 @@ function IssueList({
             </p>
 
             {item.value ? (
-              <p className="mt-3 break-words rounded-[var(--radius-sm-token)] bg-white/75 p-3 font-mono text-xs leading-relaxed text-service-ink">
+              <p className="mt-3 break-words rounded-[var(--radius-sm-token)] bg-bg-surface/75 p-3 font-mono text-xs leading-relaxed text-service-ink">
                 {item.value}
               </p>
             ) : null}
@@ -1208,31 +1288,113 @@ function IssueList({
   );
 }
 
-function TemplateReadyIcon({ isReady }: { isReady: boolean }) {
-  const label = isReady ? "Template ready" : "Waiting for template";
-
-  return (
-    <span
-      aria-label={label}
-      className={`absolute right-3 top-3 flex size-8 items-center justify-center rounded-full border ${
-        isReady
-          ? "border-service-accent/30 bg-service-accent/10 text-service-accent"
-          : "border-service-border bg-white/70 text-service-muted/55"
-      }`}
-      title={label}
-    >
+function TemplateReadyIcon({
+  copyState,
+  isReady,
+  onCopy,
+}: {
+  copyState?: ContractCopyState;
+  isReady: boolean;
+  onCopy?: () => void;
+}) {
+  const label =
+    copyState === "copied"
+      ? "Template contract copied"
+      : copyState === "error"
+        ? "Template contract could not be copied"
+        : isReady
+          ? "Copy template contract"
+          : "Waiting for template";
+  const className = cx(
+    "absolute right-3 top-3 flex size-8 items-center justify-center rounded-full border transition-[background-color,border-color,color,box-shadow,transform] duration-150 active:translate-y-px active:scale-95",
+    isReady
+      ? "border-service-accent bg-service-accent text-white hover:border-service-accent hover:bg-service-accent hover:text-white hover:shadow-service"
+      : "border-service-border/60 bg-white/35 text-service-muted/45",
+    isReady &&
+      copyState === "copied" &&
+      "motion-safe:animate-[template-copy-confirm_560ms_ease-out]",
+  );
+  const icon = (
+    <>
       <span
         aria-hidden="true"
         className="relative block h-4 w-3 rounded-[2px] border border-current"
       >
         <span className="absolute left-1 top-1 h-px w-1.5 bg-current" />
         <span className="absolute left-1 top-2 h-px w-1.5 bg-current" />
-        {isReady ? (
-          <span className="absolute -bottom-1 -right-1 flex size-3 items-center justify-center rounded-full bg-current">
-            <span className="block size-1 rounded-full bg-white" />
+      </span>
+    </>
+  );
+
+  if (!isReady || !onCopy) {
+    return (
+      <>
+        <span aria-label={label} className={className} title={label}>
+          {icon}
+        </span>
+        {copyState === "error" ? (
+          <span className="pointer-events-none absolute right-14 top-4 type-caption font-semibold text-service-muted">
+            Not copied
           </span>
         ) : null}
-      </span>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <button
+        aria-label={label}
+        className={className}
+        onClick={onCopy}
+        title={label}
+        type="button"
+      >
+        {icon}
+      </button>
+      {copyState === "copied" ? (
+        <span className="pointer-events-none absolute right-14 top-4 type-caption font-semibold text-service-accent motion-safe:animate-[template-copy-message_1200ms_ease-out_both]">
+          Copied!
+        </span>
+      ) : null}
+      {copyState === "error" ? (
+        <span className="pointer-events-none absolute right-14 top-4 type-caption font-semibold text-service-muted">
+          Not copied
+        </span>
+      ) : null}
+    </>
+  );
+}
+
+function PageCopyReadyIcon({ isReady }: { isReady: boolean }) {
+  const label = isReady ? "Page copy filled" : "Page copy empty";
+
+  return (
+    <span
+      aria-label={label}
+      className={`absolute right-3 top-12 flex size-8 items-center justify-center rounded-full border ${
+        isReady
+          ? "border-green-700 bg-green-700 text-white"
+          : "border-service-border/60 bg-white/35 text-service-muted/45"
+      }`}
+      title={label}
+    >
+      <svg
+        aria-hidden="true"
+        className="size-4"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+        viewBox="0 0 24 24"
+      >
+        <path d="M7 4h8l4 4v12H7z" />
+        <path d="M15 4v5h5" />
+        <path d="M10 13h6" />
+        <path d="M10 16h4" />
+        {isReady ? <path d="M9 20l2 2 4-5" /> : null}
+      </svg>
     </span>
   );
 }
@@ -1318,7 +1480,7 @@ function InputStatusIcon({
           ? "border-green-600 bg-green-600 text-white"
           : isStarted
             ? "border-amber-500 bg-amber-100 text-amber-800"
-            : "border-service-border bg-white text-service-muted"
+            : "border-service-border bg-bg-surface text-service-muted"
       }`}
       title={iconLabel}
     >
@@ -1782,8 +1944,47 @@ function normalizePageType(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, "");
 }
 
+type StrategyNavIconName =
+  | "pagebuilder"
+  | "plan"
+  | "prompts"
+  | "sections"
+  | "style"
+  | "templates";
+
+function StrategyNavIcon({ icon }: { icon: StrategyNavIconName }) {
+  const paths: Record<StrategyNavIconName, string[]> = {
+    pagebuilder: ["M4 5h7v7H4z", "M13 5h7v4h-7z", "M13 11h7v8h-7z", "M4 14h7v5H4z"],
+    plan: ["M7 4h10l3 3v13H7z", "M17 4v4h4", "M10 11h7", "M10 15h5"],
+    prompts: ["M5 6h14v10H8l-3 3z", "M8 10h8", "M8 13h5"],
+    sections: ["M5 5h14v4H5z", "M5 11h14v4H5z", "M5 17h14v2H5z"],
+    style: ["M12 4l7 4v8l-7 4-7-4V8z", "M12 4v16", "M5 8l7 4 7-4"],
+    templates: ["M4 5h16v14H4z", "M8 5v14", "M4 10h16", "M12 10v9"],
+  };
+
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-4 shrink-0"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.7"
+      viewBox="0 0 24 24"
+    >
+      {paths[icon].map((path) => (
+        <path d={path} key={path} />
+      ))}
+    </svg>
+  );
+}
+
+const strategyNavButtonClass =
+  "radius-button inline-flex min-h-9 items-center justify-center gap-1.5 whitespace-nowrap border border-service-border bg-bg-surface/92 px-2.5 type-caption font-semibold text-service-ink shadow-service transition-colors hover:border-service-accent hover:text-service-accent";
+
 const primaryButtonClass =
   "radius-button inline-flex min-h-12 w-full items-center justify-center whitespace-nowrap border border-service-accent bg-service-accent px-5 type-caption font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto";
 
 const secondaryButtonClass =
-  "radius-button inline-flex min-h-12 w-full items-center justify-center whitespace-nowrap border border-service-border bg-white px-5 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent sm:w-auto";
+  "radius-button inline-flex min-h-12 w-full items-center justify-center whitespace-nowrap border border-service-border bg-bg-surface px-5 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent sm:w-auto";

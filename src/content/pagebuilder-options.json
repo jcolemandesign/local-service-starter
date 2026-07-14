@@ -7,188 +7,14 @@
       },
       "optionIndex": 0,
       "optionName": "Page Layout",
-      "recipeId": "conversion-heavy",
-      "recipeName": "About",
-      "savedAt": "2026-07-14T01:20:42.694Z",
-      "sectionCount": 10,
-      "sections": [
-        {
-          "component": "NavPrimarySectionV2",
-          "id": "conversion-heavy-slot-1-NavCenterLogoSectionV2-0",
-          "included": true,
-          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
-          "mode": "Navigation",
-          "name": "Primary navigation",
-          "originalComponent": "NavCenterLogoSectionV2",
-          "originalIndex": 0
-        },
-        {
-          "component": "HeroCenteredFloatersSectionV2",
-          "id": "conversion-heavy-slot-1-HeroCenteredFloatersSectionV2-1",
-          "included": false,
-          "instruction": "Use the centered message while floaters carry proof, service cues, or conversion nudges.",
-          "mode": "Hero",
-          "name": "Centered with left right floaters",
-          "originalComponent": "HeroCenteredFloatersSectionV2",
-          "originalIndex": 1
-        },
-        {
-          "component": "TrustBarSectionV3",
-          "id": "conversion-heavy-slot-1-TrustBarSectionV3-2",
-          "included": false,
-          "instruction": "Validate the promise immediately with rating, volume, team, and locality claims.",
-          "mode": "Proof",
-          "name": "Trust bar",
-          "originalComponent": "TrustBarSectionV3",
-          "originalIndex": 2
-        },
-        {
-          "component": "ServicesScrollCardsSectionV2",
-          "id": "conversion-heavy-slot-1-ServicesScrollCardsSectionV2-3",
-          "included": false,
-          "instruction": "Use a service rail when there are more service paths than a small grid can handle gracefully.",
-          "mode": "Scan",
-          "name": "Scroll service cards",
-          "originalComponent": "ServicesScrollCardsSectionV2",
-          "originalIndex": 3
-        },
-        {
-          "component": "ContentStickyCardStreamSectionV2",
-          "id": "conversion-heavy-slot-1-ContentStickyCardStreamSectionV2-4",
-          "included": false,
-          "instruction": "Keep a promise fixed while supporting details move through response, diagnosis, options, and follow-up.",
-          "mode": "Narrative",
-          "name": "Sticky card stream content",
-          "originalComponent": "ContentStickyCardStreamSectionV2",
-          "originalIndex": 4
-        },
-        {
-          "component": "FAQAccordionSectionV3",
-          "id": "conversion-heavy-slot-1-FAQAccordionSectionV3-5",
-          "included": false,
-          "instruction": "Handle objections with expandable answers and no vague copy.",
-          "mode": "Utility",
-          "name": "FAQ accordion",
-          "originalComponent": "FAQAccordionSectionV3",
-          "originalIndex": 5
-        },
-        {
-          "component": "ContactSectionV3",
-          "id": "conversion-heavy-slot-1-ContactSectionV3-6",
-          "included": false,
-          "instruction": "Close with phone, email, hours, and a simple form or request path.",
-          "mode": "Utility",
-          "name": "Contact section",
-          "originalComponent": "ContactSectionV3",
-          "originalIndex": 6
-        },
-        {
-          "component": "HeroContentTopImageBottomSectionV2",
-          "id": "conversion-heavy-HeroGridMosaicSectionV2-added-1",
-          "included": true,
-          "instruction": "Lead with direct copy first, then use the image below to keep the page useful and quick to understand.",
-          "mode": "Hero",
-          "name": "Content top image bottom",
-          "originalComponent": "HeroGridMosaicSectionV2",
-          "originalIndex": -1
-        },
-        {
-          "component": "TrustLogoGridSectionV3",
-          "id": "conversion-heavy-TrustLogoGridSectionV3-added-1",
-          "included": true,
-          "instruction": "Use static logos or associations when motion would distract from reading.",
-          "mode": "Proof",
-          "name": "Static trust logo grid",
-          "originalComponent": "TrustLogoGridSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ContentStickyIdeasSectionV2",
-          "id": "conversion-heavy-ContentAboutStorySectionV3-added-4",
-          "included": true,
-          "instruction": "Keep core ideas visible while longer copy earns trust.",
-          "mode": "Narrative",
-          "name": "Sticky ideas content",
-          "originalComponent": "ContentAboutStorySectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ContentPhotoGalleryCarouselSectionV3",
-          "id": "conversion-heavy-ContentPhotoGalleryCarouselSectionV3-added-2",
-          "included": true,
-          "instruction": "Use a mixed-size horizontal photo gallery when people, projects, or proof images should carry the visual story.",
-          "mode": "Images",
-          "name": "Photo gallery carousel",
-          "originalComponent": "ContentPhotoGalleryCarouselSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ContentRevealParagraphSectionV2",
-          "id": "conversion-heavy-ContentRevealParagraphSectionV2-added-1",
-          "included": true,
-          "instruction": "Use a short editorial thesis to slow the page down and frame the service promise.",
-          "mode": "Narrative",
-          "name": "Reveal paragraph",
-          "originalComponent": "ContentRevealParagraphSectionV2",
-          "originalIndex": -1
-        },
-        {
-          "component": "FeatureAsymmetricCardsSectionV3",
-          "id": "conversion-heavy-FeatureAsymmetricCardsSectionV3-added-1",
-          "included": true,
-          "instruction": "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points.",
-          "mode": "Narrative",
-          "name": "Asymmetric feature cards",
-          "originalComponent": "FeatureAsymmetricCardsSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "DecisionSplitDecisionSectionV3",
-          "id": "conversion-heavy-DecisionSplitDecisionSectionV3-added-4",
-          "included": true,
-          "instruction": "Use a compact two-card comparison when a homeowner needs help deciding whether repair or replacement makes more sense after inspection.",
-          "mode": "Decision",
-          "name": "Split decision",
-          "originalComponent": "DecisionSplitDecisionSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "TrustMarqueeSection",
-          "id": "conversion-heavy-TrustMarqueeSection-added-5",
-          "included": true,
-          "instruction": "Use a headline with a scrolling banner when proof points should move beside a stronger editorial claim.",
-          "mode": "Action",
-          "name": "Headline with Scrolling Banner",
-          "originalComponent": "TrustMarqueeSection",
-          "originalIndex": -1
-        },
-        {
-          "component": "FooterSectionV3",
-          "id": "conversion-heavy-FooterSectionV3-added-6",
-          "included": true,
-          "instruction": "End with service links, areas, contact details, and legal links.",
-          "mode": "Utility",
-          "name": "Footer",
-          "originalComponent": "FooterSectionV3",
-          "originalIndex": -1
-        }
-      ]
-    },
-    {
-      "designStyle": {
-        "showSectionMarkers": false,
-        "viewportId": "main"
-      },
-      "optionIndex": 0,
-      "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-07-14T00:43:13.922Z",
+      "savedAt": "2026-07-14T03:18:06.783Z",
       "sectionCount": 11,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
-          "id": "classic-service-template-basic-home-0",
+          "id": "classic-service-template-home-northstar-v1-0",
           "included": true,
           "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
           "mode": "Navigation",
@@ -198,18 +24,18 @@
         },
         {
           "component": "HeroSplitFullHeightSectionV3",
-          "id": "classic-service-template-basic-home-1",
+          "id": "classic-service-template-home-northstar-v1-1",
           "included": true,
           "instruction": "Use h1, one primary booking CTA, one services CTA, and three compact trust stats beside a full-bleed image column.",
           "mode": "Hero",
           "name": "Split content and full image",
           "originalComponent": "HeroSplitFullHeightSectionV3",
           "originalIndex": 1,
-          "variant": "text-4-image-3-right"
+          "variant": "text-3-image-4-right"
         },
         {
           "component": "TrustMarqueeSectionV3",
-          "id": "classic-service-template-basic-home-2",
+          "id": "classic-service-template-home-northstar-v1-2",
           "included": true,
           "instruction": "Use short repeated claims when there are many small proof points.",
           "mode": "Proof",
@@ -219,7 +45,7 @@
         },
         {
           "component": "ServicesBentoCardsSectionV2",
-          "id": "classic-service-template-basic-home-3",
+          "id": "classic-service-template-home-northstar-v1-3",
           "included": true,
           "instruction": "Use bento-style service cards when the services need a richer visual scan pattern.",
           "mode": "Scan",
@@ -229,7 +55,7 @@
         },
         {
           "component": "FeatureAsymmetricCardsSectionV3",
-          "id": "classic-service-template-basic-home-4",
+          "id": "classic-service-template-home-northstar-v1-4",
           "included": true,
           "instruction": "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points.",
           "mode": "Narrative",
@@ -239,7 +65,7 @@
         },
         {
           "component": "DecisionSplitLargeCardsSectionV3",
-          "id": "classic-service-DecisionSplitLargeCardsSectionV3-added-4",
+          "id": "classic-service-template-home-northstar-v1-5",
           "included": true,
           "instruction": "Use two large three-column decision cards with a simple left-aligned header and link above them.",
           "mode": "Decision",
@@ -249,7 +75,7 @@
         },
         {
           "component": "ProcessStepsSectionV3",
-          "id": "classic-service-template-basic-home-5",
+          "id": "classic-service-template-home-northstar-v1-6",
           "included": true,
           "instruction": "Use current process steps when the page needs a clearer, more styled decision sequence.",
           "mode": "Decision",
@@ -259,7 +85,7 @@
         },
         {
           "component": "ServiceAreaZipLookupSectionV3",
-          "id": "classic-service-template-basic-home-6",
+          "id": "classic-service-template-home-northstar-v1-7",
           "included": true,
           "instruction": "Use when visitors need to confirm service coverage before starting a request.",
           "mode": "Utility",
@@ -269,7 +95,7 @@
         },
         {
           "component": "FAQAccordionSectionV3",
-          "id": "classic-service-template-basic-home-7",
+          "id": "classic-service-template-home-northstar-v1-8",
           "included": true,
           "instruction": "Handle objections with expandable answers and no vague copy.",
           "mode": "Utility",
@@ -279,7 +105,7 @@
         },
         {
           "component": "CTASectionV3",
-          "id": "classic-service-template-basic-home-8",
+          "id": "classic-service-template-home-northstar-v1-9",
           "included": true,
           "instruction": "Use the current conversion band when the page needs a polished direct next step.",
           "mode": "Action",
@@ -289,7 +115,7 @@
         },
         {
           "component": "FooterSectionV3",
-          "id": "classic-service-template-basic-home-9",
+          "id": "classic-service-template-home-northstar-v1-10",
           "included": true,
           "instruction": "End with service links, areas, contact details, and legal links.",
           "mode": "Utility",
@@ -306,109 +132,109 @@
       },
       "optionIndex": 0,
       "optionName": "Page Layout",
-      "recipeId": "compact-utility",
-      "recipeName": "Individual Service",
-      "savedAt": "2026-07-14T00:40:16.860Z",
-      "sectionCount": 4,
+      "recipeId": "conversion-heavy",
+      "recipeName": "About",
+      "savedAt": "2026-07-14T03:02:50.440Z",
+      "sectionCount": 10,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
-          "id": "compact-utility-slot-1-NavFloatingBentoSectionV2-0",
+          "id": "conversion-heavy-template-about-1-0",
           "included": true,
           "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
           "mode": "Navigation",
           "name": "Primary navigation",
-          "originalComponent": "NavFloatingBentoSectionV2",
+          "originalComponent": "NavCenterLogoSectionV2",
           "originalIndex": 0
         },
         {
           "component": "HeroContentTopImageBottomSectionV2",
-          "id": "compact-utility-slot-1-HeroContentTopImageBottomSectionV2-1",
-          "included": false,
+          "id": "conversion-heavy-template-about-1-1",
+          "included": true,
           "instruction": "Lead with direct copy first, then use the image below to keep the page useful and quick to understand.",
           "mode": "Hero",
           "name": "Content top image bottom",
-          "originalComponent": "HeroContentTopImageBottomSectionV2",
-          "originalIndex": 1
-        },
-        {
-          "component": "TrustMarqueeSectionV3",
-          "id": "compact-utility-slot-1-TrustMarqueeSectionV3-2",
-          "included": false,
-          "instruction": "Use short repeated claims when there are many small proof points.",
-          "mode": "Proof",
-          "name": "Trust marquee",
-          "originalComponent": "TrustMarqueeSectionV3",
-          "originalIndex": 2
-        },
-        {
-          "component": "ServicesScrollCardsSectionV2",
-          "id": "compact-utility-slot-1-ServicesScrollCardsSectionV2-3",
-          "included": false,
-          "instruction": "Use a service rail when there are more service paths than a small grid can handle gracefully.",
-          "mode": "Scan",
-          "name": "Scroll service cards",
-          "originalComponent": "ServicesScrollCardsSectionV2",
-          "originalIndex": 3
-        },
-        {
-          "component": "ContentRuleHeaderSectionV2",
-          "id": "compact-utility-slot-1-ContentRuleHeaderSectionV2-4",
-          "included": false,
-          "instruction": "Use as lightweight editorial texture to introduce a practical idea without adding a heavy section.",
-          "mode": "Narrative",
-          "name": "Rule header content",
-          "originalComponent": "ContentRuleHeaderSectionV2",
-          "originalIndex": 4
-        },
-        {
-          "component": "FAQSectionV3",
-          "id": "compact-utility-slot-1-FAQSectionV3-5",
-          "included": false,
-          "instruction": "Include only the questions that affect whether someone contacts you.",
-          "mode": "Utility",
-          "name": "FAQ",
-          "originalComponent": "FAQSectionV3",
-          "originalIndex": 5
-        },
-        {
-          "component": "FooterSectionV3",
-          "id": "compact-utility-slot-1-FooterSectionV3-6",
-          "included": false,
-          "instruction": "End with service links, areas, contact details, and legal links.",
-          "mode": "Utility",
-          "name": "Footer",
-          "originalComponent": "FooterSectionV3",
-          "originalIndex": 6
-        },
-        {
-          "component": "HeroGridMosaicSectionV2",
-          "id": "compact-utility-HeroGridMosaicSectionV2-added-7",
-          "included": true,
-          "instruction": "Use the mosaic to combine h1, trust proof, service paths, and supporting visuals.",
-          "mode": "Hero",
-          "name": "Grid mosaic hero",
           "originalComponent": "HeroGridMosaicSectionV2",
           "originalIndex": -1
         },
         {
-          "component": "HeroCompactSectionV3",
-          "id": "compact-utility-HeroCompactSectionV3-added-10",
+          "component": "TrustLogoGridSectionV3",
+          "id": "conversion-heavy-template-about-1-2",
           "included": true,
-          "instruction": "Use a compact page title, eyebrow, and short descriptor when the page needs a clear header without media or proof blocks.",
-          "mode": "Hero",
-          "name": "Compact page hero",
-          "originalComponent": "HeroCompactSectionV3",
+          "instruction": "Use static logos or associations when motion would distract from reading.",
+          "mode": "Proof",
+          "name": "Static trust logo grid",
+          "originalComponent": "TrustLogoGridSectionV3",
           "originalIndex": -1
         },
         {
-          "component": "ServicesThreeCardsRightSectionV3",
-          "id": "compact-utility-ServicesThreeCardsRightSectionV3-added-9",
+          "component": "ContentStickyIdeasSectionV2",
+          "id": "conversion-heavy-template-about-1-3",
           "included": true,
-          "instruction": "Show top-level service cards on the seven-column page grid, using explicit card size metadata when one card should be larger.",
-          "mode": "Scan",
-          "name": "Services cards grid",
-          "originalComponent": "ServicesThreeCardsRightSectionV3",
+          "instruction": "Keep core ideas visible while longer copy earns trust.",
+          "mode": "Narrative",
+          "name": "Sticky ideas content",
+          "originalComponent": "ContentAboutStorySectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "ContentPhotoGalleryCarouselSectionV3",
+          "id": "conversion-heavy-template-about-1-4",
+          "included": true,
+          "instruction": "Use a mixed-size horizontal photo gallery when people, projects, or proof images should carry the visual story.",
+          "mode": "Images",
+          "name": "Photo gallery carousel",
+          "originalComponent": "ContentPhotoGalleryCarouselSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "ContentRevealParagraphSectionV2",
+          "id": "conversion-heavy-template-about-1-5",
+          "included": true,
+          "instruction": "Use a short editorial thesis to slow the page down and frame the service promise.",
+          "mode": "Narrative",
+          "name": "Reveal paragraph",
+          "originalComponent": "ContentRevealParagraphSectionV2",
+          "originalIndex": -1
+        },
+        {
+          "component": "FeatureAsymmetricCardsSectionV3",
+          "id": "conversion-heavy-template-about-1-6",
+          "included": true,
+          "instruction": "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points.",
+          "mode": "Narrative",
+          "name": "Asymmetric feature cards",
+          "originalComponent": "FeatureAsymmetricCardsSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "DecisionSplitDecisionSectionV3",
+          "id": "conversion-heavy-template-about-1-7",
+          "included": true,
+          "instruction": "Use a compact two-card comparison when a homeowner needs help deciding whether repair or replacement makes more sense after inspection.",
+          "mode": "Decision",
+          "name": "Split decision",
+          "originalComponent": "DecisionSplitDecisionSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "TrustMarqueeSection",
+          "id": "conversion-heavy-template-about-1-8",
+          "included": true,
+          "instruction": "Use a headline with a scrolling banner when proof points should move beside a stronger editorial claim.",
+          "mode": "Action",
+          "name": "Headline with Scrolling Banner",
+          "originalComponent": "TrustMarqueeSection",
+          "originalIndex": -1
+        },
+        {
+          "component": "FooterSectionV3",
+          "id": "conversion-heavy-template-about-1-9",
+          "included": true,
+          "instruction": "End with service links, areas, contact details, and legal links.",
+          "mode": "Utility",
+          "name": "Footer",
+          "originalComponent": "FooterSectionV3",
           "originalIndex": -1
         }
       ]
@@ -422,13 +248,13 @@
       "optionName": "Page Layout",
       "recipeId": "editorial-local",
       "recipeName": "Services Overview",
-      "savedAt": "2026-07-14T00:10:36.585Z",
-      "sectionCount": 4,
+      "savedAt": "2026-07-14T03:02:14.320Z",
+      "sectionCount": 0,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
           "id": "editorial-local-slot-1-NavPrimarySectionV2-0",
-          "included": true,
+          "included": false,
           "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
           "mode": "Navigation",
           "name": "Primary navigation",
@@ -439,7 +265,7 @@
           "component": "HeroGridMosaicSectionV2",
           "id": "editorial-local-slot-1-HeroGridMosaicSectionV2-1",
           "included": false,
-          "instruction": "Use the mosaic to combine a clear h1, trust proof, service paths, and supporting visuals in one richer first view.",
+          "instruction": "Use the mosaic to combine h1, trust proof, service paths, and supporting visuals.",
           "mode": "Hero",
           "name": "Grid mosaic hero",
           "originalComponent": "HeroGridMosaicSectionV2",
@@ -449,7 +275,7 @@
           "component": "ContentRevealParagraphSectionV2",
           "id": "editorial-local-slot-1-ContentRevealParagraphSectionV2-2",
           "included": false,
-          "instruction": "Use a short editorial thesis that frames why the business is different.",
+          "instruction": "Use a short editorial thesis to slow the page down and frame the service promise.",
           "mode": "Narrative",
           "name": "Reveal paragraph",
           "originalComponent": "ContentRevealParagraphSectionV2",
@@ -459,7 +285,7 @@
           "component": "ContentStickyIdeasSectionV2",
           "id": "editorial-local-slot-1-ContentStickyIdeasSectionV2-3",
           "included": false,
-          "instruction": "Keep the core ideas visible while longer copy earns trust.",
+          "instruction": "Keep core ideas visible while longer copy earns trust.",
           "mode": "Narrative",
           "name": "Sticky ideas content",
           "originalComponent": "ContentStickyIdeasSectionV2",
@@ -469,9 +295,9 @@
           "component": "ContentAboutCompanySectionV2",
           "id": "editorial-local-slot-1-ContentAboutCompanySectionV2-4",
           "included": false,
-          "instruction": "Use this for regular about content with enough visual structure to feel useful instead of generic.",
+          "instruction": "Use for regular about content with enough visual structure to feel useful instead of generic.",
           "mode": "Narrative",
-          "name": "General editorial texture",
+          "name": "About company content",
           "originalComponent": "ContentAboutCompanySectionV2",
           "originalIndex": 4
         },
@@ -499,7 +325,7 @@
           "component": "CTAScrollRevealOfferSectionV3",
           "id": "editorial-local-slot-1-CTAScrollRevealOfferSectionV3-7",
           "included": false,
-          "instruction": "Use a discovered offer or next-step reveal to transition from editorial trust into action.",
+          "instruction": "Use a discovered offer or next-step reveal to transition from trust into action.",
           "mode": "Action",
           "name": "Scroll reveal offer conversion",
           "originalComponent": "CTAScrollRevealOfferSectionV3",
@@ -508,32 +334,72 @@
         {
           "component": "HeroCompactSectionV3",
           "id": "editorial-local-HeroCompactSectionV3-added-1",
-          "included": true,
+          "included": false,
           "instruction": "Use a compact page title, eyebrow, and short descriptor when the page needs a clear header without media or proof blocks.",
           "mode": "Hero",
           "name": "Compact page hero",
           "originalComponent": "HeroCompactSectionV3",
           "originalIndex": -1,
-          "variant": "left"
+          "variant": "center"
         },
         {
-          "component": "ImageStripSectionV3",
-          "id": "editorial-local-ImageStripSectionV3-added-4",
-          "included": true,
-          "instruction": "Use a simple image strip with one large image and two supporting images on the seven-column grid.",
-          "mode": "Images",
-          "name": "Image strip",
-          "originalComponent": "ImageStripSectionV3",
+          "component": "ServicesThreeCardsRightSectionV3",
+          "id": "editorial-local-ServicesThreeCardsRightSectionV3-added-3",
+          "included": false,
+          "instruction": "Show top-level service cards on the seven-column page grid, using explicit card size metadata when one card should be larger.",
+          "mode": "Scan",
+          "name": "Services cards grid",
+          "originalComponent": "ServicesThreeCardsRightSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "ServicesHoverPanelSectionV2",
+          "id": "editorial-local-ServicesHoverPanelSectionV2-added-4",
+          "included": false,
+          "instruction": "Use a hover panel when a compact service list should reveal more detail and visual emphasis.",
+          "mode": "Scan",
+          "name": "Services hover panel",
+          "originalComponent": "ServicesHoverPanelSectionV2",
           "originalIndex": -1
         },
         {
           "component": "ServicesThreeCardsRightSectionV3",
           "id": "editorial-local-ServicesThreeCardsRightSectionV3-added-5",
-          "included": true,
+          "included": false,
           "instruction": "Show top-level service cards on the seven-column page grid, using explicit card size metadata when one card should be larger.",
           "mode": "Scan",
           "name": "Services cards grid",
           "originalComponent": "ServicesThreeCardsRightSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "ServicesScrollCardsSectionV2",
+          "id": "editorial-local-ServicesScrollCardsSectionV2-added-6",
+          "included": false,
+          "instruction": "Use a service rail when there are more service paths than a small grid can handle gracefully.",
+          "mode": "Scan",
+          "name": "Scroll service cards",
+          "originalComponent": "ServicesScrollCardsSectionV2",
+          "originalIndex": -1
+        },
+        {
+          "component": "ContentHorizontalCardCarouselSectionV2",
+          "id": "editorial-local-ContentHorizontalCardCarouselSectionV2-added-7",
+          "included": false,
+          "instruction": "Use a horizontal card carousel when scan content needs a compact browseable sequence.",
+          "mode": "Scan",
+          "name": "Services card carousel",
+          "originalComponent": "ContentHorizontalCardCarouselSectionV2",
+          "originalIndex": -1
+        },
+        {
+          "component": "QuickPageLinksSectionV2",
+          "id": "editorial-local-QuickPageLinksSectionV2-added-8",
+          "included": false,
+          "instruction": "Offer a small set of useful page paths for visitors who need more context before contacting.",
+          "mode": "Scan",
+          "name": "Quick page links",
+          "originalComponent": "QuickPageLinksSectionV2",
           "originalIndex": -1
         }
       ]

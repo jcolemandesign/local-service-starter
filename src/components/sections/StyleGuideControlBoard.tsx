@@ -304,7 +304,7 @@ export function StyleGuideControlBoard({
       })) ?? [];
 
   return (
-    <section className="border-b border-service-border bg-service-border">
+    <section className="border-b border-service-border bg-service-border/35">
       <SevenColumnGrid className="section-min-none items-start" padding="sml">
         <SevenColumnGridItem className="col-span-7 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <div className="fluid-type-frame">
@@ -320,7 +320,7 @@ export function StyleGuideControlBoard({
 
         <SevenColumnGridItem className="col-span-7 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <div className="columns-3 [column-gap:var(--layout-gap-active)] max-lg:columns-2 max-md:columns-1">
-            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 p-5 shadow-none">
+            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-service-surface p-5 shadow-none">
               <div className="fluid-type-frame">
                 <p className="type-label text-service-accent">Layout</p>
                 <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -380,7 +380,7 @@ export function StyleGuideControlBoard({
               </div>
             </Card>
 
-            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 p-5 shadow-none">
+            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-service-surface p-5 shadow-none">
               <div className="fluid-type-frame">
                 <p className="type-label text-service-accent">Rhythm</p>
                 <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -411,7 +411,7 @@ export function StyleGuideControlBoard({
               />
             </Card>
 
-            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 p-5 shadow-none">
+            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-service-surface p-5 shadow-none">
               <div className="fluid-type-frame">
                 <p className="type-label text-service-accent">Border</p>
                 <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -450,7 +450,7 @@ export function StyleGuideControlBoard({
               </label>
             </Card>
 
-            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 p-5 shadow-none">
+            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-service-surface p-5 shadow-none">
               <div className="fluid-type-frame">
                 <p className="type-label text-service-accent">Shadow</p>
                 <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -520,7 +520,7 @@ export function StyleGuideControlBoard({
               </div>
             </Card>
 
-            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 p-5 shadow-none">
+            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-service-surface p-5 shadow-none">
               <div className="fluid-type-frame">
                 <p className="type-label text-service-accent">Radii</p>
                 <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -550,7 +550,7 @@ export function StyleGuideControlBoard({
               </div>
             </Card>
 
-            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 p-5 shadow-none">
+            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-service-surface p-5 shadow-none">
               <div className="fluid-type-frame">
                 <p className="type-label text-service-accent">Color</p>
                 <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -560,6 +560,23 @@ export function StyleGuideControlBoard({
 
               <div className="flex flex-wrap gap-2">
                 <StyleGuideColorResetButton />
+              </div>
+
+              <div className="radius-4 grid gap-3 border border-accent/35 bg-accent/15 p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="type-caption font-semibold text-accent">
+                    Accent sample
+                  </span>
+                  <span className="size-7 rounded-full bg-accent" />
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <span className="radius-button inline-flex min-h-9 items-center bg-accent px-3 type-caption font-semibold text-white">
+                    Filled accent
+                  </span>
+                  <span className="radius-button inline-flex min-h-9 items-center border border-accent bg-white px-3 type-caption font-semibold text-accent">
+                    Text accent
+                  </span>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
@@ -595,7 +612,7 @@ export function StyleGuideControlBoard({
               </div>
             </Card>
 
-            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 p-5 shadow-none">
+            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-service-surface p-5 shadow-none">
               <div className="fluid-type-frame">
                 <p className="type-label text-service-accent">Secondary gaps</p>
                 <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">

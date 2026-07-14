@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { HomeIndexSection } from "@/components/sections";
+import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import { homeIndexContent } from "@/content/home";
 import { RecoveryRedirect } from "./RecoveryRedirect";
 
@@ -11,9 +12,11 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main>
-      <RecoveryRedirect />
-      <HomeIndexSection {...homeIndexContent} />
-    </main>
+    <StyleGuidePreviewSurface>
+      <main>
+        <RecoveryRedirect />
+        <HomeIndexSection {...homeIndexContent} />
+      </main>
+    </StyleGuidePreviewSurface>
   );
 }

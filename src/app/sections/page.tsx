@@ -67,7 +67,6 @@ import {
   sectionLibraryV3Content,
 } from "@/content/section-library-v3";
 import { StyleGuideCloseAllButton } from "@/components/sections/StyleGuideCloseAllButton";
-import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 
 export const metadata: Metadata = {
   title: "Section Library",
@@ -349,8 +348,7 @@ const sectionTemplateCount = sectionLibraryV3Collections.reduce(
 
 export default function SectionsV3Page() {
   return (
-    <StyleGuidePreviewSurface>
-      <main className="min-h-svh bg-service-ink text-white">
+    <main className="min-h-svh bg-[#10141b] text-white">
         <section
           className="section-space-sml border-b border-white/10 text-white"
           style={{
@@ -371,7 +369,6 @@ export default function SectionsV3Page() {
 
         <SectionLibraryV3Accordions collections={collections} />
         <StyleGuideCloseAllButton />
-      </main>
-    </StyleGuidePreviewSurface>
+    </main>
   );
 }

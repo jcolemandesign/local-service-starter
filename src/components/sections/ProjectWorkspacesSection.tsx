@@ -10,7 +10,7 @@ export function ProjectWorkspacesSection({
   projects,
 }: ProjectWorkspacesSectionProps) {
   return (
-    <Section className="min-h-svh bg-service-surface text-service-ink">
+    <Section className="min-h-svh bg-bg-page text-service-ink">
       <Container>
         <div className="grid layout-gap-lrg">
           <div className="fluid-type-frame">
