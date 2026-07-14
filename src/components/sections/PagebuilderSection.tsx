@@ -47,6 +47,7 @@ import {
   HeroCompactSectionV3,
   type HeroCompactAlign,
 } from "@/components/sections/HeroCompactSectionV3";
+import { SectionHeaderCompactSectionV3 } from "@/components/sections/SectionHeaderCompactSectionV3";
 import { HeroContentTopImageBottomSectionV2 } from "@/components/sections/HeroContentTopImageBottomSectionV2";
 import {
   HeroSplitFixedImageSectionV3,
@@ -225,6 +226,14 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.heroCompact}
           align={getHeroCompactAlign(section)}
           headingLevel={headingLevel}
+        />
+      );
+    case "SectionHeaderCompactSectionV3":
+      return (
+        <SectionHeaderCompactSectionV3
+          {...sectionLibraryV3Content.sectionHeaderCompact}
+          align={getHeroCompactAlign(section)}
+          headingLevel={2}
         />
       );
     case "TrustBarSectionV3":
@@ -627,6 +636,12 @@ export function PagebuilderSection() {
       "Hero",
       "Compact page hero",
       1,
+    ),
+    SectionHeaderCompactSectionV3: previewCatalogEntry(
+      "SectionHeaderCompactSectionV3",
+      "Section Header",
+      "Compact section header",
+      2,
     ),
     TrustBarSectionV3: (
       <div key="TrustBarSectionV3">

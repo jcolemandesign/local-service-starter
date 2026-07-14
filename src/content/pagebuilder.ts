@@ -44,6 +44,16 @@ export const sectionModes: SectionMode[] = [
     ],
   },
   {
+    id: "section-header",
+    name: "Section Header",
+    intent: "Reusable section introductions that separate page modules without becoming page heroes.",
+    rules: [
+      "Use these before card grids, decisions, FAQs, or utility sections that need a clear lead-in.",
+      "Keep the copy short enough to introduce the next section without resetting the page hierarchy.",
+      "Avoid using section headers as the page h1 unless the page intentionally has no separate hero.",
+    ],
+  },
+  {
     id: "scan",
     name: "Scan",
     intent: "Fast comprehension through cards, lists, and short labels.",
@@ -146,6 +156,13 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
         mode: "Proof",
         instruction:
           "Validate the promise immediately with rating, volume, team, and local ownership claims.",
+      },
+      {
+        name: "Compact section header",
+        component: "SectionHeaderCompactSectionV3",
+        mode: "Section Header",
+        instruction:
+          "Introduce the service card grid with a concise eyebrow, heading, and body before the scan section begins.",
       },
       {
         name: "Services cards grid",
@@ -394,6 +411,13 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
         mode: "Utility",
         instruction:
           "List priority service areas and keep the map visual as an FPO coverage placeholder.",
+      },
+      {
+        name: "Compact section header",
+        component: "SectionHeaderCompactSectionV3",
+        mode: "Section Header",
+        instruction:
+          "Introduce the coverage service grid without relying on the grid cards to carry their own heading.",
       },
       {
         name: "Services cards grid",
@@ -648,6 +672,13 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
         mode: "Scan",
         instruction:
           "Show featured posts, categories, or seasonal topics as browseable cards.",
+      },
+      {
+        name: "Compact section header",
+        component: "SectionHeaderCompactSectionV3",
+        mode: "Section Header",
+        instruction:
+          "Introduce the related categories or service paths before the card grid.",
       },
       {
         name: "Services cards grid",

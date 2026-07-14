@@ -20,6 +20,7 @@ import {
   HeroCompactSectionV3,
   type HeroCompactAlign,
 } from "@/components/sections/HeroCompactSectionV3";
+import { SectionHeaderCompactSectionV3 } from "@/components/sections/SectionHeaderCompactSectionV3";
 import { DownArrowIcon } from "@/components/primitives";
 import type { PagebuilderRecipe, SectionMode } from "@/content/pagebuilder";
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
@@ -51,6 +52,7 @@ const splitContentImageComponent = "HeroSplitFullHeightSectionV3";
 const fixedRatioSplitComponent = "HeroSplitFixedImageSectionV3";
 const contentFixedRatioSplitComponent = "ContentSplitFixedImageSectionV3";
 const heroCompactComponent = "HeroCompactSectionV3";
+const sectionHeaderCompactComponent = "SectionHeaderCompactSectionV3";
 const splitContentImageVariantOptions = [
   {
     label: "Text 3 / Image 4",
@@ -309,8 +311,17 @@ function isAnyFixedRatioSplitSection(section: WorkingSection) {
   );
 }
 
-function isHeroCompactSection(section: WorkingSection) {
+function isHeroCompactSection(section: PagebuilderRecipe["sectionStack"][number]) {
   return section.component === heroCompactComponent;
+}
+
+function isCompactHeaderAlignmentSection(
+  section: PagebuilderRecipe["sectionStack"][number],
+) {
+  return (
+    section.component === heroCompactComponent ||
+    section.component === sectionHeaderCompactComponent
+  );
 }
 
 function getSplitContentImageVariantLabel(variant: string | undefined) {
@@ -365,7 +376,7 @@ function createInitialWorkingStack(
           ? section.variant ?? fixedRatioSplitVariantOptions[0].value
           : section.component === contentFixedRatioSplitComponent
             ? section.variant ?? fixedRatioSplitVariantOptions[0].value
-            : section.component === heroCompactComponent
+            : isCompactHeaderAlignmentSection(section)
               ? section.variant ?? sectionLibraryV3Content.heroCompact.align
               : section.variant,
   }));
@@ -435,7 +446,8 @@ function updateSectionFromSwapOption(
           ? section.variant ?? fixedRatioSplitVariantOptions[0].value
           : nextOption.component === contentFixedRatioSplitComponent
             ? section.variant ?? fixedRatioSplitVariantOptions[0].value
-            : nextOption.component === heroCompactComponent
+            : nextOption.component === heroCompactComponent ||
+                nextOption.component === sectionHeaderCompactComponent
               ? sectionLibraryV3Content.heroCompact.align
               : undefined,
   };
@@ -616,6 +628,13 @@ const sectionSwapOptions = [
       "Use a compact page title, eyebrow, and short descriptor when the page needs a clear header without media or proof blocks.",
     mode: "Hero",
     name: "Compact page hero",
+  },
+  {
+    component: "SectionHeaderCompactSectionV3",
+    instruction:
+      "Use a no-min-height compact header to introduce a section before card grids, FAQs, decisions, or utility blocks.",
+    mode: "Section Header",
+    name: "Compact section header",
   },
   {
     component: "ServicesBentoCardsSectionV2",
@@ -977,6 +996,10 @@ const innerOptionSignifiers: Partial<
     pattern: "fixed",
   },
   HeroCompactSectionV3: {
+    label: "Alignment options",
+    pattern: "align",
+  },
+  SectionHeaderCompactSectionV3: {
     label: "Alignment options",
     pattern: "align",
   },
@@ -1698,7 +1721,8 @@ export function PagebuilderShell({
             ? fixedRatioSplitVariantOptions[0].value
             : nextOption.component === contentFixedRatioSplitComponent
               ? fixedRatioSplitVariantOptions[0].value
-              : nextOption.component === heroCompactComponent
+              : nextOption.component === heroCompactComponent ||
+                  nextOption.component === sectionHeaderCompactComponent
                 ? sectionLibraryV3Content.heroCompact.align
                 : undefined,
     };
@@ -1947,6 +1971,12 @@ export function PagebuilderShell({
             {...sectionLibraryV3Content.heroCompact}
             align={getHeroCompactAlign(section)}
             headingLevel={headingLevel}
+          />
+        ) : section.component === sectionHeaderCompactComponent ? (
+          <SectionHeaderCompactSectionV3
+            {...sectionLibraryV3Content.sectionHeaderCompact}
+            align={getHeroCompactAlign(section)}
+            headingLevel={2}
           />
         ) : (
           previewCatalog[section.component] ??

@@ -47,6 +47,7 @@ import {
   HeroCompactSectionV3,
   type HeroCompactAlign,
 } from "@/components/sections/HeroCompactSectionV3";
+import { SectionHeaderCompactSectionV3 } from "@/components/sections/SectionHeaderCompactSectionV3";
 import { HeroContentTopImageBottomSectionV2 } from "@/components/sections/HeroContentTopImageBottomSectionV2";
 import {
   HeroSplitFixedImageSectionV3,
@@ -346,6 +347,14 @@ export function renderPageTemplateSection(
           headingLevel={headingLevel}
         />
       );
+    case "SectionHeaderCompactSectionV3":
+      return (
+        <SectionHeaderCompactSectionV3
+          {...sectionHeaderCompactProps(fieldSection)}
+          align={getHeroCompactAlign(section)}
+          headingLevel={2}
+        />
+      );
     case "TrustBarSectionV3":
       return <TrustBarSectionV3 {...trustBarProps(fieldSection)} />;
     case "TrustBarFloatingBentoSectionV3":
@@ -619,6 +628,19 @@ function heroCompactProps(section: FieldSection) {
       sectionLibraryV3Content.heroCompact.eyebrow,
     ),
     title: getTitle(section, sectionLibraryV3Content.heroCompact.title),
+  };
+}
+
+function sectionHeaderCompactProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.sectionHeaderCompact,
+    body: getBody(section, sectionLibraryV3Content.sectionHeaderCompact.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.sectionHeaderCompact.eyebrow,
+    ),
+    title: getTitle(section, sectionLibraryV3Content.sectionHeaderCompact.title),
   };
 }
 

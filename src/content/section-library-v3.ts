@@ -71,6 +71,12 @@ export const sectionLibraryV3Content = {
     title: "Straightforward local service, organized for quick decisions.",
     body: "A compact page header for secondary pages that need a clear title, short descriptor, and no extra visual system.",
   },
+  sectionHeaderCompact: {
+    align: "center" as const,
+    eyebrow: "Services",
+    title: "A compact section header for introducing the next page module.",
+    body: "A no-min-height section header based on the compact page hero rhythm, built to sit directly above reusable content modules.",
+  },
   heroLogoStatement: {
     logoLabel: "Logo",
     statement:
@@ -1033,14 +1039,20 @@ export const sectionLibraryV3Content = {
       {
         title: "Shared grid",
         body: "The section uses one seven-column grid so spacing and padding can change without changing the column count.",
+        imageAlt: "Technician working on indoor HVAC equipment",
+        imageSrc: "/images/bg-image-sample%201.jpg",
       },
       {
         title: "Wrapped content",
         body: "Each content object sits inside a placement wrapper that controls span, alignment, and readable measure.",
+        imageAlt: "Technician speaking with a homeowner at the door",
+        imageSrc: "/images/bg-image-sample%202.jpg",
       },
       {
         title: "Predictable flow",
         body: "Rows can be composed intentionally while still allowing section content to adapt inside its assigned columns.",
+        imageAlt: "HVAC unit staged near a service truck",
+        imageSrc: "/images/hvac-unit-truck-wide.png",
         size: "large" as const,
       },
     ],
@@ -1080,6 +1092,15 @@ export const sectionLibraryV3Collections = [
       {
         label: "Compact page hero",
         component: "hero-compact-v3",
+      },
+    ],
+  },
+  {
+    title: "Section Headers",
+    items: [
+      {
+        label: "Compact section header",
+        component: "section-header-compact-v3",
       },
     ],
   },

@@ -5,11 +5,11 @@
         "showSectionMarkers": false,
         "viewportId": "main"
       },
-      "id": "about-template-1",
-      "name": "About Template 1",
+      "id": "about-1",
+      "name": "About 1",
       "notes": "",
       "pageType": "About",
-      "promotedAt": "2026-07-14T00:36:28.163Z",
+      "promotedAt": "2026-07-14T01:21:27.960Z",
       "sectionCount": 10,
       "sections": [
         {
@@ -37,35 +37,11 @@
           "originalIndex": -1
         },
         {
-          "component": "ContentRevealParagraphSectionV2",
-          "instruction": "Use a short editorial thesis to slow the page down and frame the service promise.",
-          "mode": "Narrative",
-          "name": "Reveal paragraph",
-          "originalComponent": "ContentRevealParagraphSectionV2",
-          "originalIndex": -1
-        },
-        {
           "component": "ContentStickyIdeasSectionV2",
           "instruction": "Keep core ideas visible while longer copy earns trust.",
           "mode": "Narrative",
           "name": "Sticky ideas content",
           "originalComponent": "ContentAboutStorySectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ServicesThreeCardsRightSectionV3",
-          "instruction": "Show top-level service cards on the seven-column page grid, using explicit card size metadata when one card should be larger.",
-          "mode": "Scan",
-          "name": "Services cards grid",
-          "originalComponent": "ServicesThreeCardsRightSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "DecisionSplitDecisionSectionV3",
-          "instruction": "Use a compact two-card comparison when a homeowner needs help deciding whether repair or replacement makes more sense after inspection.",
-          "mode": "Decision",
-          "name": "Split decision",
-          "originalComponent": "DecisionSplitDecisionSectionV3",
           "originalIndex": -1
         },
         {
@@ -77,63 +53,6 @@
           "originalIndex": -1
         },
         {
-          "component": "TrustMarqueeSection",
-          "instruction": "Use a headline with a scrolling banner when proof points should move beside a stronger editorial claim.",
-          "mode": "Action",
-          "name": "Headline with Scrolling Banner",
-          "originalComponent": "TrustMarqueeSection",
-          "originalIndex": -1
-        },
-        {
-          "component": "FooterSectionV3",
-          "instruction": "End with service links, areas, contact details, and legal links.",
-          "mode": "Utility",
-          "name": "Footer",
-          "originalComponent": "FooterSectionV3",
-          "originalIndex": -1
-        }
-      ],
-      "sourceOptionName": "Page Layout",
-      "sourceRecipeId": "conversion-heavy",
-      "sourceRecipeName": "About"
-    },
-    {
-      "designStyle": {
-        "showSectionMarkers": false,
-        "viewportId": "main"
-      },
-      "id": "large-image-and-gallery",
-      "name": "Large image and gallery",
-      "notes": "",
-      "pageType": "About",
-      "promotedAt": "2026-07-13T22:00:13.748Z",
-      "sectionCount": 10,
-      "sections": [
-        {
-          "component": "NavPrimarySectionV2",
-          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
-          "mode": "Navigation",
-          "name": "Primary navigation",
-          "originalComponent": "NavCenterLogoSectionV2",
-          "originalIndex": 0
-        },
-        {
-          "component": "HeroContentTopImageBottomSectionV2",
-          "instruction": "Lead with direct copy first, then use the image below to keep the page useful and quick to understand.",
-          "mode": "Hero",
-          "name": "Content top image bottom",
-          "originalComponent": "HeroGridMosaicSectionV2",
-          "originalIndex": -1
-        },
-        {
-          "component": "TrustLogoGridSectionV3",
-          "instruction": "Use static logos or associations when motion would distract from reading.",
-          "mode": "Proof",
-          "name": "Static trust logo grid",
-          "originalComponent": "TrustLogoGridSectionV3",
-          "originalIndex": -1
-        },
-        {
           "component": "ContentRevealParagraphSectionV2",
           "instruction": "Use a short editorial thesis to slow the page down and frame the service promise.",
           "mode": "Narrative",
@@ -142,19 +61,11 @@
           "originalIndex": -1
         },
         {
-          "component": "ContentStickyIdeasSectionV2",
-          "instruction": "Keep core ideas visible while longer copy earns trust.",
+          "component": "FeatureAsymmetricCardsSectionV3",
+          "instruction": "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points.",
           "mode": "Narrative",
-          "name": "Sticky ideas content",
-          "originalComponent": "ContentAboutStorySectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ServicesThreeCardsRightSectionV3",
-          "instruction": "Show top-level service cards on the seven-column page grid, using explicit card size metadata when one card should be larger.",
-          "mode": "Scan",
-          "name": "Services cards grid",
-          "originalComponent": "ServicesThreeCardsRightSectionV3",
+          "name": "Asymmetric feature cards",
+          "originalComponent": "FeatureAsymmetricCardsSectionV3",
           "originalIndex": -1
         },
         {
@@ -163,14 +74,6 @@
           "mode": "Decision",
           "name": "Split decision",
           "originalComponent": "DecisionSplitDecisionSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ContentPhotoGalleryCarouselSectionV3",
-          "instruction": "Use a mixed-size horizontal photo gallery when people, projects, or proof images should carry the visual story.",
-          "mode": "Images",
-          "name": "Photo gallery carousel",
-          "originalComponent": "ContentPhotoGalleryCarouselSectionV3",
           "originalIndex": -1
         },
         {

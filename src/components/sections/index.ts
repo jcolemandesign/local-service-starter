@@ -96,6 +96,7 @@ export { ServicesHoverPanelSection } from "./ServicesHoverPanelSection";
 export { ServicesHoverPanelSectionV2 } from "./ServicesHoverPanelSectionV2";
 export { ServicesScrollCardsSection } from "./ServicesScrollCardsSection";
 export { ServicesScrollCardsSectionV2 } from "./ServicesScrollCardsSectionV2";
+export { SectionHeaderCompactSectionV3 } from "./SectionHeaderCompactSectionV3";
 export { ServiceAreaZipLookupSectionV3 } from "./ServiceAreaZipLookupSectionV3";
 export { SectionLibraryCollections } from "./SectionLibraryCollections";
 export { SectionLibraryV3Accordions } from "./SectionLibraryV3Accordions";

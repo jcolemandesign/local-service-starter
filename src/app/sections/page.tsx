@@ -43,6 +43,7 @@ import {
   ServicesBentoCardsSectionV2,
   ServicesHoverPanelSectionV2,
   ServicesScrollCardsSectionV2,
+  SectionHeaderCompactSectionV3,
   SectionLibraryV3Accordions,
   ServiceAreaZipLookupSectionV3,
   ServicesThreeCardsRightSectionV3,
@@ -123,6 +124,12 @@ const sectionElements = {
   "hero-compact-v3": (
     <HeroCompactSectionV3
       {...sectionLibraryV3Content.heroCompact}
+      headingLevel={2}
+    />
+  ),
+  "section-header-compact-v3": (
+    <SectionHeaderCompactSectionV3
+      {...sectionLibraryV3Content.sectionHeaderCompact}
       headingLevel={2}
     />
   ),
