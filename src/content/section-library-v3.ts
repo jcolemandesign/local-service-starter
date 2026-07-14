@@ -1167,6 +1167,10 @@ export const sectionLibraryV3Collections = [
         label: "Photo gallery carousel",
         component: "content-photo-gallery-carousel-v3",
       },
+      {
+        label: "Large photo gallery carousel",
+        component: "content-photo-gallery-large-carousel-v3",
+      },
     ],
   },
   {

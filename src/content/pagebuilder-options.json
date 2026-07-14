@@ -7,6 +7,120 @@
       },
       "optionIndex": 0,
       "optionName": "Page Layout",
+      "recipeId": "compact-utility",
+      "recipeName": "Individual Service",
+      "savedAt": "2026-07-14T00:40:16.860Z",
+      "sectionCount": 4,
+      "sections": [
+        {
+          "component": "NavPrimarySectionV2",
+          "id": "compact-utility-slot-1-NavFloatingBentoSectionV2-0",
+          "included": true,
+          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
+          "mode": "Navigation",
+          "name": "Primary navigation",
+          "originalComponent": "NavFloatingBentoSectionV2",
+          "originalIndex": 0
+        },
+        {
+          "component": "HeroContentTopImageBottomSectionV2",
+          "id": "compact-utility-slot-1-HeroContentTopImageBottomSectionV2-1",
+          "included": false,
+          "instruction": "Lead with direct copy first, then use the image below to keep the page useful and quick to understand.",
+          "mode": "Hero",
+          "name": "Content top image bottom",
+          "originalComponent": "HeroContentTopImageBottomSectionV2",
+          "originalIndex": 1
+        },
+        {
+          "component": "TrustMarqueeSectionV3",
+          "id": "compact-utility-slot-1-TrustMarqueeSectionV3-2",
+          "included": false,
+          "instruction": "Use short repeated claims when there are many small proof points.",
+          "mode": "Proof",
+          "name": "Trust marquee",
+          "originalComponent": "TrustMarqueeSectionV3",
+          "originalIndex": 2
+        },
+        {
+          "component": "ServicesScrollCardsSectionV2",
+          "id": "compact-utility-slot-1-ServicesScrollCardsSectionV2-3",
+          "included": false,
+          "instruction": "Use a service rail when there are more service paths than a small grid can handle gracefully.",
+          "mode": "Scan",
+          "name": "Scroll service cards",
+          "originalComponent": "ServicesScrollCardsSectionV2",
+          "originalIndex": 3
+        },
+        {
+          "component": "ContentRuleHeaderSectionV2",
+          "id": "compact-utility-slot-1-ContentRuleHeaderSectionV2-4",
+          "included": false,
+          "instruction": "Use as lightweight editorial texture to introduce a practical idea without adding a heavy section.",
+          "mode": "Narrative",
+          "name": "Rule header content",
+          "originalComponent": "ContentRuleHeaderSectionV2",
+          "originalIndex": 4
+        },
+        {
+          "component": "FAQSectionV3",
+          "id": "compact-utility-slot-1-FAQSectionV3-5",
+          "included": false,
+          "instruction": "Include only the questions that affect whether someone contacts you.",
+          "mode": "Utility",
+          "name": "FAQ",
+          "originalComponent": "FAQSectionV3",
+          "originalIndex": 5
+        },
+        {
+          "component": "FooterSectionV3",
+          "id": "compact-utility-slot-1-FooterSectionV3-6",
+          "included": false,
+          "instruction": "End with service links, areas, contact details, and legal links.",
+          "mode": "Utility",
+          "name": "Footer",
+          "originalComponent": "FooterSectionV3",
+          "originalIndex": 6
+        },
+        {
+          "component": "HeroGridMosaicSectionV2",
+          "id": "compact-utility-HeroGridMosaicSectionV2-added-7",
+          "included": true,
+          "instruction": "Use the mosaic to combine h1, trust proof, service paths, and supporting visuals.",
+          "mode": "Hero",
+          "name": "Grid mosaic hero",
+          "originalComponent": "HeroGridMosaicSectionV2",
+          "originalIndex": -1
+        },
+        {
+          "component": "HeroCompactSectionV3",
+          "id": "compact-utility-HeroCompactSectionV3-added-10",
+          "included": true,
+          "instruction": "Use a compact page title, eyebrow, and short descriptor when the page needs a clear header without media or proof blocks.",
+          "mode": "Hero",
+          "name": "Compact page hero",
+          "originalComponent": "HeroCompactSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "ServicesThreeCardsRightSectionV3",
+          "id": "compact-utility-ServicesThreeCardsRightSectionV3-added-9",
+          "included": true,
+          "instruction": "Show top-level service cards on the seven-column page grid, using explicit card size metadata when one card should be larger.",
+          "mode": "Scan",
+          "name": "Services cards grid",
+          "originalComponent": "ServicesThreeCardsRightSectionV3",
+          "originalIndex": -1
+        }
+      ]
+    },
+    {
+      "designStyle": {
+        "showSectionMarkers": false,
+        "viewportId": "main"
+      },
+      "optionIndex": 0,
+      "optionName": "Page Layout",
       "recipeId": "conversion-heavy",
       "recipeName": "About",
       "savedAt": "2026-07-14T00:30:54.755Z",
@@ -290,120 +404,6 @@
         {
           "component": "ServicesThreeCardsRightSectionV3",
           "id": "editorial-local-ServicesThreeCardsRightSectionV3-added-5",
-          "included": true,
-          "instruction": "Show top-level service cards on the seven-column page grid, using explicit card size metadata when one card should be larger.",
-          "mode": "Scan",
-          "name": "Services cards grid",
-          "originalComponent": "ServicesThreeCardsRightSectionV3",
-          "originalIndex": -1
-        }
-      ]
-    },
-    {
-      "designStyle": {
-        "showSectionMarkers": false,
-        "viewportId": "main"
-      },
-      "optionIndex": 0,
-      "optionName": "Page Layout",
-      "recipeId": "compact-utility",
-      "recipeName": "Individual Service",
-      "savedAt": "2026-07-13T23:05:03.316Z",
-      "sectionCount": 4,
-      "sections": [
-        {
-          "component": "NavPrimarySectionV2",
-          "id": "compact-utility-slot-1-NavFloatingBentoSectionV2-0",
-          "included": true,
-          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
-          "mode": "Navigation",
-          "name": "Primary navigation",
-          "originalComponent": "NavFloatingBentoSectionV2",
-          "originalIndex": 0
-        },
-        {
-          "component": "HeroContentTopImageBottomSectionV2",
-          "id": "compact-utility-slot-1-HeroContentTopImageBottomSectionV2-1",
-          "included": false,
-          "instruction": "Lead with direct copy first, then use the image below to keep the page useful and quick to understand.",
-          "mode": "Hero",
-          "name": "Content top image bottom",
-          "originalComponent": "HeroContentTopImageBottomSectionV2",
-          "originalIndex": 1
-        },
-        {
-          "component": "TrustMarqueeSectionV3",
-          "id": "compact-utility-slot-1-TrustMarqueeSectionV3-2",
-          "included": false,
-          "instruction": "Use short repeated claims when there are many small proof points.",
-          "mode": "Proof",
-          "name": "Trust marquee",
-          "originalComponent": "TrustMarqueeSectionV3",
-          "originalIndex": 2
-        },
-        {
-          "component": "ServicesScrollCardsSectionV2",
-          "id": "compact-utility-slot-1-ServicesScrollCardsSectionV2-3",
-          "included": false,
-          "instruction": "Use a compact service rail when there are more service paths than a small grid can handle gracefully.",
-          "mode": "Scan",
-          "name": "Scroll service cards",
-          "originalComponent": "ServicesScrollCardsSectionV2",
-          "originalIndex": 3
-        },
-        {
-          "component": "ContentRuleHeaderSectionV2",
-          "id": "compact-utility-slot-1-ContentRuleHeaderSectionV2-4",
-          "included": false,
-          "instruction": "Use this as a lightweight editorial texture to introduce the next practical idea without adding a heavy section.",
-          "mode": "Narrative",
-          "name": "Rule header content",
-          "originalComponent": "ContentRuleHeaderSectionV2",
-          "originalIndex": 4
-        },
-        {
-          "component": "FAQSectionV3",
-          "id": "compact-utility-slot-1-FAQSectionV3-5",
-          "included": false,
-          "instruction": "Include only the questions that affect whether someone contacts you.",
-          "mode": "Utility",
-          "name": "FAQ",
-          "originalComponent": "FAQSectionV3",
-          "originalIndex": 5
-        },
-        {
-          "component": "FooterSectionV3",
-          "id": "compact-utility-slot-1-FooterSectionV3-6",
-          "included": false,
-          "instruction": "End with service links, areas, contact details, and legal links.",
-          "mode": "Utility",
-          "name": "Footer",
-          "originalComponent": "FooterSectionV3",
-          "originalIndex": 6
-        },
-        {
-          "component": "HeroGridMosaicSectionV2",
-          "id": "compact-utility-HeroGridMosaicSectionV2-added-7",
-          "included": true,
-          "instruction": "Use the mosaic to combine h1, trust proof, service paths, and supporting visuals.",
-          "mode": "Hero",
-          "name": "Grid mosaic hero",
-          "originalComponent": "HeroGridMosaicSectionV2",
-          "originalIndex": -1
-        },
-        {
-          "component": "HeroCompactSectionV3",
-          "id": "compact-utility-HeroCompactSectionV3-added-10",
-          "included": true,
-          "instruction": "Use a compact page title, eyebrow, and short descriptor when the page needs a clear header without media or proof blocks.",
-          "mode": "Hero",
-          "name": "Compact page hero",
-          "originalComponent": "HeroCompactSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ServicesThreeCardsRightSectionV3",
-          "id": "compact-utility-ServicesThreeCardsRightSectionV3-added-9",
           "included": true,
           "instruction": "Show top-level service cards on the seven-column page grid, using explicit card size metadata when one card should be larger.",
           "mode": "Scan",

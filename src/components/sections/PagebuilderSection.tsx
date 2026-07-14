@@ -2,7 +2,10 @@ import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAbout
 import { ContentAboutStorySectionV3 } from "@/components/sections/ContentAboutStorySectionV3";
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
-import { ContentPhotoGalleryCarouselSectionV3 } from "@/components/sections/ContentPhotoGalleryCarouselSectionV3";
+import {
+  ContentPhotoGalleryCarouselSectionV3,
+  ContentPhotoGalleryLargeCarouselSectionV3,
+} from "@/components/sections/ContentPhotoGalleryCarouselSectionV3";
 import { ImageStripSectionV3 } from "@/components/sections/ImageStripSectionV3";
 import { QuickPageLinksSectionV2 } from "@/components/sections/QuickPageLinksSectionV2";
 import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
@@ -287,6 +290,12 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
     case "ContentPhotoGalleryCarouselSectionV3":
       return (
         <ContentPhotoGalleryCarouselSectionV3
+          {...sectionLibraryV3Content.contentPhotoGalleryCarousel}
+        />
+      );
+    case "ContentPhotoGalleryLargeCarouselSectionV3":
+      return (
+        <ContentPhotoGalleryLargeCarouselSectionV3
           {...sectionLibraryV3Content.contentPhotoGalleryCarousel}
         />
       );
@@ -751,6 +760,12 @@ export function PagebuilderSection() {
       "ContentPhotoGalleryCarouselSectionV3",
       "Images",
       "Photo gallery carousel",
+      4,
+    ),
+    ContentPhotoGalleryLargeCarouselSectionV3: previewCatalogEntry(
+      "ContentPhotoGalleryLargeCarouselSectionV3",
+      "Images",
+      "Large photo gallery carousel",
       4,
     ),
     ImageStripSectionV3: previewCatalogEntry(

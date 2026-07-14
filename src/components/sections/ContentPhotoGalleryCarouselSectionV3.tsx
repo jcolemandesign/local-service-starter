@@ -25,6 +25,8 @@ type ContentPhotoGalleryCarouselSectionV3Props = {
   images: GalleryImage[];
 };
 
+type GalleryScale = "compact" | "large";
+
 type DragState = {
   active: boolean;
   lastTime: number;
@@ -35,12 +37,24 @@ type DragState = {
   velocity: number;
 };
 
-const gallerySizeClasses: Record<GalleryImageSize, string> = {
-  small: "w-[min(72vw,18rem)] h-[18rem]",
-  medium: "w-[min(76vw,22rem)] h-[20rem]",
-  large: "w-[min(82vw,28rem)] h-[22rem]",
-  tall: "w-[min(70vw,20rem)] h-[23rem]",
-  wide: "w-[min(84vw,30rem)] h-[19rem]",
+const gallerySizeClasses: Record<
+  GalleryScale,
+  Record<GalleryImageSize, string>
+> = {
+  compact: {
+    small: "w-[min(72vw,18rem)] h-[18rem]",
+    medium: "w-[min(76vw,22rem)] h-[20rem]",
+    large: "w-[min(82vw,28rem)] h-[22rem]",
+    tall: "w-[min(70vw,20rem)] h-[23rem]",
+    wide: "w-[min(84vw,30rem)] h-[19rem]",
+  },
+  large: {
+    small: "w-[min(72vw,22rem)] h-[22rem]",
+    medium: "w-[min(78vw,27rem)] h-[26rem]",
+    large: "w-[min(84vw,35rem)] h-[31rem]",
+    tall: "w-[min(72vw,25rem)] h-[34rem]",
+    wide: "w-[min(88vw,38rem)] h-[25rem]",
+  },
 };
 
 const grabCursor =
@@ -84,23 +98,28 @@ function ArrowButton({
 function GalleryImageCard({
   image,
   index,
+  scale,
 }: {
   image: GalleryImage;
   index: number;
+  scale: GalleryScale;
 }) {
   const size = image.size ?? "medium";
 
   return (
     <li className="shrink-0" data-gallery-card>
       <figure
+        onDragStart={(event) => event.preventDefault()}
         className={cx(
-          "group/photo fluid-type-frame relative max-h-[23rem] overflow-hidden border border-service-border bg-service-ink shadow-service max-md:h-[18rem] max-md:w-[calc(100vw-3rem)]",
-          gallerySizeClasses[size],
+          "group/photo fluid-type-frame relative overflow-hidden border border-service-border bg-service-ink shadow-service select-none max-md:h-[18rem] max-md:w-[calc(100vw-3rem)]",
+          scale === "compact" ? "max-h-[23rem]" : "max-h-[34rem]",
+          gallerySizeClasses[scale][size],
         )}
       >
         <Image
           alt={image.alt}
           className="object-cover transition-transform duration-700 group-hover/photo:scale-[1.035]"
+          draggable={false}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 55vw, 38vw"
           src={image.src}
@@ -123,7 +142,10 @@ export function ContentPhotoGalleryCarouselSectionV3({
   title,
   body,
   images,
-}: ContentPhotoGalleryCarouselSectionV3Props) {
+  scale = "compact",
+}: ContentPhotoGalleryCarouselSectionV3Props & {
+  scale?: GalleryScale;
+}) {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const hoverFrame = useRef<number | null>(null);
   const hoverTimeout = useRef<number | null>(null);
@@ -317,7 +339,7 @@ export function ContentPhotoGalleryCarouselSectionV3({
   }, [cancelMomentum, stopHoverScroll]);
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType !== "mouse") {
+    if (event.pointerType !== "mouse" || event.button !== 0) {
       return;
     }
 
@@ -329,6 +351,7 @@ export function ContentPhotoGalleryCarouselSectionV3({
 
     cancelMomentum();
     stopHoverScroll();
+    event.preventDefault();
 
     const eventTime = window.performance.now();
 
@@ -388,14 +411,27 @@ export function ContentPhotoGalleryCarouselSectionV3({
 
   return (
     <section className="bg-service-surface">
-      <SevenColumnGrid className="section-min-none content-center" padding="med">
+      <SevenColumnGrid
+        className="section-min-none content-center"
+        padding={scale === "large" ? "lrg" : "med"}
+      >
         <SevenColumnGridItem className="col-span-7">
           <div className="fluid-type-frame flex items-end justify-between gap-8 max-md:flex-col max-md:items-start">
             <div className="max-w-[var(--measure-copy-wide)]">
-              <h2 className="type-heading-md text-service-ink">
+              <h2
+                className={cx(
+                  "text-service-ink",
+                  scale === "large" ? "type-display-lg" : "type-heading-md",
+                )}
+              >
                 {title}
               </h2>
-              <p className="type-text-sm measure-copy wrap-pretty mt-heading-body-sm text-service-muted">
+              <p
+                className={cx(
+                  "measure-copy wrap-pretty mt-heading-body-sm text-service-muted",
+                  scale === "large" ? "type-text-md" : "type-text-sm",
+                )}
+              >
                 {body}
               </p>
             </div>
@@ -428,15 +464,18 @@ export function ContentPhotoGalleryCarouselSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-7">
-          <div className="mt-heading-body-lg">
+          <div
+            className={scale === "large" ? "mt-heading-body-xl" : "mt-heading-body-lg"}
+          >
             <div
               aria-label={`${title} gallery`}
               className={cx(
-                "-mx-[var(--site-grid-inset-inline)] overflow-x-auto overscroll-x-contain pl-[var(--site-grid-inset-inline)] pr-[var(--site-grid-inset-inline)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+                "-mx-[var(--site-grid-inset-inline)] touch-pan-y overflow-x-auto overscroll-x-contain pl-[var(--site-grid-inset-inline)] pr-[var(--site-grid-inset-inline)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
                 isFreeScrolling
                   ? "cursor-grabbing select-none scroll-auto"
                   : "cursor-grab scroll-auto",
               )}
+              onLostPointerCapture={finishDrag}
               onPointerCancel={finishDrag}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
@@ -447,12 +486,18 @@ export function ContentPhotoGalleryCarouselSectionV3({
               style={{ cursor: isFreeScrolling ? grabbingCursor : grabCursor }}
               tabIndex={0}
             >
-              <ul className="flex w-max items-center gap-4 pb-6 pt-1">
+              <ul
+                className={cx(
+                  "flex w-max items-center pb-6 pt-1",
+                  scale === "large" ? "gap-6" : "gap-4",
+                )}
+              >
                 {images.map((image, index) => (
                   <GalleryImageCard
                     image={image}
                     index={index}
                     key={`${image.src}-${image.caption}`}
+                    scale={scale}
                   />
                 ))}
                 <li aria-hidden="true" className="w-[min(14vw,10rem)] shrink-0" />
@@ -463,4 +508,10 @@ export function ContentPhotoGalleryCarouselSectionV3({
       </SevenColumnGrid>
     </section>
   );
+}
+
+export function ContentPhotoGalleryLargeCarouselSectionV3(
+  props: ContentPhotoGalleryCarouselSectionV3Props,
+) {
+  return <ContentPhotoGalleryCarouselSectionV3 {...props} scale="large" />;
 }

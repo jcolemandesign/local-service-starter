@@ -730,6 +730,13 @@ const sectionSwapOptions = [
     name: "Photo gallery carousel",
   },
   {
+    component: "ContentPhotoGalleryLargeCarouselSectionV3",
+    instruction:
+      "Use a larger mixed-size photo gallery when the images should become a stronger editorial moment.",
+    mode: "Images",
+    name: "Large photo gallery carousel",
+  },
+  {
     component: "ImageStripSectionV3",
     instruction:
       "Use a simple image strip with one large image and two supporting images on the seven-column grid.",

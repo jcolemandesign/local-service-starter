@@ -2,7 +2,10 @@ import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAbout
 import { ContentAboutStorySectionV3 } from "@/components/sections/ContentAboutStorySectionV3";
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
-import { ContentPhotoGalleryCarouselSectionV3 } from "@/components/sections/ContentPhotoGalleryCarouselSectionV3";
+import {
+  ContentPhotoGalleryCarouselSectionV3,
+  ContentPhotoGalleryLargeCarouselSectionV3,
+} from "@/components/sections/ContentPhotoGalleryCarouselSectionV3";
 import { ImageStripSectionV3 } from "@/components/sections/ImageStripSectionV3";
 import { QuickPageLinksSectionV2 } from "@/components/sections/QuickPageLinksSectionV2";
 import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
@@ -374,6 +377,12 @@ export function renderPageTemplateSection(
     case "ContentPhotoGalleryCarouselSectionV3":
       return (
         <ContentPhotoGalleryCarouselSectionV3
+          {...photoGalleryProps(fieldSection)}
+        />
+      );
+    case "ContentPhotoGalleryLargeCarouselSectionV3":
+      return (
+        <ContentPhotoGalleryLargeCarouselSectionV3
           {...photoGalleryProps(fieldSection)}
         />
       );
