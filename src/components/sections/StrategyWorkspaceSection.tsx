@@ -598,6 +598,15 @@ export function StrategyWorkspaceSection({
           <StrategyNavIcon icon="prompts" />
           Prompt library
         </Link>
+        <Link
+          className={strategyNavButtonClass}
+          href={`/api/agent-export?clientSlug=${encodeURIComponent(clientSlug)}`}
+          rel="noreferrer"
+          target="_blank"
+        >
+          <StrategyNavIcon icon="download" />
+          Agent doc
+        </Link>
         <button
           className={primaryButtonClass}
           disabled={saveState === "saving"}
@@ -1952,6 +1961,8 @@ function normalizePageType(value: string) {
 }
 
 type StrategyNavIconName =
+  | "agent"
+  | "download"
   | "pagebuilder"
   | "plan"
   | "prompts"
@@ -1961,6 +1972,8 @@ type StrategyNavIconName =
 
 function StrategyNavIcon({ icon }: { icon: StrategyNavIconName }) {
   const paths: Record<StrategyNavIconName, string[]> = {
+    agent: ["M8 5h8", "M7 9h10", "M7 13h6", "M5 3h14v18H5z"],
+    download: ["M12 4v10", "M8 10l4 4 4-4", "M5 20h14"],
     pagebuilder: ["M4 5h7v7H4z", "M13 5h7v4h-7z", "M13 11h7v8h-7z", "M4 14h7v5H4z"],
     plan: ["M7 4h10l3 3v13H7z", "M17 4v4h4", "M10 11h7", "M10 15h5"],
     prompts: ["M5 6h14v10H8l-3 3z", "M8 10h8", "M8 13h5"],

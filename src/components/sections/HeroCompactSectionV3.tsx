@@ -79,8 +79,8 @@ export function HeroCompactSectionV3({
             <p className="type-label text-service-accent">{eyebrow}</p>
             <Heading
               className={cx(
-                "type-heading-xl",
-                "mt-eyebrow-heading-lg text-service-ink",
+                "type-display-lg",
+                "mt-eyebrow-display text-service-ink",
               )}
             >
               {title}

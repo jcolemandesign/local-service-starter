@@ -170,7 +170,12 @@ export function PageTemplatePreview({
   const includedSections = sections.filter(Boolean);
 
   return (
-    <div className="page-template-preview pagebuilder-density-normal pagebuilder-hide-markers min-h-full w-full bg-bg-page">
+    <div
+      className={cx(
+        "page-template-preview pagebuilder-density-normal pagebuilder-hide-markers min-h-full w-full bg-bg-page",
+        fixedNavigation && "page-template-preview-fixed-nav",
+      )}
+    >
       <div className="min-h-full w-full bg-bg-page">
         {includedSections.map((section, index) => {
           const nextSection = includedSections[index + 1];

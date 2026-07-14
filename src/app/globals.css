@@ -366,6 +366,7 @@ body {
 
   .services-three-cards-grid.site-grid-frame {
     min-height: 0;
+    padding-block: var(--section-space-sml);
   }
 
   .site-grid-gap {
@@ -748,6 +749,27 @@ body {
     [data-pagebuilder-section-component="HeroFullscreenSectionV2"]
     .section-min-screen {
     min-height: 100svh;
+  }
+
+  .page-template-preview-fixed-nav .pagebuilder-nav-hero-pair {
+    --template-preview-fixed-nav-height: 5rem;
+  }
+
+  .page-template-preview-fixed-nav
+    .pagebuilder-nav-hero-pair
+    > [data-pagebuilder-section-mode="Hero"]
+    .site-grid-frame {
+    padding-top: min(
+      var(--site-grid-inset-block),
+      calc(var(--section-space-sml) * 0.75)
+    );
+  }
+
+  .page-template-preview-fixed-nav
+    .pagebuilder-nav-hero-pair
+    > [data-pagebuilder-section-mode="Hero"]
+    .section-min-screen {
+    min-height: calc(100svh - var(--template-preview-fixed-nav-height));
   }
 
   .page-template-preview
@@ -1327,31 +1349,31 @@ body {
   --live-service-muted: #5f6f68;
   --live-service-accent: #4376ad;
   --live-service-surface: #fafafa;
-  --live-service-border: #dfe7e1;
-  --live-bg-page: #e6e8ef;
+  --live-service-border: #bec1bf;
+  --live-bg-page: #e8e9ed;
   --live-bg-surface: #fafafa;
-  --live-bg-muted: #dfe7e1;
+  --live-bg-muted: #bec1bf;
   --live-bg-dark: #1b212c;
   --live-text-main: #30403a;
   --live-text-muted: #5f6f68;
   --live-text-accent: #4376ad;
-  --live-border-default: #dfe7e1;
+  --live-border-default: #bec1bf;
   --live-accent: #c45a2c;
   --live-shadow-service: 2px 3px 48px rgb(0 0 0 / 0.05);
   --color-service-ink: #30403a;
   --color-service-muted: #5f6f68;
   --color-service-accent: #4376ad;
   --color-service-surface: #fafafa;
-  --color-service-border: #dfe7e1;
-  --color-bg-page: #e6e8ef;
+  --color-service-border: #bec1bf;
+  --color-bg-page: #e8e9ed;
   --color-bg-surface: #fafafa;
-  --color-bg-muted: #dfe7e1;
+  --color-bg-muted: #bec1bf;
   --color-bg-dark: #1b212c;
   --color-text-main: #30403a;
   --color-text-muted: #5f6f68;
   --color-text-inverse: #ffffff;
   --color-text-accent: #4376ad;
-  --color-border-default: #dfe7e1;
+  --color-border-default: #bec1bf;
   --color-accent: #c45a2c;
   --card-grid-gap-active: 1.75rem;
   --inline-gap-active: 1rem;

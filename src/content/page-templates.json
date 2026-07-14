@@ -5,6 +5,214 @@
         "showSectionMarkers": false,
         "viewportId": "main"
       },
+      "id": "individual-service-1",
+      "name": "Individual Service 1",
+      "notes": "",
+      "pageType": "Individual Service",
+      "promotedAt": "2026-07-14T19:03:31.521Z",
+      "sectionCount": 12,
+      "sections": [
+        {
+          "component": "NavPrimarySectionV2",
+          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
+          "mode": "Navigation",
+          "name": "Primary navigation",
+          "originalComponent": "NavFloatingBentoSectionV2",
+          "originalIndex": 0
+        },
+        {
+          "component": "HeroCompactSectionV3",
+          "instruction": "Use a compact page title, eyebrow, and short descriptor when the page needs a clear header without media or proof blocks.",
+          "mode": "Hero",
+          "name": "Compact page hero",
+          "originalComponent": "HeroSplitFixedImageSectionV3",
+          "originalIndex": -1,
+          "variant": "left"
+        },
+        {
+          "component": "ImageStripSectionV3",
+          "instruction": "Use a simple image strip with one large image and two supporting images on the seven-column grid.",
+          "mode": "Images",
+          "name": "Image strip",
+          "originalComponent": "ImageStripSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "ContentAboutStorySectionV3",
+          "instruction": "Use for long-form about storytelling when the page needs local context, operating philosophy, and careful trust language.",
+          "mode": "Narrative",
+          "name": "About story",
+          "originalComponent": "ContentAboutStorySectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "DecisionSplitDecisionSectionV3",
+          "instruction": "Use a compact two-card comparison when a homeowner needs help deciding whether repair or replacement makes more sense after inspection.",
+          "mode": "Decision",
+          "name": "Split decision",
+          "originalComponent": "DecisionSplitDecisionSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "CTAMutedSectionV3",
+          "instruction": "Use a quieter service-card CTA when the page needs a softer next step between content sections.",
+          "mode": "Action",
+          "name": "Muted CTA",
+          "originalComponent": "CTAMutedSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "ContentStickyCardStreamSectionV2",
+          "instruction": "Keep a promise fixed while supporting details move through response, diagnosis, options, and follow-up.",
+          "mode": "Narrative",
+          "name": "Sticky card stream content",
+          "originalComponent": "ContentStickyCardStreamSectionV2",
+          "originalIndex": -1
+        },
+        {
+          "component": "ContentSplitFixedImageSectionV3",
+          "instruction": "Use a content-height split layout when the section needs fixed-ratio imagery without hero-scale height.",
+          "mode": "Narrative",
+          "name": "Split content with fixed image",
+          "originalComponent": "ContentSplitFixedImageSectionV3",
+          "originalIndex": -1,
+          "ratio": "3-2",
+          "variant": "text-3-image-4-right"
+        },
+        {
+          "component": "FAQSectionV3",
+          "instruction": "Include only the questions that affect whether someone contacts you.",
+          "mode": "Utility",
+          "name": "FAQ",
+          "originalComponent": "FAQSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "QuickPageLinksSectionV2",
+          "instruction": "Offer a small set of useful page paths for visitors who need more context before contacting.",
+          "mode": "Scan",
+          "name": "Quick page links",
+          "originalComponent": "QuickPageLinksSectionV2",
+          "originalIndex": -1
+        },
+        {
+          "component": "CTASectionV3",
+          "instruction": "Use the current conversion band when the page needs a polished direct next step.",
+          "mode": "Action",
+          "name": "CTA",
+          "originalComponent": "CTASectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "FooterSectionV3",
+          "instruction": "End with service links, areas, contact details, and legal links.",
+          "mode": "Utility",
+          "name": "Footer",
+          "originalComponent": "FooterSectionV3",
+          "originalIndex": -1
+        }
+      ],
+      "sourceOptionName": "Page Layout",
+      "sourceRecipeId": "compact-utility",
+      "sourceRecipeName": "Individual Service"
+    },
+    {
+      "designStyle": {
+        "showSectionMarkers": false,
+        "viewportId": "main"
+      },
+      "id": "services-overview-1",
+      "name": "Services Overview 1",
+      "notes": "",
+      "pageType": "Services Overview",
+      "promotedAt": "2026-07-14T18:23:34.278Z",
+      "sectionCount": 9,
+      "sections": [
+        {
+          "component": "NavPrimarySectionV2",
+          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
+          "mode": "Navigation",
+          "name": "Primary navigation",
+          "originalComponent": "NavPrimarySectionV2",
+          "originalIndex": 0
+        },
+        {
+          "component": "HeroCompactSectionV3",
+          "instruction": "Use a compact page title, eyebrow, and short descriptor when the page needs a clear header without media or proof blocks.",
+          "mode": "Hero",
+          "name": "Compact page hero",
+          "originalComponent": "HeroCompactSectionV3",
+          "originalIndex": -1,
+          "variant": "left"
+        },
+        {
+          "component": "ServicesThreeCardsRightSectionV3",
+          "instruction": "Show top-level service cards on the seven-column page grid, using explicit card size metadata when one card should be larger.",
+          "mode": "Scan",
+          "name": "Services cards grid",
+          "originalComponent": "ServicesThreeCardsRightSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "ServicesHoverPanelSectionV2",
+          "instruction": "Use a hover panel when a compact service list should reveal more detail and visual emphasis.",
+          "mode": "Scan",
+          "name": "Services hover panel",
+          "originalComponent": "ServicesHoverPanelSectionV2",
+          "originalIndex": -1
+        },
+        {
+          "component": "CTAMutedSectionV3",
+          "instruction": "Use a quieter service-card CTA when the page needs a softer next step between content sections.",
+          "mode": "Action",
+          "name": "Muted CTA",
+          "originalComponent": "CTASectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "ContentSplitFixedImageSectionV3",
+          "instruction": "Use a content-height split layout when the section needs fixed-ratio imagery without hero-scale height.",
+          "mode": "Narrative",
+          "name": "Split content with fixed image",
+          "originalComponent": "ContentSplitFixedImageSectionV3",
+          "originalIndex": -1,
+          "ratio": "3-2",
+          "variant": "text-3-image-4-right"
+        },
+        {
+          "component": "ContentStickyCardStreamSectionV2",
+          "instruction": "Keep a promise fixed while supporting details move through response, diagnosis, options, and follow-up.",
+          "mode": "Narrative",
+          "name": "Sticky card stream content",
+          "originalComponent": "ContentStickyCardStreamSectionV2",
+          "originalIndex": -1
+        },
+        {
+          "component": "ContactSectionV3",
+          "instruction": "Close with phone, email, hours, and a simple form or request path.",
+          "mode": "Utility",
+          "name": "Contact section",
+          "originalComponent": "ContactSectionV3",
+          "originalIndex": -1
+        },
+        {
+          "component": "FooterSectionV3",
+          "instruction": "End with service links, areas, contact details, and legal links.",
+          "mode": "Utility",
+          "name": "Footer",
+          "originalComponent": "FooterSectionV3",
+          "originalIndex": -1
+        }
+      ],
+      "sourceOptionName": "Page Layout",
+      "sourceRecipeId": "editorial-local",
+      "sourceRecipeName": "Services Overview"
+    },
+    {
+      "designStyle": {
+        "showSectionMarkers": false,
+        "viewportId": "main"
+      },
       "id": "about-1",
       "name": "About 1",
       "notes": "",

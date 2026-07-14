@@ -1039,18 +1039,21 @@ export const sectionLibraryV3Content = {
       {
         title: "Shared grid",
         body: "The section uses one seven-column grid so spacing and padding can change without changing the column count.",
+        href: "/services",
         imageAlt: "Technician working on indoor HVAC equipment",
         imageSrc: "/images/bg-image-sample%201.jpg",
       },
       {
         title: "Wrapped content",
         body: "Each content object sits inside a placement wrapper that controls span, alignment, and readable measure.",
+        href: "/services",
         imageAlt: "Technician speaking with a homeowner at the door",
         imageSrc: "/images/bg-image-sample%202.jpg",
       },
       {
         title: "Predictable flow",
         body: "Rows can be composed intentionally while still allowing section content to adapt inside its assigned columns.",
+        href: "/services",
         imageAlt: "HVAC unit staged near a service truck",
         imageSrc: "/images/hvac-unit-truck-wide.png",
         size: "large" as const,

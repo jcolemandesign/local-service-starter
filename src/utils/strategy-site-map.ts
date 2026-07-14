@@ -496,7 +496,22 @@ function detectStrategyPageIds(fields: StrategyWorkspaceFields) {
     }
   }
 
+  collapseGenericRepeatablePageIds(detectedPageIds);
+
   return detectedPageIds;
+}
+
+function collapseGenericRepeatablePageIds(detectedPageIds: Set<string>) {
+  const hasSpecificServicePage = strategyPageSlots.some(
+    (slot) =>
+      slot.parentId === "services" &&
+      slot.id !== "individual-service" &&
+      detectedPageIds.has(slot.id),
+  );
+
+  if (hasSpecificServicePage) {
+    detectedPageIds.delete("individual-service");
+  }
 }
 
 function canCopyFieldDirectlyDetectPage(
