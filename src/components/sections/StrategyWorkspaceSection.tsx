@@ -17,6 +17,13 @@ import {
   buildTemplateCopyContract,
   type TemplateCopyContractTemplate,
 } from "@/utils/template-copy-contract";
+import {
+  copywritingLeverDefinitions,
+  copywritingPersonalityPackets,
+  getCopywritingLeverInstruction,
+  getCopywritingPersonalityPacket,
+  normalizeCopywritingSettings,
+} from "@/content/copywriting-personality-packets";
 import type {
   StrategyWorkspace,
   StrategyWorkspaceFields,
@@ -278,6 +285,14 @@ export function StrategyWorkspaceSection({
         : [],
     [templatePickerPage, templates],
   );
+  const copywritingSettings = useMemo(
+    () => normalizeCopywritingSettings(fields),
+    [fields],
+  );
+  const selectedCopywritingPacket = useMemo(
+    () => getCopywritingPersonalityPacket(copywritingSettings.personalityId),
+    [copywritingSettings.personalityId],
+  );
   const showAssemblyOverview = Boolean(updatedAt) || saveState === "saved";
 
   function updateField(key: keyof StrategyWorkspaceFields, value: string) {
@@ -355,6 +370,26 @@ export function StrategyWorkspaceSection({
       setPacketCopyState("copied");
     } catch {
       setPacketCopyState("error");
+    }
+  }
+
+  function updateCopywritingPersonality(personalityId: string) {
+    const nextPacket = getCopywritingPersonalityPacket(personalityId);
+    const nextLeverFields = Object.fromEntries(
+      copywritingLeverDefinitions.map((lever) => [
+        lever.fieldKey,
+        String(nextPacket.defaultLevers[lever.id]),
+      ]),
+    );
+
+    setFields((currentFields) => ({
+      ...currentFields,
+      ...nextLeverFields,
+      copywritingPersonalityId: nextPacket.id,
+    }));
+
+    if (saveState !== "idle") {
+      setSaveState("idle");
     }
   }
 
@@ -940,6 +975,113 @@ export function StrategyWorkspaceSection({
               );
             })}
           </div>
+
+          <Card className="p-4 shadow-none">
+            <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-5 max-xl:grid-cols-1">
+              <div className="min-w-0">
+                <p className="type-label text-service-accent">
+                  Copywriting Voice
+                </p>
+                <h2 className="type-heading-sm mt-eyebrow-heading-sm text-text-main">
+                  {selectedCopywritingPacket.name}
+                </h2>
+                <p className="type-text-sm mt-heading-body-sm text-service-muted">
+                  Select the base personality that should be injected into the
+                  downloadable page-copy agent instructions. Save the workspace
+                  before downloading the agent doc.
+                </p>
+
+                <label
+                  className="mt-4 grid gap-2 text-sm font-semibold text-service-ink"
+                  htmlFor="copywriting-personality"
+                >
+                  Personality packet
+                  <select
+                    className="min-h-12 rounded-[var(--radius-md-token)] border border-service-border bg-bg-surface px-3 text-sm font-semibold text-service-ink outline-none transition-colors focus:border-service-accent"
+                    id="copywriting-personality"
+                    onChange={(event) =>
+                      updateCopywritingPersonality(event.currentTarget.value)
+                    }
+                    value={selectedCopywritingPacket.id}
+                  >
+                    {copywritingPersonalityPackets.map((packet) => (
+                      <option key={packet.id} value={packet.id}>
+                        {packet.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <div className="mt-4 grid gap-3 rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-3">
+                  <p className="type-caption font-semibold text-service-accent">
+                    Core impression
+                  </p>
+                  <p className="text-sm leading-relaxed text-service-ink">
+                    {selectedCopywritingPacket.coreImpression}
+                  </p>
+                  <p className="type-caption leading-relaxed text-service-muted">
+                    Risk to avoid: {selectedCopywritingPacket.risk}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1">
+                  {copywritingLeverDefinitions.map((lever) => {
+                    const leverValue = copywritingSettings.levers[lever.id];
+
+                    return (
+                      <label
+                        className="grid gap-2 rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-3"
+                        htmlFor={`copywriting-lever-${lever.id}`}
+                        key={lever.id}
+                      >
+                        <span className="flex items-center justify-between gap-3">
+                          <span className="text-sm font-semibold text-service-ink">
+                            {lever.label}
+                          </span>
+                          <span className="type-caption font-semibold text-service-accent">
+                            {leverValue}/5
+                          </span>
+                        </span>
+                        <input
+                          className="accent-service-accent"
+                          id={`copywriting-lever-${lever.id}`}
+                          max={5}
+                          min={1}
+                          onChange={(event) =>
+                            updateField(lever.fieldKey, event.currentTarget.value)
+                          }
+                          type="range"
+                          value={leverValue}
+                        />
+                        <span className="flex justify-between gap-3 type-caption text-service-muted">
+                          <span>{lever.lowLabel}</span>
+                          <span>{lever.highLabel}</span>
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+
+                <div className="rounded-[var(--radius-md-token)] border border-service-border bg-bg-surface p-3">
+                  <p className="type-caption font-semibold text-service-accent">
+                    Agent instruction preview
+                  </p>
+                  <ul className="mt-3 grid gap-2 text-sm leading-relaxed text-service-muted">
+                    {copywritingLeverDefinitions.map((lever) => (
+                      <li key={lever.id}>
+                        {getCopywritingLeverInstruction(
+                          lever,
+                          copywritingSettings.levers[lever.id],
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </Card>
 
           <Card className="p-4 shadow-none">
             <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-start">

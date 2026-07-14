@@ -14,6 +14,14 @@ export type StrategyWorkspaceFields = {
   contactCopy: string;
   thankYouCopy: string;
   generalNotes: string;
+  copywritingPersonalityId: string;
+  copywritingWarmth: string;
+  copywritingAuthority: string;
+  copywritingEnergy: string;
+  copywritingPolish: string;
+  copywritingPersonalityPresence: string;
+  copywritingHumor: string;
+  copywritingUrgency: string;
 };
 
 export type StrategyWorkspace = {
@@ -58,6 +66,14 @@ export const strategyWorkspaceFieldDefaults: StrategyWorkspaceFields = {
   aboutCopy: "",
   contactCopy: "",
   contentPlan: "",
+  copywritingAuthority: "",
+  copywritingEnergy: "",
+  copywritingHumor: "",
+  copywritingPersonalityId: "",
+  copywritingPersonalityPresence: "",
+  copywritingPolish: "",
+  copywritingUrgency: "",
+  copywritingWarmth: "",
   generalNotes: "",
   homepageCopy: "",
   servicesCopy: "",
