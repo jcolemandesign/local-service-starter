@@ -304,7 +304,7 @@ export function StyleGuideControlBoard({
       })) ?? [];
 
   return (
-    <section className="border-b border-service-border bg-service-border/35">
+    <section className="border-b border-service-border bg-bg-page">
       <SevenColumnGrid className="section-min-none items-start" padding="sml">
         <SevenColumnGridItem className="col-span-7 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <div className="fluid-type-frame">
@@ -320,7 +320,7 @@ export function StyleGuideControlBoard({
 
         <SevenColumnGridItem className="col-span-7 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <div className="columns-3 [column-gap:var(--layout-gap-active)] max-lg:columns-2 max-md:columns-1">
-            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-service-surface p-5 shadow-none">
+            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-white p-5 shadow-none">
               <div className="fluid-type-frame">
                 <p className="type-label text-service-accent">Layout</p>
                 <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -380,7 +380,7 @@ export function StyleGuideControlBoard({
               </div>
             </Card>
 
-            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-service-surface p-5 shadow-none">
+            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-white p-5 shadow-none">
               <div className="fluid-type-frame">
                 <p className="type-label text-service-accent">Rhythm</p>
                 <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -411,7 +411,7 @@ export function StyleGuideControlBoard({
               />
             </Card>
 
-            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-service-surface p-5 shadow-none">
+            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-white p-5 shadow-none">
               <div className="fluid-type-frame">
                 <p className="type-label text-service-accent">Border</p>
                 <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -450,7 +450,7 @@ export function StyleGuideControlBoard({
               </label>
             </Card>
 
-            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-service-surface p-5 shadow-none">
+            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-white p-5 shadow-none">
               <div className="fluid-type-frame">
                 <p className="type-label text-service-accent">Shadow</p>
                 <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -520,7 +520,7 @@ export function StyleGuideControlBoard({
               </div>
             </Card>
 
-            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-service-surface p-5 shadow-none">
+            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-white p-5 shadow-none">
               <div className="fluid-type-frame">
                 <p className="type-label text-service-accent">Radii</p>
                 <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -550,7 +550,7 @@ export function StyleGuideControlBoard({
               </div>
             </Card>
 
-            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-service-surface p-5 shadow-none">
+            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-white p-5 shadow-none">
               <div className="fluid-type-frame">
                 <p className="type-label text-service-accent">Color</p>
                 <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -612,7 +612,7 @@ export function StyleGuideControlBoard({
               </div>
             </Card>
 
-            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-service-surface p-5 shadow-none">
+            <Card className="mb-[var(--layout-gap-active)] grid break-inside-avoid gap-5 bg-white p-5 shadow-none">
               <div className="fluid-type-frame">
                 <p className="type-label text-service-accent">Secondary gaps</p>
                 <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">

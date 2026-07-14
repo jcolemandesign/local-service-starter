@@ -520,6 +520,8 @@ function applySavedOptionsToLayoutSlots(
           return slot;
         }
 
+        const usedSectionIds = new Set<string>();
+
         return {
           ...slot,
           designStyle: {
@@ -530,12 +532,17 @@ function applySavedOptionsToLayoutSlots(
           },
           stack: savedOption.sections.map((section, index) => {
             const normalizedSection = normalizeSectionMetadata(section);
+            const baseId =
+              section.id || `${savedOption.recipeId}-saved-${slotIndex}-${index}`;
+            const nextId = usedSectionIds.has(baseId)
+              ? `${baseId}-duplicate-${index}`
+              : baseId;
+
+            usedSectionIds.add(nextId);
 
             return {
               ...normalizedSection,
-              id:
-                section.id ||
-                `${savedOption.recipeId}-saved-${slotIndex}-${index}`,
+              id: nextId,
               included: Boolean(section.included),
               originalComponent:
                 section.originalComponent || normalizedSection.component,
@@ -996,11 +1003,11 @@ const innerOptionSignifiers: Partial<
     pattern: "fixed",
   },
   HeroCompactSectionV3: {
-    label: "Alignment options",
+    label: "Compact hero",
     pattern: "align",
   },
   SectionHeaderCompactSectionV3: {
-    label: "Alignment options",
+    label: "Compact section header",
     pattern: "align",
   },
 };

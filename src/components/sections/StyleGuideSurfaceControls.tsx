@@ -71,7 +71,7 @@ export function StyleGuideSurfaceControls() {
 
   return (
     <div className="grid gap-5">
-      <Card className="p-5 shadow-none">
+      <Card className="bg-white p-5 shadow-none">
         <div className="fluid-type-frame">
           <p className="type-label text-service-accent">Border controls</p>
           <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -130,7 +130,7 @@ export function StyleGuideSurfaceControls() {
         </div>
       </Card>
 
-      <Card className="p-5 shadow-none">
+      <Card className="bg-white p-5 shadow-none">
         <div className="fluid-type-frame">
           <p className="type-label text-service-accent">Shadow controls</p>
           <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">

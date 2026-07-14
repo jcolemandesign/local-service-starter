@@ -140,9 +140,15 @@ function SelectField({
         {label}
       </span>
       <select
-        className="min-h-11 rounded-md border border-service-border bg-bg-surface px-3 text-sm font-semibold text-service-ink outline-none transition-colors focus:border-service-accent"
+        className="min-h-11 appearance-none rounded-md border border-service-border bg-bg-surface bg-no-repeat py-2 pl-3 pr-11 text-sm font-semibold text-service-ink outline-none transition-colors focus:border-service-accent"
         id={id}
         onChange={(event) => onChange(event.target.value)}
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235f6f68' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")",
+          backgroundPosition: "right 0.875rem center",
+          backgroundSize: "1rem 1rem",
+        }}
         value={value}
       >
         {children}
