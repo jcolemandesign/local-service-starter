@@ -36,11 +36,11 @@ type DragState = {
 };
 
 const gallerySizeClasses: Record<GalleryImageSize, string> = {
-  small: "w-[min(72vw,22rem)] h-[24rem]",
-  medium: "w-[min(78vw,28rem)] h-[28rem]",
-  large: "w-[min(86vw,36rem)] h-[32rem]",
-  tall: "w-[min(72vw,24rem)] h-[34rem]",
-  wide: "w-[min(88vw,40rem)] h-[26rem]",
+  small: "w-[min(72vw,18rem)] h-[18rem]",
+  medium: "w-[min(76vw,22rem)] h-[20rem]",
+  large: "w-[min(82vw,28rem)] h-[22rem]",
+  tall: "w-[min(70vw,20rem)] h-[23rem]",
+  wide: "w-[min(84vw,30rem)] h-[19rem]",
 };
 
 const grabCursor =
@@ -68,7 +68,7 @@ function ArrowButton({
   return (
     <button
       aria-label={direction === "previous" ? "Previous images" : "Next images"}
-      className="flex size-24 items-center justify-center rounded-full border border-white/80 bg-white text-3xl font-semibold leading-none text-service-ink shadow-[0_14px_34px_rgb(20_27_24_/_0.1),0_0_0_1px_rgb(20_27_24_/_0.045)] transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-white/80 disabled:hover:bg-white disabled:hover:text-service-ink max-md:size-16 max-md:text-2xl"
+      className="flex size-16 items-center justify-center rounded-full border border-white/80 bg-white text-2xl font-semibold leading-none text-service-ink shadow-[0_10px_24px_rgb(20_27_24_/_0.09),0_0_0_1px_rgb(20_27_24_/_0.045)] transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-white/80 disabled:hover:bg-white disabled:hover:text-service-ink max-md:size-12 max-md:text-xl"
       disabled={disabled}
       onClick={onClick}
       onPointerEnter={onPointerEnter}
@@ -94,7 +94,7 @@ function GalleryImageCard({
     <li className="shrink-0" data-gallery-card>
       <figure
         className={cx(
-          "group/photo fluid-type-frame radius-medium relative overflow-hidden border border-service-border bg-service-ink shadow-service max-md:h-[24rem] max-md:w-[calc(100vw-3rem)]",
+          "group/photo fluid-type-frame relative max-h-[23rem] overflow-hidden border border-service-border bg-service-ink shadow-service max-md:h-[18rem] max-md:w-[calc(100vw-3rem)]",
           gallerySizeClasses[size],
         )}
       >
@@ -120,7 +120,6 @@ function GalleryImageCard({
 }
 
 export function ContentPhotoGalleryCarouselSectionV3({
-  eyebrow,
   title,
   body,
   images,
@@ -389,15 +388,14 @@ export function ContentPhotoGalleryCarouselSectionV3({
 
   return (
     <section className="bg-service-surface">
-      <SevenColumnGrid className="section-min-screen content-center">
+      <SevenColumnGrid className="section-min-none content-center" padding="med">
         <SevenColumnGridItem className="col-span-7">
           <div className="fluid-type-frame flex items-end justify-between gap-8 max-md:flex-col max-md:items-start">
-            <div>
-              <p className="type-label text-service-accent">{eyebrow}</p>
-              <h2 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
+            <div className="max-w-[var(--measure-copy-wide)]">
+              <h2 className="type-heading-md text-service-ink">
                 {title}
               </h2>
-              <p className="type-text-lg measure-lead wrap-pretty mt-heading-body-lg text-service-muted">
+              <p className="type-text-sm measure-copy wrap-pretty mt-heading-body-sm text-service-muted">
                 {body}
               </p>
             </div>
@@ -430,7 +428,7 @@ export function ContentPhotoGalleryCarouselSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-7">
-          <div className="mt-body-actions-lg">
+          <div className="mt-heading-body-lg">
             <div
               aria-label={`${title} gallery`}
               className={cx(
@@ -449,7 +447,7 @@ export function ContentPhotoGalleryCarouselSectionV3({
               style={{ cursor: isFreeScrolling ? grabbingCursor : grabCursor }}
               tabIndex={0}
             >
-              <ul className="flex w-max items-center card-grid-gap-med pb-12 pt-2">
+              <ul className="flex w-max items-center gap-4 pb-6 pt-1">
                 {images.map((image, index) => (
                   <GalleryImageCard
                     image={image}

@@ -394,6 +394,25 @@ function serializeWorkingSection(section: WorkingSection) {
   };
 }
 
+function getSectionSwapOption(component: string) {
+  return sectionSwapOptions.find((option) => option.component === component);
+}
+
+function normalizeSectionMetadata(section: WorkingSection): WorkingSection {
+  const swapOption = getSectionSwapOption(section.component);
+
+  if (!swapOption) {
+    return section;
+  }
+
+  return {
+    ...section,
+    instruction: swapOption.instruction,
+    mode: swapOption.mode,
+    name: swapOption.name,
+  };
+}
+
 function updateSectionFromSwapOption(
   section: WorkingSection,
   nextOption: (typeof sectionSwapOptions)[number],
@@ -497,16 +516,22 @@ function applySavedOptionsToLayoutSlots(
             ),
             viewportId: "main" as const,
           },
-          stack: savedOption.sections.map((section, index) => ({
-            ...section,
-            id:
-              section.id || `${savedOption.recipeId}-saved-${slotIndex}-${index}`,
-            included: Boolean(section.included),
-            originalComponent: section.originalComponent || section.component,
-            originalIndex: Number.isFinite(section.originalIndex)
-              ? section.originalIndex
-              : index,
-          })),
+          stack: savedOption.sections.map((section, index) => {
+            const normalizedSection = normalizeSectionMetadata(section);
+
+            return {
+              ...normalizedSection,
+              id:
+                section.id ||
+                `${savedOption.recipeId}-saved-${slotIndex}-${index}`,
+              included: Boolean(section.included),
+              originalComponent:
+                section.originalComponent || normalizedSection.component,
+              originalIndex: Number.isFinite(section.originalIndex)
+                ? section.originalIndex
+                : index,
+            };
+          }),
         };
       }),
     ),
@@ -700,9 +725,16 @@ const sectionSwapOptions = [
   {
     component: "ContentPhotoGalleryCarouselSectionV3",
     instruction:
-      "Use a mixed-size horizontal photo gallery when people, projects, or proof images should carry a narrative moment.",
-    mode: "Narrative",
+      "Use a mixed-size horizontal photo gallery when people, projects, or proof images should carry the visual story.",
+    mode: "Images",
     name: "Photo gallery carousel",
+  },
+  {
+    component: "ImageStripSectionV3",
+    instruction:
+      "Use a simple image strip with one large image and two supporting images on the seven-column grid.",
+    mode: "Images",
+    name: "Image strip",
   },
   {
     component: "FeaturePortraitParagraphSectionV3",

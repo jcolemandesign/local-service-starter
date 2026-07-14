@@ -51,10 +51,26 @@ function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-function LogoPlaceholder({ name }: { name: string }) {
+function LogoPlaceholder({
+  compact = false,
+  name,
+}: {
+  compact?: boolean;
+  name: string;
+}) {
   return (
-    <div className="content-padding-x radius-medium flex h-24 items-center justify-center border border-service-border bg-white shadow-service">
-      <div className="type-label radius-4 flex h-12 w-full items-center justify-center border border-service-border bg-service-surface text-service-muted">
+    <div
+      className={cx(
+        "content-padding-x radius-medium flex items-center justify-center border border-service-border bg-white shadow-service",
+        compact ? "h-18" : "h-24",
+      )}
+    >
+      <div
+        className={cx(
+          "type-label radius-4 flex w-full items-center justify-center border border-service-border bg-service-surface text-service-muted",
+          compact ? "h-10" : "h-12",
+        )}
+      >
         {name}
       </div>
     </div>
@@ -347,13 +363,13 @@ export function TrustLogoGridSectionV3({ label, logos }: TrustLogosProps) {
 
   return (
     <section className="bg-bg-page">
-      <SevenColumnGrid className="section-min-none" padding="sml">
+      <SevenColumnGrid className="section-min-none py-6 max-md:py-5">
         <SevenColumnGridItem
           alignY="middle"
           className="col-span-2 max-lg:col-span-7"
           measure="caption"
         >
-          <div className="content-padding radius-medium flex h-full items-center justify-center border border-service-border bg-service-surface text-center">
+          <div className="radius-medium flex h-full items-center justify-center border border-service-border bg-service-surface px-5 py-4 text-center">
             <p className="type-text-xl wrap-balance font-semibold text-service-ink">
               {label}
             </p>
@@ -367,7 +383,7 @@ export function TrustLogoGridSectionV3({ label, logos }: TrustLogosProps) {
           <ul className="grid grid-cols-5 justify-items-center site-grid-gap max-lg:grid-cols-3 max-sm:grid-cols-2">
             {visibleLogos.map((logo) => (
               <li className="w-full" key={logo}>
-                <LogoPlaceholder name={logo} />
+                <LogoPlaceholder compact name={logo} />
               </li>
             ))}
           </ul>

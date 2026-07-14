@@ -64,6 +64,16 @@ export const sectionModes: SectionMode[] = [
     ],
   },
   {
+    id: "images",
+    name: "Images",
+    intent: "Visual proof, project texture, and browseable photo moments.",
+    rules: [
+      "Use real project, crew, place, or service images when the visual evidence matters.",
+      "Keep captions useful and concrete instead of decorative.",
+      "Choose image-led sections when photos should carry the scan, not just support copy.",
+    ],
+  },
+  {
     id: "proof",
     name: "Proof",
     intent: "Evidence that reduces perceived risk.",

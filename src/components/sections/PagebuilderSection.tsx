@@ -3,6 +3,7 @@ import { ContentAboutStorySectionV3 } from "@/components/sections/ContentAboutSt
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
 import { ContentPhotoGalleryCarouselSectionV3 } from "@/components/sections/ContentPhotoGalleryCarouselSectionV3";
+import { ImageStripSectionV3 } from "@/components/sections/ImageStripSectionV3";
 import { QuickPageLinksSectionV2 } from "@/components/sections/QuickPageLinksSectionV2";
 import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
 import { CTAFullscreenSectionV2 } from "@/components/sections/CTAFullscreenSectionV2";
@@ -289,6 +290,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.contentPhotoGalleryCarousel}
         />
       );
+    case "ImageStripSectionV3":
+      return <ImageStripSectionV3 {...sectionLibraryV3Content.imageStrip} />;
     case "QuickPageLinksSectionV2":
       return (
         <QuickPageLinksSectionV2
@@ -746,8 +749,14 @@ export function PagebuilderSection() {
     ),
     ContentPhotoGalleryCarouselSectionV3: previewCatalogEntry(
       "ContentPhotoGalleryCarouselSectionV3",
-      "Narrative",
+      "Images",
       "Photo gallery carousel",
+      4,
+    ),
+    ImageStripSectionV3: previewCatalogEntry(
+      "ImageStripSectionV3",
+      "Images",
+      "Image strip",
       4,
     ),
     QuickPageLinksSectionV2: previewCatalogEntry(

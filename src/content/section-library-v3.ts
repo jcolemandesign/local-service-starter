@@ -238,7 +238,7 @@ export const sectionLibraryV3Content = {
   contentPhotoGalleryCarousel: {
     eyebrow: "Field Notes",
     title: "A flexible image rail for people, projects, and proof.",
-    body: "Use this gallery when the page needs a richer visual pass with mixed image sizes, captions, and enough motion to feel browsable without becoming a masonry wall.",
+    body: "A compact rail for mixed project, crew, and proof images.",
     images: [
       {
         alt: "Technician working on indoor HVAC equipment",
@@ -274,6 +274,28 @@ export const sectionLibraryV3Content = {
         objectPosition: "50% 50%",
         size: "small" as const,
         src: "/images/bg-image-sample%202.jpg",
+      },
+    ],
+  },
+  imageStrip: {
+    images: [
+      {
+        alt: "Technician working on indoor HVAC equipment",
+        caption: "Lead image for a project, crew, or service moment.",
+        objectPosition: "50% 40%",
+        src: "/images/bg-image-sample%201.jpg",
+      },
+      {
+        alt: "Technician speaking with a homeowner at the door",
+        caption: "Secondary image with a quieter supporting note.",
+        objectPosition: "42% 42%",
+        src: "/images/bg-image-sample%202.jpg",
+      },
+      {
+        alt: "HVAC unit staged near a service truck",
+        caption: "A second supporting frame for texture and proof.",
+        objectPosition: "22% 50%",
+        src: "/images/hvac-unit-truck-wide.png",
       },
     ],
   },
@@ -1121,10 +1143,6 @@ export const sectionLibraryV3Collections = [
         component: "content-rule-header-v2",
       },
       {
-        label: "Photo gallery carousel",
-        component: "content-photo-gallery-carousel-v3",
-      },
-      {
         label: "Editorial portrait",
         component: "feature-portrait-paragraph-v3",
       },
@@ -1135,6 +1153,19 @@ export const sectionLibraryV3Collections = [
       {
         label: "Asymmetric feature cards",
         component: "feature-asymmetric-cards-v3",
+      },
+    ],
+  },
+  {
+    title: "Images",
+    items: [
+      {
+        label: "Image strip",
+        component: "image-strip-v3",
+      },
+      {
+        label: "Photo gallery carousel",
+        component: "content-photo-gallery-carousel-v3",
       },
     ],
   },

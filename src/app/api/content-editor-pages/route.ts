@@ -234,6 +234,7 @@ function getSectionContent(component: string): ContentSourceValue | null {
       sectionLibraryV3Content.contentHorizontalCardCarousel,
     ContentPhotoGalleryCarouselSectionV3:
       sectionLibraryV3Content.contentPhotoGalleryCarousel,
+    ImageStripSectionV3: sectionLibraryV3Content.imageStrip,
     QuickPageLinksSectionV2: sectionLibraryV3Content.quickPageLinks,
     ContentRevealParagraphSectionV2: sectionLibraryV3Content.contentRevealParagraph,
     ContentRuleHeaderSectionV2: sectionLibraryV3Content.contentRuleHeader,

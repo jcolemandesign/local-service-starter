@@ -12,6 +12,7 @@ import {
   ContentStickyCardStreamSectionV2,
   ContentStickyIdeasSectionV2,
   ContentSplitHeadlineImageSectionV2,
+  ImageStripSectionV3,
   ContactSectionV3,
   CTAFullscreenSectionV3,
   CTASectionV3,
@@ -180,6 +181,9 @@ const sectionElements = {
       {...sectionLibraryV3Content.contentPhotoGalleryCarousel}
     />
   ),
+  "image-strip-v3": (
+    <ImageStripSectionV3 {...sectionLibraryV3Content.imageStrip} />
+  ),
   "content-fixed-cover-fade-v2": (
     <ContentFixedCoverFadeSectionV2
       {...sectionLibraryV3Content.contentFixedCoverFade}
@@ -333,14 +337,21 @@ const sectionTemplateCount = sectionLibraryV3Collections.reduce(
 export default function SectionsV3Page() {
   return (
     <StyleGuidePreviewSurface>
-      <main className="library-surface">
-        <section className="section-space-sml bg-service-ink text-white">
-          <Container>
-            <h1 className="type-display-lg">
-              Section Library
-            </h1>
-            <p className="type-text-xl measure-copy wrap-pretty mt-display-body text-white/75">
-              {sectionTemplateCount} reusable section templates.
+      <main className="min-h-svh bg-service-ink text-white">
+        <section
+          className="section-space-sml border-b border-white/10 text-white"
+          style={{
+            backgroundColor: "#26332f",
+            backgroundImage:
+              "linear-gradient(135deg, rgb(255 255 255 / 0.055) 0%, rgb(255 255 255 / 0.038) 24%, rgb(255 255 255 / 0.018) 45%, transparent 62%, rgb(255 255 255 / 0.018) 80%, rgb(255 255 255 / 0.035) 100%), linear-gradient(180deg, rgb(255 255 255 / 0.03), rgb(255 255 255 / 0.008))",
+          }}
+        >
+          <Container className="grid gap-4">
+            <p className="type-label text-white/55">Internal Library</p>
+            <h1 className="type-display-lg text-white">Section Library</h1>
+            <p className="type-text-xl measure-copy wrap-pretty text-white/72">
+              {sectionTemplateCount} reusable section templates grouped by
+              pagebuilder mode.
             </p>
           </Container>
         </section>

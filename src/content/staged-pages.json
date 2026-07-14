@@ -234,7 +234,7 @@
           "id": "about.08-photo-gallery-carousel.contentDirection",
           "kind": "meta",
           "path": "08-photo-gallery-carousel.contentDirection",
-          "value": "Use a mixed-size horizontal photo gallery when people, projects, or proof images should carry a narrative moment."
+          "value": "Use a mixed-size horizontal photo gallery when people, projects, or proof images should carry the visual story."
         },
         {
           "id": "about.08-photo-gallery-carousel.eyebrow",
@@ -454,8 +454,8 @@
           },
           {
             "component": "ContentPhotoGalleryCarouselSectionV3",
-            "instruction": "Use a mixed-size horizontal photo gallery when people, projects, or proof images should carry a narrative moment.",
-            "mode": "Narrative",
+            "instruction": "Use a mixed-size horizontal photo gallery when people, projects, or proof images should carry the visual story.",
+            "mode": "Images",
             "name": "Photo gallery carousel",
             "originalComponent": "ContentPhotoGalleryCarouselSectionV3",
             "originalIndex": -1

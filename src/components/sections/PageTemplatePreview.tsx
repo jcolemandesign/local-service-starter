@@ -3,6 +3,7 @@ import { ContentAboutStorySectionV3 } from "@/components/sections/ContentAboutSt
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
 import { ContentPhotoGalleryCarouselSectionV3 } from "@/components/sections/ContentPhotoGalleryCarouselSectionV3";
+import { ImageStripSectionV3 } from "@/components/sections/ImageStripSectionV3";
 import { QuickPageLinksSectionV2 } from "@/components/sections/QuickPageLinksSectionV2";
 import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
 import { CTAFullscreenSectionV2 } from "@/components/sections/CTAFullscreenSectionV2";
@@ -376,6 +377,8 @@ export function renderPageTemplateSection(
           {...photoGalleryProps(fieldSection)}
         />
       );
+    case "ImageStripSectionV3":
+      return <ImageStripSectionV3 {...imageStripProps(fieldSection)} />;
     case "QuickPageLinksSectionV2":
       return <QuickPageLinksSectionV2 {...quickPageLinksProps(fieldSection)} />;
     case "ContentRevealParagraphSectionV2":
@@ -1192,6 +1195,36 @@ function photoGalleryProps(section: FieldSection) {
       section,
       sectionLibraryV3Content.contentPhotoGalleryCarousel.title,
     ),
+  };
+}
+
+function imageStripProps(section: FieldSection) {
+  const records = getRepeatedRecords(section, ["images", "gallery", "items"]);
+  const fallbackImages = sectionLibraryV3Content.imageStrip.images;
+
+  return {
+    ...sectionLibraryV3Content.imageStrip,
+    images:
+      records.length > 0
+        ? records.slice(0, 3).map((record, index) => {
+            const fallback = fallbackImages[index % fallbackImages.length];
+
+            return {
+              alt: record.alt ?? record.title ?? fallback.alt,
+              caption:
+                record.caption ??
+                record.body ??
+                record.description ??
+                record.title ??
+                fallback.caption,
+              objectPosition:
+                record.objectPosition ??
+                record.position ??
+                fallback.objectPosition,
+              src: record.src ?? record.imageSrc ?? fallback.src,
+            };
+          })
+        : fallbackImages,
   };
 }
 

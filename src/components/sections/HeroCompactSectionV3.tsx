@@ -59,7 +59,7 @@ export function HeroCompactSectionV3({
   return (
     <section className="bg-bg-page">
       <SevenColumnGrid
-        className="section-min-short content-center"
+        className="section-min-tiny content-center"
         padding="med"
       >
         <SevenColumnGridItem

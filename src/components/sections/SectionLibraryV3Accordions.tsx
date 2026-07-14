@@ -29,16 +29,16 @@ function EmptySubAccordion({ item }: { item: SectionLibraryV3Item }) {
   const element = activeVariant?.element ?? item.element;
 
   return (
-    <details className="library-surface group/item border-b border-service-border">
-      <summary className="library-surface-hover cursor-pointer list-none transition-colors">
+    <details className="group/item border-b border-white/10 bg-white/[0.045]">
+      <summary className="cursor-pointer list-none transition-colors hover:bg-white/8">
         <Container className="grid gap-3 py-4">
           <div className="flex items-start justify-between gap-6">
             <div className="min-w-0">
-              <p className="text-sm font-semibold uppercase tracking-widest text-service-accent">
+              <p className="text-sm font-semibold uppercase tracking-widest text-white">
                 {item.label}
               </p>
               {activeVariant ? (
-                <p className="mt-1 text-sm font-medium text-service-muted">
+                <p className="mt-1 text-sm font-medium text-white/55">
                   Active layout: {activeVariant.label}
                 </p>
               ) : null}
@@ -46,7 +46,7 @@ function EmptySubAccordion({ item }: { item: SectionLibraryV3Item }) {
 
             <span
               aria-hidden="true"
-              className="flex size-8 shrink-0 items-center justify-center border border-service-border text-service-accent transition-transform group-open/item:rotate-180"
+              className="flex size-8 shrink-0 items-center justify-center border border-white/15 text-white/70 transition-transform group-open/item:rotate-180"
             >
               <DownArrowIcon className="size-3.5" />
             </span>
@@ -54,7 +54,7 @@ function EmptySubAccordion({ item }: { item: SectionLibraryV3Item }) {
 
           {item.variants ? (
             <div className="grid gap-2">
-              <p className="text-[0.6875rem] font-semibold uppercase tracking-widest text-service-muted">
+              <p className="text-[0.6875rem] font-semibold uppercase tracking-widest text-white/45">
                 Layout
               </p>
               <div
@@ -67,8 +67,8 @@ function EmptySubAccordion({ item }: { item: SectionLibraryV3Item }) {
                     className={[
                       "min-h-7 border px-2.5 text-xs font-semibold transition-colors",
                       activeVariantIndex === index
-                        ? "border-service-accent bg-service-accent text-white"
-                        : "library-surface border-service-border text-service-ink hover:border-service-accent hover:bg-bg-page hover:text-service-accent",
+                        ? "border-white/45 bg-white/16 text-white"
+                        : "border-white/15 bg-white/8 text-white/72 hover:border-white/45 hover:bg-white/14 hover:text-white",
                     ]
                       .filter(Boolean)
                       .join(" ")}
@@ -89,7 +89,7 @@ function EmptySubAccordion({ item }: { item: SectionLibraryV3Item }) {
         </Container>
       </summary>
 
-      <div className="border-t border-service-border bg-bg-page">
+      <div className="border-t border-white/10 bg-bg-page text-service-ink">
         {element ?? (
           <Container>
             <div className="min-h-48" />
@@ -108,27 +108,27 @@ function EmptyCollectionAccordion({
   const sectionCount = collection.items.length;
 
   return (
-    <details className="library-surface group/collection border-b border-service-border">
-      <summary className="library-surface-hover cursor-pointer list-none transition-colors">
+    <details className="group/collection border-b border-white/10 bg-white/8">
+      <summary className="cursor-pointer list-none transition-colors hover:bg-white/10">
         <Container className="flex items-center justify-between gap-8 py-7 max-md:gap-5 max-md:py-6">
           <div>
-            <h2 className="text-2xl font-semibold leading-tight text-service-ink max-md:text-xl">
+            <h2 className="text-2xl font-semibold leading-tight text-white max-md:text-xl">
               {collection.title}
             </h2>
-            <p className="mt-2 text-sm font-medium text-service-muted">
+            <p className="mt-2 text-sm font-medium text-white/55">
               {sectionCount} {sectionCount === 1 ? "section" : "sections"}
             </p>
           </div>
           <span
             aria-hidden="true"
-            className="flex size-11 shrink-0 items-center justify-center border border-service-border text-service-accent transition-transform group-open/collection:rotate-180 max-md:size-10"
+            className="flex size-11 shrink-0 items-center justify-center border border-white/15 text-white/75 transition-transform group-open/collection:rotate-180 max-md:size-10"
           >
             <DownArrowIcon className="size-4" />
           </span>
         </Container>
       </summary>
 
-      <div className="border-t border-service-border">
+      <div className="border-t border-white/10">
         {collection.items.map((item) => (
           <EmptySubAccordion key={item.label} item={item} />
         ))}
@@ -141,8 +141,11 @@ export function SectionLibraryV3Accordions({
   collections,
 }: SectionLibraryV3AccordionsProps) {
   return (
-    <section aria-label="Section library v3 accordions" className="library-surface">
-      <div className="border-t border-service-border">
+    <section
+      aria-label="Section library v3 accordions"
+      className="bg-service-ink text-white"
+    >
+      <div className="border-t border-white/10">
         {collections.map((collection) => (
           <EmptyCollectionAccordion
             key={collection.title}

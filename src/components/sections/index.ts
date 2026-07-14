@@ -11,6 +11,7 @@ export { QuickPageLinksSectionV2 } from "./QuickPageLinksSectionV2";
 export { ContentPositioningSplitSection } from "./ContentPositioningSplitSection";
 export { ContentPositioningSplitSectionV2 } from "./ContentPositioningSplitSectionV2";
 export { ContentPhotoGalleryCarouselSectionV3 } from "./ContentPhotoGalleryCarouselSectionV3";
+export { ImageStripSectionV3 } from "./ImageStripSectionV3";
 export { ContentRevealParagraphSection } from "./ContentRevealParagraphSection";
 export { ContentRevealParagraphSectionV2 } from "./ContentRevealParagraphSectionV2";
 export { ContentRuleHeaderSectionV2 } from "./ContentRuleHeaderSectionV2";

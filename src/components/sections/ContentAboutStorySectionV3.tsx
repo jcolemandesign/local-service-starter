@@ -32,7 +32,7 @@ export function ContentAboutStorySectionV3({
   return (
     <section className="bg-white">
       <SevenColumnGrid
-        className="section-min-screen items-start"
+        className="section-min-medium items-start"
         gap="lrg"
         padding="lrg"
       >
