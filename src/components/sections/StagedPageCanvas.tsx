@@ -212,13 +212,22 @@ function buildStagedNavigationLinks(pages: StagedPage[]) {
 }
 
 function toNavigationLink(page: StagedPage, childPages: StagedPage[] = []) {
+  const label = getNavigationLabel(page);
+  const href = getStagedPageHref(page);
+
   return {
-    href: getStagedPageHref(page),
-    items: childPages.map((childPage) => ({
-      href: getStagedPageHref(childPage),
-      label: childPage.pageLabel,
-    })),
-    label: getNavigationLabel(page),
+    href,
+    items:
+      childPages.length > 0
+        ? [
+            { href, label: `${label} Overview` },
+            ...childPages.map((childPage) => ({
+              href: getStagedPageHref(childPage),
+              label: childPage.pageLabel,
+            })),
+          ]
+        : [],
+    label,
   };
 }
 

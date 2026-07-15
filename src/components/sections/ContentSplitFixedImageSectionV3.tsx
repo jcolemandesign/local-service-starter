@@ -111,6 +111,7 @@ export function ContentSplitFixedImageSectionV3({
   imageAlt,
   imageSrc,
   ratio = "3-2",
+  stats = [],
   title,
   variant = "text-3-image-4-right",
 }: ContentSplitFixedImageSectionV3Props) {
@@ -134,21 +135,18 @@ export function ContentSplitFixedImageSectionV3({
             <p className="type-text-lg wrap-pretty mt-display-body text-service-muted">
               {body}
             </p>
-            <div className="mt-body-actions-md grid gap-3">
-              <p className="type-label text-service-accent">
-                What this supports
-              </p>
-              <p className="type-text-md wrap-pretty text-service-muted">
-                Pair this section with a project photo, crew detail, or process
-                image, then use the copy to explain how the work is planned,
-                protected, and followed through.
-              </p>
-              <p className="type-text-sm wrap-pretty text-service-ink">
-                Best for capability notes, local context, and service standards
-                that need more room than a card but should still feel easy to
-                scan.
-              </p>
-            </div>
+            {stats.length > 0 ? (
+              <ul className="mt-body-actions-md grid inline-gap-sml">
+                {stats.map((item) => (
+                  <li
+                    className="type-text-sm wrap-pretty border-l border-service-border pl-4 text-service-ink"
+                    key={item}
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </div>
         </SevenColumnGridItem>
 

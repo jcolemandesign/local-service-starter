@@ -259,6 +259,12 @@ export function getTemplateCopyFieldsForSection(
   if (lookupValue.includes("footer")) {
     return [
       {
+        example: "North Star HVAC",
+        name: "businessName",
+        purpose: "Exact business name shown in the footer identity and contact block.",
+        target: "Use the exact sourced business name. Required.",
+      },
+      {
         example:
           "North Star HVAC helps Lake Norman homeowners plan repairs, replacements, and maintenance with clear next steps.",
         name: "businessSummary",
@@ -279,17 +285,71 @@ export function getTemplateCopyFieldsForSection(
         target: "Match site pages and key service paths. Labels should be 8-28 characters.",
       },
       {
-        example:
-          "Phone: 704-555-0184. Service area: Huntersville, Cornelius, Davidson, and nearby Lake Norman communities.",
-        name: "contactDetails",
-        purpose: "Phone, email, address, hours, or service area details.",
-        target: "Use sourced facts only. 80-180 characters.",
+        example: "704-555-0184",
+        name: "phone",
+        purpose: "Phone number shown as the direct call link.",
+        target: "Use the exact sourced number. Required, or NEEDS REVIEW.",
+      },
+      {
+        example: "hello@example.com",
+        name: "email",
+        purpose: "Email address shown as the direct email link.",
+        target: "Use the exact sourced email, or NEEDS REVIEW. Never invent one.",
+      },
+      {
+        example: "Serving Huntersville, Cornelius, Davidson, and nearby Lake Norman communities.",
+        name: "serviceArea",
+        purpose: "Location or service-area line shown in the footer contact block.",
+        target: "Use sourced service-area wording only. 55-150 characters.",
+      },
+      {
+        example: "8am to 6pm, Monday to Friday",
+        name: "hours",
+        purpose: "Hours appended after the service-area line in the footer contact block.",
+        target: "Use exact sourced hours. Put the time range before the days.",
       },
       {
         example: "© 2026 North Star HVAC. All rights reserved. Privacy policy.",
         name: "legalLine",
         purpose: "Copyright or small footer note.",
         target: "45-90 characters.",
+      },
+    ];
+  }
+
+  if (component.includes("heroservices")) {
+    return [
+      {
+        example: "Heating and cooling services",
+        name: "eyebrow",
+        purpose: "Immediate category context above the Services page H1.",
+        target: "18-44 characters.",
+      },
+      {
+        example: "HVAC Services for Lake Norman Homeowners",
+        name: "h1",
+        purpose: "Main Services page headline in the left three-column panel.",
+        target: "38-70 characters. One H1 only.",
+      },
+      {
+        example:
+          "Explore repair, replacement, maintenance, and heat pump support with clear recommendations based on the system and the needs of the home.",
+        name: "intro",
+        purpose: "Short Services page introduction beside the image.",
+        target: "120-220 characters.",
+      },
+      {
+        example: [
+          "System Replacement - Compare repair and replacement paths around equipment condition and long-term fit.",
+          "HVAC Repair - Diagnose the current problem and review the practical repair path.",
+          "Heat Pump Service - Plan heat pump repair, maintenance, or replacement around the system.",
+        ],
+        format: "One item per line as Title - Description.",
+        name: "serviceItems",
+        purpose:
+          "Priority service links shown as compact cards over the hero image. The card displays the title; retain a useful description in the content data.",
+        target:
+          "Use 1-7 approved priority services. Do not repeat these services in the following hover panel.",
       },
     ];
   }
@@ -338,6 +398,98 @@ export function getTemplateCopyFieldsForSection(
         name: "proofPoints",
         purpose: "Stats, trust points, or short supporting claims if the layout uses them.",
         target: "2-4 items, 28-70 characters each. Use sourced facts only.",
+      },
+    ];
+  }
+
+  if (component.includes("servicesthreecardsright")) {
+    return [
+      {
+        example: [
+          "[large] System Replacement - Compare repair and replacement paths with clear guidance on equipment condition and long-term fit.",
+          "HVAC Repair - Diagnose the current problem and explain the practical repair path before work begins.",
+          "Heat Pump Service - Plan heat pump repair, maintenance, or replacement around the system's condition and performance.",
+        ],
+        format:
+          "One item per line as Title - Description. Mark one large card with [large] or [featured] when the layout calls for it.",
+        itemCount: 3,
+        name: "serviceItems",
+        purpose:
+          "The highest-priority services featured first on the page. Do not include every service here.",
+        target:
+          "Exactly 3 priority services. These must not repeat in the following Services hover panel.",
+      },
+    ];
+  }
+
+  if (component.includes("serviceshoverpanel")) {
+    return [
+      {
+        example: "More ways we can help",
+        name: "eyebrow",
+        purpose: "Short category label above the remaining-service browser.",
+        target: "12-32 characters.",
+      },
+      {
+        example: "Support for the rest of your system",
+        name: "heading",
+        purpose: "Headline for services not included in the priority-card section above.",
+        target: "32-68 characters.",
+      },
+      {
+        example:
+          "Explore the other approved services that support your equipment, comfort, and ongoing maintenance needs.",
+        name: "intro",
+        purpose: "Brief setup for the hover service browser.",
+        target: "90-170 characters.",
+      },
+      {
+        example: [
+          "AC Repair - Diagnose cooling problems and explain the repair options before work begins.",
+          "Maintenance & Tune-Ups - Review system operation, identify developing concerns, and support dependable seasonal performance.",
+        ],
+        format: "One item per line as Title - Description.",
+        name: "serviceItems",
+        purpose:
+          "Every remaining approved service after the preceding priority-service section. Do not repeat a priority service or omit an approved remaining service.",
+        target:
+          "Include the complete remaining service set. Titles 12-38 characters. Descriptions 90-180 characters.",
+      },
+    ];
+  }
+
+  if (component.includes("contentsplitfixedimage")) {
+    return [
+      {
+        example: "Guidance before the work",
+        name: "eyebrow",
+        purpose: "Short context label above the split-content headline.",
+        target: "12-36 characters.",
+      },
+      {
+        example: "Recommendations based on the system itself",
+        name: "heading",
+        purpose: "Primary split-content headline.",
+        target: "36-76 characters.",
+      },
+      {
+        example:
+          "A useful recommendation begins with the equipment, the current problem, and what makes sense for the home before any work is proposed.",
+        name: "body",
+        purpose: "Main explanation beside the image.",
+        target: "130-240 characters.",
+      },
+      {
+        example: [
+          "Diagnosis before pricing - Repair pricing follows a clear diagnosis and defined scope.",
+          "Repair when practical - The team explains when a dependable repair makes sense.",
+          "Replacement when supported - Longer-term options are discussed when the evidence supports them.",
+        ],
+        format: "One item per line as Title - Description.",
+        itemCount: 3,
+        name: "supportingItems",
+        purpose: "Visible supporting points beneath the main split-content copy.",
+        target: "2-4 items. Titles 14-38 characters. Descriptions 70-150 characters.",
       },
     ];
   }
@@ -489,6 +641,206 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  if (component.includes("contentstickyideas")) {
+    return [
+      {
+        example: "What matters in the decision",
+        name: "eyebrow",
+        purpose: "Context label for the longform narrative.",
+        target: "12-36 characters.",
+      },
+      {
+        example: "A clearer way to approach an expensive home-service decision",
+        name: "heading",
+        purpose: "Longform section headline.",
+        target: "36-88 characters.",
+      },
+      {
+        example:
+          "A good service decision begins with an accurate understanding of the system and the homeowner's priorities.\n\nThat context makes it easier to compare the practical options without pressure or generic promises.",
+        format:
+          "Write 2-4 natural paragraphs. Put a hard return between paragraphs; each return becomes a visible paragraph. Do not compress this field to a generic body-character limit.",
+        name: "body",
+        purpose: "Editorial narrative that earns the section's visual space.",
+        target: "Length follows the argument and available source material, not a fixed character count.",
+      },
+      {
+        example: "What to look for",
+        name: "ideasLabel",
+        purpose: "Relevant label for the sticky side list. Do not use a generic label such as Important ideas.",
+        target: "12-36 characters.",
+      },
+      {
+        example: [
+          "Start with the diagnosis",
+          "Compare practical options",
+          "Know what happens next",
+        ],
+        format: "One short bullet per line. Do not use Title - Description format.",
+        itemCount: 3,
+        name: "ideas",
+        purpose: "Short, scannable sticky-list bullets that summarize the narrative.",
+        target: "3-4 bullets, 2-8 words each.",
+      },
+    ];
+  }
+
+  if (component.includes("contentrevealparagraph")) {
+    return [
+      {
+        example:
+          "The right recommendation starts with the facts.\n\nThen it gives the homeowner room to decide.",
+        format:
+          "Write 1-3 short editorial thoughts. Put a hard return between each visual paragraph; every return is rendered as a separated animated paragraph.",
+        name: "body",
+        purpose: "Large interstitial thought between sections, not a standard longform block or card section.",
+        target: "Use only the length needed for a strong transition. Do not apply normal headline, card, or body-character limits.",
+      },
+    ];
+  }
+
+  if (component.includes("contentaboutstory")) {
+    return [
+      {
+        example: "How we approach the work",
+        name: "eyebrow",
+        purpose: "Short context label for the story.",
+        target: "12-36 characters.",
+      },
+      {
+        example: "A local service philosophy built around clear recommendations",
+        name: "heading",
+        purpose: "About-story headline.",
+        target: "40-90 characters.",
+      },
+      {
+        example:
+          "Use the intro to set the story's point of view before the fuller narrative begins.",
+        name: "intro",
+        purpose: "Opening lead for the story.",
+        target: "Natural lead length; keep it focused rather than forcing it into a generic body limit.",
+      },
+      {
+        example:
+          "The story can explain what the business pays attention to before work begins and why that matters to customers.\n\nIt can then connect that approach to the service experience without inventing history, credentials, or outcomes.",
+        format:
+          "Write 2-5 natural paragraphs. Put a hard return between paragraphs. Preserve useful nuance instead of forcing a short card-style description.",
+        name: "paragraphs",
+        purpose: "Main longform about narrative.",
+        target: "Length follows the available source material and the story's needs, not a fixed character count.",
+      },
+      {
+        example: "Clear information should come before an expensive decision.",
+        name: "pullquote",
+        purpose: "Short pullquote that distills the story's philosophy.",
+        target: "45-120 characters.",
+      },
+      {
+        example: [
+          "Start with the system - Recommendations begin with the current condition and the actual problem.",
+          "Explain the options - Customers should understand the practical paths before deciding.",
+        ],
+        format: "One item per line as Label - Description.",
+        itemCount: 2,
+        name: "notes",
+        purpose: "Short side notes that make the longform story easier to scan.",
+        target: "2-4 notes. Labels 12-36 characters. Descriptions 70-150 characters.",
+      },
+    ];
+  }
+
+  if (component.includes("decisionsplitdecision")) {
+    return [
+      {
+        example: "Repair or replace? Start with the facts",
+        name: "heading",
+        purpose: "Comparison section headline.",
+        target: "36-74 characters.",
+      },
+      {
+        example:
+          "The right path depends on the system condition, the current issue, and what makes sense for the home.",
+        name: "intro",
+        purpose: "Short decision context in the left column.",
+        target: "90-180 characters.",
+      },
+      {
+        example: [
+          "Repair - Use a practical repair when the diagnosis and system condition support it.",
+          "Replacement - Consider the longer-term option when age, reliability, or repeat repairs change the equation.",
+        ],
+        format: "Exactly 2 items, one per line as Title - Description.",
+        itemCount: 2,
+        name: "decisionItems",
+        purpose: "The two visible comparison cards. Required; do not use steps for this section.",
+        target: "Exactly 2 items. Titles 12-32 characters. Descriptions 90-170 characters.",
+      },
+      {
+        example: "Talk through your options",
+        name: "sectionAction",
+        purpose: "Text link below the left-column explanation.",
+        target: "12-28 characters.",
+      },
+    ];
+  }
+
+  if (component.includes("decisionsplitlarge")) {
+    return [
+      {
+        example: "Choose the service path that fits your system",
+        name: "heading",
+        purpose: "Decision-card section headline.",
+        target: "36-74 characters.",
+      },
+      {
+        example: [
+          "Repair the current system - Review the diagnosis, proposed repair, and what the system needs now.",
+          "Plan a replacement - Compare the longer-term option when condition and reliability make it relevant.",
+        ],
+        format: "Exactly 2 items, one per line as Title - Description.",
+        itemCount: 2,
+        name: "decisionItems",
+        purpose: "The two visible decision cards. Required; do not use steps for this section.",
+        target: "Exactly 2 items. Titles 12-32 characters. Descriptions 90-170 characters.",
+      },
+      {
+        example: "Compare your options",
+        name: "sectionAction",
+        purpose: "Optional action label when the template shows one.",
+        target: "12-28 characters.",
+      },
+    ];
+  }
+
+  if (component.includes("faqaccordion")) {
+    return [
+      {
+        example: "Common HVAC questions, answered clearly",
+        name: "heading",
+        purpose: "FAQ section header. Required; do not omit it.",
+        target: "24-60 characters.",
+      },
+      {
+        example:
+          "Get straightforward answers about service area, timing, repair decisions, and what happens next.",
+        name: "intro",
+        purpose: "Short supporting copy directly below the FAQ header.",
+        target: "80-160 characters.",
+      },
+      {
+        example: [
+          "Do you service my area? - We serve the locations listed in the approved service-area source. Contact the team to confirm availability for a specific address.",
+          "Should I repair or replace my system? - The right answer depends on the diagnosis, equipment condition, repair history, and current needs.",
+        ],
+        format: "One item per line as Question - Answer.",
+        itemCount: 5,
+        name: "faqs",
+        purpose: "Expandable FAQ rows.",
+        target: "4-8 FAQs. Questions 35-90 characters. Answers 120-260 characters.",
+      },
+    ];
+  }
+
   if (mode === "action" || lookupValue.includes("cta")) {
     return [
       {
@@ -526,6 +878,13 @@ export function getTemplateCopyFieldsForSection(
         name: "heading",
         purpose: "FAQ section headline.",
         target: "24-60 characters.",
+      },
+      {
+        example:
+          "Get straightforward answers about timing, service fit, common decisions, and what happens next.",
+        name: "intro",
+        purpose: "Short supporting copy beside the FAQ questions.",
+        target: "80-160 characters.",
       },
       {
         example: [

@@ -30,6 +30,7 @@ type HeroSplitFixedImageSectionV3Props = {
   primaryAction: string;
   ratio?: HeroSplitFixedImageRatio;
   secondaryAction: string;
+  secondaryActionHref?: string;
   stats: readonly string[];
   title: string;
   variant?: HeroSplitFixedImageVariant;
@@ -144,6 +145,7 @@ export function HeroSplitFixedImageSectionV3({
   primaryAction,
   ratio = "3-2",
   secondaryAction,
+  secondaryActionHref = "#services",
   stats,
   title,
   variant = "text-3-image-4-right",
@@ -173,7 +175,7 @@ export function HeroSplitFixedImageSectionV3({
             </p>
             <div className="mt-body-actions-md flex flex-wrap inline-gap-med">
               <RequestServiceButton>{primaryAction}</RequestServiceButton>
-              <Button href="#services" variant="secondary">
+              <Button href={secondaryActionHref} variant="secondary">
                 {secondaryAction}
               </Button>
             </div>

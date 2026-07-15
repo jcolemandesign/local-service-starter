@@ -33,6 +33,7 @@ import {
   FooterSectionV3,
   HeroCenteredFloatersSectionV2,
   HeroCompactSectionV3,
+  HeroServicesSectionV3,
   HeroContentTopImageBottomSectionV2,
   HeroFullscreenSectionV2,
   HeroGridMosaicSectionV2,
@@ -126,6 +127,12 @@ const sectionElements = {
   "hero-compact-v3": (
     <HeroCompactSectionV3
       {...sectionLibraryV3Content.heroCompact}
+      headingLevel={2}
+    />
+  ),
+  "hero-services-v3": (
+    <HeroServicesSectionV3
+      {...sectionLibraryV3Content.heroServices}
       headingLevel={2}
     />
   ),

@@ -195,8 +195,9 @@ export async function syncStagedPagesFromStrategySnapshot(
 
     syncedCount += 1;
 
+    const reconciledFields = reconcileTemplateCopyFields(page, page.fields);
     const nextFields = seedFieldsFromStrategyCopy(
-      page.fields.map((field) => {
+      reconciledFields.map((field) => {
         if (field.path === "strategy.pageCopy") {
           return stagedField({
             ...field,
@@ -251,6 +252,55 @@ export async function syncStagedPagesFromStrategySnapshot(
     pages: nextPages,
     syncedCount,
   };
+}
+
+function reconcileTemplateCopyFields(
+  page: StagedPage,
+  fields: StagedPageField[],
+) {
+  const sections = page.template?.sections;
+
+  if (!sections?.length) {
+    return fields;
+  }
+
+  const nextFields = [...fields];
+  const existingPaths = new Set(nextFields.map((field) => field.path));
+
+  sections.forEach((section, index) => {
+    const sectionId = `${String(index + 1).padStart(2, "0")}-${slugify(
+      section.name || section.component,
+    )}`;
+    const missingFields = getTemplateCopyFieldsForSection(section)
+      .filter((field) => !existingPaths.has(`${sectionId}.${field.name}`))
+      .map((field) =>
+        stagedField({
+          id: `${page.pageId}.${sectionId}.${field.name}`,
+          kind: "copy",
+          path: `${sectionId}.${field.name}`,
+          value: "",
+        }),
+      );
+
+    if (missingFields.length === 0) {
+      return;
+    }
+
+    const sectionFieldIndexes = nextFields
+      .map((field, fieldIndex) =>
+        field.path.startsWith(`${sectionId}.`) ? fieldIndex : -1,
+      )
+      .filter((fieldIndex) => fieldIndex >= 0);
+    const insertionIndex =
+      sectionFieldIndexes.length > 0
+        ? Math.max(...sectionFieldIndexes) + 1
+        : nextFields.length;
+
+    nextFields.splice(insertionIndex, 0, ...missingFields);
+    missingFields.forEach((field) => existingPaths.add(field.path));
+  });
+
+  return nextFields;
 }
 
 export function buildStrategyTemplateStagedPage({

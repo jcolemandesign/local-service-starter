@@ -70,6 +70,7 @@ export { FooterSectionV2 } from "./FooterSectionV2";
 export { HomeIndexSection } from "./HomeIndexSection";
 export { HeroCenteredFloatersSectionV2 } from "./HeroCenteredFloatersSectionV2";
 export { HeroCompactSectionV3 } from "./HeroCompactSectionV3";
+export { HeroServicesSectionV3 } from "./HeroServicesSectionV3";
 export { HeroContentTopImageBottomSectionV2 } from "./HeroContentTopImageBottomSectionV2";
 export { HeroFullscreenSection } from "./HeroFullscreenSection";
 export { HeroFullscreenSectionV2 } from "./HeroFullscreenSectionV2";

@@ -103,18 +103,16 @@ export function ContentRevealParagraphSectionV2({
           className="col-span-6 max-lg:col-span-7"
         >
           <div className="fluid-type-frame" ref={sectionRef}>
-            <p
-              className={cx(
-                "type-heading-xl",
-                "measure-copy-wide",
-                "text-service-ink",
-              )}
-            >
+            <div className="grid gap-6">
               {lines.map((line, index) => (
-                <span className="block overflow-hidden pb-1" key={line}>
-                  <motion.span
+                <div className="overflow-hidden pb-1" key={`${index}-${line}`}>
+                  <motion.p
                     key={`${revealKey}-${line}`}
-                    className="block"
+                    className={cx(
+                      "type-heading-xl",
+                      "measure-copy-wide",
+                      "text-service-ink",
+                    )}
                     initial={
                       shouldReduceMotion
                         ? false
@@ -137,10 +135,10 @@ export function ContentRevealParagraphSectionV2({
                     }
                   >
                     {line}
-                  </motion.span>
-                </span>
+                  </motion.p>
+                </div>
               ))}
-            </p>
+            </div>
           </div>
         </SevenColumnGridItem>
       </SevenColumnGrid>

@@ -259,7 +259,7 @@ const radii = [
   ["radius-lg / radius-large", "24px"],
   ["radius-xl / radius-extra-large", "40px"],
   ["radius-round", "9999px"],
-];
+] as const;
 
 const spacing = [
   ["section-space-vsml", "2rem desktop / 2rem mobile"],

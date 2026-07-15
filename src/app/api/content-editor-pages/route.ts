@@ -263,6 +263,7 @@ function getSectionContent(component: string): ContentSourceValue | null {
     FooterCompactSectionV3: sectionLibraryV3Content.footer,
     HeroCenteredFloatersSectionV2: sectionLibraryV3Content.hero,
     HeroCompactSectionV3: sectionLibraryV3Content.heroCompact,
+    HeroServicesSectionV3: sectionLibraryV3Content.heroServices,
     SectionHeaderCompactSectionV3:
       sectionLibraryV3Content.sectionHeaderCompact,
     HeroContentTopImageBottomSectionV2: sectionLibraryV3Content.hero,

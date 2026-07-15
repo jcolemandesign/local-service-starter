@@ -8,6 +8,7 @@ import {
 
 type ContentStickyIdeasSectionV2Props = {
   eyebrow: string;
+  ideasLabel?: string;
   title: string;
   paragraphs: readonly string[];
   ideas: readonly string[];
@@ -24,7 +25,13 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-function ImportantIdeasBoxV2({ ideas }: { ideas: readonly string[] }) {
+function ImportantIdeasBoxV2({
+  ideas,
+  label,
+}: {
+  ideas: readonly string[];
+  label: string;
+}) {
   const boxRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<number | null>(null);
   const [offset, setOffset] = useState(0);
@@ -95,7 +102,7 @@ function ImportantIdeasBoxV2({ ideas }: { ideas: readonly string[] }) {
       style={{ transform: `translate3d(0, ${offset}px, 0)` }}
     >
       <p className={cx("type-label", "text-service-accent")}>
-        Important ideas
+        {label}
       </p>
       <ul className="mt-6 grid gap-4">
         {ideas.map((idea) => (
@@ -116,6 +123,7 @@ function ImportantIdeasBoxV2({ ideas }: { ideas: readonly string[] }) {
 
 export function ContentStickyIdeasSectionV2({
   eyebrow,
+  ideasLabel = "What matters",
   title,
   paragraphs,
   ideas,
@@ -161,7 +169,7 @@ export function ContentStickyIdeasSectionV2({
           className="col-span-2 col-start-6 max-lg:col-span-7 max-lg:col-start-1 max-lg:order-first"
           alignY="top"
         >
-          <ImportantIdeasBoxV2 ideas={ideas} />
+          <ImportantIdeasBoxV2 ideas={ideas} label={ideasLabel} />
         </SevenColumnGridItem>
       </SevenColumnGrid>
     </section>

@@ -205,7 +205,10 @@ export function StrategyWorkspaceSection({
 
   const filledCount = useMemo(
     () =>
-      Object.values(fields).filter((value) => value.trim().length > 0).length,
+      Object.entries(fields).filter(
+        ([key, value]) =>
+          !key.startsWith("layoutApproval.") && value.trim().length > 0,
+      ).length,
     [fields],
   );
   const strategyPages = useMemo(
@@ -596,8 +599,8 @@ export function StrategyWorkspaceSection({
   }
 
   return (
-    <Section className="strategy-workspace min-h-svh bg-bg-page text-text-main">
-      <div className="fixed left-[var(--container-gutter)] right-[var(--container-gutter)] top-4 z-40 flex flex-wrap items-center justify-end gap-2">
+    <Section className="strategy-workspace strategy-chrome token-chrome min-h-svh">
+      <div className="strategy-toolbar fixed inset-x-0 top-0 z-40 flex flex-wrap items-center justify-end gap-2 border-b px-[var(--container-gutter)] py-3">
         <Link
           className={strategyNavButtonClass}
           href="/dev/pagebuilder"
@@ -714,13 +717,16 @@ export function StrategyWorkspaceSection({
                       fields[getStrategyPageCopyField(page)] ?? "";
                     const hasPageCopy = pageCopyValue.trim().length > 0;
                     const templateCopyKey = page.stagedPageId || page.id;
+                    const layoutApprovalKey = getPageLayoutApprovalField(page.id);
+                    const isLayoutApproved =
+                      fields[layoutApprovalKey] === "approved";
 
                     return (
                       <div
-                        className={`relative rounded-[var(--radius-md-token)] border p-3 pr-14 transition-colors ${
+                        className={`token-chrome-card relative rounded-[var(--chrome-radius-control)] border p-4 pr-16 transition-colors ${
                           hasTemplateReady
-                            ? "border-service-accent/35 bg-bg-surface"
-                            : "border-service-border bg-service-surface"
+                            ? "strategy-page-card-ready"
+                            : ""
                         }`}
                         key={page.id}
                       >
@@ -734,6 +740,41 @@ export function StrategyWorkspaceSection({
                           }
                         />
                         <PageCopyReadyIcon isReady={hasPageCopy} />
+                        <label
+                          className="absolute right-3 top-[7.25rem] flex size-10 cursor-pointer items-center justify-center"
+                          title={
+                            isLayoutApproved
+                              ? "Layout approved"
+                              : "Mark layout approved"
+                          }
+                        >
+                          <input
+                            aria-label="Layout approved"
+                            checked={isLayoutApproved}
+                            className="peer sr-only"
+                            onChange={(event) =>
+                              updateField(
+                                layoutApprovalKey,
+                                event.target.checked ? "approved" : "",
+                              )
+                            }
+                            type="checkbox"
+                          />
+                          <span className="pointer-events-none flex size-5 shrink-0 items-center justify-center rounded-[3px] border border-service-border bg-bg-surface transition-colors peer-checked:border-service-accent peer-checked:bg-service-accent peer-checked:[&>svg]:opacity-100 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-service-accent">
+                            <svg
+                              aria-hidden="true"
+                              className="size-2.5 text-white opacity-0 transition-opacity"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              viewBox="0 0 12 12"
+                            >
+                              <path d="m3 6.2 2 2L9 4" />
+                            </svg>
+                          </span>
+                        </label>
                         <p
                           className={`type-caption font-semibold ${getPageStatusClassName(
                             page.detected,
@@ -805,7 +846,7 @@ export function StrategyWorkspaceSection({
                   })}
                 </div>
 
-                <div className="rounded-[var(--radius-md-token)] border border-service-border bg-bg-surface p-4">
+                <div className="token-chrome-panel rounded-[var(--chrome-radius-panel)] border p-5">
                   <p className="type-caption font-semibold text-service-accent">
                     Navigation
                   </p>
@@ -841,7 +882,7 @@ export function StrategyWorkspaceSection({
               );
 
               return (
-                <Card className="overflow-hidden shadow-none" key={group.title}>
+                <Card className="token-chrome-panel overflow-hidden rounded-[var(--chrome-radius-panel)] border shadow-none" key={group.title}>
                   <details
                     className="group"
                     open={openFieldGroups.includes(group.title)}
@@ -994,7 +1035,7 @@ export function StrategyWorkspaceSection({
             })}
           </div>
 
-          <Card className="p-4 shadow-none">
+          <Card className="token-chrome-panel rounded-[var(--chrome-radius-panel)] border p-5 shadow-none">
             <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-5 max-xl:grid-cols-1">
               <div className="min-w-0">
                 <p className="type-label text-service-accent">
@@ -1120,7 +1161,7 @@ export function StrategyWorkspaceSection({
             </div>
           </Card>
 
-          <Card className="p-4 shadow-none">
+          <Card className="token-chrome-panel rounded-[var(--chrome-radius-panel)] border p-5 shadow-none">
             <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-start">
               <div className="min-w-0">
                 <p className="type-label text-service-accent">
@@ -1279,10 +1320,10 @@ export function StrategyWorkspaceSection({
         <div
           aria-labelledby="strategy-template-picker-title"
           aria-modal="true"
-          className="fixed inset-0 z-50 grid place-items-center bg-service-ink/55 p-4"
+          className="strategy-template-backdrop fixed inset-0 z-50 grid place-items-center p-4"
           role="dialog"
         >
-          <div className="max-h-[min(90vh,52rem)] w-full max-w-5xl overflow-y-auto rounded-[var(--radius-md-token)] border border-service-border bg-bg-surface shadow-service">
+          <div className="token-chrome-panel-strong max-h-[min(90vh,52rem)] w-full max-w-5xl overflow-y-auto rounded-[var(--chrome-radius-panel)] border">
             <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-service-border bg-bg-surface p-5">
               <div className="min-w-0">
                 <p className="type-label text-service-accent">
@@ -1504,7 +1545,7 @@ function TemplateReadyIcon({
     "absolute right-3 top-3 flex size-10 items-center justify-center rounded-sm border transition-[background-color,border-color,color,box-shadow,transform] duration-150 active:translate-y-px active:scale-95",
     isReady
       ? "border-service-accent bg-service-accent text-white hover:shadow-service"
-      : "border-service-border bg-bg-surface text-service-muted/45",
+      : "strategy-status-icon-inert",
     isReady &&
       copyState === "copied" &&
       "motion-safe:animate-[template-copy-confirm_560ms_ease-out]",
@@ -1576,7 +1617,7 @@ function PageCopyReadyIcon({ isReady }: { isReady: boolean }) {
       className={`absolute right-3 top-16 flex size-10 items-center justify-center rounded-sm border ${
         isReady
           ? "border-accent bg-accent text-white"
-          : "border-service-border/60 bg-white/35 text-service-muted/45"
+          : "strategy-status-icon-inert"
       }`}
       title={label}
     >
@@ -2143,6 +2184,10 @@ function normalizePageType(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, "");
 }
 
+function getPageLayoutApprovalField(pageId: string) {
+  return `layoutApproval.${pageId}`;
+}
+
 type StrategyNavIconName =
   | "agent"
   | "download"
@@ -2184,10 +2229,10 @@ function StrategyNavIcon({ icon }: { icon: StrategyNavIconName }) {
 }
 
 const strategyNavButtonClass =
-  "radius-button inline-flex min-h-9 items-center justify-center gap-1.5 whitespace-nowrap border border-service-border bg-bg-surface/92 px-2.5 type-caption font-semibold text-service-ink shadow-service transition-colors hover:border-service-accent hover:text-service-accent";
+  "token-chrome-control inline-flex min-h-9 items-center justify-center gap-1.5 whitespace-nowrap rounded-[var(--chrome-radius-control)] border px-3 type-caption font-semibold transition-colors";
 
 const primaryButtonClass =
-  "radius-button inline-flex min-h-12 w-full items-center justify-center whitespace-nowrap border border-service-accent bg-service-accent px-5 type-caption font-semibold text-white transition-colors hover:bg-service-ink disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto";
+  "token-chrome-primary inline-flex min-h-11 w-full items-center justify-center whitespace-nowrap rounded-[var(--chrome-radius-control)] border px-5 type-caption font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto";
 
 const secondaryButtonClass =
-  "radius-button inline-flex min-h-12 w-full items-center justify-center whitespace-nowrap border border-service-border bg-bg-surface px-5 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent sm:w-auto";
+  "token-chrome-control inline-flex min-h-11 w-full items-center justify-center whitespace-nowrap rounded-[var(--chrome-radius-control)] border px-5 type-caption font-semibold transition-colors sm:w-auto";

@@ -21,6 +21,7 @@ type HeroSplitFullHeightSectionV3Props = {
   imageSrc: string;
   primaryAction: string;
   secondaryAction: string;
+  secondaryActionHref?: string;
   stats: readonly string[];
   title: string;
   variant?: HeroSplitFullHeightVariant;
@@ -116,6 +117,7 @@ export function HeroSplitFullHeightSectionV3({
   imageSrc,
   primaryAction,
   secondaryAction,
+  secondaryActionHref = "#services",
   stats,
   title,
   variant = "text-3-image-4-right",
@@ -158,7 +160,7 @@ export function HeroSplitFullHeightSectionV3({
               <RequestServiceButton>
                 {primaryAction}
               </RequestServiceButton>
-              <Button href="#services" variant="secondary">
+              <Button href={secondaryActionHref} variant="secondary">
                 {secondaryAction}
               </Button>
             </div>

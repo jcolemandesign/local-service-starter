@@ -160,22 +160,22 @@ export function HomeIndexMenu({ initialGroups }: HomeIndexMenuProps) {
                 return (
                   <Card
                     key={link.href}
-                    className="flex min-h-44 flex-col p-5 transition-transform duration-200 hover:-translate-y-1 hover:border-service-accent"
+                    className="group relative flex min-h-44 flex-col p-5 transition-transform duration-200 hover:-translate-y-1 hover:border-service-accent"
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <Link
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="min-w-0 flex-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-service-accent focus-visible:ring-offset-2"
-                      >
-                        <span className="type-text-md block font-semibold text-service-ink">
-                          {link.label}
-                        </span>
-                      </Link>
+                    <Link
+                      aria-label={`Open ${link.label}`}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute inset-0 z-0 cursor-pointer rounded-[inherit] focus:outline-none focus-visible:ring-2 focus-visible:ring-service-accent focus-visible:ring-offset-2"
+                    />
+                    <div className="relative z-10 flex items-start justify-between gap-4 pointer-events-none">
+                      <span className="type-text-md block min-w-0 flex-1 font-semibold text-service-ink">
+                        {link.label}
+                      </span>
                       {canManagePage ? (
                         <div
-                          className="flex shrink-0 items-center gap-1"
+                          className="pointer-events-auto flex shrink-0 items-center gap-1"
                           aria-label={`${link.label} actions`}
                         >
                           <CardActionButton
@@ -196,19 +196,14 @@ export function HomeIndexMenu({ initialGroups }: HomeIndexMenuProps) {
                         </div>
                       ) : null}
                     </div>
-                    <Link
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-3 flex flex-1 flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-service-accent focus-visible:ring-offset-2"
-                    >
+                    <div className="relative z-10 mt-3 flex flex-1 flex-col pointer-events-none">
                       <span className="type-text-sm block text-service-muted">
                         {link.description}
                       </span>
                       <span className="type-caption mt-auto block pt-5 font-semibold text-service-accent">
                         {link.href}
                       </span>
-                    </Link>
+                    </div>
                   </Card>
                 );
               })}

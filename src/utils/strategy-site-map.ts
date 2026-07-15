@@ -295,13 +295,16 @@ export function getStrategyCopyForPage(
   pageSlug: string,
   pageType: string,
 ) {
+  const normalizedPageSlug = pageSlug.toLowerCase().trim();
   const normalized = `${pageSlug} ${pageType}`.toLowerCase();
-  const matchingSlot = strategyPageSlots.find(
-    (slot) =>
-      normalized.includes(slot.id) ||
-      normalized.includes(slot.label.toLowerCase()) ||
-      normalized.includes(slot.copyField.replace("Copy", "").toLowerCase()),
-  );
+  const matchingSlot =
+    strategyPageSlots.find((slot) => slot.id === normalizedPageSlug) ??
+    strategyPageSlots.find(
+      (slot) =>
+        normalized.includes(slot.id) ||
+        normalized.includes(slot.label.toLowerCase()) ||
+        normalized.includes(slot.copyField.replace("Copy", "").toLowerCase()),
+    );
   const dynamicCopy = matchingSlot
     ? (fields[getStrategyPageCopyField(matchingSlot)] ?? "").trim()
     : "";

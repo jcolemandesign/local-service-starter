@@ -33,7 +33,7 @@ export function ContentStickyCardStreamSectionV2({
 
   return (
     <section className="bg-service-surface">
-      <SevenColumnGrid className="section-min-screen items-start">
+      <SevenColumnGrid className="section-min-active items-start">
         <SevenColumnGridItem
           className="col-span-3 max-lg:col-span-7"
           alignY="top"

@@ -332,7 +332,7 @@ export function TrustBarBentoAboutSectionV3({
 
 export function TrustMarqueeSectionV3({ items }: TrustItemsProps) {
   return (
-    <section className="section-min-none overflow-hidden bg-bg-page py-8 max-md:py-6">
+    <section className="section-min-none section-space-vsml overflow-hidden bg-bg-page">
       <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
         <div className="flex w-max animate-trust-marquee motion-reduce:animate-none">
           <TextMarqueeItems items={items} />
@@ -347,7 +347,7 @@ export function TrustLogoMarqueeSectionV3({
   logos,
 }: TrustLogosProps) {
   return (
-    <section className="section-min-none overflow-hidden bg-bg-page py-8 max-md:py-6">
+    <section className="section-min-none section-space-vsml overflow-hidden bg-bg-page">
       <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
         <div className="flex w-max animate-trust-marquee motion-reduce:animate-none">
           <LogoTrack logos={logos} />

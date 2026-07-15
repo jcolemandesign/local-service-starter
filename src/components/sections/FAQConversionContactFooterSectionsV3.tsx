@@ -217,8 +217,11 @@ export function FAQSectionV3({
   return (
     <section className="bg-service-surface">
       <SevenColumnGrid className="section-min-none" padding="med">
-        <SevenColumnGridItem className="col-span-3 max-lg:col-span-7">
-          <div className="fluid-type-frame">
+        <SevenColumnGridItem
+          alignY="stretch"
+          className="col-span-3 max-lg:col-span-7"
+        >
+          <div className="fluid-type-frame sticky top-[var(--site-grid-inset-block)] h-fit max-lg:static">
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">{title}</h2>
             <p className="type-text-lg wrap-pretty mt-heading-body-lg text-service-muted">

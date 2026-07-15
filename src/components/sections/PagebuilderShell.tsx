@@ -20,6 +20,7 @@ import {
   HeroCompactSectionV3,
   type HeroCompactAlign,
 } from "@/components/sections/HeroCompactSectionV3";
+import { HeroServicesSectionV3 } from "@/components/sections/HeroServicesSectionV3";
 import { SectionHeaderCompactSectionV3 } from "@/components/sections/SectionHeaderCompactSectionV3";
 import {
   ServicesBentoCardsSectionV2,
@@ -56,6 +57,7 @@ const splitContentImageComponent = "HeroSplitFullHeightSectionV3";
 const fixedRatioSplitComponent = "HeroSplitFixedImageSectionV3";
 const contentFixedRatioSplitComponent = "ContentSplitFixedImageSectionV3";
 const heroCompactComponent = "HeroCompactSectionV3";
+const heroServicesComponent = "HeroServicesSectionV3";
 const sectionHeaderCompactComponent = "SectionHeaderCompactSectionV3";
 const servicesBentoComponent = "ServicesBentoCardsSectionV2";
 const splitContentImageVariantOptions = [
@@ -698,6 +700,13 @@ const sectionSwapOptions = [
     name: "Compact page hero",
   },
   {
+    component: "HeroServicesSectionV3",
+    instruction:
+      "Combine a services page introduction with one full-height image and up to seven compact priority-service links layered over the image.",
+    mode: "Hero",
+    name: "Services hero",
+  },
+  {
     component: "SectionHeaderCompactSectionV3",
     instruction:
       "Use a no-min-height compact header to introduce a section before card grids, FAQs, decisions, or utility blocks.",
@@ -749,7 +758,7 @@ const sectionSwapOptions = [
   {
     component: "ContentRevealParagraphSectionV2",
     instruction:
-      "Use a short editorial thesis to slow the page down and frame the service promise.",
+      "Use a large editorial interstitial thought. A hard return creates a separate animated paragraph; do not treat it as standard body or card copy.",
     mode: "Narrative",
     name: "Reveal paragraph",
   },
@@ -784,7 +793,7 @@ const sectionSwapOptions = [
   {
     component: "ContentStickyIdeasSectionV2",
     instruction:
-      "Keep core ideas visible while longer copy earns trust.",
+      "Use natural longform paragraphs with short sticky bullets and a context-specific side-list label. Do not use generic Important ideas copy.",
     mode: "Narrative",
     name: "Sticky ideas content",
   },
@@ -798,7 +807,7 @@ const sectionSwapOptions = [
   {
     component: "ContentAboutStorySectionV3",
     instruction:
-      "Use for long-form about storytelling when the page needs local context, operating philosophy, and careful trust language.",
+      "Use an extended about narrative with natural paragraphs, a pullquote, and scannable notes. Do not force the story into card-length copy.",
     mode: "Narrative",
     name: "About story",
   },
@@ -2080,6 +2089,11 @@ export function PagebuilderShell({
           <HeroCompactSectionV3
             {...sectionLibraryV3Content.heroCompact}
             align={getHeroCompactAlign(section)}
+            headingLevel={headingLevel}
+          />
+        ) : section.component === heroServicesComponent ? (
+          <HeroServicesSectionV3
+            {...sectionLibraryV3Content.heroServices}
             headingLevel={headingLevel}
           />
         ) : section.component === sectionHeaderCompactComponent ? (

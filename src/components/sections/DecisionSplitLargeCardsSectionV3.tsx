@@ -22,7 +22,7 @@ export function DecisionSplitLargeCardsSectionV3({
 }: DecisionSplitLargeCardsSectionV3Props) {
   return (
     <section className="bg-bg-page">
-      <SevenColumnGrid className="section-min-none items-start" padding="sml">
+      <SevenColumnGrid className="section-min-tiny items-start" padding="med">
         <SevenColumnGridItem
           className="col-span-4 max-md:col-span-3 max-sm:col-span-1"
           measure="none"

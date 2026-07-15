@@ -49,6 +49,7 @@ import {
   HeroCompactSectionV3,
   type HeroCompactAlign,
 } from "@/components/sections/HeroCompactSectionV3";
+import { HeroServicesSectionV3 } from "@/components/sections/HeroServicesSectionV3";
 import { SectionHeaderCompactSectionV3 } from "@/components/sections/SectionHeaderCompactSectionV3";
 import { HeroContentTopImageBottomSectionV2 } from "@/components/sections/HeroContentTopImageBottomSectionV2";
 import {
@@ -241,6 +242,13 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
         <HeroCompactSectionV3
           {...sectionLibraryV3Content.heroCompact}
           align={getHeroCompactAlign(section)}
+          headingLevel={headingLevel}
+        />
+      );
+    case "HeroServicesSectionV3":
+      return (
+        <HeroServicesSectionV3
+          {...sectionLibraryV3Content.heroServices}
           headingLevel={headingLevel}
         />
       );
@@ -795,6 +803,19 @@ export function PagebuilderSection() {
       "Scan",
       "Services card carousel",
       3,
+    ),
+    HeroServicesSectionV3: (
+      <div key="HeroServicesSectionV3">
+        {renderPreviewSection(
+          {
+            component: "HeroServicesSectionV3",
+            instruction: "",
+            mode: "Hero",
+            name: "Services hero",
+          },
+          1,
+        )}
+      </div>
     ),
     ContentPhotoGalleryCarouselSectionV3: previewCatalogEntry(
       "ContentPhotoGalleryCarouselSectionV3",

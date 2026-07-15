@@ -206,26 +206,34 @@ function NavPrimaryLayoutSection({
                 >
                   {hasDropdown ? (
                     <>
-                      <button
-                        aria-controls={menuId}
-                        aria-expanded={isOpen}
-                        className="flex cursor-pointer items-center gap-2 py-3 transition-colors hover:text-service-accent"
-                        type="button"
-                        onClick={() =>
-                          setOpenDropdown(isOpen ? null : link.label)
-                        }
-                      >
-                        {link.label}
-                        <span
-                          aria-hidden="true"
-                          className={cx(
-                            "inline-flex transition-transform",
-                            isOpen ? "rotate-180" : undefined,
-                          )}
+                      <div className="flex items-center">
+                        <a
+                          className="cursor-pointer py-3 transition-colors hover:text-service-accent"
+                          href={link.href ?? "#"}
                         >
-                          <DownArrowIcon className="size-3.5" />
-                        </span>
-                      </button>
+                          {link.label}
+                        </a>
+                        <button
+                          aria-controls={menuId}
+                          aria-expanded={isOpen}
+                          aria-label={`Open ${link.label} menu`}
+                          className="cursor-pointer p-2 transition-colors hover:text-service-accent"
+                          type="button"
+                          onClick={() =>
+                            setOpenDropdown(isOpen ? null : link.label)
+                          }
+                        >
+                          <span
+                            aria-hidden="true"
+                            className={cx(
+                              "inline-flex transition-transform",
+                              isOpen ? "rotate-180" : undefined,
+                            )}
+                          >
+                            <DownArrowIcon className="size-3.5" />
+                          </span>
+                        </button>
+                      </div>
                       <AnimatePresence initial={false}>
                         {isOpen ? (
                           <motion.div

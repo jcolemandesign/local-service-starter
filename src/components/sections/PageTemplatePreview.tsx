@@ -49,6 +49,7 @@ import {
   HeroCompactSectionV3,
   type HeroCompactAlign,
 } from "@/components/sections/HeroCompactSectionV3";
+import { HeroServicesSectionV3 } from "@/components/sections/HeroServicesSectionV3";
 import { SectionHeaderCompactSectionV3 } from "@/components/sections/SectionHeaderCompactSectionV3";
 import { HeroContentTopImageBottomSectionV2 } from "@/components/sections/HeroContentTopImageBottomSectionV2";
 import {
@@ -318,6 +319,7 @@ export function renderPageTemplateSection(
         <HeroSplitFullHeightSectionV3
           {...heroSplitProps(fieldSection)}
           headingLevel={headingLevel}
+          secondaryActionHref={getServicesHref(navigationLinks)}
           variant={getHeroSplitFullHeightVariant(section)}
         />
       );
@@ -327,6 +329,7 @@ export function renderPageTemplateSection(
           {...heroSplitProps(fieldSection)}
           headingLevel={headingLevel}
           ratio={getHeroSplitFixedImageRatio(section)}
+          secondaryActionHref={getServicesHref(navigationLinks)}
           variant={getHeroSplitFixedImageVariant(section)}
         />
       );
@@ -363,6 +366,13 @@ export function renderPageTemplateSection(
         <HeroCompactSectionV3
           {...heroCompactProps(fieldSection)}
           align={getHeroCompactAlign(section)}
+          headingLevel={headingLevel}
+        />
+      );
+    case "HeroServicesSectionV3":
+      return (
+        <HeroServicesSectionV3
+          {...heroServicesProps(fieldSection)}
           headingLevel={headingLevel}
         />
       );
@@ -571,6 +581,14 @@ function navProps(
   };
 }
 
+function getServicesHref(navigationLinks: SiteNavigationLink[]) {
+  return (
+    navigationLinks.find(
+      (link) => normalizeLabel(link.label) === normalizeLabel("Services"),
+    )?.href ?? "#services"
+  );
+}
+
 function heroSplitProps(section: FieldSection) {
   return {
     ...sectionLibraryV3Content.heroSplitFullHeight,
@@ -592,7 +610,7 @@ function heroSplitProps(section: FieldSection) {
     ),
     stats: getListValues(
       section,
-      ["proofPoints", "stats", "items"],
+      ["supportingItems", "proofPoints", "stats", "items"],
       sectionLibraryV3Content.heroSplitFullHeight.stats.join("\n"),
     ).slice(0, 3),
     title: getTitle(section, sectionLibraryV3Content.heroSplitFullHeight.title),
@@ -656,6 +674,26 @@ function heroCompactProps(section: FieldSection) {
       sectionLibraryV3Content.heroCompact.eyebrow,
     ),
     title: getTitle(section, sectionLibraryV3Content.heroCompact.title),
+  };
+}
+
+function heroServicesProps(section: FieldSection) {
+  const serviceItems = cardItemsWithFallback(
+    section,
+    ["serviceItems", "items", "cards"],
+    sectionLibraryV3Content.heroServices.cards,
+  );
+
+  return {
+    ...sectionLibraryV3Content.heroServices,
+    body: getBody(section, sectionLibraryV3Content.heroServices.body),
+    cards: serviceItems.slice(0, 7),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.heroServices.eyebrow,
+    ),
+    title: getTitle(section, sectionLibraryV3Content.heroServices.title),
   };
 }
 
@@ -765,7 +803,12 @@ function servicesThreeCardsProps(section: FieldSection) {
 
   return {
     ...sectionLibraryV3Content.servicesThreeCardsRight,
-    cards: serviceItems,
+    cards: serviceItems.map((item, index) => ({
+      ...sectionLibraryV3Content.servicesThreeCardsRight.cards[
+        index % sectionLibraryV3Content.servicesThreeCardsRight.cards.length
+      ],
+      ...item,
+    })),
     eyebrow: getValue(
       section,
       "eyebrow",
@@ -871,7 +914,7 @@ function featureAsymmetricProps(section: FieldSection) {
 function splitDecisionProps(section: FieldSection) {
   const cards = cardItemsWithFallback(
     section,
-    ["decisionItems", "supportingItems", "cards", "items"],
+    ["decisionItems", "steps", "supportingItems", "cards", "items"],
     sectionLibraryV3Content.decisionSplitDecision.cards,
   );
 
@@ -908,7 +951,7 @@ function splitDecisionProps(section: FieldSection) {
 function splitLargeCardsProps(section: FieldSection) {
   const cards = cardItemsWithFallback(
     section,
-    ["decisionItems", "supportingItems", "cards", "items"],
+    ["decisionItems", "steps", "supportingItems", "cards", "items"],
     sectionLibraryV3Content.decisionSplitLargeCards.cards,
   );
 
@@ -1060,10 +1103,13 @@ function footerProps(section: FieldSection) {
     parseLink,
   );
   const contactDetails = getListValues(section, ["contactDetails", "details"], "");
-  const phone = contactDetails.find((item) => /phone/i.test(item)) ?? "";
-  const email = contactDetails.find((item) => /@/.test(item)) ?? "";
-  const address =
+  const legacyPhone = contactDetails.find((item) => /phone/i.test(item)) ?? "";
+  const legacyEmail = contactDetails.find((item) => /@/.test(item)) ?? "";
+  const legacyAddress =
     contactDetails.find((item) => /based|address|serving/i.test(item)) ?? "";
+  const serviceArea = getValue(section, "serviceArea", stripLabel(legacyAddress));
+  const hours = getValue(section, "hours", "");
+  const contactAddress = [serviceArea, hours].filter(Boolean).join(" | ");
 
   return {
     ...sectionLibraryV3Content.footer,
@@ -1074,14 +1120,22 @@ function footerProps(section: FieldSection) {
     ),
     contact: {
       ...sectionLibraryV3Content.footer.contact,
-      address: stripLabel(address) || sectionLibraryV3Content.footer.contact.address,
-      email: stripLabel(email) || sectionLibraryV3Content.footer.contact.email,
+      address: contactAddress || sectionLibraryV3Content.footer.contact.address,
+      email: getValue(
+        section,
+        "email",
+        stripLabel(legacyEmail) || sectionLibraryV3Content.footer.contact.email,
+      ),
       name: getValue(
         section,
         "businessName",
-        sectionLibraryV3Content.footer.contact.name,
+        getValue(section, "logoLabel", sectionLibraryV3Content.footer.contact.name),
       ),
-      phone: stripLabel(phone) || sectionLibraryV3Content.footer.contact.phone,
+      phone: getValue(
+        section,
+        "phone",
+        stripLabel(legacyPhone) || sectionLibraryV3Content.footer.contact.phone,
+      ),
     },
     copyright: getValue(
       section,
@@ -1387,9 +1441,14 @@ function stickyIdeasProps(section: FieldSection) {
     ),
     ideas: getListValues(
       section,
-      ["proofItems", "items", "supportingItems"],
+      ["ideas", "proofItems", "items", "supportingItems"],
       sectionLibraryV3Content.contentStickyIdeas.ideas.join("\n"),
     ).slice(0, 4),
+    ideasLabel: getValue(
+      section,
+      "ideasLabel",
+      sectionLibraryV3Content.contentStickyIdeas.ideasLabel,
+    ),
     paragraphs: splitItems(
       getBody(section, sectionLibraryV3Content.contentStickyIdeas.paragraphs.join("\n")),
     ),
@@ -1422,6 +1481,7 @@ function aboutStoryProps(section: FieldSection) {
     "items",
   ]);
   const fallbackNotes = sectionLibraryV3Content.contentAboutStory.notes;
+  const parsedNotes = cardItems(section, ["notes", "supportingItems", "items"]);
 
   return {
     ...sectionLibraryV3Content.contentAboutStory,
@@ -1449,7 +1509,14 @@ function aboutStoryProps(section: FieldSection) {
                 fallback.body,
             };
           })
-        : fallbackNotes,
+        : parsedNotes.length > 0
+          ? parsedNotes.map((note, index) => ({
+              body:
+                note.body || fallbackNotes[index % fallbackNotes.length].body,
+              label:
+                note.title || fallbackNotes[index % fallbackNotes.length].label,
+            }))
+          : fallbackNotes,
     paragraphs: getListValues(
       section,
       ["paragraphs", "story", "bodySections"],

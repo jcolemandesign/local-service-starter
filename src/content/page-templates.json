@@ -252,7 +252,7 @@
         },
         {
           "component": "ContentAboutStorySectionV3",
-          "instruction": "Use for long-form about storytelling when the page needs local context, operating philosophy, and careful trust language.",
+          "instruction": "Use an extended about narrative with natural paragraphs, a pullquote, and scannable notes. Do not force the story into card-length copy.",
           "mode": "Narrative",
           "name": "About story",
           "originalComponent": "ContentAboutStorySectionV3",
@@ -339,7 +339,7 @@
       "notes": "",
       "pageType": "Services Overview",
       "promotedAt": "2026-07-14T18:23:34.278Z",
-      "sectionCount": 9,
+      "sectionCount": 8,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
@@ -350,25 +350,16 @@
           "originalIndex": 0
         },
         {
-          "component": "HeroCompactSectionV3",
-          "instruction": "Use a compact page title, eyebrow, and short descriptor when the page needs a clear header without media or proof blocks.",
+          "component": "HeroServicesSectionV3",
+          "instruction": "Combine the Services page introduction with one full-height four-column image and 1-7 compact priority-service links over the image. The following hover panel must contain every remaining approved service without repeats.",
           "mode": "Hero",
-          "name": "Compact page hero",
-          "originalComponent": "HeroCompactSectionV3",
-          "originalIndex": -1,
-          "variant": "left"
-        },
-        {
-          "component": "ServicesThreeCardsRightSectionV3",
-          "instruction": "Show top-level service cards on the seven-column page grid, using explicit card size metadata when one card should be larger.",
-          "mode": "Scan",
-          "name": "Services cards grid",
-          "originalComponent": "ServicesThreeCardsRightSectionV3",
+          "name": "Services hero",
+          "originalComponent": "HeroServicesSectionV3",
           "originalIndex": -1
         },
         {
           "component": "ServicesHoverPanelSectionV2",
-          "instruction": "Use a hover panel when a compact service list should reveal more detail and visual emphasis.",
+        "instruction": "Use a hover panel for every remaining approved service after the 1-7 priority links in the Services hero. Do not repeat or omit services.",
           "mode": "Scan",
           "name": "Services hover panel",
           "originalComponent": "ServicesHoverPanelSectionV2",
@@ -459,7 +450,7 @@
         },
         {
           "component": "ContentStickyIdeasSectionV2",
-          "instruction": "Keep core ideas visible while longer copy earns trust.",
+          "instruction": "Use natural longform paragraphs with short sticky bullets and a context-specific side-list label. Do not use generic Important ideas copy.",
           "mode": "Narrative",
           "name": "Sticky ideas content",
           "originalComponent": "ContentAboutStorySectionV3",
@@ -475,7 +466,7 @@
         },
         {
           "component": "ContentRevealParagraphSectionV2",
-          "instruction": "Use a short editorial thesis to slow the page down and frame the service promise.",
+          "instruction": "Use a large editorial interstitial thought. A hard return creates a separate animated paragraph; do not treat it as standard body or card copy.",
           "mode": "Narrative",
           "name": "Reveal paragraph",
           "originalComponent": "ContentRevealParagraphSectionV2",
