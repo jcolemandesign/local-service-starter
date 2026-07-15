@@ -158,7 +158,7 @@ const colors = [
     text: "text-white",
     muted: "text-white/68",
     border: "border-white/18",
-    accent: "bg-white text-service-ink",
+    accent: "bg-surface-raised text-service-ink",
     usage: "Brand dark ink with a green undertone",
   },
   {
@@ -169,7 +169,7 @@ const colors = [
     text: "text-white",
     muted: "text-white/76",
     border: "border-white/22",
-    accent: "bg-white text-service-muted",
+    accent: "bg-surface-raised text-service-muted",
     usage: "Secondary text color and subdued support surfaces",
   },
   {
@@ -180,7 +180,7 @@ const colors = [
     text: "text-white",
     muted: "text-white/78",
     border: "border-white/24",
-    accent: "bg-white text-service-accent",
+    accent: "bg-surface-raised text-service-accent",
     usage: "Core service brand accent and primary action color",
   },
   {
@@ -193,6 +193,17 @@ const colors = [
     border: "border-service-border",
     accent: "bg-service-accent text-white",
     usage: "Quiet section backgrounds and soft panels",
+  },
+  {
+    name: "surface-raised",
+    controlKey: "surfaceRaised",
+    value: "#fafcf9",
+    surface: "bg-surface-raised",
+    text: "text-service-ink",
+    muted: "text-service-muted",
+    border: "border-service-border",
+    accent: "bg-service-accent text-white",
+    usage: "Focused forms, inputs, and nested reading surfaces",
   },
   {
     name: "service-border",
@@ -224,7 +235,7 @@ const colors = [
     text: "text-text-inverse",
     muted: "text-white/68",
     border: "border-white/18",
-    accent: "bg-white text-bg-dark",
+    accent: "bg-surface-raised text-bg-dark",
     usage: "Neutral dark background for non-brand dark sections",
   },
   {
@@ -235,7 +246,7 @@ const colors = [
     text: "text-white",
     muted: "text-white/78",
     border: "border-white/24",
-    accent: "bg-white text-accent",
+    accent: "bg-surface-raised text-accent",
     usage: "Warm highlight accent for contrast moments",
   },
 ] as const;
@@ -621,7 +632,7 @@ const colorRoleCombinations = [
     textClass: "text-white",
     mutedClass: "text-white/78",
     borderClass: "border-white/24",
-    actionClass: "bg-white text-service-accent",
+    actionClass: "bg-surface-raised text-service-accent",
   },
   {
     name: "Inverse ink",
@@ -629,7 +640,7 @@ const colorRoleCombinations = [
     textClass: "text-white",
     mutedClass: "text-white/70",
     borderClass: "border-white/18",
-    actionClass: "bg-white text-service-ink",
+    actionClass: "bg-surface-raised text-service-ink",
   },
   {
     name: "Neutral dark",
@@ -637,7 +648,7 @@ const colorRoleCombinations = [
     textClass: "text-text-inverse",
     mutedClass: "text-white/68",
     borderClass: "border-white/18",
-    actionClass: "bg-accent text-white",
+    actionClass: "bg-surface-raised text-service-ink",
   },
   {
     name: "Warm action",
@@ -645,7 +656,7 @@ const colorRoleCombinations = [
     textClass: "text-white",
     mutedClass: "text-white/78",
     borderClass: "border-white/24",
-    actionClass: "bg-white text-accent",
+    actionClass: "bg-surface-raised text-accent",
   },
 ];
 
@@ -675,17 +686,17 @@ const surfaceTypeSpecimens = [
     eyebrowClass: "text-service-accent",
     headingClass: "text-service-ink",
     bodyClass: "text-service-muted",
-    insetClass: "border-service-border bg-white",
+    insetClass: "border-service-border bg-surface-raised",
     insetHeadingClass: "text-service-ink",
     insetBodyClass: "text-service-muted",
     actionClass: "bg-service-ink text-white",
   },
   {
-    name: "White card on quiet surface",
-    semantic: "bg-white / text-service-ink / text-service-muted",
+    name: "Raised card on quiet surface",
+    semantic: "bg-surface-raised / text-service-ink / text-service-muted",
     headingClassName: "type-heading-lg",
     bodyClassName: "type-text-md",
-    surfaceClass: "bg-white",
+    surfaceClass: "bg-surface-raised",
     frameClass: "border-service-border",
     eyebrowClass: "text-service-accent",
     headingClass: "text-service-ink",
@@ -705,10 +716,10 @@ const surfaceTypeSpecimens = [
     eyebrowClass: "text-white/68",
     headingClass: "text-white",
     bodyClass: "text-white/72",
-    insetClass: "border-white/14 bg-white/8",
+    insetClass: "border-white/14 bg-surface-raised/8",
     insetHeadingClass: "text-white",
     insetBodyClass: "text-white/68",
-    actionClass: "bg-white text-service-ink",
+    actionClass: "bg-surface-raised text-service-ink",
   },
   {
     name: "Accent inverse",
@@ -720,10 +731,10 @@ const surfaceTypeSpecimens = [
     eyebrowClass: "text-white/78",
     headingClass: "text-white",
     bodyClass: "text-white/80",
-    insetClass: "border-white/20 bg-white/10",
+    insetClass: "border-white/20 bg-surface-raised/10",
     insetHeadingClass: "text-white",
     insetBodyClass: "text-white/72",
-    actionClass: "bg-white text-service-accent",
+    actionClass: "bg-surface-raised text-service-accent",
   },
   {
     name: "Neutral dark",
@@ -735,10 +746,10 @@ const surfaceTypeSpecimens = [
     eyebrowClass: "text-white/68",
     headingClass: "text-text-inverse",
     bodyClass: "text-white/70",
-    insetClass: "border-white/14 bg-white/8",
+    insetClass: "border-white/14 bg-surface-raised/8",
     insetHeadingClass: "text-white",
     insetBodyClass: "text-white/66",
-    actionClass: "bg-accent text-white",
+    actionClass: "bg-surface-raised text-service-ink",
   },
   {
     name: "Warm offer",
@@ -750,10 +761,10 @@ const surfaceTypeSpecimens = [
     eyebrowClass: "text-white/76",
     headingClass: "text-white",
     bodyClass: "text-white/78",
-    insetClass: "border-white/18 bg-white/10",
+    insetClass: "border-white/18 bg-surface-raised/10",
     insetHeadingClass: "text-white",
     insetBodyClass: "text-white/70",
-    actionClass: "bg-white text-accent",
+    actionClass: "bg-surface-raised text-accent",
   },
   {
     name: "Muted proof panel",
@@ -765,7 +776,7 @@ const surfaceTypeSpecimens = [
     eyebrowClass: "text-service-accent",
     headingClass: "text-service-ink",
     bodyClass: "text-service-muted",
-    insetClass: "border-service-muted/20 bg-white",
+    insetClass: "border-service-muted/20 bg-surface-raised",
     insetHeadingClass: "text-service-ink",
     insetBodyClass: "text-service-muted",
     actionClass: "bg-service-ink text-white",
@@ -835,13 +846,13 @@ function LayoutSystemControlLab() {
                 </p>
               </div>
               <div className="layout-gap-med mt-8 grid grid-cols-2 max-md:grid-cols-1">
-                <div className="radius-small border border-service-border bg-white p-4">
+                <div className="radius-small border border-service-border bg-surface-raised p-4">
                   <p className="type-label text-service-muted">Frame</p>
                   <p className="type-text-sm mt-2 text-service-ink">
                     Body spacing controls the page inset around this whole lab.
                   </p>
                 </div>
-                <div className="radius-small border border-service-border bg-white p-4">
+                <div className="radius-small border border-service-border bg-surface-raised p-4">
                   <p className="type-label text-service-muted">Inset</p>
                   <p className="type-text-sm mt-2 text-service-ink">
                     Content spacing controls the padding inside each panel.
@@ -856,7 +867,7 @@ function LayoutSystemControlLab() {
               className="site-grid-gap grid h-full content-start"
               style={{ rowGap: "var(--site-grid-gap)" }}
             >
-              <article className="content-frame radius-medium border border-service-border bg-white">
+              <article className="content-frame radius-medium border border-service-border bg-surface-raised">
                 <div className="fluid-type-frame">
                   <p className="type-label text-service-accent">Columns 4-7</p>
                   <h4 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
@@ -902,7 +913,7 @@ function LayoutSystemControlLab() {
                     introducing a second spacing system.
                   </p>
                 </div>
-                <span className="radius-button border border-white/18 bg-white/10 px-4 py-2 text-sm font-semibold">
+                <span className="radius-button border border-white/18 bg-surface-raised/10 px-4 py-2 text-sm font-semibold">
                   Request service
                 </span>
               </article>
@@ -927,7 +938,7 @@ function LayoutSystemControlLab() {
           style={{ marginTop: "var(--site-grid-gap)" }}
         >
           <SevenColumnGridItem className="col-span-5 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-            <article className="content-frame radius-medium fluid-type-frame min-h-48 border border-service-border bg-white">
+            <article className="content-frame radius-medium fluid-type-frame min-h-48 border border-service-border bg-surface-raised">
               <p className="type-label text-service-accent">Wide system block</p>
               <h4 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
                 Larger blocks stay in the same gutter rhythm
@@ -970,7 +981,7 @@ function FrameVisualAid({
   previewInline: string;
 }) {
   return (
-    <div className="radius-medium border border-service-border bg-white p-4">
+    <div className="radius-medium border border-service-border bg-surface-raised p-4">
       <p className="type-caption font-semibold text-service-ink">{label}</p>
       <p className="type-caption mt-1 text-service-muted">
         inline {inline} / block {block}
@@ -982,7 +993,7 @@ function FrameVisualAid({
         <div className="grid grid-cols-5 gap-1.5">
           {Array.from({ length: 5 }, (_, index) => (
             <span
-              className="radius-4 h-10 bg-white shadow-service"
+              className="radius-4 h-10 bg-surface-raised shadow-service"
               key={`${label}-frame-aid-${index}`}
             />
           ))}
@@ -1000,7 +1011,7 @@ function ContentFrameVisualAid({
   value: string;
 }) {
   return (
-    <div className="radius-medium border border-service-border bg-white p-4">
+    <div className="radius-medium border border-service-border bg-surface-raised p-4">
       <p className="type-caption font-semibold text-service-ink">{label}</p>
       <p className="type-caption mt-1 text-service-muted">
         container gutter {value}
@@ -1009,7 +1020,7 @@ function ContentFrameVisualAid({
         className="radius-medium mt-4 min-h-60 border border-service-border bg-service-surface"
         style={{ padding: value }}
       >
-        <div className="radius-4 grid h-full min-h-20 content-between gap-3 border border-service-border bg-white p-3 shadow-service">
+        <div className="radius-4 grid h-full min-h-20 content-between gap-3 border border-service-border bg-surface-raised p-3 shadow-service">
           <div className="grid grid-cols-3 gap-2">
             <span className="radius-4 h-8 bg-service-surface" />
             <span className="radius-4 h-8 bg-service-surface" />
@@ -1035,14 +1046,14 @@ function GapVisualAid({
   value: string;
 }) {
   return (
-    <div className="radius-medium border border-service-border bg-white p-4">
+    <div className="radius-medium border border-service-border bg-surface-raised p-4">
       <p className="type-caption font-semibold text-service-ink">{label}</p>
       <p className="type-caption mt-1 text-service-muted">{value}</p>
       <div className="radius-medium mt-4 border border-service-border bg-service-surface p-4">
         <div className="grid grid-cols-5" style={{ gap: previewValue }}>
           {Array.from({ length: 5 }, (_, index) => (
             <span
-              className="radius-4 h-16 bg-white shadow-service"
+              className="radius-4 h-16 bg-surface-raised shadow-service"
               key={`${label}-gap-aid-${index}`}
             />
           ))}
@@ -1062,13 +1073,13 @@ function RadiusVisualAid({ name, value }: { name: string; value: string }) {
   const radiusStyle = { borderRadius: value };
 
   return (
-    <div className="radius-medium border border-service-border bg-white p-4">
+    <div className="radius-medium border border-service-border bg-surface-raised p-4">
       <div
         className="border border-service-border bg-service-surface p-3 shadow-service"
         style={radiusStyle}
       >
         <div
-          className="relative aspect-[5/3] overflow-hidden border border-service-accent/25 bg-white"
+          className="relative aspect-[5/3] overflow-hidden border border-service-accent/25 bg-surface-raised"
           style={radiusStyle}
         >
           <div className="absolute inset-4 border border-dashed border-service-accent/35" />
@@ -1094,7 +1105,7 @@ function NestedGapVisualAid({
   value: string;
 }) {
   return (
-    <div className="radius-medium border border-service-border bg-white p-4">
+    <div className="radius-medium border border-service-border bg-surface-raised p-4">
       <p className="type-caption font-semibold text-service-ink">{name}</p>
       <p className="type-caption mt-1 text-service-muted">{value}</p>
 
@@ -1184,7 +1195,7 @@ function GuideSection({
                 </div>
                 <span
                   aria-hidden="true"
-                  className="guide-section-icon mt-2 grid size-11 shrink-0 place-items-center rounded-full border border-service-border bg-white text-2xl leading-none text-service-ink transition-transform duration-200 max-sm:size-9 max-sm:text-xl"
+                  className="guide-section-icon mt-2 grid size-11 shrink-0 place-items-center rounded-full border border-service-border bg-surface-raised text-2xl leading-none text-service-ink transition-transform duration-200 max-sm:size-9 max-sm:text-xl"
                 >
                   +
                 </span>
@@ -1228,7 +1239,7 @@ function StyleGuideListControlSamples() {
   return (
     <SevenColumnGrid minHeight="none" padding="none">
       <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-        <div className="radius-medium grid h-full gap-6 border border-service-border bg-white p-6">
+        <div className="radius-medium grid h-full gap-6 border border-service-border bg-surface-raised p-6">
           <div className="fluid-type-frame">
             <p className="type-label text-service-accent">Text lists</p>
             <h3 className="type-heading-sm mt-label-heading-sm text-service-ink">
@@ -1255,7 +1266,7 @@ function StyleGuideListControlSamples() {
       </SevenColumnGridItem>
 
       <SevenColumnGridItem className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-        <div className="radius-medium grid h-full gap-6 border border-service-border bg-white p-6">
+        <div className="radius-medium grid h-full gap-6 border border-service-border bg-surface-raised p-6">
           <div className="fluid-type-frame">
             <p className="type-label text-service-accent">Ordered lists</p>
             <h3 className="type-heading-sm mt-label-heading-sm text-service-ink">
@@ -1281,7 +1292,7 @@ function StyleGuideListControlSamples() {
       </SevenColumnGridItem>
 
       <SevenColumnGridItem className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-        <div className="radius-medium grid h-full gap-6 border border-service-border bg-white p-6">
+        <div className="radius-medium grid h-full gap-6 border border-service-border bg-surface-raised p-6">
           <div className="fluid-type-frame">
             <p className="type-label text-service-accent">Input lists</p>
             <h3 className="type-heading-sm mt-label-heading-sm text-service-ink">
@@ -1297,7 +1308,7 @@ function StyleGuideListControlSamples() {
                     "type-text-sm radius-button flex min-h-12 cursor-pointer items-center gap-3 border px-3 py-2 font-semibold transition-colors",
                     index === 0
                       ? "border-service-accent bg-service-accent text-white"
-                      : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent",
+                      : "border-service-border bg-surface-raised text-service-ink hover:border-service-accent hover:text-service-accent",
                   )}
                   key={item}
                 >
@@ -1562,7 +1573,7 @@ export default function StyleGuidePage() {
                   )}
                   key={item.name}
                 >
-                  <div className="radius-medium min-h-12 overflow-visible border border-service-border bg-white">
+                  <div className="radius-medium min-h-12 overflow-visible border border-service-border bg-surface-raised">
                     <div
                       className={cx(
                         "flex min-h-12 items-center gap-3 px-4 py-3",
@@ -1613,7 +1624,7 @@ export default function StyleGuidePage() {
               }}
             >
               <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
-                <div className="content-frame radius-medium grid h-full content-between border border-service-border bg-white">
+                <div className="content-frame radius-medium grid h-full content-between border border-service-border bg-surface-raised">
                   <div>
                     <p className="type-label text-service-accent">Columns 1-2</p>
                     <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
@@ -1633,7 +1644,7 @@ export default function StyleGuidePage() {
                 className="col-span-3 max-lg:col-span-7"
                 measure="copy"
               >
-                <div className="content-frame radius-medium grid h-full content-center border border-service-border bg-white">
+                <div className="content-frame radius-medium grid h-full content-center border border-service-border bg-surface-raised">
                   <p className="type-label text-service-accent">Columns 3-5</p>
                   <h3 className="type-heading-lg mt-eyebrow-heading-sm text-service-ink">
                     Main copy track with editorial texture
@@ -1663,10 +1674,10 @@ export default function StyleGuidePage() {
                     </p>
                   </div>
                   <div className="mt-8 grid gap-2">
-                    <span className="type-caption rounded-sm border border-white/18 bg-white/10 px-3 py-2 font-semibold text-white/80">
+                    <span className="type-caption rounded-sm border border-white/18 bg-surface-raised/10 px-3 py-2 font-semibold text-white/80">
                       4.9 local rating
                     </span>
-                    <span className="type-caption rounded-sm border border-white/18 bg-white/10 px-3 py-2 font-semibold text-white/80">
+                    <span className="type-caption rounded-sm border border-white/18 bg-surface-raised/10 px-3 py-2 font-semibold text-white/80">
                       Same-day dispatch
                     </span>
                   </div>
@@ -1724,7 +1735,7 @@ export default function StyleGuidePage() {
             </SevenColumnGrid>
           </div>
 
-          <div className="radius-medium overflow-hidden border border-service-border bg-white">
+          <div className="radius-medium overflow-hidden border border-service-border bg-surface-raised">
             <SevenColumnGrid minHeight="none" padding="med">
               <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
                 <div className="content-frame radius-medium aspect-[4/3] h-full min-h-80 border border-service-border bg-service-surface">
@@ -1733,7 +1744,7 @@ export default function StyleGuidePage() {
                     <div className="grid grid-cols-4 gap-3">
                       {Array.from({ length: 8 }, (_, index) => (
                         <span
-                          className="radius-4 h-12 bg-white"
+                          className="radius-4 h-12 bg-surface-raised"
                           key={`layout-media-${index}`}
                         />
                       ))}
@@ -1784,7 +1795,7 @@ export default function StyleGuidePage() {
                 className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
                 alignY="middle"
               >
-                <div className="content-frame radius-medium border border-white/18 bg-white/8">
+                <div className="content-frame radius-medium border border-white/18 bg-surface-raised/8">
                   <p className="type-heading-sm">Book the next visit</p>
                   <p className="type-text-sm mt-heading-body-sm text-white/70">
                     Keep form, phone, and trust cues close enough to scan as one
@@ -1792,7 +1803,7 @@ export default function StyleGuidePage() {
                   </p>
                   <div className="mt-body-actions-md flex flex-wrap gap-3">
                     <Button
-                      className="border-white bg-white text-service-ink hover:bg-service-surface"
+                      className="border-white bg-surface-raised text-service-ink hover:bg-service-surface"
                       href="#"
                       variant="secondary"
                     >
@@ -1885,16 +1896,11 @@ export default function StyleGuidePage() {
           <StyleGuideColorResetButton />
         </div>
 
-        <SevenColumnGrid minHeight="none" padding="none">
+        <div className="grid grid-cols-2 card-grid-gap-med max-lg:grid-cols-1">
           {colors.map((color) => (
-            <SevenColumnGridItem
-              className="col-span-1 max-lg:col-span-1 max-md:col-span-1 max-sm:col-span-1"
-              key={color.name}
-            >
-              <StyleGuideColorSwatch color={color} />
-            </SevenColumnGridItem>
+            <StyleGuideColorSwatch color={color} key={color.name} />
           ))}
-        </SevenColumnGrid>
+        </div>
 
         <SevenColumnGrid className="mt-6" minHeight="none" padding="none">
           {colorRoleCombinations.map((combo) => (
@@ -2024,7 +2030,7 @@ export default function StyleGuidePage() {
 
         <SevenColumnGrid className="mt-6" minHeight="none" padding="none">
           <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-            <div className="fluid-type-frame radius-medium border border-service-border bg-white p-8 shadow-service max-md:p-6">
+            <div className="fluid-type-frame radius-medium border border-service-border bg-surface-raised p-8 shadow-service max-md:p-6">
               <p className="type-label text-service-accent">Hierarchy waterfall</p>
               <h3 className="type-display-lg mt-eyebrow-display text-service-ink">
                 Emergency help, calm communication, clean closeout notes
@@ -2067,7 +2073,7 @@ export default function StyleGuidePage() {
                 Use this to judge whether inverse copy has enough presence beside
                 bright actions, muted labels, and card borders.
               </p>
-              <div className="mt-body-actions-md rounded-sm border border-white/14 bg-white/8 p-5">
+              <div className="mt-body-actions-md rounded-sm border border-white/14 bg-surface-raised/8 p-5">
                 <p className="type-heading-sm">Ready for dispatch</p>
                 <p className="type-caption mt-heading-body-sm text-white/66">
                   The nested panel should feel distinct without turning chalky.
@@ -2128,7 +2134,7 @@ export default function StyleGuidePage() {
             </div>
             <div className="mt-6 grid grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] gap-5 max-lg:grid-cols-1">
               <div className="radius-surface border border-service-border bg-service-surface p-5 shadow-service [border-width:var(--border-surface-width-token)]">
-                <div className="radius-surface border border-service-border bg-white p-5 [border-width:var(--border-surface-width-token)]">
+                <div className="radius-surface border border-service-border bg-surface-raised p-5 [border-width:var(--border-surface-width-token)]">
                   <p className="type-label text-service-accent">Card shell</p>
                   <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
                     Active surface recipe on nested content
@@ -2142,10 +2148,10 @@ export default function StyleGuidePage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="radius-surface border border-service-border bg-service-surface p-4 [border-width:var(--border-surface-width-token)]">
-                  <div className="radius-surface h-24 border border-service-border bg-white [border-width:var(--border-surface-width-token)]" />
+                  <div className="radius-surface h-24 border border-service-border bg-surface-raised [border-width:var(--border-surface-width-token)]" />
                 </div>
                 <div className="radius-surface border border-service-border bg-service-ink p-4 [border-width:var(--border-surface-width-token)]">
-                  <div className="radius-surface h-24 border border-white/18 bg-white/10 [border-width:var(--border-surface-width-token)]" />
+                  <div className="radius-surface h-24 border border-white/18 bg-surface-raised/10 [border-width:var(--border-surface-width-token)]" />
                 </div>
               </div>
             </div>
@@ -2182,13 +2188,13 @@ export default function StyleGuidePage() {
               >
               <Card className="h-full overflow-hidden shadow-none">
                 <div className={cx(name, "bg-service-surface px-6")}>
-                  <div className="fluid-type-frame rounded border border-service-border bg-white p-6">
+                  <div className="fluid-type-frame rounded border border-service-border bg-surface-raised p-6">
                     <p className="type-label text-service-accent">Section sample</p>
                     <h3 className="type-heading-sm mt-4 text-service-ink">
                       Padding around a real content group
                     </h3>
                     <p className="type-text-sm wrap-pretty mt-3 text-service-muted">
-                      The empty area above and below this white box is the section
+                      The empty area above and below this raised box is the section
                       spacing token in action.
                     </p>
                   </div>
@@ -2274,7 +2280,7 @@ export default function StyleGuidePage() {
                     </p>
                     <div className="mt-body-actions-lg flex flex-wrap gap-3">
                       <Button
-                        className="border-white bg-white text-service-ink hover:bg-service-surface"
+                        className="border-white bg-surface-raised text-service-ink hover:bg-service-surface"
                         href="#"
                         variant="secondary"
                       >

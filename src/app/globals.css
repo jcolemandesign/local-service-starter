@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #fbfaf6;
   --foreground: #171717;
   --container-site: 1600px;
   --container-content: 1200px;
@@ -60,8 +60,9 @@
   --color-service-muted: var(--live-service-muted, #5f6f68);
   --color-service-accent: var(--live-service-accent, #1f7a5a);
   --color-service-surface: var(--live-service-surface, #f4f7f3);
+  --color-surface-raised: var(--live-surface-raised, #fafcf9);
   --color-service-border: var(--live-service-border, #dfe7e1);
-  --color-bg-page: var(--live-bg-page, #ffffff);
+  --color-bg-page: var(--live-bg-page, #fbfaf6);
   --color-bg-surface: var(--live-bg-surface, #f4f7f3);
   --color-bg-muted: var(--live-bg-muted, #dfe7e1);
   --color-bg-dark: var(--live-bg-dark, #10141b);
@@ -322,8 +323,8 @@ body {
   .style-guide-control-panel .text-service-muted { color: rgb(226 232 240 / 0.68) !important; }
   .style-guide-control-panel .text-service-accent { color: #aeb8c8 !important; }
 
-  .style-guide-control-panel .bg-white,
   .style-guide-control-panel .bg-bg-surface,
+  .style-guide-control-panel .bg-surface-raised,
   .style-guide-control-panel .bg-service-surface {
     background-color: rgb(255 255 255 / 0.055) !important;
   }

@@ -51,6 +51,7 @@ export type StyleGuideTokenDraft = {
   serviceBorder: string;
   serviceInk: string;
   serviceMuted: string;
+  surfaceRaised: string;
   serviceSurface: string;
   shadowAlpha: number;
   shadowBlur: number;
@@ -131,6 +132,7 @@ export const defaultStyleGuideTokenDraft: StyleGuideTokenDraft = {
   serviceBorder: "#dfe7e1",
   serviceInk: "#17211d",
   serviceMuted: "#5f6f68",
+  surfaceRaised: "#fafcf9",
   serviceSurface: "#f4f7f3",
   shadowAlpha: 0.08,
   shadowBlur: 50,
@@ -264,6 +266,7 @@ export function buildStyleVariables(
     "--live-service-ink": draft.serviceInk,
     "--live-service-muted": draft.serviceMuted,
     "--live-service-surface": draft.serviceSurface,
+    "--live-surface-raised": draft.surfaceRaised,
     "--live-text-accent": draft.serviceAccent,
     "--live-text-main": draft.serviceInk,
     "--live-text-muted": draft.serviceMuted,

@@ -9,6 +9,7 @@ const normalColors = {
   serviceBorder: "#dfe7e1",
   serviceInk: "#17211d",
   serviceMuted: "#5f6f68",
+  surfaceRaised: "#fafcf9",
   serviceSurface: "#f4f7f3",
 } as const;
 
@@ -19,6 +20,7 @@ const inverseColors = {
   serviceBorder: "#314039",
   serviceInk: "#fbfaf6",
   serviceMuted: "#b6c5bd",
+  surfaceRaised: "#26312c",
   serviceSurface: "#17211d",
 } as const;
 

@@ -111,7 +111,7 @@ export function StyleGuideSectionMinControl({
                       height: `${Math.max(token.ratio * 100, 2)}%`,
                     }}
                   >
-                    <span className="type-caption absolute left-3 top-2 bg-white/80 px-2 py-1 font-semibold text-service-ink">
+                    <span className="type-caption absolute left-3 top-2 bg-surface-raised/80 px-2 py-1 font-semibold text-service-ink">
                       {token.value}
                     </span>
                   </div>
@@ -124,7 +124,7 @@ export function StyleGuideSectionMinControl({
                   "ring-2 ring-service-accent/70",
               )}
             >
-              <span className="type-caption absolute left-3 top-2 bg-white/80 px-2 py-1 font-semibold text-service-muted">
+              <span className="type-caption absolute left-3 top-2 bg-surface-raised/80 px-2 py-1 font-semibold text-service-muted">
                 0
               </span>
             </div>

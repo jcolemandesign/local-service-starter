@@ -95,7 +95,7 @@ export function StyleGuideButtonControls({
           </p>
         </div>
 
-        <div className="radius-medium mt-5 border border-service-border bg-white p-3">
+        <div className="radius-medium mt-5 border border-service-border bg-surface-raised p-3">
           <div className="grid grid-cols-4 gap-2 max-lg:grid-cols-2 max-md:grid-cols-1">
             {buttonExamples.map((example) => {
               const isActive = example.name === activeExample.name;
@@ -107,7 +107,7 @@ export function StyleGuideButtonControls({
                     "radius-button min-h-11 border px-3 py-2 text-center text-xs font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
                     isActive
                       ? "border-service-accent bg-service-accent text-white"
-                      : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent",
+                      : "border-service-border bg-surface-raised text-service-ink hover:border-service-accent hover:text-service-accent",
                   )}
                   key={example.name}
                   onClick={() => setActiveName(example.name)}

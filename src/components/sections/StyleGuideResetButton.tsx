@@ -47,7 +47,7 @@ export function StyleGuideResetButton() {
 
               <div className="flex flex-wrap items-center justify-end gap-3">
                 <button
-                  className="radius-button min-h-11 border border-service-muted/60 bg-service-surface px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-white hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                  className="radius-button min-h-11 border border-service-muted/60 bg-service-surface px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-surface-raised hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
                   onClick={() => setIsOpen(false)}
                   type="button"
                 >
@@ -70,7 +70,7 @@ export function StyleGuideResetButton() {
   return (
     <>
       <button
-        className="radius-button min-h-11 border border-service-muted/60 bg-service-surface px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-white hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+        className="radius-button min-h-11 border border-service-muted/60 bg-service-surface px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-surface-raised hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
         onClick={() => setIsOpen(true)}
         type="button"
       >

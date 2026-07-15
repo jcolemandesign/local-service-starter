@@ -574,7 +574,7 @@ export function StyleGuideControlBoard({
                   <span className="radius-button inline-flex min-h-9 items-center bg-accent px-3 type-caption font-semibold text-white">
                     Filled accent
                   </span>
-                  <span className="radius-button inline-flex min-h-9 items-center border border-accent bg-white px-3 type-caption font-semibold text-accent">
+                  <span className="radius-button inline-flex min-h-9 items-center border border-accent bg-surface-raised px-3 type-caption font-semibold text-accent">
                     Text accent
                   </span>
                 </div>
