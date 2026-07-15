@@ -1008,7 +1008,7 @@ const sectionSwapOptions = [
   {
     component: "ContentFixedCoverFadeSectionV2",
     instruction:
-      "Use a fixed-cover fade when the action moment should feel immersive and image-led.",
+      "Use a fixed-cover fade as an immersive, image-led closing conversion. Write backgroundTitle and backgroundBody for the full-screen closing message, then foregroundEyebrow, foregroundTitle, foregroundBody, and contactDetails for the request path. Do not leave backgroundTitle or backgroundBody blank.",
     mode: "Action",
     name: "Fixed cover fade",
   },

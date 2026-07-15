@@ -8,6 +8,7 @@ const borderWidthOptions = [
   { label: "Fine", name: "border-fine", value: "1px" },
   { label: "Default", name: "border-default", value: "2px" },
   { label: "Bold", name: "border-bold", value: "3px" },
+  { label: "Thick", name: "border-thick", value: "4px" },
 ] as const;
 
 function SliderControl({
@@ -196,12 +197,14 @@ export function StyleGuideSurfaceControls() {
           />
           <SliderControl
             label="Opacity"
-            max={0.24}
+            max={100}
             min={0}
-            onChange={(value) => updateDraft("shadowAlpha", value)}
-            step={0.01}
-            value={draft.shadowAlpha}
-            valueLabel={draft.shadowAlpha.toFixed(2)}
+            onChange={(value) =>
+              updateDraft("shadowAlpha", (value / 100) ** 2)
+            }
+            step={1}
+            value={Math.sqrt(draft.shadowAlpha) * 100}
+            valueLabel={`${Math.round(draft.shadowAlpha * 100)}%`}
           />
         </div>
       </Card>

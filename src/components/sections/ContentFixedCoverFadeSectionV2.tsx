@@ -18,6 +18,10 @@ function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+function hasVisibleCopy(value: string) {
+  return value.trim().toLowerCase() !== "[omit]";
+}
+
 function BackgroundTexture({ label }: { label: string }) {
   return (
     <div
@@ -71,9 +75,11 @@ export function ContentFixedCoverFadeSectionV2({
             className="col-span-3 max-lg:col-span-7"
           >
             <div className="fluid-type-frame">
-              <p className="type-label text-service-accent">
-                {foregroundEyebrow}
-              </p>
+              {hasVisibleCopy(foregroundEyebrow) ? (
+                <p className="type-label text-service-accent">
+                  {foregroundEyebrow}
+                </p>
+              ) : null}
               <h3 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
                 {foregroundTitle}
               </h3>

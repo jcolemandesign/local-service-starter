@@ -1518,18 +1518,42 @@ function scrollRevealOfferProps(section: FieldSection) {
 function fixedCoverFadeProps(section: FieldSection) {
   return {
     ...sectionLibraryV3Content.contentFixedCoverFade,
-    foregroundBody: getBody(
+    backgroundBody: getValue(
       section,
-      sectionLibraryV3Content.contentFixedCoverFade.foregroundBody,
+      "backgroundBody",
+      sectionLibraryV3Content.contentFixedCoverFade.backgroundBody,
+    ),
+    backgroundLabel: getValue(
+      section,
+      "backgroundLabel",
+      sectionLibraryV3Content.contentFixedCoverFade.backgroundLabel,
+    ),
+    backgroundTitle: getValue(
+      section,
+      "backgroundTitle",
+      sectionLibraryV3Content.contentFixedCoverFade.backgroundTitle,
+    ),
+    foregroundBody: getValue(
+      section,
+      "foregroundBody",
+      getBody(
+        section,
+        sectionLibraryV3Content.contentFixedCoverFade.foregroundBody,
+      ),
     ),
     foregroundEyebrow: getValue(
       section,
-      "eyebrow",
-      sectionLibraryV3Content.contentFixedCoverFade.foregroundEyebrow,
+      "foregroundEyebrow",
+      getValue(
+        section,
+        "eyebrow",
+        sectionLibraryV3Content.contentFixedCoverFade.foregroundEyebrow,
+      ),
     ),
-    foregroundTitle: getTitle(
+    foregroundTitle: getValue(
       section,
-      sectionLibraryV3Content.contentFixedCoverFade.foregroundTitle,
+      "foregroundTitle",
+      getTitle(section, sectionLibraryV3Content.contentFixedCoverFade.foregroundTitle),
     ),
     items: getListValues(
       section,

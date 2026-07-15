@@ -18,6 +18,7 @@ import {
   type TemplateCopyContractTemplate,
 } from "@/utils/template-copy-contract";
 import {
+  buildCopywritingAgentInstructions,
   copywritingLeverDefinitions,
   copywritingPersonalityPackets,
   getCopywritingLeverInstruction,
@@ -182,6 +183,9 @@ export function StrategyWorkspaceSection({
     "idle" | "copied" | "error"
   >("idle");
   const [digestCopyState, setDigestCopyState] = useState<
+    "idle" | "copied" | "error"
+  >("idle");
+  const [voicePacketCopyState, setVoicePacketCopyState] = useState<
     "idle" | "copied" | "error"
   >("idle");
   const [fieldCopyState, setFieldCopyState] = useState<
@@ -370,6 +374,20 @@ export function StrategyWorkspaceSection({
       setPacketCopyState("copied");
     } catch {
       setPacketCopyState("error");
+    }
+  }
+
+  async function copyCopywritingVoicePacket() {
+    if (!navigator.clipboard?.writeText) {
+      setVoicePacketCopyState("error");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(buildCopywritingAgentInstructions(fields));
+      setVoicePacketCopyState("copied");
+    } catch {
+      setVoicePacketCopyState("error");
     }
   }
 
@@ -1065,9 +1083,18 @@ export function StrategyWorkspaceSection({
                 </div>
 
                 <div className="rounded-[var(--radius-md-token)] border border-service-border bg-bg-surface p-3">
-                  <p className="type-caption font-semibold text-service-accent">
-                    Agent instruction preview
-                  </p>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <p className="type-caption font-semibold text-service-accent">
+                      Agent instruction preview
+                    </p>
+                    <button
+                      className={secondaryButtonClass}
+                      onClick={() => void copyCopywritingVoicePacket()}
+                      type="button"
+                    >
+                      Copy voice packet
+                    </button>
+                  </div>
                   <ul className="mt-3 grid gap-2 text-sm leading-relaxed text-service-muted">
                     {copywritingLeverDefinitions.map((lever) => (
                       <li key={lever.id}>
@@ -1078,6 +1105,16 @@ export function StrategyWorkspaceSection({
                       </li>
                     ))}
                   </ul>
+                  {voicePacketCopyState === "copied" ? (
+                    <p className="type-caption mt-3 font-semibold text-green-700">
+                      Voice packet copied.
+                    </p>
+                  ) : null}
+                  {voicePacketCopyState === "error" ? (
+                    <p className="type-caption mt-3 font-semibold text-red-700">
+                      Could not copy voice packet.
+                    </p>
+                  ) : null}
                 </div>
               </div>
             </div>

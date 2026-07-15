@@ -438,6 +438,57 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  if (component.includes("contentfixedcoverfade")) {
+    return [
+      {
+        example: "Let the final message hold before the request path rises",
+        name: "backgroundTitle",
+        purpose:
+          "The large, immersive closing statement shown before the request form enters.",
+        target: "42-92 characters. Required; do not reuse the form-side headline.",
+      },
+      {
+        example:
+          "A steady closing promise gives way to a request form when the visitor is ready to act.",
+        name: "backgroundBody",
+        purpose:
+          "Supporting copy for the full-screen closing statement behind the request path.",
+        target: "80-170 characters. Required; do not leave blank.",
+      },
+      {
+        example: "Contact",
+        name: "foregroundEyebrow",
+        purpose: "Optional short label above the form-side request headline.",
+        target: "8-24 characters, or [omit] when the label is not needed.",
+      },
+      {
+        example: "Plan the right next step for your system",
+        name: "foregroundTitle",
+        purpose: "Request-side headline beside the form.",
+        target: "36-72 characters. Keep distinct from backgroundTitle.",
+      },
+      {
+        example:
+          "Tell us what is happening, and the team will follow up to discuss the request and the most appropriate service path.",
+        name: "foregroundBody",
+        purpose: "Supporting copy beside the form that explains the next step.",
+        target: "90-180 characters.",
+      },
+      {
+        example: [
+          "704-555-0184",
+          "hello@example.com",
+          "Mon-Fri, 8am-6pm",
+        ],
+        format: "One sourced contact detail per line.",
+        itemCount: 3,
+        name: "contactDetails",
+        purpose: "Short contact or availability details listed below the request copy.",
+        target: "2-4 concise sourced entries. Use NEEDS REVIEW for missing facts.",
+      },
+    ];
+  }
+
   if (mode === "action" || lookupValue.includes("cta")) {
     return [
       {
