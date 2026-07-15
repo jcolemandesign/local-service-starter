@@ -38,6 +38,7 @@ import {
   TestimonialsSectionV3,
 } from "@/components/sections/FeatureProcessTestimonialsSectionsV3";
 import { FeatureAsymmetricCardsSectionV3 } from "@/components/sections/FeatureAsymmetricCardsSectionV3";
+import { FeatureStackedCardsSectionV3 } from "@/components/sections/FeatureStackedCardsSectionV3";
 import { DecisionSplitDecisionSectionV3 } from "@/components/sections/DecisionSplitDecisionSectionV3";
 import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
 import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
@@ -70,7 +71,10 @@ import {
 import { NavFloatingBentoSectionV2 } from "@/components/sections/NavFloatingBentoSectionV2";
 import { ProcessImageChecklistSectionV2 } from "@/components/sections/ProcessImageChecklistSectionV2";
 import { ProcessImageChecklistSectionV3 } from "@/components/sections/ProcessImageChecklistSectionV3";
-import { ServicesBentoCardsSectionV2 } from "@/components/sections/ServicesBentoCardsSectionV2";
+import {
+  ServicesBentoCardsSectionV2,
+  type ServicesBentoCardsVariant,
+} from "@/components/sections/ServicesBentoCardsSectionV2";
 import { ServicesHoverPanelSectionV2 } from "@/components/sections/ServicesHoverPanelSectionV2";
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { ServiceAreaZipLookupSectionV3 } from "@/components/sections/ServiceAreaZipLookupSectionV3";
@@ -122,6 +126,11 @@ const heroSplitFixedImageRatios = new Set<string>([
 ]);
 
 const heroCompactAlignments = new Set<string>(["left", "center", "right"]);
+const servicesBentoVariants = new Set<string>([
+  "default",
+  "split-header",
+  "offset-header",
+]);
 
 function getHeroSplitFixedImageVariant(section: PagebuilderRecipeSection) {
   return heroSplitFixedImageVariants.has(section.variant ?? "")
@@ -151,6 +160,12 @@ function getHeroCompactAlign(section: PagebuilderRecipeSection) {
   return heroCompactAlignments.has(section.variant ?? "")
     ? (section.variant as HeroCompactAlign)
     : sectionLibraryV3Content.heroCompact.align;
+}
+
+function getServicesBentoVariant(section: PagebuilderRecipeSection) {
+  return servicesBentoVariants.has(section.variant ?? "")
+    ? (section.variant as ServicesBentoCardsVariant)
+    : undefined;
 }
 
 function UnknownSection({ section }: { section: PagebuilderRecipeSection }) {
@@ -271,6 +286,7 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <ServicesBentoCardsSectionV2
           {...sectionLibraryV3Content.servicesBento}
+          variant={getServicesBentoVariant(section)}
         />
       );
     case "ServicesHoverPanelSectionV2":
@@ -390,6 +406,12 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <FeatureAsymmetricCardsSectionV3
           {...sectionLibraryV3Content.featureAsymmetricCards}
+        />
+      );
+    case "FeatureStackedCardsSectionV3":
+      return (
+        <FeatureStackedCardsSectionV3
+          {...sectionLibraryV3Content.featureStackedCards}
         />
       );
     case "DecisionSplitDecisionSectionV3":
@@ -910,6 +932,12 @@ export function PagebuilderSection() {
       "FeatureAsymmetricCardsSectionV3",
       "Narrative",
       "Asymmetric feature cards",
+      4,
+    ),
+    FeatureStackedCardsSectionV3: previewCatalogEntry(
+      "FeatureStackedCardsSectionV3",
+      "Narrative",
+      "Stacked feature cards",
       4,
     ),
     FAQSectionV3: (

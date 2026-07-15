@@ -254,6 +254,7 @@ function getSectionContent(component: string): ContentSourceValue | null {
     FAQSectionV3: sectionLibraryV3Content.faq,
     FeatureAsymmetricCardsSectionV3:
       sectionLibraryV3Content.featureAsymmetricCards,
+    FeatureStackedCardsSectionV3: sectionLibraryV3Content.featureStackedCards,
     FeatureOverlapRowsSectionV3: sectionLibraryV3Content.featureOverlapRows,
     FeaturePortraitParagraphSectionV3:
       sectionLibraryV3Content.featurePortraitParagraph,

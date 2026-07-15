@@ -38,6 +38,7 @@ import {
   TestimonialsSectionV3,
 } from "@/components/sections/FeatureProcessTestimonialsSectionsV3";
 import { FeatureAsymmetricCardsSectionV3 } from "@/components/sections/FeatureAsymmetricCardsSectionV3";
+import { FeatureStackedCardsSectionV3 } from "@/components/sections/FeatureStackedCardsSectionV3";
 import { DecisionSplitDecisionSectionV3 } from "@/components/sections/DecisionSplitDecisionSectionV3";
 import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
 import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
@@ -70,7 +71,10 @@ import {
 import { NavFloatingBentoSectionV2 } from "@/components/sections/NavFloatingBentoSectionV2";
 import { ProcessImageChecklistSectionV2 } from "@/components/sections/ProcessImageChecklistSectionV2";
 import { ProcessImageChecklistSectionV3 } from "@/components/sections/ProcessImageChecklistSectionV3";
-import { ServicesBentoCardsSectionV2 } from "@/components/sections/ServicesBentoCardsSectionV2";
+import {
+  ServicesBentoCardsSectionV2,
+  type ServicesBentoCardsVariant,
+} from "@/components/sections/ServicesBentoCardsSectionV2";
 import { ServicesHoverPanelSectionV2 } from "@/components/sections/ServicesHoverPanelSectionV2";
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { ServiceAreaZipLookupSectionV3 } from "@/components/sections/ServiceAreaZipLookupSectionV3";
@@ -146,6 +150,11 @@ const heroSplitFixedImageRatios = new Set<string>([
 ]);
 
 const heroCompactAlignments = new Set<string>(["left", "center", "right"]);
+const servicesBentoVariants = new Set<string>([
+  "default",
+  "split-header",
+  "offset-header",
+]);
 
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -380,7 +389,12 @@ export function renderPageTemplateSection(
     case "TrustLogoGridSectionV3":
       return <TrustLogoGridSectionV3 {...sectionLibraryV3Content.trustLogoMarquee} />;
     case "ServicesBentoCardsSectionV2":
-      return <ServicesBentoCardsSectionV2 {...servicesBentoProps(fieldSection)} />;
+      return (
+        <ServicesBentoCardsSectionV2
+          {...servicesBentoProps(fieldSection)}
+          variant={getServicesBentoVariant(section)}
+        />
+      );
     case "ServicesHoverPanelSectionV2":
       return <ServicesHoverPanelSectionV2 {...servicesHoverProps(fieldSection)} />;
     case "ServicesThreeCardsRightSectionV3":
@@ -456,6 +470,8 @@ export function renderPageTemplateSection(
       return <FeatureOverlapRowsSectionV3 {...featureOverlapRowsProps(fieldSection)} />;
     case "FeatureAsymmetricCardsSectionV3":
       return <FeatureAsymmetricCardsSectionV3 {...featureAsymmetricProps(fieldSection)} />;
+    case "FeatureStackedCardsSectionV3":
+      return <FeatureStackedCardsSectionV3 {...featureAsymmetricProps(fieldSection)} />;
     case "DecisionSplitDecisionSectionV3":
       return <DecisionSplitDecisionSectionV3 {...splitDecisionProps(fieldSection)} />;
     case "DecisionSplitLargeCardsSectionV3":
@@ -1589,6 +1605,12 @@ function getHeroCompactAlign(section: PageTemplatePreviewSection) {
     : sectionLibraryV3Content.heroCompact.align;
 }
 
+function getServicesBentoVariant(section: PageTemplatePreviewSection) {
+  return servicesBentoVariants.has(section.variant ?? "")
+    ? (section.variant as ServicesBentoCardsVariant)
+    : undefined;
+}
+
 function getValue(section: FieldSection, fieldName: string, fallback: string) {
   return (
     section.fields.find((field) => {
@@ -1772,13 +1794,7 @@ function testimonialItems(section: FieldSection) {
   const values = getListValues(section, ["testimonials", "items"], "");
 
   return values.length > 0
-    ? values.map((value, index) => ({
-        author: `Customer ${index + 1}`,
-        city: "",
-        detail: "",
-        quote: value,
-        service: "",
-      }))
+    ? values.map(parseTestimonialItem)
     : sectionLibraryV3Content.testimonialsMasonry.items.map((item) => ({
         ...item,
         city: "",
@@ -1930,6 +1946,70 @@ function parseFaqItem(value: string) {
     answer: answerParts.join(" - ").trim(),
     question: question.trim(),
   };
+}
+
+function parseTestimonialItem(value: string) {
+  const parts = value
+    .split(/\s+[—-]\s+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  if (parts.length < 2) {
+    return {
+      author: "Customer",
+      city: "",
+      detail: "",
+      quote: value.trim(),
+      service: "",
+    };
+  }
+
+  const [firstPart, ...restParts] = parts;
+  const secondPart = restParts.join(" - ");
+  const attributionFirst = isLikelyTestimonialAttribution(
+    firstPart,
+    secondPart,
+  );
+  const quote = attributionFirst ? secondPart : firstPart;
+  const attribution = attributionFirst ? firstPart : secondPart;
+  const parsedAttribution = parseTestimonialAttribution(attribution);
+
+  return {
+    author: parsedAttribution.author,
+    city: parsedAttribution.detail,
+    detail: parsedAttribution.detail,
+    quote,
+    service: parsedAttribution.detail,
+  };
+}
+
+function parseTestimonialAttribution(value: string) {
+  const [author, ...detailParts] = value.split(/\s*,\s*/);
+  const detail = detailParts.join(", ").trim();
+
+  return {
+    author: author.trim() || "Customer",
+    detail,
+  };
+}
+
+function isLikelyTestimonialAttribution(candidate: string, quote: string) {
+  const compactCandidate = candidate.trim();
+  const compactQuote = quote.trim();
+
+  if (!compactCandidate || !compactQuote) {
+    return false;
+  }
+
+  const hasNameInitial = /\b[A-Z][a-z]+(?:\s+[A-Z]\.)/.test(compactCandidate);
+  const hasLocationDetail = /^[^,]{2,40},\s*[^,]{2,40}$/.test(
+    compactCandidate,
+  );
+  const isMuchShorter =
+    compactCandidate.length <= 60 &&
+    compactQuote.length > compactCandidate.length + 20;
+
+  return (hasNameInitial || hasLocationDetail) && isMuchShorter;
 }
 
 function parseLink(value: string) {

@@ -306,10 +306,10 @@ export const sectionLibraryV3Content = {
     ],
   },
   contentFixedCoverFade: {
-    backgroundEyebrow: "Ready when you are",
+    backgroundEyebrow: "",
     backgroundTitle: "Let the final message hold before the request path rises.",
     backgroundBody:
-      "Use this conversion pattern when the page needs a cinematic close: one steady promise, then a contact form that covers the scene and turns attention into action.",
+      "A steady closing promise gives way to a request form when the visitor is ready to act.",
     backgroundLabel: "Closing CTA",
     foregroundEyebrow: "Contact",
     foregroundTitle: "Tell us what you need and we will follow up clearly.",
@@ -462,7 +462,7 @@ export const sectionLibraryV3Content = {
   },
   servicesBento: {
     eyebrow: "Services",
-    title: "Focused service paths for the work customers need most.",
+    title: "Heating and Cooling Services",
     body: "A larger image-led service card pattern for showing primary offers with more visual weight.",
     items: [
       {
@@ -605,6 +605,34 @@ export const sectionLibraryV3Content = {
     eyebrow: "Why choose us",
     title: "Straightforward service without the runaround.",
     body: "Use this asymmetrical feature section to pair a three-column intro with four compact proof points.",
+    actionLabel: "About the team",
+    cards: [
+      {
+        iconLabel: "01",
+        title: "Clear Recommendations",
+        body: "Repair, maintenance, and replacement guidance based on the home, budget, and timing.",
+      },
+      {
+        iconLabel: "02",
+        title: "Repair-First Approach",
+        body: "Explain what is happening, what can wait, and what needs attention now.",
+      },
+      {
+        iconLabel: "03",
+        title: "Fast Response",
+        body: "Keep scheduling practical with clear next steps and responsive appointment windows.",
+      },
+      {
+        iconLabel: "04",
+        title: "Local Team",
+        body: "Ground the experience in nearby service areas, familiar homes, and steady follow-through.",
+      },
+    ],
+  },
+  featureStackedCards: {
+    eyebrow: "Why choose us",
+    title: "Straightforward service without the runaround.",
+    body: "Use this stacked feature section to pair a three-column intro with larger, icon-led proof points.",
     actionLabel: "About the team",
     cards: [
       {
@@ -1177,6 +1205,10 @@ export const sectionLibraryV3Collections = [
       {
         label: "Asymmetric feature cards",
         component: "feature-asymmetric-cards-v3",
+      },
+      {
+        label: "Stacked feature cards",
+        component: "feature-stacked-cards-v3",
       },
     ],
   },

@@ -35,7 +35,6 @@ function BackgroundTexture({ label }: { label: string }) {
 }
 
 export function ContentFixedCoverFadeSectionV2({
-  backgroundEyebrow,
   backgroundTitle,
   backgroundBody,
   backgroundLabel,
@@ -54,8 +53,7 @@ export function ContentFixedCoverFadeSectionV2({
             className="col-span-6 max-lg:col-span-7"
           >
             <div className="fluid-type-frame w-full">
-              <p className="type-label text-white/60">{backgroundEyebrow}</p>
-              <h2 className="type-display-lg mt-eyebrow-display text-white">
+              <h2 className="type-display-lg text-white">
                 {backgroundTitle}
               </h2>
               <p className="type-text-xl measure-longform wrap-pretty mt-display-body text-white/72">
@@ -110,7 +108,7 @@ export function ContentFixedCoverFadeSectionV2({
                 <input
                   className={cx(
                     "radius-4",
-                    "min-h-12 border border-service-border bg-bg-page px-4 text-base font-normal outline-none transition-colors focus:border-service-accent",
+                    "min-h-12 w-full border border-service-border bg-bg-page px-4 text-base font-normal outline-none transition-colors focus:border-service-accent",
                   )}
                   placeholder="Jane Smith"
                   type="text"
@@ -126,7 +124,7 @@ export function ContentFixedCoverFadeSectionV2({
                 <input
                   className={cx(
                     "radius-4",
-                    "min-h-12 border border-service-border bg-bg-page px-4 text-base font-normal outline-none transition-colors focus:border-service-accent",
+                    "min-h-12 w-full border border-service-border bg-bg-page px-4 text-base font-normal outline-none transition-colors focus:border-service-accent",
                   )}
                   placeholder="Repair, installation, maintenance"
                   type="text"
@@ -142,7 +140,7 @@ export function ContentFixedCoverFadeSectionV2({
                 <textarea
                   className={cx(
                     "radius-4",
-                    "min-h-36 border border-service-border bg-bg-page px-4 py-3 text-base font-normal outline-none transition-colors focus:border-service-accent",
+                    "min-h-36 w-full border border-service-border bg-bg-page px-4 py-3 text-base font-normal outline-none transition-colors focus:border-service-accent",
                   )}
                   placeholder="Briefly describe the issue"
                 />

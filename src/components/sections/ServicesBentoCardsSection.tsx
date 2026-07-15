@@ -43,7 +43,7 @@ export function ServicesBentoCardsSection({
           align="center"
         />
 
-        <div className="mt-16 grid grid-cols-3 gap-3 max-lg:grid-cols-2 max-md:mt-12 max-md:grid-cols-1">
+        <div className="mt-16 grid grid-cols-3 card-grid-gap-med max-lg:grid-cols-2 max-md:mt-12 max-md:grid-cols-1">
           {items.map((item) => (
             <article
               className="group/service-card relative aspect-[3/4] cursor-pointer overflow-hidden rounded-lg border border-service-border bg-white shadow-service transition-transform duration-300 ease-out hover:scale-[1.015]"

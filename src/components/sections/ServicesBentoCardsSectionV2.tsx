@@ -13,15 +13,36 @@ type ServiceBentoItem = {
   imageSrc?: string;
 };
 
+export type ServicesBentoCardsVariant =
+  | "default"
+  | "split-header"
+  | "offset-header";
+
 type ServicesBentoCardsSectionV2Props = {
   eyebrow: string;
   title: string;
   body: string;
   items: ServiceBentoItem[];
+  variant?: ServicesBentoCardsVariant;
 };
 
 function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
+}
+
+function getShortTitle(title: string, maxWords = 5) {
+  const sanitizedTitle = title.trim().replace(/\.$/, "");
+  const words = sanitizedTitle.split(/\s+/).filter(Boolean);
+
+  if (words.length <= maxWords) {
+    return sanitizedTitle;
+  }
+
+  return words.slice(0, maxWords).join(" ");
+}
+
+function getSectionHeaderText(title: string) {
+  return title.trim().replace(/\.$/, "");
 }
 
 function ServiceImage({
@@ -62,53 +83,144 @@ const bentoCardSpanPattern = [
   "col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
 ];
 
+const splitHeaderCardSpanPattern = [
+  "col-span-2 max-md:col-span-3 max-sm:col-span-1",
+  "col-span-2 max-md:col-span-3 max-sm:col-span-1",
+  "col-span-2 max-md:col-span-3 max-sm:col-span-1",
+  "col-span-2 max-md:col-span-3 max-sm:col-span-1",
+  "col-span-2 max-md:col-span-3 max-sm:col-span-1",
+  "col-span-2 max-md:col-span-3 max-sm:col-span-1",
+];
+
 export function ServicesBentoCardsSectionV2({
   eyebrow,
   title,
   body,
   items,
+  variant = "default",
 }: ServicesBentoCardsSectionV2Props) {
+  const isSplitHeader = variant === "split-header";
+  const isOffsetHeader = variant === "offset-header";
+  const cardSpanPattern = isSplitHeader
+    ? splitHeaderCardSpanPattern
+    : bentoCardSpanPattern;
+  const splitHeaderSupportItems = items.slice(0, 4).map((item) => item.title);
+  const splitHeaderBody = [
+    body,
+    items
+      .slice(0, 2)
+      .map((item) => item.body)
+      .join(" "),
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <section id="services-bento" className="bg-bg-page">
-      <SevenColumnGrid minHeight="none" padding="med">
-        <SevenColumnGridItem
-          alignX="center"
-          className="col-span-5 col-start-2 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1"
-        >
-          <div className={cx("text-center", "fluid-type-frame")}>
-            <p className={cx("type-label", "text-service-accent")}>
-              {eyebrow}
-            </p>
-            <h2
+      <SevenColumnGrid className="items-start" minHeight="none" padding="med">
+        {isOffsetHeader ? (
+          <>
+            <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+              <h2 className="type-heading-xl max-w-4xl text-left text-service-ink">
+                {getSectionHeaderText(title)}
+              </h2>
+            </SevenColumnGridItem>
+            <SevenColumnGridItem
+              alignY="bottom"
+              className="col-span-3 col-start-5 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1"
+            >
+              <p className="type-text-lg measure-copy wrap-pretty text-service-muted">
+                {body}
+              </p>
+            </SevenColumnGridItem>
+          </>
+        ) : (
+          <SevenColumnGridItem
+            alignX={isSplitHeader ? "left" : "center"}
+            className={cx(
+              isSplitHeader
+                ? "col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+                : "col-span-5 col-start-2 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1",
+            )}
+            measure={isSplitHeader ? "copyWide" : undefined}
+          >
+            <div
               className={cx(
-                "type-heading-xl",
-                "mx-auto mt-5 text-service-ink",
+                isSplitHeader ? "text-left" : "text-center",
+                "fluid-type-frame",
+                isSplitHeader
+                  ? "sticky top-[var(--site-grid-inset-block)] max-lg:static"
+                  : undefined,
               )}
             >
-              {title}
-            </h2>
-            <p
-              className={cx(
-                "type-text-lg",
-                "measure-copy",
-                "wrap-pretty",
-                "mx-auto mt-6 text-service-muted",
-              )}
-            >
-              {body}
-            </p>
-          </div>
-        </SevenColumnGridItem>
+              <p className={cx("type-label", "text-service-accent")}>
+                {eyebrow}
+              </p>
+              <h2
+                className={cx(
+                  isSplitHeader ? "type-display-lg" : "type-heading-xl",
+                  isSplitHeader ? "mt-eyebrow-heading-lg" : "mx-auto mt-5",
+                  "text-service-ink",
+                )}
+              >
+                {isSplitHeader ? getShortTitle(title) : getSectionHeaderText(title)}
+              </h2>
+              <p
+                className={cx(
+                  "type-text-lg",
+                  "measure-copy",
+                  "wrap-pretty",
+                  isSplitHeader
+                    ? "mt-heading-body-md"
+                    : "mx-auto mt-6",
+                  "text-service-muted",
+                )}
+              >
+                {isSplitHeader ? splitHeaderBody : body}
+              </p>
+              {isSplitHeader ? (
+                <ul className="mt-body-actions-lg grid gap-2">
+                  {splitHeaderSupportItems.map((item) => (
+                    <li
+                      className="type-text-sm flex items-center gap-2 font-semibold text-service-ink"
+                      key={item}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="size-2 shrink-0 rounded-full bg-service-accent"
+                      />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          </SevenColumnGridItem>
+        )}
 
-        <SevenColumnGridItem className="col-span-7 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-          <div className="mt-16 grid grid-cols-7 items-start gap-3 max-md:mt-12 max-lg:grid-cols-5 max-md:grid-cols-3 max-sm:grid-cols-1">
+        <SevenColumnGridItem
+          className={cx(
+            isSplitHeader
+              ? "col-span-4 col-start-4 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1"
+              : "col-span-7 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
+          )}
+        >
+          <div
+            className={cx(
+              "grid card-grid-gap-med max-md:grid-cols-3 max-sm:grid-cols-1",
+              isSplitHeader
+                ? "grid-cols-4 items-stretch"
+                : "mt-16 grid-cols-7 items-start max-lg:grid-cols-5 max-md:mt-12",
+            )}
+          >
             {items.map((item, index) => (
               <article
                 className={cx(
                   "fluid-type-frame",
                   "radius-medium",
                   "group/service-card relative flex cursor-pointer flex-col overflow-hidden border border-service-border bg-service-surface shadow-service transition-transform duration-300 ease-out hover:scale-[1.015]",
-                  bentoCardSpanPattern[index % bentoCardSpanPattern.length],
+                  isSplitHeader ? "h-full" : undefined,
+                  cardSpanPattern[index % cardSpanPattern.length],
                 )}
                 key={item.title}
               >

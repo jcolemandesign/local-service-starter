@@ -1345,31 +1345,31 @@ body {
 
 /* BEGIN PAGEWORKS STYLEGUIDE TOKEN OVERRIDES */
 :root {
-  --live-service-ink: #30403a;
+  --live-service-ink: #17211d;
   --live-service-muted: #5f6f68;
   --live-service-accent: #4376ad;
-  --live-service-surface: #fafafa;
+  --live-service-surface: #ffffff;
   --live-service-border: #bec1bf;
-  --live-bg-page: #e8e9ed;
-  --live-bg-surface: #fafafa;
+  --live-bg-page: #ebebea;
+  --live-bg-surface: #ffffff;
   --live-bg-muted: #bec1bf;
-  --live-bg-dark: #1b212c;
-  --live-text-main: #30403a;
+  --live-bg-dark: #10141b;
+  --live-text-main: #17211d;
   --live-text-muted: #5f6f68;
   --live-text-accent: #4376ad;
   --live-border-default: #bec1bf;
   --live-accent: #c45a2c;
   --live-shadow-service: 2px 3px 48px rgb(0 0 0 / 0.05);
-  --color-service-ink: #30403a;
+  --color-service-ink: #17211d;
   --color-service-muted: #5f6f68;
   --color-service-accent: #4376ad;
-  --color-service-surface: #fafafa;
+  --color-service-surface: #ffffff;
   --color-service-border: #bec1bf;
-  --color-bg-page: #e8e9ed;
-  --color-bg-surface: #fafafa;
+  --color-bg-page: #ebebea;
+  --color-bg-surface: #ffffff;
   --color-bg-muted: #bec1bf;
-  --color-bg-dark: #1b212c;
-  --color-text-main: #30403a;
+  --color-bg-dark: #10141b;
+  --color-text-main: #17211d;
   --color-text-muted: #5f6f68;
   --color-text-inverse: #ffffff;
   --color-text-accent: #4376ad;
@@ -1399,7 +1399,7 @@ body {
   --section-space-sml-mobile: 2.75rem;
   --section-space-med-mobile: 3rem;
   --section-space-lrg-mobile: 3rem;
-  --semantic-spacing-scale: 0.9;
+  --semantic-spacing-scale: 0.65;
   --container-gutter: clamp(1.5rem, 3vw, 2.5rem);
   --site-grid-inset-block: clamp(2rem, 4vw, 7rem);
   --site-grid-inset-inline: clamp(0.5rem, 3vw, 6rem);

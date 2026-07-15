@@ -21,6 +21,10 @@ import {
   type HeroCompactAlign,
 } from "@/components/sections/HeroCompactSectionV3";
 import { SectionHeaderCompactSectionV3 } from "@/components/sections/SectionHeaderCompactSectionV3";
+import {
+  ServicesBentoCardsSectionV2,
+  type ServicesBentoCardsVariant,
+} from "@/components/sections/ServicesBentoCardsSectionV2";
 import { DownArrowIcon } from "@/components/primitives";
 import type { PagebuilderRecipe, SectionMode } from "@/content/pagebuilder";
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
@@ -53,6 +57,7 @@ const fixedRatioSplitComponent = "HeroSplitFixedImageSectionV3";
 const contentFixedRatioSplitComponent = "ContentSplitFixedImageSectionV3";
 const heroCompactComponent = "HeroCompactSectionV3";
 const sectionHeaderCompactComponent = "SectionHeaderCompactSectionV3";
+const servicesBentoComponent = "ServicesBentoCardsSectionV2";
 const splitContentImageVariantOptions = [
   {
     label: "Text 3 / Image 4",
@@ -118,6 +123,19 @@ const heroCompactAlignOptions = [
 const heroCompactAlignments = new Set<string>(
   heroCompactAlignOptions.map((option) => option.value),
 );
+
+const servicesBentoVariantOptions = [
+  { label: "Centered", value: "default" },
+  { label: "Split Header", value: "split-header" },
+  { label: "Offset Header", value: "offset-header" },
+] as const;
+
+const servicesBentoVariantValues = new Set<string>(
+  servicesBentoVariantOptions.map((option) => option.value),
+);
+
+type ServicesBentoVariantOption =
+  (typeof servicesBentoVariantOptions)[number]["value"];
 
 function readPagebuilderPreviewVariables(): PreviewVariableStyle {
   if (typeof window === "undefined") {
@@ -324,6 +342,10 @@ function isCompactHeaderAlignmentSection(
   );
 }
 
+function isServicesBentoSection(section: PagebuilderRecipe["sectionStack"][number]) {
+  return section.component === servicesBentoComponent;
+}
+
 function getSplitContentImageVariantLabel(variant: string | undefined) {
   return splitContentImageVariantOptions.find(
     (option) => option.value === variant,
@@ -341,10 +363,21 @@ function getFixedRatioSplitRatioLabel(ratio: string | undefined) {
     ?.label;
 }
 
+function getServicesBentoVariantLabel(variant: string | undefined) {
+  return servicesBentoVariantOptions.find((option) => option.value === variant)
+    ?.label;
+}
+
 function getHeroCompactAlign(section: WorkingSection) {
   return heroCompactAlignments.has(section.variant ?? "")
     ? (section.variant as HeroCompactAlign)
     : sectionLibraryV3Content.heroCompact.align;
+}
+
+function getServicesBentoVariant(section: WorkingSection) {
+  return servicesBentoVariantValues.has(section.variant ?? "")
+    ? (section.variant as ServicesBentoCardsVariant)
+    : servicesBentoVariantOptions[0].value;
 }
 
 function createInitialDesignStyle(): DesignStyleSettings {
@@ -378,6 +411,8 @@ function createInitialWorkingStack(
             ? section.variant ?? fixedRatioSplitVariantOptions[0].value
             : isCompactHeaderAlignmentSection(section)
               ? section.variant ?? sectionLibraryV3Content.heroCompact.align
+              : isServicesBentoSection(section)
+                ? section.variant ?? servicesBentoVariantOptions[0].value
               : section.variant,
   }));
 }
@@ -478,6 +513,8 @@ function updateSectionFromSwapOption(
             : nextOption.component === heroCompactComponent ||
                 nextOption.component === sectionHeaderCompactComponent
               ? sectionLibraryV3Content.heroCompact.align
+              : nextOption.component === servicesBentoComponent
+                ? servicesBentoVariantOptions[0].value
               : undefined,
   };
 }
@@ -815,6 +852,13 @@ const sectionSwapOptions = [
     name: "Asymmetric feature cards",
   },
   {
+    component: "FeatureStackedCardsSectionV3",
+    instruction:
+      "Use stacked feature cards when a why-choose-us section needs larger icon-led proof points with the same copy formula as asymmetric cards.",
+    mode: "Narrative",
+    name: "Stacked feature cards",
+  },
+  {
     component: "TrustBarSectionV3",
     instruction:
       "Validate the promise immediately with rating, volume, team, and locality claims.",
@@ -1137,6 +1181,11 @@ function buildPageInstruction({
      getFixedRatioSplitRatioLabel(section.ratio) ??
      fixedRatioSplitRatioOptions[0].label
    } (${section.ratio ?? fixedRatioSplitRatioOptions[0].value})`
+       : isServicesBentoSection(section)
+         ? `Variant: ${
+             getServicesBentoVariantLabel(section.variant) ??
+             servicesBentoVariantOptions[0].label
+           } (${section.variant ?? servicesBentoVariantOptions[0].value})`
        : "Variant: default"
    }
    Instruction: ${section.instruction}
@@ -1710,6 +1759,23 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateServicesBentoVariant(
+    sectionId: string,
+    variant: ServicesBentoVariantOption,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && isServicesBentoSection(section)
+          ? {
+              ...section,
+              variant,
+            }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateFixedRatioSplitRatio(
     sectionId: string,
     ratio: FixedRatioSplitRatio,
@@ -1766,6 +1832,8 @@ export function PagebuilderShell({
               : nextOption.component === heroCompactComponent ||
                   nextOption.component === sectionHeaderCompactComponent
                 ? sectionLibraryV3Content.heroCompact.align
+                : nextOption.component === servicesBentoComponent
+                  ? servicesBentoVariantOptions[0].value
                 : undefined,
     };
 
@@ -2019,6 +2087,11 @@ export function PagebuilderShell({
             {...sectionLibraryV3Content.sectionHeaderCompact}
             align={getHeroCompactAlign(section)}
             headingLevel={2}
+          />
+        ) : isServicesBentoSection(section) ? (
+          <ServicesBentoCardsSectionV2
+            {...sectionLibraryV3Content.servicesBento}
+            variant={getServicesBentoVariant(section)}
           />
         ) : (
           previewCatalog[section.component] ??
@@ -2474,6 +2547,47 @@ export function PagebuilderShell({
                               <p className="type-caption text-current/60">
                                 Choose where the compact title block sits on
                                 the seven-column grid.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
+                          {isServicesBentoSection(section) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Header Layout
+                              </legend>
+                              <div className="grid grid-cols-3 gap-2 max-md:grid-cols-1">
+                                {servicesBentoVariantOptions.map((option) => {
+                                  const optionIsActive =
+                                    getServicesBentoVariant(section) ===
+                                    option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "radius-4 min-h-10 border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateServicesBentoVariant(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Choose centered, sticky split, or offset header
+                                layout.
                               </p>
                             </fieldset>
                           ) : null}

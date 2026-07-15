@@ -24,6 +24,7 @@ import {
   FAQAccordionSectionV3,
   FAQSectionV3,
   FeatureAsymmetricCardsSectionV3,
+  FeatureStackedCardsSectionV3,
   FeatureOverlapRowsSectionV3,
   FeaturePortraitParagraphSectionV3,
   FooterCompactSectionV3,
@@ -216,6 +217,11 @@ const sectionElements = {
   "feature-asymmetric-cards-v3": (
     <FeatureAsymmetricCardsSectionV3
       {...sectionLibraryV3Content.featureAsymmetricCards}
+    />
+  ),
+  "feature-stacked-cards-v3": (
+    <FeatureStackedCardsSectionV3
+      {...sectionLibraryV3Content.featureStackedCards}
     />
   ),
   "decision-split-decision-v3": (

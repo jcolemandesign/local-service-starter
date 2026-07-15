@@ -9,8 +9,8 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-07-14T19:03:35.848Z",
-      "sectionCount": 16,
+      "savedAt": "2026-07-14T23:25:15.265Z",
+      "sectionCount": 11,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
@@ -45,23 +45,14 @@
         },
         {
           "component": "ServicesBentoCardsSectionV2",
-          "id": "classic-service-template-home-northstar-v1-3",
+          "id": "classic-service-ServicesBentoCardsSectionV2-added-1",
           "included": true,
           "instruction": "Use bento-style service cards when the services need a richer visual scan pattern.",
           "mode": "Scan",
           "name": "Services bento cards",
-          "originalComponent": "ServicesThreeCardsRightSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "FeatureAsymmetricCardsSectionV3",
-          "id": "classic-service-template-home-northstar-v1-4",
-          "included": true,
-          "instruction": "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points.",
-          "mode": "Narrative",
-          "name": "Asymmetric feature cards",
-          "originalComponent": "FeatureAsymmetricCardsSectionV3",
-          "originalIndex": -1
+          "originalComponent": "ServicesBentoCardsSectionV2",
+          "originalIndex": -1,
+          "variant": "offset-header"
         },
         {
           "component": "DecisionSplitLargeCardsSectionV3",
@@ -74,13 +65,13 @@
           "originalIndex": -1
         },
         {
-          "component": "ProcessStepsSectionV3",
-          "id": "classic-service-template-home-northstar-v1-6",
+          "component": "FeatureStackedCardsSectionV3",
+          "id": "classic-service-template-home-northstar-v1-4",
           "included": true,
-          "instruction": "Use current process steps when the page needs a clearer, more styled decision sequence.",
-          "mode": "Decision",
-          "name": "Process steps",
-          "originalComponent": "ProcessStepsSectionV3",
+          "instruction": "Use stacked feature cards when a why-choose-us section needs larger icon-led proof points with the same copy formula as asymmetric cards.",
+          "mode": "Narrative",
+          "name": "Stacked feature cards",
+          "originalComponent": "FeatureAsymmetricCardsSectionV3",
           "originalIndex": -1
         },
         {
@@ -94,6 +85,16 @@
           "originalIndex": -1
         },
         {
+          "component": "ProcessStepsSectionV3",
+          "id": "classic-service-template-home-northstar-v1-6",
+          "included": true,
+          "instruction": "Use current process steps when the page needs a clearer, more styled decision sequence.",
+          "mode": "Decision",
+          "name": "Process steps",
+          "originalComponent": "ProcessStepsSectionV3",
+          "originalIndex": -1
+        },
+        {
           "component": "FAQAccordionSectionV3",
           "id": "classic-service-template-home-northstar-v1-8",
           "included": true,
@@ -104,73 +105,23 @@
           "originalIndex": -1
         },
         {
-          "component": "CTASectionV3",
+          "component": "ContentFixedCoverFadeSectionV2",
           "id": "classic-service-template-home-northstar-v1-9",
           "included": true,
-          "instruction": "Use the current conversion band when the page needs a polished direct next step.",
+          "instruction": "Use a fixed-cover fade when the action moment should feel immersive and image-led.",
           "mode": "Action",
-          "name": "CTA",
+          "name": "Fixed cover fade",
           "originalComponent": "ContentFixedCoverFadeSectionV2",
           "originalIndex": -1
         },
         {
-          "component": "FooterSectionV3",
-          "id": "classic-service-template-home-northstar-v1-10",
-          "included": true,
-          "instruction": "End with service links, areas, contact details, and legal links.",
-          "mode": "Utility",
-          "name": "Footer",
-          "originalComponent": "FooterSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "FooterLinkPanelSectionV3",
-          "id": "classic-service-FooterLinkPanelSectionV3-added-1",
-          "included": true,
-          "instruction": "End with a large link-panel footer that groups service areas, services, contact paths, social links, and a back-to-top action.",
-          "mode": "Utility",
-          "name": "Link panel footer",
-          "originalComponent": "FooterLinkPanelSectionV3",
-          "originalIndex": -1
-        },
-        {
           "component": "FooterCompactSectionV3",
-          "id": "classic-service-FooterCompactSectionV3-added-2",
+          "id": "classic-service-template-home-northstar-v1-10",
           "included": true,
           "instruction": "End with top-level navigation links, a rule, contact info, social links, and legal links in a compact footer.",
           "mode": "Utility",
           "name": "Condensed footer",
-          "originalComponent": "FooterCompactSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "FooterHorizontalSectionV3",
-          "id": "classic-service-FooterHorizontalSectionV3-added-3",
-          "included": true,
-          "instruction": "End with a horizontal footer where link groups sit inline and wrap beside their headings.",
-          "mode": "Utility",
-          "name": "Horizontal footer",
-          "originalComponent": "FooterHorizontalSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "FooterSectionV3",
-          "id": "classic-service-FooterSectionV3-added-4",
-          "included": true,
-          "instruction": "End with service links, areas, contact details, and legal links.",
-          "mode": "Utility",
-          "name": "Footer",
           "originalComponent": "FooterSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ContactSectionV3",
-          "id": "classic-service-ContactSectionV3-added-5",
-          "included": true,
-          "instruction": "Close with phone, email, hours, and a simple form or request path.",
-          "mode": "Utility",
-          "name": "Contact section",
-          "originalComponent": "ContactSectionV3",
           "originalIndex": -1
         }
       ]

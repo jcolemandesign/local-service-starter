@@ -28,7 +28,7 @@ function ServiceAreaMapPlaceholder({
   label: string;
 }) {
   return (
-    <div className="content-padding radius-surface relative isolate grid h-full min-h-[31rem] overflow-hidden border border-service-border bg-service-surface shadow-service max-lg:min-h-[24rem] max-md:min-h-[20rem]">
+    <div className="content-padding radius-medium relative isolate grid h-full min-h-[31rem] overflow-hidden border border-service-border bg-service-surface shadow-service max-lg:min-h-[24rem] max-md:min-h-[20rem]">
       <div
         aria-hidden="true"
         className="absolute inset-x-0 top-1/2 -z-10 h-px bg-service-border"
@@ -75,7 +75,7 @@ export function ServiceAreaZipLookupSectionV3({
   }
 
   return (
-    <section className="bg-service-surface text-service-ink">
+    <section className="bg-bg-page text-service-ink">
       <SevenColumnGrid padding="med" minHeight="none" className="items-stretch">
         <SevenColumnGridItem
           className="col-span-7 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
@@ -87,7 +87,7 @@ export function ServiceAreaZipLookupSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-          <div className="content-padding radius-surface grid h-full content-between border border-service-border bg-bg-page shadow-service">
+          <div className="content-padding radius-medium grid h-full content-between border border-service-border bg-service-surface shadow-service">
             <div>
               <p className="type-label text-service-accent">Service area</p>
               <div className="mt-heading-body-md grid grid-cols-2 items-start gap-x-6 gap-y-3 max-sm:grid-cols-1">
@@ -126,7 +126,7 @@ export function ServiceAreaZipLookupSectionV3({
                     inputMode="numeric"
                     autoComplete="postal-code"
                     placeholder={inputPlaceholder}
-                    className="radius-button min-h-12 border border-service-border bg-service-surface px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent focus:bg-bg-page"
+                    className="radius-button min-h-12 border border-service-border bg-bg-page px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent"
                   />
                   <button
                     type="submit"
@@ -140,7 +140,7 @@ export function ServiceAreaZipLookupSectionV3({
 
               {hasSubmitted ? (
                 <div
-                  className="mt-body-actions-sm radius-surface border border-service-accent/35 bg-service-accent/10 p-4"
+                  className="mt-body-actions-sm radius-medium border border-service-accent/35 bg-service-accent/10 p-4"
                   role="status"
                   aria-live="polite"
                 >

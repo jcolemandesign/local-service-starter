@@ -41,8 +41,8 @@ export function DecisionSplitDecisionSectionV3({
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="bg-service-surface">
-      <SevenColumnGrid className="section-min-none items-start" padding="sml">
+    <section className="bg-bg-page">
+      <SevenColumnGrid className="section-min-tiny items-start" padding="sml">
         <SevenColumnGridItem
           className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
           measure="copyWide"
@@ -70,7 +70,7 @@ export function DecisionSplitDecisionSectionV3({
           <div className="grid grid-cols-2 items-stretch gap-[var(--site-grid-gap)] max-md:grid-cols-1">
             {cards.slice(0, 2).map((card, index) => (
               <motion.article
-                className="fluid-type-frame min-h-56 rounded-[var(--radius-md-token)] border border-service-border bg-bg-page p-5 text-service-ink shadow-none max-md:min-h-0"
+                className="fluid-type-frame radius-medium min-h-56 border border-service-border bg-service-surface p-5 text-service-ink shadow-none max-md:min-h-0"
                 initial={false}
                 key={card.title}
                 viewport={{ amount: 0.85, once: true }}

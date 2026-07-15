@@ -59,6 +59,7 @@ export {
 export { DecisionSplitDecisionSectionV3 } from "./DecisionSplitDecisionSectionV3";
 export { DecisionSplitLargeCardsSectionV3 } from "./DecisionSplitLargeCardsSectionV3";
 export { FeatureAsymmetricCardsSectionV3 } from "./FeatureAsymmetricCardsSectionV3";
+export { FeatureStackedCardsSectionV3 } from "./FeatureStackedCardsSectionV3";
 export { FeatureOverlapRowsSection } from "./FeatureOverlapRowsSection";
 export { FeatureOverlapRowsSectionV2 } from "./FeatureOverlapRowsSectionV2";
 export { FeaturePortraitParagraphSectionV3 } from "./FeaturePortraitParagraphSectionV3";

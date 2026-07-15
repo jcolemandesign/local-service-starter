@@ -599,6 +599,9 @@ function getBulkPasteMatchKey(
   const candidates = [
     field.path,
     `${sectionId}.${fieldName}`,
+    ...getBulkPasteSectionAliases(sectionId).map(
+      (sectionAlias) => `${sectionAlias}.${fieldName}`,
+    ),
     field.id,
   ].map(normalizeBulkPasteKey);
 
@@ -607,6 +610,20 @@ function getBulkPasteMatchKey(
 
 function getSectionIdFromPath(fieldPath: string) {
   return fieldPath.split(".")[0] || "strategy";
+}
+
+function getBulkPasteSectionAliases(sectionId: string) {
+  const aliases = new Set<string>();
+
+  if (sectionId.includes("stacked-feature-cards")) {
+    aliases.add(sectionId.replace("stacked-feature-cards", "asymmetric-feature-cards"));
+  }
+
+  if (sectionId.includes("asymmetric-feature-cards")) {
+    aliases.add(sectionId.replace("asymmetric-feature-cards", "stacked-feature-cards"));
+  }
+
+  return Array.from(aliases);
 }
 
 function normalizeBulkPasteKey(value: string) {

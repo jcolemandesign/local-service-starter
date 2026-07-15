@@ -21,7 +21,7 @@ export function DecisionSplitLargeCardsSectionV3({
   title,
 }: DecisionSplitLargeCardsSectionV3Props) {
   return (
-    <section className="bg-service-surface">
+    <section className="bg-bg-page">
       <SevenColumnGrid className="section-min-none items-start" padding="sml">
         <SevenColumnGridItem
           className="col-span-4 max-md:col-span-3 max-sm:col-span-1"
@@ -65,7 +65,7 @@ export function DecisionSplitLargeCardsSectionV3({
 
 function SplitLargeCard({ card }: { card: SplitLargeCard }) {
   return (
-    <article className="fluid-type-frame min-h-64 rounded-[var(--radius-md-token)] border border-service-border bg-bg-page p-6 text-service-ink shadow-none max-md:min-h-0">
+    <article className="fluid-type-frame radius-medium min-h-64 border border-service-border bg-service-surface p-6 text-service-ink shadow-none max-md:min-h-0">
       <p className="type-label text-service-accent">{card.eyebrow}</p>
       <h3 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
         {card.title}
