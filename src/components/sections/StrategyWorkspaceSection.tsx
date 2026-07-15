@@ -578,7 +578,7 @@ export function StrategyWorkspaceSection({
   }
 
   return (
-    <Section className="min-h-svh bg-bg-page text-text-main">
+    <Section className="strategy-workspace min-h-svh bg-bg-page text-text-main">
       <div className="fixed left-[var(--container-gutter)] right-[var(--container-gutter)] top-4 z-40 flex flex-wrap items-center justify-end gap-2">
         <Link
           className={strategyNavButtonClass}
@@ -699,7 +699,7 @@ export function StrategyWorkspaceSection({
 
                     return (
                       <div
-                        className={`relative rounded-[var(--radius-md-token)] border p-3 pr-12 transition-colors ${
+                        className={`relative rounded-[var(--radius-md-token)] border p-3 pr-14 transition-colors ${
                           hasTemplateReady
                             ? "border-service-accent/35 bg-bg-surface"
                             : "border-service-border bg-service-surface"
@@ -1464,7 +1464,7 @@ function TemplateReadyIcon({
           ? "Copy template contract"
           : "Waiting for template";
   const className = cx(
-    "absolute right-3 top-3 flex size-8 items-center justify-center rounded-sm border transition-[background-color,border-color,color,box-shadow,transform] duration-150 active:translate-y-px active:scale-95",
+    "absolute right-3 top-3 flex size-10 items-center justify-center rounded-sm border transition-[background-color,border-color,color,box-shadow,transform] duration-150 active:translate-y-px active:scale-95",
     isReady
       ? "border-service-accent bg-service-accent text-white hover:shadow-service"
       : "border-service-border bg-bg-surface text-service-muted/45",
@@ -1475,19 +1475,18 @@ function TemplateReadyIcon({
   const icon = (
     <svg
       aria-hidden="true"
-      className="size-4"
+      className="size-7"
       fill="none"
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth="2"
+      strokeWidth="1.25"
       viewBox="0 0 24 24"
     >
-      {isReady ? (
-        <path d="M5 12.5l4.2 4.2L19 7" />
-      ) : (
-        <path d="M7 7h10v10H7z" />
-      )}
+      <rect height="15" rx="0.75" width="14" x="5" y="4.5" />
+      <path d="M5 8.5h14" />
+      <rect height="3.5" rx="0.35" width="3.5" x="8" y="11.5" />
+      <path d="M14 11.75h2.5M14 14.25h2.5" />
     </svg>
   );
 
@@ -1537,28 +1536,26 @@ function PageCopyReadyIcon({ isReady }: { isReady: boolean }) {
   return (
     <span
       aria-label={label}
-      className={`absolute right-3 top-12 flex size-8 items-center justify-center rounded-full border ${
+      className={`absolute right-3 top-16 flex size-10 items-center justify-center rounded-sm border ${
         isReady
-          ? "border-green-700 bg-green-700 text-white"
+          ? "border-accent bg-accent text-white"
           : "border-service-border/60 bg-white/35 text-service-muted/45"
       }`}
       title={label}
     >
       <svg
         aria-hidden="true"
-        className="size-4"
+        className="size-7"
         fill="none"
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="1.8"
+        strokeWidth="1.25"
         viewBox="0 0 24 24"
       >
-        <path d="M7 4h8l4 4v12H7z" />
-        <path d="M15 4v5h5" />
-        <path d="M10 13h6" />
-        <path d="M10 16h4" />
-        {isReady ? <path d="M9 20l2 2 4-5" /> : null}
+        <path d="M7.25 3.75h7.5l3 3v13.5H7.25z" />
+        <path d="M14.75 3.75v3h3" />
+        <path d="M10 12h5M10 15h5" />
       </svg>
     </span>
   );

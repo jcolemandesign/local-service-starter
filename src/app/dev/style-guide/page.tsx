@@ -6,7 +6,7 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 import { StyleGuideLiveSurface } from "@/components/sections/StyleGuideLiveSurface";
-import { StyleGuideRadiusCard } from "@/components/sections/StyleGuideRadiusCard";
+import { StyleGuideRadiusControls } from "@/components/sections/StyleGuideRadiusControls";
 import { StyleGuideSectionMinControl } from "@/components/sections/StyleGuideSectionMinControl";
 import { StyleGuideGridTokenControl } from "@/components/sections/StyleGuideGridTokenControl";
 import { StyleGuideSemanticSpacingControl } from "@/components/sections/StyleGuideSemanticSpacingControl";
@@ -2087,71 +2087,7 @@ export default function StyleGuidePage() {
           <Card className="p-5 shadow-none">
             <SevenColumnGrid minHeight="none" padding="none">
               <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-                <div className="fluid-type-frame">
-                  <p className="type-label text-service-accent">radius tokens</p>
-                  <h2 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
-                    Corner controls
-                  </h2>
-                  <p className="type-text-sm mt-heading-body-sm text-service-muted">
-                    Select separate active radius tokens for cards/surfaces and
-                    button controls.
-                  </p>
-                </div>
-                <div className="mt-5 grid gap-5">
-                  <div>
-                    <p className="type-caption mb-2 font-semibold text-service-ink">
-                      Cards and surfaces
-                    </p>
-                    <div className="grid grid-cols-[minmax(0,1fr)_4rem_2rem] gap-3 px-3 pb-2">
-                      <span className="type-caption font-semibold text-service-muted">
-                        Token
-                      </span>
-                      <span className="type-caption text-right font-semibold text-service-muted">
-                        Value
-                      </span>
-                      <span className="type-caption text-right font-semibold text-service-muted">
-                        Edge
-                      </span>
-                    </div>
-                    <div className="grid gap-2">
-                      {radii.map(([name, value]) => (
-                        <StyleGuideRadiusCard
-                          key={`surface-${name}`}
-                          name={name}
-                          target="surface"
-                          value={value}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="type-caption mb-2 font-semibold text-service-ink">
-                      Buttons
-                    </p>
-                    <div className="grid grid-cols-[minmax(0,1fr)_4rem_2rem] gap-3 px-3 pb-2">
-                      <span className="type-caption font-semibold text-service-muted">
-                        Token
-                      </span>
-                      <span className="type-caption text-right font-semibold text-service-muted">
-                        Value
-                      </span>
-                      <span className="type-caption text-right font-semibold text-service-muted">
-                        Edge
-                      </span>
-                    </div>
-                    <div className="grid gap-2">
-                      {radii.map(([name, value]) => (
-                        <StyleGuideRadiusCard
-                          key={`button-${name}`}
-                          name={name}
-                          target="button"
-                          value={value}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                <StyleGuideRadiusControls options={radii} />
               </SevenColumnGridItem>
 
               <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
