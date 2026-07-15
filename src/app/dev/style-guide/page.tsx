@@ -6,7 +6,6 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 import { StyleGuideLiveSurface } from "@/components/sections/StyleGuideLiveSurface";
-import { StyleGuideControlBoard } from "@/components/sections/StyleGuideControlBoard";
 import { StyleGuideRadiusCard } from "@/components/sections/StyleGuideRadiusCard";
 import { StyleGuideSectionMinControl } from "@/components/sections/StyleGuideSectionMinControl";
 import { StyleGuideGridTokenControl } from "@/components/sections/StyleGuideGridTokenControl";
@@ -19,7 +18,6 @@ import {
 } from "@/components/sections/StyleGuideTypographyControls";
 import {
   FAQSectionV3,
-  HeroSplitFullHeightSectionV3,
   ServicesThreeCardsRightSectionV3,
   TrustBarSectionV3,
 } from "@/components/sections";
@@ -311,20 +309,20 @@ const sectionPaddingOptions = [
     vsmlTablet: "2.25rem",
   },
   {
-    label: "Wide padding",
-    lrg: "12rem",
-    lrgMobile: "5.5rem",
-    lrgTablet: "8rem",
-    med: "9rem",
-    medMobile: "5rem",
-    medTablet: "7rem",
-    name: "section-padding-wide",
-    sml: "6rem",
-    smlMobile: "5rem",
-    smlTablet: "5rem",
-    vsml: "3rem",
-    vsmlMobile: "2.5rem",
-    vsmlTablet: "2.5rem",
+    label: "Max padding",
+    lrg: "14rem",
+    lrgMobile: "6rem",
+    lrgTablet: "9rem",
+    med: "10rem",
+    medMobile: "5.5rem",
+    medTablet: "7.5rem",
+    name: "section-padding-max",
+    sml: "6.5rem",
+    smlMobile: "5.5rem",
+    smlTablet: "5.5rem",
+    vsml: "3.25rem",
+    vsmlMobile: "2.75rem",
+    vsmlTablet: "2.75rem",
   },
 ] as const;
 
@@ -410,8 +408,8 @@ const siteGridGapOptions = [
     value: "clamp(1rem, 1.35vw, 2rem)",
   },
   {
-    label: "Wide gutter",
-    name: "site-grid-gap-wide",
+    label: "Max gutter",
+    name: "site-grid-gap-max",
     previewValue: "4rem",
     value: "clamp(1.5rem, 2.15vw, 3.5rem)",
   },
@@ -775,13 +773,11 @@ const surfaceTypeSpecimens = [
 ];
 
 const styleGuideToc = [
-  { href: "#seven-column-grid", label: "Layout" },
-  { href: "#typographic-hierarchy", label: "Type" },
+  { href: "#spacing", label: "Spacing" },
+  { href: "#typography", label: "Type" },
   { href: "#color-system", label: "Color" },
   { href: "#shape", label: "Shape" },
-  { href: "#spacing", label: "Spacing" },
   { href: "#buttons", label: "Buttons" },
-  { href: "#lists-controls", label: "Lists" },
   { href: "#styles-in-context", label: "Context" },
 ];
 
@@ -794,6 +790,170 @@ const styleGuidePreviewPages = [
 
 function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
+}
+
+function LayoutSystemControlLab() {
+  const tokenLabels = [
+    "site-grid-frame",
+    "section-space-med",
+    "site-grid-gap",
+    "content-frame",
+    "inline-gap-med",
+  ];
+
+  return (
+    <div className="radius-medium overflow-hidden border border-service-border bg-bg-page">
+      <div className="content-frame border-b border-service-border bg-service-surface">
+        <div className="fluid-type-frame">
+          <p className="type-label text-service-accent">Live control lab</p>
+          <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
+            Stress test the active layout tokens
+          </h3>
+          <p className="type-text-sm mt-heading-body-sm text-service-muted">
+            This preview uses the same section frame, grid gutter, content
+            inset, card gap, and radius tokens a production section would use.
+          </p>
+        </div>
+      </div>
+
+      <section
+        className="section-min-active section-space-med bg-bg-page"
+        style={{ minHeight: "min(var(--section-min-active), 44rem)" }}
+      >
+        <SevenColumnGrid minHeight="none" padding="none">
+          <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+            <article className="content-frame fluid-type-frame radius-medium grid h-full content-between border border-service-border bg-service-surface shadow-service">
+              <div>
+                <p className="type-label text-service-accent">Columns 1-3</p>
+                <h4 className="type-heading-lg mt-eyebrow-heading-sm text-service-ink">
+                  Primary copy block
+                </h4>
+                <p className="type-text-sm mt-heading-body-sm text-service-muted">
+                  Increase section padding for taller bands, adjust body spacing
+                  for the outer frame, then tune content spacing to see this
+                  card breathe without changing its markup.
+                </p>
+              </div>
+              <div className="layout-gap-med mt-8 grid grid-cols-2 max-md:grid-cols-1">
+                <div className="radius-small border border-service-border bg-white p-4">
+                  <p className="type-label text-service-muted">Frame</p>
+                  <p className="type-text-sm mt-2 text-service-ink">
+                    Body spacing controls the page inset around this whole lab.
+                  </p>
+                </div>
+                <div className="radius-small border border-service-border bg-white p-4">
+                  <p className="type-label text-service-muted">Inset</p>
+                  <p className="type-text-sm mt-2 text-service-ink">
+                    Content spacing controls the padding inside each panel.
+                  </p>
+                </div>
+              </div>
+            </article>
+          </SevenColumnGridItem>
+
+          <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+            <div
+              className="site-grid-gap grid h-full content-start"
+              style={{ rowGap: "var(--site-grid-gap)" }}
+            >
+              <article className="content-frame radius-medium border border-service-border bg-white">
+                <div className="fluid-type-frame">
+                  <p className="type-label text-service-accent">Columns 4-7</p>
+                  <h4 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                    Gutter rhythm check
+                  </h4>
+                  <p className="type-text-sm mt-heading-body-sm text-service-muted">
+                    The distance between the left card and this stack follows
+                    site-grid-gap. The vertical stack and the two-card split use
+                    that same gutter so one control tests both directions.
+                  </p>
+                </div>
+              </article>
+
+              <div
+                className="site-grid-gap grid grid-cols-2 max-md:grid-cols-1"
+                style={{ rowGap: "var(--site-grid-gap)" }}
+              >
+                {["Compact card", "Wide card"].map((label) => (
+                  <article
+                    className="content-frame radius-medium min-h-40 border border-service-border bg-service-surface"
+                    key={label}
+                  >
+                    <p className="type-label text-service-accent">{label}</p>
+                    <p className="type-heading-sm mt-label-heading-sm text-service-ink">
+                      Same shell, different column pressure
+                    </p>
+                    <p className="type-text-sm mt-heading-body-sm text-service-muted">
+                      Watch text, padding, and corners stay tied to shared
+                      tokens as the layout gets tighter.
+                    </p>
+                  </article>
+                ))}
+              </div>
+
+              <article className="content-frame radius-medium grid min-h-36 grid-cols-[minmax(0,1fr)_auto] items-end gap-6 border border-service-border bg-service-ink text-white max-md:grid-cols-1">
+                <div className="fluid-type-frame">
+                  <p className="type-label text-white/68">Wide action block</p>
+                  <h4 className="type-heading-sm mt-eyebrow-heading-sm">
+                    One strong next step can span the remaining track
+                  </h4>
+                  <p className="type-text-sm mt-heading-body-sm text-white/72">
+                    This wider block tests a different content pressure without
+                    introducing a second spacing system.
+                  </p>
+                </div>
+                <span className="radius-button border border-white/18 bg-white/10 px-4 py-2 text-sm font-semibold">
+                  Request service
+                </span>
+              </article>
+
+              <div className="inline-gap-med flex flex-wrap">
+                {tokenLabels.map((label) => (
+                  <code
+                    className="radius-small border border-service-border bg-service-surface px-3 py-2 text-xs font-semibold text-service-muted"
+                    key={label}
+                  >
+                    {label}
+                  </code>
+                ))}
+              </div>
+            </div>
+          </SevenColumnGridItem>
+        </SevenColumnGrid>
+
+        <SevenColumnGrid
+          minHeight="none"
+          padding="none"
+          style={{ marginTop: "var(--site-grid-gap)" }}
+        >
+          <SevenColumnGridItem className="col-span-5 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+            <article className="content-frame radius-medium fluid-type-frame min-h-48 border border-service-border bg-white">
+              <p className="type-label text-service-accent">Wide system block</p>
+              <h4 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                Larger blocks stay in the same gutter rhythm
+              </h4>
+              <p className="type-text-sm mt-heading-body-sm text-service-muted">
+                The primary grid handles alignment between differently sized
+                blocks. Use a nested gap only when a compact group lives inside
+                one of those blocks.
+              </p>
+            </article>
+          </SevenColumnGridItem>
+          <SevenColumnGridItem className="col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+            <article className="content-frame radius-medium grid min-h-48 content-between border border-service-border bg-service-surface">
+              <p className="type-label text-service-accent">Proof rail</p>
+              <div>
+                <p className="type-heading-sm text-service-ink">2-column support</p>
+                <p className="type-text-sm mt-heading-body-sm text-service-muted">
+                  A compact block belongs to the same outer system.
+                </p>
+              </div>
+            </article>
+          </SevenColumnGridItem>
+        </SevenColumnGrid>
+      </section>
+    </div>
+  );
 }
 
 function FrameVisualAid({
@@ -1199,23 +1359,12 @@ export default function StyleGuidePage() {
         </div>
       </nav>
 
-      <StyleGuideControlBoard
-        colors={colors}
-        contentFrameOptions={contentFrameOptions}
-        gapTokens={gapTokens}
-        radii={radii}
-        sectionMinTokens={sectionMinTokens}
-        sectionPaddingOptions={sectionPaddingOptions}
-        siteGridFrameOptions={siteGridFrameOptions}
-        siteGridGapOptions={siteGridGapOptions}
-      />
-
       <GuideSection
         eyebrow="Type + Grid"
-        id="typographic-hierarchy"
-        title="Typographic Hierarchy"
+        id="typography"
+        title="Typography"
         titleAs="h1"
-        body="One live specimen per typography role, placed on a seven-column row so the text can occupy the main track while the token metadata stays fixed."
+        body="Live hierarchy specimens and content patterns. Select any specimen to tune its role in the controls beside it."
       >
         <SevenColumnGrid minHeight="none" padding="none">
           <SevenColumnGridItem className="sticky top-16 col-span-2 self-start max-lg:col-span-5 max-md:col-span-3 max-sm:static max-sm:col-span-1">
@@ -1257,8 +1406,99 @@ export default function StyleGuidePage() {
             </div>
           </SevenColumnGridItem>
         </SevenColumnGrid>
-</GuideSection>
+        <section className="mt-12 border-t border-service-border pt-10">
+          <div className="fluid-type-frame max-w-3xl">
+            <p className="type-label text-service-accent">Typography subsection</p>
+            <h2 className="type-heading-lg mt-eyebrow-heading-sm text-service-ink">
+              Lists and controls
+            </h2>
+            <p className="type-text-md mt-heading-body-md text-service-muted">
+              Lists, steps, and inputs inherit the active type roles. Use this
+              lab to check hierarchy in denser, task-oriented content.
+            </p>
+          </div>
+          <div className="mt-7">
+            <StyleGuideListControlSamples />
+          </div>
+        </section>
+      </GuideSection>
 
+      <GuideSection
+        eyebrow="Spacing"
+        id="spacing"
+        title="Spacing System"
+        body="Use this one lab to tune the page frame, section rhythm, panel inset, grid gutter, local gaps, and optional minimum section presence."
+      >
+        <div className="grid gap-7">
+          <div className="grid grid-cols-3 gap-4 max-xl:grid-cols-2 max-md:grid-cols-1">
+            <StyleGuideGridTokenControl kind="body-spacing" options={siteGridFrameOptions} />
+            <StyleGuideGridTokenControl kind="section-spacing" options={sectionPaddingOptions} />
+            <StyleGuideSectionMinControl tokens={sectionMinTokens} variant="controls" />
+            <StyleGuideGridTokenControl kind="content-spacing" options={contentFrameOptions} />
+            <StyleGuideGridTokenControl kind="gap" options={siteGridGapOptions} />
+            <StyleGuideSemanticSpacingControl />
+            <StyleGuideGridTokenControl
+              kind="inline-gap"
+              options={gapTokens[0].items.map(([name, value]) => ({ label: name, name, value }))}
+            />
+            <StyleGuideGridTokenControl
+              kind="card-gap"
+              options={gapTokens[1].items.map(([name, value]) => ({ label: name, name, value }))}
+            />
+            <StyleGuideGridTokenControl
+              kind="layout-gap"
+              options={gapTokens[2].items.map(([name, value]) => ({ label: name, name, value }))}
+            />
+          </div>
+
+          <div className="grid grid-cols-3 gap-4 max-xl:grid-cols-1">
+            <div className="style-guide-control-panel radius-medium border p-6">
+              <p className="type-label text-service-accent">Hierarchy</p>
+              <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">What controls what</h3>
+              <ol className="type-text-sm mt-heading-body-sm grid gap-2 text-service-muted">
+                <li>Page frame sets the global canvas inset.</li>
+                <li>Section padding sets vertical page rhythm.</li>
+                <li>Section min adds presence only where a section opts in.</li>
+              </ol>
+            </div>
+            <div className="style-guide-control-panel radius-medium border p-6">
+              <p className="type-label text-service-accent">Inside a section</p>
+              <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">Use the smallest scope</h3>
+              <p className="type-text-sm mt-heading-body-sm text-service-muted">Content padding gives a card breathing room. Grid gutter aligns columns and rows. Semantic rhythm handles the relationships within a copy group.</p>
+            </div>
+            <div className="style-guide-control-panel radius-medium border p-6">
+              <p className="type-label text-service-accent">Usage</p>
+              <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">Avoid double spacing</h3>
+              <p className="type-text-sm mt-heading-body-sm text-service-muted">Reach for section padding between bands, content padding inside panels, and local gaps only for compact clusters or repeated content.</p>
+            </div>
+          </div>
+
+          <LayoutSystemControlLab />
+
+          <section className="border-t border-service-border pt-10">
+            <div className="fluid-type-frame max-w-3xl">
+              <p className="type-label text-service-accent">Applied sections</p>
+              <h3 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                Section library in the same spacing system
+              </h3>
+              <p className="type-text-sm mt-heading-body-sm text-service-muted">
+                These real library sections show where the outer grid gutter,
+                section spacing, and locally scoped card gaps each belong.
+              </p>
+            </div>
+            <div className="mt-7 grid overflow-hidden rounded border border-service-border bg-service-surface">
+              <TrustBarSectionV3 {...sectionLibraryV3Content.trustBar} />
+              <ServicesThreeCardsRightSectionV3
+                {...sectionLibraryV3Content.servicesThreeCardsRight}
+              />
+              <FAQSectionV3 {...sectionLibraryV3Content.faq} />
+            </div>
+          </section>
+        </div>
+      </GuideSection>
+
+      {false && (
+        <>
       <GuideSection
         eyebrow="Layout"
         id="seven-column-grid"
@@ -1308,6 +1548,8 @@ export default function StyleGuidePage() {
               />
             </div>
           </div>
+
+          <LayoutSystemControlLab />
 
           <div className="radius-medium overflow-visible border border-service-border bg-service-surface p-4">
             <SevenColumnGrid minHeight="none" padding="none">
@@ -1630,6 +1872,8 @@ export default function StyleGuidePage() {
 
         </div>
       </GuideSection>
+        </>
+      )}
 
       <GuideSection
         eyebrow="Color"
@@ -1974,16 +2218,23 @@ export default function StyleGuidePage() {
         </div>
       </GuideSection>
 
-      <GuideSection
-        eyebrow="Spacing"
-        id="spacing"
-        title="Spacing System"
-        body="These tokens describe why space exists: eyebrow to heading, heading to body, body to actions, and editorial text rhythm."
-      >
+      {false && (
+        <GuideSection
+          eyebrow="Spacing"
+          id="legacy-spacing"
+          title="Legacy Spacing System"
+          body="Legacy reference retained while the focused spacing lab replaces its controls and visual aids."
+        >
         <div className="grid gap-8">
           <SevenColumnGrid minHeight="none" padding="none">
             <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
               <StyleGuideSemanticSpacingControl />
+            </SevenColumnGridItem>
+            <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+              <StyleGuideGridTokenControl
+                kind="section-spacing"
+                options={sectionPaddingOptions}
+              />
             </SevenColumnGridItem>
           </SevenColumnGrid>
 
@@ -2192,7 +2443,8 @@ export default function StyleGuidePage() {
             </div>
           </div>
         </div>
-      </GuideSection>
+        </GuideSection>
+      )}
 
       <GuideSection
         eyebrow="Buttons"
@@ -2203,14 +2455,7 @@ export default function StyleGuidePage() {
         <StyleGuideButtonControls />
       </GuideSection>
 
-      <GuideSection
-        eyebrow="Lists"
-        id="lists-controls"
-        title="Lists and Controls"
-        body="Reusable list, step, and checkbox patterns should use semantic type utilities so they inherit the active typography profile."
-      >
-        <StyleGuideListControlSamples />
-      </GuideSection>
+      {false && <StyleGuideListControlSamples />}
 
       <GuideSection
         eyebrow="Composition"
@@ -2267,30 +2512,6 @@ export default function StyleGuidePage() {
           </SevenColumnGridItem>
         </SevenColumnGrid>
 
-        <div className="mt-10 border-t border-service-border pt-10">
-          <div className="fluid-type-frame mb-6">
-            <p className="type-label text-service-accent">Real sections</p>
-            <h3 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
-              Representative Real Sections
-            </h3>
-            <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
-              A few real section-library components rendered inside the
-              styleguide so token changes can be reviewed against organic
-              compositions.
-            </p>
-          </div>
-          <div className="grid gap-6 overflow-hidden rounded border border-service-border bg-service-surface">
-            <HeroSplitFullHeightSectionV3
-              {...sectionLibraryV3Content.heroSplitFullHeight}
-              variant="text-3-image-4-right"
-            />
-            <TrustBarSectionV3 {...sectionLibraryV3Content.trustBar} />
-            <ServicesThreeCardsRightSectionV3
-              {...sectionLibraryV3Content.servicesThreeCardsRight}
-            />
-            <FAQSectionV3 {...sectionLibraryV3Content.faq} />
-          </div>
-        </div>
       </GuideSection>
 
       </main>

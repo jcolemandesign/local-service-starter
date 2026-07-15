@@ -251,28 +251,39 @@ export function FAQSectionV3({
 
 export function CTASectionV3({ action, body, title }: CTASectionV3Props) {
   return (
-    <section className="bg-bg-dark text-text-inverse">
-      <SevenColumnGrid className="section-min-none" padding="med">
-        <SevenColumnGridItem className="col-span-5 max-lg:col-span-7">
+    <section className="bg-service-ink text-white">
+      <SevenColumnGrid className="section-min-none items-center" padding="med">
+        <SevenColumnGridItem className="col-span-3 max-lg:col-span-7">
           <div className="fluid-type-frame">
-            <h2 className="type-heading-xl">{title}</h2>
-            <p className="type-text-lg wrap-pretty mt-heading-body-lg text-white/75">
+            <p className="type-label text-white/68">Conversion</p>
+            <h2 className="type-heading-xl mt-eyebrow-heading-lg text-white">
+              {title}
+            </h2>
+            <p className="type-text-lg wrap-pretty mt-heading-body-lg text-white/72">
               {body}
             </p>
           </div>
         </SevenColumnGridItem>
 
         <SevenColumnGridItem
-          alignX="right"
           alignY="middle"
-          className="col-span-2 col-start-6 max-lg:col-span-7 max-lg:col-start-1 max-lg:justify-items-start"
+          className="col-span-3 col-start-5 max-lg:col-span-7 max-lg:col-start-1"
         >
-          <RequestServiceButton
-            className="shrink-0 border-bg-page bg-bg-page text-service-ink hover:bg-service-surface"
-            variant="secondary"
-          >
-            {action}
-          </RequestServiceButton>
+          <article className="content-padding fluid-type-frame radius-medium border border-white/8 bg-white/8">
+            <h3 className="type-heading-sm text-white">Book the next visit</h3>
+            <p className="type-text-sm wrap-pretty mt-heading-body-sm text-white/70">
+              Keep form, phone, and trust cues close enough to scan as one
+              decision.
+            </p>
+            <div className="mt-body-actions-sm">
+              <RequestServiceButton
+                className="w-auto shrink-0 border-bg-page bg-bg-page text-service-ink hover:bg-service-surface"
+                variant="secondary"
+              >
+                {action}
+              </RequestServiceButton>
+            </div>
+          </article>
         </SevenColumnGridItem>
       </SevenColumnGrid>
     </section>

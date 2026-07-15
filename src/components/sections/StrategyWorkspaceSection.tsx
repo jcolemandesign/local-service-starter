@@ -1464,24 +1464,31 @@ function TemplateReadyIcon({
           ? "Copy template contract"
           : "Waiting for template";
   const className = cx(
-    "absolute right-3 top-3 flex size-8 items-center justify-center rounded-full border transition-[background-color,border-color,color,box-shadow,transform] duration-150 active:translate-y-px active:scale-95",
+    "absolute right-3 top-3 flex size-8 items-center justify-center rounded-sm border transition-[background-color,border-color,color,box-shadow,transform] duration-150 active:translate-y-px active:scale-95",
     isReady
-      ? "border-service-accent bg-service-accent text-white hover:border-service-accent hover:bg-service-accent hover:text-white hover:shadow-service"
-      : "border-service-border/60 bg-white/35 text-service-muted/45",
+      ? "border-service-accent bg-service-accent text-white hover:shadow-service"
+      : "border-service-border bg-bg-surface text-service-muted/45",
     isReady &&
       copyState === "copied" &&
       "motion-safe:animate-[template-copy-confirm_560ms_ease-out]",
   );
   const icon = (
-    <>
-      <span
-        aria-hidden="true"
-        className="relative block h-4 w-3 rounded-[2px] border border-current"
-      >
-        <span className="absolute left-1 top-1 h-px w-1.5 bg-current" />
-        <span className="absolute left-1 top-2 h-px w-1.5 bg-current" />
-      </span>
-    </>
+    <svg
+      aria-hidden="true"
+      className="size-4"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      {isReady ? (
+        <path d="M5 12.5l4.2 4.2L19 7" />
+      ) : (
+        <path d="M7 7h10v10H7z" />
+      )}
+    </svg>
   );
 
   if (!isReady || !onCopy) {

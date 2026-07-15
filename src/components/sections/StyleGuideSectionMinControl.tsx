@@ -26,36 +26,48 @@ export function StyleGuideSectionMinControl({
   const { draft, updateDraft } = useStyleGuideTokens();
 
   if (variant === "controls") {
-    return (
-      <div className="grid gap-2">
-        {tokens.map((token) => {
-          const isActive = draft.activeSectionMinName === token.name;
+    const activeIndex = Math.max(
+      0,
+      tokens.findIndex((token) => token.name === draft.activeSectionMinName),
+    );
+    const activeToken = tokens[activeIndex] ?? tokens[0];
 
-          return (
-            <button
-              className={cx(
-                "radius-medium flex min-h-12 items-center justify-between gap-3 border bg-white px-4 text-left transition-colors hover:border-service-accent hover:bg-service-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
-                isActive
-                  ? "border-service-accent ring-2 ring-service-accent/55"
-                  : "border-service-border",
-              )}
-              key={token.name}
-              onClick={() => {
-                updateDraft("activeSectionMinName", token.name);
-                updateDraft("activeSectionMinValue", token.value);
-              }}
-              type="button"
-            >
-              <span className="type-caption font-semibold text-service-ink">
-                {token.name}
-              </span>
-              <span className="type-caption text-service-muted">
-                {token.value}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+    if (!activeToken) {
+      return null;
+    }
+
+    return (
+      <Card className="style-guide-control-panel p-6 shadow-none">
+        <label className="grid gap-4">
+          <span className="flex items-center justify-between gap-3">
+            <span className="type-caption font-semibold text-service-ink">
+              Section min
+            </span>
+            <span className="type-caption min-w-0 truncate text-service-muted">
+              {activeToken.name}
+            </span>
+          </span>
+          <input
+            className="style-guide-control-slider w-full"
+            max={tokens.length - 1}
+            min={0}
+            onChange={(event) => {
+              const token = tokens[Number(event.target.value)];
+
+              if (!token) return;
+
+              updateDraft("activeSectionMinName", token.name);
+              updateDraft("activeSectionMinValue", token.value);
+            }}
+            step={1}
+            type="range"
+            value={activeIndex}
+          />
+        </label>
+        <p className="type-caption mt-1 text-service-muted">
+          {activeToken.value}
+        </p>
+      </Card>
     );
   }
 

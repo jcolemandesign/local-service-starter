@@ -11,7 +11,7 @@ export function StyleGuideSemanticSpacingControl() {
   const { draft, updateDraft } = useStyleGuideTokens();
 
   return (
-    <Card className="p-5 shadow-none">
+    <Card className="style-guide-control-panel p-6 shadow-none">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 max-sm:grid-cols-1">
         <div className="fluid-type-frame min-w-0">
           <p className="type-label text-service-accent">Spacing controls</p>
@@ -28,7 +28,7 @@ export function StyleGuideSemanticSpacingControl() {
         </span>
       </div>
 
-      <label className="mt-5 grid gap-3">
+      <label className="mt-7 grid gap-4">
         <span className="flex items-center justify-between gap-3">
           <span className="type-caption font-semibold text-service-muted">
             Rhythm scale
@@ -38,7 +38,7 @@ export function StyleGuideSemanticSpacingControl() {
           </span>
         </span>
         <input
-          className="w-full accent-service-accent"
+          className="style-guide-control-slider w-full"
           max={maxScale}
           min={minScale}
           onChange={(event) =>
@@ -51,7 +51,7 @@ export function StyleGuideSemanticSpacingControl() {
       </label>
 
       <button
-        className="mt-4 min-h-10 rounded-md border border-service-border bg-white px-4 text-sm font-semibold text-service-muted transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+        className="style-guide-control-button mt-5 min-h-11 rounded-md border px-4 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
         onClick={() => updateDraft("activeSemanticSpacingScale", defaultScale)}
         type="button"
       >

@@ -43,13 +43,9 @@ type StyleGuideGridTokenControlProps =
       options: readonly SectionSpacingOption[];
     }
   | {
-      kind: "content-spacing" | "gap";
+      kind: "card-gap" | "content-spacing" | "gap" | "inline-gap" | "layout-gap";
       options: readonly SiteGridValueOption[];
     };
-
-function cx(...classes: Array<string | false | undefined>) {
-  return classes.filter(Boolean).join(" ");
-}
 
 function shortSpacingLabel(label: string) {
   return label.replace(/\s+(spacing|padding)$/i, "");
@@ -94,7 +90,13 @@ export function StyleGuideGridTokenControl(
         ? "Section Padding"
         : props.kind === "content-spacing"
           ? "Content Padding"
-          : "Grid Gutter";
+          : props.kind === "gap"
+            ? "Grid Gutter"
+            : props.kind === "card-gap"
+              ? "Card Gap"
+              : props.kind === "inline-gap"
+                ? "Inline Gap"
+                : "Nested Layout Gap";
   const activeName =
     props.kind === "body-spacing"
       ? activeBodySpacingOption?.name ?? draft.activeSiteGridFrameName
@@ -102,144 +104,104 @@ export function StyleGuideGridTokenControl(
         ? activeSectionSpacingOption?.name ?? draft.activeSectionSpaceName
         : props.kind === "content-spacing"
           ? activeContentSpacingOption?.name ?? draft.activeContentFrameName
-          : draft.activeSiteGridGapName;
+          : props.kind === "gap"
+            ? draft.activeSiteGridGapName
+            : props.kind === "card-gap"
+              ? draft.activeCardGapName
+              : props.kind === "inline-gap"
+                ? draft.activeInlineGapName
+                : draft.activeLayoutGapName;
+  const activeIndex = Math.max(
+    0,
+    props.options.findIndex((option) => option.name === activeName),
+  );
+  const activeOption = props.options[activeIndex] ?? props.options[0];
+
+  function applyOption(index: number) {
+    if (props.kind === "body-spacing") {
+      const option = props.options[index];
+
+      if (!option) return;
+
+      updateDraft("activeSiteGridFrameName", option.name);
+      updateDraft("activeSiteGridFrameBlock", option.block);
+      updateDraft("activeSiteGridFrameInline", option.inline);
+      return;
+    }
+
+    if (props.kind === "section-spacing") {
+      const option = props.options[index];
+
+      if (!option) return;
+
+      updateDraft("activeSectionSpaceName", option.name);
+      updateDraft("activeSectionSpaceVsml", option.vsml);
+      updateDraft("activeSectionSpaceSml", option.sml);
+      updateDraft("activeSectionSpaceMed", option.med);
+      updateDraft("activeSectionSpaceLrg", option.lrg);
+      updateDraft("activeSectionSpaceVsmlTablet", option.vsmlTablet);
+      updateDraft("activeSectionSpaceSmlTablet", option.smlTablet);
+      updateDraft("activeSectionSpaceMedTablet", option.medTablet);
+      updateDraft("activeSectionSpaceLrgTablet", option.lrgTablet);
+      updateDraft("activeSectionSpaceVsmlMobile", option.vsmlMobile);
+      updateDraft("activeSectionSpaceSmlMobile", option.smlMobile);
+      updateDraft("activeSectionSpaceMedMobile", option.medMobile);
+      updateDraft("activeSectionSpaceLrgMobile", option.lrgMobile);
+      return;
+    }
+
+    const option = props.options[index];
+
+    if (!option) return;
+
+    if (props.kind === "content-spacing") {
+      updateDraft("activeContentFrameName", option.name);
+      updateDraft("activeContentFrameValue", option.value);
+      return;
+    }
+
+    if (props.kind === "gap") {
+      updateDraft("activeSiteGridGapName", option.name);
+      updateDraft("activeSiteGridGapValue", option.value);
+      return;
+    }
+
+    if (props.kind === "card-gap") {
+      updateDraft("activeCardGapName", option.name);
+      updateDraft("activeCardGapValue", option.value);
+      return;
+    }
+
+    if (props.kind === "inline-gap") {
+      updateDraft("activeInlineGapName", option.name);
+      updateDraft("activeInlineGapValue", option.value);
+      return;
+    }
+
+    updateDraft("activeLayoutGapName", option.name);
+    updateDraft("activeLayoutGapValue", option.value);
+  }
 
   return (
-    <Card className="h-full p-5 shadow-none">
-      <div className="flex items-center justify-between gap-3">
+    <Card className="style-guide-control-panel h-full p-6 shadow-none">
+      <div className="flex items-center justify-between gap-4">
         <p className="type-label text-service-accent">
           {controlLabel}
         </p>
         <span className="type-caption font-semibold text-service-muted">
-          {activeName}
+          {activeOption ? shortSpacingLabel(activeOption.label) : activeName}
         </span>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-2 max-sm:grid-cols-1">
-        {props.kind === "body-spacing"
-          ? props.options.map((option) => {
-              const isActive =
-                activeBodySpacingOption?.name === option.name ||
-                draft.activeSiteGridFrameName === option.name;
-
-              return (
-                <button
-                  aria-pressed={isActive}
-                  className={cx(
-                    "type-caption radius-4 border px-3 py-2 font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
-                    isActive
-                      ? "border-service-accent bg-service-accent text-white"
-                      : "border-service-border bg-white text-service-ink hover:border-service-accent",
-                  )}
-                  key={option.name}
-                  onClick={() => {
-                    updateDraft("activeSiteGridFrameName", option.name);
-                    updateDraft("activeSiteGridFrameBlock", option.block);
-                    updateDraft("activeSiteGridFrameInline", option.inline);
-                  }}
-                  type="button"
-                >
-                  {shortSpacingLabel(option.label)}
-                </button>
-              );
-            })
-          : props.kind === "section-spacing"
-            ? props.options.map((option) => {
-                const isActive =
-                  activeSectionSpacingOption?.name === option.name ||
-                  draft.activeSectionSpaceName === option.name;
-
-                return (
-                  <button
-                    aria-pressed={isActive}
-                    className={cx(
-                      "type-caption radius-4 border px-3 py-2 font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
-                      isActive
-                        ? "border-service-accent bg-service-accent text-white"
-                        : "border-service-border bg-white text-service-ink hover:border-service-accent",
-                    )}
-                    key={option.name}
-                    onClick={() => {
-                      updateDraft("activeSectionSpaceName", option.name);
-                      updateDraft("activeSectionSpaceVsml", option.vsml);
-                      updateDraft("activeSectionSpaceSml", option.sml);
-                      updateDraft("activeSectionSpaceMed", option.med);
-                      updateDraft("activeSectionSpaceLrg", option.lrg);
-                      updateDraft(
-                        "activeSectionSpaceVsmlTablet",
-                        option.vsmlTablet,
-                      );
-                      updateDraft(
-                        "activeSectionSpaceSmlTablet",
-                        option.smlTablet,
-                      );
-                      updateDraft(
-                        "activeSectionSpaceMedTablet",
-                        option.medTablet,
-                      );
-                      updateDraft(
-                        "activeSectionSpaceLrgTablet",
-                        option.lrgTablet,
-                      );
-                      updateDraft(
-                        "activeSectionSpaceVsmlMobile",
-                        option.vsmlMobile,
-                      );
-                      updateDraft(
-                        "activeSectionSpaceSmlMobile",
-                        option.smlMobile,
-                      );
-                      updateDraft(
-                        "activeSectionSpaceMedMobile",
-                        option.medMobile,
-                      );
-                      updateDraft(
-                        "activeSectionSpaceLrgMobile",
-                        option.lrgMobile,
-                      );
-                    }}
-                    type="button"
-                  >
-                    {shortSpacingLabel(option.label)}
-                  </button>
-                );
-              })
-          : props.options.map((option) => {
-              const isActive =
-                props.kind === "content-spacing"
-                  ? activeContentSpacingOption?.name === option.name ||
-                    draft.activeContentFrameName === option.name
-                  : draft.activeSiteGridGapName === option.name;
-
-              return (
-                <button
-                  aria-pressed={isActive}
-                  className={cx(
-                    "type-caption radius-4 border px-3 py-2 font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
-                    isActive
-                      ? "border-service-accent bg-service-accent text-white"
-                      : "border-service-border bg-white text-service-ink hover:border-service-accent",
-                  )}
-                  key={option.name}
-                  onClick={() => {
-                    if (props.kind === "content-spacing") {
-                      updateDraft("activeContentFrameName", option.name);
-                      updateDraft("activeContentFrameValue", option.value);
-                      return;
-                    }
-
-                    updateDraft("activeSiteGridGapName", option.name);
-                    updateDraft("activeSiteGridGapValue", option.value);
-                  }}
-                  type="button"
-                >
-                  {props.kind === "content-spacing"
-                    ? shortSpacingLabel(option.label)
-                    : shortSpacingLabel(option.label)}
-                </button>
-              );
-            })}
-      </div>
+      <input
+        className="style-guide-control-slider mt-6 w-full"
+        max={props.options.length - 1}
+        min={0}
+        onChange={(event) => applyOption(Number(event.target.value))}
+        step={1}
+        type="range"
+        value={activeIndex}
+      />
     </Card>
   );
 }

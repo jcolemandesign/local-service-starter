@@ -71,7 +71,11 @@ function ButtonPreview({ example }: { example: ButtonExample }) {
   return <Button href="#">Request service</Button>;
 }
 
-export function StyleGuideButtonControls() {
+export function StyleGuideButtonControls({
+  compact = false,
+}: {
+  compact?: boolean;
+}) {
   const [activeName, setActiveName] = useState(buttonExamples[0].name);
   const activeExample =
     buttonExamples.find((example) => example.name === activeName) ??
@@ -117,7 +121,14 @@ export function StyleGuideButtonControls() {
         </div>
       </Card>
 
-      <div className="grid grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] gap-5 max-lg:grid-cols-1">
+      <div
+        className={cx(
+          "grid gap-5",
+          compact
+            ? "grid-cols-1"
+            : "grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] max-lg:grid-cols-1",
+        )}
+      >
         <Card className="fluid-type-frame p-6 shadow-none">
           <p className="type-label text-service-accent">Active treatment</p>
           <h3 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
@@ -138,7 +149,7 @@ export function StyleGuideButtonControls() {
         </Card>
       </div>
 
-      <Card className="p-6 shadow-none">
+      <Card className={cx("p-6 shadow-none", compact && "hidden")}>
         <div className="fluid-type-frame">
           <p className="type-label text-service-accent">Full set</p>
           <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">

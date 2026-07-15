@@ -135,7 +135,7 @@ function SelectField({
   value: string;
 }) {
   return (
-    <label className="grid gap-2">
+    <label className="grid gap-3">
       <span className="type-caption font-semibold text-service-muted">
         {label}
       </span>
@@ -183,7 +183,7 @@ function NumberControl({
         </span>
       </span>
       <input
-        className="w-full accent-service-accent"
+        className="style-guide-control-slider w-full"
         max={max}
         min={min}
         onChange={(event) => onChange(Number(event.target.value))}
@@ -377,7 +377,7 @@ export function StyleGuideTypographyControls() {
   }
 
   return (
-    <Card className="max-h-[calc(100svh-5rem)] overflow-y-auto p-5 shadow-service max-sm:max-h-none max-sm:overflow-visible">
+    <Card className="style-guide-control-panel max-h-[calc(100svh-5rem)] overflow-y-auto p-6 shadow-none max-sm:max-h-none max-sm:overflow-visible">
       <div className="border-b border-service-border pb-5">
         <p className="type-label text-service-accent">Typography controls</p>
         <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">

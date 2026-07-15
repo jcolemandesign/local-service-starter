@@ -423,9 +423,9 @@
       "promotedAt": "2026-07-14T23:28:05.511Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-14T23:38:59.544Z",
-        "id": "north-star-hvac-v47",
-        "version": 47
+        "createdAt": "2026-07-15T03:09:07.414Z",
+        "id": "north-star-hvac-v50",
+        "version": 50
       },
       "sourceStage": "strategy-template",
       "status": "staged",
@@ -999,9 +999,9 @@
       "promotedAt": "2026-07-14T19:06:16.598Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-14T23:38:59.544Z",
-        "id": "north-star-hvac-v47",
-        "version": 47
+        "createdAt": "2026-07-15T03:09:07.414Z",
+        "id": "north-star-hvac-v50",
+        "version": 50
       },
       "sourceStage": "strategy-template",
       "status": "staged",
@@ -1584,9 +1584,9 @@
       "promotedAt": "2026-07-14T19:05:54.314Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-14T23:38:59.544Z",
-        "id": "north-star-hvac-v47",
-        "version": 47
+        "createdAt": "2026-07-15T03:09:07.414Z",
+        "id": "north-star-hvac-v50",
+        "version": 50
       },
       "sourceStage": "strategy-template",
       "status": "staged",
@@ -2169,9 +2169,9 @@
       "promotedAt": "2026-07-14T19:04:36.478Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-14T23:38:59.544Z",
-        "id": "north-star-hvac-v47",
-        "version": 47
+        "createdAt": "2026-07-15T03:09:07.414Z",
+        "id": "north-star-hvac-v50",
+        "version": 50
       },
       "sourceStage": "strategy-template",
       "status": "staged",
@@ -2688,9 +2688,9 @@
       "promotedAt": "2026-07-14T18:23:51.214Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-14T23:38:59.544Z",
-        "id": "north-star-hvac-v47",
-        "version": 47
+        "createdAt": "2026-07-15T03:09:07.414Z",
+        "id": "north-star-hvac-v50",
+        "version": 50
       },
       "sourceStage": "strategy-template",
       "status": "staged",
@@ -3177,9 +3177,9 @@
       "promotedAt": "2026-07-13T22:00:39.500Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-14T23:38:59.544Z",
-        "id": "north-star-hvac-v47",
-        "version": 47
+        "createdAt": "2026-07-15T03:09:07.414Z",
+        "id": "north-star-hvac-v50",
+        "version": 50
       },
       "sourceStage": "strategy-template",
       "status": "staged",

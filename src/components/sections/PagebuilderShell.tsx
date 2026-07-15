@@ -1126,7 +1126,7 @@ function InnerLayoutPill({
   return (
     <span
       className={cx(
-        "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em]",
+        "inline-flex items-center gap-1.5 rounded-[var(--chrome-radius-control)] border px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em]",
         tone === "dark"
           ? "token-chrome-badge"
           : "border-service-border bg-service-surface text-service-muted",
@@ -2188,19 +2188,19 @@ export function PagebuilderShell({
       <div className="h-full w-full px-4 py-4 max-md:px-3">
         <div className="grid h-full min-h-0 grid-cols-[22rem_minmax(0,1fr)] items-stretch gap-5 max-lg:h-auto max-lg:grid-cols-1">
           <aside className="grid h-full min-h-0 content-start gap-4 overflow-y-auto overscroll-contain pb-10 pr-1 max-lg:h-auto max-lg:overflow-visible max-lg:pb-0 max-lg:pr-0">
-            <div className="token-chrome-panel radius-medium order-1 border p-5">
-              <h1 className="type-heading-lg">
+            <div className="token-chrome-panel order-1 rounded-[var(--chrome-radius-panel)] border p-5">
+              <h1 className="text-5xl font-semibold leading-none tracking-normal">
                 Page Builder
               </h1>
-              <p className="token-chrome-muted type-text-sm wrap-pretty mt-heading-body-sm">
+              <p className="token-chrome-muted wrap-pretty mt-5 text-lg font-semibold leading-8">
                 Choose, swap, reorder, and preview page sections while the
                 implementation brief updates with the live stack.
               </p>
             </div>
 
-            <details className="token-chrome-panel radius-medium group/page-layouts order-2 border p-5">
+            <details className="token-chrome-panel group/page-layouts order-2 rounded-[var(--chrome-radius-panel)] border p-5">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 marker:hidden">
-                <span className="type-heading-sm">
+                <span className="text-2xl font-semibold leading-tight">
                   Page Layouts
                 </span>
                 <span className="flex shrink-0 items-center gap-2">
@@ -2210,7 +2210,7 @@ export function PagebuilderShell({
                   </span>
                   <span
                     aria-hidden="true"
-                    className="token-chrome-badge flex size-8 shrink-0 items-center justify-center border transition-transform group-open/page-layouts:rotate-180"
+                    className="token-chrome-badge flex size-8 shrink-0 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-transform group-open/page-layouts:rotate-180"
                   >
                     <DownArrowIcon className="size-4" />
                   </span>
@@ -2225,7 +2225,7 @@ export function PagebuilderShell({
                       <button
                         aria-current={isActive ? "page" : undefined}
                         className={cx(
-                          "radius-4 min-h-11 border px-3 text-left type-text-sm font-semibold transition-colors",
+                          "min-h-11 rounded-[var(--chrome-radius-control)] border px-3 text-left type-text-sm font-semibold transition-colors",
                           isActive
                             ? "token-chrome-card-active"
                             : "token-chrome-card",
@@ -2243,7 +2243,7 @@ export function PagebuilderShell({
                         <div className="grid gap-2">
                           <div className="flex flex-wrap gap-2">
                             <button
-                              className="token-chrome-primary radius-4 min-h-9 border px-3 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                              className="token-chrome-primary min-h-9 rounded-[var(--chrome-radius-control)] border px-3 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                               disabled={isSavingOption}
                               onClick={() => void saveActiveOption()}
                               type="button"
@@ -2251,7 +2251,7 @@ export function PagebuilderShell({
                               {isSavingOption ? "Saving..." : "Save Layout"}
                             </button>
                             <button
-                              className="token-chrome-control radius-4 min-h-9 border px-2.5 text-xs font-semibold transition-colors"
+                              className="token-chrome-control min-h-9 rounded-[var(--chrome-radius-control)] border px-2.5 text-xs font-semibold transition-colors"
                               onClick={openTemplateModal}
                               type="button"
                             >
@@ -2259,7 +2259,7 @@ export function PagebuilderShell({
                             </button>
                             <button
                               aria-label="Clear page template"
-                              className="token-chrome-control radius-4 inline-flex min-h-9 w-9 items-center justify-center border transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+                              className="token-chrome-control inline-flex min-h-9 w-9 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors disabled:cursor-not-allowed disabled:opacity-40"
                               disabled={includedSections.length === 0}
                               onClick={clearActiveBuildingSpace}
                               title="Clear page template"
@@ -2271,7 +2271,7 @@ export function PagebuilderShell({
                           {optionSaveStatus || optionSaveError ? (
                             <p
                               className={cx(
-                                "type-caption rounded-sm border px-3 py-2",
+                                "type-caption rounded-[var(--chrome-radius-control)] border px-3 py-2",
                                 optionSaveError
                                   ? "border-red-300/60 bg-red-950/30 text-red-100"
                                   : "token-chrome-badge",
@@ -2289,14 +2289,14 @@ export function PagebuilderShell({
             </details>
 
             <div
-              className="token-chrome-panel-strong radius-medium order-3 border p-5"
+              className="token-chrome-panel-strong order-3 rounded-[var(--chrome-radius-panel)] border p-5"
             >
               <div className="flex items-center gap-3">
                 <span
                   aria-hidden="true"
                   className="h-5 w-px bg-[var(--chrome-border-strong)]"
                 />
-                <h2 className="type-heading-sm">
+                <h2 className="text-2xl font-semibold leading-tight">
                   Sections
                 </h2>
               </div>
@@ -2313,7 +2313,7 @@ export function PagebuilderShell({
                   return (
                     <div
                       className={cx(
-                        "radius-4 relative overflow-hidden border transition-colors",
+                        "relative overflow-hidden rounded-[var(--chrome-radius-control)] border transition-colors",
                         isActive
                           ? "token-chrome-card-active"
                           : "token-chrome-card",
@@ -2355,7 +2355,7 @@ export function PagebuilderShell({
                         <span
                           aria-hidden="true"
                           className={cx(
-                            "absolute left-2 right-2 z-10 h-0.5 rounded-full bg-[var(--chrome-accent)]",
+                            "absolute left-2 right-2 z-10 h-0.5 rounded-[var(--chrome-radius-control)] bg-[var(--chrome-accent)]",
                             dragDropPosition === "before"
                               ? "top-0"
                               : "bottom-0",
@@ -2405,7 +2405,7 @@ export function PagebuilderShell({
                           <span
                             aria-hidden="true"
                             className={cx(
-                              "mt-1 flex size-7 shrink-0 items-center justify-center rounded-sm border transition-transform",
+                              "mt-1 flex size-7 shrink-0 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-transform",
                               isActive
                                 ? "rotate-180 border-[var(--chrome-border-strong)] text-[var(--chrome-accent)]"
                                 : "token-chrome-badge",
@@ -2418,18 +2418,18 @@ export function PagebuilderShell({
 
                       {isActive ? (
                         <div className="grid gap-4 border-t border-current/10 p-3">
-                          <div className="token-chrome-control rounded border p-3">
+                          <div className="token-chrome-control rounded-[var(--chrome-radius-control)] border p-3">
                             <p className="text-sm font-semibold text-current">
                               {section.name}
                             </p>
                             <p className="type-caption mt-1 text-current/60">
                               {section.component}
                             </p>
-                            <span className="token-chrome-badge mt-3 inline-flex rounded-full border px-3 py-1 text-xs font-semibold">
+                            <span className="token-chrome-badge mt-3 inline-flex rounded-[var(--chrome-radius-control)] border px-3 py-1 text-xs font-semibold">
                               {section.mode}
                             </span>
                             {section.component !== section.originalComponent && (
-                              <span className="token-chrome-badge ml-2 mt-3 inline-flex rounded-full border px-3 py-1 text-xs font-semibold">
+                              <span className="token-chrome-badge ml-2 mt-3 inline-flex rounded-[var(--chrome-radius-control)] border px-3 py-1 text-xs font-semibold">
                                 swapped
                               </span>
                             )}
@@ -2448,7 +2448,7 @@ export function PagebuilderShell({
                               Alternate
                             </span>
                             <select
-                              className="token-chrome-select radius-4 min-h-11 border px-3 text-sm font-semibold outline-none"
+                              className="token-chrome-select min-h-11 rounded-[var(--chrome-radius-control)] border px-3 text-sm font-semibold outline-none"
                               onChange={(event) =>
                                 swapSection(section.id, event.target.value)
                               }
@@ -2484,7 +2484,7 @@ export function PagebuilderShell({
                                     <button
                                       aria-pressed={optionIsActive}
                                       className={cx(
-                                        "radius-4 min-h-10 border px-3 text-left text-xs font-semibold transition-colors",
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-left text-xs font-semibold transition-colors",
                                         optionIsActive
                                           ? "token-chrome-card-active"
                                           : "token-chrome-card",
@@ -2525,7 +2525,7 @@ export function PagebuilderShell({
                                     <button
                                       aria-pressed={optionIsActive}
                                       className={cx(
-                                        "radius-4 min-h-10 border px-3 text-center text-xs font-semibold transition-colors",
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
                                         optionIsActive
                                           ? "token-chrome-card-active"
                                           : "token-chrome-card",
@@ -2566,7 +2566,7 @@ export function PagebuilderShell({
                                     <button
                                       aria-pressed={optionIsActive}
                                       className={cx(
-                                        "radius-4 min-h-10 border px-3 text-center text-xs font-semibold transition-colors",
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
                                         optionIsActive
                                           ? "token-chrome-card-active"
                                           : "token-chrome-card",
@@ -2609,7 +2609,7 @@ export function PagebuilderShell({
                                       <button
                                         aria-pressed={optionIsActive}
                                         className={cx(
-                                          "radius-4 min-h-10 border px-3 text-left text-xs font-semibold transition-colors",
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-left text-xs font-semibold transition-colors",
                                           optionIsActive
                                             ? "token-chrome-card-active"
                                             : "token-chrome-card",
@@ -2645,7 +2645,7 @@ export function PagebuilderShell({
                                       <button
                                         aria-pressed={optionIsActive}
                                         className={cx(
-                                          "radius-4 min-h-9 border px-2 text-center text-xs font-semibold transition-colors",
+                                          "min-h-9 rounded-[var(--chrome-radius-control)] border px-2 text-center text-xs font-semibold transition-colors",
                                           optionIsActive
                                             ? "token-chrome-card-active"
                                             : "token-chrome-card",
@@ -2673,7 +2673,7 @@ export function PagebuilderShell({
                           ) : null}
 
                           <button
-                            className="token-chrome-control radius-4 min-h-10 border px-3 text-sm font-semibold transition-colors"
+                            className="token-chrome-control min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-sm font-semibold transition-colors"
                             onClick={() => deleteSection(section.id)}
                             type="button"
                           >
@@ -2687,8 +2687,8 @@ export function PagebuilderShell({
               </div>
             </div>
 
-            <div className="token-chrome-panel radius-medium order-5 border p-5">
-              <h2 className="type-heading-sm">
+            <div className="token-chrome-panel order-5 rounded-[var(--chrome-radius-panel)] border p-5">
+              <h2 className="text-2xl font-semibold leading-tight">
                 Preview Controls
               </h2>
               <div className="mt-4 grid gap-4">
@@ -2696,7 +2696,7 @@ export function PagebuilderShell({
                   <span className="type-caption font-semibold">
                     Preview Canvas
                   </span>
-                  <div className="token-chrome-control radius-4 border px-3 py-3">
+                  <div className="token-chrome-control rounded-[var(--chrome-radius-control)] border px-3 py-3">
                     <p className="text-sm font-semibold">
                       {selectedViewport.label}
                     </p>
@@ -2712,14 +2712,14 @@ export function PagebuilderShell({
 
                 <div className="grid grid-cols-2 gap-2">
                   <button
-                    className="token-chrome-primary radius-4 min-h-10 border px-3 text-sm font-semibold transition-colors"
+                    className="token-chrome-primary min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-sm font-semibold transition-colors"
                     onClick={() => setIsPreviewOpen(true)}
                     type="button"
                   >
                     Focus
                   </button>
                   <button
-                    className="token-chrome-control radius-4 min-h-10 border px-3 text-sm font-semibold transition-colors"
+                    className="token-chrome-control min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-sm font-semibold transition-colors"
                     onClick={refreshPreviewStyles}
                     type="button"
                   >
@@ -2729,14 +2729,14 @@ export function PagebuilderShell({
               </div>
             </div>
 
-            <details className="token-chrome-panel radius-medium group order-6 border p-5">
+            <details className="token-chrome-panel group order-6 rounded-[var(--chrome-radius-panel)] border p-5">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left">
-                <h2 className="type-heading-sm">
+                <h2 className="text-2xl font-semibold leading-tight">
                   Add Section
                 </h2>
                 <span
                   aria-hidden="true"
-                  className="token-chrome-badge flex size-8 shrink-0 items-center justify-center border transition-transform group-open:rotate-180"
+                  className="token-chrome-badge flex size-8 shrink-0 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-transform group-open:rotate-180"
                 >
                   <DownArrowIcon className="size-4" />
                 </span>
@@ -2753,7 +2753,7 @@ export function PagebuilderShell({
 
                   return (
                     <details
-                      className="token-chrome-card group/mode rounded border"
+                      className="token-chrome-card group/mode rounded-[var(--chrome-radius-control)] border"
                       key={mode.id}
                     >
                       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5 text-left">
@@ -2767,7 +2767,7 @@ export function PagebuilderShell({
                         </span>
                         <span
                           aria-hidden="true"
-                          className="token-chrome-badge flex size-7 shrink-0 items-center justify-center border transition-transform group-open/mode:rotate-180"
+                          className="token-chrome-badge flex size-7 shrink-0 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-transform group-open/mode:rotate-180"
                         >
                           <DownArrowIcon className="size-3.5" />
                         </span>
@@ -2781,7 +2781,7 @@ export function PagebuilderShell({
 
                           return (
                             <button
-                              className="token-chrome-control radius-4 grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border px-3 py-2 text-left text-sm font-semibold transition-colors"
+                              className="token-chrome-control grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-[var(--chrome-radius-control)] border px-3 py-2 text-left text-sm font-semibold transition-colors"
                               key={option.component}
                               onClick={() => addSection(option.component)}
                               type="button"
@@ -2799,7 +2799,7 @@ export function PagebuilderShell({
                               </span>
                               <span className="flex items-center gap-1.5">
                                 {templateUsageCount > 0 ? (
-                                  <span className="token-chrome-badge flex size-5 shrink-0 items-center justify-center rounded-full border text-[0.625rem] font-semibold leading-none">
+                                  <span className="token-chrome-badge flex size-5 shrink-0 items-center justify-center rounded-[var(--chrome-radius-control)] border text-[0.625rem] font-semibold leading-none">
                                     {templateUsageCount}
                                   </span>
                                 ) : null}
@@ -2818,7 +2818,7 @@ export function PagebuilderShell({
             </details>
           </aside>
 
-          <div className="token-chrome-frame grid h-full min-h-0 overflow-hidden rounded border p-2 max-lg:h-[78svh]">
+          <div className="token-chrome-frame grid h-full min-h-0 overflow-hidden rounded-[var(--chrome-radius-control)] border p-2 max-lg:h-[78svh]">
             <div className="grid h-full min-h-0 place-items-stretch overflow-hidden">
               {renderPreviewWindow()}
             </div>
@@ -3492,22 +3492,22 @@ export function PagebuilderShell({
             type="button"
           />
           <div className="relative z-10 grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-3">
-            <div className="token-chrome-panel flex flex-wrap items-center justify-between gap-3 rounded border px-3 py-2">
+            <div className="token-chrome-panel flex flex-wrap items-center justify-between gap-3 rounded-[var(--chrome-radius-control)] border px-3 py-2">
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-service-ink">
+                <p className="text-sm font-semibold text-[var(--chrome-text)]">
                   {activePageLabel}
                 </p>
-                <p className="type-caption truncate text-service-muted">
+                <p className="type-caption truncate text-[var(--chrome-muted)]">
                   {selectedViewport.sizeLabel} preview
                 </p>
               </div>
-              <div className="rounded border border-service-border bg-service-surface px-3 py-2">
-                <p className="text-xs font-semibold text-service-ink">
+              <div className="token-chrome-control rounded-[var(--chrome-radius-control)] border px-3 py-2">
+                <p className="text-xs font-semibold text-[var(--chrome-text)]">
                   {selectedViewport.label}
                 </p>
               </div>
               <button
-                className="min-h-10 shrink-0 rounded border border-service-border bg-service-surface px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                className="token-chrome-control min-h-10 shrink-0 rounded-[var(--chrome-radius-control)] border px-3 text-xs font-semibold transition-colors"
                 onClick={refreshPreviewStyles}
                 type="button"
               >
@@ -3515,7 +3515,7 @@ export function PagebuilderShell({
               </button>
               <button
                 aria-label="Close preview"
-                className="flex size-10 shrink-0 items-center justify-center rounded border border-service-border bg-service-surface text-xl font-semibold leading-none text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                className="token-chrome-control flex size-10 shrink-0 items-center justify-center rounded-[var(--chrome-radius-control)] border text-xl font-semibold leading-none transition-colors"
                 onClick={() => setIsPreviewOpen(false)}
                 type="button"
               >

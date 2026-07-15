@@ -5,6 +5,7 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import { StyleGuideButtonControls } from "@/components/sections/StyleGuideButtonControls";
 import { StyleGuideColorResetButton } from "@/components/sections/StyleGuideColorResetButton";
 import { useStyleGuideTokens } from "@/components/sections/StyleGuideLiveSurface";
 
@@ -67,15 +68,10 @@ type StyleGuideControlBoardProps = {
   contentFrameOptions: readonly ContentFrameOption[];
   gapTokens: readonly GapTokenGroup[];
   radii: readonly string[][];
-  sectionMinTokens: readonly ContentFrameOption[];
   sectionPaddingOptions: readonly SectionPaddingOption[];
   siteGridFrameOptions: readonly SiteGridFrameOption[];
   siteGridGapOptions: readonly ContentFrameOption[];
 };
-
-function cx(...classes: Array<string | undefined>) {
-  return classes.filter(Boolean).join(" ");
-}
 
 function compactOptionLabel(option: CompactChoiceOption) {
   const label = option.label ?? option.name.split("-").at(-1) ?? option.name;
@@ -98,32 +94,42 @@ function CompactChoiceGroup<T extends CompactChoiceOption>({
   onSelect: (option: T) => void;
   options: readonly T[];
 }) {
-  return (
-    <div className="grid gap-2">
-      <p className="type-caption font-semibold text-service-muted">{label}</p>
-      <div className="grid grid-cols-2 gap-2">
-        {options.map((option) => {
-          const isActive = activeName === option.name;
+  const activeIndex = Math.max(
+    0,
+    options.findIndex((option) => option.name === activeName),
+  );
+  const activeOption = options[activeIndex] ?? options[0];
 
-          return (
-            <button
-              aria-pressed={isActive}
-              className={cx(
-                "radius-4 min-h-9 border px-2 text-xs font-semibold transition-colors",
-                isActive
-                  ? "border-service-accent bg-service-accent text-white"
-                  : "border-service-muted/60 bg-service-surface text-service-ink hover:border-service-accent hover:bg-white hover:text-service-accent",
-              )}
-              key={option.name}
-              onClick={() => onSelect(option)}
-              type="button"
-            >
-              {compactOptionLabel(option)}
-            </button>
-          );
-        })}
-      </div>
-    </div>
+  if (!activeOption) {
+    return null;
+  }
+
+  return (
+    <label className="grid gap-1">
+      <span className="flex items-center justify-between gap-3">
+        <span className="type-caption font-semibold text-service-ink">
+          {label}
+        </span>
+        <span className="type-caption min-w-0 truncate text-service-muted">
+          {compactOptionLabel(activeOption)}
+        </span>
+      </span>
+      <input
+        className="accent-service-accent"
+        max={options.length - 1}
+        min={0}
+        onChange={(event) => {
+          const option = options[Number(event.target.value)];
+
+          if (option) {
+            onSelect(option);
+          }
+        }}
+        step={1}
+        type="range"
+        value={activeIndex}
+      />
+    </label>
   );
 }
 
@@ -230,7 +236,6 @@ export function StyleGuideControlBoard({
   contentFrameOptions,
   gapTokens,
   radii,
-  sectionMinTokens,
   sectionPaddingOptions,
   siteGridFrameOptions,
   siteGridGapOptions,
@@ -322,6 +327,10 @@ export function StyleGuideControlBoard({
 
         <SevenColumnGridItem className="col-span-7 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <div className="columns-3 [column-gap:var(--layout-gap-active)] max-lg:columns-2 max-md:columns-1">
+            <div className="mb-[var(--layout-gap-active)] break-inside-avoid">
+              <StyleGuideButtonControls compact />
+            </div>
+
             <Card className={controlPanelClass}>
               <div className="fluid-type-frame">
                 <p className="type-label text-service-accent">Layout</p>
@@ -343,7 +352,7 @@ export function StyleGuideControlBoard({
                 />
                 <CompactChoiceGroup
                   activeName={draft.activeSectionSpaceName}
-                  label="Section"
+                  label="Section padding"
                   options={sectionPaddingOptions}
                   onSelect={(option) => {
                     updateDraft("activeSectionSpaceName", option.name);
@@ -389,16 +398,6 @@ export function StyleGuideControlBoard({
                   Height and relationships
                 </h3>
               </div>
-
-              <CompactTokenSlider
-                activeName={draft.activeSectionMinName}
-                label="Section min"
-                options={sectionMinTokens}
-                onSelect={(token) => {
-                  updateDraft("activeSectionMinName", token.name);
-                  updateDraft("activeSectionMinValue", token.value);
-                }}
-              />
 
               <CompactRange
                 label="Semantic rhythm"
