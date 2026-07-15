@@ -159,7 +159,7 @@ const colors = [
     muted: "text-white/68",
     border: "border-white/18",
     accent: "bg-surface-raised text-service-ink",
-    usage: "Brand dark ink with a green undertone",
+    usage: "Primary dark for headings, inverse sections, and strong structure",
   },
   {
     name: "service-muted",

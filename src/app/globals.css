@@ -352,6 +352,12 @@ body {
     color: #f3f4f6 !important;
   }
 
+  .style-guide-control-panel select option,
+  .style-guide-control-panel select optgroup {
+    background-color: #f3f4f6;
+    color: #17211d;
+  }
+
   .style-guide-control-button {
     border-color: rgb(226 232 240 / 0.18);
     background-color: rgb(255 255 255 / 0.07);
@@ -1415,65 +1421,65 @@ body {
 /* BEGIN PAGEWORKS STYLEGUIDE TOKEN OVERRIDES */
 :root {
   --live-service-ink: #17211d;
-  --live-service-muted: #5f6f68;
-  --live-service-accent: #4376ad;
-  --live-service-surface: #ededed;
+  --live-service-muted: #3e564c;
+  --live-service-accent: #32ae85;
+  --live-service-surface: #fbf9fb;
   --live-service-border: #bec1bf;
-  --live-bg-page: #e6e6e6;
-  --live-bg-surface: #ededed;
+  --live-bg-page: #f5f5f5;
+  --live-bg-surface: #fbf9fb;
   --live-bg-muted: #bec1bf;
   --live-bg-dark: #10141b;
   --live-text-main: #17211d;
-  --live-text-muted: #5f6f68;
-  --live-text-accent: #4376ad;
+  --live-text-muted: #3e564c;
+  --live-text-accent: #32ae85;
   --live-border-default: #bec1bf;
-  --live-accent: #c45a2c;
-  --live-shadow-service: 2px 3px 16px rgb(0 0 0 / 0.04);
+  --live-accent: #53aca2;
+  --live-shadow-service: 13px 16px 14px rgb(20 20 20 / 0.11);
   --color-service-ink: #17211d;
-  --color-service-muted: #5f6f68;
-  --color-service-accent: #4376ad;
-  --color-service-surface: #ededed;
+  --color-service-muted: #3e564c;
+  --color-service-accent: #32ae85;
+  --color-service-surface: #fbf9fb;
   --color-service-border: #bec1bf;
-  --color-bg-page: #e6e6e6;
-  --color-bg-surface: #ededed;
+  --color-bg-page: #f5f5f5;
+  --color-bg-surface: #fbf9fb;
   --color-bg-muted: #bec1bf;
   --color-bg-dark: #10141b;
   --color-text-main: #17211d;
-  --color-text-muted: #5f6f68;
+  --color-text-muted: #3e564c;
   --color-text-inverse: #ffffff;
-  --color-text-accent: #4376ad;
+  --color-text-accent: #32ae85;
   --color-border-default: #bec1bf;
-  --color-accent: #c45a2c;
-  --card-grid-gap-active: 1.75rem;
+  --color-accent: #53aca2;
+  --card-grid-gap-active: 2.25rem;
   --inline-gap-active: 1.75rem;
   --layout-gap-active: 1.75rem;
-  --border-surface-width-token: 2px;
+  --border-surface-width-token: 0px;
   --radius-sm-token: 4px;
   --radius-md-token: 8px;
   --radius-lg-token: 24px;
   --radius-xl-token: 40px;
   --radius-round-token: 9999px;
-  --radius-surface-token: 40px;
+  --radius-surface-token: 24px;
   --radius-button-token: 9999px;
   --section-min-active: 54rem;
-  --section-space-vsml: 3rem;
-  --section-space-sml: 6rem;
-  --section-space-med: 9rem;
-  --section-space-lrg: 12rem;
-  --section-space-vsml-tablet: 2.5rem;
-  --section-space-sml-tablet: 5rem;
-  --section-space-med-tablet: 7rem;
-  --section-space-lrg-tablet: 8rem;
-  --section-space-vsml-mobile: 2.5rem;
-  --section-space-sml-mobile: 5rem;
-  --section-space-med-mobile: 5rem;
-  --section-space-lrg-mobile: 5.5rem;
+  --section-space-vsml: 2rem;
+  --section-space-sml: 4rem;
+  --section-space-med: 6rem;
+  --section-space-lrg: 8rem;
+  --section-space-vsml-tablet: 2rem;
+  --section-space-sml-tablet: 3.5rem;
+  --section-space-med-tablet: 5rem;
+  --section-space-lrg-tablet: 6rem;
+  --section-space-vsml-mobile: 2rem;
+  --section-space-sml-mobile: 4rem;
+  --section-space-med-mobile: 4rem;
+  --section-space-lrg-mobile: 4rem;
   --semantic-spacing-scale: 1.5;
-  --container-gutter: clamp(2rem, 4vw, 3.5rem);
-  --site-grid-inset-block: clamp(2rem, 4vw, 7rem);
-  --site-grid-inset-inline: clamp(0.5rem, 3vw, 6rem);
-  --site-grid-gap: clamp(0.375rem, 0.55vw, 0.75rem);
-  --shadow-service: 2px 3px 16px rgb(0 0 0 / 0.04);
+  --container-gutter: clamp(2.25rem, 5vw, 4rem);
+  --site-grid-inset-block: clamp(2.5rem, 5vw, 8rem);
+  --site-grid-inset-inline: clamp(0.75rem, 4vw, 8rem);
+  --site-grid-gap: clamp(1.5rem, 2.15vw, 3.5rem);
+  --shadow-service: 13px 16px 14px rgb(20 20 20 / 0.11);
   --type-display-xl-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --type-display-xl-size: clamp(3.5rem, calc(4.8611cqw + 2.3333rem), 7rem);
   --type-display-xl-leading: 0.92;
@@ -1507,7 +1513,7 @@ body {
   --type-heading-lg-wrap: balance;
   --type-heading-lg-transform: none;
   --type-heading-md-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  --type-heading-md-size: clamp(1.375rem, calc(0.8681cqw + 1.1667rem), 2rem);
+  --type-heading-md-size: clamp(1.1875rem, calc(1.6493cqw + 0.7917rem), 2.375rem);
   --type-heading-md-leading: 1.15;
   --type-heading-md-measure: 28ch;
   --type-heading-md-weight: 650;

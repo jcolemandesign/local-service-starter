@@ -61,7 +61,7 @@ export function FAQAccordionSectionV3({
           </div>
         </SevenColumnGridItem>
 
-        <SevenColumnGridItem className="col-span-5 col-start-2 max-lg:col-span-7 max-lg:col-start-1">
+        <SevenColumnGridItem className="col-span-7 col-start-1">
           <div className="mt-16 divide-y divide-service-border border-y border-service-border max-md:mt-12">
             {items.map((item, index) => {
               const isOpen = openItems.includes(item.question);
@@ -80,11 +80,11 @@ export function FAQAccordionSectionV3({
                       <span className="type-heading-md">{item.question}</span>
                       <span
                         aria-hidden="true"
-                        className={`radius-medium flex size-10 shrink-0 items-center justify-center border border-service-border text-service-accent transition-transform max-md:size-9 ${
+                        className={`radius-medium flex size-12 shrink-0 items-center justify-center border border-service-border text-service-accent transition-transform max-md:size-11 ${
                           isOpen ? "rotate-180" : ""
                         }`}
                       >
-                        <DownArrowIcon className="size-4" />
+                        <DownArrowIcon className="size-5" />
                       </span>
                     </button>
                   </h3>
