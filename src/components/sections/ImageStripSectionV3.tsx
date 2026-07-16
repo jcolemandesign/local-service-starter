@@ -38,11 +38,17 @@ export function ImageStripSectionV3({ images }: ImageStripSectionV3Props) {
         {visibleImages.map((image, index) => (
           <SevenColumnGridItem
             alignX="stretch"
+            alignY="stretch"
             className={imageLayoutClasses[index]}
             key={`${image.src}-${index}`}
           >
-            <figure className="grid h-full min-h-[28rem] grid-rows-[minmax(0,1fr)_auto] overflow-hidden bg-bg-page max-lg:min-h-[22rem] max-md:min-h-[18rem]">
-              <div className="relative h-full min-h-0 bg-bg-page">
+            <figure
+              className={cx(
+                "grid h-full grid-rows-[minmax(0,1fr)_auto] overflow-hidden bg-bg-page",
+                index === 0 && "aspect-[4/3]",
+              )}
+            >
+              <div className="relative h-full bg-bg-page">
                 <Image
                   alt={image.alt}
                   className="object-cover"

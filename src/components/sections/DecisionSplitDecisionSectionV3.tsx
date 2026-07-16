@@ -76,11 +76,13 @@ export function DecisionSplitDecisionSectionV3({
                 viewport={{ amount: 0.85, once: true }}
                 whileInView={shouldReduceMotion ? undefined : getCardPulse(index)}
               >
-                <p className="type-label text-service-accent">{card.eyebrow}</p>
-                <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
+                <p className="type-text-sm font-semibold text-service-accent">
+                  {card.eyebrow}
+                </p>
+                <h3 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
                   {card.title}
                 </h3>
-                <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
+                <p className="type-text-md wrap-pretty mt-heading-body-sm text-service-muted">
                   {card.body}
                 </p>
               </motion.article>
