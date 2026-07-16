@@ -1,4 +1,5 @@
 import { Container, Section } from "@/components/primitives";
+import { MeasuredMarquee } from "@/components/sections/MeasuredMarquee";
 
 type TrustLogoMarqueeSectionProps = {
   label: string;
@@ -95,10 +96,9 @@ export function TrustLogoMarqueeSection({
                 className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-linear-to-l from-service-surface to-service-surface/0"
                 aria-hidden="true"
               />
-              <div className="flex w-max animate-trust-marquee motion-reduce:animate-none">
+              <MeasuredMarquee>
                 <LogoTrack logos={logos} />
-                <LogoTrack logos={logos} hidden />
-              </div>
+              </MeasuredMarquee>
             </div>
           </div>
         </div>

@@ -741,11 +741,13 @@ function heroGridProps(section: FieldSection) {
 }
 
 function servicesBentoProps(section: FieldSection) {
+  const serviceItemFieldNames = ["serviceItems", "items", "cards"];
   const serviceItems = cardItemsWithFallback(
     section,
-    ["serviceItems", "items", "cards"],
+    serviceItemFieldNames,
     sectionLibraryV3Content.servicesBento.items,
   );
+  const hasCustomItems = hasCardItems(section, serviceItemFieldNames);
 
   return {
     ...sectionLibraryV3Content.servicesBento,
@@ -761,6 +763,7 @@ function servicesBentoProps(section: FieldSection) {
           index % sectionLibraryV3Content.servicesBento.items.length
         ],
         ...item,
+        cardSize: hasCustomItems ? item.size : item.cardSize,
       }),
     ),
     title: getTitle(section, sectionLibraryV3Content.servicesBento.title),
@@ -795,18 +798,18 @@ function servicesHoverProps(section: FieldSection) {
 }
 
 function servicesThreeCardsProps(section: FieldSection) {
+  const fallbackServices =
+    sectionLibraryV3Content.servicesThreeCardsRight.priorityServices;
   const serviceItems = cardItemsWithFallback(
     section,
-    ["serviceItems", "items", "cards"],
-    sectionLibraryV3Content.servicesThreeCardsRight.cards,
+    ["priorityServices", "serviceItems", "items", "cards"],
+    fallbackServices,
   );
 
   return {
     ...sectionLibraryV3Content.servicesThreeCardsRight,
-    cards: serviceItems.map((item, index) => ({
-      ...sectionLibraryV3Content.servicesThreeCardsRight.cards[
-        index % sectionLibraryV3Content.servicesThreeCardsRight.cards.length
-      ],
+    priorityServices: serviceItems.map((item, index) => ({
+      ...fallbackServices[index % fallbackServices.length],
       ...item,
     })),
     eyebrow: getValue(
@@ -1830,6 +1833,7 @@ function cardItems(section: FieldSection, fieldNames: string[]) {
   if (records.length > 0) {
     return records.map((record) => ({
       body: record.body ?? record.description ?? "",
+      cardSize: record.cardSize ?? record.size ?? record.featured,
       imageLabel: record.imageLabel ?? record.title ?? "Service",
       size: getCardSize(record.size ?? record.cardSize ?? record.featured),
       title: record.title ?? record.heading ?? "Service",
@@ -1847,11 +1851,19 @@ function cardItems(section: FieldSection, fieldNames: string[]) {
   return [];
 }
 
+function hasCardItems(section: FieldSection, fieldNames: string[]) {
+  return (
+    getRepeatedRecords(section, fieldNames).length > 0 ||
+    fieldNames.some((fieldName) => getValue(section, fieldName, "").length > 0)
+  );
+}
+
 function cardItemsWithFallback(
   section: FieldSection,
   fieldNames: string[],
   fallbackItems: ReadonlyArray<{
     body?: string;
+    cardSize?: string;
     imageLabel?: string;
     size?: "large" | "medium" | "small";
     title: string;
@@ -1863,6 +1875,7 @@ function cardItemsWithFallback(
     ? items
     : fallbackItems.map((item) => ({
         body: item.body ?? "",
+        cardSize: item.cardSize,
         imageLabel: item.imageLabel ?? item.title,
         size: item.size,
         title: item.title,
@@ -1945,6 +1958,7 @@ function parseCardItem(value: string) {
 
   return {
     body,
+    cardSize: size,
     imageLabel: title.trim(),
     size,
     title: title.trim(),

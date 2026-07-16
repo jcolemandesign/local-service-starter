@@ -109,13 +109,13 @@ const appointmentWindowOptions = [
 ];
 
 const modalFieldClass =
-  "radius-button min-h-12 border border-service-border bg-white px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent";
+  "radius-small min-h-12 border border-service-border bg-white px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent";
 
 const modalLabelClass =
   "grid content-start gap-2 type-caption font-semibold text-service-ink";
 
 const modalSelectClass =
-  "radius-button min-h-12 border border-service-border bg-service-surface px-4 type-text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent";
+  "radius-small min-h-12 border border-service-border bg-service-surface px-4 type-text-sm font-normal text-service-ink outline-none transition-colors focus:border-service-accent";
 
 const modalButtonClass =
   "radius-button inline-flex min-h-10 cursor-pointer items-center justify-center px-5 type-caption font-semibold transition-colors";

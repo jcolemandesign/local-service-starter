@@ -716,9 +716,16 @@ const sectionSwapOptions = [
   {
     component: "ServicesBentoCardsSectionV2",
     instruction:
-      "Use bento-style service cards when the services need a richer visual scan pattern.",
+      "Use 6-9 bento-style service cards for a fuller service scan. The fixed layout rhythm is big small small, small small big, then big small small.",
     mode: "Scan",
     name: "Services bento cards",
+  },
+  {
+    component: "ServicesCards13ColSection",
+    instruction:
+      "Use 6-9 service cards in a 13-column auto-packed grid. Prefix higher-priority services with [large] or [featured] so they span 3 columns; standard cards span 2 columns and backfill available row space.",
+    mode: "Scan",
+    name: "Service cards 13col",
   },
   {
     component: "ServicesHoverPanelSectionV2",
@@ -730,9 +737,9 @@ const sectionSwapOptions = [
   {
     component: "ServicesThreeCardsRightSectionV3",
     instruction:
-      "Show top-level service cards on the seven-column page grid, using explicit card size metadata when one card should be larger.",
+      "Show 3-5 priority services the business wants listed first before the full all-services section.",
     mode: "Scan",
-    name: "Services cards grid",
+    name: "Priority service cards",
   },
   {
     component: "ServicesScrollCardsSectionV2",
@@ -1757,7 +1764,7 @@ export function PagebuilderShell({
   ) {
     updateActiveStack((stack) =>
       stack.map((section) =>
-        section.id === sectionId && isHeroCompactSection(section)
+        section.id === sectionId && isCompactHeaderAlignmentSection(section)
           ? {
               ...section,
               variant: align,
@@ -2524,7 +2531,7 @@ export function PagebuilderShell({
                             </fieldset>
                           ) : null}
 
-                          {isHeroCompactSection(section) ? (
+                          {isCompactHeaderAlignmentSection(section) ? (
                             <fieldset className="grid gap-2">
                               <legend className="type-caption font-semibold text-current">
                                 Alignment

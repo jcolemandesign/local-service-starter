@@ -57,7 +57,11 @@ export function SectionHeaderCompactSectionV3({
 
   return (
     <section className="bg-bg-page">
-      <SevenColumnGrid padding="med">
+      <SevenColumnGrid
+        minHeight="none"
+        padding="none"
+        style={{ paddingBlock: "var(--section-space-vsml) 0" }}
+      >
         <SevenColumnGridItem
           alignX={align}
           className={cx(

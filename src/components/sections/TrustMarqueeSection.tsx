@@ -4,6 +4,7 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import { MeasuredMarquee } from "@/components/sections/MeasuredMarquee";
 
 type TrustMarqueeSectionProps = {
   actionHref?: string;
@@ -90,10 +91,9 @@ export function TrustMarqueeSection({
 
       <div className="relative left-1/2 w-screen -translate-x-1/2">
         <div className="overflow-hidden bg-service-surface py-4">
-          <div className="flex w-max animate-trust-marquee motion-reduce:animate-none">
+          <MeasuredMarquee>
             <MarqueeItems items={items} />
-            <MarqueeItems items={items} hidden />
-          </div>
+          </MeasuredMarquee>
         </div>
       </div>
     </Section>

@@ -3,6 +3,7 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import { MeasuredMarquee } from "@/components/sections/MeasuredMarquee";
 
 type TrustItemsProps = {
   items: readonly string[];
@@ -333,12 +334,9 @@ export function TrustBarBentoAboutSectionV3({
 export function TrustMarqueeSectionV3({ items }: TrustItemsProps) {
   return (
     <section className="section-min-none section-space-vsml overflow-hidden bg-bg-page">
-      <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
-        <div className="flex w-max animate-trust-marquee motion-reduce:animate-none">
-          <TextMarqueeItems items={items} />
-          <TextMarqueeItems hidden items={items} />
-        </div>
-      </div>
+      <MeasuredMarquee className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
+        <TextMarqueeItems items={items} />
+      </MeasuredMarquee>
     </section>
   );
 }
@@ -348,12 +346,9 @@ export function TrustLogoMarqueeSectionV3({
 }: TrustLogosProps) {
   return (
     <section className="section-min-none section-space-vsml overflow-hidden bg-bg-page">
-      <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
-        <div className="flex w-max animate-trust-marquee motion-reduce:animate-none">
-          <LogoTrack logos={logos} />
-          <LogoTrack hidden logos={logos} />
-        </div>
-      </div>
+      <MeasuredMarquee className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
+        <LogoTrack logos={logos} />
+      </MeasuredMarquee>
     </section>
   );
 }

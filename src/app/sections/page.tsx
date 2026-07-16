@@ -44,6 +44,7 @@ import {
   ProcessStepsSectionV3,
   QuickPageLinksSectionV2,
   ServicesBentoCardsSectionV2,
+  ServicesCards13ColSection,
   ServicesHoverPanelSectionV2,
   ServicesScrollCardsSectionV2,
   SectionHeaderCompactSectionV3,
@@ -248,6 +249,9 @@ const sectionElements = {
   ),
   "services-bento-cards-v2": (
     <ServicesBentoCardsSectionV2 {...sectionLibraryV3Content.servicesBento} />
+  ),
+  "service-cards-13col": (
+    <ServicesCards13ColSection {...sectionLibraryV3Content.servicesBento} />
   ),
   "services-hover-panel-v2": (
     <ServicesHoverPanelSectionV2

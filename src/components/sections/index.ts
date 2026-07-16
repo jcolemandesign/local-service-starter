@@ -94,6 +94,7 @@ export { ProcessStepsSection } from "./ProcessStepsSection";
 export { ProcessStepsSectionV2 } from "./ProcessStepsSectionV2";
 export { ServicesBentoCardsSection } from "./ServicesBentoCardsSection";
 export { ServicesBentoCardsSectionV2 } from "./ServicesBentoCardsSectionV2";
+export { ServicesCards13ColSection } from "./ServicesCards13ColSection";
 export { ServicesGridSection } from "./ServicesGridSection";
 export { ServicesHoverPanelSection } from "./ServicesHoverPanelSection";
 export { ServicesHoverPanelSectionV2 } from "./ServicesHoverPanelSectionV2";

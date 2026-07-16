@@ -165,11 +165,11 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
           "Introduce the service card grid with a concise eyebrow, heading, and body before the scan section begins.",
       },
       {
-        name: "Services cards grid",
+        name: "Priority service cards",
         component: "ServicesThreeCardsRightSectionV3",
         mode: "Scan",
         instruction:
-          "Show top-level service cards on the seven-column page grid, using explicit card size metadata when one card should be larger.",
+          "Show 3-5 priority services the business wants listed first before the full all-services section.",
       },
       {
         name: "FAQ",
@@ -420,11 +420,11 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
           "Introduce the coverage service grid without relying on the grid cards to carry their own heading.",
       },
       {
-        name: "Services cards grid",
+        name: "Priority service cards",
         component: "ServicesThreeCardsRightSectionV3",
         mode: "Scan",
         instruction:
-          "Show the core services available across the coverage area on the seven-column page grid, using explicit card size metadata when one card should be larger.",
+          "Show 3-5 priority services available in this coverage area before the full all-services section.",
       },
       {
         name: "FAQ",
@@ -681,11 +681,11 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
           "Introduce the related categories or service paths before the card grid.",
       },
       {
-        name: "Services cards grid",
+        name: "Priority service cards",
         component: "ServicesThreeCardsRightSectionV3",
         mode: "Scan",
         instruction:
-          "Connect common article categories back to the related service paths on the seven-column page grid.",
+          "Connect 3-5 priority article or service paths before routing into the broader service set.",
       },
       {
         name: "CTA",
@@ -774,7 +774,14 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
         component: "ServicesBentoCardsSectionV2",
         mode: "Scan",
         instruction:
-          "Use cards as product or system option tiles with short fit-focused descriptions.",
+          "Use 6-9 bento-style service or product cards. The fixed layout rhythm is big small small, small small big, then big small small.",
+      },
+      {
+        name: "Service cards 13col",
+        component: "ServicesCards13ColSection",
+        mode: "Scan",
+        instruction:
+          "Use 6-9 service cards in a 13-column auto-packed grid. Prefix higher-priority services with [large] or [featured] so they span 3 columns; standard cards span 2 columns and backfill available row space.",
       },
       {
         name: "Process steps",

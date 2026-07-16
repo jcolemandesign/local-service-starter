@@ -278,6 +278,7 @@ function getSectionContent(component: string): ContentSourceValue | null {
     ProcessStepsSectionV3: sectionLibraryV3Content.process,
     ServiceAreaZipLookupSectionV3: sectionLibraryV3Content.serviceAreaZipLookup,
     ServicesBentoCardsSectionV2: sectionLibraryV3Content.servicesBento,
+    ServicesCards13ColSection: sectionLibraryV3Content.servicesBento,
     ServicesHoverPanelSectionV2: sectionLibraryV3Content.servicesHoverPanel,
     ServicesScrollCardsSectionV2: sectionLibraryV3Content.servicesScrollCards,
     ServicesThreeCardsRightSectionV3:
@@ -480,6 +481,7 @@ function getCollectionItemLabel(value: string) {
     items: "Item",
     links: "Link",
     points: "Point",
+    priorityServices: "Priority Service",
     services: "Service",
     stats: "Stat",
   };

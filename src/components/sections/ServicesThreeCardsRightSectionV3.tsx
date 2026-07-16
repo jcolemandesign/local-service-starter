@@ -1,15 +1,18 @@
-import { SevenColumnGrid } from "@/components/primitives";
+import { SevenColumnGrid, SevenColumnGridItem } from "@/components/primitives";
 
-type ServicesThreeCardsRightSectionV3Props = {
-  cards: ReadonlyArray<{
+type ServicePriorityCard = {
     body: string;
     href?: string;
     imageAlt?: string;
     imageSrc?: string;
     size?: "large" | "medium" | "small";
     title: string;
-  }>;
+};
+
+type ServicesThreeCardsRightSectionV3Props = {
+  cards?: ReadonlyArray<ServicePriorityCard>;
   eyebrow?: string;
+  priorityServices?: ReadonlyArray<ServicePriorityCard>;
   title?: string;
 };
 
@@ -51,38 +54,45 @@ function ServiceCardIcon({ index }: { index: number }) {
 
 export function ServicesThreeCardsRightSectionV3({
   cards,
+  priorityServices,
 }: ServicesThreeCardsRightSectionV3Props) {
+  const displayCards = priorityServices ?? cards ?? [];
+
   return (
     <section className="bg-bg-page">
       <SevenColumnGrid
-        className="services-three-cards-grid [--site-grid-row-gap:var(--inline-gap-active)]"
+        className="services-three-cards-grid"
         minHeight="none"
       >
-        {cards.map((card, index) => {
-          const href =
-            card.href ??
-            `/services/${card.title
-              .toLowerCase()
-              .replace(/[^a-z0-9]+/g, "-")
-              .replace(/(^-|-$)/g, "")}`;
+        <SevenColumnGridItem className="col-span-7">
+          <div className="services-three-cards-list">
+            {displayCards.map((card, index) => {
+              const href =
+                card.href ??
+                `/services/${card.title
+                  .toLowerCase()
+                  .replace(/[^a-z0-9]+/g, "-")
+                  .replace(/(^-|-$)/g, "")}`;
 
-          return (
-            <a
-              className="radius-medium relative col-span-1 flex min-h-28 items-end border border-service-border bg-service-surface text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent hover:shadow-[0_18px_48px_rgb(20_27_24_/_0.12)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent max-md:col-span-3 max-sm:col-span-1"
-              href={href}
-              key={card.title}
-            >
-              <span className="pointer-events-none absolute right-5 top-5">
-                <ServiceCardIcon index={index} />
-              </span>
-              <div className="content-padding fluid-type-frame w-full">
-                <h3 className="type-heading-sm text-service-ink">
-                  {card.title}
-                </h3>
-              </div>
-            </a>
-          );
-        })}
+              return (
+                <a
+                  className="services-three-card radius-medium relative flex min-h-28 items-center justify-center border border-service-border bg-service-surface text-center text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent hover:shadow-[0_18px_48px_rgb(20_27_24_/_0.12)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                  href={href}
+                  key={card.title}
+                >
+                  <span className="pointer-events-none absolute right-4 top-4">
+                    <ServiceCardIcon index={index} />
+                  </span>
+                  <div className="fluid-type-frame w-full p-[clamp(1.25rem,1.8vw,1.75rem)] max-md:p-6 max-sm:p-5">
+                    <h3 className="type-heading-sm text-service-ink">
+                      {card.title}
+                    </h3>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </SevenColumnGridItem>
       </SevenColumnGrid>
     </section>
   );

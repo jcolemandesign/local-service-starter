@@ -76,6 +76,7 @@ import {
   ServicesBentoCardsSectionV2,
   type ServicesBentoCardsVariant,
 } from "@/components/sections/ServicesBentoCardsSectionV2";
+import { ServicesCards13ColSection } from "@/components/sections/ServicesCards13ColSection";
 import { ServicesHoverPanelSectionV2 } from "@/components/sections/ServicesHoverPanelSectionV2";
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { ServiceAreaZipLookupSectionV3 } from "@/components/sections/ServiceAreaZipLookupSectionV3";
@@ -297,6 +298,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           variant={getServicesBentoVariant(section)}
         />
       );
+    case "ServicesCards13ColSection":
+      return <ServicesCards13ColSection {...sectionLibraryV3Content.servicesBento} />;
     case "ServicesHoverPanelSectionV2":
       return (
         <ServicesHoverPanelSectionV2
@@ -779,7 +782,7 @@ export function PagebuilderSection() {
             component: "ServicesThreeCardsRightSectionV3",
             instruction: "",
             mode: "Scan",
-            name: "Services cards grid",
+            name: "Priority service cards",
           },
           3,
         )}
@@ -803,6 +806,19 @@ export function PagebuilderSection() {
       "Scan",
       "Services card carousel",
       3,
+    ),
+    ServicesCards13ColSection: (
+      <div key="ServicesCards13ColSection">
+        {renderPreviewSection(
+          {
+            component: "ServicesCards13ColSection",
+            instruction: "",
+            mode: "Scan",
+            name: "Service cards 13col",
+          },
+          2,
+        )}
+      </div>
     ),
     HeroServicesSectionV3: (
       <div key="HeroServicesSectionV3">

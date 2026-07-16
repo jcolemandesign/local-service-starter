@@ -81,6 +81,9 @@ const bentoCardSpanPattern = [
   "col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
   "col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
   "col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
+  "col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
+  "col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
+  "col-span-2 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
 ];
 
 const splitHeaderCardSpanPattern = [
@@ -104,10 +107,11 @@ export function ServicesBentoCardsSectionV2({
   const cardSpanPattern = isSplitHeader
     ? splitHeaderCardSpanPattern
     : bentoCardSpanPattern;
-  const splitHeaderSupportItems = items.slice(0, 4).map((item) => item.title);
+  const displayItems = isSplitHeader ? items : items.slice(0, 9);
+  const splitHeaderSupportItems = displayItems.slice(0, 4).map((item) => item.title);
   const splitHeaderBody = [
     body,
-    items
+    displayItems
       .slice(0, 2)
       .map((item) => item.body)
       .join(" "),
@@ -210,10 +214,10 @@ export function ServicesBentoCardsSectionV2({
               "grid card-grid-gap-med max-md:grid-cols-3 max-sm:grid-cols-1",
               isSplitHeader
                 ? "grid-cols-4 items-stretch"
-                : "mt-16 grid-cols-7 items-start max-lg:grid-cols-5 max-md:mt-12",
+                : "mt-16 grid-cols-7 items-center max-lg:grid-cols-5 max-md:mt-12",
             )}
           >
-            {items.map((item, index) => (
+            {displayItems.map((item, index) => (
               <article
                 className={cx(
                   "fluid-type-frame",

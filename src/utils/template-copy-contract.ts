@@ -154,6 +154,7 @@ export function buildTemplateCopyContract({
     "- Return structured text by section ID, not prose paragraphs about the page.",
     "- If the user asks for outline mode, use bullets and notes for review.",
     "- If the user asks for bulk paste mode, use exact field labels with no bullets before field names.",
+    `- In bulk paste mode, begin immediately below \`# Bulk Paste Copy\` with \`<!-- Page target: ${pageLabel} (${publicPath}) -->\`. This visible page note is intentionally ignored by the importer and must not be treated as a content field.`,
     "",
     "## Sections",
   );
@@ -406,18 +407,19 @@ export function getTemplateCopyFieldsForSection(
     return [
       {
         example: [
-          "[large] System Replacement - Compare repair and replacement paths with clear guidance on equipment condition and long-term fit.",
+          "System Replacement - Compare repair and replacement paths with clear guidance on equipment condition and long-term fit.",
           "HVAC Repair - Diagnose the current problem and explain the practical repair path before work begins.",
           "Heat Pump Service - Plan heat pump repair, maintenance, or replacement around the system's condition and performance.",
+          "Maintenance & Tune-Ups - Schedule seasonal care to review operation and identify developing concerns.",
+          "Seasonal Service - Prepare heating or cooling equipment before peak demand.",
         ],
         format:
-          "One item per line as Title - Description. Mark one large card with [large] or [featured] when the layout calls for it.",
-        itemCount: 3,
-        name: "serviceItems",
+          "One item per line as Title - Description. List priority services in the order they should appear before the full all-services section.",
+        name: "priorityServices",
         purpose:
-          "The highest-priority services featured first on the page. Do not include every service here.",
+          "The priority services the business wants listed first before the broader all-services section.",
         target:
-          "Exactly 3 priority services. These must not repeat in the following Services hover panel.",
+          "Suggest 3-5 priority services. Do not include every service here, and do not repeat these in the following all-services section.",
       },
     ];
   }
@@ -454,6 +456,71 @@ export function getTemplateCopyFieldsForSection(
           "Every remaining approved service after the preceding priority-service section. Do not repeat a priority service or omit an approved remaining service.",
         target:
           "Include the complete remaining service set. Titles 12-38 characters. Descriptions 90-180 characters.",
+      },
+    ];
+  }
+
+  if (
+    component.includes("servicesbentocards") ||
+    component.includes("servicescards13col")
+  ) {
+    const isThirteenColumnLayout = component.includes("servicescards13col");
+    const layoutRhythm = isThirteenColumnLayout
+      ? "13-column auto-packed grid with [large] cards spanning 3 columns and standard cards spanning 2 columns"
+      : "big small small, small small big, big small small";
+    const prioritySlotGuidance = isThirteenColumnLayout
+      ? "Prefix higher-priority services with [large] or [featured]. Use standard unprefixed items for supporting services so smaller cards can backfill available row space."
+      : "Put the most important services in positions 1, 6, and 7 because those render as the larger slots.";
+
+    return [
+      {
+        example: "HVAC services",
+        name: "eyebrow",
+        purpose: "Short category label.",
+        target: "12-32 characters.",
+      },
+      {
+        example: "Service options for every season",
+        name: "heading",
+        purpose: "Services section headline.",
+        target: "32-68 characters.",
+      },
+      {
+        example:
+          "Choose the path that matches the problem, from urgent repairs to planned system upgrades and seasonal maintenance.",
+        name: "intro",
+        purpose: "Brief explanation of the larger service set.",
+        target: "100-190 characters.",
+      },
+      {
+        example: [
+          "[large] System Replacement - Compare repair and replacement paths when an older system is no longer dependable.",
+          "HVAC Repair - Diagnose heating and cooling problems and review the practical repair path.",
+          "AC Repair - Address cooling failures, weak airflow, and performance concerns.",
+          "Heating Repair - Resolve heating issues with clear options before work begins.",
+          "Seasonal Tune-Ups - Prepare equipment before peak heating or cooling demand.",
+          "[large] Maintenance & Tune-Ups - Schedule seasonal care to review operation and identify developing concerns.",
+          "[large] Heat Pump Service - Plan heat pump repair, maintenance, or replacement around the system.",
+          "Emergency HVAC Service - Route urgent heating or cooling problems to a direct call path.",
+          "Indoor Air Quality - Review practical options for filtration, airflow, humidity, and indoor environment concerns.",
+        ],
+        format:
+          isThirteenColumnLayout
+            ? `One item per line as optional [large] marker + Title - Description. Use 6-9 items. Layout: ${layoutRhythm}.`
+            : `One item per line as Title - Description. Use 6-9 items. The layout is capped at 9 and follows this fixed rhythm by item order: ${layoutRhythm}.`,
+        name: "serviceItems",
+        purpose:
+          isThirteenColumnLayout
+            ? "A fuller service scan where [large] marks the wider visual cards and order controls reading priority."
+            : "A fuller service scan where item order controls the larger visual slots.",
+        target:
+          `6-9 items. ${prioritySlotGuidance} Titles 12-38 characters. Descriptions 80-170 characters.`,
+      },
+      {
+        example: "View All Services",
+        name: "sectionAction",
+        purpose: "CTA for the service group if the layout uses one.",
+        target: "12-24 characters.",
       },
     ];
   }

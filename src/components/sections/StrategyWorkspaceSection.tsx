@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Card, DownArrowIcon, Section } from "@/components/primitives";
 import type { PageTemplateSummary } from "@/components/sections/TemplateLibrarySection";
 import {
@@ -174,9 +174,10 @@ export function StrategyWorkspaceSection({
   templates,
   sourcePacketText,
 }: StrategyWorkspaceSectionProps) {
-  const [fields, setFields] = useState<StrategyWorkspaceFields>(
+  const [fields, setFieldsState] = useState<StrategyWorkspaceFields>(
     initialWorkspace.fields,
   );
+  const fieldsRef = useRef(initialWorkspace.fields);
   const [snapshot, setSnapshot] = useState<StrategySnapshot | null>(null);
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [packetCopyState, setPacketCopyState] = useState<
@@ -302,6 +303,20 @@ export function StrategyWorkspaceSection({
   );
   const showAssemblyOverview = Boolean(updatedAt) || saveState === "saved";
 
+  function setFields(
+    nextFields:
+      | StrategyWorkspaceFields
+      | ((currentFields: StrategyWorkspaceFields) => StrategyWorkspaceFields),
+  ) {
+    const resolvedFields =
+      typeof nextFields === "function"
+        ? nextFields(fieldsRef.current)
+        : nextFields;
+
+    fieldsRef.current = resolvedFields;
+    setFieldsState(resolvedFields);
+  }
+
   function updateField(key: keyof StrategyWorkspaceFields, value: string) {
     setFields((currentFields) => ({
       ...currentFields,
@@ -318,14 +333,14 @@ export function StrategyWorkspaceSection({
     }
   }
 
-  async function saveWorkspace() {
+  async function saveWorkspace(nextFields = fieldsRef.current) {
     setSaveState("saving");
 
     try {
       const response = await fetch("/api/strategy-workspace", {
         body: JSON.stringify({
           clientSlug,
-          fields,
+          fields: nextFields,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -350,6 +365,18 @@ export function StrategyWorkspaceSection({
     } catch {
       setSaveState("error");
     }
+  }
+
+  function updateLayoutApproval(pageId: string, isApproved: boolean) {
+    const layoutApprovalKey = getPageLayoutApprovalField(pageId);
+    const nextFields = {
+      ...fieldsRef.current,
+      [layoutApprovalKey]: isApproved ? "approved" : "",
+    };
+
+    setFields(nextFields);
+    clearWorkspaceFieldCopyState(layoutApprovalKey);
+    void saveWorkspace(nextFields);
   }
 
   async function copyStrategyDigest() {
@@ -753,10 +780,7 @@ export function StrategyWorkspaceSection({
                             checked={isLayoutApproved}
                             className="peer sr-only"
                             onChange={(event) =>
-                              updateField(
-                                layoutApprovalKey,
-                                event.target.checked ? "approved" : "",
-                              )
+                              updateLayoutApproval(page.id, event.target.checked)
                             }
                             type="checkbox"
                           />
