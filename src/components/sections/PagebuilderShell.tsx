@@ -42,6 +42,8 @@ type WorkingSection = PagebuilderRecipe["sectionStack"][number] & {
   included: boolean;
   originalComponent: string;
   originalIndex: number;
+  reduceTopPadding?: boolean;
+  reduceBottomPadding?: boolean;
 };
 
 type DragDropPosition = "before" | "after" | null;
@@ -399,6 +401,8 @@ function createInitialWorkingStack(
     included: false,
     originalComponent: section.component,
     originalIndex: index,
+    reduceTopPadding: false,
+    reduceBottomPadding: false,
     ratio:
       section.component === fixedRatioSplitComponent ||
       section.component === contentFixedRatioSplitComponent
@@ -429,6 +433,8 @@ function createInitialLayoutSlots(recipe: PagebuilderRecipe) {
 
 function serializeWorkingSection(section: WorkingSection) {
   return {
+    reduceBottomPadding: section.reduceBottomPadding ?? false,
+    reduceTopPadding: section.reduceTopPadding ?? false,
     component: section.component,
     id: section.id,
     included: section.included,
@@ -1204,7 +1210,13 @@ function buildPageInstruction({
            } (${section.variant ?? servicesBentoVariantOptions[0].value})`
        : "Variant: default"
    }
-   Instruction: ${section.instruction}
+       Instruction: ${section.instruction}
+   Spacing: ${[
+     section.reduceTopPadding ? "reduce top padding" : null,
+     section.reduceBottomPadding ? "reduce bottom padding" : null,
+   ]
+     .filter(Boolean)
+     .join(", ") || "default section padding"}
    Origin: ${
      section.originalComponent !== section.component
        ? `swapped from ${section.originalComponent}`
@@ -1252,6 +1264,29 @@ type PagebuilderPreviewWindowProps = {
   spacingClassName: string;
 };
 
+function PaddingPrismIcon({
+  active,
+  edge,
+}: {
+  active: boolean;
+  edge: "top" | "bottom";
+}) {
+  return (
+    <span
+      aria-hidden="true"
+      className="relative block h-7 w-11 rounded-sm border border-current/70"
+    >
+      <span
+        className={cx(
+          "absolute left-0 right-0 h-[16.666%] transition-colors",
+          edge === "top" ? "top-0" : "bottom-0",
+          active ? "bg-white" : "bg-current/35",
+        )}
+      />
+    </span>
+  );
+}
+
 function PagebuilderPreviewWindow({
   activePageLabel,
   children,
@@ -1267,7 +1302,7 @@ function PagebuilderPreviewWindow({
   return (
     <div
       className={cx(
-        "mx-auto flex max-h-full min-h-0 flex-col overflow-hidden rounded border border-service-border bg-bg-page shadow-service transition-all duration-300",
+        "mx-auto flex max-h-full min-h-0 flex-col overflow-hidden rounded border border-service-border bg-bg-page transition-all duration-300",
         frameClassName,
       )}
     >
@@ -1356,7 +1391,13 @@ export function PagebuilderShell({
     SavedPageTemplate[]
   >([]);
   const [savedOptionsLoaded, setSavedOptionsLoaded] = useState(false);
+  const [recentlyAddedSection, setRecentlyAddedSection] = useState<string | null>(
+    null,
+  );
   const addedSectionIdCounterRef = useRef(0);
+  const addedSectionFeedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const autosaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const autosaveSignaturesRef = useRef(new Map<string, string>());
 
@@ -1575,6 +1616,12 @@ export function PagebuilderShell({
     );
   }
 
+  function clearDragState() {
+    setDraggedSectionId(null);
+    setDragOverSectionId(null);
+    setDragDropPosition(null);
+  }
+
   function moveSection(sectionId: string, direction: -1 | 1) {
     updateActiveStack((stack) => {
       const currentIndex = stack.findIndex(
@@ -1603,9 +1650,7 @@ export function PagebuilderShell({
     position: "before" | "after",
   ) {
     if (!draggedId || draggedId === targetId) {
-      setDraggedSectionId(null);
-      setDragOverSectionId(null);
-      setDragDropPosition(null);
+      clearDragState();
       return;
     }
 
@@ -1636,9 +1681,7 @@ export function PagebuilderShell({
 
       return nextStack;
     });
-    setDraggedSectionId(null);
-    setDragOverSectionId(null);
-    setDragDropPosition(null);
+    clearDragState();
   }
 
   function getDragDropPosition(
@@ -1646,17 +1689,34 @@ export function PagebuilderShell({
   ): DragDropPosition {
     const bounds = event.currentTarget.getBoundingClientRect();
     const pointerRatio = (event.clientY - bounds.top) / bounds.height;
-    const inertBand = 0.08;
+    return pointerRatio <= 0.5 ? "before" : "after";
+  }
 
-    if (pointerRatio < 0.5 - inertBand) {
-      return "before";
-    }
+  function startDraggingSection(
+    event: DragEvent<HTMLElement>,
+    sectionId: string,
+  ) {
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", sectionId);
+    setDraggedSectionId(sectionId);
+    setDragOverSectionId(null);
+    setDragDropPosition(null);
+  }
 
-    if (pointerRatio > 0.5 + inertBand) {
-      return "after";
-    }
-
-    return null;
+  function updateSectionPadding(
+    sectionId: string,
+    edge: "top" | "bottom",
+    reduce: boolean,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId
+          ? edge === "top"
+            ? { ...section, reduceTopPadding: reduce }
+            : { ...section, reduceBottomPadding: reduce }
+          : section,
+      ),
+    );
   }
 
   function deleteSection(sectionId: string) {
@@ -1864,6 +1924,16 @@ export function PagebuilderShell({
       return nextStack;
     });
     setSelectedSectionId(nextSection.id);
+    setRecentlyAddedSection(component);
+
+    if (addedSectionFeedbackTimeoutRef.current) {
+      clearTimeout(addedSectionFeedbackTimeoutRef.current);
+    }
+
+    addedSectionFeedbackTimeoutRef.current = setTimeout(() => {
+      setRecentlyAddedSection(null);
+      addedSectionFeedbackTimeoutRef.current = null;
+    }, 1800);
   }
 
   async function copyPageInstruction() {
@@ -2011,6 +2081,8 @@ export function PagebuilderShell({
             name: section.name,
             originalComponent: section.originalComponent,
             originalIndex: section.originalIndex,
+            reduceBottomPadding: section.reduceBottomPadding ?? false,
+            reduceTopPadding: section.reduceTopPadding ?? false,
             ratio: section.ratio,
             variant: section.variant,
           })),
@@ -2133,6 +2205,12 @@ export function PagebuilderShell({
           data-pagebuilder-section-id={section.id}
           data-pagebuilder-section-component={section.component}
           data-pagebuilder-section-mode={section.mode}
+          data-pagebuilder-padding-top={
+            section.reduceTopPadding ? "none" : "default"
+          }
+          data-pagebuilder-padding-bottom={
+            section.reduceBottomPadding ? "none" : "default"
+          }
           key={section.id}
           onClick={(event) => {
             event.preventDefault();
@@ -2346,11 +2424,19 @@ export function PagebuilderShell({
                       key={section.id}
                       onDragOver={(event) => {
                         event.preventDefault();
+                        if (!draggedSectionId || draggedSectionId === section.id) {
+                          return;
+                        }
                         event.dataTransfer.dropEffect = "move";
                         const nextPosition = getDragDropPosition(event);
 
                         setDragOverSectionId(section.id);
                         setDragDropPosition(nextPosition);
+                      }}
+                      onDragLeave={(event) => {
+                        if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+                          clearDragState();
+                        }
                       }}
                       onDrop={(event) => {
                         event.preventDefault();
@@ -2366,9 +2452,7 @@ export function PagebuilderShell({
                             dropPosition,
                           );
                         } else {
-                          setDraggedSectionId(null);
-                          setDragOverSectionId(null);
-                          setDragDropPosition(null);
+                          clearDragState();
                         }
                       }}
                     >
@@ -2376,12 +2460,16 @@ export function PagebuilderShell({
                         <span
                           aria-hidden="true"
                           className={cx(
-                            "absolute left-2 right-2 z-10 h-0.5 rounded-[var(--chrome-radius-control)] bg-[var(--chrome-accent)]",
+                            "pointer-events-none absolute left-0 right-0 z-20 h-1 rounded-[var(--chrome-radius-control)] bg-[var(--chrome-accent)] shadow-[0_0_0_3px_color-mix(in_srgb,var(--chrome-accent)_20%,transparent)]",
                             dragDropPosition === "before"
                               ? "top-0"
                               : "bottom-0",
                           )}
-                        />
+                        >
+                          <span className="pointer-events-none absolute left-1/2 top-1 z-30 -translate-x-1/2 whitespace-nowrap rounded-[var(--chrome-radius-control)] bg-[var(--chrome-accent)] px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-normal text-white shadow-sm">
+                            Move {dragDropPosition}
+                          </span>
+                        </span>
                       ) : null}
                       <div className="flex min-h-12 items-stretch">
                         <button
@@ -2389,14 +2477,10 @@ export function PagebuilderShell({
                           className="flex w-14 shrink-0 cursor-grab items-center justify-center border-r border-current/10 text-[0.65rem] font-semibold uppercase tracking-normal text-current/65 transition-colors hover:bg-[var(--chrome-hover)] active:cursor-grabbing"
                           draggable
                           onDragEnd={() => {
-                            setDraggedSectionId(null);
-                            setDragOverSectionId(null);
-                            setDragDropPosition(null);
+                            clearDragState();
                           }}
                           onDragStart={(event) => {
-                            event.dataTransfer.effectAllowed = "move";
-                            event.dataTransfer.setData("text/plain", section.id);
-                            setDraggedSectionId(section.id);
+                            startDraggingSection(event, section.id);
                           }}
                           title="Drag to reorder"
                           type="button"
@@ -2488,6 +2572,67 @@ export function PagebuilderShell({
                               Swaps to another section with the same function.
                             </span>
                           </label>
+
+                          <fieldset className="grid gap-2">
+                            <legend className="type-caption font-semibold text-current">
+                              Section spacing
+                            </legend>
+                            <div className="flex items-center gap-2">
+                              <button
+                                aria-pressed={section.reduceTopPadding ?? false}
+                                className={cx(
+                                  "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                  (section.reduceTopPadding ?? false) &&
+                                    "token-chrome-card-active",
+                                )}
+                                onClick={() =>
+                                  updateSectionPadding(
+                                    section.id,
+                                    "top",
+                                    !(section.reduceTopPadding ?? false),
+                                  )
+                                }
+                                title="Toggle top padding"
+                                type="button"
+                              >
+                                <PaddingPrismIcon
+                                  active={section.reduceTopPadding ?? false}
+                                  edge="top"
+                                />
+                                <span className="sr-only">
+                                  Toggle top padding
+                                </span>
+                              </button>
+                              <button
+                                aria-pressed={section.reduceBottomPadding ?? false}
+                                className={cx(
+                                  "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                  (section.reduceBottomPadding ?? false) &&
+                                    "token-chrome-card-active",
+                                )}
+                                onClick={() =>
+                                  updateSectionPadding(
+                                    section.id,
+                                    "bottom",
+                                    !(section.reduceBottomPadding ?? false),
+                                  )
+                                }
+                                title="Toggle bottom padding"
+                                type="button"
+                              >
+                                <PaddingPrismIcon
+                                  active={section.reduceBottomPadding ?? false}
+                                  edge="bottom"
+                                />
+                                <span className="sr-only">
+                                  Toggle bottom padding
+                                </span>
+                              </button>
+                            </div>
+                            <p className="type-caption text-current/60">
+                              Highlight the top or bottom slot to tighten that edge.
+                            </p>
+                          </fieldset>
 
                           {isSplitContentImageSection(section) ? (
                             <fieldset className="grid gap-2">
@@ -2799,10 +2944,17 @@ export function PagebuilderShell({
                             sectionTemplateUsageCounts.get(option.component) ?? 0;
                           const innerOptionSignifier =
                             getInnerOptionSignifier(option.component);
+                          const isRecentlyAdded =
+                            recentlyAddedSection === option.component;
 
                           return (
                             <button
-                              className="token-chrome-control grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-[var(--chrome-radius-control)] border px-3 py-2 text-left text-sm font-semibold transition-colors"
+                              aria-label={`${option.name}${isRecentlyAdded ? " added" : ""}`}
+                              className={cx(
+                                "token-chrome-control grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-[var(--chrome-radius-control)] border px-3 py-2 text-left text-sm font-semibold transition-colors",
+                                isRecentlyAdded &&
+                                  "border-service-accent bg-service-accent text-white",
+                              )}
                               key={option.component}
                               onClick={() => addSection(option.component)}
                               type="button"
@@ -2819,6 +2971,9 @@ export function PagebuilderShell({
                                 ) : null}
                               </span>
                               <span className="flex items-center gap-1.5">
+                                {isRecentlyAdded ? (
+                                  <span className="text-xs font-semibold">Added</span>
+                                ) : null}
                                 {templateUsageCount > 0 ? (
                                   <span className="token-chrome-badge flex size-5 shrink-0 items-center justify-center rounded-[var(--chrome-radius-control)] border text-[0.625rem] font-semibold leading-none">
                                     {templateUsageCount}
@@ -3110,10 +3265,17 @@ export function PagebuilderShell({
                               {options.map((option) => {
                                 const innerOptionSignifier =
                                   getInnerOptionSignifier(option.component);
+                                const isRecentlyAdded =
+                                  recentlyAddedSection === option.component;
 
                                 return (
                                   <button
-                                    className="radius-4 grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border border-service-border bg-bg-page px-3 py-2 text-left text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent"
+                                    aria-label={`${option.name}${isRecentlyAdded ? " added" : ""}`}
+                                    className={cx(
+                                      "radius-4 grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border border-service-border bg-bg-page px-3 py-2 text-left text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent",
+                                      isRecentlyAdded &&
+                                        "border-service-accent bg-service-accent text-white hover:border-service-accent hover:bg-service-accent hover:text-white",
+                                    )}
                                     key={option.component}
                                     onClick={() => addSection(option.component)}
                                     type="button"
@@ -3131,6 +3293,9 @@ export function PagebuilderShell({
                                         />
                                       ) : null}
                                     </span>
+                                    {isRecentlyAdded ? (
+                                      <span className="text-xs font-semibold">Added</span>
+                                    ) : null}
                                   </button>
                                 );
                               })}
@@ -3157,27 +3322,21 @@ export function PagebuilderShell({
                             "border-service-accent",
                           !section.included && "opacity-50",
                         )}
-                        draggable
-                        onDragEnd={() => {
-                          setDraggedSectionId(null);
-                          setDragOverSectionId(null);
-                          setDragDropPosition(null);
-                        }}
                         onDragOver={(event) => {
                           event.preventDefault();
+                          if (!draggedSectionId || draggedSectionId === section.id) {
+                            return;
+                          }
                           event.dataTransfer.dropEffect = "move";
                           const nextPosition = getDragDropPosition(event);
 
                           setDragOverSectionId(section.id);
                           setDragDropPosition(nextPosition);
                         }}
-                        onDragStart={(event) => {
-                          event.dataTransfer.effectAllowed = "move";
-                          event.dataTransfer.setData(
-                            "text/plain",
-                            section.id,
-                          );
-                          setDraggedSectionId(section.id);
+                        onDragLeave={(event) => {
+                          if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+                            clearDragState();
+                          }
                         }}
                         onDrop={(event) => {
                           event.preventDefault();
@@ -3193,9 +3352,7 @@ export function PagebuilderShell({
                               dropPosition,
                             );
                           } else {
-                            setDraggedSectionId(null);
-                            setDragOverSectionId(null);
-                            setDragDropPosition(null);
+                            clearDragState();
                           }
                         }}
                         key={section.id}
@@ -3204,16 +3361,30 @@ export function PagebuilderShell({
                           <span
                             aria-hidden="true"
                             className={cx(
-                              "absolute left-3 right-3 h-0.5 rounded-full bg-service-accent",
+                              "pointer-events-none absolute left-0 right-0 z-20 h-1 rounded-full bg-service-accent shadow-[0_0_0_3px_color-mix(in_srgb,var(--color-service-accent)_20%,transparent)]",
                               dragDropPosition === "before"
                                 ? "top-0"
                                 : "bottom-0",
                             )}
-                          />
+                          >
+                            <span className="pointer-events-none absolute left-1/2 top-1 z-30 -translate-x-1/2 whitespace-nowrap rounded bg-service-accent px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-normal text-white shadow-sm">
+                              Move {dragDropPosition}
+                            </span>
+                          </span>
                         ) : null}
-                        <span className="flex size-10 cursor-grab items-center justify-center rounded bg-bg-page text-sm font-semibold text-service-accent active:cursor-grabbing">
+                        <button
+                          aria-label={`Drag ${section.name} section`}
+                          className="flex size-10 cursor-grab items-center justify-center rounded bg-bg-page text-sm font-semibold text-service-accent transition-colors hover:bg-service-accent hover:text-white active:cursor-grabbing"
+                          draggable
+                          onDragEnd={clearDragState}
+                          onDragStart={(event) =>
+                            startDraggingSection(event, section.id)
+                          }
+                          title="Drag to reorder"
+                          type="button"
+                        >
                           {index + 1}
-                        </span>
+                        </button>
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-start justify-between gap-3">
                             <div>

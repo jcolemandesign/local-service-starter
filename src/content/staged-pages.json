@@ -6,7 +6,7 @@
           "id": "services.strategy.pageCopy",
           "kind": "copy",
           "path": "strategy.pageCopy",
-          "value": "### 01-primary-navigation\n\nlogoLabel: North Star HVAC\nnavLinks: Services -> /services\nService Area -> /service-area\nAbout -> /about\nContact -> /contact\nphone: 704-555-0184\nprimaryAction: Request an Estimate\n\n### 02-services-hero\n\neyebrow: Residential HVAC services\nh1: HVAC Services for Lake Norman Homeowners\nintro: North Star HVAC provides repair, replacement, heat pump service, maintenance, and supporting system care with qualified technicians and clear recommendations based on what the equipment needs.\nserviceItems: [large] System Replacement - Compare repair and replacement paths with guidance on equipment condition, efficiency, long-term performance, and project scope.\nMaintenance & Tune-Ups - Schedule seasonal service to review system operation, identify developing concerns, and support dependable performance.\nHeat Pump Service - Plan heat pump diagnosis, repair, maintenance, or replacement around the system's condition and current performance.\nHVAC Repair - Diagnose heating and cooling problems, explain the findings, and review the practical repair path before work begins.\nSystem Installation - Plan new heating and cooling equipment installation around the needs of the home, proposed scope, and selected system.\nInspection & Diagnosis - Evaluate system performance, identify the likely cause of a problem, and define the work required before pricing is finalized.\nEmergency HVAC Service - Call directly for urgent heating or cooling issues. Availability depends on schedule, distance, and technician capacity.\n\n### 03-services-hover-panel\n\neyebrow: More ways we can help\nheading: Support for the rest of your HVAC system\nintro: Explore the additional services North Star HVAC provides for equipment problems, installation needs, controls, air quality, and qualified urgent requests.\nserviceItems: Indoor Air Quality - Review practical options that may support filtration, airflow, humidity control, and the home's overall indoor environment.\nSmart Thermostat Installation - Replace or install compatible controls and review the basic setup needed to operate the system effectively.\nDuctless Mini-Split Service - Request diagnosis, repair, maintenance, or installation support for ductless equipment when this service fits the home.\nReplacement Financing - Ask about financing that may be available for qualifying replacement projects, subject to provider terms and approval.\n\n### 04-muted-cta\n\nheading: Not sure which HVAC service you need?\nbody: Describe what is happening with your system and North Star HVAC will help identify the appropriate service path before work is scheduled.\nprimaryAction: Request an Estimate\nsecondaryAction: Call Now\n\n### 05-split-content-with-fixed-image\n\neyebrow: Guidance before the work\nheading: Recommendations based on the system itself\nbody: A useful recommendation begins with the equipment, the current problem, and what makes sense for the home. North Star HVAC evaluates the system before proposing a repair, maintenance, or replacement path.\nsupportingItems: Diagnosis before pricing - Repair pricing follows an evaluation of the problem and a clearly defined scope of work.\nRepair when practical - When a dependable repair makes sense, the technician explains what it addresses and why it is recommended.\nReplacement when supported - Longer-term equipment options are discussed when condition, reliability, and repair history support that path.\n\n### 06-sticky-card-stream-content\n\neyebrow: A defined service process\nheading: Clear expectations from the first call forward\nbody: North Star HVAC keeps the service process structured and understandable. Homeowners know what information to provide, what the technician will evaluate, and what happens before any repair or replacement decision is made.\nsupportingItems: Response - Share the symptoms, timing, equipment concerns, and whether the heating or cooling issue requires urgent attention.\nDiagnosis - A qualified technician evaluates the equipment, identifies the likely cause, and explains the relevant system findings.\nOptions and follow-up - Review the recommended path, ask questions, and decide whether to repair, maintain, install, or replace the equipment.\n\n### 07-contact-section\n\nheading: Request service or discuss current availability\nintro: Use the request form for non-urgent repairs, maintenance, replacement questions, or estimates. Call directly when a heating or cooling issue is urgent.\ndetails: Phone: 704-555-0184. Hours: 8am to 6pm, Monday to Friday. Serving Huntersville, Cornelius, Davidson, Mooresville, and nearby Lake Norman communities.\nhelperText: Form submissions are service requests and do not confirm an appointment.\n\n### 08-footer\n\nbusinessName: North Star HVAC\nbusinessSummary: North Star HVAC provides residential repair, replacement, heat pump service, maintenance, installation, and supporting HVAC care throughout the Lake Norman area.\nfooterLinks: HVAC Repair -> /services/hvac-repair\nSystem Replacement -> /services/system-replacement\nHeat Pump Service -> /services/heat-pump-service\nMaintenance & Tune-Ups -> /services/maintenance\nService Area -> /service-area\nRequest an Estimate -> /contact\nphone: 704-555-0184\nemail: NEEDS REVIEW: Confirm public contact email\nserviceArea: Serving Huntersville, Cornelius, Davidson, Mooresville, and nearby Lake Norman communities.\nhours: 8am to 6pm, Monday to Friday\nlegalLine: © 2026 North Star HVAC. All rights reserved. Privacy Policy.\n\n## Copy Notes\n\nSuggested page title: Residential HVAC Services in Lake Norman | North Star HVAC\n\nSuggested meta description: Explore HVAC repair, replacement, heat pump service, maintenance, installation, and supporting system care for Lake Norman homeowners.\n\nPriority services shown in the Services hero:\n\nSystem Replacement\n\nMaintenance & Tune-Ups\n\nHeat Pump Service\n\nHVAC Repair\n\nSystem Installation\n\nInspection & Diagnosis\n\nEmergency HVAC Service\n\nRemaining approved services included without repeating the priority services:\n\nIndoor Air Quality\n\nSmart Thermostat Installation\n\nDuctless Mini-Split Service\n\nReplacement Financing\n\nFictional credentials used for this test company:\n\nNorth Carolina licensed HVAC contractor\n\nFully insured\n\nNATE-certified technicians\n\nEPA-certified refrigerant handling\n\n## Copy QA\n\nEvery section ID preserved: Passed\n\nExact field names preserved: Passed\n\nServices-hero item count: Passed\n\nPriority services not repeated: Passed\n\nRemaining approved services included: Passed\n\nNavigation item count: Passed\n\nHero proof-point count: Passed\n\nSupporting-item counts: Passed\n\nFooter-link count: Passed\n\nEmergency availability qualified: Passed\n\nFinancing language cautious: Passed\n\nNon-priority ductless service kept low emphasis: Passed\n\nUnverified email not invented: Passed\n\nCTA hierarchy consistent: Passed\n\nTemplate copy-fit targets followed: Passed"
+          "value": "# Bulk Paste Copy\n\n<!-- Page target: Services Overview (/services) -->\n\n### 01-primary-navigation\n\nlogoLabel: North Star HVAC\nnavLinks: Services -> /services\nService Area -> /service-area\nAbout -> /about\nContact -> /contact\nphone: 704-555-0184\nprimaryAction: Request an Estimate\n\n### 02-compact-section-header\n\neyebrow: Residential HVAC services\nheading: Clear service options for your home and system\nbody: Explore repair, replacement, maintenance, and supporting HVAC services for Lake Norman homeowners, with qualified guidance based on the condition of the equipment and the needs of the home.\nitems: System Replacement - Compare repair and replacement paths with clear guidance on long-term fit.\nMaintenance & Tune-Ups - Plan seasonal care that supports dependable system operation.\nHeat Pump Service - Get help with heat pump repair, upkeep, or replacement.\n\n### 03-priority-service-cards\n\npriorityServices: System Replacement - Compare repair and replacement paths with guidance on equipment condition, efficiency, reliability, and long-term project fit.\nMaintenance & Tune-Ups - Schedule seasonal care to review system operation, identify developing concerns, and support dependable performance.\nHeat Pump Service - Plan heat pump diagnosis, repair, maintenance, or replacement around the system’s condition and current performance.\n\n### 04-services-hover-panel\n\neyebrow: More ways we can help\nheading: Support for the rest of your HVAC system\nintro: Explore additional services for heating and cooling problems, equipment installation, urgent needs, system controls, and the home’s indoor environment.\nserviceItems: AC Repair - Diagnose cooling failures, weak airflow, uneven temperatures, and performance concerns before reviewing the recommended repair.\nHeating Repair - Identify furnace and heating-system problems and explain the work needed to restore dependable operation.\nSystem Installation - Plan new heating and cooling equipment around the home’s needs, selected system, and clearly defined installation scope.\nInspection & Diagnosis - Evaluate system performance, identify the likely cause of a problem, and define the work required before repair pricing is finalized.\nEmergency HVAC Service - Call directly for urgent heating or cooling problems. Availability depends on schedule, distance, and technician capacity.\nIndoor Air Quality - Review practical options related to filtration, airflow, humidity control, and the home’s overall indoor environment.\nSmart Thermostat Installation - Install compatible controls and review the basic setup needed to operate the heating and cooling system effectively.\nDuctless Mini-Split Service - Request diagnosis, repair, maintenance, or installation support when ductless equipment is appropriate for the home.\nReplacement Financing - Ask about financing that may be available for qualifying replacement projects, subject to provider terms and approval.\n\n### 05-muted-cta\n\nheading: Not sure which HVAC service fits the problem?\nbody: Describe what is happening with your system and North Star HVAC will help identify the appropriate service path before work is scheduled.\nprimaryAction: Request an Estimate\nsecondaryAction: Call Now\n\n### 06-split-content-with-fixed-image\n\neyebrow: Guidance before the work\nheading: Recommendations based on the system itself\nbody: A useful recommendation begins with the equipment, the current problem, and what makes sense for the home. North Star HVAC evaluates the system before proposing a repair, maintenance, or replacement path.\nsupportingItems: Diagnosis before pricing - Repair pricing follows an evaluation of the problem and a clearly defined scope of work.\nRepair when practical - When a dependable repair makes sense, the technician explains what it addresses and why it is recommended.\nReplacement when supported - Longer-term equipment options are discussed when condition, reliability, and repair history support that path.\n\n### 07-sticky-card-stream-content\n\neyebrow: A defined service process\nheading: Clear expectations from the first request forward\nbody: North Star HVAC keeps the service process structured and understandable. Homeowners know what information to provide, what the technician will evaluate, and what happens before any repair, installation, or replacement decision is made.\nsupportingItems: Response - Share the symptoms, timing, equipment concerns, and whether the heating or cooling issue requires urgent attention.\nDiagnosis - A qualified technician evaluates the equipment, identifies the likely cause, and explains the relevant system findings.\nOptions and follow-up - Review the recommended path, ask questions, and decide whether to repair, maintain, install, or replace the equipment.\n\n### 08-contact-section\n\nheading: Request service or discuss current availability\nintro: Use the request form for non-urgent repairs, maintenance, replacement questions, or estimates. Call directly when a heating or cooling issue is urgent.\ndetails: Phone: 704-555-0184. Hours: 8am to 6pm, Monday to Friday. Serving Huntersville, Cornelius, Davidson, Mooresville, and nearby Lake Norman communities.\nhelperText: Form submissions are service requests and do not confirm an appointment.\n\n### 09-footer\n\nbusinessName: North Star HVAC\nbusinessSummary: North Star HVAC provides residential repair, replacement, heat pump service, maintenance, installation, and supporting HVAC care throughout the Lake Norman area.\nfooterLinks: AC Repair -> /services/ac-repair\nHeating Repair -> /services/heating-repair\nSystem Replacement -> /services/system-replacement\nHeat Pump Service -> /services/heat-pump-service\nMaintenance & Tune-Ups -> /services/maintenance\nRequest an Estimate -> /contact\nphone: 704-555-0184\nemail: NEEDS REVIEW: Confirm public contact email\nserviceArea: Serving Huntersville, Cornelius, Davidson, Mooresville, and nearby Lake Norman communities.\nhours: 8am to 6pm, Monday to Friday\nlegalLine: © 2026 North Star HVAC. All rights reserved. Privacy Policy.\n\n## Copy Notes\n\nSuggested page title: Residential HVAC Services in Lake Norman | North Star HVAC\n\nSuggested meta description: Explore HVAC repair, replacement, heat pump service, maintenance, installation, and supporting system care for Lake Norman homeowners.\n\nPriority services:\n\nSystem Replacement\n\nMaintenance & Tune-Ups\n\nHeat Pump Service\n\nFictional credentials established for this test company:\n\nNorth Carolina licensed HVAC contractor\n\nFully insured\n\nNATE-certified technicians\n\nEPA-certified refrigerant handling\n\n## Copy QA\n\nEvery section ID preserved: Passed\n\nExact field names preserved: Passed\n\nPage-target comment included: Passed\n\nPriority services limited to three: Passed\n\nPriority services not repeated: Passed\n\nRemaining approved services included: Passed\n\nNavigation item count: Passed\n\nSupporting-item counts: Passed\n\nFooter-link count: Passed\n\nEmergency availability qualified: Passed\n\nFinancing language cautious: Passed\n\nDuctless service kept low emphasis: Passed\n\nUnverified email not invented: Passed\n\nCTA hierarchy consistent: Passed\n\nTemplate copy-fit targets followed: Passed"
         },
         {
           "id": "services.strategy.contentPlan",
@@ -60,25 +60,25 @@
           "id": "services.02-compact-section-header.eyebrow",
           "kind": "copy",
           "path": "02-compact-section-header.eyebrow",
-          "value": ""
+          "value": "Residential HVAC services"
         },
         {
           "id": "services.02-compact-section-header.heading",
           "kind": "copy",
           "path": "02-compact-section-header.heading",
-          "value": ""
+          "value": "Clear service options for your home and system"
         },
         {
           "id": "services.02-compact-section-header.body",
           "kind": "copy",
           "path": "02-compact-section-header.body",
-          "value": ""
+          "value": "Explore repair, replacement, maintenance, and supporting HVAC services for Lake Norman homeowners, with qualified guidance based on the condition of the equipment and the needs of the home."
         },
         {
           "id": "services.02-compact-section-header.items",
           "kind": "copy",
           "path": "02-compact-section-header.items",
-          "value": ""
+          "value": "System Replacement - Compare repair and replacement paths with clear guidance on long-term fit.\nMaintenance & Tune-Ups - Plan seasonal care that supports dependable system operation.\nHeat Pump Service - Get help with heat pump repair, upkeep, or replacement."
         },
         {
           "id": "services.03-services-cards-grid.contentDirection",
@@ -102,25 +102,25 @@
           "id": "services.04-services-hover-panel.eyebrow",
           "kind": "copy",
           "path": "04-services-hover-panel.eyebrow",
-          "value": ""
+          "value": "More ways we can help"
         },
         {
           "id": "services.04-services-hover-panel.heading",
           "kind": "copy",
           "path": "04-services-hover-panel.heading",
-          "value": ""
+          "value": "Support for the rest of your HVAC system"
         },
         {
           "id": "services.04-services-hover-panel.intro",
           "kind": "copy",
           "path": "04-services-hover-panel.intro",
-          "value": ""
+          "value": "Explore additional services for heating and cooling problems, equipment installation, urgent needs, system controls, and the home’s indoor environment."
         },
         {
           "id": "services.04-services-hover-panel.serviceItems",
           "kind": "copy",
           "path": "04-services-hover-panel.serviceItems",
-          "value": ""
+          "value": "AC Repair - Diagnose cooling failures, weak airflow, uneven temperatures, and performance concerns before reviewing the recommended repair.\nHeating Repair - Identify furnace and heating-system problems and explain the work needed to restore dependable operation.\nSystem Installation - Plan new heating and cooling equipment around the home’s needs, selected system, and clearly defined installation scope.\nInspection & Diagnosis - Evaluate system performance, identify the likely cause of a problem, and define the work required before repair pricing is finalized.\nEmergency HVAC Service - Call directly for urgent heating or cooling problems. Availability depends on schedule, distance, and technician capacity.\nIndoor Air Quality - Review practical options related to filtration, airflow, humidity control, and the home’s overall indoor environment.\nSmart Thermostat Installation - Install compatible controls and review the basic setup needed to operate the heating and cooling system effectively.\nDuctless Mini-Split Service - Request diagnosis, repair, maintenance, or installation support when ductless equipment is appropriate for the home.\nReplacement Financing - Ask about financing that may be available for qualifying replacement projects, subject to provider terms and approval."
         },
         {
           "id": "services.05-muted-cta.contentDirection",
@@ -132,25 +132,25 @@
           "id": "services.05-muted-cta.heading",
           "kind": "copy",
           "path": "05-muted-cta.heading",
-          "value": ""
+          "value": "Not sure which HVAC service fits the problem?"
         },
         {
           "id": "services.05-muted-cta.body",
           "kind": "copy",
           "path": "05-muted-cta.body",
-          "value": ""
+          "value": "Describe what is happening with your system and North Star HVAC will help identify the appropriate service path before work is scheduled."
         },
         {
           "id": "services.05-muted-cta.primaryAction",
           "kind": "copy",
           "path": "05-muted-cta.primaryAction",
-          "value": ""
+          "value": "Request an Estimate"
         },
         {
           "id": "services.05-muted-cta.secondaryAction",
           "kind": "copy",
           "path": "05-muted-cta.secondaryAction",
-          "value": ""
+          "value": "Call Now"
         },
         {
           "id": "services.06-split-content-with-fixed-image.contentDirection",
@@ -162,25 +162,25 @@
           "id": "services.06-split-content-with-fixed-image.eyebrow",
           "kind": "copy",
           "path": "06-split-content-with-fixed-image.eyebrow",
-          "value": ""
+          "value": "Guidance before the work"
         },
         {
           "id": "services.06-split-content-with-fixed-image.heading",
           "kind": "copy",
           "path": "06-split-content-with-fixed-image.heading",
-          "value": ""
+          "value": "Recommendations based on the system itself"
         },
         {
           "id": "services.06-split-content-with-fixed-image.body",
           "kind": "copy",
           "path": "06-split-content-with-fixed-image.body",
-          "value": ""
+          "value": "A useful recommendation begins with the equipment, the current problem, and what makes sense for the home. North Star HVAC evaluates the system before proposing a repair, maintenance, or replacement path."
         },
         {
           "id": "services.06-split-content-with-fixed-image.supportingItems",
           "kind": "copy",
           "path": "06-split-content-with-fixed-image.supportingItems",
-          "value": ""
+          "value": "Diagnosis before pricing - Repair pricing follows an evaluation of the problem and a clearly defined scope of work.\nRepair when practical - When a dependable repair makes sense, the technician explains what it addresses and why it is recommended.\nReplacement when supported - Longer-term equipment options are discussed when condition, reliability, and repair history support that path."
         },
         {
           "id": "services.07-sticky-card-stream-content.contentDirection",
@@ -192,25 +192,25 @@
           "id": "services.07-sticky-card-stream-content.eyebrow",
           "kind": "copy",
           "path": "07-sticky-card-stream-content.eyebrow",
-          "value": ""
+          "value": "A defined service process"
         },
         {
           "id": "services.07-sticky-card-stream-content.heading",
           "kind": "copy",
           "path": "07-sticky-card-stream-content.heading",
-          "value": ""
+          "value": "Clear expectations from the first request forward"
         },
         {
           "id": "services.07-sticky-card-stream-content.body",
           "kind": "copy",
           "path": "07-sticky-card-stream-content.body",
-          "value": ""
+          "value": "North Star HVAC keeps the service process structured and understandable. Homeowners know what information to provide, what the technician will evaluate, and what happens before any repair, installation, or replacement decision is made."
         },
         {
           "id": "services.07-sticky-card-stream-content.supportingItems",
           "kind": "copy",
           "path": "07-sticky-card-stream-content.supportingItems",
-          "value": ""
+          "value": "Response - Share the symptoms, timing, equipment concerns, and whether the heating or cooling issue requires urgent attention.\nDiagnosis - A qualified technician evaluates the equipment, identifies the likely cause, and explains the relevant system findings.\nOptions and follow-up - Review the recommended path, ask questions, and decide whether to repair, maintain, install, or replace the equipment."
         },
         {
           "id": "services.08-contact-section.contentDirection",
@@ -222,25 +222,25 @@
           "id": "services.08-contact-section.heading",
           "kind": "copy",
           "path": "08-contact-section.heading",
-          "value": ""
+          "value": "Request service or discuss current availability"
         },
         {
           "id": "services.08-contact-section.intro",
           "kind": "copy",
           "path": "08-contact-section.intro",
-          "value": ""
+          "value": "Use the request form for non-urgent repairs, maintenance, replacement questions, or estimates. Call directly when a heating or cooling issue is urgent."
         },
         {
           "id": "services.08-contact-section.details",
           "kind": "copy",
           "path": "08-contact-section.details",
-          "value": ""
+          "value": "Phone: 704-555-0184. Hours: 8am to 6pm, Monday to Friday. Serving Huntersville, Cornelius, Davidson, Mooresville, and nearby Lake Norman communities."
         },
         {
           "id": "services.08-contact-section.helperText",
           "kind": "copy",
           "path": "08-contact-section.helperText",
-          "value": ""
+          "value": "Form submissions are service requests and do not confirm an appointment."
         },
         {
           "id": "services.09-footer.contentDirection",
@@ -252,55 +252,55 @@
           "id": "services.09-footer.businessName",
           "kind": "copy",
           "path": "09-footer.businessName",
-          "value": ""
+          "value": "North Star HVAC"
         },
         {
           "id": "services.09-footer.businessSummary",
           "kind": "copy",
           "path": "09-footer.businessSummary",
-          "value": ""
+          "value": "North Star HVAC provides residential repair, replacement, heat pump service, maintenance, installation, and supporting HVAC care throughout the Lake Norman area."
         },
         {
           "id": "services.09-footer.footerLinks",
           "kind": "copy",
           "path": "09-footer.footerLinks",
-          "value": ""
+          "value": "AC Repair -> /services/ac-repair\nHeating Repair -> /services/heating-repair\nSystem Replacement -> /services/system-replacement\nHeat Pump Service -> /services/heat-pump-service\nMaintenance & Tune-Ups -> /services/maintenance\nRequest an Estimate -> /contact"
         },
         {
           "id": "services.09-footer.phone",
           "kind": "copy",
           "path": "09-footer.phone",
-          "value": ""
+          "value": "704-555-0184"
         },
         {
           "id": "services.09-footer.email",
           "kind": "copy",
           "path": "09-footer.email",
-          "value": ""
+          "value": "NEEDS REVIEW: Confirm public contact email"
         },
         {
           "id": "services.09-footer.serviceArea",
           "kind": "copy",
           "path": "09-footer.serviceArea",
-          "value": ""
+          "value": "Serving Huntersville, Cornelius, Davidson, Mooresville, and nearby Lake Norman communities."
         },
         {
           "id": "services.09-footer.hours",
           "kind": "copy",
           "path": "09-footer.hours",
-          "value": ""
+          "value": "8am to 6pm, Monday to Friday"
         },
         {
           "id": "services.09-footer.legalLine",
           "kind": "copy",
           "path": "09-footer.legalLine",
-          "value": ""
+          "value": "© 2026 North Star HVAC. All rights reserved. Privacy Policy."
         },
         {
           "id": "services.03-priority-service-cards.priorityServices",
           "kind": "copy",
           "path": "03-priority-service-cards.priorityServices",
-          "value": ""
+          "value": "System Replacement - Compare repair and replacement paths with guidance on equipment condition, efficiency, reliability, and long-term project fit.\nMaintenance & Tune-Ups - Schedule seasonal care to review system operation, identify developing concerns, and support dependable performance.\nHeat Pump Service - Plan heat pump diagnosis, repair, maintenance, or replacement around the system’s condition and current performance."
         }
       ],
       "fieldCounts": {
@@ -393,9 +393,9 @@
       "promotedAt": "2026-07-16T17:24:40.572Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-16T18:32:40.913Z",
-        "id": "north-star-hvac-v68",
-        "version": 68
+        "createdAt": "2026-07-16T23:04:21.403Z",
+        "id": "north-star-hvac-v69",
+        "version": 69
       },
       "sourceStage": "strategy-template",
       "status": "staged",
@@ -894,9 +894,9 @@
       "promotedAt": "2026-07-15T23:05:18.653Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-16T18:32:40.913Z",
-        "id": "north-star-hvac-v68",
-        "version": 68
+        "createdAt": "2026-07-16T23:04:21.403Z",
+        "id": "north-star-hvac-v69",
+        "version": 69
       },
       "sourceStage": "strategy-template",
       "status": "staged",
@@ -1532,9 +1532,9 @@
       "promotedAt": "2026-07-14T19:04:36.478Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-16T18:32:40.913Z",
-        "id": "north-star-hvac-v68",
-        "version": 68
+        "createdAt": "2026-07-16T23:04:21.403Z",
+        "id": "north-star-hvac-v69",
+        "version": 69
       },
       "sourceStage": "strategy-template",
       "status": "staged",
@@ -2117,9 +2117,9 @@
       "promotedAt": "2026-07-14T23:28:05.511Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-16T18:32:40.913Z",
-        "id": "north-star-hvac-v68",
-        "version": 68
+        "createdAt": "2026-07-16T23:04:21.403Z",
+        "id": "north-star-hvac-v69",
+        "version": 69
       },
       "sourceStage": "strategy-template",
       "status": "staged",
@@ -2765,9 +2765,9 @@
       "promotedAt": "2026-07-14T19:06:16.598Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-16T18:32:40.913Z",
-        "id": "north-star-hvac-v68",
-        "version": 68
+        "createdAt": "2026-07-16T23:04:21.403Z",
+        "id": "north-star-hvac-v69",
+        "version": 69
       },
       "sourceStage": "strategy-template",
       "status": "staged",
@@ -3422,9 +3422,9 @@
       "promotedAt": "2026-07-14T19:05:54.314Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-16T18:32:40.913Z",
-        "id": "north-star-hvac-v68",
-        "version": 68
+        "createdAt": "2026-07-16T23:04:21.403Z",
+        "id": "north-star-hvac-v69",
+        "version": 69
       },
       "sourceStage": "strategy-template",
       "status": "staged",

@@ -60,7 +60,7 @@ export function SectionHeaderCompactSectionV3({
       <SevenColumnGrid
         minHeight="none"
         padding="none"
-        style={{ paddingBlock: "var(--section-space-vsml) 0" }}
+        style={{ paddingBlock: "var(--section-space-vsml)" }}
       >
         <SevenColumnGridItem
           alignX={align}

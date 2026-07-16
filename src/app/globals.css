@@ -848,6 +848,30 @@ body {
   }
 
   .pagebuilder-density-normal
+    .pagebuilder-section-frame[data-pagebuilder-padding-top="none"]
+    :is(.site-grid-frame, .section-space-vsml, .section-space-sml, .section-space-med, .section-space-lrg) {
+    padding-top: 0 !important;
+  }
+
+  .pagebuilder-density-normal
+    .pagebuilder-section-frame[data-pagebuilder-padding-bottom="none"]
+    :is(.site-grid-frame, .section-space-vsml, .section-space-sml, .section-space-med, .section-space-lrg) {
+    padding-bottom: 0 !important;
+  }
+
+  .pagebuilder-density-normal
+    .pagebuilder-section-frame[data-pagebuilder-padding-top="none"]
+    > [class*="py-"] {
+    padding-top: 0 !important;
+  }
+
+  .pagebuilder-density-normal
+    .pagebuilder-section-frame[data-pagebuilder-padding-bottom="none"]
+    > [class*="py-"] {
+    padding-bottom: 0 !important;
+  }
+
+  .pagebuilder-density-normal
     .pagebuilder-section-frame
     + .pagebuilder-section-frame {
     margin-top: var(--pagebuilder-section-gap-before);
@@ -1509,19 +1533,19 @@ body {
   --radius-surface-token: 24px;
   --radius-button-token: 9999px;
   --section-min-active: 54rem;
-  --section-space-vsml: 2.5rem;
-  --section-space-sml: 5rem;
-  --section-space-med: 7.5rem;
-  --section-space-lrg: 10rem;
-  --section-space-vsml-tablet: 2.25rem;
-  --section-space-sml-tablet: 4.5rem;
-  --section-space-med-tablet: 6rem;
-  --section-space-lrg-tablet: 7rem;
+  --section-space-vsml: 2rem;
+  --section-space-sml: 4rem;
+  --section-space-med: 6rem;
+  --section-space-lrg: 8rem;
+  --section-space-vsml-tablet: 2rem;
+  --section-space-sml-tablet: 3.5rem;
+  --section-space-med-tablet: 5rem;
+  --section-space-lrg-tablet: 6rem;
   --section-space-vsml-mobile: 2rem;
-  --section-space-sml-mobile: 4.5rem;
-  --section-space-med-mobile: 4.75rem;
-  --section-space-lrg-mobile: 5rem;
-  --semantic-spacing-scale: 1.5;
+  --section-space-sml-mobile: 4rem;
+  --section-space-med-mobile: 4rem;
+  --section-space-lrg-mobile: 4rem;
+  --semantic-spacing-scale: 0.9;
   --container-gutter: clamp(2.25rem, 5vw, 4rem);
   --site-grid-inset-block: clamp(2rem, 4vw, 7rem);
   --site-grid-inset-inline: clamp(0.5rem, 3vw, 6rem);

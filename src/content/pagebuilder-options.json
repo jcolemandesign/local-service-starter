@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-07-16T18:00:31.176Z",
+      "savedAt": "2026-07-16T23:32:59.999Z",
       "sectionCount": 11,
       "sections": [
         {
@@ -135,8 +135,8 @@
       "optionName": "Page Layout",
       "recipeId": "editorial-local",
       "recipeName": "Services Overview",
-      "savedAt": "2026-07-16T17:34:05.198Z",
-      "sectionCount": 9,
+      "savedAt": "2026-07-16T23:31:05.736Z",
+      "sectionCount": 11,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
@@ -149,6 +149,16 @@
           "originalIndex": 0
         },
         {
+          "component": "ServicesThreeCardsRightSectionV3",
+          "id": "editorial-local-ServicesThreeCardsRightSectionV3-added-5",
+          "included": true,
+          "instruction": "Show 3-5 priority services the business wants listed first before the full all-services section.",
+          "mode": "Scan",
+          "name": "Priority service cards",
+          "originalComponent": "ServicesThreeCardsRightSectionV3",
+          "originalIndex": -1
+        },
+        {
           "component": "SectionHeaderCompactSectionV3",
           "id": "editorial-local-SectionHeaderCompactSectionV3-added-4",
           "included": true,
@@ -158,16 +168,6 @@
           "originalComponent": "SectionHeaderCompactSectionV3",
           "originalIndex": -1,
           "variant": "center"
-        },
-        {
-          "component": "ServicesThreeCardsRightSectionV3",
-          "id": "editorial-local-ServicesThreeCardsRightSectionV3-added-5",
-          "included": true,
-          "instruction": "Show 3-5 priority services the business wants listed first before the full all-services section.",
-          "mode": "Scan",
-          "name": "Priority service cards",
-          "originalComponent": "ServicesThreeCardsRightSectionV3",
-          "originalIndex": -1
         },
         {
           "component": "ServicesHoverPanelSectionV2",
@@ -199,7 +199,31 @@
           "originalComponent": "ContentSplitFixedImageSectionV3",
           "originalIndex": -1,
           "ratio": "3-2",
-          "variant": "text-3-image-4-right"
+          "variant": "text-4-image-3-right"
+        },
+        {
+          "component": "ContentSplitFixedImageSectionV3",
+          "id": "editorial-local-ContentSplitFixedImageSectionV3-added-1",
+          "included": true,
+          "instruction": "Use a content-height split layout when the section needs fixed-ratio imagery without hero-scale height.",
+          "mode": "Narrative",
+          "name": "Split content with fixed image",
+          "originalComponent": "ContentSplitFixedImageSectionV3",
+          "originalIndex": -1,
+          "ratio": "3-2",
+          "variant": "image-4-left-text-3"
+        },
+        {
+          "component": "ContentSplitFixedImageSectionV3",
+          "id": "editorial-local-ContentSplitFixedImageSectionV3-added-2",
+          "included": true,
+          "instruction": "Use a content-height split layout when the section needs fixed-ratio imagery without hero-scale height.",
+          "mode": "Narrative",
+          "name": "Split content with fixed image",
+          "originalComponent": "ContentSplitFixedImageSectionV3",
+          "originalIndex": -1,
+          "ratio": "3-2",
+          "variant": "text-4-image-3-right"
         },
         {
           "component": "ContentStickyCardStreamSectionV2",

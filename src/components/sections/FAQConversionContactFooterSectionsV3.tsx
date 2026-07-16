@@ -296,7 +296,7 @@ export function CTASectionV3({ action, body, title }: CTASectionV3Props) {
 export function CTAMutedSectionV3({ action, body, title }: CTASectionV3Props) {
   return (
     <section className="bg-bg-page">
-      <SevenColumnGrid className="section-min-none" padding="sml">
+      <SevenColumnGrid className="section-min-none py-2" padding="none">
         <SevenColumnGridItem className="col-span-7">
           <article className="content-padding radius-medium border border-service-border bg-service-surface text-service-ink shadow-service">
             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-8 gap-y-5 max-md:grid-cols-1">
