@@ -291,6 +291,8 @@ function TemplateSectionFrame({
         isFixed ? "fixed" : isOverlay ? "absolute" : "relative",
         className,
       )}
+      data-pagebuilder-card-fill={section.cardFill ?? "solid"}
+      data-pagebuilder-color-recipe={section.colorRecipe ?? "default"}
       data-pagebuilder-section-component={section.component}
       data-pagebuilder-section-mode={section.mode}
     >

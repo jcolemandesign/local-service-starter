@@ -1,5 +1,9 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import type {
+  SectionCardFill,
+  SectionColorRecipe,
+} from "@/content/section-color-recipes";
 import {
   getPathFromSlugForPageType,
   getStrategyCopyForPage,
@@ -19,6 +23,8 @@ export type StagedPageField = {
 };
 
 export type StagedPageTemplateSection = {
+  cardFill?: SectionCardFill;
+  colorRecipe?: SectionColorRecipe;
   component: string;
   instruction: string;
   mode: string;
