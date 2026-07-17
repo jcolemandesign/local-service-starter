@@ -4,6 +4,10 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import type {
+  SectionCardFill,
+  SectionColorRecipe,
+} from "@/content/section-color-recipes";
 
 type ServiceBentoItem = {
   title: string;
@@ -24,6 +28,8 @@ type ServicesBentoCardsSectionV2Props = {
   body: string;
   items: ServiceBentoItem[];
   variant?: ServicesBentoCardsVariant;
+  colorRecipe?: SectionColorRecipe;
+  cardFill?: SectionCardFill;
 };
 
 function cx(...classes: Array<string | undefined>) {
@@ -44,6 +50,45 @@ function getShortTitle(title: string, maxWords = 5) {
 function getSectionHeaderText(title: string) {
   return title.trim().replace(/\.$/, "");
 }
+
+const colorRecipeClasses = {
+  default: {
+    body: "text-service-muted",
+    card: "bg-service-surface",
+    cardText: "text-service-ink",
+    cardMuted: "text-service-muted",
+    eyebrow: "text-service-accent",
+    heading: "text-service-ink",
+    section: "bg-bg-page",
+  },
+  muted: {
+    body: "text-service-muted",
+    card: "bg-bg-page",
+    cardText: "text-service-ink",
+    cardMuted: "text-service-muted",
+    eyebrow: "text-service-accent",
+    heading: "text-service-ink",
+    section: "bg-service-surface",
+  },
+  dark: {
+    body: "text-white/70",
+    card: "bg-service-surface",
+    cardText: "text-service-ink",
+    cardMuted: "text-service-muted",
+    eyebrow: "text-white",
+    heading: "text-white",
+    section: "bg-bg-dark",
+  },
+  accent: {
+    body: "text-[var(--live-accent-muted-text)]",
+    card: "bg-service-surface",
+    cardText: "text-service-ink",
+    cardMuted: "text-service-muted",
+    eyebrow: "text-[var(--live-accent-ink)]",
+    heading: "text-[var(--live-accent-ink)]",
+    section: "bg-service-accent",
+  },
+} as const;
 
 function ServiceImage({
   label,
@@ -101,6 +146,8 @@ export function ServicesBentoCardsSectionV2({
   body,
   items,
   variant = "default",
+  colorRecipe = "default",
+  cardFill = "solid",
 }: ServicesBentoCardsSectionV2Props) {
   const isSplitHeader = variant === "split-header";
   const isOffsetHeader = variant === "offset-header";
@@ -118,14 +165,28 @@ export function ServicesBentoCardsSectionV2({
   ]
     .filter(Boolean)
     .join(" ");
+  const colors = colorRecipeClasses[colorRecipe];
+  const transparentCards = cardFill === "none";
+  const transparentCardText =
+    colorRecipe === "dark"
+      ? "text-white"
+      : colorRecipe === "accent"
+        ? "text-[var(--live-accent-ink)]"
+        : "text-service-ink";
+  const transparentCardMuted =
+    colorRecipe === "dark"
+      ? "text-white/70"
+      : colorRecipe === "accent"
+        ? "text-[var(--live-accent-muted-text)]"
+        : "text-service-muted";
 
   return (
-    <section id="services-bento" className="bg-bg-page">
+    <section id="services-bento" className={colors.section}>
       <SevenColumnGrid className="items-start" minHeight="none" padding="med">
         {isOffsetHeader ? (
           <>
             <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-              <h2 className="type-heading-xl max-w-4xl text-left text-service-ink">
+              <h2 className={cx("type-heading-xl max-w-4xl text-left", colors.heading)}>
                 {getSectionHeaderText(title)}
               </h2>
             </SevenColumnGridItem>
@@ -133,7 +194,7 @@ export function ServicesBentoCardsSectionV2({
               alignY="bottom"
               className="col-span-3 col-start-5 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1"
             >
-              <p className="type-text-lg measure-copy wrap-pretty text-service-muted">
+              <p className={cx("type-text-lg measure-copy wrap-pretty", colors.body)}>
                 {body}
               </p>
             </SevenColumnGridItem>
@@ -157,14 +218,14 @@ export function ServicesBentoCardsSectionV2({
                   : undefined,
               )}
             >
-              <p className={cx("type-label", "text-service-accent")}>
+              <p className={cx("type-label", colors.eyebrow)}>
                 {eyebrow}
               </p>
               <h2
                 className={cx(
                   isSplitHeader ? "type-display-lg" : "type-heading-xl",
                   isSplitHeader ? "mt-eyebrow-heading-lg" : "mx-auto mt-5",
-                  "text-service-ink",
+                  colors.heading,
                 )}
               >
                 {isSplitHeader ? getShortTitle(title) : getSectionHeaderText(title)}
@@ -177,7 +238,7 @@ export function ServicesBentoCardsSectionV2({
                   isSplitHeader
                     ? "mt-heading-body-md"
                     : "mx-auto mt-6",
-                  "text-service-muted",
+                  colors.body,
                 )}
               >
                 {isSplitHeader ? splitHeaderBody : body}
@@ -186,7 +247,7 @@ export function ServicesBentoCardsSectionV2({
                 <ul className="mt-body-actions-lg grid gap-2">
                   {splitHeaderSupportItems.map((item) => (
                     <li
-                      className="type-text-sm flex items-center gap-2 font-semibold text-service-ink"
+                      className={cx("type-text-sm flex items-center gap-2 font-semibold", colors.heading)}
                       key={item}
                     >
                       <span
@@ -222,7 +283,8 @@ export function ServicesBentoCardsSectionV2({
                 className={cx(
                   "fluid-type-frame",
                   "radius-medium",
-                  "group/service-card relative flex cursor-pointer flex-col overflow-hidden border border-service-border bg-service-surface shadow-service transition-transform duration-300 ease-out hover:scale-[1.015]",
+                  "group/service-card relative flex cursor-pointer flex-col overflow-hidden border border-service-border transition-transform duration-300 ease-out hover:scale-[1.015]",
+                  transparentCards ? "bg-transparent shadow-none" : `${colors.card} shadow-service`,
                   isSplitHeader ? "h-full" : undefined,
                   cardSpanPattern[index % cardSpanPattern.length],
                 )}
@@ -242,7 +304,7 @@ export function ServicesBentoCardsSectionV2({
                     <h3
                       className={cx(
                         "type-heading-sm",
-                        "text-service-ink",
+                        transparentCards ? transparentCardText : colors.cardText,
                       )}
                     >
                       {item.title}
@@ -252,7 +314,8 @@ export function ServicesBentoCardsSectionV2({
                         "type-text-sm",
                         "measure-copy",
                         "wrap-pretty",
-                        "mt-4 text-service-muted",
+                        "mt-4",
+                        transparentCards ? transparentCardMuted : colors.cardMuted,
                       )}
                     >
                       {item.body}

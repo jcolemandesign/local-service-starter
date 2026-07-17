@@ -6,6 +6,7 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
+import type { SectionColorRecipe } from "@/content/section-color-recipes";
 
 export type HeroSplitFullHeightVariant =
   | "text-3-image-4-right"
@@ -25,6 +26,7 @@ type HeroSplitFullHeightSectionV3Props = {
   stats: readonly string[];
   title: string;
   variant?: HeroSplitFullHeightVariant;
+  colorRecipe?: SectionColorRecipe;
 };
 
 type HeroVariantConfig = {
@@ -121,27 +123,36 @@ export function HeroSplitFullHeightSectionV3({
   stats,
   title,
   variant = "text-3-image-4-right",
+  colorRecipe = "default",
 }: HeroSplitFullHeightSectionV3Props) {
   const config = variantConfig[variant];
   const HeadingTag = `h${headingLevel}` as const;
   const isTextFourImageThree = variant === "text-4-image-3-right";
+  const colors = {
+    default: { body: "text-service-muted", eyebrow: "text-service-accent", ink: "text-service-ink", section: "bg-bg-page", stat: "border-service-border" },
+    muted: { body: "text-service-muted", eyebrow: "text-service-accent", ink: "text-service-ink", section: "bg-service-surface", stat: "border-service-border" },
+    dark: { body: "text-white/70", eyebrow: "text-white", ink: "text-white", section: "bg-bg-dark", stat: "border-white/25" },
+    accent: { body: "text-[var(--live-accent-muted-text)]", eyebrow: "text-[var(--live-accent-ink)]", ink: "text-[var(--live-accent-ink)]", section: "bg-service-accent", stat: "border-[color:var(--live-accent-ink)]/30" },
+  }[colorRecipe];
 
   return (
-    <section className="bg-bg-page">
+    <section className={colors.section}>
       <SevenColumnGrid className="section-min-screen h-[var(--section-min-screen)] grid-rows-[minmax(0,1fr)] max-lg:grid-rows-none max-md:h-auto">
         <SevenColumnGridItem
           alignX="left"
           alignY="middle"
           className={cx(
-            "content-padding-y radius-medium row-start-1 h-full min-h-0 text-service-ink max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto",
+            "content-padding-y radius-medium row-start-1 h-full min-h-0 max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto",
+            colors.ink,
             config.textClassName,
           )}
         >
           <div className="fluid-type-frame w-full">
-            <p className="type-label text-service-accent">{eyebrow}</p>
+            <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
             <HeadingTag
               className={cx(
-                "mt-eyebrow-display text-service-ink",
+                "mt-eyebrow-display",
+                colors.ink,
                 isTextFourImageThree ? "type-display-xl" : "type-display-lg",
               )}
             >
@@ -149,7 +160,8 @@ export function HeroSplitFullHeightSectionV3({
             </HeadingTag>
             <p
               className={cx(
-                "type-text-xl wrap-pretty mt-display-body text-service-muted",
+                "type-text-xl wrap-pretty mt-display-body",
+                colors.body,
               )}
             >
               {body}
@@ -172,10 +184,11 @@ export function HeroSplitFullHeightSectionV3({
               {stats.map((stat) => (
                 <li
                   className={cx(
-                    "type-text-sm font-semibold text-service-ink",
+                    "type-text-sm font-semibold",
+                    colors.ink,
                     isTextFourImageThree
                       ? "relative overflow-hidden rounded-full border border-white/70 bg-white/78 px-5 py-3 shadow-service backdrop-blur-sm before:absolute before:inset-x-5 before:top-0 before:h-px before:bg-white/90"
-                      : "border-l border-service-border pl-4 max-md:border-l-0 max-md:border-t max-md:pl-0 max-md:pt-3",
+                      : cx("border-l pl-4 max-md:border-l-0 max-md:border-t max-md:pl-0 max-md:pt-3", colors.stat),
                   )}
                   key={stat}
                 >

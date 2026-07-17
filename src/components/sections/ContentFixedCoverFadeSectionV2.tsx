@@ -26,11 +26,11 @@ function BackgroundTexture({ label }: { label: string }) {
   return (
     <div
       aria-label={`${label} background placeholder`}
-      className="absolute inset-0 overflow-hidden bg-service-ink"
+      className="absolute inset-0 overflow-hidden bg-bg-dark"
     >
       <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.35),rgb(23_33_29_/_0.02)),linear-gradient(45deg,rgb(255_255_255_/_0.14)_0_1px,transparent_1px_22px)]" />
       <div className="absolute inset-0 bg-service-accent/15" />
-      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-service-ink via-service-ink/65 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-bg-dark via-bg-dark/65 to-transparent" />
       <span className="type-label absolute bottom-[var(--site-grid-inset-block)] left-[var(--site-grid-inset-inline)] text-white/55">
         {label}
       </span>
@@ -155,7 +155,7 @@ export function ContentFixedCoverFadeSectionV2({
                 className={cx(
                   "radius-button",
                   "type-label",
-                  "min-h-12 cursor-pointer bg-service-accent px-6 text-white transition-colors hover:bg-service-ink",
+                  "min-h-12 cursor-pointer bg-service-accent px-6 text-white transition-colors hover:bg-bg-dark",
                 )}
                 type="button"
               >

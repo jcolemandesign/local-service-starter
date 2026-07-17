@@ -4,10 +4,25 @@ import type { CSSProperties, ReactNode } from "react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { type TypeRole, typePalettes } from "@/content/type-palettes";
 
-export type StyleGuideTokenDraft = {
+export type StyleGuideColorTokens = {
   accent: string;
+  accentInk: string;
+  accentMutedText: string;
   bgDark: string;
   bgPage: string;
+  serviceAccent: string;
+  serviceBorder: string;
+  serviceInk: string;
+  serviceMuted: string;
+  serviceSurface: string;
+  surfaceRaised: string;
+};
+
+export type StyleGuideColorPaletteId = "evergreen" | "harbor" | "sunset";
+
+export type StyleGuideTokenDraft = StyleGuideColorTokens & {
+  activeColorPaletteId: StyleGuideColorPaletteId;
+  colorPaletteTokens: Record<StyleGuideColorPaletteId, StyleGuideColorTokens>;
   activeButtonRadiusName: string;
   activeButtonRadiusValue: string;
   activeSurfaceRadiusName: string;
@@ -47,12 +62,6 @@ export type StyleGuideTokenDraft = {
   radiusMd: number;
   radiusSm: number;
   radiusXl: number;
-  serviceAccent: string;
-  serviceBorder: string;
-  serviceInk: string;
-  serviceMuted: string;
-  surfaceRaised: string;
-  serviceSurface: string;
   shadowAlpha: number;
   shadowBlur: number;
   shadowColor: string;
@@ -74,6 +83,7 @@ type StyleGuideLiveSurfaceProps = {
 type StyleGuideTokenContextValue = {
   draft: StyleGuideTokenDraft;
   resetDraft: () => void;
+  selectColorPalette: (paletteId: StyleGuideColorPaletteId) => void;
   updateDraft: <K extends keyof StyleGuideTokenDraft>(
     key: K,
     value: StyleGuideTokenDraft[K],
@@ -85,10 +95,74 @@ type StyleVariableProperties = CSSProperties & Record<`--${string}`, string>;
 
 export const styleGuideStorageKey = "pageworks-styleguide-token-draft-v1";
 
+export const styleGuideColorPalettes: Array<{
+  id: StyleGuideColorPaletteId;
+  name: string;
+  tokens: StyleGuideColorTokens;
+}> = [
+  {
+    id: "evergreen",
+    name: "Evergreen",
+    tokens: {
+      accent: "#c45a2c",
+      accentInk: "#ffffff",
+      accentMutedText: "#dcefe7",
+      bgDark: "#10141b",
+      bgPage: "#fbfaf6",
+      serviceAccent: "#1f7a5a",
+      serviceBorder: "#dfe7e1",
+      serviceInk: "#17211d",
+      serviceMuted: "#5f6f68",
+      serviceSurface: "#f4f7f3",
+      surfaceRaised: "#fafcf9",
+    },
+  },
+  {
+    id: "harbor",
+    name: "Harbor",
+    tokens: {
+      accent: "#d46b32",
+      accentInk: "#ffffff",
+      accentMutedText: "#dcecf4",
+      bgDark: "#10202b",
+      bgPage: "#f8fbfc",
+      serviceAccent: "#176b8a",
+      serviceBorder: "#d7e3e8",
+      serviceInk: "#152c36",
+      serviceMuted: "#57717c",
+      serviceSurface: "#edf5f7",
+      surfaceRaised: "#ffffff",
+    },
+  },
+  {
+    id: "sunset",
+    name: "Sunset",
+    tokens: {
+      accent: "#2d5b87",
+      accentInk: "#24140e",
+      accentMutedText: "#4d281b",
+      bgDark: "#261b18",
+      bgPage: "#fffaf5",
+      serviceAccent: "#efb16c",
+      serviceBorder: "#ecdcca",
+      serviceInk: "#34241c",
+      serviceMuted: "#725f52",
+      serviceSurface: "#fff1e2",
+      surfaceRaised: "#ffffff",
+    },
+  },
+];
+
+const colorTokenKeys = Object.keys(
+  styleGuideColorPalettes[0].tokens,
+) as Array<keyof StyleGuideColorTokens>;
+
 export const defaultStyleGuideTokenDraft: StyleGuideTokenDraft = {
-  accent: "#c45a2c",
-  bgDark: "#10141b",
-  bgPage: "#fbfaf6",
+  ...styleGuideColorPalettes[0].tokens,
+  activeColorPaletteId: "evergreen",
+  colorPaletteTokens: Object.fromEntries(
+    styleGuideColorPalettes.map((palette) => [palette.id, palette.tokens]),
+  ) as Record<StyleGuideColorPaletteId, StyleGuideColorTokens>,
   activeButtonRadiusName: "radius-sm / radius-4",
   activeButtonRadiusValue: "4px",
   activeSurfaceRadiusName: "radius-md / radius-medium",
@@ -128,12 +202,6 @@ export const defaultStyleGuideTokenDraft: StyleGuideTokenDraft = {
   radiusMd: 8,
   radiusSm: 4,
   radiusXl: 40,
-  serviceAccent: "#1f7a5a",
-  serviceBorder: "#dfe7e1",
-  serviceInk: "#17211d",
-  serviceMuted: "#5f6f68",
-  surfaceRaised: "#fafcf9",
-  serviceSurface: "#f4f7f3",
   shadowAlpha: 0.08,
   shadowBlur: 50,
   shadowColor: "#17211d",
@@ -230,6 +298,100 @@ function hexToRgbChannels(value: string) {
   return `${red} ${green} ${blue}`;
 }
 
+function isColorPaletteId(value: unknown): value is StyleGuideColorPaletteId {
+  return styleGuideColorPalettes.some((palette) => palette.id === value);
+}
+
+function colorTokensFromDraft(draft: StyleGuideTokenDraft): StyleGuideColorTokens {
+  return Object.fromEntries(
+    colorTokenKeys.map((key) => [key, draft[key]]),
+  ) as StyleGuideColorTokens;
+}
+
+function normalizeStyleGuideDraft(value: unknown): StyleGuideTokenDraft {
+  const savedDraft =
+    value && typeof value === "object"
+      ? (value as Partial<StyleGuideTokenDraft>)
+      : {};
+  const activeColorPaletteId = isColorPaletteId(savedDraft.activeColorPaletteId)
+    ? savedDraft.activeColorPaletteId
+    : defaultStyleGuideTokenDraft.activeColorPaletteId;
+  const savedPaletteTokens = (savedDraft.colorPaletteTokens ?? {}) as Partial<
+    Record<StyleGuideColorPaletteId, StyleGuideColorTokens>
+  >;
+  const colorPaletteTokens = Object.fromEntries(
+    styleGuideColorPalettes.map((palette) => [
+      palette.id,
+      {
+        ...palette.tokens,
+        ...savedPaletteTokens[palette.id],
+      },
+    ]),
+  ) as Record<StyleGuideColorPaletteId, StyleGuideColorTokens>;
+  const activeTokens = savedDraft.colorPaletteTokens
+    ? colorPaletteTokens[activeColorPaletteId]
+    : {
+        ...colorPaletteTokens[activeColorPaletteId],
+        ...colorTokenKeys.reduce<Partial<StyleGuideColorTokens>>((tokens, key) => {
+          const value = savedDraft[key];
+
+          if (typeof value === "string") {
+            tokens[key] = value;
+          }
+
+          return tokens;
+        }, {}),
+      };
+
+  return {
+    ...defaultStyleGuideTokenDraft,
+    ...savedDraft,
+    ...activeTokens,
+    activeColorPaletteId,
+    colorPaletteTokens: {
+      ...colorPaletteTokens,
+      [activeColorPaletteId]: activeTokens,
+    },
+  };
+}
+
+function syncActivePaletteTokens(
+  draft: StyleGuideTokenDraft,
+  updates: Partial<StyleGuideTokenDraft>,
+): StyleGuideTokenDraft {
+  const tokenUpdates = colorTokenKeys.reduce<Partial<StyleGuideColorTokens>>(
+    (tokens, key) => {
+      const value = updates[key];
+
+      if (typeof value === "string") {
+        tokens[key] = value;
+      }
+
+      return tokens;
+    },
+    {},
+  );
+
+  if (Object.keys(tokenUpdates).length === 0) {
+    return { ...draft, ...updates };
+  }
+
+  const activeTokens = {
+    ...draft.colorPaletteTokens[draft.activeColorPaletteId],
+    ...tokenUpdates,
+  };
+
+  return {
+    ...draft,
+    ...updates,
+    ...activeTokens,
+    colorPaletteTokens: {
+      ...draft.colorPaletteTokens,
+      [draft.activeColorPaletteId]: activeTokens,
+    },
+  };
+}
+
 const StyleGuideTokenContext = createContext<StyleGuideTokenContextValue | null>(
   null,
 );
@@ -256,6 +418,8 @@ export function buildStyleVariables(
 
   return {
     "--live-accent": draft.accent,
+    "--live-accent-ink": draft.accentInk,
+    "--live-accent-muted-text": draft.accentMutedText,
     "--live-bg-dark": draft.bgDark,
     "--live-bg-muted": draft.serviceBorder,
     "--live-bg-page": draft.bgPage,
@@ -268,6 +432,7 @@ export function buildStyleVariables(
     "--live-service-surface": draft.serviceSurface,
     "--live-surface-raised": draft.surfaceRaised,
     "--live-text-accent": draft.serviceAccent,
+    "--live-text-inverse": "#ffffff",
     "--live-text-main": draft.serviceInk,
     "--live-text-muted": draft.serviceMuted,
     "--card-grid-gap-active": draft.activeCardGapValue,
@@ -319,7 +484,7 @@ export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) 
         const storedDraft = window.localStorage.getItem(styleGuideStorageKey);
         setDraft(
           storedDraft
-            ? { ...defaultStyleGuideTokenDraft, ...JSON.parse(storedDraft) }
+            ? normalizeStyleGuideDraft(JSON.parse(storedDraft))
             : defaultStyleGuideTokenDraft,
         );
       } catch {
@@ -344,17 +509,30 @@ export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) 
     key: K,
     value: StyleGuideTokenDraft[K],
   ) {
-    setDraft((currentDraft) => ({
-      ...currentDraft,
-      [key]: value,
-    }));
+    setDraft((currentDraft) =>
+      syncActivePaletteTokens(currentDraft, { [key]: value }),
+    );
   }
 
   function updateDrafts(updates: Partial<StyleGuideTokenDraft>) {
-    setDraft((currentDraft) => ({
-      ...currentDraft,
-      ...updates,
-    }));
+    setDraft((currentDraft) => syncActivePaletteTokens(currentDraft, updates));
+  }
+
+  function selectColorPalette(paletteId: StyleGuideColorPaletteId) {
+    setDraft((currentDraft) => {
+      const colorPaletteTokens = {
+        ...currentDraft.colorPaletteTokens,
+        [currentDraft.activeColorPaletteId]: colorTokensFromDraft(currentDraft),
+      };
+      const nextTokens = colorPaletteTokens[paletteId];
+
+      return {
+        ...currentDraft,
+        ...nextTokens,
+        activeColorPaletteId: paletteId,
+        colorPaletteTokens,
+      };
+    });
   }
 
   function resetDraft() {
@@ -364,7 +542,13 @@ export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) 
 
   return (
     <StyleGuideTokenContext.Provider
-      value={{ draft, resetDraft, updateDraft, updateDrafts }}
+      value={{
+        draft,
+        resetDraft,
+        selectColorPalette,
+        updateDraft,
+        updateDrafts,
+      }}
     >
       <div style={previewStyle}>{children}</div>
     </StyleGuideTokenContext.Provider>
@@ -376,7 +560,7 @@ function readStoredStyleGuideDraft() {
     const storedDraft = window.localStorage.getItem(styleGuideStorageKey);
 
     return storedDraft
-      ? { ...defaultStyleGuideTokenDraft, ...JSON.parse(storedDraft) }
+      ? normalizeStyleGuideDraft(JSON.parse(storedDraft))
       : defaultStyleGuideTokenDraft;
   } catch {
     return defaultStyleGuideTokenDraft;

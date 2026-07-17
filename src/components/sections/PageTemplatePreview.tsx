@@ -101,6 +101,8 @@ export type PageTemplatePreviewSection = {
   id?: string;
   instruction: string;
   mode: string;
+  colorRecipe?: import("@/content/section-color-recipes").SectionColorRecipe;
+  cardFill?: import("@/content/section-color-recipes").SectionCardFill;
   name: string;
   ratio?: string;
   variant?: string;
@@ -318,6 +320,7 @@ export function renderPageTemplateSection(
       return (
         <HeroSplitFullHeightSectionV3
           {...heroSplitProps(fieldSection)}
+          colorRecipe={section.colorRecipe}
           headingLevel={headingLevel}
           secondaryActionHref={getServicesHref(navigationLinks)}
           variant={getHeroSplitFullHeightVariant(section)}
@@ -402,6 +405,8 @@ export function renderPageTemplateSection(
       return (
         <ServicesBentoCardsSectionV2
           {...servicesBentoProps(fieldSection)}
+          cardFill={section.cardFill}
+          colorRecipe={section.colorRecipe}
           variant={getServicesBentoVariant(section)}
         />
       );
@@ -445,6 +450,7 @@ export function renderPageTemplateSection(
       return (
         <ContentSplitHeadlineImageSectionV2
           {...splitHeadlineImageProps(fieldSection)}
+          colorRecipe={section.colorRecipe}
         />
       );
     case "ContentSplitFixedImageSectionV3":
@@ -460,6 +466,7 @@ export function renderPageTemplateSection(
       return (
         <ContentStickyCardStreamSectionV2
           {...stickyCardStreamProps(fieldSection)}
+          colorRecipe={section.colorRecipe}
         />
       );
     case "ContentStickyIdeasSectionV2":

@@ -12,6 +12,8 @@ export type PagebuilderRecipeSection = {
   instruction: string;
   ratio?: string;
   variant?: string;
+  colorRecipe?: import("@/content/section-color-recipes").SectionColorRecipe;
+  cardFill?: import("@/content/section-color-recipes").SectionCardFill;
 };
 
 export type PagebuilderRecipe = {

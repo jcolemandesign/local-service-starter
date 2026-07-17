@@ -29,6 +29,7 @@ import { StyleGuideResetButton } from "@/components/sections/StyleGuideResetButt
 import { StyleGuideCloseAllButton } from "@/components/sections/StyleGuideCloseAllButton";
 import { StyleGuideButtonControls } from "@/components/sections/StyleGuideButtonControls";
 import { StyleGuideSurfaceControls } from "@/components/sections/StyleGuideSurfaceControls";
+import { StyleGuideColorRecipeControls } from "@/components/sections/StyleGuideColorRecipeControls";
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
 
 export const metadata: Metadata = {
@@ -1900,6 +1901,10 @@ export default function StyleGuidePage() {
           {colors.map((color) => (
             <StyleGuideColorSwatch color={color} key={color.name} />
           ))}
+        </div>
+
+        <div className="mt-6 rounded border border-service-border bg-service-surface p-6">
+          <StyleGuideColorRecipeControls />
         </div>
 
         <SevenColumnGrid className="mt-6" minHeight="none" padding="none">

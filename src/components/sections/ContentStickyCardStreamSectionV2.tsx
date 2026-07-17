@@ -5,6 +5,7 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import type { SectionColorRecipe } from "@/content/section-color-recipes";
 
 type StreamCard = {
   eyebrow: string;
@@ -17,6 +18,7 @@ type ContentStickyCardStreamSectionV2Props = {
   title: string;
   body: string;
   cards: StreamCard[];
+  colorRecipe?: SectionColorRecipe;
 };
 
 function cx(...classes: Array<string | undefined>) {
@@ -28,11 +30,16 @@ export function ContentStickyCardStreamSectionV2({
   title,
   body,
   cards,
+  colorRecipe = "default",
 }: ContentStickyCardStreamSectionV2Props) {
   const shouldReduceMotion = useReducedMotion();
+  const colors =
+    colorRecipe === "dark" || colorRecipe === "accent"
+      ? { card: "bg-service-surface", section: "bg-bg-page" }
+      : { card: "bg-bg-page", section: "bg-service-surface" };
 
   return (
-    <section className="bg-service-surface">
+    <section className={colors.section}>
       <SevenColumnGrid className="section-min-active items-start">
         <SevenColumnGridItem
           className="col-span-3 max-lg:col-span-7"
@@ -61,7 +68,8 @@ export function ContentStickyCardStreamSectionV2({
                 className={cx(
                   "fluid-type-frame",
                   "radius-medium",
-                  "border border-service-border bg-bg-page p-8 shadow-service max-md:p-6",
+                  "border border-service-border p-8 shadow-service max-md:p-6",
+                  colors.card,
                 )}
                 initial={
                   shouldReduceMotion ? false : { opacity: 0, y: 36 }

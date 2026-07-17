@@ -14,6 +14,8 @@ type SavedPagebuilderSection = {
   originalIndex: number;
   ratio?: string;
   variant?: string;
+  colorRecipe?: string;
+  cardFill?: string;
 };
 
 type SavedPagebuilderOptionRequest = {
@@ -185,6 +187,9 @@ function normalizeSection(
       : 0,
     ratio: typeof section.ratio === "string" ? section.ratio : undefined,
     variant: typeof section.variant === "string" ? section.variant : undefined,
+    colorRecipe:
+      typeof section.colorRecipe === "string" ? section.colorRecipe : undefined,
+    cardFill: typeof section.cardFill === "string" ? section.cardFill : undefined,
   };
 }
 

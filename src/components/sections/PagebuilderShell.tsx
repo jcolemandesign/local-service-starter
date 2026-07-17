@@ -26,8 +26,16 @@ import {
   ServicesBentoCardsSectionV2,
   type ServicesBentoCardsVariant,
 } from "@/components/sections/ServicesBentoCardsSectionV2";
+import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
+import { ContentStickyCardStreamSectionV2 } from "@/components/sections/ContentStickyCardStreamSectionV2";
 import { DownArrowIcon } from "@/components/primitives";
 import type { PagebuilderRecipe, SectionMode } from "@/content/pagebuilder";
+import {
+  isSectionColorRecipe,
+  sectionColorRecipes,
+  type SectionCardFill,
+  type SectionColorRecipe,
+} from "@/content/section-color-recipes";
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
 
 type PagebuilderShellProps = {
@@ -62,6 +70,8 @@ const heroCompactComponent = "HeroCompactSectionV3";
 const heroServicesComponent = "HeroServicesSectionV3";
 const sectionHeaderCompactComponent = "SectionHeaderCompactSectionV3";
 const servicesBentoComponent = "ServicesBentoCardsSectionV2";
+const contentSplitHeadlineImageComponent = "ContentSplitHeadlineImageSectionV2";
+const contentStickyCardStreamComponent = "ContentStickyCardStreamSectionV2";
 const splitContentImageVariantOptions = [
   {
     label: "Text 3 / Image 4",
@@ -350,6 +360,14 @@ function isServicesBentoSection(section: PagebuilderRecipe["sectionStack"][numbe
   return section.component === servicesBentoComponent;
 }
 
+function getSectionColorRecipe(section: WorkingSection): SectionColorRecipe {
+  return isSectionColorRecipe(section.colorRecipe) ? section.colorRecipe : "default";
+}
+
+function getSectionCardFill(section: WorkingSection): SectionCardFill {
+  return section.cardFill === "none" ? "none" : "solid";
+}
+
 function getSplitContentImageVariantLabel(variant: string | undefined) {
   return splitContentImageVariantOptions.find(
     (option) => option.value === variant,
@@ -403,6 +421,8 @@ function createInitialWorkingStack(
     originalIndex: index,
     reduceTopPadding: false,
     reduceBottomPadding: false,
+    colorRecipe: section.colorRecipe ?? "default",
+    cardFill: section.cardFill ?? "solid",
     ratio:
       section.component === fixedRatioSplitComponent ||
       section.component === contentFixedRatioSplitComponent
@@ -445,6 +465,8 @@ function serializeWorkingSection(section: WorkingSection) {
     originalIndex: section.originalIndex,
     ratio: section.ratio,
     variant: section.variant,
+    colorRecipe: getSectionColorRecipe(section),
+    cardFill: getSectionCardFill(section),
   };
 }
 
@@ -1719,6 +1741,25 @@ export function PagebuilderShell({
     );
   }
 
+  function updateSectionColorRecipe(
+    sectionId: string,
+    colorRecipe: SectionColorRecipe,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId ? { ...section, colorRecipe } : section,
+      ),
+    );
+  }
+
+  function updateSectionCardFill(sectionId: string, cardFill: SectionCardFill) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId ? { ...section, cardFill } : section,
+      ),
+    );
+  }
+
   function deleteSection(sectionId: string) {
     updateActiveStack((stack) =>
       stack.filter((section) => section.id !== sectionId),
@@ -2083,6 +2124,8 @@ export function PagebuilderShell({
             originalIndex: section.originalIndex,
             reduceBottomPadding: section.reduceBottomPadding ?? false,
             reduceTopPadding: section.reduceTopPadding ?? false,
+            colorRecipe: getSectionColorRecipe(section),
+            cardFill: getSectionCardFill(section),
             ratio: section.ratio,
             variant: section.variant,
           })),
@@ -2128,6 +2171,7 @@ export function PagebuilderShell({
       const renderedSectionPreview = isSplitContentImageSection(section) ? (
           <HeroSplitFullHeightSectionV3
             {...sectionLibraryV3Content.heroSplitFullHeight}
+            colorRecipe={getSectionColorRecipe(section)}
             headingLevel={headingLevel}
             variant={
               (section.variant ??
@@ -2181,9 +2225,21 @@ export function PagebuilderShell({
             align={getHeroCompactAlign(section)}
             headingLevel={2}
           />
+        ) : section.component === contentSplitHeadlineImageComponent ? (
+          <ContentSplitHeadlineImageSectionV2
+            {...sectionLibraryV3Content.contentSplitHeadlineImage}
+            colorRecipe={getSectionColorRecipe(section)}
+          />
+        ) : section.component === contentStickyCardStreamComponent ? (
+          <ContentStickyCardStreamSectionV2
+            {...sectionLibraryV3Content.contentStickyCardStream}
+            colorRecipe={getSectionColorRecipe(section)}
+          />
         ) : isServicesBentoSection(section) ? (
           <ServicesBentoCardsSectionV2
             {...sectionLibraryV3Content.servicesBento}
+            cardFill={getSectionCardFill(section)}
+            colorRecipe={getSectionColorRecipe(section)}
             variant={getServicesBentoVariant(section)}
           />
         ) : (
@@ -2205,6 +2261,8 @@ export function PagebuilderShell({
           data-pagebuilder-section-id={section.id}
           data-pagebuilder-section-component={section.component}
           data-pagebuilder-section-mode={section.mode}
+          data-pagebuilder-card-fill={getSectionCardFill(section)}
+          data-pagebuilder-color-recipe={getSectionColorRecipe(section)}
           data-pagebuilder-padding-top={
             section.reduceTopPadding ? "none" : "default"
           }
@@ -2572,6 +2630,71 @@ export function PagebuilderShell({
                               Swaps to another section with the same function.
                             </span>
                           </label>
+
+                          <fieldset className="grid gap-2">
+                            <legend className="type-caption font-semibold text-current">
+                              Color recipe
+                            </legend>
+                            <div className="grid grid-cols-4 gap-2 max-md:grid-cols-2">
+                              {sectionColorRecipes.map((recipe) => {
+                                const isActive =
+                                  getSectionColorRecipe(section) === recipe.id;
+
+                                return (
+                                  <button
+                                    aria-pressed={isActive}
+                                    className={cx(
+                                      "min-h-10 rounded-[var(--chrome-radius-control)] border px-2 text-center text-xs font-semibold transition-colors",
+                                      isActive
+                                        ? "token-chrome-card-active"
+                                        : "token-chrome-card",
+                                    )}
+                                    key={recipe.id}
+                                    onClick={() =>
+                                      updateSectionColorRecipe(
+                                        section.id,
+                                        recipe.id,
+                                      )
+                                    }
+                                    type="button"
+                                  >
+                                    {recipe.label}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </fieldset>
+
+                          <fieldset className="grid gap-2">
+                            <legend className="type-caption font-semibold text-current">
+                              Card fill
+                            </legend>
+                            <div className="grid grid-cols-2 gap-2">
+                              {(["solid", "none"] as const).map((cardFill) => {
+                                const isActive =
+                                  getSectionCardFill(section) === cardFill;
+
+                                return (
+                                  <button
+                                    aria-pressed={isActive}
+                                    className={cx(
+                                      "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                      isActive
+                                        ? "token-chrome-card-active"
+                                        : "token-chrome-card",
+                                    )}
+                                    key={cardFill}
+                                    onClick={() =>
+                                      updateSectionCardFill(section.id, cardFill)
+                                    }
+                                    type="button"
+                                  >
+                                    {cardFill === "solid" ? "Filled" : "Transparent"}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </fieldset>
 
                           <fieldset className="grid gap-2">
                             <legend className="type-caption font-semibold text-current">

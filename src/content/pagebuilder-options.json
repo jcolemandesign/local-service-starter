@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-07-16T23:32:59.999Z",
+      "savedAt": "2026-07-17T02:32:54.449Z",
       "sectionCount": 11,
       "sections": [
         {
@@ -20,7 +20,9 @@
           "mode": "Navigation",
           "name": "Primary navigation",
           "originalComponent": "NavPrimarySectionV2",
-          "originalIndex": 0
+          "originalIndex": 0,
+          "colorRecipe": "default",
+          "cardFill": "solid"
         },
         {
           "component": "HeroSplitFullHeightSectionV3",
@@ -31,7 +33,9 @@
           "name": "Split content and full image",
           "originalComponent": "HeroSplitFullHeightSectionV3",
           "originalIndex": 1,
-          "variant": "text-3-image-4-right"
+          "variant": "text-3-image-4-right",
+          "colorRecipe": "muted",
+          "cardFill": "none"
         },
         {
           "component": "TrustMarqueeSectionV3",
@@ -41,7 +45,9 @@
           "mode": "Proof",
           "name": "Trust marquee",
           "originalComponent": "TrustBarSectionV3",
-          "originalIndex": 2
+          "originalIndex": 2,
+          "colorRecipe": "accent",
+          "cardFill": "solid"
         },
         {
           "component": "ServicesBentoCardsSectionV2",
@@ -52,7 +58,9 @@
           "name": "Services bento cards",
           "originalComponent": "ServicesBentoCardsSectionV2",
           "originalIndex": -1,
-          "variant": "offset-header"
+          "variant": "offset-header",
+          "colorRecipe": "muted",
+          "cardFill": "none"
         },
         {
           "component": "DecisionSplitLargeCardsSectionV3",
@@ -62,7 +70,9 @@
           "mode": "Decision",
           "name": "Split large cards",
           "originalComponent": "DecisionSplitLargeCardsSectionV3",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "dark",
+          "cardFill": "solid"
         },
         {
           "component": "FeatureStackedCardsSectionV3",
@@ -72,7 +82,9 @@
           "mode": "Narrative",
           "name": "Stacked feature cards",
           "originalComponent": "FeatureAsymmetricCardsSectionV3",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "dark",
+          "cardFill": "none"
         },
         {
           "component": "ServiceAreaZipLookupSectionV3",
@@ -82,7 +94,9 @@
           "mode": "Utility",
           "name": "Service area zip lookup",
           "originalComponent": "ServiceAreaZipLookupSectionV3",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "dark",
+          "cardFill": "solid"
         },
         {
           "component": "ProcessStepsSectionV3",
@@ -92,7 +106,9 @@
           "mode": "Decision",
           "name": "Process steps",
           "originalComponent": "ProcessStepsSectionV3",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "dark",
+          "cardFill": "solid"
         },
         {
           "component": "FAQAccordionSectionV3",
@@ -102,7 +118,9 @@
           "mode": "Utility",
           "name": "FAQ accordion",
           "originalComponent": "FAQAccordionSectionV3",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "dark",
+          "cardFill": "solid"
         },
         {
           "component": "ContentFixedCoverFadeSectionV2",
@@ -112,7 +130,9 @@
           "mode": "Action",
           "name": "Fixed cover fade",
           "originalComponent": "ContentFixedCoverFadeSectionV2",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "dark",
+          "cardFill": "solid"
         },
         {
           "component": "FooterCompactSectionV3",
@@ -122,7 +142,9 @@
           "mode": "Utility",
           "name": "Condensed footer",
           "originalComponent": "FooterSectionV3",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "default",
+          "cardFill": "solid"
         }
       ]
     },
@@ -135,7 +157,7 @@
       "optionName": "Page Layout",
       "recipeId": "editorial-local",
       "recipeName": "Services Overview",
-      "savedAt": "2026-07-16T23:31:05.736Z",
+      "savedAt": "2026-07-17T00:31:55.446Z",
       "sectionCount": 11,
       "sections": [
         {
@@ -146,7 +168,9 @@
           "mode": "Navigation",
           "name": "Primary navigation",
           "originalComponent": "NavPrimarySectionV2",
-          "originalIndex": 0
+          "originalIndex": 0,
+          "colorRecipe": "default",
+          "cardFill": "solid"
         },
         {
           "component": "ServicesThreeCardsRightSectionV3",
@@ -156,7 +180,9 @@
           "mode": "Scan",
           "name": "Priority service cards",
           "originalComponent": "ServicesThreeCardsRightSectionV3",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "default",
+          "cardFill": "solid"
         },
         {
           "component": "SectionHeaderCompactSectionV3",
@@ -167,7 +193,9 @@
           "name": "Compact section header",
           "originalComponent": "SectionHeaderCompactSectionV3",
           "originalIndex": -1,
-          "variant": "center"
+          "variant": "center",
+          "colorRecipe": "default",
+          "cardFill": "solid"
         },
         {
           "component": "ServicesHoverPanelSectionV2",
@@ -177,7 +205,9 @@
           "mode": "Scan",
           "name": "Services hover panel",
           "originalComponent": "ServicesHoverPanelSectionV2",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "default",
+          "cardFill": "solid"
         },
         {
           "component": "CTAMutedSectionV3",
@@ -187,7 +217,9 @@
           "mode": "Action",
           "name": "Muted CTA",
           "originalComponent": "CTASectionV3",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "default",
+          "cardFill": "solid"
         },
         {
           "component": "ContentSplitFixedImageSectionV3",
@@ -199,7 +231,9 @@
           "originalComponent": "ContentSplitFixedImageSectionV3",
           "originalIndex": -1,
           "ratio": "3-2",
-          "variant": "text-4-image-3-right"
+          "variant": "text-4-image-3-right",
+          "colorRecipe": "muted",
+          "cardFill": "solid"
         },
         {
           "component": "ContentSplitFixedImageSectionV3",
@@ -211,7 +245,9 @@
           "originalComponent": "ContentSplitFixedImageSectionV3",
           "originalIndex": -1,
           "ratio": "3-2",
-          "variant": "image-4-left-text-3"
+          "variant": "image-4-left-text-3",
+          "colorRecipe": "muted",
+          "cardFill": "solid"
         },
         {
           "component": "ContentSplitFixedImageSectionV3",
@@ -223,7 +259,9 @@
           "originalComponent": "ContentSplitFixedImageSectionV3",
           "originalIndex": -1,
           "ratio": "3-2",
-          "variant": "text-4-image-3-right"
+          "variant": "text-4-image-3-right",
+          "colorRecipe": "muted",
+          "cardFill": "solid"
         },
         {
           "component": "ContentStickyCardStreamSectionV2",
@@ -233,7 +271,9 @@
           "mode": "Narrative",
           "name": "Sticky card stream content",
           "originalComponent": "ContentStickyCardStreamSectionV2",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "dark",
+          "cardFill": "solid"
         },
         {
           "component": "ContactSectionV3",
@@ -243,7 +283,9 @@
           "mode": "Utility",
           "name": "Contact section",
           "originalComponent": "ContactSectionV3",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "dark",
+          "cardFill": "solid"
         },
         {
           "component": "FooterSectionV3",
@@ -253,7 +295,9 @@
           "mode": "Utility",
           "name": "Footer",
           "originalComponent": "FooterSectionV3",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "default",
+          "cardFill": "solid"
         }
       ]
     },
@@ -266,7 +310,7 @@
       "optionName": "Page Layout",
       "recipeId": "conversion-heavy",
       "recipeName": "About",
-      "savedAt": "2026-07-15T23:05:54.707Z",
+      "savedAt": "2026-07-17T00:26:51.311Z",
       "sectionCount": 10,
       "sections": [
         {
@@ -277,7 +321,9 @@
           "mode": "Navigation",
           "name": "Primary navigation",
           "originalComponent": "NavCenterLogoSectionV2",
-          "originalIndex": 0
+          "originalIndex": 0,
+          "colorRecipe": "default",
+          "cardFill": "solid"
         },
         {
           "component": "HeroContentTopImageBottomSectionV2",
@@ -287,7 +333,9 @@
           "mode": "Hero",
           "name": "Content top image bottom",
           "originalComponent": "HeroGridMosaicSectionV2",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "default",
+          "cardFill": "solid"
         },
         {
           "component": "TrustLogoGridSectionV3",
@@ -297,7 +345,9 @@
           "mode": "Proof",
           "name": "Static trust logo grid",
           "originalComponent": "TrustLogoGridSectionV3",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "accent",
+          "cardFill": "solid"
         },
         {
           "component": "ContentStickyIdeasSectionV2",
@@ -307,7 +357,9 @@
           "mode": "Narrative",
           "name": "Sticky ideas content",
           "originalComponent": "ContentAboutStorySectionV3",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "muted",
+          "cardFill": "solid"
         },
         {
           "component": "ContentPhotoGalleryCarouselSectionV3",
@@ -317,7 +369,9 @@
           "mode": "Images",
           "name": "Photo gallery carousel",
           "originalComponent": "ContentPhotoGalleryCarouselSectionV3",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "default",
+          "cardFill": "solid"
         },
         {
           "component": "ContentRevealParagraphSectionV2",
@@ -327,7 +381,9 @@
           "mode": "Narrative",
           "name": "Reveal paragraph",
           "originalComponent": "ContentRevealParagraphSectionV2",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "dark",
+          "cardFill": "solid"
         },
         {
           "component": "FeatureAsymmetricCardsSectionV3",
@@ -337,7 +393,9 @@
           "mode": "Narrative",
           "name": "Asymmetric feature cards",
           "originalComponent": "FeatureAsymmetricCardsSectionV3",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "default",
+          "cardFill": "solid"
         },
         {
           "component": "DecisionSplitDecisionSectionV3",
@@ -347,7 +405,9 @@
           "mode": "Decision",
           "name": "Split decision",
           "originalComponent": "DecisionSplitDecisionSectionV3",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "default",
+          "cardFill": "solid"
         },
         {
           "component": "TrustMarqueeSection",
@@ -357,7 +417,9 @@
           "mode": "Action",
           "name": "Headline with Scrolling Banner",
           "originalComponent": "TrustMarqueeSection",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "default",
+          "cardFill": "solid"
         },
         {
           "component": "FooterSectionV3",
@@ -367,7 +429,9 @@
           "mode": "Utility",
           "name": "Footer",
           "originalComponent": "FooterSectionV3",
-          "originalIndex": -1
+          "originalIndex": -1,
+          "colorRecipe": "default",
+          "cardFill": "solid"
         }
       ]
     },
