@@ -1064,6 +1064,13 @@ const sectionSwapOptions = [
     name: "Contact section",
   },
   {
+    component: "ContactSectionModalBegin",
+    instruction:
+      "Begin the request flow in-page with system and service choices, then carry those answers into step two of the request modal.",
+    mode: "Utility",
+    name: "Contact section modal begin",
+  },
+  {
     component: "FooterSectionV3",
     instruction:
       "End with service links, areas, contact details, and legal links.",

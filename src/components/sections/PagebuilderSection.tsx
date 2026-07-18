@@ -9,6 +9,7 @@ import {
 import { ImageStripSectionV3 } from "@/components/sections/ImageStripSectionV3";
 import { QuickPageLinksSectionV2 } from "@/components/sections/QuickPageLinksSectionV2";
 import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
+import { ContactSectionModalBegin } from "@/components/sections/ContactSectionModalBegin";
 import { CTAFullscreenSectionV2 } from "@/components/sections/CTAFullscreenSectionV2";
 import { CTAScrollRevealOfferSectionV2 } from "@/components/sections/CTAScrollRevealOfferSectionV2";
 import { ContentRevealParagraphSectionV2 } from "@/components/sections/ContentRevealParagraphSectionV2";
@@ -509,6 +510,12 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       );
     case "ContactSectionV3":
       return <ContactSectionV3 {...sectionLibraryV3Content.contact} />;
+    case "ContactSectionModalBegin":
+      return (
+        <ContactSectionModalBegin
+          {...sectionLibraryV3Content.contactModalBegin}
+        />
+      );
     case "FooterSectionV2":
       return <FooterSectionV2 {...sectionLibraryV3Content.footer} />;
     case "FooterSectionV3":
@@ -1121,6 +1128,12 @@ export function PagebuilderSection() {
           7,
         )}
       </div>
+    ),
+    ContactSectionModalBegin: previewCatalogEntry(
+      "ContactSectionModalBegin",
+      "Utility",
+      "Contact section modal begin",
+      7,
     ),
     FooterHorizontalSectionV3: (
       <div key="FooterHorizontalSectionV3">

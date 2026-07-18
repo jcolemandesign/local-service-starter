@@ -935,6 +935,15 @@ export const sectionLibraryV3Content = {
     body: "A reusable contact section placeholder for phone, email, hours, and a simple form preview.",
     details: ["(555) 014-2250", "hello@examplelocal.com", "Mon-Fri, 8am-6pm"],
   },
+  contactModalBegin: {
+    eyebrow: "Request service",
+    title: "Start with the kind of help you need.",
+    body: "Choose the system and service path that best match the situation. We will carry those answers into the request flow so you can continue without repeating yourself.",
+    systemPrompt: "What system needs help?",
+    requestPrompt: "What do you need?",
+    continueLabel: "Continue",
+    helperText: "Your selections will carry into the next step.",
+  },
   footer: {
     businessName: "Example Local Service",
     description:
@@ -1297,6 +1306,10 @@ export const sectionLibraryV3Collections = [
       {
         label: "Service area zip lookup",
         component: "service-area-zip-lookup-v3",
+      },
+      {
+        label: "Contact section modal begin",
+        component: "contact-modal-begin-v3",
       },
       { label: "Contact section", component: "contact-v3" },
       { label: "Footer", component: "footer-v3" },

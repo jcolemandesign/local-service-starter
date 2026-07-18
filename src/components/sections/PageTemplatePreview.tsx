@@ -9,6 +9,7 @@ import {
 import { ImageStripSectionV3 } from "@/components/sections/ImageStripSectionV3";
 import { QuickPageLinksSectionV2 } from "@/components/sections/QuickPageLinksSectionV2";
 import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
+import { ContactSectionModalBegin } from "@/components/sections/ContactSectionModalBegin";
 import { CTAFullscreenSectionV2 } from "@/components/sections/CTAFullscreenSectionV2";
 import { CTAScrollRevealOfferSectionV2 } from "@/components/sections/CTAScrollRevealOfferSectionV2";
 import { ContentRevealParagraphSectionV2 } from "@/components/sections/ContentRevealParagraphSectionV2";
@@ -531,6 +532,12 @@ export function renderPageTemplateSection(
       return <ServiceAreaZipLookupSectionV3 {...serviceAreaProps(fieldSection)} />;
     case "ContactSectionV3":
       return <ContactSectionV3 {...contactProps(fieldSection)} />;
+    case "ContactSectionModalBegin":
+      return (
+        <ContactSectionModalBegin
+          {...contactModalBeginProps(fieldSection)}
+        />
+      );
     case "FooterSectionV2":
       return <FooterSectionV2 {...footerProps(fieldSection)} />;
     case "FooterSectionV3":
@@ -1070,6 +1077,39 @@ function contactProps(section: FieldSection) {
       sectionLibraryV3Content.contact.eyebrow,
     ),
     title: getTitle(section, sectionLibraryV3Content.contact.title),
+  };
+}
+
+function contactModalBeginProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.contactModalBegin,
+    body: getBody(section, sectionLibraryV3Content.contactModalBegin.body),
+    continueLabel: getValue(
+      section,
+      "continueLabel",
+      sectionLibraryV3Content.contactModalBegin.continueLabel,
+    ),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.contactModalBegin.eyebrow,
+    ),
+    helperText: getValue(
+      section,
+      "helperText",
+      sectionLibraryV3Content.contactModalBegin.helperText,
+    ),
+    requestPrompt: getValue(
+      section,
+      "requestPrompt",
+      sectionLibraryV3Content.contactModalBegin.requestPrompt,
+    ),
+    systemPrompt: getValue(
+      section,
+      "systemPrompt",
+      sectionLibraryV3Content.contactModalBegin.systemPrompt,
+    ),
+    title: getTitle(section, sectionLibraryV3Content.contactModalBegin.title),
   };
 }
 

@@ -230,6 +230,7 @@ function getSectionContent(component: string): ContentSourceValue | null {
   const contentByComponent: Record<string, ContentSourceValue> = {
     ContactSectionV2: sectionLibraryV3Content.contact,
     ContactSectionV3: sectionLibraryV3Content.contact,
+    ContactSectionModalBegin: sectionLibraryV3Content.contactModalBegin,
     ContentAboutCompanySectionV2: sectionLibraryV3Content.contentAboutCompany,
     ContentFixedCoverFadeSectionV2: sectionLibraryV3Content.contentFixedCoverFade,
     ContentHorizontalCardCarouselSectionV2:

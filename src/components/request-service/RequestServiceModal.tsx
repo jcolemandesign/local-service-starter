@@ -15,16 +15,21 @@ import { AnimatePresence, motion } from "motion/react";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { supabase } from "@/utils/supabase/client";
 
-type SystemType = "cooling" | "heating";
-type RequestType =
+export type RequestServiceSystemType = "cooling" | "heating";
+export type RequestServiceRequestType =
   | "repair"
   | "maintenance"
   | "replacement_install"
   | "not_sure";
 type ContactMethod = "call" | "text" | "email";
 
+export type RequestServicePrefill = {
+  requestType: RequestServiceRequestType;
+  systemType: RequestServiceSystemType;
+};
+
 type RequestServiceContextValue = {
-  openRequestService: () => void;
+  openRequestService: (prefill?: RequestServicePrefill) => void;
 };
 
 type RequestServiceButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -45,8 +50,8 @@ type LeadData = {
   property_type?: string;
   appointment_window?: string;
   street_address?: string;
-  system_type: SystemType;
-  request_type: RequestType;
+  system_type: RequestServiceSystemType;
+  request_type: RequestServiceRequestType;
   problem_type: string;
   service_needed: string;
   description?: string;
@@ -75,12 +80,12 @@ const RequestServiceContext = createContext<RequestServiceContextValue | null>(
   null,
 );
 
-const systemOptions = [
+export const requestServiceSystemOptions = [
   { label: "Cooling", value: "cooling" },
   { label: "Heating", value: "heating" },
 ] as const;
 
-const requestOptions = [
+export const requestServiceRequestOptions = [
   { label: "Repair", value: "repair" },
   { label: "Maintenance", value: "maintenance" },
   { label: "Replacement / Install", value: "replacement_install" },
@@ -121,8 +126,8 @@ const modalButtonClass =
   "radius-button inline-flex min-h-10 cursor-pointer items-center justify-center px-5 type-caption font-semibold transition-colors";
 
 const problemOptionsBySelection: Record<
-  SystemType,
-  Record<RequestType, string[]>
+  RequestServiceSystemType,
+  Record<RequestServiceRequestType, string[]>
 > = {
   cooling: {
     repair: [
@@ -187,18 +192,21 @@ const problemOptionsBySelection: Record<
   },
 };
 
-function getProblemOptions(systemType: SystemType, requestType: RequestType) {
+function getProblemOptions(
+  systemType: RequestServiceSystemType,
+  requestType: RequestServiceRequestType,
+) {
   return problemOptionsBySelection[systemType][requestType];
 }
 
-function getRequestLabel(value: RequestType) {
+function getRequestLabel(value: RequestServiceRequestType) {
   return (
-    requestOptions.find((option) => option.value === value)?.label ?? value
+    requestServiceRequestOptions.find((option) => option.value === value)?.label ?? value
   );
 }
 
-function getSystemLabel(value: SystemType) {
-  return systemOptions.find((option) => option.value === value)?.label ?? value;
+function getSystemLabel(value: RequestServiceSystemType) {
+  return requestServiceSystemOptions.find((option) => option.value === value)?.label ?? value;
 }
 
 function createLeadId() {
@@ -400,11 +408,19 @@ export function RequestServiceTrigger({
 export function RequestServiceProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [lockActive, setLockActive] = useState(false);
+  const [prefill, setPrefill] = useState<RequestServicePrefill | null>(null);
+  const [prefillLaunchKey, setPrefillLaunchKey] = useState(0);
   useScrollLock(lockActive);
 
   const contextValue = useMemo(
     () => ({
-      openRequestService: () => {
+      openRequestService: (nextPrefill?: RequestServicePrefill) => {
+        setPrefill(nextPrefill ?? null);
+
+        if (nextPrefill) {
+          setPrefillLaunchKey((currentKey) => currentKey + 1);
+        }
+
         setLockActive(true);
         setIsOpen(true);
       },
@@ -416,9 +432,11 @@ export function RequestServiceProvider({ children }: { children: ReactNode }) {
     <RequestServiceContext.Provider value={contextValue}>
       {children}
       <RequestServiceModal
+        key={prefillLaunchKey}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onExitComplete={() => setLockActive(false)}
+        prefill={prefill}
       />
     </RequestServiceContext.Provider>
   );
@@ -428,16 +446,22 @@ function RequestServiceModal({
   isOpen,
   onClose,
   onExitComplete,
+  prefill,
 }: {
   isOpen: boolean;
   onClose: () => void;
   onExitComplete: () => void;
+  prefill: RequestServicePrefill | null;
 }) {
   const router = useRouter();
   const dialogRef = useRef<HTMLDivElement | null>(null);
-  const [step, setStep] = useState(1);
-  const [systemType, setSystemType] = useState<SystemType | "">("");
-  const [requestType, setRequestType] = useState<RequestType | "">("");
+  const [step, setStep] = useState(prefill ? 2 : 1);
+  const [systemType, setSystemType] = useState<RequestServiceSystemType | "">(
+    prefill?.systemType ?? "",
+  );
+  const [requestType, setRequestType] = useState<RequestServiceRequestType | "">(
+    prefill?.requestType ?? "",
+  );
   const [problemType, setProblemType] = useState("");
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");
@@ -700,7 +724,7 @@ function RequestServiceModal({
                   What system needs help?
                 </h3>
                 <div className="grid grid-cols-2 card-grid-gap-med max-sm:grid-cols-1">
-                  {systemOptions.map((option) => (
+                  {requestServiceSystemOptions.map((option) => (
                     <OptionButton
                       isSelected={systemType === option.value}
                       key={option.value}
@@ -719,7 +743,7 @@ function RequestServiceModal({
                   What do you need?
                 </h3>
                 <div className="grid grid-cols-2 card-grid-gap-med max-sm:grid-cols-1">
-                  {requestOptions.map((option) => (
+                  {requestServiceRequestOptions.map((option) => (
                     <OptionButton
                       isSelected={requestType === option.value}
                       key={option.value}

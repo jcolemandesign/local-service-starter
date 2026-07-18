@@ -1152,9 +1152,9 @@ function PagebuilderIcon() {
       strokeWidth="1.8"
       viewBox="0 0 24 24"
     >
-      <path d="M5 3h9l4 4v14H5z" />
-      <path d="M14 3v5h4M8 13h5M8 17h3" />
-      <path d="m15 12 4 4M16.5 10.5l3 3M14.5 14.5l-2 2" />
+      <path d="m16 3 5 5-3 3-5-5z" />
+      <path d="m14.5 9.5-8 8" />
+      <path d="m5 19 2-2" />
     </svg>
   );
 }

@@ -14,6 +14,7 @@ import {
   ContentStickyIdeasSectionV2,
   ContentSplitHeadlineImageSectionV2,
   ImageStripSectionV3,
+  ContactSectionModalBegin,
   ContactSectionV3,
   CTAFullscreenSectionV3,
   CTAMutedSectionV3,
@@ -302,6 +303,11 @@ const sectionElements = {
     />
   ),
   "contact-v3": <ContactSectionV3 {...sectionLibraryV3Content.contact} />,
+  "contact-modal-begin-v3": (
+    <ContactSectionModalBegin
+      {...sectionLibraryV3Content.contactModalBegin}
+    />
+  ),
   "footer-v3": <FooterSectionV3 {...sectionLibraryV3Content.footer} />,
   "footer-horizontal-v3": (
     <FooterHorizontalSectionV3 {...sectionLibraryV3Content.footer} />
