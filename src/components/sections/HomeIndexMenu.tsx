@@ -172,7 +172,7 @@ export function HomeIndexMenu({ initialGroups }: HomeIndexMenuProps) {
                       <span className="type-text-md block min-w-0 flex-1 font-semibold text-[var(--chrome-text)]">
                         {link.label}
                       </span>
-                      <div className="absolute right-3.5 -top-1 flex shrink-0 items-center gap-2">
+                      <div className="absolute -right-3.5 -top-3.5 flex shrink-0 items-center gap-2">
                         {canManagePage ? (
                           <div
                             className="pointer-events-auto flex items-center gap-1"
