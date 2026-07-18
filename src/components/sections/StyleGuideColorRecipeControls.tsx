@@ -16,7 +16,7 @@ export function StyleGuideColorRecipeControls() {
         <div className="mt-3 grid grid-cols-3 gap-3 max-md:grid-cols-1">
           {styleGuideColorPalettes.map((palette) => (
             <button
-              className={`rounded border p-3 text-left transition-colors hover:border-service-accent ${
+              className={`style-guide-palette-tab rounded border p-3 text-left transition-colors hover:border-service-accent ${
                 draft.activeColorPaletteId === palette.id
                   ? "border-service-accent bg-service-surface"
                   : "border-service-border bg-bg-page"

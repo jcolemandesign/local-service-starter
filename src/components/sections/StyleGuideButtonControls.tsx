@@ -83,43 +83,45 @@ export function StyleGuideButtonControls({
 
   return (
     <div className="grid gap-5">
-      <Card className="bg-service-surface p-5 shadow-none">
-        <div className="fluid-type-frame">
-          <p className="type-label text-service-accent">Button controls</p>
-          <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
-            Shared CTA treatments
-          </h3>
-          <p className="type-text-sm mt-heading-body-sm text-service-muted">
-            Choose a treatment to inspect its shared radius, surface, hover, and
-            focus behavior. New button ideas can be added to this same list.
-          </p>
-        </div>
-
-        <div className="radius-medium mt-5 border border-service-border bg-surface-raised p-3">
-          <div className="grid grid-cols-4 gap-2 max-lg:grid-cols-2 max-md:grid-cols-1">
-            {buttonExamples.map((example) => {
-              const isActive = example.name === activeExample.name;
-
-              return (
-                <button
-                  aria-pressed={isActive}
-                  className={cx(
-                    "radius-button min-h-11 border px-3 py-2 text-center text-xs font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
-                    isActive
-                      ? "border-service-accent bg-service-accent text-white"
-                      : "border-service-border bg-surface-raised text-service-ink hover:border-service-accent hover:text-service-accent",
-                  )}
-                  key={example.name}
-                  onClick={() => setActiveName(example.name)}
-                  type="button"
-                >
-                  {example.label}
-                </button>
-              );
-            })}
+      <div className="style-guide-control-band grid border-y px-[var(--site-grid-inset-inline)] py-4">
+        <Card className="bg-service-surface p-5 shadow-none">
+          <div className="fluid-type-frame">
+            <p className="type-label text-service-accent">Button controls</p>
+            <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
+              Shared CTA treatments
+            </h3>
+            <p className="type-text-sm mt-heading-body-sm text-service-muted">
+              Choose a treatment to inspect its shared radius, surface, hover, and
+              focus behavior. New button ideas can be added to this same list.
+            </p>
           </div>
-        </div>
-      </Card>
+
+          <div className="radius-medium mt-5 border border-service-border bg-surface-raised p-3">
+            <div className="grid grid-cols-4 gap-2 max-lg:grid-cols-2 max-md:grid-cols-1">
+              {buttonExamples.map((example) => {
+                const isActive = example.name === activeExample.name;
+
+                return (
+                  <button
+                    aria-pressed={isActive}
+                    className={cx(
+                      "radius-button min-h-11 border px-3 py-2 text-center text-xs font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
+                      isActive
+                        ? "border-service-accent bg-service-accent text-white"
+                        : "border-service-border bg-surface-raised text-service-ink hover:border-service-accent hover:text-service-accent",
+                    )}
+                    key={example.name}
+                    onClick={() => setActiveName(example.name)}
+                    type="button"
+                  >
+                    {example.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </Card>
+      </div>
 
       <div
         className={cx(

@@ -1168,7 +1168,10 @@ function GuideSection({
   const defaultOpen = titleAs === "h1";
 
   return (
-    <section className="scroll-mt-12 border-t border-service-border" id={id}>
+    <section
+      className="style-guide-accordion token-chrome token-chrome-panel-strong mx-2 my-2 scroll-mt-12 overflow-hidden rounded-[var(--chrome-radius-panel)] border"
+      id={id}
+    >
       <details
         className="group [&[open]_.guide-section-icon]:rotate-45"
         data-style-guide-accordion
@@ -1205,7 +1208,7 @@ function GuideSection({
           </SevenColumnGrid>
         </summary>
         <SevenColumnGrid
-          className="px-[var(--site-grid-inset-inline)] pb-[var(--site-grid-inset-block)]"
+          className="style-guide-accordion-content bg-bg-page px-[var(--site-grid-inset-inline)] pb-[var(--site-grid-inset-block)] text-service-ink"
           frame="none"
           minHeight="none"
           padding="none"
@@ -1337,7 +1340,7 @@ export default function StyleGuidePage() {
       <StyleGuideCloseAllButton />
       <nav
         aria-label="Style guide table of contents"
-        className="inline-gap-lrg sticky top-0 z-40 flex w-full items-center overflow-x-auto border-b border-service-border bg-bg-page/92 px-[var(--site-grid-inset-inline)] py-2 text-service-muted backdrop-blur"
+        className="style-guide-nav token-chrome inline-gap-lrg sticky top-0 z-40 flex w-full items-center overflow-x-auto border-b px-[var(--site-grid-inset-inline)] py-2 backdrop-blur"
       >
         <div className="inline-gap-lrg flex shrink-0 items-center">
           {styleGuideToc.map((item) => (
@@ -1378,46 +1381,48 @@ export default function StyleGuidePage() {
         titleAs="h1"
         body="Live hierarchy specimens and content patterns. Select any specimen to tune its role in the controls beside it."
       >
-        <SevenColumnGrid minHeight="none" padding="none">
-          <SevenColumnGridItem className="sticky top-16 col-span-2 self-start max-lg:col-span-5 max-md:col-span-3 max-sm:static max-sm:col-span-1">
-            <StyleGuideTypographyControls />
-          </SevenColumnGridItem>
+        <div className="style-guide-control-band grid border-y px-[var(--site-grid-inset-inline)] py-4">
+          <SevenColumnGrid minHeight="none" padding="none">
+            <SevenColumnGridItem className="sticky top-16 col-span-2 self-start max-lg:col-span-5 max-md:col-span-3 max-sm:static max-sm:col-span-1">
+              <StyleGuideTypographyControls />
+            </SevenColumnGridItem>
 
-          <SevenColumnGridItem className="col-span-5 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-            <div className="grid gap-3">
-              {typeTokens.map((token) => (
-                <div
-                  className="fluid-type-frame grid grid-cols-7 gap-4 border-t border-service-border py-6 max-lg:grid-cols-5 max-md:grid-cols-3 max-sm:grid-cols-1"
-                  key={`grid-row-${token.name}`}
-                >
-                  <div className="col-span-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-                    <code className="radius-4 inline-flex bg-service-surface px-2 py-1 text-xs font-semibold text-service-ink">
-                      {token.name}
-                    </code>
-                    <p className="type-caption mt-2 text-service-muted">
-                      {token.role}
-                    </p>
-                    <p className="type-caption mt-2 font-semibold text-service-muted">
-                      <StyleGuideTypeSpec tokenName={token.name} />
-                    </p>
-                    <StyleGuideResetFontButton tokenName={token.name} />
-                  </div>
-                  <StyleGuideTypeSample
-                    className={cx(
-                      token.typeClass,
-                      token.measureClass,
-                      token.wrapClass,
-                      "col-span-6 text-service-ink max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
-                    )}
-                    tokenName={token.name}
+            <SevenColumnGridItem className="style-guide-demo-surface col-span-5 rounded-[var(--radius-md-token)] p-5 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+              <div className="grid gap-3">
+                {typeTokens.map((token) => (
+                  <div
+                    className="fluid-type-frame grid grid-cols-7 gap-4 border-t border-service-border py-6 max-lg:grid-cols-5 max-md:grid-cols-3 max-sm:grid-cols-1"
+                    key={`grid-row-${token.name}`}
                   >
-                    {token.sample}
-                  </StyleGuideTypeSample>
-                </div>
-              ))}
-            </div>
-          </SevenColumnGridItem>
-        </SevenColumnGrid>
+                    <div className="col-span-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+                      <code className="radius-4 inline-flex bg-service-surface px-2 py-1 text-xs font-semibold text-service-ink">
+                        {token.name}
+                      </code>
+                      <p className="type-caption mt-2 text-service-muted">
+                        {token.role}
+                      </p>
+                      <p className="type-caption mt-2 font-semibold text-service-muted">
+                        <StyleGuideTypeSpec tokenName={token.name} />
+                      </p>
+                      <StyleGuideResetFontButton tokenName={token.name} />
+                    </div>
+                    <StyleGuideTypeSample
+                      className={cx(
+                        token.typeClass,
+                        token.measureClass,
+                        token.wrapClass,
+                        "col-span-6 text-service-ink max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
+                      )}
+                      tokenName={token.name}
+                    >
+                      {token.sample}
+                    </StyleGuideTypeSample>
+                  </div>
+                ))}
+              </div>
+            </SevenColumnGridItem>
+          </SevenColumnGrid>
+        </div>
         <section className="mt-12 border-t border-service-border pt-10">
           <div className="fluid-type-frame max-w-3xl">
             <p className="type-label text-service-accent">Typography subsection</p>
@@ -1442,46 +1447,48 @@ export default function StyleGuidePage() {
         body="Use this one lab to tune the page frame, section rhythm, panel inset, grid gutter, local gaps, and optional minimum section presence."
       >
         <div className="grid gap-7">
-          <div className="grid grid-cols-3 gap-4 max-xl:grid-cols-2 max-md:grid-cols-1">
-            <StyleGuideGridTokenControl kind="body-spacing" options={siteGridFrameOptions} />
-            <StyleGuideGridTokenControl kind="section-spacing" options={sectionPaddingOptions} />
-            <StyleGuideSectionMinControl tokens={sectionMinTokens} variant="controls" />
-            <StyleGuideGridTokenControl kind="content-spacing" options={contentFrameOptions} />
-            <StyleGuideGridTokenControl kind="gap" options={siteGridGapOptions} />
-            <StyleGuideSemanticSpacingControl />
-            <StyleGuideGridTokenControl
-              kind="inline-gap"
-              options={gapTokens[0].items.map(([name, value]) => ({ label: name, name, value }))}
-            />
-            <StyleGuideGridTokenControl
-              kind="card-gap"
-              options={gapTokens[1].items.map(([name, value]) => ({ label: name, name, value }))}
-            />
-            <StyleGuideGridTokenControl
-              kind="layout-gap"
-              options={gapTokens[2].items.map(([name, value]) => ({ label: name, name, value }))}
-            />
-          </div>
+          <div className="style-guide-control-band grid gap-4 border-y px-[var(--site-grid-inset-inline)] py-4">
+            <div className="grid grid-cols-3 gap-4 max-xl:grid-cols-2 max-md:grid-cols-1">
+              <StyleGuideGridTokenControl kind="body-spacing" options={siteGridFrameOptions} />
+              <StyleGuideGridTokenControl kind="section-spacing" options={sectionPaddingOptions} />
+              <StyleGuideSectionMinControl tokens={sectionMinTokens} variant="controls" />
+              <StyleGuideGridTokenControl kind="content-spacing" options={contentFrameOptions} />
+              <StyleGuideGridTokenControl kind="gap" options={siteGridGapOptions} />
+              <StyleGuideSemanticSpacingControl />
+              <StyleGuideGridTokenControl
+                kind="inline-gap"
+                options={gapTokens[0].items.map(([name, value]) => ({ label: name, name, value }))}
+              />
+              <StyleGuideGridTokenControl
+                kind="card-gap"
+                options={gapTokens[1].items.map(([name, value]) => ({ label: name, name, value }))}
+              />
+              <StyleGuideGridTokenControl
+                kind="layout-gap"
+                options={gapTokens[2].items.map(([name, value]) => ({ label: name, name, value }))}
+              />
+            </div>
 
-          <div className="grid grid-cols-3 gap-4 max-xl:grid-cols-1">
-            <div className="style-guide-control-panel radius-medium border p-6">
-              <p className="type-label text-service-accent">Hierarchy</p>
-              <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">What controls what</h3>
-              <ol className="type-text-sm mt-heading-body-sm grid gap-2 text-service-muted">
-                <li>Page frame sets the global canvas inset.</li>
-                <li>Section padding sets vertical page rhythm.</li>
-                <li>Section min adds presence only where a section opts in.</li>
-              </ol>
-            </div>
-            <div className="style-guide-control-panel radius-medium border p-6">
-              <p className="type-label text-service-accent">Inside a section</p>
-              <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">Use the smallest scope</h3>
-              <p className="type-text-sm mt-heading-body-sm text-service-muted">Content padding gives a card breathing room. Grid gutter aligns columns and rows. Semantic rhythm handles the relationships within a copy group.</p>
-            </div>
-            <div className="style-guide-control-panel radius-medium border p-6">
-              <p className="type-label text-service-accent">Usage</p>
-              <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">Avoid double spacing</h3>
-              <p className="type-text-sm mt-heading-body-sm text-service-muted">Reach for section padding between bands, content padding inside panels, and local gaps only for compact clusters or repeated content.</p>
+            <div className="grid grid-cols-3 gap-4 max-xl:grid-cols-1">
+              <div className="style-guide-control-panel radius-medium border p-6">
+                <p className="type-label text-service-accent">Hierarchy</p>
+                <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">What controls what</h3>
+                <ol className="type-text-sm mt-heading-body-sm grid gap-2 text-service-muted">
+                  <li>Page frame sets the global canvas inset.</li>
+                  <li>Section padding sets vertical page rhythm.</li>
+                  <li>Section min adds presence only where a section opts in.</li>
+                </ol>
+              </div>
+              <div className="style-guide-control-panel radius-medium border p-6">
+                <p className="type-label text-service-accent">Inside a section</p>
+                <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">Use the smallest scope</h3>
+                <p className="type-text-sm mt-heading-body-sm text-service-muted">Content padding gives a card breathing room. Grid gutter aligns columns and rows. Semantic rhythm handles the relationships within a copy group.</p>
+              </div>
+              <div className="style-guide-control-panel radius-medium border p-6">
+                <p className="type-label text-service-accent">Usage</p>
+                <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">Avoid double spacing</h3>
+                <p className="type-text-sm mt-heading-body-sm text-service-muted">Reach for section padding between bands, content padding inside panels, and local gaps only for compact clusters or repeated content.</p>
+              </div>
             </div>
           </div>
 
@@ -1893,18 +1900,20 @@ export default function StyleGuidePage() {
         title="Color System"
         body="Palette tokens, semantic color roles, and live surface/type relationships in one place. The color inputs on these swatches update the cards directly."
       >
-        <div className="mb-6 flex flex-wrap items-center justify-end inline-gap-sml">
-          <StyleGuideColorResetButton />
-        </div>
+        <div className="style-guide-control-band grid gap-6 border-y px-[var(--site-grid-inset-inline)] py-4">
+          <div className="flex flex-wrap items-center justify-end inline-gap-sml">
+            <StyleGuideColorResetButton />
+          </div>
 
-        <div className="grid grid-cols-2 card-grid-gap-med max-lg:grid-cols-1">
-          {colors.map((color) => (
-            <StyleGuideColorSwatch color={color} key={color.name} />
-          ))}
-        </div>
+          <div className="grid grid-cols-2 card-grid-gap-med max-lg:grid-cols-1">
+            {colors.map((color) => (
+              <StyleGuideColorSwatch color={color} key={color.name} />
+            ))}
+          </div>
 
-        <div className="mt-6 rounded border border-service-border bg-service-surface p-6">
-          <StyleGuideColorRecipeControls />
+          <div className="rounded border border-service-border bg-service-surface p-6">
+            <StyleGuideColorRecipeControls />
+          </div>
         </div>
 
         <SevenColumnGrid className="mt-6" minHeight="none" padding="none">
@@ -2095,7 +2104,7 @@ export default function StyleGuidePage() {
         title="Radius, Borders, And Shadows"
       >
         <div className="grid gap-5">
-          <Card className="p-5 shadow-none">
+          <div className="style-guide-control-band grid border-y px-[var(--site-grid-inset-inline)] py-4">
             <SevenColumnGrid minHeight="none" padding="none">
               <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
                 <StyleGuideRadiusControls options={radii} />
@@ -2105,7 +2114,7 @@ export default function StyleGuidePage() {
                 <StyleGuideSurfaceControls />
               </SevenColumnGridItem>
             </SevenColumnGrid>
-          </Card>
+          </div>
 
           <Card className="p-5 shadow-none">
             <div className="fluid-type-frame">

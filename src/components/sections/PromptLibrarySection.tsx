@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card, Container, Section } from "@/components/primitives";
+import { Card, Container, DownArrowIcon, Section } from "@/components/primitives";
 import {
   promptLibraryPrompts,
   promptLibraryWorkflow,
@@ -250,7 +250,7 @@ export function PromptLibrarySection({
   }
 
   return (
-    <Section className="min-h-svh bg-service-surface text-service-ink">
+    <Section className="prompt-library-chrome token-chrome min-h-svh">
       <Container>
         <div className="grid layout-gap-lrg">
           <div className="grid gap-5">
@@ -337,8 +337,11 @@ export function PromptLibrarySection({
               });
 
               return (
-                <Card className="overflow-hidden" key={prompt.id}>
-                  <details>
+                <Card
+                  className="prompt-library-longform token-chrome token-chrome-panel overflow-hidden rounded-[var(--chrome-radius-panel)] border shadow-none"
+                  key={prompt.id}
+                >
+                  <details className="group/prompt">
                     <summary className="flex cursor-pointer list-none flex-col gap-4 p-5 marker:hidden lg:flex-row lg:items-start lg:justify-between">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
@@ -355,7 +358,7 @@ export function PromptLibrarySection({
                         </p>
                       </div>
 
-                      <div className="flex shrink-0 flex-wrap gap-2">
+                      <div className="flex shrink-0 flex-wrap items-center gap-2">
                         <button
                           className="radius-button inline-flex min-h-11 items-center justify-center border border-service-border px-4 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent"
                           onClick={(event) => {
@@ -368,6 +371,9 @@ export function PromptLibrarySection({
                         </button>
                         <span className="radius-button inline-flex min-h-11 items-center justify-center border border-service-border px-4 type-caption font-semibold text-service-muted">
                           Review prompt
+                        </span>
+                        <span className="token-chrome-badge inline-flex size-11 items-center justify-center border transition-transform duration-200 group-open/prompt:rotate-180">
+                          <DownArrowIcon className="size-4" />
                         </span>
                       </div>
                     </summary>
@@ -430,7 +436,7 @@ export function PromptLibrarySection({
               <div className="grid card-grid-gap-med">
                 {finalPageGroups.map((group) => (
                   <details
-                    className="rounded-[var(--radius-md-token)] border border-service-border bg-white shadow-service"
+                    className="prompt-library-longform token-chrome token-chrome-panel group/page-group overflow-hidden rounded-[var(--chrome-radius-panel)] border shadow-none"
                     key={group.key}
                     open
                   >
@@ -447,8 +453,16 @@ export function PromptLibrarySection({
                           {group.description}
                         </span>
                       </span>
-                      <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
-                        Open group
+                      <span className="flex shrink-0 items-center gap-3">
+                        <span className="type-caption text-service-muted group-open/page-group:hidden">
+                          Closed
+                        </span>
+                        <span className="type-caption text-service-muted group-open/page-group:inline">
+                          Open
+                        </span>
+                        <span className="token-chrome-badge inline-flex size-11 items-center justify-center border transition-transform duration-200 group-open/page-group:rotate-180">
+                          <DownArrowIcon className="size-4" />
+                        </span>
                       </span>
                     </summary>
                     <div className="grid gap-3 border-t border-service-border p-5">
@@ -465,7 +479,7 @@ export function PromptLibrarySection({
 
                         return (
                           <div
-                            className="grid gap-4 rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
+                            className="token-chrome-card grid gap-4 rounded-[var(--chrome-radius-control)] border p-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
                             key={page.id}
                           >
                             <div className="min-w-0">
@@ -522,7 +536,7 @@ export function PromptLibrarySection({
                 ))}
               </div>
 
-              <details className="rounded-[var(--radius-md-token)] border border-service-border bg-white shadow-service">
+              <details className="prompt-library-longform token-chrome token-chrome-panel group/prompt-reference overflow-hidden rounded-[var(--chrome-radius-panel)] border shadow-none">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 marker:hidden">
                   <span>
                     <span className="type-label text-service-accent">
@@ -532,8 +546,16 @@ export function PromptLibrarySection({
                       {finalPagePrompt.title}
                     </span>
                   </span>
-                  <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
-                    Review prompt
+                  <span className="flex shrink-0 items-center gap-3">
+                    <span className="type-caption text-service-muted group-open/prompt-reference:hidden">
+                      Closed
+                    </span>
+                    <span className="type-caption text-service-muted group-open/prompt-reference:inline">
+                      Open
+                    </span>
+                    <span className="token-chrome-badge inline-flex size-11 items-center justify-center border transition-transform duration-200 group-open/prompt-reference:rotate-180">
+                      <DownArrowIcon className="size-4" />
+                    </span>
                   </span>
                 </summary>
                 <div className="grid card-grid-gap-med border-t border-service-border p-5">

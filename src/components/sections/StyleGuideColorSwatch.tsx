@@ -102,7 +102,13 @@ export function StyleGuideColorSwatch({ color }: StyleGuideColorSwatchProps) {
   return (
     <Card className="overflow-hidden shadow-none">
       <div className="grid min-h-40 grid-cols-[8.5rem_minmax(0,1fr)] max-sm:grid-cols-1">
-        <div className={cx(color.surface, color.text, "grid content-between p-4")}>
+        <div
+          className={cx(
+            color.surface,
+            color.text,
+            "style-guide-live-swatch grid content-between p-4",
+          )}
+        >
           <p className="type-label opacity-75">{color.name}</p>
           <p className="type-caption mt-3 opacity-80">{value}</p>
         </div>
