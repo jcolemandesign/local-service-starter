@@ -70,6 +70,10 @@ export type StagedPage = {
   };
 };
 
+export function getStagedPageKey(page: Pick<StagedPage, "pageId" | "snapshot">) {
+  return `${page.snapshot.clientSlug}:${page.pageId}`;
+}
+
 type StagedPagesFile = {
   pages?: StagedPage[];
 };
@@ -94,9 +98,10 @@ export async function readStagedPages() {
 
 export async function writeStagedPage(page: StagedPage) {
   const pages = await readStagedPages();
+  const pageKey = getStagedPageKey(page);
   const nextPages = [
     page,
-    ...pages.filter((currentPage) => currentPage.pageId !== page.pageId),
+    ...pages.filter((currentPage) => getStagedPageKey(currentPage) !== pageKey),
   ];
 
   await mkdir(path.dirname(stagedPagesPath), { recursive: true });
@@ -108,9 +113,12 @@ export async function writeStagedPage(page: StagedPage) {
   return nextPages;
 }
 
-export async function removeStagedPage(pageId: string) {
+export async function removeStagedPage(clientSlug: string, pageId: string) {
   const pages = await readStagedPages();
-  const nextPages = pages.filter((page) => page.pageId !== pageId);
+  const nextPages = pages.filter(
+    (page) =>
+      page.pageId !== pageId || page.snapshot.clientSlug !== clientSlug,
+  );
 
   if (nextPages.length === pages.length) {
     throw new Error("Staged page not found.");
@@ -126,11 +134,16 @@ export async function removeStagedPage(pageId: string) {
 }
 
 export async function updateStagedPageFields(
+  clientSlug: string,
   pageId: string,
   fields: StagedPageField[],
 ) {
   const pages = await readStagedPages();
-  const page = pages.find((currentPage) => currentPage.pageId === pageId);
+  const page = pages.find(
+    (currentPage) =>
+      currentPage.pageId === pageId &&
+      currentPage.snapshot.clientSlug === clientSlug,
+  );
 
   if (!page) {
     throw new Error("Staged page not found.");
@@ -157,7 +170,9 @@ export async function updateStagedPageFields(
   };
   const nextPages = [
     nextPage,
-    ...pages.filter((currentPage) => currentPage.pageId !== pageId),
+    ...pages.filter(
+      (currentPage) => getStagedPageKey(currentPage) !== getStagedPageKey(page),
+    ),
   ];
 
   await mkdir(path.dirname(stagedPagesPath), { recursive: true });
@@ -177,6 +192,7 @@ export async function syncStagedPagesFromStrategySnapshot(
 ) {
   const pages = await readStagedPages();
   let syncedCount = 0;
+  const syncedPageIds: string[] = [];
   const nextPages = pages.map((page) => {
     if (
       page.snapshot.clientSlug !== snapshot.clientSlug ||
@@ -200,6 +216,7 @@ export async function syncStagedPagesFromStrategySnapshot(
     }
 
     syncedCount += 1;
+    syncedPageIds.push(page.pageId);
 
     const reconciledFields = reconcileTemplateCopyFields(page, page.fields);
     const nextFields = seedFieldsFromStrategyCopy(
@@ -257,6 +274,7 @@ export async function syncStagedPagesFromStrategySnapshot(
   return {
     pages: nextPages,
     syncedCount,
+    syncedPageIds,
   };
 }
 

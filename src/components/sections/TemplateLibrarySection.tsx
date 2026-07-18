@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/primitives/Button";
 import { Card } from "@/components/primitives/Card";
+import { DownArrowIcon } from "@/components/primitives";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
@@ -370,14 +371,14 @@ export function TemplateLibrarySection({
   }
 
   return (
-    <section className="min-h-svh bg-bg-page text-service-ink">
+    <section className="template-library-chrome token-chrome min-h-svh">
       <SevenColumnGrid minHeight="none" padding="med">
         <SevenColumnGridItem className="col-start-2 col-span-4 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <p className="type-label text-service-accent">Pageworks Templates</p>
-          <h1 className="type-display-lg mt-eyebrow-display text-service-ink">
+          <h1 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
             Template Library
           </h1>
-          <p className="type-text-xl wrap-pretty mt-display-body text-service-muted">
+          <p className="type-text-lg wrap-pretty mt-heading-body-md text-service-muted">
             Reusable page layouts promoted from Pagebuilder options. Use a
             template to stage a page from the latest saved strategy snapshot.
           </p>
@@ -397,7 +398,7 @@ export function TemplateLibrarySection({
 
         <SevenColumnGridItem className="col-start-2 col-span-5 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           {strategySnapshots.length > 0 ? (
-            <Card className="mb-5 p-5 shadow-none">
+            <Card className="mb-5 bg-white p-5 shadow-none">
               <label className="type-caption font-semibold text-service-ink">
                 Strategy snapshot
                 <select
@@ -453,19 +454,19 @@ export function TemplateLibrarySection({
             <div className="grid gap-5">
               {templateGroups.map((group) => (
                 <details
-                  className="rounded-[var(--radius-md-token)] border border-service-border bg-bg-surface shadow-service"
+                  className="token-chrome-panel group/template-group overflow-hidden rounded-[var(--chrome-radius-panel)] border"
                   key={group.pageType}
                 >
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 marker:hidden">
                     <span>
-                      <span className="type-label text-service-accent">
+                      <span className="token-chrome-accent type-label">
                         {group.pageType}
                       </span>
-                      <span className="type-heading-sm mt-1 block text-service-ink">
+                      <span className="type-heading-sm mt-1 block text-[var(--chrome-text)]">
                         {group.templates.length}{" "}
                         {group.templates.length === 1 ? "template" : "templates"}
                       </span>
-                      <span className="type-caption mt-2 block text-service-muted">
+                      <span className="token-chrome-muted type-caption mt-2 block">
                         {countAssignmentsForTemplates(
                           group.templates,
                           assignmentsByTemplateId,
@@ -473,8 +474,17 @@ export function TemplateLibrarySection({
                         active on staging
                       </span>
                     </span>
-                    <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
-                      Open group
+                    <span className="flex shrink-0 items-center gap-2">
+                      <span className="token-chrome-muted type-caption font-semibold">
+                        <span className="group-open/template-group:hidden">Closed</span>
+                        <span className="hidden group-open/template-group:inline">Open</span>
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        className="token-chrome-badge flex size-8 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-transform group-open/template-group:rotate-180"
+                      >
+                        <DownArrowIcon className="size-4" />
+                      </span>
                     </span>
                   </summary>
                   <div className="grid grid-cols-2 items-start gap-5 border-t border-service-border p-5 max-lg:grid-cols-1">
@@ -509,27 +519,78 @@ export function TemplateLibrarySection({
                       );
 
                       return (
-                        <Card className="overflow-hidden shadow-none" key={template.id}>
-                          <details className="group relative">
-                            <summary className="relative flex cursor-pointer list-none items-start justify-between gap-4 p-5 pr-14 marker:hidden">
+                        <Card className="token-chrome-card overflow-hidden rounded-[var(--chrome-radius-control)] border shadow-none" key={template.id}>
+                          <details className="group/template relative">
+                            <summary className="flex cursor-pointer list-none items-start justify-between gap-4 p-5 marker:hidden">
                               <span className="min-w-0">
-                                <span className="type-heading-sm block text-service-ink">
+                                <span className="type-heading-sm block text-[var(--chrome-text)]">
                                   {template.name}
                                 </span>
                               </span>
+                              <span className="flex shrink-0 items-center gap-3">
+                                <button
+                                  aria-label={`Delete ${template.name}`}
+                                  className="flex size-9 items-center justify-center rounded-[var(--chrome-radius-control)] border border-red-300/60 bg-red-950/30 text-red-100 transition-colors hover:border-red-300 hover:bg-red-700 disabled:cursor-wait disabled:opacity-60"
+                                  disabled={deletingTemplateId === template.id}
+                                  onClick={(event) => {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    setDeleteCandidate(template);
+                                  }}
+                                  title="Delete template"
+                                  type="button"
+                                >
+                                  <TrashIcon />
+                                </button>
+                                <button
+                                  aria-label={`Copy ${template.name} contract`}
+                                  className="token-chrome-control flex size-9 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors"
+                                  onClick={(event) => {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    void copyTemplateContract(template);
+                                  }}
+                                  title="Copy contract"
+                                  type="button"
+                                >
+                                  <CopyIcon />
+                                </button>
+                                <button
+                                  aria-label={`Send ${template.name} to Pagebuilder`}
+                                  className="token-chrome-control flex size-9 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors disabled:cursor-wait disabled:opacity-60"
+                                  disabled={sendingTemplateId === template.id}
+                                  onClick={(event) => {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    setPagebuilderCandidate(template);
+                                    setStatus("");
+                                    setError("");
+                                  }}
+                                  title="Send to Pagebuilder"
+                                  type="button"
+                                >
+                                  <PagebuilderIcon />
+                                </button>
+                                <Link
+                                  aria-label={`Preview ${template.name}`}
+                                  className="token-chrome-control flex size-9 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors"
+                                  href={`/dev/templates/${template.id}`}
+                                  onClick={(event) => event.stopPropagation()}
+                                  target="_blank"
+                                  title="Preview template"
+                                >
+                                  <PreviewIcon />
+                                </Link>
+                                <span
+                                  aria-hidden="true"
+                                  className="token-chrome-badge flex size-9 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-transform group-open/template:rotate-180"
+                                >
+                                  <DownArrowIcon className="size-4" />
+                                </span>
+                              </span>
                             </summary>
-                            <button
-                              aria-label={`Delete ${template.name}`}
-                              className="absolute right-4 top-4 z-10 flex size-9 items-center justify-center rounded-sm border border-red-200 bg-red-50 text-red-700 transition-colors hover:border-red-700 hover:bg-red-700 hover:text-white disabled:cursor-wait disabled:opacity-60"
-                              disabled={deletingTemplateId === template.id}
-                              onClick={() => setDeleteCandidate(template)}
-                              title="Delete template"
-                              type="button"
-                            >
-                              <TrashIcon />
-                            </button>
 
-                            <div className="grid gap-5 border-t border-service-border bg-service-surface p-5">
+                            <div className="token-chrome-control grid gap-5 border-t p-5">
                               <div className="grid gap-5">
                                 <div className="grid gap-5">
                                   <div className="fluid-type-frame">
@@ -788,12 +849,12 @@ export function TemplateLibrarySection({
               ))}
             </div>
           ) : (
-            <Card className="p-6 shadow-none">
-              <p className="type-label text-service-accent">No templates yet</p>
-              <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+            <Card className="token-chrome-panel rounded-[var(--chrome-radius-panel)] border p-6 shadow-none">
+              <p className="token-chrome-accent type-label">No templates yet</p>
+              <h2 className="type-heading-md mt-eyebrow-heading-sm text-[var(--chrome-text)]">
                 Promote a Pagebuilder layout first.
               </h2>
-              <p className="type-text-md wrap-pretty mt-heading-body-md text-service-muted">
+              <p className="token-chrome-muted type-text-md wrap-pretty mt-heading-body-md">
                 Go to Pagebuilder, choose a page type, then use Promote
                 to Template. Promoted templates will appear here.
               </p>
@@ -1034,7 +1095,7 @@ const locationNameSignals = [
 
 function StatusPill({ label }: { label: string }) {
   return (
-    <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
+    <span className="token-chrome-badge type-caption rounded-[var(--chrome-radius-control)] border px-3 py-1">
       {label}
     </span>
   );
@@ -1057,6 +1118,61 @@ function TrashIcon() {
       <path d="M14 11v6" />
       <path d="M6 7l1 14h10l1-14" />
       <path d="M9 7V4h6v3" />
+    </svg>
+  );
+}
+
+function CopyIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-4"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+      viewBox="0 0 24 24"
+    >
+      <rect x="8" y="8" width="11" height="11" rx="1.5" />
+      <path d="M5 15H4.5A1.5 1.5 0 0 1 3 13.5v-9A1.5 1.5 0 0 1 4.5 3h9A1.5 1.5 0 0 1 15 4.5V5" />
+    </svg>
+  );
+}
+
+function PagebuilderIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-4"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+      viewBox="0 0 24 24"
+    >
+      <path d="M5 3h9l4 4v14H5z" />
+      <path d="M14 3v5h4M8 13h5M8 17h3" />
+      <path d="m15 12 4 4M16.5 10.5l3 3M14.5 14.5l-2 2" />
+    </svg>
+  );
+}
+
+function PreviewIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-4"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+      viewBox="0 0 24 24"
+    >
+      <path d="M3 12s3.2-5 9-5 9 5 9 5-3.2 5-9 5-9-5-9-5Z" />
+      <circle cx="12" cy="12" r="2.5" />
     </svg>
   );
 }

@@ -34,7 +34,7 @@ export function HomeIndexSection({
 }: HomeIndexSectionProps) {
   return (
     <Section
-      className="min-h-svh bg-bg-page text-text-main"
+      className="token-chrome min-h-svh"
       style={{ paddingBlockStart: "var(--section-space-med)" }}
     >
       <Container>
@@ -45,6 +45,7 @@ export function HomeIndexSection({
               title={title}
               body={body}
               level={1}
+              className="[&_.text-service-accent]:text-[var(--chrome-accent)] [&_.text-service-ink]:text-[var(--chrome-text)] [&_.text-service-muted]:text-[var(--chrome-muted)]"
             />
           </SevenColumnGridItem>
           <nav aria-label="Project index" className="contents">

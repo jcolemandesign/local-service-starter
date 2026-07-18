@@ -270,11 +270,11 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
           "Use the standard nav so the slower editorial page still feels easy to operate.",
       },
       {
-        name: "Grid mosaic hero",
-        component: "HeroGridMosaicSectionV2",
+        name: "Fullscreen image hero",
+        component: "HeroFullscreenSectionV2",
         mode: "Hero",
         instruction:
-          "Use the mosaic to combine a clear h1, trust proof, service paths, and supporting visuals in one richer first view.",
+          "Use a strong image, calm h1, review proof, and one visible request path.",
       },
       {
         name: "Reveal paragraph",
@@ -662,11 +662,11 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
           "Use standard navigation so education content still connects to service paths.",
       },
       {
-        name: "Grid mosaic hero",
-        component: "HeroGridMosaicSectionV2",
+        name: "Fullscreen image hero",
+        component: "HeroFullscreenSectionV2",
         mode: "Hero",
         instruction:
-          "Introduce the resource center and highlight the most useful seasonal or service topics.",
+          "Introduce the resource center with a clear opening message and request path.",
       },
       {
         name: "Services card carousel",
@@ -765,8 +765,8 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
           "Keep service, financing, and contact paths visible while visitors compare options.",
       },
       {
-        name: "Grid mosaic hero",
-        component: "HeroGridMosaicSectionV2",
+        name: "Fullscreen image hero",
+        component: "HeroFullscreenSectionV2",
         mode: "Hero",
         instruction:
           "Frame the product category, comparison need, and request-estimate action.",

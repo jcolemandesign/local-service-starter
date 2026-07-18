@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 
 type ContentEditorPageProps = {
   searchParams: Promise<{
+    client?: string | string[];
     page?: string | string[];
   }>;
 };
@@ -16,12 +17,18 @@ type ContentEditorPageProps = {
 export default async function ContentEditorPage({
   searchParams,
 }: ContentEditorPageProps) {
-  const pageParam = (await searchParams).page;
+  const resolvedSearchParams = await searchParams;
+  const pageParam = resolvedSearchParams.page;
+  const clientParam = resolvedSearchParams.client;
   const initialPageId = Array.isArray(pageParam) ? pageParam[0] : pageParam;
+  const initialClientSlug = Array.isArray(clientParam)
+    ? clientParam[0]
+    : clientParam;
 
   return (
     <main>
       <ContentEditorSection
+        initialClientSlug={initialClientSlug}
         initialPageId={initialPageId}
         pages={contentEditorPages}
       />

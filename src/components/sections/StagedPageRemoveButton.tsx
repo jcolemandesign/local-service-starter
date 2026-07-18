@@ -4,11 +4,13 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type StagedPageRemoveButtonProps = {
+  clientSlug: string;
   pageId: string;
   pageLabel: string;
 };
 
 export function StagedPageRemoveButton({
+  clientSlug,
   pageId,
   pageLabel,
 }: StagedPageRemoveButtonProps) {
@@ -30,7 +32,7 @@ export function StagedPageRemoveButton({
 
     try {
       const response = await fetch("/api/staged-pages", {
-        body: JSON.stringify({ pageId }),
+        body: JSON.stringify({ clientSlug, pageId }),
         headers: {
           "Content-Type": "application/json",
         },

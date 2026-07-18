@@ -15,6 +15,11 @@
           "label": "Template Library",
           "href": "/dev/templates",
           "description": "Browse reusable page layouts promoted from Pagebuilder options."
+        },
+        {
+          "label": "Prompt Library",
+          "href": "/dev/prompt-library",
+          "description": "Copy the packet-based prompt set for strategy, content planning, and final page copy."
         }
       ]
     },
@@ -22,9 +27,24 @@
       "title": "Building Tools",
       "links": [
         {
+          "label": "Strategy workspace",
+          "href": "/strategy",
+          "description": "Open the active client strategy workspace."
+        },
+        {
           "label": "Pagebuilder",
           "href": "/dev/pagebuilder",
           "description": "Compose, swap, and review page section recipes."
+        },
+        {
+          "label": "Style guide",
+          "href": "/dev/style-guide",
+          "description": "Review shared visual tokens and section defaults."
+        },
+        {
+          "label": "Staged Pages",
+          "href": "/dev/staged-pages",
+          "description": "Review baked pages that are eligible to become public pages."
         },
         {
           "label": "Content Editor",
@@ -32,39 +52,9 @@
           "description": "Map page copy and image fields into editable content forms."
         },
         {
-          "label": "Prompt Library",
-          "href": "/dev/prompt-library",
-          "description": "Copy the packet-based prompt set for strategy, content planning, and final page copy."
-        },
-        {
-          "label": "Client Strategy",
-          "href": "/strategy",
-          "description": "Open the active client strategy workspace."
-        },
-        {
           "label": "Workspace Archive",
           "href": "/dev/projects",
           "description": "Review saved project folders, packets, and workspace versions."
-        },
-        {
-          "label": "Style guide",
-          "href": "/dev/style-guide",
-          "description": "Review shared visual tokens and section defaults."
-        }
-      ]
-    },
-    {
-      "title": "Created pages",
-      "links": [
-        {
-          "label": "HVAC service",
-          "href": "/hvac-service",
-          "description": "Current public example service page using the shared section system."
-        },
-        {
-          "label": "Staged Pages",
-          "href": "/dev/staged-pages",
-          "description": "Review baked pages that are eligible to become public pages."
         }
       ]
     },

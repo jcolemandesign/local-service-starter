@@ -58,7 +58,6 @@ import {
   type HeroSplitFixedImageVariant,
 } from "@/components/sections/HeroSplitFixedImageSectionV3";
 import { HeroFullscreenSectionV2 } from "@/components/sections/HeroFullscreenSectionV2";
-import { HeroGridMosaicSectionV2 } from "@/components/sections/HeroGridMosaicSectionV2";
 import {
   HeroSplitFullHeightSectionV3,
   type HeroSplitFullHeightVariant,
@@ -221,13 +220,6 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <HeroCenteredFloatersSectionV2
           {...sectionLibraryV3Content.hero}
-          headingLevel={headingLevel}
-        />
-      );
-    case "HeroGridMosaicSectionV2":
-      return (
-        <HeroGridMosaicSectionV2
-          {...sectionLibraryV3Content.heroGridMosaic}
           headingLevel={headingLevel}
         />
       );
@@ -636,19 +628,6 @@ export function PagebuilderSection() {
             instruction: "",
             mode: "Hero",
             name: "Centered with left right floaters",
-          },
-          1,
-        )}
-      </div>
-    ),
-    HeroGridMosaicSectionV2: (
-      <div key="HeroGridMosaicSectionV2">
-        {renderPreviewSection(
-          {
-            component: "HeroGridMosaicSectionV2",
-            instruction: "",
-            mode: "Hero",
-            name: "Grid mosaic hero",
           },
           1,
         )}

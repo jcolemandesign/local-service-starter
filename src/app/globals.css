@@ -407,6 +407,39 @@ body {
     color: var(--chrome-accent);
   }
 
+  .template-library-chrome .text-service-ink {
+    color: var(--chrome-text) !important;
+  }
+
+  .template-library-chrome .text-service-muted {
+    color: var(--chrome-muted) !important;
+  }
+
+  .template-library-chrome .text-service-accent {
+    color: var(--chrome-accent) !important;
+  }
+
+  .template-library-chrome .border-service-border {
+    border-color: var(--chrome-border-soft) !important;
+  }
+
+  .template-library-chrome :is(.bg-white, .bg-bg-surface) {
+    background-color: var(--chrome-panel) !important;
+    background-image: var(--chrome-field-sheen);
+  }
+
+  .template-library-chrome .bg-service-surface {
+    background-color: var(--chrome-panel-muted) !important;
+    background-image: var(--chrome-field-sheen);
+  }
+
+  .template-library-chrome :is(input, select, textarea) {
+    border-color: var(--chrome-border-soft) !important;
+    background-color: var(--chrome-panel-muted) !important;
+    background-image: var(--chrome-field-sheen);
+    color: var(--chrome-text) !important;
+  }
+
   .token-footer-inverse {
     background-color: var(--color-bg-dark) !important;
     color: var(--color-text-inverse) !important;

@@ -7,6 +7,8 @@ import {
 } from "@/components/primitives";
 import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import { StagedPageRemoveButton } from "@/components/sections/StagedPageRemoveButton";
+import { SiteExportControls } from "@/components/sections/SiteExportControls";
+import { readSiteExportState } from "@/utils/site-export-state";
 import { readStagedPages, type StagedPage } from "@/utils/staged-pages";
 
 export const metadata: Metadata = {
@@ -18,6 +20,15 @@ export const dynamic = "force-dynamic";
 
 export default async function StagedPagesPage() {
   const stagedPages = await readStagedPages();
+  const clientGroups = groupPagesByClient(stagedPages);
+  const exportStates = new Map(
+    await Promise.all(
+      Array.from(clientGroups.keys()).map(async (clientSlug) => [
+        clientSlug,
+        await readSiteExportState(clientSlug),
+      ] as const),
+    ),
+  );
   const totalCopyFields = stagedPages.reduce(
     (total, page) => total + page.fieldCounts.copy,
     0,
@@ -57,6 +68,23 @@ export default async function StagedPagesPage() {
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-start-2 col-span-5 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
+          {clientGroups.size > 0 ? (
+            <div className="mb-5 grid gap-4">
+              {Array.from(clientGroups.entries()).map(([clientSlug, pages]) => (
+                <SiteExportControls
+                  approvedPageIds={
+                    exportStates.get(clientSlug)?.approvedPageIds ?? []
+                  }
+                  clientSlug={clientSlug}
+                  key={clientSlug}
+                  pages={pages.map((page) => ({
+                    pageId: page.pageId,
+                    pageLabel: page.pageLabel,
+                  }))}
+                />
+              ))}
+            </div>
+          ) : null}
           {stagedPages.length > 0 ? (
             <div className="grid gap-5">
               {stagedPages.map((page) => {
@@ -100,10 +128,11 @@ export default async function StagedPagesPage() {
                         <Button href={getContentEditorHref(page)}>
                           Edit Content
                         </Button>
-                        <Button href={`${getPreviewHref(page)}/debug`} variant="secondary">
+                        <Button href={getDebugHref(page)} variant="secondary">
                           Debug
                         </Button>
                         <StagedPageRemoveButton
+                          clientSlug={page.snapshot.clientSlug}
                           pageId={page.pageId}
                           pageLabel={page.pageLabel}
                         />
@@ -232,11 +261,27 @@ function StatusPill({
 }
 
 function getPreviewHref(page: StagedPage) {
-  return page.previewHref ?? `/dev/staged-pages/${page.pageId}`;
+  const previewHref = page.previewHref ?? `/dev/staged-pages/${page.pageId}`;
+  return `${previewHref}?client=${encodeURIComponent(page.snapshot.clientSlug)}`;
 }
 
 function getContentEditorHref(page: StagedPage) {
-  return `/dev/content-editor?page=${encodeURIComponent(page.pageId)}`;
+  return `/dev/content-editor?page=${encodeURIComponent(page.pageId)}&client=${encodeURIComponent(page.snapshot.clientSlug)}`;
+}
+
+function getDebugHref(page: StagedPage) {
+  return `/dev/staged-pages/${encodeURIComponent(page.pageId)}/debug?client=${encodeURIComponent(page.snapshot.clientSlug)}`;
+}
+
+function groupPagesByClient(pages: StagedPage[]) {
+  const groups = new Map<string, StagedPage[]>();
+
+  pages.forEach((page) => {
+    const clientSlug = page.snapshot.clientSlug;
+    groups.set(clientSlug, [...(groups.get(clientSlug) ?? []), page]);
+  });
+
+  return groups;
 }
 
 function getEmptyCopyFields(page: StagedPage) {

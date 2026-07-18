@@ -707,13 +707,6 @@ const sectionSwapOptions = [
     name: "Centered with left right floaters",
   },
   {
-    component: "HeroGridMosaicSectionV2",
-    instruction:
-      "Use the mosaic to combine h1, trust proof, service paths, and supporting visuals.",
-    mode: "Hero",
-    name: "Grid mosaic hero",
-  },
-  {
     component: "HeroContentTopImageBottomSectionV2",
     instruction:
       "Lead with direct copy first, then use the image below to keep the page useful and quick to understand.",
@@ -2445,18 +2438,30 @@ export function PagebuilderShell({
               </div>
             </details>
 
-            <div
-              className="token-chrome-panel-strong order-3 rounded-[var(--chrome-radius-panel)] border p-5"
-            >
-              <div className="flex items-center gap-3">
-                <span
-                  aria-hidden="true"
-                  className="h-5 w-px bg-[var(--chrome-border-strong)]"
-                />
-                <h2 className="text-2xl font-semibold leading-tight">
-                  Sections
-                </h2>
-              </div>
+            <details className="token-chrome-panel-strong group/sections order-3 rounded-[var(--chrome-radius-panel)] border p-5">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 marker:hidden">
+                <span className="flex items-center gap-3">
+                  <span
+                    aria-hidden="true"
+                    className="h-5 w-px bg-[var(--chrome-border-strong)]"
+                  />
+                  <span className="text-2xl font-semibold leading-tight">
+                    Sections
+                  </span>
+                </span>
+                <span className="flex shrink-0 items-center gap-2">
+                  <span className="token-chrome-muted type-caption font-semibold">
+                    <span className="group-open/sections:hidden">Closed</span>
+                    <span className="hidden group-open/sections:inline">Open</span>
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="token-chrome-badge flex size-8 shrink-0 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-transform group-open/sections:rotate-180"
+                  >
+                    <DownArrowIcon className="size-4" />
+                  </span>
+                </span>
+              </summary>
               <div className="mt-4 grid gap-2">
                 {includedSections.map((section, index) => {
                   const isActive = section.id === selectedSectionId;
@@ -2974,7 +2979,7 @@ export function PagebuilderShell({
                   );
                 })}
               </div>
-            </div>
+            </details>
 
             <div className="token-chrome-panel order-5 rounded-[var(--chrome-radius-panel)] border p-5">
               <h2 className="text-2xl font-semibold leading-tight">

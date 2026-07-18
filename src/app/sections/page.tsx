@@ -36,7 +36,6 @@ import {
   HeroServicesSectionV3,
   HeroContentTopImageBottomSectionV2,
   HeroFullscreenSectionV2,
-  HeroGridMosaicSectionV2,
   NavCenterLogoSectionV2,
   NavFloatingBentoSectionV2,
   NavPrimarySectionV2,
@@ -98,12 +97,6 @@ const sectionElements = {
   "hero-centered-floaters-v2": (
     <HeroCenteredFloatersSectionV2
       {...sectionLibraryV3Content.hero}
-      headingLevel={2}
-    />
-  ),
-  "hero-grid-mosaic-v2": (
-    <HeroGridMosaicSectionV2
-      {...sectionLibraryV3Content.heroGridMosaic}
       headingLevel={2}
     />
   ),
@@ -371,7 +364,7 @@ export default function SectionsV3Page() {
     <StyleGuidePreviewSurface>
       <main className="token-chrome min-h-svh">
         <section
-          className="token-chrome-panel-strong section-space-sml border-b"
+          className="section-space-sml border-b border-[var(--chrome-border-soft)] bg-[var(--chrome-bg)]"
         >
           <Container className="grid gap-4">
             <p className="token-chrome-muted type-label">Internal Library</p>

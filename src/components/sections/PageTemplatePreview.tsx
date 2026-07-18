@@ -58,7 +58,6 @@ import {
   type HeroSplitFixedImageVariant,
 } from "@/components/sections/HeroSplitFixedImageSectionV3";
 import { HeroFullscreenSectionV2 } from "@/components/sections/HeroFullscreenSectionV2";
-import { HeroGridMosaicSectionV2 } from "@/components/sections/HeroGridMosaicSectionV2";
 import {
   HeroSplitFullHeightSectionV3,
   type HeroSplitFullHeightVariant,
@@ -349,13 +348,6 @@ export function renderPageTemplateSection(
       return (
         <HeroCenteredFloatersSectionV2
           {...heroBasicProps(fieldSection)}
-          headingLevel={headingLevel}
-        />
-      );
-    case "HeroGridMosaicSectionV2":
-      return (
-        <HeroGridMosaicSectionV2
-          {...heroGridProps(fieldSection)}
           headingLevel={headingLevel}
         />
       );
@@ -719,35 +711,6 @@ function sectionHeaderCompactProps(section: FieldSection) {
   };
 }
 
-function heroGridProps(section: FieldSection) {
-  const serviceItems = cardItemsWithFallback(
-    section,
-    ["serviceItems", "items"],
-    sectionLibraryV3Content.heroGridMosaic.services,
-  );
-
-  return {
-    ...sectionLibraryV3Content.heroGridMosaic,
-    body: getBody(section, sectionLibraryV3Content.heroGridMosaic.body),
-    eyebrow: getValue(
-      section,
-      "eyebrow",
-      sectionLibraryV3Content.heroGridMosaic.eyebrow,
-    ),
-    primaryAction: getValue(
-      section,
-      "primaryAction",
-      sectionLibraryV3Content.heroGridMosaic.primaryAction,
-    ),
-    secondaryAction: getValue(
-      section,
-      "secondaryAction",
-      sectionLibraryV3Content.heroGridMosaic.secondaryAction,
-    ),
-    services: serviceItems,
-    title: getTitle(section, sectionLibraryV3Content.heroGridMosaic.title),
-  };
-}
 
 function servicesBentoProps(section: FieldSection) {
   const serviceItemFieldNames = ["serviceItems", "items", "cards"];

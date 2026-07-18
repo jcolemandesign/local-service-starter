@@ -15,14 +15,24 @@ type StagedPagePreviewProps = {
   params: Promise<{
     pageId: string;
   }>;
+  searchParams: Promise<{
+    client?: string | string[];
+  }>;
 };
 
 export default async function StagedPagePreview({
   params,
+  searchParams,
 }: StagedPagePreviewProps) {
   const { pageId } = await params;
+  const clientParam = (await searchParams).client;
+  const clientSlug = Array.isArray(clientParam) ? clientParam[0] : clientParam;
   const stagedPages = await readStagedPages();
-  const page = stagedPages.find((currentPage) => currentPage.pageId === pageId);
+  const page = stagedPages.find(
+    (currentPage) =>
+      currentPage.pageId === pageId &&
+      (!clientSlug || currentPage.snapshot.clientSlug === clientSlug),
+  );
 
   if (!page) {
     notFound();

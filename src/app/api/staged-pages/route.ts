@@ -8,6 +8,7 @@ import {
   type StagedPageField,
   type StagedPageTemplate,
 } from "@/utils/staged-pages";
+import { setPageExportApproval } from "@/utils/site-export-state";
 import { readLatestStrategySnapshot } from "@/utils/strategy-snapshots";
 
 export const runtime = "nodejs";
@@ -20,11 +21,13 @@ type StagePageRequest = {
 };
 
 type UpdateStagedPageRequest = {
+  clientSlug?: string;
   fields?: StagedPageField[];
   pageId?: string;
 };
 
 type DeleteStagedPageRequest = {
+  clientSlug?: string;
   pageId?: string;
 };
 
@@ -70,6 +73,11 @@ export async function POST(request: Request) {
       template,
     });
     const pages = await writeStagedPage(page);
+    await setPageExportApproval({
+      approved: false,
+      clientSlug: page.snapshot.clientSlug,
+      pageId: page.pageId,
+    });
 
     return Response.json({ ok: true, page, pages, snapshot });
   } catch (error) {
@@ -98,9 +106,10 @@ export async function PATCH(request: Request) {
 
   try {
     const pageId = sanitizeSlug(body.pageId);
+    const clientSlug = sanitizeSlug(body.clientSlug);
 
-    if (!pageId) {
-      throw new Error("Missing page id.");
+    if (!pageId || !clientSlug) {
+      throw new Error("Missing client slug or page id.");
     }
 
     if (!Array.isArray(body.fields)) {
@@ -108,7 +117,12 @@ export async function PATCH(request: Request) {
     }
 
     const fields = body.fields.map(normalizeField);
-    const result = await updateStagedPageFields(pageId, fields);
+    const result = await updateStagedPageFields(clientSlug, pageId, fields);
+    await setPageExportApproval({
+      approved: false,
+      clientSlug,
+      pageId,
+    });
 
     return Response.json({ ok: true, ...result });
   } catch (error) {
@@ -137,12 +151,18 @@ export async function DELETE(request: Request) {
 
   try {
     const pageId = sanitizeSlug(body.pageId);
+    const clientSlug = sanitizeSlug(body.clientSlug);
 
-    if (!pageId) {
-      throw new Error("Missing page id.");
+    if (!pageId || !clientSlug) {
+      throw new Error("Missing client slug or page id.");
     }
 
-    const pages = await removeStagedPage(pageId);
+    const pages = await removeStagedPage(clientSlug, pageId);
+    await setPageExportApproval({
+      approved: false,
+      clientSlug,
+      pageId,
+    });
 
     return Response.json({ ok: true, pages });
   } catch (error) {

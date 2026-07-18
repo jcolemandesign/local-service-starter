@@ -29,42 +29,6 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
-  heroGridMosaic: {
-    eyebrow: "Local service starter",
-    title: "Service pages with clarity, proof, and quick paths to action.",
-    body: "A modular grid hero for local service brands that need room for a strong message, trust proof, supporting visuals, and three high-priority service paths.",
-    primaryAction: "Request service",
-    secondaryAction: "Explore services",
-    images: ["Visit", "Map"],
-    trustSignals: [
-      {
-        value: "4.9",
-        label: "Average rating",
-      },
-      {
-        value: "2,400+",
-        label: "Completed jobs",
-      },
-      {
-        value: "Same-week",
-        label: "Scheduling",
-      },
-    ],
-    services: [
-      {
-        title: "Emergency repairs",
-        body: "Fast help for urgent issues with clear next steps before work begins.",
-      },
-      {
-        title: "Maintenance plans",
-        body: "Recurring tune-ups and practical notes that help customers prevent surprises.",
-      },
-      {
-        title: "System installation",
-        body: "Clean upgrades and replacements with tidy closeout and simple documentation.",
-      },
-    ],
-  },
   heroCompact: {
     align: "center" as const,
     eyebrow: "Service area",
@@ -1157,7 +1121,6 @@ export const sectionLibraryV3Collections = [
         label: "Centered hero with floaters",
         component: "hero-centered-floaters-v2",
       },
-      { label: "Grid mosaic hero", component: "hero-grid-mosaic-v2" },
       {
         label: "Content top, image bottom hero",
         component: "hero-content-top-image-bottom-v2",

@@ -6,6 +6,7 @@ import {
 } from "@/utils/strategy-workspace";
 import { syncStagedPagesFromStrategySnapshot } from "@/utils/staged-pages";
 import { writeStrategySnapshot } from "@/utils/strategy-snapshots";
+import { setPageExportApproval } from "@/utils/site-export-state";
 
 export const runtime = "nodejs";
 
@@ -70,6 +71,15 @@ export async function POST(request: Request) {
     const workspace = await writeStrategyWorkspace(clientSlug, body.fields ?? {});
     const snapshot = await writeStrategySnapshot(workspace);
     const stagedSync = await syncStagedPagesFromStrategySnapshot(snapshot);
+    await Promise.all(
+      stagedSync.syncedPageIds.map((pageId) =>
+        setPageExportApproval({
+          approved: false,
+          clientSlug,
+          pageId,
+        }),
+      ),
+    );
 
     return Response.json({
       ok: true,

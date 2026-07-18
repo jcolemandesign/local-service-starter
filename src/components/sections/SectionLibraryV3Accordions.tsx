@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, type CSSProperties, type ReactNode } from "react";
 import { Container, DownArrowIcon } from "@/components/primitives";
 
 type SectionLibraryV3Collection = {
@@ -23,13 +23,42 @@ type SectionLibraryV3AccordionsProps = {
   collections: readonly SectionLibraryV3Collection[];
 };
 
-function EmptySubAccordion({ item }: { item: SectionLibraryV3Item }) {
+function SectionLibraryPreviewFrame({
+  children,
+  fitLandscapeCanvas = false,
+}: {
+  children: ReactNode;
+  fitLandscapeCanvas?: boolean;
+}) {
+  if (!fitLandscapeCanvas) {
+    return <div className="bg-bg-page">{children}</div>;
+  }
+
+  return (
+    <div className="aspect-video min-h-0 overflow-x-hidden overflow-y-auto bg-bg-page max-md:aspect-auto max-md:overflow-visible">
+      <div
+        className="h-full min-h-full w-full bg-bg-page [&>section]:h-full [&_.section-min-screen]:!h-full [&_.section-min-screen]:!min-h-full"
+        style={{ "--section-min-screen": "100%" } as CSSProperties}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function EmptySubAccordion({
+  item,
+  fitLandscapeCanvas,
+}: {
+  item: SectionLibraryV3Item;
+  fitLandscapeCanvas: boolean;
+}) {
   const [activeVariantIndex, setActiveVariantIndex] = useState(0);
   const activeVariant = item.variants?.[activeVariantIndex];
   const element = activeVariant?.element ?? item.element;
 
   return (
-    <details className="token-chrome-card group/item border-b">
+    <details className="token-chrome-card group/item border-b border-[var(--chrome-border-soft)] last:border-b-0">
       <summary className="cursor-pointer list-none transition-colors">
         <Container className="grid gap-3 py-4">
           <div className="flex items-start justify-between gap-6">
@@ -89,12 +118,14 @@ function EmptySubAccordion({ item }: { item: SectionLibraryV3Item }) {
         </Container>
       </summary>
 
-      <div className="border-t border-service-border bg-bg-page text-service-ink">
-        {element ?? (
-          <Container>
-            <div className="min-h-48" />
-          </Container>
-        )}
+      <div className="border-t border-[var(--chrome-border-soft)] text-service-ink">
+        <SectionLibraryPreviewFrame fitLandscapeCanvas={fitLandscapeCanvas}>
+          {element ?? (
+            <Container>
+              <div className="min-h-48" />
+            </Container>
+          )}
+        </SectionLibraryPreviewFrame>
       </div>
     </details>
   );
@@ -108,9 +139,9 @@ function EmptyCollectionAccordion({
   const sectionCount = collection.items.length;
 
   return (
-    <details className="token-chrome-card group/collection border-b">
+    <details className="token-chrome-panel group/collection overflow-hidden rounded-[var(--chrome-radius-panel)] border">
       <summary className="cursor-pointer list-none transition-colors">
-        <Container className="flex items-center justify-between gap-8 py-7 max-md:gap-5 max-md:py-6">
+        <Container className="flex items-center justify-between gap-8 py-5 max-md:gap-5 max-md:py-5">
           <div>
             <h2 className="text-2xl font-semibold leading-tight max-md:text-xl">
               {collection.title}
@@ -130,7 +161,11 @@ function EmptyCollectionAccordion({
 
       <div className="border-t border-[var(--chrome-border-soft)]">
         {collection.items.map((item) => (
-          <EmptySubAccordion key={item.label} item={item} />
+          <EmptySubAccordion
+            fitLandscapeCanvas={collection.title === "Hero"}
+            key={item.label}
+            item={item}
+          />
         ))}
       </div>
     </details>
@@ -141,18 +176,15 @@ export function SectionLibraryV3Accordions({
   collections,
 }: SectionLibraryV3AccordionsProps) {
   return (
-    <section
-      aria-label="Section library v3 accordions"
-      className="token-chrome"
-    >
-      <div className="border-t border-[var(--chrome-border-soft)]">
+    <section aria-label="Section library v3 accordions" className="token-chrome">
+      <Container className="grid gap-4 py-4 max-md:gap-3 max-md:py-3">
         {collections.map((collection) => (
           <EmptyCollectionAccordion
             key={collection.title}
             collection={collection}
           />
         ))}
-      </div>
+      </Container>
     </section>
   );
 }

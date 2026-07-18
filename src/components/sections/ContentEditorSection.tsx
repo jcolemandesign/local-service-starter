@@ -13,6 +13,7 @@ import {
 } from "@/components/primitives/SevenColumnGrid";
 
 type ContentEditorSectionProps = {
+  initialClientSlug?: string;
   initialPageId?: string;
   pages: ContentEditorPage[];
 };
@@ -42,13 +43,17 @@ const fieldFilterOptions: Array<{ label: string; value: FieldFilter }> = [
 ];
 
 export function ContentEditorSection({
+  initialClientSlug,
   initialPageId,
   pages,
 }: ContentEditorSectionProps) {
-  const [activePageId, setActivePageId] = useState(() =>
-    pages.some((page) => page.id === initialPageId)
-      ? (initialPageId ?? "")
-      : (pages[0]?.id ?? ""),
+  const initialPageKey = initialClientSlug && initialPageId
+    ? `${initialClientSlug}:${initialPageId}`
+    : pages.find((page) => page.id === initialPageId)?.key;
+  const [activePageKey, setActivePageKey] = useState(() =>
+    pages.some((page) => page.key === initialPageKey)
+      ? (initialPageKey ?? "")
+      : (pages[0]?.key ?? ""),
   );
   const originalValues = useMemo(() => getOriginalValues(pages), [pages]);
   const [values, setValues] = useState<Record<string, string>>(
@@ -71,7 +76,7 @@ export function ContentEditorSection({
     return () => window.cancelAnimationFrame(frameId);
   }, [originalValues]);
 
-  const activePage = pages.find((page) => page.id === activePageId) ?? pages[0];
+  const activePage = pages.find((page) => page.key === activePageKey) ?? pages[0];
   const allFields = pages.flatMap((page) =>
     page.sections.flatMap((section) => section.fields),
   );
@@ -115,8 +120,8 @@ export function ContentEditorSection({
     setStatus("");
   }
 
-  function selectPage(pageId: string) {
-    setActivePageId(pageId);
+  function selectPage(pageKey: string) {
+    setActivePageKey(pageKey);
     setOpenSectionIds([]);
   }
 
@@ -167,13 +172,14 @@ export function ContentEditorSection({
 
     try {
       const fields = activeFields.map((field) => ({
-        id: field.id,
+        id: field.sourceId ?? field.id,
         kind: field.kind,
         path: field.path,
         value: values[field.id] ?? "",
       }));
       const response = await fetch("/api/staged-pages", {
         body: JSON.stringify({
+          clientSlug: activePage.clientSlug,
           fields,
           pageId: activePage.id,
         }),
@@ -221,13 +227,13 @@ export function ContentEditorSection({
               const pageDirtyCount = pageFields.filter((field) =>
                 dirtyFieldIds.includes(field.id),
               ).length;
-              const isActive = page.id === activePage?.id;
+              const isActive = page.key === activePage?.key;
 
               return (
                 <button
-                  key={page.id}
+                  key={page.key}
                   type="button"
-                  onClick={() => selectPage(page.id)}
+                  onClick={() => selectPage(page.key)}
                   className={`rounded-sm border px-3 py-3 text-left transition-colors ${
                     isActive
                       ? "border-service-accent bg-white text-service-ink shadow-service"

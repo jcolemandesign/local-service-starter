@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Card } from "@/components/primitives/Card";
 
 export type HomeIndexLink = {
   label: string;
@@ -126,7 +125,7 @@ export function HomeIndexMenu({ initialGroups }: HomeIndexMenuProps) {
   }
 
   return (
-    <>
+    <div className="token-chrome contents">
       {status ? (
         <p className="col-start-3 col-span-5 type-caption rounded-sm border border-service-border bg-white px-4 py-3 text-service-muted max-lg:col-start-2 max-lg:col-span-4 max-md:col-start-1 max-md:col-span-3 max-sm:col-span-1">
           {status}
@@ -139,14 +138,14 @@ export function HomeIndexMenu({ initialGroups }: HomeIndexMenuProps) {
           className="contents"
         >
           <div className="col-start-1 col-span-1 mt-8 grid w-full min-w-0 content-start self-start justify-items-start text-left [&>*]:min-w-0 [&>*]:w-full max-lg:col-start-1 max-lg:col-span-1 max-lg:mt-4 max-md:col-span-3 max-sm:col-span-1">
-            <div className="border-t border-border-default pt-3">
+            <div className="border-t border-[var(--chrome-border-soft)] pt-4">
               <h2
                 id={`home-${slugify(group.title)}`}
-                className="type-label text-service-ink"
+                className="type-heading-sm text-[var(--chrome-text)]"
               >
                 {group.title}
               </h2>
-              <p className="type-caption mt-2 text-service-muted">
+              <p className="token-chrome-muted type-caption mt-2">
                 {group.links.length} links
               </p>
             </div>
@@ -158,9 +157,9 @@ export function HomeIndexMenu({ initialGroups }: HomeIndexMenuProps) {
                   manageableGroupTitles.has(group.title) && link.mutable === true;
 
                 return (
-                  <Card
+                  <div
                     key={link.href}
-                    className="group relative flex min-h-44 flex-col p-5 transition-transform duration-200 hover:-translate-y-1 hover:border-service-accent"
+                    className="token-chrome-card group relative flex min-h-44 flex-col overflow-hidden rounded-[var(--chrome-radius-control)] border p-5 transition-all duration-200 hover:-translate-y-1"
                   >
                     <Link
                       aria-label={`Open ${link.label}`}
@@ -169,15 +168,16 @@ export function HomeIndexMenu({ initialGroups }: HomeIndexMenuProps) {
                       rel="noopener noreferrer"
                       className="absolute inset-0 z-0 cursor-pointer rounded-[inherit] focus:outline-none focus-visible:ring-2 focus-visible:ring-service-accent focus-visible:ring-offset-2"
                     />
-                    <div className="relative z-10 flex items-start justify-between gap-4 pointer-events-none">
-                      <span className="type-text-md block min-w-0 flex-1 font-semibold text-service-ink">
+                    <div className="relative z-10 flex items-start pr-12 pointer-events-none">
+                      <span className="type-text-md block min-w-0 flex-1 font-semibold text-[var(--chrome-text)]">
                         {link.label}
                       </span>
-                      {canManagePage ? (
-                        <div
-                          className="pointer-events-auto flex shrink-0 items-center gap-1"
-                          aria-label={`${link.label} actions`}
-                        >
+                      <div className="absolute right-3.5 -top-1 flex shrink-0 items-center gap-2">
+                        {canManagePage ? (
+                          <div
+                            className="pointer-events-auto flex items-center gap-1"
+                            aria-label={`${link.label} actions`}
+                          >
                           <CardActionButton
                             label={`Clone ${link.label}`}
                             title="Clone page for a new version or branch"
@@ -193,18 +193,25 @@ export function HomeIndexMenu({ initialGroups }: HomeIndexMenuProps) {
                           >
                             <TrashIcon />
                           </CardActionButton>
-                        </div>
-                      ) : null}
+                          </div>
+                        ) : null}
+                        <span
+                          aria-hidden="true"
+                          className="token-chrome-badge flex size-10 items-center justify-center rounded-[var(--chrome-radius-control)] border"
+                        >
+                          <IndexLinkIcon href={link.href} />
+                        </span>
+                      </div>
                     </div>
                     <div className="relative z-10 mt-3 flex flex-1 flex-col pointer-events-none">
-                      <span className="type-text-sm block text-service-muted">
+                      <span className="token-chrome-muted type-text-sm block">
                         {link.description}
                       </span>
-                      <span className="type-caption mt-auto block pt-5 font-semibold text-service-accent">
+                      <span className="token-chrome-accent type-caption mt-auto block pt-5 font-semibold">
                         {link.href}
                       </span>
                     </div>
-                  </Card>
+                  </div>
                 );
               })}
             </div>
@@ -293,8 +300,84 @@ export function HomeIndexMenu({ initialGroups }: HomeIndexMenuProps) {
           </div>
         </div>
       ) : null}
-    </>
+    </div>
   );
+}
+
+function IndexLinkIcon({ href }: { href: string }) {
+  const iconClass = "size-5";
+  const commonProps = {
+    "aria-hidden": true,
+    className: iconClass,
+    fill: "none",
+    stroke: "currentColor",
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    strokeWidth: 1.75,
+    viewBox: "0 0 24 24",
+  };
+
+  if (href === "/sections") {
+    return <svg {...commonProps}><rect x="4" y="4" width="6" height="6" /><rect x="14" y="4" width="6" height="6" /><rect x="4" y="14" width="6" height="6" /><rect x="14" y="14" width="6" height="6" /></svg>;
+  }
+
+  if (href === "/dev/templates") {
+    return <svg {...commonProps}><rect x="4" y="4" width="16" height="16" rx="1" /><path d="M4 9h16M10 9v11" /></svg>;
+  }
+
+  if (href === "/dev/prompt-library") {
+    return <svg {...commonProps}><path d="M5 4h14v16H5z" /><path d="M8 8h8M8 12h8M8 16h5" /></svg>;
+  }
+
+  if (href === "/strategy") {
+    return <svg {...commonProps}><circle cx="12" cy="12" r="8" /><path d="m15 9-2.3 4.7L8 16l2.3-4.7L15 9Z" /></svg>;
+  }
+
+  if (href === "/dev/pagebuilder") {
+    return <svg {...commonProps}><rect x="4" y="5" width="16" height="14" rx="1" /><path d="M4 9h16M9 9v10" /></svg>;
+  }
+
+  if (href === "/dev/style-guide") {
+    return <svg {...commonProps}><path d="M12 4a8 8 0 1 0 0 16h1.1a1.9 1.9 0 0 0 1.7-2.7 1.9 1.9 0 0 1 1.7-2.7H18a2 2 0 0 0 2-2A8 8 0 0 0 12 4Z" /><circle cx="8" cy="11" r=".8" fill="currentColor" /><circle cx="11" cy="8" r=".8" fill="currentColor" /><circle cx="15" cy="9" r=".8" fill="currentColor" /></svg>;
+  }
+
+  if (href === "/dev/staged-pages") {
+    return <svg {...commonProps}><path d="M5 7h5l2 2h7v10H5z" /><path d="M8 13h8M8 16h5" /></svg>;
+  }
+
+  if (href === "/dev/content-editor") {
+    return <svg {...commonProps}><path d="M5 19h4l10-10a2.1 2.1 0 0 0-3-3L6 16v3Z" /><path d="m14 8 3 3" /></svg>;
+  }
+
+  if (href === "/dev/projects") {
+    return <svg {...commonProps}><path d="M5 8h14v11H5z" /><path d="M8 8V5h8v3M9 12h6" /></svg>;
+  }
+
+  if (href === "/dev/dashboard" || href === "/dashboard") {
+    return <svg {...commonProps}><path d="M5 19V9M12 19V5M19 19v-7" /><path d="M3 19h18" /></svg>;
+  }
+
+  if (href === "/client-intake") {
+    return <svg {...commonProps}><path d="M7 5h10v15H7z" /><path d="M9 4h6v3H9zM10 12h4M10 16h4" /></svg>;
+  }
+
+  if (href === "/dev/admin") {
+    return <svg {...commonProps}><path d="M12 3 5 6v5c0 4.4 3 7.5 7 10 4-2.5 7-5.6 7-10V6l-7-3Z" /><path d="M9 12h6M12 9v6" /></svg>;
+  }
+
+  if (href === "/login") {
+    return <svg {...commonProps}><path d="M10 5H5v14h5M13 12h7M17 8l4 4-4 4" /></svg>;
+  }
+
+  if (href === "/thank-you") {
+    return <svg {...commonProps}><circle cx="12" cy="12" r="8" /><path d="m8.5 12 2.3 2.3 4.7-5" /></svg>;
+  }
+
+  if (href === "/privacy-policy") {
+    return <svg {...commonProps}><rect x="6" y="10" width="12" height="9" rx="1" /><path d="M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10M12 13v3" /></svg>;
+  }
+
+  return <svg {...commonProps}><path d="M6 4h9l3 3v13H6z" /><path d="M15 4v4h4M9 13h6M9 16h6" /></svg>;
 }
 
 function ModalError({ error }: { error: string }) {

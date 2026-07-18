@@ -75,7 +75,6 @@ export { HeroContentTopImageBottomSectionV2 } from "./HeroContentTopImageBottomS
 export { HeroFullscreenSection } from "./HeroFullscreenSection";
 export { HeroFullscreenSectionV2 } from "./HeroFullscreenSectionV2";
 export { HeroGridMosaicSection } from "./HeroGridMosaicSection";
-export { HeroGridMosaicSectionV2 } from "./HeroGridMosaicSectionV2";
 export { HeroImageTopContentBottomSectionV2 } from "./HeroImageTopContentBottomSectionV2";
 export { HeroLogoStatementSection } from "./HeroLogoStatementSection";
 export { HeroSection } from "./HeroSection";

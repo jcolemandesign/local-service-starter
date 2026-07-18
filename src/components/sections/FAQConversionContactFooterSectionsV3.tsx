@@ -56,7 +56,7 @@ type FooterSectionV3Props = {
   description: string;
   privacyLink: FooterLink;
   quickLinks: readonly FooterLink[];
-  reviewLink: FooterLink;
+  reviewLink?: FooterLink;
   serviceAreas: readonly FooterLink[];
   services: readonly FooterLink[];
   socialLinks: readonly FooterLink[];
@@ -526,12 +526,14 @@ export function FooterSectionV3({
         </SevenColumnGridItem>
 
         <div className="fluid-type-frame col-span-7 mt-body-actions-sm flex items-center justify-between inline-gap-lrg border-t border-white/10 pt-[var(--inline-gap-active)] max-md:flex-col max-md:items-start">
-          <a
-            className="type-text-sm cursor-pointer font-medium text-white/60 transition-colors hover:text-white"
-            href={reviewLink.href}
-          >
-            {reviewLink.label}
-          </a>
+          {reviewLink ? (
+            <a
+              className="type-text-sm cursor-pointer font-medium text-white/60 transition-colors hover:text-white"
+              href={reviewLink.href}
+            >
+              {reviewLink.label}
+            </a>
+          ) : null}
           <p className="type-text-sm text-center font-medium text-white/60 max-md:text-left">
             {copyright}
           </p>
@@ -642,12 +644,14 @@ export function FooterHorizontalSectionV3({
         </SevenColumnGridItem>
 
         <div className="fluid-type-frame col-span-7 flex items-center justify-between inline-gap-lrg border-t border-white/10 pt-[var(--inline-gap-active)] max-md:flex-col max-md:items-start">
-          <a
-            className="type-text-sm cursor-pointer font-medium text-white/60 transition-colors hover:text-white"
-            href={reviewLink.href}
-          >
-            {reviewLink.label}
-          </a>
+          {reviewLink ? (
+            <a
+              className="type-text-sm cursor-pointer font-medium text-white/60 transition-colors hover:text-white"
+              href={reviewLink.href}
+            >
+              {reviewLink.label}
+            </a>
+          ) : null}
           <p className="type-text-sm text-center font-medium text-white/60 max-md:text-left">
             {copyright}
           </p>
@@ -749,12 +753,14 @@ export function FooterCompactSectionV3({
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-white/10 pt-4">
-              <a
-                className="type-text-sm cursor-pointer font-medium text-white/60 transition-colors hover:text-white"
-                href={reviewLink.href}
-              >
-                {reviewLink.label}
-              </a>
+              {reviewLink ? (
+                <a
+                  className="type-text-sm cursor-pointer font-medium text-white/60 transition-colors hover:text-white"
+                  href={reviewLink.href}
+                >
+                  {reviewLink.label}
+                </a>
+              ) : null}
               <p className="type-text-sm font-medium text-white/60">
                 {copyright}
               </p>

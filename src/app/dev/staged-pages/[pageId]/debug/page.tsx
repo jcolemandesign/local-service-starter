@@ -26,14 +26,24 @@ type StagedPageDebugProps = {
   params: Promise<{
     pageId: string;
   }>;
+  searchParams: Promise<{
+    client?: string | string[];
+  }>;
 };
 
 export default async function StagedPageDebug({
   params,
+  searchParams,
 }: StagedPageDebugProps) {
   const { pageId } = await params;
+  const clientParam = (await searchParams).client;
+  const clientSlug = Array.isArray(clientParam) ? clientParam[0] : clientParam;
   const stagedPages = await readStagedPages();
-  const page = stagedPages.find((currentPage) => currentPage.pageId === pageId);
+  const page = stagedPages.find(
+    (currentPage) =>
+      currentPage.pageId === pageId &&
+      (!clientSlug || currentPage.snapshot.clientSlug === clientSlug),
+  );
 
   if (!page) {
     notFound();
@@ -91,7 +101,7 @@ export default async function StagedPageDebug({
             {formatPreviewMeta(page)}
           </p>
           <div className="mt-body-actions-md flex flex-wrap gap-2">
-            <Button href={page.previewHref}>Live Preview</Button>
+            <Button href={`${page.previewHref}?client=${encodeURIComponent(page.snapshot.clientSlug)}`}>Live Preview</Button>
             <Button href={getContentEditorHref(page)} variant="secondary">
               Edit Content
             </Button>
@@ -141,17 +151,21 @@ export default async function StagedPageDebug({
 }
 
 function getNavigation(page: StagedPage, stagedPages: StagedPage[]) {
+  const clientPages = stagedPages.filter(
+    (stagedPage) =>
+      stagedPage.snapshot.clientSlug === page.snapshot.clientSlug,
+  );
   const navigation =
     page.navigation?.length > 0
       ? page.navigation
-      : stagedPages.map((stagedPage) => ({
+      : clientPages.map((stagedPage) => ({
           href: stagedPage.pageHref,
           label: stagedPage.pageLabel,
           pageId: stagedPage.pageId,
         }));
 
   return navigation.map((item) => {
-    const stagedPage = stagedPages.find(
+    const stagedPage = clientPages.find(
       (currentPage) =>
         currentPage.pageHref === item.href || currentPage.pageId === item.pageId,
     );
@@ -160,7 +174,7 @@ function getNavigation(page: StagedPage, stagedPages: StagedPage[]) {
       ...item,
       isActive: stagedPage?.pageId === page.pageId,
       previewHref: stagedPage
-        ? stagedPage.previewHref ?? `/dev/staged-pages/${stagedPage.pageId}`
+        ? `${stagedPage.previewHref ?? `/dev/staged-pages/${stagedPage.pageId}`}?client=${encodeURIComponent(page.snapshot.clientSlug)}`
         : "",
     };
   });
@@ -175,5 +189,5 @@ function formatPreviewMeta(page: StagedPage) {
 }
 
 function getContentEditorHref(page: StagedPage) {
-  return `/dev/content-editor?page=${encodeURIComponent(page.pageId)}`;
+  return `/dev/content-editor?page=${encodeURIComponent(page.pageId)}&client=${encodeURIComponent(page.snapshot.clientSlug)}`;
 }

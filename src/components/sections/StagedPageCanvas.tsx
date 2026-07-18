@@ -15,7 +15,7 @@ type StagedPageCanvasProps = {
   page: StagedPage;
 };
 
-type StagedPageRenderData = {
+export type StagedPageRenderData = {
   fieldsBySection: Record<string, StagedPageField[]>;
   homeHref: string;
   navigationLinks: SiteNavigationLink[];
@@ -46,7 +46,7 @@ export function StagedPageCanvas({
   );
 }
 
-function getStagedPageRenderData(
+export function getStagedPageRenderData(
   page: StagedPage,
   allPages: StagedPage[],
 ): StagedPageRenderData {
@@ -232,7 +232,8 @@ function toNavigationLink(page: StagedPage, childPages: StagedPage[] = []) {
 }
 
 function getStagedPageHref(page: StagedPage) {
-  return page.previewHref ?? `/dev/staged-pages/${page.pageId}`;
+  const previewHref = page.previewHref ?? `/dev/staged-pages/${page.pageId}`;
+  return `${previewHref}?client=${encodeURIComponent(page.snapshot.clientSlug)}`;
 }
 
 function getNavigationLabel(page: StagedPage) {

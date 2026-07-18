@@ -175,8 +175,10 @@ function buildContentEditorPage({
   }
 
   return {
+    clientSlug: "legacy",
     href: `/${id}`,
     id,
+    key: `legacy:${id}`,
     label,
     sections: template.sections.map((section, index) =>
       buildContentEditorSection({ pageId: id, section, index }),
@@ -268,7 +270,6 @@ function getSectionContent(component: string): ContentSourceValue | null {
       sectionLibraryV3Content.sectionHeaderCompact,
     HeroContentTopImageBottomSectionV2: sectionLibraryV3Content.hero,
     HeroFullscreenSectionV2: sectionLibraryV3Content.heroFullscreen,
-    HeroGridMosaicSectionV2: sectionLibraryV3Content.heroGridMosaic,
     HeroSplitFixedImageSectionV3: sectionLibraryV3Content.heroSplitFullHeight,
     HeroSplitFullHeightSectionV3: sectionLibraryV3Content.heroSplitFullHeight,
     NavCenterLogoSectionV2: getNavigationContent(),

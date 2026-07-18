@@ -7,6 +7,7 @@ export type ContentEditorField = {
   kind: ContentEditorFieldKind;
   label: string;
   path: string;
+  sourceId?: string;
   value: string;
 };
 
@@ -17,8 +18,10 @@ export type ContentEditorSection = {
 };
 
 export type ContentEditorPage = {
+  clientSlug: string;
   href: string;
   id: string;
+  key: string;
   label: string;
   sections: ContentEditorSection[];
   sourceRecipe: string;
@@ -81,8 +84,10 @@ export const contentEditorPages: ContentEditorPage[] = [
       .filter((section) => section.fields.length > 0);
 
     return {
+      clientSlug: "legacy",
       href: page.href,
       id: page.id,
+      key: `legacy:${page.id}`,
       label: page.label,
       sections,
       sourceRecipe:
@@ -97,6 +102,7 @@ function mapStagedPageToContentEditorPage(
   page: StagedEditorPage,
 ): ContentEditorPage {
   const pageId = page.pageId || "staged-page";
+  const clientSlug = page.snapshot?.clientSlug || "staged-client";
   const fields = Array.isArray(page.fields) ? page.fields : [];
   const sectionsById = fields.reduce<Record<string, ContentEditorField[]>>(
     (sections, field) => {
@@ -107,10 +113,11 @@ function mapStagedPageToContentEditorPage(
         [sectionId]: [
           ...(sections[sectionId] ?? []),
           {
-            id: field.id,
+            id: `${clientSlug}:${field.id}`,
             kind: field.kind,
             label: humanizePath(field.path.split(".").slice(1)),
             path: field.path,
+            sourceId: field.id,
             value: field.value,
           },
         ],
@@ -120,8 +127,10 @@ function mapStagedPageToContentEditorPage(
   );
 
   return {
+    clientSlug,
     href: page.pageHref ?? `/${pageId}`,
     id: pageId,
+    key: `${clientSlug}:${pageId}`,
     label: page.pageLabel ?? humanize(pageId),
     sections: Object.entries(sectionsById).map(([sectionId, sectionFields]) => ({
       fields: sectionFields,
