@@ -555,50 +555,8 @@ export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) 
   );
 }
 
-function readStoredStyleGuideDraft() {
-  try {
-    const storedDraft = window.localStorage.getItem(styleGuideStorageKey);
-
-    return storedDraft
-      ? normalizeStyleGuideDraft(JSON.parse(storedDraft))
-      : defaultStyleGuideTokenDraft;
-  } catch {
-    return defaultStyleGuideTokenDraft;
-  }
-}
-
 export function StyleGuidePreviewSurface({
   children,
 }: StyleGuideLiveSurfaceProps) {
-  const [draft, setDraft] = useState<StyleGuideTokenDraft>(
-    defaultStyleGuideTokenDraft,
-  );
-  const previewStyle = useMemo(() => buildStyleVariables(draft), [draft]);
-
-  useEffect(() => {
-    const restoreTimer = window.setTimeout(() => {
-      setDraft(readStoredStyleGuideDraft());
-    }, 0);
-
-    function handleStorage(event: StorageEvent) {
-      if (event.key === styleGuideStorageKey) {
-        setDraft(readStoredStyleGuideDraft());
-      }
-    }
-
-    function handleFocus() {
-      setDraft(readStoredStyleGuideDraft());
-    }
-
-    window.addEventListener("storage", handleStorage);
-    window.addEventListener("focus", handleFocus);
-
-    return () => {
-      window.clearTimeout(restoreTimer);
-      window.removeEventListener("storage", handleStorage);
-      window.removeEventListener("focus", handleFocus);
-    };
-  }, []);
-
-  return <div style={previewStyle}>{children}</div>;
+  return <>{children}</>;
 }

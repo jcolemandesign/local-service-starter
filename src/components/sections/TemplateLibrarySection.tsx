@@ -530,7 +530,17 @@ export function TemplateLibrarySection({
                         <Card className="token-chrome-card overflow-hidden rounded-[var(--chrome-radius-control)] border shadow-none" key={template.id}>
                           <details className="group/template relative">
                             <summary className="flex cursor-pointer list-none items-start justify-between gap-4 p-5 marker:hidden">
-                              <span className="min-w-0">
+                              <span className="flex min-w-0 items-center gap-2">
+                                {activeAssignment ? (
+                                  <>
+                                    <span
+                                      aria-hidden="true"
+                                      className="size-2.5 shrink-0 rounded-full bg-service-accent"
+                                      title="Active on staging"
+                                    />
+                                    <span className="sr-only">Active on staging</span>
+                                  </>
+                                ) : null}
                                 <span className="type-heading-sm block text-[var(--chrome-text)]">
                                   {template.name}
                                 </span>

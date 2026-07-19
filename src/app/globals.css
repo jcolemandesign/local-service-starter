@@ -100,6 +100,12 @@
   animation: none;
 }
 
+@media (max-width: 639px) {
+  .trust-marquee-track[data-ready="true"] {
+    animation-duration: calc(var(--trust-marquee-duration, 44s) * 0.8);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .trust-marquee-track[data-ready="true"] {
     animation: none;
@@ -1159,6 +1165,16 @@ body {
     --live-text-accent: var(--live-accent-ink);
   }
 
+  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"]:is([data-pagebuilder-section-component="TrustMarqueeSection"], [data-pagebuilder-section-component="TrustMarqueeSectionV3"])
+    .text-service-muted {
+    color: rgb(255 255 255 / 0.86) !important;
+  }
+
+  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"]:is([data-pagebuilder-section-component="TrustMarqueeSection"], [data-pagebuilder-section-component="TrustMarqueeSectionV3"])
+    .bg-service-accent {
+    background-color: rgb(255 255 255 / 0.72) !important;
+  }
+
   .pagebuilder-section-frame[data-pagebuilder-color-recipe="dark"][data-pagebuilder-section-mode="Narrative"]
     > section.bg-service-surface {
     background-color: var(--live-bg-dark) !important;
@@ -1881,23 +1897,23 @@ body {
   --radius-surface-token: 24px;
   --radius-button-token: 9999px;
   --section-min-active: 54rem;
-  --section-space-vsml: 3.25rem;
-  --section-space-sml: 6.5rem;
-  --section-space-med: 10rem;
-  --section-space-lrg: 14rem;
-  --section-space-vsml-tablet: 2.75rem;
-  --section-space-sml-tablet: 5.5rem;
-  --section-space-med-tablet: 7.5rem;
-  --section-space-lrg-tablet: 9rem;
-  --section-space-vsml-mobile: 2.75rem;
-  --section-space-sml-mobile: 5.5rem;
-  --section-space-med-mobile: 5.5rem;
-  --section-space-lrg-mobile: 6rem;
+  --section-space-vsml: 2rem;
+  --section-space-sml: 4rem;
+  --section-space-med: 6rem;
+  --section-space-lrg: 8rem;
+  --section-space-vsml-tablet: 2rem;
+  --section-space-sml-tablet: 3.5rem;
+  --section-space-med-tablet: 5rem;
+  --section-space-lrg-tablet: 6rem;
+  --section-space-vsml-mobile: 2rem;
+  --section-space-sml-mobile: 4rem;
+  --section-space-med-mobile: 4rem;
+  --section-space-lrg-mobile: 4rem;
   --semantic-spacing-scale: 1.05;
   --container-gutter: clamp(2.25rem, 5vw, 4rem);
   --site-grid-inset-block: clamp(2.5rem, 5vw, 8rem);
   --site-grid-inset-inline: clamp(0.75rem, 4vw, 8rem);
-  --site-grid-gap: clamp(1.5rem, 2.15vw, 3.5rem);
+  --site-grid-gap: clamp(0.75rem, 1vw, 1.5rem);
   --shadow-service: 8px 10px 0px rgb(222 222 222 / 0);
   --type-display-xl-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --type-display-xl-size: clamp(3.5rem, calc(4.8611cqw + 2.3333rem), 7rem);
