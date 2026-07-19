@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import {
   Button,
   Card,
+  Container,
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
@@ -1169,7 +1170,7 @@ function GuideSection({
 
   return (
     <section
-      className="style-guide-accordion token-chrome token-chrome-panel-strong mx-2 my-2 scroll-mt-12 overflow-hidden rounded-[var(--chrome-radius-panel)] border"
+      className="style-guide-accordion token-chrome token-chrome-panel-strong scroll-mt-12 overflow-hidden rounded-[var(--chrome-radius-panel)] border"
       id={id}
     >
       <details
@@ -1336,7 +1337,7 @@ function StyleGuideListControlSamples() {
 export default function StyleGuidePage() {
   return (
     <StyleGuideLiveSurface>
-      <main className="bg-bg-page text-service-ink">
+      <main className="style-guide-page min-h-svh text-service-ink">
       <StyleGuideCloseAllButton />
       <nav
         aria-label="Style guide table of contents"
@@ -1374,6 +1375,7 @@ export default function StyleGuidePage() {
         </div>
       </nav>
 
+      <Container className="grid gap-4 py-4 max-md:gap-3 max-md:py-3">
       <GuideSection
         eyebrow="Type + Grid"
         id="typography"
@@ -1382,7 +1384,7 @@ export default function StyleGuidePage() {
         body="Live hierarchy specimens and content patterns. Select any specimen to tune its role in the controls beside it."
       >
         <div className="style-guide-control-band grid border-y px-[var(--site-grid-inset-inline)] py-4">
-          <SevenColumnGrid minHeight="none" padding="none">
+          <SevenColumnGrid frame="none" minHeight="none" padding="none">
             <SevenColumnGridItem className="sticky top-16 col-span-2 self-start max-lg:col-span-5 max-md:col-span-3 max-sm:static max-sm:col-span-1">
               <StyleGuideTypographyControls />
             </SevenColumnGridItem>
@@ -1391,19 +1393,21 @@ export default function StyleGuidePage() {
               <div className="grid gap-3">
                 {typeTokens.map((token) => (
                   <div
-                    className="fluid-type-frame grid grid-cols-7 gap-4 border-t border-service-border py-6 max-lg:grid-cols-5 max-md:grid-cols-3 max-sm:grid-cols-1"
+                    className="fluid-type-frame grid min-w-0 gap-5 border-t border-service-border py-6"
                     key={`grid-row-${token.name}`}
                   >
-                    <div className="col-span-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-                      <code className="radius-4 inline-flex bg-service-surface px-2 py-1 text-xs font-semibold text-service-ink">
-                        {token.name}
-                      </code>
-                      <p className="type-caption mt-2 text-service-muted">
-                        {token.role}
-                      </p>
-                      <p className="type-caption mt-2 font-semibold text-service-muted">
-                        <StyleGuideTypeSpec tokenName={token.name} />
-                      </p>
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                      <div>
+                        <code className="radius-4 inline-flex bg-service-surface px-2 py-1 text-xs font-semibold text-service-ink">
+                          {token.name}
+                        </code>
+                        <p className="type-caption mt-2 text-service-muted">
+                          {token.role}
+                        </p>
+                        <p className="type-caption mt-2 font-semibold text-service-muted">
+                          <StyleGuideTypeSpec tokenName={token.name} />
+                        </p>
+                      </div>
                       <StyleGuideResetFontButton tokenName={token.name} />
                     </div>
                     <StyleGuideTypeSample
@@ -1411,7 +1415,7 @@ export default function StyleGuidePage() {
                         token.typeClass,
                         token.measureClass,
                         token.wrapClass,
-                        "col-span-6 text-service-ink max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1",
+                        "w-full min-w-0 text-service-ink",
                       )}
                       tokenName={token.name}
                     >
@@ -2470,6 +2474,7 @@ export default function StyleGuidePage() {
 
       </GuideSection>
 
+      </Container>
       </main>
     </StyleGuideLiveSurface>
   );

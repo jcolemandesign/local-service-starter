@@ -923,7 +923,7 @@ export function PagebuilderSection() {
     ContentAboutStorySectionV3: previewCatalogEntry(
       "ContentAboutStorySectionV3",
       "Narrative",
-      "About story",
+      "Editorial 3 column",
       4,
     ),
     ContentRuleHeaderSectionV2: (

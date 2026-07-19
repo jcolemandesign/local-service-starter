@@ -5,6 +5,148 @@
         "showSectionMarkers": false,
         "viewportId": "main"
       },
+      "id": "services-overview-new",
+      "name": "Services Overview new",
+      "notes": "",
+      "pageType": "Services Overview",
+      "promotedAt": "2026-07-18T22:06:32.671Z",
+      "sectionCount": 10,
+      "sections": [
+        {
+          "component": "NavPrimarySectionV2",
+          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
+          "mode": "Navigation",
+          "name": "Primary navigation",
+          "originalComponent": "NavPrimarySectionV2",
+          "originalIndex": 0,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        },
+        {
+          "component": "SectionHeaderCompactSectionV3",
+          "instruction": "Use a no-min-height compact header to introduce a section before card grids, FAQs, decisions, or utility blocks.",
+          "mode": "Section Header",
+          "name": "Compact section header",
+          "originalComponent": "SectionHeaderCompactSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": true,
+          "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardFill": "solid",
+          "variant": "center"
+        },
+        {
+          "component": "ServicesThreeCardsRightSectionV3",
+          "instruction": "Show 3-5 priority services the business wants listed first before the full all-services section.",
+          "mode": "Scan",
+          "name": "Priority service cards",
+          "originalComponent": "ServicesThreeCardsRightSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": true,
+          "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        },
+        {
+          "component": "ServicesHoverPanelSectionV2",
+          "instruction": "Use a hover panel when a compact service list should reveal more detail and visual emphasis.",
+          "mode": "Scan",
+          "name": "Services hover panel",
+          "originalComponent": "ServicesHoverPanelSectionV2",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        },
+        {
+          "component": "CTAMutedSectionV3",
+          "instruction": "Use a quieter service-card CTA when the page needs a softer next step between content sections.",
+          "mode": "Action",
+          "name": "Muted CTA",
+          "originalComponent": "CTASectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": true,
+          "reduceTopPadding": true,
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        },
+        {
+          "component": "ContentSplitFixedImageSectionV3",
+          "instruction": "Use a content-height split layout when the section needs fixed-ratio imagery without hero-scale height.",
+          "mode": "Narrative",
+          "name": "Split content with fixed image",
+          "originalComponent": "ContentSplitFixedImageSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": true,
+          "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardFill": "solid",
+          "ratio": "5-4",
+          "variant": "text-4-image-3-right"
+        },
+        {
+          "component": "ContentSplitFixedImageSectionV3",
+          "instruction": "Use a content-height split layout when the section needs fixed-ratio imagery without hero-scale height.",
+          "mode": "Narrative",
+          "name": "Split content with fixed image",
+          "originalComponent": "ContentSplitFixedImageSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": true,
+          "colorRecipe": "default",
+          "cardFill": "solid",
+          "ratio": "5-4",
+          "variant": "image-3-left-text-4"
+        },
+        {
+          "component": "ContentStickyCardStreamSectionV2",
+          "instruction": "Keep a promise fixed while supporting details move through response, diagnosis, options, and follow-up.",
+          "mode": "Narrative",
+          "name": "Sticky card stream content",
+          "originalComponent": "ContentStickyCardStreamSectionV2",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        },
+        {
+          "component": "ContactSectionModalBegin",
+          "instruction": "Begin the request flow in-page with system and service choices, then carry those answers into step two of the request modal.",
+          "mode": "Utility",
+          "name": "Contact section modal begin",
+          "originalComponent": "ContactSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        },
+        {
+          "component": "FooterSectionV3",
+          "instruction": "End with service links, areas, contact details, and legal links.",
+          "mode": "Utility",
+          "name": "Footer",
+          "originalComponent": "FooterSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        }
+      ],
+      "sourceOptionName": "Page Layout",
+      "sourceRecipeId": "editorial-local",
+      "sourceRecipeName": "Services Overview"
+    },
+    {
+      "designStyle": {
+        "showSectionMarkers": false,
+        "viewportId": "main"
+      },
       "id": "color-stage-test",
       "name": "color stage test",
       "notes": "",
@@ -128,98 +270,6 @@
       "sourceOptionName": "Page Layout",
       "sourceRecipeId": "classic-service",
       "sourceRecipeName": "Home"
-    },
-    {
-      "designStyle": {
-        "showSectionMarkers": false,
-        "viewportId": "main"
-      },
-      "id": "services-overview-2",
-      "name": "Services Overview 2",
-      "notes": "",
-      "pageType": "Services Overview",
-      "promotedAt": "2026-07-16T17:24:21.908Z",
-      "sectionCount": 9,
-      "sections": [
-        {
-          "component": "NavPrimarySectionV2",
-          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
-          "mode": "Navigation",
-          "name": "Primary navigation",
-          "originalComponent": "NavPrimarySectionV2",
-          "originalIndex": 0
-        },
-        {
-          "component": "SectionHeaderCompactSectionV3",
-          "instruction": "Use a no-min-height compact header to introduce a section before card grids, FAQs, decisions, or utility blocks.",
-          "mode": "Section Header",
-          "name": "Compact section header",
-          "originalComponent": "SectionHeaderCompactSectionV3",
-          "originalIndex": -1,
-          "variant": "center"
-        },
-        {
-          "component": "ServicesThreeCardsRightSectionV3",
-          "instruction": "Show 3-5 priority services the business wants listed first before the full all-services section.",
-          "mode": "Scan",
-          "name": "Priority service cards",
-          "originalComponent": "ServicesThreeCardsRightSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ServicesHoverPanelSectionV2",
-          "instruction": "Use a hover panel when a compact service list should reveal more detail and visual emphasis.",
-          "mode": "Scan",
-          "name": "Services hover panel",
-          "originalComponent": "ServicesHoverPanelSectionV2",
-          "originalIndex": -1
-        },
-        {
-          "component": "CTAMutedSectionV3",
-          "instruction": "Use a quieter service-card CTA when the page needs a softer next step between content sections.",
-          "mode": "Action",
-          "name": "Muted CTA",
-          "originalComponent": "CTASectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ContentSplitFixedImageSectionV3",
-          "instruction": "Use a content-height split layout when the section needs fixed-ratio imagery without hero-scale height.",
-          "mode": "Narrative",
-          "name": "Split content with fixed image",
-          "originalComponent": "ContentSplitFixedImageSectionV3",
-          "originalIndex": -1,
-          "ratio": "3-2",
-          "variant": "text-3-image-4-right"
-        },
-        {
-          "component": "ContentStickyCardStreamSectionV2",
-          "instruction": "Keep a promise fixed while supporting details move through response, diagnosis, options, and follow-up.",
-          "mode": "Narrative",
-          "name": "Sticky card stream content",
-          "originalComponent": "ContentStickyCardStreamSectionV2",
-          "originalIndex": -1
-        },
-        {
-          "component": "ContactSectionV3",
-          "instruction": "Close with phone, email, hours, and a simple form or request path.",
-          "mode": "Utility",
-          "name": "Contact section",
-          "originalComponent": "ContactSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "FooterSectionV3",
-          "instruction": "End with service links, areas, contact details, and legal links.",
-          "mode": "Utility",
-          "name": "Footer",
-          "originalComponent": "FooterSectionV3",
-          "originalIndex": -1
-        }
-      ],
-      "sourceOptionName": "Page Layout",
-      "sourceRecipeId": "editorial-local",
-      "sourceRecipeName": "Services Overview"
     },
     {
       "designStyle": {
@@ -549,89 +599,6 @@
       "sourceOptionName": "Page Layout",
       "sourceRecipeId": "compact-utility",
       "sourceRecipeName": "Individual Service"
-    },
-    {
-      "designStyle": {
-        "showSectionMarkers": false,
-        "viewportId": "main"
-      },
-      "id": "services-overview-1",
-      "name": "Services Overview 1",
-      "notes": "",
-      "pageType": "Services Overview",
-      "promotedAt": "2026-07-14T18:23:34.278Z",
-      "sectionCount": 8,
-      "sections": [
-        {
-          "component": "NavPrimarySectionV2",
-          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
-          "mode": "Navigation",
-          "name": "Primary navigation",
-          "originalComponent": "NavPrimarySectionV2",
-          "originalIndex": 0
-        },
-        {
-          "component": "HeroServicesSectionV3",
-          "instruction": "Combine the Services page introduction with one full-height four-column image and 1-7 compact priority-service links over the image. The following hover panel must contain every remaining approved service without repeats.",
-          "mode": "Hero",
-          "name": "Services hero",
-          "originalComponent": "HeroServicesSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ServicesHoverPanelSectionV2",
-          "instruction": "Use a hover panel for every remaining approved service after the 1-7 priority links in the Services hero. Do not repeat or omit services.",
-          "mode": "Scan",
-          "name": "Services hover panel",
-          "originalComponent": "ServicesHoverPanelSectionV2",
-          "originalIndex": -1
-        },
-        {
-          "component": "CTAMutedSectionV3",
-          "instruction": "Use a quieter service-card CTA when the page needs a softer next step between content sections.",
-          "mode": "Action",
-          "name": "Muted CTA",
-          "originalComponent": "CTASectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "ContentSplitFixedImageSectionV3",
-          "instruction": "Use a content-height split layout when the section needs fixed-ratio imagery without hero-scale height.",
-          "mode": "Narrative",
-          "name": "Split content with fixed image",
-          "originalComponent": "ContentSplitFixedImageSectionV3",
-          "originalIndex": -1,
-          "ratio": "3-2",
-          "variant": "text-3-image-4-right"
-        },
-        {
-          "component": "ContentStickyCardStreamSectionV2",
-          "instruction": "Keep a promise fixed while supporting details move through response, diagnosis, options, and follow-up.",
-          "mode": "Narrative",
-          "name": "Sticky card stream content",
-          "originalComponent": "ContentStickyCardStreamSectionV2",
-          "originalIndex": -1
-        },
-        {
-          "component": "ContactSectionV3",
-          "instruction": "Close with phone, email, hours, and a simple form or request path.",
-          "mode": "Utility",
-          "name": "Contact section",
-          "originalComponent": "ContactSectionV3",
-          "originalIndex": -1
-        },
-        {
-          "component": "FooterSectionV3",
-          "instruction": "End with service links, areas, contact details, and legal links.",
-          "mode": "Utility",
-          "name": "Footer",
-          "originalComponent": "FooterSectionV3",
-          "originalIndex": -1
-        }
-      ],
-      "sourceOptionName": "Page Layout",
-      "sourceRecipeId": "editorial-local",
-      "sourceRecipeName": "Services Overview"
     },
     {
       "designStyle": {

@@ -1206,7 +1206,7 @@ export const sectionLibraryV3Collections = [
         component: "content-about-company-v2",
       },
       {
-        label: "About story",
+        label: "Editorial 3 column",
         component: "content-about-story-v3",
       },
       {

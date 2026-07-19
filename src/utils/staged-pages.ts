@@ -31,6 +31,8 @@ export type StagedPageTemplateSection = {
   name: string;
   originalComponent?: string;
   originalIndex?: number;
+  reduceBottomPadding?: boolean;
+  reduceTopPadding?: boolean;
   ratio?: string;
   variant?: string;
 };

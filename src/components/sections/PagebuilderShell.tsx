@@ -837,7 +837,7 @@ const sectionSwapOptions = [
     instruction:
       "Use an extended about narrative with natural paragraphs, a pullquote, and scannable notes. Do not force the story into card-length copy.",
     mode: "Narrative",
-    name: "About story",
+    name: "Editorial 3 column",
   },
   {
     component: "ContentRuleHeaderSectionV2",
@@ -2475,9 +2475,11 @@ export function PagebuilderShell({
                   const innerOptionSignifier = getInnerOptionSignifier(
                     section.component,
                   );
-                  const sectionSwapOptionsForMode = sectionSwapOptions.filter(
-                    (option) => option.mode === section.mode,
-                  );
+                  const sectionSwapOptionsForMode = sectionSwapOptions
+                    .filter((option) => option.mode === section.mode)
+                    .sort((first, second) =>
+                      first.name.localeCompare(second.name),
+                    );
 
                   return (
                     <div
@@ -3044,9 +3046,11 @@ export function PagebuilderShell({
               </summary>
               <div className="mt-4 grid gap-4">
                 {sectionModes.map((mode) => {
-                  const options = sectionSwapOptions.filter(
-                    (option) => option.mode === mode.name,
-                  );
+                  const options = sectionSwapOptions
+                    .filter((option) => option.mode === mode.name)
+                    .sort((first, second) =>
+                      first.name.localeCompare(second.name),
+                    );
 
                   if (options.length === 0) {
                     return null;
@@ -3367,9 +3371,11 @@ export function PagebuilderShell({
                         Add Section Template
                       </p>
                       {sectionModes.map((mode) => {
-                        const options = sectionSwapOptions.filter(
-                          (option) => option.mode === mode.name,
-                        );
+                        const options = sectionSwapOptions
+                          .filter((option) => option.mode === mode.name)
+                          .sort((first, second) =>
+                            first.name.localeCompare(second.name),
+                          );
 
                         if (options.length === 0) {
                           return null;

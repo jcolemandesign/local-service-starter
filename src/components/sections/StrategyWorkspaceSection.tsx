@@ -1761,6 +1761,7 @@ function buildContentPlanDocumentHtml({
   content: string;
 }) {
   const title = `${clientSlug} Page-Building Reference`;
+  const formattedContent = formatReferenceContent(content);
   const generatedAt = new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
     timeStyle: "short",
@@ -1835,6 +1836,7 @@ function buildContentPlanDocumentHtml({
         line-height: 1.15;
         margin: 36px 0 14px;
         padding-top: 28px;
+        scroll-margin-top: 24px;
       }
 
       h3 {
@@ -1842,6 +1844,57 @@ function buildContentPlanDocumentHtml({
         font-size: 20px;
         line-height: 1.25;
         margin: 28px 0 10px;
+        scroll-margin-top: 24px;
+      }
+
+      .toc {
+        background: #fffdf8;
+        border: 1px solid #d8d2c6;
+        border-radius: 8px;
+        margin: 0 0 36px;
+        padding: 20px;
+      }
+
+      .toc-title {
+        color: #1d2520;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        margin: 0 0 12px;
+        text-transform: uppercase;
+      }
+
+      .toc-list {
+        display: grid;
+        gap: 4px 20px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .toc-list a {
+        color: #3f4a43;
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.3;
+        text-decoration: none;
+      }
+
+      .toc-list a:hover {
+        color: #8a5f2d;
+      }
+
+      @media (max-width: 720px) {
+        .toc-list {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 480px) {
+        .toc-list {
+          grid-template-columns: 1fr;
+        }
       }
 
       p {
@@ -1960,15 +2013,24 @@ function buildContentPlanDocumentHtml({
         <p class="intro">A formatted planning reference for page building. Use this to interpret structure, priorities, page intent, messaging notes, and content requirements while assembling the site.</p>
         <p class="meta">Generated ${escapeHtml(generatedAt)}</p>
       </header>
-      ${formatReferenceContent(content)}
+      ${formatReferenceToc(formattedContent.headings)}
+      ${formattedContent.html}
     </main>
   </body>
 </html>`;
 }
 
+type ReferenceHeading = {
+  id: string;
+  label: string;
+  sourceLevel: number;
+};
+
 function formatReferenceContent(content: string) {
   const lines = content.replace(/\r\n/g, "\n").split("\n");
   const html: string[] = [];
+  const headings: ReferenceHeading[] = [];
+  const headingIds = new Map<string, number>();
   let listType: "ol" | "ul" | null = null;
 
   function closeList() {
@@ -2018,8 +2080,15 @@ function formatReferenceContent(content: string) {
     if (headingMatch) {
       closeList();
       const level = Math.min(headingMatch[1].length + 1, 3);
+      const label = stripMarkdownFormatting(headingMatch[2]);
+      const id = createReferenceHeadingId(label, headingIds);
+      headings.push({
+        id,
+        label,
+        sourceLevel: headingMatch[1].length,
+      });
       html.push(
-        `<h${level}>${formatInlineText(headingMatch[2])}</h${level}>`,
+        `<h${level} id="${escapeHtml(id)}">${formatInlineText(headingMatch[2])}</h${level}>`,
       );
       continue;
     }
@@ -2049,7 +2118,65 @@ function formatReferenceContent(content: string) {
 
   closeList();
 
-  return html.join("\n");
+  return { headings, html: html.join("\n") };
+}
+
+function createReferenceHeadingId(label: string, headingIds: Map<string, number>) {
+  const baseId =
+    label
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "") || "section";
+  const count = headingIds.get(baseId) ?? 0;
+  headingIds.set(baseId, count + 1);
+
+  return count === 0 ? baseId : `${baseId}-${count + 1}`;
+}
+
+function formatReferenceToc(headings: ReferenceHeading[]) {
+  const pageMapHeadingIndex = headings.findIndex((heading) =>
+    /page-by-page content map/i.test(heading.label),
+  );
+
+  if (pageMapHeadingIndex === -1) {
+    return "";
+  }
+
+  const pageMapHeading = headings[pageMapHeadingIndex];
+  const pageHeadings: ReferenceHeading[] = [];
+
+  for (const heading of headings.slice(pageMapHeadingIndex + 1)) {
+    if (heading.sourceLevel <= pageMapHeading.sourceLevel) {
+      break;
+    }
+
+    if (heading.sourceLevel === pageMapHeading.sourceLevel + 1) {
+      pageHeadings.push(heading);
+    }
+  }
+
+  if (pageHeadings.length === 0) {
+    return "";
+  }
+
+  return `<nav class="toc" aria-label="Page instructions table of contents">
+  <p class="toc-title">Page instructions</p>
+  <ul class="toc-list">
+    ${pageHeadings
+      .map(
+        (heading) =>
+          `<li><a href="#${escapeHtml(heading.id)}">${escapeHtml(heading.label)}</a></li>`,
+      )
+      .join("\n    ")}
+  </ul>
+</nav>`;
+}
+
+function stripMarkdownFormatting(value: string) {
+  return value
+    .replace(/!?(?:\[([^\]]+)\])\([^)]*\)/g, "$1")
+    .replace(/[*_`~]/g, "")
+    .trim();
 }
 
 function formatMarkdownTable(tableLines: string[]) {

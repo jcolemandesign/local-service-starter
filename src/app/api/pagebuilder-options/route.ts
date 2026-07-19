@@ -12,6 +12,8 @@ type SavedPagebuilderSection = {
   name: string;
   originalComponent: string;
   originalIndex: number;
+  reduceBottomPadding?: boolean;
+  reduceTopPadding?: boolean;
   ratio?: string;
   variant?: string;
   colorRecipe?: string;
@@ -185,6 +187,8 @@ function normalizeSection(
     originalIndex: Number.isFinite(section.originalIndex)
       ? section.originalIndex
       : 0,
+    reduceBottomPadding: Boolean(section.reduceBottomPadding),
+    reduceTopPadding: Boolean(section.reduceTopPadding),
     ratio: typeof section.ratio === "string" ? section.ratio : undefined,
     variant: typeof section.variant === "string" ? section.variant : undefined,
     colorRecipe:

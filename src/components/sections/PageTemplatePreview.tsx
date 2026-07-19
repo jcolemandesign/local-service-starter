@@ -104,6 +104,8 @@ export type PageTemplatePreviewSection = {
   colorRecipe?: import("@/content/section-color-recipes").SectionColorRecipe;
   cardFill?: import("@/content/section-color-recipes").SectionCardFill;
   name: string;
+  reduceBottomPadding?: boolean;
+  reduceTopPadding?: boolean;
   ratio?: string;
   variant?: string;
 };
@@ -295,6 +297,12 @@ function TemplateSectionFrame({
       data-pagebuilder-color-recipe={section.colorRecipe ?? "default"}
       data-pagebuilder-section-component={section.component}
       data-pagebuilder-section-mode={section.mode}
+      data-pagebuilder-padding-bottom={
+        section.reduceBottomPadding ? "none" : "default"
+      }
+      data-pagebuilder-padding-top={
+        section.reduceTopPadding ? "none" : "default"
+      }
     >
       {children}
     </div>

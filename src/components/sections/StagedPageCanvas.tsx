@@ -340,6 +340,8 @@ function toPreviewSection(
     instruction: section.instruction,
     mode: section.mode,
     name: section.name,
+    reduceBottomPadding: section.reduceBottomPadding,
+    reduceTopPadding: section.reduceTopPadding,
     ratio: section.ratio,
     variant: section.variant,
   };

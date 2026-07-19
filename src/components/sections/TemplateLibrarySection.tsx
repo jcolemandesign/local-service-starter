@@ -28,12 +28,16 @@ export type PageTemplateSummary = {
   promotedAt: string;
   sectionCount: number;
   sections: Array<{
+    cardFill?: import("@/content/section-color-recipes").SectionCardFill;
+    colorRecipe?: import("@/content/section-color-recipes").SectionColorRecipe;
     component: string;
     instruction?: string;
     mode: string;
     name: string;
     originalComponent?: string;
     originalIndex?: number;
+    reduceBottomPadding?: boolean;
+    reduceTopPadding?: boolean;
     ratio?: string;
     variant?: string;
   }>;
@@ -342,6 +346,10 @@ export function TemplateLibrarySection({
               typeof section.originalIndex === "number"
                 ? section.originalIndex
                 : index,
+            reduceBottomPadding: section.reduceBottomPadding ?? false,
+            reduceTopPadding: section.reduceTopPadding ?? false,
+            cardFill: section.cardFill,
+            colorRecipe: section.colorRecipe,
             ratio: section.ratio,
             variant: section.variant,
           })),
@@ -581,6 +589,38 @@ export function TemplateLibrarySection({
                                 >
                                   <PreviewIcon />
                                 </Link>
+                                <button
+                                  aria-controls={`template-use-${template.id}`}
+                                  aria-label={`Use ${template.name}`}
+                                  className="flex size-9 items-center justify-center rounded-[var(--chrome-radius-control)] border border-service-accent bg-service-accent text-white transition-colors hover:border-white hover:bg-service-ink"
+                                  onClick={(event) => {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+
+                                    const details = event.currentTarget.closest(
+                                      "details",
+                                    );
+
+                                    if (details) {
+                                      details.open = true;
+                                    }
+
+                                    window.requestAnimationFrame(() => {
+                                      document
+                                        .getElementById(
+                                          `template-use-${template.id}`,
+                                        )
+                                        ?.scrollIntoView({
+                                          behavior: "smooth",
+                                          block: "center",
+                                        });
+                                    });
+                                  }}
+                                  title="Use template"
+                                  type="button"
+                                >
+                                  <UseTemplateIcon />
+                                </button>
                                 <span
                                   aria-hidden="true"
                                   className="token-chrome-badge flex size-9 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-transform group-open/template:rotate-180"
@@ -670,7 +710,10 @@ export function TemplateLibrarySection({
                                     </div>
                                   </details>
 
-                                  <div className="grid gap-3 rounded-sm border border-service-border bg-white p-4">
+                                  <div
+                                    className="grid gap-3 rounded-sm border border-service-border bg-white p-4"
+                                    id={`template-use-${template.id}`}
+                                  >
                                     <label className="type-caption font-semibold text-service-ink">
                                       Staged page name
                                       <input
@@ -782,7 +825,7 @@ export function TemplateLibrarySection({
                                     </div>
                                     {!isRepeatable && activeAssignment ? (
                                       <Link
-                                        className="radius-4 inline-flex min-h-11 items-center justify-center border border-green-200 bg-green-50 px-4 text-sm font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
+                                        className="radius-4 inline-flex min-h-11 items-center justify-center border border-emerald-400/35 bg-emerald-950/30 px-4 text-sm font-semibold text-emerald-100 transition-colors hover:border-emerald-300 hover:bg-emerald-900/50"
                                         href={activeAssignment.previewHref}
                                       >
                                         Open {activeAssignment.pageLabel}
@@ -799,7 +842,7 @@ export function TemplateLibrarySection({
                                       />
                                     ) : null}
                                   <button
-                                    className="radius-4 min-h-11 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent disabled:cursor-wait disabled:opacity-60"
+                                    className="radius-4 min-h-11 border border-emerald-400 bg-emerald-600 px-4 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255_/_0.18)] transition-colors hover:border-emerald-300 hover:bg-emerald-500 disabled:cursor-wait disabled:opacity-60"
                                     disabled={isSubmitting || !activeClientSlug}
                                     onClick={() => void stageTemplate(template)}
                                     type="button"
@@ -816,7 +859,7 @@ export function TemplateLibrarySection({
 
                               {stagedFeedback ? (
                                 <div
-                                  className="rounded-sm border border-green-200 bg-green-50 px-4 py-3 text-green-800"
+                                  className="rounded-sm border border-emerald-400/35 bg-emerald-950/30 px-4 py-3 text-emerald-100"
                                   role="status"
                                 >
                                   <p className="type-caption font-semibold">
@@ -825,13 +868,13 @@ export function TemplateLibrarySection({
                                   </p>
                                   <div className="mt-3 flex flex-wrap gap-2">
                                     <Link
-                                      className="radius-4 inline-flex min-h-10 items-center justify-center border border-green-300 bg-white px-4 text-sm font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
+                                      className="radius-4 inline-flex min-h-10 items-center justify-center border border-emerald-400/35 bg-emerald-950/35 px-4 text-sm font-semibold text-emerald-100 transition-colors hover:border-emerald-300 hover:bg-emerald-900/50"
                                       href={stagedFeedback.previewHref}
                                     >
                                       Open staged page
                                     </Link>
                                     <Link
-                                      className="radius-4 inline-flex min-h-10 items-center justify-center border border-green-300 bg-white px-4 text-sm font-semibold text-green-800 transition-colors hover:border-service-accent hover:text-service-accent"
+                                      className="radius-4 inline-flex min-h-10 items-center justify-center border border-emerald-400/35 bg-emerald-950/35 px-4 text-sm font-semibold text-emerald-100 transition-colors hover:border-emerald-300 hover:bg-emerald-900/50"
                                       href="/dev/staged-pages"
                                     >
                                       Open staged pages
@@ -1152,9 +1195,9 @@ function PagebuilderIcon() {
       strokeWidth="1.8"
       viewBox="0 0 24 24"
     >
-      <path d="m16 3 5 5-3 3-5-5z" />
-      <path d="m14.5 9.5-8 8" />
-      <path d="m5 19 2-2" />
+      <path d="m15 12-8.4 8.4a1 1 0 0 1-1.4 0l-1.6-1.6a1 1 0 0 1 0-1.4L12 9" />
+      <path d="m18 15 4-4" />
+      <path d="m21.5 11.5-1.9-1.9A2 2 0 0 1 19 8.2V7l-2.3-2.3a6 6 0 0 0-7.3-.9L5.5 6.5 8 9l3.5-1.5L14 10l-1 1 2 2 1-1Z" />
     </svg>
   );
 }
@@ -1173,6 +1216,24 @@ function PreviewIcon() {
     >
       <path d="M3 12s3.2-5 9-5 9 5 9 5-3.2 5-9 5-9-5-9-5Z" />
       <circle cx="12" cy="12" r="2.5" />
+    </svg>
+  );
+}
+
+function UseTemplateIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-4"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <path d="M12 20V5" />
+      <path d="m6.5 10.5 5.5-5.5 5.5 5.5" />
     </svg>
   );
 }

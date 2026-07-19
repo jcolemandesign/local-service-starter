@@ -354,10 +354,12 @@ const sectionElements = {
 
 const collections = sectionLibraryV3Collections.map((collection) => ({
   ...collection,
-  items: collection.items.map((item) => ({
-    label: item.label,
-    element: sectionElements[item.component as keyof typeof sectionElements],
-  })),
+  items: [...collection.items]
+    .sort((first, second) => first.label.localeCompare(second.label))
+    .map((item) => ({
+      label: item.label,
+      element: sectionElements[item.component as keyof typeof sectionElements],
+    })),
 }));
 
 const sectionTemplateCount = sectionLibraryV3Collections.reduce(

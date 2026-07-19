@@ -10,6 +10,8 @@ type PageTemplateSection = {
   name: string;
   originalComponent: string;
   originalIndex: number;
+  reduceBottomPadding?: boolean;
+  reduceTopPadding?: boolean;
   ratio?: string;
   variant?: string;
   colorRecipe?: string;
@@ -233,6 +235,8 @@ function normalizeSection(section: PageTemplateSection): PageTemplateSection {
     originalIndex: Number.isFinite(section.originalIndex)
       ? section.originalIndex
       : 0,
+    reduceBottomPadding: Boolean(section.reduceBottomPadding),
+    reduceTopPadding: Boolean(section.reduceTopPadding),
     colorRecipe:
       typeof section.colorRecipe === "string" ? section.colorRecipe : undefined,
     cardFill: typeof section.cardFill === "string" ? section.cardFill : undefined,
