@@ -103,7 +103,7 @@ export function ContentRevealParagraphSectionV2({
           className="col-span-6 max-lg:col-span-7"
         >
           <div className="fluid-type-frame" ref={sectionRef}>
-            <div className="grid gap-6">
+            <div className="grid gap-2">
               {lines.map((line, index) => (
                 <div className="overflow-hidden pb-1" key={`${index}-${line}`}>
                   <motion.p

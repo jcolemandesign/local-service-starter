@@ -130,7 +130,7 @@ export function ContentStickyIdeasSectionV2({
 }: ContentStickyIdeasSectionV2Props) {
   return (
     <section className="bg-service-surface">
-      <SevenColumnGrid className="section-min-screen">
+      <SevenColumnGrid minHeight="none">
         <SevenColumnGridItem
           className="col-span-5 max-lg:col-span-7"
           alignY="middle"

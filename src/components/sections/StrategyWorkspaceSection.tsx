@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { Card, DownArrowIcon, Section } from "@/components/primitives";
+import { StrategyIndexMenu } from "@/components/sections/StrategyIndexMenu";
 import type { PageTemplateSummary } from "@/components/sections/TemplateLibrarySection";
 import {
   buildStrategyNavigation,
@@ -80,6 +81,24 @@ type StagePageResponse =
 
 function cx(...classes: Array<false | string | undefined>) {
   return classes.filter(Boolean).join(" ");
+}
+
+const clientNameAcronyms = new Set(["hvac", "llc", "usa"]);
+
+function formatClientName(clientSlug: string) {
+  return clientSlug
+    .split(/[-_]+/)
+    .filter(Boolean)
+    .map((word) => {
+      const normalizedWord = word.toLowerCase();
+
+      if (clientNameAcronyms.has(normalizedWord)) {
+        return normalizedWord.toUpperCase();
+      }
+
+      return `${normalizedWord.charAt(0).toUpperCase()}${normalizedWord.slice(1)}`;
+    })
+    .join(" ");
 }
 
 const baseFieldGroups: {
@@ -627,93 +646,97 @@ export function StrategyWorkspaceSection({
 
   return (
     <Section className="strategy-workspace strategy-chrome token-chrome min-h-svh">
-      <div className="strategy-toolbar fixed inset-x-0 top-0 z-40 flex flex-wrap items-center justify-end gap-2 border-b px-[var(--container-gutter)] py-3">
-        <Link
-          className={strategyNavButtonClass}
-          href="/dev/pagebuilder"
-          rel="noreferrer"
-          target="_blank"
+      <div className="strategy-toolbar fixed inset-x-0 top-0 z-40 flex items-center justify-end gap-4 border-b px-[var(--container-gutter)] py-3">
+        <span
+          aria-current="page"
+          className={strategyActiveNavButtonClass}
         >
-          <StrategyNavIcon icon="pagebuilder" />
-          Page Builder
-        </Link>
-        <Link
-          className={strategyNavButtonClass}
-          href="/sections"
-          rel="noreferrer"
-          target="_blank"
-        >
-          <StrategyNavIcon icon="sections" />
-          Section Library
-        </Link>
-        <Link
-          className={strategyNavButtonClass}
-          href="/dev/style-guide"
-          rel="noreferrer"
-          target="_blank"
-        >
-          <StrategyNavIcon icon="style" />
-          Style Guide
-        </Link>
-        <button
-          className={strategyNavButtonClass}
-          onClick={openContentPlanReference}
-          type="button"
-        >
-          <StrategyNavIcon icon="plan" />
-          Build plan
-        </button>
-        <Link
-          className={strategyNavButtonClass}
-          href="/dev/templates"
-          rel="noreferrer"
-          target="_blank"
-        >
-          <StrategyNavIcon icon="templates" />
-          Template library
-        </Link>
-        <Link
-          className={strategyNavButtonClass}
-          href={`/dev/prompt-library?project=${clientSlug}`}
-          rel="noreferrer"
-          target="_blank"
-        >
-          <StrategyNavIcon icon="prompts" />
-          Prompt library
-        </Link>
-        <Link
-          className={strategyNavButtonClass}
-          href={`/api/agent-export?clientSlug=${encodeURIComponent(clientSlug)}`}
-          rel="noreferrer"
-          target="_blank"
-        >
-          <StrategyNavIcon icon="download" />
-          Agent doc
-        </Link>
-        <button
-          className={primaryButtonClass}
-          disabled={saveState === "saving"}
-          onClick={() => void saveWorkspace()}
-          type="button"
-        >
-          {saveState === "saving" ? "Saving" : "Save workspace"}
-        </button>
+          <StrategyNavIcon icon="strategy" />
+          Strategy Workspace
+        </span>
+        <div className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-4">
+          <Link
+            className={strategyNavButtonClass}
+            href="/dev/pagebuilder"
+            rel="noreferrer"
+            target="_blank"
+          >
+            <StrategyNavIcon icon="pagebuilder" />
+            Page Builder
+          </Link>
+          <Link
+            className={strategyNavButtonClass}
+            href="/sections"
+            rel="noreferrer"
+            target="_blank"
+          >
+            <StrategyNavIcon icon="sections" />
+            Section Library
+          </Link>
+          <Link
+            className={strategyNavButtonClass}
+            href="/dev/style-guide"
+            rel="noreferrer"
+            target="_blank"
+          >
+            <StrategyNavIcon icon="style" />
+            Style Guide
+          </Link>
+          <button
+            className={strategyNavButtonClass}
+            onClick={openContentPlanReference}
+            type="button"
+          >
+            <StrategyNavIcon icon="plan" />
+            Build plan
+          </button>
+          <Link
+            className={strategyNavButtonClass}
+            href="/dev/templates"
+            rel="noreferrer"
+            target="_blank"
+          >
+            <StrategyNavIcon icon="templates" />
+            Template library
+          </Link>
+          <Link
+            className={strategyNavButtonClass}
+            href={`/dev/prompt-library?project=${clientSlug}`}
+            rel="noreferrer"
+            target="_blank"
+          >
+            <StrategyNavIcon icon="prompts" />
+            Prompt library
+          </Link>
+          <Link
+            className={strategyNavButtonClass}
+            href={`/api/agent-export?clientSlug=${encodeURIComponent(clientSlug)}`}
+            rel="noreferrer"
+            target="_blank"
+          >
+            <StrategyNavIcon icon="download" />
+            Agent doc
+          </Link>
+          <button
+            className={cx(
+              primaryButtonClass,
+              "strategy-toolbar-control strategy-toolbar-save",
+            )}
+            disabled={saveState === "saving"}
+            onClick={() => void saveWorkspace()}
+            type="button"
+          >
+            {saveState === "saving" ? "Saving" : "Save workspace"}
+          </button>
+        </div>
+        <StrategyIndexMenu clientSlug={clientSlug} />
       </div>
       <div className="w-full px-[var(--container-gutter)]">
         <div className="grid layout-gap-lrg">
-          <div className="grid gap-5">
-            <div className="fluid-type-frame">
-              <p className="type-label text-service-accent">
-                Strategy Workspace
-              </p>
-              <h1 className="type-heading-xl mt-eyebrow-heading-lg text-text-main">
-                {clientSlug}
-              </h1>
-              <p className="type-text-lg wrap-pretty mt-heading-body-md text-text-muted">
-                Local saved workspace for research, strategy outputs, content
-                planning, and page copy tied to this project.
-              </p>
-            </div>
+          <div className="fluid-type-frame">
+            <h1 className="type-heading-xl text-text-main">
+              {formatClientName(clientSlug)}
+            </h1>
           </div>
 
           {showAssemblyOverview ? (
@@ -721,18 +744,19 @@ export function StrategyWorkspaceSection({
               <div className="grid gap-5">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="fluid-type-frame min-w-0 flex-1">
-                    <p className="type-label text-service-accent">
-                      Site Assembly Overview
+                    <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
+                      <p className="type-label text-service-accent">
+                        Site Assembly Overview
+                      </p>
+                      <h2 className="type-heading-sm text-text-main">
+                        {detectedPageCount} pages detected
+                      </h2>
+                    </div>
+                    <p className="strategy-assembly-guidance type-text-sm mt-heading-body-sm max-w-none text-text-muted">
+                      Use templates to stage these pages from snapshot. Content
+                      Editor edits can then sit on top as manual overrides.
                     </p>
-                    <h2 className="type-heading-md mt-eyebrow-heading-sm text-text-main">
-                      {detectedPageCount} pages detected from the saved strategy
-                    </h2>
-                  <p className="type-text-sm wrap-pretty mt-heading-body-sm max-w-none text-text-muted">
-                    Use templates to stage these pages from snapshot
-                    {snapshot ? ` ${snapshot.id}` : ""}. Content Editor edits
-                    can then sit on top as manual overrides.
-                  </p>
-                </div>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-5 gap-3 max-lg:grid-cols-2 max-sm:grid-cols-1">
@@ -2346,6 +2370,7 @@ type StrategyNavIconName =
   | "plan"
   | "prompts"
   | "sections"
+  | "strategy"
   | "style"
   | "templates";
 
@@ -2357,6 +2382,7 @@ function StrategyNavIcon({ icon }: { icon: StrategyNavIconName }) {
     plan: ["M7 4h10l3 3v13H7z", "M17 4v4h4", "M10 11h7", "M10 15h5"],
     prompts: ["M5 6h14v10H8l-3 3z", "M8 10h8", "M8 13h5"],
     sections: ["M5 5h14v4H5z", "M5 11h14v4H5z", "M5 17h14v2H5z"],
+    strategy: ["M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z", "m15 9-2.3 4.7L8 16l2.3-4.7L15 9Z"],
     style: ["M12 4l7 4v8l-7 4-7-4V8z", "M12 4v16", "M5 8l7 4 7-4"],
     templates: ["M4 5h16v14H4z", "M8 5v14", "M4 10h16", "M12 10v9"],
   };
@@ -2380,7 +2406,10 @@ function StrategyNavIcon({ icon }: { icon: StrategyNavIconName }) {
 }
 
 const strategyNavButtonClass =
-  "token-chrome-control inline-flex min-h-9 items-center justify-center gap-1.5 whitespace-nowrap rounded-[var(--chrome-radius-control)] border px-3 type-caption font-semibold transition-colors";
+  "strategy-toolbar-control token-chrome-control inline-flex min-h-9 items-center justify-center gap-1.5 whitespace-nowrap rounded-[var(--chrome-radius-control)] border px-3 type-caption font-semibold transition-colors";
+
+const strategyActiveNavButtonClass =
+  "strategy-toolbar-page-link strategy-toolbar-page-link-current mr-auto inline-flex min-h-9 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-[var(--chrome-radius-control)] px-3 type-caption font-semibold";
 
 const primaryButtonClass =
   "token-chrome-primary inline-flex min-h-11 w-full items-center justify-center whitespace-nowrap rounded-[var(--chrome-radius-control)] border px-5 type-caption font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto";

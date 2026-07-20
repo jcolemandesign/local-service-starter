@@ -1,7 +1,10 @@
 "use client";
 
-import { useState, type CSSProperties, type ReactNode } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useId, useState, type CSSProperties, type ReactNode } from "react";
 import { Container, DownArrowIcon } from "@/components/primitives";
+
+const accordionEase = [0.22, 1, 0.36, 1] as const;
 
 type SectionLibraryV3Collection = {
   title: string;
@@ -54,14 +57,23 @@ function EmptySubAccordion({
   fitLandscapeCanvas: boolean;
 }) {
   const [activeVariantIndex, setActiveVariantIndex] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
   const activeVariant = item.variants?.[activeVariantIndex];
   const element = activeVariant?.element ?? item.element;
+  const contentId = useId();
+  const shouldReduceMotion = useReducedMotion();
 
   return (
-    <details className="token-chrome-card group/item border-b border-[var(--chrome-border-soft)] last:border-b-0">
-      <summary className="cursor-pointer list-none transition-colors">
+    <div className="token-chrome-card border-b border-[var(--chrome-border-soft)] last:border-b-0">
+      <div>
         <Container className="grid gap-3 py-4">
-          <div className="flex items-start justify-between gap-6">
+          <button
+            aria-controls={contentId}
+            aria-expanded={isOpen}
+            className="flex w-full cursor-pointer items-start justify-between gap-6 text-left"
+            onClick={() => setIsOpen((currentValue) => !currentValue)}
+            type="button"
+          >
             <div className="min-w-0">
               <p className="text-sm font-semibold uppercase tracking-widest">
                 {item.label}
@@ -75,11 +87,11 @@ function EmptySubAccordion({
 
             <span
               aria-hidden="true"
-              className="token-chrome-badge flex size-8 shrink-0 items-center justify-center border transition-transform group-open/item:rotate-180"
+              className={`token-chrome-badge flex size-8 shrink-0 items-center justify-center border transition-transform ${isOpen ? "rotate-180" : ""}`}
             >
               <DownArrowIcon className="size-3.5" />
             </span>
-          </div>
+          </button>
 
           {item.variants ? (
             <div className="grid gap-2">
@@ -116,18 +128,35 @@ function EmptySubAccordion({
             </div>
           ) : null}
         </Container>
-      </summary>
-
-      <div className="border-t border-[var(--chrome-border-soft)] text-service-ink">
-        <SectionLibraryPreviewFrame fitLandscapeCanvas={fitLandscapeCanvas}>
-          {element ?? (
-            <Container>
-              <div className="min-h-48" />
-            </Container>
-          )}
-        </SectionLibraryPreviewFrame>
       </div>
-    </details>
+
+      <AnimatePresence initial={false}>
+        {isOpen ? (
+          <motion.div
+            animate={{ height: "auto", opacity: 1 }}
+            className="overflow-hidden"
+            exit={{ height: 0, opacity: 0 }}
+            id={contentId}
+            initial={{ height: 0, opacity: 0 }}
+            transition={
+              shouldReduceMotion
+                ? { duration: 0 }
+                : { duration: 0.34, ease: accordionEase }
+            }
+          >
+            <div className="border-t border-[var(--chrome-border-soft)] text-service-ink">
+              <SectionLibraryPreviewFrame fitLandscapeCanvas={fitLandscapeCanvas}>
+                {element ?? (
+                  <Container>
+                    <div className="min-h-48" />
+                  </Container>
+                )}
+              </SectionLibraryPreviewFrame>
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </div>
   );
 }
 
