@@ -65,6 +65,8 @@ import {
 } from "@/components/sections/HeroSplitFullHeightSectionV3";
 import { FooterSectionV2 } from "@/components/sections/FooterSectionV2";
 import { FooterLinkPanelSectionV3 } from "@/components/sections/FooterLinkPanelSectionV3";
+import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
+import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import {
   NavCenterLogoSectionV2,
   NavPrimarySectionV2,
@@ -76,10 +78,10 @@ import {
   ServicesBentoCardsSectionV2,
   type ServicesBentoCardsVariant,
 } from "@/components/sections/ServicesBentoCardsSectionV2";
-import { ServicesCards13ColSection } from "@/components/sections/ServicesCards13ColSection";
 import { ServicesHoverPanelSectionV2 } from "@/components/sections/ServicesHoverPanelSectionV2";
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { ServiceAreaZipLookupSectionV3 } from "@/components/sections/ServiceAreaZipLookupSectionV3";
+import { ThankYouConfirmationSectionV3 } from "@/components/sections/ThankYouConfirmationSectionV3";
 import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/ServicesThreeCardsRightSectionV3";
 import { TestimonialsCarouselSectionV3 } from "@/components/sections/TestimonialsCarouselSectionV3";
 import { TestimonialsCarouselCondensedSectionV3 } from "@/components/sections/TestimonialsCarouselCondensedSectionV3";
@@ -291,8 +293,20 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           variant={getServicesBentoVariant(section)}
         />
       );
-    case "ServicesCards13ColSection":
-      return <ServicesCards13ColSection {...sectionLibraryV3Content.servicesBento} />;
+    case "FourCardLinkGridSectionV3":
+      return (
+        <FourCardLinkGridSectionV3
+          {...sectionLibraryV3Content.fourCardLinkGrid}
+          showImages={section.variant !== "text-only"}
+        />
+      );
+    case "ThreeCardLinkGridSectionV3":
+      return (
+        <ThreeCardLinkGridSectionV3
+          {...sectionLibraryV3Content.threeCardLinkGrid}
+          showImages={section.variant !== "text-only"}
+        />
+      );
     case "ServicesHoverPanelSectionV2":
       return (
         <ServicesHoverPanelSectionV2
@@ -510,6 +524,13 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       );
     case "ContactSectionV3":
       return <ContactSectionV3 {...sectionLibraryV3Content.contact} />;
+    case "ThankYouConfirmationSectionV3":
+      return (
+        <ThankYouConfirmationSectionV3
+          {...sectionLibraryV3Content.thankYouConfirmation}
+          headingLevel={2}
+        />
+      );
     case "ContactSectionModalBegin":
       return (
         <ContactSectionModalBegin
@@ -793,18 +814,17 @@ export function PagebuilderSection() {
       "Services card carousel",
       3,
     ),
-    ServicesCards13ColSection: (
-      <div key="ServicesCards13ColSection">
-        {renderPreviewSection(
-          {
-            component: "ServicesCards13ColSection",
-            instruction: "",
-            mode: "Scan",
-            name: "Service cards 13col",
-          },
-          2,
-        )}
-      </div>
+    FourCardLinkGridSectionV3: previewCatalogEntry(
+      "FourCardLinkGridSectionV3",
+      "Scan",
+      "Card Links 4 Up",
+      3,
+    ),
+    ThreeCardLinkGridSectionV3: previewCatalogEntry(
+      "ThreeCardLinkGridSectionV3",
+      "Scan",
+      "Card Links 3 Up",
+      3,
     ),
     HeroServicesSectionV3: (
       <div key="HeroServicesSectionV3">
@@ -1115,6 +1135,12 @@ export function PagebuilderSection() {
           7,
         )}
       </div>
+    ),
+    ThankYouConfirmationSectionV3: previewCatalogEntry(
+      "ThankYouConfirmationSectionV3",
+      "Utility",
+      "Thank you confirmation",
+      7,
     ),
     FooterSectionV3: (
       <div key="FooterSectionV3">

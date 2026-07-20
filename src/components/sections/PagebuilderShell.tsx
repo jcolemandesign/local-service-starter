@@ -26,6 +26,8 @@ import {
   ServicesBentoCardsSectionV2,
   type ServicesBentoCardsVariant,
 } from "@/components/sections/ServicesBentoCardsSectionV2";
+import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
+import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
 import { ContentStickyCardStreamSectionV2 } from "@/components/sections/ContentStickyCardStreamSectionV2";
 import { DownArrowIcon } from "@/components/primitives";
@@ -70,8 +72,17 @@ const heroCompactComponent = "HeroCompactSectionV3";
 const heroServicesComponent = "HeroServicesSectionV3";
 const sectionHeaderCompactComponent = "SectionHeaderCompactSectionV3";
 const servicesBentoComponent = "ServicesBentoCardsSectionV2";
+const fourCardLinkGridComponent = "FourCardLinkGridSectionV3";
+const threeCardLinkGridComponent = "ThreeCardLinkGridSectionV3";
 const contentSplitHeadlineImageComponent = "ContentSplitHeadlineImageSectionV2";
 const contentStickyCardStreamComponent = "ContentStickyCardStreamSectionV2";
+const fourCardLinkGridVariantOptions = [
+  { label: "Images", value: "with-images" },
+  { label: "No images", value: "text-only" },
+] as const;
+type FourCardLinkGridVariant =
+  (typeof fourCardLinkGridVariantOptions)[number]["value"];
+type ThreeCardLinkGridVariant = FourCardLinkGridVariant;
 const splitContentImageVariantOptions = [
   {
     label: "Text 3 / Image 4",
@@ -360,6 +371,22 @@ function isServicesBentoSection(section: PagebuilderRecipe["sectionStack"][numbe
   return section.component === servicesBentoComponent;
 }
 
+function isFourCardLinkGridSection(
+  section: PagebuilderRecipe["sectionStack"][number],
+) {
+  return section.component === fourCardLinkGridComponent;
+}
+
+function isThreeCardLinkGridSection(
+  section: PagebuilderRecipe["sectionStack"][number],
+) {
+  return section.component === threeCardLinkGridComponent;
+}
+
+function isCardLinkGridSection(section: PagebuilderRecipe["sectionStack"][number]) {
+  return isFourCardLinkGridSection(section) || isThreeCardLinkGridSection(section);
+}
+
 function getSectionColorRecipe(section: WorkingSection): SectionColorRecipe {
   return isSectionColorRecipe(section.colorRecipe) ? section.colorRecipe : "default";
 }
@@ -402,6 +429,18 @@ function getServicesBentoVariant(section: WorkingSection) {
     : servicesBentoVariantOptions[0].value;
 }
 
+function getFourCardLinkGridVariant(
+  section: WorkingSection,
+): FourCardLinkGridVariant {
+  return section.variant === "text-only" ? "text-only" : "with-images";
+}
+
+function getCardLinkGridVariant(
+  section: WorkingSection,
+): ThreeCardLinkGridVariant {
+  return section.variant === "text-only" ? "text-only" : "with-images";
+}
+
 function createInitialDesignStyle(): DesignStyleSettings {
   return {
     showSectionMarkers: false,
@@ -439,7 +478,11 @@ function createInitialWorkingStack(
               ? section.variant ?? sectionLibraryV3Content.heroCompact.align
               : isServicesBentoSection(section)
                 ? section.variant ?? servicesBentoVariantOptions[0].value
-              : section.variant,
+              : isFourCardLinkGridSection(section)
+                ? section.variant ?? fourCardLinkGridVariantOptions[0].value
+                : isThreeCardLinkGridSection(section)
+                  ? section.variant ?? fourCardLinkGridVariantOptions[0].value
+                : section.variant,
   }));
 }
 
@@ -545,6 +588,8 @@ function updateSectionFromSwapOption(
               ? sectionLibraryV3Content.heroCompact.align
               : nextOption.component === servicesBentoComponent
                 ? servicesBentoVariantOptions[0].value
+              : nextOption.component === fourCardLinkGridComponent
+                ? fourCardLinkGridVariantOptions[0].value
               : undefined,
   };
 }
@@ -656,7 +701,17 @@ function slugifyTemplateName(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-const sectionSwapOptions = [
+type SectionLayoutGrid = 7 | 14;
+
+type SectionSwapOption = {
+  component: string;
+  instruction: string;
+  layoutGrid?: SectionLayoutGrid;
+  mode: string;
+  name: string;
+};
+
+const sectionSwapOptions: readonly SectionSwapOption[] = [
   {
     component: "NavPrimarySectionV2",
     instruction:
@@ -735,18 +790,27 @@ const sectionSwapOptions = [
     name: "Compact section header",
   },
   {
+    component: "FourCardLinkGridSectionV3",
+    instruction:
+      "Show four linked cards on the shared 14-column grid. Each card spans three columns, leaving the first and last columns open; images may be toggled off for a shorter text-only layout.",
+    layoutGrid: 14,
+    mode: "Scan",
+    name: "Card Links 4 Up",
+  },
+  {
+    component: "ThreeCardLinkGridSectionV3",
+    instruction:
+      "Show three linked cards on the shared 14-column grid. Each card spans four columns, leaving the first and last columns open; images may be toggled off for a shorter text-only layout.",
+    layoutGrid: 14,
+    mode: "Scan",
+    name: "Card Links 3 Up",
+  },
+  {
     component: "ServicesBentoCardsSectionV2",
     instruction:
       "Use 6-9 bento-style service cards for a fuller service scan. The fixed layout rhythm is big small small, small small big, then big small small.",
     mode: "Scan",
     name: "Services bento cards",
-  },
-  {
-    component: "ServicesCards13ColSection",
-    instruction:
-      "Use 6-9 service cards in a 13-column auto-packed grid. Prefix higher-priority services with [large] or [featured] so they span 3 columns; standard cards span 2 columns and backfill available row space.",
-    mode: "Scan",
-    name: "Service cards 13col",
   },
   {
     component: "ServicesHoverPanelSectionV2",
@@ -1071,6 +1135,13 @@ const sectionSwapOptions = [
     name: "Contact section modal begin",
   },
   {
+    component: "ThankYouConfirmationSectionV3",
+    instruction:
+      "Confirm that a request was received, explain the follow-up sequence, and provide clear home and services exit paths.",
+    mode: "Utility",
+    name: "Thank you confirmation",
+  },
+  {
     component: "FooterSectionV3",
     instruction:
       "End with service links, areas, contact details, and legal links.",
@@ -1100,7 +1171,6 @@ const sectionSwapOptions = [
   },
 ] as const;
 
-type SectionSwapOption = (typeof sectionSwapOptions)[number];
 type InnerOptionSignifier = {
   label: string;
   pattern: "align" | "full" | "fixed";
@@ -1132,7 +1202,40 @@ const innerOptionSignifiers: Partial<
 };
 
 function getInnerOptionSignifier(component: string) {
-  return innerOptionSignifiers[component as SectionSwapOption["component"]];
+  return innerOptionSignifiers[component];
+}
+
+function getSectionLayoutGrid(component: string): SectionLayoutGrid {
+  return (
+    sectionSwapOptions.find((option) => option.component === component)
+      ?.layoutGrid ?? 7
+  );
+}
+
+function SectionLayoutGridBadge({
+  component,
+  tone,
+}: {
+  component: string;
+  tone: "dark" | "light";
+}) {
+  if (getSectionLayoutGrid(component) !== 14) {
+    return null;
+  }
+
+  return (
+    <span
+      className={cx(
+        "inline-flex shrink-0 items-center rounded-[var(--chrome-radius-control)] border px-1.5 py-0.5 text-[0.5625rem] font-semibold uppercase leading-none tracking-[0.06em]",
+        tone === "dark"
+          ? "token-chrome-badge"
+          : "border-service-border bg-service-surface text-service-muted",
+      )}
+      title="Uses the shared 14-column fine grid"
+    >
+      14 col
+    </span>
+  );
 }
 
 function InnerLayoutPill({
@@ -1200,8 +1303,8 @@ function buildPageInstruction({
     ``,
     `Style rules:`,
     ...recipe.styleRules.map((rule) => `- ${rule}`),
-    `- Use the universal SevenColumnGrid / SevenColumnGridItem system where an equivalent current section exists.`,
-    `- Use common regular/medium section spacing through section-space-med or SevenColumnGrid padding="med", unless a real hero/footer pattern requires its established spacing.`,
+    `- Use the shared LayoutGrid / LayoutGridItem system with the registered 7- or 14-column layout. Existing SevenColumnGrid sections remain valid through the compatibility wrapper.`,
+    `- Use common regular/medium section spacing through section-space-med or LayoutGrid padding="med", unless a real hero/footer pattern requires its established spacing.`,
     `- Use the existing project typography, radius, surface, and color tokens.`,
     ``,
     `Included section order:`,
@@ -1210,6 +1313,7 @@ function buildPageInstruction({
         `${index + 1}. ${section.component}
    Name: ${section.name}
    Mode: ${section.mode}
+   Layout grid: ${getSectionLayoutGrid(section.component)} columns
    ${
      isSplitContentImageSection(section)
        ? `Variant: ${
@@ -1230,6 +1334,18 @@ function buildPageInstruction({
              getServicesBentoVariantLabel(section.variant) ??
              servicesBentoVariantOptions[0].label
            } (${section.variant ?? servicesBentoVariantOptions[0].value})`
+       : isFourCardLinkGridSection(section)
+         ? `Variant: ${
+             getFourCardLinkGridVariant(section) === "with-images"
+               ? "Images"
+               : "No images"
+           } (${getFourCardLinkGridVariant(section)})`
+       : isThreeCardLinkGridSection(section)
+         ? `Variant: ${
+             getCardLinkGridVariant(section) === "with-images"
+               ? "Images"
+               : "No images"
+           } (${getCardLinkGridVariant(section)})`
        : "Variant: default"
    }
        Instruction: ${section.instruction}
@@ -1306,6 +1422,22 @@ function PaddingPrismIcon({
         )}
       />
     </span>
+  );
+}
+
+function CardImageIcon({ hidden }: { hidden?: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <rect height="14" rx="1.5" stroke="currentColor" strokeWidth="1.75" width="18" x="3" y="5" />
+      <circle cx="8" cy="10" fill="currentColor" r="1.4" />
+      <path d="m5 17 4.25-4.25L12 15.5l2.25-2.25L19 18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" />
+      {hidden ? <path d="M4 4 20 20" stroke="currentColor" strokeLinecap="round" strokeWidth="2" /> : null}
+    </svg>
   );
 }
 
@@ -1893,6 +2025,20 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateCardLinkGridVariant(
+    sectionId: string,
+    variant: ThreeCardLinkGridVariant,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && isCardLinkGridSection(section)
+          ? { ...section, variant }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateFixedRatioSplitRatio(
     sectionId: string,
     ratio: FixedRatioSplitRatio,
@@ -1951,6 +2097,10 @@ export function PagebuilderShell({
                 ? sectionLibraryV3Content.heroCompact.align
                 : nextOption.component === servicesBentoComponent
                   ? servicesBentoVariantOptions[0].value
+                : nextOption.component === fourCardLinkGridComponent
+                  ? fourCardLinkGridVariantOptions[0].value
+                  : nextOption.component === threeCardLinkGridComponent
+                    ? fourCardLinkGridVariantOptions[0].value
                 : undefined,
     };
 
@@ -2234,6 +2384,16 @@ export function PagebuilderShell({
           <ContentStickyCardStreamSectionV2
             {...sectionLibraryV3Content.contentStickyCardStream}
             colorRecipe={getSectionColorRecipe(section)}
+          />
+        ) : isFourCardLinkGridSection(section) ? (
+          <FourCardLinkGridSectionV3
+            {...sectionLibraryV3Content.fourCardLinkGrid}
+            showImages={getFourCardLinkGridVariant(section) === "with-images"}
+          />
+        ) : isThreeCardLinkGridSection(section) ? (
+          <ThreeCardLinkGridSectionV3
+            {...sectionLibraryV3Content.threeCardLinkGrid}
+            showImages={getCardLinkGridVariant(section) === "with-images"}
           />
         ) : isServicesBentoSection(section) ? (
           <ServicesBentoCardsSectionV2
@@ -2579,16 +2739,22 @@ export function PagebuilderShell({
                               {section.name}
                             </span>
                           </span>
-                          <span
-                            aria-hidden="true"
-                            className={cx(
-                              "mt-1 flex size-7 shrink-0 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-transform",
-                              isActive
-                                ? "rotate-180 border-[var(--chrome-border-strong)] text-[var(--chrome-accent)]"
-                                : "token-chrome-badge",
-                            )}
-                          >
-                            <DownArrowIcon className="size-3.5" />
+                          <span className="mt-1 flex shrink-0 items-center gap-1.5">
+                            <SectionLayoutGridBadge
+                              component={section.component}
+                              tone="dark"
+                            />
+                            <span
+                              aria-hidden="true"
+                              className={cx(
+                                "flex size-7 shrink-0 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-transform",
+                                isActive
+                                  ? "rotate-180 border-[var(--chrome-border-strong)] text-[var(--chrome-accent)]"
+                                  : "token-chrome-badge",
+                              )}
+                            >
+                              <DownArrowIcon className="size-3.5" />
+                            </span>
                           </span>
                         </button>
                       </div>
@@ -2710,6 +2876,12 @@ export function PagebuilderShell({
                             </div>
                           </fieldset>
 
+                          <div
+                            className={cx(
+                              "grid gap-4",
+                              isCardLinkGridSection(section) && "grid-cols-2 items-start",
+                            )}
+                          >
                           <fieldset className="grid gap-2">
                             <legend className="type-caption font-semibold text-current">
                               Section spacing
@@ -2766,10 +2938,54 @@ export function PagebuilderShell({
                                 </span>
                               </button>
                             </div>
-                            <p className="type-caption text-current/60">
-                              Highlight the top or bottom slot to tighten that edge.
-                            </p>
                           </fieldset>
+
+                          {isCardLinkGridSection(section) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Card images
+                              </legend>
+                              <div className="flex items-center gap-2">
+                                {fourCardLinkGridVariantOptions.map((option) => {
+                                  const optionIsActive =
+                                    getCardLinkGridVariant(section) === option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                        optionIsActive && "token-chrome-card-active",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateCardLinkGridVariant(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      title={
+                                        option.value === "with-images"
+                                          ? "Show card images"
+                                          : "Hide card images"
+                                      }
+                                      type="button"
+                                    >
+                                      <CardImageIcon
+                                        hidden={option.value === "text-only"}
+                                      />
+                                      <span className="sr-only">
+                                        {option.value === "with-images"
+                                          ? "Show card images"
+                                          : "Hide card images"}
+                                      </span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </fieldset>
+                          ) : null}
+                          </div>
 
                           {isSplitContentImageSection(section) ? (
                             <fieldset className="grid gap-2">
@@ -3110,6 +3326,10 @@ export function PagebuilderShell({
                                 ) : null}
                               </span>
                               <span className="flex items-center gap-1.5">
+                                <SectionLayoutGridBadge
+                                  component={option.component}
+                                  tone="dark"
+                                />
                                 {isRecentlyAdded ? (
                                   <span className="text-xs font-semibold">Added</span>
                                 ) : null}
@@ -3434,9 +3654,15 @@ export function PagebuilderShell({
                                         />
                                       ) : null}
                                     </span>
-                                    {isRecentlyAdded ? (
-                                      <span className="text-xs font-semibold">Added</span>
-                                    ) : null}
+                                    <span className="flex items-center gap-1.5">
+                                      <SectionLayoutGridBadge
+                                        component={option.component}
+                                        tone="light"
+                                      />
+                                      {isRecentlyAdded ? (
+                                        <span className="text-xs font-semibold">Added</span>
+                                      ) : null}
+                                    </span>
                                   </button>
                                 );
                               })}

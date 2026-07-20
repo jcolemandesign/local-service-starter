@@ -460,18 +460,58 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
-  if (
-    component.includes("servicesbentocards") ||
-    component.includes("servicescards13col")
-  ) {
-    const isThirteenColumnLayout = component.includes("servicescards13col");
-    const layoutRhythm = isThirteenColumnLayout
-      ? "13-column auto-packed grid with [large] cards spanning 3 columns and standard cards spanning 2 columns"
-      : "big small small, small small big, big small small";
-    const prioritySlotGuidance = isThirteenColumnLayout
-      ? "Prefix higher-priority services with [large] or [featured]. Use standard unprefixed items for supporting services so smaller cards can backfill available row space."
-      : "Put the most important services in positions 1, 6, and 7 because those render as the larger slots.";
+  if (component.includes("threecardlinkgrid")) {
+    return [
+      {
+        example: [
+          "System Replacement - Compare replacement options when an older system is no longer dependable. -> /services/system-replacement",
+          "HVAC Repair - Review common repair needs and what to expect before service begins. -> /services/hvac-repair",
+          "Maintenance Plans - Keep seasonal service organized with recurring visits. -> /maintenance-plan",
+        ],
+        format:
+          "Exactly three lines as Title - Description -> /destination-path.",
+        name: "serviceItems",
+        purpose:
+          "Three linked cards. Their order maps left to right across the centered 14-column layout.",
+        target:
+          "Exactly 3 items. Titles 12-38 characters. Descriptions 80-160 characters. Every item needs a valid internal destination path.",
+      },
+      {
+        example: "Learn more",
+        name: "linkLabel",
+        purpose: "Shared action label shown at the bottom of every card.",
+        target: "8-20 characters.",
+      },
+    ];
+  }
 
+  if (component.includes("fourcardlinkgrid")) {
+    return [
+      {
+        example: [
+          "System Replacement - Compare replacement options when an older system is no longer dependable. -> /services/system-replacement",
+          "HVAC Repair - Review common repair needs and what to expect before service begins. -> /services/hvac-repair",
+          "Maintenance Plans - Keep seasonal service organized with recurring visits. -> /maintenance-plan",
+          "Indoor Air Quality - Explore filtration, humidity, ventilation, and airflow options. -> /services/indoor-air-quality",
+        ],
+        format:
+          "Exactly four lines as Title - Description -> /destination-path.",
+        name: "serviceItems",
+        purpose:
+          "Four linked cards. Their order maps left to right across the centered 14-column layout.",
+        target:
+          "Exactly 4 items. Titles 12-38 characters. Descriptions 80-160 characters. Every item needs a valid internal destination path.",
+      },
+      {
+        example: "Learn more",
+        name: "linkLabel",
+        purpose: "Shared action label shown at the bottom of every card.",
+        target: "8-20 characters.",
+      },
+    ];
+  }
+
+  if (component.includes("servicesbentocards")) {
     return [
       {
         example: "HVAC services",
@@ -494,27 +534,23 @@ export function getTemplateCopyFieldsForSection(
       },
       {
         example: [
-          "[large] System Replacement - Compare repair and replacement paths when an older system is no longer dependable.",
+          "System Replacement - Compare repair and replacement paths when an older system is no longer dependable.",
           "HVAC Repair - Diagnose heating and cooling problems and review the practical repair path.",
           "AC Repair - Address cooling failures, weak airflow, and performance concerns.",
           "Heating Repair - Resolve heating issues with clear options before work begins.",
           "Seasonal Tune-Ups - Prepare equipment before peak heating or cooling demand.",
-          "[large] Maintenance & Tune-Ups - Schedule seasonal care to review operation and identify developing concerns.",
-          "[large] Heat Pump Service - Plan heat pump repair, maintenance, or replacement around the system.",
+          "Maintenance & Tune-Ups - Schedule seasonal care to review operation and identify developing concerns.",
+          "Heat Pump Service - Plan heat pump repair, maintenance, or replacement around the system.",
           "Emergency HVAC Service - Route urgent heating or cooling problems to a direct call path.",
           "Indoor Air Quality - Review practical options for filtration, airflow, humidity, and indoor environment concerns.",
         ],
         format:
-          isThirteenColumnLayout
-            ? `One item per line as optional [large] marker + Title - Description. Use 6-9 items. Layout: ${layoutRhythm}.`
-            : `One item per line as Title - Description. Use 6-9 items. The layout is capped at 9 and follows this fixed rhythm by item order: ${layoutRhythm}.`,
+          "One item per line as Title - Description. Use 6-9 items. The layout is capped at 9 and follows this fixed rhythm by item order: big small small, small small big, big small small.",
         name: "serviceItems",
         purpose:
-          isThirteenColumnLayout
-            ? "A fuller service scan where [large] marks the wider visual cards and order controls reading priority."
-            : "A fuller service scan where item order controls the larger visual slots.",
+          "A fuller service scan where item order controls the larger visual slots.",
         target:
-          `6-9 items. ${prioritySlotGuidance} Titles 12-38 characters. Descriptions 80-170 characters.`,
+          "6-9 items. Put the most important services in positions 1, 6, and 7 because those render as the larger slots. Titles 12-38 characters. Descriptions 80-170 characters.",
       },
       {
         example: "View All Services",

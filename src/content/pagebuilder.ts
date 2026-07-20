@@ -779,13 +779,6 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
           "Use 6-9 bento-style service or product cards. The fixed layout rhythm is big small small, small small big, then big small small.",
       },
       {
-        name: "Service cards 13col",
-        component: "ServicesCards13ColSection",
-        mode: "Scan",
-        instruction:
-          "Use 6-9 service cards in a 13-column auto-packed grid. Prefix higher-priority services with [large] or [featured] so they span 3 columns; standard cards span 2 columns and backfill available row space.",
-      },
-      {
         name: "Process steps",
         component: "ProcessStepsSectionV3",
         mode: "Decision",
@@ -805,6 +798,40 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
         mode: "Utility",
         instruction:
           "Close with a request path for help choosing the right product or system.",
+      },
+    ],
+  },
+  {
+    id: "thank-you",
+    name: "Thank You",
+    positioning:
+      "Post-submission confirmation page for acknowledging the request, setting follow-up expectations, and giving visitors clear exit paths.",
+    styleRules: [
+      "Keep the confirmation message immediate and unambiguous.",
+      "Explain what happens next without promising an appointment or response time that has not been confirmed.",
+      "Keep the page short and avoid introducing another conversion form after submission.",
+    ],
+    sectionStack: [
+      {
+        name: "Primary navigation",
+        component: "NavPrimarySectionV2",
+        mode: "Navigation",
+        instruction:
+          "Use the standard navigation so visitors can return to core site paths after submitting their request.",
+      },
+      {
+        name: "Thank you confirmation",
+        component: "ThankYouConfirmationSectionV3",
+        mode: "Utility",
+        instruction:
+          "Confirm receipt, explain the follow-up sequence, and provide clear links back home or into services.",
+      },
+      {
+        name: "Condensed footer",
+        component: "FooterCompactSectionV3",
+        mode: "Utility",
+        instruction:
+          "Close with only the essential navigation, contact, social, and legal links.",
       },
     ],
   },

@@ -231,6 +231,8 @@ function getSectionContent(component: string): ContentSourceValue | null {
     ContactSectionV2: sectionLibraryV3Content.contact,
     ContactSectionV3: sectionLibraryV3Content.contact,
     ContactSectionModalBegin: sectionLibraryV3Content.contactModalBegin,
+    ThankYouConfirmationSectionV3:
+      sectionLibraryV3Content.thankYouConfirmation,
     ContentAboutCompanySectionV2: sectionLibraryV3Content.contentAboutCompany,
     ContentFixedCoverFadeSectionV2: sectionLibraryV3Content.contentFixedCoverFade,
     ContentHorizontalCardCarouselSectionV2:
@@ -273,6 +275,7 @@ function getSectionContent(component: string): ContentSourceValue | null {
     HeroFullscreenSectionV2: sectionLibraryV3Content.heroFullscreen,
     HeroSplitFixedImageSectionV3: sectionLibraryV3Content.heroSplitFullHeight,
     HeroSplitFullHeightSectionV3: sectionLibraryV3Content.heroSplitFullHeight,
+    FourCardLinkGridSectionV3: sectionLibraryV3Content.fourCardLinkGrid,
     NavCenterLogoSectionV2: getNavigationContent(),
     NavFloatingBentoSectionV2: getNavigationContent(),
     NavPrimarySectionV2: getNavigationContent(),
@@ -280,7 +283,6 @@ function getSectionContent(component: string): ContentSourceValue | null {
     ProcessStepsSectionV3: sectionLibraryV3Content.process,
     ServiceAreaZipLookupSectionV3: sectionLibraryV3Content.serviceAreaZipLookup,
     ServicesBentoCardsSectionV2: sectionLibraryV3Content.servicesBento,
-    ServicesCards13ColSection: sectionLibraryV3Content.servicesBento,
     ServicesHoverPanelSectionV2: sectionLibraryV3Content.servicesHoverPanel,
     ServicesScrollCardsSectionV2: sectionLibraryV3Content.servicesScrollCards,
     ServicesThreeCardsRightSectionV3:

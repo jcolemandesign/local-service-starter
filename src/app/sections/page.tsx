@@ -32,6 +32,8 @@ import {
   FooterHorizontalSectionV3,
   FooterLinkPanelSectionV3,
   FooterSectionV3,
+  FourCardLinkGridSectionV3,
+  ThreeCardLinkGridSectionV3,
   HeroCenteredFloatersSectionV2,
   HeroCompactSectionV3,
   HeroServicesSectionV3,
@@ -44,7 +46,6 @@ import {
   ProcessStepsSectionV3,
   QuickPageLinksSectionV2,
   ServicesBentoCardsSectionV2,
-  ServicesCards13ColSection,
   ServicesHoverPanelSectionV2,
   ServicesScrollCardsSectionV2,
   SectionHeaderCompactSectionV3,
@@ -55,6 +56,7 @@ import {
   TestimonialsCarouselSectionV3,
   TestimonialsMasonrySectionV3,
   TestimonialsSectionV3,
+  ThankYouConfirmationSectionV3,
   TrustBarBentoAboutSectionV3,
   TrustBarFloatingBentoSectionV3,
   TrustBarSectionV3,
@@ -244,8 +246,15 @@ const sectionElements = {
   "services-bento-cards-v2": (
     <ServicesBentoCardsSectionV2 {...sectionLibraryV3Content.servicesBento} />
   ),
-  "service-cards-13col": (
-    <ServicesCards13ColSection {...sectionLibraryV3Content.servicesBento} />
+  "four-card-link-grid-v3": (
+    <FourCardLinkGridSectionV3
+      {...sectionLibraryV3Content.fourCardLinkGrid}
+    />
+  ),
+  "three-card-link-grid-v3": (
+    <ThreeCardLinkGridSectionV3
+      {...sectionLibraryV3Content.threeCardLinkGrid}
+    />
   ),
   "services-hover-panel-v2": (
     <ServicesHoverPanelSectionV2
@@ -306,6 +315,12 @@ const sectionElements = {
   "contact-modal-begin-v3": (
     <ContactSectionModalBegin
       {...sectionLibraryV3Content.contactModalBegin}
+    />
+  ),
+  "thank-you-confirmation-v3": (
+    <ThankYouConfirmationSectionV3
+      {...sectionLibraryV3Content.thankYouConfirmation}
+      headingLevel={2}
     />
   ),
   "footer-v3": <FooterSectionV3 {...sectionLibraryV3Content.footer} />,

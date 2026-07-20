@@ -1,7 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useState } from "react";
+import Link from "next/link";
+import { type UIEvent, useRef, useState } from "react";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
@@ -13,6 +14,7 @@ type HoverServiceItem = {
   title: string;
   body: string;
   imageLabel: string;
+  href?: string;
 };
 
 type ServicesHoverPanelSectionV2Props = {
@@ -35,6 +37,21 @@ function PlaceholderBackground() {
   );
 }
 
+function getServiceHref(item: HoverServiceItem) {
+  if (item.href) {
+    return item.href;
+  }
+
+  const slug = item.title
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  return `/services/${slug}`;
+}
+
 export function ServicesHoverPanelSectionV2({
   eyebrow,
   title,
@@ -42,6 +59,7 @@ export function ServicesHoverPanelSectionV2({
   items,
 }: ServicesHoverPanelSectionV2Props) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const mobileTrackRef = useRef<HTMLDivElement | null>(null);
   const activeItem = items[activeIndex];
   const shouldReduceMotion = useReducedMotion();
   const panelTransition = shouldReduceMotion
@@ -50,6 +68,41 @@ export function ServicesHoverPanelSectionV2({
   const textTransition = shouldReduceMotion
     ? { duration: 0 }
     : { duration: 0.1, ease: servicePanelEase };
+
+  const handleMobileScroll = (event: UIEvent<HTMLDivElement>) => {
+    const track = event.currentTarget;
+    const slides = Array.from(track.children) as HTMLElement[];
+
+    if (slides.length === 0) {
+      return;
+    }
+
+    const nextIndex = slides.reduce((closestIndex, slide, index) => {
+      const closestDistance = Math.abs(
+        slides[closestIndex].offsetLeft - track.scrollLeft,
+      );
+      const currentDistance = Math.abs(slide.offsetLeft - track.scrollLeft);
+
+      return currentDistance < closestDistance ? index : closestIndex;
+    }, 0);
+
+    setActiveIndex(nextIndex);
+  };
+
+  const scrollToMobileSlide = (index: number) => {
+    const track = mobileTrackRef.current;
+    const slide = track?.children.item(index) as HTMLElement | null;
+
+    if (!track || !slide) {
+      return;
+    }
+
+    track.scrollTo({
+      behavior: shouldReduceMotion ? "auto" : "smooth",
+      left: slide.offsetLeft,
+    });
+    setActiveIndex(index);
+  };
 
   return (
     <section className="bg-bg-page">
@@ -76,7 +129,7 @@ export function ServicesHoverPanelSectionV2({
             {body}
           </p>
 
-          <ul className="mt-body-actions-md grid gap-2">
+          <ul className="mt-body-actions-md grid gap-2 max-lg:hidden">
             {items.map((item, index) => {
               const isActive = index === activeIndex;
 
@@ -117,7 +170,7 @@ export function ServicesHoverPanelSectionV2({
           alignX="stretch"
           alignY="stretch"
           className={cx(
-            "col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1",
+            "col-span-4 col-start-4 max-lg:hidden",
           )}
         >
           <div
@@ -203,6 +256,79 @@ export function ServicesHoverPanelSectionV2({
                 </motion.div>
               </AnimatePresence>
             </article>
+          </div>
+        </SevenColumnGridItem>
+
+        <SevenColumnGridItem
+          alignX="stretch"
+          alignY="stretch"
+          className="col-span-7 hidden max-lg:block"
+        >
+          <div
+            aria-label="Services carousel"
+            className="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            onScroll={handleMobileScroll}
+            ref={mobileTrackRef}
+            role="region"
+          >
+            {items.map((item) => (
+              <article
+                className="radius-medium media-min-medium relative flex w-full shrink-0 snap-start snap-always items-end overflow-hidden border border-service-border bg-service-ink text-white shadow-service"
+                key={item.title}
+              >
+                <PlaceholderBackground />
+                <div className="absolute inset-0 bg-service-ink/45" aria-hidden="true" />
+                <div
+                  className="absolute inset-0 bg-linear-to-t from-service-ink via-service-ink/55 to-service-ink/10"
+                  aria-hidden="true"
+                />
+
+                <div className="content-padding fluid-type-frame relative z-10 flex w-full flex-col items-start">
+                  <p className="type-label text-white/70">{item.imageLabel}</p>
+                  <h3 className="type-heading-lg mt-5 text-white">
+                    {item.title}
+                  </h3>
+                  <p className="type-text-lg measure-copy wrap-pretty mt-6 text-white/80">
+                    {item.body}
+                  </p>
+                  <Link
+                    aria-label={`Learn more about ${item.title}`}
+                    className="type-text-md mt-body-actions-md inline-flex min-h-11 items-center gap-2 border-b border-white/60 font-semibold text-white transition-colors hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                    href={getServiceHref(item)}
+                  >
+                    Learn More <span aria-hidden="true">&rarr;</span>
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div
+            aria-label="Choose a service slide"
+            className="mt-inline-sml flex items-center justify-center"
+            role="group"
+          >
+            {items.map((item, index) => {
+              const isActive = index === activeIndex;
+
+              return (
+                <button
+                  aria-current={isActive ? "true" : undefined}
+                  aria-label={`Show ${item.title}`}
+                  className="group/slide-dot flex size-7 cursor-pointer items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-service-accent"
+                  key={item.title}
+                  onClick={() => scrollToMobileSlide(index)}
+                  type="button"
+                >
+                  <span
+                    className={cx(
+                      "size-2.5 rounded-full border border-service-accent transition-colors group-hover/slide-dot:bg-service-accent/35",
+                      isActive ? "bg-service-accent" : "bg-transparent",
+                    )}
+                  />
+                </button>
+              );
+            })}
           </div>
         </SevenColumnGridItem>
       </SevenColumnGrid>

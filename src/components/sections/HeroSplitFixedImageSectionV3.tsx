@@ -1,5 +1,4 @@
 import Image from "next/image";
-import type { CSSProperties } from "react";
 import {
   Button,
   SevenColumnGrid,
@@ -80,27 +79,6 @@ const ratioClassNames: Record<HeroSplitFixedImageRatio, string> = {
   "4-5": "aspect-[4/5]",
 };
 
-const ratioMaxWidthStyles: Record<HeroSplitFixedImageRatio, CSSProperties> = {
-  "3-2": {
-    maxWidth: "calc((100svh - (var(--site-grid-inset-block) * 2)) * 3 / 2)",
-  },
-  "2-3": {
-    maxWidth: "calc((100svh - (var(--site-grid-inset-block) * 2)) * 2 / 3)",
-  },
-  "4-3": {
-    maxWidth: "calc((100svh - (var(--site-grid-inset-block) * 2)) * 4 / 3)",
-  },
-  "3-4": {
-    maxWidth: "calc((100svh - (var(--site-grid-inset-block) * 2)) * 3 / 4)",
-  },
-  "5-4": {
-    maxWidth: "calc((100svh - (var(--site-grid-inset-block) * 2)) * 5 / 4)",
-  },
-  "4-5": {
-    maxWidth: "calc((100svh - (var(--site-grid-inset-block) * 2)) * 4 / 5)",
-  },
-};
-
 function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
@@ -115,13 +93,12 @@ function FixedRatioImage({
   src: string;
 }) {
   return (
-    <div className="grid h-full min-h-0 w-full place-items-center">
+    <div className="grid w-full place-items-center">
       <div
         className={cx(
-          "relative w-full max-h-[calc(100svh-(var(--site-grid-inset-block)*2))] overflow-hidden bg-service-surface shadow-service",
+          "relative w-full overflow-hidden bg-service-surface shadow-service",
           ratioClassNames[ratio],
         )}
-        style={ratioMaxWidthStyles[ratio]}
       >
         <Image
           alt={alt}
@@ -156,12 +133,12 @@ export function HeroSplitFixedImageSectionV3({
 
   return (
     <section className="bg-bg-page">
-      <SevenColumnGrid className="section-min-screen grid-rows-[minmax(0,1fr)] items-center max-lg:grid-rows-[minmax(0,1fr)] max-md:grid-rows-none">
+      <SevenColumnGrid className="section-min-none items-center">
         <SevenColumnGridItem
           alignX="left"
           alignY="middle"
           className={cx(
-            "content-padding radius-medium row-start-1 h-full min-h-0 text-service-ink max-md:h-auto max-md:row-auto",
+            "content-padding radius-medium row-start-1 text-service-ink max-md:row-auto",
             config.textClassName,
           )}
         >
@@ -196,7 +173,7 @@ export function HeroSplitFixedImageSectionV3({
           alignX="center"
           alignY="middle"
           className={cx(
-            "row-start-1 h-full min-h-0 max-md:h-auto max-md:row-auto",
+            "row-start-1 max-md:row-auto",
             config.imageClassName,
           )}
         >

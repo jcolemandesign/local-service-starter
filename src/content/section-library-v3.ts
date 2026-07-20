@@ -1,3 +1,5 @@
+import { thankYouPageContent } from "@/content/thank-you";
+
 export const sectionLibraryV3Content = {
   hero: {
     eyebrow: "Local service starter",
@@ -511,6 +513,72 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
+  fourCardLinkGrid: {
+    linkLabel: "Learn more",
+    items: [
+      {
+        title: "System Replacement",
+        body: "Compare replacement options when an older heating or cooling system is no longer a dependable fit.",
+        href: "/services/system-replacement",
+        imageAlt: "Heating and cooling system replacement",
+        imageLabel: "Replacement",
+        imageSrc: "/images/fpo-image.svg",
+      },
+      {
+        title: "HVAC Repair",
+        body: "Review common repair needs, diagnostic steps, and what to expect before service begins.",
+        href: "/services/hvac-repair",
+        imageAlt: "HVAC repair service",
+        imageLabel: "Repair",
+        imageSrc: "/images/fpo-image.svg",
+      },
+      {
+        title: "Maintenance Plans",
+        body: "Keep seasonal service organized with recurring visits and documented system recommendations.",
+        href: "/maintenance-plan",
+        imageAlt: "Seasonal HVAC maintenance",
+        imageLabel: "Maintenance",
+        imageSrc: "/images/fpo-image.svg",
+      },
+      {
+        title: "Indoor Air Quality",
+        body: "Explore filtration, humidity, ventilation, and airflow options for the home’s indoor environment.",
+        href: "/services/indoor-air-quality",
+        imageAlt: "Indoor air quality service",
+        imageLabel: "Air quality",
+        imageSrc: "/images/fpo-image.svg",
+      },
+    ],
+  },
+  threeCardLinkGrid: {
+    linkLabel: "Learn more",
+    items: [
+      {
+        title: "System Replacement",
+        body: "Compare replacement options when an older heating or cooling system is no longer a dependable fit.",
+        href: "/services/system-replacement",
+        imageAlt: "Heating and cooling system replacement",
+        imageLabel: "Replacement",
+        imageSrc: "/images/fpo-image.svg",
+      },
+      {
+        title: "HVAC Repair",
+        body: "Review common repair needs, diagnostic steps, and what to expect before service begins.",
+        href: "/services/hvac-repair",
+        imageAlt: "HVAC repair service",
+        imageLabel: "Repair",
+        imageSrc: "/images/fpo-image.svg",
+      },
+      {
+        title: "Maintenance Plans",
+        body: "Keep seasonal service organized with recurring visits and documented system recommendations.",
+        href: "/maintenance-plan",
+        imageAlt: "Seasonal HVAC maintenance",
+        imageLabel: "Maintenance",
+        imageSrc: "/images/fpo-image.svg",
+      },
+    ],
+  },
   servicesHoverPanel: {
     eyebrow: "Services",
     title: "Explore service categories",
@@ -944,6 +1012,7 @@ export const sectionLibraryV3Content = {
     continueLabel: "Continue",
     helperText: "Your selections will carry into the next step.",
   },
+  thankYouConfirmation: thankYouPageContent,
   footer: {
     businessName: "Example Local Service",
     description:
@@ -1164,6 +1233,8 @@ export const sectionLibraryV3Collections = [
   {
     title: "Scan",
     items: [
+      { label: "Card Links 4 Up", component: "four-card-link-grid-v3" },
+      { label: "Card Links 3 Up", component: "three-card-link-grid-v3" },
       {
         label: "Services card carousel",
         component: "content-horizontal-card-carousel-v2",
@@ -1177,7 +1248,6 @@ export const sectionLibraryV3Collections = [
         component: "services-three-cards-right-v3",
       },
       { label: "Services bento cards", component: "services-bento-cards-v2" },
-      { label: "Service cards 13col", component: "service-cards-13col" },
       { label: "Services hover panel", component: "services-hover-panel-v2" },
       { label: "Services scroll cards", component: "services-scroll-cards-v2" },
     ],
@@ -1303,6 +1373,10 @@ export const sectionLibraryV3Collections = [
     items: [
       { label: "FAQ", component: "faq-v3" },
       { label: "FAQ accordion", component: "faq-accordion-v3" },
+      {
+        label: "Thank you confirmation",
+        component: "thank-you-confirmation-v3",
+      },
       {
         label: "Service area zip lookup",
         component: "service-area-zip-lookup-v3",

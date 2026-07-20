@@ -53,6 +53,16 @@ export {
 } from "./FAQConversionContactFooterSectionsV3";
 export { FooterLinkPanelSectionV3 } from "./FooterLinkPanelSectionV3";
 export {
+  FourCardLinkGridSectionV3,
+  type FourCardLinkGridItem,
+  type FourCardLinkGridSectionV3Props,
+} from "./FourCardLinkGridSectionV3";
+export {
+  ThreeCardLinkGridSectionV3,
+  type ThreeCardLinkGridItem,
+  type ThreeCardLinkGridSectionV3Props,
+} from "./ThreeCardLinkGridSectionV3";
+export {
   FeatureOverlapRowsSectionV3,
   ProcessStepsSectionV3,
   TestimonialsSectionV3,
@@ -94,7 +104,6 @@ export { ProcessStepsSection } from "./ProcessStepsSection";
 export { ProcessStepsSectionV2 } from "./ProcessStepsSectionV2";
 export { ServicesBentoCardsSection } from "./ServicesBentoCardsSection";
 export { ServicesBentoCardsSectionV2 } from "./ServicesBentoCardsSectionV2";
-export { ServicesCards13ColSection } from "./ServicesCards13ColSection";
 export { ServicesGridSection } from "./ServicesGridSection";
 export { ServicesHoverPanelSection } from "./ServicesHoverPanelSection";
 export { ServicesHoverPanelSectionV2 } from "./ServicesHoverPanelSectionV2";
@@ -114,6 +123,11 @@ export { TestimonialsMasonrySectionV2 } from "./TestimonialsMasonrySectionV2";
 export { TestimonialsMasonrySectionV3 } from "./TestimonialsMasonrySectionV3";
 export { TestimonialsSection } from "./TestimonialsSection";
 export { TestimonialsSectionV2 } from "./TestimonialsSectionV2";
+export {
+  ThankYouConfirmationSectionV3,
+  type ThankYouConfirmationSectionV3Props,
+  type ThankYouConfirmationStep,
+} from "./ThankYouConfirmationSectionV3";
 export {
   TemplateLibrarySection,
   type PageTemplateSummary,

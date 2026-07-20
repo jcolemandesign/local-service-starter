@@ -65,6 +65,8 @@ import {
 } from "@/components/sections/HeroSplitFullHeightSectionV3";
 import { FooterSectionV2 } from "@/components/sections/FooterSectionV2";
 import { FooterLinkPanelSectionV3 } from "@/components/sections/FooterLinkPanelSectionV3";
+import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
+import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import {
   NavCenterLogoSectionV2,
   NavPrimarySectionV2,
@@ -79,6 +81,7 @@ import {
 import { ServicesHoverPanelSectionV2 } from "@/components/sections/ServicesHoverPanelSectionV2";
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { ServiceAreaZipLookupSectionV3 } from "@/components/sections/ServiceAreaZipLookupSectionV3";
+import { ThankYouConfirmationSectionV3 } from "@/components/sections/ThankYouConfirmationSectionV3";
 import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/ServicesThreeCardsRightSectionV3";
 import { TestimonialsCarouselSectionV3 } from "@/components/sections/TestimonialsCarouselSectionV3";
 import { TestimonialsCarouselCondensedSectionV3 } from "@/components/sections/TestimonialsCarouselCondensedSectionV3";
@@ -413,6 +416,20 @@ export function renderPageTemplateSection(
           variant={getServicesBentoVariant(section)}
         />
       );
+    case "FourCardLinkGridSectionV3":
+      return (
+        <FourCardLinkGridSectionV3
+          {...fourCardLinkGridProps(fieldSection)}
+          showImages={section.variant !== "text-only"}
+        />
+      );
+    case "ThreeCardLinkGridSectionV3":
+      return (
+        <ThreeCardLinkGridSectionV3
+          {...threeCardLinkGridProps(fieldSection)}
+          showImages={section.variant !== "text-only"}
+        />
+      );
     case "ServicesHoverPanelSectionV2":
       return <ServicesHoverPanelSectionV2 {...servicesHoverProps(fieldSection)} />;
     case "ServicesThreeCardsRightSectionV3":
@@ -540,6 +557,13 @@ export function renderPageTemplateSection(
       return <ServiceAreaZipLookupSectionV3 {...serviceAreaProps(fieldSection)} />;
     case "ContactSectionV3":
       return <ContactSectionV3 {...contactProps(fieldSection)} />;
+    case "ThankYouConfirmationSectionV3":
+      return (
+        <ThankYouConfirmationSectionV3
+          {...thankYouConfirmationProps(fieldSection)}
+          headingLevel={headingLevel}
+        />
+      );
     case "ContactSectionModalBegin":
       return (
         <ContactSectionModalBegin
@@ -754,6 +778,52 @@ function servicesBentoProps(section: FieldSection) {
       }),
     ),
     title: getTitle(section, sectionLibraryV3Content.servicesBento.title),
+  };
+}
+
+function fourCardLinkGridProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.fourCardLinkGrid;
+  const items = cardItemsWithFallback(
+    section,
+    ["serviceItems", "items", "cards"],
+    fallback.items,
+  );
+
+  return {
+    ...fallback,
+    items: items.slice(0, 4).map((item, index) => {
+      const fallbackItem = fallback.items[index % fallback.items.length];
+
+      return {
+        ...fallbackItem,
+        ...item,
+        href: item.href ?? fallbackItem.href,
+      };
+    }),
+    linkLabel: getValue(section, "linkLabel", fallback.linkLabel),
+  };
+}
+
+function threeCardLinkGridProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.threeCardLinkGrid;
+  const items = cardItemsWithFallback(
+    section,
+    ["serviceItems", "items", "cards"],
+    fallback.items,
+  );
+
+  return {
+    ...fallback,
+    items: items.slice(0, 3).map((item, index) => {
+      const fallbackItem = fallback.items[index % fallback.items.length];
+
+      return {
+        ...fallbackItem,
+        ...item,
+        href: item.href ?? fallbackItem.href,
+      };
+    }),
+    linkLabel: getValue(section, "linkLabel", fallback.linkLabel),
   };
 }
 
@@ -1118,6 +1188,56 @@ function contactModalBeginProps(section: FieldSection) {
       sectionLibraryV3Content.contactModalBegin.systemPrompt,
     ),
     title: getTitle(section, sectionLibraryV3Content.contactModalBegin.title),
+  };
+}
+
+function thankYouConfirmationProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.thankYouConfirmation;
+  const nextSteps = cardItemsWithFallback(
+    section,
+    ["nextSteps", "steps", "items"],
+    fallback.nextSteps,
+  );
+
+  return {
+    ...fallback,
+    body: getBody(section, fallback.body),
+    eyebrow: getValue(section, "eyebrow", fallback.eyebrow),
+    nextSteps: nextSteps.map((step) => ({
+      body: step.body,
+      title: step.title,
+    })),
+    nextStepsTitle: getValue(
+      section,
+      "nextStepsTitle",
+      fallback.nextStepsTitle,
+    ),
+    note: getValue(section, "note", fallback.note),
+    primaryActionHref: getValue(
+      section,
+      "primaryActionHref",
+      fallback.primaryActionHref,
+    ),
+    primaryActionLabel: getValue(
+      section,
+      "primaryAction",
+      getValue(section, "primaryActionLabel", fallback.primaryActionLabel),
+    ),
+    secondaryActionHref: getValue(
+      section,
+      "secondaryActionHref",
+      fallback.secondaryActionHref,
+    ),
+    secondaryActionLabel: getValue(
+      section,
+      "secondaryAction",
+      getValue(
+        section,
+        "secondaryActionLabel",
+        fallback.secondaryActionLabel,
+      ),
+    ),
+    title: getTitle(section, fallback.title),
   };
 }
 
@@ -1854,6 +1974,7 @@ function cardItems(section: FieldSection, fieldNames: string[]) {
     return records.map((record) => ({
       body: record.body ?? record.description ?? "",
       cardSize: record.cardSize ?? record.size ?? record.featured,
+      href: record.href,
       imageLabel: record.imageLabel ?? record.title ?? "Service",
       size: getCardSize(record.size ?? record.cardSize ?? record.featured),
       title: record.title ?? record.heading ?? "Service",
@@ -1884,6 +2005,7 @@ function cardItemsWithFallback(
   fallbackItems: ReadonlyArray<{
     body?: string;
     cardSize?: string;
+    href?: string;
     imageLabel?: string;
     size?: "large" | "medium" | "small";
     title: string;
@@ -1896,6 +2018,7 @@ function cardItemsWithFallback(
     : fallbackItems.map((item) => ({
         body: item.body ?? "",
         cardSize: item.cardSize,
+        href: item.href,
         imageLabel: item.imageLabel ?? item.title,
         size: item.size,
         title: item.title,
@@ -1973,12 +2096,14 @@ function pageLinkItems(section: FieldSection) {
 
 function parseCardItem(value: string) {
   const { cleanValue, size } = extractCardSize(value);
-  const [title, ...bodyParts] = cleanValue.split(/\s+[—-]\s+/);
+  const [content, href] = cleanValue.split(/\s*->\s*/);
+  const [title, ...bodyParts] = content.split(/\s+[—-]\s+/);
   const body = bodyParts.join(" - ").trim();
 
   return {
     body,
     cardSize: size,
+    href: href?.trim() || undefined,
     imageLabel: title.trim(),
     size,
     title: title.trim(),
