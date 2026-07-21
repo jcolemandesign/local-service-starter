@@ -2,14 +2,24 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
-import type { HeroCompactAlign } from "./HeroCompactSectionV3";
+import type {
+  HeroCompactAlign,
+  HeroCompactHeadingSize,
+} from "./HeroCompactSectionV3";
 
 type SectionHeaderCompactSectionV3Props = {
   align?: HeroCompactAlign;
   body: string;
   eyebrow: string;
+  headingSize?: HeroCompactHeadingSize;
   headingLevel?: 1 | 2;
   title: string;
+};
+
+const headingSizeClassName: Record<HeroCompactHeadingSize, string> = {
+  "heading-lg": "type-heading-lg",
+  "heading-xl": "type-heading-xl",
+  "display-lg": "type-display-lg",
 };
 
 function cx(...classes: Array<string | undefined>) {
@@ -49,6 +59,7 @@ export function SectionHeaderCompactSectionV3({
   align = "center",
   body,
   eyebrow,
+  headingSize = "heading-xl",
   headingLevel = 2,
   title,
 }: SectionHeaderCompactSectionV3Props) {
@@ -66,7 +77,7 @@ export function SectionHeaderCompactSectionV3({
           alignX={align}
           className={cx(
             alignment.item,
-            "max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3",
+            "max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1",
           )}
         >
           <div
@@ -79,7 +90,7 @@ export function SectionHeaderCompactSectionV3({
             <p className="type-label text-service-accent">{eyebrow}</p>
             <Heading
               className={cx(
-                "type-heading-xl",
+                headingSizeClassName[headingSize],
                 "mt-eyebrow-heading-lg text-service-ink",
               )}
             >
@@ -87,7 +98,10 @@ export function SectionHeaderCompactSectionV3({
             </Heading>
             <p
               className={cx(
-                "type-text-lg wrap-pretty mt-heading-body-lg text-service-muted",
+                headingSize === "display-lg"
+                  ? "type-text-xl"
+                  : "type-text-lg",
+                "wrap-pretty mt-heading-body-lg text-service-muted",
                 alignment.body,
               )}
             >

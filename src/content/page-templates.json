@@ -5,6 +5,143 @@
         "showSectionMarkers": false,
         "viewportId": "main"
       },
+      "id": "about",
+      "name": "About",
+      "notes": "",
+      "pageType": "About",
+      "promotedAt": "2026-07-20T22:36:13.813Z",
+      "sectionCount": 10,
+      "sections": [
+        {
+          "component": "NavPrimarySectionV2",
+          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
+          "mode": "Navigation",
+          "name": "Primary navigation",
+          "originalComponent": "NavCenterLogoSectionV2",
+          "originalIndex": 0,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        },
+        {
+          "component": "HeroContentTopImageBottomSectionV2",
+          "instruction": "Lead with direct copy first, then use the image below to keep the page useful and quick to understand.",
+          "mode": "Hero",
+          "name": "Content top image bottom",
+          "originalComponent": "HeroGridMosaicSectionV2",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "muted",
+          "cardFill": "solid"
+        },
+        {
+          "component": "TrustLogoMarqueeSectionV3",
+          "instruction": "Use scrolling logo proof for affiliations, certifications, training, manufacturer badges, or partner networks.",
+          "mode": "Proof",
+          "name": "Logo marquee",
+          "originalComponent": "TrustLogoGridSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": true,
+          "reduceTopPadding": false,
+          "colorRecipe": "muted",
+          "cardFill": "solid"
+        },
+        {
+          "component": "ContentStickyIdeasSectionV2",
+          "instruction": "Use natural longform paragraphs with short sticky bullets and a context-specific side-list label. Do not use generic Important ideas copy.",
+          "mode": "Narrative",
+          "name": "Sticky ideas content",
+          "originalComponent": "ContentAboutStorySectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "muted",
+          "cardFill": "solid"
+        },
+        {
+          "component": "ContentPhotoGalleryCarouselSectionV3",
+          "instruction": "Use a mixed-size horizontal photo gallery when people, projects, or proof images should carry the visual story.",
+          "mode": "Images",
+          "name": "Photo gallery carousel",
+          "originalComponent": "ContentPhotoGalleryCarouselSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        },
+        {
+          "component": "ContentRevealParagraphSectionV2",
+          "instruction": "Use a large editorial interstitial thought. A hard return creates a separate animated paragraph; do not treat it as standard body or card copy.",
+          "mode": "Narrative",
+          "name": "Reveal paragraph",
+          "originalComponent": "ContentRevealParagraphSectionV2",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "muted",
+          "cardFill": "solid"
+        },
+        {
+          "component": "FeatureAsymmetricCardsSectionV3",
+          "instruction": "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points.",
+          "mode": "Narrative",
+          "name": "Asymmetric feature cards",
+          "originalComponent": "FeatureAsymmetricCardsSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": true,
+          "reduceTopPadding": false,
+          "colorRecipe": "dark",
+          "cardFill": "none"
+        },
+        {
+          "component": "DecisionSplitDecisionSectionV3",
+          "instruction": "Use a compact two-card comparison when a homeowner needs help deciding whether repair or replacement makes more sense after inspection.",
+          "mode": "Decision",
+          "name": "Split decision",
+          "originalComponent": "DecisionSplitDecisionSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "dark",
+          "cardFill": "solid"
+        },
+        {
+          "component": "TrustMarqueeSection",
+          "instruction": "Use a headline with a scrolling banner when proof points should move beside a stronger editorial claim.",
+          "mode": "Action",
+          "name": "Headline with Scrolling Banner",
+          "originalComponent": "TrustMarqueeSection",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "muted",
+          "cardFill": "solid"
+        },
+        {
+          "component": "FooterSectionV3",
+          "instruction": "End with service links, areas, contact details, and legal links.",
+          "mode": "Utility",
+          "name": "Footer",
+          "originalComponent": "FooterSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        }
+      ],
+      "sourceOptionName": "Page Layout",
+      "sourceRecipeId": "conversion-heavy",
+      "sourceRecipeName": "About"
+    },
+    {
+      "designStyle": {
+        "showSectionMarkers": false,
+        "viewportId": "main"
+      },
       "id": "home-full-image-hero-side-scrolling-service-cards",
       "name": "Home - full image hero, side scrolling service cards",
       "notes": "",

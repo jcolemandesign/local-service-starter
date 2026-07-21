@@ -19,9 +19,14 @@ import {
 import {
   HeroCompactSectionV3,
   type HeroCompactAlign,
+  type HeroCompactHeadingSize,
 } from "@/components/sections/HeroCompactSectionV3";
 import { HeroServicesSectionV3 } from "@/components/sections/HeroServicesSectionV3";
 import { SectionHeaderCompactSectionV3 } from "@/components/sections/SectionHeaderCompactSectionV3";
+import {
+  SectionHeaderLargeSectionV3,
+  type LargeSectionHeaderSize,
+} from "@/components/sections/SectionHeaderLargeSectionV3";
 import {
   ServicesBentoCardsSectionV2,
   type ServicesBentoCardsVariant,
@@ -71,6 +76,7 @@ const contentFixedRatioSplitComponent = "ContentSplitFixedImageSectionV3";
 const heroCompactComponent = "HeroCompactSectionV3";
 const heroServicesComponent = "HeroServicesSectionV3";
 const sectionHeaderCompactComponent = "SectionHeaderCompactSectionV3";
+const sectionHeaderLargeComponent = "SectionHeaderLargeSectionV3";
 const servicesBentoComponent = "ServicesBentoCardsSectionV2";
 const fourCardLinkGridComponent = "FourCardLinkGridSectionV3";
 const threeCardLinkGridComponent = "ThreeCardLinkGridSectionV3";
@@ -148,6 +154,46 @@ const heroCompactAlignOptions = [
 const heroCompactAlignments = new Set<string>(
   heroCompactAlignOptions.map((option) => option.value),
 );
+
+const largeSectionHeaderSizeOptions = [
+  { label: "Heading XL", value: "heading-xl", iconSize: 17 },
+  { label: "Display LG", value: "display-lg", iconSize: 23 },
+  { label: "Display XL", value: "display-xl", iconSize: 29 },
+] as const;
+
+const compactHeaderHeadingSizeOptions = [
+  { label: "Heading LG", value: "heading-lg", iconSize: 17 },
+  { label: "Heading XL", value: "heading-xl", iconSize: 23 },
+  { label: "Display LG", value: "display-lg", iconSize: 29 },
+] as const;
+
+function HeadingScaleIcon({ iconSize }: { iconSize: number }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="h-8 w-10 overflow-visible"
+      viewBox="0 0 32 32"
+    >
+      <text
+        dominantBaseline="central"
+        fill="currentColor"
+        fillOpacity="0.38"
+        fontFamily="Arial, Helvetica, sans-serif"
+        fontSize={iconSize}
+        fontWeight="900"
+        paintOrder="stroke fill"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="1.1"
+        textAnchor="middle"
+        x="16"
+        y="16"
+      >
+        X
+      </text>
+    </svg>
+  );
+}
 
 const servicesBentoVariantOptions = [
   { label: "Centered", value: "default" },
@@ -367,6 +413,12 @@ function isCompactHeaderAlignmentSection(
   );
 }
 
+function isLargeSectionHeaderSection(
+  section: PagebuilderRecipe["sectionStack"][number],
+) {
+  return section.component === sectionHeaderLargeComponent;
+}
+
 function isServicesBentoSection(section: PagebuilderRecipe["sectionStack"][number]) {
   return section.component === servicesBentoComponent;
 }
@@ -418,9 +470,47 @@ function getServicesBentoVariantLabel(variant: string | undefined) {
 }
 
 function getHeroCompactAlign(section: WorkingSection) {
-  return heroCompactAlignments.has(section.variant ?? "")
-    ? (section.variant as HeroCompactAlign)
+  const [align] = (section.variant ?? "").split("-");
+
+  return heroCompactAlignments.has(align)
+    ? (align as HeroCompactAlign)
     : sectionLibraryV3Content.heroCompact.align;
+}
+
+function getCompactHeaderHeadingSize(
+  section: WorkingSection,
+): HeroCompactHeadingSize {
+  if (section.variant?.endsWith("heading-lg")) {
+    return "heading-lg";
+  }
+
+  if (section.variant?.endsWith("heading-xl")) {
+    return "heading-xl";
+  }
+
+  return isHeroCompactSection(section)
+    ? sectionLibraryV3Content.heroCompact.headingSize
+    : sectionLibraryV3Content.sectionHeaderCompact.headingSize;
+}
+
+function getLargeSectionHeaderAlign(section: WorkingSection) {
+  const [align] = (section.variant ?? "").split("-");
+
+  return heroCompactAlignments.has(align)
+    ? (align as HeroCompactAlign)
+    : sectionLibraryV3Content.sectionHeaderLarge.align;
+}
+
+function getLargeSectionHeaderSize(
+  section: WorkingSection,
+): LargeSectionHeaderSize {
+  if (section.variant?.endsWith("heading-xl")) {
+    return "heading-xl";
+  }
+
+  return section.variant?.endsWith("display-lg")
+    ? "display-lg"
+    : sectionLibraryV3Content.sectionHeaderLarge.size;
 }
 
 function getServicesBentoVariant(section: WorkingSection) {
@@ -476,6 +566,8 @@ function createInitialWorkingStack(
             ? section.variant ?? fixedRatioSplitVariantOptions[0].value
             : isCompactHeaderAlignmentSection(section)
               ? section.variant ?? sectionLibraryV3Content.heroCompact.align
+              : isLargeSectionHeaderSection(section)
+                ? section.variant ?? "center-display-xl"
               : isServicesBentoSection(section)
                 ? section.variant ?? servicesBentoVariantOptions[0].value
               : isFourCardLinkGridSection(section)
@@ -586,6 +678,8 @@ function updateSectionFromSwapOption(
             : nextOption.component === heroCompactComponent ||
                 nextOption.component === sectionHeaderCompactComponent
               ? sectionLibraryV3Content.heroCompact.align
+              : nextOption.component === sectionHeaderLargeComponent
+                ? "center-display-xl"
               : nextOption.component === servicesBentoComponent
                 ? servicesBentoVariantOptions[0].value
               : nextOption.component === fourCardLinkGridComponent
@@ -788,6 +882,13 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
       "Use a no-min-height compact header to introduce a section before card grids, FAQs, decisions, or utility blocks.",
     mode: "Section Header",
     name: "Compact section header",
+  },
+  {
+    component: "SectionHeaderLargeSectionV3",
+    instruction:
+      "Use a large title-only section header when the next content module needs a stronger visual reset.",
+    mode: "Section Header",
+    name: "Large section header",
   },
   {
     component: "FourCardLinkGridSectionV3",
@@ -1197,6 +1298,10 @@ const innerOptionSignifiers: Partial<
   },
   SectionHeaderCompactSectionV3: {
     label: "Compact section header",
+    pattern: "align",
+  },
+  SectionHeaderLargeSectionV3: {
+    label: "Large section header",
     pattern: "align",
   },
 };
@@ -1996,14 +2101,58 @@ export function PagebuilderShell({
     align: HeroCompactAlign,
   ) {
     updateActiveStack((stack) =>
+      stack.map((section) => {
+        if (
+          section.id !== sectionId ||
+          !isCompactHeaderAlignmentSection(section)
+        ) {
+          return section;
+        }
+
+        return {
+          ...section,
+          variant: `${align}-${getCompactHeaderHeadingSize(section)}`,
+        };
+      }),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
+  function updateCompactHeaderHeadingSize(
+    sectionId: string,
+    headingSize: HeroCompactHeadingSize,
+  ) {
+    updateActiveStack((stack) =>
       stack.map((section) =>
         section.id === sectionId && isCompactHeaderAlignmentSection(section)
           ? {
               ...section,
-              variant: align,
+              variant: `${getHeroCompactAlign(section)}-${headingSize}`,
             }
           : section,
       ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
+  function updateLargeSectionHeader(
+    sectionId: string,
+    nextValue: Partial<{
+      align: HeroCompactAlign;
+      size: LargeSectionHeaderSize;
+    }>,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) => {
+        if (section.id !== sectionId || !isLargeSectionHeaderSection(section)) {
+          return section;
+        }
+
+        const align = nextValue.align ?? getLargeSectionHeaderAlign(section);
+        const size = nextValue.size ?? getLargeSectionHeaderSize(section);
+
+        return { ...section, variant: `${align}-${size}` };
+      }),
     );
     setSelectedSectionId(sectionId);
   }
@@ -2095,6 +2244,8 @@ export function PagebuilderShell({
               : nextOption.component === heroCompactComponent ||
                   nextOption.component === sectionHeaderCompactComponent
                 ? sectionLibraryV3Content.heroCompact.align
+                : nextOption.component === sectionHeaderLargeComponent
+                  ? "center-display-xl"
                 : nextOption.component === servicesBentoComponent
                   ? servicesBentoVariantOptions[0].value
                 : nextOption.component === fourCardLinkGridComponent
@@ -2362,6 +2513,7 @@ export function PagebuilderShell({
           <HeroCompactSectionV3
             {...sectionLibraryV3Content.heroCompact}
             align={getHeroCompactAlign(section)}
+            headingSize={getCompactHeaderHeadingSize(section)}
             headingLevel={headingLevel}
           />
         ) : section.component === heroServicesComponent ? (
@@ -2373,7 +2525,15 @@ export function PagebuilderShell({
           <SectionHeaderCompactSectionV3
             {...sectionLibraryV3Content.sectionHeaderCompact}
             align={getHeroCompactAlign(section)}
+            headingSize={getCompactHeaderHeadingSize(section)}
             headingLevel={2}
+          />
+        ) : section.component === sectionHeaderLargeComponent ? (
+          <SectionHeaderLargeSectionV3
+            {...sectionLibraryV3Content.sectionHeaderLarge}
+            align={getLargeSectionHeaderAlign(section)}
+            headingLevel={2}
+            size={getLargeSectionHeaderSize(section)}
           />
         ) : section.component === contentSplitHeadlineImageComponent ? (
           <ContentSplitHeadlineImageSectionV2
@@ -3032,6 +3192,47 @@ export function PagebuilderShell({
                           {isCompactHeaderAlignmentSection(section) ? (
                             <fieldset className="grid gap-2">
                               <legend className="type-caption font-semibold text-current">
+                                Heading Size
+                              </legend>
+                              <div className="grid grid-cols-3 gap-2">
+                                {compactHeaderHeadingSizeOptions.map((option) => {
+                                  const optionIsActive =
+                                    getCompactHeaderHeadingSize(section) ===
+                                    option.value;
+
+                                  return (
+                                    <button
+                                      aria-label={option.label}
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "flex min-h-11 items-center justify-center rounded-[var(--chrome-radius-control)] border px-2 transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateCompactHeaderHeadingSize(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      title={option.label}
+                                      type="button"
+                                    >
+                                      <HeadingScaleIcon
+                                        iconSize={option.iconSize}
+                                      />
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </fieldset>
+                          ) : null}
+
+                          {isCompactHeaderAlignmentSection(section) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
                                 Alignment
                               </legend>
                               <div className="grid grid-cols-3 gap-2">
@@ -3068,6 +3269,82 @@ export function PagebuilderShell({
                                 the seven-column grid.
                               </p>
                             </fieldset>
+                          ) : null}
+
+                          {isLargeSectionHeaderSection(section) ? (
+                            <div className="grid gap-4">
+                              <fieldset className="grid gap-2">
+                                <legend className="type-caption font-semibold text-current">
+                                  Display Size
+                                </legend>
+                                <div className="grid grid-cols-3 gap-2">
+                                  {largeSectionHeaderSizeOptions.map((option) => {
+                                    const optionIsActive =
+                                      getLargeSectionHeaderSize(section) ===
+                                      option.value;
+
+                                    return (
+                                      <button
+                                        aria-label={option.label}
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "flex min-h-11 items-center justify-center rounded-[var(--chrome-radius-control)] border px-2 transition-colors",
+                                          optionIsActive
+                                            ? "token-chrome-card-active"
+                                            : "token-chrome-card",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateLargeSectionHeader(section.id, {
+                                            size: option.value,
+                                          })
+                                        }
+                                        type="button"
+                                        title={option.label}
+                                      >
+                                        <HeadingScaleIcon
+                                          iconSize={option.iconSize}
+                                        />
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </fieldset>
+
+                              <fieldset className="grid gap-2">
+                                <legend className="type-caption font-semibold text-current">
+                                  Alignment
+                                </legend>
+                                <div className="grid grid-cols-3 gap-2">
+                                  {heroCompactAlignOptions.map((option) => {
+                                    const optionIsActive =
+                                      getLargeSectionHeaderAlign(section) ===
+                                      option.value;
+
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                          optionIsActive
+                                            ? "token-chrome-card-active"
+                                            : "token-chrome-card",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateLargeSectionHeader(section.id, {
+                                            align: option.value,
+                                          })
+                                        }
+                                        type="button"
+                                      >
+                                        {option.label}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </fieldset>
+                            </div>
                           ) : null}
 
                           {isServicesBentoSection(section) ? (

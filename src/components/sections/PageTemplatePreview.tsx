@@ -49,9 +49,14 @@ import { HeroCenteredFloatersSectionV2 } from "@/components/sections/HeroCentere
 import {
   HeroCompactSectionV3,
   type HeroCompactAlign,
+  type HeroCompactHeadingSize,
 } from "@/components/sections/HeroCompactSectionV3";
 import { HeroServicesSectionV3 } from "@/components/sections/HeroServicesSectionV3";
 import { SectionHeaderCompactSectionV3 } from "@/components/sections/SectionHeaderCompactSectionV3";
+import {
+  SectionHeaderLargeSectionV3,
+  type LargeSectionHeaderSize,
+} from "@/components/sections/SectionHeaderLargeSectionV3";
 import { HeroContentTopImageBottomSectionV2 } from "@/components/sections/HeroContentTopImageBottomSectionV2";
 import {
   HeroSplitFixedImageSectionV3,
@@ -376,6 +381,7 @@ export function renderPageTemplateSection(
           {...heroCompactProps(fieldSection)}
           align={getHeroCompactAlign(section)}
           headingLevel={headingLevel}
+          headingSize={getCompactHeaderHeadingSize(section)}
         />
       );
     case "HeroServicesSectionV3":
@@ -391,6 +397,16 @@ export function renderPageTemplateSection(
           {...sectionHeaderCompactProps(fieldSection)}
           align={getHeroCompactAlign(section)}
           headingLevel={2}
+          headingSize={getCompactHeaderHeadingSize(section)}
+        />
+      );
+    case "SectionHeaderLargeSectionV3":
+      return (
+        <SectionHeaderLargeSectionV3
+          {...sectionHeaderLargeProps(fieldSection)}
+          align={getLargeSectionHeaderAlign(section)}
+          headingLevel={2}
+          size={getLargeSectionHeaderSize(section)}
         />
       );
     case "TrustBarSectionV3":
@@ -713,6 +729,21 @@ function heroCompactProps(section: FieldSection) {
       "eyebrow",
       sectionLibraryV3Content.heroCompact.eyebrow,
     ),
+    primaryAction: getValue(
+      section,
+      "primaryAction",
+      sectionLibraryV3Content.heroCompact.primaryAction,
+    ),
+    secondaryAction: getValue(
+      section,
+      "secondaryAction",
+      sectionLibraryV3Content.heroCompact.secondaryAction,
+    ),
+    secondaryActionHref: getValue(
+      section,
+      "secondaryActionHref",
+      sectionLibraryV3Content.heroCompact.secondaryActionHref,
+    ),
     title: getTitle(section, sectionLibraryV3Content.heroCompact.title),
   };
 }
@@ -748,6 +779,33 @@ function sectionHeaderCompactProps(section: FieldSection) {
     ),
     title: getTitle(section, sectionLibraryV3Content.sectionHeaderCompact.title),
   };
+}
+
+function sectionHeaderLargeProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.sectionHeaderLarge,
+    title: getTitle(section, sectionLibraryV3Content.sectionHeaderLarge.title),
+  };
+}
+
+function getLargeSectionHeaderAlign(section: PageTemplatePreviewSection) {
+  const [align] = (section.variant ?? "").split("-");
+
+  return heroCompactAlignments.has(align)
+    ? (align as HeroCompactAlign)
+    : sectionLibraryV3Content.sectionHeaderLarge.align;
+}
+
+function getLargeSectionHeaderSize(
+  section: PageTemplatePreviewSection,
+): LargeSectionHeaderSize {
+  if (section.variant?.endsWith("heading-xl")) {
+    return "heading-xl";
+  }
+
+  return section.variant?.endsWith("display-lg")
+    ? "display-lg"
+    : "display-xl";
 }
 
 
@@ -1834,9 +1892,27 @@ function getContentSplitFixedImageRatio(section: PageTemplatePreviewSection) {
 }
 
 function getHeroCompactAlign(section: PageTemplatePreviewSection) {
-  return heroCompactAlignments.has(section.variant ?? "")
-    ? (section.variant as HeroCompactAlign)
+  const [align] = (section.variant ?? "").split("-");
+
+  return heroCompactAlignments.has(align)
+    ? (align as HeroCompactAlign)
     : sectionLibraryV3Content.heroCompact.align;
+}
+
+function getCompactHeaderHeadingSize(
+  section: PageTemplatePreviewSection,
+): HeroCompactHeadingSize {
+  if (section.variant?.endsWith("heading-lg")) {
+    return "heading-lg";
+  }
+
+  if (section.variant?.endsWith("heading-xl")) {
+    return "heading-xl";
+  }
+
+  return section.component === "HeroCompactSectionV3"
+    ? sectionLibraryV3Content.heroCompact.headingSize
+    : sectionLibraryV3Content.sectionHeaderCompact.headingSize;
 }
 
 function getServicesBentoVariant(section: PageTemplatePreviewSection) {

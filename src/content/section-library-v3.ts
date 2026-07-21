@@ -34,8 +34,12 @@ export const sectionLibraryV3Content = {
   heroCompact: {
     align: "center" as const,
     eyebrow: "Service area",
+    headingSize: "display-lg" as const,
     title: "Straightforward local service, organized for quick decisions.",
     body: "A compact page header for secondary pages that need a clear title, short descriptor, and no extra visual system.",
+    primaryAction: "Request service",
+    secondaryAction: "View services",
+    secondaryActionHref: "#services",
   },
   heroServices: {
     eyebrow: "Heating and cooling services",
@@ -56,8 +60,14 @@ export const sectionLibraryV3Content = {
   sectionHeaderCompact: {
     align: "center" as const,
     eyebrow: "Services",
+    headingSize: "heading-xl" as const,
     title: "A compact section header for introducing the next page module.",
     body: "A no-min-height section header based on the compact page hero rhythm, built to sit directly above reusable content modules.",
+  },
+  sectionHeaderLarge: {
+    align: "center" as const,
+    size: "display-xl" as const,
+    title: "A large section header that gives the next module room to land.",
   },
   heroLogoStatement: {
     logoLabel: "Logo",
@@ -1227,6 +1237,10 @@ export const sectionLibraryV3Collections = [
       {
         label: "Compact section header",
         component: "section-header-compact-v3",
+      },
+      {
+        label: "Large section header",
+        component: "section-header-large-v3",
       },
     ],
   },

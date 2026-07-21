@@ -271,6 +271,7 @@ function getSectionContent(component: string): ContentSourceValue | null {
     HeroServicesSectionV3: sectionLibraryV3Content.heroServices,
     SectionHeaderCompactSectionV3:
       sectionLibraryV3Content.sectionHeaderCompact,
+    SectionHeaderLargeSectionV3: sectionLibraryV3Content.sectionHeaderLarge,
     HeroContentTopImageBottomSectionV2: sectionLibraryV3Content.hero,
     HeroFullscreenSectionV2: sectionLibraryV3Content.heroFullscreen,
     HeroSplitFixedImageSectionV3: sectionLibraryV3Content.heroSplitFullHeight,

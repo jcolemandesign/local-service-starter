@@ -110,10 +110,19 @@ export { ServicesHoverPanelSectionV2 } from "./ServicesHoverPanelSectionV2";
 export { ServicesScrollCardsSection } from "./ServicesScrollCardsSection";
 export { ServicesScrollCardsSectionV2 } from "./ServicesScrollCardsSectionV2";
 export { SectionHeaderCompactSectionV3 } from "./SectionHeaderCompactSectionV3";
+export { SectionHeaderLargeSectionV3 } from "./SectionHeaderLargeSectionV3";
 export { ServiceAreaZipLookupSectionV3 } from "./ServiceAreaZipLookupSectionV3";
 export { SectionLibraryCollections } from "./SectionLibraryCollections";
 export { SectionLibraryV3Accordions } from "./SectionLibraryV3Accordions";
 export { StagedPageCanvas } from "./StagedPageCanvas";
+export {
+  WorkspaceNav,
+  WorkspaceNavAgentDocLink,
+  WorkspaceNavDivider,
+  WorkspaceNavIndex,
+  type WorkspaceNavIconName,
+  type WorkspaceNavItem,
+} from "./WorkspaceNav";
 export { TestimonialsCarouselSection } from "./TestimonialsCarouselSection";
 export { TestimonialsCarouselCondensedSectionV3 } from "./TestimonialsCarouselCondensedSectionV3";
 export { TestimonialsCarouselSectionV2 } from "./TestimonialsCarouselSectionV2";

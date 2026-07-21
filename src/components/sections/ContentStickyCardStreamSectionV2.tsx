@@ -34,9 +34,9 @@ export function ContentStickyCardStreamSectionV2({
 }: ContentStickyCardStreamSectionV2Props) {
   const shouldReduceMotion = useReducedMotion();
   const colors =
-    colorRecipe === "dark" || colorRecipe === "accent"
-      ? { card: "bg-service-surface", section: "bg-bg-page" }
-      : { card: "bg-bg-page", section: "bg-service-surface" };
+    colorRecipe === "muted"
+      ? { card: "bg-bg-page", section: "bg-service-surface" }
+      : { card: "bg-service-surface", section: "bg-bg-page" };
 
   return (
     <section className={colors.section}>

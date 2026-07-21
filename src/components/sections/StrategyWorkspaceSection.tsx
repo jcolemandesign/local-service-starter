@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { Card, DownArrowIcon, Section } from "@/components/primitives";
-import { StrategyIndexMenu } from "@/components/sections/StrategyIndexMenu";
+import {
+  WorkspaceNav,
+  WorkspaceNavAgentDocLink,
+  WorkspaceNavDivider,
+  WorkspaceNavIndex,
+  type WorkspaceNavItem,
+} from "@/components/sections/WorkspaceNav";
 import type { PageTemplateSummary } from "@/components/sections/TemplateLibrarySection";
 import {
   buildStrategyNavigation,
@@ -81,24 +87,6 @@ type StagePageResponse =
 
 function cx(...classes: Array<false | string | undefined>) {
   return classes.filter(Boolean).join(" ");
-}
-
-const clientNameAcronyms = new Set(["hvac", "llc", "usa"]);
-
-function formatClientName(clientSlug: string) {
-  return clientSlug
-    .split(/[-_]+/)
-    .filter(Boolean)
-    .map((word) => {
-      const normalizedWord = word.toLowerCase();
-
-      if (clientNameAcronyms.has(normalizedWord)) {
-        return normalizedWord.toUpperCase();
-      }
-
-      return `${normalizedWord.charAt(0).toUpperCase()}${normalizedWord.slice(1)}`;
-    })
-    .join(" ");
 }
 
 const baseFieldGroups: {
@@ -321,6 +309,17 @@ export function StrategyWorkspaceSection({
     [copywritingSettings.personalityId],
   );
   const showAssemblyOverview = Boolean(updatedAt) || saveState === "saved";
+  const workspaceNavigationItems: WorkspaceNavItem[] = [
+    { icon: "strategy", id: "strategy", label: "Strategy Workspace", tone: "blue" },
+    { icon: "prompts", id: "prompts", label: "Prompt Library", href: `/dev/prompt-library?project=${clientSlug}`, openInNewTab: true, tone: "orange" },
+    { icon: "plan", id: "plan", label: "Build Plan", onClick: openContentPlanReference, tone: "purple" },
+    { icon: "sections", id: "sections", label: "Section Library", href: "/sections", openInNewTab: true, tone: "green" },
+    { icon: "pagebuilder", id: "pagebuilder", label: "Page Builder", href: "/dev/pagebuilder", openInNewTab: true, tone: "pink" },
+    { icon: "templates", id: "templates", label: "Template Library", href: "/dev/templates", openInNewTab: true, tone: "yellow" },
+    { icon: "stagedPages", id: "staged-pages", label: "Staged Pages", href: "/dev/staged-pages", openInNewTab: true, tone: "teal" },
+    { icon: "style", id: "style", label: "Style Guide", href: "/dev/style-guide", openInNewTab: true, tone: "indigo" },
+    { icon: "contentEditor", id: "content-editor", label: "Content Editor", href: `/dev/content-editor?client=${encodeURIComponent(clientSlug)}`, openInNewTab: true, tone: "slate" },
+  ];
 
   function setFields(
     nextFields:
@@ -646,99 +645,29 @@ export function StrategyWorkspaceSection({
 
   return (
     <Section className="strategy-workspace strategy-chrome token-chrome min-h-svh">
-      <div className="strategy-toolbar fixed inset-x-0 top-0 z-40 flex items-center justify-end gap-4 border-b px-[var(--container-gutter)] py-3">
-        <span
-          aria-current="page"
-          className={strategyActiveNavButtonClass}
-        >
-          <StrategyNavIcon icon="strategy" />
-          Strategy Workspace
-        </span>
-        <div className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-4">
-          <Link
-            className={strategyNavButtonClass}
-            href="/dev/pagebuilder"
-            rel="noreferrer"
-            target="_blank"
-          >
-            <StrategyNavIcon icon="pagebuilder" />
-            Page Builder
-          </Link>
-          <Link
-            className={strategyNavButtonClass}
-            href="/sections"
-            rel="noreferrer"
-            target="_blank"
-          >
-            <StrategyNavIcon icon="sections" />
-            Section Library
-          </Link>
-          <Link
-            className={strategyNavButtonClass}
-            href="/dev/style-guide"
-            rel="noreferrer"
-            target="_blank"
-          >
-            <StrategyNavIcon icon="style" />
-            Style Guide
-          </Link>
-          <button
-            className={strategyNavButtonClass}
-            onClick={openContentPlanReference}
-            type="button"
-          >
-            <StrategyNavIcon icon="plan" />
-            Build plan
-          </button>
-          <Link
-            className={strategyNavButtonClass}
-            href="/dev/templates"
-            rel="noreferrer"
-            target="_blank"
-          >
-            <StrategyNavIcon icon="templates" />
-            Template library
-          </Link>
-          <Link
-            className={strategyNavButtonClass}
-            href={`/dev/prompt-library?project=${clientSlug}`}
-            rel="noreferrer"
-            target="_blank"
-          >
-            <StrategyNavIcon icon="prompts" />
-            Prompt library
-          </Link>
-          <Link
-            className={strategyNavButtonClass}
-            href={`/api/agent-export?clientSlug=${encodeURIComponent(clientSlug)}`}
-            rel="noreferrer"
-            target="_blank"
-          >
-            <StrategyNavIcon icon="download" />
-            Agent doc
-          </Link>
-          <button
-            className={cx(
-              primaryButtonClass,
-              "strategy-toolbar-control strategy-toolbar-save",
-            )}
-            disabled={saveState === "saving"}
-            onClick={() => void saveWorkspace()}
-            type="button"
-          >
-            {saveState === "saving" ? "Saving" : "Save workspace"}
-          </button>
-        </div>
-        <StrategyIndexMenu clientSlug={clientSlug} />
-      </div>
-      <div className="w-full px-[var(--container-gutter)]">
+      <WorkspaceNav
+        activeTool="strategy"
+        clientSlug={clientSlug}
+        navigationItems={workspaceNavigationItems}
+        pageActions={
+          <>
+            <WorkspaceNavDivider />
+            <WorkspaceNavAgentDocLink clientSlug={clientSlug} />
+            <button
+              className={cx(primaryButtonClass, "strategy-toolbar-save")}
+              disabled={saveState === "saving"}
+              onClick={() => void saveWorkspace()}
+              type="button"
+            >
+              {saveState === "saving" ? "Saving" : "Save Workspace"}
+            </button>
+            <WorkspaceNavIndex clientSlug={clientSlug} />
+          </>
+        }
+        pageTitle="Strategy"
+      />
+      <div className="strategy-toolbar-content w-full px-[var(--container-gutter)]">
         <div className="grid layout-gap-lrg">
-          <div className="fluid-type-frame">
-            <h1 className="type-heading-xl text-text-main">
-              {formatClientName(clientSlug)}
-            </h1>
-          </div>
-
           {showAssemblyOverview ? (
             <div>
               <div className="grid gap-5">
@@ -1804,6 +1733,12 @@ function buildContentPlanDocumentHtml({
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }
 
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+
       * {
         box-sizing: border-box;
       }
@@ -1811,6 +1746,14 @@ function buildContentPlanDocumentHtml({
       body {
         margin: 0;
         background: #f5f2eb;
+      }
+
+      .reference-scroll {
+        height: 100dvh;
+        overflow-anchor: none;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scroll-behavior: auto;
       }
 
       main {
@@ -1871,6 +1814,12 @@ function buildContentPlanDocumentHtml({
         scroll-margin-top: 24px;
       }
 
+      h2:focus-visible,
+      h3:focus-visible {
+        outline: 2px solid #8a5f2d;
+        outline-offset: 4px;
+      }
+
       .toc {
         background: #fffdf8;
         border: 1px solid #d8d2c6;
@@ -1897,16 +1846,28 @@ function buildContentPlanDocumentHtml({
         padding: 0;
       }
 
-      .toc-list a {
+      .toc-list button {
+        appearance: none;
+        background: transparent;
+        border: 0;
         color: #3f4a43;
+        cursor: pointer;
         font-size: 15px;
         font-weight: 700;
         line-height: 1.3;
+        padding: 0;
+        text-align: left;
         text-decoration: none;
       }
 
-      .toc-list a:hover {
+      .toc-list button:hover,
+      .toc-list button:focus-visible {
         color: #8a5f2d;
+      }
+
+      .toc-list button:focus-visible {
+        outline: 2px solid #8a5f2d;
+        outline-offset: 3px;
       }
 
       @media (max-width: 720px) {
@@ -2011,8 +1972,16 @@ function buildContentPlanDocumentHtml({
       }
 
       @media print {
+        html,
         body {
           background: #fff;
+          height: auto;
+          overflow: visible;
+        }
+
+        .reference-scroll {
+          height: auto;
+          overflow: visible;
         }
 
         main {
@@ -2027,19 +1996,52 @@ function buildContentPlanDocumentHtml({
     </style>
   </head>
   <body>
-    <main>
-      <div class="toolbar">
-        <button type="button" onclick="window.print()">Print / Save PDF</button>
-      </div>
-      <header>
-        <p class="eyebrow">Phase 3 Reference</p>
-        <h1>${escapeHtml(title)}</h1>
-        <p class="intro">A formatted planning reference for page building. Use this to interpret structure, priorities, page intent, messaging notes, and content requirements while assembling the site.</p>
-        <p class="meta">Generated ${escapeHtml(generatedAt)}</p>
-      </header>
-      ${formatReferenceToc(formattedContent.headings)}
-      ${formattedContent.html}
-    </main>
+    <div class="reference-scroll" data-reference-scroll>
+      <main>
+        <div class="toolbar">
+          <button type="button" onclick="window.print()">Print / Save PDF</button>
+        </div>
+        <header>
+          <p class="eyebrow">Phase 3 Reference</p>
+          <h1>${escapeHtml(title)}</h1>
+          <p class="intro">A formatted planning reference for page building. Use this to interpret structure, priorities, page intent, messaging notes, and content requirements while assembling the site.</p>
+          <p class="meta">Generated ${escapeHtml(generatedAt)}</p>
+        </header>
+        ${formatReferenceToc(formattedContent.headings)}
+        ${formattedContent.html}
+      </main>
+    </div>
+    <script>
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
+
+      window.scrollToReferenceHeading = function scrollToReferenceHeading(trigger) {
+        var targetId = trigger && trigger.getAttribute("data-target");
+        var target = targetId ? document.getElementById(targetId) : null;
+        var scrollPane = document.querySelector("[data-reference-scroll]");
+
+        if (!target || !scrollPane) {
+          return;
+        }
+
+        if (trigger instanceof HTMLElement) {
+          trigger.blur();
+        }
+
+        var currentTrigger = document.querySelector('.toc-list button[aria-current="location"]');
+
+        if (currentTrigger) {
+          currentTrigger.removeAttribute("aria-current");
+        }
+
+        trigger.setAttribute("aria-current", "location");
+
+        var paneTop = scrollPane.getBoundingClientRect().top;
+        var targetTop = target.getBoundingClientRect().top;
+        scrollPane.scrollTop = Math.max(0, scrollPane.scrollTop + targetTop - paneTop - 24);
+      };
+    </script>
   </body>
 </html>`;
 }
@@ -2112,7 +2114,7 @@ function formatReferenceContent(content: string) {
         sourceLevel: headingMatch[1].length,
       });
       html.push(
-        `<h${level} id="${escapeHtml(id)}">${formatInlineText(headingMatch[2])}</h${level}>`,
+        `<h${level} id="${escapeHtml(id)}" tabindex="-1">${formatInlineText(headingMatch[2])}</h${level}>`,
       );
       continue;
     }
@@ -2189,7 +2191,7 @@ function formatReferenceToc(headings: ReferenceHeading[]) {
     ${pageHeadings
       .map(
         (heading) =>
-          `<li><a href="#${escapeHtml(heading.id)}">${escapeHtml(heading.label)}</a></li>`,
+          `<li><button type="button" onmousedown="event.preventDefault()" onclick="event.preventDefault(); event.stopPropagation(); window.scrollToReferenceHeading(this); return false;" data-target="${escapeHtml(heading.id)}">${escapeHtml(heading.label)}</button></li>`,
       )
       .join("\n    ")}
   </ul>
@@ -2362,54 +2364,6 @@ function normalizePageType(value: string) {
 function getPageLayoutApprovalField(pageId: string) {
   return `layoutApproval.${pageId}`;
 }
-
-type StrategyNavIconName =
-  | "agent"
-  | "download"
-  | "pagebuilder"
-  | "plan"
-  | "prompts"
-  | "sections"
-  | "strategy"
-  | "style"
-  | "templates";
-
-function StrategyNavIcon({ icon }: { icon: StrategyNavIconName }) {
-  const paths: Record<StrategyNavIconName, string[]> = {
-    agent: ["M8 5h8", "M7 9h10", "M7 13h6", "M5 3h14v18H5z"],
-    download: ["M12 4v10", "M8 10l4 4 4-4", "M5 20h14"],
-    pagebuilder: ["M4 5h7v7H4z", "M13 5h7v4h-7z", "M13 11h7v8h-7z", "M4 14h7v5H4z"],
-    plan: ["M7 4h10l3 3v13H7z", "M17 4v4h4", "M10 11h7", "M10 15h5"],
-    prompts: ["M5 6h14v10H8l-3 3z", "M8 10h8", "M8 13h5"],
-    sections: ["M5 5h14v4H5z", "M5 11h14v4H5z", "M5 17h14v2H5z"],
-    strategy: ["M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z", "m15 9-2.3 4.7L8 16l2.3-4.7L15 9Z"],
-    style: ["M12 4l7 4v8l-7 4-7-4V8z", "M12 4v16", "M5 8l7 4 7-4"],
-    templates: ["M4 5h16v14H4z", "M8 5v14", "M4 10h16", "M12 10v9"],
-  };
-
-  return (
-    <svg
-      aria-hidden="true"
-      className="size-4 shrink-0"
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.7"
-      viewBox="0 0 24 24"
-    >
-      {paths[icon].map((path) => (
-        <path d={path} key={path} />
-      ))}
-    </svg>
-  );
-}
-
-const strategyNavButtonClass =
-  "strategy-toolbar-control token-chrome-control inline-flex min-h-9 items-center justify-center gap-1.5 whitespace-nowrap rounded-[var(--chrome-radius-control)] border px-3 type-caption font-semibold transition-colors";
-
-const strategyActiveNavButtonClass =
-  "strategy-toolbar-page-link strategy-toolbar-page-link-current mr-auto inline-flex min-h-9 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-[var(--chrome-radius-control)] px-3 type-caption font-semibold";
 
 const primaryButtonClass =
   "token-chrome-primary inline-flex min-h-11 w-full items-center justify-center whitespace-nowrap rounded-[var(--chrome-radius-control)] border px-5 type-caption font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto";

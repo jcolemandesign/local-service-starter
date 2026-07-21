@@ -131,7 +131,7 @@ export function FeatureAsymmetricCardsSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-4 col-start-4 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1">
-          <div className="grid gap-[var(--site-grid-gap)]">
+          <div className="grid gap-x-[var(--site-grid-gap)] gap-y-3">
             {[cards.slice(0, 2), cards.slice(2, 4)].map((row, rowIndex) => (
               <div
                 className="grid grid-cols-2 items-start gap-[var(--site-grid-gap)] max-md:grid-cols-1"
@@ -144,7 +144,7 @@ export function FeatureAsymmetricCardsSectionV3({
 
                   return (
                     <motion.article
-                      className="fluid-type-frame min-h-72 py-5 text-service-ink max-md:min-h-0"
+                      className="fluid-type-frame min-h-60 pb-0 pt-5 text-service-ink max-md:min-h-0"
                       custom={cardIndex}
                       initial={initial}
                       key={card.title}

@@ -49,9 +49,14 @@ import { HeroCenteredFloatersSectionV2 } from "@/components/sections/HeroCentere
 import {
   HeroCompactSectionV3,
   type HeroCompactAlign,
+  type HeroCompactHeadingSize,
 } from "@/components/sections/HeroCompactSectionV3";
 import { HeroServicesSectionV3 } from "@/components/sections/HeroServicesSectionV3";
 import { SectionHeaderCompactSectionV3 } from "@/components/sections/SectionHeaderCompactSectionV3";
+import {
+  SectionHeaderLargeSectionV3,
+  type LargeSectionHeaderSize,
+} from "@/components/sections/SectionHeaderLargeSectionV3";
 import { HeroContentTopImageBottomSectionV2 } from "@/components/sections/HeroContentTopImageBottomSectionV2";
 import {
   HeroSplitFixedImageSectionV3,
@@ -161,9 +166,47 @@ function getContentSplitFixedImageRatio(section: PagebuilderRecipeSection) {
 }
 
 function getHeroCompactAlign(section: PagebuilderRecipeSection) {
-  return heroCompactAlignments.has(section.variant ?? "")
-    ? (section.variant as HeroCompactAlign)
+  const [align] = (section.variant ?? "").split("-");
+
+  return heroCompactAlignments.has(align)
+    ? (align as HeroCompactAlign)
     : sectionLibraryV3Content.heroCompact.align;
+}
+
+function getCompactHeaderHeadingSize(
+  section: PagebuilderRecipeSection,
+): HeroCompactHeadingSize {
+  if (section.variant?.endsWith("heading-lg")) {
+    return "heading-lg";
+  }
+
+  if (section.variant?.endsWith("heading-xl")) {
+    return "heading-xl";
+  }
+
+  return section.component === "HeroCompactSectionV3"
+    ? sectionLibraryV3Content.heroCompact.headingSize
+    : sectionLibraryV3Content.sectionHeaderCompact.headingSize;
+}
+
+function getLargeSectionHeaderAlign(section: PagebuilderRecipeSection) {
+  const [align] = (section.variant ?? "").split("-");
+
+  return heroCompactAlignments.has(align)
+    ? (align as HeroCompactAlign)
+    : sectionLibraryV3Content.sectionHeaderLarge.align;
+}
+
+function getLargeSectionHeaderSize(
+  section: PagebuilderRecipeSection,
+): LargeSectionHeaderSize {
+  if (section.variant?.endsWith("heading-xl")) {
+    return "heading-xl";
+  }
+
+  return section.variant?.endsWith("display-lg")
+    ? "display-lg"
+    : "display-xl";
 }
 
 function getServicesBentoVariant(section: PagebuilderRecipeSection) {
@@ -239,6 +282,7 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.heroCompact}
           align={getHeroCompactAlign(section)}
           headingLevel={headingLevel}
+          headingSize={getCompactHeaderHeadingSize(section)}
         />
       );
     case "HeroServicesSectionV3":
@@ -254,6 +298,16 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.sectionHeaderCompact}
           align={getHeroCompactAlign(section)}
           headingLevel={2}
+          headingSize={getCompactHeaderHeadingSize(section)}
+        />
+      );
+    case "SectionHeaderLargeSectionV3":
+      return (
+        <SectionHeaderLargeSectionV3
+          {...sectionLibraryV3Content.sectionHeaderLarge}
+          align={getLargeSectionHeaderAlign(section)}
+          headingLevel={2}
+          size={getLargeSectionHeaderSize(section)}
         />
       );
     case "TrustBarSectionV3":
@@ -684,6 +738,12 @@ export function PagebuilderSection() {
       "SectionHeaderCompactSectionV3",
       "Section Header",
       "Compact section header",
+      2,
+    ),
+    SectionHeaderLargeSectionV3: previewCatalogEntry(
+      "SectionHeaderLargeSectionV3",
+      "Section Header",
+      "Large section header",
       2,
     ),
     TrustBarSectionV3: (

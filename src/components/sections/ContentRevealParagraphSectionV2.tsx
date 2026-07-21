@@ -22,10 +22,17 @@ export function ContentRevealParagraphSectionV2({
   lines,
   sectionSpace = "med",
 }: ContentRevealParagraphSectionV2Props) {
+  const sectionSpaceClass = {
+    vsml: "section-space-vsml",
+    sml: "section-space-sml",
+    med: "section-space-med",
+    lrg: "section-space-lrg",
+  }[sectionSpace];
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const [revealKey, setRevealKey] = useState(0);
   const [isRevealed, setIsRevealed] = useState(false);
   const shouldReduceMotion = useReducedMotion();
+  const revealText = lines.map((line) => line.trim()).filter(Boolean).join(" ");
   const transition = shouldReduceMotion
     ? { duration: 0 }
     : { duration: 0.58, ease: revealEase };
@@ -88,56 +95,40 @@ export function ContentRevealParagraphSectionV2({
 
   return (
     <section className="bg-bg-page">
-      <SevenColumnGrid
-        className={
-          {
-            vsml: "section-min-short",
-            sml: "section-min-medium",
-            med: "section-min-short",
-            lrg: "section-min-story",
-          }[sectionSpace]
-        }
-      >
+      <SevenColumnGrid className={cx("section-min-none", sectionSpaceClass)}>
         <SevenColumnGridItem
           alignY="middle"
           className="col-span-6 max-lg:col-span-7"
         >
           <div className="fluid-type-frame" ref={sectionRef}>
-            <div className="grid gap-2">
-              {lines.map((line, index) => (
-                <div className="overflow-hidden pb-1" key={`${index}-${line}`}>
-                  <motion.p
-                    key={`${revealKey}-${line}`}
-                    className={cx(
-                      "type-heading-xl",
-                      "measure-copy-wide",
-                      "text-service-ink",
-                    )}
-                    initial={
-                      shouldReduceMotion
-                        ? false
-                        : {
-                            clipPath: "inset(100% 0 0 0)",
-                            y: "0.65em",
-                          }
-                    }
-                    transition={{
-                      ...transition,
-                      delay: shouldReduceMotion ? 0 : index * 0.12,
-                    }}
-                    animate={
-                      isRevealed
-                        ? {
-                            clipPath: "inset(0% 0 0 0)",
-                            y: 0,
-                          }
-                        : undefined
-                    }
-                  >
-                    {line}
-                  </motion.p>
-                </div>
-              ))}
+            <div className="overflow-hidden pb-1">
+              <motion.p
+                key={`${revealKey}-${revealText}`}
+                className={cx(
+                  "type-heading-xl",
+                  "measure-copy-wide",
+                  "text-service-ink",
+                )}
+                initial={
+                  shouldReduceMotion
+                    ? false
+                    : {
+                        clipPath: "inset(100% 0 0 0)",
+                        y: "0.65em",
+                      }
+                }
+                transition={transition}
+                animate={
+                  isRevealed
+                    ? {
+                        clipPath: "inset(0% 0 0 0)",
+                        y: 0,
+                      }
+                    : undefined
+                }
+              >
+                {revealText}
+              </motion.p>
             </div>
           </div>
         </SevenColumnGridItem>

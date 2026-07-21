@@ -49,6 +49,7 @@ import {
   ServicesHoverPanelSectionV2,
   ServicesScrollCardsSectionV2,
   SectionHeaderCompactSectionV3,
+  SectionHeaderLargeSectionV3,
   SectionLibraryV3Accordions,
   ServiceAreaZipLookupSectionV3,
   ServicesThreeCardsRightSectionV3,
@@ -136,6 +137,12 @@ const sectionElements = {
   "section-header-compact-v3": (
     <SectionHeaderCompactSectionV3
       {...sectionLibraryV3Content.sectionHeaderCompact}
+      headingLevel={2}
+    />
+  ),
+  "section-header-large-v3": (
+    <SectionHeaderLargeSectionV3
+      {...sectionLibraryV3Content.sectionHeaderLarge}
       headingLevel={2}
     />
   ),
