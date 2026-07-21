@@ -300,6 +300,18 @@ body {
     color: var(--chrome-text);
   }
 
+  .token-chrome-control-danger {
+    border-color: rgb(252 165 165 / 0.6);
+    background-color: rgb(127 29 29 / 0.45);
+    color: #fee2e2;
+  }
+
+  .token-chrome-control-danger:hover {
+    border-color: rgb(254 202 202 / 0.85);
+    background-color: rgb(185 28 28 / 0.8);
+    color: #fff;
+  }
+
   .token-chrome-primary {
     border-color: rgb(255 255 255 / 0.18);
     background-color: #3c4551;

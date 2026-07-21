@@ -1310,6 +1310,22 @@ function getInnerOptionSignifier(component: string) {
   return innerOptionSignifiers[component];
 }
 
+function sortSectionSwapOptions(options: readonly SectionSwapOption[]) {
+  return [...options].sort((first, second) => {
+    const firstSignifier = getInnerOptionSignifier(first.component);
+    const secondSignifier = getInnerOptionSignifier(second.component);
+    const firstGroup = firstSignifier ? 0 : 1;
+    const secondGroup = secondSignifier ? 0 : 1;
+
+    return (
+      firstGroup - secondGroup ||
+      (firstSignifier?.label ?? first.name).localeCompare(
+        secondSignifier?.label ?? second.name,
+      )
+    );
+  });
+}
+
 function getSectionLayoutGrid(component: string): SectionLayoutGrid {
   return (
     sectionSwapOptions.find((option) => option.component === component)
@@ -1625,6 +1641,9 @@ export function PagebuilderShell({
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(
     null,
   );
+  const [openSidebarPanel, setOpenSidebarPanel] = useState<
+    "page-layouts" | "sections" | "add-section" | null
+  >(null);
   const [draggedSectionId, setDraggedSectionId] = useState<string | null>(null);
   const [dragOverSectionId, setDragOverSectionId] = useState<string | null>(
     null,
@@ -2665,17 +2684,31 @@ export function PagebuilderShell({
       <div className="h-full w-full px-4 py-4 max-md:px-3">
         <div className="grid h-full min-h-0 grid-cols-[22rem_minmax(0,1fr)] items-stretch gap-5 max-lg:h-auto max-lg:grid-cols-1">
           <aside className="grid h-full min-h-0 content-start gap-4 overflow-y-auto overscroll-contain pb-10 pr-1 max-lg:h-auto max-lg:overflow-visible max-lg:pb-0 max-lg:pr-0">
-            <div className="token-chrome-panel order-1 rounded-[var(--chrome-radius-panel)] border p-5">
-              <h1 className="text-5xl font-semibold leading-none tracking-normal">
+            <div className="token-chrome-panel order-1 rounded-[var(--chrome-radius-panel)] border p-4">
+              <h1 className="text-3xl font-semibold leading-none tracking-normal">
                 Page Builder
               </h1>
-              <p className="token-chrome-muted wrap-pretty mt-5 text-lg font-semibold leading-8">
+              <p className="token-chrome-muted wrap-pretty mt-3 text-sm font-semibold leading-6">
                 Choose, swap, reorder, and preview page sections while the
                 implementation brief updates with the live stack.
               </p>
             </div>
 
-            <details className="token-chrome-panel group/page-layouts order-2 rounded-[var(--chrome-radius-panel)] border p-5">
+            <details
+              className="token-chrome-panel group/page-layouts order-2 rounded-[var(--chrome-radius-panel)] border p-5"
+              onToggle={(event) => {
+                const isOpen = event.currentTarget.open;
+
+                setOpenSidebarPanel((currentPanel) =>
+                  isOpen
+                    ? "page-layouts"
+                    : currentPanel === "page-layouts"
+                      ? null
+                      : currentPanel,
+                );
+              }}
+              open={openSidebarPanel === "page-layouts"}
+            >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 marker:hidden">
                 <span className="text-2xl font-semibold leading-tight">
                   Page Layouts
@@ -2765,7 +2798,21 @@ export function PagebuilderShell({
               </div>
             </details>
 
-            <details className="token-chrome-panel-strong group/sections order-3 rounded-[var(--chrome-radius-panel)] border p-5">
+            <details
+              className="token-chrome-panel-strong group/sections order-3 rounded-[var(--chrome-radius-panel)] border p-5"
+              onToggle={(event) => {
+                const isOpen = event.currentTarget.open;
+
+                setOpenSidebarPanel((currentPanel) =>
+                  isOpen
+                    ? "sections"
+                    : currentPanel === "sections"
+                      ? null
+                      : currentPanel,
+                );
+              }}
+              open={openSidebarPanel === "sections"}
+            >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 marker:hidden">
                 <span className="flex items-center gap-3">
                   <span
@@ -2795,11 +2842,11 @@ export function PagebuilderShell({
                   const innerOptionSignifier = getInnerOptionSignifier(
                     section.component,
                   );
-                  const sectionSwapOptionsForMode = sectionSwapOptions
-                    .filter((option) => option.mode === section.mode)
-                    .sort((first, second) =>
-                      first.name.localeCompare(second.name),
-                    );
+                  const sectionSwapOptionsForMode = sortSectionSwapOptions(
+                    sectionSwapOptions.filter(
+                      (option) => option.mode === section.mode,
+                    ),
+                  );
 
                   return (
                     <div
@@ -3469,7 +3516,7 @@ export function PagebuilderShell({
                           ) : null}
 
                           <button
-                            className="token-chrome-control min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-sm font-semibold transition-colors"
+                            className="token-chrome-control token-chrome-control-danger min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-sm font-semibold transition-colors"
                             onClick={() => deleteSection(section.id)}
                             type="button"
                           >
@@ -3483,67 +3530,39 @@ export function PagebuilderShell({
               </div>
             </details>
 
-            <div className="token-chrome-panel order-5 rounded-[var(--chrome-radius-panel)] border p-5">
-              <h2 className="text-2xl font-semibold leading-tight">
-                Preview Controls
-              </h2>
-              <div className="mt-4 grid gap-4">
-                <div className="grid gap-2">
-                  <span className="type-caption font-semibold">
-                    Preview Canvas
-                  </span>
-                  <div className="token-chrome-control rounded-[var(--chrome-radius-control)] border px-3 py-3">
-                    <p className="text-sm font-semibold">
-                      {selectedViewport.label}
-                    </p>
-                    <p className="token-chrome-muted type-caption mt-1">
-                      {selectedViewport.sizeLabel}
-                    </p>
-                  </div>
-                  <span className="token-chrome-muted type-caption">
-                    All pagebuilder previews use this fixed canvas for
-                    agreement and consistency.
-                  </span>
-                </div>
+            <details
+              className="token-chrome-panel group/add-section order-4 rounded-[var(--chrome-radius-panel)] border p-5"
+              onToggle={(event) => {
+                const isOpen = event.currentTarget.open;
 
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    className="token-chrome-primary min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-sm font-semibold transition-colors"
-                    onClick={() => setIsPreviewOpen(true)}
-                    type="button"
-                  >
-                    Focus
-                  </button>
-                  <button
-                    className="token-chrome-control min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-sm font-semibold transition-colors"
-                    onClick={refreshPreviewStyles}
-                    type="button"
-                  >
-                    Refresh
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <details className="token-chrome-panel group order-6 rounded-[var(--chrome-radius-panel)] border p-5">
+                setOpenSidebarPanel((currentPanel) =>
+                  isOpen
+                    ? "add-section"
+                    : currentPanel === "add-section"
+                      ? null
+                      : currentPanel,
+                );
+              }}
+              open={openSidebarPanel === "add-section"}
+            >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left">
                 <h2 className="text-2xl font-semibold leading-tight">
                   Add Section
                 </h2>
                 <span
                   aria-hidden="true"
-                  className="token-chrome-badge flex size-8 shrink-0 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-transform group-open:rotate-180"
+                  className="token-chrome-badge flex size-8 shrink-0 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-transform group-open/add-section:rotate-180"
                 >
                   <DownArrowIcon className="size-4" />
                 </span>
               </summary>
               <div className="mt-4 grid gap-4">
                 {sectionModes.map((mode) => {
-                  const options = sectionSwapOptions
-                    .filter((option) => option.mode === mode.name)
-                    .sort((first, second) =>
-                      first.name.localeCompare(second.name),
-                    );
+                  const options = sortSectionSwapOptions(
+                    sectionSwapOptions.filter(
+                      (option) => option.mode === mode.name,
+                    ),
+                  );
 
                   if (options.length === 0) {
                     return null;
@@ -3628,6 +3647,48 @@ export function PagebuilderShell({
                 Adds after the selected section, or at the bottom.
               </p>
             </details>
+
+            <div className="token-chrome-panel order-5 rounded-[var(--chrome-radius-panel)] border p-5">
+              <h2 className="text-2xl font-semibold leading-tight">
+                Preview Controls
+              </h2>
+              <div className="mt-4 grid gap-4">
+                <div className="grid gap-2">
+                  <span className="type-caption font-semibold">
+                    Preview Canvas
+                  </span>
+                  <div className="token-chrome-control rounded-[var(--chrome-radius-control)] border px-3 py-3">
+                    <p className="text-sm font-semibold">
+                      {selectedViewport.label}
+                    </p>
+                    <p className="token-chrome-muted type-caption mt-1">
+                      {selectedViewport.sizeLabel}
+                    </p>
+                  </div>
+                  <span className="token-chrome-muted type-caption">
+                    All pagebuilder previews use this fixed canvas for
+                    agreement and consistency.
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    className="token-chrome-primary min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-sm font-semibold transition-colors"
+                    onClick={() => setIsPreviewOpen(true)}
+                    type="button"
+                  >
+                    Focus
+                  </button>
+                  <button
+                    className="token-chrome-control min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-sm font-semibold transition-colors"
+                    onClick={refreshPreviewStyles}
+                    type="button"
+                  >
+                    Refresh
+                  </button>
+                </div>
+              </div>
+            </div>
           </aside>
 
           <div className="token-chrome-frame grid h-full min-h-0 overflow-hidden rounded-[var(--chrome-radius-control)] border p-2 max-lg:h-[78svh]">
@@ -3868,11 +3929,11 @@ export function PagebuilderShell({
                         Add Section Template
                       </p>
                       {sectionModes.map((mode) => {
-                        const options = sectionSwapOptions
-                          .filter((option) => option.mode === mode.name)
-                          .sort((first, second) =>
-                            first.name.localeCompare(second.name),
-                          );
+                        const options = sortSectionSwapOptions(
+                          sectionSwapOptions.filter(
+                            (option) => option.mode === mode.name,
+                          ),
+                        );
 
                         if (options.length === 0) {
                           return null;
@@ -4080,7 +4141,7 @@ export function PagebuilderShell({
                             Select
                           </button>
                           <button
-                            className="radius-4 min-h-9 border border-service-border bg-bg-page px-3 text-xs font-semibold text-service-muted transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent"
+                            className="token-chrome-control token-chrome-control-danger min-h-9 rounded-[var(--chrome-radius-control)] border px-3 text-xs font-semibold transition-colors"
                             onClick={() => deleteSection(section.id)}
                             type="button"
                           >

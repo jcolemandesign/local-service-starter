@@ -9,8 +9,8 @@
       "optionName": "Page Layout",
       "recipeId": "compact-utility",
       "recipeName": "Individual Service",
-      "savedAt": "2026-07-21T16:12:22.957Z",
-      "sectionCount": 5,
+      "savedAt": "2026-07-21T16:56:46.180Z",
+      "sectionCount": 2,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
@@ -111,38 +111,8 @@
           "cardFill": "solid"
         },
         {
-          "component": "SectionHeaderLargeSectionV3",
-          "id": "compact-utility-SectionHeaderCompactSectionV3-added-1",
-          "included": true,
-          "instruction": "Use a large title-only section header when the next content module needs a stronger visual reset.",
-          "mode": "Section Header",
-          "name": "Large section header",
-          "originalComponent": "SectionHeaderCompactSectionV3",
-          "originalIndex": -1,
-          "reduceBottomPadding": false,
-          "reduceTopPadding": false,
-          "variant": "left-heading-xl",
-          "colorRecipe": "default",
-          "cardFill": "solid"
-        },
-        {
-          "component": "SectionHeaderCompactSectionV3",
-          "id": "compact-utility-SectionHeaderCompactSectionV3-added-1-duplicate-2",
-          "included": true,
-          "instruction": "Use a no-min-height compact header to introduce a section before card grids, FAQs, decisions, or utility blocks.",
-          "mode": "Section Header",
-          "name": "Compact section header",
-          "originalComponent": "SectionHeaderCompactSectionV3",
-          "originalIndex": -1,
-          "reduceBottomPadding": false,
-          "reduceTopPadding": false,
-          "variant": "left",
-          "colorRecipe": "default",
-          "cardFill": "solid"
-        },
-        {
           "component": "HeroCompactSectionV3",
-          "id": "compact-utility-HeroCompactSectionV3-added-2",
+          "id": "compact-utility-HeroCompactSectionV3-added-1",
           "included": true,
           "instruction": "Use a compact page title, eyebrow, and short descriptor when the page needs a clear header without media or proof blocks.",
           "mode": "Hero",
@@ -151,21 +121,7 @@
           "originalIndex": -1,
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
-          "variant": "left-display-lg",
-          "colorRecipe": "default",
-          "cardFill": "solid"
-        },
-        {
-          "component": "FeatureOverlapRowsSectionV3",
-          "id": "compact-utility-FeatureOverlapRowsSectionV3-added-3",
-          "included": true,
-          "instruction": "Use overlapping feature rows when multiple narrative points need visual momentum without becoming service cards.",
-          "mode": "Narrative",
-          "name": "Overlap feature rows",
-          "originalComponent": "FeatureOverlapRowsSectionV3",
-          "originalIndex": -1,
-          "reduceBottomPadding": false,
-          "reduceTopPadding": false,
+          "variant": "left-heading-xl",
           "colorRecipe": "default",
           "cardFill": "solid"
         }
