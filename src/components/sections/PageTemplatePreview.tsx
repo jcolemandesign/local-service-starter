@@ -355,7 +355,7 @@ export function renderPageTemplateSection(
         <HeroSplitFixedImageSectionV3
           {...heroSplitProps(fieldSection)}
           headingLevel={headingLevel}
-          ratio={getHeroSplitFixedImageRatio(section)}
+          ratio={getHeroSplitFixedImageRatio(section, fieldSection)}
           secondaryActionHref={getServicesHref(navigationLinks)}
           variant={getHeroSplitFixedImageVariant(section)}
         />
@@ -508,7 +508,7 @@ export function renderPageTemplateSection(
         <ContentSplitFixedImageSectionV3
           {...heroSplitProps(fieldSection)}
           headingLevel={headingLevel}
-          ratio={getContentSplitFixedImageRatio(section)}
+          ratio={getContentSplitFixedImageRatio(section, fieldSection)}
           variant={getContentSplitFixedImageVariant(section)}
         />
       );
@@ -687,6 +687,16 @@ function heroSplitProps(section: FieldSection) {
       "eyebrow",
       sectionLibraryV3Content.heroSplitFullHeight.eyebrow,
     ),
+    imageAlt: getAssetValue(
+      section,
+      "imageAlt",
+      sectionLibraryV3Content.heroSplitFullHeight.imageAlt,
+    ),
+    imageSrc: getAssetValue(
+      section,
+      "imageSrc",
+      sectionLibraryV3Content.heroSplitFullHeight.imageSrc,
+    ),
     primaryAction: getValue(
       section,
       "primaryAction",
@@ -797,6 +807,16 @@ function heroServicesProps(section: FieldSection) {
       "eyebrow",
       sectionLibraryV3Content.heroServices.eyebrow,
     ),
+    imageAlt: getAssetValue(
+      section,
+      "imageAlt",
+      sectionLibraryV3Content.heroServices.imageAlt,
+    ),
+    imageSrc: getAssetValue(
+      section,
+      "imageSrc",
+      sectionLibraryV3Content.heroServices.imageSrc,
+    ),
     title: getTitle(section, sectionLibraryV3Content.heroServices.title),
   };
 }
@@ -850,6 +870,7 @@ function servicesBentoProps(section: FieldSection) {
     sectionLibraryV3Content.servicesBento.items,
   );
   const hasCustomItems = hasCardItems(section, serviceItemFieldNames);
+  const imageItems = getRepeatedAssetRecords(section, ["items"]);
 
   return {
     ...sectionLibraryV3Content.servicesBento,
@@ -866,6 +887,11 @@ function servicesBentoProps(section: FieldSection) {
         ],
         ...item,
         cardSize: hasCustomItems ? item.size : item.cardSize,
+        imageSrc:
+          imageItems[index]?.imageSrc ??
+          sectionLibraryV3Content.servicesBento.items[
+            index % sectionLibraryV3Content.servicesBento.items.length
+          ].imageSrc,
       }),
     ),
     title: getTitle(section, sectionLibraryV3Content.servicesBento.title),
@@ -874,6 +900,7 @@ function servicesBentoProps(section: FieldSection) {
 
 function fourCardLinkGridProps(section: FieldSection) {
   const fallback = sectionLibraryV3Content.fourCardLinkGrid;
+  const imageItems = getRepeatedAssetRecords(section, ["items"]);
   const items = cardItemsWithFallback(
     section,
     ["serviceItems", "items", "cards"],
@@ -889,6 +916,7 @@ function fourCardLinkGridProps(section: FieldSection) {
         ...fallbackItem,
         ...item,
         href: item.href ?? fallbackItem.href,
+        imageSrc: imageItems[index]?.imageSrc ?? fallbackItem.imageSrc,
       };
     }),
     linkLabel: getValue(section, "linkLabel", fallback.linkLabel),
@@ -897,6 +925,7 @@ function fourCardLinkGridProps(section: FieldSection) {
 
 function threeCardLinkGridProps(section: FieldSection) {
   const fallback = sectionLibraryV3Content.threeCardLinkGrid;
+  const imageItems = getRepeatedAssetRecords(section, ["items"]);
   const items = cardItemsWithFallback(
     section,
     ["serviceItems", "items", "cards"],
@@ -912,6 +941,7 @@ function threeCardLinkGridProps(section: FieldSection) {
         ...fallbackItem,
         ...item,
         href: item.href ?? fallbackItem.href,
+        imageSrc: imageItems[index]?.imageSrc ?? fallbackItem.imageSrc,
       };
     }),
     linkLabel: getValue(section, "linkLabel", fallback.linkLabel),
@@ -953,12 +983,16 @@ function servicesThreeCardsProps(section: FieldSection) {
     ["priorityServices", "serviceItems", "items", "cards"],
     fallbackServices,
   );
+  const imageItems = getRepeatedAssetRecords(section, ["priorityServices"]);
 
   return {
     ...sectionLibraryV3Content.servicesThreeCardsRight,
     priorityServices: serviceItems.map((item, index) => ({
       ...fallbackServices[index % fallbackServices.length],
       ...item,
+      imageSrc:
+        imageItems[index]?.imageSrc ??
+        fallbackServices[index % fallbackServices.length].imageSrc,
     })),
     eyebrow: getValue(
       section,
@@ -1580,6 +1614,8 @@ function mainIdeaGridProps(section: FieldSection) {
 
 function projectCaseStudyGalleryProps(section: FieldSection) {
   const structuredSlides = getRepeatedRecords(section, ["slides"]);
+  const assetSlides = getRepeatedAssetRecords(section, ["slides"]);
+  const fallbackSlides = sectionLibraryV3Content.projectCaseStudyGallery.slides;
   const hasStagedContent = section.fields.some(
     (field) => field.kind === "copy" && field.value.trim().length > 0,
   );
@@ -1589,7 +1625,7 @@ function projectCaseStudyGalleryProps(section: FieldSection) {
   }
 
   return {
-    slides: structuredSlides.flatMap((slide) => {
+    slides: structuredSlides.flatMap((slide, index) => {
       const equipment = getIndexedRecordPairs(
         slide,
         "equipment",
@@ -1607,12 +1643,14 @@ function projectCaseStudyGalleryProps(section: FieldSection) {
       const testimonialAttribution = getApprovedProjectValue(
         slide["testimonial.attribution"],
       );
+      const fallbackSlide = fallbackSlides[index % fallbackSlides.length];
+      const assetSlide = assetSlides[index];
 
       return [
         {
           equipment,
-          imageAlt: slide.imageAlt,
-          imageSrc: slide.imageSrc,
+          imageAlt: assetSlide?.imageAlt ?? fallbackSlide.imageAlt,
+          imageSrc: assetSlide?.imageSrc ?? fallbackSlide.imageSrc,
           project: slide.project,
           summary: slide.summary,
           testimonial: {
@@ -1637,8 +1675,6 @@ function isQualifiedProjectCaseStudySlide(
   equipment: Array<{ label: string; value: string }>,
 ) {
   return (
-    isUsableImageSource(slide.imageSrc) &&
-    Boolean(getApprovedProjectValue(slide.imageAlt)) &&
     Boolean(getApprovedProjectValue(slide.project)) &&
     Boolean(getApprovedProjectValue(slide.title)) &&
     Boolean(getApprovedProjectValue(slide.summary)) &&
@@ -1660,7 +1696,7 @@ function getApprovedProjectValue(value: string | undefined) {
 }
 
 function photoGalleryProps(section: FieldSection) {
-  const records = getRepeatedRecords(section, ["images", "gallery", "items"]);
+  const records = getRepeatedAssetRecords(section, ["images", "gallery", "items"]);
   const fallbackImages = sectionLibraryV3Content.contentPhotoGalleryCarousel.images;
 
   return {
@@ -1701,7 +1737,7 @@ function photoGalleryProps(section: FieldSection) {
 }
 
 function imageStripProps(section: FieldSection) {
-  const records = getRepeatedRecords(section, ["images", "gallery", "items"]);
+  const records = getRepeatedAssetRecords(section, ["images", "gallery", "items"]);
   const fallbackImages = sectionLibraryV3Content.imageStrip.images;
 
   return {
@@ -2061,9 +2097,16 @@ function getHeroSplitFixedImageVariant(section: PageTemplatePreviewSection) {
     : undefined;
 }
 
-function getHeroSplitFixedImageRatio(section: PageTemplatePreviewSection) {
-  return heroSplitFixedImageRatios.has(section.ratio ?? "")
-    ? (section.ratio as HeroSplitFixedImageRatio)
+function getHeroSplitFixedImageRatio(
+  section: PageTemplatePreviewSection,
+  fieldSection: FieldSection,
+) {
+  const override = getAssetValue(fieldSection, "imageRatio", "");
+
+  return heroSplitFixedImageRatios.has(override)
+    ? (override as HeroSplitFixedImageRatio)
+    : heroSplitFixedImageRatios.has(section.ratio ?? "")
+      ? (section.ratio as HeroSplitFixedImageRatio)
     : undefined;
 }
 
@@ -2081,9 +2124,16 @@ function getContentSplitFixedImageVariant(section: PageTemplatePreviewSection) {
     : undefined;
 }
 
-function getContentSplitFixedImageRatio(section: PageTemplatePreviewSection) {
-  return heroSplitFixedImageRatios.has(section.ratio ?? "")
-    ? (section.ratio as ContentSplitFixedImageRatio)
+function getContentSplitFixedImageRatio(
+  section: PageTemplatePreviewSection,
+  fieldSection: FieldSection,
+) {
+  const override = getAssetValue(fieldSection, "imageRatio", "");
+
+  return heroSplitFixedImageRatios.has(override)
+    ? (override as ContentSplitFixedImageRatio)
+    : heroSplitFixedImageRatios.has(section.ratio ?? "")
+      ? (section.ratio as ContentSplitFixedImageRatio)
     : undefined;
 }
 
@@ -2129,6 +2179,22 @@ function getValue(section: FieldSection, fieldName: string, fallback: string) {
       );
     })?.value.trim() ||
     fallback
+  );
+}
+
+function getAssetValue(
+  section: FieldSection,
+  fieldName: string,
+  fallback: string,
+) {
+  return getValue(
+    {
+      fields: section.fields.filter(
+        (field) => field.kind === "image" || field.kind === "meta",
+      ),
+    },
+    fieldName,
+    fallback,
   );
 }
 
@@ -2239,6 +2305,20 @@ function getRepeatedRecords(section: FieldSection, collectionNames: string[]) {
   );
 }
 
+function getRepeatedAssetRecords(
+  section: FieldSection,
+  collectionNames: string[],
+) {
+  return getRepeatedRecords(
+    {
+      fields: section.fields.filter(
+        (field) => field.kind === "image" || field.kind === "meta",
+      ),
+    },
+    collectionNames,
+  );
+}
+
 function getIndexedRecordValues(
   record: Record<string, string>,
   collectionName: string,
@@ -2288,12 +2368,8 @@ function getIndexedRecordPairs(
     .filter((item) => item.label && item.value);
 }
 
-function isUsableImageSource(value: string | undefined) {
-  return Boolean(value && (value.startsWith("/") || value.startsWith("http")));
-}
-
 function cardItems(section: FieldSection, fieldNames: string[]) {
-  const records = getRepeatedRecords(section, fieldNames);
+  const records = getCardContentRecords(section, fieldNames);
 
   if (records.length > 0) {
     return records.map((record) => ({
@@ -2319,8 +2395,18 @@ function cardItems(section: FieldSection, fieldNames: string[]) {
 
 function hasCardItems(section: FieldSection, fieldNames: string[]) {
   return (
-    getRepeatedRecords(section, fieldNames).length > 0 ||
+    getCardContentRecords(section, fieldNames).length > 0 ||
     fieldNames.some((fieldName) => getValue(section, fieldName, "").length > 0)
+  );
+}
+
+function getCardContentRecords(
+  section: FieldSection,
+  fieldNames: string[],
+) {
+  return getRepeatedRecords(section, fieldNames).filter(
+    (record) =>
+      record.title || record.heading || record.body || record.description,
   );
 }
 

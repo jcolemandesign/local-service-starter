@@ -4,6 +4,7 @@ import type {
   SectionCardFill,
   SectionColorRecipe,
 } from "@/content/section-color-recipes";
+import { sectionLibraryV3Content } from "@/content/section-library-v3";
 import {
   getPathFromSlugForPageType,
   getStrategyCopyForPage,
@@ -154,8 +155,9 @@ export async function updateStagedPageFields(
     throw new Error("Staged page not found.");
   }
 
+  const currentFields = reconcileTemplateCopyFields(page, page.fields);
   const fieldsById = new Map(fields.map((field) => [field.id, field]));
-  const nextFields = page.fields.map((field) => {
+  const nextFields = currentFields.map((field) => {
     const nextField = fieldsById.get(field.id);
 
     return nextField
@@ -307,21 +309,55 @@ function reconcileTemplateCopyFields(
     return fields;
   }
 
-  const nextFields = [...fields];
+  const assetFieldsByPath = new Map<string, TemplateAssetField>(
+    sections.flatMap((section, index) => {
+      const sectionId = `${String(index + 1).padStart(2, "0")}-${slugify(
+        section.name || section.component,
+      )}`;
+
+      return getTemplateAssetFieldsForSection(section).map((field) => [
+        `${sectionId}.${field.name}`,
+        field,
+      ] as const);
+    }),
+  );
+  const nextFields = fields.map((field) => {
+    const assetField = assetFieldsByPath.get(field.path);
+
+    if (!assetField) {
+      return field;
+    }
+
+    return stagedField({
+      ...field,
+      kind: assetField.kind,
+      value:
+        field.kind === "copy" || !field.value.trim()
+          ? assetField.value
+          : field.value,
+    });
+  });
   const existingPaths = new Set(nextFields.map((field) => field.path));
 
   sections.forEach((section, index) => {
     const sectionId = `${String(index + 1).padStart(2, "0")}-${slugify(
       section.name || section.component,
     )}`;
-    const missingFields = getTemplateCopyFieldsForSection(section)
+    const missingFields = [
+      ...getTemplateCopyFieldsForSection(section).map((field) => ({
+        kind: "copy" as const,
+        name: field.name,
+        value: "",
+      })),
+      ...getTemplateAssetFieldsForSection(section),
+    ]
       .filter((field) => !existingPaths.has(`${sectionId}.${field.name}`))
       .map((field) =>
         stagedField({
           id: `${page.pageId}.${sectionId}.${field.name}`,
-          kind: "copy",
+          kind: field.kind,
           path: `${sectionId}.${field.name}`,
-          value: "",
+          value: field.value,
         }),
       );
 
@@ -399,6 +435,7 @@ export function buildStrategyTemplateStagedPage({
         section.name || section.component,
       )}`;
       const sectionFields = getTemplateCopyFieldsForSection(section);
+      const assetFields = getTemplateAssetFieldsForSection(section);
 
       return [
         stagedField({
@@ -413,6 +450,14 @@ export function buildStrategyTemplateStagedPage({
             kind: "copy",
             path: `${sectionId}.${field.name}`,
             value: "",
+          }),
+        ),
+        ...assetFields.map((field) =>
+          stagedField({
+            id: `${pageId}.${sectionId}.${field.name}`,
+            kind: field.kind,
+            path: `${sectionId}.${field.name}`,
+            value: field.value,
           }),
         ),
       ];
@@ -461,6 +506,153 @@ function countFields(fields: StagedPageField[]) {
 
 function stagedField(field: StagedPageField) {
   return field;
+}
+
+type TemplateAssetField = {
+  kind: "image" | "meta";
+  name: string;
+  value: string;
+};
+
+function getTemplateAssetFieldsForSection(
+  section: StagedPageTemplateSection,
+): TemplateAssetField[] {
+  const component = section.component.toLowerCase();
+
+  if (component.includes("projectcasestudygallery")) {
+    return sectionLibraryV3Content.projectCaseStudyGallery.slides.flatMap(
+      (slide, index) => [
+        {
+          kind: "meta" as const,
+          name: `slides.${index + 1}.imageAlt`,
+          value: slide.imageAlt,
+        },
+        {
+          kind: "image" as const,
+          name: `slides.${index + 1}.imageSrc`,
+          value: slide.imageSrc,
+        },
+      ],
+    );
+  }
+
+  if (
+    component.includes("herosplitfullheight") ||
+    component.includes("herosplitfixedimage") ||
+    component.includes("herocontenttopimagebottom") ||
+    component.includes("contentsplitfixedimage")
+  ) {
+    return [
+      ...(component.includes("herosplitfixedimage") ||
+      component.includes("contentsplitfixedimage")
+        ? [
+            {
+              kind: "meta" as const,
+              name: "imageRatio",
+              value: "",
+            },
+          ]
+        : []),
+      {
+        kind: "meta",
+        name: "imageAlt",
+        value: sectionLibraryV3Content.heroSplitFullHeight.imageAlt,
+      },
+      {
+        kind: "image",
+        name: "imageSrc",
+        value: sectionLibraryV3Content.heroSplitFullHeight.imageSrc,
+      },
+    ];
+  }
+
+  if (component.includes("heroservices")) {
+    return [
+      {
+        kind: "meta",
+        name: "imageAlt",
+        value: sectionLibraryV3Content.heroServices.imageAlt,
+      },
+      {
+        kind: "image",
+        name: "imageSrc",
+        value: sectionLibraryV3Content.heroServices.imageSrc,
+      },
+    ];
+  }
+
+  if (component.includes("servicesbentocards")) {
+    return imageCollectionFields(
+      "items",
+      sectionLibraryV3Content.servicesBento.items,
+    );
+  }
+
+  if (component.includes("fourcardlinkgrid")) {
+    return imageCollectionFields(
+      "items",
+      sectionLibraryV3Content.fourCardLinkGrid.items,
+    );
+  }
+
+  if (component.includes("threecardlinkgrid")) {
+    return imageCollectionFields(
+      "items",
+      sectionLibraryV3Content.threeCardLinkGrid.items,
+    );
+  }
+
+  if (component.includes("servicesthreecardsright")) {
+    return imageCollectionFields(
+      "priorityServices",
+      sectionLibraryV3Content.servicesThreeCardsRight.priorityServices,
+    );
+  }
+
+  if (component.includes("photogallerycarousel")) {
+    return sectionLibraryV3Content.contentPhotoGalleryCarousel.images.flatMap(
+      (image, index) => [
+        {
+          kind: "meta" as const,
+          name: `images.${index + 1}.alt`,
+          value: image.alt,
+        },
+        {
+          kind: "image" as const,
+          name: `images.${index + 1}.src`,
+          value: image.src,
+        },
+      ],
+    );
+  }
+
+  if (component.includes("imagestrip")) {
+    return sectionLibraryV3Content.imageStrip.images.flatMap((image, index) => [
+      {
+        kind: "meta" as const,
+        name: `images.${index + 1}.alt`,
+        value: image.alt,
+      },
+      {
+        kind: "image" as const,
+        name: `images.${index + 1}.src`,
+        value: image.src,
+      },
+    ]);
+  }
+
+  return [];
+}
+
+function imageCollectionFields(
+  collectionName: string,
+  items: ReadonlyArray<{ imageSrc: string }>,
+): TemplateAssetField[] {
+  return items.map((item, index) => ({
+    kind: "image",
+    name: `${collectionName}.${index + 1}.imageSrc`,
+    value: item.imageSrc,
+  }));
 }
 
 function sanitizeStagedFieldValue(field: StagedPageField, value: string) {

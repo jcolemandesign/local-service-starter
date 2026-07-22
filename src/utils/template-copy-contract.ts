@@ -263,11 +263,12 @@ function getTemplateCopySectionRules(section: TemplateCopyContractSection) {
 
   return [
     "This is a visual, slide-based mini case study of completed client work. It is not an FAQ, educational explainer, service list, testimonial carousel, or generic marketing section.",
-    "Each slide must describe one real project. The image, project label, headline, summary, equipment/details, and optional testimonial must all refer to that same project.",
+    "Each slide must describe one real project. The project label, headline, summary, equipment/details, and optional testimonial must all refer to that same project.",
     "Write exactly two slides using verified first-party project facts from the supplied strategy, project notes, or approved assets. Do not convert nearby FAQ copy or general service guidance into a slide.",
-    "A usable slide needs an approved local image path, accessible image description, factual project summary, and three verified detail pairs such as Location, Equipment, and Work Completed.",
+    "Images are not part of batch page copy. The renderer supplies the section-library FPO images until they are replaced through the content editor or a later implementation request.",
+    "A usable slide needs a factual project summary and three verified detail pairs such as Location, Equipment, and Work Completed.",
     "A testimonial is optional. Include it only when an approved quote and attribution are tied to that project; otherwise write NEEDS REVIEW for both testimonial fields.",
-    "If the prompt inputs do not contain enough verified project evidence, keep every unavailable slide field as NEEDS REVIEW. Never invent a project, image path, equipment detail, result, location, quote, or attribution. The renderer will hide incomplete slides.",
+    "If the prompt inputs do not contain enough verified project evidence, keep every unavailable copy field as NEEDS REVIEW. Never invent a project, equipment detail, result, location, quote, or attribution. The renderer will hide incomplete slides.",
   ];
 }
 
@@ -1407,18 +1408,6 @@ function projectCaseStudyGalleryFields(): TemplateCopyFieldSpec[] {
         name: `slides.${slideNumber}.summary`,
         purpose: `Slide ${slideNumber} concise case-study summary.`,
         target: "120-230 characters.",
-      },
-      {
-        example: "Heat pump equipment staged for a residential replacement project",
-        name: `slides.${slideNumber}.imageAlt`,
-        purpose: `Accessible description of slide ${slideNumber}'s approved image.`,
-        target: "55-140 characters.",
-      },
-      {
-        example: "/images/approved-project-photo.jpg",
-        name: `slides.${slideNumber}.imageSrc`,
-        purpose: `Approved local image path for slide ${slideNumber}.`,
-        target: "Use an existing /images path or NEEDS REVIEW. Never invent a remote URL.",
       },
       ...Array.from({ length: 3 }, (_, detailIndex) => [
         {

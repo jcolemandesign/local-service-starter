@@ -1,4 +1,5 @@
 import stagedPagesData from "./staged-pages.json";
+import { slugify } from "@/utils/strategy-site-map";
 
 export type ContentEditorFieldKind = "copy" | "image" | "link" | "meta";
 
@@ -46,6 +47,10 @@ type StagedEditorPage = {
   sourceStage?: string;
   template?: {
     name?: string;
+    sections?: Array<{
+      component?: string;
+      name?: string;
+    }>;
   };
 };
 type StagedPagesFile = {
@@ -103,7 +108,10 @@ function mapStagedPageToContentEditorPage(
 ): ContentEditorPage {
   const pageId = page.pageId || "staged-page";
   const clientSlug = page.snapshot?.clientSlug || "staged-client";
-  const fields = Array.isArray(page.fields) ? page.fields : [];
+  const fields = [
+    ...(Array.isArray(page.fields) ? page.fields : []),
+    ...getMissingImageRatioFields(page),
+  ];
   const sectionsById = fields.reduce<Record<string, ContentEditorField[]>>(
     (sections, field) => {
       const sectionId = getSectionIdFromFieldPath(field.path);
@@ -139,6 +147,37 @@ function mapStagedPageToContentEditorPage(
     })),
     sourceRecipe: formatStagedSource(page),
   };
+}
+
+function getMissingImageRatioFields(page: StagedEditorPage): StagedEditorField[] {
+  const existingPaths = new Set((page.fields ?? []).map((field) => field.path));
+
+  return (page.template?.sections ?? []).flatMap((section, index) => {
+    const component = section.component?.toLowerCase() ?? "";
+
+    if (
+      !component.includes("herosplitfixedimage") &&
+      !component.includes("contentsplitfixedimage")
+    ) {
+      return [];
+    }
+
+    const sectionId = `${String(index + 1).padStart(2, "0")}-${slugify(
+      section.name || section.component || "section",
+    )}`;
+    const path = `${sectionId}.imageRatio`;
+
+    return existingPaths.has(path)
+      ? []
+      : [
+          {
+            id: `${page.pageId}.${path}`,
+            kind: "meta" as const,
+            path,
+            value: "",
+          },
+        ];
+  });
 }
 
 function getSectionIdFromFieldPath(fieldPath: string) {

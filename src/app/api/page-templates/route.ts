@@ -155,6 +155,53 @@ export async function DELETE(request: Request) {
   }
 }
 
+export async function PATCH(request: Request) {
+  if (
+    process.env.NODE_ENV === "production" &&
+    process.env.ENABLE_DEV_ROUTES !== "true"
+  ) {
+    return jsonError("Template editing is disabled in production.", 403);
+  }
+
+  let body: { name?: string; templateId?: string };
+
+  try {
+    body = (await request.json()) as { name?: string; templateId?: string };
+  } catch {
+    return jsonError("Invalid request body.", 400);
+  }
+
+  try {
+    const templateId = sanitizeSlug(body.templateId ?? "");
+    const name = normalizeRequiredString(body.name, "Enter a template name.");
+    const templatesFile = await readTemplates();
+    const template = templatesFile.templates.find(
+      (currentTemplate) => currentTemplate.id === templateId,
+    );
+
+    if (!template) {
+      return jsonError("Template not found.", 404);
+    }
+
+    const renamedTemplate = { ...template, name };
+    const nextTemplates = templatesFile.templates.map((currentTemplate) =>
+      currentTemplate.id === templateId ? renamedTemplate : currentTemplate,
+    );
+
+    await writeFile(
+      templatesPath,
+      `${JSON.stringify({ templates: nextTemplates }, null, 2)}\n`,
+    );
+
+    return Response.json({ ok: true, template: renamedTemplate });
+  } catch (error) {
+    return jsonError(
+      error instanceof Error ? error.message : "Template rename failed.",
+      400,
+    );
+  }
+}
+
 async function readTemplates(): Promise<PageTemplatesFile> {
   try {
     const contents = await readFile(templatesPath, "utf8");

@@ -119,15 +119,12 @@ export function ProjectCaseStudyGallerySectionV3({
           </div>
         </LayoutGridItem>
 
-        <LayoutGridItem
-          alignY="stretch"
-          className="col-span-5 col-start-10 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2"
-        >
-          <div className="grid h-full">
+        <LayoutGridItem className="col-span-5 col-start-10 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2">
+          <div className="grid">
             <AnimatePresence initial={false} mode="wait">
               <motion.article
                 aria-live="polite"
-                className={`radius-medium flex h-full flex-col col-start-1 row-start-1 border p-7 max-md:p-6 ${cardBorderClass} ${
+                className={`radius-medium flex flex-col col-start-1 row-start-1 border p-7 max-md:p-6 ${cardBorderClass} ${
                   cardFill === "none"
                     ? "bg-transparent shadow-none"
                     : hasDarkCard

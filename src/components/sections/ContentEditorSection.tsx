@@ -41,6 +41,15 @@ const fieldFilterOptions: Array<{ label: string; value: FieldFilter }> = [
   { label: "Meta", value: "meta" },
   { label: "Links", value: "link" },
 ];
+const imageRatioOptions = [
+  { label: "Use template default", value: "" },
+  { label: "3:2", value: "3-2" },
+  { label: "2:3", value: "2-3" },
+  { label: "4:3", value: "4-3" },
+  { label: "3:4", value: "3-4" },
+  { label: "5:4", value: "5-4" },
+  { label: "4:5", value: "4-5" },
+] as const;
 
 export function ContentEditorSection({
   initialClientSlug,
@@ -485,6 +494,10 @@ function FieldEditor({
   originalValue: string;
   value: string;
 }) {
+  if (field.path.endsWith(".imageRatio")) {
+    return <ImageRatioFieldEditor field={field} onChange={onChange} originalValue={originalValue} value={value} />;
+  }
+
   const isDirty = value !== originalValue;
   const isEmpty = isEmptyEditableField(field, value);
   const helperText = getFieldHelperText(field);
@@ -574,6 +587,69 @@ function ActionButton({
     >
       {children}
     </button>
+  );
+}
+
+function ImageRatioFieldEditor({
+  field,
+  onChange,
+  originalValue,
+  value,
+}: {
+  field: ContentEditorField;
+  onChange: (value: string) => void;
+  originalValue: string;
+  value: string;
+}) {
+  const isDirty = value !== originalValue;
+
+  return (
+    <fieldset className="grid gap-3 rounded-sm border border-service-border bg-white p-4 shadow-sm">
+      <legend className="sr-only">Image framing</legend>
+      <div className="grid gap-2">
+        <span className="flex flex-wrap items-center gap-2">
+          <span className={`type-caption rounded-sm px-2 py-0.5 font-semibold ${
+            isDirty
+              ? "bg-service-accent text-white"
+              : "border border-service-border bg-white text-service-muted"
+          }`}>
+            image framing
+          </span>
+          {isDirty ? (
+            <span className="type-caption font-semibold text-service-accent">
+              edited
+            </span>
+          ) : null}
+        </span>
+        <span className="type-text-sm font-semibold text-service-ink">
+          {field.label}
+        </span>
+        <span className="type-caption text-service-muted">
+          Choose a page-specific image frame, or use the ratio saved on the template.
+        </span>
+      </div>
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Image framing">
+        {imageRatioOptions.map((option) => {
+          const isActive = value === option.value;
+
+          return (
+            <button
+              aria-pressed={isActive}
+              className={`min-h-9 rounded-sm border px-3 text-xs font-semibold transition-colors ${
+                isActive
+                  ? "border-service-accent bg-service-accent text-white"
+                  : "border-service-border bg-white text-service-muted hover:border-service-accent hover:text-service-accent"
+              }`}
+              key={option.value || "template-default"}
+              onClick={() => onChange(option.value)}
+              type="button"
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+    </fieldset>
   );
 }
 

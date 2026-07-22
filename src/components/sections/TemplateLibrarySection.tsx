@@ -70,6 +70,10 @@ type DeleteTemplateResponse =
     }
   | { ok: false; error?: string };
 
+type RenameTemplateResponse =
+  | { ok: true; template: PageTemplateSummary }
+  | { ok: false; error?: string };
+
 type SendTemplateToPagebuilderResponse =
   | {
       ok: true;
@@ -123,9 +127,13 @@ export function TemplateLibrarySection({
   const [copiedContractTemplateId, setCopiedContractTemplateId] = useState("");
   const [deleteCandidate, setDeleteCandidate] =
     useState<PageTemplateSummary | null>(null);
+  const [renameCandidate, setRenameCandidate] =
+    useState<PageTemplateSummary | null>(null);
+  const [renameValue, setRenameValue] = useState("");
   const [pagebuilderCandidate, setPagebuilderCandidate] =
     useState<PageTemplateSummary | null>(null);
   const [deletingTemplateId, setDeletingTemplateId] = useState("");
+  const [renamingTemplateId, setRenamingTemplateId] = useState("");
   const [sendingTemplateId, setSendingTemplateId] = useState("");
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
@@ -308,6 +316,49 @@ export function TemplateLibrarySection({
       setError("Template deletion failed.");
     } finally {
       setDeletingTemplateId("");
+    }
+  }
+
+  async function renameTemplate(template: PageTemplateSummary) {
+    const name = renameValue.trim();
+
+    if (!name) {
+      setError("Enter a template name.");
+      return;
+    }
+
+    setRenamingTemplateId(template.id);
+    setStatus("");
+    setError("");
+
+    try {
+      const response = await fetch("/api/page-templates", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ templateId: template.id, name }),
+      });
+      const result = (await response.json()) as RenameTemplateResponse;
+
+      if (!response.ok || !result.ok) {
+        setError(
+          result.ok
+            ? "Template rename failed."
+            : result.error ?? "Template rename failed.",
+        );
+        return;
+      }
+
+      setLocalTemplates((currentTemplates) =>
+        currentTemplates.map((currentTemplate) =>
+          currentTemplate.id === template.id ? result.template : currentTemplate,
+        ),
+      );
+      setRenameCandidate(null);
+      setStatus(`Renamed template to ${result.template.name}.`);
+    } catch {
+      setError("Template rename failed.");
+    } finally {
+      setRenamingTemplateId("");
     }
   }
 
@@ -559,6 +610,22 @@ export function TemplateLibrarySection({
                                   type="button"
                                 >
                                   <TrashIcon />
+                                </button>
+                                <button
+                                  aria-label={`Rename ${template.name}`}
+                                  className="token-chrome-control flex size-9 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors"
+                                  onClick={(event) => {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    setRenameCandidate(template);
+                                    setRenameValue(template.name);
+                                    setStatus("");
+                                    setError("");
+                                  }}
+                                  title="Rename template"
+                                  type="button"
+                                >
+                                  <RenameIcon />
                                 </button>
                                 <button
                                   aria-label={`Copy ${template.name} contract`}
@@ -966,6 +1033,63 @@ export function TemplateLibrarySection({
           </div>
         </div>
       ) : null}
+      {renameCandidate ? (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-service-ink/45 px-4 py-8"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !renamingTemplateId) {
+              setRenameCandidate(null);
+            }
+          }}
+        >
+          <form
+            aria-labelledby="rename-template-title"
+            aria-modal="true"
+            className="w-full max-w-md rounded-md border border-service-border bg-white p-6 text-service-ink shadow-service"
+            role="dialog"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void renameTemplate(renameCandidate);
+            }}
+          >
+            <p className="type-label text-service-accent">Rename template</p>
+            <h2
+              className="type-heading-sm mt-eyebrow-heading-sm text-service-ink"
+              id="rename-template-title"
+            >
+              Update template name
+            </h2>
+            <label className="type-text-sm mt-5 block font-semibold text-service-ink" htmlFor="template-name">
+              Template name
+            </label>
+            <input
+              autoFocus
+              className="radius-4 mt-2 min-h-11 w-full border border-service-border bg-white px-3 text-service-ink outline-none transition-colors focus:border-service-accent focus:ring-2 focus:ring-service-accent/20"
+              id="template-name"
+              onChange={(event) => setRenameValue(event.target.value)}
+              value={renameValue}
+            />
+            <div className="mt-body-actions-md flex justify-end gap-3">
+              <button
+                className="radius-4 min-h-10 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                disabled={Boolean(renamingTemplateId)}
+                onClick={() => setRenameCandidate(null)}
+                type="button"
+              >
+                Cancel
+              </button>
+              <button
+                className="radius-4 min-h-10 border border-service-ink bg-service-ink px-4 text-sm font-semibold text-white transition-colors hover:border-service-accent hover:bg-service-accent disabled:cursor-wait disabled:opacity-60"
+                disabled={Boolean(renamingTemplateId)}
+                type="submit"
+              >
+                {renamingTemplateId ? "Saving..." : "Save Name"}
+              </button>
+            </div>
+          </form>
+        </div>
+      ) : null}
       {pagebuilderCandidate ? (
         <div
           className="fixed inset-0 z-50 grid place-items-center bg-service-ink/45 px-4 py-8"
@@ -1171,6 +1295,24 @@ function TrashIcon() {
       <path d="M14 11v6" />
       <path d="M6 7l1 14h10l1-14" />
       <path d="M9 7V4h6v3" />
+    </svg>
+  );
+}
+
+function RenameIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-4"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+      viewBox="0 0 24 24"
+    >
+      <path d="m4 20 4.1-1 10.5-10.5a2.1 2.1 0 0 0-3-3L5.1 16.1 4 20Z" />
+      <path d="m13.8 7.3 3 3" />
     </svg>
   );
 }
