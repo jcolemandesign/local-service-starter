@@ -620,6 +620,54 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  if (component.includes("serviceneedsprioritygrid")) {
+    return [
+      {
+        example: [
+          "Weak or Uneven Performance - Some rooms feel different or airflow feels limited.",
+          "Unusual Operation - New sounds, frequent cycling, or other changes need a closer look.",
+          "Planning Ahead - You are considering care, repair, or replacement.",
+          "No Heating and Cooling - The system is no longer keeping the home comfortable. Explain what changed and direct the homeowner toward the most useful immediate next step.",
+        ],
+        format:
+          "Exactly four lines as Title - Description. Items 1-3 are compact supporting cards. Item 4 is intentionally larger and functions as the section's most important feature/CTA slot, so give it the fullest and most actionable description.",
+        itemCount: 4,
+        name: "items",
+        purpose:
+          "Three compact supporting cards plus one larger priority feature that gives the section a clear conversion or decision-making focus.",
+        target:
+          "Exactly 4 items. Compact descriptions 60-120 characters. The priority feature description should be 160-280 characters and explain why the visitor should use its primary or secondary CTA.",
+      },
+      {
+        example: "Emergency Service",
+        name: "priorityEyebrow",
+        purpose:
+          "Short label that frames why the larger feature deserves priority, such as Emergency Service, Seasonal Offer, Financing, or Recommended Next Step.",
+        target: "8-28 characters. Match the feature's actual context.",
+      },
+      {
+        example: "Request service",
+        name: "primaryAction",
+        purpose:
+          "Main conversion action inside the larger priority feature. It should directly advance the important need or offer described there.",
+        target: "10-24 characters. Use a specific action, not Learn More.",
+      },
+      {
+        example: "Call with questions",
+        name: "secondaryAction",
+        purpose:
+          "Lower-commitment or alternate path inside the larger priority feature, such as calling, comparing options, or reviewing details.",
+        target: "10-24 characters. Keep it distinct from the primary action.",
+      },
+      {
+        example: "View options",
+        name: "linkLabel",
+        purpose: "Shared text-link label on the three compact cards.",
+        target: "8-20 characters.",
+      },
+    ];
+  }
+
   if (component.includes("serviceshoverpanel")) {
     return [
       {

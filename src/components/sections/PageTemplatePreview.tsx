@@ -995,6 +995,23 @@ function serviceNeedsPriorityGridProps(section: FieldSection) {
         fallback.items[index % fallback.items.length].imageSrc,
     })),
     linkLabel: getValue(section, "linkLabel", fallback.linkLabel),
+    primaryAction: getValue(
+      section,
+      "primaryAction",
+      fallback.primaryAction,
+    ),
+    primaryActionHref: fallback.primaryActionHref,
+    priorityEyebrow: getValue(
+      section,
+      "priorityEyebrow",
+      fallback.priorityEyebrow,
+    ),
+    secondaryAction: getValue(
+      section,
+      "secondaryAction",
+      fallback.secondaryAction,
+    ),
+    secondaryActionHref: fallback.secondaryActionHref,
     title: getTitle(section, fallback.title),
   };
 }

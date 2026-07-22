@@ -1297,11 +1297,16 @@ export const sectionLibraryV3Content = {
     title: "What are you experiencing?",
     body: "Start with the problem—not an assumption about the solution.",
     linkLabel: "View options",
+    priorityEyebrow: "Emergency Service",
+    primaryAction: "Request urgent service",
+    primaryActionHref: "/contact",
+    secondaryAction: "Call with questions",
+    secondaryActionHref: "tel:7045550184",
     items: [
       { title: "Weak or Uneven Performance", body: "Some rooms feel different or airflow feels limited.", href: "/services", imageAlt: "HVAC airflow placeholder", imageSrc: "/images/fpo-image.svg" },
       { title: "Unusual Operation", body: "New sounds, frequent cycling, or other changes need a closer look.", href: "/services", imageAlt: "HVAC equipment placeholder", imageSrc: "/images/fpo-image.svg" },
       { title: "Planning Ahead", body: "You are considering care, repair, or replacement.", href: "/services", imageAlt: "HVAC planning placeholder", imageSrc: "/images/fpo-image.svg" },
-      { title: "No Heating or Cooling", body: "The system is not keeping the home comfortable.", href: "/contact", imageAlt: "HVAC system placeholder", imageSrc: "/images/fpo-image.svg" },
+      { title: "No Heating and Cooling", body: "If the system has stopped heating or cooling the home, start here. Share what changed, when the problem began, and whether the equipment is still running so the team can help identify the right next step.", href: "/contact", imageAlt: "HVAC system placeholder", imageSrc: "/images/fpo-image.svg" },
     ],
   },
   servicesThreeCardsRight: {
