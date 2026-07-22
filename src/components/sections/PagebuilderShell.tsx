@@ -2656,6 +2656,7 @@ export function PagebuilderShell({
         ) : section.component === "FAQSectionV3" ? (
           <FAQSectionV3
             {...sectionLibraryV3Content.faq}
+            cardFill={getSectionCardFill(section)}
             colorRecipe={getSectionColorRecipe(section)}
           />
         ) : section.component === projectCaseStudyGalleryComponent ? (

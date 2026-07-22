@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "compact-utility",
       "recipeName": "Individual Service",
-      "savedAt": "2026-07-22T05:06:26.445Z",
+      "savedAt": "2026-07-22T13:47:14.039Z",
       "sectionCount": 11,
       "sections": [
         {
@@ -109,9 +109,9 @@
           "name": "Process steps",
           "originalComponent": "ProcessStepsSectionV3",
           "originalIndex": -1,
-          "reduceBottomPadding": true,
+          "reduceBottomPadding": false,
           "reduceTopPadding": false,
-          "colorRecipe": "muted",
+          "colorRecipe": "default",
           "cardFill": "solid"
         },
         {
@@ -139,8 +139,8 @@
           "originalIndex": -1,
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
-          "colorRecipe": "muted",
-          "cardFill": "solid"
+          "colorRecipe": "default",
+          "cardFill": "none"
         },
         {
           "component": "ContactSectionModalBegin",

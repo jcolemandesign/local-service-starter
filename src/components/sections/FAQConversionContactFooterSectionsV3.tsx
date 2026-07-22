@@ -6,7 +6,10 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
-import type { SectionColorRecipe } from "@/content/section-color-recipes";
+import type {
+  SectionCardFill,
+  SectionColorRecipe,
+} from "@/content/section-color-recipes";
 
 type FAQItem = {
   answer: string;
@@ -27,6 +30,7 @@ type FooterContact = {
 
 type FAQSectionV3Props = {
   body: string;
+  cardFill?: SectionCardFill;
   colorRecipe?: SectionColorRecipe;
   eyebrow: string;
   items: readonly FAQItem[];
@@ -255,6 +259,7 @@ const faqRecipeClasses: Record<
 
 export function FAQSectionV3({
   body,
+  cardFill = "solid",
   colorRecipe = "default",
   eyebrow,
   items,
@@ -281,19 +286,25 @@ export function FAQSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1">
-          <div className="grid card-grid-gap-med">
+          <div className={cardFill === "none" ? "grid" : "grid card-grid-gap-med"}>
             {items.map((item) => (
-              <article
-                className={`content-padding fluid-type-frame radius-medium border ${colors.card}`}
-                key={item.question}
-              >
-                <h3 className={`type-heading-sm ${colors.heading}`}>
-                  {item.question}
-                </h3>
-                <p className={`type-text-md wrap-pretty mt-heading-body-sm ${colors.body}`}>
-                  {item.answer}
-                </p>
-              </article>
+              <div key={item.question}>
+                <article
+                  className={`content-padding fluid-type-frame radius-medium border ${colors.card} ${
+                    cardFill === "none" ? "!bg-transparent !shadow-none" : ""
+                  }`}
+                >
+                  <h3 className={`type-heading-sm ${colors.heading}`}>
+                    {item.question}
+                  </h3>
+                  <p className={`type-text-md wrap-pretty mt-heading-body-sm ${colors.body}`}>
+                    {item.answer}
+                  </p>
+                </article>
+                {cardFill === "none" && item !== items.at(-1) ? (
+                  <hr className="border-0 border-t border-service-border" />
+                ) : null}
+              </div>
             ))}
           </div>
         </SevenColumnGridItem>

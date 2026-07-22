@@ -161,7 +161,7 @@ export function ProcessStepsSectionV3({
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="bg-service-surface">
+    <section className="bg-bg-page">
       <SevenColumnGrid className="section-min-none" padding="med">
         <SevenColumnGridItem
           className="col-span-3 max-lg:col-span-7"
