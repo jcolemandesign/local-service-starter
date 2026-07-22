@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
 import {
   SevenColumnGrid,
@@ -19,6 +20,11 @@ type ContentStickyCardStreamSectionV2Props = {
   body: string;
   cards: StreamCard[];
   colorRecipe?: SectionColorRecipe;
+  imageAlt: string;
+  imageHeight: number;
+  imageSrc: string;
+  imageWidth: number;
+  showImage?: boolean;
 };
 
 function cx(...classes: Array<string | undefined>) {
@@ -31,6 +37,11 @@ export function ContentStickyCardStreamSectionV2({
   body,
   cards,
   colorRecipe = "default",
+  imageAlt,
+  imageHeight,
+  imageSrc,
+  imageWidth,
+  showImage = false,
 }: ContentStickyCardStreamSectionV2Props) {
   const shouldReduceMotion = useReducedMotion();
   const colors =
@@ -55,6 +66,18 @@ export function ContentStickyCardStreamSectionV2({
                 {body}
               </p>
             </div>
+            {showImage ? (
+              <div className="radius-medium mt-body-actions-lg w-full max-w-full overflow-hidden border border-service-border bg-service-surface shadow-service">
+                <Image
+                  alt={imageAlt}
+                  className="h-auto w-full object-contain"
+                  height={imageHeight}
+                  sizes="(max-width: 1024px) 100vw, 43vw"
+                  src={imageSrc}
+                  width={imageWidth}
+                />
+              </div>
+            ) : null}
           </div>
         </SevenColumnGridItem>
 

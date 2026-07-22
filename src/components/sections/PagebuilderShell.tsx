@@ -41,6 +41,10 @@ import {
   type ContentMainIdeaGridAlign,
 } from "@/components/sections/ContentMainIdeaGridSectionV3";
 import {
+  ContentNarrativeFeatureRailSectionV3,
+  type ContentNarrativeFeatureRailAlign,
+} from "@/components/sections/ContentNarrativeFeatureRailSectionV3";
+import {
   ProjectCaseStudyGallerySectionV3,
   type ProjectCaseStudyGalleryAlign,
 } from "@/components/sections/ProjectCaseStudyGallerySectionV3";
@@ -102,6 +106,8 @@ const threeCardLinkGridComponent = "ThreeCardLinkGridSectionV3";
 const serviceNeedsPriorityGridComponent = "ServiceNeedsPriorityGridSectionV3";
 const contentSplitHeadlineImageComponent = "ContentSplitHeadlineImageSectionV2";
 const contentMainIdeaGridComponent = "ContentMainIdeaGridSectionV3";
+const contentNarrativeFeatureRailComponent =
+  "ContentNarrativeFeatureRailSectionV3";
 const projectCaseStudyGalleryComponent = "ProjectCaseStudyGallerySectionV3";
 const contentStickyCardStreamComponent = "ContentStickyCardStreamSectionV2";
 const ctaSectionComponent = "CTASectionV3";
@@ -513,6 +519,12 @@ function getMainIdeaGridAlign(
   return section.variant === "right" ? "right" : "left";
 }
 
+function getNarrativeFeatureRailAlign(
+  section: WorkingSection,
+): ContentNarrativeFeatureRailAlign {
+  return section.variant === "left" ? "left" : "right";
+}
+
 function getProjectCaseStudyGalleryAlign(
   section: WorkingSection,
 ): ProjectCaseStudyGalleryAlign {
@@ -611,6 +623,10 @@ function getCardLinkGridVariant(
   section: WorkingSection,
 ): ThreeCardLinkGridVariant {
   return section.variant === "text-only" ? "text-only" : "with-images";
+}
+
+function getStickyCardStreamShowImage(section: WorkingSection) {
+  return section.variant === "with-images";
 }
 
 function createInitialDesignStyle(): DesignStyleSettings {
@@ -1095,6 +1111,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     name: "Editorial 3 column",
   },
   {
+    component: "ContentNarrativeFeatureRailSectionV3",
+    instruction:
+      "Use an eight-column longform narrative with a six-column image and two or three stacked callouts for promotions, financing, maintenance plans, or other secondary offers. Do not use the callouts for the page's primary repair or replacement path.",
+    layoutGrid: 14,
+    mode: "Narrative",
+    name: "Longform with feature rail",
+  },
+  {
     component: "ContentRuleHeaderSectionV2",
     instruction:
       "Use as lightweight editorial texture to introduce a practical idea without adding a heavy section.",
@@ -1568,7 +1592,7 @@ function buildPageInstruction({
              getServicesBentoVariantLabel(section.variant) ??
              servicesBentoVariantOptions[0].label
            } (${section.variant ?? servicesBentoVariantOptions[0].value})`
-       : isFourCardLinkGridSection(section)
+      : isFourCardLinkGridSection(section)
          ? `Variant: ${
              getFourCardLinkGridVariant(section) === "with-images"
                ? "Images"
@@ -1580,6 +1604,10 @@ function buildPageInstruction({
                ? "Images"
                : "No images"
            } (${getCardLinkGridVariant(section)})`
+      : section.component === contentStickyCardStreamComponent
+        ? `Content image: ${
+            getStickyCardStreamShowImage(section) ? "shown" : "hidden"
+          } (${section.variant ?? "text-only"})`
        : "Variant: default"
    }
        Instruction: ${section.instruction}
@@ -2169,6 +2197,21 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateNarrativeFeatureRailAlign(
+    sectionId: string,
+    align: ContentNarrativeFeatureRailAlign,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId &&
+        section.component === contentNarrativeFeatureRailComponent
+          ? { ...section, variant: align }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateProjectCaseStudyGalleryAlign(
     sectionId: string,
     align: ProjectCaseStudyGalleryAlign,
@@ -2199,6 +2242,18 @@ export function PagebuilderShell({
 
         return { ...section, variant: showImages ? align : `${align}-text-only` };
       }),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
+  function updateStickyCardStreamImage(sectionId: string, showImage: boolean) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId &&
+        section.component === contentStickyCardStreamComponent
+          ? { ...section, variant: showImage ? "with-images" : "text-only" }
+          : section,
+      ),
     );
     setSelectedSectionId(sectionId);
   }
@@ -2753,6 +2808,11 @@ export function PagebuilderShell({
             align={getMainIdeaGridAlign(section)}
             colorRecipe={getSectionColorRecipe(section)}
           />
+        ) : section.component === contentNarrativeFeatureRailComponent ? (
+          <ContentNarrativeFeatureRailSectionV3
+            {...sectionLibraryV3Content.contentNarrativeFeatureRail}
+            align={getNarrativeFeatureRailAlign(section)}
+          />
         ) : section.component === ctaSectionComponent ? (
           <CTASectionV3
             {...sectionLibraryV3Content.cta}
@@ -2785,6 +2845,7 @@ export function PagebuilderShell({
           <ContentStickyCardStreamSectionV2
             {...sectionLibraryV3Content.contentStickyCardStream}
             colorRecipe={getSectionColorRecipe(section)}
+            showImage={getStickyCardStreamShowImage(section)}
           />
         ) : isFourCardLinkGridSection(section) ? (
           <FourCardLinkGridSectionV3
@@ -2800,6 +2861,7 @@ export function PagebuilderShell({
           <ServiceNeedsPriorityGridSectionV3
             {...sectionLibraryV3Content.serviceNeedsPriorityGrid}
             align={getServiceNeedsPriorityGridAlign(section)}
+            cardFill={getSectionCardFill(section)}
             showImages={getServiceNeedsPriorityGridShowImages(section)}
           />
         ) : isServicesBentoSection(section) ? (
@@ -3324,7 +3386,9 @@ export function PagebuilderShell({
                           <div
                             className={cx(
                               "grid gap-4",
-                              isCardLinkGridSection(section) && "grid-cols-2 items-start",
+                              (isCardLinkGridSection(section) ||
+                                section.component === contentStickyCardStreamComponent) &&
+                                "grid-cols-2 items-start",
                             )}
                           >
                           <fieldset className="grid gap-2">
@@ -3424,6 +3488,42 @@ export function PagebuilderShell({
                                           ? "Show card images"
                                           : "Hide card images"}
                                       </span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </fieldset>
+                          ) : null}
+                          {section.component === contentStickyCardStreamComponent ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Content image
+                              </legend>
+                              <div className="flex items-center gap-2">
+                                {fourCardLinkGridVariantOptions.map((option) => {
+                                  const showImage = option.value === "with-images";
+                                  const optionIsActive =
+                                    getStickyCardStreamShowImage(section) === showImage;
+                                  const label = showImage
+                                    ? "Show content image"
+                                    : "Hide content image";
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                        optionIsActive && "token-chrome-card-active",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateStickyCardStreamImage(section.id, showImage)
+                                      }
+                                      title={label}
+                                      type="button"
+                                    >
+                                      <CardImageIcon hidden={!showImage} />
+                                      <span className="sr-only">{label}</span>
                                     </button>
                                   );
                                 })}
@@ -3709,6 +3809,48 @@ export function PagebuilderShell({
                               <p className="type-caption text-current/60">
                                 Right places the support cards in columns 1–6,
                                 leaves column 7 open, and starts the lead card in column 8.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
+                          {section.component ===
+                          contentNarrativeFeatureRailComponent ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Sidebar position
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {mainIdeaGridAlignOptions.map((option) => {
+                                  const optionIsActive =
+                                    getNarrativeFeatureRailAlign(section) ===
+                                    option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateNarrativeFeatureRailAlign(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Right places the sidebar beside the content on
+                                the right; Left mirrors the desktop layout.
                               </p>
                             </fieldset>
                           ) : null}

@@ -6,6 +6,12 @@ export { ContentAboutCompanySection } from "./ContentAboutCompanySection";
 export { ContentAboutCompanySectionV2 } from "./ContentAboutCompanySectionV2";
 export { ContentAboutStorySectionV3 } from "./ContentAboutStorySectionV3";
 export {
+  ContentNarrativeFeatureRailSectionV3,
+  type ContentNarrativeFeatureRailAlign,
+  type ContentNarrativeFeatureRailSectionV3Props,
+  type NarrativeFeatureRailCard,
+} from "./ContentNarrativeFeatureRailSectionV3";
+export {
   ContentMainIdeaGridSectionV3,
   type ContentMainIdeaGridPoint,
   type ContentMainIdeaGridSectionV3Props,

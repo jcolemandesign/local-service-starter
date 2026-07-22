@@ -140,6 +140,10 @@ export const sectionLibraryV3Content = {
     eyebrow: "Service clarity",
     title: "A steady message beside a moving proof stream.",
     body: "Use this section when the page needs one persistent idea while supporting details, proof points, or service moments move through the reader's attention.",
+    imageAlt: "Service image placeholder",
+    imageHeight: 1200,
+    imageSrc: "/images/fpo-image.svg",
+    imageWidth: 1600,
     cards: [
       {
         eyebrow: "First response",
@@ -446,6 +450,50 @@ export const sectionLibraryV3Content = {
       {
         label: "Tone guardrail",
         body: "Avoid cheap pricing, guaranteed emergency coverage, exact repair pricing, or unverified warranty and financing claims.",
+      },
+    ],
+  },
+  contentNarrativeFeatureRail: {
+    align: "right" as const,
+    eyebrow: "More ways we can help",
+    title: "Support that continues beyond the immediate service call.",
+    intro:
+      "Some of the most useful service options are not repairs or replacements at all. They make it easier to plan, budget, and stay ahead of the next season.",
+    paragraphs: [
+      "A longer narrative gives these supporting offers enough context to feel useful instead of promotional. Homeowners can understand where each option fits, what kind of problem it solves, and when it may be worth asking about.",
+      "The visual rail keeps that explanation connected to the people and work behind the service. Below the image, focused callouts can surface the offers that matter for the current page without competing with its primary repair or replacement path.",
+      "Because the callouts are configurable, the same section can support seasonal promotions, payment options, membership plans, rebates, indoor air quality offers, or another secondary feature the business wants to make easier to discover.",
+    ],
+    bullets: [
+      "Keep secondary offers connected to the page story.",
+      "Give each callout one clear purpose and next step.",
+      "Confirm promotion, financing, and plan details before publishing.",
+    ],
+    textLinkLabel: "Explore all homeowner resources",
+    textLinkHref: "/resources",
+    imageAlt: "Technician reviewing service options with a homeowner",
+    imageSrc: "/images/bg-image-sample%202.jpg",
+    cards: [
+      {
+        eyebrow: "Seasonal offer",
+        title: "Make the next visit easier to plan.",
+        body: "Feature a current promotion without interrupting the page's primary service decision.",
+        actionLabel: "View current offers",
+        actionHref: "/promotions",
+      },
+      {
+        eyebrow: "Payment options",
+        title: "Ask about financing for qualified projects.",
+        body: "Give larger planned work a clear secondary path while keeping terms and approval details appropriately qualified.",
+        actionLabel: "Explore financing",
+        actionHref: "/financing",
+      },
+      {
+        eyebrow: "Ongoing care",
+        title: "Keep seasonal maintenance organized.",
+        body: "Introduce a maintenance plan, recurring visits, or another preventive service offer in a compact callout.",
+        actionLabel: "View maintenance plans",
+        actionHref: "/maintenance",
       },
     ],
   },
@@ -1404,6 +1452,10 @@ export const sectionLibraryV3Collections = [
       {
         label: "Editorial 3 column",
         component: "content-about-story-v3",
+      },
+      {
+        label: "Longform with feature rail",
+        component: "content-narrative-feature-rail-v3",
       },
       {
         label: "Split headline image",

@@ -467,6 +467,7 @@ export function renderPageTemplateSection(
         <ServiceNeedsPriorityGridSectionV3
           {...serviceNeedsPriorityGridProps(fieldSection)}
           align={getServiceNeedsPriorityGridAlign(section)}
+          cardFill={section.cardFill}
           showImages={!section.variant?.endsWith("text-only")}
         />
       );
@@ -544,6 +545,7 @@ export function renderPageTemplateSection(
         <ContentStickyCardStreamSectionV2
           {...stickyCardStreamProps(fieldSection)}
           colorRecipe={section.colorRecipe}
+          showImage={section.variant === "with-images"}
         />
       );
     case "ContentStickyIdeasSectionV2":

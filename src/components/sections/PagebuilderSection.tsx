@@ -1,5 +1,6 @@
 import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAboutCompanySectionV2";
 import { ContentAboutStorySectionV3 } from "@/components/sections/ContentAboutStorySectionV3";
+import { ContentNarrativeFeatureRailSectionV3 } from "@/components/sections/ContentNarrativeFeatureRailSectionV3";
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
 import { ContentMainIdeaGridSectionV3 } from "@/components/sections/ContentMainIdeaGridSectionV3";
@@ -370,6 +371,7 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
         <ServiceNeedsPriorityGridSectionV3
           {...sectionLibraryV3Content.serviceNeedsPriorityGrid}
           align={section.variant?.startsWith("left") ? "left" : "right"}
+          cardFill={section.cardFill}
           showImages={!section.variant?.endsWith("text-only")}
         />
       );
@@ -460,6 +462,7 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <ContentStickyCardStreamSectionV2
           {...sectionLibraryV3Content.contentStickyCardStream}
+          showImage={section.variant === "with-images"}
         />
       );
     case "ContentStickyIdeasSectionV2":
@@ -478,6 +481,13 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <ContentAboutStorySectionV3
           {...sectionLibraryV3Content.contentAboutStory}
+        />
+      );
+    case "ContentNarrativeFeatureRailSectionV3":
+      return (
+        <ContentNarrativeFeatureRailSectionV3
+          {...sectionLibraryV3Content.contentNarrativeFeatureRail}
+          align={section.variant === "left" ? "left" : "right"}
         />
       );
     case "ContentRuleHeaderSectionV2":
@@ -1046,6 +1056,12 @@ export function PagebuilderSection() {
       "ContentAboutStorySectionV3",
       "Narrative",
       "Editorial 3 column",
+      4,
+    ),
+    ContentNarrativeFeatureRailSectionV3: previewCatalogEntry(
+      "ContentNarrativeFeatureRailSectionV3",
+      "Narrative",
+      "Longform with feature rail",
       4,
     ),
     ContentMainIdeaGridSectionV3: previewCatalogEntry(

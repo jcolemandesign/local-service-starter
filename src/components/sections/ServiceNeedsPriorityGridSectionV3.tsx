@@ -11,6 +11,7 @@ export type ServiceNeedsPriorityGridItem = {
 
 export type ServiceNeedsPriorityGridSectionV3Props = {
   align?: ServiceNeedsPriorityGridAlign;
+  cardFill?: "solid" | "none";
   items: readonly ServiceNeedsPriorityGridItem[];
   linkLabel?: string;
   showImages?: boolean;
@@ -35,6 +36,7 @@ const itemPositions: Record<ServiceNeedsPriorityGridAlign, readonly string[]> = 
 
 export function ServiceNeedsPriorityGridSectionV3({
   align = "right",
+  cardFill = "solid",
   items,
   linkLabel = "View options",
   showImages = true,
@@ -46,17 +48,15 @@ export function ServiceNeedsPriorityGridSectionV3({
     <section className="bg-bg-page">
       <LayoutGrid className="section-min-none" columns={14} padding="med">
         {displayItems.map((item, index) => {
-          const isPriority = align === "left" ? index === 0 : index === 3;
-
           return (
           <LayoutGridItem
-            alignY={isPriority ? "stretch" : "middle"}
+            alignY="stretch"
             className={`${positions[index]} max-lg:col-span-5 max-lg:col-start-auto max-md:col-span-3 max-sm:col-span-2`}
             key={item.title}
           >
             <a
-              className={`group/card fluid-type-frame flex min-w-0 flex-col overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent ${
-                isPriority ? "h-full" : ""
+              className={`group/card fluid-type-frame flex h-full min-w-0 flex-col overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent ${
+                cardFill === "none" ? "!bg-transparent !shadow-none" : ""
               }`}
               href={item.href}
             >

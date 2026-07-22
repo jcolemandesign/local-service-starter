@@ -3,6 +3,7 @@ import { Container } from "@/components/primitives";
 import {
   ContentAboutCompanySectionV2,
   ContentAboutStorySectionV3,
+  ContentNarrativeFeatureRailSectionV3,
   ContentFixedCoverFadeSectionV2,
   ContentHorizontalCardCarouselSectionV2,
   ContentMainIdeaGridSectionV3,
@@ -183,6 +184,11 @@ const sectionElements = {
   "content-about-story-v3": (
     <ContentAboutStorySectionV3
       {...sectionLibraryV3Content.contentAboutStory}
+    />
+  ),
+  "content-narrative-feature-rail-v3": (
+    <ContentNarrativeFeatureRailSectionV3
+      {...sectionLibraryV3Content.contentNarrativeFeatureRail}
     />
   ),
   "content-split-headline-image-v2": (
