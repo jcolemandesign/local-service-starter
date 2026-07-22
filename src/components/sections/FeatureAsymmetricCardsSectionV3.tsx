@@ -108,6 +108,7 @@ export function FeatureAsymmetricCardsSectionV3({
 }: FeatureAsymmetricCardsSectionV3Props) {
   const shouldReduceMotion = useReducedMotion();
   const cardsFirst = align === "right";
+  const displayCards = cards.slice(0, 4);
 
   return (
     <section className="bg-service-surface">
@@ -143,7 +144,10 @@ export function FeatureAsymmetricCardsSectionV3({
           }`}
         >
           <div className="grid gap-x-[var(--site-grid-gap)] gap-y-3">
-            {[cards.slice(0, 2), cards.slice(2, 4)].map((row, rowIndex) => (
+            {[
+              displayCards.slice(0, 2),
+              displayCards.slice(2, 4),
+            ].map((row, rowIndex) => (
               <div
                 className="grid grid-cols-2 items-start gap-[var(--site-grid-gap)] max-md:grid-cols-1"
                 key={`feature-asymmetric-row-${rowIndex}`}

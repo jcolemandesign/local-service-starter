@@ -6,6 +6,7 @@ import {
   ContentMainIdeaGridSectionV3,
   type ContentMainIdeaGridAlign,
 } from "@/components/sections/ContentMainIdeaGridSectionV3";
+import { ContentNarrativeFeatureRailSectionV3 } from "@/components/sections/ContentNarrativeFeatureRailSectionV3";
 import {
   ContentPhotoGalleryCarouselSectionV3,
   ContentPhotoGalleryLargeCarouselSectionV3,
@@ -544,6 +545,7 @@ export function renderPageTemplateSection(
       return (
         <ContentStickyCardStreamSectionV2
           {...stickyCardStreamProps(fieldSection)}
+          cardFill={section.cardFill}
           colorRecipe={section.colorRecipe}
           showImage={section.variant === "with-images"}
         />
@@ -554,6 +556,13 @@ export function renderPageTemplateSection(
       return <ContentAboutCompanySectionV2 {...aboutCompanyProps(fieldSection)} />;
     case "ContentAboutStorySectionV3":
       return <ContentAboutStorySectionV3 {...aboutStoryProps(fieldSection)} />;
+    case "ContentNarrativeFeatureRailSectionV3":
+      return (
+        <ContentNarrativeFeatureRailSectionV3
+          {...contentNarrativeFeatureRailProps(fieldSection)}
+          align={section.variant === "left" ? "left" : "right"}
+        />
+      );
     case "ContentRuleHeaderSectionV2":
       return <ContentRuleHeaderSectionV2 {...ruleHeaderProps(fieldSection)} />;
     case "FeaturePortraitParagraphSectionV3":
@@ -1150,7 +1159,7 @@ function featureAsymmetricProps(section: FieldSection) {
       sectionLibraryV3Content.featureAsymmetricCards.actionLabel,
     ),
     body: getBody(section, sectionLibraryV3Content.featureAsymmetricCards.body),
-    cards: cards.map((item, index) => ({
+    cards: cards.slice(0, 4).map((item, index) => ({
       body: item.body,
       iconLabel: String(index + 1).padStart(2, "0"),
       title: item.title,
@@ -1161,6 +1170,32 @@ function featureAsymmetricProps(section: FieldSection) {
       sectionLibraryV3Content.featureAsymmetricCards.eyebrow,
     ),
     title: getTitle(section, sectionLibraryV3Content.featureAsymmetricCards.title),
+  };
+}
+
+function contentNarrativeFeatureRailProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.contentNarrativeFeatureRail;
+  const supportingItems = cardItemsWithFallback(
+    section,
+    ["supportingItems", "cards", "items"],
+    fallback.cards,
+  );
+  const body = getBody(section, "").trim();
+  const paragraphs = body
+    ? body.split(/\n\s*\n/).filter(Boolean)
+    : fallback.paragraphs;
+
+  return {
+    ...fallback,
+    cards: supportingItems.slice(0, 3).map((item, index) => ({
+      ...fallback.cards[index % fallback.cards.length],
+      body: item.body,
+      title: item.title,
+    })),
+    eyebrow: getValue(section, "eyebrow", fallback.eyebrow),
+    intro: paragraphs[0] ?? fallback.intro,
+    paragraphs: paragraphs.slice(1),
+    title: getTitle(section, fallback.title),
   };
 }
 

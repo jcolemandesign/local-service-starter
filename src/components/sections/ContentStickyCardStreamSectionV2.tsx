@@ -16,6 +16,7 @@ type StreamCard = {
 
 type ContentStickyCardStreamSectionV2Props = {
   eyebrow: string;
+  cardFill?: "solid" | "none";
   title: string;
   body: string;
   cards: StreamCard[];
@@ -33,6 +34,7 @@ function cx(...classes: Array<string | undefined>) {
 
 export function ContentStickyCardStreamSectionV2({
   eyebrow,
+  cardFill = "solid",
   title,
   body,
   cards,
@@ -44,6 +46,7 @@ export function ContentStickyCardStreamSectionV2({
   showImage = false,
 }: ContentStickyCardStreamSectionV2Props) {
   const shouldReduceMotion = useReducedMotion();
+  const transparentCards = cardFill === "none";
   const colors =
     colorRecipe === "muted"
       ? { card: "bg-bg-page", section: "bg-service-surface" }
@@ -92,7 +95,7 @@ export function ContentStickyCardStreamSectionV2({
                   "fluid-type-frame",
                   "radius-medium",
                   "border border-service-border p-8 shadow-service max-md:p-6",
-                  colors.card,
+                  transparentCards ? "!bg-transparent !shadow-none" : colors.card,
                 )}
                 initial={
                   shouldReduceMotion ? false : { opacity: 0, y: 36 }
@@ -114,6 +117,9 @@ export function ContentStickyCardStreamSectionV2({
                     {String(index + 1).padStart(2, "0")}
                   </span>
                 </div>
+                {transparentCards ? (
+                  <div className="mt-3 border-t border-service-border" />
+                ) : null}
                 <h3 className="type-heading-lg mt-eyebrow-heading-md text-service-ink">
                   {card.title}
                 </h3>

@@ -1126,7 +1126,7 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
   {
     component: "ContentNarrativeFeatureRailSectionV3",
     instruction:
-      "Use an eight-column longform narrative with a six-column image and two or three stacked callouts for promotions, financing, maintenance plans, or other secondary offers. Do not use the callouts for the page's primary repair or replacement path.",
+      "Use an eight-column longform narrative with three fixed rail slots. Item order is fixed: 1. Seasonal offer, 2. Financing or payment options, 3. Ongoing care or maintenance plan. Each title and description must match the fixed eyebrow and CTA for its slot; do not reorder these concepts.",
     layoutGrid: 14,
     mode: "Narrative",
     name: "Longform with feature rail",
@@ -1191,7 +1191,7 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
   {
     component: "FeatureAsymmetricCardsSectionV3",
     instruction:
-      "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points.",
+      "Use an intro and exactly four supporting items in the four-card feature cluster when a why-choose-us section needs scannable proof points.",
     mode: "Narrative",
     name: "Cards features 4 up split",
   },
@@ -2872,6 +2872,7 @@ export function PagebuilderShell({
         ) : section.component === contentStickyCardStreamComponent ? (
           <ContentStickyCardStreamSectionV2
             {...sectionLibraryV3Content.contentStickyCardStream}
+            cardFill={getSectionCardFill(section)}
             colorRecipe={getSectionColorRecipe(section)}
             showImage={getStickyCardStreamShowImage(section)}
           />

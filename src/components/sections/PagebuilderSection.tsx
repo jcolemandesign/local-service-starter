@@ -462,6 +462,7 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <ContentStickyCardStreamSectionV2
           {...sectionLibraryV3Content.contentStickyCardStream}
+          cardFill={section.cardFill}
           showImage={section.variant === "with-images"}
         />
       );
