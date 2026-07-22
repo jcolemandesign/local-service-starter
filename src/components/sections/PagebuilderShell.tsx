@@ -33,6 +33,8 @@ import {
 } from "@/components/sections/ServicesBentoCardsSectionV2";
 import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
+import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
+import type { ServiceNeedsPriorityGridAlign } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
 import {
   ContentMainIdeaGridSectionV3,
@@ -97,6 +99,7 @@ const sectionHeaderLargeComponent = "SectionHeaderLargeSectionV3";
 const servicesBentoComponent = "ServicesBentoCardsSectionV2";
 const fourCardLinkGridComponent = "FourCardLinkGridSectionV3";
 const threeCardLinkGridComponent = "ThreeCardLinkGridSectionV3";
+const serviceNeedsPriorityGridComponent = "ServiceNeedsPriorityGridSectionV3";
 const contentSplitHeadlineImageComponent = "ContentSplitHeadlineImageSectionV2";
 const contentMainIdeaGridComponent = "ContentMainIdeaGridSectionV3";
 const projectCaseStudyGalleryComponent = "ProjectCaseStudyGallerySectionV3";
@@ -179,6 +182,10 @@ const mainIdeaGridAlignOptions = [
 const projectCaseStudyGalleryAlignOptions = [
   { label: "Image left", value: "left" },
   { label: "Image right", value: "right" },
+] as const;
+const serviceNeedsPriorityGridAlignOptions = [
+  { label: "Large card left", value: "left" },
+  { label: "Large card right", value: "right" },
 ] as const;
 
 const heroCompactAlignments = new Set<string>(
@@ -465,8 +472,17 @@ function isThreeCardLinkGridSection(
   return section.component === threeCardLinkGridComponent;
 }
 
+function isServiceNeedsPriorityGridSection(
+  section: PagebuilderRecipe["sectionStack"][number],
+) {
+  return section.component === serviceNeedsPriorityGridComponent;
+}
+
 function isCardLinkGridSection(section: PagebuilderRecipe["sectionStack"][number]) {
-  return isFourCardLinkGridSection(section) || isThreeCardLinkGridSection(section);
+  return (
+    isFourCardLinkGridSection(section) ||
+    isThreeCardLinkGridSection(section)
+  );
 }
 
 function isDecisionSplitDecisionLargeSection(
@@ -501,6 +517,16 @@ function getProjectCaseStudyGalleryAlign(
   section: WorkingSection,
 ): ProjectCaseStudyGalleryAlign {
   return section.variant === "right" ? "right" : "left";
+}
+
+function getServiceNeedsPriorityGridAlign(
+  section: WorkingSection,
+): ServiceNeedsPriorityGridAlign {
+  return section.variant?.startsWith("left") ? "left" : "right";
+}
+
+function getServiceNeedsPriorityGridShowImages(section: WorkingSection) {
+  return !section.variant?.endsWith("text-only");
 }
 
 function getSplitContentImageVariantLabel(variant: string | undefined) {
@@ -961,6 +987,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     layoutGrid: 14,
     mode: "Scan",
     name: "Card Links 3 Up",
+  },
+  {
+    component: "ServiceNeedsPriorityGridSectionV3",
+    instruction:
+      "Show three compact service-need cards and one wider priority card on the 14-column grid. Images may be toggled off for a shorter text-only layout.",
+    layoutGrid: 14,
+    mode: "Scan",
+    name: "Service needs priority grid",
   },
   {
     component: "ServicesBentoCardsSectionV2",
@@ -2149,6 +2183,26 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateServiceNeedsPriorityGrid(
+    sectionId: string,
+    nextValue: Partial<{ align: ServiceNeedsPriorityGridAlign; showImages: boolean }>,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) => {
+        if (section.id !== sectionId || !isServiceNeedsPriorityGridSection(section)) {
+          return section;
+        }
+
+        const align = nextValue.align ?? getServiceNeedsPriorityGridAlign(section);
+        const showImages =
+          nextValue.showImages ?? getServiceNeedsPriorityGridShowImages(section);
+
+        return { ...section, variant: showImages ? align : `${align}-text-only` };
+      }),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function deleteSection(sectionId: string) {
     updateActiveStack((stack) =>
       stack.filter((section) => section.id !== sectionId),
@@ -2402,7 +2456,8 @@ export function PagebuilderShell({
                   ? servicesBentoVariantOptions[0].value
                 : nextOption.component === fourCardLinkGridComponent
                   ? fourCardLinkGridVariantOptions[0].value
-                  : nextOption.component === threeCardLinkGridComponent
+                  : nextOption.component === threeCardLinkGridComponent ||
+                      nextOption.component === serviceNeedsPriorityGridComponent
                     ? fourCardLinkGridVariantOptions[0].value
                 : undefined,
     };
@@ -2740,6 +2795,12 @@ export function PagebuilderShell({
           <ThreeCardLinkGridSectionV3
             {...sectionLibraryV3Content.threeCardLinkGrid}
             showImages={getCardLinkGridVariant(section) === "with-images"}
+          />
+        ) : isServiceNeedsPriorityGridSection(section) ? (
+          <ServiceNeedsPriorityGridSectionV3
+            {...sectionLibraryV3Content.serviceNeedsPriorityGrid}
+            align={getServiceNeedsPriorityGridAlign(section)}
+            showImages={getServiceNeedsPriorityGridShowImages(section)}
           />
         ) : isServicesBentoSection(section) ? (
           <ServicesBentoCardsSectionV2
@@ -3686,6 +3747,72 @@ export function PagebuilderShell({
                                 })}
                               </div>
                             </fieldset>
+                          ) : null}
+
+                          {isServiceNeedsPriorityGridSection(section) ? (
+                            <div className="grid gap-4">
+                              <fieldset className="grid gap-2">
+                                <legend className="type-caption font-semibold text-current">
+                                  Priority card position
+                                </legend>
+                                <div className="grid grid-cols-2 gap-2">
+                                  {serviceNeedsPriorityGridAlignOptions.map((option) => {
+                                    const optionIsActive =
+                                      getServiceNeedsPriorityGridAlign(section) === option.value;
+
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                          optionIsActive ? "token-chrome-card-active" : "token-chrome-card",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateServiceNeedsPriorityGrid(section.id, {
+                                            align: option.value,
+                                          })
+                                        }
+                                        type="button"
+                                      >
+                                        {option.label}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </fieldset>
+                              <fieldset className="grid gap-2">
+                                <legend className="type-caption font-semibold text-current">
+                                  Card images
+                                </legend>
+                                <div className="flex items-center gap-2">
+                                  {fourCardLinkGridVariantOptions.map((option) => {
+                                    const optionIsActive =
+                                      getServiceNeedsPriorityGridShowImages(section) ===
+                                      (option.value === "with-images");
+
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                          optionIsActive ? "token-chrome-card-active" : "token-chrome-card",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateServiceNeedsPriorityGrid(section.id, {
+                                            showImages: option.value === "with-images",
+                                          })
+                                        }
+                                        type="button"
+                                      >
+                                        {option.label}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </fieldset>
+                            </div>
                           ) : null}
 
                           {isServicesBentoSection(section) ? (

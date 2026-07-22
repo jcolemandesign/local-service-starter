@@ -1244,6 +1244,18 @@ export const sectionLibraryV3Content = {
     contentAlignY: "middle" as const,
     body: "A large portrait image gives the section a clear visual anchor while the adjacent paragraph carries the main service idea with enough room to feel editorial, direct, and easy to read.",
   },
+  serviceNeedsPriorityGrid: {
+    eyebrow: "Common heat pump needs",
+    title: "What are you experiencing?",
+    body: "Start with the problem—not an assumption about the solution.",
+    linkLabel: "View options",
+    items: [
+      { title: "Weak or Uneven Performance", body: "Some rooms feel different or airflow feels limited.", href: "/services", imageAlt: "HVAC airflow placeholder", imageSrc: "/images/fpo-image.svg" },
+      { title: "Unusual Operation", body: "New sounds, frequent cycling, or other changes need a closer look.", href: "/services", imageAlt: "HVAC equipment placeholder", imageSrc: "/images/fpo-image.svg" },
+      { title: "Planning Ahead", body: "You are considering care, repair, or replacement.", href: "/services", imageAlt: "HVAC planning placeholder", imageSrc: "/images/fpo-image.svg" },
+      { title: "No Heating or Cooling", body: "The system is not keeping the home comfortable.", href: "/contact", imageAlt: "HVAC system placeholder", imageSrc: "/images/fpo-image.svg" },
+    ],
+  },
   servicesThreeCardsRight: {
     eyebrow: "Priority services",
     title: "Services to list first before the full service set.",
@@ -1341,9 +1353,10 @@ export const sectionLibraryV3Collections = [
   },
   {
     title: "Scan",
-    items: [
-      { label: "Card Links 4 Up", component: "four-card-link-grid-v3" },
-      { label: "Card Links 3 Up", component: "three-card-link-grid-v3" },
+      items: [
+        { label: "Card Links 4 Up", component: "four-card-link-grid-v3" },
+        { label: "Card Links 3 Up", component: "three-card-link-grid-v3" },
+        { label: "Service needs priority grid", component: "service-needs-priority-grid-v3" },
       {
         label: "Services card carousel",
         component: "content-horizontal-card-carousel-v2",

@@ -37,6 +37,7 @@ import {
   FooterSectionV3,
   FourCardLinkGridSectionV3,
   ThreeCardLinkGridSectionV3,
+  ServiceNeedsPriorityGridSectionV3,
   HeroCenteredFloatersSectionV2,
   HeroCompactSectionV3,
   HeroServicesSectionV3,
@@ -279,6 +280,11 @@ const sectionElements = {
   "three-card-link-grid-v3": (
     <ThreeCardLinkGridSectionV3
       {...sectionLibraryV3Content.threeCardLinkGrid}
+    />
+  ),
+  "service-needs-priority-grid-v3": (
+    <ServiceNeedsPriorityGridSectionV3
+      {...sectionLibraryV3Content.serviceNeedsPriorityGrid}
     />
   ),
   "services-hover-panel-v2": (

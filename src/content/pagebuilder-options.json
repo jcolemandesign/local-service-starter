@@ -9,8 +9,8 @@
       "optionName": "Page Layout",
       "recipeId": "compact-utility",
       "recipeName": "Individual Service",
-      "savedAt": "2026-07-22T15:03:51.508Z",
-      "sectionCount": 11,
+      "savedAt": "2026-07-22T17:10:35.264Z",
+      "sectionCount": 12,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
@@ -54,6 +54,21 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "variant": "right",
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        },
+        {
+          "component": "FourCardLinkGridSectionV3",
+          "id": "compact-utility-FourCardLinkGridSectionV3-added-1",
+          "included": true,
+          "instruction": "Show four linked cards on the shared 14-column grid. Each card spans three columns, leaving the first and last columns open; images may be toggled off for a shorter text-only layout.",
+          "mode": "Scan",
+          "name": "Card Links 4 Up",
+          "originalComponent": "FourCardLinkGridSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "variant": "with-images",
           "colorRecipe": "default",
           "cardFill": "solid"
         },

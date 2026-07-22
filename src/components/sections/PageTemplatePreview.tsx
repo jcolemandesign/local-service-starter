@@ -84,6 +84,8 @@ import { FooterSectionV2 } from "@/components/sections/FooterSectionV2";
 import { FooterLinkPanelSectionV3 } from "@/components/sections/FooterLinkPanelSectionV3";
 import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
+import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
+import type { ServiceNeedsPriorityGridAlign } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import {
   NavCenterLogoSectionV2,
   NavPrimarySectionV2,
@@ -458,6 +460,14 @@ export function renderPageTemplateSection(
         <ThreeCardLinkGridSectionV3
           {...threeCardLinkGridProps(fieldSection)}
           showImages={section.variant !== "text-only"}
+        />
+      );
+    case "ServiceNeedsPriorityGridSectionV3":
+      return (
+        <ServiceNeedsPriorityGridSectionV3
+          {...serviceNeedsPriorityGridProps(fieldSection)}
+          align={getServiceNeedsPriorityGridAlign(section)}
+          showImages={!section.variant?.endsWith("text-only")}
         />
       );
     case "ServicesHoverPanelSectionV2":
@@ -955,6 +965,30 @@ function threeCardLinkGridProps(section: FieldSection) {
       };
     }),
     linkLabel: getValue(section, "linkLabel", fallback.linkLabel),
+  };
+}
+
+function serviceNeedsPriorityGridProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.serviceNeedsPriorityGrid;
+  const imageItems = getRepeatedAssetRecords(section, ["items"]);
+  const items = cardItemsWithFallback(section, ["items", "cards", "services"], fallback.items);
+
+  return {
+    body: getBody(section, fallback.body),
+    eyebrow: getValue(section, "eyebrow", fallback.eyebrow),
+    items: items.map((item, index) => ({
+      ...fallback.items[index % fallback.items.length],
+      ...item,
+      href: item.href ?? fallback.items[index % fallback.items.length].href,
+      imageAlt:
+        imageItems[index]?.imageAlt ??
+        fallback.items[index % fallback.items.length].imageAlt,
+      imageSrc:
+        imageItems[index]?.imageSrc ??
+        fallback.items[index % fallback.items.length].imageSrc,
+    })),
+    linkLabel: getValue(section, "linkLabel", fallback.linkLabel),
+    title: getTitle(section, fallback.title),
   };
 }
 
@@ -2142,6 +2176,12 @@ function getProjectCaseStudyGalleryAlign(
   return projectCaseStudyGalleryAlignments.has(section.variant ?? "")
     ? (section.variant as ProjectCaseStudyGalleryAlign)
     : "left";
+}
+
+function getServiceNeedsPriorityGridAlign(
+  section: PageTemplatePreviewSection,
+): ServiceNeedsPriorityGridAlign {
+  return section.variant?.startsWith("left") ? "left" : "right";
 }
 
 function getContentSplitFixedImageVariant(section: PageTemplatePreviewSection) {

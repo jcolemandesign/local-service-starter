@@ -75,6 +75,7 @@ import { FooterSectionV2 } from "@/components/sections/FooterSectionV2";
 import { FooterLinkPanelSectionV3 } from "@/components/sections/FooterLinkPanelSectionV3";
 import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
+import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import {
   NavCenterLogoSectionV2,
   NavPrimarySectionV2,
@@ -362,6 +363,14 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
         <ThreeCardLinkGridSectionV3
           {...sectionLibraryV3Content.threeCardLinkGrid}
           showImages={section.variant !== "text-only"}
+        />
+      );
+    case "ServiceNeedsPriorityGridSectionV3":
+      return (
+        <ServiceNeedsPriorityGridSectionV3
+          {...sectionLibraryV3Content.serviceNeedsPriorityGrid}
+          align={section.variant?.startsWith("left") ? "left" : "right"}
+          showImages={!section.variant?.endsWith("text-only")}
         />
       );
     case "ServicesHoverPanelSectionV2":
@@ -906,6 +915,12 @@ export function PagebuilderSection() {
       "Scan",
       "Card Links 3 Up",
       3,
+    ),
+    ServiceNeedsPriorityGridSectionV3: previewCatalogEntry(
+      "ServiceNeedsPriorityGridSectionV3",
+      "Scan",
+      "Service needs priority grid",
+      4,
     ),
     HeroServicesSectionV3: (
       <div key="HeroServicesSectionV3">

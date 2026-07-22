@@ -16,6 +16,7 @@ export { ContentHorizontalCardCarouselSectionV2 } from "./ContentHorizontalCardC
 export { QuickPageLinksSectionV2 } from "./QuickPageLinksSectionV2";
 export { ContentPositioningSplitSection } from "./ContentPositioningSplitSection";
 export { ContentPositioningSplitSectionV2 } from "./ContentPositioningSplitSectionV2";
+export { ServiceNeedsPriorityGridSectionV3 } from "./ServiceNeedsPriorityGridSectionV3";
 export {
   ContentPhotoGalleryCarouselSectionV3,
   ContentPhotoGalleryLargeCarouselSectionV3,
