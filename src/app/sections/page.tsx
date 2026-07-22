@@ -5,8 +5,10 @@ import {
   ContentAboutStorySectionV3,
   ContentFixedCoverFadeSectionV2,
   ContentHorizontalCardCarouselSectionV2,
+  ContentMainIdeaGridSectionV3,
   ContentPhotoGalleryCarouselSectionV3,
   ContentPhotoGalleryLargeCarouselSectionV3,
+  ProjectCaseStudyGallerySectionV3,
   ContentRevealParagraphSectionV2,
   ContentRuleHeaderSectionV2,
   ContentScrollWrittenRevealSectionV2,
@@ -21,6 +23,7 @@ import {
   CTASectionV3,
   CTAScrollRevealOfferSectionV3,
   DecisionSplitDecisionSectionV3,
+  DecisionSplitDecisionLargeSectionV3,
   DecisionSplitLargeCardsSectionV3,
   FAQAccordionSectionV3,
   FAQSectionV3,
@@ -166,6 +169,11 @@ const sectionElements = {
       {...sectionLibraryV3Content.contentStickyIdeas}
     />
   ),
+  "content-main-idea-grid-v3": (
+    <ContentMainIdeaGridSectionV3
+      {...sectionLibraryV3Content.contentMainIdeaGrid}
+    />
+  ),
   "content-about-company-v2": (
     <ContentAboutCompanySectionV2
       {...sectionLibraryV3Content.contentAboutCompany}
@@ -207,6 +215,11 @@ const sectionElements = {
       {...sectionLibraryV3Content.contentPhotoGalleryCarousel}
     />
   ),
+  "project-case-study-gallery-v3": (
+    <ProjectCaseStudyGallerySectionV3
+      {...sectionLibraryV3Content.projectCaseStudyGallery}
+    />
+  ),
   "image-strip-v3": (
     <ImageStripSectionV3 {...sectionLibraryV3Content.imageStrip} />
   ),
@@ -243,6 +256,11 @@ const sectionElements = {
   "decision-split-large-cards-v3": (
     <DecisionSplitLargeCardsSectionV3
       {...sectionLibraryV3Content.decisionSplitLargeCards}
+    />
+  ),
+  "decision-split-decision-large-v3": (
+    <DecisionSplitDecisionLargeSectionV3
+      {...sectionLibraryV3Content.decisionSplitDecisionLarge}
     />
   ),
   "services-three-cards-right-v3": (

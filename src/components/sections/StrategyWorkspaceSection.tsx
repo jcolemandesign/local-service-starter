@@ -22,6 +22,8 @@ import {
 } from "@/utils/strategy-site-map";
 import {
   buildTemplateCopyContract,
+  getTemplateCopyContractStatus,
+  type TemplateCopyContractStatus,
   type TemplateCopyContractTemplate,
 } from "@/utils/template-copy-contract";
 import {
@@ -40,7 +42,7 @@ import type {
 } from "@/utils/strategy-workspace";
 import type { StrategySnapshot } from "@/utils/strategy-snapshots";
 
-type SaveState = "idle" | "saving" | "saved" | "error";
+type SaveState = "dirty" | "saving" | "saved" | "error";
 type ContentPlanReferenceState = "idle" | "generated" | "error";
 type ContractCopyState = "copied" | "error";
 
@@ -87,6 +89,19 @@ type StagePageResponse =
 
 function cx(...classes: Array<false | string | undefined>) {
   return classes.filter(Boolean).join(" ");
+}
+
+function workspaceFieldsMatch(
+  left: StrategyWorkspaceFields,
+  right: StrategyWorkspaceFields,
+) {
+  const leftEntries = Object.entries(left);
+  const rightKeys = Object.keys(right);
+
+  return (
+    leftEntries.length === rightKeys.length &&
+    leftEntries.every(([key, value]) => right[key] === value)
+  );
 }
 
 const baseFieldGroups: {
@@ -185,8 +200,9 @@ export function StrategyWorkspaceSection({
     initialWorkspace.fields,
   );
   const fieldsRef = useRef(initialWorkspace.fields);
+  const savedFieldsRef = useRef(initialWorkspace.fields);
   const [snapshot, setSnapshot] = useState<StrategySnapshot | null>(null);
-  const [saveState, setSaveState] = useState<SaveState>("idle");
+  const [saveState, setSaveState] = useState<SaveState>("saved");
   const [packetCopyState, setPacketCopyState] = useState<
     "idle" | "copied" | "error"
   >("idle");
@@ -308,7 +324,7 @@ export function StrategyWorkspaceSection({
     () => getCopywritingPersonalityPacket(copywritingSettings.personalityId),
     [copywritingSettings.personalityId],
   );
-  const showAssemblyOverview = Boolean(updatedAt) || saveState === "saved";
+  const showAssemblyOverview = Boolean(updatedAt);
   const workspaceNavigationItems: WorkspaceNavItem[] = [
     { icon: "strategy", id: "strategy", label: "Strategy Workspace", tone: "blue" },
     { icon: "prompts", id: "prompts", label: "Prompt Library", href: `/dev/prompt-library?project=${clientSlug}`, openInNewTab: true, tone: "orange" },
@@ -333,6 +349,11 @@ export function StrategyWorkspaceSection({
 
     fieldsRef.current = resolvedFields;
     setFieldsState(resolvedFields);
+    setSaveState(
+      workspaceFieldsMatch(resolvedFields, savedFieldsRef.current)
+        ? "saved"
+        : "dirty",
+    );
   }
 
   function updateField(key: keyof StrategyWorkspaceFields, value: string) {
@@ -344,10 +365,6 @@ export function StrategyWorkspaceSection({
 
     if (key === "contentPlan" && contentPlanReferenceState !== "idle") {
       setContentPlanReferenceState("idle");
-    }
-
-    if (saveState !== "idle") {
-      setSaveState("idle");
     }
   }
 
@@ -376,10 +393,10 @@ export function StrategyWorkspaceSection({
         throw new Error(result.message ?? "Strategy workspace save failed.");
       }
 
+      savedFieldsRef.current = result.workspace.fields;
       setFields(result.workspace.fields);
       setSnapshot(result.snapshot ?? null);
       setUpdatedAt(result.workspace.updatedAt);
-      setSaveState("saved");
     } catch {
       setSaveState("error");
     }
@@ -453,10 +470,6 @@ export function StrategyWorkspaceSection({
       ...nextLeverFields,
       copywritingPersonalityId: nextPacket.id,
     }));
-
-    if (saveState !== "idle") {
-      setSaveState("idle");
-    }
   }
 
   function clearWorkspaceFieldCopyState(key: keyof StrategyWorkspaceFields) {
@@ -651,6 +664,25 @@ export function StrategyWorkspaceSection({
         navigationItems={workspaceNavigationItems}
         pageActions={
           <>
+            <span
+              aria-live="polite"
+              className={cx(
+                "type-caption font-semibold",
+                saveState === "dirty" && "text-amber-700",
+                saveState === "saving" && "text-service-muted",
+                saveState === "saved" && "text-green-700",
+                saveState === "error" && "text-red-700",
+              )}
+              role="status"
+            >
+              {saveState === "dirty"
+                ? "Unsaved changes"
+                : saveState === "saving"
+                  ? "Saving…"
+                  : saveState === "saved"
+                    ? "Saved"
+                    : "Save failed"}
+            </span>
             <WorkspaceNavDivider />
             <WorkspaceNavAgentDocLink clientSlug={clientSlug} />
             <button
@@ -696,6 +728,13 @@ export function StrategyWorkspaceSection({
                     const pageCopyValue =
                       fields[getStrategyPageCopyField(page)] ?? "";
                     const hasPageCopy = pageCopyValue.trim().length > 0;
+                    const contractTemplate =
+                      templates.find((item) => item.id === page.templateId) ??
+                      page.stagedTemplate;
+                    const contractStatus = getTemplateCopyContractStatus(
+                      pageCopyValue,
+                      contractTemplate,
+                    );
                     const templateCopyKey = page.stagedPageId || page.id;
                     const layoutApprovalKey = getPageLayoutApprovalField(page.id);
                     const isLayoutApproved =
@@ -712,6 +751,7 @@ export function StrategyWorkspaceSection({
                       >
                         <TemplateReadyIcon
                           copyState={contractCopyState[templateCopyKey]}
+                          contractStatus={contractStatus}
                           isReady={hasTemplateReady}
                           onCopy={
                             hasTemplateReady
@@ -719,7 +759,10 @@ export function StrategyWorkspaceSection({
                               : undefined
                           }
                         />
-                        <PageCopyReadyIcon isReady={hasPageCopy} />
+                        <PageCopyReadyIcon
+                          contractStatus={contractStatus}
+                          isReady={hasPageCopy}
+                        />
                         <label
                           className="absolute right-3 top-[7.25rem] flex size-10 cursor-pointer items-center justify-center"
                           title={
@@ -773,6 +816,9 @@ export function StrategyWorkspaceSection({
                           <p className="type-caption mt-2 text-service-muted">
                             {page.templateName}
                           </p>
+                        ) : null}
+                        {hasPageCopy ? (
+                          <ContractStatusLabel status={contractStatus} />
                         ) : null}
                         {page.repeatable && page.childPages.length > 0 ? (
                           <div className="mt-3 grid gap-2">
@@ -1503,10 +1549,12 @@ function IssueList({
 
 function TemplateReadyIcon({
   copyState,
+  contractStatus,
   isReady,
   onCopy,
 }: {
   copyState?: ContractCopyState;
+  contractStatus: TemplateCopyContractStatus;
   isReady: boolean;
   onCopy?: () => void;
 }) {
@@ -1516,7 +1564,9 @@ function TemplateReadyIcon({
       : copyState === "error"
         ? "Template contract could not be copied"
         : isReady
-          ? "Copy template contract"
+          ? contractStatus === "current" || contractStatus === "empty"
+            ? "Copy template contract"
+            : "Copy updated template contract"
           : "Waiting for template";
   const className = cx(
     "absolute right-3 top-3 flex size-10 items-center justify-center rounded-sm border transition-[background-color,border-color,color,box-shadow,transform] duration-150 active:translate-y-px active:scale-95",
@@ -1585,16 +1635,26 @@ function TemplateReadyIcon({
   );
 }
 
-function PageCopyReadyIcon({ isReady }: { isReady: boolean }) {
-  const label = isReady ? "Page copy filled" : "Page copy empty";
+function PageCopyReadyIcon({
+  contractStatus,
+  isReady,
+}: {
+  contractStatus: TemplateCopyContractStatus;
+  isReady: boolean;
+}) {
+  const label = getContractStatusLabel(contractStatus);
+  const readyClassName = {
+    current: "border-accent bg-accent text-white",
+    empty: "strategy-status-icon-inert",
+    stale: "border-red-700 bg-red-700 text-white",
+    unverified: "border-amber-700 bg-amber-50 text-amber-900",
+  }[contractStatus];
 
   return (
     <span
       aria-label={label}
       className={`absolute right-3 top-16 flex size-10 items-center justify-center rounded-sm border ${
-        isReady
-          ? "border-accent bg-accent text-white"
-          : "strategy-status-icon-inert"
+        isReady ? readyClassName : "strategy-status-icon-inert"
       }`}
       title={label}
     >
@@ -1614,6 +1674,34 @@ function PageCopyReadyIcon({ isReady }: { isReady: boolean }) {
       </svg>
     </span>
   );
+}
+
+function ContractStatusLabel({
+  status,
+}: {
+  status: TemplateCopyContractStatus;
+}) {
+  const className = {
+    current: "text-green-700",
+    empty: "text-service-muted",
+    stale: "text-red-700",
+    unverified: "text-amber-800",
+  }[status];
+
+  return (
+    <p className={`type-caption mt-2 font-semibold ${className}`}>
+      {getContractStatusLabel(status)}
+    </p>
+  );
+}
+
+function getContractStatusLabel(status: TemplateCopyContractStatus) {
+  return {
+    current: "Batch copy matches current template",
+    empty: "Page copy empty",
+    stale: "Batch copy contract is outdated",
+    unverified: "Batch copy contract is unverified",
+  }[status];
 }
 
 function Metric({ label, value }: { label: string; value: number | null }) {

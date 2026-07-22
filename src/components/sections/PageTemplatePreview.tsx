@@ -2,10 +2,12 @@ import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAbout
 import { ContentAboutStorySectionV3 } from "@/components/sections/ContentAboutStorySectionV3";
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
+import { ContentMainIdeaGridSectionV3 } from "@/components/sections/ContentMainIdeaGridSectionV3";
 import {
   ContentPhotoGalleryCarouselSectionV3,
   ContentPhotoGalleryLargeCarouselSectionV3,
 } from "@/components/sections/ContentPhotoGalleryCarouselSectionV3";
+import { ProjectCaseStudyGallerySectionV3 } from "@/components/sections/ProjectCaseStudyGallerySectionV3";
 import { ImageStripSectionV3 } from "@/components/sections/ImageStripSectionV3";
 import { QuickPageLinksSectionV2 } from "@/components/sections/QuickPageLinksSectionV2";
 import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
@@ -41,6 +43,10 @@ import {
 import { FeatureAsymmetricCardsSectionV3 } from "@/components/sections/FeatureAsymmetricCardsSectionV3";
 import { FeatureStackedCardsSectionV3 } from "@/components/sections/FeatureStackedCardsSectionV3";
 import { DecisionSplitDecisionSectionV3 } from "@/components/sections/DecisionSplitDecisionSectionV3";
+import {
+  DecisionSplitDecisionLargeSectionV3,
+  type DecisionSplitDecisionLargeAlign,
+} from "@/components/sections/DecisionSplitDecisionLargeSectionV3";
 import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
 import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
@@ -470,6 +476,14 @@ export function renderPageTemplateSection(
           {...photoGalleryProps(fieldSection)}
         />
       );
+    case "ProjectCaseStudyGallerySectionV3":
+      return (
+        <ProjectCaseStudyGallerySectionV3
+          {...projectCaseStudyGalleryProps(fieldSection)}
+          cardFill={section.cardFill}
+          colorRecipe={section.colorRecipe}
+        />
+      );
     case "ImageStripSectionV3":
       return <ImageStripSectionV3 {...imageStripProps(fieldSection)} />;
     case "QuickPageLinksSectionV2":
@@ -496,6 +510,13 @@ export function renderPageTemplateSection(
           headingLevel={headingLevel}
           ratio={getContentSplitFixedImageRatio(section)}
           variant={getContentSplitFixedImageVariant(section)}
+        />
+      );
+    case "ContentMainIdeaGridSectionV3":
+      return (
+        <ContentMainIdeaGridSectionV3
+          {...mainIdeaGridProps(fieldSection)}
+          colorRecipe={section.colorRecipe}
         />
       );
     case "ContentStickyCardStreamSectionV2":
@@ -529,8 +550,20 @@ export function renderPageTemplateSection(
       return <DecisionSplitDecisionSectionV3 {...splitDecisionProps(fieldSection)} />;
     case "DecisionSplitLargeCardsSectionV3":
       return <DecisionSplitLargeCardsSectionV3 {...splitLargeCardsProps(fieldSection)} />;
+    case "DecisionSplitDecisionLargeSectionV3":
+      return (
+        <DecisionSplitDecisionLargeSectionV3
+          {...splitDecisionLargeDetailedProps(fieldSection)}
+          align={getDecisionSplitDecisionLargeAlign(section)}
+        />
+      );
     case "FAQSectionV3":
-      return <FAQSectionV3 {...faqProps(fieldSection)} />;
+      return (
+        <FAQSectionV3
+          {...faqProps(fieldSection)}
+          colorRecipe={section.colorRecipe}
+        />
+      );
     case "FAQAccordionSectionV3":
       return <FAQAccordionSectionV3 {...faqAccordionProps(fieldSection)} />;
     case "TestimonialsSectionV3":
@@ -1097,6 +1130,57 @@ function splitLargeCardsProps(section: FieldSection) {
   };
 }
 
+function splitDecisionLargeDetailedProps(section: FieldSection) {
+  const fallbackCards = sectionLibraryV3Content.decisionSplitDecisionLarge.cards;
+  const structuredCards = getRepeatedRecords(section, ["cards"]);
+  const parsedCards = cardItems(section, [
+    "decisionItems",
+    "cards",
+    "items",
+    "supportingItems",
+  ]);
+  const sectionTitle = getTitle(section, "");
+  const sectionBody = getBody(section, "");
+  const actionLabel = getValue(section, "sectionAction", "");
+
+  return {
+    cards: fallbackCards.map((fallbackCard, index) => {
+      const structuredCard = structuredCards[index];
+      const parsedCard = parsedCards[index];
+      const structuredParagraphs = structuredCard
+        ? getIndexedRecordValues(structuredCard, "paragraphs")
+        : [];
+      const structuredPoints = structuredCard
+        ? getIndexedRecordValues(structuredCard, "points")
+        : [];
+
+      return {
+        ...fallbackCard,
+        actionLabel:
+          structuredCard?.actionLabel || actionLabel || fallbackCard.actionLabel,
+        eyebrow: structuredCard?.eyebrow || fallbackCard.eyebrow,
+        paragraphs:
+          structuredParagraphs.length > 0
+            ? structuredParagraphs
+            : parsedCard?.body
+              ? [parsedCard.body]
+              : index === 0 && sectionBody
+                ? [sectionBody]
+                : fallbackCard.paragraphs,
+        points:
+          structuredPoints.length > 0
+            ? structuredPoints
+            : fallbackCard.points,
+        title:
+          structuredCard?.title ||
+          parsedCard?.title ||
+          (index === 0 ? sectionTitle : "") ||
+          fallbackCard.title,
+      };
+    }),
+  };
+}
+
 function testimonialsProps(section: FieldSection) {
   return {
     ...sectionLibraryV3Content.testimonials,
@@ -1469,6 +1553,110 @@ function horizontalCardsProps(section: FieldSection) {
       sectionLibraryV3Content.contentHorizontalCardCarousel.title,
     ),
   };
+}
+
+function mainIdeaGridProps(section: FieldSection) {
+  const points = cardItemsWithFallback(
+    section,
+    ["points", "supportingItems", "items", "notes", "decisionItems"],
+    sectionLibraryV3Content.contentMainIdeaGrid.points,
+  );
+
+  return {
+    ...sectionLibraryV3Content.contentMainIdeaGrid,
+    body: getBody(section, sectionLibraryV3Content.contentMainIdeaGrid.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.contentMainIdeaGrid.eyebrow,
+    ),
+    points: points.slice(0, 4).map((point) => ({
+      body: point.body,
+      title: point.title,
+    })),
+    title: getTitle(section, sectionLibraryV3Content.contentMainIdeaGrid.title),
+  };
+}
+
+function projectCaseStudyGalleryProps(section: FieldSection) {
+  const structuredSlides = getRepeatedRecords(section, ["slides"]);
+  const hasStagedContent = section.fields.some(
+    (field) => field.kind === "copy" && field.value.trim().length > 0,
+  );
+
+  if (!hasStagedContent) {
+    return sectionLibraryV3Content.projectCaseStudyGallery;
+  }
+
+  return {
+    slides: structuredSlides.flatMap((slide) => {
+      const equipment = getIndexedRecordPairs(
+        slide,
+        "equipment",
+        "label",
+        "value",
+      );
+
+      if (!isQualifiedProjectCaseStudySlide(slide, equipment)) {
+        return [];
+      }
+
+      const testimonialQuote = getApprovedProjectValue(
+        slide["testimonial.quote"],
+      );
+      const testimonialAttribution = getApprovedProjectValue(
+        slide["testimonial.attribution"],
+      );
+
+      return [
+        {
+          equipment,
+          imageAlt: slide.imageAlt,
+          imageSrc: slide.imageSrc,
+          project: slide.project,
+          summary: slide.summary,
+          testimonial: {
+            attribution:
+              testimonialQuote && testimonialAttribution
+                ? testimonialAttribution
+                : "",
+            quote:
+              testimonialQuote && testimonialAttribution
+                ? testimonialQuote
+                : "",
+          },
+          title: slide.title,
+        },
+      ];
+    }),
+  };
+}
+
+function isQualifiedProjectCaseStudySlide(
+  slide: Record<string, string>,
+  equipment: Array<{ label: string; value: string }>,
+) {
+  return (
+    isUsableImageSource(slide.imageSrc) &&
+    Boolean(getApprovedProjectValue(slide.imageAlt)) &&
+    Boolean(getApprovedProjectValue(slide.project)) &&
+    Boolean(getApprovedProjectValue(slide.title)) &&
+    Boolean(getApprovedProjectValue(slide.summary)) &&
+    equipment.length === 3 &&
+    equipment.every(
+      (detail) =>
+        Boolean(getApprovedProjectValue(detail.label)) &&
+        Boolean(getApprovedProjectValue(detail.value)),
+    )
+  );
+}
+
+function getApprovedProjectValue(value: string | undefined) {
+  const normalizedValue = value?.trim() ?? "";
+
+  return normalizedValue && !/needs review/i.test(normalizedValue)
+    ? normalizedValue
+    : "";
 }
 
 function photoGalleryProps(section: FieldSection) {
@@ -1879,6 +2067,14 @@ function getHeroSplitFixedImageRatio(section: PageTemplatePreviewSection) {
     : undefined;
 }
 
+function getDecisionSplitDecisionLargeAlign(
+  section: PageTemplatePreviewSection,
+): DecisionSplitDecisionLargeAlign {
+  return heroCompactAlignments.has(section.variant ?? "")
+    ? (section.variant as DecisionSplitDecisionLargeAlign)
+    : "center";
+}
+
 function getContentSplitFixedImageVariant(section: PageTemplatePreviewSection) {
   return heroSplitFixedImageVariants.has(section.variant ?? "")
     ? (section.variant as ContentSplitFixedImageVariant)
@@ -2041,6 +2237,59 @@ function getRepeatedRecords(section: FieldSection, collectionNames: string[]) {
       record.question ||
       record.answer,
   );
+}
+
+function getIndexedRecordValues(
+  record: Record<string, string>,
+  collectionName: string,
+) {
+  const prefix = `${collectionName.toLowerCase()}.`;
+
+  return Object.entries(record)
+    .filter(([key, value]) =>
+      key.toLowerCase().startsWith(prefix) && value.trim().length > 0,
+    )
+    .sort(([leftKey], [rightKey]) => {
+      const leftIndex = Number(leftKey.slice(prefix.length).split(".")[0]);
+      const rightIndex = Number(rightKey.slice(prefix.length).split(".")[0]);
+
+      return leftIndex - rightIndex;
+    })
+    .map(([, value]) => value.trim());
+}
+
+function getIndexedRecordPairs(
+  record: Record<string, string>,
+  collectionName: string,
+  labelKey: string,
+  valueKey: string,
+) {
+  const prefix = `${collectionName.toLowerCase()}.`;
+  const indexes = new Set<number>();
+
+  Object.keys(record).forEach((key) => {
+    if (!key.toLowerCase().startsWith(prefix)) {
+      return;
+    }
+
+    const index = Number(key.slice(prefix.length).split(".")[0]);
+
+    if (Number.isFinite(index)) {
+      indexes.add(index);
+    }
+  });
+
+  return Array.from(indexes)
+    .sort((left, right) => left - right)
+    .map((index) => ({
+      label: record[`${collectionName}.${index}.${labelKey}`]?.trim() ?? "",
+      value: record[`${collectionName}.${index}.${valueKey}`]?.trim() ?? "",
+    }))
+    .filter((item) => item.label && item.value);
+}
+
+function isUsableImageSource(value: string | undefined) {
+  return Boolean(value && (value.startsWith("/") || value.startsWith("http")));
 }
 
 function cardItems(section: FieldSection, fieldNames: string[]) {

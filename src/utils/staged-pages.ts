@@ -11,7 +11,10 @@ import {
   type StrategyNavigationItem,
 } from "@/utils/strategy-site-map";
 import type { StrategySnapshot } from "@/utils/strategy-snapshots";
-import { getTemplateCopyFieldsForSection } from "@/utils/template-copy-contract";
+import {
+  getTemplateCopyContractStatus,
+  getTemplateCopyFieldsForSection,
+} from "@/utils/template-copy-contract";
 
 export type ContentFieldKind = "copy" | "image" | "link" | "meta";
 
@@ -217,6 +220,20 @@ export async function syncStagedPagesFromStrategySnapshot(
       return page;
     }
 
+    const contractStatus = getTemplateCopyContractStatus(
+      strategyCopy,
+      page.template.sections?.length
+        ? {
+            ...page.template,
+            sections: page.template.sections,
+          }
+        : undefined,
+    );
+
+    if (contractStatus !== "current") {
+      return page;
+    }
+
     syncedCount += 1;
     syncedPageIds.push(page.pageId);
 
@@ -330,11 +347,13 @@ function reconcileTemplateCopyFields(
 }
 
 export function buildStrategyTemplateStagedPage({
+  applyBatchCopy = true,
   pageLabel,
   pageSlug,
   snapshot,
   template,
 }: {
+  applyBatchCopy?: boolean;
   pageLabel: string;
   pageSlug: string;
   snapshot: StrategySnapshot;
@@ -356,52 +375,52 @@ export function buildStrategyTemplateStagedPage({
     pageId,
     template.pageType,
   );
-  const fields = seedFieldsFromStrategyCopy(
-    [
-      stagedField({
-        id: `${pageId}.strategy.pageCopy`,
-        kind: "copy",
-        path: "strategy.pageCopy",
-        value: strategyCopy,
-      }),
-      stagedField({
-        id: `${pageId}.strategy.contentPlan`,
-        kind: "meta",
-        path: "strategy.contentPlan",
-        value: snapshot.fields.contentPlan,
-      }),
-      stagedField({
-        id: `${pageId}.strategy.strategyBrief`,
-        kind: "meta",
-        path: "strategy.strategyBrief",
-        value: snapshot.fields.strategyBrief,
-      }),
-      ...template.sections.flatMap((section, index) => {
-        const sectionId = `${String(index + 1).padStart(2, "0")}-${slugify(
-          section.name || section.component,
-        )}`;
-        const templateFields = getTemplateCopyFieldsForSection(section);
+  const templateFields = [
+    stagedField({
+      id: `${pageId}.strategy.pageCopy`,
+      kind: "copy",
+      path: "strategy.pageCopy",
+      value: strategyCopy,
+    }),
+    stagedField({
+      id: `${pageId}.strategy.contentPlan`,
+      kind: "meta",
+      path: "strategy.contentPlan",
+      value: snapshot.fields.contentPlan,
+    }),
+    stagedField({
+      id: `${pageId}.strategy.strategyBrief`,
+      kind: "meta",
+      path: "strategy.strategyBrief",
+      value: snapshot.fields.strategyBrief,
+    }),
+    ...template.sections.flatMap((section, index) => {
+      const sectionId = `${String(index + 1).padStart(2, "0")}-${slugify(
+        section.name || section.component,
+      )}`;
+      const sectionFields = getTemplateCopyFieldsForSection(section);
 
-        return [
+      return [
+        stagedField({
+          id: `${pageId}.${sectionId}.contentDirection`,
+          kind: "meta",
+          path: `${sectionId}.contentDirection`,
+          value: section.instruction,
+        }),
+        ...sectionFields.map((field) =>
           stagedField({
-            id: `${pageId}.${sectionId}.contentDirection`,
-            kind: "meta",
-            path: `${sectionId}.contentDirection`,
-            value: section.instruction,
+            id: `${pageId}.${sectionId}.${field.name}`,
+            kind: "copy",
+            path: `${sectionId}.${field.name}`,
+            value: "",
           }),
-          ...templateFields.map((field) =>
-            stagedField({
-              id: `${pageId}.${sectionId}.${field.name}`,
-              kind: "copy",
-              path: `${sectionId}.${field.name}`,
-              value: "",
-            }),
-          ),
-        ];
-      }),
-    ],
-    strategyCopy,
-  );
+        ),
+      ];
+    }),
+  ];
+  const fields = applyBatchCopy
+    ? seedFieldsFromStrategyCopy(templateFields, strategyCopy)
+    : templateFields;
 
   return {
     fields,
@@ -608,9 +627,13 @@ function parseMarkdownCopyValues(text: string) {
     if (keyedMatch) {
       commitCurrentValue();
       const rawKey = keyedMatch[1].trim();
-      const fieldKey = rawKey.includes(".")
-        ? rawKey
-        : [currentSection, rawKey].filter(Boolean).join(".");
+      const normalizedSection = normalizeBulkPasteKey(currentSection);
+      const normalizedRawKey = normalizeBulkPasteKey(rawKey);
+      const fieldKey =
+        currentSection &&
+        !normalizedRawKey.startsWith(`${normalizedSection}.`)
+          ? `${currentSection}.${rawKey}`
+          : rawKey;
 
       currentKey = fieldKey;
       currentValueLines = [keyedMatch[2] ?? ""];
@@ -680,8 +703,68 @@ function getBulkPasteMatchKey(
     ),
     field.id,
   ].map(normalizeBulkPasteKey);
+  const exactMatch = candidates.find((candidate) => keyedValues.has(candidate));
 
-  return candidates.find((candidate) => keyedValues.has(candidate));
+  if (exactMatch) {
+    return exactMatch;
+  }
+
+  const sectionOrdinal = sectionId.match(/^(\d+)-/)?.[1];
+
+  if (!sectionOrdinal) {
+    return undefined;
+  }
+
+  const compatibleFieldNames = getCompatibleBulkPasteFieldNames(fieldName);
+
+  for (const compatibleFieldName of compatibleFieldNames) {
+    const normalizedSuffix = `.${normalizeBulkPasteKey(compatibleFieldName)}`;
+    const ordinalMatch = Array.from(keyedValues.keys()).find(
+      (key) =>
+        key.startsWith(`${sectionOrdinal}-`) && key.endsWith(normalizedSuffix),
+    );
+
+    if (ordinalMatch) {
+      return ordinalMatch;
+    }
+  }
+
+  return undefined;
+}
+
+function getCompatibleBulkPasteFieldNames(fieldName: string) {
+  const normalizedFieldName = normalizeBulkPasteKey(fieldName);
+  const aliases: Record<string, string[]> = {
+    body: ["intro", "description", "paragraphs"],
+    decisionitems: ["items", "supportingitems", "steps", "notes"],
+    details: ["supportingitems", "items", "notes", "decisionitems"],
+    faqs: ["items", "serviceitems", "supportingitems"],
+    helpertext: ["secondaryaction", "sectionaction"],
+    intro: ["body", "description", "paragraphs"],
+    items: [
+      "supportingitems",
+      "decisionitems",
+      "serviceitems",
+      "steps",
+      "notes",
+      "faqs",
+      "proofpoints",
+    ],
+    primaryaction: ["sectionaction"],
+    proofpoints: ["items", "supportingitems", "notes"],
+    sectionaction: ["primaryaction", "secondaryaction"],
+    steps: ["supportingitems", "items", "decisionitems", "notes"],
+    supportingitems: [
+      "items",
+      "notes",
+      "decisionitems",
+      "steps",
+      "serviceitems",
+      "proofpoints",
+    ],
+  };
+
+  return [normalizedFieldName, ...(aliases[normalizedFieldName] ?? [])];
 }
 
 function getSectionIdFromPath(fieldPath: string) {

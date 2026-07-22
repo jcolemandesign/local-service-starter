@@ -163,6 +163,29 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
+  contentMainIdeaGrid: {
+    eyebrow: "Replacement planning",
+    title: "Replacement is a decision—not a default.",
+    body: "A system should be replaced when the evidence supports it, not simply because a repair is inconvenient. Start with the condition of the equipment, the pattern of recent issues, and the value of each available path.",
+    points: [
+      {
+        title: "Repeated repairs",
+        body: "Look at repair frequency and total recent spend, not one isolated service call.",
+      },
+      {
+        title: "Uneven comfort",
+        body: "Persistent hot and cold areas can reveal capacity, airflow, or distribution concerns.",
+      },
+      {
+        title: "System condition",
+        body: "Age matters, but operating condition and component health tell the fuller story.",
+      },
+      {
+        title: "Long-term reliability",
+        body: "Compare the expected life of a repair with the stability a replacement may provide.",
+      },
+    ],
+  },
   contentHorizontalCardCarousel: {
     eyebrow: "Capabilities",
     title: "A swipeable card stream for related proof points.",
@@ -273,6 +296,46 @@ export const sectionLibraryV3Content = {
         objectPosition: "50% 50%",
         size: "small" as const,
         src: "/images/bg-image-sample%202.jpg",
+      },
+    ],
+  },
+  projectCaseStudyGallery: {
+    slides: [
+      {
+        project: "Replacement project",
+        title: "A clearer path to dependable whole-home comfort.",
+        summary:
+          "A planned replacement paired a properly sized heat pump with quieter airflow and a straightforward handoff for the homeowner.",
+        imageAlt: "Heat pump equipment staged for a residential replacement project",
+        imageSrc: "/images/hvac-unit-truck-wide.png",
+        equipment: [
+          { label: "Equipment", value: "Variable-speed heat pump" },
+          { label: "Scope", value: "System replacement" },
+          { label: "Timeline", value: "One scheduled visit" },
+        ],
+        testimonial: {
+          quote:
+            "The options were clear, the crew was organized, and the house felt balanced that same evening.",
+          attribution: "Homeowner · Residential replacement",
+        },
+      },
+      {
+        project: "System care",
+        title: "Service notes that make the next decision easier.",
+        summary:
+          "A focused maintenance visit documented the equipment condition and left the household with a practical plan for the coming season.",
+        imageAlt: "Technician working on indoor HVAC equipment during a service visit",
+        imageSrc: "/images/bg-image-sample%201.jpg",
+        equipment: [
+          { label: "Equipment", value: "High-efficiency furnace" },
+          { label: "Scope", value: "Seasonal maintenance" },
+          { label: "Follow-up", value: "Documented recommendations" },
+        ],
+        testimonial: {
+          quote:
+            "We knew exactly what was checked and what to keep an eye on before the next season.",
+          attribution: "Homeowner · Preventive maintenance",
+        },
       },
     ],
   },
@@ -768,6 +831,38 @@ export const sectionLibraryV3Content = {
         eyebrow: "Replace",
         title: "Plan the longer-term move",
         body: "Use this card for replacement fit, estimate timing, financing notes, and the conditions that make upgrade planning useful.",
+      },
+    ],
+  },
+  decisionSplitDecisionLarge: {
+    cards: [
+      {
+        eyebrow: "Repair path",
+        title: "Keep the current system working well.",
+        paragraphs: [
+          "Repair can be the right next step when the issue is contained and the rest of the system is operating dependably.",
+          "A clear recommendation should explain what is being fixed now, what to monitor, and what outcome to expect.",
+        ],
+        points: [
+          "The repair solves the current issue directly.",
+          "The remaining system condition supports more useful service life.",
+          "The cost fits the expected reliability after the visit.",
+        ],
+        actionLabel: "Talk through a repair",
+      },
+      {
+        eyebrow: "Replacement path",
+        title: "Plan the next system with more context.",
+        paragraphs: [
+          "Replacement is worth comparing when recent repairs, comfort concerns, and system condition point to a less dependable future.",
+          "The goal is not to force an upgrade—it is to make the longer-term tradeoffs visible before a decision is urgent.",
+        ],
+        points: [
+          "Review capacity, comfort goals, and current operating costs.",
+          "Compare repair investment with the expected remaining service life.",
+          "Build an estimate around the home, not just the equipment label.",
+        ],
+        actionLabel: "Explore replacement options",
       },
     ],
   },
@@ -1286,6 +1381,10 @@ export const sectionLibraryV3Collections = [
         component: "content-sticky-ideas-v2",
       },
       {
+        label: "Main idea support grid",
+        component: "content-main-idea-grid-v3",
+      },
+      {
         label: "About company",
         component: "content-about-company-v2",
       },
@@ -1338,6 +1437,10 @@ export const sectionLibraryV3Collections = [
         label: "Large photo gallery carousel",
         component: "content-photo-gallery-large-carousel-v3",
       },
+      {
+        label: "Project case study gallery",
+        component: "project-case-study-gallery-v3",
+      },
     ],
   },
   {
@@ -1375,6 +1478,10 @@ export const sectionLibraryV3Collections = [
     items: [
       { label: "Split decision", component: "decision-split-decision-v3" },
       { label: "Split large cards", component: "decision-split-large-cards-v3" },
+      {
+        label: "Split decision large",
+        component: "decision-split-decision-large-v3",
+      },
       { label: "Process steps", component: "process-steps-v3" },
       {
         label: "Image checklist process",

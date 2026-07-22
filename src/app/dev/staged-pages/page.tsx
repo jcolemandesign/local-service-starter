@@ -6,10 +6,15 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
+import { StagedPageRefreshButton } from "@/components/sections/StagedPageRefreshButton";
 import { StagedPageRemoveButton } from "@/components/sections/StagedPageRemoveButton";
 import { SiteExportControls } from "@/components/sections/SiteExportControls";
 import { readSiteExportState } from "@/utils/site-export-state";
 import { readStagedPages, type StagedPage } from "@/utils/staged-pages";
+import {
+  getTemplateCopyContractStatus,
+  type TemplateCopyContractTemplate,
+} from "@/utils/template-copy-contract";
 
 export const metadata: Metadata = {
   title: "Staged Pages",
@@ -95,6 +100,7 @@ export default async function StagedPagesPage() {
                   filledCopyCount,
                   page.fieldCounts.copy,
                 );
+                const contractStatus = getPageContractStatus(page);
 
                 return (
                   <Card className="p-5 shadow-none" key={page.pageId}>
@@ -105,6 +111,17 @@ export default async function StagedPagesPage() {
                           <StatusPill label={page.pageHref} />
                           <StatusPill
                             label={page.template?.name ?? "Template unknown"}
+                          />
+                          <StatusPill
+                            label={formatContractStatus(contractStatus)}
+                            tone={
+                              contractStatus === "current"
+                                ? "complete"
+                                : contractStatus === "stale" ||
+                                    contractStatus === "unverified"
+                                  ? "warning"
+                                  : "default"
+                            }
                           />
                         </div>
                         <h2 className="type-heading-md mt-4 text-service-ink">
@@ -131,6 +148,16 @@ export default async function StagedPagesPage() {
                         <Button href={getDebugHref(page)} variant="secondary">
                           Debug
                         </Button>
+                        {page.template ? (
+                          <StagedPageRefreshButton
+                            clientSlug={page.snapshot.clientSlug}
+                            pageId={page.pageId}
+                            pageLabel={page.pageLabel}
+                            contractStatus={contractStatus}
+                            templateId={page.template.id}
+                            templateName={page.template.name}
+                          />
+                        ) : null}
                         <StagedPageRemoveButton
                           clientSlug={page.snapshot.clientSlug}
                           pageId={page.pageId}
@@ -304,6 +331,32 @@ function getSectionCount(page: StagedPage) {
       .map((field) => field.path.split(".")[0])
       .filter((sectionId) => sectionId !== "strategy"),
   ).size;
+}
+
+function getPageContractStatus(page: StagedPage) {
+  const pageCopy =
+    page.fields.find((field) => field.path === "strategy.pageCopy")?.value ??
+    "";
+  const template =
+    page.template?.sections && page.template.sections.length > 0
+      ? ({
+          ...page.template,
+          sections: page.template.sections,
+        } satisfies TemplateCopyContractTemplate)
+      : undefined;
+
+  return getTemplateCopyContractStatus(pageCopy, template);
+}
+
+function formatContractStatus(
+  status: ReturnType<typeof getTemplateCopyContractStatus>,
+) {
+  return {
+    current: "Copy contract current",
+    empty: "No batch copy",
+    stale: "Copy contract outdated",
+    unverified: "Copy contract unverified",
+  }[status];
 }
 
 function formatFieldPath(path: string) {

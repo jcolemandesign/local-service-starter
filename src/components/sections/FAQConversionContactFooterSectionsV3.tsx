@@ -1,9 +1,12 @@
 import type { ReactNode } from "react";
 import {
+  LayoutGrid,
+  LayoutGridItem,
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
+import type { SectionColorRecipe } from "@/content/section-color-recipes";
 
 type FAQItem = {
   answer: string;
@@ -24,6 +27,7 @@ type FooterContact = {
 
 type FAQSectionV3Props = {
   body: string;
+  colorRecipe?: SectionColorRecipe;
   eyebrow: string;
   items: readonly FAQItem[];
   title: string;
@@ -32,6 +36,7 @@ type FAQSectionV3Props = {
 type CTASectionV3Props = {
   action: string;
   body: string;
+  colorRecipe?: SectionColorRecipe;
   title: string;
 };
 
@@ -208,23 +213,68 @@ function PlaceholderBackground() {
   );
 }
 
+const faqRecipeClasses: Record<
+  SectionColorRecipe,
+  {
+    body: string;
+    card: string;
+    eyebrow: string;
+    heading: string;
+    section: string;
+  }
+> = {
+  default: {
+    body: "text-service-muted",
+    card: "border-service-border bg-service-surface shadow-service",
+    eyebrow: "text-service-accent",
+    heading: "text-service-ink",
+    section: "bg-bg-page",
+  },
+  muted: {
+    body: "text-service-muted",
+    card: "border-service-border bg-surface-raised shadow-service",
+    eyebrow: "text-service-accent",
+    heading: "text-service-ink",
+    section: "bg-service-surface",
+  },
+  dark: {
+    body: "text-white/72",
+    card: "border-white/16 bg-bg-dark shadow-service",
+    eyebrow: "text-white/68",
+    heading: "text-white",
+    section: "bg-service-surface",
+  },
+  accent: {
+    body: "text-white/78",
+    card: "border-white/18 bg-white/10 shadow-service",
+    eyebrow: "text-white/72",
+    heading: "text-white",
+    section: "bg-service-accent",
+  },
+};
+
 export function FAQSectionV3({
   body,
+  colorRecipe = "default",
   eyebrow,
   items,
   title,
 }: FAQSectionV3Props) {
+  const colors = faqRecipeClasses[colorRecipe];
+
   return (
-    <section className="bg-service-surface">
+    <section className={colors.section}>
       <SevenColumnGrid className="section-min-none" padding="med">
         <SevenColumnGridItem
           alignY="stretch"
           className="col-span-3 max-lg:col-span-7"
         >
           <div className="fluid-type-frame sticky top-[var(--site-grid-inset-block)] h-fit max-lg:static">
-            <p className="type-label text-service-accent">{eyebrow}</p>
-            <h2 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">{title}</h2>
-            <p className="type-text-lg wrap-pretty mt-heading-body-lg text-service-muted">
+            <p className={`type-label ${colors.eyebrow}`}>{eyebrow}</p>
+            <h2 className={`type-heading-xl mt-eyebrow-heading-lg ${colors.heading}`}>
+              {title}
+            </h2>
+            <p className={`type-text-lg wrap-pretty mt-heading-body-lg ${colors.body}`}>
               {body}
             </p>
           </div>
@@ -234,13 +284,13 @@ export function FAQSectionV3({
           <div className="grid card-grid-gap-med">
             {items.map((item) => (
               <article
-                className="content-padding fluid-type-frame radius-medium border border-service-border bg-bg-page shadow-service"
+                className={`content-padding fluid-type-frame radius-medium border ${colors.card}`}
                 key={item.question}
               >
-                <h3 className="type-heading-sm text-service-ink">
+                <h3 className={`type-heading-sm ${colors.heading}`}>
                   {item.question}
                 </h3>
-                <p className="type-text-md wrap-pretty mt-heading-body-sm text-service-muted">
+                <p className={`type-text-md wrap-pretty mt-heading-body-sm ${colors.body}`}>
                   {item.answer}
                 </p>
               </article>
@@ -252,62 +302,127 @@ export function FAQSectionV3({
   );
 }
 
-export function CTASectionV3({ action, body, title }: CTASectionV3Props) {
+const ctaRecipeClasses: Record<
+  SectionColorRecipe,
+  {
+    action: string;
+    body: string;
+    card: string;
+    eyebrow: string;
+    heading: string;
+    section: string;
+  }
+> = {
+  default: {
+    action:
+      "!border-service-accent !bg-service-accent !text-white hover:!border-service-ink hover:!bg-service-ink",
+    body: "text-service-muted",
+    card: "border-service-border bg-service-surface text-service-ink shadow-service",
+    eyebrow: "text-service-accent",
+    heading: "text-service-ink",
+    section: "bg-bg-page",
+  },
+  muted: {
+    action:
+      "!border-service-ink !bg-service-ink !text-white hover:!border-service-accent hover:!bg-service-accent",
+    body: "text-service-muted",
+    card: "border-service-border bg-bg-page text-service-ink shadow-service",
+    eyebrow: "text-service-accent",
+    heading: "text-service-ink",
+    section: "bg-service-surface",
+  },
+  dark: {
+    action: "!border-white !bg-white !text-bg-dark hover:!bg-service-surface",
+    body: "text-white/72",
+    card: "border-white/16 bg-white/8 text-white",
+    eyebrow: "text-white/68",
+    heading: "text-white",
+    section: "bg-bg-dark text-white",
+  },
+  accent: {
+    action: "!border-white !bg-white !text-bg-dark hover:!bg-white/85",
+    body: "text-white/78",
+    card: "border-white/18 bg-white/10 text-white",
+    eyebrow: "text-white/72",
+    heading: "text-white",
+    section: "bg-service-accent text-white",
+  },
+};
+
+export function CTASectionV3({
+  action,
+  body,
+  colorRecipe = "dark",
+  title,
+}: CTASectionV3Props) {
+  const colors = ctaRecipeClasses[colorRecipe];
+
   return (
-    <section className="bg-service-ink text-white">
-      <SevenColumnGrid className="section-min-none items-center" padding="med">
-        <SevenColumnGridItem className="col-span-3 max-lg:col-span-7">
+    <section className={colors.section}>
+      <LayoutGrid
+        className="section-min-none items-center"
+        columns={14}
+        padding="med"
+      >
+        <LayoutGridItem className="col-span-6 max-lg:col-span-10 max-md:col-span-6 max-sm:col-span-2">
           <div className="fluid-type-frame">
-            <p className="type-label text-white/68">Conversion</p>
-            <h2 className="type-heading-xl mt-eyebrow-heading-lg text-white">
+            <p className={`type-label ${colors.eyebrow}`}>Conversion</p>
+            <h2 className={`type-heading-xl mt-eyebrow-heading-lg ${colors.heading}`}>
               {title}
             </h2>
-            <p className="type-text-lg wrap-pretty mt-heading-body-lg text-white/72">
+            <p className={`type-text-lg wrap-pretty mt-heading-body-lg ${colors.body}`}>
               {body}
             </p>
           </div>
-        </SevenColumnGridItem>
+        </LayoutGridItem>
 
-        <SevenColumnGridItem
+        <LayoutGridItem
           alignY="middle"
-          className="col-span-3 col-start-5 max-lg:col-span-7 max-lg:col-start-1"
+          className="col-span-6 col-start-8 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2"
         >
-          <article className="content-padding fluid-type-frame radius-medium border border-white/8 bg-white/8">
-            <h3 className="type-heading-sm text-white">Book the next visit</h3>
-            <p className="type-text-sm wrap-pretty mt-heading-body-sm text-white/70">
+          <article className={`content-padding fluid-type-frame radius-medium border ${colors.card}`}>
+            <h3 className={`type-heading-sm ${colors.heading}`}>Book the next visit</h3>
+            <p className={`type-text-sm wrap-pretty mt-heading-body-sm ${colors.body}`}>
               Keep form, phone, and trust cues close enough to scan as one
               decision.
             </p>
             <div className="mt-body-actions-sm">
               <RequestServiceButton
-                className="w-auto shrink-0 border-bg-page bg-bg-page text-service-ink hover:bg-service-surface"
+                className={`w-auto shrink-0 ${colors.action}`}
                 variant="secondary"
               >
                 {action}
               </RequestServiceButton>
             </div>
           </article>
-        </SevenColumnGridItem>
-      </SevenColumnGrid>
+        </LayoutGridItem>
+      </LayoutGrid>
     </section>
   );
 }
 
-export function CTAMutedSectionV3({ action, body, title }: CTASectionV3Props) {
+export function CTAMutedSectionV3({
+  action,
+  body,
+  colorRecipe = "muted",
+  title,
+}: CTASectionV3Props) {
+  const colors = ctaRecipeClasses[colorRecipe];
+
   return (
-    <section className="bg-bg-page">
+    <section className={colors.section}>
       <SevenColumnGrid className="section-min-none py-2" padding="none">
         <SevenColumnGridItem className="col-span-7">
-          <article className="content-padding radius-medium border border-service-border bg-service-surface text-service-ink shadow-service">
+          <article className={`content-padding radius-medium border ${colors.card}`}>
             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-8 gap-y-5 max-md:grid-cols-1">
               <div className="fluid-type-frame">
-                <h2 className="type-heading-md text-service-ink">{title}</h2>
-                <p className="type-text-md wrap-pretty mt-heading-body-sm text-service-muted">
+                <h2 className={`type-heading-md ${colors.heading}`}>{title}</h2>
+                <p className={`type-text-md wrap-pretty mt-heading-body-sm ${colors.body}`}>
                   {body}
                 </p>
               </div>
               <RequestServiceButton
-                className="w-auto shrink-0 border border-service-border bg-bg-page text-service-ink hover:border-service-accent hover:bg-service-surface hover:text-service-accent max-md:w-full"
+                className={`w-auto shrink-0 border max-md:w-full ${colors.action}`}
                 variant="secondary"
               >
                 {action}
@@ -481,32 +596,32 @@ export function FooterSectionV3({
           </div>
         </SevenColumnGridItem>
 
-        <SevenColumnGridItem className="col-span-1 col-start-3 max-lg:col-span-2 max-lg:col-start-1 max-md:col-span-7">
+        <SevenColumnGridItem className="col-span-1 col-start-4 max-lg:col-span-2 max-lg:col-start-1 max-md:col-span-7">
           <nav aria-label="Quick footer navigation">
             <FooterColumn links={quickLinks} title="Quick Links" />
           </nav>
         </SevenColumnGridItem>
 
-        <SevenColumnGridItem className="col-span-1 col-start-4 max-lg:col-span-2 max-lg:col-start-3 max-md:col-span-7 max-md:col-start-1">
+        <SevenColumnGridItem className="col-span-1 col-start-5 max-lg:col-span-2 max-lg:col-start-3 max-md:col-span-7 max-md:col-start-1">
           <nav aria-label="Footer services navigation">
             <FooterColumn links={services} title="Service" />
           </nav>
         </SevenColumnGridItem>
 
-        <SevenColumnGridItem className="col-span-1 col-start-5 max-lg:col-span-2 max-lg:col-start-5 max-md:col-span-7 max-md:col-start-1">
+        <SevenColumnGridItem className="col-span-1 col-start-6 max-lg:col-span-2 max-lg:col-start-5 max-md:col-span-7 max-md:col-start-1">
           <nav aria-label="Footer service areas navigation">
             <FooterColumn links={serviceAreas} title="Service Areas" />
           </nav>
         </SevenColumnGridItem>
 
-        <SevenColumnGridItem className="col-span-2 col-start-6 max-lg:col-span-7 max-lg:col-start-1">
-          <div className="fluid-type-frame">
+        <SevenColumnGridItem className="col-span-1 col-start-7 min-w-0 max-lg:col-span-7 max-lg:col-start-1">
+          <div className="fluid-type-frame min-w-0">
             <h2 className="type-label text-white/55">Contact</h2>
             <address className="mt-heading-body-sm grid card-grid-gap-sml not-italic">
               <span className="type-text-sm font-medium text-white/72">
                 {contact.name}
               </span>
-              <span className="type-text-sm wrap-pretty font-medium text-white/72">
+              <span className="type-text-sm wrap-pretty break-words font-medium text-white/72">
                 {contact.address}
               </span>
               <a

@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties, DragEvent, ReactNode } from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
   ContentSplitFixedImageSectionV3,
   type ContentSplitFixedImageRatio,
@@ -34,7 +34,18 @@ import {
 import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
+import { ContentMainIdeaGridSectionV3 } from "@/components/sections/ContentMainIdeaGridSectionV3";
+import { ProjectCaseStudyGallerySectionV3 } from "@/components/sections/ProjectCaseStudyGallerySectionV3";
+import {
+  DecisionSplitDecisionLargeSectionV3,
+  type DecisionSplitDecisionLargeAlign,
+} from "@/components/sections/DecisionSplitDecisionLargeSectionV3";
 import { ContentStickyCardStreamSectionV2 } from "@/components/sections/ContentStickyCardStreamSectionV2";
+import {
+  CTASectionV3,
+  CTAMutedSectionV3,
+  FAQSectionV3,
+} from "@/components/sections/FAQConversionContactFooterSectionsV3";
 import { DownArrowIcon } from "@/components/primitives";
 import type { PagebuilderRecipe, SectionMode } from "@/content/pagebuilder";
 import {
@@ -81,7 +92,12 @@ const servicesBentoComponent = "ServicesBentoCardsSectionV2";
 const fourCardLinkGridComponent = "FourCardLinkGridSectionV3";
 const threeCardLinkGridComponent = "ThreeCardLinkGridSectionV3";
 const contentSplitHeadlineImageComponent = "ContentSplitHeadlineImageSectionV2";
+const contentMainIdeaGridComponent = "ContentMainIdeaGridSectionV3";
+const projectCaseStudyGalleryComponent = "ProjectCaseStudyGallerySectionV3";
 const contentStickyCardStreamComponent = "ContentStickyCardStreamSectionV2";
+const ctaSectionComponent = "CTASectionV3";
+const ctaMutedSectionComponent = "CTAMutedSectionV3";
+const decisionSplitDecisionLargeComponent = "DecisionSplitDecisionLargeSectionV3";
 const fourCardLinkGridVariantOptions = [
   { label: "Images", value: "with-images" },
   { label: "No images", value: "text-only" },
@@ -439,12 +455,26 @@ function isCardLinkGridSection(section: PagebuilderRecipe["sectionStack"][number
   return isFourCardLinkGridSection(section) || isThreeCardLinkGridSection(section);
 }
 
+function isDecisionSplitDecisionLargeSection(
+  section: PagebuilderRecipe["sectionStack"][number],
+) {
+  return section.component === decisionSplitDecisionLargeComponent;
+}
+
 function getSectionColorRecipe(section: WorkingSection): SectionColorRecipe {
   return isSectionColorRecipe(section.colorRecipe) ? section.colorRecipe : "default";
 }
 
 function getSectionCardFill(section: WorkingSection): SectionCardFill {
   return section.cardFill === "none" ? "none" : "solid";
+}
+
+function getDecisionSplitDecisionLargeAlign(
+  section: WorkingSection,
+): DecisionSplitDecisionLargeAlign {
+  return heroCompactAlignments.has(section.variant ?? "")
+    ? (section.variant as DecisionSplitDecisionLargeAlign)
+    : "center";
 }
 
 function getSplitContentImageVariantLabel(variant: string | undefined) {
@@ -1012,6 +1042,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     name: "Rule header content",
   },
   {
+    component: "ContentMainIdeaGridSectionV3",
+    instruction:
+      "Use one dominant narrative idea with four concise supporting points on a 14-column grid. Keep the lead idea interpretive and the supporting cards evidence-based.",
+    layoutGrid: 14,
+    mode: "Narrative",
+    name: "Main idea support grid",
+  },
+  {
     component: "ContentPhotoGalleryCarouselSectionV3",
     instruction:
       "Use a mixed-size horizontal photo gallery when people, projects, or proof images should carry the visual story.",
@@ -1024,6 +1062,13 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
       "Use a larger mixed-size photo gallery when the images should become a stronger editorial moment.",
     mode: "Images",
     name: "Large photo gallery carousel",
+  },
+  {
+    component: "ProjectCaseStudyGallerySectionV3",
+    instruction:
+      "Use a focused project gallery when one image and concise project details should work together as a mini case study.",
+    mode: "Images",
+    name: "Project case study gallery",
   },
   {
     component: "ImageStripSectionV3",
@@ -1150,6 +1195,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
       "Use two large three-column decision cards with a simple left-aligned header and link above them.",
     mode: "Decision",
     name: "Split large cards",
+  },
+  {
+    component: "DecisionSplitDecisionLargeSectionV3",
+    instruction:
+      "Use two detailed decision cards on a 14-column grid. Each card should contain a focused header, two concise paragraphs, a short evidence list, and a bottom-aligned next-step link.",
+    layoutGrid: 14,
+    mode: "Decision",
+    name: "Split decision large",
   },
   {
     component: "ProcessStepsSectionV3",
@@ -1625,6 +1678,10 @@ function PagebuilderPreviewWindow({
   );
 }
 
+function subscribeToHydration() {
+  return () => {};
+}
+
 export function PagebuilderShell({
   previewCatalog,
   previewSections,
@@ -1644,6 +1701,14 @@ export function PagebuilderShell({
   const [openSidebarPanel, setOpenSidebarPanel] = useState<
     "page-layouts" | "sections" | "add-section" | null
   >(null);
+  const isSidebarStateHydrated = useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false,
+  );
+  const [openAddSectionModeId, setOpenAddSectionModeId] = useState<string | null>(
+    null,
+  );
   const [draggedSectionId, setDraggedSectionId] = useState<string | null>(null);
   const [dragOverSectionId, setDragOverSectionId] = useState<string | null>(
     null,
@@ -2014,6 +2079,20 @@ export function PagebuilderShell({
         section.id === sectionId ? { ...section, cardFill } : section,
       ),
     );
+  }
+
+  function updateDecisionSplitDecisionLargeAlign(
+    sectionId: string,
+    align: DecisionSplitDecisionLargeAlign,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && isDecisionSplitDecisionLargeSection(section)
+          ? { ...section, variant: align }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
   }
 
   function deleteSection(sectionId: string) {
@@ -2559,6 +2638,37 @@ export function PagebuilderShell({
             {...sectionLibraryV3Content.contentSplitHeadlineImage}
             colorRecipe={getSectionColorRecipe(section)}
           />
+        ) : section.component === contentMainIdeaGridComponent ? (
+          <ContentMainIdeaGridSectionV3
+            {...sectionLibraryV3Content.contentMainIdeaGrid}
+            colorRecipe={getSectionColorRecipe(section)}
+          />
+        ) : section.component === ctaSectionComponent ? (
+          <CTASectionV3
+            {...sectionLibraryV3Content.cta}
+            colorRecipe={getSectionColorRecipe(section)}
+          />
+        ) : section.component === ctaMutedSectionComponent ? (
+          <CTAMutedSectionV3
+            {...sectionLibraryV3Content.cta}
+            colorRecipe={getSectionColorRecipe(section)}
+          />
+        ) : section.component === "FAQSectionV3" ? (
+          <FAQSectionV3
+            {...sectionLibraryV3Content.faq}
+            colorRecipe={getSectionColorRecipe(section)}
+          />
+        ) : section.component === projectCaseStudyGalleryComponent ? (
+          <ProjectCaseStudyGallerySectionV3
+            {...sectionLibraryV3Content.projectCaseStudyGallery}
+            cardFill={getSectionCardFill(section)}
+            colorRecipe={getSectionColorRecipe(section)}
+          />
+        ) : isDecisionSplitDecisionLargeSection(section) ? (
+          <DecisionSplitDecisionLargeSectionV3
+            {...sectionLibraryV3Content.decisionSplitDecisionLarge}
+            align={getDecisionSplitDecisionLargeAlign(section)}
+          />
         ) : section.component === contentStickyCardStreamComponent ? (
           <ContentStickyCardStreamSectionV2
             {...sectionLibraryV3Content.contentStickyCardStream}
@@ -2707,7 +2817,12 @@ export function PagebuilderShell({
                       : currentPanel,
                 );
               }}
-              open={openSidebarPanel === "page-layouts"}
+              open={
+                isSidebarStateHydrated
+                  ? openSidebarPanel === "page-layouts"
+                  : undefined
+              }
+              suppressHydrationWarning
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 marker:hidden">
                 <span className="text-2xl font-semibold leading-tight">
@@ -2811,7 +2926,12 @@ export function PagebuilderShell({
                       : currentPanel,
                 );
               }}
-              open={openSidebarPanel === "sections"}
+              open={
+                isSidebarStateHydrated
+                  ? openSidebarPanel === "sections"
+                  : undefined
+              }
+              suppressHydrationWarning
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 marker:hidden">
                 <span className="flex items-center gap-3">
@@ -3394,6 +3514,47 @@ export function PagebuilderShell({
                             </div>
                           ) : null}
 
+                          {isDecisionSplitDecisionLargeSection(section) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Alignment
+                              </legend>
+                              <div className="grid grid-cols-3 gap-2">
+                                {heroCompactAlignOptions.map((option) => {
+                                  const optionIsActive =
+                                    getDecisionSplitDecisionLargeAlign(section) ===
+                                    option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateDecisionSplitDecisionLargeAlign(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Position the two-card group left, centered, or
+                                right on the fourteen-column grid.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
                           {isServicesBentoSection(section) ? (
                             <fieldset className="grid gap-2">
                               <legend className="type-caption font-semibold text-current">
@@ -3535,6 +3696,10 @@ export function PagebuilderShell({
               onToggle={(event) => {
                 const isOpen = event.currentTarget.open;
 
+                if (!isOpen) {
+                  setOpenAddSectionModeId(null);
+                }
+
                 setOpenSidebarPanel((currentPanel) =>
                   isOpen
                     ? "add-section"
@@ -3543,7 +3708,12 @@ export function PagebuilderShell({
                       : currentPanel,
                 );
               }}
-              open={openSidebarPanel === "add-section"}
+              open={
+                isSidebarStateHydrated
+                  ? openSidebarPanel === "add-section"
+                  : undefined
+              }
+              suppressHydrationWarning
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left">
                 <h2 className="text-2xl font-semibold leading-tight">
@@ -3572,6 +3742,23 @@ export function PagebuilderShell({
                     <details
                       className="token-chrome-card group/mode rounded-[var(--chrome-radius-control)] border"
                       key={mode.id}
+                      onToggle={(event) => {
+                        const isOpen = event.currentTarget.open;
+
+                        setOpenAddSectionModeId((currentModeId) =>
+                          isOpen
+                            ? mode.id
+                            : currentModeId === mode.id
+                              ? null
+                              : currentModeId,
+                        );
+                      }}
+                      open={
+                        isSidebarStateHydrated
+                          ? openAddSectionModeId === mode.id
+                          : undefined
+                      }
+                      suppressHydrationWarning
                     >
                       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5 text-left">
                         <span className="min-w-0">

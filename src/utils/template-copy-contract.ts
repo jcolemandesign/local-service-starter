@@ -9,6 +9,7 @@ export type TemplateCopyContractSection = {
   instruction?: string;
   mode: string;
   name: string;
+  ratio?: string;
   variant?: string;
 };
 
@@ -16,7 +17,7 @@ export type TemplateCopyContractTemplate = {
   id: string;
   name: string;
   pageType: string;
-  sectionCount: number;
+  sectionCount?: number;
   sections: TemplateCopyContractSection[];
 };
 
@@ -42,6 +43,12 @@ export type TemplateCopyFieldSpec = {
   purpose: string;
   target: string;
 };
+
+export type TemplateCopyContractStatus =
+  | "current"
+  | "empty"
+  | "stale"
+  | "unverified";
 
 const fallbackFields: TemplateCopyFieldSpec[] = [
   {
@@ -84,6 +91,7 @@ export function buildTemplateCopyContract({
   const publicPath = getPathFromSlugForPageType(pageSlug, template.pageType);
   const isRepeatable = isRepeatablePageType(template.pageType);
   const relationshipLabel = getPageTypeRelationshipLabel(template.pageType);
+  const contractFingerprint = getTemplateCopyContractFingerprint(template);
   const lines = [
     "# Page Template Copy Spec",
     "",
@@ -97,6 +105,7 @@ export function buildTemplateCopyContract({
     `Public path: ${publicPath}`,
     `Selected template: ${template.name}`,
     `Template ID: ${template.id}`,
+    `Contract fingerprint: ${contractFingerprint}`,
     `Page type: ${template.pageType}`,
     `Page relationship: ${relationshipLabel}`,
   ];
@@ -154,7 +163,7 @@ export function buildTemplateCopyContract({
     "- Return structured text by section ID, not prose paragraphs about the page.",
     "- If the user asks for outline mode, use bullets and notes for review.",
     "- If the user asks for bulk paste mode, use exact field labels with no bullets before field names.",
-    `- In bulk paste mode, begin immediately below \`# Bulk Paste Copy\` with \`<!-- Page target: ${pageLabel} (${publicPath}) -->\`. This visible page note is intentionally ignored by the importer and must not be treated as a content field.`,
+    `- In bulk paste mode, begin immediately below \`# Bulk Paste Copy\` with these two comments on separate lines: \`<!-- Page target: ${pageLabel} (${publicPath}) -->\` and \`<!-- Template contract: ${contractFingerprint} -->\`. These notes are intentionally ignored by the importer and must not be treated as content fields.`,
     "",
     "## Sections",
   );
@@ -177,6 +186,13 @@ export function buildTemplateCopyContract({
 
     if (section.instruction) {
       lines.push(`Template intent: ${section.instruction}`);
+    }
+
+    const sectionRules = getTemplateCopySectionRules(section);
+
+    if (sectionRules.length > 0) {
+      lines.push("", "Section-specific rules:");
+      sectionRules.forEach((rule) => lines.push(`- ${rule}`));
     }
 
     lines.push("", "Fields:");
@@ -211,6 +227,169 @@ export function buildTemplateCopyContract({
   });
 
   return lines.join("\n");
+}
+
+export function getTemplateCopyContractFingerprint(
+  template: TemplateCopyContractTemplate,
+) {
+  const contractShape = {
+    id: template.id,
+    pageType: template.pageType,
+    sections: template.sections.map((section) => ({
+      component: section.component,
+      fields: getTemplateCopyFieldsForSection(section).map((field) => ({
+        format: field.format ?? "",
+        itemCount: field.itemCount ?? 0,
+        name: field.name,
+        purpose: field.purpose,
+        target: field.target,
+      })),
+      instruction: section.instruction ?? "",
+      mode: section.mode,
+      name: section.name,
+      ratio: section.ratio ?? "",
+      variant: section.variant ?? "",
+    })),
+    version: 2,
+  };
+
+  return `tc-v2-${hashContractShape(JSON.stringify(contractShape))}`;
+}
+
+function getTemplateCopySectionRules(section: TemplateCopyContractSection) {
+  if (!section.component.toLowerCase().includes("projectcasestudygallery")) {
+    return [];
+  }
+
+  return [
+    "This is a visual, slide-based mini case study of completed client work. It is not an FAQ, educational explainer, service list, testimonial carousel, or generic marketing section.",
+    "Each slide must describe one real project. The image, project label, headline, summary, equipment/details, and optional testimonial must all refer to that same project.",
+    "Write exactly two slides using verified first-party project facts from the supplied strategy, project notes, or approved assets. Do not convert nearby FAQ copy or general service guidance into a slide.",
+    "A usable slide needs an approved local image path, accessible image description, factual project summary, and three verified detail pairs such as Location, Equipment, and Work Completed.",
+    "A testimonial is optional. Include it only when an approved quote and attribution are tied to that project; otherwise write NEEDS REVIEW for both testimonial fields.",
+    "If the prompt inputs do not contain enough verified project evidence, keep every unavailable slide field as NEEDS REVIEW. Never invent a project, image path, equipment detail, result, location, quote, or attribution. The renderer will hide incomplete slides.",
+  ];
+}
+
+export function getBatchCopyContractFingerprint(copy: string) {
+  return (
+    copy.match(/<!--\s*Template contract:\s*([^\s>]+)\s*-->/i)?.[1] ?? ""
+  );
+}
+
+export function getTemplateCopyContractStatus(
+  copy: string,
+  template: TemplateCopyContractTemplate | undefined,
+): TemplateCopyContractStatus {
+  if (!copy.trim()) {
+    return "empty";
+  }
+
+  const copyFingerprint = getBatchCopyContractFingerprint(copy);
+
+  if (!copyFingerprint || !template) {
+    return "unverified";
+  }
+
+  return copyFingerprint === getTemplateCopyContractFingerprint(template) ||
+    isBatchCopySchemaCompatible(copy, template)
+    ? "current"
+    : "stale";
+}
+
+function isBatchCopySchemaCompatible(
+  copy: string,
+  template: TemplateCopyContractTemplate,
+) {
+  const fieldsBySectionOrdinal = getBatchCopyFieldsBySectionOrdinal(copy);
+
+  if (fieldsBySectionOrdinal.size !== template.sections.length) {
+    return false;
+  }
+
+  return template.sections.every((section, index) => {
+    const sectionOrdinal = String(index + 1).padStart(2, "0");
+    const suppliedFields = fieldsBySectionOrdinal.get(sectionOrdinal);
+
+    if (!suppliedFields) {
+      return false;
+    }
+
+    return getTemplateCopyFieldsForSection(section).every((field) =>
+      suppliedFields.has(normalizeContractFieldName(field.name)),
+    );
+  });
+}
+
+function getBatchCopyFieldsBySectionOrdinal(copy: string) {
+  const fieldsBySectionOrdinal = new Map<string, Set<string>>();
+  const lines = extractContractBulkPasteCopy(copy).split(/\r?\n/);
+  let currentSectionOrdinal = "";
+
+  lines.forEach((rawLine) => {
+    const line = rawLine.trim();
+    const sectionMatch = line.match(/^#{2,4}\s+(\d+)(?:-|\s|$)/);
+
+    if (sectionMatch) {
+      currentSectionOrdinal = sectionMatch[1].padStart(2, "0");
+      fieldsBySectionOrdinal.set(
+        currentSectionOrdinal,
+        fieldsBySectionOrdinal.get(currentSectionOrdinal) ?? new Set<string>(),
+      );
+      return;
+    }
+
+    if (!currentSectionOrdinal) {
+      return;
+    }
+
+    const keyedMatch = line.match(
+      /^(?:[-*]\s*)?`?([A-Za-z0-9_.-]+)`?\s*:\s*(.*)$/,
+    );
+
+    if (!keyedMatch) {
+      return;
+    }
+
+    fieldsBySectionOrdinal
+      .get(currentSectionOrdinal)
+      ?.add(normalizeContractFieldName(keyedMatch[1]));
+  });
+
+  return fieldsBySectionOrdinal;
+}
+
+function extractContractBulkPasteCopy(copy: string) {
+  const lines = copy.split(/\r?\n/);
+  const bulkStartIndex = lines.findIndex((line) =>
+    /^#{1,3}\s+Bulk Paste Copy\s*$/i.test(line.trim()),
+  );
+  const bulkLines = bulkStartIndex >= 0 ? lines.slice(bulkStartIndex + 1) : lines;
+  const reviewStartIndex = bulkLines.findIndex((line) =>
+    /^(?:#{1,3}\s+|\d+\.\s+)?(?:Copy Notes|Copy QA)\s*$/i.test(
+      line.trim(),
+    ),
+  );
+
+  return (reviewStartIndex >= 0
+    ? bulkLines.slice(0, reviewStartIndex)
+    : bulkLines
+  ).join("\n");
+}
+
+function normalizeContractFieldName(value: string) {
+  return value.toLowerCase().trim().replace(/[^a-z0-9.]+/g, "");
+}
+
+function hashContractShape(value: string) {
+  let hash = 2166136261;
+
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return (hash >>> 0).toString(36);
 }
 
 export function getTemplateCopyFieldsForSection(
@@ -316,6 +495,22 @@ export function getTemplateCopyFieldsForSection(
         target: "45-90 characters.",
       },
     ];
+  }
+
+  if (component.includes("contentmainideagrid")) {
+    return mainIdeaGridFields();
+  }
+
+  if (component.includes("decisionsplitdecisionlarge")) {
+    return splitDecisionLargeFields();
+  }
+
+  if (component.includes("projectcasestudygallery")) {
+    return projectCaseStudyGalleryFields();
+  }
+
+  if (component.includes("contactsectionmodalbegin")) {
+    return contactModalBeginFields();
   }
 
   if (component.includes("heroservices")) {
@@ -1102,6 +1297,205 @@ export function getTemplateCopyFieldsForSection(
   }
 
   return fallbackFields;
+}
+
+function mainIdeaGridFields(): TemplateCopyFieldSpec[] {
+  return [
+    {
+      example: "Replacement planning",
+      name: "eyebrow",
+      purpose: "Short context label above the dominant idea.",
+      target: "16-38 characters.",
+    },
+    {
+      example: "Replacement is a decision—not a default",
+      name: "heading",
+      purpose: "Primary statement in the seven-column lead card.",
+      target: "38-78 characters.",
+    },
+    {
+      example:
+        "Start with the condition of the equipment, the pattern of recent issues, and the practical value of each available path.",
+      name: "body",
+      purpose: "Interpretive paragraph supporting the main idea.",
+      target: "120-240 characters.",
+    },
+    ...Array.from({ length: 4 }, (_, index) => [
+      {
+        example: "Repeated repairs",
+        name: `points.${index + 1}.title`,
+        purpose: `Supporting point ${index + 1} title.`,
+        target: "16-42 characters.",
+      },
+      {
+        example:
+          "Look at repair frequency and total recent spend, not one isolated service call.",
+        name: `points.${index + 1}.body`,
+        purpose: `Supporting point ${index + 1} evidence or explanation.`,
+        target: "70-150 characters.",
+      },
+    ]).flat(),
+  ];
+}
+
+function splitDecisionLargeFields(): TemplateCopyFieldSpec[] {
+  return Array.from({ length: 2 }, (_, cardIndex) => {
+    const cardNumber = cardIndex + 1;
+
+    return [
+      {
+        example: cardIndex === 0 ? "Repair path" : "Replacement path",
+        name: `cards.${cardNumber}.eyebrow`,
+        purpose: `Decision card ${cardNumber} context label.`,
+        target: "12-32 characters.",
+      },
+      {
+        example:
+          cardIndex === 0
+            ? "Keep the current system working well"
+            : "Plan the next system with more context",
+        name: `cards.${cardNumber}.title`,
+        purpose: `Decision card ${cardNumber} heading.`,
+        target: "30-68 characters.",
+      },
+      ...Array.from({ length: 2 }, (_, paragraphIndex) => ({
+        example:
+          "Explain when this path fits, what the homeowner should understand, and which tradeoff matters most.",
+        name: `cards.${cardNumber}.paragraphs.${paragraphIndex + 1}`,
+        purpose: `Decision card ${cardNumber}, paragraph ${paragraphIndex + 1}.`,
+        target: "90-180 characters.",
+      })),
+      ...Array.from({ length: 3 }, (_, pointIndex) => ({
+        example: "The recommendation addresses the current issue directly.",
+        name: `cards.${cardNumber}.points.${pointIndex + 1}`,
+        purpose: `Decision card ${cardNumber}, evidence point ${pointIndex + 1}.`,
+        target: "45-110 characters.",
+      })),
+      {
+        example:
+          cardIndex === 0
+            ? "Talk through a repair"
+            : "Explore replacement options",
+        name: `cards.${cardNumber}.actionLabel`,
+        purpose: `Bottom-aligned link label for decision card ${cardNumber}.`,
+        target: "12-30 characters.",
+      },
+    ];
+  }).flat();
+}
+
+function projectCaseStudyGalleryFields(): TemplateCopyFieldSpec[] {
+  return Array.from({ length: 2 }, (_, slideIndex) => {
+    const slideNumber = slideIndex + 1;
+
+    return [
+      {
+        example: "Replacement project",
+        name: `slides.${slideNumber}.project`,
+        purpose: `Slide ${slideNumber} project label.`,
+        target: "14-38 characters.",
+      },
+      {
+        example: "A clearer path to dependable whole-home comfort",
+        name: `slides.${slideNumber}.title`,
+        purpose: `Slide ${slideNumber} case-study headline.`,
+        target: "36-76 characters.",
+      },
+      {
+        example:
+          "Summarize the homeowner situation, approved work, and practical outcome without inventing performance claims.",
+        name: `slides.${slideNumber}.summary`,
+        purpose: `Slide ${slideNumber} concise case-study summary.`,
+        target: "120-230 characters.",
+      },
+      {
+        example: "Heat pump equipment staged for a residential replacement project",
+        name: `slides.${slideNumber}.imageAlt`,
+        purpose: `Accessible description of slide ${slideNumber}'s approved image.`,
+        target: "55-140 characters.",
+      },
+      {
+        example: "/images/approved-project-photo.jpg",
+        name: `slides.${slideNumber}.imageSrc`,
+        purpose: `Approved local image path for slide ${slideNumber}.`,
+        target: "Use an existing /images path or NEEDS REVIEW. Never invent a remote URL.",
+      },
+      ...Array.from({ length: 3 }, (_, detailIndex) => [
+        {
+          example: detailIndex === 0 ? "Equipment" : "Scope",
+          name: `slides.${slideNumber}.equipment.${detailIndex + 1}.label`,
+          purpose: `Slide ${slideNumber}, project detail ${detailIndex + 1} label.`,
+          target: "8-24 characters.",
+        },
+        {
+          example: detailIndex === 0 ? "Variable-speed heat pump" : "System replacement",
+          name: `slides.${slideNumber}.equipment.${detailIndex + 1}.value`,
+          purpose: `Slide ${slideNumber}, project detail ${detailIndex + 1} verified value.`,
+          target: "18-60 characters or NEEDS REVIEW.",
+        },
+      ]).flat(),
+      {
+        example: "The options were clear and the crew kept the project organized.",
+        name: `slides.${slideNumber}.testimonial.quote`,
+        purpose: `Approved customer quote for slide ${slideNumber}.`,
+        target: "80-190 characters or NEEDS REVIEW. Do not fabricate testimonials.",
+      },
+      {
+        example: "Homeowner · Residential replacement",
+        name: `slides.${slideNumber}.testimonial.attribution`,
+        purpose: `Approved testimonial attribution for slide ${slideNumber}.`,
+        target: "25-70 characters or NEEDS REVIEW.",
+      },
+    ];
+  }).flat();
+}
+
+function contactModalBeginFields(): TemplateCopyFieldSpec[] {
+  return [
+    {
+      example: "Request service",
+      name: "eyebrow",
+      purpose: "Short conversion context above the section heading.",
+      target: "14-32 characters.",
+    },
+    {
+      example: "Start with the kind of help you need",
+      name: "heading",
+      purpose: "Primary heading beside the request-selection card.",
+      target: "34-70 characters.",
+    },
+    {
+      example:
+        "Choose the system and service path that best match the situation. These answers carry into the request flow.",
+      name: "body",
+      purpose: "Short explanation of what the two selections do.",
+      target: "100-190 characters.",
+    },
+    {
+      example: "What system needs help?",
+      name: "systemPrompt",
+      purpose: "Legend above the system-type choices.",
+      target: "18-42 characters.",
+    },
+    {
+      example: "What do you need?",
+      name: "requestPrompt",
+      purpose: "Legend above the request-type choices.",
+      target: "16-38 characters.",
+    },
+    {
+      example: "Continue",
+      name: "continueLabel",
+      purpose: "Button label that opens the request modal.",
+      target: "8-20 characters.",
+    },
+    {
+      example: "Your selections will carry into the next step.",
+      name: "helperText",
+      purpose: "Small reassurance below the continue button.",
+      target: "45-100 characters.",
+    },
+  ];
 }
 
 function countCharacters(value: string) {

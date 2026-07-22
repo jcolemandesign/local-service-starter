@@ -2,10 +2,12 @@ import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAbout
 import { ContentAboutStorySectionV3 } from "@/components/sections/ContentAboutStorySectionV3";
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
+import { ContentMainIdeaGridSectionV3 } from "@/components/sections/ContentMainIdeaGridSectionV3";
 import {
   ContentPhotoGalleryCarouselSectionV3,
   ContentPhotoGalleryLargeCarouselSectionV3,
 } from "@/components/sections/ContentPhotoGalleryCarouselSectionV3";
+import { ProjectCaseStudyGallerySectionV3 } from "@/components/sections/ProjectCaseStudyGallerySectionV3";
 import { ImageStripSectionV3 } from "@/components/sections/ImageStripSectionV3";
 import { QuickPageLinksSectionV2 } from "@/components/sections/QuickPageLinksSectionV2";
 import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
@@ -41,6 +43,7 @@ import {
 import { FeatureAsymmetricCardsSectionV3 } from "@/components/sections/FeatureAsymmetricCardsSectionV3";
 import { FeatureStackedCardsSectionV3 } from "@/components/sections/FeatureStackedCardsSectionV3";
 import { DecisionSplitDecisionSectionV3 } from "@/components/sections/DecisionSplitDecisionSectionV3";
+import { DecisionSplitDecisionLargeSectionV3 } from "@/components/sections/DecisionSplitDecisionLargeSectionV3";
 import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
 import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
@@ -397,6 +400,12 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.contentPhotoGalleryCarousel}
         />
       );
+    case "ProjectCaseStudyGallerySectionV3":
+      return (
+        <ProjectCaseStudyGallerySectionV3
+          {...sectionLibraryV3Content.projectCaseStudyGallery}
+        />
+      );
     case "ImageStripSectionV3":
       return <ImageStripSectionV3 {...sectionLibraryV3Content.imageStrip} />;
     case "QuickPageLinksSectionV2":
@@ -430,6 +439,12 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           headingLevel={headingLevel}
           ratio={getContentSplitFixedImageRatio(section)}
           variant={getContentSplitFixedImageVariant(section)}
+        />
+      );
+    case "ContentMainIdeaGridSectionV3":
+      return (
+        <ContentMainIdeaGridSectionV3
+          {...sectionLibraryV3Content.contentMainIdeaGrid}
         />
       );
     case "ContentStickyCardStreamSectionV2":
@@ -496,6 +511,12 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <DecisionSplitLargeCardsSectionV3
           {...sectionLibraryV3Content.decisionSplitLargeCards}
+        />
+      );
+    case "DecisionSplitDecisionLargeSectionV3":
+      return (
+        <DecisionSplitDecisionLargeSectionV3
+          {...sectionLibraryV3Content.decisionSplitDecisionLarge}
         />
       );
     case "FAQSectionV3":
@@ -911,6 +932,12 @@ export function PagebuilderSection() {
       "Large photo gallery carousel",
       4,
     ),
+    ProjectCaseStudyGallerySectionV3: previewCatalogEntry(
+      "ProjectCaseStudyGallerySectionV3",
+      "Images",
+      "Project case study gallery",
+      4,
+    ),
     ImageStripSectionV3: previewCatalogEntry(
       "ImageStripSectionV3",
       "Images",
@@ -1004,6 +1031,12 @@ export function PagebuilderSection() {
       "ContentAboutStorySectionV3",
       "Narrative",
       "Editorial 3 column",
+      4,
+    ),
+    ContentMainIdeaGridSectionV3: previewCatalogEntry(
+      "ContentMainIdeaGridSectionV3",
+      "Narrative",
+      "Main idea support grid",
       4,
     ),
     ContentRuleHeaderSectionV2: (
@@ -1123,6 +1156,12 @@ export function PagebuilderSection() {
       "DecisionSplitLargeCardsSectionV3",
       "Decision",
       "Split large cards",
+      6,
+    ),
+    DecisionSplitDecisionLargeSectionV3: previewCatalogEntry(
+      "DecisionSplitDecisionLargeSectionV3",
+      "Decision",
+      "Split decision large",
       6,
     ),
     ProcessImageChecklistSectionV3: (

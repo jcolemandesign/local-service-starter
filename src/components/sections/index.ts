@@ -5,6 +5,11 @@ export { ButtonStylesSectionV2 } from "./ButtonStylesSectionV2";
 export { ContentAboutCompanySection } from "./ContentAboutCompanySection";
 export { ContentAboutCompanySectionV2 } from "./ContentAboutCompanySectionV2";
 export { ContentAboutStorySectionV3 } from "./ContentAboutStorySectionV3";
+export {
+  ContentMainIdeaGridSectionV3,
+  type ContentMainIdeaGridPoint,
+  type ContentMainIdeaGridSectionV3Props,
+} from "./ContentMainIdeaGridSectionV3";
 export { ContentEditorSection } from "./ContentEditorSection";
 export { ContentFixedCoverFadeSectionV2 } from "./ContentFixedCoverFadeSectionV2";
 export { ContentHorizontalCardCarouselSectionV2 } from "./ContentHorizontalCardCarouselSectionV2";
@@ -15,6 +20,7 @@ export {
   ContentPhotoGalleryCarouselSectionV3,
   ContentPhotoGalleryLargeCarouselSectionV3,
 } from "./ContentPhotoGalleryCarouselSectionV3";
+export { ProjectCaseStudyGallerySectionV3 } from "./ProjectCaseStudyGallerySectionV3";
 export { ImageStripSectionV3 } from "./ImageStripSectionV3";
 export { ContentRevealParagraphSection } from "./ContentRevealParagraphSection";
 export { ContentRevealParagraphSectionV2 } from "./ContentRevealParagraphSectionV2";
@@ -68,6 +74,12 @@ export {
   TestimonialsSectionV3,
 } from "./FeatureProcessTestimonialsSectionsV3";
 export { DecisionSplitDecisionSectionV3 } from "./DecisionSplitDecisionSectionV3";
+export {
+  DecisionSplitDecisionLargeSectionV3,
+  type DecisionSplitDecisionLargeAlign,
+  type DecisionSplitDecisionLargeCard,
+  type DecisionSplitDecisionLargeSectionV3Props,
+} from "./DecisionSplitDecisionLargeSectionV3";
 export { DecisionSplitLargeCardsSectionV3 } from "./DecisionSplitLargeCardsSectionV3";
 export { FeatureAsymmetricCardsSectionV3 } from "./FeatureAsymmetricCardsSectionV3";
 export { FeatureStackedCardsSectionV3 } from "./FeatureStackedCardsSectionV3";

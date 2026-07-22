@@ -10,10 +10,12 @@ import {
 } from "@/utils/staged-pages";
 import { setPageExportApproval } from "@/utils/site-export-state";
 import { readLatestStrategySnapshot } from "@/utils/strategy-snapshots";
+import { getTemplateCopyContractStatus } from "@/utils/template-copy-contract";
 
 export const runtime = "nodejs";
 
 type StagePageRequest = {
+  action?: "refresh" | "stage";
   clientSlug?: string;
   pageLabel?: string;
   pageSlug?: string;
@@ -66,9 +68,30 @@ export async function POST(request: Request) {
       throw new Error("Save the strategy workspace before staging pages.");
     }
 
+    const pageSlug = body.pageSlug ?? template.id;
+    const explicitPageCopy =
+      snapshot.fields[`pageCopy.${sanitizeSlug(pageSlug)}`] ?? "";
+    const contractStatus = getTemplateCopyContractStatus(
+      explicitPageCopy,
+      template,
+    );
+
+    if (
+      body.action === "refresh" &&
+      explicitPageCopy.trim() &&
+      contractStatus !== "current"
+    ) {
+      throw new Error(
+        contractStatus === "stale"
+          ? "This page's batch copy was generated from an older template contract. Copy the updated contract in Strategy, regenerate the batch copy, and save it before staging."
+          : "This page's batch copy does not include a verifiable template contract. Copy the current contract in Strategy, regenerate the batch copy, and save it before staging.",
+      );
+    }
+
     const page = buildStrategyTemplateStagedPage({
+      applyBatchCopy: contractStatus === "current",
       pageLabel: body.pageLabel ?? template.name,
-      pageSlug: body.pageSlug ?? template.id,
+      pageSlug,
       snapshot,
       template,
     });

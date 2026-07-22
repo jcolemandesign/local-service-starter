@@ -8,10 +8,7 @@ import {
   type RequestServiceSystemType,
   useRequestService,
 } from "@/components/request-service";
-import {
-  SevenColumnGrid,
-  SevenColumnGridItem,
-} from "@/components/primitives";
+import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 
 type ContactSectionModalBeginProps = {
   body: string;
@@ -68,8 +65,8 @@ export function ContactSectionModalBegin({
 
   return (
     <section className="bg-bg-page" id="contact">
-      <SevenColumnGrid className="section-min-none" padding="med">
-        <SevenColumnGridItem className="col-span-2 col-start-2 max-lg:col-span-7 max-lg:col-start-1">
+      <LayoutGrid className="section-min-none" columns={14} padding="med">
+        <LayoutGridItem className="col-span-6 col-start-1 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2">
           <div className="fluid-type-frame">
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
@@ -79,9 +76,9 @@ export function ContactSectionModalBegin({
               {body}
             </p>
           </div>
-        </SevenColumnGridItem>
+        </LayoutGridItem>
 
-        <SevenColumnGridItem className="col-span-3 col-start-4 max-lg:col-span-7 max-lg:col-start-1">
+        <LayoutGridItem className="col-span-6 col-start-8 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2">
           <form
             className="content-padding fluid-type-frame radius-medium grid card-grid-gap-med border border-service-border bg-service-surface shadow-service"
             onSubmit={(event) => {
@@ -139,8 +136,8 @@ export function ContactSectionModalBegin({
               </p>
             </div>
           </form>
-        </SevenColumnGridItem>
-      </SevenColumnGrid>
+        </LayoutGridItem>
+      </LayoutGrid>
     </section>
   );
 }
