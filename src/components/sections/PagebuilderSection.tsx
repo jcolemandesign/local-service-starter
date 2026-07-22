@@ -512,6 +512,7 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <FeatureAsymmetricCardsSectionV3
           {...sectionLibraryV3Content.featureAsymmetricCards}
+          align={section.variant === "right" ? "right" : "left"}
         />
       );
     case "FeatureStackedCardsSectionV3":
@@ -1098,7 +1099,7 @@ export function PagebuilderSection() {
     FeatureAsymmetricCardsSectionV3: previewCatalogEntry(
       "FeatureAsymmetricCardsSectionV3",
       "Narrative",
-      "Asymmetric feature cards",
+      "Cards features 4 up split",
       4,
     ),
     FeatureStackedCardsSectionV3: previewCatalogEntry(

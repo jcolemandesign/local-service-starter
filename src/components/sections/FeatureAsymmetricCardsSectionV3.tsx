@@ -14,11 +14,14 @@ type FeatureAsymmetricCard = {
 
 type FeatureAsymmetricCardsSectionV3Props = {
   actionLabel: string;
+  align?: FeatureAsymmetricCardsAlign;
   body: string;
   cards: readonly FeatureAsymmetricCard[];
   eyebrow: string;
   title: string;
 };
+
+export type FeatureAsymmetricCardsAlign = "left" | "right";
 
 const cardEase = "easeOut" as const;
 const cardSequenceDelay = 0.12;
@@ -97,18 +100,22 @@ function FeatureIconPlaceholder({ label }: { label: string }) {
 
 export function FeatureAsymmetricCardsSectionV3({
   actionLabel,
+  align = "left",
   body,
   cards,
   eyebrow,
   title,
 }: FeatureAsymmetricCardsSectionV3Props) {
   const shouldReduceMotion = useReducedMotion();
+  const cardsFirst = align === "right";
 
   return (
     <section className="bg-service-surface">
       <SevenColumnGrid className="section-min-none items-start" padding="med">
         <SevenColumnGridItem
-          className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+          className={`col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1 ${
+            cardsFirst ? "col-start-5 max-lg:col-start-1" : ""
+          }`}
           measure="copyWide"
         >
           <div className="fluid-type-frame">
@@ -130,7 +137,11 @@ export function FeatureAsymmetricCardsSectionV3({
           </div>
         </SevenColumnGridItem>
 
-        <SevenColumnGridItem className="col-span-4 col-start-4 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1">
+        <SevenColumnGridItem
+          className={`col-span-4 col-start-4 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1 ${
+            cardsFirst ? "col-start-1" : ""
+          }`}
+        >
           <div className="grid gap-x-[var(--site-grid-gap)] gap-y-3">
             {[cards.slice(0, 2), cards.slice(2, 4)].map((row, rowIndex) => (
               <div

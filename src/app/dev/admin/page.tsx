@@ -36,7 +36,6 @@ const linkGroups = [
     links: [
       { label: "Login", href: "/login" },
       { label: "Dashboard", href: "/dashboard" },
-      { label: "Thank You", href: "/thank-you" },
     ],
   },
   {

@@ -477,7 +477,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
           "Show what the plan may include, what needs confirmation, and how the visit cadence works.",
       },
       {
-        name: "Asymmetric feature cards",
+        name: "Cards features 4 up split",
         component: "FeatureAsymmetricCardsSectionV3",
         mode: "Narrative",
         instruction:

@@ -565,7 +565,12 @@ export function renderPageTemplateSection(
     case "FeatureOverlapRowsSectionV3":
       return <FeatureOverlapRowsSectionV3 {...featureOverlapRowsProps(fieldSection)} />;
     case "FeatureAsymmetricCardsSectionV3":
-      return <FeatureAsymmetricCardsSectionV3 {...featureAsymmetricProps(fieldSection)} />;
+      return (
+        <FeatureAsymmetricCardsSectionV3
+          {...featureAsymmetricProps(fieldSection)}
+          align={section.variant === "right" ? "right" : "left"}
+        />
+      );
     case "FeatureStackedCardsSectionV3":
       return <FeatureStackedCardsSectionV3 {...featureAsymmetricProps(fieldSection)} />;
     case "DecisionSplitDecisionSectionV3":

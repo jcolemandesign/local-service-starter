@@ -104,6 +104,7 @@ const servicesBentoComponent = "ServicesBentoCardsSectionV2";
 const fourCardLinkGridComponent = "FourCardLinkGridSectionV3";
 const threeCardLinkGridComponent = "ThreeCardLinkGridSectionV3";
 const serviceNeedsPriorityGridComponent = "ServiceNeedsPriorityGridSectionV3";
+const featureAsymmetricCardsComponent = "FeatureAsymmetricCardsSectionV3";
 const contentSplitHeadlineImageComponent = "ContentSplitHeadlineImageSectionV2";
 const contentMainIdeaGridComponent = "ContentMainIdeaGridSectionV3";
 const contentNarrativeFeatureRailComponent =
@@ -193,6 +194,12 @@ const serviceNeedsPriorityGridAlignOptions = [
   { label: "Large card left", value: "left" },
   { label: "Large card right", value: "right" },
 ] as const;
+const featureAsymmetricCardsAlignOptions = [
+  { label: "Left", value: "left" },
+  { label: "Right", value: "right" },
+] as const;
+type FeatureAsymmetricCardsAlign =
+  (typeof featureAsymmetricCardsAlignOptions)[number]["value"];
 
 const heroCompactAlignments = new Set<string>(
   heroCompactAlignOptions.map((option) => option.value),
@@ -535,6 +542,12 @@ function getServiceNeedsPriorityGridAlign(
   section: WorkingSection,
 ): ServiceNeedsPriorityGridAlign {
   return section.variant?.startsWith("left") ? "left" : "right";
+}
+
+function getFeatureAsymmetricCardsAlign(
+  section: WorkingSection,
+): FeatureAsymmetricCardsAlign {
+  return section.variant === "right" ? "right" : "left";
 }
 
 function getServiceNeedsPriorityGridShowImages(section: WorkingSection) {
@@ -1180,7 +1193,7 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     instruction:
       "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points.",
     mode: "Narrative",
-    name: "Asymmetric feature cards",
+    name: "Cards features 4 up split",
   },
   {
     component: "FeatureStackedCardsSectionV3",
@@ -2190,6 +2203,21 @@ export function PagebuilderShell({
     updateActiveStack((stack) =>
       stack.map((section) =>
         section.id === sectionId && section.component === contentMainIdeaGridComponent
+          ? { ...section, variant: align }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
+  function updateFeatureAsymmetricCardsAlign(
+    sectionId: string,
+    align: FeatureAsymmetricCardsAlign,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId &&
+        section.component === featureAsymmetricCardsComponent
           ? { ...section, variant: align }
           : section,
       ),
@@ -3809,6 +3837,45 @@ export function PagebuilderShell({
                               <p className="type-caption text-current/60">
                                 Right places the support cards in columns 1–6,
                                 leaves column 7 open, and starts the lead card in column 8.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
+                          {section.component === featureAsymmetricCardsComponent ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Card position
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {featureAsymmetricCardsAlignOptions.map((option) => {
+                                  const optionIsActive =
+                                    getFeatureAsymmetricCardsAlign(section) === option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateFeatureAsymmetricCardsAlign(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Right places the four-card group before the feature content.
                               </p>
                             </fieldset>
                           ) : null}

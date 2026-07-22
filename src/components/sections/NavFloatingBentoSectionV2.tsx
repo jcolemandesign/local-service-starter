@@ -170,6 +170,14 @@ export function NavFloatingBentoSectionV2({
   links,
   fixed = false,
 }: NavFloatingBentoSectionV2Props) {
+  const visibleLinks = links
+    .filter((link) => link.href !== "/thank-you")
+    .map((link) => ({
+      ...link,
+      items: link.items?.filter(
+        (item) => getDropdownItemHref(item) !== "/thank-you",
+      ),
+    }));
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [lockActive, setLockActive] = useState(false);
@@ -201,7 +209,7 @@ export function NavFloatingBentoSectionV2({
               "pointer-events-auto col-start-2 flex min-h-12 items-center gap-1 border border-service-border bg-bg-page/90 p-1 font-semibold text-service-ink shadow-service backdrop-blur-md",
             )}
           >
-            {links.map((link) => {
+            {visibleLinks.map((link) => {
               const hasDropdown = Boolean(link.items?.length);
               const isOpen = openDropdown === link.label;
               const menuId = `floating-v2-nav-${link.label.toLowerCase().replaceAll(" ", "-")}`;
@@ -343,7 +351,7 @@ export function NavFloatingBentoSectionV2({
       <ModalMenu
         action={action}
         isOpen={isMenuOpen}
-        links={links}
+        links={visibleLinks}
         onExitComplete={() => setLockActive(false)}
         phone={phone}
         setIsOpen={setIsMenuOpen}

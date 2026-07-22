@@ -1478,7 +1478,7 @@ export const sectionLibraryV3Collections = [
         component: "feature-overlap-rows-v3",
       },
       {
-        label: "Asymmetric feature cards",
+        label: "Cards features 4 up split",
         component: "feature-asymmetric-cards-v3",
       },
       {

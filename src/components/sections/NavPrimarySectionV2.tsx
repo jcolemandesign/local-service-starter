@@ -138,6 +138,14 @@ function NavPrimaryLayoutSection({
   links,
   layout,
 }: NavPrimarySectionV2Props & { layout: NavPrimaryLayout }) {
+  const visibleLinks = links
+    .filter((link) => link.href !== "/thank-you")
+    .map((link) => ({
+      ...link,
+      items: link.items?.filter(
+        (item) => getDropdownItemHref(item) !== "/thank-you",
+      ),
+    }));
   const phoneHref = `tel:${phone.replace(/\D/g, "")}`;
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -184,7 +192,7 @@ function NavPrimaryLayoutSection({
               "flex items-center gap-7 font-semibold text-service-ink max-lg:hidden",
             )}
           >
-            {links.map((link) => {
+            {visibleLinks.map((link) => {
               const hasDropdown = Boolean(link.items?.length);
               const isOpen = openDropdown === link.label;
               const menuId = `desktop-v2-nav-${link.label.toLowerCase().replaceAll(" ", "-")}`;
@@ -340,7 +348,7 @@ function NavPrimaryLayoutSection({
             >
               <div className="flex min-h-0 flex-1 flex-col items-center justify-center overflow-y-auto overscroll-contain">
                 <ul className="grid justify-items-center gap-8 text-center">
-                  {links.map((link) => (
+                  {visibleLinks.map((link) => (
                     <li key={link.label}>
                       <a
                         className="cursor-pointer text-5xl font-semibold leading-none transition-colors hover:text-service-accent max-md:text-4xl"

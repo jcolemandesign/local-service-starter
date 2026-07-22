@@ -90,11 +90,6 @@
           "label": "Login",
           "href": "/login",
           "description": "Authentication entry point."
-        },
-        {
-          "label": "Thank you",
-          "href": "/thank-you",
-          "description": "Post-submission confirmation page."
         }
       ]
     },

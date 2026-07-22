@@ -68,6 +68,14 @@ type StagedStrategyPageSummary = {
   templateName: string;
 };
 
+type TemplatePickerTarget = {
+  id: string;
+  isChild: boolean;
+  label: string;
+  pageType: string;
+  path: string;
+};
+
 type StagePageResponse =
   | {
       ok: true;
@@ -223,6 +231,8 @@ export function StrategyWorkspaceSection({
   const [openFieldGroups, setOpenFieldGroups] = useState<string[]>([]);
   const [localStagedPages, setLocalStagedPages] = useState(stagedPages);
   const [templatePickerPageId, setTemplatePickerPageId] = useState("");
+  const [templatePickerChildPageId, setTemplatePickerChildPageId] =
+    useState("");
   const [stagingTemplateId, setStagingTemplateId] = useState("");
   const [templatePickerError, setTemplatePickerError] = useState("");
   const [updatedAt, setUpdatedAt] = useState(initialWorkspace.updatedAt);
@@ -305,17 +315,36 @@ export function StrategyWorkspaceSection({
   const detectedPageCount = strategyPages.filter((page) => page.detected).length;
   const templatePickerPage =
     assemblyPages.find((page) => page.id === templatePickerPageId) ?? null;
-  const matchingTemplates = useMemo(
-    () =>
-      templatePickerPage
-        ? templates.filter(
-            (template) =>
-              normalizePageType(template.pageType) ===
-              normalizePageType(templatePickerPage.pageType),
-          )
-        : [],
-    [templatePickerPage, templates],
-  );
+  const templatePickerChildPage = templatePickerChildPageId
+    ? localStagedPages.find(
+        (page) => page.pageId === templatePickerChildPageId,
+      ) ?? null
+    : null;
+  const templatePickerTarget: TemplatePickerTarget | null =
+    templatePickerChildPage
+      ? {
+          id: templatePickerChildPage.pageId,
+          isChild: true,
+          label: templatePickerChildPage.pageLabel,
+          pageType: templatePickerChildPage.pageType,
+          path: templatePickerChildPage.pageHref,
+        }
+      : templatePickerPage
+        ? {
+            id: templatePickerPage.id,
+            isChild: false,
+            label: templatePickerPage.label,
+            pageType: templatePickerPage.pageType,
+            path: templatePickerPage.path,
+          }
+        : null;
+  const matchingTemplates = templatePickerTarget
+    ? templates.filter(
+        (template) =>
+          normalizePageType(template.pageType) ===
+          normalizePageType(templatePickerTarget.pageType),
+      )
+    : [];
   const copywritingSettings = useMemo(
     () => normalizeCopywritingSettings(fields),
     [fields],
@@ -550,8 +579,19 @@ export function StrategyWorkspaceSection({
     setContentPlanReferenceState("generated");
   }
 
-  function openTemplatePicker(pageId: string) {
+  function openTemplatePicker(pageId: string, childPageId = "") {
+    const page = assemblyPages.find((candidate) => candidate.id === pageId);
+    const initialChildPageId =
+      childPageId || (page?.repeatable ? page.childPages[0]?.pageId ?? "" : "");
+
     setTemplatePickerPageId(pageId);
+    setTemplatePickerChildPageId(initialChildPageId);
+    setTemplatePickerError("");
+  }
+
+  function closeTemplatePicker() {
+    setTemplatePickerPageId("");
+    setTemplatePickerChildPageId("");
     setTemplatePickerError("");
   }
 
@@ -604,7 +644,7 @@ export function StrategyWorkspaceSection({
   }
 
   async function stageTemplateForPage(template: PageTemplateSummary) {
-    if (!templatePickerPage) {
+    if (!templatePickerTarget) {
       return;
     }
 
@@ -615,8 +655,8 @@ export function StrategyWorkspaceSection({
       const response = await fetch("/api/staged-pages", {
         body: JSON.stringify({
           clientSlug,
-          pageLabel: templatePickerPage.label,
-          pageSlug: templatePickerPage.id,
+          pageLabel: templatePickerTarget.label,
+          pageSlug: templatePickerTarget.id,
           templateId: template.id,
         }),
         headers: { "Content-Type": "application/json" },
@@ -648,7 +688,7 @@ export function StrategyWorkspaceSection({
         nextPage,
         ...currentPages.filter((page) => page.pageId !== nextPage.pageId),
       ]);
-      setTemplatePickerPageId("");
+      closeTemplatePicker();
     } catch {
       setTemplatePickerError("Template could not be applied.");
     } finally {
@@ -826,17 +866,36 @@ export function StrategyWorkspaceSection({
                               {page.childPages.length} staged{" "}
                               {page.childPages.length === 1 ? "page" : "pages"}
                             </p>
-                            <div className="flex flex-wrap gap-2">
+                            <div className="grid gap-2">
                               {page.childPages.map((childPage) => (
-                                <Link
-                                  className="type-caption rounded-sm border border-service-border bg-bg-surface px-2 py-1 font-semibold text-service-accent hover:text-service-ink"
-                                  href={childPage.previewHref}
+                                <div
+                                  className="rounded-sm border border-service-border bg-bg-surface p-2"
                                   key={childPage.pageId}
-                                  rel="noreferrer"
-                                  target="_blank"
                                 >
-                                  {childPage.pageLabel}
-                                </Link>
+                                  <Link
+                                    className="type-caption font-semibold text-service-accent hover:text-service-ink"
+                                    href={childPage.previewHref}
+                                    rel="noreferrer"
+                                    target="_blank"
+                                  >
+                                    {childPage.pageLabel}
+                                  </Link>
+                                  <p className="type-caption mt-1 text-service-muted">
+                                    {childPage.templateName}
+                                  </p>
+                                  <button
+                                    className="type-caption mt-2 font-semibold text-service-muted underline decoration-service-accent underline-offset-4 hover:text-service-accent"
+                                    onClick={() =>
+                                      openTemplatePicker(
+                                        page.id,
+                                        childPage.pageId,
+                                      )
+                                    }
+                                    type="button"
+                                  >
+                                    Change template
+                                  </button>
+                                </div>
                               ))}
                             </div>
                           </div>
@@ -1339,7 +1398,7 @@ export function StrategyWorkspaceSection({
           </Card>
         </div>
       </div>
-      {templatePickerPage ? (
+      {templatePickerPage && templatePickerTarget ? (
         <div
           aria-labelledby="strategy-template-picker-title"
           aria-modal="true"
@@ -1356,20 +1415,22 @@ export function StrategyWorkspaceSection({
                   className="type-heading-md mt-eyebrow-heading-sm text-service-ink"
                   id="strategy-template-picker-title"
                 >
-                  {templatePickerPage.label}
+                  {templatePickerTarget.label}
                 </h2>
                 <p className="type-text-sm mt-heading-body-sm text-service-muted">
-                  {templatePickerPage.pageType} template for{" "}
-                  <span className="font-mono">{templatePickerPage.path}</span>
+                  {templatePickerTarget.pageType} template for{" "}
+                  <span className="font-mono">{templatePickerTarget.path}</span>
                 </p>
+                {templatePickerTarget.isChild ? (
+                  <p className="type-caption mt-2 font-semibold text-service-accent">
+                    This changes only this child page.
+                  </p>
+                ) : null}
               </div>
               <button
                 aria-label="Close template selector"
                 className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-md-token)] border border-service-border text-service-muted transition-colors hover:border-service-accent hover:text-service-accent"
-                onClick={() => {
-                  setTemplatePickerPageId("");
-                  setTemplatePickerError("");
-                }}
+                onClick={closeTemplatePicker}
                 type="button"
               >
                 x
@@ -1464,7 +1525,7 @@ export function StrategyWorkspaceSection({
               ) : (
                 <div className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-5">
                   <p className="type-heading-sm text-service-ink">
-                    No {templatePickerPage.pageType} templates yet.
+                    No {templatePickerTarget.pageType} templates yet.
                   </p>
                   <p className="type-text-sm mt-heading-body-sm text-service-muted">
                     Promote a matching page layout from Pagebuilder, then return
