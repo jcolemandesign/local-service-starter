@@ -2,12 +2,18 @@ import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAbout
 import { ContentAboutStorySectionV3 } from "@/components/sections/ContentAboutStorySectionV3";
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
-import { ContentMainIdeaGridSectionV3 } from "@/components/sections/ContentMainIdeaGridSectionV3";
+import {
+  ContentMainIdeaGridSectionV3,
+  type ContentMainIdeaGridAlign,
+} from "@/components/sections/ContentMainIdeaGridSectionV3";
 import {
   ContentPhotoGalleryCarouselSectionV3,
   ContentPhotoGalleryLargeCarouselSectionV3,
 } from "@/components/sections/ContentPhotoGalleryCarouselSectionV3";
-import { ProjectCaseStudyGallerySectionV3 } from "@/components/sections/ProjectCaseStudyGallerySectionV3";
+import {
+  ProjectCaseStudyGallerySectionV3,
+  type ProjectCaseStudyGalleryAlign,
+} from "@/components/sections/ProjectCaseStudyGallerySectionV3";
 import { ImageStripSectionV3 } from "@/components/sections/ImageStripSectionV3";
 import { QuickPageLinksSectionV2 } from "@/components/sections/QuickPageLinksSectionV2";
 import { ContactSectionV2 } from "@/components/sections/ContactSectionV2";
@@ -169,6 +175,8 @@ const heroSplitFixedImageRatios = new Set<string>([
 ]);
 
 const heroCompactAlignments = new Set<string>(["left", "center", "right"]);
+const mainIdeaGridAlignments = new Set<string>(["left", "right"]);
+const projectCaseStudyGalleryAlignments = new Set<string>(["left", "right"]);
 const servicesBentoVariants = new Set<string>([
   "default",
   "split-header",
@@ -480,6 +488,7 @@ export function renderPageTemplateSection(
       return (
         <ProjectCaseStudyGallerySectionV3
           {...projectCaseStudyGalleryProps(fieldSection)}
+          align={getProjectCaseStudyGalleryAlign(section)}
           cardFill={section.cardFill}
           colorRecipe={section.colorRecipe}
         />
@@ -516,6 +525,7 @@ export function renderPageTemplateSection(
       return (
         <ContentMainIdeaGridSectionV3
           {...mainIdeaGridProps(fieldSection)}
+          align={getMainIdeaGridAlign(section)}
           colorRecipe={section.colorRecipe}
         />
       );
@@ -2116,6 +2126,22 @@ function getDecisionSplitDecisionLargeAlign(
   return heroCompactAlignments.has(section.variant ?? "")
     ? (section.variant as DecisionSplitDecisionLargeAlign)
     : "center";
+}
+
+function getMainIdeaGridAlign(
+  section: PageTemplatePreviewSection,
+): ContentMainIdeaGridAlign {
+  return mainIdeaGridAlignments.has(section.variant ?? "")
+    ? (section.variant as ContentMainIdeaGridAlign)
+    : "left";
+}
+
+function getProjectCaseStudyGalleryAlign(
+  section: PageTemplatePreviewSection,
+): ProjectCaseStudyGalleryAlign {
+  return projectCaseStudyGalleryAlignments.has(section.variant ?? "")
+    ? (section.variant as ProjectCaseStudyGalleryAlign)
+    : "left";
 }
 
 function getContentSplitFixedImageVariant(section: PageTemplatePreviewSection) {

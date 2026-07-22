@@ -6,7 +6,10 @@ export type ContentMainIdeaGridPoint = {
   title: string;
 };
 
+export type ContentMainIdeaGridAlign = "left" | "right";
+
 export type ContentMainIdeaGridSectionV3Props = {
+  align?: ContentMainIdeaGridAlign;
   body: string;
   colorRecipe?: SectionColorRecipe;
   eyebrow: string;
@@ -14,24 +17,46 @@ export type ContentMainIdeaGridSectionV3Props = {
   title: string;
 };
 
-const pointPositions = [
-  "col-start-9 row-start-1",
-  "col-start-12 row-start-1",
-  "col-start-9 row-start-2",
-  "col-start-12 row-start-2",
-] as const;
+const gridLayouts: Record<
+  ContentMainIdeaGridAlign,
+  {
+    header: string;
+    points: readonly string[];
+  }
+> = {
+  left: {
+    header: "col-span-7 col-start-1",
+    points: [
+      "col-start-9 row-start-1",
+      "col-start-12 row-start-1",
+      "col-start-9 row-start-2",
+      "col-start-12 row-start-2",
+    ],
+  },
+  right: {
+    header: "col-span-7 col-start-8",
+    points: [
+      "col-start-1 row-start-1",
+      "col-start-4 row-start-1",
+      "col-start-1 row-start-2",
+      "col-start-4 row-start-2",
+    ],
+  },
+};
 
 function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
 export function ContentMainIdeaGridSectionV3({
+  align = "left",
   body,
   colorRecipe = "default",
   eyebrow,
   points,
   title,
 }: ContentMainIdeaGridSectionV3Props) {
+  const layout = gridLayouts[align];
   const colors = {
     default: {
       body: "text-service-muted",
@@ -74,7 +99,9 @@ export function ContentMainIdeaGridSectionV3({
         columns={14}
         padding="lrg"
       >
-        <LayoutGridItem className="col-span-7 col-start-1 row-span-2 max-lg:col-span-10 max-lg:row-span-1 max-md:col-span-6 max-sm:col-span-2">
+        <LayoutGridItem
+          className={`${layout.header} row-span-2 max-lg:col-span-10 max-lg:col-start-1 max-lg:row-span-1 max-md:col-span-6 max-sm:col-span-2`}
+        >
           <article
             className={cx(
               "fluid-type-frame flex h-full min-h-96 flex-col justify-between rounded-[var(--radius-surface-token)] border p-8 max-md:min-h-0 max-md:p-6",
@@ -105,7 +132,7 @@ export function ContentMainIdeaGridSectionV3({
 
         {points.slice(0, 4).map((point, index) => (
           <LayoutGridItem
-            className={`col-span-3 ${pointPositions[index]} max-lg:col-span-5 max-lg:col-start-auto max-lg:row-auto max-md:col-span-3 max-sm:col-span-2`}
+            className={`col-span-3 ${layout.points[index]} max-lg:col-span-5 max-lg:col-start-auto max-lg:row-auto max-md:col-span-3 max-sm:col-span-2`}
             key={`${index}-${point.title}`}
           >
             <article

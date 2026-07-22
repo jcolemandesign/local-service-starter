@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "compact-utility",
       "recipeName": "Individual Service",
-      "savedAt": "2026-07-22T14:25:21.060Z",
+      "savedAt": "2026-07-22T15:03:51.508Z",
       "sectionCount": 11,
       "sections": [
         {
@@ -53,6 +53,7 @@
           "originalIndex": -1,
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
+          "variant": "right",
           "colorRecipe": "default",
           "cardFill": "solid"
         },
@@ -67,7 +68,7 @@
           "originalIndex": -1,
           "reduceBottomPadding": false,
           "reduceTopPadding": true,
-          "variant": "center-heading-xl",
+          "variant": "left-heading-xl",
           "colorRecipe": "default",
           "cardFill": "solid"
         },
@@ -82,7 +83,7 @@
           "originalIndex": -1,
           "reduceBottomPadding": false,
           "reduceTopPadding": true,
-          "variant": "center",
+          "variant": "right",
           "colorRecipe": "default",
           "cardFill": "solid"
         },
@@ -125,6 +126,7 @@
           "originalIndex": -1,
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
+          "variant": "right",
           "colorRecipe": "muted",
           "cardFill": "solid"
         },

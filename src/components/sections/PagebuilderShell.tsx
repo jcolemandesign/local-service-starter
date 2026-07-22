@@ -34,8 +34,14 @@ import {
 import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
-import { ContentMainIdeaGridSectionV3 } from "@/components/sections/ContentMainIdeaGridSectionV3";
-import { ProjectCaseStudyGallerySectionV3 } from "@/components/sections/ProjectCaseStudyGallerySectionV3";
+import {
+  ContentMainIdeaGridSectionV3,
+  type ContentMainIdeaGridAlign,
+} from "@/components/sections/ContentMainIdeaGridSectionV3";
+import {
+  ProjectCaseStudyGallerySectionV3,
+  type ProjectCaseStudyGalleryAlign,
+} from "@/components/sections/ProjectCaseStudyGallerySectionV3";
 import {
   DecisionSplitDecisionLargeSectionV3,
   type DecisionSplitDecisionLargeAlign,
@@ -165,6 +171,14 @@ const heroCompactAlignOptions = [
   { label: "Left", value: "left" },
   { label: "Center", value: "center" },
   { label: "Right", value: "right" },
+] as const;
+const mainIdeaGridAlignOptions = [
+  { label: "Left", value: "left" },
+  { label: "Right", value: "right" },
+] as const;
+const projectCaseStudyGalleryAlignOptions = [
+  { label: "Image left", value: "left" },
+  { label: "Image right", value: "right" },
 ] as const;
 
 const heroCompactAlignments = new Set<string>(
@@ -475,6 +489,18 @@ function getDecisionSplitDecisionLargeAlign(
   return heroCompactAlignments.has(section.variant ?? "")
     ? (section.variant as DecisionSplitDecisionLargeAlign)
     : "center";
+}
+
+function getMainIdeaGridAlign(
+  section: WorkingSection,
+): ContentMainIdeaGridAlign {
+  return section.variant === "right" ? "right" : "left";
+}
+
+function getProjectCaseStudyGalleryAlign(
+  section: WorkingSection,
+): ProjectCaseStudyGalleryAlign {
+  return section.variant === "right" ? "right" : "left";
 }
 
 function getSplitContentImageVariantLabel(variant: string | undefined) {
@@ -2095,6 +2121,34 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateMainIdeaGridAlign(
+    sectionId: string,
+    align: ContentMainIdeaGridAlign,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && section.component === contentMainIdeaGridComponent
+          ? { ...section, variant: align }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
+  function updateProjectCaseStudyGalleryAlign(
+    sectionId: string,
+    align: ProjectCaseStudyGalleryAlign,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && section.component === projectCaseStudyGalleryComponent
+          ? { ...section, variant: align }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function deleteSection(sectionId: string) {
     updateActiveStack((stack) =>
       stack.filter((section) => section.id !== sectionId),
@@ -2641,6 +2695,7 @@ export function PagebuilderShell({
         ) : section.component === contentMainIdeaGridComponent ? (
           <ContentMainIdeaGridSectionV3
             {...sectionLibraryV3Content.contentMainIdeaGrid}
+            align={getMainIdeaGridAlign(section)}
             colorRecipe={getSectionColorRecipe(section)}
           />
         ) : section.component === ctaSectionComponent ? (
@@ -2662,6 +2717,7 @@ export function PagebuilderShell({
         ) : section.component === projectCaseStudyGalleryComponent ? (
           <ProjectCaseStudyGallerySectionV3
             {...sectionLibraryV3Content.projectCaseStudyGallery}
+            align={getProjectCaseStudyGalleryAlign(section)}
             cardFill={getSectionCardFill(section)}
             colorRecipe={getSectionColorRecipe(section)}
           />
@@ -3553,6 +3609,82 @@ export function PagebuilderShell({
                                 Position the two-card group left, centered, or
                                 right on the fourteen-column grid.
                               </p>
+                            </fieldset>
+                          ) : null}
+
+                          {section.component === contentMainIdeaGridComponent ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Alignment
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {mainIdeaGridAlignOptions.map((option) => {
+                                  const optionIsActive =
+                                    getMainIdeaGridAlign(section) === option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateMainIdeaGridAlign(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Right places the support cards in columns 1–6,
+                                leaves column 7 open, and starts the lead card in column 8.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
+                          {section.component === projectCaseStudyGalleryComponent ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Image Position
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {projectCaseStudyGalleryAlignOptions.map((option) => {
+                                  const optionIsActive =
+                                    getProjectCaseStudyGalleryAlign(section) === option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateProjectCaseStudyGalleryAlign(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
                             </fieldset>
                           ) : null}
 

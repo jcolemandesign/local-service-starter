@@ -389,7 +389,7 @@ export function CTASectionV3({
 
         <LayoutGridItem
           alignY="middle"
-          className="col-span-6 col-start-8 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2"
+          className="col-span-7 col-start-8 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2"
         >
           <article className={`content-padding fluid-type-frame radius-medium border ${colors.card}`}>
             <h3 className={`type-heading-sm ${colors.heading}`}>Book the next visit</h3>

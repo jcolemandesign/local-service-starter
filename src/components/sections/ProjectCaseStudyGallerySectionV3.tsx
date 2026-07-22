@@ -28,10 +28,13 @@ type ProjectCaseStudySlide = {
 };
 
 type ProjectCaseStudyGallerySectionV3Props = {
+  align?: ProjectCaseStudyGalleryAlign;
   cardFill?: SectionCardFill;
   colorRecipe?: SectionColorRecipe;
   slides: readonly ProjectCaseStudySlide[];
 };
+
+export type ProjectCaseStudyGalleryAlign = "left" | "right";
 
 function SliderControl({
   direction,
@@ -64,10 +67,12 @@ function SliderControl({
 }
 
 export function ProjectCaseStudyGallerySectionV3({
+  align = "left",
   cardFill = "solid",
   colorRecipe = "default",
   slides,
 }: ProjectCaseStudyGallerySectionV3Props) {
+  const isImageRight = align === "right";
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const hasMultipleSlides = slides.length > 1;
   const activeSlide = slides[activeSlideIndex] ?? slides[0];
@@ -95,7 +100,9 @@ export function ProjectCaseStudyGallerySectionV3({
   return (
     <section className="relative bg-bg-page">
       <LayoutGrid columns={14} minHeight="none" padding="med">
-        <LayoutGridItem className="col-span-9 col-start-1 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2">
+        <LayoutGridItem
+          className={`col-span-8 ${isImageRight ? "col-start-7" : "col-start-1"} row-start-1 max-lg:col-span-10 max-lg:col-start-1 max-lg:row-auto max-md:col-span-6 max-sm:col-span-2`}
+        >
           <div className="grid aspect-[5/4]">
             <AnimatePresence initial={false} mode="wait">
               <motion.figure
@@ -119,7 +126,9 @@ export function ProjectCaseStudyGallerySectionV3({
           </div>
         </LayoutGridItem>
 
-        <LayoutGridItem className="col-span-5 col-start-10 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2">
+        <LayoutGridItem
+          className={`col-span-5 ${isImageRight ? "col-start-1" : "col-start-10"} row-start-1 max-lg:col-span-10 max-lg:col-start-1 max-lg:row-auto max-md:col-span-6 max-sm:col-span-2`}
+        >
           <div className="grid">
             <AnimatePresence initial={false} mode="wait">
               <motion.article
