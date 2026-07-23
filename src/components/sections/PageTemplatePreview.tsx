@@ -843,6 +843,11 @@ function heroCompactServiceProps(section: FieldSection) {
   return {
     ...sectionLibraryV3Content.heroCompactService,
     body: getBody(section, sectionLibraryV3Content.heroCompactService.body),
+    ctaBody: getValue(
+      section,
+      "ctaBody",
+      sectionLibraryV3Content.heroCompactService.ctaBody,
+    ),
     ctaTitle: getValue(
       section,
       "ctaTitle",

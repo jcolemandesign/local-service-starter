@@ -2978,6 +2978,18 @@ export function PagebuilderShell({
           }}
         >
           {renderedSectionPreview}
+          <button
+            aria-label={`Delete ${section.name}`}
+            className="absolute right-2 top-2 z-20 grid size-8 place-items-center rounded-md border border-service-border bg-white text-red-600 opacity-0 shadow-service transition-opacity duration-300 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              deleteSection(section.id);
+            }}
+            type="button"
+          >
+            <TrashIcon />
+          </button>
         </div>
       );
     }

@@ -741,10 +741,16 @@ export function getTemplateCopyFieldsForSection(
         target: "110-200 characters.",
       },
       {
-        example: "Ready to get started?",
+        example: "Same-day heat pump repair",
         name: "ctaTitle",
-        purpose: "Short heading above the boxed primary/secondary CTAs.",
+        purpose: "Boxed CTA panel header, framed as a specific service or offer callout (not a generic prompt).",
         target: "16-40 characters.",
+      },
+      {
+        example: "Get a technician out today with clear pricing before any work begins.",
+        name: "ctaBody",
+        purpose: "One short supporting line under the CTA callout header.",
+        target: "60-120 characters.",
       },
       {
         example: "Request service",
