@@ -43,7 +43,12 @@ export function ContentCardTwoUpSectionV3({
 
   return (
     <section className="bg-bg-page">
-      <LayoutGrid className="section-min-none items-start" columns={14} padding="lrg">
+      <LayoutGrid
+        className="section-min-none items-start"
+        columns={14}
+        padding="lrg"
+        style={{ rowGap: "var(--site-grid-gap)" }}
+      >
         {displayItems.map((item, index) => {
           const rowStart = rowStartClasses[Math.floor(index / 2)] ?? "row-start-1";
           const columnStart = index % 2 === 0 ? positions.first : positions.second;

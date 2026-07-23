@@ -1037,22 +1037,38 @@ export function getTemplateCopyFieldsForSection(
       },
       {
         example:
-          "A useful recommendation begins with the equipment, the current problem, and what makes sense for the home before any work is proposed.",
+          "A useful recommendation begins with the equipment, the current problem, and what makes sense for the home before any work is proposed.\n\nThat order keeps the conversation grounded in the system's actual condition instead of a generic sales script.",
+        format:
+          "Write 1-2 natural paragraphs. Put a hard return between paragraphs; each return becomes a separate visible paragraph.",
         name: "body",
         purpose: "Main explanation beside the image.",
-        target: "130-240 characters.",
+        target: "Length follows the argument, not a fixed character count.",
       },
       {
         example: [
-          "Diagnosis before pricing - Repair pricing follows a clear diagnosis and defined scope.",
-          "Repair when practical - The team explains when a dependable repair makes sense.",
-          "Replacement when supported - Longer-term options are discussed when the evidence supports them.",
+          "Diagnosis before pricing",
+          "Repair explained when it's practical",
+          "Replacement discussed when the evidence supports it",
         ],
-        format: "One item per line as Title - Description.",
+        format: "One short bullet per line. Omit this field entirely if the page doesn't need a bullet list here.",
         itemCount: 3,
-        name: "supportingItems",
-        purpose: "Visible supporting points beneath the main split-content copy.",
-        target: "2-4 items. Titles 14-38 characters. Descriptions 70-150 characters.",
+        name: "bullets",
+        purpose:
+          "Optional scannable bullet list under the body copy. Only include it if it adds something the paragraphs don't already say - leave it out rather than padding it.",
+        target: "2-4 bullets, 3-8 words each, if used.",
+      },
+      {
+        example: "Request service",
+        name: "primaryAction",
+        purpose:
+          "Optional primary CTA. Only include this section's primaryAction/secondaryAction if the page needs a conversion path here - many uses of this layout are pure explanation with no CTA.",
+        target: "10-22 characters, if used.",
+      },
+      {
+        example: "View services",
+        name: "secondaryAction",
+        purpose: "Optional secondary CTA, paired with primaryAction.",
+        target: "10-22 characters, if used.",
       },
     ];
   }
@@ -1451,21 +1467,43 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
-  if (component.includes("faqaccordion")) {
+  if (component.includes("faqaccordionsidebar")) {
     return [
       {
-        example: "Common HVAC questions, answered clearly",
+        example: "Still have questions?",
         name: "heading",
-        purpose: "FAQ section header. Required; do not omit it.",
-        target: "24-60 characters.",
+        purpose: "Sidebar panel header, next to the FAQ accordion.",
+        target: "16-40 characters.",
       },
       {
         example:
-          "Get straightforward answers about service area, timing, repair decisions, and what happens next.",
+          "Most homeowners have a few practical questions before scheduling. Reach out directly if the answer isn't here.",
         name: "intro",
-        purpose: "Short supporting copy directly below the FAQ header.",
+        purpose: "Short supporting line under the sidebar panel header.",
         target: "80-160 characters.",
       },
+      {
+        example: "Contact the team",
+        name: "primaryAction",
+        purpose: "The sidebar panel's single CTA.",
+        target: "10-22 characters.",
+      },
+      {
+        example: [
+          "Do you service my area? - We serve the locations listed in the approved service-area source. Contact the team to confirm availability for a specific address.",
+          "Should I repair or replace my system? - The right answer depends on the diagnosis, equipment condition, repair history, and current needs.",
+        ],
+        format: "One item per line as Question - Answer.",
+        itemCount: 4,
+        name: "faqs",
+        purpose: "Expandable FAQ rows beside the sidebar panel.",
+        target: "3-6 FAQs. Questions 35-90 characters. Answers 120-260 characters.",
+      },
+    ];
+  }
+
+  if (component.includes("faqaccordion")) {
+    return [
       {
         example: [
           "Do you service my area? - We serve the locations listed in the approved service-area source. Contact the team to confirm availability for a specific address.",
@@ -1474,7 +1512,7 @@ export function getTemplateCopyFieldsForSection(
         format: "One item per line as Question - Answer.",
         itemCount: 5,
         name: "faqs",
-        purpose: "Expandable FAQ rows.",
+        purpose: "Expandable FAQ rows. This section has no header - do not write a heading or intro for it.",
         target: "4-8 FAQs. Questions 35-90 characters. Answers 120-260 characters.",
       },
     ];

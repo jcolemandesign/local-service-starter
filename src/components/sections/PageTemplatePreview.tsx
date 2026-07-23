@@ -59,6 +59,7 @@ import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/Decision
 import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
 import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
+import { FAQAccordionSidebarSectionV3 } from "@/components/sections/FAQAccordionSidebarSectionV3";
 import { HeroCenteredFloatersSectionV2 } from "@/components/sections/HeroCenteredFloatersSectionV2";
 import {
   HeroCompactSectionV3,
@@ -539,9 +540,10 @@ export function renderPageTemplateSection(
     case "ContentSplitFixedImageSectionV3":
       return (
         <ContentSplitFixedImageSectionV3
-          {...heroSplitProps(fieldSection)}
+          {...contentSplitFixedImageProps(fieldSection)}
           colorRecipe={section.colorRecipe}
           headingLevel={headingLevel}
+          headingSizeStep={getContentSplitFixedImageHeadingSizeStep(section)}
           ratio={getContentSplitFixedImageRatio(section, fieldSection)}
           variant={getContentSplitFixedImageVariant(section)}
         />
@@ -628,6 +630,13 @@ export function renderPageTemplateSection(
       );
     case "FAQAccordionSectionV3":
       return <FAQAccordionSectionV3 {...faqAccordionProps(fieldSection)} />;
+    case "FAQAccordionSidebarSectionV3":
+      return (
+        <FAQAccordionSidebarSectionV3
+          {...faqAccordionSidebarProps(fieldSection)}
+          align={section.variant === "left" ? "left" : "right"}
+        />
+      );
     case "TestimonialsSectionV3":
       return <TestimonialsSectionV3 {...testimonialsProps(fieldSection)} />;
     case "TestimonialsCarouselSectionV3":
@@ -775,6 +784,37 @@ function heroSplitProps(section: FieldSection) {
       sectionLibraryV3Content.heroSplitFullHeight.stats.join("\n"),
     ).slice(0, 3),
     title: getTitle(section, sectionLibraryV3Content.heroSplitFullHeight.title),
+  };
+}
+
+function contentSplitFixedImageProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.contentSplitFixedImage;
+  const body = getBody(section, "").trim();
+  const paragraphs = body
+    ? body.split(/\n\s*\n/).filter(Boolean)
+    : fallback.paragraphs;
+  // Bullets and CTAs are purely additive on top of the required content
+  // below - if batch copy didn't provide them, they stay unset so the
+  // component skips rendering them instead of falling back to demo content.
+  const bullets = getListValues(section, ["bullets"], "");
+  const primaryAction = getValue(section, "primaryAction", "");
+  const secondaryAction = getValue(section, "secondaryAction", "");
+
+  return {
+    ...fallback,
+    bullets: bullets.length > 0 ? bullets : undefined,
+    eyebrow: getValue(section, "eyebrow", fallback.eyebrow),
+    imageAlt: getAssetValue(section, "imageAlt", fallback.imageAlt),
+    imageSrc: getAssetValue(section, "imageSrc", fallback.imageSrc),
+    paragraphs,
+    primaryAction: primaryAction || undefined,
+    secondaryAction: secondaryAction || undefined,
+    stats: getListValues(
+      section,
+      ["supportingItems", "proofPoints", "stats", "items"],
+      fallback.stats.join("\n"),
+    ).slice(0, 3),
+    title: getTitle(section, fallback.title),
   };
 }
 
@@ -1484,14 +1524,19 @@ function faqProps(section: FieldSection) {
 function faqAccordionProps(section: FieldSection) {
   return {
     ...sectionLibraryV3Content.faqAccordion,
-    body: getBody(section, sectionLibraryV3Content.faqAccordion.body),
-    eyebrow: getValue(
-      section,
-      "eyebrow",
-      sectionLibraryV3Content.faqAccordion.eyebrow,
-    ),
     items: faqItems(section),
-    title: getTitle(section, sectionLibraryV3Content.faqAccordion.title),
+  };
+}
+
+function faqAccordionSidebarProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.faqAccordionSidebar;
+
+  return {
+    ...fallback,
+    items: faqItems(section),
+    primaryAction: getValue(section, "primaryAction", fallback.primaryAction),
+    subhead: getBody(section, fallback.subhead),
+    title: getTitle(section, fallback.title),
   };
 }
 
@@ -2355,9 +2400,25 @@ function getServiceNeedsPriorityGridAlign(
 }
 
 function getContentSplitFixedImageVariant(section: PageTemplatePreviewSection) {
-  return heroSplitFixedImageVariants.has(section.variant ?? "")
-    ? (section.variant as ContentSplitFixedImageVariant)
+  const baseVariant = (section.variant ?? "").replace(/-size-(up|down)$/, "");
+
+  return heroSplitFixedImageVariants.has(baseVariant)
+    ? (baseVariant as ContentSplitFixedImageVariant)
     : undefined;
+}
+
+function getContentSplitFixedImageHeadingSizeStep(
+  section: PageTemplatePreviewSection,
+): -1 | 0 | 1 {
+  if (section.variant?.endsWith("-size-up")) {
+    return 1;
+  }
+
+  if (section.variant?.endsWith("-size-down")) {
+    return -1;
+  }
+
+  return 0;
 }
 
 function getContentSplitFixedImageRatio(

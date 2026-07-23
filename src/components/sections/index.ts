@@ -58,6 +58,10 @@ export { PagebuilderSection } from "./PagebuilderSection";
 export { FAQAccordionSection } from "./FAQAccordionSection";
 export { FAQAccordionSectionV2 } from "./FAQAccordionSectionV2";
 export { FAQAccordionSectionV3 } from "./FAQAccordionSectionV3";
+export {
+  FAQAccordionSidebarSectionV3,
+  type FAQAccordionSidebarAlign,
+} from "./FAQAccordionSidebarSectionV3";
 export { FAQSection } from "./FAQSection";
 export { FAQSectionV2 } from "./FAQSectionV2";
 export {

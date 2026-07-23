@@ -4,6 +4,7 @@ import type { CSSProperties, DragEvent, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
   ContentSplitFixedImageSectionV3,
+  type ContentSplitFixedImageHeadingSizeStep,
   type ContentSplitFixedImageRatio,
   type ContentSplitFixedImageVariant,
 } from "@/components/sections/ContentSplitFixedImageSectionV3";
@@ -49,6 +50,10 @@ import {
   ContentCardTwoUpSectionV3,
   type ContentCardTwoUpAlign,
 } from "@/components/sections/ContentCardTwoUpSectionV3";
+import {
+  FAQAccordionSidebarSectionV3,
+  type FAQAccordionSidebarAlign,
+} from "@/components/sections/FAQAccordionSidebarSectionV3";
 import {
   ProjectCaseStudyGallerySectionV3,
   type ProjectCaseStudyGalleryAlign,
@@ -116,6 +121,7 @@ const contentMainIdeaGridComponent = "ContentMainIdeaGridSectionV3";
 const contentNarrativeFeatureRailComponent =
   "ContentNarrativeFeatureRailSectionV3";
 const contentCardTwoUpComponent = "ContentCardTwoUpSectionV3";
+const faqAccordionSidebarComponent = "FAQAccordionSidebarSectionV3";
 const projectCaseStudyGalleryComponent = "ProjectCaseStudyGallerySectionV3";
 const contentStickyCardStreamComponent = "ContentStickyCardStreamSectionV2";
 const ctaSectionComponent = "CTASectionV3";
@@ -461,6 +467,26 @@ function isAnyFixedRatioSplitSection(section: WorkingSection) {
   );
 }
 
+function getContentSplitFixedImageVariant(section: WorkingSection) {
+  return section.variant?.replace(/-size-(up|down)$/, "") as
+    | ContentSplitFixedImageVariant
+    | undefined;
+}
+
+function getContentSplitFixedImageHeadingSizeStep(
+  section: WorkingSection,
+): ContentSplitFixedImageHeadingSizeStep {
+  if (section.variant?.endsWith("-size-up")) {
+    return 1;
+  }
+
+  if (section.variant?.endsWith("-size-down")) {
+    return -1;
+  }
+
+  return 0;
+}
+
 function isHeroCompactSection(section: PagebuilderRecipe["sectionStack"][number]) {
   return section.component === heroCompactComponent;
 }
@@ -553,6 +579,12 @@ function getContentCardTwoUpAlign(
   return section.variant === "center" || section.variant === "right"
     ? section.variant
     : "left";
+}
+
+function getFAQAccordionSidebarAlign(
+  section: WorkingSection,
+): FAQAccordionSidebarAlign {
+  return section.variant === "left" ? "left" : "right";
 }
 
 function getProjectCaseStudyGalleryAlign(
@@ -1366,6 +1398,13 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
       "Handle objections with expandable answers and no vague copy.",
     mode: "Utility",
     name: "FAQ accordion",
+  },
+  {
+    component: "FAQAccordionSidebarSectionV3",
+    instruction:
+      "Handle objections with expandable answers beside a sidebar panel (header, subhead, one CTA) on the shared seven-column grid. Use when the FAQ section should also carry a direct contact path.",
+    mode: "Utility",
+    name: "FAQ accordion sidebar",
   },
   {
     component: "ProcessImageChecklistSectionV3",
@@ -2313,6 +2352,20 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateFAQAccordionSidebarAlign(
+    sectionId: string,
+    align: FAQAccordionSidebarAlign,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && section.component === faqAccordionSidebarComponent
+          ? { ...section, variant: align }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateProjectCaseStudyGalleryAlign(
     sectionId: string,
     align: ProjectCaseStudyGalleryAlign,
@@ -2458,14 +2511,42 @@ export function PagebuilderShell({
     variant: FixedRatioSplitVariant,
   ) {
     updateActiveStack((stack) =>
-      stack.map((section) =>
-        section.id === sectionId && isAnyFixedRatioSplitSection(section)
-          ? {
-              ...section,
-              variant,
-            }
-          : section,
-      ),
+      stack.map((section) => {
+        if (section.id !== sectionId || !isAnyFixedRatioSplitSection(section)) {
+          return section;
+        }
+
+        // Preserve ContentSplitFixedImageSectionV3's heading-size suffix (if
+        // any) across a layout change instead of silently resetting it.
+        const sizeSuffix = section.variant?.match(/-size-(up|down)$/)?.[0] ?? "";
+
+        return { ...section, variant: `${variant}${sizeSuffix}` };
+      }),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
+  function updateContentSplitFixedImageHeadingSizeStep(
+    sectionId: string,
+    step: ContentSplitFixedImageHeadingSizeStep,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) => {
+        if (
+          section.id !== sectionId ||
+          section.component !== contentFixedRatioSplitComponent
+        ) {
+          return section;
+        }
+
+        const baseVariant =
+          getContentSplitFixedImageVariant(section) ??
+          fixedRatioSplitVariantOptions[0].value;
+        const suffix =
+          step === 1 ? "-size-up" : step === -1 ? "-size-down" : "";
+
+        return { ...section, variant: `${baseVariant}${suffix}` };
+      }),
     );
     setSelectedSectionId(sectionId);
   }
@@ -2872,16 +2953,17 @@ export function PagebuilderShell({
           />
         ) : isContentFixedRatioSplitSection(section) ? (
           <ContentSplitFixedImageSectionV3
-            {...sectionLibraryV3Content.heroSplitFullHeight}
+            {...sectionLibraryV3Content.contentSplitFixedImage}
             colorRecipe={getSectionColorRecipe(section)}
             headingLevel={headingLevel}
+            headingSizeStep={getContentSplitFixedImageHeadingSizeStep(section)}
             ratio={
               (section.ratio ??
                 fixedRatioSplitRatioOptions[0]
                   .value) as ContentSplitFixedImageRatio
             }
             variant={
-              (section.variant ??
+              (getContentSplitFixedImageVariant(section) ??
                 fixedRatioSplitVariantOptions[0]
                   .value) as ContentSplitFixedImageVariant
             }
@@ -2940,6 +3022,11 @@ export function PagebuilderShell({
             {...sectionLibraryV3Content.contentCardTwoUp}
             align={getContentCardTwoUpAlign(section)}
             cardFill={getSectionCardFill(section)}
+          />
+        ) : section.component === faqAccordionSidebarComponent ? (
+          <FAQAccordionSidebarSectionV3
+            {...sectionLibraryV3Content.faqAccordionSidebar}
+            align={getFAQAccordionSidebarAlign(section)}
           />
         ) : section.component === ctaSectionComponent ? (
           <CTASectionV3
@@ -4112,6 +4199,47 @@ export function PagebuilderShell({
                             </fieldset>
                           ) : null}
 
+                          {section.component === faqAccordionSidebarComponent ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Sidebar position
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {mainIdeaGridAlignOptions.map((option) => {
+                                  const optionIsActive =
+                                    getFAQAccordionSidebarAlign(section) ===
+                                    option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateFAQAccordionSidebarAlign(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Right places the sidebar panel beside the
+                                accordion on the right; Left swaps the sides.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
                           {section.component === projectCaseStudyGalleryComponent ? (
                             <fieldset className="grid gap-2">
                               <legend className="type-caption font-semibold text-current">
@@ -4296,7 +4424,10 @@ export function PagebuilderShell({
                                 <div className="grid gap-2">
                                   {fixedRatioSplitVariantOptions.map((option) => {
                                     const optionIsActive =
-                                      (section.variant ??
+                                      ((section.variant?.replace(
+                                        /-size-(up|down)$/,
+                                        "",
+                                      ) as FixedRatioSplitVariant | undefined) ??
                                         fixedRatioSplitVariantOptions[0]
                                           .value) === option.value;
 
@@ -4324,6 +4455,55 @@ export function PagebuilderShell({
                                   })}
                                 </div>
                               </fieldset>
+
+                              {isContentFixedRatioSplitSection(section) ? (
+                                <fieldset className="grid gap-2">
+                                  <legend className="type-caption font-semibold text-current">
+                                    Heading Size
+                                  </legend>
+                                  <div className="grid grid-cols-3 gap-2">
+                                    {(
+                                      [
+                                        { label: "Smaller", value: -1 },
+                                        { label: "Default", value: 0 },
+                                        { label: "Larger", value: 1 },
+                                      ] as const
+                                    ).map((option) => {
+                                      const optionIsActive =
+                                        getContentSplitFixedImageHeadingSizeStep(
+                                          section,
+                                        ) === option.value;
+
+                                      return (
+                                        <button
+                                          aria-pressed={optionIsActive}
+                                          className={cx(
+                                            "min-h-10 rounded-[var(--chrome-radius-control)] border px-2 text-center text-xs font-semibold transition-colors",
+                                            optionIsActive
+                                              ? "token-chrome-card-active"
+                                              : "token-chrome-card",
+                                          )}
+                                          key={option.value}
+                                          onClick={() =>
+                                            updateContentSplitFixedImageHeadingSizeStep(
+                                              section.id,
+                                              option.value,
+                                            )
+                                          }
+                                          type="button"
+                                        >
+                                          {option.label}
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
+                                  <p className="type-caption text-current/60">
+                                    Default picks a heading size that fits the
+                                    text column&apos;s width; Smaller/Larger
+                                    move one step from that.
+                                  </p>
+                                </fieldset>
+                              ) : null}
 
                               <fieldset className="grid gap-2">
                                 <legend className="type-caption font-semibold text-current">

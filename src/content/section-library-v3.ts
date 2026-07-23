@@ -1120,9 +1120,6 @@ export const sectionLibraryV3Content = {
     ],
   },
   faqAccordion: {
-    eyebrow: "FAQ",
-    title: "Clear answers before customers reach out.",
-    body: "A full-width accordion pattern for service pages that need organized answers without overwhelming the layout.",
     items: [
       {
         question: "Do you provide estimates before work begins?",
@@ -1148,6 +1145,36 @@ export const sectionLibraryV3Content = {
         question: "Are your technicians licensed and insured?",
         answer:
           "Yes. Use this answer to reinforce credentials, insurance coverage, background checks, training, or any local certifications that help customers feel confident before inviting the team into their home or business.",
+      },
+    ],
+  },
+  faqAccordionSidebar: {
+    align: "right" as const,
+    title: "Still have questions?",
+    subhead:
+      "Most homeowners have a few practical questions before scheduling. Reach out directly if the answer isn't here.",
+    primaryAction: "Contact the team",
+    primaryActionHref: "/contact",
+    items: [
+      {
+        question: "Do you provide estimates before work begins?",
+        answer:
+          "Yes. Customers receive a clear scope, pricing guidance, and an approval point before paid work starts.",
+      },
+      {
+        question: "What areas do you serve?",
+        answer:
+          "This placeholder can be adapted for city, county, or neighborhood coverage tied to the approved service area.",
+      },
+      {
+        question: "Can customers book recurring maintenance?",
+        answer:
+          "Yes. This pattern supports one-time visits and recurring service plans, with room for seasonal tune-up scheduling.",
+      },
+      {
+        question: "How quickly can someone schedule service?",
+        answer:
+          "Availability depends on the service type and current schedule; use this answer for typical response windows.",
       },
     ],
   },
@@ -1332,6 +1359,25 @@ export const sectionLibraryV3Content = {
         variant: "image-4-left-text-3",
       },
     ],
+  },
+  contentSplitFixedImage: {
+    eyebrow: "Guidance before the work",
+    title: "Recommendations based on the system itself.",
+    paragraphs: [
+      "A useful recommendation begins with the equipment, the current problem, and what makes sense for the home before any work is proposed.",
+      "That order keeps the conversation grounded in the system's actual condition instead of a generic sales script.",
+    ],
+    bullets: [
+      "Diagnosis before pricing",
+      "Repair explained when it's practical",
+      "Replacement discussed when the evidence supports it",
+    ],
+    imageAlt: "Technician reviewing equipment with a homeowner",
+    imageSrc: "/images/fpo-image.svg",
+    primaryAction: "Request service",
+    secondaryAction: "View services",
+    secondaryActionHref: "#services",
+    stats: [],
   },
   featurePortraitParagraph: {
     imageLabel: "Portrait feature",
@@ -1619,6 +1665,10 @@ export const sectionLibraryV3Collections = [
     items: [
       { label: "FAQ", component: "faq-v3" },
       { label: "FAQ accordion", component: "faq-accordion-v3" },
+      {
+        label: "FAQ accordion sidebar",
+        component: "faq-accordion-sidebar-v3",
+      },
       {
         label: "Thank you confirmation",
         component: "thank-you-confirmation-v3",

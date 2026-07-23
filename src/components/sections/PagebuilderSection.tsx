@@ -50,6 +50,7 @@ import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/Decision
 import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
 import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
+import { FAQAccordionSidebarSectionV3 } from "@/components/sections/FAQAccordionSidebarSectionV3";
 import { HeroCenteredFloatersSectionV2 } from "@/components/sections/HeroCenteredFloatersSectionV2";
 import {
   HeroCompactSectionV3,
@@ -161,9 +162,25 @@ function getHeroSplitFixedImageRatio(section: PagebuilderRecipeSection) {
 }
 
 function getContentSplitFixedImageVariant(section: PagebuilderRecipeSection) {
-  return heroSplitFixedImageVariants.has(section.variant ?? "")
-    ? (section.variant as ContentSplitFixedImageVariant)
+  const baseVariant = (section.variant ?? "").replace(/-size-(up|down)$/, "");
+
+  return heroSplitFixedImageVariants.has(baseVariant)
+    ? (baseVariant as ContentSplitFixedImageVariant)
     : undefined;
+}
+
+function getContentSplitFixedImageHeadingSizeStep(
+  section: PagebuilderRecipeSection,
+): -1 | 0 | 1 {
+  if (section.variant?.endsWith("-size-up")) {
+    return 1;
+  }
+
+  if (section.variant?.endsWith("-size-down")) {
+    return -1;
+  }
+
+  return 0;
 }
 
 function getContentSplitFixedImageRatio(section: PagebuilderRecipeSection) {
@@ -456,8 +473,9 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
     case "ContentSplitFixedImageSectionV3":
       return (
         <ContentSplitFixedImageSectionV3
-          {...sectionLibraryV3Content.heroSplitFullHeight}
+          {...sectionLibraryV3Content.contentSplitFixedImage}
           headingLevel={headingLevel}
+          headingSizeStep={getContentSplitFixedImageHeadingSizeStep(section)}
           ratio={getContentSplitFixedImageRatio(section)}
           variant={getContentSplitFixedImageVariant(section)}
         />
@@ -567,6 +585,13 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return <FAQSectionV3 {...sectionLibraryV3Content.faq} />;
     case "FAQAccordionSectionV3":
       return <FAQAccordionSectionV3 {...sectionLibraryV3Content.faqAccordion} />;
+    case "FAQAccordionSidebarSectionV3":
+      return (
+        <FAQAccordionSidebarSectionV3
+          {...sectionLibraryV3Content.faqAccordionSidebar}
+          align={section.variant === "left" ? "left" : "right"}
+        />
+      );
     case "TestimonialsSectionV3":
       return <TestimonialsSectionV3 {...sectionLibraryV3Content.testimonials} />;
     case "TestimonialsCarouselSectionV3":
@@ -1169,6 +1194,12 @@ export function PagebuilderSection() {
           6,
         )}
       </div>
+    ),
+    FAQAccordionSidebarSectionV3: previewCatalogEntry(
+      "FAQAccordionSidebarSectionV3",
+      "Utility",
+      "FAQ accordion sidebar",
+      6,
     ),
     TestimonialsSectionV3: previewCatalogEntry(
       "TestimonialsSectionV3",

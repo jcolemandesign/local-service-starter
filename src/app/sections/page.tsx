@@ -28,6 +28,7 @@ import {
   DecisionSplitDecisionLargeSectionV3,
   DecisionSplitLargeCardsSectionV3,
   FAQAccordionSectionV3,
+  FAQAccordionSidebarSectionV3,
   FAQSectionV3,
   FeatureAsymmetricCardsSectionV3,
   FeatureStackedCardsSectionV3,
@@ -209,7 +210,7 @@ const sectionElements = {
   ),
   "content-split-fixed-image-v3": (
     <ContentSplitFixedImageSectionLibraryDemo
-      {...sectionLibraryV3Content.heroSplitFullHeight}
+      {...sectionLibraryV3Content.contentSplitFixedImage}
       headingLevel={2}
     />
   ),
@@ -343,6 +344,11 @@ const sectionElements = {
   "faq-v3": <FAQSectionV3 {...sectionLibraryV3Content.faq} />,
   "faq-accordion-v3": (
     <FAQAccordionSectionV3 {...sectionLibraryV3Content.faqAccordion} />
+  ),
+  "faq-accordion-sidebar-v3": (
+    <FAQAccordionSidebarSectionV3
+      {...sectionLibraryV3Content.faqAccordionSidebar}
+    />
   ),
   "cta-v3": <CTASectionV3 {...sectionLibraryV3Content.cta} />,
   "cta-muted-v3": <CTAMutedSectionV3 {...sectionLibraryV3Content.cta} />,

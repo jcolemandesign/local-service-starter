@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { SevenColumnGrid, SevenColumnGridItem } from "@/components/primitives";
+import { Button, SevenColumnGrid, SevenColumnGridItem } from "@/components/primitives";
+import { RequestServiceButton } from "@/components/request-service";
 import type { SectionColorRecipe } from "@/content/section-color-recipes";
 
 export type ContentSplitFixedImageVariant =
@@ -16,16 +17,21 @@ export type ContentSplitFixedImageRatio =
   | "5-4"
   | "4-5";
 
+export type ContentSplitFixedImageHeadingSizeStep = -1 | 0 | 1;
+
 type ContentSplitFixedImageSectionV3Props = {
-  body: string;
+  bullets?: readonly string[];
   colorRecipe?: SectionColorRecipe;
   eyebrow: string;
   headingLevel?: 1 | 2;
+  headingSizeStep?: ContentSplitFixedImageHeadingSizeStep;
   imageAlt: string;
   imageSrc: string;
+  paragraphs: readonly string[];
   primaryAction?: string;
   ratio?: ContentSplitFixedImageRatio;
   secondaryAction?: string;
+  secondaryActionHref?: string;
   stats?: readonly string[];
   title: string;
   variant?: ContentSplitFixedImageVariant;
@@ -75,7 +81,52 @@ const ratioClassNames: Record<ContentSplitFixedImageRatio, string> = {
   "4-5": "aspect-[4/5]",
 };
 
-function cx(...classes: Array<string | undefined>) {
+// Ordered small -> large. The default heading size is picked from this scale
+// based on how wide the text column is for the active variant; the
+// headingSizeStep prop then nudges that default up or down by one step.
+const headingSizeScale = [
+  "type-heading-sm",
+  "type-heading-md",
+  "type-heading-lg",
+  "type-heading-xl",
+  "type-display-lg",
+  "type-display-xl",
+] as const;
+
+function getDefaultHeadingSizeIndex(variant: ContentSplitFixedImageVariant) {
+  const hasFourColumnText =
+    variant === "text-4-image-3-right" || variant === "image-4-left-text-3";
+
+  return hasFourColumnText ? 3 : 2;
+}
+
+const colorRecipeClassName: Record<
+  SectionColorRecipe,
+  { action: string; eyebrow: string; secondaryAction: string }
+> = {
+  default: { action: "", eyebrow: "text-service-accent", secondaryAction: "" },
+  muted: { action: "", eyebrow: "text-service-accent", secondaryAction: "" },
+  dark: {
+    action: "!border-white !bg-white !text-bg-dark hover:!bg-service-surface",
+    eyebrow: "text-white",
+    // Ghost/outline treatment: the default secondary style is a light pill
+    // (bg-bg-page), which would clash with a dark section - drop the fill so
+    // it reads as a lighter-weight, secondary action against the dark bg.
+    secondaryAction:
+      "!border-white/40 !bg-transparent !text-white hover:!border-white hover:!bg-white/10 hover:!text-white",
+  },
+  accent: {
+    // RequestServiceButton's own default fill is bg-service-accent - identical
+    // to this recipe's section background - so without this override the
+    // primary CTA is invisible against it.
+    action: "!border-white !bg-white !text-bg-dark hover:!bg-white/85",
+    eyebrow: "text-[var(--live-accent-ink)]",
+    secondaryAction:
+      "!border-[color-mix(in_oklab,var(--live-accent-ink)_40%,transparent)] !bg-transparent !text-[var(--live-accent-ink)] hover:!border-[color:var(--live-accent-ink)] hover:!bg-white/10 hover:!text-[var(--live-accent-ink)]",
+  },
+};
+
+function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
@@ -107,13 +158,18 @@ function FixedRatioImage({
 }
 
 export function ContentSplitFixedImageSectionV3({
-  body,
+  bullets,
   colorRecipe = "default",
   eyebrow,
   headingLevel = 2,
+  headingSizeStep = 0,
   imageAlt,
   imageSrc,
+  paragraphs,
+  primaryAction,
   ratio = "3-2",
+  secondaryAction,
+  secondaryActionHref = "#services",
   stats = [],
   title,
   variant = "text-3-image-4-right",
@@ -121,14 +177,14 @@ export function ContentSplitFixedImageSectionV3({
   const config =
     variantConfig[variant] ?? variantConfig["text-3-image-4-right"];
   const HeadingTag = `h${headingLevel}` as const;
-  // Section background and ink/muted text below use the generic
-  // bg-page/service-ink tokens, which the pagebuilder-section-frame wrapper
-  // already re-tints correctly for dark/accent recipes. text-service-accent
-  // is the one token that stays a constant brand color regardless of recipe,
-  // so it needs an explicit swap here or the eyebrow becomes invisible
-  // against an accent-colored background.
-  const eyebrowClass =
-    colorRecipe === "accent" ? "text-[var(--live-accent-ink)]" : "text-service-accent";
+  const colors = colorRecipeClassName[colorRecipe];
+  const headingSizeIndex = Math.min(
+    headingSizeScale.length - 1,
+    Math.max(0, getDefaultHeadingSizeIndex(variant) + headingSizeStep),
+  );
+  const headingSizeClassName = headingSizeScale[headingSizeIndex];
+  const hasBullets = Boolean(bullets && bullets.length > 0);
+  const hasCta = Boolean(primaryAction || secondaryAction);
 
   return (
     <section className="bg-bg-page">
@@ -139,13 +195,47 @@ export function ContentSplitFixedImageSectionV3({
           className={cx("content-padding text-service-ink", config.textClassName)}
         >
           <div className="fluid-type-frame w-full">
-            <p className={cx("type-label", eyebrowClass)}>{eyebrow}</p>
-            <HeadingTag className="type-heading-lg mt-eyebrow-display text-service-ink">
+            <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
+            <HeadingTag
+              className={cx(
+                headingSizeClassName,
+                "wrap-pretty mt-eyebrow-display text-service-ink",
+              )}
+            >
               {title}
             </HeadingTag>
-            <p className="type-text-lg wrap-pretty mt-display-body text-service-muted">
-              {body}
-            </p>
+
+            <div className="mt-display-body grid gap-4">
+              {paragraphs.map((paragraph, index) => (
+                <p
+                  className={cx(
+                    index === 0 ? "type-text-lg" : "type-text-md",
+                    "wrap-pretty text-service-muted",
+                  )}
+                  key={paragraph}
+                >
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+
+            {hasBullets ? (
+              <ul className="mt-heading-body-md grid gap-3">
+                {bullets?.map((bullet) => (
+                  <li
+                    className="type-text-sm flex items-start gap-3 text-service-ink"
+                    key={bullet}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="mt-[0.65em] size-1.5 shrink-0 rounded-full bg-service-accent"
+                    />
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+
             {stats.length > 0 ? (
               <ul className="mt-body-actions-md grid inline-gap-sml">
                 {stats.map((item) => (
@@ -157,6 +247,25 @@ export function ContentSplitFixedImageSectionV3({
                   </li>
                 ))}
               </ul>
+            ) : null}
+
+            {hasCta ? (
+              <div className="mt-body-actions-md flex flex-wrap inline-gap-med">
+                {primaryAction ? (
+                  <RequestServiceButton className={colors.action}>
+                    {primaryAction}
+                  </RequestServiceButton>
+                ) : null}
+                {secondaryAction ? (
+                  <Button
+                    className={colors.secondaryAction}
+                    href={secondaryActionHref}
+                    variant="secondary"
+                  >
+                    {secondaryAction}
+                  </Button>
+                ) : null}
+              </div>
             ) : null}
           </div>
         </SevenColumnGridItem>

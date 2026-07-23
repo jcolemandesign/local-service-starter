@@ -647,15 +647,33 @@ function getTemplateAssetFieldsForSection(
     );
   }
 
+  if (component.includes("contentsplitfixedimage")) {
+    return [
+      {
+        kind: "meta",
+        name: "imageRatio",
+        value: "",
+      },
+      {
+        kind: "meta",
+        name: "imageAlt",
+        value: sectionLibraryV3Content.contentSplitFixedImage.imageAlt,
+      },
+      {
+        kind: "image",
+        name: "imageSrc",
+        value: sectionLibraryV3Content.contentSplitFixedImage.imageSrc,
+      },
+    ];
+  }
+
   if (
     component.includes("herosplitfullheight") ||
     component.includes("herosplitfixedimage") ||
-    component.includes("herocontenttopimagebottom") ||
-    component.includes("contentsplitfixedimage")
+    component.includes("herocontenttopimagebottom")
   ) {
     return [
-      ...(component.includes("herosplitfixedimage") ||
-      component.includes("contentsplitfixedimage")
+      ...(component.includes("herosplitfixedimage")
         ? [
             {
               kind: "meta" as const,
