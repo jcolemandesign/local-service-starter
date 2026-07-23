@@ -11,6 +11,7 @@ import {
   type WorkspaceNavItem,
 } from "@/components/sections/WorkspaceNav";
 import type { PageTemplateSummary } from "@/components/sections/TemplateLibrarySection";
+import { StagedPageCanvas } from "@/components/sections/StagedPageCanvas";
 import {
   buildStrategyNavigation,
   deriveStrategyPagesFromFields,
@@ -25,8 +26,10 @@ import {
   getTemplateCopyContractStatus,
   type TemplateCopyContractStatus,
   type TemplateCopyContractTemplate,
+  type TemplateCopySectionStatus,
 } from "@/utils/template-copy-contract";
 import { resolveContractTemplate } from "@/utils/resolve-contract-template";
+import type { StagedPage } from "@/utils/staged-pages";
 import {
   buildCopywritingAgentInstructions,
   copywritingLeverDefinitions,
@@ -93,6 +96,14 @@ type StagePageResponse =
           pageType?: string;
         };
       };
+    }
+  | { ok: false; error?: string };
+
+type StagePagePreviewResponse =
+  | {
+      ok: true;
+      page: StagedPage;
+      sectionStatuses: TemplateCopySectionStatus[];
     }
   | { ok: false; error?: string };
 
@@ -236,6 +247,14 @@ export function StrategyWorkspaceSection({
     useState("");
   const [stagingTemplateId, setStagingTemplateId] = useState("");
   const [templatePickerError, setTemplatePickerError] = useState("");
+  const [templatePreview, setTemplatePreview] = useState<{
+    page: StagedPage;
+    sectionStatuses: TemplateCopySectionStatus[];
+  } | null>(null);
+  const [previewingTemplateId, setPreviewingTemplateId] = useState("");
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false);
+  const [templatePreviewError, setTemplatePreviewError] = useState("");
+  const previewRequestTokenRef = useRef(0);
   const [updatedAt, setUpdatedAt] = useState(initialWorkspace.updatedAt);
 
   const filledCount = useMemo(
@@ -588,12 +607,18 @@ export function StrategyWorkspaceSection({
     setTemplatePickerPageId(pageId);
     setTemplatePickerChildPageId(initialChildPageId);
     setTemplatePickerError("");
+    setTemplatePreview(null);
+    setPreviewingTemplateId("");
+    setTemplatePreviewError("");
   }
 
   function closeTemplatePicker() {
     setTemplatePickerPageId("");
     setTemplatePickerChildPageId("");
     setTemplatePickerError("");
+    setTemplatePreview(null);
+    setPreviewingTemplateId("");
+    setTemplatePreviewError("");
   }
 
   async function copyPageTemplateContract(page: (typeof assemblyPages)[number]) {
@@ -646,6 +671,63 @@ export function StrategyWorkspaceSection({
     }, 1600);
   }
 
+  async function previewTemplateForPage(template: PageTemplateSummary) {
+    if (!templatePickerTarget) {
+      return;
+    }
+
+    const requestToken = ++previewRequestTokenRef.current;
+
+    setPreviewingTemplateId(template.id);
+    setIsPreviewLoading(true);
+    setTemplatePreviewError("");
+
+    try {
+      const response = await fetch("/api/staged-pages", {
+        body: JSON.stringify({
+          action: "preview",
+          clientSlug,
+          pageLabel: templatePickerTarget.label,
+          pageSlug: templatePickerTarget.id,
+          templateId: template.id,
+        }),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      });
+      const result = (await response.json()) as StagePagePreviewResponse;
+
+      if (requestToken !== previewRequestTokenRef.current) {
+        return;
+      }
+
+      if (!response.ok || !result.ok) {
+        setTemplatePreview(null);
+        setTemplatePreviewError(
+          result.ok
+            ? "Template preview failed."
+            : result.error ?? "Template preview failed.",
+        );
+        return;
+      }
+
+      setTemplatePreview({
+        page: result.page,
+        sectionStatuses: result.sectionStatuses,
+      });
+    } catch {
+      if (requestToken !== previewRequestTokenRef.current) {
+        return;
+      }
+
+      setTemplatePreview(null);
+      setTemplatePreviewError("Template preview failed.");
+    } finally {
+      if (requestToken === previewRequestTokenRef.current) {
+        setIsPreviewLoading(false);
+      }
+    }
+  }
+
   async function stageTemplateForPage(template: PageTemplateSummary) {
     if (!templatePickerTarget) {
       return;
@@ -657,6 +739,7 @@ export function StrategyWorkspaceSection({
     try {
       const response = await fetch("/api/staged-pages", {
         body: JSON.stringify({
+          action: "stage",
           clientSlug,
           pageLabel: templatePickerTarget.label,
           pageSlug: templatePickerTarget.id,
@@ -1410,7 +1493,7 @@ export function StrategyWorkspaceSection({
           className="strategy-template-backdrop fixed inset-0 z-50 grid place-items-center p-4"
           role="dialog"
         >
-          <div className="token-chrome-panel-strong max-h-[min(90vh,52rem)] w-full max-w-5xl overflow-y-auto rounded-[var(--chrome-radius-panel)] border">
+          <div className="token-chrome-panel-strong max-h-[min(90vh,52rem)] w-full max-w-7xl overflow-y-auto rounded-[var(--chrome-radius-panel)] border">
             <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-service-border bg-bg-surface p-5">
               <div className="min-w-0">
                 <p className="type-label text-service-accent">
@@ -1450,82 +1533,161 @@ export function StrategyWorkspaceSection({
               ) : null}
 
               {matchingTemplates.length > 0 ? (
-                <div className="grid grid-cols-2 gap-4 max-lg:grid-cols-1">
-                  {matchingTemplates.map((template) => {
-                    const isStaging = stagingTemplateId === template.id;
+                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-4 max-lg:grid-cols-1">
+                  <div className="grid content-start gap-4">
+                    {matchingTemplates.map((template) => {
+                      const isSelected = previewingTemplateId === template.id;
+                      const isLoadingThis = isSelected && isPreviewLoading;
 
-                    return (
-                      <article
-                        className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-4"
-                        key={template.id}
-                      >
-                        <div className="flex flex-wrap items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <h3 className="type-heading-sm text-service-ink">
-                              {template.name}
-                            </h3>
-                            <p className="type-caption mt-2 text-service-muted">
-                              {template.sectionCount} sections from{" "}
-                              {template.sourceRecipeName}
+                      return (
+                        <article
+                          className={cx(
+                            "cursor-pointer rounded-[var(--radius-md-token)] border p-4 transition-colors",
+                            isSelected
+                              ? "border-service-accent bg-service-surface"
+                              : "border-service-border bg-service-surface hover:border-service-accent/60",
+                          )}
+                          key={template.id}
+                          onClick={() => void previewTemplateForPage(template)}
+                        >
+                          <div className="flex flex-wrap items-start justify-between gap-3">
+                            <div className="min-w-0">
+                              <h3 className="type-heading-sm text-service-ink">
+                                {template.name}
+                              </h3>
+                              <p className="type-caption mt-2 text-service-muted">
+                                {template.sectionCount} sections from{" "}
+                                {template.sourceRecipeName}
+                              </p>
+                            </div>
+                            <span className="type-caption rounded-sm border border-service-border bg-bg-surface px-3 py-1 text-service-muted">
+                              {template.pageType}
+                            </span>
+                          </div>
+
+                          {template.notes ? (
+                            <p className="type-text-sm mt-3 text-service-muted">
+                              {template.notes}
                             </p>
-                          </div>
-                          <span className="type-caption rounded-sm border border-service-border bg-bg-surface px-3 py-1 text-service-muted">
-                            {template.pageType}
-                          </span>
-                        </div>
+                          ) : null}
 
-                        {template.notes ? (
-                          <p className="type-text-sm mt-3 text-service-muted">
-                            {template.notes}
-                          </p>
-                        ) : null}
-
-                        <details className="mt-4 rounded-sm border border-service-border bg-bg-surface">
-                          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 marker:hidden">
-                            <span className="type-caption font-semibold text-service-ink">
-                              Sections
-                            </span>
-                            <span className="type-caption text-service-muted">
-                              {template.sections.length}
-                            </span>
-                          </summary>
-                          <div className="grid gap-2 border-t border-service-border p-3">
-                            {template.sections.map((section, index) => (
-                              <div
-                                className="grid grid-cols-[6rem_minmax(0,1fr)] gap-3 rounded-sm border border-service-border bg-service-surface px-3 py-2 max-md:grid-cols-1"
-                                key={`${template.id}-${section.component}-${index}`}
-                              >
-                                <span className="type-caption font-semibold text-service-accent">
-                                  {index + 1}. {section.mode}
-                                </span>
-                                <span className="type-caption text-service-muted">
-                                  {section.name}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </details>
-
-                        <div className="mt-4 grid grid-cols-2 gap-2 max-sm:grid-cols-1">
-                          <Link
-                            className={secondaryButtonClass}
-                            href={`/dev/templates/${template.id}`}
-                            target="_blank"
+                          <details
+                            className="mt-4 rounded-sm border border-service-border bg-bg-surface"
+                            onClick={(event) => event.stopPropagation()}
                           >
-                            Preview
-                          </Link>
+                            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 marker:hidden">
+                              <span className="type-caption font-semibold text-service-ink">
+                                Sections
+                              </span>
+                              <span className="type-caption text-service-muted">
+                                {template.sections.length}
+                              </span>
+                            </summary>
+                            <div className="grid gap-2 border-t border-service-border p-3">
+                              {template.sections.map((section, index) => (
+                                <div
+                                  className="grid grid-cols-[6rem_minmax(0,1fr)] gap-3 rounded-sm border border-service-border bg-service-surface px-3 py-2 max-md:grid-cols-1"
+                                  key={`${template.id}-${section.component}-${index}`}
+                                >
+                                  <span className="type-caption font-semibold text-service-accent">
+                                    {index + 1}. {section.mode}
+                                  </span>
+                                  <span className="type-caption text-service-muted">
+                                    {section.name}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </details>
+
+                          <div className="mt-4 flex items-center justify-between gap-2">
+                            <Link
+                              className={secondaryButtonClass}
+                              href={`/dev/templates/${template.id}`}
+                              onClick={(event) => event.stopPropagation()}
+                              target="_blank"
+                            >
+                              Preview raw template
+                            </Link>
+                            {isLoadingThis ? (
+                              <span className="type-caption text-service-muted">
+                                Loading preview…
+                              </span>
+                            ) : isSelected ? (
+                              <span className="type-caption font-semibold text-service-accent">
+                                Selected
+                              </span>
+                            ) : null}
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+
+                  <div className="grid content-start gap-3">
+                    {templatePreviewError ? (
+                      <p className="type-caption rounded-sm border border-red-200 bg-red-50 px-3 py-2 font-semibold text-red-700">
+                        {templatePreviewError}
+                      </p>
+                    ) : null}
+
+                    {templatePreview ? (
+                      <>
+                        <div className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-md-token)] border border-service-border bg-service-surface px-4 py-3">
+                          <div className="flex flex-wrap gap-2">
+                            {templatePreview.sectionStatuses.map(
+                              (sectionStatus) => (
+                                <span
+                                  className={cx(
+                                    "type-caption rounded-sm border px-2 py-1",
+                                    sectionStatus.status === "current"
+                                      ? "border-green-200 bg-green-50 text-green-700"
+                                      : "border-amber-200 bg-amber-50 text-amber-700",
+                                  )}
+                                  key={sectionStatus.sectionId}
+                                  title={sectionStatus.reasons.join(" ")}
+                                >
+                                  {sectionStatus.ordinal} {sectionStatus.status}
+                                </span>
+                              ),
+                            )}
+                          </div>
                           <button
                             className={primaryButtonClass}
                             disabled={Boolean(stagingTemplateId)}
-                            onClick={() => void stageTemplateForPage(template)}
+                            onClick={() => {
+                              const selectedTemplate = matchingTemplates.find(
+                                (candidate) =>
+                                  candidate.id === previewingTemplateId,
+                              );
+
+                              if (selectedTemplate) {
+                                void stageTemplateForPage(selectedTemplate);
+                              }
+                            }}
                             type="button"
                           >
-                            {isStaging ? "Applying" : "Use template"}
+                            {stagingTemplateId ? "Staging" : "Stage this page"}
                           </button>
                         </div>
-                      </article>
-                    );
-                  })}
+                        <div className="max-h-[60vh] overflow-y-auto rounded-[var(--radius-md-token)] border border-service-border">
+                          <StagedPageCanvas
+                            allPages={[templatePreview.page]}
+                            chrome={false}
+                            page={templatePreview.page}
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <div className="grid min-h-[16rem] place-items-center rounded-[var(--radius-md-token)] border border-dashed border-service-border bg-service-surface p-6 text-center">
+                        <p className="type-text-sm text-service-muted">
+                          {isPreviewLoading
+                            ? "Loading preview…"
+                            : "Select a template to preview batch copy applied to this page."}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="rounded-[var(--radius-md-token)] border border-service-border bg-service-surface p-5">

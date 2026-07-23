@@ -513,6 +513,56 @@ export function buildStrategyTemplateStagedPage({
 }
 
 /**
+ * Builds the same candidate page the "stage" action writes, without writing
+ * it: build the page with batch copy applied, merge in any previously staged
+ * values for sections whose freshly-built copy isn't current. Safe to call
+ * from a preview action since `readStagedPages()` is a read.
+ */
+export async function buildStagedPageCandidate({
+  pageLabel,
+  pageSlug,
+  snapshot,
+  template,
+}: {
+  pageLabel: string;
+  pageSlug: string;
+  snapshot: StrategySnapshot;
+  template: StagedPageTemplate;
+}) {
+  const explicitPageCopy =
+    snapshot.fields[`pageCopy.${slugify(pageSlug)}`] ?? "";
+
+  const page = buildStrategyTemplateStagedPage({
+    pageLabel,
+    pageSlug,
+    snapshot,
+    template,
+  });
+  const stagedPages = await readStagedPages();
+  const previousPage = stagedPages.find(
+    (existingPage) =>
+      getStagedPageKey(existingPage) ===
+      getStagedPageKey({ pageId: page.pageId, snapshot: page.snapshot }),
+  );
+  const sectionStatuses = getTemplateCopySectionStatuses(
+    explicitPageCopy,
+    template,
+  );
+  const mergedFields = mergePreservingIncompatibleSections(
+    page.fields,
+    previousPage?.fields,
+    sectionStatuses,
+  );
+  const finalPage: StagedPage = {
+    ...page,
+    fieldCounts: countFields(mergedFields),
+    fields: mergedFields,
+  };
+
+  return { finalPage, sectionStatuses, snapshot };
+}
+
+/**
  * Restores a previously staged page's field values for any section whose
  * freshly-built copy is not verified as "current" (stale/unverified/empty),
  * so a same-position restage only overwrites the sections that actually have

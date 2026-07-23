@@ -1,11 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import {
-  buildStrategyTemplateStagedPage,
-  countFields,
-  getStagedPageKey,
-  mergePreservingIncompatibleSections,
-  readStagedPages,
+  buildStagedPageCandidate,
   removeStagedPage,
   updateStagedPageFields,
   writeStagedPage,
@@ -14,12 +10,11 @@ import {
 } from "@/utils/staged-pages";
 import { setPageExportApproval } from "@/utils/site-export-state";
 import { readLatestStrategySnapshot } from "@/utils/strategy-snapshots";
-import { getTemplateCopySectionStatuses } from "@/utils/template-copy-contract";
 
 export const runtime = "nodejs";
 
 type StagePageRequest = {
-  action?: "refresh" | "stage";
+  action?: "preview" | "refresh" | "stage";
   clientSlug?: string;
   pageLabel?: string;
   pageSlug?: string;
@@ -73,8 +68,6 @@ export async function POST(request: Request) {
     }
 
     const pageSlug = body.pageSlug ?? template.id;
-    const explicitPageCopy =
-      snapshot.fields[`pageCopy.${sanitizeSlug(pageSlug)}`] ?? "";
 
     // Build the page with batch copy applied per section (a section whose
     // pasted copy isn't verified "current" for this template is left blank
@@ -82,32 +75,21 @@ export async function POST(request: Request) {
     // copy), then restore the previous staged page's values for any section
     // that isn't current, so a same-position stage/refresh only touches the
     // sections that actually have good new copy.
-    const page = buildStrategyTemplateStagedPage({
+    const { finalPage, sectionStatuses } = await buildStagedPageCandidate({
       pageLabel: body.pageLabel ?? template.name,
       pageSlug,
       snapshot,
       template,
     });
-    const stagedPages = await readStagedPages();
-    const previousPage = stagedPages.find(
-      (existingPage) =>
-        getStagedPageKey(existingPage) ===
-        getStagedPageKey({ pageId: page.pageId, snapshot: page.snapshot }),
-    );
-    const sectionStatuses = getTemplateCopySectionStatuses(
-      explicitPageCopy,
-      template,
-    );
-    const mergedFields = mergePreservingIncompatibleSections(
-      page.fields,
-      previousPage?.fields,
-      sectionStatuses,
-    );
-    const finalPage = {
-      ...page,
-      fieldCounts: countFields(mergedFields),
-      fields: mergedFields,
-    };
+
+    if (body.action === "preview") {
+      return Response.json({
+        ok: true,
+        page: finalPage,
+        sectionStatuses,
+        snapshot,
+      });
+    }
 
     const pages = await writeStagedPage(finalPage);
     await setPageExportApproval({

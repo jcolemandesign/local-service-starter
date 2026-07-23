@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "compact-utility",
       "recipeName": "Individual Service",
-      "savedAt": "2026-07-23T01:37:18.796Z",
+      "savedAt": "2026-07-23T02:32:11.713Z",
       "sectionCount": 11,
       "sections": [
         {
@@ -39,21 +39,21 @@
           "reduceTopPadding": false,
           "ratio": "4-3",
           "variant": "image-3-left-text-4",
-          "colorRecipe": "accent",
+          "colorRecipe": "default",
           "cardFill": "solid"
         },
         {
-          "component": "ServiceNeedsPriorityGridSectionV3",
+          "component": "ThreeCardLinkGridSectionV3",
           "id": "compact-utility-ServiceNeedsPriorityGridSectionV3-added-3",
           "included": true,
-          "instruction": "Show three compact service-need cards and one wider priority card on the 14-column grid. Images may be toggled off for a shorter text-only layout.",
+          "instruction": "Show three linked cards on the shared 14-column grid. Each card spans four columns, leaving the first and last columns open; images may be toggled off for a shorter text-only layout.",
           "mode": "Scan",
-          "name": "Service needs priority grid",
+          "name": "Card Links 3 Up",
           "originalComponent": "ServiceNeedsPriorityGridSectionV3",
           "originalIndex": -1,
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
-          "variant": "right-text-only",
+          "variant": "text-only",
           "colorRecipe": "default",
           "cardFill": "solid"
         },
