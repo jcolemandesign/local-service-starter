@@ -194,6 +194,10 @@ const serviceNeedsPriorityGridAlignOptions = [
   { label: "Large card left", value: "left" },
   { label: "Large card right", value: "right" },
 ] as const;
+const serviceNeedsPriorityGridSizeOptions = [
+  { label: "Standard", value: "standard" },
+  { label: "Compact", value: "compact" },
+] as const;
 const featureAsymmetricCardsAlignOptions = [
   { label: "Left", value: "left" },
   { label: "Right", value: "right" },
@@ -551,7 +555,13 @@ function getFeatureAsymmetricCardsAlign(
 }
 
 function getServiceNeedsPriorityGridShowImages(section: WorkingSection) {
-  return !section.variant?.endsWith("text-only");
+  return !section.variant?.includes("text-only");
+}
+
+function getServiceNeedsPriorityGridCompactPriorityCard(
+  section: WorkingSection,
+) {
+  return Boolean(section.variant?.includes("compact"));
 }
 
 function getSplitContentImageVariantLabel(variant: string | undefined) {
@@ -2256,7 +2266,11 @@ export function PagebuilderShell({
 
   function updateServiceNeedsPriorityGrid(
     sectionId: string,
-    nextValue: Partial<{ align: ServiceNeedsPriorityGridAlign; showImages: boolean }>,
+    nextValue: Partial<{
+      align: ServiceNeedsPriorityGridAlign;
+      compactPriorityCard: boolean;
+      showImages: boolean;
+    }>,
   ) {
     updateActiveStack((stack) =>
       stack.map((section) => {
@@ -2267,8 +2281,16 @@ export function PagebuilderShell({
         const align = nextValue.align ?? getServiceNeedsPriorityGridAlign(section);
         const showImages =
           nextValue.showImages ?? getServiceNeedsPriorityGridShowImages(section);
+        const compactPriorityCard =
+          nextValue.compactPriorityCard ??
+          getServiceNeedsPriorityGridCompactPriorityCard(section);
 
-        return { ...section, variant: showImages ? align : `${align}-text-only` };
+        return {
+          ...section,
+          variant: `${align}${showImages ? "" : "-text-only"}${
+            compactPriorityCard ? "-compact" : ""
+          }`,
+        };
       }),
     );
     setSelectedSectionId(sectionId);
@@ -2894,6 +2916,9 @@ export function PagebuilderShell({
             {...sectionLibraryV3Content.serviceNeedsPriorityGrid}
             align={getServiceNeedsPriorityGridAlign(section)}
             cardFill={getSectionCardFill(section)}
+            compactPriorityCard={getServiceNeedsPriorityGridCompactPriorityCard(
+              section,
+            )}
             showImages={getServiceNeedsPriorityGridShowImages(section)}
           />
         ) : isServicesBentoSection(section) ? (
@@ -4015,6 +4040,38 @@ export function PagebuilderShell({
                                         onClick={() =>
                                           updateServiceNeedsPriorityGrid(section.id, {
                                             showImages: option.value === "with-images",
+                                          })
+                                        }
+                                        type="button"
+                                      >
+                                        {option.label}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </fieldset>
+                              <fieldset className="grid gap-2">
+                                <legend className="type-caption font-semibold text-current">
+                                  Priority card sizing
+                                </legend>
+                                <div className="grid grid-cols-2 gap-2">
+                                  {serviceNeedsPriorityGridSizeOptions.map((option) => {
+                                    const optionIsActive =
+                                      getServiceNeedsPriorityGridCompactPriorityCard(
+                                        section,
+                                      ) === (option.value === "compact");
+
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                          optionIsActive ? "token-chrome-card-active" : "token-chrome-card",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateServiceNeedsPriorityGrid(section.id, {
+                                            compactPriorityCard: option.value === "compact",
                                           })
                                         }
                                         type="button"

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Card, DownArrowIcon, Section } from "@/components/primitives";
 import {
   WorkspaceNav,
@@ -110,6 +110,12 @@ type StagePagePreviewResponse =
 function cx(...classes: Array<false | string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
+
+// The design system's desktop container width (see AGENTS.md). Rendering the
+// preview at this width and scaling down to fit the pane keeps the page's
+// desktop-first layout intact instead of forcing it to reflow at a much
+// narrower width, which is what breaks it.
+const TEMPLATE_PREVIEW_DESIGN_WIDTH = 1440;
 
 function workspaceFieldsMatch(
   left: StrategyWorkspaceFields,
@@ -255,7 +261,34 @@ export function StrategyWorkspaceSection({
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [templatePreviewError, setTemplatePreviewError] = useState("");
   const previewRequestTokenRef = useRef(0);
+  const [previewScale, setPreviewScale] = useState(1);
+  const previewWrapperRef = useRef<HTMLDivElement | null>(null);
   const [updatedAt, setUpdatedAt] = useState(initialWorkspace.updatedAt);
+
+  useEffect(() => {
+    const wrapperElement = previewWrapperRef.current;
+
+    if (!templatePreview || !wrapperElement) {
+      return;
+    }
+
+    const updateScale = () => {
+      const wrapperWidth = wrapperElement.offsetWidth;
+
+      setPreviewScale(
+        wrapperWidth > 0
+          ? Math.min(wrapperWidth / TEMPLATE_PREVIEW_DESIGN_WIDTH, 1)
+          : 1,
+      );
+    };
+
+    updateScale();
+
+    const resizeObserver = new ResizeObserver(updateScale);
+    resizeObserver.observe(wrapperElement);
+
+    return () => resizeObserver.disconnect();
+  }, [templatePreview]);
 
   const filledCount = useMemo(
     () =>
@@ -1493,8 +1526,8 @@ export function StrategyWorkspaceSection({
           className="strategy-template-backdrop fixed inset-0 z-50 grid place-items-center p-4"
           role="dialog"
         >
-          <div className="token-chrome-panel-strong max-h-[min(90vh,52rem)] w-full max-w-7xl overflow-y-auto rounded-[var(--chrome-radius-panel)] border">
-            <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-service-border bg-bg-surface p-5">
+          <div className="token-chrome-panel-strong flex h-[92vh] w-[96vw] max-w-[1760px] flex-col overflow-hidden rounded-[var(--chrome-radius-panel)] border">
+            <div className="flex shrink-0 items-start justify-between gap-4 border-b border-service-border bg-bg-surface p-5">
               <div className="min-w-0">
                 <p className="type-label text-service-accent">
                   Template selector
@@ -1525,7 +1558,7 @@ export function StrategyWorkspaceSection({
               </button>
             </div>
 
-            <div className="grid gap-4 p-5">
+            <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-5">
               {templatePickerError ? (
                 <p className="type-caption rounded-sm border border-red-200 bg-red-50 px-3 py-2 font-semibold text-red-700">
                   {templatePickerError}
@@ -1533,8 +1566,8 @@ export function StrategyWorkspaceSection({
               ) : null}
 
               {matchingTemplates.length > 0 ? (
-                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-4 max-lg:grid-cols-1">
-                  <div className="grid content-start gap-4">
+                <div className="grid min-h-0 flex-1 grid-cols-[20rem_minmax(0,1fr)] gap-4 max-lg:grid-cols-1">
+                  <div className="grid content-start gap-4 overflow-y-auto pr-1">
                     {matchingTemplates.map((template) => {
                       const isSelected = previewingTemplateId === template.id;
                       const isLoadingThis = isSelected && isPreviewLoading;
@@ -1624,16 +1657,16 @@ export function StrategyWorkspaceSection({
                     })}
                   </div>
 
-                  <div className="grid content-start gap-3">
+                  <div className="flex min-h-0 flex-col gap-3">
                     {templatePreviewError ? (
-                      <p className="type-caption rounded-sm border border-red-200 bg-red-50 px-3 py-2 font-semibold text-red-700">
+                      <p className="type-caption shrink-0 rounded-sm border border-red-200 bg-red-50 px-3 py-2 font-semibold text-red-700">
                         {templatePreviewError}
                       </p>
                     ) : null}
 
                     {templatePreview ? (
                       <>
-                        <div className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-md-token)] border border-service-border bg-service-surface px-4 py-3">
+                        <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 rounded-[var(--radius-md-token)] border border-service-border bg-service-surface px-4 py-3">
                           <div className="flex flex-wrap gap-2">
                             {templatePreview.sectionStatuses.map(
                               (sectionStatus) => (
@@ -1670,16 +1703,27 @@ export function StrategyWorkspaceSection({
                             {stagingTemplateId ? "Staging" : "Stage this page"}
                           </button>
                         </div>
-                        <div className="max-h-[60vh] overflow-y-auto rounded-[var(--radius-md-token)] border border-service-border">
-                          <StagedPageCanvas
-                            allPages={[templatePreview.page]}
-                            chrome={false}
-                            page={templatePreview.page}
-                          />
+                        <div
+                          className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto rounded-[var(--radius-md-token)] border border-service-border"
+                          ref={previewWrapperRef}
+                        >
+                          <div
+                            style={{
+                              transform: `scale(${previewScale})`,
+                              transformOrigin: "top left",
+                              width: TEMPLATE_PREVIEW_DESIGN_WIDTH,
+                            }}
+                          >
+                            <StagedPageCanvas
+                              allPages={[templatePreview.page]}
+                              chrome={false}
+                              page={templatePreview.page}
+                            />
+                          </div>
                         </div>
                       </>
                     ) : (
-                      <div className="grid min-h-[16rem] place-items-center rounded-[var(--radius-md-token)] border border-dashed border-service-border bg-service-surface p-6 text-center">
+                      <div className="flex min-h-[16rem] flex-1 items-center justify-center rounded-[var(--radius-md-token)] border border-dashed border-service-border bg-service-surface p-6 text-center">
                         <p className="type-text-sm text-service-muted">
                           {isPreviewLoading
                             ? "Loading preview…"

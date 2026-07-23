@@ -471,7 +471,8 @@ export function renderPageTemplateSection(
           {...serviceNeedsPriorityGridProps(fieldSection)}
           align={getServiceNeedsPriorityGridAlign(section)}
           cardFill={section.cardFill}
-          showImages={!section.variant?.endsWith("text-only")}
+          compactPriorityCard={Boolean(section.variant?.includes("compact"))}
+          showImages={!section.variant?.includes("text-only")}
         />
       );
     case "ServicesHoverPanelSectionV2":

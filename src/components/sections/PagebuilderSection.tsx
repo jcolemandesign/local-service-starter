@@ -372,7 +372,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.serviceNeedsPriorityGrid}
           align={section.variant?.startsWith("left") ? "left" : "right"}
           cardFill={section.cardFill}
-          showImages={!section.variant?.endsWith("text-only")}
+          compactPriorityCard={Boolean(section.variant?.includes("compact"))}
+          showImages={!section.variant?.includes("text-only")}
         />
       );
     case "ServicesHoverPanelSectionV2":

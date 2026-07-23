@@ -12,6 +12,7 @@ export type ServiceNeedsPriorityGridItem = {
 export type ServiceNeedsPriorityGridSectionV3Props = {
   align?: ServiceNeedsPriorityGridAlign;
   cardFill?: "solid" | "none";
+  compactPriorityCard?: boolean;
   items: readonly ServiceNeedsPriorityGridItem[];
   linkLabel?: string;
   primaryAction?: string;
@@ -27,6 +28,7 @@ export type ServiceNeedsPriorityGridAlign = "left" | "right";
 export function ServiceNeedsPriorityGridSectionV3({
   align = "right",
   cardFill = "solid",
+  compactPriorityCard = false,
   items,
   linkLabel = "View options",
   primaryAction = "Request service",
@@ -46,6 +48,8 @@ export function ServiceNeedsPriorityGridSectionV3({
       : "col-span-9 col-start-1 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2";
 
   function renderCard(item: ServiceNeedsPriorityGridItem, isPriority: boolean) {
+    const usePriorityTypography = isPriority && !compactPriorityCard;
+
     return (
       <article
         className={`group/card fluid-type-frame flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent ${
@@ -75,22 +79,24 @@ export function ServiceNeedsPriorityGridSectionV3({
           ) : null}
           <h3
             className={
-              isPriority
+              usePriorityTypography
                 ? "type-heading-lg wrap-pretty mt-eyebrow-heading-md text-service-ink"
-                : "type-heading-sm text-service-ink"
+                : isPriority
+                  ? "type-heading-sm mt-eyebrow-heading-sm text-service-ink"
+                  : "type-heading-sm text-service-ink"
             }
           >
             {item.title}
           </h3>
           <p
             className={`${
-              isPriority ? "type-text-md" : "type-text-sm"
+              usePriorityTypography ? "type-text-md" : "type-text-sm"
             } wrap-pretty mt-heading-body-sm text-service-muted`}
           >
             {item.body}
           </p>
           {isPriority ? (
-            <div className="mt-auto flex flex-nowrap gap-3 pt-8 max-sm:flex-wrap">
+            <div className="mt-auto flex flex-col items-start gap-3 pt-8">
               <Button href={primaryActionHref}>{primaryAction}</Button>
               <Button href={secondaryActionHref} variant="secondary">
                 {secondaryAction}
