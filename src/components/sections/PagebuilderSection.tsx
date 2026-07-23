@@ -497,7 +497,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <ContentNarrativeFeatureRailSectionV3
           {...sectionLibraryV3Content.contentNarrativeFeatureRail}
-          align={section.variant === "left" ? "left" : "right"}
+          align={section.variant?.startsWith("left") ? "left" : "right"}
+          showImage={!section.variant?.includes("text-only")}
         />
       );
     case "ContentRuleHeaderSectionV2":

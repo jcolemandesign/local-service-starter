@@ -1204,6 +1204,46 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  if (component.includes("contentnarrativefeaturerail")) {
+    return [
+      {
+        example: "More ways we can help",
+        name: "eyebrow",
+        purpose: "Short context label above the narrative headline.",
+        target: "16-40 characters.",
+      },
+      {
+        example: "Support that continues beyond the immediate service call.",
+        name: "heading",
+        purpose: "Narrative section headline.",
+        target: "40-80 characters.",
+      },
+      {
+        example:
+          "Some of the most useful service options are not repairs or replacements at all. They make it easier to plan, budget, and stay ahead of the next season.\n\nA longer narrative gives these supporting offers enough context to feel useful instead of promotional. Homeowners can understand where each option fits and when it may be worth asking about.\n\nThe visual rail keeps that explanation connected to the people and work behind the service.",
+        format:
+          "Write the first paragraph as a short intro lead, then 1-2 additional longform paragraphs. Put a hard return between paragraphs; each return becomes a separate visible paragraph.",
+        name: "body",
+        purpose:
+          "Intro lead plus the longform narrative that runs beside the feature rail.",
+        target: "Length follows the argument, not a fixed character count.",
+      },
+      {
+        example: [
+          "Seasonal offer - Feature a current promotion without interrupting the page's primary service decision.",
+          "Payment options - Ask about financing for qualified projects, with terms and approval details appropriately qualified.",
+          "Ongoing care - Introduce a maintenance plan or recurring visits in a compact callout.",
+        ],
+        format: "One item per line as Title - Description.",
+        itemCount: 3,
+        name: "supportingItems",
+        purpose:
+          "The feature rail's callout cards. Each one should be a seasonal offer, payment or financing option, maintenance plan, or promotional discount - not a generic feature or benefit.",
+        target: "1-3 items. Titles 12-36 characters. Descriptions 80-150 characters.",
+      },
+    ];
+  }
+
   if (component.includes("contentstickyideas")) {
     return [
       {

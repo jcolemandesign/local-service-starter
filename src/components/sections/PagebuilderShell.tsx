@@ -535,7 +535,11 @@ function getMainIdeaGridAlign(
 function getNarrativeFeatureRailAlign(
   section: WorkingSection,
 ): ContentNarrativeFeatureRailAlign {
-  return section.variant === "left" ? "left" : "right";
+  return section.variant?.startsWith("left") ? "left" : "right";
+}
+
+function getNarrativeFeatureRailShowImage(section: WorkingSection) {
+  return !section.variant?.includes("text-only");
 }
 
 function getProjectCaseStudyGalleryAlign(
@@ -2245,17 +2249,31 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
-  function updateNarrativeFeatureRailAlign(
+  function updateNarrativeFeatureRail(
     sectionId: string,
-    align: ContentNarrativeFeatureRailAlign,
+    nextValue: Partial<{
+      align: ContentNarrativeFeatureRailAlign;
+      showImage: boolean;
+    }>,
   ) {
     updateActiveStack((stack) =>
-      stack.map((section) =>
-        section.id === sectionId &&
-        section.component === contentNarrativeFeatureRailComponent
-          ? { ...section, variant: align }
-          : section,
-      ),
+      stack.map((section) => {
+        if (
+          section.id !== sectionId ||
+          section.component !== contentNarrativeFeatureRailComponent
+        ) {
+          return section;
+        }
+
+        const align = nextValue.align ?? getNarrativeFeatureRailAlign(section);
+        const showImage =
+          nextValue.showImage ?? getNarrativeFeatureRailShowImage(section);
+
+        return {
+          ...section,
+          variant: `${align}${showImage ? "" : "-text-only"}`,
+        };
+      }),
     );
     setSelectedSectionId(sectionId);
   }
@@ -2880,6 +2898,7 @@ export function PagebuilderShell({
           <ContentNarrativeFeatureRailSectionV3
             {...sectionLibraryV3Content.contentNarrativeFeatureRail}
             align={getNarrativeFeatureRailAlign(section)}
+            showImage={getNarrativeFeatureRailShowImage(section)}
           />
         ) : section.component === ctaSectionComponent ? (
           <CTASectionV3
@@ -3938,44 +3957,76 @@ export function PagebuilderShell({
 
                           {section.component ===
                           contentNarrativeFeatureRailComponent ? (
-                            <fieldset className="grid gap-2">
-                              <legend className="type-caption font-semibold text-current">
-                                Sidebar position
-                              </legend>
-                              <div className="grid grid-cols-2 gap-2">
-                                {mainIdeaGridAlignOptions.map((option) => {
-                                  const optionIsActive =
-                                    getNarrativeFeatureRailAlign(section) ===
-                                    option.value;
+                            <div className="grid gap-4">
+                              <fieldset className="grid gap-2">
+                                <legend className="type-caption font-semibold text-current">
+                                  Sidebar position
+                                </legend>
+                                <div className="grid grid-cols-2 gap-2">
+                                  {mainIdeaGridAlignOptions.map((option) => {
+                                    const optionIsActive =
+                                      getNarrativeFeatureRailAlign(section) ===
+                                      option.value;
 
-                                  return (
-                                    <button
-                                      aria-pressed={optionIsActive}
-                                      className={cx(
-                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
-                                        optionIsActive
-                                          ? "token-chrome-card-active"
-                                          : "token-chrome-card",
-                                      )}
-                                      key={option.value}
-                                      onClick={() =>
-                                        updateNarrativeFeatureRailAlign(
-                                          section.id,
-                                          option.value,
-                                        )
-                                      }
-                                      type="button"
-                                    >
-                                      {option.label}
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                              <p className="type-caption text-current/60">
-                                Right places the sidebar beside the content on
-                                the right; Left mirrors the desktop layout.
-                              </p>
-                            </fieldset>
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                          optionIsActive
+                                            ? "token-chrome-card-active"
+                                            : "token-chrome-card",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateNarrativeFeatureRail(section.id, {
+                                            align: option.value,
+                                          })
+                                        }
+                                        type="button"
+                                      >
+                                        {option.label}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                                <p className="type-caption text-current/60">
+                                  Right places the sidebar beside the content on
+                                  the right; Left mirrors the desktop layout.
+                                </p>
+                              </fieldset>
+                              <fieldset className="grid gap-2">
+                                <legend className="type-caption font-semibold text-current">
+                                  Rail image
+                                </legend>
+                                <div className="flex items-center gap-2">
+                                  {fourCardLinkGridVariantOptions.map((option) => {
+                                    const optionIsActive =
+                                      getNarrativeFeatureRailShowImage(section) ===
+                                      (option.value === "with-images");
+
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                          optionIsActive ? "token-chrome-card-active" : "token-chrome-card",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateNarrativeFeatureRail(section.id, {
+                                            showImage: option.value === "with-images",
+                                          })
+                                        }
+                                        type="button"
+                                      >
+                                        {option.label}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </fieldset>
+                            </div>
                           ) : null}
 
                           {section.component === projectCaseStudyGalleryComponent ? (

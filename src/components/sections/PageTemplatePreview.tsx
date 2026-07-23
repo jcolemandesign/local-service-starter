@@ -572,7 +572,8 @@ export function renderPageTemplateSection(
       return (
         <ContentNarrativeFeatureRailSectionV3
           {...contentNarrativeFeatureRailProps(fieldSection)}
-          align={section.variant === "left" ? "left" : "right"}
+          align={section.variant?.startsWith("left") ? "left" : "right"}
+          showImage={!section.variant?.includes("text-only")}
         />
       );
     case "ContentRuleHeaderSectionV2":

@@ -9,8 +9,8 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-07-23T19:45:01.191Z",
-      "sectionCount": 4,
+      "savedAt": "2026-07-23T20:42:46.924Z",
+      "sectionCount": 5,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
@@ -151,6 +151,21 @@
           "originalIndex": -1,
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        },
+        {
+          "component": "ContentNarrativeFeatureRailSectionV3",
+          "id": "classic-service-ContentNarrativeFeatureRailSectionV3-added-1",
+          "included": true,
+          "instruction": "Use an eight-column longform narrative with three fixed rail slots. Item order is fixed: 1. Seasonal offer, 2. Financing or payment options, 3. Ongoing care or maintenance plan. Each title and description must match the fixed eyebrow and CTA for its slot; do not reorder these concepts.",
+          "mode": "Narrative",
+          "name": "Longform with feature rail",
+          "originalComponent": "ContentNarrativeFeatureRailSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "variant": "left",
           "colorRecipe": "default",
           "cardFill": "solid"
         }

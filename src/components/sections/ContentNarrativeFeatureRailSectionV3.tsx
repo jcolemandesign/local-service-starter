@@ -20,6 +20,7 @@ export type ContentNarrativeFeatureRailSectionV3Props = {
   imageSrc: string;
   intro: string;
   paragraphs: readonly string[];
+  showImage?: boolean;
   textLinkHref: string;
   textLinkLabel: string;
   title: string;
@@ -34,6 +35,7 @@ export function ContentNarrativeFeatureRailSectionV3({
   imageSrc,
   intro,
   paragraphs,
+  showImage = true,
   textLinkHref,
   textLinkLabel,
   title,
@@ -52,9 +54,10 @@ export function ContentNarrativeFeatureRailSectionV3({
         padding="lrg"
       >
         <LayoutGridItem
-          className={`col-span-8 ${contentPosition} max-lg:col-span-6 max-md:col-span-6 max-md:col-start-1 max-sm:col-span-2`}
+          alignY="stretch"
+          className={`col-span-8 ${contentPosition} row-start-1 max-lg:col-span-6 max-md:col-span-6 max-md:col-start-1 max-md:row-auto max-sm:col-span-2`}
         >
-          <article className="fluid-type-frame sticky top-[var(--site-grid-inset-block)] pr-8 max-lg:pr-2 max-md:static max-md:pr-0">
+          <article className="fluid-type-frame sticky top-[var(--site-grid-inset-block)] self-start pr-8 max-lg:pr-2 max-md:static max-md:pr-0">
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2 className="type-display-lg wrap-pretty mt-eyebrow-display text-service-ink">
               {title}
@@ -103,18 +106,20 @@ export function ContentNarrativeFeatureRailSectionV3({
         </LayoutGridItem>
 
         <LayoutGridItem
-          className={`col-span-6 ${railPosition} max-lg:col-span-4 max-md:col-span-6 max-md:col-start-1 max-md:mt-12 max-sm:col-span-2`}
+          className={`col-span-6 ${railPosition} row-start-1 max-lg:col-span-4 max-md:col-span-6 max-md:col-start-1 max-md:row-auto max-md:mt-12 max-sm:col-span-2`}
         >
           <aside className="grid card-grid-gap-med">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-surface-token)] bg-service-border">
-              <Image
-                alt={imageAlt}
-                className="object-cover"
-                fill
-                sizes="(max-width: 767px) 100vw, (max-width: 1023px) 40vw, 43vw"
-                src={imageSrc}
-              />
-            </div>
+            {showImage ? (
+              <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-surface-token)] bg-service-border">
+                <Image
+                  alt={imageAlt}
+                  className="object-cover"
+                  fill
+                  sizes="(max-width: 767px) 100vw, (max-width: 1023px) 40vw, 43vw"
+                  src={imageSrc}
+                />
+              </div>
+            ) : null}
 
             {cards.slice(0, 3).map((card) => (
               <article
