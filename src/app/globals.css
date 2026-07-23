@@ -3,11 +3,11 @@
 :root {
   --background: #fbfaf6;
   --foreground: #171717;
-  --container-site: 1600px;
+  --container-site: 2000px;
   --container-content: 1200px;
   --container-narrow: 900px;
   --container-gutter: 3rem;
-  --site-grid-max: none;
+  --site-grid-max: 2000px;
   --site-grid-inset-inline: clamp(1.5rem, 4vw, 8rem);
   --site-grid-inset-block: clamp(2rem, 4vw, 7rem);
   --site-grid-gap: clamp(0.75rem, 1vw, 1.5rem);

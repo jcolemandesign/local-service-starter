@@ -131,9 +131,9 @@ If Motion for React is not already installed, explain why it is needed and wait 
 
 ## Layout Width Philosophy
 
-The default max content width is `1440px`.
+The default max content width is `2000px`.
 
-Most sections should use the shared `Container` primitive to align primary content to the 1440px layout system.
+Most sections should use the shared `Container` primitive to align primary content to the 2000px layout system.
 
 Sections may become full-screen or full-bleed only when specifically described that way in the task or section brief.
 
