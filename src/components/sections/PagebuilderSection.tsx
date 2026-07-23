@@ -56,6 +56,7 @@ import {
   type HeroCompactHeadingSize,
 } from "@/components/sections/HeroCompactSectionV3";
 import { HeroServicesSectionV3 } from "@/components/sections/HeroServicesSectionV3";
+import { HeroCompactServiceSectionV3 } from "@/components/sections/HeroCompactServiceSectionV3";
 import { SectionHeaderCompactSectionV3 } from "@/components/sections/SectionHeaderCompactSectionV3";
 import {
   SectionHeaderLargeSectionV3,
@@ -294,6 +295,13 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <HeroServicesSectionV3
           {...sectionLibraryV3Content.heroServices}
+          headingLevel={headingLevel}
+        />
+      );
+    case "HeroCompactServiceSectionV3":
+      return (
+        <HeroCompactServiceSectionV3
+          {...sectionLibraryV3Content.heroCompactService}
           headingLevel={headingLevel}
         />
       );
@@ -947,6 +955,12 @@ export function PagebuilderSection() {
           1,
         )}
       </div>
+    ),
+    HeroCompactServiceSectionV3: previewCatalogEntry(
+      "HeroCompactServiceSectionV3",
+      "Hero",
+      "Compact service hero",
+      1,
     ),
     ContentPhotoGalleryCarouselSectionV3: previewCatalogEntry(
       "ContentPhotoGalleryCarouselSectionV3",

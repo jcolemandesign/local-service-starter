@@ -22,6 +22,7 @@ import {
   type HeroCompactHeadingSize,
 } from "@/components/sections/HeroCompactSectionV3";
 import { HeroServicesSectionV3 } from "@/components/sections/HeroServicesSectionV3";
+import { HeroCompactServiceSectionV3 } from "@/components/sections/HeroCompactServiceSectionV3";
 import { SectionHeaderCompactSectionV3 } from "@/components/sections/SectionHeaderCompactSectionV3";
 import {
   SectionHeaderLargeSectionV3,
@@ -98,6 +99,7 @@ const fixedRatioSplitComponent = "HeroSplitFixedImageSectionV3";
 const contentFixedRatioSplitComponent = "ContentSplitFixedImageSectionV3";
 const heroCompactComponent = "HeroCompactSectionV3";
 const heroServicesComponent = "HeroServicesSectionV3";
+const heroCompactServiceComponent = "HeroCompactServiceSectionV3";
 const sectionHeaderCompactComponent = "SectionHeaderCompactSectionV3";
 const sectionHeaderLargeComponent = "SectionHeaderLargeSectionV3";
 const servicesBentoComponent = "ServicesBentoCardsSectionV2";
@@ -996,6 +998,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
       "Combine a services page introduction with one full-height image and up to seven compact priority-service links layered over the image.",
     mode: "Hero",
     name: "Services hero",
+  },
+  {
+    component: "HeroCompactServiceSectionV3",
+    instruction:
+      "Use a compact intro (eyebrow, h1, short body) for the service this page covers, a fixed-ratio service photo frame, and a boxed primary/secondary CTA on the shared 14-column grid.",
+    layoutGrid: 14,
+    mode: "Hero",
+    name: "Compact service hero",
   },
   {
     component: "SectionHeaderCompactSectionV3",
@@ -2834,6 +2844,11 @@ export function PagebuilderShell({
         ) : section.component === heroServicesComponent ? (
           <HeroServicesSectionV3
             {...sectionLibraryV3Content.heroServices}
+            headingLevel={headingLevel}
+          />
+        ) : section.component === heroCompactServiceComponent ? (
+          <HeroCompactServiceSectionV3
+            {...sectionLibraryV3Content.heroCompactService}
             headingLevel={headingLevel}
           />
         ) : section.component === sectionHeaderCompactComponent ? (

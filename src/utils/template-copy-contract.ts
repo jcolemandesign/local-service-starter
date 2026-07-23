@@ -719,6 +719,48 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  if (component.includes("herocompactservice")) {
+    return [
+      {
+        example: "Heat pump service",
+        name: "eyebrow",
+        purpose: "Immediate context for which service this page covers.",
+        target: "12-40 characters.",
+      },
+      {
+        example: "Heat pump repair, maintenance, and replacement.",
+        name: "h1",
+        purpose: "Main service page headline in the compact left column.",
+        target: "30-70 characters. One H1 only.",
+      },
+      {
+        example:
+          "A compact intro for the service this page covers, next to a bounded photo frame and a boxed request path.",
+        name: "intro",
+        purpose: "Short intro paragraph beside the service photo.",
+        target: "110-200 characters.",
+      },
+      {
+        example: "Ready to get started?",
+        name: "ctaTitle",
+        purpose: "Short heading above the boxed primary/secondary CTAs.",
+        target: "16-40 characters.",
+      },
+      {
+        example: "Request service",
+        name: "primaryAction",
+        purpose: "Main conversion CTA in the boxed CTA panel.",
+        target: "10-22 characters.",
+      },
+      {
+        example: "View all services",
+        name: "secondaryAction",
+        purpose: "Secondary CTA in the boxed CTA panel.",
+        target: "10-22 characters.",
+      },
+    ];
+  }
+
   if (lookupValue.includes("hero")) {
     return [
       {

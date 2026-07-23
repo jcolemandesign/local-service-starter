@@ -57,6 +57,17 @@ export const sectionLibraryV3Content = {
       { title: "Emergency HVAC", body: "Discuss urgent needs and current service availability." },
     ],
   },
+  heroCompactService: {
+    eyebrow: "Heat pump service",
+    title: "Heat pump repair, maintenance, and replacement.",
+    body: "A compact intro for the service this page covers, next to a bounded photo frame and a boxed request path.",
+    ctaTitle: "Ready to get started?",
+    imageAlt: "Technician servicing a heat pump",
+    imageSrc: "/images/fpo-image.svg",
+    primaryAction: "Request service",
+    secondaryAction: "View all services",
+    secondaryActionHref: "#services",
+  },
   sectionHeaderCompact: {
     align: "center" as const,
     eyebrow: "Services",
@@ -1388,6 +1399,10 @@ export const sectionLibraryV3Collections = [
       {
         label: "Services hero",
         component: "hero-services-v3",
+      },
+      {
+        label: "Compact service hero",
+        component: "hero-compact-service-v3",
       },
     ],
   },

@@ -677,6 +677,21 @@ function getTemplateAssetFieldsForSection(
     ];
   }
 
+  if (component.includes("herocompactservice")) {
+    return [
+      {
+        kind: "meta",
+        name: "imageAlt",
+        value: sectionLibraryV3Content.heroCompactService.imageAlt,
+      },
+      {
+        kind: "image",
+        name: "imageSrc",
+        value: sectionLibraryV3Content.heroCompactService.imageSrc,
+      },
+    ];
+  }
+
   if (component.includes("heroservices")) {
     return [
       {

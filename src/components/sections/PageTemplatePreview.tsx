@@ -65,6 +65,7 @@ import {
   type HeroCompactHeadingSize,
 } from "@/components/sections/HeroCompactSectionV3";
 import { HeroServicesSectionV3 } from "@/components/sections/HeroServicesSectionV3";
+import { HeroCompactServiceSectionV3 } from "@/components/sections/HeroCompactServiceSectionV3";
 import { SectionHeaderCompactSectionV3 } from "@/components/sections/SectionHeaderCompactSectionV3";
 import {
   SectionHeaderLargeSectionV3,
@@ -407,6 +408,13 @@ export function renderPageTemplateSection(
       return (
         <HeroServicesSectionV3
           {...heroServicesProps(fieldSection)}
+          headingLevel={headingLevel}
+        />
+      );
+    case "HeroCompactServiceSectionV3":
+      return (
+        <HeroCompactServiceSectionV3
+          {...heroCompactServiceProps(fieldSection)}
           headingLevel={headingLevel}
         />
       );
@@ -828,6 +836,49 @@ function heroCompactProps(section: FieldSection) {
       sectionLibraryV3Content.heroCompact.secondaryActionHref,
     ),
     title: getTitle(section, sectionLibraryV3Content.heroCompact.title),
+  };
+}
+
+function heroCompactServiceProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.heroCompactService,
+    body: getBody(section, sectionLibraryV3Content.heroCompactService.body),
+    ctaTitle: getValue(
+      section,
+      "ctaTitle",
+      sectionLibraryV3Content.heroCompactService.ctaTitle,
+    ),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.heroCompactService.eyebrow,
+    ),
+    imageAlt: getAssetValue(
+      section,
+      "imageAlt",
+      sectionLibraryV3Content.heroCompactService.imageAlt,
+    ),
+    imageSrc: getAssetValue(
+      section,
+      "imageSrc",
+      sectionLibraryV3Content.heroCompactService.imageSrc,
+    ),
+    primaryAction: getValue(
+      section,
+      "primaryAction",
+      sectionLibraryV3Content.heroCompactService.primaryAction,
+    ),
+    secondaryAction: getValue(
+      section,
+      "secondaryAction",
+      sectionLibraryV3Content.heroCompactService.secondaryAction,
+    ),
+    secondaryActionHref: getValue(
+      section,
+      "secondaryActionHref",
+      sectionLibraryV3Content.heroCompactService.secondaryActionHref,
+    ),
+    title: getTitle(section, sectionLibraryV3Content.heroCompactService.title),
   };
 }
 

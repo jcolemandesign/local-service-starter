@@ -41,6 +41,7 @@ import {
   ServiceNeedsPriorityGridSectionV3,
   HeroCenteredFloatersSectionV2,
   HeroCompactSectionV3,
+  HeroCompactServiceSectionV3,
   HeroServicesSectionV3,
   HeroContentTopImageBottomSectionV2,
   HeroFullscreenSectionV2,
@@ -136,6 +137,12 @@ const sectionElements = {
   "hero-services-v3": (
     <HeroServicesSectionV3
       {...sectionLibraryV3Content.heroServices}
+      headingLevel={2}
+    />
+  ),
+  "hero-compact-service-v3": (
+    <HeroCompactServiceSectionV3
+      {...sectionLibraryV3Content.heroCompactService}
       headingLevel={2}
     />
   ),
