@@ -84,6 +84,12 @@ export function ProjectCaseStudyGallerySectionV3({
   const cardBorderClass = hasDarkCard ? "border-white/20" : "border-service-border";
   const cardTextClass = hasDarkCard ? "text-white" : "text-service-ink";
   const cardMutedTextClass = hasDarkCard ? "text-white/70" : "text-service-muted";
+  // text-service-accent stays a constant brand color regardless of recipe
+  // (unlike text-service-ink/muted above, which the pagebuilder-section-frame
+  // wrapper already re-tints for dark/accent), so the eyebrow needs an
+  // explicit swap here or it becomes invisible against an accent background.
+  const eyebrowClass =
+    colorRecipe === "accent" ? "text-[var(--live-accent-ink)]" : "text-service-accent";
 
   if (!activeSlide) {
     return null;
@@ -146,7 +152,7 @@ export function ProjectCaseStudyGallerySectionV3({
                 key={activeSlide.title}
                 transition={imageTransition}
               >
-                <p className="type-caption font-semibold tracking-[0.14em] text-service-accent uppercase">
+                <p className={`type-caption font-semibold tracking-[0.14em] uppercase ${eyebrowClass}`}>
                   {activeSlide.project}
                 </p>
                 <h2 className={`type-heading-md mt-3 ${cardTextClass}`}>

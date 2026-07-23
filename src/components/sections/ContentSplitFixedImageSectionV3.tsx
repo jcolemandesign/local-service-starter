@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { SevenColumnGrid, SevenColumnGridItem } from "@/components/primitives";
+import type { SectionColorRecipe } from "@/content/section-color-recipes";
 
 export type ContentSplitFixedImageVariant =
   | "text-3-image-4-right"
@@ -17,6 +18,7 @@ export type ContentSplitFixedImageRatio =
 
 type ContentSplitFixedImageSectionV3Props = {
   body: string;
+  colorRecipe?: SectionColorRecipe;
   eyebrow: string;
   headingLevel?: 1 | 2;
   imageAlt: string;
@@ -106,6 +108,7 @@ function FixedRatioImage({
 
 export function ContentSplitFixedImageSectionV3({
   body,
+  colorRecipe = "default",
   eyebrow,
   headingLevel = 2,
   imageAlt,
@@ -118,6 +121,14 @@ export function ContentSplitFixedImageSectionV3({
   const config =
     variantConfig[variant] ?? variantConfig["text-3-image-4-right"];
   const HeadingTag = `h${headingLevel}` as const;
+  // Section background and ink/muted text below use the generic
+  // bg-page/service-ink tokens, which the pagebuilder-section-frame wrapper
+  // already re-tints correctly for dark/accent recipes. text-service-accent
+  // is the one token that stays a constant brand color regardless of recipe,
+  // so it needs an explicit swap here or the eyebrow becomes invisible
+  // against an accent-colored background.
+  const eyebrowClass =
+    colorRecipe === "accent" ? "text-[var(--live-accent-ink)]" : "text-service-accent";
 
   return (
     <section className="bg-bg-page">
@@ -128,7 +139,7 @@ export function ContentSplitFixedImageSectionV3({
           className={cx("content-padding text-service-ink", config.textClassName)}
         >
           <div className="fluid-type-frame w-full">
-            <p className="type-label text-service-accent">{eyebrow}</p>
+            <p className={cx("type-label", eyebrowClass)}>{eyebrow}</p>
             <HeadingTag className="type-heading-lg mt-eyebrow-display text-service-ink">
               {title}
             </HeadingTag>

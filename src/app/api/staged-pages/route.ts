@@ -2,6 +2,10 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import {
   buildStrategyTemplateStagedPage,
+  countFields,
+  getStagedPageKey,
+  mergePreservingIncompatibleSections,
+  readStagedPages,
   removeStagedPage,
   updateStagedPageFields,
   writeStagedPage,
@@ -10,7 +14,7 @@ import {
 } from "@/utils/staged-pages";
 import { setPageExportApproval } from "@/utils/site-export-state";
 import { readLatestStrategySnapshot } from "@/utils/strategy-snapshots";
-import { getTemplateCopyContractStatus } from "@/utils/template-copy-contract";
+import { getTemplateCopySectionStatuses } from "@/utils/template-copy-contract";
 
 export const runtime = "nodejs";
 
@@ -71,38 +75,54 @@ export async function POST(request: Request) {
     const pageSlug = body.pageSlug ?? template.id;
     const explicitPageCopy =
       snapshot.fields[`pageCopy.${sanitizeSlug(pageSlug)}`] ?? "";
-    const contractStatus = getTemplateCopyContractStatus(
-      explicitPageCopy,
-      template,
-    );
 
-    if (
-      body.action === "refresh" &&
-      explicitPageCopy.trim() &&
-      contractStatus !== "current"
-    ) {
-      throw new Error(
-        contractStatus === "stale"
-          ? "This page's batch copy was generated from an older template contract. Copy the updated contract in Strategy, regenerate the batch copy, and save it before staging."
-          : "This page's batch copy does not include a verifiable template contract. Copy the current contract in Strategy, regenerate the batch copy, and save it before staging.",
-      );
-    }
-
+    // Build the page with batch copy applied per section (a section whose
+    // pasted copy isn't verified "current" for this template is left blank
+    // here rather than blocking the whole page or seeding possibly-wrong
+    // copy), then restore the previous staged page's values for any section
+    // that isn't current, so a same-position stage/refresh only touches the
+    // sections that actually have good new copy.
     const page = buildStrategyTemplateStagedPage({
-      applyBatchCopy: contractStatus === "current",
       pageLabel: body.pageLabel ?? template.name,
       pageSlug,
       snapshot,
       template,
     });
-    const pages = await writeStagedPage(page);
+    const stagedPages = await readStagedPages();
+    const previousPage = stagedPages.find(
+      (existingPage) =>
+        getStagedPageKey(existingPage) ===
+        getStagedPageKey({ pageId: page.pageId, snapshot: page.snapshot }),
+    );
+    const sectionStatuses = getTemplateCopySectionStatuses(
+      explicitPageCopy,
+      template,
+    );
+    const mergedFields = mergePreservingIncompatibleSections(
+      page.fields,
+      previousPage?.fields,
+      sectionStatuses,
+    );
+    const finalPage = {
+      ...page,
+      fieldCounts: countFields(mergedFields),
+      fields: mergedFields,
+    };
+
+    const pages = await writeStagedPage(finalPage);
     await setPageExportApproval({
       approved: false,
-      clientSlug: page.snapshot.clientSlug,
-      pageId: page.pageId,
+      clientSlug: finalPage.snapshot.clientSlug,
+      pageId: finalPage.pageId,
     });
 
-    return Response.json({ ok: true, page, pages, snapshot });
+    return Response.json({
+      ok: true,
+      page: finalPage,
+      pages,
+      sectionStatuses,
+      snapshot,
+    });
   } catch (error) {
     return jsonError(
       error instanceof Error ? error.message : "Page staging failed.",

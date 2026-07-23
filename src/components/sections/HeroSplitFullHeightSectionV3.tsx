@@ -125,14 +125,55 @@ export function HeroSplitFullHeightSectionV3({
   variant = "text-3-image-4-right",
   colorRecipe = "default",
 }: HeroSplitFullHeightSectionV3Props) {
-  const config = variantConfig[variant];
+  const config = variantConfig[variant] ?? variantConfig["text-3-image-4-right"];
   const HeadingTag = `h${headingLevel}` as const;
   const isTextFourImageThree = variant === "text-4-image-3-right";
   const colors = {
-    default: { body: "text-service-muted", eyebrow: "text-service-accent", ink: "text-service-ink", section: "bg-bg-page", stat: "border-service-border" },
-    muted: { body: "text-service-muted", eyebrow: "text-service-accent", ink: "text-service-ink", section: "bg-service-surface", stat: "border-service-border" },
-    dark: { body: "text-white/70", eyebrow: "text-white", ink: "text-white", section: "bg-bg-dark", stat: "border-white/25" },
-    accent: { body: "text-[var(--live-accent-muted-text)]", eyebrow: "text-[var(--live-accent-ink)]", ink: "text-[var(--live-accent-ink)]", section: "bg-service-accent", stat: "border-[color:var(--live-accent-ink)]/30" },
+    default: {
+      action: "",
+      body: "text-service-muted",
+      eyebrow: "text-service-accent",
+      ink: "text-service-ink",
+      secondaryAction: "",
+      section: "bg-bg-page",
+      stat: "border-service-border",
+    },
+    muted: {
+      action: "",
+      body: "text-service-muted",
+      eyebrow: "text-service-accent",
+      ink: "text-service-ink",
+      secondaryAction: "",
+      section: "bg-service-surface",
+      stat: "border-service-border",
+    },
+    dark: {
+      action: "!border-white !bg-white !text-bg-dark hover:!bg-service-surface",
+      body: "text-white/70",
+      eyebrow: "text-white",
+      ink: "text-white",
+      // Ghost/outline treatment: the default secondary style is a light pill
+      // (bg-bg-page), which would clash with a dark section - drop the fill
+      // so it reads as a lighter-weight, secondary action against the dark bg.
+      secondaryAction:
+        "!border-white/40 !bg-transparent !text-white hover:!border-white hover:!bg-white/10 hover:!text-white",
+      section: "bg-bg-dark",
+      stat: "border-white/25",
+    },
+    accent: {
+      // RequestServiceButton's own default fill is bg-service-accent - identical
+      // to this recipe's section background - so without this override the
+      // primary CTA is invisible against it. Force a solid, neutral button that
+      // stays visible regardless of what the brand accent color actually is.
+      action: "!border-white !bg-white !text-bg-dark hover:!bg-white/85",
+      body: "text-[var(--live-accent-muted-text)]",
+      eyebrow: "text-[var(--live-accent-ink)]",
+      ink: "text-[var(--live-accent-ink)]",
+      secondaryAction:
+        "!border-[color-mix(in_oklab,var(--live-accent-ink)_40%,transparent)] !bg-transparent !text-[var(--live-accent-ink)] hover:!border-[color:var(--live-accent-ink)] hover:!bg-white/10 hover:!text-[var(--live-accent-ink)]",
+      section: "bg-service-accent",
+      stat: "border-[color-mix(in_oklab,var(--live-accent-ink)_30%,transparent)]",
+    },
   }[colorRecipe];
 
   return (
@@ -169,10 +210,14 @@ export function HeroSplitFullHeightSectionV3({
             <div
               className="mt-body-actions-md flex flex-wrap inline-gap-med"
             >
-              <RequestServiceButton>
+              <RequestServiceButton className={colors.action}>
                 {primaryAction}
               </RequestServiceButton>
-              <Button href={secondaryActionHref} variant="secondary">
+              <Button
+                className={colors.secondaryAction}
+                href={secondaryActionHref}
+                variant="secondary"
+              >
                 {secondaryAction}
               </Button>
             </div>

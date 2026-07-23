@@ -19,6 +19,8 @@ type StyleGuideTokenDraft = {
   bgPage: string;
   bgDark: string;
   accent: string;
+  accentInk: string;
+  accentMutedText: string;
   activeCardGapValue: string;
   activeInlineGapValue: string;
   activeLayoutGapValue: string;
@@ -112,6 +114,8 @@ function normalizeTokens(tokens: Partial<StyleGuideTokenDraft> | undefined) {
     bgPage: normalizeColor(tokens.bgPage, "page background"),
     bgDark: normalizeColor(tokens.bgDark, "dark background"),
     accent: normalizeColor(tokens.accent, "warm accent"),
+    accentInk: normalizeColor(tokens.accentInk, "accent ink"),
+    accentMutedText: normalizeColor(tokens.accentMutedText, "accent muted text"),
     activeCardGapValue: normalizeSpacingValue(tokens.activeCardGapValue, "card gap"),
     activeInlineGapValue: normalizeSpacingValue(
       tokens.activeInlineGapValue,
@@ -516,6 +520,8 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --live-text-accent: ${tokens.serviceAccent};
   --live-border-default: ${tokens.serviceBorder};
   --live-accent: ${tokens.accent};
+  --live-accent-ink: ${tokens.accentInk};
+  --live-accent-muted-text: ${tokens.accentMutedText};
   --live-shadow-service: ${serviceShadow};
   --color-service-ink: ${tokens.serviceInk};
   --color-service-muted: ${tokens.serviceMuted};

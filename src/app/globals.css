@@ -1151,7 +1151,7 @@ body {
     background-color: var(--color-service-surface) !important;
   }
 
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="dark"]:not([data-pagebuilder-section-component="ServicesBentoCardsSectionV2"]):not([data-pagebuilder-section-component="ContentSplitHeadlineImageSectionV2"]):not([data-pagebuilder-section-component="HeroSplitFullHeightSectionV3"]) {
+  .pagebuilder-section-frame[data-pagebuilder-color-recipe="dark"]:not([data-pagebuilder-section-component="ServicesBentoCardsSectionV2"]):not([data-pagebuilder-section-component="ContentSplitHeadlineImageSectionV2"]):not([data-pagebuilder-section-component="HeroSplitFullHeightSectionV3"]):not([data-pagebuilder-section-component="HeroCompactSectionV3"]):not([data-pagebuilder-section-component="HeroSplitFixedImageSectionV3"]) {
     --live-bg-page: var(--live-bg-dark);
     --live-bg-surface: color-mix(in srgb, var(--live-bg-dark) 88%, white);
     --live-service-surface: color-mix(in srgb, var(--live-bg-dark) 88%, white);
@@ -1165,7 +1165,7 @@ body {
     --live-text-accent: #ffffff;
   }
 
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"]:not([data-pagebuilder-section-component="ServicesBentoCardsSectionV2"]):not([data-pagebuilder-section-component="ContentSplitHeadlineImageSectionV2"]):not([data-pagebuilder-section-component="HeroSplitFullHeightSectionV3"]) {
+  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"]:not([data-pagebuilder-section-component="ServicesBentoCardsSectionV2"]):not([data-pagebuilder-section-component="ContentSplitHeadlineImageSectionV2"]):not([data-pagebuilder-section-component="HeroSplitFullHeightSectionV3"]):not([data-pagebuilder-section-component="HeroCompactSectionV3"]):not([data-pagebuilder-section-component="HeroSplitFixedImageSectionV3"]) {
     --live-bg-page: var(--live-service-accent);
     --live-bg-surface: color-mix(in srgb, var(--live-service-accent) 86%, white);
     --live-service-surface: color-mix(in srgb, var(--live-service-accent) 86%, white);
@@ -1928,6 +1928,8 @@ body {
   --live-text-accent: #1f5f7a;
   --live-border-default: #9e9e9e;
   --live-accent: #427f9a;
+  --live-accent-ink: #ffffff;
+  --live-accent-muted-text: #dcefe7;
   --live-shadow-service: 8px 10px 0px rgb(222 222 222 / 0);
   --color-service-ink: #1a1924;
   --color-service-muted: #35343d;
@@ -1947,7 +1949,7 @@ body {
   --card-grid-gap-active: 2.25rem;
   --inline-gap-active: 2.25rem;
   --layout-gap-active: 2.25rem;
-  --border-surface-width-token: 0px;
+  --border-surface-width-token: 1px;
   --radius-sm-token: 4px;
   --radius-md-token: 8px;
   --radius-lg-token: 24px;

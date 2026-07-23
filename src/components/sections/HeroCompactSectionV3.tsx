@@ -4,10 +4,12 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service/RequestServiceModal";
+import type { SectionColorRecipe } from "@/content/section-color-recipes";
 
 type HeroCompactSectionV3Props = {
   align?: HeroCompactAlign;
   body: string;
+  colorRecipe?: SectionColorRecipe;
   eyebrow: string;
   headingSize?: HeroCompactHeadingSize;
   headingLevel?: 1 | 2;
@@ -68,14 +70,18 @@ const headingSizeClassName: Record<HeroCompactHeadingSize, string> = {
 };
 
 function HeroCompactActions({
+  actionClassName,
   className,
   primaryAction,
   secondaryAction,
+  secondaryActionClassName,
   secondaryActionHref,
 }: {
+  actionClassName?: string;
   className?: string;
   primaryAction: string;
   secondaryAction: string;
+  secondaryActionClassName?: string;
   secondaryActionHref: string;
 }) {
   return (
@@ -85,17 +91,77 @@ function HeroCompactActions({
         className,
       )}
     >
-      <RequestServiceButton>{primaryAction}</RequestServiceButton>
-      <Button href={secondaryActionHref} variant="secondary">
+      <RequestServiceButton className={actionClassName}>
+        {primaryAction}
+      </RequestServiceButton>
+      <Button
+        className={secondaryActionClassName}
+        href={secondaryActionHref}
+        variant="secondary"
+      >
         {secondaryAction}
       </Button>
     </div>
   );
 }
 
+const colorRecipeClassName: Record<
+  SectionColorRecipe,
+  {
+    action: string;
+    body: string;
+    eyebrow: string;
+    ink: string;
+    secondaryAction: string;
+    section: string;
+  }
+> = {
+  default: {
+    action: "",
+    body: "text-service-muted",
+    eyebrow: "text-service-accent",
+    ink: "text-service-ink",
+    secondaryAction: "",
+    section: "bg-bg-page",
+  },
+  muted: {
+    action: "",
+    body: "text-service-muted",
+    eyebrow: "text-service-accent",
+    ink: "text-service-ink",
+    secondaryAction: "",
+    section: "bg-service-surface",
+  },
+  dark: {
+    action: "!border-white !bg-white !text-bg-dark hover:!bg-service-surface",
+    body: "text-white/70",
+    eyebrow: "text-white",
+    ink: "text-white",
+    // Ghost/outline treatment: the default secondary style is a light pill
+    // (bg-bg-page), which would clash with a dark section - drop the fill so
+    // it reads as a lighter-weight, secondary action against the dark bg.
+    secondaryAction:
+      "!border-white/40 !bg-transparent !text-white hover:!border-white hover:!bg-white/10 hover:!text-white",
+    section: "bg-bg-dark",
+  },
+  accent: {
+    // RequestServiceButton's own default fill is bg-service-accent - identical
+    // to this recipe's section background - so without this override the
+    // primary CTA is invisible against it.
+    action: "!border-white !bg-white !text-bg-dark hover:!bg-white/85",
+    body: "text-[var(--live-accent-muted-text)]",
+    eyebrow: "text-[var(--live-accent-ink)]",
+    ink: "text-[var(--live-accent-ink)]",
+    secondaryAction:
+      "!border-[color-mix(in_oklab,var(--live-accent-ink)_40%,transparent)] !bg-transparent !text-[var(--live-accent-ink)] hover:!border-[color:var(--live-accent-ink)] hover:!bg-white/10 hover:!text-[var(--live-accent-ink)]",
+    section: "bg-service-accent",
+  },
+};
+
 export function HeroCompactSectionV3({
   align = "center",
   body,
+  colorRecipe = "default",
   eyebrow,
   headingSize = "display-lg",
   headingLevel = 1,
@@ -106,9 +172,10 @@ export function HeroCompactSectionV3({
 }: HeroCompactSectionV3Props) {
   const Heading = headingLevel === 1 ? "h1" : "h2";
   const alignment = alignClassName[align];
+  const colors = colorRecipeClassName[colorRecipe];
 
   return (
-    <section className="bg-bg-page">
+    <section className={colors.section}>
       <SevenColumnGrid
         className="section-min-tiny content-center"
         padding="med"
@@ -127,11 +194,12 @@ export function HeroCompactSectionV3({
               alignment.text,
             )}
           >
-            <p className="type-label text-service-accent">{eyebrow}</p>
+            <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
             <Heading
               className={cx(
                 headingSizeClassName[headingSize],
-                "mt-eyebrow-display text-service-ink",
+                "mt-eyebrow-display",
+                colors.ink,
               )}
             >
               {title}
@@ -141,7 +209,8 @@ export function HeroCompactSectionV3({
                 headingSize === "display-lg"
                   ? "type-text-xl"
                   : "type-text-lg",
-                "wrap-pretty mt-heading-body-lg text-service-muted",
+                "wrap-pretty mt-heading-body-lg",
+                colors.body,
                 alignment.body,
               )}
             >
@@ -149,9 +218,11 @@ export function HeroCompactSectionV3({
             </p>
             {align === "center" ? (
               <HeroCompactActions
+                actionClassName={colors.action}
                 className="mt-body-actions-md"
                 primaryAction={primaryAction}
                 secondaryAction={secondaryAction}
+                secondaryActionClassName={colors.secondaryAction}
                 secondaryActionHref={secondaryActionHref}
               />
             ) : null}
@@ -167,8 +238,10 @@ export function HeroCompactSectionV3({
             )}
           >
             <HeroCompactActions
+              actionClassName={colors.action}
               primaryAction={primaryAction}
               secondaryAction={secondaryAction}
+              secondaryActionClassName={colors.secondaryAction}
               secondaryActionHref={secondaryActionHref}
             />
           </SevenColumnGridItem>

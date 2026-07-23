@@ -365,6 +365,7 @@ export function renderPageTemplateSection(
       return (
         <HeroSplitFixedImageSectionV3
           {...heroSplitProps(fieldSection)}
+          colorRecipe={section.colorRecipe}
           headingLevel={headingLevel}
           ratio={getHeroSplitFixedImageRatio(section, fieldSection)}
           secondaryActionHref={getServicesHref(navigationLinks)}
@@ -397,6 +398,7 @@ export function renderPageTemplateSection(
         <HeroCompactSectionV3
           {...heroCompactProps(fieldSection)}
           align={getHeroCompactAlign(section)}
+          colorRecipe={section.colorRecipe}
           headingLevel={headingLevel}
           headingSize={getCompactHeaderHeadingSize(section)}
         />
@@ -528,6 +530,7 @@ export function renderPageTemplateSection(
       return (
         <ContentSplitFixedImageSectionV3
           {...heroSplitProps(fieldSection)}
+          colorRecipe={section.colorRecipe}
           headingLevel={headingLevel}
           ratio={getContentSplitFixedImageRatio(section, fieldSection)}
           variant={getContentSplitFixedImageVariant(section)}

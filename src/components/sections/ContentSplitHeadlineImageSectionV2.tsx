@@ -43,8 +43,8 @@ export function ContentSplitHeadlineImageSectionV2({
   const colors = {
     default: { body: "text-service-muted", heading: "text-service-ink", media: "bg-surface-raised", panel: "bg-service-surface", section: "bg-bg-page" },
     muted: { body: "text-service-muted", heading: "text-service-ink", media: "bg-service-surface", panel: "bg-bg-page", section: "bg-service-surface" },
-    dark: { body: "text-white/70", heading: "text-white", media: "bg-surface-raised", panel: "bg-service-surface", section: "bg-bg-dark" },
-    accent: { body: "text-[var(--live-accent-muted-text)]", heading: "text-[var(--live-accent-ink)]", media: "bg-surface-raised", panel: "bg-service-surface", section: "bg-service-accent" },
+    dark: { body: "text-white/70", heading: "text-white", media: "bg-white/8", panel: "bg-white/5", section: "bg-bg-dark" },
+    accent: { body: "text-[var(--live-accent-muted-text)]", heading: "text-[var(--live-accent-ink)]", media: "bg-white/8", panel: "bg-white/10", section: "bg-service-accent" },
   }[colorRecipe];
 
   return (

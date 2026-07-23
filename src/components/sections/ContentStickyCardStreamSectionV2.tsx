@@ -47,10 +47,27 @@ export function ContentStickyCardStreamSectionV2({
 }: ContentStickyCardStreamSectionV2Props) {
   const shouldReduceMotion = useReducedMotion();
   const transparentCards = cardFill === "none";
+  // Section/card backgrounds and ink/muted text below use the generic
+  // service-ink/bg-page tokens, which the pagebuilder-section-frame wrapper
+  // already re-tints correctly for dark/accent recipes. text-service-accent
+  // is the one token that stays a constant brand color regardless of recipe,
+  // so it needs an explicit swap here or the eyebrow becomes invisible
+  // against an accent-colored background.
   const colors =
     colorRecipe === "muted"
-      ? { card: "bg-bg-page", section: "bg-service-surface" }
-      : { card: "bg-service-surface", section: "bg-bg-page" };
+      ? {
+          card: "bg-bg-page",
+          eyebrow: "text-service-accent",
+          section: "bg-service-surface",
+        }
+      : {
+          card: "bg-service-surface",
+          eyebrow:
+            colorRecipe === "accent"
+              ? "text-[var(--live-accent-ink)]"
+              : "text-service-accent",
+          section: "bg-bg-page",
+        };
 
   return (
     <section className={colors.section}>
@@ -61,7 +78,7 @@ export function ContentStickyCardStreamSectionV2({
         >
           <div className="sticky top-[var(--site-grid-inset-block)] max-lg:static">
             <div className="fluid-type-frame">
-              <p className="type-label text-service-accent">{eyebrow}</p>
+              <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
               <h2 className="type-display-lg mt-eyebrow-display text-service-ink">
                 {title}
               </h2>
@@ -110,7 +127,7 @@ export function ContentStickyCardStreamSectionV2({
                 key={card.title}
               >
                 <div className="flex items-start justify-between gap-6">
-                  <p className="type-label text-service-accent">
+                  <p className={cx("type-label", colors.eyebrow)}>
                     {card.eyebrow}
                   </p>
                   <span className="type-caption shrink-0 text-service-muted">

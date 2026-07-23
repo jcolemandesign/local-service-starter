@@ -26,6 +26,7 @@ import {
   type TemplateCopyContractStatus,
   type TemplateCopyContractTemplate,
 } from "@/utils/template-copy-contract";
+import { resolveContractTemplate } from "@/utils/resolve-contract-template";
 import {
   buildCopywritingAgentInstructions,
   copywritingLeverDefinitions,
@@ -597,9 +598,11 @@ export function StrategyWorkspaceSection({
 
   async function copyPageTemplateContract(page: (typeof assemblyPages)[number]) {
     const copyKey = page.stagedPageId || page.id;
-    const template =
-      templates.find((item) => item.id === page.templateId) ??
-      page.stagedTemplate;
+    const template = resolveContractTemplate(
+      page.stagedTemplate,
+      templates,
+      page.templateId,
+    );
 
     if (!template || !navigator.clipboard?.writeText) {
       setContractCopyFeedback(copyKey, "error");
@@ -768,9 +771,11 @@ export function StrategyWorkspaceSection({
                     const pageCopyValue =
                       fields[getStrategyPageCopyField(page)] ?? "";
                     const hasPageCopy = pageCopyValue.trim().length > 0;
-                    const contractTemplate =
-                      templates.find((item) => item.id === page.templateId) ??
-                      page.stagedTemplate;
+                    const contractTemplate = resolveContractTemplate(
+                      page.stagedTemplate,
+                      templates,
+                      page.templateId,
+                    );
                     const contractStatus = getTemplateCopyContractStatus(
                       pageCopyValue,
                       contractTemplate,

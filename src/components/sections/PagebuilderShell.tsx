@@ -2773,6 +2773,7 @@ export function PagebuilderShell({
         ) : isFixedRatioSplitSection(section) ? (
           <HeroSplitFixedImageSectionV3
             {...sectionLibraryV3Content.heroSplitFullHeight}
+            colorRecipe={getSectionColorRecipe(section)}
             headingLevel={headingLevel}
             ratio={
               (section.ratio ??
@@ -2787,6 +2788,7 @@ export function PagebuilderShell({
         ) : isContentFixedRatioSplitSection(section) ? (
           <ContentSplitFixedImageSectionV3
             {...sectionLibraryV3Content.heroSplitFullHeight}
+            colorRecipe={getSectionColorRecipe(section)}
             headingLevel={headingLevel}
             ratio={
               (section.ratio ??
@@ -2803,6 +2805,7 @@ export function PagebuilderShell({
           <HeroCompactSectionV3
             {...sectionLibraryV3Content.heroCompact}
             align={getHeroCompactAlign(section)}
+            colorRecipe={getSectionColorRecipe(section)}
             headingSize={getCompactHeaderHeadingSize(section)}
             headingLevel={headingLevel}
           />

@@ -50,6 +50,13 @@ export type TemplateCopyContractStatus =
   | "stale"
   | "unverified";
 
+export type TemplateCopySectionStatus = {
+  ordinal: string;
+  reasons: string[];
+  sectionId: string;
+  status: TemplateCopyContractStatus;
+};
+
 const fallbackFields: TemplateCopyFieldSpec[] = [
   {
     example: "Local service starter",
@@ -164,6 +171,7 @@ export function buildTemplateCopyContract({
     "- If the user asks for outline mode, use bullets and notes for review.",
     "- If the user asks for bulk paste mode, use exact field labels with no bullets before field names.",
     `- In bulk paste mode, begin immediately below \`# Bulk Paste Copy\` with these two comments on separate lines: \`<!-- Page target: ${pageLabel} (${publicPath}) -->\` and \`<!-- Template contract: ${contractFingerprint} -->\`. These notes are intentionally ignored by the importer and must not be treated as content fields.`,
+    "- In bulk paste mode, immediately below each section's `### 0N-slug` heading, include `<!-- Section contract: <value> -->` on its own line before any fields, using the exact \"Section contract\" value shown for that section below. This note is intentionally ignored by the importer and must not be treated as a content field.",
     "",
     "## Sections",
   );
@@ -171,6 +179,7 @@ export function buildTemplateCopyContract({
   template.sections.forEach((section, index) => {
     const sectionId = `${String(index + 1).padStart(2, "0")}-${slugify(section.name || section.mode || section.component)}`;
     const fields = getTemplateCopyFieldsForSection(section);
+    const sectionFingerprint = getTemplateCopySectionFingerprint(section);
 
     lines.push(
       "",
@@ -178,6 +187,7 @@ export function buildTemplateCopyContract({
       `Section name: ${section.name}`,
       `Semantic role: ${section.mode}`,
       `Component: ${section.component}`,
+      `Section contract: ${sectionFingerprint}`,
     );
 
     if (section.variant) {
@@ -256,6 +266,35 @@ export function getTemplateCopyContractFingerprint(
   return `tc-v2-${hashContractShape(JSON.stringify(contractShape))}`;
 }
 
+/**
+ * A schema fingerprint of a single section, mirroring
+ * getTemplateCopyContractFingerprint but scoped to one section instead of the
+ * whole template. Lets copy be validated per section rather than only at the
+ * whole-page level.
+ */
+export function getTemplateCopySectionFingerprint(
+  section: TemplateCopyContractSection,
+) {
+  const sectionShape = {
+    component: section.component,
+    fields: getTemplateCopyFieldsForSection(section).map((field) => ({
+      format: field.format ?? "",
+      itemCount: field.itemCount ?? 0,
+      name: field.name,
+      purpose: field.purpose,
+      target: field.target,
+    })),
+    instruction: section.instruction ?? "",
+    mode: section.mode,
+    name: section.name,
+    ratio: section.ratio ?? "",
+    variant: section.variant ?? "",
+    version: 1,
+  };
+
+  return `sc-v1-${hashContractShape(JSON.stringify(sectionShape))}`;
+}
+
 function getTemplateCopySectionRules(section: TemplateCopyContractSection) {
   if (!section.component.toLowerCase().includes("projectcasestudygallery")) {
     return [];
@@ -298,49 +337,178 @@ export function getTemplateCopyContractStatus(
     : "stale";
 }
 
+/**
+ * Per-section counterpart to getTemplateCopyContractStatus, with a reason for
+ * each section's status. Does not replace or change the existing whole-page
+ * status function or its callers - this is additive, for consumers that want
+ * section-level truth (e.g. surfacing which specific sections need
+ * regenerated copy) instead of one aggregate status for the whole page.
+ */
+export function getTemplateCopySectionStatuses(
+  copy: string,
+  template: TemplateCopyContractTemplate,
+): TemplateCopySectionStatus[] {
+  const sectionsByOrdinal = copy.trim()
+    ? getBatchCopyFieldsBySectionOrdinal(copy)
+    : new Map<string, { fields: Set<string>; fingerprint: string; slug: string }>();
+
+  return template.sections.map((section, index) => {
+    const ordinal = String(index + 1).padStart(2, "0");
+    const sectionId = `${ordinal}-${slugify(section.name || section.mode || section.component)}`;
+
+    if (!copy.trim()) {
+      return {
+        ordinal,
+        reasons: ["No copy has been pasted for this page yet."],
+        sectionId,
+        status: "empty",
+      };
+    }
+
+    const suppliedSection = sectionsByOrdinal.get(ordinal);
+
+    if (!suppliedSection) {
+      return {
+        ordinal,
+        reasons: [
+          "No matching section block was found in the pasted copy for this position.",
+        ],
+        sectionId,
+        status: "unverified",
+      };
+    }
+
+    if (suppliedSection.fingerprint) {
+      const expectedFingerprint = getTemplateCopySectionFingerprint(section);
+
+      if (suppliedSection.fingerprint === expectedFingerprint) {
+        return { ordinal, reasons: [], sectionId, status: "current" };
+      }
+
+      return {
+        ordinal,
+        reasons: [
+          "Section contract fingerprint does not match the current section definition.",
+        ],
+        sectionId,
+        status: "stale",
+      };
+    }
+
+    const reasons: string[] = [];
+    const expectedSlug = slugify(
+      section.name || section.mode || section.component,
+    );
+
+    if (suppliedSection.slug && suppliedSection.slug !== expectedSlug) {
+      reasons.push(
+        `Section heading identity ("${suppliedSection.slug}") does not match the current section ("${expectedSlug}").`,
+      );
+    }
+
+    const missingFieldNames = getTemplateCopyFieldsForSection(section)
+      .filter(
+        (field) => !suppliedSection.fields.has(normalizeContractFieldName(field.name)),
+      )
+      .map((field) => field.name);
+
+    if (missingFieldNames.length > 0) {
+      reasons.push(`Missing required field(s): ${missingFieldNames.join(", ")}.`);
+    }
+
+    if (reasons.length > 0) {
+      return { ordinal, reasons, sectionId, status: "stale" };
+    }
+
+    return {
+      ordinal,
+      reasons: [
+        "Verified via legacy field-name match - no section contract fingerprint was found in the pasted copy.",
+      ],
+      sectionId,
+      status: "current",
+    };
+  });
+}
+
 function isBatchCopySchemaCompatible(
   copy: string,
   template: TemplateCopyContractTemplate,
 ) {
-  const fieldsBySectionOrdinal = getBatchCopyFieldsBySectionOrdinal(copy);
+  const sectionsByOrdinal = getBatchCopyFieldsBySectionOrdinal(copy);
 
-  if (fieldsBySectionOrdinal.size !== template.sections.length) {
+  if (sectionsByOrdinal.size !== template.sections.length) {
     return false;
   }
 
   return template.sections.every((section, index) => {
     const sectionOrdinal = String(index + 1).padStart(2, "0");
-    const suppliedFields = fieldsBySectionOrdinal.get(sectionOrdinal);
+    const suppliedSection = sectionsByOrdinal.get(sectionOrdinal);
 
-    if (!suppliedFields) {
+    if (!suppliedSection) {
+      return false;
+    }
+
+    // A slug present in the pasted heading must identify the same section the
+    // template currently has at this ordinal. Without this check, two different
+    // components sharing overlapping field names (eyebrow/headline/body/...) at
+    // the same position would both satisfy the field-name check below and the
+    // status would incorrectly report "current" for copy written for a
+    // component that is no longer there. Copy with no slug in its heading
+    // (older pasted format) can't be checked this way and falls through to the
+    // field-name-only comparison, unchanged from prior behavior.
+    const expectedSlug = slugify(
+      section.name || section.mode || section.component,
+    );
+
+    if (suppliedSection.slug && suppliedSection.slug !== expectedSlug) {
       return false;
     }
 
     return getTemplateCopyFieldsForSection(section).every((field) =>
-      suppliedFields.has(normalizeContractFieldName(field.name)),
+      suppliedSection.fields.has(normalizeContractFieldName(field.name)),
     );
   });
 }
 
 function getBatchCopyFieldsBySectionOrdinal(copy: string) {
-  const fieldsBySectionOrdinal = new Map<string, Set<string>>();
+  const sectionsByOrdinal = new Map<
+    string,
+    { fields: Set<string>; fingerprint: string; slug: string }
+  >();
   const lines = extractContractBulkPasteCopy(copy).split(/\r?\n/);
   let currentSectionOrdinal = "";
 
   lines.forEach((rawLine) => {
     const line = rawLine.trim();
-    const sectionMatch = line.match(/^#{2,4}\s+(\d+)(?:-|\s|$)/);
+    const sectionMatch = line.match(/^#{2,4}\s+(\d+)(?:[-\s](.*))?$/);
 
     if (sectionMatch) {
       currentSectionOrdinal = sectionMatch[1].padStart(2, "0");
-      fieldsBySectionOrdinal.set(
-        currentSectionOrdinal,
-        fieldsBySectionOrdinal.get(currentSectionOrdinal) ?? new Set<string>(),
-      );
+      const existing = sectionsByOrdinal.get(currentSectionOrdinal);
+      sectionsByOrdinal.set(currentSectionOrdinal, {
+        fields: existing?.fields ?? new Set<string>(),
+        fingerprint: existing?.fingerprint ?? "",
+        slug: slugify(sectionMatch[2] ?? ""),
+      });
       return;
     }
 
     if (!currentSectionOrdinal) {
+      return;
+    }
+
+    const sectionFingerprintMatch = line.match(
+      /^<!--\s*Section contract:\s*([^\s>]+)\s*-->$/i,
+    );
+
+    if (sectionFingerprintMatch) {
+      const current = sectionsByOrdinal.get(currentSectionOrdinal);
+
+      if (current) {
+        current.fingerprint = sectionFingerprintMatch[1];
+      }
+
       return;
     }
 
@@ -352,12 +520,12 @@ function getBatchCopyFieldsBySectionOrdinal(copy: string) {
       return;
     }
 
-    fieldsBySectionOrdinal
+    sectionsByOrdinal
       .get(currentSectionOrdinal)
-      ?.add(normalizeContractFieldName(keyedMatch[1]));
+      ?.fields.add(normalizeContractFieldName(keyedMatch[1]));
   });
 
-  return fieldsBySectionOrdinal;
+  return sectionsByOrdinal;
 }
 
 function extractContractBulkPasteCopy(copy: string) {

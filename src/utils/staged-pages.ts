@@ -15,6 +15,8 @@ import type { StrategySnapshot } from "@/utils/strategy-snapshots";
 import {
   getTemplateCopyContractStatus,
   getTemplateCopyFieldsForSection,
+  getTemplateCopySectionStatuses,
+  type TemplateCopySectionStatus,
 } from "@/utils/template-copy-contract";
 
 export type ContentFieldKind = "copy" | "image" | "link" | "meta";
@@ -463,8 +465,24 @@ export function buildStrategyTemplateStagedPage({
       ];
     }),
   ];
+  // Only seed fields belonging to sections whose pasted copy is verified as
+  // "current" for this template. A section that is stale/unverified/empty is
+  // left blank here rather than seeded with copy that may belong to a
+  // different component - the same-position partial-restaging and
+  // section-scoped application described in the staged-copy workflow handoff.
+  const sectionStatuses = getTemplateCopySectionStatuses(
+    strategyCopy,
+    template,
+  );
+  const currentSectionOrdinals = new Set(
+    sectionStatuses
+      .filter((sectionStatus) => sectionStatus.status === "current")
+      .map((sectionStatus) => sectionStatus.ordinal),
+  );
   const fields = applyBatchCopy
-    ? seedFieldsFromStrategyCopy(templateFields, strategyCopy)
+    ? seedFieldsFromStrategyCopy(templateFields, strategyCopy, {
+        allowedSectionOrdinals: currentSectionOrdinals,
+      })
     : templateFields;
 
   return {
@@ -494,7 +512,50 @@ export function buildStrategyTemplateStagedPage({
   } satisfies StagedPage;
 }
 
-function countFields(fields: StagedPageField[]) {
+/**
+ * Restores a previously staged page's field values for any section whose
+ * freshly-built copy is not verified as "current" (stale/unverified/empty),
+ * so a same-position restage only overwrites the sections that actually have
+ * good new copy instead of blanking sections that were fine before. Matching
+ * is by field path, so this is a no-op wherever the section's identity
+ * (ordinal + slug) has changed - there is nothing to preserve at a path that
+ * no longer exists.
+ */
+export function mergePreservingIncompatibleSections(
+  nextFields: StagedPageField[],
+  previousFields: StagedPageField[] | undefined,
+  sectionStatuses: TemplateCopySectionStatus[],
+) {
+  if (!previousFields?.length) {
+    return nextFields;
+  }
+
+  const nonCurrentOrdinals = new Set(
+    sectionStatuses
+      .filter((sectionStatus) => sectionStatus.status !== "current")
+      .map((sectionStatus) => sectionStatus.ordinal),
+  );
+
+  if (nonCurrentOrdinals.size === 0) {
+    return nextFields;
+  }
+
+  const previousFieldsByPath = new Map(
+    previousFields.map((field) => [field.path, field]),
+  );
+
+  return nextFields.map((field) => {
+    const ordinal = getSectionIdFromPath(field.path).match(/^(\d+)-/)?.[1];
+
+    if (!ordinal || !nonCurrentOrdinals.has(ordinal)) {
+      return field;
+    }
+
+    return previousFieldsByPath.get(field.path) ?? field;
+  });
+}
+
+export function countFields(fields: StagedPageField[]) {
   return fields.reduce<Record<ContentFieldKind, number>>(
     (counts, field) => ({
       ...counts,
@@ -678,6 +739,7 @@ function seedFieldsFromStrategyCopy(
   fields: StagedPageField[],
   strategyCopy: string,
   options: {
+    allowedSectionOrdinals?: Set<string>;
     overwriteExistingCopy?: boolean;
     previousStrategyCopy?: string;
   } = {},
@@ -695,7 +757,8 @@ function seedFieldsFromStrategyCopy(
     if (
       field.kind !== "copy" ||
       field.path.startsWith("strategy.") ||
-      (!options.overwriteExistingCopy && field.value.trim().length > 0)
+      (!options.overwriteExistingCopy && field.value.trim().length > 0) ||
+      !isSectionOrdinalAllowed(field.path, options.allowedSectionOrdinals)
     ) {
       return field;
     }
@@ -961,6 +1024,19 @@ function getCompatibleBulkPasteFieldNames(fieldName: string) {
 
 function getSectionIdFromPath(fieldPath: string) {
   return fieldPath.split(".")[0] || "strategy";
+}
+
+function isSectionOrdinalAllowed(
+  fieldPath: string,
+  allowedSectionOrdinals: Set<string> | undefined,
+) {
+  if (!allowedSectionOrdinals) {
+    return true;
+  }
+
+  const ordinal = getSectionIdFromPath(fieldPath).match(/^(\d+)-/)?.[1];
+
+  return ordinal ? allowedSectionOrdinals.has(ordinal) : false;
 }
 
 function getBulkPasteSectionAliases(sectionId: string) {

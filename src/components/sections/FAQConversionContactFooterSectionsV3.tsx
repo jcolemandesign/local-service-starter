@@ -249,10 +249,10 @@ const faqRecipeClasses: Record<
     section: "bg-service-surface",
   },
   accent: {
-    body: "text-white/78",
-    card: "border-white/18 bg-white/10 shadow-service",
-    eyebrow: "text-white/72",
-    heading: "text-white",
+    body: "text-[var(--live-accent-muted-text)]",
+    card: "border-[color-mix(in_oklab,var(--live-accent-ink)_18%,transparent)] bg-[color-mix(in_oklab,var(--live-accent-ink)_10%,transparent)] shadow-service",
+    eyebrow: "text-[var(--live-accent-ink)]",
+    heading: "text-[var(--live-accent-ink)]",
     section: "bg-service-accent",
   },
 };
@@ -352,11 +352,11 @@ const ctaRecipeClasses: Record<
   },
   accent: {
     action: "!border-white !bg-white !text-bg-dark hover:!bg-white/85",
-    body: "text-white/78",
-    card: "border-white/18 bg-white/10 text-white",
-    eyebrow: "text-white/72",
-    heading: "text-white",
-    section: "bg-service-accent text-white",
+    body: "text-[var(--live-accent-muted-text)]",
+    card: "border-[color-mix(in_oklab,var(--live-accent-ink)_18%,transparent)] bg-[color-mix(in_oklab,var(--live-accent-ink)_10%,transparent)] text-[var(--live-accent-ink)]",
+    eyebrow: "text-[var(--live-accent-ink)]",
+    heading: "text-[var(--live-accent-ink)]",
+    section: "bg-service-accent text-[var(--live-accent-ink)]",
   },
 };
 

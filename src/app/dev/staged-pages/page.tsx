@@ -13,7 +13,9 @@ import { readSiteExportState } from "@/utils/site-export-state";
 import { readStagedPages, type StagedPage } from "@/utils/staged-pages";
 import {
   getTemplateCopyContractStatus,
+  getTemplateCopySectionStatuses,
   type TemplateCopyContractTemplate,
+  type TemplateCopySectionStatus,
 } from "@/utils/template-copy-contract";
 
 export const metadata: Metadata = {
@@ -101,6 +103,9 @@ export default async function StagedPagesPage() {
                   page.fieldCounts.copy,
                 );
                 const contractStatus = getPageContractStatus(page);
+                const sectionsNeedingAttention = getPageSectionStatuses(
+                  page,
+                ).filter((sectionStatus) => sectionStatus.status !== "current");
 
                 return (
                   <Card className="p-5 shadow-none" key={page.pageId}>
@@ -196,6 +201,12 @@ export default async function StagedPagesPage() {
                             label={`${page.fieldCounts.meta ?? 0} reference`}
                           />
                           <StatusPill label={`${page.fields.length} fields`} />
+                          {sectionsNeedingAttention.length > 0 ? (
+                            <StatusPill
+                              label={`${sectionsNeedingAttention.length} section${sectionsNeedingAttention.length === 1 ? "" : "s"} need copy`}
+                              tone="warning"
+                            />
+                          ) : null}
                         </div>
                       </div>
 
@@ -236,6 +247,39 @@ export default async function StagedPagesPage() {
                             fields
                           </p>
                         ) : null}
+                      </div>
+                    ) : null}
+
+                    {sectionsNeedingAttention.length > 0 ? (
+                      <div className="mt-5 border-t border-service-border pt-5">
+                        <p className="type-label text-service-accent">
+                          Sections needing regenerated copy
+                        </p>
+                        <div className="mt-3 grid gap-2">
+                          {sectionsNeedingAttention.map((sectionStatus) => (
+                            <div
+                              className="rounded-sm border border-amber-700 bg-amber-50 px-3 py-2"
+                              key={sectionStatus.sectionId}
+                            >
+                              <div className="flex flex-wrap items-center gap-2">
+                                <p className="type-caption font-semibold text-amber-900">
+                                  {sectionStatus.sectionId}
+                                </p>
+                                <StatusPill
+                                  label={formatContractStatus(
+                                    sectionStatus.status,
+                                  )}
+                                  tone="warning"
+                                />
+                              </div>
+                              {sectionStatus.reasons.length > 0 ? (
+                                <p className="type-caption mt-1 text-amber-900">
+                                  {sectionStatus.reasons.join(" ")}
+                                </p>
+                              ) : null}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     ) : null}
                   </Card>
@@ -333,19 +377,41 @@ function getSectionCount(page: StagedPage) {
   ).size;
 }
 
-function getPageContractStatus(page: StagedPage) {
-  const pageCopy =
-    page.fields.find((field) => field.path === "strategy.pageCopy")?.value ??
-    "";
-  const template =
-    page.template?.sections && page.template.sections.length > 0
-      ? ({
-          ...page.template,
-          sections: page.template.sections,
-        } satisfies TemplateCopyContractTemplate)
-      : undefined;
+function getPageContractTemplate(page: StagedPage) {
+  return page.template?.sections && page.template.sections.length > 0
+    ? ({
+        ...page.template,
+        sections: page.template.sections,
+      } satisfies TemplateCopyContractTemplate)
+    : undefined;
+}
 
-  return getTemplateCopyContractStatus(pageCopy, template);
+function getPageCopy(page: StagedPage) {
+  return (
+    page.fields.find((field) => field.path === "strategy.pageCopy")?.value ??
+    ""
+  );
+}
+
+function getPageContractStatus(page: StagedPage) {
+  return getTemplateCopyContractStatus(
+    getPageCopy(page),
+    getPageContractTemplate(page),
+  );
+}
+
+function getPageSectionStatuses(page: StagedPage): TemplateCopySectionStatus[] {
+  const pageCopy = getPageCopy(page);
+  const template = getPageContractTemplate(page);
+
+  // Skip per-section detail when the page has no batch copy at all yet -
+  // every section would report "empty", which is already covered by the
+  // page-level "No batch copy" status and the empty-copy-fields list below.
+  if (!template || !pageCopy.trim()) {
+    return [];
+  }
+
+  return getTemplateCopySectionStatuses(pageCopy, template);
 }
 
 function formatContractStatus(

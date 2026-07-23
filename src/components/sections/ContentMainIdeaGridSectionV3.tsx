@@ -84,7 +84,7 @@ export function ContentMainIdeaGridSectionV3({
     },
     accent: {
       body: "text-[var(--live-accent-muted-text)]",
-      card: "border-[color:var(--live-accent-ink)]/20 bg-bg-page shadow-service",
+      card: "border-[color-mix(in_oklab,var(--live-accent-ink)_20%,transparent)] bg-white/10",
       eyebrow: "text-[var(--live-accent-ink)]",
       heading: "text-[var(--live-accent-ink)]",
       index: "text-[var(--live-accent-ink)]",
