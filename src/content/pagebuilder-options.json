@@ -9,23 +9,9 @@
       "optionName": "Page Layout",
       "recipeId": "compact-utility",
       "recipeName": "Individual Service",
-      "savedAt": "2026-07-23T22:35:12.563Z",
-      "sectionCount": 13,
+      "savedAt": "2026-07-23T23:08:05.962Z",
+      "sectionCount": 12,
       "sections": [
-        {
-          "component": "NavPrimarySectionV2",
-          "id": "compact-utility-template-system-replacement-0",
-          "included": true,
-          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
-          "mode": "Navigation",
-          "name": "Primary navigation",
-          "originalComponent": "NavFloatingBentoSectionV2",
-          "originalIndex": 0,
-          "reduceBottomPadding": false,
-          "reduceTopPadding": false,
-          "colorRecipe": "default",
-          "cardFill": "solid"
-        },
         {
           "component": "HeroSplitFixedImageSectionV3",
           "id": "compact-utility-template-system-replacement-1",

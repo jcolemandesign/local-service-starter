@@ -1704,7 +1704,7 @@ export function StrategyWorkspaceSection({
                           </button>
                         </div>
                         <div
-                          className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto rounded-[var(--radius-md-token)] border border-service-border"
+                          className="strategy-template-preview min-h-0 flex-1 overflow-x-hidden overflow-y-auto rounded-[var(--radius-md-token)] border border-service-border"
                           ref={previewWrapperRef}
                         >
                           <div
