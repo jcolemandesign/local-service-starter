@@ -509,6 +509,41 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
+  contentCardTwoUp: {
+    align: "left" as const,
+    items: [
+      {
+        title: "Repair or replace, decided with the full picture.",
+        body: "A single visible problem rarely tells the whole story. A practical recommendation weighs the system's age, repair history, and efficiency alongside the immediate issue.",
+        secondBody:
+          "That context is what turns a repair estimate into a decision the homeowner can actually stand behind, instead of a guess made under pressure.",
+      },
+      {
+        title: "What a same-week visit actually includes.",
+        body: "A clear visit covers diagnosis, a written explanation of the problem, and options ranked by urgency before any work begins.",
+        bullets: [
+          "Diagnosis explained in plain terms",
+          "Options ranked by urgency, not upsell",
+          "Written estimate before work starts",
+        ],
+      },
+      {
+        title: "Maintenance that earns its place on the calendar.",
+        body: "Seasonal visits only matter if they catch something before it becomes a breakdown. A useful plan documents system condition at every visit, not just a filter change.",
+        secondBody:
+          "That record is what makes next year's recommendation faster and more accurate than starting from scratch.",
+      },
+      {
+        title: "Financing that fits the actual project.",
+        body: "Larger replacements deserve a payment path that's explained as clearly as the equipment itself, with terms confirmed before anyone signs.",
+        bullets: [
+          "Qualified-project financing options",
+          "Terms confirmed before approval",
+          "No pressure to decide same-day",
+        ],
+      },
+    ],
+  },
   contentSplitHeadlineImage: {
     headlineTop: "Useful service pages",
     headlineBottom: "feel calm first",
@@ -1477,6 +1512,10 @@ export const sectionLibraryV3Collections = [
       {
         label: "Longform with feature rail",
         component: "content-narrative-feature-rail-v3",
+      },
+      {
+        label: "Card content 2 up",
+        component: "content-card-two-up-v3",
       },
       {
         label: "Split headline image",

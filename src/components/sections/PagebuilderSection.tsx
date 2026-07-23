@@ -1,6 +1,7 @@
 import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAboutCompanySectionV2";
 import { ContentAboutStorySectionV3 } from "@/components/sections/ContentAboutStorySectionV3";
 import { ContentNarrativeFeatureRailSectionV3 } from "@/components/sections/ContentNarrativeFeatureRailSectionV3";
+import { ContentCardTwoUpSectionV3 } from "@/components/sections/ContentCardTwoUpSectionV3";
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
 import { ContentMainIdeaGridSectionV3 } from "@/components/sections/ContentMainIdeaGridSectionV3";
@@ -499,6 +500,18 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.contentNarrativeFeatureRail}
           align={section.variant?.startsWith("left") ? "left" : "right"}
           showImage={!section.variant?.includes("text-only")}
+        />
+      );
+    case "ContentCardTwoUpSectionV3":
+      return (
+        <ContentCardTwoUpSectionV3
+          {...sectionLibraryV3Content.contentCardTwoUp}
+          align={
+            section.variant === "center" || section.variant === "right"
+              ? section.variant
+              : "left"
+          }
+          cardFill={section.cardFill}
         />
       );
     case "ContentRuleHeaderSectionV2":
@@ -1080,6 +1093,12 @@ export function PagebuilderSection() {
       "ContentNarrativeFeatureRailSectionV3",
       "Narrative",
       "Longform with feature rail",
+      4,
+    ),
+    ContentCardTwoUpSectionV3: previewCatalogEntry(
+      "ContentCardTwoUpSectionV3",
+      "Narrative",
+      "Card content 2 up",
       4,
     ),
     ContentMainIdeaGridSectionV3: previewCatalogEntry(

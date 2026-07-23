@@ -12,6 +12,12 @@ export {
   type NarrativeFeatureRailCard,
 } from "./ContentNarrativeFeatureRailSectionV3";
 export {
+  ContentCardTwoUpSectionV3,
+  type ContentCardTwoUpAlign,
+  type ContentCardTwoUpItem,
+  type ContentCardTwoUpSectionV3Props,
+} from "./ContentCardTwoUpSectionV3";
+export {
   ContentMainIdeaGridSectionV3,
   type ContentMainIdeaGridPoint,
   type ContentMainIdeaGridSectionV3Props,

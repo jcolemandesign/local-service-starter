@@ -7,6 +7,7 @@ import {
   type ContentMainIdeaGridAlign,
 } from "@/components/sections/ContentMainIdeaGridSectionV3";
 import { ContentNarrativeFeatureRailSectionV3 } from "@/components/sections/ContentNarrativeFeatureRailSectionV3";
+import { ContentCardTwoUpSectionV3 } from "@/components/sections/ContentCardTwoUpSectionV3";
 import {
   ContentPhotoGalleryCarouselSectionV3,
   ContentPhotoGalleryLargeCarouselSectionV3,
@@ -574,6 +575,18 @@ export function renderPageTemplateSection(
           {...contentNarrativeFeatureRailProps(fieldSection)}
           align={section.variant?.startsWith("left") ? "left" : "right"}
           showImage={!section.variant?.includes("text-only")}
+        />
+      );
+    case "ContentCardTwoUpSectionV3":
+      return (
+        <ContentCardTwoUpSectionV3
+          {...contentCardTwoUpProps(fieldSection)}
+          align={
+            section.variant === "center" || section.variant === "right"
+              ? section.variant
+              : "left"
+          }
+          cardFill={section.cardFill}
         />
       );
     case "ContentRuleHeaderSectionV2":
@@ -1257,6 +1270,43 @@ function contentNarrativeFeatureRailProps(section: FieldSection) {
     intro: paragraphs[0] ?? fallback.intro,
     paragraphs: paragraphs.slice(1),
     title: getTitle(section, fallback.title),
+  };
+}
+
+function contentCardTwoUpProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.contentCardTwoUp;
+  const slots = [1, 2, 3, 4] as const;
+  const parsedItems = slots
+    .map((slot) => {
+      const title = getValue(section, `item${slot}Title`, "");
+      const body = getValue(section, `item${slot}Body`, "");
+      const supporting = getValue(section, `item${slot}Supporting`, "");
+
+      if (!title && !body) {
+        return null;
+      }
+
+      const supportingLines = supporting
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean);
+      const bullets = supportingLines.length > 1 ? supportingLines : undefined;
+      const secondBody =
+        !bullets && supportingLines.length === 1 ? supportingLines[0] : undefined;
+      const fallbackItem = fallback.items[(slot - 1) % fallback.items.length];
+
+      return {
+        body: body || fallbackItem.body,
+        bullets,
+        secondBody,
+        title: title || fallbackItem.title,
+      };
+    })
+    .filter((item): item is NonNullable<typeof item> => item !== null);
+
+  return {
+    ...fallback,
+    items: parsedItems.length > 0 ? parsedItems : fallback.items,
   };
 }
 

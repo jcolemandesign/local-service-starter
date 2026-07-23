@@ -46,6 +46,10 @@ import {
   type ContentNarrativeFeatureRailAlign,
 } from "@/components/sections/ContentNarrativeFeatureRailSectionV3";
 import {
+  ContentCardTwoUpSectionV3,
+  type ContentCardTwoUpAlign,
+} from "@/components/sections/ContentCardTwoUpSectionV3";
+import {
   ProjectCaseStudyGallerySectionV3,
   type ProjectCaseStudyGalleryAlign,
 } from "@/components/sections/ProjectCaseStudyGallerySectionV3";
@@ -111,6 +115,7 @@ const contentSplitHeadlineImageComponent = "ContentSplitHeadlineImageSectionV2";
 const contentMainIdeaGridComponent = "ContentMainIdeaGridSectionV3";
 const contentNarrativeFeatureRailComponent =
   "ContentNarrativeFeatureRailSectionV3";
+const contentCardTwoUpComponent = "ContentCardTwoUpSectionV3";
 const projectCaseStudyGalleryComponent = "ProjectCaseStudyGallerySectionV3";
 const contentStickyCardStreamComponent = "ContentStickyCardStreamSectionV2";
 const ctaSectionComponent = "CTASectionV3";
@@ -540,6 +545,14 @@ function getNarrativeFeatureRailAlign(
 
 function getNarrativeFeatureRailShowImage(section: WorkingSection) {
   return !section.variant?.includes("text-only");
+}
+
+function getContentCardTwoUpAlign(
+  section: WorkingSection,
+): ContentCardTwoUpAlign {
+  return section.variant === "center" || section.variant === "right"
+    ? section.variant
+    : "left";
 }
 
 function getProjectCaseStudyGalleryAlign(
@@ -1154,6 +1167,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     layoutGrid: 14,
     mode: "Narrative",
     name: "Longform with feature rail",
+  },
+  {
+    component: "ContentCardTwoUpSectionV3",
+    instruction:
+      "Show two editorial-scale cards per row on the shared 14-column grid, each spanning six columns. Provide exactly 2 or 4 cards (2 = one row, 4 = two rows). Each card is a header plus either two short paragraphs or one short paragraph and a short bullet list.",
+    layoutGrid: 14,
+    mode: "Narrative",
+    name: "Card content 2 up",
   },
   {
     component: "ContentRuleHeaderSectionV2",
@@ -2278,6 +2299,20 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateContentCardTwoUpAlign(
+    sectionId: string,
+    align: ContentCardTwoUpAlign,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && section.component === contentCardTwoUpComponent
+          ? { ...section, variant: align }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateProjectCaseStudyGalleryAlign(
     sectionId: string,
     align: ProjectCaseStudyGalleryAlign,
@@ -2899,6 +2934,12 @@ export function PagebuilderShell({
             {...sectionLibraryV3Content.contentNarrativeFeatureRail}
             align={getNarrativeFeatureRailAlign(section)}
             showImage={getNarrativeFeatureRailShowImage(section)}
+          />
+        ) : section.component === contentCardTwoUpComponent ? (
+          <ContentCardTwoUpSectionV3
+            {...sectionLibraryV3Content.contentCardTwoUp}
+            align={getContentCardTwoUpAlign(section)}
+            cardFill={getSectionCardFill(section)}
           />
         ) : section.component === ctaSectionComponent ? (
           <CTASectionV3
@@ -4027,6 +4068,48 @@ export function PagebuilderShell({
                                 </div>
                               </fieldset>
                             </div>
+                          ) : null}
+
+                          {section.component === contentCardTwoUpComponent ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Card alignment
+                              </legend>
+                              <div className="grid grid-cols-3 gap-2">
+                                {heroCompactAlignOptions.map((option) => {
+                                  const optionIsActive =
+                                    getContentCardTwoUpAlign(section) ===
+                                    option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateContentCardTwoUpAlign(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Left starts the pair at the left column;
+                                Center leaves a blank column on each side;
+                                Right leaves two blank columns on the left.
+                              </p>
+                            </fieldset>
                           ) : null}
 
                           {section.component === projectCaseStudyGalleryComponent ? (

@@ -1244,6 +1244,42 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  if (component.includes("contentcardtwoup")) {
+    return [1, 2, 3, 4].flatMap((slot) => [
+      {
+        example:
+          slot === 1
+            ? "Repair or replace, decided with the full picture."
+            : slot === 2
+              ? "What a same-week visit actually includes."
+              : slot === 3
+                ? "Maintenance that earns its place on the calendar."
+                : "Financing that fits the actual project.",
+        name: `item${slot}Title`,
+        purpose: `Header for card ${slot} of this editorial two-up grid. Leave item3Title and item4Title blank for a 2-card (one row) section; fill all four for a 4-card (two row) section. Exactly 2 or 4 cards total, never 1 or 3.`,
+        target: "30-70 characters. One clear editorial statement, not a generic label.",
+      },
+      {
+        example:
+          "A single visible problem rarely tells the whole story. A practical recommendation weighs the system's age, repair history, and efficiency alongside the immediate issue.",
+        name: `item${slot}Body`,
+        purpose: `First paragraph for card ${slot}.`,
+        target: "110-220 characters.",
+      },
+      {
+        example:
+          slot % 2 === 1
+            ? "That context is what turns a repair estimate into a decision the homeowner can actually stand behind, instead of a guess made under pressure."
+            : "Diagnosis explained in plain terms\nOptions ranked by urgency, not upsell\nWritten estimate before work starts",
+        format:
+          "EITHER one short paragraph (a second paragraph under the first), OR 3-4 short bullet lines, one per line - never mix both in the same card. Bullets are auto-detected from multiple lines, so do not add dashes or bullet characters.",
+        name: `item${slot}Supporting`,
+        purpose: `Card ${slot}'s second content block: a second short paragraph, or a short bullet list, whichever fits the card's point better. Vary the choice across the 2-4 cards in this section rather than using the same shape for every card.`,
+        target: "Paragraph: 90-180 characters. Bullets: 3-4 lines, 4-9 words each.",
+      },
+    ]);
+  }
+
   if (component.includes("contentstickyideas")) {
     return [
       {

@@ -4,6 +4,7 @@ import {
   ContentAboutCompanySectionV2,
   ContentAboutStorySectionV3,
   ContentNarrativeFeatureRailSectionV3,
+  ContentCardTwoUpSectionV3,
   ContentFixedCoverFadeSectionV2,
   ContentHorizontalCardCarouselSectionV2,
   ContentMainIdeaGridSectionV3,
@@ -197,6 +198,9 @@ const sectionElements = {
     <ContentNarrativeFeatureRailSectionV3
       {...sectionLibraryV3Content.contentNarrativeFeatureRail}
     />
+  ),
+  "content-card-two-up-v3": (
+    <ContentCardTwoUpSectionV3 {...sectionLibraryV3Content.contentCardTwoUp} />
   ),
   "content-split-headline-image-v2": (
     <ContentSplitHeadlineImageSectionV2
