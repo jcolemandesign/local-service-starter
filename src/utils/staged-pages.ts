@@ -524,9 +524,6 @@ export async function buildStagedPageCandidate({
   snapshot: StrategySnapshot;
   template: StagedPageTemplate;
 }) {
-  const explicitPageCopy =
-    snapshot.fields[`pageCopy.${slugify(pageSlug)}`] ?? "";
-
   const page = buildStrategyTemplateStagedPage({
     pageLabel,
     pageSlug,
@@ -539,8 +536,23 @@ export async function buildStagedPageCandidate({
       getStagedPageKey(existingPage) ===
       getStagedPageKey({ pageId: page.pageId, snapshot: page.snapshot }),
   );
+  // Must resolve copy exactly the way buildStrategyTemplateStagedPage does.
+  // These statuses decide which sections the merge is allowed to overwrite,
+  // and that seeding used the same statuses to decide what to write. Reading
+  // `pageCopy.<slug>` directly instead diverges in two real cases: a page with
+  // no matching strategy slot (explicit is empty, but getStrategyCopyForPage
+  // falls back to contentPlan/strategyBrief), and a fuzzy slot match where the
+  // slot id differs from the page slug (the explicit key points at a field
+  // that does not exist). In both, every section looks non-current, the merge
+  // restores all previous values over the freshly seeded ones, and the user
+  // gets a success message for a refresh that changed nothing.
+  const strategyCopy = getStrategyCopyForPage(
+    snapshot.fields,
+    page.pageId,
+    template.pageType,
+  );
   const sectionStatuses = getTemplateCopySectionStatuses(
-    explicitPageCopy,
+    strategyCopy,
     template,
   );
   const mergedFields = mergePreservingIncompatibleSections(

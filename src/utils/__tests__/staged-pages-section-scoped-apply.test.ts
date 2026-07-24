@@ -6,6 +6,7 @@ import {
   type StagedPageField,
   type StagedPageTemplate,
 } from "@/utils/staged-pages";
+import { getStrategyCopyForPage } from "@/utils/strategy-site-map";
 import { getTemplateCopySectionStatuses } from "@/utils/template-copy-contract";
 import type { StrategySnapshot } from "@/utils/strategy-snapshots";
 import type { StrategyWorkspaceFields } from "@/utils/strategy-workspace";
@@ -208,5 +209,55 @@ describe("mergePreservingIncompatibleSections", () => {
     expect(
       merged.find((field) => field.path === "02-widget-two.eyebrow")?.value,
     ).toBe("");
+  });
+});
+
+describe("refresh copy source", () => {
+  // buildStagedPageCandidate computes the section statuses that gate the merge,
+  // and buildStrategyTemplateStagedPage computes the statuses that gate seeding.
+  // If those two read copy from different places, the merge can restore previous
+  // values over everything seeding just wrote - a refresh that reports success
+  // and changes nothing.
+  //
+  // This fixture is that exact case: the copy lives in contentPlan, and the page
+  // slug has no matching strategy slot, so there is no `pageCopy.test-page`
+  // field at all.
+  const snapshot = testSnapshot();
+  const template = twoSectionTemplate();
+
+  it("resolves page copy through the strategy fallback chain, not a direct pageCopy lookup", () => {
+    const directLookup = snapshot.fields["pageCopy.test-page"] ?? "";
+    const resolved = getStrategyCopyForPage(
+      snapshot.fields,
+      "test-page",
+      template.pageType,
+    );
+
+    // The direct lookup finds nothing; the resolver falls back to contentPlan.
+    // Gating the merge on the empty one is what caused the silent no-op.
+    expect(directLookup).toBe("");
+    expect(resolved).toBe(strategyCopy);
+  });
+
+  it("gives the merge the same section statuses that seeding used", () => {
+    const resolved = getStrategyCopyForPage(
+      snapshot.fields,
+      "test-page",
+      template.pageType,
+    );
+    const mergeStatuses = getTemplateCopySectionStatuses(resolved, template);
+    const seedingStatuses = getTemplateCopySectionStatuses(
+      strategyCopy,
+      template,
+    );
+
+    expect(mergeStatuses).toEqual(seedingStatuses);
+
+    // Section 1 must be "current" so the merge is allowed to overwrite it.
+    // Under the old direct lookup every section came back non-current, so the
+    // merge restored the previous values over the freshly seeded ones.
+    expect(mergeStatuses.find((s) => s.ordinal === "01")?.status).toBe(
+      "current",
+    );
   });
 });
