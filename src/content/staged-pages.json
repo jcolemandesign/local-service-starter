@@ -3161,33 +3161,33 @@
           "value": "The right recommendation starts with the facts.\n\nThen it gives the homeowner room to make a confident decision."
         },
         {
-          "id": "about.07-asymmetric-feature-cards.contentDirection",
+          "id": "about.07-cards-features-4-up-split.contentDirection",
           "kind": "meta",
-          "path": "07-asymmetric-feature-cards.contentDirection",
+          "path": "07-cards-features-4-up-split.contentDirection",
           "value": "Use an asymmetrical intro and feature card cluster when a why-choose-us section needs scannable proof points."
         },
         {
-          "id": "about.07-asymmetric-feature-cards.eyebrow",
+          "id": "about.07-cards-features-4-up-split.eyebrow",
           "kind": "copy",
-          "path": "07-asymmetric-feature-cards.eyebrow",
+          "path": "07-cards-features-4-up-split.eyebrow",
           "value": "What homeowners can expect"
         },
         {
-          "id": "about.07-asymmetric-feature-cards.heading",
+          "id": "about.07-cards-features-4-up-split.heading",
           "kind": "copy",
-          "path": "07-asymmetric-feature-cards.heading",
+          "path": "07-cards-features-4-up-split.heading",
           "value": "A service experience built around clarity and respect"
         },
         {
-          "id": "about.07-asymmetric-feature-cards.body",
+          "id": "about.07-cards-features-4-up-split.body",
           "kind": "copy",
-          "path": "07-asymmetric-feature-cards.body",
+          "path": "07-cards-features-4-up-split.body",
           "value": "North Star HVAC combines qualified technical work with a straightforward homeowner experience. That means understanding the problem, defining the proposed work, and communicating clearly throughout the service visit."
         },
         {
-          "id": "about.07-asymmetric-feature-cards.supportingItems",
+          "id": "about.07-cards-features-4-up-split.supportingItems",
           "kind": "copy",
-          "path": "07-asymmetric-feature-cards.supportingItems",
+          "path": "07-cards-features-4-up-split.supportingItems",
           "value": "Clear recommendations - Understand what the technician found, what the proposed work addresses, and why that path is being recommended.\nDefined scope - Review what is included before approving repair, maintenance, installation, or replacement work.\nRespect for the home - Expect professional conduct, careful work around the property, and a clean work area when the visit is complete."
         },
         {
