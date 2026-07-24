@@ -192,7 +192,7 @@ export function ContentSplitFixedImageSectionV3({
         <SevenColumnGridItem
           alignX="left"
           alignY="middle"
-          className={cx("content-padding text-service-ink", config.textClassName)}
+          className={cx("text-service-ink", config.textClassName)}
         >
           <div className="fluid-type-frame w-full">
             <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>

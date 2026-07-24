@@ -868,13 +868,11 @@ function findStagedPageContract(
   return contracts.find((contract) => {
     const normalizedPageId = normalizePageKey(contract.pageId);
     const normalizedPageLabel = normalizePageKey(contract.pageLabel);
-    const normalizedPageType = normalizePageKey(contract.pageType);
 
     return (
       contract.pageHref === selectedPage.href ||
       normalizedPageId === selectedPage.id ||
       normalizedPageLabel === normalizePageKey(selectedPage.label) ||
-      normalizedPageType === normalizePageKey(selectedPage.pageType) ||
       normalizedPageId.includes(selectedPage.id)
     );
   });

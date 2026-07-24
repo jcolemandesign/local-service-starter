@@ -18,7 +18,7 @@ The goal is to create a modular, reusable, visually polished system for local se
 
 ## Architecture
 
-Every major page section is a standalone component in `src/components/sections/`.
+Every major page section is a standalone component in `src/components/sections/`. Shared building blocks live in `src/components/primitives/`; business-specific data lives in `src/content/`.
 
 Page files should compose imported section components. Do not leave large raw section markup directly inside `app/**/page.tsx`.
 
@@ -50,13 +50,7 @@ Do not add a section only to pagebuilder. Pagebuilder should reference sections 
 
 Before finishing, verify the section appears in `/sections`, appears in pagebuilder under the matching semantic mode, and passes lint/build.
 
-### File structure
-
-```txt
-src/components/sections/    # Major page sections: HeroSection, FAQSection, ServicesSection, etc.
-src/components/primitives/  # Shared building blocks: Section, Container, SectionHeading, Button, Card
-src/content/                # Business-specific data: site.ts, services.ts, faqs.ts, testimonials.ts
-```
+For the full section-registration checklist, see `.claude/skills/add-section/SKILL.md`.
 
 ---
 
@@ -179,15 +173,7 @@ Avoid brittle fixed heights. Prefer `min-height` for hero sections and allow con
 
 ## Breakpoints
 
-Use only Tailwind’s default breakpoint system.
-
-| Prefix     | Viewport      |
-| ---------- | ------------- |
-| `max-sm:`  | below 640px   |
-| `max-md:`  | below 768px   |
-| `max-lg:`  | below 1024px  |
-| `max-xl:`  | below 1280px  |
-| `max-2xl:` | below 1536px  |
+Use only Tailwind's default breakpoint system (`max-sm:`, `max-md:`, `max-lg:`, `max-xl:`, `max-2xl:`).
 
 Do not add custom breakpoints to `tailwind.config.ts`.
 
