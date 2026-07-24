@@ -1,5 +1,17 @@
 # Pageworks Pipeline
 
+> **Status: historical design intent, not current behaviour.**
+>
+> This describes the plan as of the Pageworks overhaul. Parts of it no longer
+> match the code — most importantly the "Promotion Model" and the Content
+> Editor's "promote saved edits into the next stage" step, which described the
+> `/api/content-editor-promotions` route. That route was dead code and was
+> deleted; the Content Editor now writes directly to staged pages via
+> `PATCH /api/staged-pages`.
+>
+> Read it for intent and vocabulary. For current architecture, sources of truth,
+> and the outstanding phase plan, see `architecture-review-2026-07.md`.
+
 Pageworks is the overhaul name for the local service starter workflow. The goal
 is to move from reusable section experiments to baked, lightweight client pages
 through clear stages.

@@ -1,5 +1,17 @@
 # Staged-Copy Workflow — Technical Handoff
 
+> **Status: historical. Accurate when written, stale in specifics now.**
+>
+> Known drift: it states that no tests exist (there are now seven test files
+> under `src/utils/__tests__/`), its Phases 1–4 have since been implemented, and
+> it documents `/api/content-editor-pages` and `/api/content-editor-promotions`,
+> both of which were dead code and have been deleted. Line references predate
+> several refactors.
+>
+> The mechanism descriptions are still a good explanation of how staged copy
+> works. For current state and the outstanding phase plan, see
+> `architecture-review-2026-07.md`.
+
 Investigation-only document. No application code, tests, config, persisted data, or other
 docs were modified while producing this file. All file:line references below were read
 directly from the repository on branch `codex/template-first-workflow`.

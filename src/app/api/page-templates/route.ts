@@ -51,6 +51,15 @@ const templatesPath = path.join(
 const idPattern = /^[a-z0-9-]+$/;
 
 export async function GET() {
+  // POST/PUT/DELETE in this file are already dev-guarded; GET was not, so a
+  // deployed builder would have served the full template library publicly.
+  if (
+    process.env.NODE_ENV === "production" &&
+    process.env.ENABLE_DEV_ROUTES !== "true"
+  ) {
+    return jsonError("Template access is disabled in production.", 403);
+  }
+
   const templatesFile = await readTemplates();
 
   return Response.json({
