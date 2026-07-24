@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { DownArrowIcon } from "@/components/primitives";
 import type {
   ContentEditorField,
@@ -18,11 +18,6 @@ type ContentEditorSectionProps = {
   pages: ContentEditorPage[];
 };
 
-type StoredDraft = {
-  savedAt: string;
-  values: Record<string, string>;
-};
-
 type FieldFilter = "all" | ContentEditorField["kind"];
 type SaveStagedPageResponse =
   | {
@@ -33,7 +28,6 @@ type SaveStagedPageResponse =
       ok: false;
     };
 
-const draftStorageKey = "pageworks-content-editor-draft-v1";
 const fieldFilterOptions: Array<{ label: string; value: FieldFilter }> = [
   { label: "All fields", value: "all" },
   { label: "Copy + items", value: "copy" },
@@ -74,16 +68,15 @@ export function ContentEditorSection({
   const [openSectionIds, setOpenSectionIds] = useState<string[]>([]);
   const [fieldFilter, setFieldFilter] = useState<FieldFilter>("all");
 
-  useEffect(() => {
-    const frameId = window.requestAnimationFrame(() => {
-      const storedDraft = readStoredDraft(originalValues);
+  // Persisted staged-page fields are the only source of truth here. Resync
+  // whenever the server sends new page data (navigation, router.refresh) so the
+  // editor never shows values that have already been superseded on disk.
+  const [syncedValues, setSyncedValues] = useState(originalValues);
 
-      setValues(storedDraft.values);
-      setSavedAt(storedDraft.savedAt);
-    });
-
-    return () => window.cancelAnimationFrame(frameId);
-  }, [originalValues]);
+  if (syncedValues !== originalValues) {
+    setSyncedValues(originalValues);
+    setValues(originalValues);
+  }
 
   const activePage = pages.find((page) => page.key === activePageKey) ?? pages[0];
   const allFields = pages.flatMap((page) =>
@@ -171,10 +164,6 @@ export function ContentEditorSection({
     }
 
     const nextSavedAt = new Date().toISOString();
-    const draft: StoredDraft = {
-      savedAt: nextSavedAt,
-      values,
-    };
 
     setIsSavingPage(true);
     setStatus("");
@@ -202,7 +191,6 @@ export function ContentEditorSection({
         return;
       }
 
-      window.localStorage.setItem(draftStorageKey, JSON.stringify(draft));
       setSavedAt(nextSavedAt);
       setStatus("Staged page saved.");
     } catch {
@@ -776,79 +764,6 @@ function getOriginalValues(pages: ContentEditorPage[]) {
         section.fields.map((field) => [field.id, field.value]),
       ),
     ),
-  );
-}
-
-function readStoredDraft(originalValues: Record<string, string>): StoredDraft {
-  if (typeof window === "undefined") {
-    return {
-      savedAt: "",
-      values: originalValues,
-    };
-  }
-
-  try {
-    const stored = window.localStorage.getItem(draftStorageKey);
-
-    if (!stored) {
-      return {
-        savedAt: "",
-        values: originalValues,
-      };
-    }
-
-    const draft = JSON.parse(stored) as StoredDraft;
-
-    return {
-      savedAt: draft.savedAt ?? "",
-      values: sanitizeDraftValues(originalValues, draft.values ?? {}),
-    };
-  } catch {
-    return {
-      savedAt: "",
-      values: originalValues,
-    };
-  }
-}
-
-function sanitizeDraftValues(
-  originalValues: Record<string, string>,
-  draftValues: Record<string, string>,
-) {
-  return Object.fromEntries(
-    Object.entries({ ...originalValues, ...draftValues }).map(([key, value]) => [
-      key,
-      shouldStripDraftValue(key, value) ? stripHumanReviewSections(value) : value,
-    ]),
-  );
-}
-
-function shouldStripDraftValue(fieldId: string, value: string) {
-  const normalizedFieldId = fieldId.toLowerCase();
-
-  return (
-    hasHumanReviewSection(value) &&
-    (normalizedFieldId.endsWith(".legalline") ||
-      normalizedFieldId.endsWith(".copyright"))
-  );
-}
-
-function stripHumanReviewSections(text: string) {
-  const lines = text.split(/\r?\n/);
-  const reviewStartIndex = lines.findIndex(isHumanReviewHeading);
-
-  return (reviewStartIndex >= 0 ? lines.slice(0, reviewStartIndex) : lines)
-    .join("\n")
-    .trim();
-}
-
-function hasHumanReviewSection(text: string) {
-  return text.split(/\r?\n/).some(isHumanReviewHeading);
-}
-
-function isHumanReviewHeading(line: string) {
-  return /^(?:#{1,3}\s+|\d+\.\s+)?(?:Copy Notes|Copy QA)\s*$/i.test(
-    line.trim(),
   );
 }
 

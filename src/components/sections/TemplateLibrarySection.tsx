@@ -657,12 +657,12 @@ export function TemplateLibrarySection({
                                   <PagebuilderIcon />
                                 </button>
                                 <Link
-                                  aria-label={`Preview ${template.name}`}
+                                  aria-label={`Preview ${template.name} structure`}
                                   className="token-chrome-control flex size-9 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors"
                                   href={`/dev/templates/${template.id}`}
                                   onClick={(event) => event.stopPropagation()}
                                   target="_blank"
-                                  title="Preview template"
+                                  title="Preview template structure (layout only, no real copy)"
                                 >
                                   <PreviewIcon />
                                 </Link>

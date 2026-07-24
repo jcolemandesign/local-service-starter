@@ -45,6 +45,11 @@ A new section is not complete until it is:
 - added to `src/content/section-library-v3.ts` in the correct semantic collection
 - added to the `/sections` preview map in `src/app/sections/page.tsx`
 - referenced by pagebuilder using the same semantic mode/category as the section library
+- given a render `case` and a `xxxProps()` mapper in `PageTemplatePreview.tsx`
+- given a copy field spec in `getTemplateCopyFieldsForSection` (`src/utils/template-copy-contract.ts`)
+- given an asset field spec in `getTemplateAssetFieldsForSection` (`src/utils/staged-pages.ts`) if it renders images
+
+The field names a section's `xxxProps()` mapper reads must exactly match the field names its copy/asset specs declare. A mismatch does not error — the renderer silently falls back to section-library demo content, and export validation cannot detect it. See `.claude/skills/add-section/SKILL.md`.
 
 Do not add a section only to pagebuilder. Pagebuilder should reference sections that already exist in the section library.
 
@@ -64,21 +69,26 @@ Use existing design tokens before creating new ones.
 
 Tokens should be design-facing and easy to reference while building.
 
-Prefer token names like:
+These are the tokens the system actually uses. Use them — do not invent parallel names.
+
+Typography utilities (defined in `src/app/globals.css`):
 
 ```txt
-type-hero
-type-section-title
-type-body
-type-pullquote
-bg-1
-bg-2
-bg-3
-bg-dark
-text-main
-text-muted
-text-accent
+type-display-xl   type-display-lg
+type-heading-xl   type-heading-lg   type-heading-md   type-heading-sm
+type-text-xl      type-text-lg      type-text-md      type-text-sm   type-text-xs
+type-eyebrow      type-label        type-caption
 ```
+
+Color tokens (Tailwind classes derived from `--color-*` custom properties):
+
+```txt
+text-service-ink      text-service-muted    text-service-accent
+bg-service-surface    bg-service-ink        border-service-border
+bg-bg-page            bg-bg-surface         bg-bg-muted        bg-bg-dark
+```
+
+The `service-*` family is the primary vocabulary — `text-service-ink`, `text-service-muted`, and `text-service-accent` account for the large majority of color usage across sections. `text-main` / `text-muted` / `text-accent` also resolve, but are legacy aliases used in a handful of builder-only screens; do not use them in new section work.
 
 Avoid vague, overly abstract, or overly section-specific token names unless they are already part of the system.
 

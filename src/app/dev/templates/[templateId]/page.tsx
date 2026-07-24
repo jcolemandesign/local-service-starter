@@ -9,8 +9,9 @@ import type { PageTemplateSummary } from "@/components/sections";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Template Preview | Local Service Starter",
-  description: "Preview a saved page template.",
+  title: "Template Structure Preview | Local Service Starter",
+  description:
+    "Preview a saved page template's layout and section order. Shows placeholder copy only — real content is populated once a page is staged.",
 };
 
 type TemplatePreviewPageProps = {

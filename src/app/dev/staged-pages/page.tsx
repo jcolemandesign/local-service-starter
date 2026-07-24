@@ -102,7 +102,6 @@ export default async function StagedPagesPage() {
                   filledCopyCount,
                   page.fieldCounts.copy,
                 );
-                const contractStatus = getPageContractStatus(page);
                 const sectionsNeedingAttention = getPageSectionStatuses(
                   page,
                 ).filter((sectionStatus) => sectionStatus.status !== "current");
@@ -116,17 +115,6 @@ export default async function StagedPagesPage() {
                           <StatusPill label={page.pageHref} />
                           <StatusPill
                             label={page.template?.name ?? "Template unknown"}
-                          />
-                          <StatusPill
-                            label={formatContractStatus(contractStatus)}
-                            tone={
-                              contractStatus === "current"
-                                ? "complete"
-                                : contractStatus === "stale" ||
-                                    contractStatus === "unverified"
-                                  ? "warning"
-                                  : "default"
-                            }
                           />
                         </div>
                         <h2 className="type-heading-md mt-4 text-service-ink">
@@ -158,7 +146,6 @@ export default async function StagedPagesPage() {
                             clientSlug={page.snapshot.clientSlug}
                             pageId={page.pageId}
                             pageLabel={page.pageLabel}
-                            contractStatus={contractStatus}
                             templateId={page.template.id}
                             templateName={page.template.name}
                           />
@@ -390,13 +377,6 @@ function getPageCopy(page: StagedPage) {
   return (
     page.fields.find((field) => field.path === "strategy.pageCopy")?.value ??
     ""
-  );
-}
-
-function getPageContractStatus(page: StagedPage) {
-  return getTemplateCopyContractStatus(
-    getPageCopy(page),
-    getPageContractTemplate(page),
   );
 }
 
