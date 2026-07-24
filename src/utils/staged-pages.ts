@@ -103,18 +103,69 @@ function getClientStagedPagesPath(clientSlug: string) {
   return path.join(projectsPath, clientSlug, "staged-pages.json");
 }
 
-async function readClientStagedPages(clientSlug: string) {
-  try {
-    const contents = await readFile(
-      getClientStagedPagesPath(clientSlug),
-      "utf8",
-    );
-    const parsed = JSON.parse(contents) as StagedPagesFile;
+/**
+ * Every consumer reaches straight for `page.snapshot.clientSlug`,
+ * `page.fields`, and `page.pageId`, so a record missing any of them crashes the
+ * surface reading it rather than failing where the bad data was written. These
+ * files are also hand-editable and hand-edited.
+ *
+ * Skip malformed records loudly instead of trusting the `as` cast. Dropping a
+ * page is visible (it disappears from the list); a thrown error would take down
+ * every staged-page surface because of one bad record.
+ */
+function isValidStagedPage(value: unknown): value is StagedPage {
+  if (!value || typeof value !== "object") return false;
 
-    return Array.isArray(parsed.pages) ? parsed.pages : [];
+  const page = value as Partial<StagedPage>;
+
+  return (
+    typeof page.pageId === "string" &&
+    page.pageId.length > 0 &&
+    Array.isArray(page.fields) &&
+    typeof page.snapshot === "object" &&
+    page.snapshot !== null &&
+    typeof page.snapshot.clientSlug === "string" &&
+    page.snapshot.clientSlug.length > 0
+  );
+}
+
+async function readClientStagedPages(clientSlug: string) {
+  let contents: string;
+
+  try {
+    contents = await readFile(getClientStagedPagesPath(clientSlug), "utf8");
   } catch {
     return [];
   }
+
+  let parsed: StagedPagesFile;
+
+  try {
+    parsed = JSON.parse(contents) as StagedPagesFile;
+  } catch (error) {
+    console.warn(
+      `[staged-pages] ${clientSlug}/staged-pages.json is not valid JSON and was skipped:`,
+      error instanceof Error ? error.message : error,
+    );
+    return [];
+  }
+
+  if (!Array.isArray(parsed.pages)) return [];
+
+  const valid: StagedPage[] = [];
+
+  parsed.pages.forEach((page, index) => {
+    if (isValidStagedPage(page)) {
+      valid.push(page);
+      return;
+    }
+
+    console.warn(
+      `[staged-pages] ${clientSlug}/staged-pages.json: skipped malformed page at index ${index} (needs pageId, fields[], and snapshot.clientSlug).`,
+    );
+  });
+
+  return valid;
 }
 
 export async function listStagedPageClientSlugs() {

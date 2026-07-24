@@ -122,3 +122,45 @@ describe("per-client staged page storage", () => {
     ).toEqual(["home"]);
   });
 });
+
+describe("malformed record handling", () => {
+  beforeEach(() => {
+    files.clear();
+  });
+
+  it("skips records missing required fields instead of crashing consumers", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    files.set(
+      pathFor("north-star-hvac"),
+      JSON.stringify({
+        pages: [
+          makePage("north-star-hvac", "good"),
+          // The shape the deleted content-editor-promotions route used to
+          // write: no snapshot, so every `page.snapshot.clientSlug` read
+          // downstream would have thrown.
+          { pageId: "no-snapshot", fields: [] },
+          { fields: [], snapshot: { clientSlug: "north-star-hvac" } },
+        ],
+      }),
+    );
+
+    const pages = await readStagedPages();
+
+    expect(pages.map((p) => p.pageId)).toEqual(["good"]);
+    expect(warn).toHaveBeenCalledTimes(2);
+
+    warn.mockRestore();
+  });
+
+  it("skips a file that is not valid JSON", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    files.set(pathFor("north-star-hvac"), "{ not json");
+
+    expect(await readStagedPages()).toEqual([]);
+    expect(warn).toHaveBeenCalledOnce();
+
+    warn.mockRestore();
+  });
+});
