@@ -1,3 +1,4 @@
+import { getSectionId, getSectionOrdinal } from "@/utils/section-id";
 import {
   getPathFromSlugForPageType,
   getPageTypeRelationshipLabel,
@@ -177,7 +178,7 @@ export function buildTemplateCopyContract({
   );
 
   template.sections.forEach((section, index) => {
-    const sectionId = `${String(index + 1).padStart(2, "0")}-${slugify(section.name || section.mode || section.component)}`;
+    const sectionId = getSectionId(section, index);
     const fields = getTemplateCopyFieldsForSection(section);
     const sectionFingerprint = getTemplateCopySectionFingerprint(section);
 
@@ -353,8 +354,8 @@ export function getTemplateCopySectionStatuses(
     : new Map<string, { fields: Set<string>; fingerprint: string; slug: string }>();
 
   return template.sections.map((section, index) => {
-    const ordinal = String(index + 1).padStart(2, "0");
-    const sectionId = `${ordinal}-${slugify(section.name || section.mode || section.component)}`;
+    const ordinal = getSectionOrdinal(index);
+    const sectionId = getSectionId(section, index);
 
     if (!copy.trim()) {
       return {

@@ -1,5 +1,5 @@
 import stagedPagesData from "./staged-pages.json";
-import { slugify } from "@/utils/strategy-site-map";
+import { getSectionId } from "@/utils/section-id";
 
 export type ContentEditorFieldKind = "copy" | "image" | "link" | "meta";
 
@@ -123,9 +123,7 @@ function getMissingImageRatioFields(page: StagedEditorPage): StagedEditorField[]
       return [];
     }
 
-    const sectionId = `${String(index + 1).padStart(2, "0")}-${slugify(
-      section.name || section.component || "section",
-    )}`;
+    const sectionId = getSectionId(section, index);
     const path = `${sectionId}.imageRatio`;
 
     return existingPaths.has(path)

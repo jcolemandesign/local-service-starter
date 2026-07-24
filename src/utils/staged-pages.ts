@@ -5,6 +5,7 @@ import type {
   SectionColorRecipe,
 } from "@/content/section-color-recipes";
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
+import { getSectionId } from "@/utils/section-id";
 import {
   getPathFromSlugForPageType,
   getStrategyCopyForPage,
@@ -313,9 +314,7 @@ function reconcileTemplateCopyFields(
 
   const assetFieldsByPath = new Map<string, TemplateAssetField>(
     sections.flatMap((section, index) => {
-      const sectionId = `${String(index + 1).padStart(2, "0")}-${slugify(
-        section.name || section.component,
-      )}`;
+      const sectionId = getSectionId(section, index);
 
       return getTemplateAssetFieldsForSection(section).map((field) => [
         `${sectionId}.${field.name}`,
@@ -342,9 +341,7 @@ function reconcileTemplateCopyFields(
   const existingPaths = new Set(nextFields.map((field) => field.path));
 
   sections.forEach((section, index) => {
-    const sectionId = `${String(index + 1).padStart(2, "0")}-${slugify(
-      section.name || section.component,
-    )}`;
+    const sectionId = getSectionId(section, index);
     const missingFields = [
       ...getTemplateCopyFieldsForSection(section).map((field) => ({
         kind: "copy" as const,
@@ -433,9 +430,7 @@ export function buildStrategyTemplateStagedPage({
       value: snapshot.fields.strategyBrief,
     }),
     ...template.sections.flatMap((section, index) => {
-      const sectionId = `${String(index + 1).padStart(2, "0")}-${slugify(
-        section.name || section.component,
-      )}`;
+      const sectionId = getSectionId(section, index);
       const sectionFields = getTemplateCopyFieldsForSection(section);
       const assetFields = getTemplateAssetFieldsForSection(section);
 

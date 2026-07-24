@@ -3,6 +3,7 @@ import {
   type PageTemplatePreviewSection,
   type SiteNavigationLink,
 } from "@/components/sections/PageTemplatePreview";
+import { getSectionId } from "@/utils/section-id";
 import type {
   StagedPage,
   StagedPageField,
@@ -345,20 +346,6 @@ function toPreviewSection(
     ratio: section.ratio,
     variant: section.variant,
   };
-}
-
-function getSectionId(section: StagedPageTemplateSection, index: number) {
-  return `${String(index + 1).padStart(2, "0")}-${slugify(
-    section.name || section.component,
-  )}`;
-}
-
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
 }
 
 function inferFallbackMode(sectionId: string) {
