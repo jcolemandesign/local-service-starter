@@ -142,19 +142,50 @@ would break export analyzability.
 
 ---
 
+## Phase 2 — done
+
+- **Section identity unified** into `src/utils/section-id.ts`. Seven
+  implementations, two precedence rules; canonicalised on `name || component`.
+  Verified behaviour-preserving first: all 217 sections in both JSON files have
+  a non-empty name, so the rules had not yet diverged.
+- **Refresh no-op fixed.** `buildStagedPageCandidate` now resolves copy through
+  `getStrategyCopyForPage`, the same path seeding uses.
+- **Approval/token conflict fixed.** Approving a page after the Style Guide has
+  been re-promoted now un-approves pages that were approved under the old
+  tokens, and says so, instead of silently re-freezing them.
+- **Orphaned About page copy recovered** — see the note below.
+- **Parser agreement pinned** rather than merged. The heading-regex and
+  normaliser differences between `parseMarkdownCopyValues` and
+  `getBatchCopyFieldsBySectionOrdinal` are latent: no spec field name contains a
+  hyphen, and generated contracts always emit `### NN-slug`. The extractors are
+  equivalent. Only JSON is a reachable divergence. Merging would change matching
+  across all existing copy for no active defect, so the tests assert the
+  property instead: whatever validation certifies must actually seed.
+
+### Observed: the rename bug is not theoretical
+
+While verifying the identity refactor, section 07 of the About page turned out
+to have been renamed ("Asymmetric feature cards" → "Cards features 4 up split")
+with its five fields stranded under the old `07-asymmetric-feature-cards.*`
+paths. That section had been rendering pure demo fallback while real approved
+copy sat unreachable. Repaired in d109015. This is the strongest argument for
+the persisted `slotId` in Phase 3.
+
 ## Remaining phases
 
-- **Phase 2 — workflow simplification.** Unify the refresh copy source; extract
-  one `getSectionId`; unify the two markdown parsers (`parseMarkdownCopyValues`
-  in `staged-pages.ts:929` vs `getBatchCopyFieldsBySectionOrdinal` in
-  `template-copy-contract.ts:474` — their heading regexes already differ); make
-  `styleTokenCss` a set of named token records.
 - **Phase 3 — structural cleanup.** Split `staged-pages.json` per client; add
   parsing at the `readStagedPages()` boundary; introduce a persisted `slotId`
   backfilled from current derived ids; delete vestigial `StagedPage.status`.
+  Touches persisted data — start from a checkpoint tag.
 - **Phase 4 — only if client count grows.** Collapse to one `SectionDefinition`
   per section (demo content + field spec + `toProps` colocated), which would
   remove the drift class structurally rather than testing for it.
+
+## Checkpoints
+
+`checkpoint/phase-1-complete`, `checkpoint/phase-2-section-id`,
+`checkpoint/phase-2-refresh-fix`, `checkpoint/phase-2-complete` — each tagged at
+a verified-green commit (tsc, lint, full vitest run).
 
 Adding fields to a spec changes its contract fingerprint and flips affected
 sections to `stale`. Expected and safe, but it surfaces warnings on existing
