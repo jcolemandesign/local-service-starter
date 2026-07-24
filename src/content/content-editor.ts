@@ -1,4 +1,4 @@
-import stagedPagesData from "./staged-pages.json";
+import { readStagedPages } from "@/utils/staged-pages";
 import { getSectionId } from "@/utils/section-id";
 
 export type ContentEditorFieldKind = "copy" | "image" | "link" | "meta";
@@ -52,17 +52,23 @@ type StagedEditorPage = {
     }>;
   };
 };
-type StagedPagesFile = {
-  pages?: StagedEditorPage[];
-};
+/**
+ * Read at request time, not build time.
+ *
+ * This was previously a static `import ... from "./staged-pages.json"`, which
+ * baked the data in at build time while /dev/staged-pages read the same records
+ * at runtime - so the two surfaces could disagree about the same page, and the
+ * Content Editor could show values that had already been superseded on disk.
+ * Staged pages are now per-client files anyway, which a static import cannot
+ * express.
+ */
+export async function getContentEditorPages(): Promise<ContentEditorPage[]> {
+  const stagedPages = await readStagedPages();
 
-const stagedContentEditorPages = (stagedPagesData as StagedPagesFile).pages ?? [];
-const mappedStagedContentEditorPages = stagedContentEditorPages.map(
-  mapStagedPageToContentEditorPage,
-);
-
-export const contentEditorPages: ContentEditorPage[] =
-  mappedStagedContentEditorPages;
+  return (stagedPages as unknown as StagedEditorPage[]).map(
+    mapStagedPageToContentEditorPage,
+  );
+}
 
 function mapStagedPageToContentEditorPage(
   page: StagedEditorPage,

@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type {
   SectionCardFill,
@@ -87,22 +87,73 @@ type StagedPagesFile = {
   pages?: StagedPage[];
 };
 
-const stagedPagesPath = path.join(
-  process.cwd(),
-  "src",
-  "content",
-  "staged-pages.json",
-);
+const projectsPath = path.join(process.cwd(), "src", "content", "projects");
 
-export async function readStagedPages() {
+/**
+ * Staged pages are stored per client, alongside that client's strategy
+ * snapshots and export state, rather than in one global file.
+ *
+ * The single file was rewritten whole on every field save (~640 lines per
+ * page), so one keystroke-save produced an unreviewable diff spanning every
+ * client, and two clients could collide on a shared dedupe key. Partitioning
+ * keeps the diffable/revertable property that makes JSON persistence workable
+ * here while removing the scaling wall.
+ */
+function getClientStagedPagesPath(clientSlug: string) {
+  return path.join(projectsPath, clientSlug, "staged-pages.json");
+}
+
+async function readClientStagedPages(clientSlug: string) {
   try {
-    const contents = await readFile(stagedPagesPath, "utf8");
+    const contents = await readFile(
+      getClientStagedPagesPath(clientSlug),
+      "utf8",
+    );
     const parsed = JSON.parse(contents) as StagedPagesFile;
 
     return Array.isArray(parsed.pages) ? parsed.pages : [];
   } catch {
     return [];
   }
+}
+
+export async function listStagedPageClientSlugs() {
+  try {
+    const entries = await readdir(projectsPath, { withFileTypes: true });
+
+    return entries
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .sort();
+  } catch {
+    return [];
+  }
+}
+
+export async function readStagedPages() {
+  const clientSlugs = await listStagedPageClientSlugs();
+  const perClient = await Promise.all(
+    clientSlugs.map((clientSlug) => readClientStagedPages(clientSlug)),
+  );
+
+  return perClient.flat();
+}
+
+/**
+ * Writes only the affected client's file. `pages` is the full cross-client set;
+ * everything belonging to another client is left untouched on disk.
+ */
+async function writeClientStagedPages(clientSlug: string, pages: StagedPage[]) {
+  const clientPages = pages.filter(
+    (page) => page.snapshot?.clientSlug === clientSlug,
+  );
+  const target = getClientStagedPagesPath(clientSlug);
+
+  await mkdir(path.dirname(target), { recursive: true });
+  await writeFile(
+    target,
+    `${JSON.stringify({ pages: clientPages }, null, 2)}\n`,
+  );
 }
 
 export async function writeStagedPage(page: StagedPage) {
@@ -113,11 +164,7 @@ export async function writeStagedPage(page: StagedPage) {
     ...pages.filter((currentPage) => getStagedPageKey(currentPage) !== pageKey),
   ];
 
-  await mkdir(path.dirname(stagedPagesPath), { recursive: true });
-  await writeFile(
-    stagedPagesPath,
-    `${JSON.stringify({ pages: nextPages }, null, 2)}\n`,
-  );
+  await writeClientStagedPages(page.snapshot.clientSlug, nextPages);
 
   return nextPages;
 }
@@ -133,11 +180,7 @@ export async function removeStagedPage(clientSlug: string, pageId: string) {
     throw new Error("Staged page not found.");
   }
 
-  await mkdir(path.dirname(stagedPagesPath), { recursive: true });
-  await writeFile(
-    stagedPagesPath,
-    `${JSON.stringify({ pages: nextPages }, null, 2)}\n`,
-  );
+  await writeClientStagedPages(clientSlug, nextPages);
 
   return nextPages;
 }
@@ -185,11 +228,7 @@ export async function updateStagedPageFields(
     ),
   ];
 
-  await mkdir(path.dirname(stagedPagesPath), { recursive: true });
-  await writeFile(
-    stagedPagesPath,
-    `${JSON.stringify({ pages: nextPages }, null, 2)}\n`,
-  );
+  await writeClientStagedPages(clientSlug, nextPages);
 
   return {
     page: nextPage,
@@ -288,11 +327,7 @@ export async function syncStagedPagesFromStrategySnapshot(
   });
 
   if (syncedCount > 0) {
-    await mkdir(path.dirname(stagedPagesPath), { recursive: true });
-    await writeFile(
-      stagedPagesPath,
-      `${JSON.stringify({ pages: nextPages }, null, 2)}\n`,
-    );
+    await writeClientStagedPages(snapshot.clientSlug, nextPages);
   }
 
   return {

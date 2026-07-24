@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import { ContentEditorSection } from "@/components/sections";
-import { contentEditorPages } from "@/content/content-editor";
+import { getContentEditorPages } from "@/content/content-editor";
 
 export const metadata: Metadata = {
   title: "Content Editor",
   description: "Pageworks content inventory and editing surface.",
 };
+
+// Staged pages are read from disk per request; without this the editor would
+// serve a cached snapshot and drift from /dev/staged-pages again.
+export const dynamic = "force-dynamic";
 
 type ContentEditorPageProps = {
   searchParams: Promise<{
@@ -24,13 +28,14 @@ export default async function ContentEditorPage({
   const initialClientSlug = Array.isArray(clientParam)
     ? clientParam[0]
     : clientParam;
+  const pages = await getContentEditorPages();
 
   return (
     <main>
       <ContentEditorSection
         initialClientSlug={initialClientSlug}
         initialPageId={initialPageId}
-        pages={contentEditorPages}
+        pages={pages}
       />
     </main>
   );

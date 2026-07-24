@@ -78,8 +78,9 @@ const builderOnlyPrefixes = [
   "src/components/sections/StrategyWorkspace",
   "src/components/sections/StagedPage",
   "src/components/sections/StyleGuide",
+  // Staged pages now live under src/content/projects/<clientSlug>/, which the
+  // prefix above already covers.
   "src/content/projects/",
-  "src/content/staged-pages.json",
 ];
 
 export async function analyzeSiteExport(
