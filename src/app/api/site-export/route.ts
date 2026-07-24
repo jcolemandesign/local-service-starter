@@ -51,13 +51,13 @@ export async function POST(request: Request) {
         throw new Error("Staged page not found for this client.");
       }
 
-      const state = await setPageExportApproval({
+      const { invalidatedPageIds, state } = await setPageExportApproval({
         approved: body.action === "approve",
         clientSlug,
         pageId,
       });
 
-      return Response.json({ ok: true, state });
+      return Response.json({ invalidatedPageIds, ok: true, state });
     }
 
     if (body.action === "dry-run") {

@@ -16,6 +16,7 @@ type SiteExportControlsProps = {
 type SiteExportResponse = {
   analysis?: SiteExportAnalysis;
   error?: string;
+  invalidatedPageIds?: string[];
   ok: boolean;
   result?: SiteExportAnalysis & {
     outputPath: string;
@@ -44,7 +45,20 @@ export function SiteExportControls({
       }
 
       setAnalysis(null);
-      setStatus(approved ? "Page approved for export." : "Page approval removed.");
+
+      // The Style Guide was promoted again since the earlier approvals, so
+      // those pages were approved against tokens that no longer exist. They
+      // have been un-approved rather than silently re-frozen under the new
+      // ones - say so, since the user did not ask for that.
+      const invalidated = result.invalidatedPageIds ?? [];
+
+      setStatus(
+        approved
+          ? invalidated.length > 0
+            ? `Page approved for export. Style tokens changed since ${invalidated.length} other page${invalidated.length === 1 ? " was" : "s were"} approved, so ${invalidated.length === 1 ? "it has" : "they have"} been un-approved and must be re-approved: ${invalidated.join(", ")}.`
+            : "Page approved for export."
+          : "Page approval removed.",
+      );
       router.refresh();
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Approval update failed.");

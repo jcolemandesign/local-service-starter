@@ -61,24 +61,54 @@ export async function setPageExportApproval({
   const state = await readSiteExportState(normalizedClientSlug);
   const approvedPageIds = new Set(state.approvedPageIds);
 
-  if (approved) {
-    approvedPageIds.add(normalizedPageId);
-  } else {
+  if (!approved) {
     approvedPageIds.delete(normalizedPageId);
+
+    const nextState: SiteExportState = {
+      approvedPageIds: Array.from(approvedPageIds).sort(),
+      clientSlug: normalizedClientSlug,
+      styleTokenCss: state.styleTokenCss,
+      updatedAt: new Date().toISOString(),
+    };
+
+    await writeState(nextState);
+
+    return { state: nextState, invalidatedPageIds: [] };
   }
+
+  const promotedStyleTokenCss = await readPromotedStyleTokenCss();
+
+  // An export produces a single globals.css for the whole site, so every
+  // approved page ships under one token set. If the Style Guide has been
+  // promoted again since the earlier approvals, those pages were approved
+  // against tokens that no longer exist - previously this silently re-froze
+  // them under the new values. Invalidate them instead, consistent with how
+  // every content mutation already resets approval.
+  const tokensChanged =
+    state.styleTokenCss.trim().length > 0 &&
+    state.styleTokenCss.trim() !== promotedStyleTokenCss.trim();
+  const invalidatedPageIds = tokensChanged
+    ? Array.from(approvedPageIds)
+        .filter((pageId) => pageId !== normalizedPageId)
+        .sort()
+    : [];
+
+  if (tokensChanged) {
+    approvedPageIds.clear();
+  }
+
+  approvedPageIds.add(normalizedPageId);
 
   const nextState: SiteExportState = {
     approvedPageIds: Array.from(approvedPageIds).sort(),
     clientSlug: normalizedClientSlug,
-    styleTokenCss: approved
-      ? await readPromotedStyleTokenCss()
-      : state.styleTokenCss,
+    styleTokenCss: promotedStyleTokenCss,
     updatedAt: new Date().toISOString(),
   };
 
   await writeState(nextState);
 
-  return nextState;
+  return { state: nextState, invalidatedPageIds };
 }
 
 export function sanitizePageId(value: unknown) {

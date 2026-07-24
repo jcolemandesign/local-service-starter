@@ -261,3 +261,61 @@ describe("refresh copy source", () => {
     );
   });
 });
+
+describe("parser agreement", () => {
+  // Two independent parsers read the same bulk-paste format:
+  // parseMarkdownCopyValues (seeding, in staged-pages) and
+  // getBatchCopyFieldsBySectionOrdinal (validation, in template-copy-contract).
+  // They differ in heading regex, key normalisation, and JSON support. Those
+  // differences are currently latent for generated contracts, but if they ever
+  // drift apart, copy can validate as "current" and then fail to seed - a paste
+  // that reports success and writes nothing.
+  //
+  // Rather than assert on the private parsers, pin the property that matters
+  // through the public pipeline: whatever validation certifies as current must
+  // actually be seeded.
+  const template = twoSectionTemplate();
+
+  it("seeds every field of a section that validation certifies as current", () => {
+    const statuses = getTemplateCopySectionStatuses(strategyCopy, template);
+    const currentOrdinals = statuses
+      .filter((s) => s.status === "current")
+      .map((s) => s.ordinal);
+
+    expect(currentOrdinals).toContain("01");
+
+    const page = buildStrategyTemplateStagedPage({
+      pageLabel: "Test Page",
+      pageSlug: "test-page",
+      snapshot: testSnapshot(),
+      template,
+    });
+
+    for (const ordinal of currentOrdinals) {
+      const sectionFields = page.fields.filter(
+        (field) => field.kind === "copy" && field.path.startsWith(`${ordinal}-`),
+      );
+
+      expect(sectionFields.length).toBeGreaterThan(0);
+
+      // If validation says this section's copy is current, the seeding parser
+      // must have found values for it. An all-blank certified section means
+      // the two parsers disagreed about the same text.
+      expect(
+        sectionFields.some((field) => field.value.trim().length > 0),
+      ).toBe(true);
+    }
+  });
+
+  it("does not certify a section whose copy the seeding parser cannot read", () => {
+    // JSON is accepted by the seeding parser but not by the validation parser.
+    // Validation must therefore certify nothing, so the section-scoped gate
+    // blocks seeding rather than half-applying it.
+    const jsonCopy = JSON.stringify({
+      "01-widget-one": { eyebrow: "From JSON", heading: "From JSON" },
+    });
+    const statuses = getTemplateCopySectionStatuses(jsonCopy, template);
+
+    expect(statuses.every((s) => s.status !== "current")).toBe(true);
+  });
+});
