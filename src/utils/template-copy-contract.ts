@@ -1169,8 +1169,76 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  if (component.includes("thankyouconfirmation")) {
+    return [
+      {
+        example: "Request received",
+        name: "eyebrow",
+        purpose: "Short confirmation label above the headline.",
+        target: "12-32 characters.",
+      },
+      {
+        example: "Thank you. Your service request has been sent.",
+        name: "heading",
+        purpose: "Confirmation headline shown after the form is submitted.",
+        target: "36-72 characters.",
+      },
+      {
+        example:
+          "A team member will review the details and follow up using the contact information you provided.",
+        name: "intro",
+        purpose: "Short reassurance line under the confirmation headline.",
+        target: "90-180 characters.",
+      },
+      {
+        example: "What happens next",
+        name: "nextStepsTitle",
+        purpose: "Label introducing the next-steps list.",
+        target: "14-36 characters.",
+      },
+      {
+        example: [
+          "We review your request - The team checks the service details, location, and preferred contact information.",
+          "We follow up - A team member reaches out to clarify the request and discuss current availability.",
+        ],
+        format: "One item per line as Title - Description.",
+        itemCount: 3,
+        name: "nextSteps",
+        purpose: "The sequence of what the customer should expect after submitting.",
+        target: "3 steps. Titles 18-42 characters. Descriptions 80-150 characters.",
+      },
+      {
+        example:
+          "For urgent issues, call the business directly to discuss current availability.",
+        name: "note",
+        purpose:
+          "Closing note for urgent cases. Must match this client's trade - do not assume heating or cooling.",
+        target: "70-140 characters.",
+      },
+      {
+        example: "Back to home",
+        name: "primaryAction",
+        purpose: "Label for the primary button on the confirmation page.",
+        target: "12-24 characters.",
+      },
+      {
+        example: "View services",
+        name: "secondaryAction",
+        purpose: "Label for the secondary button on the confirmation page.",
+        target: "12-24 characters.",
+      },
+    ];
+  }
+
   if (component.includes("contentfixedcoverfade")) {
     return [
+      {
+        example: "Ready when you are",
+        name: "backgroundLabel",
+        purpose:
+          "Small context label above the closing statement. Written for the visitor - never an internal section name.",
+        target: "12-32 characters.",
+      },
       {
         example: "Let the final message hold before the request path rises",
         name: "backgroundTitle",

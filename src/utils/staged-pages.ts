@@ -625,7 +625,7 @@ type TemplateAssetField = {
   value: string;
 };
 
-function getTemplateAssetFieldsForSection(
+export function getTemplateAssetFieldsForSection(
   section: StagedPageTemplateSection,
 ): TemplateAssetField[] {
   const component = section.component.toLowerCase();
