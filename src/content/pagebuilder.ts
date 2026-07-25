@@ -14,6 +14,7 @@ export type PagebuilderRecipeSection = {
   variant?: string;
   colorRecipe?: import("@/content/section-color-recipes").SectionColorRecipe;
   cardFill?: import("@/content/section-color-recipes").SectionCardFill;
+  cardBorder?: import("@/content/section-color-recipes").SectionCardBorder;
 };
 
 export type PagebuilderRecipe = {

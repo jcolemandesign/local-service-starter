@@ -6,7 +6,11 @@ export const sectionColorRecipes = [
 ] as const;
 
 export type SectionColorRecipe = (typeof sectionColorRecipes)[number]["id"];
+/** Card background + shadow. Independent of SectionCardBorder. */
 export type SectionCardFill = "solid" | "none";
+/** Card outline. Independent of SectionCardFill, so a card can be transparent
+ *  but still outlined, or filled with no outline. */
+export type SectionCardBorder = "on" | "off";
 
 export function isSectionColorRecipe(value: string | undefined): value is SectionColorRecipe {
   return sectionColorRecipes.some((recipe) => recipe.id === value);

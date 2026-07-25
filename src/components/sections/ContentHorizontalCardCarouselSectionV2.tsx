@@ -18,6 +18,8 @@ type HorizontalCard = {
 };
 
 type ContentHorizontalCardCarouselSectionV2Props = {
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   eyebrow: string;
   title: string;
   body: string;
@@ -80,9 +82,13 @@ function ArrowButton({
 
 function HorizontalCarouselCard({
   card,
+  cardBorder,
+  cardFill,
   index,
 }: {
   card: HorizontalCard;
+  cardBorder: "on" | "off";
+  cardFill: "solid" | "none";
   index: number;
 }) {
   const size = card.size ?? "medium";
@@ -97,6 +103,11 @@ function HorizontalCarouselCard({
           isFeatured
             ? "border-service-ink bg-service-ink text-white"
             : "border-service-border bg-bg-page text-service-ink",
+          // The featured card is an inverted dark panel with white text, so
+          // clearing its fill would leave unreadable copy - only the standard
+          // cards follow the fill toggle.
+          !isFeatured && cardFill === "none" && "!bg-transparent !shadow-none",
+          cardBorder === "off" && "!border-transparent",
         )}
       >
         <div>
@@ -156,6 +167,8 @@ function HorizontalCarouselCard({
 }
 
 export function ContentHorizontalCardCarouselSectionV2({
+  cardBorder = "on",
+  cardFill = "solid",
   eyebrow,
   title,
   body,
@@ -487,6 +500,8 @@ export function ContentHorizontalCardCarouselSectionV2({
                 {cards.map((card, index) => (
                   <HorizontalCarouselCard
                     card={card}
+                    cardBorder={cardBorder}
+                    cardFill={cardFill}
                     index={index}
                     key={card.title}
                   />

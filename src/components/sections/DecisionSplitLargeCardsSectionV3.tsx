@@ -11,12 +11,20 @@ type SplitLargeCard = {
 
 type DecisionSplitLargeCardsSectionV3Props = {
   actionLabel: string;
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   cards: readonly SplitLargeCard[];
   title: string;
 };
 
+function cx(...classes: Array<string | false | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
+
 export function DecisionSplitLargeCardsSectionV3({
   actionLabel,
+  cardBorder = "on",
+  cardFill = "solid",
   cards,
   title,
 }: DecisionSplitLargeCardsSectionV3Props) {
@@ -50,22 +58,36 @@ export function DecisionSplitLargeCardsSectionV3({
           className="col-span-3 col-start-2 max-md:col-span-3 max-md:col-start-1 max-sm:col-span-1"
           measure="none"
         >
-          {cards[0] ? <SplitLargeCard card={cards[0]} /> : null}
+          {cards[0] ? <SplitLargeCard card={cards[0]} cardBorder={cardBorder} cardFill={cardFill} /> : null}
         </SevenColumnGridItem>
         <SevenColumnGridItem
           className="col-span-3 col-start-5 max-md:col-span-3 max-md:col-start-1 max-sm:col-span-1"
           measure="none"
         >
-          {cards[1] ? <SplitLargeCard card={cards[1]} /> : null}
+          {cards[1] ? <SplitLargeCard card={cards[1]} cardBorder={cardBorder} cardFill={cardFill} /> : null}
         </SevenColumnGridItem>
       </SevenColumnGrid>
     </section>
   );
 }
 
-function SplitLargeCard({ card }: { card: SplitLargeCard }) {
+function SplitLargeCard({
+  card,
+  cardBorder,
+  cardFill,
+}: {
+  card: SplitLargeCard;
+  cardBorder: "on" | "off";
+  cardFill: "solid" | "none";
+}) {
   return (
-    <article className="fluid-type-frame radius-medium min-h-64 border border-service-border bg-service-surface p-6 text-service-ink shadow-none max-md:min-h-0">
+    <article
+      className={cx(
+        "fluid-type-frame radius-medium min-h-64 border border-service-border bg-service-surface p-6 text-service-ink shadow-none max-md:min-h-0",
+        cardFill === "none" && "!bg-transparent !shadow-none",
+        cardBorder === "off" && "!border-transparent",
+      )}
+    >
       <p className="type-label text-service-accent">{card.eyebrow}</p>
       <h3 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
         {card.title}

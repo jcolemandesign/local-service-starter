@@ -21,6 +21,9 @@ export type ContentSplitFixedImageHeadingSizeStep = -1 | 0 | 1;
 
 type ContentSplitFixedImageSectionV3Props = {
   bullets?: readonly string[];
+  cardBorder?: "on" | "off";
+  /** Defaults to "none" - this section renders no card until fill is turned on. */
+  cardFill?: "solid" | "none";
   colorRecipe?: SectionColorRecipe;
   eyebrow: string;
   headingLevel?: 1 | 2;
@@ -142,7 +145,7 @@ function FixedRatioImage({
   return (
     <div
       className={cx(
-        "relative w-full overflow-hidden bg-service-surface shadow-service",
+        "radius-medium relative w-full overflow-hidden bg-service-surface shadow-service",
         ratioClassNames[ratio],
       )}
     >
@@ -159,6 +162,8 @@ function FixedRatioImage({
 
 export function ContentSplitFixedImageSectionV3({
   bullets,
+  cardBorder = "on",
+  cardFill = "none",
   colorRecipe = "default",
   eyebrow,
   headingLevel = 2,
@@ -185,16 +190,26 @@ export function ContentSplitFixedImageSectionV3({
   const headingSizeClassName = headingSizeScale[headingSizeIndex];
   const hasBullets = Boolean(bullets && bullets.length > 0);
   const hasCta = Boolean(primaryAction || secondaryAction);
+  // Stretching the item makes the filled card fill the row, which is as tall
+  // as the copy or the image - whichever wins.
+  const isFilled = cardFill === "solid";
 
   return (
     <section className="bg-bg-page">
       <SevenColumnGrid className="section-min-none items-center" padding="med">
         <SevenColumnGridItem
           alignX="left"
-          alignY="middle"
+          alignY={isFilled ? "stretch" : "middle"}
           className={cx("text-service-ink", config.textClassName)}
         >
-          <div className="fluid-type-frame w-full">
+          <div
+            className={cx(
+              "fluid-type-frame w-full",
+              isFilled &&
+                "radius-medium flex h-full flex-col justify-center bg-service-surface p-14 shadow-service max-md:p-10",
+              isFilled && cardBorder === "on" && "border border-service-border",
+            )}
+          >
             <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
             <HeadingTag
               className={cx(

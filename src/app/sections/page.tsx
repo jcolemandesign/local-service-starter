@@ -5,6 +5,7 @@ import {
   ContentAboutStorySectionV3,
   ContentNarrativeFeatureRailSectionV3,
   ContentCardTwoUpSectionV3,
+  ContentThreeColumnMixedSectionV3,
   ContentFixedCoverFadeSectionV2,
   ContentHorizontalCardCarouselSectionV2,
   ContentMainIdeaGridSectionV3,
@@ -202,6 +203,11 @@ const sectionElements = {
   ),
   "content-card-two-up-v3": (
     <ContentCardTwoUpSectionV3 {...sectionLibraryV3Content.contentCardTwoUp} />
+  ),
+  "content-three-column-mixed-v3": (
+    <ContentThreeColumnMixedSectionV3
+      {...sectionLibraryV3Content.contentThreeColumnMixed}
+    />
   ),
   "content-split-headline-image-v2": (
     <ContentSplitHeadlineImageSectionV2

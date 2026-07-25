@@ -10,6 +10,8 @@ type ScrollServiceItem = {
 };
 
 type ServicesScrollCardsSectionV2Props = {
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   eyebrow: string;
   title: string;
   items: ScrollServiceItem[];
@@ -46,13 +48,23 @@ function ServiceImage() {
   );
 }
 
-function ServiceScrollCard({ item }: { item: ScrollServiceItem }) {
+function ServiceScrollCard({
+  cardBorder,
+  cardFill,
+  item,
+}: {
+  cardBorder: "on" | "off";
+  cardFill: "solid" | "none";
+  item: ScrollServiceItem;
+}) {
   return (
     <article
       className={cx(
         "fluid-type-frame",
         "radius-medium",
         "group/service-card flex w-[min(39vw,495px)] shrink-0 cursor-pointer flex-col overflow-hidden border border-service-border bg-bg-page shadow-service transition-transform duration-300 ease-out hover:-translate-y-2 max-lg:w-full",
+        cardFill === "none" ? "!bg-transparent !shadow-none" : undefined,
+        cardBorder === "off" ? "!border-transparent" : undefined,
       )}
     >
       <div className="flex min-h-28 items-center justify-between gap-8 px-7 py-6">
@@ -105,6 +117,8 @@ function ViewAllCard({ label }: { label: string }) {
 }
 
 export function ServicesScrollCardsSectionV2({
+  cardBorder = "on",
+  cardFill = "solid",
   eyebrow,
   title,
   items,
@@ -241,7 +255,12 @@ export function ServicesScrollCardsSectionV2({
                   className="w-[clamp(16rem,32vw,28rem)] shrink-0 max-lg:hidden"
                 />
                 {items.map((item) => (
-                  <ServiceScrollCard item={item} key={item.title} />
+                  <ServiceScrollCard
+                    cardBorder={cardBorder}
+                    cardFill={cardFill}
+                    item={item}
+                    key={item.title}
+                  />
                 ))}
                 <ViewAllCard label={viewAllLabel} />
               </motion.div>

@@ -58,6 +58,7 @@ export const sectionLibraryV3Content = {
     ],
   },
   heroCompactService: {
+    align: "right" as const,
     eyebrow: "Heat pump service",
     title: "Heat pump repair, maintenance, and replacement.",
     body: "A compact intro for the service this page covers, next to a bounded photo frame and a boxed request path.",
@@ -1443,6 +1444,62 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
+  contentThreeColumnMixed: {
+    align: "left" as const,
+    ctaEyebrow: "Start here",
+    ctaTitle: "Book the visit that matches the problem.",
+    ctaBody:
+      "Share what the system is doing now and the team will confirm the right service path, timing, and pricing before any work begins.",
+    primaryAction: "Request service",
+    primaryActionHref: "/contact",
+    secondaryAction: "Call the office",
+    secondaryActionHref: "tel:7045550184",
+    longformTitle: "What to expect on the first visit",
+    longformIntro:
+      "Every visit starts the same way: a full look at the system before anyone talks about parts, pricing, or replacement.",
+    longformBody:
+      "A technician walks the equipment end to end, checks airflow, refrigerant behavior, and electrical connections, then explains what they find in plain terms. If something looks worn but is still working, you hear that too, along with how much life is realistically left in it.",
+    longformDetail:
+      "Nothing is taken apart before you have seen the findings and approved a written price. If the repair turns out to be larger than expected once work begins, the technician stops and walks you through the revised options rather than pushing ahead.",
+    longformPoints: [
+      "Full system inspection",
+      "Written price before work",
+      "Repair and replace options",
+      "Same-day scheduling",
+      "Licensed and insured techs",
+      "Workmanship guarantee",
+    ],
+    longformLead:
+      "Most visits end with a clear recommendation, a written estimate, and no pressure to decide on the spot.",
+    linkLabel: "Learn more",
+    images: [
+      {
+        imageAlt: "Technician inspecting an outdoor heat pump unit",
+        imageSrc: "/images/fpo-image.svg",
+      },
+      {
+        imageAlt: "Indoor air handler during a maintenance visit",
+        imageSrc: "/images/fpo-image.svg",
+      },
+    ],
+    links: [
+      {
+        title: "Repair",
+        body: "Diagnose the current issue and review practical options.",
+        href: "/services",
+      },
+      {
+        title: "Maintenance",
+        body: "Keep seasonal service and system care on schedule.",
+        href: "/services",
+      },
+      {
+        title: "Replacement",
+        body: "Compare repair and replacement paths for older equipment.",
+        href: "/services",
+      },
+    ],
+  },
 };
 
 export const sectionLibraryV3Collections = [
@@ -1562,6 +1619,10 @@ export const sectionLibraryV3Collections = [
       {
         label: "Card content 2 up",
         component: "content-card-two-up-v3",
+      },
+      {
+        label: "3 col mixed content",
+        component: "content-three-column-mixed-v3",
       },
       {
         label: "Split headline image",

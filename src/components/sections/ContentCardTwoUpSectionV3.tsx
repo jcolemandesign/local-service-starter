@@ -11,6 +11,7 @@ export type ContentCardTwoUpAlign = "left" | "center" | "right";
 
 export type ContentCardTwoUpSectionV3Props = {
   align?: ContentCardTwoUpAlign;
+  cardBorder?: "on" | "off";
   cardFill?: "solid" | "none";
   items: readonly ContentCardTwoUpItem[];
 };
@@ -35,6 +36,7 @@ function cx(...classes: Array<string | false | undefined>) {
 
 export function ContentCardTwoUpSectionV3({
   align = "left",
+  cardBorder = "on",
   cardFill = "solid",
   items,
 }: ContentCardTwoUpSectionV3Props) {
@@ -69,7 +71,8 @@ export function ContentCardTwoUpSectionV3({
               <article
                 className={cx(
                   "fluid-type-frame h-full min-w-0 rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-10 text-service-ink shadow-service max-md:p-8",
-                  cardFill === "none" && "!border-transparent !bg-transparent !shadow-none",
+                  cardFill === "none" && "!bg-transparent !shadow-none",
+                  cardBorder === "off" && "!border-transparent",
                 )}
               >
                 <h3 className="type-heading-lg wrap-pretty text-service-ink">

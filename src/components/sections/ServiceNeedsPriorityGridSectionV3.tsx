@@ -11,6 +11,7 @@ export type ServiceNeedsPriorityGridItem = {
 
 export type ServiceNeedsPriorityGridSectionV3Props = {
   align?: ServiceNeedsPriorityGridAlign;
+  cardBorder?: "on" | "off";
   cardFill?: "solid" | "none";
   compactPriorityCard?: boolean;
   items: readonly ServiceNeedsPriorityGridItem[];
@@ -27,6 +28,7 @@ export type ServiceNeedsPriorityGridAlign = "left" | "right";
 
 export function ServiceNeedsPriorityGridSectionV3({
   align = "right",
+  cardBorder = "on",
   cardFill = "solid",
   compactPriorityCard = false,
   items,
@@ -54,7 +56,7 @@ export function ServiceNeedsPriorityGridSectionV3({
       <article
         className={`group/card fluid-type-frame flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent ${
           cardFill === "none" ? "!bg-transparent !shadow-none" : ""
-        }`}
+        } ${cardBorder === "off" ? "!border-transparent" : ""}`}
       >
         {showImages ? (
           <div className="relative aspect-[4/3] overflow-hidden border-b border-service-border bg-bg-muted">

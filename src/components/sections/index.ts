@@ -18,6 +18,13 @@ export {
   type ContentCardTwoUpSectionV3Props,
 } from "./ContentCardTwoUpSectionV3";
 export {
+  ContentThreeColumnMixedSectionV3,
+  type ContentThreeColumnMixedAlign,
+  type ContentThreeColumnMixedImage,
+  type ContentThreeColumnMixedLink,
+  type ContentThreeColumnMixedSectionV3Props,
+} from "./ContentThreeColumnMixedSectionV3";
+export {
   ContentMainIdeaGridSectionV3,
   type ContentMainIdeaGridPoint,
   type ContentMainIdeaGridSectionV3Props,

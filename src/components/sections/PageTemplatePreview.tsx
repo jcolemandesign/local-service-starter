@@ -9,6 +9,10 @@ import {
 import { ContentNarrativeFeatureRailSectionV3 } from "@/components/sections/ContentNarrativeFeatureRailSectionV3";
 import { ContentCardTwoUpSectionV3 } from "@/components/sections/ContentCardTwoUpSectionV3";
 import {
+  ContentThreeColumnMixedSectionV3,
+  type ContentThreeColumnMixedAlign,
+} from "@/components/sections/ContentThreeColumnMixedSectionV3";
+import {
   ContentPhotoGalleryCarouselSectionV3,
   ContentPhotoGalleryLargeCarouselSectionV3,
 } from "@/components/sections/ContentPhotoGalleryCarouselSectionV3";
@@ -129,6 +133,7 @@ export type PageTemplatePreviewSection = {
   mode: string;
   colorRecipe?: import("@/content/section-color-recipes").SectionColorRecipe;
   cardFill?: import("@/content/section-color-recipes").SectionCardFill;
+  cardBorder?: import("@/content/section-color-recipes").SectionCardBorder;
   name: string;
   reduceBottomPadding?: boolean;
   reduceTopPadding?: boolean;
@@ -368,6 +373,8 @@ export function renderPageTemplateSection(
       return (
         <HeroSplitFixedImageSectionV3
           {...heroSplitProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           colorRecipe={section.colorRecipe}
           headingLevel={headingLevel}
           ratio={getHeroSplitFixedImageRatio(section, fieldSection)}
@@ -417,6 +424,9 @@ export function renderPageTemplateSection(
       return (
         <HeroCompactServiceSectionV3
           {...heroCompactServiceProps(fieldSection)}
+          align={getHeroCompactServiceAlign(section)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           headingLevel={headingLevel}
         />
       );
@@ -456,6 +466,7 @@ export function renderPageTemplateSection(
       return (
         <ServicesBentoCardsSectionV2
           {...servicesBentoProps(fieldSection)}
+          cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           colorRecipe={section.colorRecipe}
           variant={getServicesBentoVariant(section)}
@@ -465,6 +476,8 @@ export function renderPageTemplateSection(
       return (
         <FourCardLinkGridSectionV3
           {...fourCardLinkGridProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           showImages={section.variant !== "text-only"}
         />
       );
@@ -472,6 +485,8 @@ export function renderPageTemplateSection(
       return (
         <ThreeCardLinkGridSectionV3
           {...threeCardLinkGridProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           showImages={section.variant !== "text-only"}
         />
       );
@@ -480,6 +495,7 @@ export function renderPageTemplateSection(
         <ServiceNeedsPriorityGridSectionV3
           {...serviceNeedsPriorityGridProps(fieldSection)}
           align={getServiceNeedsPriorityGridAlign(section)}
+          cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           compactPriorityCard={Boolean(section.variant?.includes("compact"))}
           showImages={!section.variant?.includes("text-only")}
@@ -488,13 +504,27 @@ export function renderPageTemplateSection(
     case "ServicesHoverPanelSectionV2":
       return <ServicesHoverPanelSectionV2 {...servicesHoverProps(fieldSection)} />;
     case "ServicesThreeCardsRightSectionV3":
-      return <ServicesThreeCardsRightSectionV3 {...servicesThreeCardsProps(fieldSection)} />;
+      return (
+        <ServicesThreeCardsRightSectionV3
+          {...servicesThreeCardsProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "ServicesScrollCardsSectionV2":
-      return <ServicesScrollCardsSectionV2 {...servicesScrollCardsProps(fieldSection)} />;
+      return (
+        <ServicesScrollCardsSectionV2
+          {...servicesScrollCardsProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "ContentHorizontalCardCarouselSectionV2":
       return (
         <ContentHorizontalCardCarouselSectionV2
           {...horizontalCardsProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "ContentPhotoGalleryCarouselSectionV3":
@@ -514,6 +544,7 @@ export function renderPageTemplateSection(
         <ProjectCaseStudyGallerySectionV3
           {...projectCaseStudyGalleryProps(fieldSection)}
           align={getProjectCaseStudyGalleryAlign(section)}
+          cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           colorRecipe={section.colorRecipe}
         />
@@ -541,6 +572,8 @@ export function renderPageTemplateSection(
       return (
         <ContentSplitFixedImageSectionV3
           {...contentSplitFixedImageProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           colorRecipe={section.colorRecipe}
           headingLevel={headingLevel}
           headingSizeStep={getContentSplitFixedImageHeadingSizeStep(section)}
@@ -560,6 +593,7 @@ export function renderPageTemplateSection(
       return (
         <ContentStickyCardStreamSectionV2
           {...stickyCardStreamProps(fieldSection)}
+          cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           colorRecipe={section.colorRecipe}
           showImage={section.variant === "with-images"}
@@ -588,6 +622,16 @@ export function renderPageTemplateSection(
               ? section.variant
               : "left"
           }
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
+    case "ContentThreeColumnMixedSectionV3":
+      return (
+        <ContentThreeColumnMixedSectionV3
+          {...contentThreeColumnMixedProps(fieldSection)}
+          align={getContentThreeColumnMixedAlign(section)}
+          cardBorder={section.cardBorder}
           cardFill={section.cardFill}
         />
       );
@@ -613,7 +657,13 @@ export function renderPageTemplateSection(
     case "DecisionSplitDecisionSectionV3":
       return <DecisionSplitDecisionSectionV3 {...splitDecisionProps(fieldSection)} />;
     case "DecisionSplitLargeCardsSectionV3":
-      return <DecisionSplitLargeCardsSectionV3 {...splitLargeCardsProps(fieldSection)} />;
+      return (
+        <DecisionSplitLargeCardsSectionV3
+          {...splitLargeCardsProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "DecisionSplitDecisionLargeSectionV3":
       return (
         <DecisionSplitDecisionLargeSectionV3
@@ -1110,6 +1160,53 @@ function threeCardLinkGridProps(section: FieldSection) {
       };
     }),
     linkLabel: getValue(section, "linkLabel", fallback.linkLabel),
+  };
+}
+
+function contentThreeColumnMixedProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.contentThreeColumnMixed;
+  const imageRecords = getRepeatedAssetRecords(section, ["images"]);
+  const links = cardItemsWithFallback(
+    section,
+    ["links", "items", "cards"],
+    fallback.links,
+  );
+
+  return {
+    ...fallback,
+    ctaBody: getValue(section, "ctaBody", fallback.ctaBody),
+    ctaEyebrow: getValue(section, "ctaEyebrow", fallback.ctaEyebrow),
+    ctaTitle: getValue(section, "ctaTitle", fallback.ctaTitle),
+    images: fallback.images.map((image, index) => ({
+      imageAlt: imageRecords[index]?.imageAlt ?? image.imageAlt,
+      imageSrc: imageRecords[index]?.imageSrc ?? image.imageSrc,
+    })),
+    linkLabel: getValue(section, "linkLabel", fallback.linkLabel),
+    links: links.slice(0, 3).map((link, index) => {
+      const fallbackLink = fallback.links[index % fallback.links.length];
+
+      return {
+        ...fallbackLink,
+        ...link,
+        href: link.href ?? fallbackLink.href,
+      };
+    }),
+    longformBody: getValue(section, "longformBody", fallback.longformBody),
+    longformDetail: getValue(section, "longformDetail", fallback.longformDetail),
+    longformIntro: getValue(section, "longformIntro", fallback.longformIntro),
+    longformLead: getValue(section, "longformLead", fallback.longformLead),
+    longformPoints: getListValues(
+      section,
+      ["longformPoints"],
+      fallback.longformPoints.join("\n"),
+    ),
+    longformTitle: getValue(section, "longformTitle", fallback.longformTitle),
+    primaryAction: getValue(section, "primaryAction", fallback.primaryAction),
+    secondaryAction: getValue(
+      section,
+      "secondaryAction",
+      fallback.secondaryAction,
+    ),
   };
 }
 
@@ -2503,6 +2600,18 @@ function getHeroCompactAlign(section: PageTemplatePreviewSection) {
   return heroCompactAlignments.has(align)
     ? (align as HeroCompactAlign)
     : sectionLibraryV3Content.heroCompact.align;
+}
+
+function getContentThreeColumnMixedAlign(section: PageTemplatePreviewSection) {
+  return heroCompactAlignments.has(section.variant ?? "")
+    ? (section.variant as ContentThreeColumnMixedAlign)
+    : sectionLibraryV3Content.contentThreeColumnMixed.align;
+}
+
+function getHeroCompactServiceAlign(section: PageTemplatePreviewSection) {
+  return heroCompactAlignments.has(section.variant ?? "")
+    ? (section.variant as HeroCompactAlign)
+    : sectionLibraryV3Content.heroCompactService.align;
 }
 
 function getCompactHeaderHeadingSize(

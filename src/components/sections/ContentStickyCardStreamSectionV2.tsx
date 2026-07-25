@@ -16,6 +16,7 @@ type StreamCard = {
 
 type ContentStickyCardStreamSectionV2Props = {
   eyebrow: string;
+  cardBorder?: "on" | "off";
   cardFill?: "solid" | "none";
   title: string;
   body: string;
@@ -34,6 +35,7 @@ function cx(...classes: Array<string | undefined>) {
 
 export function ContentStickyCardStreamSectionV2({
   eyebrow,
+  cardBorder = "on",
   cardFill = "solid",
   title,
   body,
@@ -113,6 +115,7 @@ export function ContentStickyCardStreamSectionV2({
                   "radius-medium",
                   "border border-service-border p-8 shadow-service max-md:p-6",
                   transparentCards ? "!bg-transparent !shadow-none" : colors.card,
+                  cardBorder === "off" ? "!border-transparent" : undefined,
                 )}
                 initial={
                   shouldReduceMotion ? false : { opacity: 0, y: 36 }

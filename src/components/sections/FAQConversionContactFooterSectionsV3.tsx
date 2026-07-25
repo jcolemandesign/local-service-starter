@@ -7,6 +7,7 @@ import {
 } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 import type {
+  SectionCardBorder,
   SectionCardFill,
   SectionColorRecipe,
 } from "@/content/section-color-recipes";
@@ -30,6 +31,7 @@ type FooterContact = {
 
 type FAQSectionV3Props = {
   body: string;
+  cardBorder?: SectionCardBorder;
   cardFill?: SectionCardFill;
   colorRecipe?: SectionColorRecipe;
   eyebrow: string;
@@ -259,6 +261,7 @@ const faqRecipeClasses: Record<
 
 export function FAQSectionV3({
   body,
+  cardBorder = "on",
   cardFill = "solid",
   colorRecipe = "default",
   eyebrow,
@@ -291,7 +294,7 @@ export function FAQSectionV3({
               <article
                 className={`content-padding fluid-type-frame radius-medium border ${colors.card} ${
                   cardFill === "none" ? "!bg-transparent !shadow-none" : ""
-                }`}
+                } ${cardBorder === "off" ? "!border-transparent" : ""}`}
                 key={item.question}
               >
                 <h3 className={`type-heading-sm ${colors.heading}`}>

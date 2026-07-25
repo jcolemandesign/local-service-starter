@@ -23,6 +23,9 @@ export type HeroSplitFixedImageRatio =
 
 type HeroSplitFixedImageSectionV3Props = {
   body: string;
+  cardBorder?: "on" | "off";
+  /** Defaults to "none" - this section renders no card until fill is turned on. */
+  cardFill?: "solid" | "none";
   colorRecipe?: SectionColorRecipe;
   eyebrow: string;
   headingLevel?: 1 | 2;
@@ -152,7 +155,7 @@ function FixedRatioImage({
     <div className="grid w-full place-items-center">
       <div
         className={cx(
-          "relative w-full overflow-hidden bg-service-surface shadow-service",
+          "radius-medium relative w-full overflow-hidden bg-service-surface shadow-service",
           ratioClassNames[ratio],
         )}
       >
@@ -171,6 +174,8 @@ function FixedRatioImage({
 
 export function HeroSplitFixedImageSectionV3({
   body,
+  cardBorder = "on",
+  cardFill = "none",
   colorRecipe = "default",
   eyebrow,
   headingLevel = 1,
@@ -188,20 +193,35 @@ export function HeroSplitFixedImageSectionV3({
     variantConfig[variant] ?? variantConfig["text-3-image-4-right"];
   const colors = colorRecipeClassName[colorRecipe];
   const HeadingTag = `h${headingLevel}` as const;
+  // Padding and radius belong to the card, not the grid item - with no card
+  // they would just inset the copy for no visible reason. Stretching the item
+  // makes the card fill the row, which is as tall as the copy or the image -
+  // whichever wins.
+  const isFilled = cardFill === "solid";
 
   return (
     <section className={colors.section}>
       <SevenColumnGrid className="section-min-none items-center">
         <SevenColumnGridItem
           alignX="left"
-          alignY="middle"
+          alignY={isFilled ? "stretch" : "middle"}
           className={cx(
-            "content-padding radius-medium row-start-1 max-md:row-auto",
+            "row-start-1 max-md:row-auto",
             colors.ink,
             config.textClassName,
           )}
         >
-          <div className="fluid-type-frame w-full">
+          <div
+            className={cx(
+              "fluid-type-frame w-full",
+              isFilled
+                ? "radius-medium flex h-full flex-col justify-center bg-service-surface p-14 shadow-service max-md:p-10"
+                : undefined,
+              isFilled && cardBorder === "on"
+                ? "border border-service-border"
+                : undefined,
+            )}
+          >
             <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
             <HeadingTag
               className={cx(

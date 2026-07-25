@@ -10,11 +10,17 @@ type ServicePriorityCard = {
 };
 
 type ServicesThreeCardsRightSectionV3Props = {
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   cards?: ReadonlyArray<ServicePriorityCard>;
   eyebrow?: string;
   priorityServices?: ReadonlyArray<ServicePriorityCard>;
   title?: string;
 };
+
+function cx(...classes: Array<string | false | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
 
 function ServiceCardIcon({ index }: { index: number }) {
   const variant = index % 3;
@@ -53,6 +59,8 @@ function ServiceCardIcon({ index }: { index: number }) {
 }
 
 export function ServicesThreeCardsRightSectionV3({
+  cardBorder = "on",
+  cardFill = "solid",
   cards,
   priorityServices,
 }: ServicesThreeCardsRightSectionV3Props) {
@@ -76,7 +84,11 @@ export function ServicesThreeCardsRightSectionV3({
 
               return (
                 <a
-                  className="services-three-card radius-medium relative flex min-h-28 items-center justify-center border border-service-border bg-service-surface text-center text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent hover:shadow-[0_18px_48px_rgb(20_27_24_/_0.12)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                  className={cx(
+                    "services-three-card radius-medium relative flex min-h-28 items-center justify-center border border-service-border bg-service-surface text-center text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent hover:shadow-[0_18px_48px_rgb(20_27_24_/_0.12)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
+                    cardFill === "none" && "!bg-transparent !shadow-none",
+                    cardBorder === "off" && "!border-transparent",
+                  )}
                   href={href}
                   key={card.title}
                 >

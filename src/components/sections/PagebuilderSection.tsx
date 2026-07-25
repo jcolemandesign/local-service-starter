@@ -2,6 +2,10 @@ import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAbout
 import { ContentAboutStorySectionV3 } from "@/components/sections/ContentAboutStorySectionV3";
 import { ContentNarrativeFeatureRailSectionV3 } from "@/components/sections/ContentNarrativeFeatureRailSectionV3";
 import { ContentCardTwoUpSectionV3 } from "@/components/sections/ContentCardTwoUpSectionV3";
+import {
+  ContentThreeColumnMixedSectionV3,
+  type ContentThreeColumnMixedAlign,
+} from "@/components/sections/ContentThreeColumnMixedSectionV3";
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
 import { ContentMainIdeaGridSectionV3 } from "@/components/sections/ContentMainIdeaGridSectionV3";
@@ -197,6 +201,18 @@ function getHeroCompactAlign(section: PagebuilderRecipeSection) {
     : sectionLibraryV3Content.heroCompact.align;
 }
 
+function getContentThreeColumnMixedAlign(section: PagebuilderRecipeSection) {
+  return heroCompactAlignments.has(section.variant ?? "")
+    ? (section.variant as ContentThreeColumnMixedAlign)
+    : sectionLibraryV3Content.contentThreeColumnMixed.align;
+}
+
+function getHeroCompactServiceAlign(section: PagebuilderRecipeSection) {
+  return heroCompactAlignments.has(section.variant ?? "")
+    ? (section.variant as HeroCompactAlign)
+    : sectionLibraryV3Content.heroCompactService.align;
+}
+
 function getCompactHeaderHeadingSize(
   section: PagebuilderRecipeSection,
 ): HeroCompactHeadingSize {
@@ -274,6 +290,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <HeroSplitFixedImageSectionV3
           {...sectionLibraryV3Content.heroSplitFullHeight}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           headingLevel={headingLevel}
           ratio={getHeroSplitFixedImageRatio(section)}
           variant={getHeroSplitFixedImageVariant(section)}
@@ -320,6 +338,9 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <HeroCompactServiceSectionV3
           {...sectionLibraryV3Content.heroCompactService}
+          align={getHeroCompactServiceAlign(section)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           headingLevel={headingLevel}
         />
       );
@@ -382,6 +403,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <FourCardLinkGridSectionV3
           {...sectionLibraryV3Content.fourCardLinkGrid}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           showImages={section.variant !== "text-only"}
         />
       );
@@ -389,6 +412,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <ThreeCardLinkGridSectionV3
           {...sectionLibraryV3Content.threeCardLinkGrid}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           showImages={section.variant !== "text-only"}
         />
       );
@@ -397,6 +422,7 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
         <ServiceNeedsPriorityGridSectionV3
           {...sectionLibraryV3Content.serviceNeedsPriorityGrid}
           align={section.variant?.startsWith("left") ? "left" : "right"}
+          cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           compactPriorityCard={Boolean(section.variant?.includes("compact"))}
           showImages={!section.variant?.includes("text-only")}
@@ -412,18 +438,24 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <ServicesThreeCardsRightSectionV3
           {...sectionLibraryV3Content.servicesThreeCardsRight}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "ServicesScrollCardsSectionV2":
       return (
         <ServicesScrollCardsSectionV2
           {...sectionLibraryV3Content.servicesScrollCards}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "ContentHorizontalCardCarouselSectionV2":
       return (
         <ContentHorizontalCardCarouselSectionV2
           {...sectionLibraryV3Content.contentHorizontalCardCarousel}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "ContentPhotoGalleryCarouselSectionV3":
@@ -474,6 +506,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <ContentSplitFixedImageSectionV3
           {...sectionLibraryV3Content.contentSplitFixedImage}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           headingLevel={headingLevel}
           headingSizeStep={getContentSplitFixedImageHeadingSizeStep(section)}
           ratio={getContentSplitFixedImageRatio(section)}
@@ -490,6 +524,7 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <ContentStickyCardStreamSectionV2
           {...sectionLibraryV3Content.contentStickyCardStream}
+          cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           showImage={section.variant === "with-images"}
         />
@@ -529,6 +564,16 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
               ? section.variant
               : "left"
           }
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
+    case "ContentThreeColumnMixedSectionV3":
+      return (
+        <ContentThreeColumnMixedSectionV3
+          {...sectionLibraryV3Content.contentThreeColumnMixed}
+          align={getContentThreeColumnMixedAlign(section)}
+          cardBorder={section.cardBorder}
           cardFill={section.cardFill}
         />
       );
@@ -573,6 +618,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <DecisionSplitLargeCardsSectionV3
           {...sectionLibraryV3Content.decisionSplitLargeCards}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "DecisionSplitDecisionLargeSectionV3":
@@ -1124,6 +1171,12 @@ export function PagebuilderSection() {
       "ContentCardTwoUpSectionV3",
       "Narrative",
       "Card content 2 up",
+      4,
+    ),
+    ContentThreeColumnMixedSectionV3: previewCatalogEntry(
+      "ContentThreeColumnMixedSectionV3",
+      "Narrative",
+      "3 col mixed content",
       4,
     ),
     ContentMainIdeaGridSectionV3: previewCatalogEntry(

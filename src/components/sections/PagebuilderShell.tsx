@@ -23,6 +23,10 @@ import {
   type HeroCompactHeadingSize,
 } from "@/components/sections/HeroCompactSectionV3";
 import { HeroServicesSectionV3 } from "@/components/sections/HeroServicesSectionV3";
+import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/ServicesThreeCardsRightSectionV3";
+import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
+import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
+import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
 import { HeroCompactServiceSectionV3 } from "@/components/sections/HeroCompactServiceSectionV3";
 import { SectionHeaderCompactSectionV3 } from "@/components/sections/SectionHeaderCompactSectionV3";
 import {
@@ -51,6 +55,10 @@ import {
   type ContentCardTwoUpAlign,
 } from "@/components/sections/ContentCardTwoUpSectionV3";
 import {
+  ContentThreeColumnMixedSectionV3,
+  type ContentThreeColumnMixedAlign,
+} from "@/components/sections/ContentThreeColumnMixedSectionV3";
+import {
   FAQAccordionSidebarSectionV3,
   type FAQAccordionSidebarAlign,
 } from "@/components/sections/FAQAccordionSidebarSectionV3";
@@ -73,6 +81,7 @@ import type { PagebuilderRecipe, SectionMode } from "@/content/pagebuilder";
 import {
   isSectionColorRecipe,
   sectionColorRecipes,
+  type SectionCardBorder,
   type SectionCardFill,
   type SectionColorRecipe,
 } from "@/content/section-color-recipes";
@@ -128,9 +137,16 @@ const contentMainIdeaGridComponent = "ContentMainIdeaGridSectionV3";
 const contentNarrativeFeatureRailComponent =
   "ContentNarrativeFeatureRailSectionV3";
 const contentCardTwoUpComponent = "ContentCardTwoUpSectionV3";
+const contentThreeColumnMixedComponent = "ContentThreeColumnMixedSectionV3";
 const faqAccordionSidebarComponent = "FAQAccordionSidebarSectionV3";
 const projectCaseStudyGalleryComponent = "ProjectCaseStudyGallerySectionV3";
 const contentStickyCardStreamComponent = "ContentStickyCardStreamSectionV2";
+const faqComponent = "FAQSectionV3";
+const contentHorizontalCardCarouselComponent =
+  "ContentHorizontalCardCarouselSectionV2";
+const decisionSplitLargeCardsComponent = "DecisionSplitLargeCardsSectionV3";
+const servicesScrollCardsComponent = "ServicesScrollCardsSectionV2";
+const servicesThreeCardsRightComponent = "ServicesThreeCardsRightSectionV3";
 const ctaSectionComponent = "CTASectionV3";
 const ctaMutedSectionComponent = "CTAMutedSectionV3";
 const decisionSplitDecisionLargeComponent = "DecisionSplitDecisionLargeSectionV3";
@@ -507,6 +523,12 @@ function isCompactHeaderAlignmentSection(
   );
 }
 
+function isHeroCompactServiceSection(
+  section: PagebuilderRecipe["sectionStack"][number],
+) {
+  return section.component === heroCompactServiceComponent;
+}
+
 function isLargeSectionHeaderSection(
   section: PagebuilderRecipe["sectionStack"][number],
 ) {
@@ -552,8 +574,52 @@ function getSectionColorRecipe(section: WorkingSection): SectionColorRecipe {
   return isSectionColorRecipe(section.colorRecipe) ? section.colorRecipe : "default";
 }
 
+// These sections render no card by default - the fill is opt-in, so an unset
+// value means "none" here rather than the usual "solid". Without this, every
+// saved instance would suddenly gain a card panel behind its copy.
+const cardFillOptInComponents = new Set<string>([
+  "HeroSplitFixedImageSectionV3",
+  "ContentSplitFixedImageSectionV3",
+]);
+
 function getSectionCardFill(section: WorkingSection): SectionCardFill {
-  return section.cardFill === "none" ? "none" : "solid";
+  if (section.cardFill === "none" || section.cardFill === "solid") {
+    return section.cardFill;
+  }
+
+  return cardFillOptInComponents.has(section.component) ? "none" : "solid";
+}
+
+// Only these sections read cardFill. Everything else ignores the value, so the
+// control is hidden rather than rendered as a toggle that silently does
+// nothing. Keep in sync with the components passed cardFill in this file.
+const cardFillComponents = new Set<string>([
+  contentCardTwoUpComponent,
+  contentFixedRatioSplitComponent,
+  contentHorizontalCardCarouselComponent,
+  fixedRatioSplitComponent,
+  contentStickyCardStreamComponent,
+  contentThreeColumnMixedComponent,
+  decisionSplitLargeCardsComponent,
+  faqComponent,
+  fourCardLinkGridComponent,
+  heroCompactServiceComponent,
+  projectCaseStudyGalleryComponent,
+  serviceNeedsPriorityGridComponent,
+  servicesBentoComponent,
+  servicesScrollCardsComponent,
+  servicesThreeCardsRightComponent,
+  threeCardLinkGridComponent,
+]);
+
+function sectionSupportsCardFill(
+  section: PagebuilderRecipe["sectionStack"][number],
+) {
+  return cardFillComponents.has(section.component);
+}
+
+function getSectionCardBorder(section: WorkingSection): SectionCardBorder {
+  return section.cardBorder === "off" ? "off" : "on";
 }
 
 function getDecisionSplitDecisionLargeAlign(
@@ -652,6 +718,24 @@ function getHeroCompactAlign(section: WorkingSection) {
     : sectionLibraryV3Content.heroCompact.align;
 }
 
+function isContentThreeColumnMixedSection(
+  section: PagebuilderRecipe["sectionStack"][number],
+) {
+  return section.component === contentThreeColumnMixedComponent;
+}
+
+function getContentThreeColumnMixedAlign(section: WorkingSection) {
+  return heroCompactAlignments.has(section.variant ?? "")
+    ? (section.variant as ContentThreeColumnMixedAlign)
+    : sectionLibraryV3Content.contentThreeColumnMixed.align;
+}
+
+function getHeroCompactServiceAlign(section: WorkingSection) {
+  return heroCompactAlignments.has(section.variant ?? "")
+    ? (section.variant as HeroCompactAlign)
+    : sectionLibraryV3Content.heroCompactService.align;
+}
+
 function getCompactHeaderHeadingSize(
   section: WorkingSection,
 ): HeroCompactHeadingSize {
@@ -745,6 +829,12 @@ function createInitialWorkingStack(
             ? section.variant ?? fixedRatioSplitVariantOptions[0].value
             : isCompactHeaderAlignmentSection(section)
               ? section.variant ?? sectionLibraryV3Content.heroCompact.align
+              : isHeroCompactServiceSection(section)
+                ? section.variant ??
+                  sectionLibraryV3Content.heroCompactService.align
+              : isContentThreeColumnMixedSection(section)
+                ? section.variant ??
+                  sectionLibraryV3Content.contentThreeColumnMixed.align
               : isLargeSectionHeaderSection(section)
                 ? section.variant ?? "center-display-xl"
               : isServicesBentoSection(section)
@@ -1215,6 +1305,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     layoutGrid: 14,
     mode: "Narrative",
     name: "Card content 2 up",
+  },
+  {
+    component: "ContentThreeColumnMixedSectionV3",
+    instruction:
+      "Three rails on the shared 14-column grid: a five-column image rail with two photos, a six-column rail holding a longform block (heading, lead paragraph, two body paragraphs, a six-item two-column bullet list, and a closing lead) with a medium primary CTA card beneath it, and a three-column rail of exactly 3 small secondary CTA link cards.",
+    layoutGrid: 14,
+    mode: "Narrative",
+    name: "3 col mixed content",
   },
   {
     component: "ContentRuleHeaderSectionV2",
@@ -1808,6 +1906,52 @@ function CardImageIcon({ hidden }: { hidden?: boolean }) {
   );
 }
 
+function CardBorderIcon({ bordered }: { bordered: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <rect
+        height="14"
+        rx="1.5"
+        stroke="currentColor"
+        strokeOpacity={bordered ? 1 : 0.25}
+        strokeWidth={bordered ? "2.25" : "1.25"}
+        width="18"
+        x="3"
+        y="5"
+      />
+    </svg>
+  );
+}
+
+function CardFillIcon({ filled }: { filled: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <rect
+        fill={filled ? "currentColor" : "none"}
+        fillOpacity={filled ? 0.35 : 0}
+        height="14"
+        rx="1.5"
+        stroke="currentColor"
+        strokeDasharray={filled ? undefined : "3 2.5"}
+        strokeWidth="1.75"
+        width="18"
+        x="3"
+        y="5"
+      />
+    </svg>
+  );
+}
+
 function PagebuilderPreviewWindow({
   activePageLabel,
   children,
@@ -2266,6 +2410,18 @@ export function PagebuilderShell({
     );
   }
 
+  function updateSectionCardBorder(
+    sectionId: string,
+    cardBorder: SectionCardBorder,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId ? { ...section, cardBorder } : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateSectionCardFill(sectionId: string, cardFill: SectionCardFill) {
     updateActiveStack((stack) =>
       stack.map((section) =>
@@ -2577,6 +2733,34 @@ export function PagebuilderShell({
           variant: `${align}-${getCompactHeaderHeadingSize(section)}`,
         };
       }),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
+  function updateContentThreeColumnMixedAlign(
+    sectionId: string,
+    align: ContentThreeColumnMixedAlign,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && isContentThreeColumnMixedSection(section)
+          ? { ...section, variant: align }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
+  function updateHeroCompactServiceAlign(
+    sectionId: string,
+    align: HeroCompactAlign,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && isHeroCompactServiceSection(section)
+          ? { ...section, variant: align }
+          : section,
+      ),
     );
     setSelectedSectionId(sectionId);
   }
@@ -2948,6 +3132,8 @@ export function PagebuilderShell({
         ) : isFixedRatioSplitSection(section) ? (
           <HeroSplitFixedImageSectionV3
             {...sectionLibraryV3Content.heroSplitFullHeight}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
             colorRecipe={getSectionColorRecipe(section)}
             headingLevel={headingLevel}
             ratio={
@@ -2963,6 +3149,8 @@ export function PagebuilderShell({
         ) : isContentFixedRatioSplitSection(section) ? (
           <ContentSplitFixedImageSectionV3
             {...sectionLibraryV3Content.contentSplitFixedImage}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
             colorRecipe={getSectionColorRecipe(section)}
             headingLevel={headingLevel}
             headingSizeStep={getContentSplitFixedImageHeadingSizeStep(section)}
@@ -2993,6 +3181,9 @@ export function PagebuilderShell({
         ) : section.component === heroCompactServiceComponent ? (
           <HeroCompactServiceSectionV3
             {...sectionLibraryV3Content.heroCompactService}
+            align={getHeroCompactServiceAlign(section)}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
             headingLevel={headingLevel}
           />
         ) : section.component === sectionHeaderCompactComponent ? (
@@ -3030,6 +3221,14 @@ export function PagebuilderShell({
           <ContentCardTwoUpSectionV3
             {...sectionLibraryV3Content.contentCardTwoUp}
             align={getContentCardTwoUpAlign(section)}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
+          />
+        ) : section.component === contentThreeColumnMixedComponent ? (
+          <ContentThreeColumnMixedSectionV3
+            {...sectionLibraryV3Content.contentThreeColumnMixed}
+            align={getContentThreeColumnMixedAlign(section)}
+            cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
           />
         ) : section.component === faqAccordionSidebarComponent ? (
@@ -3047,9 +3246,10 @@ export function PagebuilderShell({
             {...sectionLibraryV3Content.cta}
             colorRecipe={getSectionColorRecipe(section)}
           />
-        ) : section.component === "FAQSectionV3" ? (
+        ) : section.component === faqComponent ? (
           <FAQSectionV3
             {...sectionLibraryV3Content.faq}
+            cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
             colorRecipe={getSectionColorRecipe(section)}
           />
@@ -3057,6 +3257,7 @@ export function PagebuilderShell({
           <ProjectCaseStudyGallerySectionV3
             {...sectionLibraryV3Content.projectCaseStudyGallery}
             align={getProjectCaseStudyGalleryAlign(section)}
+            cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
             colorRecipe={getSectionColorRecipe(section)}
           />
@@ -3068,6 +3269,7 @@ export function PagebuilderShell({
         ) : section.component === contentStickyCardStreamComponent ? (
           <ContentStickyCardStreamSectionV2
             {...sectionLibraryV3Content.contentStickyCardStream}
+            cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
             colorRecipe={getSectionColorRecipe(section)}
             showImage={getStickyCardStreamShowImage(section)}
@@ -3075,17 +3277,22 @@ export function PagebuilderShell({
         ) : isFourCardLinkGridSection(section) ? (
           <FourCardLinkGridSectionV3
             {...sectionLibraryV3Content.fourCardLinkGrid}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
             showImages={getFourCardLinkGridVariant(section) === "with-images"}
           />
         ) : isThreeCardLinkGridSection(section) ? (
           <ThreeCardLinkGridSectionV3
             {...sectionLibraryV3Content.threeCardLinkGrid}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
             showImages={getCardLinkGridVariant(section) === "with-images"}
           />
         ) : isServiceNeedsPriorityGridSection(section) ? (
           <ServiceNeedsPriorityGridSectionV3
             {...sectionLibraryV3Content.serviceNeedsPriorityGrid}
             align={getServiceNeedsPriorityGridAlign(section)}
+            cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
             compactPriorityCard={getServiceNeedsPriorityGridCompactPriorityCard(
               section,
@@ -3095,9 +3302,34 @@ export function PagebuilderShell({
         ) : isServicesBentoSection(section) ? (
           <ServicesBentoCardsSectionV2
             {...sectionLibraryV3Content.servicesBento}
+            cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
             colorRecipe={getSectionColorRecipe(section)}
             variant={getServicesBentoVariant(section)}
+          />
+        ) : section.component === servicesThreeCardsRightComponent ? (
+          <ServicesThreeCardsRightSectionV3
+            {...sectionLibraryV3Content.servicesThreeCardsRight}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
+          />
+        ) : section.component === servicesScrollCardsComponent ? (
+          <ServicesScrollCardsSectionV2
+            {...sectionLibraryV3Content.servicesScrollCards}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
+          />
+        ) : section.component === contentHorizontalCardCarouselComponent ? (
+          <ContentHorizontalCardCarouselSectionV2
+            {...sectionLibraryV3Content.contentHorizontalCardCarousel}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
+          />
+        ) : section.component === decisionSplitLargeCardsComponent ? (
+          <DecisionSplitLargeCardsSectionV3
+            {...sectionLibraryV3Content.decisionSplitLargeCards}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
           />
         ) : (
           previewCatalog[section.component] ??
@@ -3592,45 +3824,84 @@ export function PagebuilderShell({
                             </div>
                           </fieldset>
 
+                          {sectionSupportsCardFill(section) ? (
+                          <div className="grid grid-cols-2 items-start gap-4">
                           <fieldset className="grid gap-2">
                             <legend className="type-caption font-semibold text-current">
                               Card fill
                             </legend>
-                            <div className="grid grid-cols-2 gap-2">
+                            <div className="flex items-center gap-2">
                               {(["solid", "none"] as const).map((cardFill) => {
                                 const isActive =
                                   getSectionCardFill(section) === cardFill;
+                                const label =
+                                  cardFill === "solid" ? "Filled" : "Transparent";
 
                                 return (
                                   <button
                                     aria-pressed={isActive}
                                     className={cx(
-                                      "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
-                                      isActive
-                                        ? "token-chrome-card-active"
-                                        : "token-chrome-card",
+                                      "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                      isActive && "token-chrome-card-active",
                                     )}
                                     key={cardFill}
                                     onClick={() =>
                                       updateSectionCardFill(section.id, cardFill)
                                     }
+                                    title={label}
                                     type="button"
                                   >
-                                    {cardFill === "solid" ? "Filled" : "Transparent"}
+                                    <CardFillIcon filled={cardFill === "solid"} />
+                                    <span className="sr-only">{label}</span>
                                   </button>
                                 );
                               })}
                             </div>
                           </fieldset>
 
-                          <div
-                            className={cx(
-                              "grid gap-4",
-                              (isCardLinkGridSection(section) ||
-                                section.component === contentStickyCardStreamComponent) &&
-                                "grid-cols-2 items-start",
-                            )}
-                          >
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Card border
+                              </legend>
+                              <div className="flex items-center gap-2">
+                                {(["on", "off"] as const).map((cardBorder) => {
+                                  const isActive =
+                                    getSectionCardBorder(section) === cardBorder;
+                                  const label =
+                                    cardBorder === "on"
+                                      ? "Border on"
+                                      : "Border off";
+
+                                  return (
+                                    <button
+                                      aria-pressed={isActive}
+                                      className={cx(
+                                        "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                        isActive && "token-chrome-card-active",
+                                      )}
+                                      key={cardBorder}
+                                      onClick={() =>
+                                        updateSectionCardBorder(
+                                          section.id,
+                                          cardBorder,
+                                        )
+                                      }
+                                      title={label}
+                                      type="button"
+                                    >
+                                      <CardBorderIcon
+                                        bordered={cardBorder === "on"}
+                                      />
+                                      <span className="sr-only">{label}</span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </fieldset>
+                          </div>
+                          ) : null}
+
+                          <div className="grid grid-cols-2 items-start gap-4">
                           <fieldset className="grid gap-2">
                             <legend className="type-caption font-semibold text-current">
                               Section spacing
@@ -3892,6 +4163,88 @@ export function PagebuilderShell({
                               <p className="type-caption text-current/60">
                                 Choose where the compact title block sits on
                                 the seven-column grid.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
+                          {isHeroCompactServiceSection(section) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Alignment
+                              </legend>
+                              <div className="grid grid-cols-3 gap-2">
+                                {heroCompactAlignOptions.map((option) => {
+                                  const optionIsActive =
+                                    getHeroCompactServiceAlign(section) ===
+                                    option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateHeroCompactServiceAlign(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Choose where the request panel sits relative to
+                                the title block and photo frame.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
+                          {isContentThreeColumnMixedSection(section) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Alignment
+                              </legend>
+                              <div className="grid grid-cols-3 gap-2">
+                                {heroCompactAlignOptions.map((option) => {
+                                  const optionIsActive =
+                                    getContentThreeColumnMixedAlign(section) ===
+                                    option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateContentThreeColumnMixedAlign(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Choose the order of the image, CTA, and link
+                                rails across the three columns.
                               </p>
                             </fieldset>
                           ) : null}

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import type {
+  SectionCardBorder,
   SectionCardFill,
   SectionColorRecipe,
 } from "@/content/section-color-recipes";
@@ -29,6 +30,7 @@ type ProjectCaseStudySlide = {
 
 type ProjectCaseStudyGallerySectionV3Props = {
   align?: ProjectCaseStudyGalleryAlign;
+  cardBorder?: SectionCardBorder;
   cardFill?: SectionCardFill;
   colorRecipe?: SectionColorRecipe;
   slides: readonly ProjectCaseStudySlide[];
@@ -68,6 +70,7 @@ function SliderControl({
 
 export function ProjectCaseStudyGallerySectionV3({
   align = "left",
+  cardBorder = "on",
   cardFill = "solid",
   colorRecipe = "default",
   slides,
@@ -145,7 +148,7 @@ export function ProjectCaseStudyGallerySectionV3({
                     : hasDarkCard
                       ? "bg-bg-dark shadow-service"
                       : "bg-service-surface shadow-service"
-                }`}
+                } ${cardBorder === "off" ? "!border-transparent" : ""}`}
                 exit={{ opacity: 0, x: shouldReduceMotion ? 0 : -6 }}
                 initial={{ opacity: 0, x: shouldReduceMotion ? 0 : 10 }}
                 animate={{ opacity: 1, x: 0 }}

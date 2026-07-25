@@ -570,6 +570,116 @@ export function getTemplateCopyFieldsForSection(
   const sectionName = section.name.toLowerCase();
   const lookupValue = `${component} ${mode} ${sectionName}`;
 
+  // Matched on the component before the generic branches below: this section's
+  // lookup value contains none of their keywords, so without an explicit branch
+  // it would fall through to fallbackFields and silently render demo copy.
+  if (component.includes("contentthreecolumnmixed")) {
+    return [
+      {
+        example: "Start here",
+        name: "ctaEyebrow",
+        purpose: "Short label above the primary CTA card headline.",
+        target: "8-24 characters.",
+      },
+      {
+        example: "Book the visit that matches the problem.",
+        name: "ctaTitle",
+        purpose: "Primary CTA card headline.",
+        target: "28-56 characters.",
+      },
+      {
+        example:
+          "Share what the system is doing now and the team will confirm the right service path, timing, and pricing before any work begins.",
+        name: "ctaBody",
+        purpose: "Supporting copy inside the primary CTA card.",
+        target: "100-190 characters.",
+      },
+      {
+        example: "Request service",
+        name: "primaryAction",
+        purpose: "Main CTA button label.",
+        target: "12-24 characters.",
+      },
+      {
+        example: "Call the office",
+        name: "secondaryAction",
+        purpose: "Secondary CTA button label beside the main action.",
+        target: "10-22 characters.",
+      },
+      {
+        example: "What to expect on the first visit",
+        name: "longformTitle",
+        purpose: "Heading for the longform block beneath the CTA card.",
+        target: "24-52 characters.",
+      },
+      {
+        example:
+          "Every visit starts the same way: a full look at the system before anyone talks about parts, pricing, or replacement.",
+        name: "longformIntro",
+        purpose:
+          "Opening lead paragraph under the longform heading, set one size larger than the body copy beneath it.",
+        target: "100-160 characters.",
+      },
+      {
+        example:
+          "A technician walks the equipment end to end, checks airflow, refrigerant behavior, and electrical connections, then explains what they find in plain terms. If something looks worn but is still working, you hear that too, along with how much life is realistically left in it.",
+        name: "longformBody",
+        purpose: "First body paragraph after the opening lead.",
+        target: "220-320 characters.",
+      },
+      {
+        example:
+          "Nothing is taken apart before you have seen the findings and approved a written price. If the repair turns out to be larger than expected once work begins, the technician stops and walks you through the revised options rather than pushing ahead.",
+        name: "longformDetail",
+        purpose: "Second body paragraph continuing the longform explanation.",
+        target: "220-320 characters.",
+      },
+      {
+        example: [
+          "Full system inspection",
+          "Written price before work",
+          "Repair and replace options",
+          "Same-day scheduling",
+          "Licensed and insured techs",
+          "Workmanship guarantee",
+        ],
+        format: "One item per line.",
+        itemCount: 6,
+        name: "longformPoints",
+        purpose:
+          "Scannable proof points rendered as a prominent two-column bulleted list.",
+        target: "Exactly 6 items. 18-34 characters each, no ending period.",
+      },
+      {
+        example:
+          "Most visits end with a clear recommendation and no pressure to decide on the spot.",
+        name: "longformLead",
+        purpose:
+          "Closing lead paragraph set one size larger than the body copy above it.",
+        target: "70-130 characters.",
+      },
+      {
+        example: [
+          "Repair - Diagnose the current issue and review practical options.",
+          "Maintenance - Keep seasonal service and system care on schedule.",
+          "Replacement - Compare repair and replacement paths for older equipment.",
+        ],
+        format: "One item per line as Title - Description.",
+        itemCount: 3,
+        name: "links",
+        purpose: "Three small secondary CTA link cards in the narrow rail.",
+        target:
+          "Exactly 3 items. Titles 6-20 characters. Descriptions 50-90 characters.",
+      },
+      {
+        example: "Learn more",
+        name: "linkLabel",
+        purpose: "Shared label on each small link card.",
+        target: "8-16 characters.",
+      },
+    ];
+  }
+
   if (lookupValue.includes("nav")) {
     return [
       {

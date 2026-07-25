@@ -802,6 +802,23 @@ export function getTemplateAssetFieldsForSection(
     );
   }
 
+  if (component.includes("contentthreecolumnmixed")) {
+    return sectionLibraryV3Content.contentThreeColumnMixed.images.flatMap(
+      (image, index) => [
+        {
+          kind: "meta" as const,
+          name: `images.${index + 1}.imageAlt`,
+          value: image.imageAlt,
+        },
+        {
+          kind: "image" as const,
+          name: `images.${index + 1}.imageSrc`,
+          value: image.imageSrc,
+        },
+      ],
+    );
+  }
+
   if (component.includes("contentstickycardstream")) {
     return [
       {

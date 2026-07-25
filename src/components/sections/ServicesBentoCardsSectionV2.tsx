@@ -5,6 +5,7 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 import type {
+  SectionCardBorder,
   SectionCardFill,
   SectionColorRecipe,
 } from "@/content/section-color-recipes";
@@ -29,6 +30,7 @@ type ServicesBentoCardsSectionV2Props = {
   items: ServiceBentoItem[];
   variant?: ServicesBentoCardsVariant;
   colorRecipe?: SectionColorRecipe;
+  cardBorder?: SectionCardBorder;
   cardFill?: SectionCardFill;
 };
 
@@ -147,6 +149,7 @@ export function ServicesBentoCardsSectionV2({
   items,
   variant = "default",
   colorRecipe = "default",
+  cardBorder = "on",
   cardFill = "solid",
 }: ServicesBentoCardsSectionV2Props) {
   const isSplitHeader = variant === "split-header";
@@ -285,6 +288,7 @@ export function ServicesBentoCardsSectionV2({
                   "radius-medium",
                   "group/service-card relative flex cursor-pointer flex-col overflow-hidden border border-service-border transition-transform duration-300 ease-out hover:scale-[1.015]",
                   transparentCards ? "bg-transparent shadow-none" : `${colors.card} shadow-service`,
+                  cardBorder === "off" ? "!border-transparent" : undefined,
                   isSplitHeader ? "h-full" : undefined,
                   cardSpanPattern[index % cardSpanPattern.length],
                 )}
