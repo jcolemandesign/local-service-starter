@@ -26,6 +26,7 @@ import { StyleGuideGapCard } from "@/components/sections/StyleGuideGapCard";
 import { StyleGuideColorSwatch } from "@/components/sections/StyleGuideColorSwatch";
 import { StyleGuideColorResetButton } from "@/components/sections/StyleGuideColorResetButton";
 import { StyleGuidePromoteTokensButton } from "@/components/sections/StyleGuidePromoteTokensButton";
+import { StyleGuideSlotsPanel } from "@/components/sections/StyleGuideSlotsPanel";
 import { StyleGuideResetButton } from "@/components/sections/StyleGuideResetButton";
 import { StyleGuideCloseAllButton } from "@/components/sections/StyleGuideCloseAllButton";
 import { StyleGuideButtonControls } from "@/components/sections/StyleGuideButtonControls";
@@ -1376,6 +1377,7 @@ export default function StyleGuidePage() {
       </nav>
 
       <Container className="grid gap-4 py-4 max-md:gap-3 max-md:py-3">
+      <StyleGuideSlotsPanel />
       <GuideSection
         eyebrow="Type + Grid"
         id="typography"

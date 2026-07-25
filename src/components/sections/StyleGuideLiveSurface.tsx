@@ -82,6 +82,13 @@ type StyleGuideLiveSurfaceProps = {
 
 type StyleGuideTokenContextValue = {
   draft: StyleGuideTokenDraft;
+  /**
+   * Replaces the whole draft, for loading a saved slot. Distinct from
+   * `updateDrafts`, which merges through the active-palette bookkeeping - a
+   * saved slot already carries its own palette state and must not be merged
+   * into whatever is currently selected.
+   */
+  replaceDraft: (next: StyleGuideTokenDraft) => void;
   resetDraft: () => void;
   selectColorPalette: (paletteId: StyleGuideColorPaletteId) => void;
   updateDraft: <K extends keyof StyleGuideTokenDraft>(
@@ -535,6 +542,12 @@ export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) 
     });
   }
 
+  function replaceDraft(next: StyleGuideTokenDraft) {
+    // Merged over the defaults so a slot saved before a token was added still
+    // loads, with the new token at its default rather than undefined.
+    setDraft({ ...defaultStyleGuideTokenDraft, ...next });
+  }
+
   function resetDraft() {
     setDraft(defaultStyleGuideTokenDraft);
     window.localStorage.removeItem(styleGuideStorageKey);
@@ -544,6 +557,7 @@ export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) 
     <StyleGuideTokenContext.Provider
       value={{
         draft,
+        replaceDraft,
         resetDraft,
         selectColorPalette,
         updateDraft,
