@@ -171,7 +171,7 @@ paths. That section had been rendering pure demo fallback while real approved
 copy sat unreachable. Repaired in d109015. This is the strongest argument for
 the persisted `slotId` in Phase 3.
 
-## Phase 3 — partly done
+## Phase 3 — done
 
 Done:
 
@@ -202,29 +202,53 @@ Deleting it removes visible UI, so it is a product decision, not cleanup.
 Options: drop the pill, or give `"ready"` a meaning — approved-for-export is the
 obvious candidate, since that state already exists in `site-export.json`.
 
-## Remaining: `slotId`
+### `slotId` — done
 
-The last Phase 3 item, and the one that structurally fixes rename/reorder
-fragility.
+The item that structurally fixes rename/reorder fragility. Shipped as designed:
+an anchor, not a replacement for the path.
 
-**The obvious implementation is wrong.** If `getSectionId` simply returns a
-persisted `slotId`, every existing field path changes at once and all current
-copy orphans — the exact failure the change is meant to prevent, applied to the
-whole repo.
+**The obvious implementation is wrong**, and was avoided. If `getSectionId`
+simply returned a persisted `slotId`, every existing field path would change at
+once and all current copy would orphan — the exact failure the change is meant
+to prevent, applied to the whole repo.
 
-The right shape is `slotId` as a stable *anchor*, not a replacement for the
-path:
+What landed:
 
-- persist `slotId` (nanoid) on each template section, assigned once at template
-  creation, backfilled on existing templates from their current derived ids
-- keep field paths human-readable and derived (`07-cards-features-4-up-split.body`)
-  so records stay diffable and greppable
-- on stage/refresh, use `slotId` to detect that a section's derived id has
-  changed and remap its field paths, instead of stranding them
+- `slotId` persisted on each template section (`createSlotId`, `crypto.randomUUID`
+  rather than a new dependency), assigned at promotion in the page-templates
+  route. Repeats are dropped at that write boundary, since a slot anchors
+  exactly one section.
+- Field paths stay derived and human-readable
+  (`07-cards-features-4-up-split.body`), so records remain diffable and
+  greppable and nothing was re-identified.
+- `getSectionIdRenames` (`src/utils/section-id.ts`) maps old section id → new
+  for every slot whose derived id changed. Renames resolve against the previous
+  ids in one pass, so a straight swap of two sections maps both without one
+  clobbering the other.
+- `remapFieldPathsForRenamedSections` (`src/utils/staged-pages.ts`) moves those
+  fields onto the new paths, wired into `buildStagedPageCandidate` ahead of the
+  path-keyed merge. That merge is where copy was being dropped: it matches by
+  path, so a renamed section previously had nothing to preserve.
+- Anchors survive the template → pagebuilder → template round trip
+  (`WorkingSection`, `serializeWorkingSection`, the pagebuilder-options route,
+  and the Template Library's send-to-pagebuilder payload), so re-promoting an
+  edited template does not lose them. Re-promotion also carries the previous
+  template's anchors by index when the stack shape is unchanged.
+- Backfilled: 150 anchors across 15 templates; the 64 staged sections took the
+  anchor of the template section they were staged from. Verified purely
+  additive — stripping `slotId` back out reproduced both files byte-for-byte.
 
-`src/utils/__tests__/staged-pages-orphan-fields.test.ts` is the safety net for
-that work: it fails if any remap leaves fields behind. Verified to fire by
-reintroducing the About page orphan.
+Sections with no anchor produce no renames and fall back to path matching,
+which is what every call site did before, so the degraded case is never worse
+than the old behaviour.
+
+Safety nets: `src/utils/__tests__/staged-pages-orphan-fields.test.ts` still runs
+against real records and fails if any remap leaves fields behind (verified to
+fire by reintroducing the About page orphan).
+`src/utils/__tests__/staged-pages-slot-id-remap.test.ts` covers rename, reorder,
+swap, and missing-anchor cases, and includes a negative control asserting the
+copy *is* lost without the anchor — so the test cannot quietly stop testing
+anything.
 
 ## Phase 4 — only if client count grows
 
@@ -243,8 +267,9 @@ run):
 - `checkpoint/phase-2-refresh-fix`
 - `checkpoint/phase-2-complete`
 - `checkpoint/phase-3-per-client-split`
+- `checkpoint/phase-3-complete`
 
-Test count over this work: 24 → 86.
+Test count over this work: 24 → 95.
 
 Adding fields to a spec changes its contract fingerprint and flips affected
 sections to `stale`. Expected and safe, but it surfaces warnings on existing
