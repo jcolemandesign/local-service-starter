@@ -17,6 +17,9 @@ function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+// Gradient stops reference design tokens (via var()/color-mix) rather than
+// literal hex, so this texture follows the promoted style guide instead of
+// staying frozen at whatever colors were current when it was written.
 function TexturedImage({ label, surfaceClass }: { label: string; surfaceClass: string }) {
   return (
     <div
@@ -27,8 +30,8 @@ function TexturedImage({ label, surfaceClass }: { label: string; surfaceClass: s
         surfaceClass,
       )}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(255,255,255,0.52),transparent_28%),radial-gradient(circle_at_76%_32%,rgba(31,122,90,0.12),transparent_24%),radial-gradient(circle_at_48%_82%,rgba(23,33,29,0.12),transparent_30%),linear-gradient(135deg,#edf3eb,#dfe7e1_45%,#f4f7f3)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(23,33,29,0.06)_1px,transparent_1px),linear-gradient(180deg,rgba(23,33,29,0.05)_1px,transparent_1px)] bg-[size:22px_22px] opacity-45" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(255,255,255,0.52),transparent_28%),radial-gradient(circle_at_76%_32%,color-mix(in_srgb,var(--color-service-accent)_12%,transparent),transparent_24%),radial-gradient(circle_at_48%_82%,color-mix(in_srgb,var(--color-service-ink)_12%,transparent),transparent_30%),linear-gradient(135deg,var(--color-surface-raised),var(--color-service-border)_45%,var(--color-service-surface))]" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,color-mix(in_srgb,var(--color-service-ink)_6%,transparent)_1px,transparent_1px),linear-gradient(180deg,color-mix(in_srgb,var(--color-service-ink)_5%,transparent)_1px,transparent_1px)] bg-[size:22px_22px] opacity-45" />
     </div>
   );
 }
