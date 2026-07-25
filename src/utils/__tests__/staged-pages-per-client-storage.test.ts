@@ -72,7 +72,6 @@ function makePage(clientSlug: string, pageId: string): StagedPage {
       version: 1,
     },
     sourceStage: "strategy-template",
-    status: "staged",
   };
 }
 

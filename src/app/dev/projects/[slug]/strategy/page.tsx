@@ -78,7 +78,6 @@ export default async function StrategyWorkspacePage({
       pageLabel: page.pageLabel,
       pageType: page.template?.pageType ?? "",
       previewHref: page.previewHref,
-      status: page.status,
       template: page.template
         ? {
             id: page.template.id,

@@ -111,7 +111,6 @@ export default async function StagedPagesPage() {
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-5 max-lg:grid-cols-1">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
-                          <StatusPill label={page.status} tone="accent" />
                           <StatusPill label={page.pageHref} />
                           <StatusPill
                             label={page.template?.name ?? "Template unknown"}

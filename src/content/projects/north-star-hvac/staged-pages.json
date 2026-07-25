@@ -398,7 +398,6 @@
         "version": 7
       },
       "sourceStage": "strategy-template",
-      "status": "staged",
       "template": {
         "id": "home-full-image-hero-side-scrolling-service-cards",
         "name": "Home - full image hero, side scrolling service cards",
@@ -1066,7 +1065,6 @@
         "version": 7
       },
       "sourceStage": "strategy-template",
-      "status": "staged",
       "template": {
         "id": "maintenance-and-tune-ups",
         "name": "Maintenance and Tune ups",
@@ -1774,7 +1772,6 @@
         "version": 7
       },
       "sourceStage": "strategy-template",
-      "status": "staged",
       "template": {
         "id": "individual-service-2",
         "name": "Individual Service 2",
@@ -2683,7 +2680,6 @@
         "version": 7
       },
       "sourceStage": "strategy-template",
-      "status": "staged",
       "template": {
         "id": "heat-pump",
         "name": "Service 1",
@@ -3382,7 +3378,6 @@
         "version": 7
       },
       "sourceStage": "strategy-template",
-      "status": "staged",
       "template": {
         "id": "services-overview-new",
         "name": "Services Overview new",
@@ -3943,7 +3938,6 @@
         "version": 89
       },
       "sourceStage": "strategy-template",
-      "status": "staged",
       "template": {
         "id": "about",
         "name": "About",
@@ -4313,7 +4307,6 @@
         "version": 89
       },
       "sourceStage": "strategy-template",
-      "status": "staged",
       "template": {
         "id": "thank-you",
         "name": "Thank You",

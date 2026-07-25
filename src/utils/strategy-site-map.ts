@@ -1,6 +1,12 @@
 import type { StrategyWorkspaceFields } from "@/utils/strategy-workspace";
 
-export type StrategyPageStatus = "needs-template" | "staged" | "ready";
+/**
+ * A page either has a template staged against it or it does not. There is no
+ * "ready" state: nothing ever assigned one, so the branch that rendered it was
+ * unreachable and the staged-page pill only ever read "staged". Approval for
+ * export is tracked separately, in `site-export.json`.
+ */
+export type StrategyPageStatus = "needs-template" | "staged";
 
 export type StrategyPageSummary = {
   copyField: string;

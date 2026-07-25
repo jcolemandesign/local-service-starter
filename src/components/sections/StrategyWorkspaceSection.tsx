@@ -66,7 +66,6 @@ type StagedStrategyPageSummary = {
   pageLabel: string;
   pageType: string;
   previewHref: string;
-  status: "staged" | "ready";
   template?: TemplateCopyContractTemplate;
   templateId: string;
   templateName: string;
@@ -89,7 +88,6 @@ type StagePageResponse =
         pageLabel: string;
         pageType?: string;
         previewHref: string;
-        status: "staged" | "ready";
         template?: {
           id?: string;
           name?: string;
@@ -344,14 +342,14 @@ export function StrategyWorkspaceSection({
           ? stagedPagesByPageType.get(normalizePageType(page.pageType)) ?? []
           : [];
         const stagedPage = stagedPagesById.get(page.id) ?? matchingStagedPages[0];
-        const repeatableStatus =
-          matchingStagedPages.length > 0 ? "staged" : page.status;
 
         return {
           ...page,
           childPages: matchingStagedPages,
           previewHref: stagedPage?.previewHref ?? "",
-          status: stagedPage?.status ?? repeatableStatus,
+          // Having a staged page is what "staged" means; the pages themselves
+          // no longer carry a status field.
+          status: stagedPage ? ("staged" as const) : page.status,
           stagedPageId: stagedPage?.pageId ?? "",
           stagedPageLabel: stagedPage?.pageLabel ?? "",
           stagedTemplate: stagedPage?.template,
@@ -798,7 +796,6 @@ export function StrategyWorkspaceSection({
         pageLabel: result.page.pageLabel,
         pageType: result.page.template?.pageType ?? template.pageType,
         previewHref: result.page.previewHref,
-        status: result.page.status,
         templateId: result.page.template?.id ?? template.id,
         templateName: result.page.template?.name ?? template.name,
       };
@@ -2672,10 +2669,6 @@ function getPageStatusLabel(
     return "No Copy Yet";
   }
 
-  if (status === "ready") {
-    return "Ready";
-  }
-
   if (status === "staged") {
     return "Staged";
   }
@@ -2689,10 +2682,6 @@ function getPageStatusClassName(
 ) {
   if (!detected) {
     return "text-service-muted";
-  }
-
-  if (status === "ready") {
-    return "text-green-700";
   }
 
   if (status === "staged") {

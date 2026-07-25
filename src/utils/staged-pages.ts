@@ -71,7 +71,6 @@ export type StagedPage = {
     version: number;
   };
   sourceStage: "content-editor" | "strategy-template";
-  status: "staged" | "ready";
   template?: {
     id: string;
     name: string;
@@ -272,7 +271,6 @@ export async function updateStagedPageFields(
     ...page,
     fieldCounts: countFields(nextFields),
     fields: nextFields,
-    status: "staged",
   };
   const nextPages = [
     nextPage,
@@ -375,7 +373,6 @@ export async function syncStagedPagesFromStrategySnapshot(
         id: snapshot.id,
         version: snapshot.version,
       },
-      status: "staged",
     } satisfies StagedPage;
   });
 
@@ -584,7 +581,6 @@ export function buildStrategyTemplateStagedPage({
       version: snapshot.version,
     },
     sourceStage: "strategy-template",
-    status: "staged",
     template: {
       id: template.id,
       name: template.name,
