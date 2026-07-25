@@ -2,6 +2,7 @@ import {
   analyzeSiteExport,
   exportClientSite,
   SiteExportValidationError,
+  type SiteExportMode,
 } from "@/utils/site-export";
 import { setPageExportApproval } from "@/utils/site-export-state";
 import { readStagedPages } from "@/utils/staged-pages";
@@ -12,6 +13,12 @@ export const runtime = "nodejs";
 type SiteExportRequest = {
   action?: "approve" | "dry-run" | "export" | "unapprove";
   clientSlug?: string;
+  /**
+   * Export only. "update" refreshes an already-exported site in place instead
+   * of refusing to touch it. Defaults to "create" so a re-export is always a
+   * deliberate choice.
+   */
+  mode?: SiteExportMode;
   pageId?: string;
 };
 
@@ -66,8 +73,9 @@ export async function POST(request: Request) {
     }
 
     if (body.action === "export") {
-      const result = await exportClientSite(clientSlug);
-      return Response.json({ ok: true, result });
+      const mode: SiteExportMode = body.mode === "update" ? "update" : "create";
+      const result = await exportClientSite(clientSlug, { mode });
+      return Response.json({ mode, ok: true, result });
     }
 
     return jsonError("Unknown site export action.", 400);

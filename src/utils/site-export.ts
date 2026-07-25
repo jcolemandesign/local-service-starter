@@ -20,6 +20,12 @@ import {
   type StagedPageRenderData,
 } from "@/components/sections/StagedPageCanvas";
 import { renderPageTemplateSection } from "@/components/sections/PageTemplatePreview";
+import {
+  exportManifestFile,
+  listGeneratedFiles,
+  readExportManifest,
+  updateExportedSite,
+} from "@/utils/site-export-update";
 import { readSiteExportState } from "@/utils/site-export-state";
 import { readStagedPages, type StagedPage } from "@/utils/staged-pages";
 import { sanitizeClientSlug } from "@/utils/strategy-workspace";
@@ -66,6 +72,12 @@ export type SiteExportResult = SiteExportAnalysis & {
   outputPath: string;
 };
 
+/**
+ * `create` refuses to touch an existing directory. `update` refreshes a site
+ * that has already been exported - and usually launched - in place.
+ */
+export type SiteExportMode = "create" | "update";
+
 const execFileAsync = promisify(execFile);
 const sourceRoot = path.join(process.cwd(), "src");
 const sectionRoot = path.join(sourceRoot, "components", "sections");
@@ -93,6 +105,7 @@ export async function analyzeSiteExport(
 
 export async function exportClientSite(
   requestedClientSlug: string,
+  { mode = "create" }: { mode?: SiteExportMode } = {},
 ): Promise<SiteExportResult> {
   const resolved = await resolveSiteExport(requestedClientSlug);
   const analysis = toAnalysis(resolved);
@@ -106,12 +119,34 @@ export async function exportClientSite(
       path.join(process.cwd(), "exports", "client-sites"),
   );
   const outputPath = path.join(exportRoot, resolved.clientSlug);
+  const destinationExists = await pathExists(outputPath);
 
   await mkdir(exportRoot, { recursive: true });
 
-  if (await pathExists(outputPath)) {
+  if (mode === "create" && destinationExists) {
     throw new Error(
-      `Export destination already exists: ${outputPath}. Move it or choose a new CLIENT_EXPORT_ROOT before regenerating.`,
+      `Export destination already exists: ${outputPath}. Re-export with mode "update" to refresh it in place, or move it before regenerating.`,
+    );
+  }
+
+  if (mode === "update" && !destinationExists) {
+    throw new Error(
+      `Nothing to update at ${outputPath}. Run a normal export first.`,
+    );
+  }
+
+  const previousManifest =
+    mode === "update" ? await readExportManifest(outputPath) : null;
+
+  if (mode === "update" && !previousManifest) {
+    throw new Error(
+      `${outputPath} has no ${exportManifestFile} written by this tool, so it will not be modified. Move it aside and run a normal export.`,
+    );
+  }
+
+  if (previousManifest && previousManifest.clientSlug !== resolved.clientSlug) {
+    throw new Error(
+      `${outputPath} was exported for "${previousManifest.clientSlug}", not "${resolved.clientSlug}". Refusing to overwrite another client's site.`,
     );
   }
 
@@ -123,7 +158,13 @@ export async function exportClientSite(
     await writeGeneratedSite(tempPath, resolved);
     await verifyGeneratedSite(tempPath);
     await rm(path.join(tempPath, ".next"), { force: true, recursive: true });
-    await rename(tempPath, outputPath);
+
+    if (mode === "update") {
+      await updateExportedSite(tempPath, outputPath, previousManifest);
+      await rm(tempPath, { force: true, recursive: true });
+    } else {
+      await rename(tempPath, outputPath);
+    }
   } catch (error) {
     await rm(tempPath, { force: true, recursive: true });
     throw error;
@@ -131,10 +172,11 @@ export async function exportClientSite(
 
   return {
     ...analysis,
-    manifestPath: path.join(outputPath, "pageworks-export.json"),
+    manifestPath: path.join(outputPath, exportManifestFile),
     outputPath,
   };
 }
+
 
 export class SiteExportValidationError extends Error {
   analysis: SiteExportAnalysis;
@@ -518,9 +560,15 @@ async function writeGeneratedSite(
   await copyProjectScaffold(outputPath, resolved.clientSlug);
 
   const commit = await readGitCommit();
+  // Listed by walking what was actually written rather than by accumulating
+  // paths as we go, so the manifest cannot drift from the real output. This is
+  // what lets a re-export delete the files a previous export created and no
+  // others - see `updateExportedSite`.
+  const files = await listGeneratedFiles(outputPath);
   const manifest = {
     clientSlug: resolved.clientSlug,
     exportedAt: new Date().toISOString(),
+    files,
     pages: resolved.resolvedPages.map(({ page, sections }) => ({
       pageHref: page.pageHref,
       pageId: page.pageId,
@@ -531,7 +579,7 @@ async function writeGeneratedSite(
     })),
     sectionLibraryCommit: commit,
     source: "local-service-starter",
-    version: 1,
+    version: 2,
   };
 
   await writeFile(
@@ -539,6 +587,7 @@ async function writeGeneratedSite(
     `${JSON.stringify(manifest, null, 2)}\n`,
   );
 }
+
 
 async function writeRoute(outputPath: string, resolvedPage: ResolvedPage) {
   const routePath = routeDirectory(resolvedPage.page.pageHref);

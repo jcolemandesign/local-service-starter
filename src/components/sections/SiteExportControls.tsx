@@ -91,19 +91,27 @@ export function SiteExportControls({
     }
   }
 
-  async function exportSite() {
+  async function exportSite(mode: "create" | "update" = "create") {
     setIsWorking(true);
-    setStatus("Generating and build-checking the client site...");
+    setStatus(
+      mode === "update"
+        ? "Rebuilding and refreshing the exported site..."
+        : "Generating and build-checking the client site...",
+    );
 
     try {
-      const result = await runAction("export");
+      const result = await runAction("export", undefined, mode);
       setAnalysis(result.analysis ?? result.result ?? null);
 
       if (!result.ok || !result.result) {
         throw new Error(result.error ?? "Site export failed.");
       }
 
-      setStatus(`Export complete: ${result.result.outputPath}`);
+      setStatus(
+        mode === "update"
+          ? `Export updated in place: ${result.result.outputPath}`
+          : `Export complete: ${result.result.outputPath}`,
+      );
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Site export failed.");
     } finally {
@@ -114,9 +122,10 @@ export function SiteExportControls({
   async function runAction(
     action: "approve" | "dry-run" | "export" | "unapprove",
     pageId?: string,
+    mode?: "create" | "update",
   ) {
     const response = await fetch("/api/site-export", {
-      body: JSON.stringify({ action, clientSlug, pageId }),
+      body: JSON.stringify({ action, clientSlug, mode, pageId }),
       headers: { "Content-Type": "application/json" },
       method: "POST",
     });
@@ -158,6 +167,15 @@ export function SiteExportControls({
             type="button"
           >
             Export site
+          </button>
+          <button
+            className="radius-button min-h-11 border border-service-border bg-white px-4 text-sm font-semibold text-service-ink disabled:opacity-60"
+            disabled={isWorking || approvedPageIds.length === 0}
+            onClick={() => void exportSite("update")}
+            title="Rebuild and refresh an already-exported site, keeping its git history, node_modules, env files, and build config"
+            type="button"
+          >
+            Update export
           </button>
         </div>
       </div>
