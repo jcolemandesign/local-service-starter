@@ -9,6 +9,7 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives/SevenColumnGrid";
+import { pagebuilderPageTypeOrder } from "@/content/pagebuilder";
 import {
   getDefaultPageLabel,
   getDefaultPageSlug,
@@ -1164,7 +1165,22 @@ function groupTemplatesByPageType(templates: PageTemplateSummary[]) {
       pageType,
       templates: groupTemplates,
     }))
-    .sort((a, b) => a.pageType.localeCompare(b.pageType));
+    .sort((a, b) => {
+      const rankDifference =
+        getPageTypeRank(a.pageType) - getPageTypeRank(b.pageType);
+
+      return rankDifference !== 0
+        ? rankDifference
+        : a.pageType.localeCompare(b.pageType);
+    });
+}
+
+function getPageTypeRank(pageType: string) {
+  const rank = pagebuilderPageTypeOrder.findIndex(
+    (name) => normalizePageType(name) === normalizePageType(pageType),
+  );
+
+  return rank === -1 ? pagebuilderPageTypeOrder.length : rank;
 }
 
 function groupAssignmentsByTemplateId(assignments: StagedTemplateAssignment[]) {

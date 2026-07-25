@@ -836,3 +836,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
     ],
   },
 ];
+
+export const pagebuilderPageTypeOrder = pagebuilderRecipes.map(
+  (recipe) => recipe.name,
+);
