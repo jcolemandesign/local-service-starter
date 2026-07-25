@@ -250,12 +250,74 @@ swap, and missing-anchor cases, and includes a negative control asserting the
 copy *is* lost without the anchor — so the test cannot quietly stop testing
 anything.
 
-## Phase 4 — only if client count grows
+## Phase 4 — partly done
 
-Collapse to one `SectionDefinition` per section (demo content + field spec +
-`toProps` colocated), which would remove the drift class structurally rather
-than testing for it. Also: make `strategyPageSlots` per-client config, and add
-re-export / update-after-launch.
+Started ahead of the client-count trigger, by decision on 2026-07-25.
+
+### Per-client sitemap — done
+
+`strategyPageSlots` was one module-level list built around North Star, so every
+client of every trade got that sitemap. Split into `baseStrategyPageSlots` (13
+trade-neutral slots, including the generic repeatable `individual-service`) plus
+per-client service pages in
+`src/content/projects/<clientSlug>/page-slots.json`. `withClientPageSlots`
+merges them after the generic slot so Services stays contiguous, and a client
+can override a base slot by id.
+
+Every reader takes its slots as an argument and defaults to the skeleton;
+server code resolves them with `readStrategyPageSlots`, client components take
+them as a prop. The slot-matching paths that decide which copy seeds a page are
+threaded through — leaving those on the skeleton would resolve a service page to
+`contentPlan`/`strategyBrief` and make refresh look like a no-op, which is the
+failure recorded above.
+
+`client-page-slots.test.ts` asserts North Star's sitemap comes back out of
+base + config in exactly the order the hardcoded list had. That ordering is the
+whole regression surface: a reorder silently changes every service page's
+ordinal, and therefore its field paths.
+
+Still hardcoded: `getPathFromSlugForPageType` special-cases
+`slug === "maintenance"` → `/maintenance`. That is one client's URL structure in
+shared code and belongs in its slot config, but moving it changes an existing
+page's path.
+
+### Re-export / update-after-launch — done
+
+`exportClientSite` refused any existing destination, so shipping a copy change
+after launch meant regenerating from scratch. `mode: "update"` builds and
+verifies in a temp directory as before, then syncs into the existing export
+rather than swapping the directory — a deployed export is usually a git repo
+with history, `node_modules`, real `.env` values, and host config.
+
+The sync is manifest-driven, so the manifest (now version 2) records the files
+the export generated, listed by walking the real output. Files a previous export
+produced and this one does not are removed; everything else in the directory is
+untouched. Build config is created once and then owned by the client repo.
+Update refuses a directory with no manifest from this tool, and one exported for
+a different client.
+
+### Remaining: collapse to one `SectionDefinition` per section
+
+Colocate demo content + field spec + `toProps`, removing the drift class
+structurally rather than testing for it (see `KNOWN_GAPS`, 11 live components).
+
+**Size and risk before starting.** This merges four registries that are keyed
+differently: the copy spec (`template-copy-contract.ts`, ~1,400 lines) matches on
+a fuzzy `component + mode + name` string via `lookupValue.includes(...)`, so
+**the order of its if-chain is semantically significant**; the asset spec
+(`staged-pages.ts`) matches the same way; `PageTemplatePreview.tsx` dispatches on
+85 exact `case` branches; demo content lives in `section-library-v3.ts`.
+
+Converting fuzzy-ordered matching into a per-component map changes which
+sections resolve to which spec — the same class of silent re-identification as
+the `slotId` trap. Do it incrementally, one section at a time, with
+`section-demo-content-leak.test.ts` driving the real render path as the guard,
+and treat any change in resolved spec for an existing section as a defect rather
+than an improvement.
+
+Also still open: `strategyPageSlots` was the per-client blocker, but
+`styleTokenCss` remains a single overwritable field per client
+(`site-export-state.ts`), so approving page B still re-freezes page A's tokens.
 
 ## Checkpoints
 
@@ -268,8 +330,9 @@ run):
 - `checkpoint/phase-2-complete`
 - `checkpoint/phase-3-per-client-split`
 - `checkpoint/phase-3-complete`
+- `checkpoint/phase-4-per-client-sitemap`
 
-Test count over this work: 24 → 95.
+Test count over this work: 24 → 115.
 
 Adding fields to a spec changes its contract fingerprint and flips affected
 sections to `stale`. Expected and safe, but it surfaces warnings on existing
