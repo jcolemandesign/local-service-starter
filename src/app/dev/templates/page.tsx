@@ -6,6 +6,7 @@ import {
   type PageTemplateSummary,
 } from "@/components/sections";
 import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
+import { readStrategyPageSlots } from "@/utils/client-page-slots";
 import { readStagedPages } from "@/utils/staged-pages";
 import { listLatestStrategySnapshotSummaries } from "@/utils/strategy-snapshots";
 
@@ -32,10 +33,24 @@ export default async function TemplatesPage() {
   const strategySnapshots = await listLatestStrategySnapshotSummaries();
   const stagedPages = await readStagedPages();
 
+  const pageSlotsByClient = Object.fromEntries(
+    await Promise.all(
+      [
+        ...new Set(
+          strategySnapshots.map((snapshot) => snapshot.clientSlug),
+        ),
+      ].map(
+        async (clientSlug) =>
+          [clientSlug, await readStrategyPageSlots(clientSlug)] as const,
+      ),
+    ),
+  );
+
   return (
     <StyleGuidePreviewSurface>
       <main>
         <TemplateLibrarySection
+          pageSlotsByClient={pageSlotsByClient}
           stagedTemplateAssignments={stagedPages
             .filter((page) => page.template?.id)
             .map((page) => ({

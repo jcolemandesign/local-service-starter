@@ -5,6 +5,7 @@ import { notFound, redirect } from "next/navigation";
 import { StrategyWorkspaceSection } from "@/components/sections/StrategyWorkspaceSection";
 import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import type { PageTemplateSummary } from "@/components/sections/TemplateLibrarySection";
+import { readStrategyPageSlots } from "@/utils/client-page-slots";
 import { readStagedPages } from "@/utils/staged-pages";
 import { readStrategyDigestText } from "@/utils/strategy-digest";
 import {
@@ -98,6 +99,7 @@ export default async function StrategyWorkspacePage({
           clientSlug={clientSlug}
           initialWorkspace={workspace}
           packetSummary={packetSummary}
+          pageSlots={await readStrategyPageSlots(clientSlug)}
           stagedPages={stagedPageSummaries}
           strategyDigestText={strategyDigestText}
           templates={templates}

@@ -5,12 +5,15 @@ import type {
   SectionColorRecipe,
 } from "@/content/section-color-recipes";
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
+import { readStrategyPageSlots } from "@/utils/client-page-slots";
 import { getSectionId, getSectionIdRenames } from "@/utils/section-id";
 import {
+  baseStrategyPageSlots,
   getPathFromSlugForPageType,
   getStrategyCopyForPage,
   slugify,
   type StrategyNavigationItem,
+  type StrategyPageDefinition,
 } from "@/utils/strategy-site-map";
 import type { StrategySnapshot } from "@/utils/strategy-snapshots";
 import {
@@ -291,6 +294,7 @@ export async function syncStagedPagesFromStrategySnapshot(
   snapshot: StrategySnapshot,
 ) {
   const pages = await readStagedPages();
+  const pageSlots = await readStrategyPageSlots(snapshot.clientSlug);
   let syncedCount = 0;
   const syncedPageIds: string[] = [];
   const nextPages = pages.map((page) => {
@@ -306,6 +310,7 @@ export async function syncStagedPagesFromStrategySnapshot(
       snapshot.fields,
       page.pageId,
       page.template.pageType,
+      pageSlots,
     );
     const previousStrategyCopy =
       page.fields.find((field) => field.path === "strategy.pageCopy")?.value ??
@@ -469,12 +474,15 @@ function reconcileTemplateCopyFields(
 export function buildStrategyTemplateStagedPage({
   applyBatchCopy = true,
   pageLabel,
+  pageSlots = baseStrategyPageSlots,
   pageSlug,
   snapshot,
   template,
 }: {
   applyBatchCopy?: boolean;
   pageLabel: string;
+  /** The client's sitemap. Defaults to the shared skeleton. */
+  pageSlots?: readonly StrategyPageDefinition[];
   pageSlug: string;
   snapshot: StrategySnapshot;
   template: StagedPageTemplate;
@@ -494,6 +502,7 @@ export function buildStrategyTemplateStagedPage({
     snapshot.fields,
     pageId,
     template.pageType,
+    pageSlots,
   );
   const templateFields = [
     stagedField({
@@ -608,8 +617,10 @@ export async function buildStagedPageCandidate({
   snapshot: StrategySnapshot;
   template: StagedPageTemplate;
 }) {
+  const pageSlots = await readStrategyPageSlots(snapshot.clientSlug);
   const page = buildStrategyTemplateStagedPage({
     pageLabel,
+    pageSlots,
     pageSlug,
     snapshot,
     template,
@@ -634,6 +645,7 @@ export async function buildStagedPageCandidate({
     snapshot.fields,
     page.pageId,
     template.pageType,
+    pageSlots,
   );
   const sectionStatuses = getTemplateCopySectionStatuses(
     strategyCopy,

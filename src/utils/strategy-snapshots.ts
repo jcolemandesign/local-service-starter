@@ -1,5 +1,6 @@
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { readStrategyPageSlots } from "@/utils/client-page-slots";
 import {
   buildStrategyNavigation,
   deriveStrategyPagesFromFields,
@@ -43,7 +44,10 @@ export async function writeStrategySnapshot(workspace: StrategyWorkspace) {
       (largestVersion, snapshot) => Math.max(largestVersion, snapshot.version),
       0,
     ) + 1;
-  const pages = deriveStrategyPagesFromFields(workspace.fields);
+  const pages = deriveStrategyPagesFromFields(
+    workspace.fields,
+    await readStrategyPageSlots(workspace.clientSlug),
+  );
   const snapshot: StrategySnapshot = {
     clientSlug: workspace.clientSlug,
     createdAt: workspace.updatedAt ?? new Date().toISOString(),

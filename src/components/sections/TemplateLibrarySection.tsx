@@ -11,12 +11,14 @@ import {
 } from "@/components/primitives/SevenColumnGrid";
 import { pagebuilderPageTypeOrder } from "@/content/pagebuilder";
 import {
+  baseStrategyPageSlots,
   getDefaultPageLabel,
   getDefaultPageSlug,
   getPageTypeRelationshipLabel,
   getPathFromSlugForPageType,
   isRepeatablePageType,
   slugify,
+  type StrategyPageDefinition,
 } from "@/utils/strategy-site-map";
 import type { StrategySnapshotSummary } from "@/utils/strategy-snapshots";
 import { buildTemplateCopyContract } from "@/utils/template-copy-contract";
@@ -50,6 +52,12 @@ export type PageTemplateSummary = {
 };
 
 type TemplateLibrarySectionProps = {
+  /**
+   * Each client's resolved sitemap, keyed by slug. Read on the server, since
+   * the per-client config lives on disk; clients with no entry fall back to the
+   * shared skeleton.
+   */
+  pageSlotsByClient: Record<string, StrategyPageDefinition[]>;
   stagedTemplateAssignments: StagedTemplateAssignment[];
   strategySnapshots: StrategySnapshotSummary[];
   templates: PageTemplateSummary[];
@@ -106,6 +114,7 @@ type StagedTemplateAssignment = {
 };
 
 export function TemplateLibrarySection({
+  pageSlotsByClient,
   stagedTemplateAssignments,
   strategySnapshots,
   templates,
@@ -114,12 +123,21 @@ export function TemplateLibrarySection({
   const [selectedClientSlug, setSelectedClientSlug] = useState(
     strategySnapshots[0]?.clientSlug ?? "",
   );
+  // Page labels default from the selected client's sitemap, so a service page
+  // prefills as "Heat Pump Service" for the client that actually has one and
+  // falls back to the template name for everyone else.
+  const getClientPageSlots = (clientSlug: string) =>
+    pageSlotsByClient[clientSlug] ?? baseStrategyPageSlots;
   const [drafts, setDrafts] = useState<Record<string, TemplateDraft>>(() =>
     Object.fromEntries(
       localTemplates.map((template) => [
         template.id,
         {
-          label: getDefaultPageLabel(template.pageType, template.name),
+          label: getDefaultPageLabel(
+            template.pageType,
+            template.name,
+            getClientPageSlots(strategySnapshots[0]?.clientSlug ?? ""),
+          ),
           slug: getDefaultPageSlug(template.pageType, template.name),
         },
       ]),
@@ -202,7 +220,11 @@ export function TemplateLibrarySection({
 
   function getTemplateContract(template: PageTemplateSummary) {
     const draft = drafts[template.id] ?? {
-      label: getDefaultPageLabel(template.pageType, template.name),
+      label: getDefaultPageLabel(
+        template.pageType,
+        template.name,
+        getClientPageSlots(activeClientSlug),
+      ),
       slug: getDefaultPageSlug(template.pageType, template.name),
     };
     const selectedSnapshot = strategySnapshots.find(
@@ -555,7 +577,11 @@ export function TemplateLibrarySection({
                   <div className="grid grid-cols-2 items-start gap-5 border-t border-service-border p-5 max-lg:grid-cols-1">
                     {group.templates.map((template) => {
                       const draft = drafts[template.id] ?? {
-                        label: getDefaultPageLabel(template.pageType, template.name),
+                        label: getDefaultPageLabel(
+                          template.pageType,
+                          template.name,
+                          getClientPageSlots(activeClientSlug),
+                        ),
                         slug: getDefaultPageSlug(template.pageType, template.name),
                       };
                       const isSubmitting = submittingTemplateId === template.id;

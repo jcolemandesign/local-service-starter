@@ -26,14 +26,27 @@ export type StrategyNavigationItem = {
   pageId: string;
 };
 
-type StrategyPageDefinition = Omit<
+export type StrategyPageDefinition = Omit<
   StrategyPageSummary,
   "detected" | "status"
 > & {
   aliases: string[];
 };
 
-export const strategyPageSlots: StrategyPageDefinition[] = [
+/**
+ * The trade-neutral page skeleton every client starts from.
+ *
+ * Named service pages are deliberately NOT here. They are the part of a sitemap
+ * that differs per client, and hardcoding one client's services meant every
+ * client of every trade got the North Star sitemap - a plumber was offered
+ * "Heat Pump Service" as a page slot. A client's own service pages live in
+ * `src/content/projects/<clientSlug>/page-slots.json` and are merged in by
+ * `withClientPageSlots`.
+ *
+ * The generic repeatable `individual-service` slot stays here, so a client with
+ * no configured services can still stage one.
+ */
+export const baseStrategyPageSlots: StrategyPageDefinition[] = [
   {
     aliases: ["home", "homepage", "home page"],
     copyField: "homepageCopy",
@@ -71,90 +84,6 @@ export const strategyPageSlots: StrategyPageDefinition[] = [
     pageType: "Individual Service",
     path: "/services/[service]",
     repeatable: true,
-  },
-  {
-    aliases: [
-      "system replacement",
-      "hvac replacement",
-      "replacement page",
-      "/services/system-replacement",
-      "/system-replacement",
-    ],
-    copyField: "servicesCopy",
-    id: "system-replacement",
-    label: "System Replacement",
-    parentId: "services",
-    pageType: "Individual Service",
-    path: "/services/system-replacement",
-  },
-  {
-    aliases: [
-      "heat pump service",
-      "heat pump page",
-      "/services/heat-pump-service",
-      "/heat-pump-service",
-    ],
-    copyField: "servicesCopy",
-    id: "heat-pump-service",
-    label: "Heat Pump Service",
-    parentId: "services",
-    pageType: "Individual Service",
-    path: "/services/heat-pump-service",
-  },
-  {
-    aliases: [
-      "maintenance / tune-ups",
-      "maintenance & tune-ups",
-      "maintenance and tune ups",
-      "maintenance page",
-      "tune-up page",
-      "tune up page",
-      "/maintenance",
-    ],
-    copyField: "servicesCopy",
-    id: "maintenance",
-    label: "Maintenance / Tune-Ups",
-    parentId: "services",
-    pageType: "Individual Service",
-    path: "/maintenance",
-  },
-  {
-    aliases: ["ac repair", "cooling repair", "/services/ac-repair", "/ac-repair"],
-    copyField: "servicesCopy",
-    id: "ac-repair",
-    label: "AC Repair",
-    parentId: "services",
-    pageType: "Individual Service",
-    path: "/services/ac-repair",
-  },
-  {
-    aliases: [
-      "heating repair",
-      "heat repair",
-      "/services/heating-repair",
-      "/heating-repair",
-    ],
-    copyField: "servicesCopy",
-    id: "heating-repair",
-    label: "Heating Repair",
-    parentId: "services",
-    pageType: "Individual Service",
-    path: "/services/heating-repair",
-  },
-  {
-    aliases: [
-      "emergency hvac service",
-      "emergency hvac",
-      "urgent hvac",
-      "/services/emergency-hvac",
-      "/emergency-hvac",
-    ],
-    copyField: "servicesCopy",
-    id: "emergency-hvac",
-    label: "Emergency HVAC Service",
-    parentId: "services",
-    pageType: "Individual Service",
-    path: "/services/emergency-hvac",
   },
   {
     aliases: ["service area", "service areas", "areas served", "coverage area"],
@@ -266,12 +195,56 @@ export const strategyPageSlots: StrategyPageDefinition[] = [
   },
 ];
 
+/**
+ * The slots a given client's sitemap is built from: the shared skeleton with
+ * that client's own service pages inserted directly after the generic
+ * `individual-service` slot, so the Services group stays contiguous.
+ *
+ * A client slot may also override a base slot by reusing its id - that is how a
+ * client with a different label or path for, say, Financing says so, without
+ * needing a second copy of the whole skeleton.
+ *
+ * Every reader below takes its slots as an argument and defaults to the base
+ * set. Client components receive the resolved list as a prop; server code loads
+ * it with `readClientPageSlots`. Nothing reads a module-level client sitemap
+ * anymore, which is what made every trade look like an HVAC company.
+ */
+export function withClientPageSlots(
+  clientSlots: readonly StrategyPageDefinition[] = [],
+): StrategyPageDefinition[] {
+  if (clientSlots.length === 0) {
+    return [...baseStrategyPageSlots];
+  }
+
+  const baseIds = new Set(baseStrategyPageSlots.map((slot) => slot.id));
+  const addedSlots = clientSlots.filter((slot) => !baseIds.has(slot.id));
+  const servicePages = addedSlots.filter((slot) => slot.parentId === "services");
+  const merged: StrategyPageDefinition[] = [];
+
+  for (const slot of baseStrategyPageSlots) {
+    merged.push(
+      clientSlots.find((clientSlot) => clientSlot.id === slot.id) ?? slot,
+    );
+
+    if (slot.id === "individual-service") {
+      merged.push(...servicePages);
+    }
+  }
+
+  // Client pages that are not services keep their own order, after the
+  // skeleton, rather than being dropped into the middle of the Services group.
+  merged.push(...addedSlots.filter((slot) => slot.parentId !== "services"));
+
+  return merged;
+}
+
 export function deriveStrategyPagesFromFields(
   fields: StrategyWorkspaceFields,
+  slots: readonly StrategyPageDefinition[] = baseStrategyPageSlots,
 ): StrategyPageSummary[] {
-  const detectedPageIds = detectStrategyPageIds(fields);
+  const detectedPageIds = detectStrategyPageIds(fields, slots);
 
-  return strategyPageSlots.map((slot) => ({
+  return slots.map((slot) => ({
     copyField: slot.copyField,
     detected: detectedPageIds.has(slot.id),
     id: slot.id,
@@ -300,12 +273,13 @@ export function getStrategyCopyForPage(
   fields: StrategyWorkspaceFields,
   pageSlug: string,
   pageType: string,
+  slots: readonly StrategyPageDefinition[] = baseStrategyPageSlots,
 ) {
   const normalizedPageSlug = pageSlug.toLowerCase().trim();
   const normalized = `${pageSlug} ${pageType}`.toLowerCase();
   const matchingSlot =
-    strategyPageSlots.find((slot) => slot.id === normalizedPageSlug) ??
-    strategyPageSlots.find(
+    slots.find((slot) => slot.id === normalizedPageSlug) ??
+    slots.find(
       (slot) =>
         normalized.includes(slot.id) ||
         normalized.includes(slot.label.toLowerCase()) ||
@@ -402,9 +376,13 @@ export function getDefaultPageSlug(pageType: string, templateName: string) {
   return slugify(templateName);
 }
 
-export function getDefaultPageLabel(pageType: string, templateName: string) {
+export function getDefaultPageLabel(
+  pageType: string,
+  templateName: string,
+  slots: readonly StrategyPageDefinition[] = baseStrategyPageSlots,
+) {
   const slug = getDefaultPageSlug(pageType, templateName);
-  const matchingSlot = strategyPageSlots.find((slot) => slot.id === slug);
+  const matchingSlot = slots.find((slot) => slot.id === slug);
 
   return matchingSlot?.label ?? templateName;
 }
@@ -451,16 +429,22 @@ export function getPathFromSlugForPageType(slug: string, pageType: string) {
   return getPathFromSlug(normalizedSlug);
 }
 
-export function isRepeatablePageType(pageType: string) {
-  const matchingSlot = strategyPageSlots.find(
+export function isRepeatablePageType(
+  pageType: string,
+  slots: readonly StrategyPageDefinition[] = baseStrategyPageSlots,
+) {
+  const matchingSlot = slots.find(
     (slot) => normalizePageType(slot.pageType) === normalizePageType(pageType),
   );
 
   return Boolean(matchingSlot?.repeatable);
 }
 
-export function getPageTypeRelationshipLabel(pageType: string) {
-  const matchingSlot = strategyPageSlots.find(
+export function getPageTypeRelationshipLabel(
+  pageType: string,
+  slots: readonly StrategyPageDefinition[] = baseStrategyPageSlots,
+) {
+  const matchingSlot = slots.find(
     (slot) => normalizePageType(slot.pageType) === normalizePageType(pageType),
   );
 
@@ -487,7 +471,10 @@ export function slugify(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-function detectStrategyPageIds(fields: StrategyWorkspaceFields) {
+function detectStrategyPageIds(
+  fields: StrategyWorkspaceFields,
+  slots: readonly StrategyPageDefinition[],
+) {
   const detectedPageIds = new Set<string>();
   const sourceText = [
     fields.contentPlan,
@@ -495,7 +482,7 @@ function detectStrategyPageIds(fields: StrategyWorkspaceFields) {
     fields.generalNotes,
   ].join("\n");
 
-  for (const slot of strategyPageSlots) {
+  for (const slot of slots) {
     if (canCopyFieldDirectlyDetectPage(fields, slot)) {
       detectedPageIds.add(slot.id);
     }
@@ -505,13 +492,16 @@ function detectStrategyPageIds(fields: StrategyWorkspaceFields) {
     }
   }
 
-  collapseGenericRepeatablePageIds(detectedPageIds);
+  collapseGenericRepeatablePageIds(detectedPageIds, slots);
 
   return detectedPageIds;
 }
 
-function collapseGenericRepeatablePageIds(detectedPageIds: Set<string>) {
-  const hasSpecificServicePage = strategyPageSlots.some(
+function collapseGenericRepeatablePageIds(
+  detectedPageIds: Set<string>,
+  slots: readonly StrategyPageDefinition[],
+) {
+  const hasSpecificServicePage = slots.some(
     (slot) =>
       slot.parentId === "services" &&
       slot.id !== "individual-service" &&

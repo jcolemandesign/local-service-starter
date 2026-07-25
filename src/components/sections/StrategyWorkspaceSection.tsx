@@ -17,6 +17,7 @@ import {
   deriveStrategyPagesFromFields,
   getStrategyPageCopyField,
   getPageTypeRelationshipLabel,
+  type StrategyPageDefinition,
   isRepeatablePageType,
   type StrategyPageSummary,
   type StrategyPageStatus,
@@ -54,6 +55,11 @@ type StrategyWorkspaceSectionProps = {
   clientSlug: string;
   initialWorkspace: StrategyWorkspace;
   packetSummary: StrategyWorkspacePacketSummary;
+  /**
+   * This client's sitemap: the shared skeleton plus its own service pages.
+   * Resolved on the server, since the per-client config is read from disk.
+   */
+  pageSlots: StrategyPageDefinition[];
   stagedPages: StagedStrategyPageSummary[];
   strategyDigestText: string;
   templates: PageTemplateSummary[];
@@ -215,6 +221,7 @@ export function StrategyWorkspaceSection({
   clientSlug,
   initialWorkspace,
   packetSummary,
+  pageSlots,
   stagedPages,
   strategyDigestText,
   templates,
@@ -297,8 +304,8 @@ export function StrategyWorkspaceSection({
     [fields],
   );
   const strategyPages = useMemo(
-    () => deriveStrategyPagesFromFields(fields),
-    [fields],
+    () => deriveStrategyPagesFromFields(fields, pageSlots),
+    [fields, pageSlots],
   );
   const fieldGroups = useMemo(
     () => [

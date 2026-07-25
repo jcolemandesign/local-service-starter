@@ -1,0 +1,93 @@
+{
+  "pageSlots": [
+    {
+      "aliases": [
+        "system replacement",
+        "hvac replacement",
+        "replacement page",
+        "/services/system-replacement",
+        "/system-replacement"
+      ],
+      "copyField": "servicesCopy",
+      "id": "system-replacement",
+      "label": "System Replacement",
+      "parentId": "services",
+      "pageType": "Individual Service",
+      "path": "/services/system-replacement"
+    },
+    {
+      "aliases": [
+        "heat pump service",
+        "heat pump page",
+        "/services/heat-pump-service",
+        "/heat-pump-service"
+      ],
+      "copyField": "servicesCopy",
+      "id": "heat-pump-service",
+      "label": "Heat Pump Service",
+      "parentId": "services",
+      "pageType": "Individual Service",
+      "path": "/services/heat-pump-service"
+    },
+    {
+      "aliases": [
+        "maintenance / tune-ups",
+        "maintenance & tune-ups",
+        "maintenance and tune ups",
+        "maintenance page",
+        "tune-up page",
+        "tune up page",
+        "/maintenance"
+      ],
+      "copyField": "servicesCopy",
+      "id": "maintenance",
+      "label": "Maintenance / Tune-Ups",
+      "parentId": "services",
+      "pageType": "Individual Service",
+      "path": "/maintenance"
+    },
+    {
+      "aliases": [
+        "ac repair",
+        "cooling repair",
+        "/services/ac-repair",
+        "/ac-repair"
+      ],
+      "copyField": "servicesCopy",
+      "id": "ac-repair",
+      "label": "AC Repair",
+      "parentId": "services",
+      "pageType": "Individual Service",
+      "path": "/services/ac-repair"
+    },
+    {
+      "aliases": [
+        "heating repair",
+        "heat repair",
+        "/services/heating-repair",
+        "/heating-repair"
+      ],
+      "copyField": "servicesCopy",
+      "id": "heating-repair",
+      "label": "Heating Repair",
+      "parentId": "services",
+      "pageType": "Individual Service",
+      "path": "/services/heating-repair"
+    },
+    {
+      "aliases": [
+        "emergency hvac service",
+        "emergency hvac",
+        "urgent hvac",
+        "/services/emergency-hvac",
+        "/emergency-hvac"
+      ],
+      "copyField": "servicesCopy",
+      "id": "emergency-hvac",
+      "label": "Emergency HVAC Service",
+      "parentId": "services",
+      "pageType": "Individual Service",
+      "path": "/services/emergency-hvac"
+    }
+  ]
+}
