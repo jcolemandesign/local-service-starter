@@ -415,7 +415,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-cd7a61e064d4"
           },
           {
             "component": "HeroFullscreenSectionV2",
@@ -427,7 +428,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-5c97ddbe38e3"
           },
           {
             "component": "TrustLogoMarqueeSectionV3",
@@ -439,7 +441,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-0c363ca08b2d"
           },
           {
             "component": "ServicesScrollCardsSectionV2",
@@ -451,7 +454,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-02ae50ddfe42"
           },
           {
             "component": "TestimonialsMasonrySectionV3",
@@ -463,7 +467,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-e3f19a22ea0d"
           },
           {
             "component": "ContentStickyCardStreamSectionV2",
@@ -475,7 +480,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-ebc983216bca"
           },
           {
             "component": "ContentFixedCoverFadeSectionV2",
@@ -487,7 +493,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-1aa35fcd842d"
           },
           {
             "component": "FooterSectionV3",
@@ -499,7 +506,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-c7ac0df28616"
           }
         ]
       }
@@ -1075,7 +1083,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-554182d0ae58"
           },
           {
             "component": "ContentSplitFixedImageSectionV3",
@@ -1089,7 +1098,8 @@
             "colorRecipe": "default",
             "cardFill": "solid",
             "ratio": "4-5",
-            "variant": "text-4-image-3-right"
+            "variant": "text-4-image-3-right",
+            "slotId": "slot-a82f2b52fb01"
           },
           {
             "component": "SectionHeaderCompactSectionV3",
@@ -1102,7 +1112,8 @@
             "reduceTopPadding": false,
             "colorRecipe": "default",
             "cardFill": "solid",
-            "variant": "center"
+            "variant": "center",
+            "slotId": "slot-bd19532ba583"
           },
           {
             "component": "FourCardLinkGridSectionV3",
@@ -1115,7 +1126,8 @@
             "reduceTopPadding": false,
             "colorRecipe": "default",
             "cardFill": "solid",
-            "variant": "text-only"
+            "variant": "text-only",
+            "slotId": "slot-458ad3e1d24a"
           },
           {
             "component": "CTASectionV3",
@@ -1127,7 +1139,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "accent",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-ed186e22438c"
           },
           {
             "component": "FeatureAsymmetricCardsSectionV3",
@@ -1139,7 +1152,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "accent",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-eb4e898917fd"
           },
           {
             "component": "ProcessStepsSectionV3",
@@ -1151,7 +1165,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-baa96fa5b1af"
           },
           {
             "component": "ContentSplitFixedImageSectionV3",
@@ -1165,7 +1180,8 @@
             "colorRecipe": "default",
             "cardFill": "solid",
             "ratio": "3-2",
-            "variant": "text-3-image-4-right"
+            "variant": "text-3-image-4-right",
+            "slotId": "slot-bf0754086def"
           },
           {
             "component": "FAQAccordionSidebarSectionV3",
@@ -1178,7 +1194,8 @@
             "reduceTopPadding": true,
             "colorRecipe": "default",
             "cardFill": "solid",
-            "variant": "left"
+            "variant": "left",
+            "slotId": "slot-d1a3ca8de1e9"
           },
           {
             "component": "ContactSectionModalBegin",
@@ -1190,7 +1207,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "dark",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-3408dc210e20"
           },
           {
             "component": "FooterSectionV3",
@@ -1202,7 +1220,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-9c3f74c56916"
           }
         ]
       }
@@ -1772,7 +1791,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-34e881c55574"
           },
           {
             "component": "HeroSplitFixedImageSectionV3",
@@ -1786,7 +1806,8 @@
             "colorRecipe": "muted",
             "cardFill": "solid",
             "ratio": "4-3",
-            "variant": "image-3-left-text-4"
+            "variant": "image-3-left-text-4",
+            "slotId": "slot-56fe74138906"
           },
           {
             "component": "ServiceNeedsPriorityGridSectionV3",
@@ -1799,7 +1820,8 @@
             "reduceTopPadding": false,
             "colorRecipe": "default",
             "cardFill": "solid",
-            "variant": "right-text-only"
+            "variant": "right-text-only",
+            "slotId": "slot-4f7afef4d10e"
           },
           {
             "component": "ContentStickyCardStreamSectionV2",
@@ -1812,7 +1834,8 @@
             "reduceTopPadding": false,
             "colorRecipe": "default",
             "cardFill": "none",
-            "variant": "with-images"
+            "variant": "with-images",
+            "slotId": "slot-ac9a7dbca54c"
           },
           {
             "component": "ContentNarrativeFeatureRailSectionV3",
@@ -1824,7 +1847,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": true,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-1c5d1573cc19"
           },
           {
             "component": "FeatureAsymmetricCardsSectionV3",
@@ -1836,7 +1860,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-87aebb4f0732"
           },
           {
             "component": "CTASectionV3",
@@ -1848,7 +1873,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "dark",
-            "cardFill": "none"
+            "cardFill": "none",
+            "slotId": "slot-3738767aa583"
           },
           {
             "component": "ServiceAreaZipLookupSectionV3",
@@ -1860,7 +1886,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-cacd8bb85207"
           },
           {
             "component": "FAQSectionV3",
@@ -1872,7 +1899,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "none"
+            "cardFill": "none",
+            "slotId": "slot-932f934bd265"
           },
           {
             "component": "ContactSectionModalBegin",
@@ -1884,7 +1912,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "dark",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-d8b30aa04e20"
           },
           {
             "component": "FooterSectionV3",
@@ -1896,7 +1925,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-fbd830958d66"
           }
         ]
       }
@@ -2670,7 +2700,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-56bcc737b70c"
           },
           {
             "component": "HeroSplitFixedImageSectionV3",
@@ -2684,7 +2715,8 @@
             "colorRecipe": "muted",
             "cardFill": "solid",
             "ratio": "3-4",
-            "variant": "text-4-image-3-right"
+            "variant": "text-4-image-3-right",
+            "slotId": "slot-5ef71cf8d19c"
           },
           {
             "component": "ContentMainIdeaGridSectionV3",
@@ -2696,7 +2728,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "none"
+            "cardFill": "none",
+            "slotId": "slot-a8e40c606d65"
           },
           {
             "component": "SectionHeaderLargeSectionV3",
@@ -2709,7 +2742,8 @@
             "reduceTopPadding": true,
             "colorRecipe": "default",
             "cardFill": "solid",
-            "variant": "center-heading-xl"
+            "variant": "center-heading-xl",
+            "slotId": "slot-d0325523b13d"
           },
           {
             "component": "DecisionSplitDecisionLargeSectionV3",
@@ -2722,7 +2756,8 @@
             "reduceTopPadding": true,
             "colorRecipe": "default",
             "cardFill": "solid",
-            "variant": "center"
+            "variant": "center",
+            "slotId": "slot-6f36abf43441"
           },
           {
             "component": "CTASectionV3",
@@ -2734,7 +2769,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "dark",
-            "cardFill": "none"
+            "cardFill": "none",
+            "slotId": "slot-92913dd8a4d4"
           },
           {
             "component": "ProcessStepsSectionV3",
@@ -2746,7 +2782,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-db19a54d6fad"
           },
           {
             "component": "ProjectCaseStudyGallerySectionV3",
@@ -2758,7 +2795,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "muted",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-de7aeb870198"
           },
           {
             "component": "FAQSectionV3",
@@ -2770,7 +2808,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "none"
+            "cardFill": "none",
+            "slotId": "slot-4adf59d2cd9f"
           },
           {
             "component": "ContactSectionModalBegin",
@@ -2782,7 +2821,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "dark",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-a4e263aa8859"
           },
           {
             "component": "FooterSectionV3",
@@ -2794,7 +2834,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-258eccab849d"
           }
         ]
       }
@@ -3358,7 +3399,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-071603262a5e"
           },
           {
             "component": "SectionHeaderCompactSectionV3",
@@ -3371,7 +3413,8 @@
             "reduceTopPadding": false,
             "colorRecipe": "default",
             "cardFill": "solid",
-            "variant": "center"
+            "variant": "center",
+            "slotId": "slot-bab70e60fea1"
           },
           {
             "component": "ServicesThreeCardsRightSectionV3",
@@ -3383,7 +3426,8 @@
             "reduceBottomPadding": true,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-c8e90c82df4a"
           },
           {
             "component": "ServicesHoverPanelSectionV2",
@@ -3395,7 +3439,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-257eef53395b"
           },
           {
             "component": "CTAMutedSectionV3",
@@ -3407,7 +3452,8 @@
             "reduceBottomPadding": true,
             "reduceTopPadding": true,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-d27297bc67c4"
           },
           {
             "component": "ContentSplitFixedImageSectionV3",
@@ -3421,7 +3467,8 @@
             "colorRecipe": "default",
             "cardFill": "solid",
             "ratio": "5-4",
-            "variant": "text-4-image-3-right"
+            "variant": "text-4-image-3-right",
+            "slotId": "slot-c001bd8178a7"
           },
           {
             "component": "ContentSplitFixedImageSectionV3",
@@ -3435,7 +3482,8 @@
             "colorRecipe": "default",
             "cardFill": "solid",
             "ratio": "5-4",
-            "variant": "image-3-left-text-4"
+            "variant": "image-3-left-text-4",
+            "slotId": "slot-fb85f64f4522"
           },
           {
             "component": "ContentStickyCardStreamSectionV2",
@@ -3447,7 +3495,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-882bde765f37"
           },
           {
             "component": "ContactSectionModalBegin",
@@ -3459,7 +3508,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-08e0c7085995"
           },
           {
             "component": "FooterSectionV3",
@@ -3471,7 +3521,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-94ac8ddf362c"
           }
         ]
       }
@@ -3909,7 +3960,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-199daed5be6e"
           },
           {
             "component": "HeroContentTopImageBottomSectionV2",
@@ -3921,7 +3973,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "muted",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-010fa0acadb4"
           },
           {
             "component": "TrustLogoMarqueeSectionV3",
@@ -3933,7 +3986,8 @@
             "reduceBottomPadding": true,
             "reduceTopPadding": false,
             "colorRecipe": "muted",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-d440e0a69358"
           },
           {
             "component": "ContentStickyIdeasSectionV2",
@@ -3945,7 +3999,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "muted",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-d79e1db652fe"
           },
           {
             "component": "ContentPhotoGalleryCarouselSectionV3",
@@ -3957,7 +4012,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-d3955b61b27c"
           },
           {
             "component": "ContentRevealParagraphSectionV2",
@@ -3969,7 +4025,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "muted",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-97ad4a51ed64"
           },
           {
             "component": "FeatureAsymmetricCardsSectionV3",
@@ -3981,7 +4038,8 @@
             "reduceBottomPadding": true,
             "reduceTopPadding": false,
             "colorRecipe": "dark",
-            "cardFill": "none"
+            "cardFill": "none",
+            "slotId": "slot-7fc82a5239bb"
           },
           {
             "component": "DecisionSplitDecisionSectionV3",
@@ -3993,7 +4051,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "dark",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-f3089f269fb9"
           },
           {
             "component": "TrustMarqueeSection",
@@ -4005,7 +4064,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "muted",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-b4d5fdc2fc50"
           },
           {
             "component": "FooterSectionV3",
@@ -4017,7 +4077,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-e24de8723ce8"
           }
         ]
       }
@@ -4269,7 +4330,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-536fb4d863a3"
           },
           {
             "component": "ThankYouConfirmationSectionV3",
@@ -4281,7 +4343,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-6e102a8c26bf"
           },
           {
             "component": "FooterSectionV3",
@@ -4293,7 +4356,8 @@
             "reduceBottomPadding": false,
             "reduceTopPadding": false,
             "colorRecipe": "default",
-            "cardFill": "solid"
+            "cardFill": "solid",
+            "slotId": "slot-bfeb843dd35b"
           }
         ]
       }
