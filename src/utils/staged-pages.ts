@@ -802,6 +802,36 @@ export function getTemplateAssetFieldsForSection(
     );
   }
 
+  if (component.includes("contentstickycardstream")) {
+    return [
+      {
+        kind: "meta",
+        name: "imageAlt",
+        value: sectionLibraryV3Content.contentStickyCardStream.imageAlt,
+      },
+      {
+        kind: "image",
+        name: "imageSrc",
+        value: sectionLibraryV3Content.contentStickyCardStream.imageSrc,
+      },
+    ];
+  }
+
+  if (component.includes("contentnarrativefeaturerail")) {
+    return [
+      {
+        kind: "meta",
+        name: "imageAlt",
+        value: sectionLibraryV3Content.contentNarrativeFeatureRail.imageAlt,
+      },
+      {
+        kind: "image",
+        name: "imageSrc",
+        value: sectionLibraryV3Content.contentNarrativeFeatureRail.imageSrc,
+      },
+    ];
+  }
+
   if (component.includes("contentsplitfixedimage")) {
     return [
       {
@@ -917,6 +947,14 @@ export function getTemplateAssetFieldsForSection(
           value: image.alt,
         },
         {
+          // Rendered under each photo, so it is client-facing copy. The mapper
+          // already read it; nothing declared it, so every gallery shipped the
+          // demo caption.
+          kind: "meta" as const,
+          name: `images.${index + 1}.caption`,
+          value: image.caption,
+        },
+        {
           kind: "image" as const,
           name: `images.${index + 1}.src`,
           value: image.src,
@@ -943,15 +981,28 @@ export function getTemplateAssetFieldsForSection(
   return [];
 }
 
+/**
+ * Alt text is declared alongside the image, the same way `slides.*` and
+ * `images.*` already do it. Without it the mapper still rendered an alt, but no
+ * spec asked anyone to write one - so every card shipped the demo library's alt
+ * text ("Service image placeholder") to real clients.
+ */
 function imageCollectionFields(
   collectionName: string,
-  items: ReadonlyArray<{ imageSrc: string }>,
+  items: ReadonlyArray<{ imageAlt?: string; imageSrc: string }>,
 ): TemplateAssetField[] {
-  return items.map((item, index) => ({
-    kind: "image",
-    name: `${collectionName}.${index + 1}.imageSrc`,
-    value: item.imageSrc,
-  }));
+  return items.flatMap((item, index) => [
+    {
+      kind: "meta" as const,
+      name: `${collectionName}.${index + 1}.imageAlt`,
+      value: item.imageAlt ?? "",
+    },
+    {
+      kind: "image" as const,
+      name: `${collectionName}.${index + 1}.imageSrc`,
+      value: item.imageSrc,
+    },
+  ]);
 }
 
 function sanitizeStagedFieldValue(field: StagedPageField, value: string) {

@@ -449,9 +449,9 @@ export function renderPageTemplateSection(
     case "TrustMarqueeSectionV3":
       return <TrustMarqueeSectionV3 {...trustMarqueeProps(fieldSection)} />;
     case "TrustLogoMarqueeSectionV3":
-      return <TrustLogoMarqueeSectionV3 {...sectionLibraryV3Content.trustLogoMarquee} />;
+      return <TrustLogoMarqueeSectionV3 {...trustLogoProps(fieldSection)} />;
     case "TrustLogoGridSectionV3":
-      return <TrustLogoGridSectionV3 {...sectionLibraryV3Content.trustLogoMarquee} />;
+      return <TrustLogoGridSectionV3 {...trustLogoProps(fieldSection)} />;
     case "ServicesBentoCardsSectionV2":
       return (
         <ServicesBentoCardsSectionV2
@@ -856,6 +856,19 @@ function heroFullscreenProps(section: FieldSection) {
       "primaryAction",
       sectionLibraryV3Content.heroFullscreen.primaryAction,
     ),
+    review: {
+      ...sectionLibraryV3Content.heroFullscreen.review,
+      detail: getValue(
+        section,
+        "reviewDetail",
+        sectionLibraryV3Content.heroFullscreen.review.detail,
+      ),
+      label: getValue(
+        section,
+        "reviewLabel",
+        sectionLibraryV3Content.heroFullscreen.review.label,
+      ),
+    },
     secondaryAction: getValue(
       section,
       "secondaryAction",
@@ -1066,6 +1079,7 @@ function fourCardLinkGridProps(section: FieldSection) {
         ...fallbackItem,
         ...item,
         href: item.href ?? fallbackItem.href,
+        imageAlt: imageItems[index]?.imageAlt ?? fallbackItem.imageAlt,
         imageSrc: imageItems[index]?.imageSrc ?? fallbackItem.imageSrc,
       };
     }),
@@ -1091,6 +1105,7 @@ function threeCardLinkGridProps(section: FieldSection) {
         ...fallbackItem,
         ...item,
         href: item.href ?? fallbackItem.href,
+        imageAlt: imageItems[index]?.imageAlt ?? fallbackItem.imageAlt,
         imageSrc: imageItems[index]?.imageSrc ?? fallbackItem.imageSrc,
       };
     }),
@@ -1181,6 +1196,9 @@ function servicesThreeCardsProps(section: FieldSection) {
     priorityServices: serviceItems.map((item, index) => ({
       ...fallbackServices[index % fallbackServices.length],
       ...item,
+      imageAlt:
+        imageItems[index]?.imageAlt ??
+        fallbackServices[index % fallbackServices.length].imageAlt,
       imageSrc:
         imageItems[index]?.imageSrc ??
         fallbackServices[index % fallbackServices.length].imageSrc,
@@ -1234,6 +1252,28 @@ function trustBarProps(section: FieldSection) {
       sectionLibraryV3Content.trustBar.items.join("\n"),
     ),
     label: getTitle(section, sectionLibraryV3Content.trustBar.label),
+  };
+}
+
+/**
+ * Both logo sections previously rendered
+ * `sectionLibraryV3Content.trustLogoMarquee` directly, so staged copy never
+ * reached them: the grid shipped the demo claim "Recognized as a top service
+ * provider" to every client regardless of what was written. Maps the declared
+ * contract fields onto the component props.
+ */
+function trustLogoProps(section: FieldSection) {
+  return {
+    label: getValue(
+      section,
+      "heading",
+      sectionLibraryV3Content.trustLogoMarquee.label,
+    ),
+    logos: getListValues(
+      section,
+      ["proofItems", "logos", "items"],
+      sectionLibraryV3Content.trustLogoMarquee.logos.join("\n"),
+    ),
   };
 }
 
@@ -1306,9 +1346,12 @@ function contentNarrativeFeatureRailProps(section: FieldSection) {
       body: item.body,
       title: item.title,
     })),
+    bullets: getListValues(section, ["bullets"], fallback.bullets.join("\n")),
     eyebrow: getValue(section, "eyebrow", fallback.eyebrow),
+    imageAlt: getAssetValue(section, "imageAlt", fallback.imageAlt),
     intro: paragraphs[0] ?? fallback.intro,
     paragraphs: paragraphs.slice(1),
+    textLinkLabel: getValue(section, "textLinkLabel", fallback.textLinkLabel),
     title: getTitle(section, fallback.title),
   };
 }
@@ -1790,6 +1833,16 @@ function serviceAreaProps(section: FieldSection) {
       "eyebrow",
       sectionLibraryV3Content.serviceAreaZipLookup.eyebrow,
     ),
+    prompt: getValue(
+      section,
+      "prompt",
+      sectionLibraryV3Content.serviceAreaZipLookup.prompt,
+    ),
+    successBody: getValue(
+      section,
+      "successBody",
+      sectionLibraryV3Content.serviceAreaZipLookup.successBody,
+    ),
     title: getTitle(section, sectionLibraryV3Content.serviceAreaZipLookup.title),
   };
 }
@@ -2072,6 +2125,16 @@ function stickyCardStreamProps(section: FieldSection) {
       section,
       "eyebrow",
       sectionLibraryV3Content.contentStickyCardStream.eyebrow,
+    ),
+    imageAlt: getAssetValue(
+      section,
+      "imageAlt",
+      sectionLibraryV3Content.contentStickyCardStream.imageAlt,
+    ),
+    imageSrc: getAssetValue(
+      section,
+      "imageSrc",
+      sectionLibraryV3Content.contentStickyCardStream.imageSrc,
     ),
     title: getTitle(section, sectionLibraryV3Content.contentStickyCardStream.title),
   };
@@ -2777,7 +2840,15 @@ function faqItems(section: FieldSection) {
 }
 
 function pageLinkItems(section: FieldSection) {
-  const records = getRepeatedRecords(section, ["pageLinks", "links", "cards"]);
+  // `serviceItems` is the name the copy contract declares for this section, so
+  // it has to be one of the names looked up here - otherwise written copy never
+  // matches and every card falls back to the demo link list.
+  const records = getRepeatedRecords(section, [
+    "serviceItems",
+    "pageLinks",
+    "links",
+    "cards",
+  ]);
 
   if (records.length > 0) {
     return records.map((record, index) => {
@@ -2795,7 +2866,11 @@ function pageLinkItems(section: FieldSection) {
     });
   }
 
-  const values = getListValues(section, ["pageLinks", "links", "cards"], "");
+  const values = getListValues(
+    section,
+    ["serviceItems", "pageLinks", "links", "cards"],
+    "",
+  );
 
   return values.length > 0
     ? values.map(parsePageLink)

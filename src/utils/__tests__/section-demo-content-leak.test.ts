@@ -54,19 +54,11 @@ const NON_COPY_PROPS = new Set([
  * getTemplateAssetFieldsForSection for images/alt text), then delete the entry.
  * Expect affected sections to flip to "stale" - the contract fingerprint changes.
  */
-const KNOWN_GAPS = new Set([
-  "ContentNarrativeFeatureRailSectionV3",
-  "ContentPhotoGalleryCarouselSectionV3",
-  "ContentStickyCardStreamSectionV2",
-  "FourCardLinkGridSectionV3",
-  "HeroFullscreenSectionV2",
-  "QuickPageLinksSectionV2",
-  "ServiceAreaZipLookupSectionV3",
-  "ServiceNeedsPriorityGridSectionV3",
-  "ServicesThreeCardsRightSectionV3",
-  "TrustLogoGridSectionV3",
-  "TrustLogoMarqueeSectionV3",
-]);
+// Swept to empty on 2026-07-25: every field a mapper reads is now declared by
+// the copy or asset contract, so it comes from batch copy and stays editable in
+// the content editor. Anything added here again is a section shipping demo
+// content to a real client - close the gap rather than record it.
+const KNOWN_GAPS = new Set<string>([]);
 
 function collectDemoStrings(value: unknown, out: Set<string>) {
   if (typeof value === "string") {
@@ -145,11 +137,15 @@ describe("section demo-content leak guard", () => {
         ).map((f) => ({ kind: f.kind, name: f.name })),
       ];
 
+      // The separator matters: many list fields are specced as
+      // "Title - Description" and their mappers split on " - ". A bare sentinel
+      // filled only the title and left the description falling back to demo
+      // content, which read as a leak when the field was in fact wired up.
       const fields: StagedPageField[] = specced.map((field, i) => ({
         id: `test.01-section.${field.name}`,
         kind: field.kind,
         path: `01-section.${field.name}`,
-        value: `${SENTINEL}${i}-${field.name}`,
+        value: `${SENTINEL}${i}-${field.name} - ${SENTINEL}${i}-${field.name}-detail`,
       })) as StagedPageField[];
 
       const element = renderPageTemplateSection(

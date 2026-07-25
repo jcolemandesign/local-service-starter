@@ -813,11 +813,37 @@ export function getTemplateCopyFieldsForSection(
         purpose: "Stats, trust points, or short supporting claims if the layout uses them.",
         target: "2-4 items, 28-70 characters each. Use sourced facts only.",
       },
+      {
+        example: "Average rating from local customers",
+        name: "reviewLabel",
+        purpose:
+          "Label for the review badge. This is a factual claim about the business - use a sourced value or NEEDS REVIEW.",
+        target: "24-50 characters. Use sourced facts only.",
+      },
+      {
+        example: "Based on verified service visits across the service area.",
+        name: "reviewDetail",
+        purpose:
+          "Supporting detail under the review badge. Do not describe verification the business cannot evidence.",
+        target: "40-90 characters. Use sourced facts only.",
+      },
     ];
   }
 
   if (component.includes("servicesthreecardsright")) {
     return [
+      {
+        example: "Priority services",
+        name: "eyebrow",
+        purpose: "Short label above the priority service list.",
+        target: "12-30 characters.",
+      },
+      {
+        example: "Start with the services homeowners ask about most.",
+        name: "title",
+        purpose: "Headline introducing the priority services.",
+        target: "40-70 characters.",
+      },
       {
         example: [
           "System Replacement - Compare repair and replacement paths with clear guidance on equipment condition and long-term fit.",
@@ -839,6 +865,20 @@ export function getTemplateCopyFieldsForSection(
 
   if (component.includes("serviceneedsprioritygrid")) {
     return [
+      {
+        example: "What are you experiencing?",
+        name: "title",
+        purpose:
+          "Headline that frames the grid around the visitor's symptom rather than a service name.",
+        target: "24-50 characters.",
+      },
+      {
+        example:
+          "Start with the problem, not an assumption about the solution.",
+        name: "body",
+        purpose: "Short lead under the headline explaining how to choose.",
+        target: "60-140 characters.",
+      },
       {
         example: [
           "Weak or Uneven Performance - Some rooms feel different or airflow feels limited.",
@@ -1326,6 +1366,23 @@ export function getTemplateCopyFieldsForSection(
           "The feature rail's callout cards. Each one should be a seasonal offer, payment or financing option, maintenance plan, or promotional discount - not a generic feature or benefit.",
         target: "1-3 items. Titles 12-36 characters. Descriptions 80-150 characters.",
       },
+      {
+        example: [
+          "Keep secondary offers connected to the page story.",
+          "Explain when each option is worth asking about.",
+        ],
+        format: "One short line per bullet.",
+        name: "bullets",
+        purpose:
+          "Short supporting points listed under the narrative body.",
+        target: "2-4 bullets, 40-90 characters each.",
+      },
+      {
+        example: "Explore all homeowner resources",
+        name: "textLinkLabel",
+        purpose: "Label for the inline text link closing the narrative.",
+        target: "20-40 characters.",
+      },
     ];
   }
 
@@ -1642,6 +1699,46 @@ export function getTemplateCopyFieldsForSection(
         name: "faqs",
         purpose: "Questions and direct answers.",
         target: "4-8 FAQs. Questions 35-90 characters. Answers 120-260 characters.",
+      },
+    ];
+  }
+
+  // Must stay ahead of the generic process/decision branch below, which this
+  // section was previously falling into - so its prompt and confirmation copy
+  // were never requested and always rendered the demo strings.
+  if (component.includes("serviceareaziplookup")) {
+    return [
+      {
+        example: "Check whether we cover your address",
+        name: "heading",
+        purpose: "Service area lookup headline.",
+        target: "36-70 characters.",
+      },
+      {
+        example:
+          "Enter a ZIP code to confirm coverage before booking a visit, or send a request and the team will confirm.",
+        name: "intro",
+        purpose: "Short explanation of what the lookup does.",
+        target: "90-180 characters.",
+      },
+      {
+        example: "Not sure if we service your area?",
+        name: "prompt",
+        purpose: "Question shown directly above the ZIP input.",
+        target: "28-60 characters.",
+      },
+      {
+        example: "Send the request and the team will confirm timing.",
+        name: "successBody",
+        purpose:
+          "Confirmation message after a successful lookup. Do not promise a response time the business has not committed to.",
+        target: "40-90 characters.",
+      },
+      {
+        example: "Coverage varies at the edge of the service area.",
+        name: "helperText",
+        purpose: "Small clarifying text near the lookup.",
+        target: "45-100 characters if needed.",
       },
     ];
   }
