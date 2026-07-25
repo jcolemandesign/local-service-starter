@@ -92,6 +92,13 @@ type WorkingSection = PagebuilderRecipe["sectionStack"][number] & {
   originalIndex: number;
   reduceTopPadding?: boolean;
   reduceBottomPadding?: boolean;
+  /**
+   * Present only on sections that came from a saved template, so editing a
+   * template here and re-promoting it keeps its rename anchors. Sections built
+   * fresh from a recipe have none until promotion assigns one. Swapping the
+   * component keeps the anchor - it is the same slot in the page.
+   */
+  slotId?: string;
 };
 
 type DragDropPosition = "before" | "after" | null;
@@ -771,6 +778,7 @@ function serializeWorkingSection(section: WorkingSection) {
     originalComponent: section.originalComponent,
     originalIndex: section.originalIndex,
     ratio: section.ratio,
+    slotId: section.slotId,
     variant: section.variant,
     colorRecipe: getSectionColorRecipe(section),
     cardFill: getSectionCardFill(section),
@@ -2884,6 +2892,7 @@ export function PagebuilderShell({
             colorRecipe: getSectionColorRecipe(section),
             cardFill: getSectionCardFill(section),
             ratio: section.ratio,
+            slotId: section.slotId,
             variant: section.variant,
           })),
           sourceOptionName: activeSlotLabel,

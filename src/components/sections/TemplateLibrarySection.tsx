@@ -40,6 +40,8 @@ export type PageTemplateSummary = {
     reduceBottomPadding?: boolean;
     reduceTopPadding?: boolean;
     ratio?: string;
+    /** Stable rename anchor - see `SlottedSection` in @/utils/section-id. */
+    slotId?: string;
     variant?: string;
   }>;
   sourceOptionName: string;
@@ -403,6 +405,9 @@ export function TemplateLibrarySection({
             cardFill: section.cardFill,
             colorRecipe: section.colorRecipe,
             ratio: section.ratio,
+            // Keeps the rename anchor attached across the pagebuilder round
+            // trip, so re-promoting an edited template does not orphan copy.
+            slotId: section.slotId,
             variant: section.variant,
           })),
         }),

@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { createSlotId } from "@/utils/section-id";
 
 export const runtime = "nodejs";
 
@@ -13,6 +14,8 @@ type PageTemplateSection = {
   reduceBottomPadding?: boolean;
   reduceTopPadding?: boolean;
   ratio?: string;
+  /** Stable rename anchor - see `SlottedSection` in @/utils/section-id. */
+  slotId?: string;
   variant?: string;
   colorRecipe?: string;
   cardFill?: string;
@@ -85,8 +88,13 @@ export async function POST(request: Request) {
   }
 
   try {
-    const template = normalizeTemplate(body);
     const templatesFile = await readTemplates();
+    const template = normalizeTemplate(
+      body,
+      templatesFile.templates.find(
+        (currentTemplate) => currentTemplate.id === sanitizeSlug(body.id ?? ""),
+      ),
+    );
     const nextTemplates = [
       template,
       ...templatesFile.templates.filter(
@@ -226,7 +234,10 @@ async function readTemplates(): Promise<PageTemplatesFile> {
   }
 }
 
-function normalizeTemplate(body: PageTemplateRequest): PageTemplate {
+function normalizeTemplate(
+  body: PageTemplateRequest,
+  previousTemplate: PageTemplate | undefined,
+): PageTemplate {
   const id = sanitizeSlug(body.id);
 
   if (!id || !idPattern.test(id)) {
@@ -252,7 +263,10 @@ function normalizeTemplate(body: PageTemplateRequest): PageTemplate {
     throw new Error("Templates need at least one included section.");
   }
 
-  const sections = body.sections.map(normalizeSection);
+  const sections = assignSlotIds(
+    body.sections.map(normalizeSection),
+    previousTemplate?.sections,
+  );
 
   return {
     designStyle: {
@@ -275,8 +289,65 @@ function normalizeTemplate(body: PageTemplateRequest): PageTemplate {
   };
 }
 
+/**
+ * Every template section gets a `slotId` that survives edits to its name and
+ * position, so a restage can follow copy to the section's new field paths
+ * instead of stranding it (see `getSectionIdRenames`).
+ *
+ * Promotion overwrites a template of the same id, so re-promoting must carry
+ * the existing anchors forward or the anchor is lost at exactly the moment it
+ * is needed. Precedence:
+ *
+ * 1. a `slotId` the client sent - the pagebuilder round trip preserves it,
+ *    and it is the only source that stays correct across inserts and deletes
+ * 2. the previous template's anchor at the same index, but only when the stack
+ *    shape is unchanged (same length, same component per index). A rename is
+ *    the case worth recovering and it leaves the shape intact.
+ * 3. a fresh id
+ *
+ * Anything that changed the stack shape without sending slotIds has no
+ * trustworthy correspondence, so those slots start fresh rather than risk
+ * anchoring copy onto a different section. That degrades to the old
+ * path-matching behaviour, which is what the code did everywhere before.
+ */
+function assignSlotIds(
+  sections: PageTemplateSection[],
+  previousSections: PageTemplateSection[] | undefined,
+) {
+  const carriedSections =
+    previousSections?.length === sections.length &&
+    sections.every(
+      (section, index) =>
+        section.component === previousSections[index]?.component,
+    )
+      ? previousSections
+      : undefined;
+
+  // A slot anchors exactly one section. Two sections sharing one would make
+  // `getSectionIdRenames` remap copy onto whichever of them it saw last, so
+  // repeats are dropped here rather than written to disk.
+  const usedSlotIds = new Set<string>();
+
+  return sections.map((section, index) => {
+    const carriedSlotId =
+      section.slotId || carriedSections?.[index]?.slotId || "";
+    const slotId =
+      carriedSlotId && !usedSlotIds.has(carriedSlotId)
+        ? carriedSlotId
+        : createSlotId();
+
+    usedSlotIds.add(slotId);
+
+    return { ...section, slotId };
+  });
+}
+
 function normalizeSection(section: PageTemplateSection): PageTemplateSection {
   return {
+    slotId:
+      typeof section.slotId === "string" && section.slotId.trim()
+        ? section.slotId.trim()
+        : undefined,
     component: normalizeRequiredString(section.component, "Invalid section."),
     instruction: normalizeRequiredString(
       section.instruction,

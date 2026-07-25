@@ -15,6 +15,12 @@ type SavedPagebuilderSection = {
   reduceBottomPadding?: boolean;
   reduceTopPadding?: boolean;
   ratio?: string;
+  /**
+   * Carried through so a template edited in pagebuilder keeps its rename
+   * anchors on re-promotion - see `SlottedSection` in @/utils/section-id.
+   * Sections added here have none until they are promoted.
+   */
+  slotId?: string;
   variant?: string;
   colorRecipe?: string;
   cardFill?: string;
@@ -190,6 +196,10 @@ function normalizeSection(
     reduceBottomPadding: Boolean(section.reduceBottomPadding),
     reduceTopPadding: Boolean(section.reduceTopPadding),
     ratio: typeof section.ratio === "string" ? section.ratio : undefined,
+    slotId:
+      typeof section.slotId === "string" && section.slotId.trim()
+        ? section.slotId.trim()
+        : undefined,
     variant: typeof section.variant === "string" ? section.variant : undefined,
     colorRecipe:
       typeof section.colorRecipe === "string" ? section.colorRecipe : undefined,

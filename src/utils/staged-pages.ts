@@ -5,7 +5,7 @@ import type {
   SectionColorRecipe,
 } from "@/content/section-color-recipes";
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
-import { getSectionId } from "@/utils/section-id";
+import { getSectionId, getSectionIdRenames } from "@/utils/section-id";
 import {
   getPathFromSlugForPageType,
   getStrategyCopyForPage,
@@ -41,6 +41,8 @@ export type StagedPageTemplateSection = {
   reduceBottomPadding?: boolean;
   reduceTopPadding?: boolean;
   ratio?: string;
+  /** Stable rename anchor - see `SlottedSection` in @/utils/section-id. */
+  slotId?: string;
   variant?: string;
 };
 
@@ -641,9 +643,22 @@ export async function buildStagedPageCandidate({
     strategyCopy,
     template,
   );
+  // Follow renamed/reordered slots to their new section ids before merging,
+  // since the merge matches by path and would otherwise silently preserve
+  // nothing for those sections.
+  const previousFields = previousPage
+    ? remapFieldPathsForRenamedSections(
+        previousPage.fields,
+        getSectionIdRenames(
+          previousPage.template?.sections ?? [],
+          template.sections,
+        ),
+        page.pageId,
+      )
+    : undefined;
   const mergedFields = mergePreservingIncompatibleSections(
     page.fields,
-    previousPage?.fields,
+    previousFields,
     sectionStatuses,
   );
   const finalPage: StagedPage = {
@@ -656,13 +671,52 @@ export async function buildStagedPageCandidate({
 }
 
 /**
+ * Rewrites a previously staged page's field paths onto the section ids the
+ * incoming template uses, for every slot whose derived id changed.
+ *
+ * This runs before the path-keyed merge below. Without it, a renamed or
+ * reordered section presents the merge with nothing to match: the old fields
+ * are not carried forward and not deleted either, they are simply never read
+ * again while the section renders demo content. That is what happened to
+ * section 07 of the About page (recovered in d109015).
+ *
+ * Field `id` is regenerated alongside `path` so the two stay consistent - they
+ * are both derived from the section id at build time.
+ */
+export function remapFieldPathsForRenamedSections(
+  fields: StagedPageField[],
+  renames: Map<string, string>,
+  pageId: string,
+) {
+  if (renames.size === 0) {
+    return fields;
+  }
+
+  return fields.map((field) => {
+    const [sectionId, ...rest] = field.path.split(".");
+    const nextSectionId = sectionId ? renames.get(sectionId) : undefined;
+
+    if (!nextSectionId || rest.length === 0) {
+      return field;
+    }
+
+    const nextPath = [nextSectionId, ...rest].join(".");
+
+    return stagedField({
+      ...field,
+      id: `${pageId}.${nextPath}`,
+      path: nextPath,
+    });
+  });
+}
+
+/**
  * Restores a previously staged page's field values for any section whose
  * freshly-built copy is not verified as "current" (stale/unverified/empty),
  * so a same-position restage only overwrites the sections that actually have
  * good new copy instead of blanking sections that were fine before. Matching
- * is by field path, so this is a no-op wherever the section's identity
- * (ordinal + slug) has changed - there is nothing to preserve at a path that
- * no longer exists.
+ * is by field path, so callers must remap renamed sections first - see
+ * `remapFieldPathsForRenamedSections`.
  */
 export function mergePreservingIncompatibleSections(
   nextFields: StagedPageField[],
