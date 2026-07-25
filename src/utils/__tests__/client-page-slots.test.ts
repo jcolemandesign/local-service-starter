@@ -6,6 +6,7 @@ import {
 } from "@/utils/client-page-slots";
 import {
   baseStrategyPageSlots,
+  getPathFromSlugForPageType,
   withClientPageSlots,
   type StrategyPageDefinition,
 } from "@/utils/strategy-site-map";
@@ -146,5 +147,47 @@ describe("readClientPageSlots", () => {
 
     expect(slots).toHaveLength(6);
     expect(slots.every((slot) => slot.parentId === "services")).toBe(true);
+  });
+});
+
+describe("slot paths agree with the shared path rules", () => {
+  /**
+   * A slot declares its `path`, and `getPathFromSlugForPageType` computes one
+   * from the page type. Two sources of truth for the same URL, and they had
+   * silently drifted: North Star's maintenance page was typed "Individual
+   * Service" but pathed "/maintenance", so a hardcoded special case for that
+   * one slug lived in the shared rules and applied to every client.
+   *
+   * The page was a service, not an offer-level plan page - that is what
+   * `service-plan` is for - so the type was right and the path was wrong.
+   *
+   * Template paths are skipped: `/services/[service]` describes a shape, not a
+   * page.
+   */
+  it("computes each concrete slot's declared path from its page type", async () => {
+    const slots = await readStrategyPageSlots("north-star-hvac");
+    const concreteSlots = slots.filter((slot) => !slot.path.includes("["));
+
+    expect(concreteSlots.length).toBeGreaterThan(10);
+
+    const mismatches = concreteSlots
+      .filter(
+        (slot) =>
+          getPathFromSlugForPageType(slot.id, slot.pageType) !== slot.path,
+      )
+      .map(
+        (slot) =>
+          `${slot.id}: declared ${slot.path}, computed ${getPathFromSlugForPageType(slot.id, slot.pageType)}`,
+      );
+
+    expect(mismatches).toEqual([]);
+  });
+
+  it("puts a service page under /services", async () => {
+    const slots = await readStrategyPageSlots("north-star-hvac");
+
+    expect(slots.find((slot) => slot.id === "maintenance")?.path).toBe(
+      "/services/maintenance",
+    );
   });
 });

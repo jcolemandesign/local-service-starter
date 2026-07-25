@@ -37,6 +37,7 @@
         "maintenance page",
         "tune-up page",
         "tune up page",
+        "/services/maintenance",
         "/maintenance"
       ],
       "copyField": "servicesCopy",
@@ -44,7 +45,7 @@
       "label": "Maintenance / Tune-Ups",
       "parentId": "services",
       "pageType": "Individual Service",
-      "path": "/maintenance"
+      "path": "/services/maintenance"
     },
     {
       "aliases": [

@@ -55,7 +55,7 @@
       "pageId": "heat-pump-service"
     },
     {
-      "href": "/maintenance",
+      "href": "/services/maintenance",
       "label": "Maintenance / Tune-Ups",
       "pageId": "maintenance"
     },
@@ -167,7 +167,7 @@
       "label": "Maintenance / Tune-Ups",
       "parentId": "services",
       "pageType": "Individual Service",
-      "path": "/maintenance",
+      "path": "/services/maintenance",
       "status": "needs-template"
     },
     {

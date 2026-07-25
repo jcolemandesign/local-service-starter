@@ -400,10 +400,6 @@ export function getPathFromSlugForPageType(slug: string, pageType: string) {
   }
 
   if (normalizedPageType === "individualservice") {
-    if (normalizedSlug === "maintenance") {
-      return "/maintenance";
-    }
-
     return `/services/${normalizedSlug}`;
   }
 
