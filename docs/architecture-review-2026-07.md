@@ -171,21 +171,80 @@ paths. That section had been rendering pure demo fallback while real approved
 copy sat unreachable. Repaired in d109015. This is the strongest argument for
 the persisted `slotId` in Phase 3.
 
-## Remaining phases
+## Phase 3 — partly done
 
-- **Phase 3 — structural cleanup.** Split `staged-pages.json` per client; add
-  parsing at the `readStagedPages()` boundary; introduce a persisted `slotId`
-  backfilled from current derived ids; delete vestigial `StagedPage.status`.
-  Touches persisted data — start from a checkpoint tag.
-- **Phase 4 — only if client count grows.** Collapse to one `SectionDefinition`
-  per section (demo content + field spec + `toProps` colocated), which would
-  remove the drift class structurally rather than testing for it.
+Done:
+
+- **Staged pages split per client** into
+  `src/content/projects/<clientSlug>/staged-pages.json`. `readStagedPages()`
+  enumerates client directories and concatenates, so consumers were unchanged;
+  writes touch only the affected client. Migration verified lossless (7 pages,
+  482 fields; git recorded a pure rename). Closes the cross-client dedupe
+  collision — two clients can now both have a page called `home`.
+- **Content Editor reads at request time.** The static
+  `import stagedPagesData from "./staged-pages.json"` baked data in at build
+  time while `/dev/staged-pages` read it at runtime, so the two surfaces could
+  disagree. Now `getContentEditorPages()` with `force-dynamic`.
+- **Validation at the read boundary.** Malformed records are skipped with a
+  specific warning rather than crashing whichever surface reads them.
+- **Orphan detection** over real records — see below.
+
+### `StagedPage.status` is NOT vestigial
+
+Corrected: this doc previously repeated the review's claim that it should be
+deleted. It is rendered — `StatusPill` in `src/app/dev/staged-pages/page.tsx`
+and status labels in `StrategyWorkspaceSection`. What is true is narrower: it is
+write-only-one-value, because `"ready"` is never assigned to a staged page. So
+the pill always reads "staged" and a `"ready"` branch in StrategyWorkspace is
+unreachable.
+
+Deleting it removes visible UI, so it is a product decision, not cleanup.
+Options: drop the pill, or give `"ready"` a meaning — approved-for-export is the
+obvious candidate, since that state already exists in `site-export.json`.
+
+## Remaining: `slotId`
+
+The last Phase 3 item, and the one that structurally fixes rename/reorder
+fragility.
+
+**The obvious implementation is wrong.** If `getSectionId` simply returns a
+persisted `slotId`, every existing field path changes at once and all current
+copy orphans — the exact failure the change is meant to prevent, applied to the
+whole repo.
+
+The right shape is `slotId` as a stable *anchor*, not a replacement for the
+path:
+
+- persist `slotId` (nanoid) on each template section, assigned once at template
+  creation, backfilled on existing templates from their current derived ids
+- keep field paths human-readable and derived (`07-cards-features-4-up-split.body`)
+  so records stay diffable and greppable
+- on stage/refresh, use `slotId` to detect that a section's derived id has
+  changed and remap its field paths, instead of stranding them
+
+`src/utils/__tests__/staged-pages-orphan-fields.test.ts` is the safety net for
+that work: it fails if any remap leaves fields behind. Verified to fire by
+reintroducing the About page orphan.
+
+## Phase 4 — only if client count grows
+
+Collapse to one `SectionDefinition` per section (demo content + field spec +
+`toProps` colocated), which would remove the drift class structurally rather
+than testing for it. Also: make `strategyPageSlots` per-client config, and add
+re-export / update-after-launch.
 
 ## Checkpoints
 
-`checkpoint/phase-1-complete`, `checkpoint/phase-2-section-id`,
-`checkpoint/phase-2-refresh-fix`, `checkpoint/phase-2-complete` — each tagged at
-a verified-green commit (tsc, lint, full vitest run).
+Each tagged at a verified-green commit (`tsc --noEmit`, `eslint`, full vitest
+run):
+
+- `checkpoint/phase-1-complete`
+- `checkpoint/phase-2-section-id`
+- `checkpoint/phase-2-refresh-fix`
+- `checkpoint/phase-2-complete`
+- `checkpoint/phase-3-per-client-split`
+
+Test count over this work: 24 → 86.
 
 Adding fields to a spec changes its contract fingerprint and flips affected
 sections to `stale`. Expected and safe, but it surfaces warnings on existing
