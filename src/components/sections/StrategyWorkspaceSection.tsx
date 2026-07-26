@@ -84,6 +84,9 @@ type StagedStrategyPageSummary = {
 };
 
 type TemplatePickerTarget = {
+  /** Template currently staged at this slot, so the picker can mark it. */
+  activeTemplateId: string;
+  activeTemplateName: string;
   id: string;
   isChild: boolean;
   label: string;
@@ -399,6 +402,8 @@ export function StrategyWorkspaceSection({
   const templatePickerTarget: TemplatePickerTarget | null =
     templatePickerChildPage
       ? {
+          activeTemplateId: templatePickerChildPage.templateId,
+          activeTemplateName: templatePickerChildPage.templateName,
           id: templatePickerChildPage.pageId,
           isChild: true,
           label: templatePickerChildPage.pageLabel,
@@ -407,6 +412,8 @@ export function StrategyWorkspaceSection({
         }
       : templatePickerPage
         ? {
+            activeTemplateId: templatePickerPage.templateId,
+            activeTemplateName: templatePickerPage.templateName ?? "",
             id: templatePickerPage.id,
             isChild: false,
             label: templatePickerPage.label,
@@ -991,7 +998,7 @@ export function StrategyWorkspaceSection({
                   </div>
                 ) : null}
 
-                <div className="grid grid-cols-5 gap-3 max-lg:grid-cols-2 max-sm:grid-cols-1">
+                <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1">
                   {assemblyPages.map((page) => {
                     const hasTemplateReady =
                       Boolean(page.previewHref) ||
@@ -1087,7 +1094,12 @@ export function StrategyWorkspaceSection({
                         </p>
                         {page.templateName ? (
                           <p className="type-caption mt-2 text-service-muted">
-                            {page.templateName}
+                            <span className="font-semibold text-service-accent">
+                              Template:
+                            </span>{" "}
+                            <span className="font-semibold text-service-ink">
+                              {page.templateName}
+                            </span>
                           </p>
                         ) : null}
                         {hasPageCopy ? (
@@ -1114,10 +1126,15 @@ export function StrategyWorkspaceSection({
                                     {childPage.pageLabel}
                                   </Link>
                                   <p className="type-caption mt-1 text-service-muted">
-                                    {childPage.templateName}
+                                    <span className="font-semibold text-service-accent">
+                                      Template:
+                                    </span>{" "}
+                                    <span className="font-semibold text-service-ink">
+                                      {childPage.templateName}
+                                    </span>
                                   </p>
                                   <button
-                                    className="type-caption mt-2 font-semibold text-service-muted underline decoration-service-accent underline-offset-4 hover:text-service-accent"
+                                    className="type-caption radius-4 mt-2 inline-flex min-h-8 items-center justify-center border border-service-border bg-bg-surface px-3 font-semibold text-service-muted transition-colors hover:border-service-accent hover:text-service-accent"
                                     onClick={() =>
                                       openTemplatePicker(
                                         page.id,
@@ -1133,10 +1150,10 @@ export function StrategyWorkspaceSection({
                             </div>
                           </div>
                         ) : null}
-                        <div className="mt-3 flex flex-wrap items-center gap-3">
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
                           {page.previewHref ? (
                             <Link
-                              className="type-caption inline-flex font-semibold text-service-accent hover:text-service-ink"
+                              className="type-caption radius-4 inline-flex min-h-9 items-center justify-center border border-service-accent bg-service-accent px-3 font-semibold text-white transition-colors hover:border-service-ink hover:bg-service-ink"
                               href={page.previewHref}
                               rel="noreferrer"
                               target="_blank"
@@ -1145,10 +1162,10 @@ export function StrategyWorkspaceSection({
                             </Link>
                           ) : null}
                           <button
-                            className={`type-caption inline-flex font-semibold ${
-                              !page.previewHref
-                                ? "text-service-accent hover:text-service-ink"
-                                : "text-service-muted hover:text-service-accent"
+                            className={`type-caption radius-4 inline-flex min-h-9 items-center justify-center border px-3 font-semibold transition-colors ${
+                              page.previewHref
+                                ? "border-service-border bg-bg-surface text-service-muted hover:border-service-accent hover:text-service-accent"
+                                : "border-service-accent bg-service-accent text-white hover:border-service-ink hover:bg-service-ink"
                             }`}
                             onClick={() => openTemplatePicker(page.id)}
                             type="button"
@@ -1654,6 +1671,18 @@ export function StrategyWorkspaceSection({
                   {templatePickerTarget.pageType} template for{" "}
                   <span className="font-mono">{templatePickerTarget.path}</span>
                 </p>
+                <p className="type-caption mt-2 text-service-muted">
+                  {templatePickerTarget.activeTemplateName ? (
+                    <>
+                      Currently using{" "}
+                      <span className="font-semibold text-service-ink">
+                        {templatePickerTarget.activeTemplateName}
+                      </span>
+                    </>
+                  ) : (
+                    "No template staged here yet."
+                  )}
+                </p>
                 {templatePickerTarget.isChild ? (
                   <p className="type-caption mt-2 font-semibold text-service-accent">
                     This changes only this child page.
@@ -1683,6 +1712,8 @@ export function StrategyWorkspaceSection({
                     {matchingTemplates.map((template) => {
                       const isSelected = previewingTemplateId === template.id;
                       const isLoadingThis = isSelected && isPreviewLoading;
+                      const isActive =
+                        template.id === templatePickerTarget.activeTemplateId;
 
                       return (
                         <article
@@ -1690,16 +1721,25 @@ export function StrategyWorkspaceSection({
                             "cursor-pointer rounded-[var(--radius-md-token)] border p-4 transition-colors",
                             isSelected
                               ? "border-service-accent bg-service-surface"
-                              : "border-service-border bg-service-surface hover:border-service-accent/60",
+                              : isActive
+                                ? "border-service-accent/50 bg-service-surface"
+                                : "border-service-border bg-service-surface hover:border-service-accent/60",
                           )}
                           key={template.id}
                           onClick={() => void previewTemplateForPage(template)}
                         >
                           <div className="flex flex-wrap items-start justify-between gap-3">
                             <div className="min-w-0">
-                              <h3 className="type-heading-sm text-service-ink">
-                                {template.name}
-                              </h3>
+                              <span className="flex flex-wrap items-center gap-2">
+                                <h3 className="type-heading-sm text-service-ink">
+                                  {template.name}
+                                </h3>
+                                {isActive ? (
+                                  <span className="type-caption rounded-sm bg-service-accent px-2 py-0.5 font-semibold text-white">
+                                    Current
+                                  </span>
+                                ) : null}
+                              </span>
                               <p className="type-caption mt-2 text-service-muted">
                                 {template.sectionCount} sections from{" "}
                                 {template.sourceRecipeName}
