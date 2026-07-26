@@ -71,6 +71,7 @@ import {
   type DecisionSplitDecisionLargeAlign,
 } from "@/components/sections/DecisionSplitDecisionLargeSectionV3";
 import { ContentStickyCardStreamSectionV2 } from "@/components/sections/ContentStickyCardStreamSectionV2";
+import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
 import {
   CTASectionV3,
   CTAMutedSectionV3,
@@ -152,6 +153,7 @@ const servicesScrollCardsComponent = "ServicesScrollCardsSectionV2";
 const servicesThreeCardsRightComponent = "ServicesThreeCardsRightSectionV3";
 const ctaSectionComponent = "CTASectionV3";
 const ctaMutedSectionComponent = "CTAMutedSectionV3";
+const contentFixedCoverFadeComponent = "ContentFixedCoverFadeSectionV2";
 const decisionSplitDecisionLargeComponent = "DecisionSplitDecisionLargeSectionV3";
 const fourCardLinkGridVariantOptions = [
   { label: "Images", value: "with-images" },
@@ -1917,6 +1919,23 @@ function CardImageIcon({ hidden }: { hidden?: boolean }) {
   );
 }
 
+function FixedCoverFadeFormIcon({ modal }: { modal: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <rect height="16" rx="1.5" stroke="currentColor" strokeWidth="1.75" width="14" x="3" y="4" />
+      <path d="M6.5 8h7M6.5 11.5h7M6.5 15h4" stroke="currentColor" strokeLinecap="round" strokeWidth="1.75" />
+      {modal ? (
+        <path d="M16 14h5v5h-5zM18.5 15.5v2M17.5 16.5h2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+      ) : null}
+    </svg>
+  );
+}
+
 function CardBorderIcon({ bordered }: { bordered: boolean }) {
   return (
     <svg
@@ -2846,6 +2865,21 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateFixedCoverFadeFormMode(
+    sectionId: string,
+    formMode: "modal-prefill" | "regular",
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId &&
+        section.component === contentFixedCoverFadeComponent
+          ? { ...section, variant: formMode === "regular" ? undefined : formMode }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateFixedRatioSplitRatio(
     sectionId: string,
     ratio: FixedRatioSplitRatio,
@@ -3256,6 +3290,13 @@ export function PagebuilderShell({
           <CTAMutedSectionV3
             {...sectionLibraryV3Content.cta}
             colorRecipe={getSectionColorRecipe(section)}
+          />
+        ) : section.component === contentFixedCoverFadeComponent ? (
+          <ContentFixedCoverFadeSectionV2
+            {...sectionLibraryV3Content.contentFixedCoverFade}
+            formMode={
+              section.variant === "modal-prefill" ? "modal-prefill" : "regular"
+            }
           />
         ) : section.component === faqComponent ? (
           <FAQSectionV3
@@ -4046,6 +4087,54 @@ export function PagebuilderShell({
                                     >
                                       <CardImageIcon hidden={!showImage} />
                                       <span className="sr-only">{label}</span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </fieldset>
+                          ) : null}
+                          {section.component === contentFixedCoverFadeComponent ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Request form
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {[
+                                  {
+                                    label: "Embedded form",
+                                    mode: "regular" as const,
+                                  },
+                                  {
+                                    label: "Prefill modal",
+                                    mode: "modal-prefill" as const,
+                                  },
+                                ].map((option) => {
+                                  const optionIsActive =
+                                    (section.variant === "modal-prefill"
+                                      ? "modal-prefill"
+                                      : "regular") === option.mode;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                        optionIsActive && "token-chrome-card-active",
+                                      )}
+                                      key={option.mode}
+                                      onClick={() =>
+                                        updateFixedCoverFadeFormMode(
+                                          section.id,
+                                          option.mode,
+                                        )
+                                      }
+                                      title={option.label}
+                                      type="button"
+                                    >
+                                      <FixedCoverFadeFormIcon
+                                        modal={option.mode === "modal-prefill"}
+                                      />
+                                      <span className="sr-only">{option.label}</span>
                                     </button>
                                   );
                                 })}

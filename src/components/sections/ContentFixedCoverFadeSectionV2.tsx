@@ -1,7 +1,19 @@
+"use client";
+
+import { useState } from "react";
+import {
+  requestServiceRequestOptions,
+  requestServiceSystemOptions,
+  type RequestServiceRequestType,
+  type RequestServiceSystemType,
+  useRequestService,
+} from "@/components/request-service";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+
+export type ContentFixedCoverFadeFormMode = "modal-prefill" | "regular";
 
 type ContentFixedCoverFadeSectionV2Props = {
   backgroundEyebrow: string;
@@ -11,6 +23,7 @@ type ContentFixedCoverFadeSectionV2Props = {
   foregroundEyebrow: string;
   foregroundTitle: string;
   foregroundBody: string;
+  formMode?: ContentFixedCoverFadeFormMode;
   items: string[];
 };
 
@@ -38,6 +51,89 @@ function BackgroundTexture({ label }: { label: string }) {
   );
 }
 
+function SelectionButton({
+  isSelected,
+  label,
+  onClick,
+}: {
+  isSelected: boolean;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      aria-pressed={isSelected}
+      className={`radius-button min-h-12 cursor-pointer border px-4 type-caption font-semibold transition-colors ${
+        isSelected
+          ? "border-service-accent bg-service-accent text-text-inverse"
+          : "border-service-border bg-bg-page text-service-ink hover:border-service-accent hover:text-service-accent"
+      }`}
+      onClick={onClick}
+      type="button"
+    >
+      {label}
+    </button>
+  );
+}
+
+function ModalPrefillForm() {
+  const { openRequestService } = useRequestService();
+  const [systemType, setSystemType] = useState<RequestServiceSystemType | "">("");
+  const [requestType, setRequestType] = useState<RequestServiceRequestType | "">("");
+  const canContinue = Boolean(systemType && requestType);
+
+  return (
+    <form
+      className="fluid-type-frame radius-medium ml-auto grid w-full max-w-4xl card-grid-gap-med border border-service-border bg-service-surface p-8 shadow-service max-lg:ml-0 max-md:p-6"
+      onSubmit={(event) => {
+        event.preventDefault();
+
+        if (systemType && requestType) {
+          openRequestService({ requestType, systemType });
+        }
+      }}
+    >
+      <fieldset className="grid card-grid-gap-sml">
+        <legend className="type-text-sm mb-3 font-semibold text-service-ink">
+          What type of system do you need help with?
+        </legend>
+        <div className="grid grid-cols-2 card-grid-gap-sml max-sm:grid-cols-1">
+          {requestServiceSystemOptions.map((option) => (
+            <SelectionButton
+              isSelected={systemType === option.value}
+              key={option.value}
+              label={option.label}
+              onClick={() => setSystemType(option.value)}
+            />
+          ))}
+        </div>
+      </fieldset>
+      <fieldset className="grid card-grid-gap-sml">
+        <legend className="type-text-sm mb-3 font-semibold text-service-ink">
+          What can we help with?
+        </legend>
+        <div className="grid grid-cols-2 card-grid-gap-sml max-sm:grid-cols-1">
+          {requestServiceRequestOptions.map((option) => (
+            <SelectionButton
+              isSelected={requestType === option.value}
+              key={option.value}
+              label={option.label}
+              onClick={() => setRequestType(option.value)}
+            />
+          ))}
+        </div>
+      </fieldset>
+      <button
+        className="radius-button type-label min-h-12 cursor-pointer bg-service-accent px-6 text-text-inverse transition-colors hover:bg-bg-dark disabled:cursor-not-allowed disabled:bg-service-muted"
+        disabled={!canContinue}
+        type="submit"
+      >
+        Continue request
+      </button>
+    </form>
+  );
+}
+
 export function ContentFixedCoverFadeSectionV2({
   backgroundTitle,
   backgroundBody,
@@ -45,6 +141,7 @@ export function ContentFixedCoverFadeSectionV2({
   foregroundEyebrow,
   foregroundTitle,
   foregroundBody,
+  formMode = "regular",
   items,
 }: ContentFixedCoverFadeSectionV2Props) {
   return (
@@ -103,7 +200,7 @@ export function ContentFixedCoverFadeSectionV2({
             alignY="middle"
             className="col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1"
           >
-            <form className="fluid-type-frame radius-medium ml-auto grid w-full max-w-4xl card-grid-gap-med border border-service-border bg-service-surface p-8 shadow-service max-lg:ml-0 max-md:p-6">
+            {formMode === "modal-prefill" ? <ModalPrefillForm /> : <form className="fluid-type-frame radius-medium ml-auto grid w-full max-w-4xl card-grid-gap-med border border-service-border bg-service-surface p-8 shadow-service max-lg:ml-0 max-md:p-6">
               <label
                 className={cx(
                   "type-text-sm",
@@ -161,7 +258,7 @@ export function ContentFixedCoverFadeSectionV2({
               >
                 Request service
               </button>
-            </form>
+            </form>}
           </SevenColumnGridItem>
         </SevenColumnGrid>
 

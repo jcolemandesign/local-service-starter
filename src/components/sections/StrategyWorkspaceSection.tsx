@@ -268,6 +268,9 @@ export function StrategyWorkspaceSection({
   const [contentPlanReferenceState, setContentPlanReferenceState] =
     useState<ContentPlanReferenceState>("idle");
   const [openFieldGroups, setOpenFieldGroups] = useState<string[]>([]);
+  const [openPageCopyFieldKey, setOpenPageCopyFieldKey] = useState<
+    string | null
+  >(null);
   const [localStagedPages, setLocalStagedPages] = useState(stagedPages);
   const [templatePickerPageId, setTemplatePickerPageId] = useState("");
   const [templatePickerChildPageId, setTemplatePickerChildPageId] =
@@ -626,10 +629,20 @@ export function StrategyWorkspaceSection({
   }
 
   function toggleFieldGroup(title: string) {
+    if (title === "Page Copy" && openFieldGroups.includes(title)) {
+      setOpenPageCopyFieldKey(null);
+    }
+
     setOpenFieldGroups((currentGroups) =>
       currentGroups.includes(title)
         ? currentGroups.filter((groupTitle) => groupTitle !== title)
         : [...currentGroups, title],
+    );
+  }
+
+  function togglePageCopyField(key: string) {
+    setOpenPageCopyFieldKey((currentKey) =>
+      currentKey === key ? null : key,
     );
   }
 
@@ -1336,8 +1349,15 @@ export function StrategyWorkspaceSection({
                           <details
                             className="overflow-hidden rounded-[var(--radius-md-token)] border border-service-border bg-bg-surface"
                             key={field.key}
+                            open={openPageCopyFieldKey === field.key}
                           >
-                            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 marker:hidden max-md:items-start">
+                            <summary
+                              className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 marker:hidden max-md:items-start"
+                              onClick={(event) => {
+                                event.preventDefault();
+                                togglePageCopyField(field.key);
+                              }}
+                            >
                               <span className="flex min-w-0 items-center gap-3 text-sm font-semibold text-service-ink">
                                 <InputStatusIcon isComplete={hasFieldValue} />
                                 <span className="min-w-0">{field.label}</span>

@@ -723,7 +723,12 @@ export function renderPageTemplateSection(
     case "CTAScrollRevealOfferSectionV3":
       return <CTAScrollRevealOfferSectionV3 {...scrollRevealOfferProps(fieldSection)} />;
     case "ContentFixedCoverFadeSectionV2":
-      return <ContentFixedCoverFadeSectionV2 {...fixedCoverFadeProps(fieldSection)} />;
+      return (
+        <ContentFixedCoverFadeSectionV2
+          {...fixedCoverFadeProps(fieldSection)}
+          formMode={section.variant === "modal-prefill" ? "modal-prefill" : "regular"}
+        />
+      );
     case "ContactSectionV2":
       return <ContactSectionV2 {...contactProps(fieldSection)} />;
     case "ServiceAreaZipLookupSectionV3":

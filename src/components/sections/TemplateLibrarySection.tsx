@@ -645,7 +645,7 @@ export function TemplateLibrarySection({
                       </span>
                     </span>
                   </summary>
-                  <div className="grid grid-cols-2 items-start gap-5 border-t border-service-border p-5 max-lg:grid-cols-1">
+                  <div className="grid items-start gap-5 border-t border-service-border p-5">
                     {group.templates.map((template) => {
                       const draft = drafts[template.id] ?? {
                         label: getDefaultPageLabel(
