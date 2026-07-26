@@ -4,6 +4,8 @@ import {
   type SiteNavigationLink,
 } from "@/components/sections/PageTemplatePreview";
 import { getSectionId } from "@/utils/section-id";
+import { getStagedPreviewHref } from "@/utils/staged-page-links";
+import { isAltStagedPage } from "@/utils/staged-page-variant";
 import type {
   StagedPage,
   StagedPageField,
@@ -51,13 +53,21 @@ export function getStagedPageRenderData(
   page: StagedPage,
   allPages: StagedPage[],
 ): StagedPageRenderData {
+  // Alts are excluded even when the page being rendered is itself an alt: an
+  // alt is a candidate for a slot the site already fills, so letting it into
+  // this list would duplicate its base page in the nav and could hand the
+  // homepage-navigation lookup an archived page. Previewing an alt therefore
+  // shows the live site's nav around the alternate content, which is the
+  // comparison being staged in the first place.
   const sitePages = allPages.filter(
-    (candidate) => candidate.snapshot.clientSlug === page.snapshot.clientSlug,
+    (candidate) =>
+      candidate.snapshot.clientSlug === page.snapshot.clientSlug &&
+      !isAltStagedPage(candidate),
   );
   const homePage = sitePages.find(isHomePage) ?? page;
   const homeNavigation = getNavigationSection(homePage);
   const fieldsBySection = getFieldsBySection(page);
-  const homeHref = getStagedPageHref(homePage);
+  const homeHref = toStagedPageHref(homePage);
   const navigationLinks = buildStagedNavigationLinks(sitePages);
   const templateSections = page.template?.sections ?? [];
 
@@ -150,9 +160,28 @@ function replaceNavigationSection(
 }
 
 function buildStagedNavigationLinks(pages: StagedPage[]) {
+  const canonicalNavigation =
+    pages.find(isHomePage)?.navigation ??
+    pages.find((page) => page.navigation.length > 0)?.navigation ??
+    [];
+  const canonicalIndex = new Map(
+    canonicalNavigation.map((item, index) => [item.pageId, index]),
+  );
   const sortedPages = pages
     .slice()
-    .sort((a, b) => getNavigationSort(a) - getNavigationSort(b));
+    .sort((a, b) => {
+      const aIndex = canonicalIndex.get(a.pageId);
+      const bIndex = canonicalIndex.get(b.pageId);
+
+      if (aIndex !== undefined || bIndex !== undefined) {
+        return (
+          (aIndex ?? Number.MAX_SAFE_INTEGER) -
+          (bIndex ?? Number.MAX_SAFE_INTEGER)
+        );
+      }
+
+      return getFallbackNavigationSort(a) - getFallbackNavigationSort(b);
+    });
   const serviceOverviewPage = sortedPages.find(isServicesOverviewPage);
   const serviceAreaOverviewPage = sortedPages.find(isServiceAreaOverviewPage);
   const individualServicePages = sortedPages.filter(isIndividualServicePage);
@@ -192,7 +221,7 @@ function buildStagedNavigationLinks(pages: StagedPage[]) {
     const serviceAreaLink = {
       href: "#",
       items: childServiceAreaPages.map((childPage) => ({
-        href: getStagedPageHref(childPage),
+        href: toStagedPageHref(childPage),
         label: childPage.pageLabel,
       })),
       label: "Service Areas",
@@ -214,7 +243,7 @@ function buildStagedNavigationLinks(pages: StagedPage[]) {
 
 function toNavigationLink(page: StagedPage, childPages: StagedPage[] = []) {
   const label = getNavigationLabel(page);
-  const href = getStagedPageHref(page);
+  const href = toStagedPageHref(page);
 
   return {
     href,
@@ -223,7 +252,7 @@ function toNavigationLink(page: StagedPage, childPages: StagedPage[] = []) {
         ? [
             { href, label: `${label} Overview` },
             ...childPages.map((childPage) => ({
-              href: getStagedPageHref(childPage),
+              href: toStagedPageHref(childPage),
               label: childPage.pageLabel,
             })),
           ]
@@ -232,9 +261,12 @@ function toNavigationLink(page: StagedPage, childPages: StagedPage[] = []) {
   };
 }
 
-function getStagedPageHref(page: StagedPage) {
-  const previewHref = page.previewHref ?? `/dev/staged-pages/${page.pageId}`;
-  return `${previewHref}?client=${encodeURIComponent(page.snapshot.clientSlug)}`;
+function toStagedPageHref(page: StagedPage) {
+  return getStagedPreviewHref({
+    clientSlug: page.snapshot.clientSlug,
+    pageId: page.pageId,
+    previewHref: page.previewHref,
+  });
 }
 
 function getNavigationLabel(page: StagedPage) {
@@ -249,7 +281,7 @@ function getNavigationLabel(page: StagedPage) {
   return page.pageLabel;
 }
 
-function getNavigationSort(page: StagedPage) {
+function getFallbackNavigationSort(page: StagedPage) {
   if (isHomePage(page)) {
     return 0;
   }

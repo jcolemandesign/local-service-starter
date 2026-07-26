@@ -115,7 +115,7 @@ function ModalMenu({
                   <li key={link.label}>
                     <a
                       className="cursor-pointer text-5xl font-semibold leading-none transition-colors hover:text-service-accent max-md:text-4xl"
-                      href="#"
+                      href={link.href ?? "#"}
                       onClick={() => setIsOpen(false)}
                     >
                       {link.label}
@@ -298,7 +298,7 @@ export function NavFloatingBentoSectionV2({
                         "radius-button",
                         "flex h-10 cursor-pointer items-center px-4 transition-colors hover:bg-service-surface hover:text-service-accent",
                       )}
-                      href="#"
+                      href={link.href ?? "#"}
                     >
                       {link.label}
                     </a>

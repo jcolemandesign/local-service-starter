@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { requireBuilderApiAccess } from "@/utils/builder-access";
 import {
   type CapitalizationStyle,
   type TypeRole,
@@ -68,6 +69,12 @@ const defaultTypeRoles = typePalettes[0].roles;
 const allowedFontStacks = new Set<string>(Object.values(fontStacks));
 
 export async function POST(request: Request) {
+  const unauthorized = await requireBuilderApiAccess();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   if (
     process.env.NODE_ENV === "production" &&
     process.env.ENABLE_DEV_ROUTES !== "true"

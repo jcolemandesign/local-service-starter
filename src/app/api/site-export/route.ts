@@ -1,3 +1,4 @@
+import { requireBuilderApiAccess } from "@/utils/builder-access";
 import {
   analyzeSiteExport,
   exportClientSite,
@@ -23,6 +24,12 @@ type SiteExportRequest = {
 };
 
 export async function POST(request: Request) {
+  const unauthorized = await requireBuilderApiAccess();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   if (
     process.env.NODE_ENV === "production" &&
     process.env.ENABLE_DEV_ROUTES !== "true"

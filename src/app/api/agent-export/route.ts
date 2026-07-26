@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
+import { requireBuilderApiAccess } from "@/utils/builder-access";
 import {
   buildCopywritingAgentInstructions,
   buildGlobalCopywritingAgentInstructions,
@@ -10,6 +11,12 @@ import { readStrategyWorkspace } from "@/utils/strategy-workspace";
 export const runtime = "nodejs";
 
 export async function GET(request: Request) {
+  const unauthorized = await requireBuilderApiAccess();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   const { searchParams } = new URL(request.url);
   const clientSlug = sanitizeExportSlug(
     searchParams.get("clientSlug") ?? "north-star-hvac",

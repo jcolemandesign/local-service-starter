@@ -22,6 +22,7 @@ import {
   type StrategyPageSummary,
   type StrategyPageStatus,
 } from "@/utils/strategy-site-map";
+import { getStagedPreviewHref } from "@/utils/staged-page-links";
 import {
   buildTemplateCopyContract,
   getTemplateCopyContractStatus,
@@ -87,6 +88,12 @@ type TemplatePickerTarget = {
 
 type StagePageResponse =
   | {
+      /** Present only when the displaced page was archived rather than replaced. */
+      alt?: {
+        pageId: string;
+        pageLabel: string;
+        previewHref: string;
+      };
       ok: true;
       page: {
         pageHref: string;
@@ -257,6 +264,11 @@ export function StrategyWorkspaceSection({
   const [templatePickerChildPageId, setTemplatePickerChildPageId] =
     useState("");
   const [stagingTemplateId, setStagingTemplateId] = useState("");
+  const [replaceChoiceTemplateId, setReplaceChoiceTemplateId] = useState("");
+  const [stagedAltNotice, setStagedAltNotice] = useState<{
+    altPageLabel: string;
+    previewHref: string;
+  } | null>(null);
   const [templatePickerError, setTemplatePickerError] = useState("");
   const [templatePreview, setTemplatePreview] = useState<{
     page: StagedPage;
@@ -396,6 +408,11 @@ export function StrategyWorkspaceSection({
             path: templatePickerPage.path,
           }
         : null;
+  const replaceChoiceTemplate = replaceChoiceTemplateId
+    ? templates.find(
+        (template) => template.id === replaceChoiceTemplateId,
+      ) ?? null
+    : null;
   const matchingTemplates = templatePickerTarget
     ? templates.filter(
         (template) =>
@@ -644,6 +661,8 @@ export function StrategyWorkspaceSection({
 
     setTemplatePickerPageId(pageId);
     setTemplatePickerChildPageId(initialChildPageId);
+    setReplaceChoiceTemplateId("");
+    setStagedAltNotice(null);
     setTemplatePickerError("");
     setTemplatePreview(null);
     setPreviewingTemplateId("");
@@ -653,6 +672,7 @@ export function StrategyWorkspaceSection({
   function closeTemplatePicker() {
     setTemplatePickerPageId("");
     setTemplatePickerChildPageId("");
+    setReplaceChoiceTemplateId("");
     setTemplatePickerError("");
     setTemplatePreview(null);
     setPreviewingTemplateId("");
@@ -766,11 +786,33 @@ export function StrategyWorkspaceSection({
     }
   }
 
-  async function stageTemplateForPage(template: PageTemplateSummary) {
+  /**
+   * Staging over a slug that already holds a page destroys what is there, so
+   * the choice of what happens to it belongs at this moment rather than after
+   * the fact. Slugs with nothing staged yet skip the question entirely.
+   */
+  function requestStageTemplate(template: PageTemplateSummary) {
     if (!templatePickerTarget) {
       return;
     }
 
+    if (!stagedPagesById.has(templatePickerTarget.id)) {
+      void stageTemplateForPage(template, "replace");
+      return;
+    }
+
+    setReplaceChoiceTemplateId(template.id);
+  }
+
+  async function stageTemplateForPage(
+    template: PageTemplateSummary,
+    onExisting: "alt" | "replace",
+  ) {
+    if (!templatePickerTarget) {
+      return;
+    }
+
+    setReplaceChoiceTemplateId("");
     setStagingTemplateId(template.id);
     setTemplatePickerError("");
 
@@ -779,6 +821,7 @@ export function StrategyWorkspaceSection({
         body: JSON.stringify({
           action: "stage",
           clientSlug,
+          onExisting,
           pageLabel: templatePickerTarget.label,
           pageSlug: templatePickerTarget.id,
           templateId: template.id,
@@ -802,7 +845,11 @@ export function StrategyWorkspaceSection({
         pageId: result.page.pageId,
         pageLabel: result.page.pageLabel,
         pageType: result.page.template?.pageType ?? template.pageType,
-        previewHref: result.page.previewHref,
+        previewHref: getStagedPreviewHref({
+          clientSlug,
+          pageId: result.page.pageId,
+          previewHref: result.page.previewHref,
+        }),
         templateId: result.page.template?.id ?? template.id,
         templateName: result.page.template?.name ?? template.name,
       };
@@ -811,6 +858,21 @@ export function StrategyWorkspaceSection({
         nextPage,
         ...currentPages.filter((page) => page.pageId !== nextPage.pageId),
       ]);
+      // The picker closes on success, so the archived alt's address is
+      // reported on the assembly overview behind it - otherwise the one piece
+      // of information the user needs to go compare disappears with the modal.
+      setStagedAltNotice(
+        result.alt
+          ? {
+              altPageLabel: result.alt.pageLabel,
+              previewHref: getStagedPreviewHref({
+                clientSlug,
+                pageId: result.alt.pageId,
+                previewHref: result.alt.previewHref,
+              }),
+            }
+          : null,
+      );
       closeTemplatePicker();
     } catch {
       setTemplatePickerError("Template could not be applied.");
@@ -882,6 +944,35 @@ export function StrategyWorkspaceSection({
                     </p>
                   </div>
                 </div>
+
+                {stagedAltNotice ? (
+                  <div className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-md-token)] border border-service-border bg-service-surface px-4 py-3">
+                    <p className="type-caption text-service-muted">
+                      Previous {stagedAltNotice.altPageLabel} kept as an
+                      alternate at{" "}
+                      <span className="font-mono text-service-ink">
+                        {stagedAltNotice.previewHref}
+                      </span>
+                    </p>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Link
+                        className="type-caption font-semibold text-service-accent underline decoration-service-accent underline-offset-4 hover:text-service-ink"
+                        href={stagedAltNotice.previewHref}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        Open alternate
+                      </Link>
+                      <button
+                        className="type-caption font-semibold text-service-muted hover:text-service-accent"
+                        onClick={() => setStagedAltNotice(null)}
+                        type="button"
+                      >
+                        Dismiss
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
 
                 <div className="grid grid-cols-5 gap-3 max-lg:grid-cols-2 max-sm:grid-cols-1">
                   {assemblyPages.map((page) => {
@@ -1699,7 +1790,7 @@ export function StrategyWorkspaceSection({
                               );
 
                               if (selectedTemplate) {
-                                void stageTemplateForPage(selectedTemplate);
+                                requestStageTemplate(selectedTemplate);
                               }
                             }}
                             type="button"
@@ -1754,6 +1845,62 @@ export function StrategyWorkspaceSection({
                   </Link>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {replaceChoiceTemplate && templatePickerTarget ? (
+        <div
+          aria-labelledby="strategy-replace-choice-title"
+          aria-modal="true"
+          className="strategy-template-backdrop fixed inset-0 z-[60] grid place-items-center p-4"
+          role="dialog"
+        >
+          <div className="token-chrome-panel-strong w-full max-w-[34rem] rounded-[var(--chrome-radius-panel)] border p-5">
+            <p className="type-label text-service-accent">
+              Replace staged page
+            </p>
+            <h2
+              className="type-heading-sm mt-eyebrow-heading-sm text-service-ink"
+              id="strategy-replace-choice-title"
+            >
+              {templatePickerTarget.label} already has a staged page
+            </h2>
+            <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
+              Staging {replaceChoiceTemplate.name} here takes over{" "}
+              <span className="font-mono">{templatePickerTarget.path}</span>.
+              Keeping the current version parks it at its own address so the two
+              can be compared; it stays out of the staged site nav either way.
+            </p>
+            <div className="mt-body-actions-md flex flex-wrap gap-2">
+              <button
+                className={primaryButtonClass}
+                disabled={Boolean(stagingTemplateId)}
+                onClick={() =>
+                  void stageTemplateForPage(replaceChoiceTemplate, "alt")
+                }
+                type="button"
+              >
+                Stage & Keep Alt
+              </button>
+              <button
+                className={secondaryButtonClass}
+                disabled={Boolean(stagingTemplateId)}
+                onClick={() =>
+                  void stageTemplateForPage(replaceChoiceTemplate, "replace")
+                }
+                type="button"
+              >
+                Stage & Discard
+              </button>
+              <button
+                className={secondaryButtonClass}
+                disabled={Boolean(stagingTemplateId)}
+                onClick={() => setReplaceChoiceTemplateId("")}
+                type="button"
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>

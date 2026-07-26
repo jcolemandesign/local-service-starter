@@ -1,3 +1,4 @@
+import { requireBuilderApiAccess } from "@/utils/builder-access";
 import {
   clearStyleGuideSlot,
   readStyleGuideSlots,
@@ -21,6 +22,12 @@ function isDevDisabled() {
 }
 
 export async function GET() {
+  const unauthorized = await requireBuilderApiAccess();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   if (isDevDisabled()) {
     return jsonError("Style guide slots are disabled in production.", 403);
   }
@@ -29,6 +36,12 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const unauthorized = await requireBuilderApiAccess();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   if (isDevDisabled()) {
     return jsonError("Style guide slots are disabled in production.", 403);
   }

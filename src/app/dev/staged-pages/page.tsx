@@ -6,17 +6,29 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
+import {
+  altActionClass,
+  StagedPageAltControls,
+} from "@/components/sections/StagedPageAltControls";
 import { StagedPageRefreshButton } from "@/components/sections/StagedPageRefreshButton";
 import { StagedPageRemoveButton } from "@/components/sections/StagedPageRemoveButton";
 import { SiteExportControls } from "@/components/sections/SiteExportControls";
+import { readStrategyPageSlots } from "@/utils/client-page-slots";
 import { readSiteExportState } from "@/utils/site-export-state";
-import { readStagedPages, type StagedPage } from "@/utils/staged-pages";
+import { getStagedPreviewHref } from "@/utils/staged-page-links";
+import {
+  getActiveStagedPages,
+  getAltStagedPages,
+  readStagedPages,
+  type StagedPage,
+} from "@/utils/staged-pages";
 import {
   getTemplateCopyContractStatus,
   getTemplateCopySectionStatuses,
   type TemplateCopyContractTemplate,
   type TemplateCopySectionStatus,
 } from "@/utils/template-copy-contract";
+import { sortPagesBySitemap } from "@/utils/sitemap-page-order";
 
 export const metadata: Metadata = {
   title: "Staged Pages",
@@ -26,16 +38,46 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function StagedPagesPage() {
-  const stagedPages = await readStagedPages();
-  const clientGroups = groupPagesByClient(stagedPages);
-  const exportStates = new Map(
-    await Promise.all(
-      Array.from(clientGroups.keys()).map(async (clientSlug) => [
-        clientSlug,
-        await readSiteExportState(clientSlug),
-      ] as const),
-    ),
+  const allStagedPages = await readStagedPages();
+  // Alts are alternates of a page rather than pages of their own, so they are
+  // listed under the page they belong to instead of alongside it - and they
+  // stay out of the export list and the queue totals entirely.
+  const activeStagedPages = getActiveStagedPages(allStagedPages);
+  const clientSlugs = Array.from(
+    new Set(activeStagedPages.map((page) => page.snapshot.clientSlug)),
   );
+  const clientResources = await Promise.all(
+    clientSlugs.map(async (clientSlug) => {
+      const [pageSlots, exportState] = await Promise.all([
+        readStrategyPageSlots(clientSlug),
+        readSiteExportState(clientSlug),
+      ]);
+
+      return { clientSlug, exportState, pageSlots };
+    }),
+  );
+  const pageSlotsByClient = new Map(
+    clientResources.map(({ clientSlug, pageSlots }) => [
+      clientSlug,
+      pageSlots,
+    ] as const),
+  );
+  const exportStates = new Map(
+    clientResources.map(({ clientSlug, exportState }) => [
+      clientSlug,
+      exportState,
+    ] as const),
+  );
+  const stagedPages = sortPagesBySitemap(
+    activeStagedPages,
+    pageSlotsByClient,
+    (page) => ({
+      clientSlug: page.snapshot.clientSlug,
+      pageId: page.pageId,
+      pageType: page.template?.pageType,
+    }),
+  );
+  const clientGroups = groupPagesByClient(stagedPages);
   const totalCopyFields = stagedPages.reduce(
     (total, page) => total + page.fieldCounts.copy,
     0,
@@ -47,7 +89,7 @@ export default async function StagedPagesPage() {
 
   return (
     <StyleGuidePreviewSurface>
-      <main className="min-h-svh bg-bg-surface text-service-ink">
+      <main className="staged-pages-chrome token-chrome min-h-svh">
         <SevenColumnGrid minHeight="none" padding="med">
         <SevenColumnGridItem className="col-start-2 col-span-4 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <p className="type-label text-service-accent">Pageworks Pipeline</p>
@@ -62,7 +104,7 @@ export default async function StagedPagesPage() {
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-start-6 col-span-1 self-end max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-          <div className="grid gap-2 rounded-sm border border-service-border bg-white p-4">
+          <div className="token-chrome-panel grid gap-2 rounded-[var(--chrome-radius-panel)] border p-4">
             <p className="type-label text-service-accent">Queue status</p>
             <p className="type-heading-sm text-service-ink">
               {stagedPages.length} staged
@@ -93,8 +135,9 @@ export default async function StagedPagesPage() {
             </div>
           ) : null}
           {stagedPages.length > 0 ? (
-            <div className="grid gap-5">
+            <div className="grid grid-cols-2 items-start gap-5 max-lg:grid-cols-1">
               {stagedPages.map((page) => {
+                const alts = getAltStagedPages(allStagedPages, page);
                 const emptyCopyFields = getEmptyCopyFields(page);
                 const filledCopyCount =
                   page.fieldCounts.copy - emptyCopyFields.length;
@@ -107,9 +150,13 @@ export default async function StagedPagesPage() {
                 ).filter((sectionStatus) => sectionStatus.status !== "current");
 
                 return (
-                  <Card className="p-5 shadow-none" key={page.pageId}>
-                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-5 max-lg:grid-cols-1">
-                      <div className="min-w-0">
+                  <details
+                    className="staged-page-accordion token-chrome-panel group/page overflow-hidden rounded-[var(--chrome-radius-panel)] border"
+                    key={page.pageId}
+                  >
+                    <summary className="cursor-pointer list-none p-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-service-accent [&::-webkit-details-marker]:hidden">
+                      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-5">
+                        <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
                           <StatusPill label={page.pageHref} />
                           <StatusPill
@@ -123,10 +170,35 @@ export default async function StagedPagesPage() {
                           Staged {formatDate(page.promotedAt)} from{" "}
                           {formatSource(page)}.
                         </p>
+                        </div>
+                        <span
+                          aria-hidden="true"
+                          className="token-chrome-badge flex size-11 shrink-0 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-transform duration-300 ease-out group-open/page:rotate-180"
+                        >
+                          <svg
+                            fill="none"
+                            height="18"
+                            viewBox="0 0 18 18"
+                            width="18"
+                          >
+                            <path
+                              d="m4 7 5 5 5-5"
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="1.75"
+                            />
+                          </svg>
+                        </span>
                       </div>
+                    </summary>
 
-                      <div className="flex flex-wrap justify-end gap-2 max-lg:justify-start">
+                    <div className="staged-page-accordion-content">
+                      <div className="min-h-0">
+                        <div className="border-t border-service-border p-5">
+                      <div className="flex flex-wrap gap-2">
                         <Button
+                          className="token-chrome-control"
                           href={getPreviewHref(page)}
                           rel="noreferrer"
                           target="_blank"
@@ -134,10 +206,17 @@ export default async function StagedPagesPage() {
                         >
                           Preview
                         </Button>
-                        <Button href={getContentEditorHref(page)}>
+                        <Button
+                          className="token-chrome-primary"
+                          href={getContentEditorHref(page)}
+                        >
                           Edit Content
                         </Button>
-                        <Button href={getDebugHref(page)} variant="secondary">
+                        <Button
+                          className="token-chrome-control"
+                          href={getDebugHref(page)}
+                          variant="secondary"
+                        >
                           Debug
                         </Button>
                         {page.template ? (
@@ -150,12 +229,79 @@ export default async function StagedPagesPage() {
                           />
                         ) : null}
                         <StagedPageRemoveButton
+                          altCount={alts.length}
                           clientSlug={page.snapshot.clientSlug}
                           pageId={page.pageId}
                           pageLabel={page.pageLabel}
                         />
                       </div>
-                    </div>
+
+                    {/* Full-bleed band inside the card. Alts are a different
+                        kind of thing from the page's own metrics below, and the
+                        tinted edge-to-edge field separates them at a glance
+                        rather than reading as one more bordered block. */}
+                    {alts.length > 0 ? (
+                      <div className="-mx-5 mt-5 border-y border-service-border bg-service-surface px-5 py-4">
+                        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                          <p className="type-label text-service-accent">
+                            Alternate versions
+                          </p>
+                          <p className="type-caption whitespace-nowrap text-service-muted max-md:whitespace-normal">
+                            Reachable by address only - no nav link, not
+                            exportable.
+                          </p>
+                        </div>
+                        <div className="mt-3 grid gap-2">
+                          {alts.map((alt) => (
+                            <div
+                              className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-sm border border-service-border bg-white px-3 py-2 max-md:grid-cols-1"
+                              key={alt.pageId}
+                            >
+                              <div className="min-w-0">
+                                <a
+                                  className="type-caption font-semibold text-service-accent underline decoration-service-accent underline-offset-4 hover:text-service-ink"
+                                  href={getPreviewHref(alt)}
+                                  rel="noreferrer"
+                                  target="_blank"
+                                >
+                                  {alt.previewHref}
+                                </a>
+                                <p className="type-caption mt-1 truncate text-service-muted">
+                                  {alt.template?.name ?? "Template unknown"} -
+                                  archived{" "}
+                                  {formatDate(
+                                    alt.variant?.archivedAt ?? alt.promotedAt,
+                                  )}
+                                </p>
+                              </div>
+                              <div className="flex flex-wrap items-center justify-end gap-2 max-md:justify-start">
+                                <a
+                                  className={altActionClass}
+                                  href={getPreviewHref(alt)}
+                                  rel="noreferrer"
+                                  target="_blank"
+                                >
+                                  Preview
+                                </a>
+                                <a
+                                  className={altActionClass}
+                                  href={getContentEditorHref(alt)}
+                                >
+                                  Edit content
+                                </a>
+                                <StagedPageAltControls
+                                  activePageLabel={page.pageLabel}
+                                  altIndex={alt.variant?.altIndex ?? 0}
+                                  altPageId={alt.pageId}
+                                  basePageId={page.pageId}
+                                  clientSlug={alt.snapshot.clientSlug}
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
 
                     <div className="mt-5 grid grid-cols-[minmax(0,1fr)_12rem] gap-5 border-t border-service-border pt-5 max-md:grid-cols-1">
                       <div className="min-w-0">
@@ -268,7 +414,10 @@ export default async function StagedPagesPage() {
                         </div>
                       </div>
                     ) : null}
-                  </Card>
+                        </div>
+                      </div>
+                    </div>
+                  </details>
                 );
               })}
             </div>
@@ -318,8 +467,11 @@ function StatusPill({
 }
 
 function getPreviewHref(page: StagedPage) {
-  const previewHref = page.previewHref ?? `/dev/staged-pages/${page.pageId}`;
-  return `${previewHref}?client=${encodeURIComponent(page.snapshot.clientSlug)}`;
+  return getStagedPreviewHref({
+    clientSlug: page.snapshot.clientSlug,
+    pageId: page.pageId,
+    previewHref: page.previewHref,
+  });
 }
 
 function getContentEditorHref(page: StagedPage) {

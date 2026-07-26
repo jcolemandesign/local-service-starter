@@ -139,7 +139,7 @@ export function SiteExportControls({
   }
 
   return (
-    <div className="grid gap-5 rounded-sm border border-service-border bg-white p-5">
+    <div className="token-chrome-panel grid gap-5 rounded-[var(--chrome-radius-panel)] border border-service-border p-5">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 max-md:grid-cols-1">
         <div>
           <p className="type-label text-service-accent">Client export</p>

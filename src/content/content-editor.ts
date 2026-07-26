@@ -1,9 +1,26 @@
-import { readStagedPages } from "@/utils/staged-pages";
+import {
+  getTemplateAssetFieldsForSection,
+  readStagedPages,
+} from "@/utils/staged-pages";
 import { getSectionId } from "@/utils/section-id";
+import {
+  isAltStagedPage,
+  type StagedPageVariant,
+} from "@/utils/staged-page-variant";
+import { readStrategyPageSlots } from "@/utils/client-page-slots";
+import { sortPagesBySitemap } from "@/utils/sitemap-page-order";
+import { getTemplateCopyFieldsForSection } from "@/utils/template-copy-contract";
 
 export type ContentEditorFieldKind = "copy" | "image" | "link" | "meta";
 
+export type ContentEditorFieldFallback = {
+  exact: boolean;
+  source: "template-default" | "template-example";
+  value: string;
+};
+
 export type ContentEditorField = {
+  fallback?: ContentEditorFieldFallback;
   id: string;
   kind: ContentEditorFieldKind;
   label: string;
@@ -34,6 +51,16 @@ type StagedEditorField = {
   path: string;
   value: string;
 };
+
+type StagedEditorSection = {
+  component?: string;
+  instruction?: string;
+  mode?: string;
+  name?: string;
+  ratio?: string;
+  variant?: string;
+};
+
 type StagedEditorPage = {
   fields?: StagedEditorField[];
   pageHref?: string;
@@ -46,11 +73,10 @@ type StagedEditorPage = {
   sourceStage?: string;
   template?: {
     name?: string;
-    sections?: Array<{
-      component?: string;
-      name?: string;
-    }>;
+    pageType?: string;
+    sections?: StagedEditorSection[];
   };
+  variant?: StagedPageVariant;
 };
 /**
  * Read at request time, not build time.
@@ -64,10 +90,37 @@ type StagedEditorPage = {
  */
 export async function getContentEditorPages(): Promise<ContentEditorPage[]> {
   const stagedPages = await readStagedPages();
-
-  return (stagedPages as unknown as StagedEditorPage[]).map(
-    mapStagedPageToContentEditorPage,
+  const editorPages = stagedPages as unknown as StagedEditorPage[];
+  const clientSlugs = Array.from(
+    new Set(
+      editorPages.map(
+        (page) => page.snapshot?.clientSlug || "staged-client",
+      ),
+    ),
   );
+  const pageSlotsByClient = new Map(
+    await Promise.all(
+      clientSlugs.map(async (clientSlug) => [
+        clientSlug,
+        await readStrategyPageSlots(clientSlug),
+      ] as const),
+    ),
+  );
+  const orderedPages = sortPagesBySitemap(
+    editorPages,
+    pageSlotsByClient,
+    (page) => ({
+      altIndex:
+        page.variant?.role === "alt" ? page.variant.altIndex : undefined,
+      basePageId:
+        page.variant?.role === "alt" ? page.variant.basePageId : undefined,
+      clientSlug: page.snapshot?.clientSlug || "staged-client",
+      pageId: page.pageId || "staged-page",
+      pageType: page.template?.pageType,
+    }),
+  );
+
+  return orderedPages.map(mapStagedPageToContentEditorPage);
 }
 
 function mapStagedPageToContentEditorPage(
@@ -79,6 +132,7 @@ function mapStagedPageToContentEditorPage(
     ...(Array.isArray(page.fields) ? page.fields : []),
     ...getMissingImageRatioFields(page),
   ];
+  const fallbacksByPath = getFieldFallbacksByPath(page);
   const sectionsById = fields.reduce<Record<string, ContentEditorField[]>>(
     (sections, field) => {
       const sectionId = getSectionIdFromFieldPath(field.path);
@@ -88,6 +142,7 @@ function mapStagedPageToContentEditorPage(
         [sectionId]: [
           ...(sections[sectionId] ?? []),
           {
+            fallback: fallbacksByPath.get(field.path),
             id: `${clientSlug}:${field.id}`,
             kind: field.kind,
             label: humanizePath(field.path.split(".").slice(1)),
@@ -106,7 +161,10 @@ function mapStagedPageToContentEditorPage(
     href: page.pageHref ?? `/${pageId}`,
     id: pageId,
     key: `${clientSlug}:${pageId}`,
-    label: page.pageLabel ?? humanize(pageId),
+    // An alt carries its base page's label, so without the suffix the picker
+    // shows two identical entries and there is no way to tell which one a save
+    // lands on. Alts stay listed here - editing them is the point.
+    label: getStagedEditorPageLabel(page, pageId),
     sections: Object.entries(sectionsById).map(([sectionId, sectionFields]) => ({
       fields: sectionFields,
       id: sectionId,
@@ -114,6 +172,72 @@ function mapStagedPageToContentEditorPage(
     })),
     sourceRecipe: formatStagedSource(page),
   };
+}
+
+function getFieldFallbacksByPath(page: StagedEditorPage) {
+  const fallbacks = new Map<string, ContentEditorFieldFallback>();
+
+  (page.template?.sections ?? []).forEach((section, index) => {
+    const component = section.component?.trim() ?? "";
+    const mode = section.mode?.trim() ?? "";
+    const name = section.name?.trim() ?? "";
+
+    if (!component || !mode || !name) {
+      return;
+    }
+
+    const normalizedSection = {
+      component,
+      instruction: section.instruction ?? "",
+      mode,
+      name,
+      ratio: section.ratio,
+      variant: section.variant,
+    };
+    const sectionId = getSectionId(normalizedSection, index);
+
+    getTemplateCopyFieldsForSection(normalizedSection).forEach((field) => {
+      const value = Array.isArray(field.example)
+        ? field.example.join("\n")
+        : field.example?.trim() ?? "";
+
+      if (!value) {
+        return;
+      }
+
+      fallbacks.set(`${sectionId}.${field.name}`, {
+        exact: false,
+        source: "template-example",
+        value,
+      });
+    });
+
+    getTemplateAssetFieldsForSection(normalizedSection).forEach((field) => {
+      if (!field.value.trim()) {
+        return;
+      }
+
+      fallbacks.set(`${sectionId}.${field.name}`, {
+        exact: true,
+        source: "template-default",
+        value: field.value,
+      });
+    });
+  });
+
+  return fallbacks;
+}
+
+function getStagedEditorPageLabel(page: StagedEditorPage, pageId: string) {
+  const label = page.pageLabel ?? humanize(pageId);
+
+  if (!isAltStagedPage(page)) {
+    return label;
+  }
+
+  const altIndex = page.variant?.altIndex;
+
+  return altIndex ? `${label} (alt ${altIndex})` : `${label} (alt)`;
 }
 
 function getMissingImageRatioFields(page: StagedEditorPage): StagedEditorField[] {

@@ -8,9 +8,17 @@ import { sectionLibraryV3Content } from "@/content/section-library-v3";
 import { readStrategyPageSlots } from "@/utils/client-page-slots";
 import { getSectionId, getSectionIdRenames } from "@/utils/section-id";
 import {
+  getAltPageId,
+  getBasePageId,
+  getNextAltIndex,
+  isAltStagedPage,
+  type StagedPageVariant,
+} from "@/utils/staged-page-variant";
+import {
   baseStrategyPageSlots,
   getPathFromSlugForPageType,
   getStrategyCopyForPage,
+  getStrategyPageCopyField,
   slugify,
   type StrategyNavigationItem,
   type StrategyPageDefinition,
@@ -22,6 +30,17 @@ import {
   getTemplateCopySectionStatuses,
   type TemplateCopySectionStatus,
 } from "@/utils/template-copy-contract";
+
+// Re-exported so staged-page consumers have one import site for the record and
+// the vocabulary describing it; client components import the pure module
+// directly, since this one reads the filesystem.
+export {
+  getActiveStagedPages,
+  getAltStagedPages,
+  getBasePageId,
+  isAltStagedPage,
+  type StagedPageVariant,
+} from "@/utils/staged-page-variant";
 
 export type ContentFieldKind = "copy" | "image" | "link" | "meta";
 
@@ -81,10 +100,130 @@ export type StagedPage = {
     sectionCount: number;
     sections?: StagedPageTemplateSection[];
   };
+  variant?: StagedPageVariant;
 };
 
 export function getStagedPageKey(page: Pick<StagedPage, "pageId" | "snapshot">) {
   return `${page.snapshot.clientSlug}:${page.pageId}`;
+}
+
+/**
+ * Moves a staged page to a different `pageId`.
+ *
+ * Every field id is `${pageId}.${field.path}` by construction, so the ids have
+ * to be rebuilt alongside the page id or the content editor writes to fields
+ * that no longer exist. `pageHref` is deliberately left alone: it is the public
+ * address this page is a candidate for, which is the same address whether the
+ * page is currently live or parked as an alt.
+ */
+export function rekeyStagedPage(
+  page: StagedPage,
+  nextPageId: string,
+  variant: StagedPageVariant,
+): StagedPage {
+  return {
+    ...page,
+    fields: page.fields.map((field) => ({
+      ...field,
+      id: `${nextPageId}.${field.path}`,
+    })),
+    pageId: nextPageId,
+    previewHref: `/dev/staged-pages/${nextPageId}`,
+    variant,
+  };
+}
+
+/**
+ * Parks the page currently live at `basePageId` in the next free alt slot,
+ * leaving that slug clear for an incoming template. Returns the archived page,
+ * or undefined when nothing was staged there yet.
+ */
+export async function archiveStagedPageAsAlt(
+  clientSlug: string,
+  basePageId: string,
+) {
+  const pages = await readStagedPages();
+  const current = pages.find(
+    (page) =>
+      page.pageId === basePageId &&
+      page.snapshot.clientSlug === clientSlug &&
+      !isAltStagedPage(page),
+  );
+
+  if (!current) {
+    return undefined;
+  }
+
+  const altIndex = getNextAltIndex(pages, current);
+  const alt = rekeyStagedPage(current, getAltPageId(basePageId, altIndex), {
+    altIndex,
+    archivedAt: new Date().toISOString(),
+    basePageId,
+    role: "alt",
+  });
+  const nextPages = pages.map((page) =>
+    getStagedPageKey(page) === getStagedPageKey(current) ? alt : page,
+  );
+
+  await writeClientStagedPages(clientSlug, nextPages);
+
+  return alt;
+}
+
+/**
+ * Swaps an alt with the page currently live at its base slug: the alt takes the
+ * base id, the live page takes the alt slot just vacated. A swap rather than a
+ * renumber means both addresses stay valid and only their contents trade, so a
+ * side-by-side comparison in two tabs survives the promotion.
+ */
+export async function promoteStagedPageAlt(
+  clientSlug: string,
+  altPageId: string,
+) {
+  const pages = await readStagedPages();
+  const alt = pages.find(
+    (page) => page.pageId === altPageId && page.snapshot.clientSlug === clientSlug,
+  );
+
+  if (!alt || !isAltStagedPage(alt)) {
+    throw new Error("Alternate staged page not found.");
+  }
+
+  const basePageId = getBasePageId(alt);
+  const altIndex = alt.variant?.altIndex ?? 1;
+  const current = pages.find(
+    (page) =>
+      page.pageId === basePageId &&
+      page.snapshot.clientSlug === clientSlug &&
+      !isAltStagedPage(page),
+  );
+  const promoted = rekeyStagedPage(alt, basePageId, {
+    basePageId,
+    role: "active",
+  });
+  const demoted = current
+    ? rekeyStagedPage(current, getAltPageId(basePageId, altIndex), {
+        altIndex,
+        archivedAt: new Date().toISOString(),
+        basePageId,
+        role: "alt",
+      })
+    : undefined;
+  const swapped = new Map<string, StagedPage>([
+    [getStagedPageKey(alt), promoted],
+  ]);
+
+  if (current && demoted) {
+    swapped.set(getStagedPageKey(current), demoted);
+  }
+
+  const nextPages = pages.map(
+    (page) => swapped.get(getStagedPageKey(page)) ?? page,
+  );
+
+  await writeClientStagedPages(clientSlug, nextPages);
+
+  return { demoted, promoted };
 }
 
 type StagedPagesFile = {
@@ -224,11 +363,75 @@ export async function writeStagedPage(page: StagedPage) {
   return nextPages;
 }
 
+/**
+ * Writes a newly staged page and, when requested, archives the page it
+ * replaces in the same staged-pages write. Building the candidate still
+ * happens before this function so partial-section copy can read the current
+ * page, but there is no intermediate file state where the active slug is
+ * empty and only its alt remains.
+ */
+export async function replaceStagedPage(
+  page: StagedPage,
+  archiveCurrent: boolean,
+) {
+  const pages = await readStagedPages();
+  const pageKey = getStagedPageKey(page);
+  const current = pages.find(
+    (candidate) =>
+      getStagedPageKey(candidate) === pageKey && !isAltStagedPage(candidate),
+  );
+  const altIndex =
+    archiveCurrent && current ? getNextAltIndex(pages, current) : undefined;
+  const archivedAlt =
+    current && altIndex !== undefined
+      ? rekeyStagedPage(
+          current,
+          getAltPageId(current.pageId, altIndex),
+          {
+            altIndex,
+            archivedAt: new Date().toISOString(),
+            basePageId: current.pageId,
+            role: "alt",
+          },
+        )
+      : undefined;
+  const nextPages = [
+    page,
+    ...(archivedAlt ? [archivedAlt] : []),
+    ...pages.filter((candidate) => getStagedPageKey(candidate) !== pageKey),
+  ];
+
+  await writeClientStagedPages(page.snapshot.clientSlug, nextPages);
+
+  return { archivedAlt, pages: nextPages };
+}
+
+/**
+ * Removing the live page also removes its alts. They are alternate versions of
+ * that page rather than pages in their own right, so leaving them behind would
+ * strand records whose base slug no longer exists and which no surface groups
+ * under anything. Removing an alt only removes that alt.
+ */
 export async function removeStagedPage(clientSlug: string, pageId: string) {
   const pages = await readStagedPages();
+  const target = pages.find(
+    (page) => page.pageId === pageId && page.snapshot.clientSlug === clientSlug,
+  );
+  const removesAlts = target ? !isAltStagedPage(target) : false;
+  const removedKeys = new Set(
+    pages
+      .filter(
+        (page) =>
+          page.snapshot.clientSlug === clientSlug &&
+          (page.pageId === pageId ||
+            (removesAlts &&
+              isAltStagedPage(page) &&
+              getBasePageId(page) === pageId)),
+      )
+      .map(getStagedPageKey),
+  );
   const nextPages = pages.filter(
-    (page) =>
-      page.pageId !== pageId || page.snapshot.clientSlug !== clientSlug,
+    (page) => !removedKeys.has(getStagedPageKey(page)),
   );
 
   if (nextPages.length === pages.length) {
@@ -298,20 +501,34 @@ export async function syncStagedPagesFromStrategySnapshot(
   let syncedCount = 0;
   const syncedPageIds: string[] = [];
   const nextPages = pages.map((page) => {
-    if (
-      page.snapshot.clientSlug !== snapshot.clientSlug ||
-      page.sourceStage !== "strategy-template" ||
-      !page.template
-    ) {
+    if (!isStrategySyncTarget(page, snapshot.clientSlug, pageSlots)) {
       return page;
     }
 
-    const strategyCopy = getStrategyCopyForPage(
-      snapshot.fields,
-      page.pageId,
-      page.template.pageType,
-      pageSlots,
-    );
+    const template = page.template;
+
+    if (!template) {
+      return page;
+    }
+
+    // Synchronization is intentionally strict. Initial staging may fall back
+    // to contentPlan/strategyBrief when a page has no dedicated copy yet, but
+    // an existing page must resolve to its exact canonical slot before an
+    // automatic sync may overwrite it. This also avoids substring collisions
+    // such as an archived `blog-post-alt1` resolving to the earlier `blog`
+    // slot in getStrategyCopyForPage's legacy/fuzzy lookup.
+    const pageSlot = pageSlots.find((slot) => slot.id === page.pageId);
+
+    if (!pageSlot) {
+      return page;
+    }
+
+    const strategyCopy =
+      (
+        snapshot.fields[getStrategyPageCopyField(pageSlot)] ??
+        snapshot.fields[pageSlot.copyField] ??
+        ""
+      ).trim();
     const previousStrategyCopy =
       page.fields.find((field) => field.path === "strategy.pageCopy")?.value ??
       "";
@@ -322,10 +539,10 @@ export async function syncStagedPagesFromStrategySnapshot(
 
     const contractStatus = getTemplateCopyContractStatus(
       strategyCopy,
-      page.template.sections?.length
+      template.sections?.length
         ? {
-            ...page.template,
-            sections: page.template.sections,
+            ...template,
+            sections: template.sections,
           }
         : undefined,
     );
@@ -390,6 +607,20 @@ export async function syncStagedPagesFromStrategySnapshot(
     syncedCount,
     syncedPageIds,
   };
+}
+
+export function isStrategySyncTarget(
+  page: StagedPage,
+  clientSlug: string,
+  pageSlots: readonly StrategyPageDefinition[],
+) {
+  return (
+    page.snapshot.clientSlug === clientSlug &&
+    page.sourceStage === "strategy-template" &&
+    Boolean(page.template) &&
+    !isAltStagedPage(page) &&
+    pageSlots.some((slot) => slot.id === page.pageId)
+  );
 }
 
 function reconcileTemplateCopyFields(

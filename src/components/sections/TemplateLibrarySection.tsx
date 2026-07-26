@@ -20,6 +20,7 @@ import {
   slugify,
   type StrategyPageDefinition,
 } from "@/utils/strategy-site-map";
+import { getStagedPreviewHref } from "@/utils/staged-page-links";
 import type { StrategySnapshotSummary } from "@/utils/strategy-snapshots";
 import { buildTemplateCopyContract } from "@/utils/template-copy-contract";
 
@@ -65,6 +66,12 @@ type TemplateLibrarySectionProps = {
 
 type CreatePageResponse =
   | {
+      /** Present only when the displaced page was archived rather than replaced. */
+      alt?: {
+        pageId: string;
+        pageLabel: string;
+        previewHref: string;
+      };
       ok: true;
       page: {
         pageId: string;
@@ -100,6 +107,7 @@ type TemplateDraft = {
 };
 
 type StagedTemplateFeedback = {
+  altPreviewHref?: string;
   pageLabel: string;
   previewHref: string;
 };
@@ -239,7 +247,29 @@ export function TemplateLibrarySection({
     });
   }
 
-  async function stageTemplate(template: PageTemplateSummary) {
+  /**
+   * True when this template's target slug already holds a staged page for the
+   * selected client, which is what turns a single "Use Template" into the
+   * keep-or-discard pair. Slugified the same way the API does so the check
+   * matches what the server will actually collide with.
+   */
+  function getStagedPageForDraft(template: PageTemplateSummary) {
+    const draft = drafts[template.id];
+    const pageSlug = slugify(
+      draft?.slug ?? getDefaultPageSlug(template.pageType, template.name),
+    );
+
+    return stagedTemplateAssignments.find(
+      (assignment) =>
+        assignment.clientSlug === activeClientSlug &&
+        assignment.pageId === pageSlug,
+    );
+  }
+
+  async function stageTemplate(
+    template: PageTemplateSummary,
+    onExisting: "alt" | "replace" = "replace",
+  ) {
     const draft = drafts[template.id];
 
     setSubmittingTemplateId(template.id);
@@ -258,6 +288,7 @@ export function TemplateLibrarySection({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           clientSlug: activeClientSlug,
+          onExisting,
           pageLabel: draft?.label ?? template.name,
           pageSlug:
             draft?.slug ?? getDefaultPageSlug(template.pageType, template.name),
@@ -279,8 +310,19 @@ export function TemplateLibrarySection({
       setStagedTemplateFeedback((currentFeedback) => ({
         ...currentFeedback,
         [template.id]: {
+          altPreviewHref: result.alt
+            ? getStagedPreviewHref({
+                clientSlug: activeClientSlug,
+                pageId: result.alt.pageId,
+                previewHref: result.alt.previewHref,
+              })
+            : undefined,
           pageLabel: result.page.pageLabel,
-          previewHref: result.page.previewHref,
+          previewHref: getStagedPreviewHref({
+            clientSlug: activeClientSlug,
+            pageId: result.page.pageId,
+            previewHref: result.page.previewHref,
+          }),
         },
       }));
     } catch {
@@ -592,6 +634,7 @@ export function TemplateLibrarySection({
                         ? getTemplateContract(template)
                         : "";
                       const stagedFeedback = stagedTemplateFeedback[template.id];
+                      const stagedPageForDraft = getStagedPageForDraft(template);
                       const activeAssignmentsForTemplate =
                         assignmentsByTemplateId.get(template.id) ?? [];
                       const activeAssignment = activeAssignmentsForTemplate[0];
@@ -624,7 +667,7 @@ export function TemplateLibrarySection({
                                     <span className="sr-only">Active on staging</span>
                                   </>
                                 ) : null}
-                                <span className="type-heading-sm block text-[var(--chrome-text)]">
+                                <span className="type-text-lg block font-semibold text-[var(--chrome-text)]">
                                   {template.name}
                                 </span>
                               </span>
@@ -950,18 +993,61 @@ export function TemplateLibrarySection({
                                         value={contract}
                                       />
                                     ) : null}
-                                  <button
-                                    className="radius-4 min-h-11 border border-emerald-400 bg-emerald-600 px-4 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255_/_0.18)] transition-colors hover:border-emerald-300 hover:bg-emerald-500 disabled:cursor-wait disabled:opacity-60"
-                                    disabled={isSubmitting || !activeClientSlug}
-                                    onClick={() => void stageTemplate(template)}
-                                    type="button"
-                                  >
-                                    {isSubmitting
-                                      ? "Staging..."
-                                      : isRepeatable
-                                        ? "Stage Child Page"
-                                        : "Use Template"}
-                                  </button>
+                                  <div className="grid gap-2">
+                                    <div className="flex gap-2 max-sm:flex-col">
+                                      <button
+                                        className="radius-4 min-h-11 flex-1 border border-emerald-400 bg-emerald-600 px-4 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255_/_0.18)] transition-colors hover:border-emerald-300 hover:bg-emerald-500 disabled:cursor-wait disabled:opacity-60"
+                                        disabled={
+                                          isSubmitting || !activeClientSlug
+                                        }
+                                        onClick={() =>
+                                          void stageTemplate(
+                                            template,
+                                            "replace",
+                                          )
+                                        }
+                                        type="button"
+                                      >
+                                        {isSubmitting
+                                          ? "Staging..."
+                                          : stagedPageForDraft
+                                            ? "Stage & Discard"
+                                            : isRepeatable
+                                              ? "Stage Child Page"
+                                              : "Use Template"}
+                                      </button>
+                                      {/* Only meaningful when something is
+                                          already staged at this slug - with
+                                          nothing to displace there is no alt
+                                          to keep. */}
+                                      {stagedPageForDraft ? (
+                                        <button
+                                          className="radius-4 min-h-11 flex-1 border border-emerald-400/35 bg-emerald-950/30 px-4 text-sm font-semibold text-emerald-100 transition-colors hover:border-emerald-300 hover:bg-emerald-900/50 disabled:cursor-wait disabled:opacity-60"
+                                          disabled={
+                                            isSubmitting || !activeClientSlug
+                                          }
+                                          onClick={() =>
+                                            void stageTemplate(template, "alt")
+                                          }
+                                          type="button"
+                                        >
+                                          {isSubmitting
+                                            ? "Staging..."
+                                            : "Stage & Keep Alt"}
+                                        </button>
+                                      ) : null}
+                                    </div>
+                                    {stagedPageForDraft ? (
+                                      <p className="type-caption text-emerald-100/70">
+                                        {stagedPageForDraft.pageLabel} is
+                                        already staged at{" "}
+                                        <span className="font-mono">
+                                          /{stagedPageForDraft.pageId}
+                                        </span>
+                                        .
+                                      </p>
+                                    ) : null}
+                                  </div>
                                   </div>
                                 </div>
                               </div>
@@ -975,7 +1061,23 @@ export function TemplateLibrarySection({
                                     Template applied. {stagedFeedback.pageLabel} is
                                     now staged and ready to edit.
                                   </p>
+                                  {stagedFeedback.altPreviewHref ? (
+                                    <p className="type-caption mt-1">
+                                      Previous version kept at{" "}
+                                      <span className="font-mono">
+                                        {stagedFeedback.altPreviewHref}
+                                      </span>
+                                    </p>
+                                  ) : null}
                                   <div className="mt-3 flex flex-wrap gap-2">
+                                    {stagedFeedback.altPreviewHref ? (
+                                      <Link
+                                        className="radius-4 inline-flex min-h-10 items-center justify-center border border-emerald-400/35 bg-emerald-950/35 px-4 text-sm font-semibold text-emerald-100 transition-colors hover:border-emerald-300 hover:bg-emerald-900/50"
+                                        href={stagedFeedback.altPreviewHref}
+                                      >
+                                        Open alternate
+                                      </Link>
+                                    ) : null}
                                     <Link
                                       className="radius-4 inline-flex min-h-10 items-center justify-center border border-emerald-400/35 bg-emerald-950/35 px-4 text-sm font-semibold text-emerald-100 transition-colors hover:border-emerald-300 hover:bg-emerald-900/50"
                                       href={stagedFeedback.previewHref}

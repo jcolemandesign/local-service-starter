@@ -6,7 +6,8 @@ import { StrategyWorkspaceSection } from "@/components/sections/StrategyWorkspac
 import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import type { PageTemplateSummary } from "@/components/sections/TemplateLibrarySection";
 import { readStrategyPageSlots } from "@/utils/client-page-slots";
-import { readStagedPages } from "@/utils/staged-pages";
+import { getStagedPreviewHref } from "@/utils/staged-page-links";
+import { getActiveStagedPages, readStagedPages } from "@/utils/staged-pages";
 import { readStrategyDigestText } from "@/utils/strategy-digest";
 import {
   readSourcePacketText,
@@ -71,14 +72,20 @@ export default async function StrategyWorkspacePage({
       readStagedPages(),
       readPageTemplates(),
     ]);
-  const stagedPageSummaries = stagedPages
+  // Active pages only. An alt shares its base page's type, so leaving alts in
+  // would list them as extra staged child pages under repeatable page types.
+  const stagedPageSummaries = getActiveStagedPages(stagedPages)
     .filter((page) => page.snapshot.clientSlug === clientSlug)
     .map((page) => ({
       pageHref: page.pageHref,
       pageId: page.pageId,
       pageLabel: page.pageLabel,
       pageType: page.template?.pageType ?? "",
-      previewHref: page.previewHref,
+      previewHref: getStagedPreviewHref({
+        clientSlug: page.snapshot.clientSlug,
+        pageId: page.pageId,
+        previewHref: page.previewHref,
+      }),
       template: page.template
         ? {
             id: page.template.id,

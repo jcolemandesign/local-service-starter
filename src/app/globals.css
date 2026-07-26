@@ -425,6 +425,53 @@ body {
     color: var(--chrome-accent);
   }
 
+  .staged-pages-chrome .text-service-ink {
+    color: var(--chrome-text) !important;
+  }
+
+  .staged-pages-chrome .text-service-muted {
+    color: var(--chrome-muted) !important;
+  }
+
+  .staged-pages-chrome .text-service-accent {
+    color: var(--chrome-accent) !important;
+  }
+
+  .staged-pages-chrome .border-service-border {
+    border-color: var(--chrome-border-soft) !important;
+  }
+
+  .staged-pages-chrome
+    :is(.bg-white, .bg-bg-page, .bg-bg-surface, .bg-service-surface) {
+    background-color: var(--chrome-panel-muted) !important;
+    background-image: var(--chrome-field-sheen);
+  }
+
+  .staged-page-accordion {
+    interpolate-size: allow-keywords;
+  }
+
+  .staged-page-accordion::details-content {
+    block-size: 0;
+    overflow-y: clip;
+    opacity: 0;
+    transition:
+      content-visibility 300ms allow-discrete,
+      block-size 300ms ease,
+      opacity 200ms ease;
+  }
+
+  .staged-page-accordion[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .staged-page-accordion::details-content {
+      transition: none;
+    }
+  }
+
   .template-library-chrome .text-service-ink {
     color: var(--chrome-text) !important;
   }

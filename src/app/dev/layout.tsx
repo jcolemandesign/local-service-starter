@@ -1,16 +1,16 @@
+import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
+import { requireBuilderPageAccess } from "@/utils/builder-access";
 
-type DevLayoutProps = {
-  children: React.ReactNode;
-};
-
-export default function DevLayout({ children }: DevLayoutProps) {
+export default async function DevLayout({ children }: { children: ReactNode }) {
   if (
     process.env.NODE_ENV === "production" &&
     process.env.ENABLE_DEV_ROUTES !== "true"
   ) {
     notFound();
   }
+
+  await requireBuilderPageAccess("/dev");
 
   return children;
 }

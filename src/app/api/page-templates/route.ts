@@ -1,6 +1,8 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { requireBuilderApiAccess } from "@/utils/builder-access";
 import { createSlotId } from "@/utils/section-id";
+import { validateTemplateStructure } from "@/utils/template-structure";
 
 export const runtime = "nodejs";
 
@@ -54,6 +56,12 @@ const templatesPath = path.join(
 const idPattern = /^[a-z0-9-]+$/;
 
 export async function GET() {
+  const unauthorized = await requireBuilderApiAccess();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   // POST/PUT/DELETE in this file are already dev-guarded; GET was not, so a
   // deployed builder would have served the full template library publicly.
   if (
@@ -72,6 +80,12 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const unauthorized = await requireBuilderApiAccess();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   if (
     process.env.NODE_ENV === "production" &&
     process.env.ENABLE_DEV_ROUTES !== "true"
@@ -122,6 +136,12 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const unauthorized = await requireBuilderApiAccess();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   if (
     process.env.NODE_ENV === "production" &&
     process.env.ENABLE_DEV_ROUTES !== "true"
@@ -173,6 +193,12 @@ export async function DELETE(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  const unauthorized = await requireBuilderApiAccess();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   if (
     process.env.NODE_ENV === "production" &&
     process.env.ENABLE_DEV_ROUTES !== "true"
@@ -267,6 +293,7 @@ function normalizeTemplate(
     body.sections.map(normalizeSection),
     previousTemplate?.sections,
   );
+  validateTemplateStructure(sections);
 
   return {
     designStyle: {

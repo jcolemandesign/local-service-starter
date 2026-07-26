@@ -98,8 +98,10 @@ strategy snapshots and export state are already partitioned. Do **not** migrate
 to Postgres — it would discard the diffable/revertable property that makes this
 workable solo and fix none of the identity problems.
 
-**`styleTokenCss` is a single overwritable field per client**
-(`site-export-state.ts:73-75`). Approving page B re-freezes page A's tokens.
+**Resolved in Phase 2:** `styleTokenCss` is intentionally one snapshot per
+client because an export emits one `globals.css`. When promoted tokens change,
+`setPageExportApproval` invalidates approvals made under the previous snapshot
+instead of silently re-freezing them.
 
 **Refresh can silently no-op.** `buildStagedPageCandidate` computes merge
 statuses from `snapshot.fields['pageCopy.' + slugify(pageSlug)]`, while
@@ -314,10 +316,6 @@ the `slotId` trap. Do it incrementally, one section at a time, with
 `section-demo-content-leak.test.ts` driving the real render path as the guard,
 and treat any change in resolved spec for an existing section as a defect rather
 than an improvement.
-
-Also still open: `strategyPageSlots` was the per-client blocker, but
-`styleTokenCss` remains a single overwritable field per client
-(`site-export-state.ts`), so approving page B still re-freezes page A's tokens.
 
 ## Checkpoints
 

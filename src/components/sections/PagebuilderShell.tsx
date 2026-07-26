@@ -85,7 +85,10 @@ import {
   type SectionCardFill,
   type SectionColorRecipe,
 } from "@/content/section-color-recipes";
-import { sectionLibraryV3Content } from "@/content/section-library-v3";
+import {
+  getCanonicalSectionLabel,
+  sectionLibraryV3Content,
+} from "@/content/section-library-v3";
 
 type PagebuilderShellProps = {
   previewCatalog: Record<string, ReactNode>;
@@ -1075,6 +1078,12 @@ type SectionSwapOption = {
   name: string;
 };
 
+function getSectionDisplayLabel(
+  section: Pick<SectionSwapOption, "component" | "name">,
+) {
+  return getCanonicalSectionLabel(section.component, section.name);
+}
+
 const sectionSwapOptions: readonly SectionSwapOption[] = [
   {
     component: "NavPrimarySectionV2",
@@ -1659,8 +1668,10 @@ function sortSectionSwapOptions(options: readonly SectionSwapOption[]) {
 
     return (
       firstGroup - secondGroup ||
-      (firstSignifier?.label ?? first.name).localeCompare(
-        secondSignifier?.label ?? second.name,
+      (
+        firstSignifier?.label ?? getSectionDisplayLabel(first)
+      ).localeCompare(
+        secondSignifier?.label ?? getSectionDisplayLabel(second),
       )
     );
   });
@@ -3367,7 +3378,7 @@ export function PagebuilderShell({
         >
           {renderedSectionPreview}
           <button
-            aria-label={`Delete ${section.name}`}
+            aria-label={`Delete ${getSectionDisplayLabel(section)}`}
             className="absolute right-2 top-2 z-20 grid size-8 place-items-center rounded-md border border-service-border bg-white text-red-600 opacity-0 shadow-service transition-opacity duration-300 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
             onClick={(event) => {
               event.preventDefault();
@@ -3684,7 +3695,7 @@ export function PagebuilderShell({
                       ) : null}
                       <div className="flex min-h-12 items-stretch">
                         <button
-                          aria-label={`Drag ${section.name} section`}
+                          aria-label={`Drag ${getSectionDisplayLabel(section)} section`}
                           className="flex w-14 shrink-0 cursor-grab items-center justify-center border-r border-current/10 text-[0.65rem] font-semibold uppercase tracking-normal text-current/65 transition-colors hover:bg-[var(--chrome-hover)] active:cursor-grabbing"
                           draggable
                           onDragEnd={() => {
@@ -3715,7 +3726,7 @@ export function PagebuilderShell({
                               {index + 1}. {section.mode}
                             </span>
                             <span className="mt-1 block truncate text-sm font-semibold">
-                              {section.name}
+                              {getSectionDisplayLabel(section)}
                             </span>
                           </span>
                           <span className="mt-1 flex shrink-0 items-center gap-1.5">
@@ -3742,7 +3753,7 @@ export function PagebuilderShell({
                         <div className="grid gap-4 border-t border-current/10 p-3">
                           <div className="token-chrome-control rounded-[var(--chrome-radius-control)] border p-3">
                             <p className="text-sm font-semibold text-current">
-                              {section.name}
+                              {getSectionDisplayLabel(section)}
                             </p>
                             <p className="type-caption mt-1 text-current/60">
                               {section.component}
@@ -3781,7 +3792,7 @@ export function PagebuilderShell({
                                   key={option.component}
                                   value={option.component}
                                 >
-                                  {option.name}
+                                  {getSectionDisplayLabel(option)}
                                 </option>
                               ))}
                             </select>
@@ -5020,7 +5031,7 @@ export function PagebuilderShell({
 
                           return (
                             <button
-                              aria-label={`${option.name}${isRecentlyAdded ? " added" : ""}`}
+                              aria-label={`${getSectionDisplayLabel(option)}${isRecentlyAdded ? " added" : ""}`}
                               className={cx(
                                 "token-chrome-control grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-[var(--chrome-radius-control)] border px-3 py-2 text-left text-sm font-semibold transition-colors",
                                 isRecentlyAdded &&
@@ -5032,7 +5043,9 @@ export function PagebuilderShell({
                             >
                               <span className="min-w-0">
                                 {!innerOptionSignifier ? (
-                                  <span className="block">{option.name}</span>
+                                  <span className="block">
+                                    {getSectionDisplayLabel(option)}
+                                  </span>
                                 ) : null}
                                 {innerOptionSignifier ? (
                                   <InnerLayoutPill
@@ -5389,7 +5402,7 @@ export function PagebuilderShell({
 
                                 return (
                                   <button
-                                    aria-label={`${option.name}${isRecentlyAdded ? " added" : ""}`}
+                                    aria-label={`${getSectionDisplayLabel(option)}${isRecentlyAdded ? " added" : ""}`}
                                     className={cx(
                                       "radius-4 grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border border-service-border bg-bg-page px-3 py-2 text-left text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent",
                                       isRecentlyAdded &&
@@ -5402,7 +5415,7 @@ export function PagebuilderShell({
                                     <span className="min-w-0">
                                       {!innerOptionSignifier ? (
                                         <span className="block">
-                                          {option.name}
+                                          {getSectionDisplayLabel(option)}
                                         </span>
                                       ) : null}
                                       {innerOptionSignifier ? (
@@ -5498,7 +5511,7 @@ export function PagebuilderShell({
                           </span>
                         ) : null}
                         <button
-                          aria-label={`Drag ${section.name} section`}
+                          aria-label={`Drag ${getSectionDisplayLabel(section)} section`}
                           className="flex size-10 cursor-grab items-center justify-center rounded bg-bg-page text-sm font-semibold text-service-accent transition-colors hover:bg-service-accent hover:text-white active:cursor-grabbing"
                           draggable
                           onDragEnd={clearDragState}
@@ -5514,7 +5527,7 @@ export function PagebuilderShell({
                           <div className="flex flex-wrap items-start justify-between gap-3">
                             <div>
                               <h4 className="type-heading-sm text-service-ink">
-                                {section.name}
+                                {getSectionDisplayLabel(section)}
                               </h4>
                               <p className="type-caption mt-1 text-service-muted">
                                 {section.component}

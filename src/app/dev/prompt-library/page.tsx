@@ -3,7 +3,11 @@ import { PromptLibrarySection } from "@/components/sections/PromptLibrarySection
 import { readStrategyDigestText } from "@/utils/strategy-digest";
 import { readStrategyPageSlots } from "@/utils/client-page-slots";
 import { deriveStrategyPagesFromFields } from "@/utils/strategy-site-map";
-import { readStagedPages, type StagedPage } from "@/utils/staged-pages";
+import {
+  getActiveStagedPages,
+  readStagedPages,
+  type StagedPage,
+} from "@/utils/staged-pages";
 import {
   listProjectWorkspaces,
   readStrategyWorkspace,
@@ -71,7 +75,9 @@ export default async function PromptLibraryPage({
 }
 
 function buildStagedPageContracts(pages: StagedPage[], clientSlug: string) {
-  return pages
+  // One contract per live page. Alts share their base page's copy contract, so
+  // including them would list the same contract twice.
+  return getActiveStagedPages(pages)
     .filter((page) => page.snapshot.clientSlug === clientSlug)
     .filter((page) => page.template?.sections?.length)
     .map((page) => ({

@@ -27,7 +27,11 @@ import {
   updateExportedSite,
 } from "@/utils/site-export-update";
 import { readSiteExportState } from "@/utils/site-export-state";
-import { readStagedPages, type StagedPage } from "@/utils/staged-pages";
+import {
+  getActiveStagedPages,
+  readStagedPages,
+  type StagedPage,
+} from "@/utils/staged-pages";
 import { sanitizeClientSlug } from "@/utils/strategy-workspace";
 
 type ExportIssue = {
@@ -199,7 +203,11 @@ async function resolveSiteExport(requestedClientSlug: string) {
     readSiteExportState(clientSlug),
     buildComponentRegistry(),
   ]);
-  const clientPages = allPages.filter(
+  // Archived alts are never exportable - they are alternates of a slug the
+  // site already fills. Dropping them here means a stale approval naming an
+  // alt reports as a missing approved page instead of exporting two pages to
+  // the same address.
+  const clientPages = getActiveStagedPages(allPages).filter(
     (page) => page.snapshot.clientSlug === clientSlug,
   );
   const approvedPages = state.approvedPageIds

@@ -18,6 +18,12 @@ const missingConfigError = {
 function createUnconfiguredClient() {
   return {
     auth: {
+      async getClaims() {
+        return {
+          data: null,
+          error: missingConfigError,
+        };
+      },
       async getUser() {
         return {
           data: { user: null },

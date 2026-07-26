@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
+const maxIntakeBodyBytes = 128 * 1024;
 
 type IntakePayload = {
   variant?: unknown;
@@ -127,7 +128,22 @@ export async function POST(request: Request) {
   let body: IntakeRequestBody;
 
   try {
-    body = (await request.json()) as IntakeRequestBody;
+    const declaredLength = Number(request.headers.get("content-length") ?? "0");
+
+    if (
+      Number.isFinite(declaredLength) &&
+      declaredLength > maxIntakeBodyBytes
+    ) {
+      return jsonError("Intake payload is too large.", 413);
+    }
+
+    const rawBody = await request.text();
+
+    if (new TextEncoder().encode(rawBody).byteLength > maxIntakeBodyBytes) {
+      return jsonError("Intake payload is too large.", 413);
+    }
+
+    body = JSON.parse(rawBody) as IntakeRequestBody;
   } catch {
     return jsonError("Invalid request body.", 400);
   }

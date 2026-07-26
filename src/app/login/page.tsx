@@ -23,14 +23,25 @@ function getFormString(formData: FormData, key: string) {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function getSafeNextPath(value: string | null | undefined) {
+  return value?.startsWith("/") &&
+    !value.startsWith("//") &&
+    !value.includes("\\")
+    ? value
+    : "/dashboard";
+}
+
 async function signIn(formData: FormData) {
   "use server";
 
   const email = getFormString(formData, "email");
+  const nextPath = getSafeNextPath(getFormString(formData, "next"));
   const password = getFormString(formData, "password");
 
   if (!email || !password) {
-    redirect("/login?error=missing");
+    redirect(
+      `/login?error=missing&next=${encodeURIComponent(nextPath)}`,
+    );
   }
 
   const supabase = createClient(await cookies());
@@ -45,30 +56,36 @@ async function signIn(formData: FormData) {
       status: "status" in error ? error.status : undefined,
     });
 
-    redirect("/login?error=invalid");
+    redirect(
+      `/login?error=invalid&next=${encodeURIComponent(nextPath)}`,
+    );
   }
 
-  redirect("/dashboard");
+  redirect(nextPath);
 }
 
 type LoginPageProps = {
   searchParams?: Promise<{
     error?: string | string[];
     loggedOut?: string | string[];
+    next?: string | string[];
   }>;
 };
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const params = await searchParams;
+  const requestedNext =
+    typeof params?.next === "string" ? params.next : undefined;
+  const nextPath = getSafeNextPath(requestedNext);
   const supabase = createClient(await cookies());
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (user) {
-    redirect("/dashboard");
+    redirect(nextPath);
   }
 
-  const params = await searchParams;
   const error = typeof params?.error === "string" ? params.error : null;
   const loggedOut = params?.loggedOut === "1";
   const errorMessage =
@@ -112,6 +129,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
               <Card className="bg-service-surface content-padding">
                 <form action={signIn}>
+                  <input name="next" type="hidden" value={nextPath} />
                   <div className="fluid-type-frame">
                     <p className="type-label text-service-accent">
                       Admin access

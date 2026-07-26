@@ -4,12 +4,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type StagedPageRemoveButtonProps = {
+  altCount?: number;
   clientSlug: string;
   pageId: string;
   pageLabel: string;
 };
 
 export function StagedPageRemoveButton({
+  altCount = 0,
   clientSlug,
   pageId,
   pageLabel,
@@ -20,7 +22,9 @@ export function StagedPageRemoveButton({
 
   async function removePage() {
     const confirmed = window.confirm(
-      `Remove "${pageLabel}" from staged pages?`,
+      altCount > 0
+        ? `Remove "${pageLabel}" from staged pages?\n\nIts ${altCount} archived alternate${altCount === 1 ? "" : "s"} will be removed with it.`
+        : `Remove "${pageLabel}" from staged pages?`,
     );
 
     if (!confirmed) {

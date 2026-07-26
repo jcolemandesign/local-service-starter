@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { requireBuilderApiAccess } from "@/utils/builder-access";
 
 export const runtime = "nodejs";
 
@@ -55,6 +56,12 @@ const optionsPath = path.join(
 );
 
 export async function GET() {
+  const unauthorized = await requireBuilderApiAccess();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   if (
     process.env.NODE_ENV === "production" &&
     process.env.ENABLE_DEV_ROUTES !== "true"
@@ -71,6 +78,12 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const unauthorized = await requireBuilderApiAccess();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   if (
     process.env.NODE_ENV === "production" &&
     process.env.ENABLE_DEV_ROUTES !== "true"

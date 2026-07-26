@@ -356,21 +356,8 @@
       "notes": "",
       "pageType": "Individual Service",
       "promotedAt": "2026-07-23T22:40:16.417Z",
-      "sectionCount": 13,
+      "sectionCount": 12,
       "sections": [
-        {
-          "component": "NavPrimarySectionV2",
-          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
-          "mode": "Navigation",
-          "name": "Primary navigation",
-          "originalComponent": "NavFloatingBentoSectionV2",
-          "originalIndex": 0,
-          "reduceBottomPadding": false,
-          "reduceTopPadding": false,
-          "colorRecipe": "default",
-          "cardFill": "solid",
-          "slotId": "slot-5ddbf781a470"
-        },
         {
           "component": "NavPrimarySectionV2",
           "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",

@@ -1514,7 +1514,7 @@ export const sectionLibraryV3Collections = [
   {
     title: "Hero",
     items: [
-      { label: "Fullscreen hero", component: "hero-fullscreen-v2" },
+      { label: "Fullscreen image hero", component: "hero-fullscreen-v2" },
       {
         label: "Centered hero with floaters",
         component: "hero-centered-floaters-v2",
@@ -1524,11 +1524,11 @@ export const sectionLibraryV3Collections = [
         component: "hero-content-top-image-bottom-v2",
       },
       {
-        label: "Split content and full image",
+        label: "Split content and full image hero",
         component: "hero-split-full-height-v3",
       },
       {
-        label: "Fixed-ratio split image",
+        label: "Fixed-ratio split image hero",
         component: "hero-split-fixed-image-v3",
       },
       {
@@ -1561,8 +1561,8 @@ export const sectionLibraryV3Collections = [
   {
     title: "Scan",
       items: [
-        { label: "Card Links 4 Up", component: "four-card-link-grid-v3" },
-        { label: "Card Links 3 Up", component: "three-card-link-grid-v3" },
+        { label: "Card links 4-up", component: "four-card-link-grid-v3" },
+        { label: "Card links 3-up", component: "three-card-link-grid-v3" },
         { label: "Service needs priority grid", component: "service-needs-priority-grid-v3" },
       {
         label: "Services card carousel",
@@ -1609,7 +1609,7 @@ export const sectionLibraryV3Collections = [
         component: "content-about-company-v2",
       },
       {
-        label: "Editorial 3 column",
+        label: "Editorial 3-col",
         component: "content-about-story-v3",
       },
       {
@@ -1617,11 +1617,11 @@ export const sectionLibraryV3Collections = [
         component: "content-narrative-feature-rail-v3",
       },
       {
-        label: "Card content 2 up",
+        label: "Card content 2-up",
         component: "content-card-two-up-v3",
       },
       {
-        label: "3 col mixed content",
+        label: "Mixed content 3-col",
         component: "content-three-column-mixed-v3",
       },
       {
@@ -1645,7 +1645,7 @@ export const sectionLibraryV3Collections = [
         component: "feature-overlap-rows-v3",
       },
       {
-        label: "Cards features 4 up split",
+        label: "Feature cards 4-up split",
         component: "feature-asymmetric-cards-v3",
       },
       {
@@ -1684,11 +1684,11 @@ export const sectionLibraryV3Collections = [
         component: "trust-bar-floating-bento-v3",
       },
       {
-        label: "Bento about us bar",
+        label: "Bento about-us trust bar",
         component: "trust-bar-bento-about-v3",
       },
       { label: "Trust marquee", component: "trust-marquee-v3" },
-      { label: "Logo marquee", component: "trust-logo-marquee-v3" },
+      { label: "Trust logo marquee", component: "trust-logo-marquee-v3" },
       { label: "Static trust logo grid", component: "trust-logo-grid-v3" },
       { label: "Testimonials", component: "testimonials-v3" },
       {
@@ -1709,14 +1709,17 @@ export const sectionLibraryV3Collections = [
     title: "Decision",
     items: [
       { label: "Split decision", component: "decision-split-decision-v3" },
-      { label: "Split large cards", component: "decision-split-large-cards-v3" },
+      {
+        label: "Decision split large cards",
+        component: "decision-split-large-cards-v3",
+      },
       {
         label: "Split decision large",
         component: "decision-split-decision-large-v3",
       },
       { label: "Process steps", component: "process-steps-v3" },
       {
-        label: "Image checklist process",
+        label: "Process image checklist",
         component: "process-image-checklist-v3",
       },
     ],
@@ -1753,17 +1756,140 @@ export const sectionLibraryV3Collections = [
     title: "Action",
     items: [
       {
-        label: "Headline with Scrolling Banner",
+        label: "CTA headline with scrolling banner",
         component: "trust-marquee-legacy",
       },
       { label: "CTA", component: "cta-v3" },
       { label: "Muted CTA", component: "cta-muted-v3" },
-      { label: "Fullscreen conversion", component: "cta-fullscreen-v3" },
       {
-        label: "Scroll reveal offer conversion",
+        label: "CTA fullscreen conversion",
+        component: "cta-fullscreen-v3",
+      },
+      {
+        label: "CTA scroll reveal offer conversion",
         component: "cta-scroll-reveal-offer-v3",
       },
-      { label: "Fixed cover fade", component: "content-fixed-cover-fade-v2" },
+      {
+        label: "CTA fixed cover fade",
+        component: "content-fixed-cover-fade-v2",
+      },
     ],
   },
 ] as const;
+
+export type SectionLibraryV3Slug =
+  (typeof sectionLibraryV3Collections)[number]["items"][number]["component"];
+
+/**
+ * Pure cross-surface identity map. Library previews use kebab-case slugs while
+ * pagebuilder recipes and persisted templates use PascalCase component names.
+ * Keeping that relationship here lets UI labels change without rewriting the
+ * persisted `name` that drives section ids and copy-contract fingerprints.
+ */
+export const sectionLibraryV3ComponentBySlug = {
+  "nav-primary-v2": "NavPrimarySectionV2",
+  "nav-center-logo-v2": "NavCenterLogoSectionV2",
+  "nav-floating-bento-v2": "NavFloatingBentoSectionV2",
+  "hero-fullscreen-v2": "HeroFullscreenSectionV2",
+  "hero-centered-floaters-v2": "HeroCenteredFloatersSectionV2",
+  "hero-content-top-image-bottom-v2": "HeroContentTopImageBottomSectionV2",
+  "hero-split-full-height-v3": "HeroSplitFullHeightSectionV3",
+  "hero-split-fixed-image-v3": "HeroSplitFixedImageSectionV3",
+  "hero-compact-v3": "HeroCompactSectionV3",
+  "hero-services-v3": "HeroServicesSectionV3",
+  "hero-compact-service-v3": "HeroCompactServiceSectionV3",
+  "section-header-compact-v3": "SectionHeaderCompactSectionV3",
+  "section-header-large-v3": "SectionHeaderLargeSectionV3",
+  "four-card-link-grid-v3": "FourCardLinkGridSectionV3",
+  "three-card-link-grid-v3": "ThreeCardLinkGridSectionV3",
+  "service-needs-priority-grid-v3": "ServiceNeedsPriorityGridSectionV3",
+  "content-horizontal-card-carousel-v2":
+    "ContentHorizontalCardCarouselSectionV2",
+  "quick-page-links-v2": "QuickPageLinksSectionV2",
+  "services-three-cards-right-v3": "ServicesThreeCardsRightSectionV3",
+  "services-bento-cards-v2": "ServicesBentoCardsSectionV2",
+  "services-hover-panel-v2": "ServicesHoverPanelSectionV2",
+  "services-scroll-cards-v2": "ServicesScrollCardsSectionV2",
+  "content-reveal-paragraph-v2": "ContentRevealParagraphSectionV2",
+  "content-scroll-written-reveal-v2": "ContentScrollWrittenRevealSectionV2",
+  "content-sticky-card-stream-v2": "ContentStickyCardStreamSectionV2",
+  "content-sticky-ideas-v2": "ContentStickyIdeasSectionV2",
+  "content-main-idea-grid-v3": "ContentMainIdeaGridSectionV3",
+  "content-about-company-v2": "ContentAboutCompanySectionV2",
+  "content-about-story-v3": "ContentAboutStorySectionV3",
+  "content-narrative-feature-rail-v3":
+    "ContentNarrativeFeatureRailSectionV3",
+  "content-card-two-up-v3": "ContentCardTwoUpSectionV3",
+  "content-three-column-mixed-v3": "ContentThreeColumnMixedSectionV3",
+  "content-split-headline-image-v2": "ContentSplitHeadlineImageSectionV2",
+  "content-split-fixed-image-v3": "ContentSplitFixedImageSectionV3",
+  "content-rule-header-v2": "ContentRuleHeaderSectionV2",
+  "feature-portrait-paragraph-v3": "FeaturePortraitParagraphSectionV3",
+  "feature-overlap-rows-v3": "FeatureOverlapRowsSectionV3",
+  "feature-asymmetric-cards-v3": "FeatureAsymmetricCardsSectionV3",
+  "feature-stacked-cards-v3": "FeatureStackedCardsSectionV3",
+  "image-strip-v3": "ImageStripSectionV3",
+  "content-photo-gallery-carousel-v3":
+    "ContentPhotoGalleryCarouselSectionV3",
+  "content-photo-gallery-large-carousel-v3":
+    "ContentPhotoGalleryLargeCarouselSectionV3",
+  "project-case-study-gallery-v3": "ProjectCaseStudyGallerySectionV3",
+  "trust-bar-v3": "TrustBarSectionV3",
+  "trust-bar-floating-bento-v3": "TrustBarFloatingBentoSectionV3",
+  "trust-bar-bento-about-v3": "TrustBarBentoAboutSectionV3",
+  "trust-marquee-v3": "TrustMarqueeSectionV3",
+  "trust-logo-marquee-v3": "TrustLogoMarqueeSectionV3",
+  "trust-logo-grid-v3": "TrustLogoGridSectionV3",
+  "testimonials-v3": "TestimonialsSectionV3",
+  "testimonials-carousel-v3": "TestimonialsCarouselSectionV3",
+  "testimonials-carousel-condensed-v3":
+    "TestimonialsCarouselCondensedSectionV3",
+  "testimonials-masonry-v3": "TestimonialsMasonrySectionV3",
+  "decision-split-decision-v3": "DecisionSplitDecisionSectionV3",
+  "decision-split-large-cards-v3": "DecisionSplitLargeCardsSectionV3",
+  "decision-split-decision-large-v3":
+    "DecisionSplitDecisionLargeSectionV3",
+  "process-steps-v3": "ProcessStepsSectionV3",
+  "process-image-checklist-v3": "ProcessImageChecklistSectionV3",
+  "faq-v3": "FAQSectionV3",
+  "faq-accordion-v3": "FAQAccordionSectionV3",
+  "faq-accordion-sidebar-v3": "FAQAccordionSidebarSectionV3",
+  "thank-you-confirmation-v3": "ThankYouConfirmationSectionV3",
+  "service-area-zip-lookup-v3": "ServiceAreaZipLookupSectionV3",
+  "contact-modal-begin-v3": "ContactSectionModalBegin",
+  "contact-v3": "ContactSectionV3",
+  "footer-v3": "FooterSectionV3",
+  "footer-horizontal-v3": "FooterHorizontalSectionV3",
+  "footer-compact-v3": "FooterCompactSectionV3",
+  "footer-link-panel-v3": "FooterLinkPanelSectionV3",
+  "trust-marquee-legacy": "TrustMarqueeSection",
+  "cta-v3": "CTASectionV3",
+  "cta-muted-v3": "CTAMutedSectionV3",
+  "cta-fullscreen-v3": "CTAFullscreenSectionV3",
+  "cta-scroll-reveal-offer-v3": "CTAScrollRevealOfferSectionV3",
+  "content-fixed-cover-fade-v2": "ContentFixedCoverFadeSectionV2",
+} as const satisfies Record<SectionLibraryV3Slug, string>;
+
+export const sectionLibraryV3Registry = sectionLibraryV3Collections.flatMap(
+  (collection) =>
+    collection.items.map((item) => ({
+      component: sectionLibraryV3ComponentBySlug[item.component],
+      family: collection.title,
+      label: item.label,
+      slug: item.component,
+    })),
+);
+
+const sectionLibraryV3EntryByComponent = new Map<
+  string,
+  (typeof sectionLibraryV3Registry)[number]
+>(
+  sectionLibraryV3Registry.map((entry) => [entry.component, entry]),
+);
+
+export function getCanonicalSectionLabel(
+  component: string,
+  fallbackLabel: string,
+) {
+  return sectionLibraryV3EntryByComponent.get(component)?.label ?? fallbackLabel;
+}

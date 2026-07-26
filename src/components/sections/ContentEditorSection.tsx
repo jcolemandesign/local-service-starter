@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { DownArrowIcon } from "@/components/primitives";
 import type {
   ContentEditorField,
@@ -62,10 +62,12 @@ export function ContentEditorSection({
   const [values, setValues] = useState<Record<string, string>>(
     originalValues,
   );
+  const [baselineValues, setBaselineValues] =
+    useState<Record<string, string>>(originalValues);
   const [isSavingPage, setIsSavingPage] = useState(false);
   const [savedAt, setSavedAt] = useState("");
   const [status, setStatus] = useState("");
-  const [openSectionIds, setOpenSectionIds] = useState<string[]>([]);
+  const [openSectionId, setOpenSectionId] = useState<string | null>(null);
   const [fieldFilter, setFieldFilter] = useState<FieldFilter>("all");
 
   // Persisted staged-page fields are the only source of truth here. Resync
@@ -76,6 +78,7 @@ export function ContentEditorSection({
   if (syncedValues !== originalValues) {
     setSyncedValues(originalValues);
     setValues(originalValues);
+    setBaselineValues(originalValues);
   }
 
   const activePage = pages.find((page) => page.key === activePageKey) ?? pages[0];
@@ -85,7 +88,7 @@ export function ContentEditorSection({
   const activeFields =
     activePage?.sections.flatMap((section) => section.fields) ?? [];
   const dirtyFieldIds = allFields
-    .filter((field) => values[field.id] !== originalValues[field.id])
+    .filter((field) => values[field.id] !== baselineValues[field.id])
     .map((field) => field.id);
   const activeDirtyCount = activeFields.filter((field) =>
     dirtyFieldIds.includes(field.id),
@@ -94,7 +97,6 @@ export function ContentEditorSection({
     isEmptyEditableField(field, values[field.id] ?? field.value),
   ).length;
   const fieldCounts = getFieldCounts(activeFields);
-  const activeSectionIds = activePage?.sections.map((section) => section.id) ?? [];
   const activeCopySectionIds =
     activePage?.sections
       .filter((section) =>
@@ -124,21 +126,17 @@ export function ContentEditorSection({
 
   function selectPage(pageKey: string) {
     setActivePageKey(pageKey);
-    setOpenSectionIds([]);
+    setOpenSectionId(null);
   }
 
   function toggleSection(sectionId: string) {
-    setOpenSectionIds((currentSectionIds) =>
-      currentSectionIds.includes(sectionId)
-        ? currentSectionIds.filter(
-            (currentSectionId) => currentSectionId !== sectionId,
-          )
-        : [...currentSectionIds, sectionId],
+    setOpenSectionId((currentSectionId) =>
+      currentSectionId === sectionId ? null : sectionId,
     );
   }
 
-  function openSections(sectionIds: string[]) {
-    setOpenSectionIds(sectionIds);
+  function openFirstSection(sectionIds: string[]) {
+    setOpenSectionId(sectionIds[0] ?? null);
   }
 
   function resetActivePage() {
@@ -150,7 +148,7 @@ export function ContentEditorSection({
       const nextValues = { ...currentValues };
 
       for (const field of activeFields) {
-        nextValues[field.id] = originalValues[field.id];
+        nextValues[field.id] = baselineValues[field.id];
       }
 
       return nextValues;
@@ -191,6 +189,15 @@ export function ContentEditorSection({
         return;
       }
 
+      setBaselineValues((currentValues) => {
+        const nextValues = { ...currentValues };
+
+        for (const field of activeFields) {
+          nextValues[field.id] = values[field.id] ?? "";
+        }
+
+        return nextValues;
+      });
       setSavedAt(nextSavedAt);
       setStatus("Staged page saved.");
     } catch {
@@ -258,7 +265,7 @@ export function ContentEditorSection({
             <div className="grid gap-5">
               <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 rounded-sm border border-service-border bg-white p-5 shadow-service max-md:grid-cols-1">
                 <div>
-                  <p className="type-label text-service-accent">
+                  <p className="type-heading-lg text-service-ink">
                     {activePage.label}
                   </p>
                   <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
@@ -304,20 +311,20 @@ export function ContentEditorSection({
                     </p>
                   ) : null}
                   <div className="mt-4 flex flex-wrap gap-2 border-t border-service-border pt-4">
-                    <ControlButton onClick={() => openSections(activeSectionIds)}>
-                      Open All
-                    </ControlButton>
                     <ControlButton
                       disabled={activeEmptySectionIds.length === 0}
-                      onClick={() => openSections(activeEmptySectionIds)}
+                      onClick={() => openFirstSection(activeEmptySectionIds)}
                     >
-                      Open Empty
+                      First Empty
                     </ControlButton>
-                    <ControlButton onClick={() => openSections(activeCopySectionIds)}>
-                      Open Copy
+                    <ControlButton
+                      disabled={activeCopySectionIds.length === 0}
+                      onClick={() => openFirstSection(activeCopySectionIds)}
+                    >
+                      First Copy
                     </ControlButton>
-                    <ControlButton onClick={() => openSections([])}>
-                      Close All
+                    <ControlButton onClick={() => setOpenSectionId(null)}>
+                      Close
                     </ControlButton>
                   </div>
                 </div>
@@ -349,7 +356,7 @@ export function ContentEditorSection({
 
               <div className="grid gap-5">
                 {activePage.sections.map((section) => {
-                  const isOpen = openSectionIds.includes(section.id);
+                  const isOpen = openSectionId === section.id;
                   const visibleFields =
                     fieldFilter === "all"
                       ? section.fields
@@ -434,7 +441,7 @@ export function ContentEditorSection({
                                 field={field}
                                 value={values[field.id] ?? field.value}
                                 originalValue={
-                                  originalValues[field.id] ?? field.value
+                                  baselineValues[field.id] ?? field.value
                                 }
                                 onChange={(nextValue) =>
                                   updateField(field.id, nextValue)
@@ -483,21 +490,30 @@ function FieldEditor({
   value: string;
 }) {
   if (field.path.endsWith(".imageRatio")) {
-    return <ImageRatioFieldEditor field={field} onChange={onChange} originalValue={originalValue} value={value} />;
+    return (
+      <ImageRatioFieldEditor
+        field={field}
+        onChange={onChange}
+        originalValue={originalValue}
+        value={value}
+      />
+    );
   }
 
   const isDirty = value !== originalValue;
   const isEmpty = isEmptyEditableField(field, value);
   const helperText = getFieldHelperText(field);
-  const useTextarea = field.kind === "copy" || value.length > 72;
+  const controlId = getFieldControlId(field);
+  const reference = getFieldReference(field, originalValue);
+  const useTextarea = shouldUseTextarea(field, value);
 
   return (
-    <label
-      className={`grid grid-cols-[minmax(12rem,18rem)_minmax(0,1fr)] gap-4 rounded-sm border bg-white p-4 shadow-sm max-lg:grid-cols-1 ${
+    <div
+      className={`grid gap-4 rounded-sm border bg-white p-4 shadow-sm ${
         isEmpty ? "border-service-accent" : "border-service-border"
       }`}
     >
-      <span className="grid content-start gap-2">
+      <div className="grid content-start gap-2">
         <span className="flex flex-wrap items-center gap-2">
           <span
             className={`type-caption rounded-sm px-2 py-0.5 font-semibold ${
@@ -519,34 +535,245 @@ function FieldEditor({
             </span>
           ) : null}
         </span>
-        <span className="type-text-sm font-semibold text-service-ink">
-          {field.label}
-        </span>
-        <span className="type-caption text-service-muted">{helperText}</span>
-        <span
-          className="type-caption break-words text-service-muted"
+        <label
+          className="type-text-sm font-semibold text-service-ink"
+          htmlFor={controlId}
         >
+          {field.label}
+        </label>
+        <span className="type-caption text-service-muted">{helperText}</span>
+        <span className="type-caption break-words text-service-muted">
           {field.path}
         </span>
-      </span>
+      </div>
+      {reference ? <FieldReferenceBlock reference={reference} /> : null}
       {useTextarea ? (
-        <textarea
-          className="min-h-36 resize-y rounded-sm border border-service-border bg-white px-4 py-3 text-base leading-7 text-service-ink outline-none transition-colors focus:border-service-accent max-md:text-sm"
+        <AutoGrowingTextarea
+          className={`${getTextareaMinimumHeight(field)} w-full resize-none overflow-y-hidden rounded-sm border border-service-border bg-white px-4 py-3 text-base leading-8 text-service-ink outline-none transition-colors focus:border-service-accent max-md:text-sm`}
+          id={controlId}
+          onChange={onChange}
           placeholder={helperText}
           value={value}
-          onChange={(event) => onChange(event.target.value)}
         />
       ) : (
         <input
-          className="min-h-12 rounded-sm border border-service-border bg-white px-4 text-base text-service-ink outline-none transition-colors focus:border-service-accent max-md:text-sm"
+          className="min-h-14 w-full rounded-sm border border-service-border bg-white px-4 text-base text-service-ink outline-none transition-colors focus:border-service-accent max-md:text-sm"
+          id={controlId}
+          onChange={(event) => onChange(event.target.value)}
           placeholder={helperText}
           value={value}
-          onChange={(event) => onChange(event.target.value)}
         />
       )}
-    </label>
+    </div>
   );
 }
+
+type FieldReference = {
+  description: string;
+  label: string;
+  value: string;
+};
+
+function FieldReferenceBlock({
+  reference,
+}: {
+  reference: FieldReference;
+}) {
+  const shouldCollapse =
+    reference.value.length > 240 || reference.value.split(/\r?\n/).length > 3;
+  const contentClassName =
+    "type-text-sm whitespace-pre-wrap break-words leading-6 text-service-ink";
+
+  if (!shouldCollapse) {
+    return (
+      <div className="rounded-sm border border-service-border bg-service-surface p-4">
+        <p className="type-caption font-semibold text-service-accent">
+          {reference.label}
+        </p>
+        <p className="type-caption mt-1 text-service-muted">
+          {reference.description}
+        </p>
+        <p className={`${contentClassName} mt-3`}>{reference.value}</p>
+      </div>
+    );
+  }
+
+  return (
+    <details className="group/reference rounded-sm border border-service-border bg-service-surface p-4">
+      <summary className="cursor-pointer list-none">
+        <span className="flex items-start justify-between gap-4">
+          <span>
+            <span className="type-caption block font-semibold text-service-accent">
+              {reference.label}
+            </span>
+            <span className="type-caption mt-1 block text-service-muted">
+              {reference.description}
+            </span>
+          </span>
+          <span className="type-caption shrink-0 font-semibold text-service-accent">
+            <span className="group-open/reference:hidden">Show full</span>
+            <span className="hidden group-open/reference:inline">Collapse</span>
+          </span>
+        </span>
+        <span
+          className={`${contentClassName} mt-3 line-clamp-3 group-open/reference:hidden`}
+        >
+          {reference.value}
+        </span>
+      </summary>
+      <p className={`${contentClassName} mt-3 border-t border-service-border pt-3`}>
+        {reference.value}
+      </p>
+    </details>
+  );
+}
+
+function AutoGrowingTextarea({
+  className,
+  id,
+  onChange,
+  placeholder,
+  value,
+}: {
+  className: string;
+  id: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  value: string;
+}) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    resizeTextareaToContent(textareaRef.current);
+  }, [value]);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+
+    if (!textarea || typeof ResizeObserver === "undefined") {
+      return;
+    }
+
+    let previousWidth = textarea.clientWidth;
+    const resizeObserver = new ResizeObserver((entries) => {
+      const nextWidth = entries[0]?.contentRect.width ?? previousWidth;
+
+      if (nextWidth === previousWidth) {
+        return;
+      }
+
+      previousWidth = nextWidth;
+      resizeTextareaToContent(textarea);
+    });
+
+    resizeObserver.observe(textarea);
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  return (
+    <textarea
+      className={className}
+      id={id}
+      onChange={(event) => {
+        resizeTextareaToContent(event.currentTarget);
+        onChange(event.currentTarget.value);
+      }}
+      placeholder={placeholder}
+      ref={textareaRef}
+      rows={3}
+      value={value}
+    />
+  );
+}
+
+function resizeTextareaToContent(textarea: HTMLTextAreaElement | null) {
+  if (!textarea) {
+    return;
+  }
+
+  textarea.style.height = "auto";
+  textarea.style.height = `${textarea.scrollHeight}px`;
+}
+
+function getFieldControlId(field: ContentEditorField) {
+  return `content-editor-field-${field.id.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
+}
+
+function getFieldReference(
+  field: ContentEditorField,
+  originalValue: string,
+): FieldReference | null {
+  if (originalValue.trim()) {
+    return {
+      description: "The value currently saved for this staged page.",
+      label: "Saved value",
+      value: originalValue,
+    };
+  }
+
+  if (!field.fallback?.value.trim()) {
+    return null;
+  }
+
+  if (field.fallback.exact) {
+    return {
+      description:
+        "The exact template default used when this staged field is empty.",
+      label: "Template default",
+      value: field.fallback.value,
+    };
+  }
+
+  return {
+    description:
+      "A writing reference from the template contract. The staged preview may differ.",
+    label: "Template example",
+    value: field.fallback.value,
+  };
+}
+
+function shouldUseTextarea(field: ContentEditorField, value: string) {
+  if (value.includes("\n") || value.length > 72) {
+    return true;
+  }
+
+  if (field.kind !== "copy") {
+    return false;
+  }
+
+  const normalizedPath = field.path.toLowerCase();
+
+  return multilineFieldPathParts.some((part) => normalizedPath.includes(part));
+}
+
+function getTextareaMinimumHeight(field: ContentEditorField) {
+  const normalizedPath = field.path.toLowerCase();
+
+  return multilineFieldPathParts.some((part) => normalizedPath.includes(part))
+    ? "min-h-40"
+    : "min-h-28";
+}
+
+const multilineFieldPathParts = [
+  "body",
+  "bullets",
+  "cards",
+  "content",
+  "description",
+  "detail",
+  "intro",
+  "items",
+  "legal",
+  "links",
+  "notes",
+  "paragraph",
+  "quote",
+  "services",
+  "steps",
+  "supporting",
+  "testimonials",
+] as const;
 
 function ActionButton({
   children,

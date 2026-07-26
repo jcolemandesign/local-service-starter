@@ -9,6 +9,7 @@ import {
 } from "@/components/primitives";
 import { StagedPageCanvas } from "@/components/sections";
 import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
+import { getStagedPreviewHref } from "@/utils/staged-page-links";
 import {
   extractBulkPasteCopy,
   readStagedPages,
@@ -101,7 +102,15 @@ export default async function StagedPageDebug({
             {formatPreviewMeta(page)}
           </p>
           <div className="mt-body-actions-md flex flex-wrap gap-2">
-            <Button href={`${page.previewHref}?client=${encodeURIComponent(page.snapshot.clientSlug)}`}>Live Preview</Button>
+            <Button
+              href={getStagedPreviewHref({
+                clientSlug: page.snapshot.clientSlug,
+                pageId: page.pageId,
+                previewHref: page.previewHref,
+              })}
+            >
+              Live Preview
+            </Button>
             <Button href={getContentEditorHref(page)} variant="secondary">
               Edit Content
             </Button>
@@ -174,7 +183,11 @@ function getNavigation(page: StagedPage, stagedPages: StagedPage[]) {
       ...item,
       isActive: stagedPage?.pageId === page.pageId,
       previewHref: stagedPage
-        ? `${stagedPage.previewHref ?? `/dev/staged-pages/${stagedPage.pageId}`}?client=${encodeURIComponent(page.snapshot.clientSlug)}`
+        ? getStagedPreviewHref({
+            clientSlug: page.snapshot.clientSlug,
+            pageId: stagedPage.pageId,
+            previewHref: stagedPage.previewHref,
+          })
         : "",
     };
   });

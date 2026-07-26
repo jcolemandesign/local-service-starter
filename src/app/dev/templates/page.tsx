@@ -7,7 +7,8 @@ import {
 } from "@/components/sections";
 import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import { readStrategyPageSlots } from "@/utils/client-page-slots";
-import { readStagedPages } from "@/utils/staged-pages";
+import { getStagedPreviewHref } from "@/utils/staged-page-links";
+import { getActiveStagedPages, readStagedPages } from "@/utils/staged-pages";
 import { listLatestStrategySnapshotSummaries } from "@/utils/strategy-snapshots";
 
 export const metadata: Metadata = {
@@ -51,14 +52,18 @@ export default async function TemplatesPage() {
       <main>
         <TemplateLibrarySection
           pageSlotsByClient={pageSlotsByClient}
-          stagedTemplateAssignments={stagedPages
+          stagedTemplateAssignments={getActiveStagedPages(stagedPages)
             .filter((page) => page.template?.id)
             .map((page) => ({
               clientSlug: page.snapshot.clientSlug,
               pageHref: page.pageHref,
               pageId: page.pageId,
               pageLabel: page.pageLabel,
-              previewHref: page.previewHref,
+              previewHref: getStagedPreviewHref({
+                clientSlug: page.snapshot.clientSlug,
+                pageId: page.pageId,
+                previewHref: page.previewHref,
+              }),
               templateId: page.template?.id ?? "",
             }))}
           strategySnapshots={strategySnapshots}

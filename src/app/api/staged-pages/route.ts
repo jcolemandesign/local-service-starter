@@ -1,10 +1,12 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { requireBuilderApiAccess } from "@/utils/builder-access";
 import {
   buildStagedPageCandidate,
+  promoteStagedPageAlt,
+  replaceStagedPage,
   removeStagedPage,
   updateStagedPageFields,
-  writeStagedPage,
   type StagedPageField,
   type StagedPageTemplate,
 } from "@/utils/staged-pages";
@@ -14,8 +16,16 @@ import { readLatestStrategySnapshot } from "@/utils/strategy-snapshots";
 export const runtime = "nodejs";
 
 type StagePageRequest = {
-  action?: "preview" | "refresh" | "stage";
+  action?: "preview" | "promote-alt" | "refresh" | "stage";
   clientSlug?: string;
+  /**
+   * What to do with the page already staged at this slug. "replace" discards
+   * it (the long-standing behavior, and the default so refresh and any caller
+   * that does not opt in are unaffected); "alt" parks it in the next free alt
+   * slot so it stays reachable for comparison.
+   */
+  onExisting?: "alt" | "replace";
+  pageId?: string;
   pageLabel?: string;
   pageSlug?: string;
   templateId?: string;
@@ -44,6 +54,12 @@ const pageTemplatesPath = path.join(
 );
 
 export async function POST(request: Request) {
+  const unauthorized = await requireBuilderApiAccess();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   if (
     process.env.NODE_ENV === "production" &&
     process.env.ENABLE_DEV_ROUTES !== "true"
@@ -60,6 +76,10 @@ export async function POST(request: Request) {
   }
 
   try {
+    if (body.action === "promote-alt") {
+      return await promoteAlt(body);
+    }
+
     const template = await findTemplate(body.templateId);
     const snapshot = await readLatestStrategySnapshot(body.clientSlug);
 
@@ -91,7 +111,14 @@ export async function POST(request: Request) {
       });
     }
 
-    const pages = await writeStagedPage(finalPage);
+    // Archive after building the candidate, never before: the candidate reads
+    // the page currently at this slug to preserve values for sections whose
+    // new copy isn't current, and moving that page out from under it first
+    // would silently blank them.
+    const { archivedAlt, pages } = await replaceStagedPage(
+      finalPage,
+      body.onExisting === "alt",
+    );
     await setPageExportApproval({
       approved: false,
       clientSlug: finalPage.snapshot.clientSlug,
@@ -99,6 +126,7 @@ export async function POST(request: Request) {
     });
 
     return Response.json({
+      alt: archivedAlt,
       ok: true,
       page: finalPage,
       pages,
@@ -114,6 +142,12 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  const unauthorized = await requireBuilderApiAccess();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   if (
     process.env.NODE_ENV === "production" &&
     process.env.ENABLE_DEV_ROUTES !== "true"
@@ -159,6 +193,12 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const unauthorized = await requireBuilderApiAccess();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   if (
     process.env.NODE_ENV === "production" &&
     process.env.ENABLE_DEV_ROUTES !== "true"
@@ -196,6 +236,27 @@ export async function DELETE(request: Request) {
       400,
     );
   }
+}
+
+async function promoteAlt(body: StagePageRequest) {
+  const clientSlug = sanitizeSlug(body.clientSlug);
+  const pageId = sanitizeSlug(body.pageId);
+
+  if (!clientSlug || !pageId) {
+    throw new Error("Missing client slug or page id.");
+  }
+
+  const { demoted, promoted } = await promoteStagedPageAlt(clientSlug, pageId);
+
+  // Both slugs changed hands, so any export approval held against either is
+  // now approving different content than it was granted for.
+  await setPageExportApproval({
+    approved: false,
+    clientSlug,
+    pageId: promoted.pageId,
+  });
+
+  return Response.json({ demoted, ok: true, promoted });
 }
 
 async function findTemplate(templateId: unknown) {

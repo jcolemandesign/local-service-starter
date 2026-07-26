@@ -1,3 +1,4 @@
+import { requireBuilderApiAccess } from "@/utils/builder-access";
 import {
   readStrategyWorkspace,
   sanitizeClientSlug,
@@ -16,6 +17,12 @@ type StrategyWorkspaceSaveRequest = {
 };
 
 export async function GET(request: Request) {
+  const unauthorized = await requireBuilderApiAccess();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   if (
     process.env.NODE_ENV === "production" &&
     process.env.ENABLE_DEV_ROUTES !== "true"
@@ -46,6 +53,12 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const unauthorized = await requireBuilderApiAccess();
+
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   if (
     process.env.NODE_ENV === "production" &&
     process.env.ENABLE_DEV_ROUTES !== "true"
