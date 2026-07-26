@@ -350,7 +350,10 @@ export function getTemplateCopySectionStatuses(
   template: TemplateCopyContractTemplate,
 ): TemplateCopySectionStatus[] {
   const sectionsByOrdinal = copy.trim()
-    ? getBatchCopyFieldsBySectionOrdinal(copy)
+    ? getBatchCopyFieldsBySectionOrdinal(
+        copy,
+        getOrdinalsByCopyFingerprint(template),
+      )
     : new Map<string, { fields: Set<string>; fingerprint: string; slug: string }>();
 
   return template.sections.map((section, index) => {
@@ -436,7 +439,10 @@ function isBatchCopySchemaCompatible(
   copy: string,
   template: TemplateCopyContractTemplate,
 ) {
-  const sectionsByOrdinal = getBatchCopyFieldsBySectionOrdinal(copy);
+  const sectionsByOrdinal = getBatchCopyFieldsBySectionOrdinal(
+    copy,
+    getOrdinalsByCopyFingerprint(template),
+  );
 
   if (sectionsByOrdinal.size !== template.sections.length) {
     return false;
@@ -472,7 +478,27 @@ function isBatchCopySchemaCompatible(
   });
 }
 
-function getBatchCopyFieldsBySectionOrdinal(copy: string) {
+/**
+ * Maps each section's contract fingerprint to its ordinal, so a pasted block
+ * can be located by fingerprint when it has no `### NN-slug` heading.
+ */
+function getOrdinalsByCopyFingerprint(template: TemplateCopyContractTemplate) {
+  const ordinalByFingerprint = new Map<string, string>();
+
+  template.sections.forEach((section, index) => {
+    ordinalByFingerprint.set(
+      getTemplateCopySectionFingerprint(section),
+      getSectionOrdinal(index),
+    );
+  });
+
+  return ordinalByFingerprint;
+}
+
+function getBatchCopyFieldsBySectionOrdinal(
+  copy: string,
+  ordinalByFingerprint?: ReadonlyMap<string, string>,
+) {
   const sectionsByOrdinal = new Map<
     string,
     { fields: Set<string>; fingerprint: string; slug: string }
@@ -495,21 +521,42 @@ function getBatchCopyFieldsBySectionOrdinal(copy: string) {
       return;
     }
 
-    if (!currentSectionOrdinal) {
-      return;
-    }
-
     const sectionFingerprintMatch = line.match(
       /^<!--\s*Section contract:\s*([^\s>]+)\s*-->$/i,
     );
 
     if (sectionFingerprintMatch) {
-      const current = sectionsByOrdinal.get(currentSectionOrdinal);
+      const fingerprint = sectionFingerprintMatch[1];
+      // A contract comment opens a section by itself. Models reliably copy
+      // these back while dropping the `### NN-slug` heading, and without this
+      // the whole page resolves to "unverified", no ordinal is allowed to
+      // seed, and the page stages with every field empty - which the renderer
+      // then fills with section-library demo content.
+      const mappedOrdinal = ordinalByFingerprint?.get(fingerprint);
 
-      if (current) {
-        current.fingerprint = sectionFingerprintMatch[1];
+      if (mappedOrdinal) {
+        currentSectionOrdinal = mappedOrdinal;
+        const existing = sectionsByOrdinal.get(mappedOrdinal);
+        sectionsByOrdinal.set(mappedOrdinal, {
+          fields: existing?.fields ?? new Set<string>(),
+          fingerprint,
+          slug: existing?.slug ?? "",
+        });
+        return;
       }
 
+      const current = currentSectionOrdinal
+        ? sectionsByOrdinal.get(currentSectionOrdinal)
+        : undefined;
+
+      if (current) {
+        current.fingerprint = fingerprint;
+      }
+
+      return;
+    }
+
+    if (!currentSectionOrdinal) {
       return;
     }
 

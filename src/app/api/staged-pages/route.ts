@@ -95,15 +95,17 @@ export async function POST(request: Request) {
     // copy), then restore the previous staged page's values for any section
     // that isn't current, so a same-position stage/refresh only touches the
     // sections that actually have good new copy.
-    const { finalPage, sectionStatuses } = await buildStagedPageCandidate({
-      pageLabel: body.pageLabel ?? template.name,
-      pageSlug,
-      snapshot,
-      template,
-    });
+    const { copySeeding, finalPage, sectionStatuses } =
+      await buildStagedPageCandidate({
+        pageLabel: body.pageLabel ?? template.name,
+        pageSlug,
+        snapshot,
+        template,
+      });
 
     if (body.action === "preview") {
       return Response.json({
+        copySeeding,
         ok: true,
         page: finalPage,
         sectionStatuses,
@@ -127,6 +129,7 @@ export async function POST(request: Request) {
 
     return Response.json({
       alt: archivedAlt,
+      copySeeding,
       ok: true,
       page: finalPage,
       pages,

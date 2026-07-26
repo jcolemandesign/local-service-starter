@@ -10,7 +10,11 @@ import {
   WorkspaceNavIndex,
   type WorkspaceNavItem,
 } from "@/components/sections/WorkspaceNav";
-import type { PageTemplateSummary } from "@/components/sections/TemplateLibrarySection";
+import {
+  getCopySeedingWarning,
+  type CopySeedingSummary,
+  type PageTemplateSummary,
+} from "@/components/sections/TemplateLibrarySection";
 import { StagedPageCanvas } from "@/components/sections/StagedPageCanvas";
 import { getCanonicalSectionLabel } from "@/content/section-library-v3";
 import {
@@ -95,6 +99,7 @@ type StagePageResponse =
         pageLabel: string;
         previewHref: string;
       };
+      copySeeding?: CopySeedingSummary;
       ok: true;
       page: {
         pageHref: string;
@@ -874,6 +879,17 @@ export function StrategyWorkspaceSection({
             }
           : null,
       );
+
+      // Staged, but every field is empty - so the preview will render template
+      // demo content. Hold the picker open with the reason rather than closing
+      // on what looks like a success.
+      const copySeedingWarning = getCopySeedingWarning(result.copySeeding);
+
+      if (copySeedingWarning) {
+        setTemplatePickerError(copySeedingWarning);
+        return;
+      }
+
       closeTemplatePicker();
     } catch {
       setTemplatePickerError("Template could not be applied.");

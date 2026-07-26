@@ -65,6 +65,26 @@ type TemplateLibrarySectionProps = {
   templates: PageTemplateSummary[];
 };
 
+export type CopySeedingSummary = {
+  filledCopyFields: number;
+  hasStrategyCopy: boolean;
+  seededNothing: boolean;
+  totalCopyFields: number;
+};
+
+/**
+ * A paste whose keys match no field leaves every field empty, which the
+ * renderer fills with section-library demo content - so a total miss looks
+ * exactly like a success. Surface it instead of reporting "staged".
+ */
+export function getCopySeedingWarning(copySeeding?: CopySeedingSummary) {
+  if (!copySeeding?.seededNothing) {
+    return "";
+  }
+
+  return `None of the ${copySeeding.totalCopyFields} copy fields were filled from the pasted copy, so this page will render template demo content. Check that the copy includes a "### <section-id>" heading or the "<!-- Section contract: ... -->" comment before each section's fields.`;
+}
+
 type CreatePageResponse =
   | {
       /** Present only when the displaced page was archived rather than replaced. */
@@ -73,6 +93,7 @@ type CreatePageResponse =
         pageLabel: string;
         previewHref: string;
       };
+      copySeeding?: CopySeedingSummary;
       ok: true;
       page: {
         pageId: string;
@@ -305,9 +326,16 @@ export function TemplateLibrarySection({
         return;
       }
 
-      setStatus(
-        `Template applied. ${result.page.pageLabel} is now staged and ready to edit.`,
-      );
+      const copySeedingWarning = getCopySeedingWarning(result.copySeeding);
+
+      if (copySeedingWarning) {
+        setError(copySeedingWarning);
+        setStatus(`${result.page.pageLabel} was staged, but with no copy.`);
+      } else {
+        setStatus(
+          `Template applied. ${result.page.pageLabel} is now staged and ready to edit.`,
+        );
+      }
       setStagedTemplateFeedback((currentFeedback) => ({
         ...currentFeedback,
         [template.id]: {

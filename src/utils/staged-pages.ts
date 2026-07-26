@@ -27,6 +27,7 @@ import type { StrategySnapshot } from "@/utils/strategy-snapshots";
 import {
   getTemplateCopyContractStatus,
   getTemplateCopyFieldsForSection,
+  getTemplateCopySectionFingerprint,
   getTemplateCopySectionStatuses,
   type TemplateCopySectionStatus,
 } from "@/utils/template-copy-contract";
@@ -581,7 +582,13 @@ export async function syncStagedPagesFromStrategySnapshot(
         return field;
       }),
       strategyCopy,
-      { overwriteExistingCopy: true, previousStrategyCopy },
+      {
+        overwriteExistingCopy: true,
+        previousStrategyCopy,
+        sectionIdByFingerprint: getSectionIdsByCopyFingerprint(
+          page.template?.sections ?? [],
+        ),
+      },
     );
 
     return {
@@ -802,6 +809,9 @@ export function buildStrategyTemplateStagedPage({
   const fields = applyBatchCopy
     ? seedFieldsFromStrategyCopy(templateFields, strategyCopy, {
         allowedSectionOrdinals: currentSectionOrdinals,
+        sectionIdByFingerprint: getSectionIdsByCopyFingerprint(
+          template.sections,
+        ),
       })
     : templateFields;
 
@@ -906,7 +916,50 @@ export async function buildStagedPageCandidate({
     fields: mergedFields,
   };
 
-  return { finalPage, sectionStatuses, snapshot };
+  return {
+    copySeeding: getCopySeedingSummary(strategyCopy, finalPage),
+    finalPage,
+    sectionStatuses,
+    snapshot,
+  };
+}
+
+export type CopySeedingSummary = {
+  filledCopyFields: number;
+  hasStrategyCopy: boolean;
+  /** True when copy was supplied but did not reach a single field. */
+  seededNothing: boolean;
+  totalCopyFields: number;
+};
+
+/**
+ * Reports whether supplied batch copy actually reached any field.
+ *
+ * A paste that resolves nothing used to be indistinguishable from a successful
+ * one: seeding leaves every field empty, the renderer falls back to
+ * section-library demo content, and the stage still reports success. The only
+ * way to notice was spotting demo prose in the preview. Callers surface this so
+ * a total miss is visible at stage time instead.
+ */
+export function getCopySeedingSummary(
+  strategyCopy: string,
+  page: Pick<StagedPage, "fields">,
+): CopySeedingSummary {
+  const copyFields = page.fields.filter(
+    (field) => field.kind === "copy" && !field.path.startsWith("strategy."),
+  );
+  const filledCopyFields = copyFields.filter(
+    (field) => field.value.trim().length > 0,
+  ).length;
+  const hasStrategyCopy = strategyCopy.trim().length > 0;
+
+  return {
+    filledCopyFields,
+    hasStrategyCopy,
+    seededNothing:
+      hasStrategyCopy && copyFields.length > 0 && filledCopyFields === 0,
+    totalCopyFields: copyFields.length,
+  };
 }
 
 /**
@@ -1279,11 +1332,18 @@ function seedFieldsFromStrategyCopy(
     allowedSectionOrdinals?: Set<string>;
     overwriteExistingCopy?: boolean;
     previousStrategyCopy?: string;
+    sectionIdByFingerprint?: ReadonlyMap<string, string>;
   } = {},
 ) {
-  const keyedValues = parseKeyedCopyValues(strategyCopy);
+  const keyedValues = parseKeyedCopyValues(
+    strategyCopy,
+    options.sectionIdByFingerprint,
+  );
   const previousKeyedValues = options.previousStrategyCopy
-    ? parseKeyedCopyValues(options.previousStrategyCopy)
+    ? parseKeyedCopyValues(
+        options.previousStrategyCopy,
+        options.sectionIdByFingerprint,
+      )
     : new Map<string, string>();
 
   if (keyedValues.size === 0) {
@@ -1323,7 +1383,10 @@ function seedFieldsFromStrategyCopy(
   });
 }
 
-function parseKeyedCopyValues(text: string) {
+export function parseKeyedCopyValues(
+  text: string,
+  sectionIdByFingerprint?: ReadonlyMap<string, string>,
+) {
   const trimmedText = text.trim();
 
   if (!trimmedText) {
@@ -1336,7 +1399,30 @@ function parseKeyedCopyValues(text: string) {
     return jsonValues;
   }
 
-  return parseMarkdownCopyValues(extractBulkPasteCopy(trimmedText));
+  return parseMarkdownCopyValues(
+    extractBulkPasteCopy(trimmedText),
+    sectionIdByFingerprint,
+  );
+}
+
+/**
+ * Maps each section's contract fingerprint to the section id its copy keys
+ * belong under, so a paste that carries the `<!-- Section contract: ... -->`
+ * comments can be split into sections even without `### <section-id>` headings.
+ */
+export function getSectionIdsByCopyFingerprint(
+  sections: readonly StagedPageTemplateSection[],
+) {
+  const sectionIdByFingerprint = new Map<string, string>();
+
+  sections.forEach((section, index) => {
+    sectionIdByFingerprint.set(
+      getTemplateCopySectionFingerprint(section),
+      getSectionId(section, index),
+    );
+  });
+
+  return sectionIdByFingerprint;
 }
 
 function parseJsonCopyValues(text: string) {
@@ -1380,9 +1466,13 @@ function flattenCopyValue(
   }
 }
 
-function parseMarkdownCopyValues(text: string) {
+function parseMarkdownCopyValues(
+  text: string,
+  sectionIdByFingerprint?: ReadonlyMap<string, string>,
+) {
   const values = new Map<string, string>();
   const lines = text.split(/\r?\n/);
+  const knownSectionIds = new Set(sectionIdByFingerprint?.values() ?? []);
   let currentSection = "";
   let currentKey = "";
   let currentValueLines: string[] = [];
@@ -1409,6 +1499,38 @@ function parseMarkdownCopyValues(text: string) {
     if (headingMatch) {
       commitCurrentValue();
       currentSection = headingMatch[1].trim().split(/\s+/)[0] ?? "";
+      continue;
+    }
+
+    // A section-contract comment is a second, stronger section delimiter. The
+    // generated contract emits one per section and models reliably copy them
+    // back even when they drop the `### <section-id>` heading - and without a
+    // section scope every key is stored bare, so `heading` from three
+    // different sections collide and nothing matches. The fingerprint also
+    // identifies a section exactly, where the heading slug is derived from an
+    // editable name.
+    const fingerprintMatch = line.match(
+      /<!--\s*Section contract:\s*(sc-v1-[A-Za-z0-9]+)\s*-->/,
+    );
+    const fingerprintSectionId = fingerprintMatch
+      ? sectionIdByFingerprint?.get(fingerprintMatch[1])
+      : undefined;
+
+    if (fingerprintSectionId) {
+      commitCurrentValue();
+      currentSection = fingerprintSectionId;
+      continue;
+    }
+
+    // A bare section id on its own line - the same `02-fullscreen-image-hero`
+    // a heading would carry, just without the `###`. Unhandled, it is neither
+    // a heading nor a `key: value` pair, so it falls through to the
+    // continuation branch below and is appended to the *previous* field's
+    // value: every section's last field ends up with the next section's id
+    // stuck on it, which then renders on the page.
+    if (knownSectionIds.has(line.trim())) {
+      commitCurrentValue();
+      currentSection = line.trim();
       continue;
     }
 
