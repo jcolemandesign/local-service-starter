@@ -123,7 +123,10 @@ import {
   TrustLogoMarqueeSectionV3,
   TrustMarqueeSectionV3,
 } from "@/components/sections/TrustSectionsV3";
-import { sectionLibraryV3Content } from "@/content/section-library-v3";
+import {
+  getCanonicalSectionLabel,
+  sectionLibraryV3Content,
+} from "@/content/section-library-v3";
 import type { StagedPageField } from "@/utils/staged-pages";
 
 export type PageTemplatePreviewSection = {
@@ -2495,7 +2498,9 @@ function UnknownSection({
   return (
     <section className="bg-service-surface p-8 text-service-ink">
       <p className="type-label text-service-accent">Preview unavailable</p>
-      <h3 className="type-heading-sm mt-3">{section.name}</h3>
+      <h3 className="type-heading-sm mt-3">
+        {getCanonicalSectionLabel(section.component, section.name)}
+      </h3>
       <p className="type-text-sm measure-copy mt-3 text-service-muted">
         {section.component} is listed in the template but has not been wired
         into the shared preview renderer yet.

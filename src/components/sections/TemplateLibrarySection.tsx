@@ -10,6 +10,7 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives/SevenColumnGrid";
 import { pagebuilderPageTypeOrder } from "@/content/pagebuilder";
+import { getCanonicalSectionLabel } from "@/content/section-library-v3";
 import {
   baseStrategyPageSlots,
   getDefaultPageLabel,
@@ -855,7 +856,10 @@ export function TemplateLibrarySection({
                                             {index + 1}. {section.mode}
                                           </span>
                                           <span className="type-caption text-service-muted">
-                                            {section.name}
+                                            {getCanonicalSectionLabel(
+                                              section.component,
+                                              section.name,
+                                            )}
                                           </span>
                                         </div>
                                       ))}

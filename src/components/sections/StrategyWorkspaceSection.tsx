@@ -12,6 +12,7 @@ import {
 } from "@/components/sections/WorkspaceNav";
 import type { PageTemplateSummary } from "@/components/sections/TemplateLibrarySection";
 import { StagedPageCanvas } from "@/components/sections/StagedPageCanvas";
+import { getCanonicalSectionLabel } from "@/content/section-library-v3";
 import {
   buildStrategyNavigation,
   deriveStrategyPagesFromFields,
@@ -1721,7 +1722,10 @@ export function StrategyWorkspaceSection({
                                     {index + 1}. {section.mode}
                                   </span>
                                   <span className="type-caption text-service-muted">
-                                    {section.name}
+                                    {getCanonicalSectionLabel(
+                                      section.component,
+                                      section.name,
+                                    )}
                                   </span>
                                 </div>
                               ))}

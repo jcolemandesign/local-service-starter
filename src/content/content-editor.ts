@@ -7,6 +7,7 @@ import {
   isAltStagedPage,
   type StagedPageVariant,
 } from "@/utils/staged-page-variant";
+import { getCanonicalSectionLabel } from "@/content/section-library-v3";
 import { readStrategyPageSlots } from "@/utils/client-page-slots";
 import { sortPagesBySitemap } from "@/utils/sitemap-page-order";
 import { getTemplateCopyFieldsForSection } from "@/utils/template-copy-contract";
@@ -133,6 +134,7 @@ function mapStagedPageToContentEditorPage(
     ...getMissingImageRatioFields(page),
   ];
   const fallbacksByPath = getFieldFallbacksByPath(page);
+  const sectionLabelsById = getSectionLabelsById(page);
   const sectionsById = fields.reduce<Record<string, ContentEditorField[]>>(
     (sections, field) => {
       const sectionId = getSectionIdFromFieldPath(field.path);
@@ -168,10 +170,35 @@ function mapStagedPageToContentEditorPage(
     sections: Object.entries(sectionsById).map(([sectionId, sectionFields]) => ({
       fields: sectionFields,
       id: sectionId,
-      label: humanize(sectionId),
+      label: sectionLabelsById.get(sectionId) ?? humanize(sectionId),
     })),
     sourceRecipe: formatStagedSource(page),
   };
+}
+
+/**
+ * Section ids are derived from the frozen structural `name`, so humanizing one
+ * shows whatever the section was called when the template was promoted - e.g.
+ * "04 Sticky Card Stream Content". Resolve the display label from the component
+ * instead, which is what every other builder surface shows.
+ */
+function getSectionLabelsById(page: StagedEditorPage) {
+  const labels = new Map<string, string>();
+
+  (page.template?.sections ?? []).forEach((section, index) => {
+    const component = section.component?.trim() ?? "";
+
+    if (!component) {
+      return;
+    }
+
+    labels.set(
+      getSectionId(section, index),
+      getCanonicalSectionLabel(component, section.name?.trim() || component),
+    );
+  });
+
+  return labels;
 }
 
 function getFieldFallbacksByPath(page: StagedEditorPage) {

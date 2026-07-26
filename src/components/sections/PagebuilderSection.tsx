@@ -115,7 +115,10 @@ import {
 } from "@/components/sections/TrustSectionsV3";
 import { PagebuilderShell } from "@/components/sections/PagebuilderShell";
 import { pagebuilderRecipes, sectionModes } from "@/content/pagebuilder";
-import { sectionLibraryV3Content } from "@/content/section-library-v3";
+import {
+  getCanonicalSectionLabel,
+  sectionLibraryV3Content,
+} from "@/content/section-library-v3";
 import type { PagebuilderRecipeSection } from "@/content/pagebuilder";
 
 const heroSplitFullHeightVariants = new Set<string>(
@@ -259,7 +262,9 @@ function UnknownSection({ section }: { section: PagebuilderRecipeSection }) {
   return (
     <section className="bg-service-surface p-8 text-service-ink">
       <p className="type-label text-service-accent">Preview unavailable</p>
-      <h3 className="type-heading-sm mt-3">{section.name}</h3>
+      <h3 className="type-heading-sm mt-3">
+        {getCanonicalSectionLabel(section.component, section.name)}
+      </h3>
       <p className="type-text-sm measure-copy mt-3 text-service-muted">
         {section.component} is listed in the recipe but has not been wired into
         the Pagebuilder renderer yet.
