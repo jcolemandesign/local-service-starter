@@ -36,7 +36,12 @@ export function DecisionSplitDecisionLargeSectionV3({
         padding="lrg"
       >
         {cards.slice(0, 2).map((card, index) => (
+          // Stretch, not the default top alignment: without it each card sizes
+          // to its own copy and the pair renders ragged. Stretched, both take
+          // the taller card's height and the card's existing `mt-auto` on the
+          // link parks it at the bottom while the rest stays top-aligned.
           <LayoutGridItem
+            alignY="stretch"
             className={`col-span-6 ${cardStartClasses[align][index]} max-lg:col-span-5 max-lg:col-start-auto max-md:col-span-6 max-sm:col-span-2`}
             key={card.title}
           >

@@ -2027,6 +2027,73 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  // Ahead of the generic CTA branch: this one writes its own eyebrow rather
+  // than using the fixed "Conversion" label the plain CTA hardcodes.
+  if (component.includes("ctaimage")) {
+    return [
+      {
+        example: "Ready when you are",
+        name: "eyebrow",
+        purpose: "Short context label above the conversion headline.",
+        target: "12-28 characters.",
+      },
+      {
+        example: "Book the visit that matches the problem.",
+        name: "title",
+        purpose: "Primary conversion headline beside the image.",
+        target: "32-60 characters.",
+      },
+      {
+        example:
+          "Share what the system is doing now and the office will confirm the right service path, timing, and pricing before any work begins.",
+        name: "body",
+        purpose:
+          "Supporting paragraph under the headline. The action sits at the bottom of this column, so this can run a little longer than a bar-style CTA.",
+        target: "110-200 characters.",
+      },
+      {
+        example: "Start a request",
+        name: "primaryAction",
+        purpose: "Conversion button label, pinned to the bottom of the copy column.",
+        target: "12-24 characters.",
+      },
+    ];
+  }
+
+  // Ahead of the generic CTA branch: this is the only CTA that renders a
+  // second action, and it renders it only when the copy supplies one.
+  if (component.includes("ctamuted")) {
+    return [
+      {
+        example: "Ready to get the system looked at?",
+        name: "title",
+        purpose: "Short conversion headline for the inline CTA bar.",
+        target: "30-60 characters.",
+      },
+      {
+        example:
+          "Send the details and the office will confirm the next available visit window.",
+        name: "body",
+        purpose: "One supporting line under the headline.",
+        target: "70-140 characters.",
+      },
+      {
+        example: "Start a request",
+        name: "primaryAction",
+        purpose: "Main conversion button label.",
+        target: "12-24 characters.",
+      },
+      {
+        example: "Call the office",
+        name: "secondaryAction",
+        purpose:
+          "Optional second path, rendered as a text link beside the button for visitors not ready to submit a form - calling, browsing services, or reviewing pricing.",
+        target:
+          "OPTIONAL. Omit this field entirely unless the page genuinely needs a lower-commitment alternative; an empty value renders no second action. When used: 10-22 characters, and it must be clearly distinct from the primary action.",
+      },
+    ];
+  }
+
   if (mode === "action" || lookupValue.includes("cta")) {
     return [
       {

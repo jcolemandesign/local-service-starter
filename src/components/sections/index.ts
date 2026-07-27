@@ -103,6 +103,11 @@ export {
   type ServiceCalloutSplitPanelSectionV3Props,
 } from "./ServiceCalloutSplitPanelSectionV3";
 export {
+  CTAImageSectionV3,
+  type CTAImageAlign,
+  type CTAImageSectionV3Props,
+} from "./CTAImageSectionV3";
+export {
   FeatureOverlapRowsSectionV3,
   ProcessStepsSectionV3,
   TestimonialsSectionV3,

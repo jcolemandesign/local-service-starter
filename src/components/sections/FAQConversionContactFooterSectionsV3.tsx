@@ -46,6 +46,18 @@ type CTASectionV3Props = {
   title: string;
 };
 
+/**
+ * The secondary action is optional on purpose: it renders only when the copy
+ * supplies a label, so a page that needs one lower-commitment path gets it and
+ * every other page keeps the single-action bar. The mapper defaults it to an
+ * empty string rather than to library demo copy, so "not written" reads as
+ * "not wanted" instead of silently seeding a button.
+ */
+type CTAMutedSectionV3Props = CTASectionV3Props & {
+  secondaryAction?: string;
+  secondaryActionHref?: string;
+};
+
 type CTAFullscreenSectionV3Props = {
   action: string;
   body: string;
@@ -415,8 +427,10 @@ export function CTAMutedSectionV3({
   action,
   body,
   colorRecipe = "muted",
+  secondaryAction,
+  secondaryActionHref,
   title,
-}: CTASectionV3Props) {
+}: CTAMutedSectionV3Props) {
   const colors = ctaRecipeClasses[colorRecipe];
 
   return (
@@ -431,12 +445,25 @@ export function CTAMutedSectionV3({
                   {body}
                 </p>
               </div>
-              <RequestServiceButton
-                className={`w-auto shrink-0 border max-md:w-full ${colors.action}`}
-                variant="secondary"
-              >
-                {action}
-              </RequestServiceButton>
+              <div className="flex shrink-0 items-center gap-5 max-md:w-full max-md:flex-col max-md:items-stretch">
+                <RequestServiceButton
+                  className={`w-auto shrink-0 border max-md:w-full ${colors.action}`}
+                  variant="secondary"
+                >
+                  {action}
+                </RequestServiceButton>
+                {secondaryAction ? (
+                  // Deliberately a text link, not a second button: it has to
+                  // read as the lower-commitment path, and `border-current`
+                  // keeps it legible across all four color recipes.
+                  <a
+                    className={`type-label inline-flex min-h-12 w-fit shrink-0 items-center border-b border-current transition-opacity hover:opacity-75 max-md:w-full ${colors.heading}`}
+                    href={secondaryActionHref ?? "/contact"}
+                  >
+                    {secondaryAction}
+                  </a>
+                ) : null}
+              </div>
             </div>
           </article>
         </SevenColumnGridItem>

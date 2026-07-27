@@ -1250,6 +1250,21 @@ export function getTemplateAssetFieldsForSection(
     ];
   }
 
+  if (component.includes("ctaimage")) {
+    return [
+      {
+        kind: "meta",
+        name: "imageAlt",
+        value: sectionLibraryV3Content.ctaImage.imageAlt,
+      },
+      {
+        kind: "image",
+        name: "imageSrc",
+        value: sectionLibraryV3Content.ctaImage.imageSrc,
+      },
+    ];
+  }
+
   if (component.includes("heroservices")) {
     return [
       {

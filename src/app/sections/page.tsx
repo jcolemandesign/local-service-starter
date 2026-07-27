@@ -22,6 +22,7 @@ import {
   ContactSectionModalBegin,
   ContactSectionV3,
   CTAFullscreenSectionV3,
+  CTAImageSectionV3,
   CTAMutedSectionV3,
   CTASectionV3,
   CTAScrollRevealOfferSectionV3,
@@ -368,7 +369,10 @@ const sectionElements = {
     />
   ),
   "cta-v3": <CTASectionV3 {...sectionLibraryV3Content.cta} />,
-  "cta-muted-v3": <CTAMutedSectionV3 {...sectionLibraryV3Content.cta} />,
+  "cta-image-v3": (
+    <CTAImageSectionV3 {...sectionLibraryV3Content.ctaImage} />
+  ),
+  "cta-muted-v3": <CTAMutedSectionV3 {...sectionLibraryV3Content.ctaMuted} />,
   "cta-fullscreen-v3": (
     <CTAFullscreenSectionV3 {...sectionLibraryV3Content.ctaFullscreen} />
   ),

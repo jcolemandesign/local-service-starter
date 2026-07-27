@@ -76,6 +76,7 @@ export const servicesBentoVariantValues = new Set<string>(
 export const cardStyleComponents = new Set<string>([
   "ContentCardTwoUpSectionV3",
   "ContentHorizontalCardCarouselSectionV2",
+  "ContentMainIdeaGridSectionV3",
   "ContentSplitFixedImageSectionV3",
   "ContentStickyCardStreamSectionV2",
   "ContentThreeColumnMixedSectionV3",

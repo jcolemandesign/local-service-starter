@@ -1270,6 +1270,24 @@ export const sectionLibraryV3Content = {
     body: "Use this section near the end of a page to move visitors toward the primary conversion.",
     action: "Start a request",
   },
+  ctaImage: {
+    eyebrow: "Ready when you are",
+    title: "Book the visit that matches the problem.",
+    body: "Share what the system is doing now and the office will confirm the right service path, timing, and pricing before any work begins.",
+    action: "Start a request",
+    imageAlt: "Technician arriving for a scheduled service visit",
+    imageSrc: "/images/fpo-image.svg",
+  },
+  ctaMuted: {
+    title: "Ready to turn interest into a booked service call?",
+    body: "Use this section near the end of a page to move visitors toward the primary conversion.",
+    action: "Start a request",
+    // Shown here so the library preview demonstrates the option. Staged pages
+    // only render it when the page copy actually supplies a label - the props
+    // mapper falls back to empty, not to this.
+    secondaryAction: "Call the office",
+    secondaryActionHref: "/contact",
+  },
   ctaFullscreen: {
     eyebrow: "Ready when you are",
     title: "Turn the next visit into a booked service call.",
@@ -1850,6 +1868,7 @@ export const sectionLibraryV3Collections = [
         component: "trust-marquee-legacy",
       },
       { label: "CTA", component: "cta-v3" },
+      { label: "CTA with image", component: "cta-image-v3" },
       { label: "Muted CTA", component: "cta-muted-v3" },
       {
         label: "CTA fullscreen conversion",
@@ -1955,6 +1974,7 @@ export const sectionLibraryV3ComponentBySlug = {
   "footer-link-panel-v3": "FooterLinkPanelSectionV3",
   "trust-marquee-legacy": "TrustMarqueeSection",
   "cta-v3": "CTASectionV3",
+  "cta-image-v3": "CTAImageSectionV3",
   "cta-muted-v3": "CTAMutedSectionV3",
   "cta-fullscreen-v3": "CTAFullscreenSectionV3",
   "cta-scroll-reveal-offer-v3": "CTAScrollRevealOfferSectionV3",

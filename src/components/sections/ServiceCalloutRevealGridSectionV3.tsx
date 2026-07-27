@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useId, useRef, useState } from "react";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
+import { CalloutCardAffordance } from "./CalloutCardAffordance";
 
 export type ServiceCalloutRevealGridItem = {
   /**
@@ -95,7 +96,7 @@ export function ServiceCalloutRevealGridSectionV3({
         aria-controls={panelId}
         aria-expanded={openIndex === index}
         className={cx(
-          "group/callout card-min-short flex w-full min-w-0 cursor-pointer flex-col items-start overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-8 text-left text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent max-md:p-6",
+          "group/callout card-min-short flex w-full min-w-0 cursor-pointer flex-col items-start overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-8 text-left text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent hover:bg-bg-page focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent max-md:p-6",
           cardFill === "none" && "!bg-transparent !shadow-none",
           cardBorder === "off" && "!border-transparent",
         )}
@@ -113,14 +114,9 @@ export function ServiceCalloutRevealGridSectionV3({
               {item.body}
             </span>
           ) : null}
-          <span className="type-label mt-auto inline-flex items-center gap-2 pt-3 text-service-accent">
-            {openHint}
-            <span
-              aria-hidden="true"
-              className="transition-transform duration-200 group-hover/callout:translate-x-1"
-            >
-              &rarr;
-            </span>
+          <span className="mt-auto flex items-center justify-between gap-3 pt-3">
+            <span className="type-label text-service-accent">{openHint}</span>
+            <CalloutCardAffordance />
           </span>
         </span>
       </button>
@@ -184,17 +180,23 @@ export function ServiceCalloutRevealGridSectionV3({
                       </svg>
                     </button>
 
-                    <div className="fluid-type-frame pr-14 max-sm:pr-0">
+                    {/* Block centered in the panel, copy still left-aligned.
+                        The measure sits on the wrapper so the heading and body
+                        share one edge rather than the body running narrower. */}
+                    <div className="fluid-type-frame measure-copy-wide mx-auto w-full">
+                      {/* Reiterates which card was opened. The panel covers the
+                          cards, so without this the heading has lost its
+                          subject. Reuses the card title - no new copy field. */}
+                      <p className="type-label text-service-accent">
+                        {activeItem.title}
+                      </p>
                       <h3
-                        className="type-heading-lg wrap-pretty text-service-ink"
+                        className="type-heading-xl wrap-pretty mt-eyebrow-heading-lg text-service-ink max-sm:pr-12"
                         id={`${panelId}-heading`}
                       >
                         {activeItem.panelHeading}
                       </h3>
-                      {/* The panel runs the full width of the card block, so
-                          only the body is held to a readable measure - the
-                          heading is free to use the width. */}
-                      <p className="type-text-md measure-copy-wide wrap-pretty mt-heading-body-sm text-service-muted">
+                      <p className="type-text-lg wrap-pretty mt-heading-body-lg text-service-muted">
                         {activeItem.panelBody}
                       </p>
                       {activeItem.actionLabel ? (

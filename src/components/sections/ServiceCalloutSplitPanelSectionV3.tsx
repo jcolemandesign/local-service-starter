@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useId, useState } from "react";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
+import { CalloutCardAffordance } from "./CalloutCardAffordance";
 
 export type ServiceCalloutSplitPanelItem = {
   /**
@@ -57,7 +58,7 @@ export function ServiceCalloutSplitPanelSectionV3({
         // state is the only thing tying a card to what the panel is showing.
         aria-pressed={isActive}
         className={cx(
-          "group/callout card-min-short flex w-full min-w-0 cursor-pointer flex-col items-start overflow-hidden rounded-[var(--radius-surface-token)] border bg-service-surface p-6 text-left text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent max-md:p-5",
+          "group/callout card-min-short flex w-full min-w-0 cursor-pointer flex-col items-start overflow-hidden rounded-[var(--radius-surface-token)] border bg-service-surface p-6 text-left text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent hover:bg-bg-page focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent max-md:p-5",
           isActive ? "border-service-accent" : "border-service-border",
           cardFill === "none" && "!bg-transparent !shadow-none",
           cardBorder === "off" && "!border-transparent",
@@ -75,19 +76,19 @@ export function ServiceCalloutSplitPanelSectionV3({
               {item.body}
             </span>
           ) : null}
-          <span
-            className={cx(
-              "type-label mt-auto inline-flex items-center gap-2 pt-3",
-              isActive ? "text-service-ink" : "text-service-accent",
-            )}
-          >
-            {openHint}
+          {/* The filled box doubles as the selected state - it is a stronger
+              signal than the accent border alone that this card is the one
+              driving the panel. */}
+          <span className="mt-auto flex items-center justify-between gap-3 pt-3">
             <span
-              aria-hidden="true"
-              className="transition-transform duration-200 group-hover/callout:translate-x-1"
+              className={cx(
+                "type-label",
+                isActive ? "text-service-ink" : "text-service-accent",
+              )}
             >
-              &rarr;
+              {openHint}
             </span>
+            <CalloutCardAffordance isActive={isActive} />
           </span>
         </span>
       </button>
@@ -124,9 +125,12 @@ export function ServiceCalloutSplitPanelSectionV3({
             id={panelId}
           >
             <AnimatePresence initial={false} mode="wait">
+              {/* Block centered in the panel, copy still left-aligned. The
+                  measure sits on the wrapper so the heading and body share one
+                  edge rather than the body running narrower. */}
               <motion.div
                 animate={{ opacity: 1, y: 0 }}
-                className="fluid-type-frame"
+                className="fluid-type-frame measure-copy-wide mx-auto w-full"
                 exit={{ opacity: 0, y: shouldReduceMotion ? 0 : -4 }}
                 initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 6 }}
                 key={activeItem ? activeItem.title : "intro"}
@@ -136,10 +140,23 @@ export function ServiceCalloutSplitPanelSectionV3({
                     : { duration: 0.2, ease: panelEase }
                 }
               >
-                <h3 className="type-heading-lg wrap-pretty text-service-ink">
+                {/* Reiterates which card is selected. Reuses the card title, so
+                    no new copy field. The opening state has no card behind it
+                    and therefore no eyebrow. */}
+                {activeItem ? (
+                  <p className="type-label text-service-accent">
+                    {activeItem.title}
+                  </p>
+                ) : null}
+                <h3
+                  className={cx(
+                    "type-heading-xl wrap-pretty text-service-ink",
+                    activeItem && "mt-eyebrow-heading-lg",
+                  )}
+                >
                   {activeItem ? activeItem.panelHeading : introHeading}
                 </h3>
-                <p className="type-text-md measure-copy-wide wrap-pretty mt-heading-body-sm text-service-muted">
+                <p className="type-text-lg wrap-pretty mt-heading-body-lg text-service-muted">
                   {activeItem ? activeItem.panelBody : introBody}
                 </p>
                 {activeItem?.actionLabel ? (

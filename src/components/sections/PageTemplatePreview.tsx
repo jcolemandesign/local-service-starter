@@ -93,6 +93,10 @@ import { FooterLinkPanelSectionV3 } from "@/components/sections/FooterLinkPanelS
 import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
 import { ServiceCalloutRevealGridSectionV3 } from "@/components/sections/ServiceCalloutRevealGridSectionV3";
 import { ServiceCalloutSplitPanelSectionV3 } from "@/components/sections/ServiceCalloutSplitPanelSectionV3";
+import {
+  CTAImageSectionV3,
+  type CTAImageAlign,
+} from "@/components/sections/CTAImageSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import type { ServiceNeedsPriorityGridAlign } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
@@ -187,6 +191,7 @@ const heroSplitFixedImageRatios = splitImageRatioValues;
 
 const heroCompactAlignments = new Set<string>(["left", "center", "right"]);
 const mainIdeaGridAlignments = new Set<string>(["left", "right"]);
+const ctaImageAlignments = new Set<string>(["left", "right"]);
 const projectCaseStudyGalleryAlignments = new Set<string>(["left", "right"]);
 const servicesBentoVariants = servicesBentoVariantValues;
 
@@ -642,6 +647,8 @@ export function renderPageTemplateSection(
         <ContentMainIdeaGridSectionV3
           {...mainIdeaGridProps(fieldSection)}
           align={getMainIdeaGridAlign(section)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           colorRecipe={section.colorRecipe}
         />
       );
@@ -765,8 +772,15 @@ export function renderPageTemplateSection(
       return <ProcessStepsSectionV3 {...processProps(fieldSection)} />;
     case "CTASectionV3":
       return <CTASectionV3 {...ctaProps(fieldSection)} />;
+    case "CTAImageSectionV3":
+      return (
+        <CTAImageSectionV3
+          {...ctaImageProps(fieldSection)}
+          align={getCTAImageAlign(section)}
+        />
+      );
     case "CTAMutedSectionV3":
-      return <CTAMutedSectionV3 {...ctaProps(fieldSection)} />;
+      return <CTAMutedSectionV3 {...ctaMutedProps(fieldSection)} />;
     case "CTAFullscreenSectionV2":
       return <CTAFullscreenSectionV2 {...ctaFullscreenProps(fieldSection)} />;
     case "CTAFullscreenSectionV3":
@@ -1829,6 +1843,47 @@ function faqAccordionSidebarProps(section: FieldSection) {
   };
 }
 
+/**
+ * The secondary action falls back to `""`, never to the library demo label.
+ * Every other mapper falls back to demo content so an unwritten field still
+ * renders something, but here that would force a second button onto every page
+ * whether the copy asked for one or not. Empty means the copy did not call for
+ * it, and the section renders no second action.
+ */
+function ctaImageProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.ctaImage;
+
+  return {
+    ...fallback,
+    action: getValue(
+      section,
+      "primaryAction",
+      getValue(section, "sectionAction", fallback.action),
+    ),
+    body: getBody(section, fallback.body),
+    eyebrow: getValue(section, "eyebrow", fallback.eyebrow),
+    imageAlt: getAssetValue(section, "imageAlt", fallback.imageAlt),
+    imageSrc: getAssetValue(section, "imageSrc", fallback.imageSrc),
+    title: getTitle(section, fallback.title),
+  };
+}
+
+function ctaMutedProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.ctaMuted;
+
+  return {
+    ...fallback,
+    action: getValue(
+      section,
+      "primaryAction",
+      getValue(section, "sectionAction", fallback.action),
+    ),
+    body: getBody(section, fallback.body),
+    secondaryAction: getValue(section, "secondaryAction", ""),
+    title: getTitle(section, fallback.title),
+  };
+}
+
 function ctaProps(section: FieldSection) {
   return {
     ...sectionLibraryV3Content.cta,
@@ -2686,6 +2741,14 @@ function getDecisionSplitDecisionLargeAlign(
   return heroCompactAlignments.has(section.variant ?? "")
     ? (section.variant as DecisionSplitDecisionLargeAlign)
     : "center";
+}
+
+function getCTAImageAlign(
+  section: PageTemplatePreviewSection,
+): CTAImageAlign {
+  return ctaImageAlignments.has(section.variant ?? "")
+    ? (section.variant as CTAImageAlign)
+    : "left";
 }
 
 function getMainIdeaGridAlign(

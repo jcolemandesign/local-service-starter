@@ -41,6 +41,10 @@ import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGri
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import { ServiceCalloutRevealGridSectionV3 } from "@/components/sections/ServiceCalloutRevealGridSectionV3";
 import { ServiceCalloutSplitPanelSectionV3 } from "@/components/sections/ServiceCalloutSplitPanelSectionV3";
+import {
+  CTAImageSectionV3,
+  type CTAImageAlign,
+} from "@/components/sections/CTAImageSectionV3";
 import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import type { ServiceNeedsPriorityGridAlign } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
@@ -169,6 +173,7 @@ const servicesScrollCardsComponent = "ServicesScrollCardsSectionV2";
 const servicesThreeCardsRightComponent = "ServicesThreeCardsRightSectionV3";
 const ctaSectionComponent = "CTASectionV3";
 const ctaMutedSectionComponent = "CTAMutedSectionV3";
+const ctaImageSectionComponent = "CTAImageSectionV3";
 const contentFixedCoverFadeComponent = "ContentFixedCoverFadeSectionV2";
 const decisionSplitDecisionLargeComponent = "DecisionSplitDecisionLargeSectionV3";
 const fourCardLinkGridVariantOptions = [
@@ -188,6 +193,10 @@ const heroCompactAlignOptions = [
   { label: "Left", value: "left" },
   { label: "Center", value: "center" },
   { label: "Right", value: "right" },
+] as const;
+const ctaImageAlignOptions = [
+  { label: "Copy left", value: "left" },
+  { label: "Copy right", value: "right" },
 ] as const;
 const mainIdeaGridAlignOptions = [
   { label: "Left", value: "left" },
@@ -570,6 +579,10 @@ function getDecisionSplitDecisionLargeAlign(
   return heroCompactAlignments.has(section.variant ?? "")
     ? (section.variant as DecisionSplitDecisionLargeAlign)
     : "center";
+}
+
+function getCTAImageAlign(section: WorkingSection): CTAImageAlign {
+  return section.variant === "right" ? "right" : "left";
 }
 
 function getMainIdeaGridAlign(
@@ -1492,6 +1505,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     name: "CTA",
   },
   {
+    component: "CTAImageSectionV3",
+    instruction:
+      "Pair a conversion block with a full-bleed cropped image on the 14-column grid. Copy takes six columns with the action pinned to the bottom of the column; the image fills the opposing seven columns. The alignment toggle swaps which side the copy sits on.",
+    layoutGrid: 14,
+    mode: "Action",
+    name: "CTA with image",
+  },
+  {
     component: "CTAMutedSectionV3",
     instruction:
       "Use a quieter service-card CTA when the page needs a softer next step between content sections.",
@@ -2039,6 +2060,7 @@ export function PagebuilderShell({
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isRenderedPreviewOpen, setIsRenderedPreviewOpen] = useState(false);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+  const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
   const [isPromotingTemplate, setIsPromotingTemplate] = useState(false);
   const [isSavingOption, setIsSavingOption] = useState(false);
   const [templateName, setTemplateName] = useState("");
@@ -2428,6 +2450,18 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateCTAImageAlign(sectionId: string, align: CTAImageAlign) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId &&
+        section.component === ctaImageSectionComponent
+          ? { ...section, variant: align }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateMainIdeaGridAlign(
     sectionId: string,
     align: ContentMainIdeaGridAlign,
@@ -2580,6 +2614,17 @@ export function PagebuilderShell({
     if (sectionId === selectedSectionId) {
       setSelectedSectionId(null);
     }
+  }
+
+  // Clearing drops every included section at once and there is no undo, so
+  // both entry points open the confirm rather than firing directly.
+  function requestClearBuildingSpace() {
+    setIsClearConfirmOpen(true);
+  }
+
+  function confirmClearBuildingSpace() {
+    setIsClearConfirmOpen(false);
+    clearActiveBuildingSpace();
   }
 
   function clearActiveBuildingSpace() {
@@ -3208,6 +3253,8 @@ export function PagebuilderShell({
           <ContentMainIdeaGridSectionV3
             {...sectionLibraryV3Content.contentMainIdeaGrid}
             align={getMainIdeaGridAlign(section)}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
             colorRecipe={getSectionColorRecipe(section)}
           />
         ) : section.component === contentNarrativeFeatureRailComponent ? (
@@ -3240,9 +3287,14 @@ export function PagebuilderShell({
             {...sectionLibraryV3Content.cta}
             colorRecipe={getSectionColorRecipe(section)}
           />
+        ) : section.component === ctaImageSectionComponent ? (
+          <CTAImageSectionV3
+            {...sectionLibraryV3Content.ctaImage}
+            align={getCTAImageAlign(section)}
+          />
         ) : section.component === ctaMutedSectionComponent ? (
           <CTAMutedSectionV3
-            {...sectionLibraryV3Content.cta}
+            {...sectionLibraryV3Content.ctaMuted}
             colorRecipe={getSectionColorRecipe(section)}
           />
         ) : section.component === contentFixedCoverFadeComponent ? (
@@ -3556,7 +3608,7 @@ export function PagebuilderShell({
                               aria-label="Clear page template"
                               className="token-chrome-control inline-flex min-h-9 w-9 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors disabled:cursor-not-allowed disabled:opacity-40"
                               disabled={includedSections.length === 0}
-                              onClick={clearActiveBuildingSpace}
+                              onClick={requestClearBuildingSpace}
                               title="Clear page template"
                               type="button"
                             >
@@ -4428,6 +4480,43 @@ export function PagebuilderShell({
                               <p className="type-caption text-current/60">
                                 Position the two-card group left, centered, or
                                 right on the fourteen-column grid.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
+                          {section.component === ctaImageSectionComponent ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Alignment
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {ctaImageAlignOptions.map((option) => {
+                                  const optionIsActive =
+                                    getCTAImageAlign(section) === option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateCTAImageAlign(section.id, option.value)
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Swaps which side the copy sits on. The image always
+                                takes the opposite columns.
                               </p>
                             </fieldset>
                           ) : null}
@@ -5398,7 +5487,7 @@ export function PagebuilderShell({
                       aria-label="Clear all sections from the building space"
                       className="radius-4 inline-flex min-h-10 items-center gap-2 border border-service-border bg-bg-page px-3 text-xs font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-40"
                       disabled={includedSections.length === 0}
-                      onClick={clearActiveBuildingSpace}
+                      onClick={requestClearBuildingSpace}
                       title="Clear building space"
                       type="button"
                     >
@@ -5764,6 +5853,55 @@ export function PagebuilderShell({
           </div>
         </div>
       </div>
+      {isClearConfirmOpen ? (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-bg-dark/40 px-4 py-8"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setIsClearConfirmOpen(false);
+            }
+          }}
+        >
+          <div
+            aria-labelledby="pagebuilder-clear-confirm-title"
+            aria-modal="true"
+            className="w-full max-w-md rounded-md border border-service-border bg-bg-page p-6 text-service-ink shadow-service"
+            role="dialog"
+          >
+            <p className="type-label text-service-accent">Clear page template</p>
+            <h3
+              className="type-heading-sm mt-3 text-service-ink"
+              id="pagebuilder-clear-confirm-title"
+            >
+              Remove all sections from {activePageLabel}?
+            </h3>
+            <p className="type-text-sm mt-3 text-service-muted">
+              This drops all {includedSections.length}{" "}
+              {includedSections.length === 1 ? "section" : "sections"} out of the
+              building space in one step. Section swaps, variants, and layout
+              settings go with them, and there is no undo.
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                autoFocus
+                className="inline-flex min-h-10 items-center justify-center rounded-sm border border-service-border px-4 text-sm font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                onClick={() => setIsClearConfirmOpen(false)}
+                type="button"
+              >
+                Cancel
+              </button>
+              <button
+                className="inline-flex min-h-10 items-center justify-center rounded-sm bg-red-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-red-700"
+                onClick={confirmClearBuildingSpace}
+                type="button"
+              >
+                Clear sections
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
       {isTemplateModalOpen ? (
         <div
           className="fixed inset-0 z-50 grid place-items-center bg-bg-dark/40 px-4 py-8"

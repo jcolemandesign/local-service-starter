@@ -11,6 +11,8 @@ export type ContentMainIdeaGridAlign = "left" | "right";
 export type ContentMainIdeaGridSectionV3Props = {
   align?: ContentMainIdeaGridAlign;
   body: string;
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   colorRecipe?: SectionColorRecipe;
   eyebrow: string;
   points: readonly ContentMainIdeaGridPoint[];
@@ -51,12 +53,20 @@ function cx(...classes: Array<string | undefined>) {
 export function ContentMainIdeaGridSectionV3({
   align = "left",
   body,
+  cardBorder = "on",
+  cardFill = "solid",
   colorRecipe = "default",
   eyebrow,
   points,
   title,
 }: ContentMainIdeaGridSectionV3Props) {
   const layout = gridLayouts[align];
+  // Applied after the recipe's card classes so the override wins, matching how
+  // every other card section layers these two.
+  const cardOverride = cx(
+    cardFill === "none" ? "!bg-transparent !shadow-none" : undefined,
+    cardBorder === "off" ? "!border-transparent" : undefined,
+  );
   const colors = {
     default: {
       body: "text-service-muted",
@@ -120,6 +130,7 @@ export function ContentMainIdeaGridSectionV3({
             className={cx(
               "fluid-type-frame flex h-full flex-col justify-center rounded-[var(--radius-surface-token)] border p-8 max-md:p-6",
               colors.card,
+              cardOverride,
             )}
           >
             <div>
@@ -159,6 +170,7 @@ export function ContentMainIdeaGridSectionV3({
               className={cx(
                 "fluid-type-frame flex h-full min-h-44 flex-col justify-between rounded-[var(--radius-surface-token)] border p-5 max-md:min-h-0",
                 colors.card,
+                cardOverride,
               )}
             >
               <p className={cx("type-label", colors.index)}>

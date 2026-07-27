@@ -84,6 +84,7 @@ import { FooterLinkPanelSectionV3 } from "@/components/sections/FooterLinkPanelS
 import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
 import { ServiceCalloutRevealGridSectionV3 } from "@/components/sections/ServiceCalloutRevealGridSectionV3";
 import { ServiceCalloutSplitPanelSectionV3 } from "@/components/sections/ServiceCalloutSplitPanelSectionV3";
+import { CTAImageSectionV3 } from "@/components/sections/CTAImageSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import {
@@ -540,6 +541,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <ContentMainIdeaGridSectionV3
           {...sectionLibraryV3Content.contentMainIdeaGrid}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "ContentStickyCardStreamSectionV2":
@@ -703,8 +706,10 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return <ProcessStepsSectionV3 {...sectionLibraryV3Content.process} />;
     case "CTASectionV3":
       return <CTASectionV3 {...sectionLibraryV3Content.cta} />;
+    case "CTAImageSectionV3":
+      return <CTAImageSectionV3 {...sectionLibraryV3Content.ctaImage} />;
     case "CTAMutedSectionV3":
-      return <CTAMutedSectionV3 {...sectionLibraryV3Content.cta} />;
+      return <CTAMutedSectionV3 {...sectionLibraryV3Content.ctaMuted} />;
     case "CTAFullscreenSectionV2":
       return <CTAFullscreenSectionV2 {...sectionLibraryV3Content.ctaFullscreen} />;
     case "CTAFullscreenSectionV3":
@@ -1358,6 +1363,12 @@ export function PagebuilderSection() {
       </div>
     ),
     CTASectionV3: previewCatalogEntry("CTASectionV3", "Action", "CTA", 7),
+    CTAImageSectionV3: previewCatalogEntry(
+      "CTAImageSectionV3",
+      "Action",
+      "CTA with image",
+      7,
+    ),
     CTAMutedSectionV3: previewCatalogEntry(
       "CTAMutedSectionV3",
       "Action",
