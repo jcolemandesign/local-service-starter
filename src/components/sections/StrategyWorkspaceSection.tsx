@@ -30,7 +30,6 @@ import {
 } from "@/utils/strategy-site-map";
 import { getStagedPreviewHref } from "@/utils/staged-page-links";
 import {
-  buildTemplateCopyContract,
   getTemplateCopyContractStatus,
   type TemplateCopyContractStatus,
   type TemplateCopyContractTemplate,
@@ -56,7 +55,6 @@ import type { StrategySnapshot } from "@/utils/strategy-snapshots";
 
 type SaveState = "dirty" | "saving" | "saved" | "error";
 type ContentPlanReferenceState = "idle" | "generated" | "error";
-type ContractCopyState = "copied" | "error";
 
 type StrategyWorkspaceSectionProps = {
   clientSlug: string;
@@ -249,7 +247,6 @@ export function StrategyWorkspaceSection({
   );
   const fieldsRef = useRef(initialWorkspace.fields);
   const savedFieldsRef = useRef(initialWorkspace.fields);
-  const [snapshot, setSnapshot] = useState<StrategySnapshot | null>(null);
   const [saveState, setSaveState] = useState<SaveState>("saved");
   const [packetCopyState, setPacketCopyState] = useState<
     "idle" | "copied" | "error"
@@ -262,9 +259,6 @@ export function StrategyWorkspaceSection({
   >("idle");
   const [fieldCopyState, setFieldCopyState] = useState<
     Partial<Record<string, "copied" | "error">>
-  >({});
-  const [contractCopyState, setContractCopyState] = useState<
-    Partial<Record<string, ContractCopyState>>
   >({});
   const [contentPlanReferenceState, setContentPlanReferenceState] =
     useState<ContentPlanReferenceState>("idle");
@@ -450,7 +444,7 @@ export function StrategyWorkspaceSection({
   const workspaceNavigationItems: WorkspaceNavItem[] = [
     { icon: "strategy", id: "strategy", label: "Strategy Workspace", tone: "blue" },
     { icon: "prompts", id: "prompts", label: "Prompt Library", href: `/dev/prompt-library?project=${clientSlug}`, openInNewTab: true, tone: "orange" },
-    { icon: "plan", id: "plan", label: "Build Plan", onClick: openContentPlanReference, tone: "purple" },
+    { icon: "plan", id: "plan", label: "Content Summary", onClick: openContentPlanReference, tone: "purple" },
     { icon: "sections", id: "sections", label: "Section Library", href: "/sections", openInNewTab: true, tone: "green" },
     { icon: "pagebuilder", id: "pagebuilder", label: "Page Builder", href: "/dev/pagebuilder", openInNewTab: true, tone: "pink" },
     { icon: "templates", id: "templates", label: "Template Library", href: "/dev/templates", openInNewTab: true, tone: "yellow" },
@@ -517,7 +511,6 @@ export function StrategyWorkspaceSection({
 
       savedFieldsRef.current = result.workspace.fields;
       setFields(result.workspace.fields);
-      setSnapshot(result.snapshot ?? null);
       setUpdatedAt(result.workspace.updatedAt);
     } catch {
       setSaveState("error");
@@ -705,56 +698,6 @@ export function StrategyWorkspaceSection({
     setTemplatePreview(null);
     setPreviewingTemplateId("");
     setTemplatePreviewError("");
-  }
-
-  async function copyPageTemplateContract(page: (typeof assemblyPages)[number]) {
-    const copyKey = page.stagedPageId || page.id;
-    const template = resolveContractTemplate(
-      page.stagedTemplate,
-      templates,
-      page.templateId,
-    );
-
-    if (!template || !navigator.clipboard?.writeText) {
-      setContractCopyFeedback(copyKey, "error");
-      return;
-    }
-
-    const contract = buildTemplateCopyContract({
-      pageLabel: page.stagedPageLabel || page.label,
-      pageSlug: page.stagedPageId || page.id,
-      strategySnapshot: snapshot
-        ? {
-            clientSlug: snapshot.clientSlug,
-            id: snapshot.id,
-            pageCount: detectedPageCount,
-            version: snapshot.version,
-          }
-        : undefined,
-      template,
-    });
-
-    try {
-      await navigator.clipboard.writeText(contract);
-      setContractCopyFeedback(copyKey, "copied");
-    } catch {
-      setContractCopyFeedback(copyKey, "error");
-    }
-  }
-
-  function setContractCopyFeedback(copyKey: string, state: ContractCopyState) {
-    setContractCopyState((currentState) => ({
-      ...currentState,
-      [copyKey]: state,
-    }));
-
-    window.setTimeout(() => {
-      setContractCopyState((currentState) => {
-        const nextState = { ...currentState };
-        delete nextState[copyKey];
-        return nextState;
-      });
-    }, 1600);
   }
 
   async function previewTemplateForPage(template: PageTemplateSummary) {
@@ -1047,7 +990,6 @@ export function StrategyWorkspaceSection({
                       pageCopyValue,
                       contractTemplate,
                     );
-                    const templateCopyKey = page.stagedPageId || page.id;
                     const layoutApprovalKey = getPageLayoutApprovalField(page.id);
                     const isLayoutApproved =
                       fields[layoutApprovalKey] === "approved";
@@ -1062,14 +1004,8 @@ export function StrategyWorkspaceSection({
                         key={page.id}
                       >
                         <TemplateReadyIcon
-                          copyState={contractCopyState[templateCopyKey]}
                           contractStatus={contractStatus}
                           isReady={hasTemplateReady}
-                          onCopy={
-                            hasTemplateReady
-                              ? () => void copyPageTemplateContract(page)
-                              : undefined
-                          }
                         />
                         <PageCopyReadyIcon
                           contractStatus={contractStatus}
@@ -1283,7 +1219,7 @@ export function StrategyWorkspaceSection({
                             }}
                             type="button"
                           >
-                            Build plan
+                            Content summary
                           </button>
                         ) : null}
                         <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 font-semibold text-service-muted">
@@ -2075,35 +2011,28 @@ function IssueList({
   );
 }
 
+/**
+ * Status only. This used to copy the template contract on click, which quietly
+ * competed with the Prompt Library as a second place to get page-copy input.
+ * The Prompt Library is the one source for that now.
+ */
 function TemplateReadyIcon({
-  copyState,
   contractStatus,
   isReady,
-  onCopy,
 }: {
-  copyState?: ContractCopyState;
   contractStatus: TemplateCopyContractStatus;
   isReady: boolean;
-  onCopy?: () => void;
 }) {
-  const label =
-    copyState === "copied"
-      ? "Template contract copied"
-      : copyState === "error"
-        ? "Template contract could not be copied"
-        : isReady
-          ? contractStatus === "current" || contractStatus === "empty"
-            ? "Copy template contract"
-            : "Copy updated template contract"
-          : "Waiting for template";
+  const label = isReady
+    ? contractStatus === "current" || contractStatus === "empty"
+      ? "Template set"
+      : "Template set - updated since this page's copy was written"
+    : "Waiting for template";
   const className = cx(
-    "absolute right-3 top-3 flex size-10 items-center justify-center rounded-sm border transition-[background-color,border-color,color,box-shadow,transform] duration-150 active:translate-y-px active:scale-95",
+    "absolute right-3 top-3 flex size-10 items-center justify-center rounded-sm border",
     isReady
-      ? "border-service-accent bg-service-accent text-white hover:shadow-service"
+      ? "border-service-accent bg-service-accent text-white"
       : "strategy-status-icon-inert",
-    isReady &&
-      copyState === "copied" &&
-      "motion-safe:animate-[template-copy-confirm_560ms_ease-out]",
   );
   const icon = (
     <svg
@@ -2123,43 +2052,10 @@ function TemplateReadyIcon({
     </svg>
   );
 
-  if (!isReady || !onCopy) {
-    return (
-      <>
-        <span aria-label={label} className={className} title={label}>
-          {icon}
-        </span>
-        {copyState === "error" ? (
-          <span className="pointer-events-none absolute right-14 top-4 type-caption font-semibold text-service-muted">
-            Not copied
-          </span>
-        ) : null}
-      </>
-    );
-  }
-
   return (
-    <>
-      <button
-        aria-label={label}
-        className={className}
-        onClick={onCopy}
-        title={label}
-        type="button"
-      >
-        {icon}
-      </button>
-      {copyState === "copied" ? (
-        <span className="pointer-events-none absolute right-14 top-4 type-caption font-semibold text-service-accent motion-safe:animate-[template-copy-message_1200ms_ease-out_both]">
-          Copied!
-        </span>
-      ) : null}
-      {copyState === "error" ? (
-        <span className="pointer-events-none absolute right-14 top-4 type-caption font-semibold text-service-muted">
-          Not copied
-        </span>
-      ) : null}
-    </>
+    <span aria-label={label} className={className} title={label}>
+      {icon}
+    </span>
   );
 }
 

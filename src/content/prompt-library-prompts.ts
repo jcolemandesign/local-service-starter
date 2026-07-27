@@ -1021,6 +1021,7 @@ Website Strategy Brief:
     description:
       "Writes paste-ready field-level copy for one selected page template at a time.",
     inputs: [
+      "Page Copy Agent Instructions (uploaded)",
       "Strategy digest",
       "Website Strategy Brief",
       "Selected page context from the Strategy Workspace",
@@ -1029,11 +1030,25 @@ Website Strategy Brief:
     ],
     prompt: String.raw`You are writing template-fitted website copy for one local service business page.
 
+The uploaded Page Copy Agent Instructions document is the governing source of truth for this project. Read it in full before writing. Everything below refines how to apply that document; it does not replace it.
+
+Before writing anything, confirm the uploaded document contains both of these headings:
+
+- "## Global Copywriting Rules"
+- "## Copywriting Voice Packet"
+
+If either heading is missing, stop and reply with only this line: MISSING VOICE PACKET - re-download the agent instructions from the Strategy Workspace agent export so the copywriting sections are included.
+
+Do not write page copy from a document that is missing those sections, and do not substitute a tone of your own in their place.
+
 Use the Strategy Digest as the factual boundary.
 Use the Website Strategy Brief and selected page context from the Strategy Workspace as strategic direction.
 Use the Template Copy Contract as the required page structure, field contract, and exact staged page target.
+Use the Copywriting Voice Packet as the required voice, and the Global Copywriting Rules as the baseline quality standard for every field.
 
 If the Website Strategy Brief, selected page context, manual notes, or Template Copy Contract conflict with the Strategy Digest, follow the Strategy Digest and flag the conflict.
+
+The Copywriting Voice Packet governs tone, phrasing, headline patterns, CTA style, and lever settings. It never overrides verified facts, claim guardrails, template-fit limits, or legal and safety constraints.
 
 Write copy for this exact staged page only:
 
@@ -1055,15 +1070,9 @@ Do not invent unsupported claims, certifications, pricing, guarantees, review co
 
 Follow all copy guardrails exactly.
 
-Use a clear, practical local service tone:
+Take tone entirely from the Copywriting Voice Packet in the agent instructions: its voice traits, writing behavior, headline patterns, body-copy rules, CTA style, preferred phrasing territory, avoided phrases, and lever settings. Do not fall back to a generic local-service voice and do not blend in a house tone of your own.
 
-- Helpful
-- Specific
-- Confident
-- Not hypey
-- Not overly clever
-- Not corporate filler
-- Not scare-tactic sales copy
+Apply the numbered Global Copywriting Rules in the agent instructions to every field.
 
 Write copy that sounds like a real business a homeowner or local customer could trust.
 
@@ -1199,6 +1208,8 @@ End with a short QA checklist:
 - Mobile visitor needs considered?
 - Template field targets followed?
 - Every section ID preserved?
+- Voice matches the selected personality in the Copywriting Voice Packet?
+- Avoided phrases from the voice packet kept out?
 
 ---
 

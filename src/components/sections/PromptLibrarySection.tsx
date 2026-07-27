@@ -504,7 +504,7 @@ export function PromptLibrarySection({
 
                             <div className="flex flex-wrap justify-end gap-2">
                               <button
-                                className="radius-button inline-flex min-h-11 items-center justify-center border border-service-border bg-white px-4 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent disabled:cursor-not-allowed disabled:text-service-muted"
+                                className="radius-button inline-flex min-h-11 items-center justify-center border border-service-border bg-white px-4 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:bg-service-surface hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-60 disabled:text-service-muted"
                                 disabled={!contract}
                                 onClick={() => void copyContract(page)}
                                 type="button"
@@ -516,7 +516,7 @@ export function PromptLibrarySection({
                                   : "Needs template"}
                               </button>
                               <button
-                                className="radius-button inline-flex min-h-11 items-center justify-center border border-service-accent bg-service-accent px-4 type-caption font-semibold text-white transition-colors hover:border-service-ink hover:bg-service-ink disabled:cursor-not-allowed disabled:border-service-border disabled:bg-white disabled:text-service-muted"
+                                className="radius-button inline-flex min-h-11 items-center justify-center border border-service-accent bg-service-accent px-4 type-caption font-semibold text-white transition-colors hover:border-service-ink hover:bg-service-ink disabled:cursor-not-allowed disabled:border-service-border disabled:bg-white disabled:opacity-60 disabled:text-service-muted"
                                 disabled={!contract}
                                 onClick={() => void copyPrompt(finalPagePrompt, page)}
                                 type="button"

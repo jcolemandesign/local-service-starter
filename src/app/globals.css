@@ -132,46 +132,6 @@
   }
 }
 
-@keyframes template-copy-confirm {
-  0% {
-    transform: translateY(0) scale(1);
-  }
-
-  18% {
-    transform: translateY(1px) scale(0.92);
-  }
-
-  48% {
-    transform: translateY(-1px) scale(1.08);
-  }
-
-  72% {
-    transform: translateY(0) scale(0.98);
-  }
-
-  100% {
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes template-copy-message {
-  0% {
-    opacity: 0;
-    transform: translateY(2px);
-  }
-
-  18%,
-  78% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateY(-2px);
-  }
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

@@ -30,6 +30,18 @@ The Page Template Copy Spec/Contract controls structure, section order, field na
 
 If a needed fact is missing, write cautious copy or use `NEEDS REVIEW: [missing detail]`. Do not invent specifics.
 
+### Voice authority
+
+The list above ranks sources for *what is true*. Voice is a separate axis and is ranked separately.
+
+The Copywriting Voice Packet and Global Copywriting Rules below are the sole authority for *how the copy sounds*: tone, voice traits, writing behavior, headline patterns, body-copy rules, CTA style, preferred phrasing territory, avoided phrases, and lever settings. They outrank any tone suggestion in the strategy brief, content plan, page context, or template intent. Do not blend in a house voice of your own.
+
+They do not work the other way. The voice packet never overrides verified facts, claim guardrails, template-fit limits, or legal/safety constraints. If following the voice would require an unsupported claim or would break a field's copy-fit limit, keep the fact and the limit, adjust the phrasing, and note it.
+
+Manual editor notes may override the voice packet for a specific page or field when they give an explicit instruction about wording. Anything less specific leaves the voice packet in control.
+
+If the Copywriting Voice Packet and Global Copywriting Rules sections are absent from this document, stop and report that they are missing rather than substituting your own tone. They are inserted when this document is exported from the Strategy Workspace, so a copy that lacks them is an incomplete download.
+
 ## 3. Business Snapshot
 
 Business name: North Star HVAC
