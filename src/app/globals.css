@@ -1158,6 +1158,34 @@ body {
     background-color: var(--color-service-surface) !important;
   }
 
+  /* Filled cards on a muted section.
+   *
+   * Muted paints the section with the service surface and remaps --live-bg-page
+   * and --live-bg-surface onto it, so every card token collapses to the section
+   * colour and filled cards read as one flat field. --live-surface-raised is
+   * deliberately not remapped, so it is the one surface that still layers.
+   *
+   * Scoped to card-fill="solid": a transparent card is meant to disappear into
+   * the section, so it must keep doing that. `:not(section)` protects sections
+   * that paint themselves with the same utility - lifting those would repaint
+   * the field this rule is trying to lift cards off. */
+  .pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"][data-pagebuilder-card-fill="solid"]
+    .bg-service-surface:not(section) {
+    background-color: var(--color-surface-raised) !important;
+  }
+
+  /* These two build their cards from the page token instead of the surface
+   * token - their sections are surface-coloured even at the default recipe - so
+   * the rule above cannot see them. Component-scoped so the page token keeps its
+   * normal meaning everywhere else, where it is also used for form controls and
+   * full-bleed wrappers that must not become raised panels. */
+  .pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"][data-pagebuilder-card-fill="solid"][data-pagebuilder-section-component="ContentHorizontalCardCarouselSectionV2"]
+    .bg-bg-page:not(section),
+  .pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"][data-pagebuilder-card-fill="solid"][data-pagebuilder-section-component="ServicesScrollCardsSectionV2"]
+    .bg-bg-page:not(section) {
+    background-color: var(--color-surface-raised) !important;
+  }
+
   .pagebuilder-section-frame[data-pagebuilder-color-recipe="dark"]:not([data-pagebuilder-section-component="ServicesBentoCardsSectionV2"]):not([data-pagebuilder-section-component="ContentSplitHeadlineImageSectionV2"]):not([data-pagebuilder-section-component="HeroSplitFullHeightSectionV3"]):not([data-pagebuilder-section-component="HeroCompactSectionV3"]):not([data-pagebuilder-section-component="HeroSplitFixedImageSectionV3"]) {
     --live-bg-page: var(--live-bg-dark);
     --live-bg-surface: color-mix(in srgb, var(--live-bg-dark) 88%, white);
@@ -1216,31 +1244,6 @@ body {
   .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"][data-pagebuilder-section-mode="Narrative"]
     > section.bg-service-surface {
     background-color: var(--live-service-accent) !important;
-  }
-
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"][data-pagebuilder-card-fill="solid"][data-pagebuilder-section-component="ContentStickyCardStreamSectionV2"]
-    article {
-    background-color: var(--color-bg-dark) !important;
-    border-color: rgb(255 255 255 / 0.16) !important;
-    box-shadow: 0 16px 36px rgb(37 49 70 / 0.18) !important;
-  }
-
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"][data-pagebuilder-card-fill="solid"][data-pagebuilder-section-component="ContentStickyCardStreamSectionV2"]
-    article
-    .text-service-ink {
-    color: #ffffff !important;
-  }
-
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"][data-pagebuilder-card-fill="solid"][data-pagebuilder-section-component="ContentStickyCardStreamSectionV2"]
-    article
-    .text-service-muted {
-    color: rgb(255 255 255 / 0.72) !important;
-  }
-
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"][data-pagebuilder-card-fill="solid"][data-pagebuilder-section-component="ContentStickyCardStreamSectionV2"]
-    article
-    .text-service-accent {
-    color: var(--live-accent-muted-text) !important;
   }
 
   .pagebuilder-section-frame[data-pagebuilder-card-fill="none"][data-pagebuilder-section-mode]

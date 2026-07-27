@@ -2,6 +2,7 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { resolveBorderWidthOption } from "@/content/section-style-options";
 import { type TypeRole, typePalettes } from "@/content/type-palettes";
 
 export type StyleGuideColorTokens = {
@@ -350,10 +351,20 @@ function normalizeStyleGuideDraft(value: unknown): StyleGuideTokenDraft {
         }, {}),
       };
 
+  // Style guides saved while `border-none` was still an option carry a `0px`
+  // width, which reads as a borderless site with no slider stop explaining it.
+  // Snap those back to the thinnest real weight on load.
+  const borderWidthOption = resolveBorderWidthOption(
+    savedDraft.activeBorderWidthName,
+    savedDraft.activeBorderWidthValue,
+  );
+
   return {
     ...defaultStyleGuideTokenDraft,
     ...savedDraft,
     ...activeTokens,
+    activeBorderWidthName: borderWidthOption.name,
+    activeBorderWidthValue: borderWidthOption.value,
     activeColorPaletteId,
     colorPaletteTokens: {
       ...colorPaletteTokens,

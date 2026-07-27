@@ -58,7 +58,10 @@ export function ContentStickyCardStreamSectionV2({
   const colors =
     colorRecipe === "muted"
       ? {
-          card: "bg-bg-page",
+          // surface-raised, not bg-bg-page: the muted frame remaps
+          // --live-bg-page onto the service surface, so a page-colored card
+          // renders as the same flat field as the section behind it.
+          card: "bg-surface-raised",
           eyebrow: "text-service-accent",
           section: "bg-service-surface",
         }

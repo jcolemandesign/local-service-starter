@@ -11,6 +11,11 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives/SevenColumnGrid";
+import {
+  isStyleFieldPath,
+  splitImageRatioFieldOptions,
+  styleFieldOptions,
+} from "@/content/section-style-options";
 
 type ContentEditorSectionProps = {
   initialClientSlug?: string;
@@ -18,7 +23,9 @@ type ContentEditorSectionProps = {
   pages: ContentEditorPage[];
 };
 
-type FieldFilter = "all" | ContentEditorField["kind"];
+// "style" is not a field kind - style overrides are stored as `meta` and
+// identified by path - so the filter carries it alongside the real kinds.
+type FieldFilter = "all" | "style" | ContentEditorField["kind"];
 type SaveStagedPageResponse =
   | {
       ok: true;
@@ -34,16 +41,9 @@ const fieldFilterOptions: Array<{ label: string; value: FieldFilter }> = [
   { label: "Images", value: "image" },
   { label: "Meta", value: "meta" },
   { label: "Links", value: "link" },
+  { label: "Style", value: "style" },
 ];
-const imageRatioOptions = [
-  { label: "Use template default", value: "" },
-  { label: "3:2", value: "3-2" },
-  { label: "2:3", value: "2-3" },
-  { label: "4:3", value: "4-3" },
-  { label: "3:4", value: "3-4" },
-  { label: "5:4", value: "5-4" },
-  { label: "4:5", value: "4-5" },
-] as const;
+const imageRatioOptions = splitImageRatioFieldOptions;
 
 export function ContentEditorSection({
   initialClientSlug,
@@ -114,7 +114,8 @@ export function ContentEditorSection({
   const visibleActiveFieldCount =
     fieldFilter === "all"
       ? activeFields.length
-      : activeFields.filter((field) => field.kind === fieldFilter).length;
+      : activeFields.filter((field) => matchesFieldFilter(field, fieldFilter))
+          .length;
 
   function updateField(fieldId: string, value: string) {
     setValues((currentValues) => ({
@@ -360,8 +361,8 @@ export function ContentEditorSection({
                   const visibleFields =
                     fieldFilter === "all"
                       ? section.fields
-                      : section.fields.filter(
-                          (field) => field.kind === fieldFilter,
+                      : section.fields.filter((field) =>
+                          matchesFieldFilter(field, fieldFilter),
                         );
                   const sectionDirtyCount = section.fields.filter((field) =>
                     dirtyFieldIds.includes(field.id),
@@ -491,9 +492,30 @@ function FieldEditor({
 }) {
   if (field.path.endsWith(".imageRatio")) {
     return (
-      <ImageRatioFieldEditor
+      <OptionToggleFieldEditor
+        badge="image framing"
         field={field}
+        helperText="Choose a page-specific image frame, or use the ratio saved on the template."
+        legend="Image framing"
         onChange={onChange}
+        options={imageRatioOptions}
+        originalValue={originalValue}
+        value={value}
+      />
+    );
+  }
+
+  const styleField = getStyleFieldSpec(field);
+
+  if (styleField) {
+    return (
+      <OptionToggleFieldEditor
+        badge="style"
+        field={field}
+        helperText="Restyle this section on this page only, or inherit the template value. Styling never changes which copy the section asks for."
+        legend={styleField.label}
+        onChange={onChange}
+        options={styleField.options}
         originalValue={originalValue}
         value={value}
       />
@@ -805,22 +827,36 @@ function ActionButton({
   );
 }
 
-function ImageRatioFieldEditor({
-  field,
+/**
+ * Toggle-group editor for fields with a fixed option list. Used for image
+ * framing and for the per-section style overrides - both are "pick one, or
+ * inherit the template value", so they share one control rather than growing a
+ * second near-identical panel.
+ */
+function OptionToggleFieldEditor({
+  badge,
+  helperText,
+  legend,
   onChange,
+  options,
   originalValue,
+  field,
   value,
 }: {
-  field: ContentEditorField;
+  badge: string;
+  helperText: string;
+  legend: string;
   onChange: (value: string) => void;
+  options: ReadonlyArray<{ label: string; value: string }>;
   originalValue: string;
+  field: ContentEditorField;
   value: string;
 }) {
   const isDirty = value !== originalValue;
 
   return (
     <fieldset className="grid gap-3 rounded-sm border border-service-border bg-white p-4 shadow-sm">
-      <legend className="sr-only">Image framing</legend>
+      <legend className="sr-only">{legend}</legend>
       <div className="grid gap-2">
         <span className="flex flex-wrap items-center gap-2">
           <span className={`type-caption rounded-sm px-2 py-0.5 font-semibold ${
@@ -828,7 +864,7 @@ function ImageRatioFieldEditor({
               ? "bg-service-accent text-white"
               : "border border-service-border bg-white text-service-muted"
           }`}>
-            image framing
+            {badge}
           </span>
           {isDirty ? (
             <span className="type-caption font-semibold text-service-accent">
@@ -839,12 +875,10 @@ function ImageRatioFieldEditor({
         <span className="type-text-sm font-semibold text-service-ink">
           {field.label}
         </span>
-        <span className="type-caption text-service-muted">
-          Choose a page-specific image frame, or use the ratio saved on the template.
-        </span>
+        <span className="type-caption text-service-muted">{helperText}</span>
       </div>
-      <div className="flex flex-wrap gap-2" role="group" aria-label="Image framing">
-        {imageRatioOptions.map((option) => {
+      <div className="flex flex-wrap gap-2" role="group" aria-label={legend}>
+        {options.map((option) => {
           const isActive = value === option.value;
 
           return (
@@ -931,6 +965,46 @@ function getStagedPreviewHref(pageId: string) {
   return `/dev/staged-pages/${encodeURIComponent(pageId)}`;
 }
 
+function matchesFieldFilter(field: ContentEditorField, filter: FieldFilter) {
+  if (filter === "all") {
+    return true;
+  }
+
+  // Style overrides are stored as `meta`, so they would otherwise clutter the
+  // Meta tab - which is for template directions and page metadata.
+  if (filter === "style") {
+    return isStyleFieldPath(field.path);
+  }
+
+  return field.kind === filter && !isStyleFieldPath(field.path);
+}
+
+/**
+ * Style fields are keyed by path rather than by field kind: they are stored as
+ * `meta` so they ride the existing staged-field save path with no schema
+ * change, and the `style.` path segment is what distinguishes them.
+ */
+function getStyleFieldSpec(field: ContentEditorField) {
+  if (!isStyleFieldPath(field.path)) {
+    return undefined;
+  }
+
+  const name = field.path.split(".").pop();
+
+  return name && name in styleFieldOptions
+    ? {
+        label: humanizeStyleFieldName(name),
+        options: styleFieldOptions[name as keyof typeof styleFieldOptions],
+      }
+    : undefined;
+}
+
+function humanizeStyleFieldName(name: string) {
+  return name
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/^\w/, (letter) => letter.toUpperCase());
+}
+
 function getFieldFilterLabel(fieldFilter: FieldFilter) {
   return (
     fieldFilterOptions.find((option) => option.value === fieldFilter)?.label ??
@@ -996,11 +1070,11 @@ function getOriginalValues(pages: ContentEditorPage[]) {
 
 function getFieldCounts(fields: ContentEditorField[]) {
   return fields.reduce(
-    (counts, field) => ({
-      ...counts,
-      [field.kind]: counts[field.kind] + 1,
-    }),
-    { copy: 0, image: 0, link: 0, meta: 0 },
+    (counts, field) =>
+      isStyleFieldPath(field.path)
+        ? { ...counts, style: counts.style + 1 }
+        : { ...counts, [field.kind]: counts[field.kind] + 1 },
+    { copy: 0, image: 0, link: 0, meta: 0, style: 0 },
   );
 }
 

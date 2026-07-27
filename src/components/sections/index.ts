@@ -180,7 +180,6 @@ export {
 } from "./TemplateLibrarySection";
 export { TrustBarFloatingBentoSectionV2 } from "./TrustBarFloatingBentoSectionV2";
 export {
-  TrustBarBentoAboutSectionV3,
   TrustBarFloatingBentoSectionV3,
   TrustBarSectionV3,
   TrustLogoGridSectionV3,

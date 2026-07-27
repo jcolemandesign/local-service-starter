@@ -8,6 +8,7 @@ import {
 import { StyleGuideButtonControls } from "@/components/sections/StyleGuideButtonControls";
 import { StyleGuideColorResetButton } from "@/components/sections/StyleGuideColorResetButton";
 import { useStyleGuideTokens } from "@/components/sections/StyleGuideLiveSurface";
+import { borderWidthOptions } from "@/content/section-style-options";
 
 type CompactChoiceOption = {
   label?: string;
@@ -277,12 +278,6 @@ export function StyleGuideControlBoard({
     name,
     value,
   }));
-  const borderWidthOptions = [
-    { label: "None", name: "border-none", value: "0px" },
-    { label: "Fine", name: "border-fine", value: "1px" },
-    { label: "Default", name: "border-default", value: "2px" },
-    { label: "Bold", name: "border-bold", value: "3px" },
-  ];
   const inlineGapOptions =
     gapTokens
       .find((group) => group.kind === "inline")

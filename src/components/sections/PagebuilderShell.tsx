@@ -90,6 +90,18 @@ import {
   getCanonicalSectionLabel,
   sectionLibraryV3Content,
 } from "@/content/section-library-v3";
+import {
+  cardFillOptInComponents,
+  sectionSupportsCardStyle,
+  servicesBentoVariantOptions,
+  servicesBentoVariantValues,
+  splitImageRatioOptions as fixedRatioSplitRatioOptions,
+  splitImageVariantOptions as fixedRatioSplitVariantOptions,
+  splitImageVariantOptions as splitContentImageVariantOptions,
+  type ServicesBentoVariant,
+  type SplitImageRatio,
+  type SplitImageVariant,
+} from "@/content/section-style-options";
 
 type PagebuilderShellProps = {
   previewCatalog: Record<string, ReactNode>;
@@ -162,61 +174,11 @@ const fourCardLinkGridVariantOptions = [
 type FourCardLinkGridVariant =
   (typeof fourCardLinkGridVariantOptions)[number]["value"];
 type ThreeCardLinkGridVariant = FourCardLinkGridVariant;
-const splitContentImageVariantOptions = [
-  {
-    label: "Text 3 / Image 4",
-    value: "text-3-image-4-right",
-  },
-  {
-    label: "Text 4 / Image 3",
-    value: "text-4-image-3-right",
-  },
-  {
-    label: "Image 3 / Text 4",
-    value: "image-3-left-text-4",
-  },
-  {
-    label: "Image 4 / Text 3",
-    value: "image-4-left-text-3",
-  },
-] as const;
+type SplitContentImageVariant = SplitImageVariant;
 
-type SplitContentImageVariant =
-  (typeof splitContentImageVariantOptions)[number]["value"];
+type FixedRatioSplitVariant = SplitImageVariant;
 
-const fixedRatioSplitVariantOptions = [
-  {
-    label: "Text 3 / Image 4",
-    value: "text-3-image-4-right",
-  },
-  {
-    label: "Text 4 / Image 3",
-    value: "text-4-image-3-right",
-  },
-  {
-    label: "Image 3 / Text 4",
-    value: "image-3-left-text-4",
-  },
-  {
-    label: "Image 4 / Text 3",
-    value: "image-4-left-text-3",
-  },
-] as const;
-
-const fixedRatioSplitRatioOptions = [
-  { label: "3:2", value: "3-2" },
-  { label: "2:3", value: "2-3" },
-  { label: "4:3", value: "4-3" },
-  { label: "3:4", value: "3-4" },
-  { label: "5:4", value: "5-4" },
-  { label: "4:5", value: "4-5" },
-] as const;
-
-type FixedRatioSplitVariant =
-  (typeof fixedRatioSplitVariantOptions)[number]["value"];
-
-type FixedRatioSplitRatio =
-  (typeof fixedRatioSplitRatioOptions)[number]["value"];
+type FixedRatioSplitRatio = SplitImageRatio;
 
 const heroCompactAlignOptions = [
   { label: "Left", value: "left" },
@@ -290,18 +252,7 @@ function HeadingScaleIcon({ iconSize }: { iconSize: number }) {
   );
 }
 
-const servicesBentoVariantOptions = [
-  { label: "Centered", value: "default" },
-  { label: "Split Header", value: "split-header" },
-  { label: "Offset Header", value: "offset-header" },
-] as const;
-
-const servicesBentoVariantValues = new Set<string>(
-  servicesBentoVariantOptions.map((option) => option.value),
-);
-
-type ServicesBentoVariantOption =
-  (typeof servicesBentoVariantOptions)[number]["value"];
+type ServicesBentoVariantOption = ServicesBentoVariant;
 
 function readPagebuilderPreviewVariables(): PreviewVariableStyle {
   if (typeof window === "undefined") {
@@ -579,14 +530,6 @@ function getSectionColorRecipe(section: WorkingSection): SectionColorRecipe {
   return isSectionColorRecipe(section.colorRecipe) ? section.colorRecipe : "default";
 }
 
-// These sections render no card by default - the fill is opt-in, so an unset
-// value means "none" here rather than the usual "solid". Without this, every
-// saved instance would suddenly gain a card panel behind its copy.
-const cardFillOptInComponents = new Set<string>([
-  "HeroSplitFixedImageSectionV3",
-  "ContentSplitFixedImageSectionV3",
-]);
-
 function getSectionCardFill(section: WorkingSection): SectionCardFill {
   if (section.cardFill === "none" || section.cardFill === "solid") {
     return section.cardFill;
@@ -595,32 +538,10 @@ function getSectionCardFill(section: WorkingSection): SectionCardFill {
   return cardFillOptInComponents.has(section.component) ? "none" : "solid";
 }
 
-// Only these sections read cardFill. Everything else ignores the value, so the
-// control is hidden rather than rendered as a toggle that silently does
-// nothing. Keep in sync with the components passed cardFill in this file.
-const cardFillComponents = new Set<string>([
-  contentCardTwoUpComponent,
-  contentFixedRatioSplitComponent,
-  contentHorizontalCardCarouselComponent,
-  fixedRatioSplitComponent,
-  contentStickyCardStreamComponent,
-  contentThreeColumnMixedComponent,
-  decisionSplitLargeCardsComponent,
-  faqComponent,
-  fourCardLinkGridComponent,
-  heroCompactServiceComponent,
-  projectCaseStudyGalleryComponent,
-  serviceNeedsPriorityGridComponent,
-  servicesBentoComponent,
-  servicesScrollCardsComponent,
-  servicesThreeCardsRightComponent,
-  threeCardLinkGridComponent,
-]);
-
 function sectionSupportsCardFill(
   section: PagebuilderRecipe["sectionStack"][number],
 ) {
-  return cardFillComponents.has(section.component);
+  return sectionSupportsCardStyle(section.component);
 }
 
 function getSectionCardBorder(section: WorkingSection): SectionCardBorder {
@@ -1409,13 +1330,6 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
       "Use floating trust proof when compact stats should feel more dimensional than a straight bar.",
     mode: "Proof",
     name: "Floating bento trust bar",
-  },
-  {
-    component: "TrustBarBentoAboutSectionV3",
-    instruction:
-      "Use crew images mixed with compact proof callouts when an about or trust moment should feel human and field-based.",
-    mode: "Proof",
-    name: "Bento about us bar",
   },
   {
     component: "TrustMarqueeSection",

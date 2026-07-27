@@ -2,14 +2,10 @@
 
 import { Card } from "@/components/primitives";
 import { useStyleGuideTokens } from "@/components/sections/StyleGuideLiveSurface";
-
-const borderWidthOptions = [
-  { label: "None", name: "border-none", value: "0px" },
-  { label: "Fine", name: "border-fine", value: "1px" },
-  { label: "Default", name: "border-default", value: "2px" },
-  { label: "Bold", name: "border-bold", value: "3px" },
-  { label: "Thick", name: "border-thick", value: "4px" },
-] as const;
+import {
+  borderWidthOptions,
+  resolveBorderWidthOption,
+} from "@/content/section-style-options";
 
 function SliderControl({
   label,
@@ -65,14 +61,11 @@ function SliderControl({
 
 export function StyleGuideSurfaceControls() {
   const { draft, updateDraft } = useStyleGuideTokens();
-  const activeBorderIndex = Math.max(
-    0,
-    borderWidthOptions.findIndex(
-      (option) => option.name === draft.activeBorderWidthName,
-    ),
+  const activeBorderOption = resolveBorderWidthOption(
+    draft.activeBorderWidthName,
+    draft.activeBorderWidthValue,
   );
-  const activeBorderOption =
-    borderWidthOptions[activeBorderIndex] ?? borderWidthOptions[0];
+  const activeBorderIndex = borderWidthOptions.indexOf(activeBorderOption);
 
   return (
     <div className="grid gap-5">

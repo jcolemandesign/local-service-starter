@@ -366,6 +366,7 @@ function toPreviewSection(
   id: string,
 ): PageTemplatePreviewSection {
   return {
+    cardBorder: section.cardBorder,
     cardFill: section.cardFill,
     colorRecipe: section.colorRecipe,
     component: section.component,

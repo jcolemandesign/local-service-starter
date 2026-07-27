@@ -68,7 +68,10 @@ export function ContentMainIdeaGridSectionV3({
     },
     muted: {
       body: "text-service-muted",
-      card: "border-service-border bg-bg-page shadow-service",
+      // surface-raised rather than bg-bg-page - the muted frame remaps
+      // --live-bg-page onto the service surface, which flattens the card into
+      // the section behind it.
+      card: "border-service-border bg-surface-raised shadow-service",
       eyebrow: "text-service-accent",
       heading: "text-service-ink",
       index: "text-service-accent",

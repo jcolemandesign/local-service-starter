@@ -1683,10 +1683,6 @@ export const sectionLibraryV3Collections = [
         label: "Floating bento trust bar",
         component: "trust-bar-floating-bento-v3",
       },
-      {
-        label: "Bento about-us trust bar",
-        component: "trust-bar-bento-about-v3",
-      },
       { label: "Trust marquee", component: "trust-marquee-v3" },
       { label: "Trust logo marquee", component: "trust-logo-marquee-v3" },
       { label: "Static trust logo grid", component: "trust-logo-grid-v3" },
@@ -1836,7 +1832,6 @@ export const sectionLibraryV3ComponentBySlug = {
   "project-case-study-gallery-v3": "ProjectCaseStudyGallerySectionV3",
   "trust-bar-v3": "TrustBarSectionV3",
   "trust-bar-floating-bento-v3": "TrustBarFloatingBentoSectionV3",
-  "trust-bar-bento-about-v3": "TrustBarBentoAboutSectionV3",
   "trust-marquee-v3": "TrustMarqueeSectionV3",
   "trust-logo-marquee-v3": "TrustLogoMarqueeSectionV3",
   "trust-logo-grid-v3": "TrustLogoGridSectionV3",

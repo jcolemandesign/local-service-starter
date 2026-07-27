@@ -67,7 +67,6 @@ import {
   TestimonialsMasonrySectionV3,
   TestimonialsSectionV3,
   ThankYouConfirmationSectionV3,
-  TrustBarBentoAboutSectionV3,
   TrustBarFloatingBentoSectionV3,
   TrustBarSectionV3,
   TrustLogoGridSectionV3,
@@ -401,11 +400,6 @@ const sectionElements = {
   ),
   "trust-bar-floating-bento-v3": (
     <TrustBarFloatingBentoSectionV3
-      {...sectionLibraryV3Content.trustBar}
-    />
-  ),
-  "trust-bar-bento-about-v3": (
-    <TrustBarBentoAboutSectionV3
       {...sectionLibraryV3Content.trustBar}
     />
   ),

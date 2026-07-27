@@ -65,7 +65,11 @@ const colorRecipeClasses = {
   },
   muted: {
     body: "text-service-muted",
-    card: "bg-bg-page",
+    // Not bg-bg-page: the muted frame remaps --live-bg-page to the service
+    // surface, so a page-colored card renders as the same flat field as the
+    // section behind it. surface-raised is not remapped, so a filled card still
+    // reads as a layer. See the muted card rules in globals.css.
+    card: "bg-surface-raised",
     cardText: "text-service-ink",
     cardMuted: "text-service-muted",
     eyebrow: "text-service-accent",

@@ -19,7 +19,11 @@ import {
   getStagedPageRenderData,
   type StagedPageRenderData,
 } from "@/components/sections/StagedPageCanvas";
-import { renderPageTemplateSection } from "@/components/sections/PageTemplatePreview";
+import {
+  renderPageTemplateSection,
+  resolveSectionStyleOverrides,
+} from "@/components/sections/PageTemplatePreview";
+import { resolveCardFill } from "@/content/section-style-options";
 import {
   exportManifestFile,
   listGeneratedFiles,
@@ -42,10 +46,14 @@ type ExportIssue = {
 };
 
 type ResolvedSection = {
+  cardFill: string;
+  colorRecipe: string;
   component: string;
   contentKey: string;
   mode: string;
   props: Record<string, unknown>;
+  reduceBottomPadding: boolean;
+  reduceTopPadding: boolean;
   sectionId: string;
   sourcePath: string;
 };
@@ -373,10 +381,15 @@ function resolvePageSections(
       return [];
     }
 
+    const sectionFields = renderData.fieldsBySection[section.id ?? ""] ?? [];
+    // The frame below is rebuilt rather than rendered, so it has to read the
+    // same style-resolved section the component props were built from - not the
+    // raw template section, which is blind to staged overrides.
+    const resolvedSection = resolveSectionStyleOverrides(section, sectionFields);
     const element = renderPageTemplateSection(
       section,
       index,
-      renderData.fieldsBySection[section.id ?? ""] ?? [],
+      sectionFields,
       publicNavigationLinks(renderData.navigationLinks, clientPages),
       publicHref(renderData.homeHref, clientPages),
     );
@@ -414,10 +427,14 @@ function resolvePageSections(
 
     return [
       {
+        cardFill: resolveCardFill(section.component, resolvedSection.cardFill),
+        colorRecipe: resolvedSection.colorRecipe ?? "default",
         component: section.component,
         contentKey: `section${String(index + 1).padStart(2, "0")}`,
         mode: section.mode,
         props,
+        reduceBottomPadding: Boolean(resolvedSection.reduceBottomPadding),
+        reduceTopPadding: Boolean(resolvedSection.reduceTopPadding),
         sectionId: section.id ?? `section-${index + 1}`,
         sourcePath,
       } satisfies ResolvedSection,
@@ -643,8 +660,13 @@ function buildPageFile({ page, sections }: ResolvedPage) {
     .map(
       (section) => `      <div
         className="pagebuilder-section-frame relative"
-        data-pagebuilder-color-recipe=${JSON.stringify(
-          String(section.props.colorRecipe ?? "default"),
+        data-pagebuilder-card-fill=${JSON.stringify(section.cardFill)}
+        data-pagebuilder-color-recipe=${JSON.stringify(section.colorRecipe)}
+        data-pagebuilder-padding-bottom=${JSON.stringify(
+          section.reduceBottomPadding ? "none" : "default",
+        )}
+        data-pagebuilder-padding-top=${JSON.stringify(
+          section.reduceTopPadding ? "none" : "default",
         )}
         data-pagebuilder-section-component=${JSON.stringify(section.component)}
         data-pagebuilder-section-mode=${JSON.stringify(section.mode)}

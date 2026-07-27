@@ -116,7 +116,6 @@ import { TestimonialsMasonrySectionV2 } from "@/components/sections/Testimonials
 import { TestimonialsMasonrySectionV3 } from "@/components/sections/TestimonialsMasonrySectionV3";
 import { TrustMarqueeSection } from "@/components/sections/TrustMarqueeSection";
 import {
-  TrustBarBentoAboutSectionV3,
   TrustBarFloatingBentoSectionV3,
   TrustBarSectionV3,
   TrustLogoGridSectionV3,
@@ -127,6 +126,14 @@ import {
   getCanonicalSectionLabel,
   sectionLibraryV3Content,
 } from "@/content/section-library-v3";
+import {
+  getSectionStyleFieldSpecs,
+  resolveCardFill,
+  servicesBentoVariantValues,
+  splitImageRatioValues,
+  splitImageVariantValues,
+  styleFieldPrefix,
+} from "@/content/section-style-options";
 import type { StagedPageField } from "@/utils/staged-pages";
 
 export type PageTemplatePreviewSection = {
@@ -172,33 +179,55 @@ const heroSplitFullHeightVariants = new Set<string>(
   ),
 );
 
-const heroSplitFixedImageVariants = new Set<string>([
-  "text-3-image-4-right",
-  "text-4-image-3-right",
-  "image-3-left-text-4",
-  "image-4-left-text-3",
-]);
+const heroSplitFixedImageVariants = splitImageVariantValues;
 
-const heroSplitFixedImageRatios = new Set<string>([
-  "3-2",
-  "2-3",
-  "4-3",
-  "3-4",
-  "5-4",
-  "4-5",
-]);
+const heroSplitFixedImageRatios = splitImageRatioValues;
 
 const heroCompactAlignments = new Set<string>(["left", "center", "right"]);
 const mainIdeaGridAlignments = new Set<string>(["left", "right"]);
 const projectCaseStudyGalleryAlignments = new Set<string>(["left", "right"]);
-const servicesBentoVariants = new Set<string>([
-  "default",
-  "split-header",
-  "offset-header",
-]);
+const servicesBentoVariants = servicesBentoVariantValues;
 
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
+}
+
+/**
+ * Folds a staged page's per-section style overrides onto the section the
+ * template saved.
+ *
+ * An override is stored as a `style.*` meta field whose empty value means
+ * "inherit", so this only replaces an axis the editor actually set. Applying it
+ * here - rather than at each of the ~40 render cases - means the section frame,
+ * the component props, and the site export all read the same resolved value.
+ * Resolving an already-resolved section is a no-op, so it is safe to call on
+ * both paths.
+ */
+export function resolveSectionStyleOverrides(
+  section: PageTemplatePreviewSection,
+  fields: StagedPageField[] = [],
+): PageTemplatePreviewSection {
+  if (fields.length === 0) {
+    return section;
+  }
+
+  const overrides = getSectionStyleFieldSpecs(section.component).reduce<
+    Record<string, string>
+  >((resolved, spec) => {
+    const value = fields
+      .find((field) => field.path.endsWith(`.${styleFieldPrefix}.${spec.name}`))
+      ?.value.trim();
+
+    if (value && spec.options.some((option) => option.value === value)) {
+      resolved[spec.name] = value;
+    }
+
+    return resolved;
+  }, {});
+
+  return Object.keys(overrides).length > 0
+    ? { ...section, ...overrides }
+    : section;
 }
 
 function isNavigationSection(section: PageTemplatePreviewSection) {
@@ -217,7 +246,11 @@ export function PageTemplatePreview({
   overlayNavigation = true,
   sections,
 }: PageTemplatePreviewProps) {
-  const includedSections = sections.filter(Boolean);
+  const includedSections = sections
+    .filter(Boolean)
+    .map((section) =>
+      resolveSectionStyleOverrides(section, fieldsBySection[section.id ?? ""]),
+    );
 
   return (
     <div
@@ -329,7 +362,10 @@ function TemplateSectionFrame({
         isFixed ? "fixed" : isOverlay ? "absolute" : "relative",
         className,
       )}
-      data-pagebuilder-card-fill={section.cardFill ?? "solid"}
+      data-pagebuilder-card-fill={resolveCardFill(
+        section.component,
+        section.cardFill,
+      )}
       data-pagebuilder-color-recipe={section.colorRecipe ?? "default"}
       data-pagebuilder-section-component={section.component}
       data-pagebuilder-section-mode={section.mode}
@@ -346,7 +382,7 @@ function TemplateSectionFrame({
 }
 
 export function renderPageTemplateSection(
-  section: PageTemplatePreviewSection,
+  rawSection: PageTemplatePreviewSection,
   index: number,
   fields: StagedPageField[] = [],
   navigationLinks: SiteNavigationLink[] = [],
@@ -354,6 +390,7 @@ export function renderPageTemplateSection(
 ) {
   const headingLevel = index === 1 ? 1 : 2;
   const fieldSection = { fields };
+  const section = resolveSectionStyleOverrides(rawSection, fields);
 
   switch (section.component) {
     case "NavPrimarySectionV2":
@@ -455,8 +492,6 @@ export function renderPageTemplateSection(
       return <TrustBarSectionV3 {...trustBarProps(fieldSection)} />;
     case "TrustBarFloatingBentoSectionV3":
       return <TrustBarFloatingBentoSectionV3 {...trustBarProps(fieldSection)} />;
-    case "TrustBarBentoAboutSectionV3":
-      return <TrustBarBentoAboutSectionV3 {...trustBarProps(fieldSection)} />;
     case "TrustMarqueeSection":
       return <TrustMarqueeSection {...trustMarqueeProps(fieldSection)} />;
     case "TrustMarqueeSectionV3":

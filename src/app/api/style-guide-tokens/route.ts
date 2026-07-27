@@ -266,10 +266,15 @@ function normalizeOptionalNumber(
   return Math.min(max, Math.max(min, value));
 }
 
+// `0px` is no longer offered by the controls but stays accepted here so style
+// guides saved before the zero-width option was retired still load; the draft
+// normalizer snaps them up to the thinnest real weight on read. `4px` is the
+// "Thick" stop, which the surface controls have long offered and this validator
+// used to reject, failing the save with no visible cause.
 function normalizeBorderWidth(value: unknown) {
   if (
     typeof value !== "string" ||
-    !/^(0|0\.5|1|2|3)px$/.test(value)
+    !/^(0|0\.5|1|2|3|4)px$/.test(value)
   ) {
     throw new Error("Invalid border width.");
   }

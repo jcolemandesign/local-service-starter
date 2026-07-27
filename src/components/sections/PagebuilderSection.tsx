@@ -106,7 +106,6 @@ import { TestimonialsMasonrySectionV2 } from "@/components/sections/Testimonials
 import { TestimonialsMasonrySectionV3 } from "@/components/sections/TestimonialsMasonrySectionV3";
 import { TrustMarqueeSection } from "@/components/sections/TrustMarqueeSection";
 import {
-  TrustBarBentoAboutSectionV3,
   TrustBarFloatingBentoSectionV3,
   TrustBarSectionV3,
   TrustLogoGridSectionV3,
@@ -372,12 +371,6 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
     case "TrustBarFloatingBentoSectionV3":
       return (
         <TrustBarFloatingBentoSectionV3
-          {...sectionLibraryV3Content.trustBar}
-        />
-      );
-    case "TrustBarBentoAboutSectionV3":
-      return (
-        <TrustBarBentoAboutSectionV3
           {...sectionLibraryV3Content.trustBar}
         />
       );
@@ -905,12 +898,6 @@ export function PagebuilderSection() {
       "TrustBarFloatingBentoSectionV3",
       "Proof",
       "Floating bento trust bar",
-      2,
-    ),
-    TrustBarBentoAboutSectionV3: previewCatalogEntry(
-      "TrustBarBentoAboutSectionV3",
-      "Proof",
-      "Bento about us bar",
       2,
     ),
     TrustMarqueeSection: previewCatalogEntry(

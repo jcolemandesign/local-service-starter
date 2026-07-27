@@ -21,6 +21,7 @@ type PageTemplateSection = {
   variant?: string;
   colorRecipe?: string;
   cardFill?: string;
+  cardBorder?: string;
 };
 
 type PageTemplateRequest = {
@@ -394,6 +395,8 @@ function normalizeSection(section: PageTemplateSection): PageTemplateSection {
     colorRecipe:
       typeof section.colorRecipe === "string" ? section.colorRecipe : undefined,
     cardFill: typeof section.cardFill === "string" ? section.cardFill : undefined,
+    cardBorder:
+      typeof section.cardBorder === "string" ? section.cardBorder : undefined,
     ratio: typeof section.ratio === "string" ? section.ratio : undefined,
     variant: typeof section.variant === "string" ? section.variant : undefined,
   };

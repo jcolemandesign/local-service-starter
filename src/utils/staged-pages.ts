@@ -1,10 +1,15 @@
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type {
+  SectionCardBorder,
   SectionCardFill,
   SectionColorRecipe,
 } from "@/content/section-color-recipes";
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
+import {
+  getSectionStyleFieldSpecs,
+  styleFieldPrefix,
+} from "@/content/section-style-options";
 import { readStrategyPageSlots } from "@/utils/client-page-slots";
 import { getSectionId, getSectionIdRenames } from "@/utils/section-id";
 import {
@@ -55,6 +60,7 @@ export type StagedPageField = {
 };
 
 export type StagedPageTemplateSection = {
+  cardBorder?: SectionCardBorder;
   cardFill?: SectionCardFill;
   colorRecipe?: SectionColorRecipe;
   component: string;
@@ -646,10 +652,10 @@ function reconcileTemplateCopyFields(
     sections.flatMap((section, index) => {
       const sectionId = getSectionId(section, index);
 
-      return getTemplateAssetFieldsForSection(section).map((field) => [
-        `${sectionId}.${field.name}`,
-        field,
-      ] as const);
+      return [
+        ...getTemplateAssetFieldsForSection(section),
+        ...getTemplateStyleFieldsForSection(section),
+      ].map((field) => [`${sectionId}.${field.name}`, field] as const);
     }),
   );
   const nextFields = fields.map((field) => {
@@ -679,6 +685,7 @@ function reconcileTemplateCopyFields(
         value: "",
       })),
       ...getTemplateAssetFieldsForSection(section),
+      ...getTemplateStyleFieldsForSection(section),
     ]
       .filter((field) => !existingPaths.has(`${sectionId}.${field.name}`))
       .map((field) =>
@@ -766,7 +773,10 @@ export function buildStrategyTemplateStagedPage({
     ...template.sections.flatMap((section, index) => {
       const sectionId = getSectionId(section, index);
       const sectionFields = getTemplateCopyFieldsForSection(section);
-      const assetFields = getTemplateAssetFieldsForSection(section);
+      const assetFields = [
+        ...getTemplateAssetFieldsForSection(section),
+        ...getTemplateStyleFieldsForSection(section),
+      ];
 
       return [
         stagedField({
@@ -1088,6 +1098,25 @@ type TemplateAssetField = {
   name: string;
   value: string;
 };
+
+/**
+ * The copy-neutral style overrides a staged page can set per section.
+ *
+ * Seeded empty, which means "inherit the value pagebuilder saved on the
+ * template". Only the axes that cannot change which fields a section renders
+ * are offered - see `getSectionStyleFieldSpecs`. Because the staged preview and
+ * the site export both render through `renderPageTemplateSection`, an override
+ * honored by the preview is emitted by the export with no extra wiring.
+ */
+export function getTemplateStyleFieldsForSection(
+  section: StagedPageTemplateSection,
+): TemplateAssetField[] {
+  return getSectionStyleFieldSpecs(section.component).map((spec) => ({
+    kind: "meta" as const,
+    name: `${styleFieldPrefix}.${spec.name}`,
+    value: "",
+  }));
+}
 
 export function getTemplateAssetFieldsForSection(
   section: StagedPageTemplateSection,

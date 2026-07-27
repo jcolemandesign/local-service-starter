@@ -8,6 +8,10 @@ import {
   type StagedPageVariant,
 } from "@/utils/staged-page-variant";
 import { getCanonicalSectionLabel } from "@/content/section-library-v3";
+import {
+  getSectionStyleFieldSpecs,
+  styleFieldPrefix,
+} from "@/content/section-style-options";
 import { readStrategyPageSlots } from "@/utils/client-page-slots";
 import { sortPagesBySitemap } from "@/utils/sitemap-page-order";
 import { getTemplateCopyFieldsForSection } from "@/utils/template-copy-contract";
@@ -132,6 +136,7 @@ function mapStagedPageToContentEditorPage(
   const fields = [
     ...(Array.isArray(page.fields) ? page.fields : []),
     ...getMissingImageRatioFields(page),
+    ...getMissingStyleFields(page),
   ];
   const fallbacksByPath = getFieldFallbacksByPath(page);
   const sectionLabelsById = getSectionLabelsById(page);
@@ -293,6 +298,31 @@ function getMissingImageRatioFields(page: StagedEditorPage): StagedEditorField[]
             value: "",
           },
         ];
+  });
+}
+
+/**
+ * Surfaces the per-section style overrides on pages that were staged before
+ * these fields existed, so an older staged page gets the controls without
+ * needing a restage. Mirrors `getMissingImageRatioFields`; both are additive
+ * and seed an empty "inherit" value, so neither changes how a page renders
+ * until the editor actually picks something.
+ */
+function getMissingStyleFields(page: StagedEditorPage): StagedEditorField[] {
+  const existingPaths = new Set((page.fields ?? []).map((field) => field.path));
+
+  return (page.template?.sections ?? []).flatMap((section, index) => {
+    const sectionId = getSectionId(section, index);
+
+    return getSectionStyleFieldSpecs(section.component ?? "")
+      .map((spec) => `${sectionId}.${styleFieldPrefix}.${spec.name}`)
+      .filter((path) => !existingPaths.has(path))
+      .map((path) => ({
+        id: `${page.pageId}.${path}`,
+        kind: "meta" as const,
+        path,
+        value: "",
+      }));
   });
 }
 
