@@ -124,7 +124,10 @@ function ModalPrefillForm() {
         </div>
       </fieldset>
       <button
-        className="radius-button type-label min-h-12 cursor-pointer bg-service-accent px-6 text-text-inverse transition-colors hover:bg-bg-dark disabled:cursor-not-allowed disabled:bg-service-muted"
+        // See ContactSectionModalBegin: service-muted is a text token that the
+        // dark/accent recipes remap to a near-white, so using it as the
+        // disabled fill hid the white label. Dim both together instead.
+        className="radius-button type-label min-h-12 cursor-pointer bg-service-accent px-6 text-text-inverse transition-colors hover:bg-bg-dark disabled:cursor-not-allowed disabled:opacity-50"
         disabled={!canContinue}
         type="submit"
       >

@@ -125,7 +125,12 @@ export function ContactSectionModalBegin({
 
             <div className="grid gap-3">
               <button
-                className="radius-button type-label min-h-12 cursor-pointer bg-service-accent px-6 text-text-inverse transition-colors hover:bg-bg-dark disabled:cursor-not-allowed disabled:bg-service-muted"
+                // Disabled dims the whole button rather than swapping the fill
+                // to service-muted: that is a text token, and the dark/accent
+                // recipes remap it to a near-white so the white label vanished
+                // into it. Fading label and fill together keeps the contrast
+                // ratio intact in every recipe.
+                className="radius-button type-label min-h-12 cursor-pointer bg-service-accent px-6 text-text-inverse transition-colors hover:bg-bg-dark disabled:cursor-not-allowed disabled:opacity-50"
                 disabled={!canContinue}
                 type="submit"
               >

@@ -2150,24 +2150,43 @@ body {
    meant for the dark admin shell. Two ancestor classes outrank the
    single-class .strategy-chrome selectors above regardless of source
    order, so this wins without needing !important escalation tricks. */
+/* Reset to the `--live-*` variables, not `--color-*`.
+ *
+ * `--color-service-ink` and friends are pinned to a single literal at :root by
+ * the generated style-guide block, so resetting to them freezes the preview at
+ * the default light recipe. The per-section recipes work by redefining the
+ * `--live-*` variables on `.pagebuilder-section-frame`, which is exactly what
+ * the real utilities read - so pointing these resets at `--live-*` restores the
+ * cascade instead of pinning a value, and dark/accent/muted sections invert
+ * here the same way they do on every other preview surface.
+ *
+ * The fallbacks mirror the `@theme inline` defaults so a preview still renders
+ * correctly when no style guide has been saved. */
 .strategy-chrome .strategy-template-preview :is(.text-text-main, .text-service-ink) {
-  color: var(--color-service-ink) !important;
+  color: var(--live-service-ink, #17211d) !important;
 }
 
 .strategy-chrome .strategy-template-preview :is(.text-text-muted, .text-service-muted) {
-  color: var(--color-service-muted) !important;
+  color: var(--live-service-muted, #5f6f68) !important;
 }
 
 .strategy-chrome .strategy-template-preview .text-service-accent {
-  color: var(--color-service-accent) !important;
+  color: var(--live-service-accent, #1f7a5a) !important;
 }
 
 .strategy-chrome .strategy-template-preview :is(.border-service-border, .border-service-accent\/35) {
-  border-color: var(--color-service-border) !important;
+  border-color: var(--live-service-border, #dfe7e1) !important;
 }
 
-.strategy-chrome .strategy-template-preview :is(.bg-bg-surface, .bg-bg-surface\/92, .bg-service-surface) {
-  background-color: var(--color-bg-surface) !important;
+/* Split from the surface token below: `bg-bg-surface` and `bg-service-surface`
+ * are separate variables that the muted recipe drives to different values. */
+.strategy-chrome .strategy-template-preview :is(.bg-bg-surface, .bg-bg-surface\/92) {
+  background-color: var(--live-bg-surface, #f4f7f3) !important;
+  background-image: none !important;
+}
+
+.strategy-chrome .strategy-template-preview .bg-service-surface {
+  background-color: var(--live-service-surface, #f4f7f3) !important;
   background-image: none !important;
 }
 
