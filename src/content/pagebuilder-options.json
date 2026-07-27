@@ -9,8 +9,8 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-07-26T20:22:21.351Z",
-      "sectionCount": 12,
+      "savedAt": "2026-07-26T20:32:44.073Z",
+      "sectionCount": 11,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
@@ -161,6 +161,7 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "slotId": "slot-3242808eb4a9",
+          "variant": "modal-prefill",
           "colorRecipe": "dark",
           "cardFill": "solid"
         },
@@ -176,20 +177,6 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "slotId": "slot-616fe0e056da",
-          "colorRecipe": "default",
-          "cardFill": "solid"
-        },
-        {
-          "component": "ContactSectionModalBegin",
-          "id": "classic-service-ContactSectionModalBegin-added-1",
-          "included": true,
-          "instruction": "Begin the request flow in-page with system and service choices, then carry those answers into step two of the request modal.",
-          "mode": "Utility",
-          "name": "Contact section modal begin",
-          "originalComponent": "ContactSectionModalBegin",
-          "originalIndex": -1,
-          "reduceBottomPadding": false,
-          "reduceTopPadding": false,
           "colorRecipe": "default",
           "cardFill": "solid"
         }
