@@ -41,6 +41,8 @@ import {
   FooterSectionV3,
   FourCardLinkGridSectionV3,
   ThreeCardLinkGridSectionV3,
+  ServiceCalloutRevealGridSectionV3,
+  ServiceCalloutSplitPanelSectionV3,
   ServiceNeedsPriorityGridSectionV3,
   HeroCenteredFloatersSectionV2,
   HeroCompactSectionV3,
@@ -308,6 +310,16 @@ const sectionElements = {
   "service-needs-priority-grid-v3": (
     <ServiceNeedsPriorityGridSectionV3
       {...sectionLibraryV3Content.serviceNeedsPriorityGrid}
+    />
+  ),
+  "service-callout-reveal-grid-v3": (
+    <ServiceCalloutRevealGridSectionV3
+      {...sectionLibraryV3Content.serviceCalloutRevealGrid}
+    />
+  ),
+  "service-callout-split-panel-v3": (
+    <ServiceCalloutSplitPanelSectionV3
+      {...sectionLibraryV3Content.serviceCalloutSplitPanel}
     />
   ),
   "services-hover-panel-v2": (

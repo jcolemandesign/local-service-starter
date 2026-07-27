@@ -82,6 +82,8 @@ import {
 import { FooterSectionV2 } from "@/components/sections/FooterSectionV2";
 import { FooterLinkPanelSectionV3 } from "@/components/sections/FooterLinkPanelSectionV3";
 import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
+import { ServiceCalloutRevealGridSectionV3 } from "@/components/sections/ServiceCalloutRevealGridSectionV3";
+import { ServiceCalloutSplitPanelSectionV3 } from "@/components/sections/ServiceCalloutSplitPanelSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import {
@@ -224,6 +226,12 @@ function getCompactHeaderHeadingSize(
 
   if (section.variant?.endsWith("heading-xl")) {
     return "heading-xl";
+  }
+
+  // See PagebuilderShell: the largest size cannot rely on the fallback,
+  // because section header content defaults to heading-xl.
+  if (section.variant?.endsWith("display-lg")) {
+    return "display-lg";
   }
 
   return section.component === "HeroCompactSectionV3"
@@ -404,6 +412,22 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           showImages={section.variant !== "text-only"}
+        />
+      );
+    case "ServiceCalloutRevealGridSectionV3":
+      return (
+        <ServiceCalloutRevealGridSectionV3
+          {...sectionLibraryV3Content.serviceCalloutRevealGrid}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
+    case "ServiceCalloutSplitPanelSectionV3":
+      return (
+        <ServiceCalloutSplitPanelSectionV3
+          {...sectionLibraryV3Content.serviceCalloutSplitPanel}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "ThreeCardLinkGridSectionV3":
@@ -1020,6 +1044,18 @@ export function PagebuilderSection() {
       "Scan",
       "Service needs priority grid",
       4,
+    ),
+    ServiceCalloutRevealGridSectionV3: previewCatalogEntry(
+      "ServiceCalloutRevealGridSectionV3",
+      "Decision",
+      "Callout cards with reveal panel",
+      6,
+    ),
+    ServiceCalloutSplitPanelSectionV3: previewCatalogEntry(
+      "ServiceCalloutSplitPanelSectionV3",
+      "Decision",
+      "Callout cards with side panel",
+      6,
     ),
     HeroServicesSectionV3: (
       <div key="HeroServicesSectionV3">

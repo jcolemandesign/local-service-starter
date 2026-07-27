@@ -719,6 +719,92 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
+  serviceCalloutRevealGrid: {
+    closeLabel: "Close details",
+    openHint: "See what to do",
+    items: [
+      {
+        title: "No Heat or No Cooling",
+        body: "The system runs but the home is not holding temperature, and adjusting the thermostat no longer changes anything.",
+        panelHeading: "Get the system looked at today",
+        panelBody:
+          "A system that runs without reaching temperature usually points to airflow, refrigerant, or a control problem. Describe what changed and when, and the office will confirm the soonest realistic visit window before anything is scheduled.",
+        actionLabel: "Request urgent service",
+        actionHref: "/contact",
+      },
+      {
+        title: "Uneven or Weak Airflow",
+        body: "Some rooms never match the rest of the house, and the vents in those rooms barely move air even while the system runs.",
+        panelHeading: "Find out what is restricting the air",
+        panelBody:
+          "Rooms that stay warmer or cooler than the rest of the home usually trace back to duct condition, filter restriction, or an undersized system. A technician measures airflow room by room before recommending any change.",
+        actionLabel: "Book an airflow check",
+        actionHref: "/contact",
+      },
+      {
+        title: "New Noises or Short Cycling",
+        body: "The system sounds different than it used to, or it starts and stops again within a few minutes of beginning a cycle.",
+        panelHeading: "Have the change checked before it grows",
+        panelBody:
+          "New sounds and frequent cycling are early signals, and they are far cheaper to address before the system fails outright. Note when the change started and the visit can focus on the components most likely responsible.",
+        actionLabel: "Schedule a diagnostic",
+        actionHref: "/contact",
+      },
+      {
+        title: "Planning a Replacement",
+        body: "The equipment is aging and still running, but you want the repair and replacement options in writing before deciding.",
+        panelHeading: "Compare repair and replacement side by side",
+        panelBody:
+          "Older equipment does not always need replacing right away. You get the current condition, the realistic remaining life, and written pricing for both paths, so the decision can wait until it makes sense for the household.",
+        actionLabel: "Request a written quote",
+        actionHref: "/contact",
+      },
+    ],
+  },
+  serviceCalloutSplitPanel: {
+    introHeading: "Start with what the system is actually doing",
+    introBody:
+      "Most calls start with a symptom rather than a service name, and the right next step depends on which one it is. Choose the description that matches what you are seeing at home and this panel will explain what usually causes it and what the visit involves.",
+    openHint: "See what to do",
+    items: [
+      {
+        title: "No Heat or No Cooling",
+        body: "The system runs but the home is not holding temperature.",
+        panelHeading: "Get the system looked at today",
+        panelBody:
+          "A system that runs without reaching temperature usually points to airflow, refrigerant, or a control problem. Describe what changed and when, and the office will confirm the soonest realistic visit window before anything is scheduled.",
+        actionLabel: "Request urgent service",
+        actionHref: "/contact",
+      },
+      {
+        title: "Uneven or Weak Airflow",
+        body: "Some rooms never match the rest of the house.",
+        panelHeading: "Find out what is restricting the air",
+        panelBody:
+          "Rooms that stay warmer or cooler than the rest of the home usually trace back to duct condition, filter restriction, or an undersized system. A technician measures airflow room by room before recommending any change.",
+        actionLabel: "Book an airflow check",
+        actionHref: "/contact",
+      },
+      {
+        title: "New Noises or Short Cycling",
+        body: "The system sounds different or cycles too often.",
+        panelHeading: "Have the change checked before it grows",
+        panelBody:
+          "New sounds and frequent cycling are early signals, and they are far cheaper to address before the system fails outright. Note when the change started and the visit can focus on the components most likely responsible.",
+        actionLabel: "Schedule a diagnostic",
+        actionHref: "/contact",
+      },
+      {
+        title: "Planning a Replacement",
+        body: "The equipment is aging and you want options in writing.",
+        panelHeading: "Compare repair and replacement side by side",
+        panelBody:
+          "Older equipment does not always need replacing right away. You get the current condition, the realistic remaining life, and written pricing for both paths, so the decision can wait until it makes sense for the household.",
+        actionLabel: "Request a written quote",
+        actionHref: "/contact",
+      },
+    ],
+  },
   threeCardLinkGrid: {
     linkLabel: "Learn more",
     items: [
@@ -1549,7 +1635,7 @@ export const sectionLibraryV3Collections = [
     title: "Section Headers",
     items: [
       {
-        label: "Compact section header",
+        label: "Section header content",
         component: "section-header-compact-v3",
       },
       {
@@ -1718,6 +1804,14 @@ export const sectionLibraryV3Collections = [
         label: "Process image checklist",
         component: "process-image-checklist-v3",
       },
+      {
+        label: "Callout cards with reveal panel",
+        component: "service-callout-reveal-grid-v3",
+      },
+      {
+        label: "Callout cards with side panel",
+        component: "service-callout-split-panel-v3",
+      },
     ],
   },
   {
@@ -1799,6 +1893,8 @@ export const sectionLibraryV3ComponentBySlug = {
   "four-card-link-grid-v3": "FourCardLinkGridSectionV3",
   "three-card-link-grid-v3": "ThreeCardLinkGridSectionV3",
   "service-needs-priority-grid-v3": "ServiceNeedsPriorityGridSectionV3",
+  "service-callout-reveal-grid-v3": "ServiceCalloutRevealGridSectionV3",
+  "service-callout-split-panel-v3": "ServiceCalloutSplitPanelSectionV3",
   "content-horizontal-card-carousel-v2":
     "ContentHorizontalCardCarouselSectionV2",
   "quick-page-links-v2": "QuickPageLinksSectionV2",

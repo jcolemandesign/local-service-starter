@@ -85,6 +85,8 @@ export const cardStyleComponents = new Set<string>([
   "HeroCompactServiceSectionV3",
   "HeroSplitFixedImageSectionV3",
   "ProjectCaseStudyGallerySectionV3",
+  "ServiceCalloutRevealGridSectionV3",
+  "ServiceCalloutSplitPanelSectionV3",
   "ServiceNeedsPriorityGridSectionV3",
   "ServicesBentoCardsSectionV2",
   "ServicesScrollCardsSectionV2",

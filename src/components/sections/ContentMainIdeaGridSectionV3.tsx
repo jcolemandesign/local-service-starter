@@ -103,11 +103,22 @@ export function ContentMainIdeaGridSectionV3({
         padding="lrg"
       >
         <LayoutGridItem
+          alignY="stretch"
           className={`${layout.header} row-span-2 max-lg:col-span-10 max-lg:col-start-1 max-lg:row-span-1 max-md:col-span-6 max-sm:col-span-2`}
         >
+          {/* No justify-between and no min-height floor: both were padding the
+              card out well past its copy, and the gap they opened between the
+              title and the body was most of the card's height. The body now
+              follows the title on the shared display-to-body step.
+
+              Centered rather than top-aligned because this card spans both
+              point-card rows: whichever side has more copy sets the height, so
+              when the points win, the leftover has to go somewhere. Centering
+              splits it above and below as even padding instead of pooling it
+              all under the body. */}
           <article
             className={cx(
-              "fluid-type-frame flex h-full min-h-96 flex-col justify-between rounded-[var(--radius-surface-token)] border p-8 max-md:min-h-0 max-md:p-6",
+              "fluid-type-frame flex h-full flex-col justify-center rounded-[var(--radius-surface-token)] border p-8 max-md:p-6",
               colors.card,
             )}
           >
@@ -124,7 +135,7 @@ export function ContentMainIdeaGridSectionV3({
             </div>
             <p
               className={cx(
-                "type-text-lg measure-copy-wide wrap-pretty mt-12 max-md:mt-8",
+                "type-text-lg measure-copy-wide wrap-pretty mt-display-body",
                 colors.body,
               )}
             >
@@ -134,7 +145,13 @@ export function ContentMainIdeaGridSectionV3({
         </LayoutGridItem>
 
         {points.slice(0, 4).map((point, index) => (
+          // Stretch, not the default top alignment: the row-spanning header
+          // sets both row heights, so a top-aligned card stops at its own
+          // min-height and leaves the remainder as dead space under it. That
+          // read as an oversized gap between the two card rows and kept the
+          // bottom row from meeting the header's bottom edge.
           <LayoutGridItem
+            alignY="stretch"
             className={`col-span-3 ${layout.points[index]} max-lg:col-span-5 max-lg:col-start-auto max-lg:row-auto max-md:col-span-3 max-sm:col-span-2`}
             key={`${index}-${point.title}`}
           >

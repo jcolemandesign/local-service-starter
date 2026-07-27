@@ -39,6 +39,8 @@ import {
 } from "@/components/sections/ServicesBentoCardsSectionV2";
 import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
+import { ServiceCalloutRevealGridSectionV3 } from "@/components/sections/ServiceCalloutRevealGridSectionV3";
+import { ServiceCalloutSplitPanelSectionV3 } from "@/components/sections/ServiceCalloutSplitPanelSectionV3";
 import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import type { ServiceNeedsPriorityGridAlign } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
@@ -147,6 +149,8 @@ const servicesBentoComponent = "ServicesBentoCardsSectionV2";
 const fourCardLinkGridComponent = "FourCardLinkGridSectionV3";
 const threeCardLinkGridComponent = "ThreeCardLinkGridSectionV3";
 const serviceNeedsPriorityGridComponent = "ServiceNeedsPriorityGridSectionV3";
+const serviceCalloutRevealGridComponent = "ServiceCalloutRevealGridSectionV3";
+const serviceCalloutSplitPanelComponent = "ServiceCalloutSplitPanelSectionV3";
 const featureAsymmetricCardsComponent = "FeatureAsymmetricCardsSectionV3";
 const contentSplitHeadlineImageComponent = "ContentSplitHeadlineImageSectionV2";
 const contentMainIdeaGridComponent = "ContentMainIdeaGridSectionV3";
@@ -513,6 +517,18 @@ function isServiceNeedsPriorityGridSection(
   return section.component === serviceNeedsPriorityGridComponent;
 }
 
+function isServiceCalloutRevealGridSection(
+  section: PagebuilderRecipe["sectionStack"][number],
+) {
+  return section.component === serviceCalloutRevealGridComponent;
+}
+
+function isServiceCalloutSplitPanelSection(
+  section: PagebuilderRecipe["sectionStack"][number],
+) {
+  return section.component === serviceCalloutSplitPanelComponent;
+}
+
 function isCardLinkGridSection(section: PagebuilderRecipe["sectionStack"][number]) {
   return (
     isFourCardLinkGridSection(section) ||
@@ -671,6 +687,14 @@ function getCompactHeaderHeadingSize(
 
   if (section.variant?.endsWith("heading-xl")) {
     return "heading-xl";
+  }
+
+  // The largest size needs its own branch rather than riding the fallback.
+  // Compact hero defaults to display-lg, so selecting it there looked like it
+  // worked; section header content defaults to heading-xl, so the same click
+  // resolved back to the middle size and the control appeared dead.
+  if (section.variant?.endsWith("display-lg")) {
+    return "display-lg";
   }
 
   return isHeroCompactSection(section)
@@ -1125,6 +1149,22 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     name: "Service needs priority grid",
   },
   {
+    component: "ServiceCalloutRevealGridSectionV3",
+    instruction:
+      "Show four problem-first callout cards in a 2x2 block on the 14-column grid. Clicking a card reveals a panel over the whole block with that card's detail and its own CTA. Card copy is left-aligned and runs the full card width; the cards carry no imagery.",
+    layoutGrid: 14,
+    mode: "Decision",
+    name: "Callout cards with reveal panel",
+  },
+  {
+    component: "ServiceCalloutSplitPanelSectionV3",
+    instruction:
+      "Show four problem-first callout cards three columns wide, stacked 2x2 across the left six columns, beside a standing panel in columns 8-14. The panel opens on a general statement about identifying the problem, then swaps to the selected card's detail and its own CTA. The cards carry no imagery.",
+    layoutGrid: 14,
+    mode: "Decision",
+    name: "Callout cards with side panel",
+  },
+  {
     component: "ServicesBentoCardsSectionV2",
     instruction:
       "Use 6-9 bento-style service cards for a fuller service scan. The fixed layout rhythm is big small small, small small big, then big small small.",
@@ -1562,7 +1602,7 @@ const innerOptionSignifiers: Partial<
     pattern: "align",
   },
   SectionHeaderCompactSectionV3: {
-    label: "Compact section header",
+    label: "Section header content",
     pattern: "align",
   },
   SectionHeaderLargeSectionV3: {
@@ -3253,6 +3293,18 @@ export function PagebuilderShell({
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
             showImages={getCardLinkGridVariant(section) === "with-images"}
+          />
+        ) : isServiceCalloutRevealGridSection(section) ? (
+          <ServiceCalloutRevealGridSectionV3
+            {...sectionLibraryV3Content.serviceCalloutRevealGrid}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
+          />
+        ) : isServiceCalloutSplitPanelSection(section) ? (
+          <ServiceCalloutSplitPanelSectionV3
+            {...sectionLibraryV3Content.serviceCalloutSplitPanel}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
           />
         ) : isServiceNeedsPriorityGridSection(section) ? (
           <ServiceNeedsPriorityGridSectionV3

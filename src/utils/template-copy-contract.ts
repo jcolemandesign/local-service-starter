@@ -1162,6 +1162,152 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  // Three parallel four-line fields, read positionally: line 1 of each belongs
+  // to card 1. Splitting them this way keeps every line in the existing
+  // "Title - Description" / "Label -> path" shapes the rest of the contract
+  // uses, rather than inventing a wide per-card delimiter format.
+  if (component.includes("servicecalloutrevealgrid")) {
+    return [
+      {
+        example: [
+          "No Heat or No Cooling - The system runs but the home is not holding temperature, and adjusting the thermostat no longer changes anything.",
+          "Uneven or Weak Airflow - Some rooms never match the rest of the house, and the vents in those rooms barely move air even while the system runs.",
+          "New Noises or Short Cycling - The system sounds different than it used to, or it starts and stops again within a few minutes of beginning a cycle.",
+          "Planning a Replacement - The equipment is aging and still running, but you want the repair and replacement options in writing before deciding.",
+        ],
+        format: "Exactly four lines as Title - Card teaser.",
+        itemCount: 4,
+        name: "calloutItems",
+        purpose:
+          "The four clickable card faces, written as the problem the visitor is experiencing rather than the service name. Order maps left to right, top to bottom.",
+        target:
+          "Exactly 4 items. Titles 14-34 characters. Teasers 100-160 characters - two clauses that describe the symptom concretely, not a one-line label.",
+      },
+      {
+        example: [
+          "Get the system looked at today - A system that runs without reaching temperature usually points to airflow, refrigerant, or a control problem. Describe what changed and the office will confirm the soonest realistic visit window.",
+          "Find out what is restricting the air - Rooms that stay warmer or cooler than the rest of the home usually trace back to duct condition, filter restriction, or an undersized system. A technician measures airflow room by room first.",
+          "Have the change checked before it grows - New sounds and frequent cycling are early signals, and they are cheaper to address before the system fails outright. Note when the change started so the visit can focus there.",
+          "Compare repair and replacement side by side - Older equipment does not always need replacing right away. You get the current condition, the realistic remaining life, and written pricing for both paths.",
+        ],
+        format:
+          "Exactly four lines as Panel heading - Panel body. Line N is the panel for card N in calloutItems.",
+        itemCount: 4,
+        name: "calloutPanels",
+        purpose:
+          "Detail revealed over the grid when its card is clicked. Answer what is likely happening and what the visit involves, in the same order as calloutItems.",
+        target:
+          "Exactly 4 items. Headings 26-48 characters. Bodies 180-280 characters.",
+      },
+      {
+        example: [
+          "Request urgent service -> /contact",
+          "Book an airflow check -> /contact",
+          "Schedule a diagnostic -> /contact",
+          "Request a written quote -> /contact",
+        ],
+        format:
+          "Exactly four lines as CTA label -> /destination-path. Line N is the CTA for card N in calloutItems.",
+        itemCount: 4,
+        name: "calloutActions",
+        purpose:
+          "The conversion action inside each reveal panel. Each label should name the action that specific callout leads to, not a generic Learn More.",
+        target:
+          "Exactly 4 items. Labels 14-28 characters. Every item needs a valid internal destination path.",
+      },
+      {
+        example: "See what to do",
+        name: "openHint",
+        purpose:
+          "Shared prompt on every card face telling the visitor the card opens more detail.",
+        target: "10-22 characters.",
+      },
+      {
+        example: "Close details",
+        name: "closeLabel",
+        purpose:
+          "Accessible label on the panel's close control. Not shown as visible text.",
+        target: "8-20 characters.",
+      },
+    ];
+  }
+
+  // Same three parallel four-line fields as the reveal-grid variant, plus the
+  // standing panel's opening state, which has no card behind it.
+  if (component.includes("servicecalloutsplitpanel")) {
+    return [
+      {
+        example: [
+          "No Heat or No Cooling - The system runs but the home is not holding temperature.",
+          "Uneven or Weak Airflow - Some rooms never match the rest of the house.",
+          "New Noises or Short Cycling - The system sounds different or cycles too often.",
+          "Planning a Replacement - The equipment is aging and you want options in writing.",
+        ],
+        format: "Exactly four lines as Title - Card teaser.",
+        itemCount: 4,
+        name: "calloutItems",
+        purpose:
+          "The four selectable cards, written as the problem the visitor is experiencing rather than the service name. These sit three columns wide in a 2x2 block, so the teaser has to stay short.",
+        target:
+          "Exactly 4 items. Titles 14-34 characters. Teasers 45-75 characters.",
+      },
+      {
+        example: [
+          "Get the system looked at today - A system that runs without reaching temperature usually points to airflow, refrigerant, or a control problem. Describe what changed and the office will confirm the soonest realistic visit window.",
+          "Find out what is restricting the air - Rooms that stay warmer or cooler than the rest of the home usually trace back to duct condition, filter restriction, or an undersized system. A technician measures airflow room by room first.",
+          "Have the change checked before it grows - New sounds and frequent cycling are early signals, and they are cheaper to address before the system fails outright. Note when the change started so the visit can focus there.",
+          "Compare repair and replacement side by side - Older equipment does not always need replacing right away. You get the current condition, the realistic remaining life, and written pricing for both paths.",
+        ],
+        format:
+          "Exactly four lines as Panel heading - Panel body. Line N is the panel for card N in calloutItems.",
+        itemCount: 4,
+        name: "calloutPanels",
+        purpose:
+          "What the standing right-hand panel shows once its card is selected. Answer what is likely happening and what the visit involves, in the same order as calloutItems.",
+        target:
+          "Exactly 4 items. Headings 26-48 characters. Bodies 180-280 characters.",
+      },
+      {
+        example: [
+          "Request urgent service -> /contact",
+          "Book an airflow check -> /contact",
+          "Schedule a diagnostic -> /contact",
+          "Request a written quote -> /contact",
+        ],
+        format:
+          "Exactly four lines as CTA label -> /destination-path. Line N is the CTA for card N in calloutItems.",
+        itemCount: 4,
+        name: "calloutActions",
+        purpose:
+          "The conversion action shown in the panel for each card. Each label should name the action that specific callout leads to, not a generic Learn More.",
+        target:
+          "Exactly 4 items. Labels 14-28 characters. Every item needs a valid internal destination path.",
+      },
+      {
+        example: "Start with what the system is actually doing",
+        name: "introHeading",
+        purpose:
+          "Heading the panel shows before any card is selected. Frame the section as identifying the problem rather than picking a service.",
+        target: "30-52 characters.",
+      },
+      {
+        example:
+          "Most calls start with a symptom rather than a service name, and the right next step depends on which one it is. Choose the description that matches what you are seeing at home and this panel will explain what usually causes it.",
+        name: "introBody",
+        purpose:
+          "Opening panel copy that tells the visitor to choose the card matching their situation. Shown until a card is selected.",
+        target: "180-280 characters. Must direct the visitor to pick an option.",
+      },
+      {
+        example: "See what to do",
+        name: "openHint",
+        purpose:
+          "Shared prompt on every card telling the visitor the card updates the panel.",
+        target: "10-22 characters.",
+      },
+    ];
+  }
+
   if (component.includes("serviceshoverpanel")) {
     return [
       {

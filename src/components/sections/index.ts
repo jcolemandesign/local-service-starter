@@ -93,6 +93,16 @@ export {
   type ThreeCardLinkGridSectionV3Props,
 } from "./ThreeCardLinkGridSectionV3";
 export {
+  ServiceCalloutRevealGridSectionV3,
+  type ServiceCalloutRevealGridItem,
+  type ServiceCalloutRevealGridSectionV3Props,
+} from "./ServiceCalloutRevealGridSectionV3";
+export {
+  ServiceCalloutSplitPanelSectionV3,
+  type ServiceCalloutSplitPanelItem,
+  type ServiceCalloutSplitPanelSectionV3Props,
+} from "./ServiceCalloutSplitPanelSectionV3";
+export {
   FeatureOverlapRowsSectionV3,
   ProcessStepsSectionV3,
   TestimonialsSectionV3,

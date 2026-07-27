@@ -91,6 +91,8 @@ import {
 import { FooterSectionV2 } from "@/components/sections/FooterSectionV2";
 import { FooterLinkPanelSectionV3 } from "@/components/sections/FooterLinkPanelSectionV3";
 import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
+import { ServiceCalloutRevealGridSectionV3 } from "@/components/sections/ServiceCalloutRevealGridSectionV3";
+import { ServiceCalloutSplitPanelSectionV3 } from "@/components/sections/ServiceCalloutSplitPanelSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import type { ServiceNeedsPriorityGridAlign } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
@@ -526,6 +528,22 @@ export function renderPageTemplateSection(
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           showImages={section.variant !== "text-only"}
+        />
+      );
+    case "ServiceCalloutRevealGridSectionV3":
+      return (
+        <ServiceCalloutRevealGridSectionV3
+          {...serviceCalloutRevealGridProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
+    case "ServiceCalloutSplitPanelSectionV3":
+      return (
+        <ServiceCalloutSplitPanelSectionV3
+          {...serviceCalloutSplitPanelProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "ServiceNeedsPriorityGridSectionV3":
@@ -1203,6 +1221,94 @@ function threeCardLinkGridProps(section: FieldSection) {
       };
     }),
     linkLabel: getValue(section, "linkLabel", fallback.linkLabel),
+  };
+}
+
+/**
+ * Reads three parallel four-line copy fields and zips them back together by
+ * index: `calloutItems` line N is the card face, `calloutPanels` line N its
+ * reveal copy, `calloutActions` line N its CTA. Any line the contract did not
+ * produce falls back to the library item at the same index, so a short or
+ * missing field degrades one card rather than desynchronizing the rest.
+ */
+function serviceCalloutRevealGridProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.serviceCalloutRevealGrid;
+  const items = cardItemsWithFallback(
+    section,
+    ["calloutItems", "items", "cards"],
+    fallback.items,
+  );
+  const panels = getListValues(section, ["calloutPanels", "panels"], "");
+  const actions = getListValues(section, ["calloutActions", "actions"], "");
+
+  return {
+    ...fallback,
+    closeLabel: getValue(section, "closeLabel", fallback.closeLabel),
+    items: items.slice(0, 4).map((item, index) => {
+      const fallbackItem = fallback.items[index % fallback.items.length];
+      const panel = panels[index] ? parseCardItem(panels[index]) : undefined;
+      const action = actions[index] ? parseCardItem(actions[index]) : undefined;
+
+      return {
+        ...fallbackItem,
+        ...item,
+        actionHref: action?.href ?? fallbackItem.actionHref,
+        actionLabel: action?.title ?? fallbackItem.actionLabel,
+        // A panel line written without a separator has no description half, so
+        // treat the whole line as the body and keep the card title as heading
+        // rather than rendering a heading with nothing under it.
+        panelBody: panel
+          ? panel.body || panel.title
+          : fallbackItem.panelBody,
+        panelHeading: panel
+          ? panel.body
+            ? panel.title
+            : item.title
+          : fallbackItem.panelHeading,
+      };
+    }),
+    openHint: getValue(section, "openHint", fallback.openHint),
+  };
+}
+
+/**
+ * Same positional zip as `serviceCalloutRevealGridProps`, with the standing
+ * panel's opening state read from its own two fields - it has no card behind
+ * it, so it cannot come out of the per-index merge.
+ */
+function serviceCalloutSplitPanelProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.serviceCalloutSplitPanel;
+  const items = cardItemsWithFallback(
+    section,
+    ["calloutItems", "items", "cards"],
+    fallback.items,
+  );
+  const panels = getListValues(section, ["calloutPanels", "panels"], "");
+  const actions = getListValues(section, ["calloutActions", "actions"], "");
+
+  return {
+    ...fallback,
+    introBody: getValue(section, "introBody", fallback.introBody),
+    introHeading: getValue(section, "introHeading", fallback.introHeading),
+    items: items.slice(0, 4).map((item, index) => {
+      const fallbackItem = fallback.items[index % fallback.items.length];
+      const panel = panels[index] ? parseCardItem(panels[index]) : undefined;
+      const action = actions[index] ? parseCardItem(actions[index]) : undefined;
+
+      return {
+        ...fallbackItem,
+        ...item,
+        actionHref: action?.href ?? fallbackItem.actionHref,
+        actionLabel: action?.title ?? fallbackItem.actionLabel,
+        panelBody: panel ? panel.body || panel.title : fallbackItem.panelBody,
+        panelHeading: panel
+          ? panel.body
+            ? panel.title
+            : item.title
+          : fallbackItem.panelHeading,
+      };
+    }),
+    openHint: getValue(section, "openHint", fallback.openHint),
   };
 }
 
@@ -2668,6 +2774,12 @@ function getCompactHeaderHeadingSize(
 
   if (section.variant?.endsWith("heading-xl")) {
     return "heading-xl";
+  }
+
+  // See PagebuilderShell: the largest size cannot rely on the fallback,
+  // because section header content defaults to heading-xl.
+  if (section.variant?.endsWith("display-lg")) {
+    return "display-lg";
   }
 
   return section.component === "HeroCompactSectionV3"
