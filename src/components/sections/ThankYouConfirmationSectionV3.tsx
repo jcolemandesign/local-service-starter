@@ -1,4 +1,4 @@
-import { Button, SevenColumnGrid, SevenColumnGridItem } from "@/components/primitives";
+import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
 
 export type ThankYouConfirmationStep = {
   body: string;
@@ -36,15 +36,16 @@ export function ThankYouConfirmationSectionV3({
 
   return (
     <section className="bg-bg-page">
-      <SevenColumnGrid
-        className="items-center"
+      <LayoutGrid
+        className="content-center items-center"
+        columns={14}
         minHeight="tall"
         padding="med"
       >
-        <SevenColumnGridItem
+        <LayoutGridItem
           alignX="left"
           alignY="middle"
-          className="col-span-4 max-lg:col-span-5 max-md:col-span-3"
+          className="col-span-6 col-start-1 max-lg:col-span-10 max-md:col-span-6 max-sm:col-span-2"
           measure="copyWide"
         >
           <div className="fluid-type-frame">
@@ -73,12 +74,12 @@ export function ThankYouConfirmationSectionV3({
               ) : null}
             </div>
           </div>
-        </SevenColumnGridItem>
+        </LayoutGridItem>
 
-        <SevenColumnGridItem
+        <LayoutGridItem
           alignX="stretch"
           alignY="middle"
-          className="col-span-3 col-start-5 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3"
+          className="col-span-6 col-start-8 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2"
         >
           <aside className="content-padding radius-medium border border-service-border bg-service-surface shadow-service">
             <p className="type-label text-service-accent">{nextStepsTitle}</p>
@@ -106,8 +107,8 @@ export function ThankYouConfirmationSectionV3({
               {note}
             </p>
           </aside>
-        </SevenColumnGridItem>
-      </SevenColumnGrid>
+        </LayoutGridItem>
+      </LayoutGrid>
     </section>
   );
 }

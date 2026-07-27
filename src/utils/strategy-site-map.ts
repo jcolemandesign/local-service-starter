@@ -269,12 +269,27 @@ export function buildStrategyNavigation(
     }));
 }
 
-export function getStrategyCopyForPage(
+/**
+ * Where a page's resolved copy actually came from.
+ *
+ * `page` is real page copy written for this slot. The other two are whole-site
+ * planning prose used as a last resort so a staged page is not completely bare.
+ * Callers that judge whether seeding "worked" must distinguish them: the
+ * fallbacks are keyed by page name, never by section id, so they are expected
+ * to seed zero fields and that is not a failure.
+ */
+export type StrategyCopySource =
+  | "content-plan"
+  | "none"
+  | "page"
+  | "strategy-brief";
+
+export function resolveStrategyCopyForPage(
   fields: StrategyWorkspaceFields,
   pageSlug: string,
   pageType: string,
   slots: readonly StrategyPageDefinition[] = baseStrategyPageSlots,
-) {
+): { copy: string; source: StrategyCopySource } {
   const normalizedPageSlug = pageSlug.toLowerCase().trim();
   const normalized = `${pageSlug} ${pageType}`.toLowerCase();
   const matchingSlot =
@@ -291,7 +306,32 @@ export function getStrategyCopyForPage(
   const copy =
     dynamicCopy || (matchingSlot ? fields[matchingSlot.copyField].trim() : "");
 
-  return copy || fields.contentPlan.trim() || fields.strategyBrief.trim();
+  if (copy) {
+    return { copy, source: "page" };
+  }
+
+  const contentPlan = fields.contentPlan.trim();
+
+  if (contentPlan) {
+    return { copy: contentPlan, source: "content-plan" };
+  }
+
+  const strategyBrief = fields.strategyBrief.trim();
+
+  if (strategyBrief) {
+    return { copy: strategyBrief, source: "strategy-brief" };
+  }
+
+  return { copy: "", source: "none" };
+}
+
+export function getStrategyCopyForPage(
+  fields: StrategyWorkspaceFields,
+  pageSlug: string,
+  pageType: string,
+  slots: readonly StrategyPageDefinition[] = baseStrategyPageSlots,
+) {
+  return resolveStrategyCopyForPage(fields, pageSlug, pageType, slots).copy;
 }
 
 export function getStrategyPageCopyField(

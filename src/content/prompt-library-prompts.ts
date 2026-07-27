@@ -1133,9 +1133,7 @@ Field formatting rules:
 
 Special field rules:
 
-- navLinks must use one link per line in this format: Label -> /url-slug
-- footerLinks must use one link group or link per line. Use Label -> /url-slug for direct links when possible.
-- legalLine must contain only the legal/copyright line. Never place Copy Notes, SEO notes, or page strategy notes in legalLine.
+- Navigation and footer are site chrome. They are written once at site level, are listed under Site Chrome (do not write) in the contract, and must never be written as part of page copy.
 - primaryAction and secondaryAction should be button labels only, unless the contract specifically asks for a URL too.
 - proofPoints, items, serviceItems, supportingItems, testimonials, faqItems, and similar repeatable fields should use the repeatable list/card rules above.
 

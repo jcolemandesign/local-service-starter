@@ -6,7 +6,10 @@ import {
   type StagedPageField,
   type StagedPageTemplate,
 } from "@/utils/staged-pages";
-import { getStrategyCopyForPage } from "@/utils/strategy-site-map";
+import {
+  getStrategyCopyForPage,
+  resolveStrategyCopyForPage,
+} from "@/utils/strategy-site-map";
 import { getTemplateCopySectionStatuses } from "@/utils/template-copy-contract";
 import type { StrategySnapshot } from "@/utils/strategy-snapshots";
 import type { StrategyWorkspaceFields } from "@/utils/strategy-workspace";
@@ -237,6 +240,23 @@ describe("refresh copy source", () => {
     // Gating the merge on the empty one is what caused the silent no-op.
     expect(directLookup).toBe("");
     expect(resolved).toBe(strategyCopy);
+  });
+
+  it("reports which field the fallback chain read the copy from", () => {
+    // Callers judging whether seeding "worked" need this: a content-plan
+    // fallback is expected to seed nothing, real page copy is not.
+    expect(
+      resolveStrategyCopyForPage(snapshot.fields, "test-page", template.pageType)
+        .source,
+    ).toBe("content-plan");
+
+    expect(
+      resolveStrategyCopyForPage(
+        { ...snapshot.fields, contentPlan: "", strategyBrief: "" },
+        "test-page",
+        template.pageType,
+      ).source,
+    ).toBe("none");
   });
 
   it("gives the merge the same section statuses that seeding used", () => {

@@ -23,10 +23,10 @@ import {
   type StagedPage,
 } from "@/utils/staged-pages";
 import {
-  getTemplateCopyContractStatus,
   getTemplateCopySectionStatuses,
   type TemplateCopyContractTemplate,
   type TemplateCopySectionStatus,
+  type TemplateCopySectionStatusValue,
 } from "@/utils/template-copy-contract";
 import { sortPagesBySitemap } from "@/utils/sitemap-page-order";
 
@@ -145,9 +145,15 @@ export default async function StagedPagesPage() {
                   filledCopyCount,
                   page.fieldCounts.copy,
                 );
+                // "site-level" is nav/footer, which page copy never covers, so
+                // it is not a gap in this page's copy.
                 const sectionsNeedingAttention = getPageSectionStatuses(
                   page,
-                ).filter((sectionStatus) => sectionStatus.status !== "current");
+                ).filter(
+                  (sectionStatus) =>
+                    sectionStatus.status !== "current" &&
+                    sectionStatus.status !== "site-level",
+                );
 
                 return (
                   <details
@@ -545,12 +551,11 @@ function getPageSectionStatuses(page: StagedPage): TemplateCopySectionStatus[] {
   return getTemplateCopySectionStatuses(pageCopy, template);
 }
 
-function formatContractStatus(
-  status: ReturnType<typeof getTemplateCopyContractStatus>,
-) {
+function formatContractStatus(status: TemplateCopySectionStatusValue) {
   return {
     current: "Copy contract current",
     empty: "No batch copy",
+    "site-level": "Site-level nav/footer",
     stale: "Copy contract outdated",
     unverified: "Copy contract unverified",
   }[status];

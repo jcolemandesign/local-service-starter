@@ -66,9 +66,11 @@ type TemplateLibrarySectionProps = {
 };
 
 export type CopySeedingSummary = {
+  copySource: "content-plan" | "none" | "page" | "strategy-brief";
   filledCopyFields: number;
   hasStrategyCopy: boolean;
   seededNothing: boolean;
+  stagedWithoutPageCopy: boolean;
   totalCopyFields: number;
 };
 
@@ -76,6 +78,10 @@ export type CopySeedingSummary = {
  * A paste whose keys match no field leaves every field empty, which the
  * renderer fills with section-library demo content - so a total miss looks
  * exactly like a success. Surface it instead of reporting "staged".
+ *
+ * Only fires for real page copy. Staging before any page copy exists seeds from
+ * the content plan and fills nothing by design - that is `getCopySeedingNotice`
+ * below, not an error.
  */
 export function getCopySeedingWarning(copySeeding?: CopySeedingSummary) {
   if (!copySeeding?.seededNothing) {
@@ -83,6 +89,18 @@ export function getCopySeedingWarning(copySeeding?: CopySeedingSummary) {
   }
 
   return `None of the ${copySeeding.totalCopyFields} copy fields were filled from the pasted copy, so this page will render template demo content. Check that the copy includes a "### <section-id>" heading or the "<!-- Section contract: ... -->" comment before each section's fields.`;
+}
+
+/**
+ * The expected first-stage state: template shell staged, no page copy written
+ * yet. Says what to do next rather than reporting a fault.
+ */
+export function getCopySeedingNotice(copySeeding?: CopySeedingSummary) {
+  if (!copySeeding?.stagedWithoutPageCopy) {
+    return "";
+  }
+
+  return `Staged with template demo content - no page copy written yet. Generate this page's copy from the Prompt Library, paste it into the page, then stage again to fill all ${copySeeding.totalCopyFields} copy fields.`;
 }
 
 type CreatePageResponse =
@@ -327,10 +345,13 @@ export function TemplateLibrarySection({
       }
 
       const copySeedingWarning = getCopySeedingWarning(result.copySeeding);
+      const copySeedingNotice = getCopySeedingNotice(result.copySeeding);
 
       if (copySeedingWarning) {
         setError(copySeedingWarning);
         setStatus(`${result.page.pageLabel} was staged, but with no copy.`);
+      } else if (copySeedingNotice) {
+        setStatus(`${result.page.pageLabel} is staged. ${copySeedingNotice}`);
       } else {
         setStatus(
           `Template applied. ${result.page.pageLabel} is now staged and ready to edit.`,

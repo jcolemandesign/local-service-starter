@@ -5,6 +5,62 @@
         "showSectionMarkers": false,
         "viewportId": "main"
       },
+      "id": "thank-you-default",
+      "name": "Thank You Default",
+      "notes": "",
+      "pageType": "Thank You",
+      "promotedAt": "2026-07-27T01:11:03.604Z",
+      "sectionCount": 3,
+      "sections": [
+        {
+          "slotId": "slot-39078b986122",
+          "component": "NavPrimarySectionV2",
+          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
+          "mode": "Navigation",
+          "name": "Primary navigation",
+          "originalComponent": "NavPrimarySectionV2",
+          "originalIndex": 0,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        },
+        {
+          "slotId": "slot-288712e3fb20",
+          "component": "ThankYouConfirmationSectionV3",
+          "instruction": "Confirm that a request was received, explain the follow-up sequence, and provide clear home and services exit paths.",
+          "mode": "Utility",
+          "name": "Thank you confirmation",
+          "originalComponent": "ThankYouConfirmationSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        },
+        {
+          "slotId": "slot-b0b5bce45b18",
+          "component": "FooterSectionV3",
+          "instruction": "End with service links, areas, contact details, and legal links.",
+          "mode": "Utility",
+          "name": "Footer",
+          "originalComponent": "FooterSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        }
+      ],
+      "sourceOptionName": "Page Layout",
+      "sourceRecipeId": "thank-you",
+      "sourceRecipeName": "Thank You"
+    },
+    {
+      "designStyle": {
+        "showSectionMarkers": false,
+        "viewportId": "main"
+      },
       "id": "ac-repair-2",
       "name": "AC Repair 2",
       "notes": "",
@@ -1625,62 +1681,6 @@
       "sourceOptionName": "Page Layout",
       "sourceRecipeId": "classic-service",
       "sourceRecipeName": "Home"
-    },
-    {
-      "designStyle": {
-        "showSectionMarkers": false,
-        "viewportId": "main"
-      },
-      "id": "thank-you",
-      "name": "Thank You",
-      "notes": "",
-      "pageType": "Thank You",
-      "promotedAt": "2026-07-19T21:53:45.172Z",
-      "sectionCount": 3,
-      "sections": [
-        {
-          "component": "NavPrimarySectionV2",
-          "instruction": "Use the standard nav when the template needs the clearest service, area, phone, and booking paths.",
-          "mode": "Navigation",
-          "name": "Primary navigation",
-          "originalComponent": "NavPrimarySectionV2",
-          "originalIndex": 0,
-          "reduceBottomPadding": false,
-          "reduceTopPadding": false,
-          "colorRecipe": "default",
-          "cardFill": "solid",
-          "slotId": "slot-536fb4d863a3"
-        },
-        {
-          "component": "ThankYouConfirmationSectionV3",
-          "instruction": "Confirm that a request was received, explain the follow-up sequence, and provide clear home and services exit paths.",
-          "mode": "Utility",
-          "name": "Thank you confirmation",
-          "originalComponent": "ThankYouConfirmationSectionV3",
-          "originalIndex": 1,
-          "reduceBottomPadding": false,
-          "reduceTopPadding": false,
-          "colorRecipe": "default",
-          "cardFill": "solid",
-          "slotId": "slot-6e102a8c26bf"
-        },
-        {
-          "component": "FooterSectionV3",
-          "instruction": "End with service links, areas, contact details, and legal links.",
-          "mode": "Utility",
-          "name": "Footer",
-          "originalComponent": "FooterCompactSectionV3",
-          "originalIndex": 2,
-          "reduceBottomPadding": false,
-          "reduceTopPadding": false,
-          "colorRecipe": "default",
-          "cardFill": "solid",
-          "slotId": "slot-bfeb843dd35b"
-        }
-      ],
-      "sourceOptionName": "Page Layout",
-      "sourceRecipeId": "thank-you",
-      "sourceRecipeName": "Thank You"
     },
     {
       "designStyle": {

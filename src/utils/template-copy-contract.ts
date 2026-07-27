@@ -51,12 +51,41 @@ export type TemplateCopyContractStatus =
   | "stale"
   | "unverified";
 
+/**
+ * Section statuses carry one value the page-level status cannot: "site-level",
+ * for nav/footer sections that are deliberately not part of page copy. It is
+ * intentionally not "current" - callers that merge staged fields must keep
+ * treating these sections as "do not overwrite from this paste" - but callers
+ * that report gaps in a page's copy should not count it as a problem either.
+ */
+export type TemplateCopySectionStatusValue =
+  | TemplateCopyContractStatus
+  | "site-level";
+
 export type TemplateCopySectionStatus = {
   ordinal: string;
   reasons: string[];
   sectionId: string;
-  status: TemplateCopyContractStatus;
+  status: TemplateCopySectionStatusValue;
 };
+
+/**
+ * Nav and footer are site chrome, not page copy. Their values - business name,
+ * phone, primary action, footer contact block, link lists - are identical on
+ * every page and are set once at site level (nav links are already derived from
+ * the staged sitemap), so requesting them in every page's copy spec spends
+ * prompt and model budget re-deriving the same lines for each page.
+ *
+ * The field specs still exist in getTemplateCopyFieldsForSection: the content
+ * editor and the bulk-paste importer both still read and accept those fields.
+ * This only controls whether a page copy prompt asks a model to write them.
+ */
+export function isSiteChromeSection(section: TemplateCopyContractSection) {
+  const lookupValue =
+    `${section.component} ${section.mode} ${section.name}`.toLowerCase();
+
+  return lookupValue.includes("nav") || lookupValue.includes("footer");
+}
 
 const fallbackFields: TemplateCopyFieldSpec[] = [
   {
@@ -162,7 +191,7 @@ export function buildTemplateCopyContract({
     "- Default output is a human-review outline.",
     "- Do not output bulk/batch paste format unless the user explicitly asks for bulk paste, batch paste, import format, or paste-ready fields.",
     "- Do not add new sections.",
-    "- Do not skip sections. If a section requires unverified proof, fill unsafe fields with NEEDS REVIEW rather than fabricating.",
+    "- Do not skip any section listed under ## Sections. If a section requires unverified proof, fill unsafe fields with NEEDS REVIEW rather than fabricating.",
     "- Write for the exact Page Target above, not for a broader page type.",
     "- Keep copy sized to the listed field targets and examples.",
     "- Use cautious wording for unsupported claims.",
@@ -173,11 +202,34 @@ export function buildTemplateCopyContract({
     "- If the user asks for bulk paste mode, use exact field labels with no bullets before field names.",
     `- In bulk paste mode, begin immediately below \`# Bulk Paste Copy\` with these two comments on separate lines: \`<!-- Page target: ${pageLabel} (${publicPath}) -->\` and \`<!-- Template contract: ${contractFingerprint} -->\`. These notes are intentionally ignored by the importer and must not be treated as content fields.`,
     "- In bulk paste mode, immediately below each section's `### 0N-slug` heading, include `<!-- Section contract: <value> -->` on its own line before any fields, using the exact \"Section contract\" value shown for that section below. This note is intentionally ignored by the importer and must not be treated as a content field.",
-    "",
-    "## Sections",
   );
 
-  template.sections.forEach((section, index) => {
+  const sectionEntries = template.sections.map((section, index) => ({
+    index,
+    section,
+  }));
+  const chromeEntries = sectionEntries.filter((entry) =>
+    isSiteChromeSection(entry.section),
+  );
+  const copyEntries = sectionEntries.filter(
+    (entry) => !isSiteChromeSection(entry.section),
+  );
+
+  if (chromeEntries.length > 0) {
+    lines.push(
+      "",
+      "## Site Chrome (do not write)",
+      "- Navigation and footer copy is site-level. It is written once for the whole site, not per page.",
+      `- Excluded from this page: ${chromeEntries
+        .map((entry) => getSectionId(entry.section, entry.index))
+        .join(", ")}.`,
+      "- Section ordinals below skip those positions on purpose. Keep the ordinals exactly as listed.",
+    );
+  }
+
+  lines.push("", "## Sections");
+
+  copyEntries.forEach(({ index, section }) => {
     const sectionId = getSectionId(section, index);
     const fields = getTemplateCopyFieldsForSection(section);
     const sectionFingerprint = getTemplateCopySectionFingerprint(section);
@@ -360,6 +412,19 @@ export function getTemplateCopySectionStatuses(
     const ordinal = getSectionOrdinal(index);
     const sectionId = getSectionId(section, index);
 
+    // Site chrome is never requested in the page copy spec, so a missing block
+    // here is expected rather than a gap in the page's copy.
+    if (isSiteChromeSection(section)) {
+      return {
+        ordinal,
+        reasons: [
+          "Site-level nav/footer - copy is not written per page, so this section keeps whatever the content editor holds.",
+        ],
+        sectionId,
+        status: "site-level",
+      };
+    }
+
     if (!copy.trim()) {
       return {
         ordinal,
@@ -444,11 +509,26 @@ function isBatchCopySchemaCompatible(
     getOrdinalsByCopyFingerprint(template),
   );
 
-  if (sectionsByOrdinal.size !== template.sections.length) {
+  // Chrome sections are not requested in the spec, so pasted copy is expected to
+  // be short by exactly those blocks. Copy written before that change still
+  // carries them, so anything between "every requested section" and "every
+  // template section" is a valid block count.
+  const requestedSections = template.sections.filter(
+    (section) => !isSiteChromeSection(section),
+  );
+
+  if (
+    sectionsByOrdinal.size < requestedSections.length ||
+    sectionsByOrdinal.size > template.sections.length
+  ) {
     return false;
   }
 
   return template.sections.every((section, index) => {
+    if (isSiteChromeSection(section)) {
+      return true;
+    }
+
     const sectionOrdinal = String(index + 1).padStart(2, "0");
     const suppliedSection = sectionsByOrdinal.get(sectionOrdinal);
 

@@ -145,9 +145,12 @@ describe("bulk paste section keying", () => {
       { id: "home", name: "Home", pageType: "Home", sections },
     );
 
+    // The nav section reports "site-level" regardless of the paste: nav and
+    // footer are no longer requested in the page copy spec, so the hero is the
+    // section that proves the headingless fingerprint lookup here.
     expect(statuses).toHaveLength(2);
     expect(statuses.map((status) => status.status)).toEqual([
-      "current",
+      "site-level",
       "current",
     ]);
 
@@ -160,7 +163,7 @@ describe("bulk paste section keying", () => {
     );
 
     expect(unknown.map((status) => status.status)).toEqual([
-      "unverified",
+      "site-level",
       "unverified",
     ]);
   });
@@ -178,6 +181,37 @@ describe("bulk paste section keying", () => {
     expect(summary.totalCopyFields).toBe(2);
     expect(summary.filledCopyFields).toBe(0);
     expect(summary.seededNothing).toBe(true);
+  });
+
+  it("stays quiet when the page staged before any page copy existed", () => {
+    // The content plan is keyed by page name, never by section id, so it can
+    // never seed a field. Reporting that as a failed paste flagged every
+    // first-time stage as broken.
+    const summary = getCopySeedingSummary(
+      "### Home\nPositioning notes for the home page.",
+      {
+        fields: [
+          { id: "a", kind: "copy", path: "02-hero.h1", value: "" },
+          { id: "b", kind: "copy", path: "02-hero.intro", value: "" },
+        ],
+      },
+      "content-plan",
+    );
+
+    expect(summary.seededNothing).toBe(false);
+    expect(summary.stagedWithoutPageCopy).toBe(true);
+    expect(summary.copySource).toBe("content-plan");
+  });
+
+  it("still reports a real page-copy paste that reached no field", () => {
+    const summary = getCopySeedingSummary(
+      "h1: Something the parser missed",
+      { fields: [{ id: "a", kind: "copy", path: "02-hero.h1", value: "" }] },
+      "page",
+    );
+
+    expect(summary.seededNothing).toBe(true);
+    expect(summary.stagedWithoutPageCopy).toBe(false);
   });
 
   it("stays quiet when copy landed, or when none was supplied", () => {

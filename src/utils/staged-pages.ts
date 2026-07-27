@@ -19,7 +19,9 @@ import {
   getPathFromSlugForPageType,
   getStrategyCopyForPage,
   getStrategyPageCopyField,
+  resolveStrategyCopyForPage,
   slugify,
+  type StrategyCopySource,
   type StrategyNavigationItem,
   type StrategyPageDefinition,
 } from "@/utils/strategy-site-map";
@@ -882,12 +884,13 @@ export async function buildStagedPageCandidate({
   // that does not exist). In both, every section looks non-current, the merge
   // restores all previous values over the freshly seeded ones, and the user
   // gets a success message for a refresh that changed nothing.
-  const strategyCopy = getStrategyCopyForPage(
-    snapshot.fields,
-    page.pageId,
-    template.pageType,
-    pageSlots,
-  );
+  const { copy: strategyCopy, source: strategyCopySource } =
+    resolveStrategyCopyForPage(
+      snapshot.fields,
+      page.pageId,
+      template.pageType,
+      pageSlots,
+    );
   const sectionStatuses = getTemplateCopySectionStatuses(
     strategyCopy,
     template,
@@ -917,7 +920,11 @@ export async function buildStagedPageCandidate({
   };
 
   return {
-    copySeeding: getCopySeedingSummary(strategyCopy, finalPage),
+    copySeeding: getCopySeedingSummary(
+      strategyCopy,
+      finalPage,
+      strategyCopySource,
+    ),
     finalPage,
     sectionStatuses,
     snapshot,
@@ -925,10 +932,17 @@ export async function buildStagedPageCandidate({
 }
 
 export type CopySeedingSummary = {
+  /** Which strategy field the seeding copy was read from. */
+  copySource: StrategyCopySource;
   filledCopyFields: number;
   hasStrategyCopy: boolean;
-  /** True when copy was supplied but did not reach a single field. */
+  /** True when real page copy was supplied but did not reach a single field. */
   seededNothing: boolean;
+  /**
+   * True when the page staged empty only because no page copy exists yet, so
+   * seeding fell back to whole-site planning prose. Expected, not a fault.
+   */
+  stagedWithoutPageCopy: boolean;
   totalCopyFields: number;
 };
 
@@ -940,10 +954,18 @@ export type CopySeedingSummary = {
  * section-library demo content, and the stage still reports success. The only
  * way to notice was spotting demo prose in the preview. Callers surface this so
  * a total miss is visible at stage time instead.
+ *
+ * `copySource` keeps that alarm off the normal path. When no page copy exists,
+ * `resolveStrategyCopyForPage` falls back to the content plan or strategy
+ * brief - prose keyed by page name, never by section id - which cannot seed a
+ * field by construction. Treating that as a failed paste flagged every
+ * first-time stage as broken and told the user to go add `###` headings to a
+ * document that already had dozens of them.
  */
 export function getCopySeedingSummary(
   strategyCopy: string,
   page: Pick<StagedPage, "fields">,
+  copySource: StrategyCopySource = "page",
 ): CopySeedingSummary {
   const copyFields = page.fields.filter(
     (field) => field.kind === "copy" && !field.path.startsWith("strategy."),
@@ -952,12 +974,15 @@ export function getCopySeedingSummary(
     (field) => field.value.trim().length > 0,
   ).length;
   const hasStrategyCopy = strategyCopy.trim().length > 0;
+  const seededNoField =
+    hasStrategyCopy && copyFields.length > 0 && filledCopyFields === 0;
 
   return {
+    copySource,
     filledCopyFields,
     hasStrategyCopy,
-    seededNothing:
-      hasStrategyCopy && copyFields.length > 0 && filledCopyFields === 0,
+    seededNothing: seededNoField && copySource === "page",
+    stagedWithoutPageCopy: seededNoField && copySource !== "page",
     totalCopyFields: copyFields.length,
   };
 }

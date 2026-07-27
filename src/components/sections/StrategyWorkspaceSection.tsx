@@ -11,6 +11,7 @@ import {
   type WorkspaceNavItem,
 } from "@/components/sections/WorkspaceNav";
 import {
+  getCopySeedingNotice,
   getCopySeedingWarning,
   type CopySeedingSummary,
   type PageTemplateSummary,
@@ -281,6 +282,7 @@ export function StrategyWorkspaceSection({
     altPageLabel: string;
     previewHref: string;
   } | null>(null);
+  const [stagedCopyNotice, setStagedCopyNotice] = useState("");
   const [templatePickerError, setTemplatePickerError] = useState("");
   const [templatePreview, setTemplatePreview] = useState<{
     page: StagedPage;
@@ -900,9 +902,10 @@ export function StrategyWorkspaceSection({
           : null,
       );
 
-      // Staged, but every field is empty - so the preview will render template
-      // demo content. Hold the picker open with the reason rather than closing
-      // on what looks like a success.
+      // Real page copy that reached no field means the paste is malformed, so
+      // hold the picker open with the reason rather than closing on what looks
+      // like a success. Staging before any page copy exists is the normal first
+      // step and closes as usual, reporting the next action on the overview.
       const copySeedingWarning = getCopySeedingWarning(result.copySeeding);
 
       if (copySeedingWarning) {
@@ -910,6 +913,7 @@ export function StrategyWorkspaceSection({
         return;
       }
 
+      setStagedCopyNotice(getCopySeedingNotice(result.copySeeding));
       closeTemplatePicker();
     } catch {
       setTemplatePickerError("Template could not be applied.");
@@ -1008,6 +1012,21 @@ export function StrategyWorkspaceSection({
                         Dismiss
                       </button>
                     </div>
+                  </div>
+                ) : null}
+
+                {stagedCopyNotice ? (
+                  <div className="flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-md-token)] border border-service-border bg-service-surface px-4 py-3">
+                    <p className="type-caption text-service-muted">
+                      {stagedCopyNotice}
+                    </p>
+                    <button
+                      className="type-caption font-semibold text-service-muted hover:text-service-accent"
+                      onClick={() => setStagedCopyNotice("")}
+                      type="button"
+                    >
+                      Dismiss
+                    </button>
                   </div>
                 ) : null}
 
@@ -1355,7 +1374,7 @@ export function StrategyWorkspaceSection({
                               className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 marker:hidden max-md:items-start"
                               onClick={(event) => {
                                 event.preventDefault();
-                                togglePageCopyField(field.key);
+                                togglePageCopyField(String(field.key));
                               }}
                             >
                               <span className="flex min-w-0 items-center gap-3 text-sm font-semibold text-service-ink">
@@ -1848,9 +1867,15 @@ export function StrategyWorkspaceSection({
                                 <span
                                   className={cx(
                                     "type-caption rounded-sm border px-2 py-1",
-                                    sectionStatus.status === "current"
-                                      ? "border-green-200 bg-green-50 text-green-700"
-                                      : "border-amber-200 bg-amber-50 text-amber-700",
+                                    sectionStatus.status === "current" &&
+                                      "border-green-200 bg-green-50 text-green-700",
+                                    // Nav/footer are never written as page copy,
+                                    // so they read as neutral, not as a warning.
+                                    sectionStatus.status === "site-level" &&
+                                      "border-service-border bg-bg-muted text-service-muted",
+                                    sectionStatus.status !== "current" &&
+                                      sectionStatus.status !== "site-level" &&
+                                      "border-amber-200 bg-amber-50 text-amber-700",
                                   )}
                                   key={sectionStatus.sectionId}
                                   title={sectionStatus.reasons.join(" ")}
