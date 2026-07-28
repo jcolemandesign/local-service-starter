@@ -3,7 +3,11 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { sectionLibraryV3Registry } from "@/content/section-library-v3";
-import { cardStyleComponents } from "@/content/section-style-options";
+import {
+  cardLinkComponents,
+  cardStyleComponents,
+} from "@/content/section-style-options";
+import { getTemplateCopyFieldsForSection } from "@/utils/template-copy-contract";
 
 /**
  * `cardStyleComponents` decides whether the builder offers the card fill and
@@ -73,5 +77,58 @@ describe("card style control registry", () => {
       dead,
       "these sections are offered the card controls but read neither prop - the toggles render and do nothing",
     ).toEqual([]);
+  });
+});
+
+/**
+ * The card-links toggle is only worth having if it reaches both ends: the
+ * section has to render differently, and the copy spec has to ask for something
+ * different. If the spec does not move, the toggle silently leaves the page
+ * agent writing destinations for cards that no longer link anywhere - the exact
+ * ambiguity the toggle exists to remove.
+ */
+describe("card links toggle", () => {
+  const reading = componentsReadingCardStyleProps();
+
+  it("is offered only where the section reads the prop", () => {
+    const notReading = [...cardLinkComponents]
+      .filter((component) => !reading.has(component))
+      .sort();
+
+    expect(
+      notReading,
+      "these sections offer the card-links toggle but never read cardLinks",
+    ).toEqual([]);
+  });
+
+  it("changes the copy spec in both directions for every section", () => {
+    for (const component of cardLinkComponents) {
+      const base = { component, mode: "Scan", name: component };
+      const on = getTemplateCopyFieldsForSection({ ...base, cardLinks: "on" });
+      const off = getTemplateCopyFieldsForSection({ ...base, cardLinks: "off" });
+
+      expect(
+        JSON.stringify(on) === JSON.stringify(off),
+        `${component}: the copy spec is identical with links on and off, so the toggle tells the page agent nothing`,
+      ).toBe(false);
+
+      expect(
+        off.some((field) => field.name === "linkLabel"),
+        `${component}: still requests linkLabel with links off`,
+      ).toBe(false);
+    }
+  });
+
+  it("defaults to links on when the axis is unset", () => {
+    for (const component of cardLinkComponents) {
+      const base = { component, mode: "Scan", name: component };
+
+      expect(
+        JSON.stringify(getTemplateCopyFieldsForSection(base)),
+        `${component}: an unset axis must render and spec exactly as links-on`,
+      ).toBe(
+        JSON.stringify(getTemplateCopyFieldsForSection({ ...base, cardLinks: "on" })),
+      );
+    }
   });
 });

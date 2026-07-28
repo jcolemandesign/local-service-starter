@@ -475,6 +475,19 @@ export function ContentEditorSection({
           )}
         </SevenColumnGridItem>
       </SevenColumnGrid>
+
+      {/* An open section runs long enough that collapsing it means scrolling
+          back to its header. This stays reachable at the bottom of the
+          viewport, and only appears while something is actually open. */}
+      {openSectionId ? (
+        <button
+          className="radius-button fixed bottom-5 right-5 z-50 min-h-10 border border-service-border bg-bg-page/88 px-3.5 text-xs font-semibold text-service-muted shadow-sm backdrop-blur transition-colors hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+          onClick={() => setOpenSectionId(null)}
+          type="button"
+        >
+          Close all
+        </button>
+      ) : null}
     </section>
   );
 }

@@ -15,6 +15,7 @@ type PageTemplateSection = {
   originalIndex: number;
   reduceBottomPadding?: boolean;
   reduceTopPadding?: boolean;
+  cardLinks?: string;
   ratio?: string;
   /** Stable rename anchor - see `SlottedSection` in @/utils/section-id. */
   slotId?: string;

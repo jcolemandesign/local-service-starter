@@ -10,6 +10,7 @@ export type PagebuilderRecipeSection = {
   component: string;
   mode: string;
   instruction: string;
+  cardLinks?: string;
   ratio?: string;
   variant?: string;
   colorRecipe?: import("@/content/section-color-recipes").SectionColorRecipe;

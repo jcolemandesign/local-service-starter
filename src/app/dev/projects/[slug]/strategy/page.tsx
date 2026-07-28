@@ -15,6 +15,7 @@ import {
   readStrategyWorkspacePacketSummary,
   sanitizeClientSlug,
 } from "@/utils/strategy-workspace";
+import { StyleGuideCloseAllButton } from "@/components/sections/StyleGuideCloseAllButton";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -112,6 +113,8 @@ export default async function StrategyWorkspacePage({
           templates={templates}
           sourcePacketText={sourcePacketText}
         />
+        <StyleGuideCloseAllButton />
+
       </main>
     </StyleGuidePreviewSurface>
   );

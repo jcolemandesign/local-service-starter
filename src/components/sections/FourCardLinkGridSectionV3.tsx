@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
+import { CardLinkShell } from "./CardLinkShell";
 
 export type FourCardLinkGridItem = {
   body: string;
@@ -12,6 +13,12 @@ export type FourCardLinkGridItem = {
 
 export type FourCardLinkGridSectionV3Props = {
   cardBorder?: "on" | "off";
+  /**
+   * Turns the whole family of card links off so these render as plain
+   * content cards. Set on the template in pagebuilder, not inferred from
+   * whether copy happened to supply a destination.
+   */
+  cardLinks?: "on" | "off";
   cardFill?: "solid" | "none";
   items: readonly FourCardLinkGridItem[];
   linkLabel?: string;
@@ -24,6 +31,7 @@ function cx(...classes: Array<string | false | undefined>) {
 
 export function FourCardLinkGridSectionV3({
   cardBorder = "on",
+  cardLinks = "on",
   cardFill = "solid",
   items,
   linkLabel = "Learn more",
@@ -46,13 +54,17 @@ export function FourCardLinkGridSectionV3({
             }
             key={item.title}
           >
-            <a
+            <CardLinkShell
               className={cx(
-                "group/card flex h-full min-w-0 flex-col overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
+                "group/card flex h-full min-w-0 flex-col overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service",
+                // Hover lift and focus ring belong to a card you can click.
+                // A static card keeps the surface and drops the affordance.
+                cardLinks === "on" &&
+                  "transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
                 cardFill === "none" && "!bg-transparent !shadow-none",
                 cardBorder === "off" && "!border-transparent",
               )}
-              href={item.href}
+              href={cardLinks === "on" ? item.href : undefined}
             >
               {showImages ? (
                 <div className="relative aspect-[4/3] overflow-hidden border-b border-service-border bg-bg-muted">
@@ -77,17 +89,19 @@ export function FourCardLinkGridSectionV3({
                 <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
                   {item.body}
                 </p>
-                <span className="type-label mt-auto inline-flex items-center gap-2 pt-4 text-service-accent">
-                  {linkLabel}
-                  <span
-                    aria-hidden="true"
-                    className="transition-transform duration-200 group-hover/card:translate-x-1"
-                  >
-                    &rarr;
+                {cardLinks === "on" ? (
+                  <span className="type-label mt-auto inline-flex items-center gap-2 pt-4 text-service-accent">
+                    {linkLabel}
+                    <span
+                      aria-hidden="true"
+                      className="transition-transform duration-200 group-hover/card:translate-x-1"
+                    >
+                      &rarr;
+                    </span>
                   </span>
-                </span>
+                ) : null}
               </div>
-            </a>
+            </CardLinkShell>
           </LayoutGridItem>
         ))}
       </LayoutGrid>

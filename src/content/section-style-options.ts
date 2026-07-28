@@ -96,6 +96,32 @@ export const cardStyleComponents = new Set<string>([
 ]);
 
 /**
+ * Sections whose ordinary card links can be switched off in pagebuilder,
+ * turning the cards into static content.
+ *
+ * Deliberately not one of the `styleFieldOptions` above: those are copy-neutral
+ * axes that a staged page may override, because repainting a section can never
+ * invalidate approved copy. This one changes which fields the section asks for
+ * - destinations and the shared link label come and go with it - so it is a
+ * template-level decision, stored beside `variant` and `ratio`, and flipping it
+ * moves the contract fingerprint.
+ *
+ * Scoped to ordinary link cards. CTA sections are excluded because their
+ * buttons are the conversion action, and the callout sections are excluded
+ * because their cards are controls rather than navigation.
+ */
+export const cardLinkComponents = new Set<string>([
+  "ContentThreeColumnMixedSectionV3",
+  "FourCardLinkGridSectionV3",
+  "ServiceNeedsPriorityGridSectionV3",
+  "ThreeCardLinkGridSectionV3",
+]);
+
+export function sectionSupportsCardLinks(component: string) {
+  return cardLinkComponents.has(component);
+}
+
+/**
  * These sections render no card by default - the fill is opt-in, so an unset
  * value means "none" here rather than the usual "solid". Without this, every
  * saved instance would suddenly gain a card panel behind its copy.
@@ -161,7 +187,30 @@ export const styleFieldOptions = {
     { label: "Dark", value: "dark" },
     { label: "Accent", value: "accent" },
   ],
+  reduceTopPadding: [
+    { label: "Use template default", value: "" },
+    { label: "Default spacing", value: "default" },
+    { label: "Reduced", value: "reduced" },
+  ],
+  reduceBottomPadding: [
+    { label: "Use template default", value: "" },
+    { label: "Default spacing", value: "default" },
+    { label: "Reduced", value: "reduced" },
+  ],
 } as const satisfies Record<string, ReadonlyArray<{ label: string; value: string }>>;
+
+/**
+ * Style fields the section record stores as booleans rather than strings.
+ *
+ * The option values have to stay strings so `""` can mean "inherit the
+ * template", but spreading `"default"` onto `reduceTopPadding` would be truthy
+ * and silently reduce the padding it was meant to restore. Resolvers convert
+ * these two back to booleans instead of spreading them raw.
+ */
+export const booleanStyleFields = new Set<SectionStyleFieldName>([
+  "reduceBottomPadding",
+  "reduceTopPadding",
+]);
 
 export type SectionStyleFieldName = keyof typeof styleFieldOptions;
 
@@ -186,13 +235,31 @@ const cardStyleFields: SectionStyleFieldSpec[] = [
   },
 ];
 
+/**
+ * Section spacing is available on every section: it moves the frame's padding
+ * and nothing else, so it cannot change which fields a section renders or
+ * invalidate approved copy.
+ */
+const spacingStyleFields: SectionStyleFieldSpec[] = [
+  {
+    label: "Top spacing",
+    name: "reduceTopPadding",
+    options: styleFieldOptions.reduceTopPadding,
+  },
+  {
+    label: "Bottom spacing",
+    name: "reduceBottomPadding",
+    options: styleFieldOptions.reduceBottomPadding,
+  },
+];
+
 /** The style overrides a given section component offers. */
 export function getSectionStyleFieldSpecs(
   component: string,
 ): SectionStyleFieldSpec[] {
   return sectionSupportsCardStyle(component)
-    ? [colorRecipeStyleField, ...cardStyleFields]
-    : [colorRecipeStyleField];
+    ? [colorRecipeStyleField, ...cardStyleFields, ...spacingStyleFields]
+    : [colorRecipeStyleField, ...spacingStyleFields];
 }
 
 export function isStyleFieldPath(path: string) {

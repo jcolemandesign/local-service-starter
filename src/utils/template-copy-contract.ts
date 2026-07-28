@@ -10,6 +10,7 @@ export type TemplateCopyContractSection = {
   instruction?: string;
   mode: string;
   name: string;
+  cardLinks?: string;
   ratio?: string;
   variant?: string;
 };
@@ -689,6 +690,33 @@ function hashContractShape(value: string) {
   return (hash >>> 0).toString(36);
 }
 
+/**
+ * Whether the template wants its ordinary card links rendered.
+ *
+ * Set in pagebuilder, not inferred from whether copy happened to supply a
+ * destination. Because the field specs below change with it - and
+ * getTemplateCopySectionFingerprint hashes the resolved specs - flipping this
+ * correctly marks existing copy stale rather than leaving a page half-written
+ * for a shape it no longer has.
+ */
+/**
+ * Drops the shared link label from a spec when the template has card links
+ * off. These two sections never asked copy for destinations - their links
+ * resolve elsewhere - so the label is the only field the toggle removes.
+ */
+function withCardLinkFields(
+  section: TemplateCopyContractSection,
+  fields: TemplateCopyFieldSpec[],
+) {
+  return wantsCardLinks(section)
+    ? fields
+    : fields.filter((field) => field.name !== "linkLabel");
+}
+
+function wantsCardLinks(section: TemplateCopyContractSection) {
+  return section.cardLinks !== "off";
+}
+
 export function getTemplateCopyFieldsForSection(
   section: TemplateCopyContractSection,
 ) {
@@ -701,7 +729,7 @@ export function getTemplateCopyFieldsForSection(
   // lookup value contains none of their keywords, so without an explicit branch
   // it would fall through to fallbackFields and silently render demo copy.
   if (component.includes("contentthreecolumnmixed")) {
-    return [
+    return withCardLinkFields(section, [
       {
         example: "Start here",
         name: "ctaEyebrow",
@@ -804,7 +832,7 @@ export function getTemplateCopyFieldsForSection(
         purpose: "Shared label on each small link card.",
         target: "8-16 characters.",
       },
-    ];
+    ]);
   }
 
   if (lookupValue.includes("nav")) {
@@ -1101,7 +1129,7 @@ export function getTemplateCopyFieldsForSection(
   }
 
   if (component.includes("serviceneedsprioritygrid")) {
-    return [
+    return withCardLinkFields(section, [
       {
         example: "What are you experiencing?",
         name: "title",
@@ -1159,7 +1187,7 @@ export function getTemplateCopyFieldsForSection(
         purpose: "Shared text-link label on the three compact cards.",
         target: "8-20 characters.",
       },
-    ];
+    ]);
   }
 
   // Three parallel four-line fields, read positionally: line 1 of each belongs
@@ -1345,6 +1373,24 @@ export function getTemplateCopyFieldsForSection(
   }
 
   if (component.includes("threecardlinkgrid")) {
+    if (!wantsCardLinks(section)) {
+      return [
+        {
+          example: [
+            "System Replacement - Compare replacement options when an older system is no longer dependable.",
+            "HVAC Repair - Review common repair needs and what to expect before service begins.",
+            "Maintenance Plans - Keep seasonal service organized with recurring visits.",
+          ],
+          format: "Exactly three lines as Title - Description.",
+          name: "serviceItems",
+          purpose:
+            "Three static content cards. Their order maps left to right across the centered 14-column layout.",
+          target:
+            "Exactly 3 items. Titles 12-38 characters. Descriptions 80-160 characters. Do not write destination paths - this template renders these cards as static content, not links.",
+        },
+      ];
+    }
+
     return [
       {
         example: [
@@ -1370,6 +1416,25 @@ export function getTemplateCopyFieldsForSection(
   }
 
   if (component.includes("fourcardlinkgrid")) {
+    if (!wantsCardLinks(section)) {
+      return [
+        {
+          example: [
+            "System Replacement - Compare replacement options when an older system is no longer dependable.",
+            "HVAC Repair - Review common repair needs and what to expect before service begins.",
+            "Maintenance Plans - Keep seasonal service organized with recurring visits.",
+            "Indoor Air Quality - Explore filtration, humidity, ventilation, and airflow options.",
+          ],
+          format: "Exactly four lines as Title - Description.",
+          name: "serviceItems",
+          purpose:
+            "Four static content cards. Their order maps left to right across the centered 14-column layout.",
+          target:
+            "Exactly 4 items. Titles 12-38 characters. Descriptions 80-160 characters. Do not write destination paths - this template renders these cards as static content, not links.",
+        },
+      ];
+    }
+
     return [
       {
         example: [

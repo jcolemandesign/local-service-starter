@@ -12,6 +12,10 @@ export type ServiceNeedsPriorityGridItem = {
 export type ServiceNeedsPriorityGridSectionV3Props = {
   align?: ServiceNeedsPriorityGridAlign;
   cardBorder?: "on" | "off";
+  /** Turns the three compact cards' text links off. The priority card's
+   *  primary/secondary CTAs are unaffected - those are real conversion
+   *  actions, not card navigation. */
+  cardLinks?: "on" | "off";
   cardFill?: "solid" | "none";
   compactPriorityCard?: boolean;
   items: readonly ServiceNeedsPriorityGridItem[];
@@ -29,6 +33,7 @@ export type ServiceNeedsPriorityGridAlign = "left" | "right";
 export function ServiceNeedsPriorityGridSectionV3({
   align = "right",
   cardBorder = "on",
+  cardLinks = "on",
   cardFill = "solid",
   compactPriorityCard = false,
   items,
@@ -104,14 +109,14 @@ export function ServiceNeedsPriorityGridSectionV3({
                 {secondaryAction}
               </Button>
             </div>
-          ) : (
+          ) : cardLinks === "on" ? (
             <a
               className="type-label mt-auto inline-flex items-center gap-2 pt-5 text-service-accent transition-colors hover:text-service-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
               href={item.href}
             >
               {linkLabel} <span aria-hidden="true">&rarr;</span>
             </a>
-          )}
+          ) : null}
         </div>
       </article>
     );

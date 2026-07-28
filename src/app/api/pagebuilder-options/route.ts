@@ -15,6 +15,7 @@ type SavedPagebuilderSection = {
   originalIndex: number;
   reduceBottomPadding?: boolean;
   reduceTopPadding?: boolean;
+  cardLinks?: string;
   ratio?: string;
   /**
    * Carried through so a template edited in pagebuilder keeps its rename

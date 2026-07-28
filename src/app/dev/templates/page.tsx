@@ -10,6 +10,7 @@ import { readStrategyPageSlots } from "@/utils/client-page-slots";
 import { getStagedPreviewHref } from "@/utils/staged-page-links";
 import { getActiveStagedPages, readStagedPages } from "@/utils/staged-pages";
 import { listLatestStrategySnapshotSummaries } from "@/utils/strategy-snapshots";
+import { StyleGuideCloseAllButton } from "@/components/sections/StyleGuideCloseAllButton";
 
 export const metadata: Metadata = {
   title: "Template Library",
@@ -69,6 +70,8 @@ export default async function TemplatesPage() {
           strategySnapshots={strategySnapshots}
           templates={templates}
         />
+        <StyleGuideCloseAllButton />
+
       </main>
     </StyleGuidePreviewSurface>
   );

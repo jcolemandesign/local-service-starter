@@ -98,6 +98,7 @@ import {
 } from "@/content/section-library-v3";
 import {
   cardFillOptInComponents,
+  sectionSupportsCardLinks,
   sectionSupportsCardStyle,
   servicesBentoVariantOptions,
   servicesBentoVariantValues,
@@ -193,6 +194,10 @@ const heroCompactAlignOptions = [
   { label: "Left", value: "left" },
   { label: "Center", value: "center" },
   { label: "Right", value: "right" },
+] as const;
+const cardLinksOptions = [
+  { label: "Links on", value: "on" },
+  { label: "Static", value: "off" },
 ] as const;
 const ctaImageAlignOptions = [
   { label: "Copy left", value: "left" },
@@ -581,6 +586,10 @@ function getDecisionSplitDecisionLargeAlign(
     : "center";
 }
 
+function getCardLinks(section: WorkingSection): "on" | "off" {
+  return section.cardLinks === "off" ? "off" : "on";
+}
+
 function getCTAImageAlign(section: WorkingSection): CTAImageAlign {
   return section.variant === "right" ? "right" : "left";
 }
@@ -830,6 +839,7 @@ function serializeWorkingSection(section: WorkingSection) {
     name: section.name,
     originalComponent: section.originalComponent,
     originalIndex: section.originalIndex,
+    cardLinks: section.cardLinks,
     ratio: section.ratio,
     slotId: section.slotId,
     variant: section.variant,
@@ -2450,6 +2460,17 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateCardLinks(sectionId: string, cardLinks: "on" | "off") {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && sectionSupportsCardLinks(section.component)
+          ? { ...section, cardLinks }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateCTAImageAlign(sectionId: string, align: CTAImageAlign) {
     updateActiveStack((stack) =>
       stack.map((section) =>
@@ -3337,6 +3358,7 @@ export function PagebuilderShell({
             {...sectionLibraryV3Content.fourCardLinkGrid}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
+            cardLinks={getCardLinks(section)}
             showImages={getFourCardLinkGridVariant(section) === "with-images"}
           />
         ) : isThreeCardLinkGridSection(section) ? (
@@ -3344,6 +3366,7 @@ export function PagebuilderShell({
             {...sectionLibraryV3Content.threeCardLinkGrid}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
+            cardLinks={getCardLinks(section)}
             showImages={getCardLinkGridVariant(section) === "with-images"}
           />
         ) : isServiceCalloutRevealGridSection(section) ? (
@@ -3367,6 +3390,7 @@ export function PagebuilderShell({
             compactPriorityCard={getServiceNeedsPriorityGridCompactPriorityCard(
               section,
             )}
+            cardLinks={getCardLinks(section)}
             showImages={getServiceNeedsPriorityGridShowImages(section)}
           />
         ) : isServicesBentoSection(section) ? (
@@ -4480,6 +4504,44 @@ export function PagebuilderShell({
                               <p className="type-caption text-current/60">
                                 Position the two-card group left, centered, or
                                 right on the fourteen-column grid.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
+                          {sectionSupportsCardLinks(section.component) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Card links
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {cardLinksOptions.map((option) => {
+                                  const optionIsActive =
+                                    getCardLinks(section) === option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateCardLinks(section.id, option.value)
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Static drops the card links and their label, and
+                                tells the page-copy spec not to write destinations.
+                                Changing this marks existing copy stale.
                               </p>
                             </fieldset>
                           ) : null}

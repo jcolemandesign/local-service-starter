@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   getSectionStyleFieldSpecs,
+  booleanStyleFields,
   cardStyleComponents,
   resolveCardFill,
   styleFieldOptions,
@@ -46,8 +47,20 @@ describe("section style override specs", () => {
       (spec) => spec.name,
     );
 
-    expect(cardNames).toEqual(["colorRecipe", "cardFill", "cardBorder"]);
-    expect(plainNames).toEqual(["colorRecipe"]);
+    expect(cardNames).toEqual([
+      "colorRecipe",
+      "cardFill",
+      "cardBorder",
+      "reduceTopPadding",
+      "reduceBottomPadding",
+    ]);
+    // Spacing is copy-neutral on every section, so a non-card section still
+    // gets it - only the card controls are conditional.
+    expect(plainNames).toEqual([
+      "colorRecipe",
+      "reduceTopPadding",
+      "reduceBottomPadding",
+    ]);
   });
 
   it("seeds every declared style field empty so a fresh page inherits the template", () => {
@@ -58,13 +71,15 @@ describe("section style override specs", () => {
       name: "Card Two Up",
     });
 
-    expect(fields).toHaveLength(3);
+    expect(fields).toHaveLength(5);
     expect(fields.every((field) => field.value === "")).toBe(true);
     expect(fields.every((field) => field.kind === "meta")).toBe(true);
     expect(fields.map((field) => field.name)).toEqual([
       `${styleFieldPrefix}.colorRecipe`,
       `${styleFieldPrefix}.cardFill`,
       `${styleFieldPrefix}.cardBorder`,
+      `${styleFieldPrefix}.reduceTopPadding`,
+      `${styleFieldPrefix}.reduceBottomPadding`,
     ]);
   });
 
@@ -109,7 +124,14 @@ describe("resolveSectionStyleOverrides", () => {
         styleField("card-1", spec.name, override?.value ?? ""),
       ]) as Record<string, unknown>;
 
-      expect(resolved[spec.name]).toBe(override?.value);
+      // The spacing fields are stored as booleans on the section, so the
+      // resolver must convert rather than spread the option string - a raw
+      // "default" would be truthy and reduce the padding it should restore.
+      expect(resolved[spec.name]).toBe(
+        booleanStyleFields.has(spec.name)
+          ? override?.value === "reduced"
+          : override?.value,
+      );
     });
   });
 

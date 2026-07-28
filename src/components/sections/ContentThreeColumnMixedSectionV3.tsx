@@ -17,6 +17,9 @@ export type ContentThreeColumnMixedLink = {
 export type ContentThreeColumnMixedSectionV3Props = {
   align?: ContentThreeColumnMixedAlign;
   cardBorder?: "on" | "off";
+  /** Turns the small rail cards' text links off. The primary CTA card is
+   *  unaffected - it is a conversion action, not card navigation. */
+  cardLinks?: "on" | "off";
   cardFill?: "solid" | "none";
   ctaBody: string;
   ctaEyebrow: string;
@@ -75,6 +78,7 @@ function cx(...classes: Array<string | undefined>) {
 export function ContentThreeColumnMixedSectionV3({
   align = "left",
   cardBorder = "on",
+  cardLinks = "on",
   cardFill = "solid",
   ctaBody,
   ctaEyebrow,
@@ -219,9 +223,11 @@ export function ContentThreeColumnMixedSectionV3({
                   <p className="type-text-xs wrap-pretty mt-heading-body-sm text-service-muted">
                     {link.body}
                   </p>
-                  <span className="type-label mt-body-actions-sm inline-flex items-center gap-2 text-service-accent">
-                    {linkLabel} <span aria-hidden="true">&rarr;</span>
-                  </span>
+                  {cardLinks === "on" ? (
+                    <span className="type-label mt-body-actions-sm inline-flex items-center gap-2 text-service-accent">
+                      {linkLabel} <span aria-hidden="true">&rarr;</span>
+                    </span>
+                  ) : null}
                 </a>
               </li>
             ))}

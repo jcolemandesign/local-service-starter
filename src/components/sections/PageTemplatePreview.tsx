@@ -133,6 +133,7 @@ import {
   sectionLibraryV3Content,
 } from "@/content/section-library-v3";
 import {
+  booleanStyleFields,
   getSectionStyleFieldSpecs,
   resolveCardFill,
   servicesBentoVariantValues,
@@ -153,6 +154,7 @@ export type PageTemplatePreviewSection = {
   name: string;
   reduceBottomPadding?: boolean;
   reduceTopPadding?: boolean;
+  cardLinks?: string;
   ratio?: string;
   variant?: string;
 };
@@ -219,14 +221,19 @@ export function resolveSectionStyleOverrides(
   }
 
   const overrides = getSectionStyleFieldSpecs(section.component).reduce<
-    Record<string, string>
+    Record<string, string | boolean>
   >((resolved, spec) => {
     const value = fields
       .find((field) => field.path.endsWith(`.${styleFieldPrefix}.${spec.name}`))
       ?.value.trim();
 
     if (value && spec.options.some((option) => option.value === value)) {
-      resolved[spec.name] = value;
+      // The spacing fields are stored as booleans on the section. Spreading the
+      // raw option string would make "default" truthy and reduce the padding it
+      // was chosen to restore.
+      resolved[spec.name] = booleanStyleFields.has(spec.name)
+        ? value === "reduced"
+        : value;
     }
 
     return resolved;
@@ -521,6 +528,7 @@ export function renderPageTemplateSection(
       return (
         <FourCardLinkGridSectionV3
           {...fourCardLinkGridProps(fieldSection)}
+          cardLinks={resolveCardLinks(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           showImages={section.variant !== "text-only"}
@@ -530,6 +538,7 @@ export function renderPageTemplateSection(
       return (
         <ThreeCardLinkGridSectionV3
           {...threeCardLinkGridProps(fieldSection)}
+          cardLinks={resolveCardLinks(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           showImages={section.variant !== "text-only"}
@@ -556,6 +565,7 @@ export function renderPageTemplateSection(
         <ServiceNeedsPriorityGridSectionV3
           {...serviceNeedsPriorityGridProps(fieldSection)}
           align={getServiceNeedsPriorityGridAlign(section)}
+          cardLinks={resolveCardLinks(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           compactPriorityCard={Boolean(section.variant?.includes("compact"))}
@@ -694,6 +704,7 @@ export function renderPageTemplateSection(
         <ContentThreeColumnMixedSectionV3
           {...contentThreeColumnMixedProps(fieldSection)}
           align={getContentThreeColumnMixedAlign(section)}
+          cardLinks={resolveCardLinks(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
         />
@@ -2749,6 +2760,11 @@ function getCTAImageAlign(
   return ctaImageAlignments.has(section.variant ?? "")
     ? (section.variant as CTAImageAlign)
     : "left";
+}
+
+/** Card links default on, so every existing template renders unchanged. */
+function resolveCardLinks(section: PageTemplatePreviewSection) {
+  return section.cardLinks === "off" ? ("off" as const) : ("on" as const);
 }
 
 function getMainIdeaGridAlign(
