@@ -9,8 +9,8 @@
       "optionName": "Page Layout",
       "recipeId": "compact-utility",
       "recipeName": "Individual Service",
-      "savedAt": "2026-07-28T19:39:38.886Z",
-      "sectionCount": 8,
+      "savedAt": "2026-07-28T19:54:03.085Z",
+      "sectionCount": 11,
       "sections": [
         {
           "component": "HeroCompactServiceSectionV3",
@@ -596,6 +596,21 @@
           "cardFill": "solid"
         },
         {
+          "component": "SectionHeaderCompactSectionV3",
+          "id": "compact-utility-SectionHeaderCompactSectionV3-added-1",
+          "included": true,
+          "instruction": "Use a no-min-height compact header to introduce a section before card grids, FAQs, decisions, or utility blocks.",
+          "mode": "Section Header",
+          "name": "Compact section header",
+          "originalComponent": "SectionHeaderCompactSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "variant": "left-heading-xl",
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        },
+        {
           "component": "ThreeCardLinkGridSectionV3",
           "id": "compact-utility-ThreeCardLinkGridSectionV3-added-4",
           "included": true,
@@ -605,11 +620,40 @@
           "originalComponent": "ThreeCardLinkGridSectionV3",
           "originalIndex": -1,
           "reduceBottomPadding": false,
-          "reduceTopPadding": false,
+          "reduceTopPadding": true,
           "variant": "text-only",
           "colorRecipe": "default",
           "cardFill": "solid",
           "align": "right"
+        },
+        {
+          "component": "ProcessStepsSectionV3",
+          "id": "compact-utility-ProcessStepsSectionV3-added-2",
+          "included": true,
+          "instruction": "Use current process steps when the page needs a clearer, more styled decision sequence.",
+          "mode": "Decision",
+          "name": "Process steps",
+          "originalComponent": "ProcessStepsSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        },
+        {
+          "component": "ProjectCaseStudyGallerySectionV3",
+          "id": "compact-utility-ProjectCaseStudyGallerySectionV3-added-3",
+          "included": true,
+          "instruction": "Use a focused project gallery when one image and concise project details should work together as a mini case study.",
+          "mode": "Images",
+          "name": "Project case study gallery",
+          "originalComponent": "ProjectCaseStudyGallerySectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "variant": "right",
+          "colorRecipe": "default",
+          "cardFill": "solid"
         }
       ]
     },

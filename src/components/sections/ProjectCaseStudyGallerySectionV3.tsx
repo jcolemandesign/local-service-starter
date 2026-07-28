@@ -135,8 +135,11 @@ export function ProjectCaseStudyGallerySectionV3({
           </div>
         </LayoutGridItem>
 
+        {/* Sits hard against the image - the spare column of the fourteen falls
+            on the outer edge rather than between the two panels, so the copy
+            reads as attached to the slide it describes. */}
         <LayoutGridItem
-          className={`col-span-5 ${isImageRight ? "col-start-1" : "col-start-10"} row-start-1 max-lg:col-span-10 max-lg:col-start-1 max-lg:row-auto max-md:col-span-6 max-sm:col-span-2`}
+          className={`col-span-5 ${isImageRight ? "col-start-2" : "col-start-9"} row-start-1 max-lg:col-span-10 max-lg:col-start-1 max-lg:row-auto max-md:col-span-6 max-sm:col-span-2`}
         >
           <div className="grid">
             <AnimatePresence initial={false} mode="wait">
