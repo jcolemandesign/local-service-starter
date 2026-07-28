@@ -1190,6 +1190,24 @@ export function getTemplateAssetFieldsForSection(
     ];
   }
 
+  // No imageRatio here, unlike the fixed-ratio twin below: this section crops
+  // its image to fill a grid column that bleeds off the page edge, so there is
+  // no frame to choose a ratio for.
+  if (component.includes("contentsplitfullimage")) {
+    return [
+      {
+        kind: "meta",
+        name: "imageAlt",
+        value: sectionLibraryV3Content.contentSplitFullImage.imageAlt,
+      },
+      {
+        kind: "image",
+        name: "imageSrc",
+        value: sectionLibraryV3Content.contentSplitFullImage.imageSrc,
+      },
+    ];
+  }
+
   if (component.includes("contentsplitfixedimage")) {
     return [
       {

@@ -3,6 +3,10 @@
 import type { CSSProperties, DragEvent, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
+  ContentSplitFullImageSectionV3,
+  type ContentSplitFullImageVariant,
+} from "@/components/sections/ContentSplitFullImageSectionV3";
+import {
   ContentSplitFixedImageSectionV3,
   type ContentSplitFixedImageHeadingSizeStep,
   type ContentSplitFixedImageRatio,
@@ -155,6 +159,18 @@ const normalSpacingClassName = "pagebuilder-density-normal";
 const splitContentImageComponent = "HeroSplitFullHeightSectionV3";
 const fixedRatioSplitComponent = "HeroSplitFixedImageSectionV3";
 const contentFixedRatioSplitComponent = "ContentSplitFixedImageSectionV3";
+const contentFullImageSplitComponent = "ContentSplitFullImageSectionV3";
+
+/**
+ * The hero and its narrative twin offer the same four arrangements and share
+ * one option list, so everything that reads or writes that axis keys off this
+ * rather than either component name. Only the render branch cares which is
+ * which - the sections differ in copy shape and height, not in layout choice.
+ */
+const fullImageSplitComponents = new Set<string>([
+  splitContentImageComponent,
+  contentFullImageSplitComponent,
+]);
 const heroCompactComponent = "HeroCompactSectionV3";
 const heroServicesComponent = "HeroServicesSectionV3";
 const heroCompactServiceComponent = "HeroCompactServiceSectionV3";
@@ -458,6 +474,14 @@ type PageInstructionInput = {
 
 function isSplitContentImageSection(section: WorkingSection) {
   return section.component === splitContentImageComponent;
+}
+
+function isContentFullImageSplitSection(section: WorkingSection) {
+  return section.component === contentFullImageSplitComponent;
+}
+
+function usesFullImageSplitVariants(section: WorkingSection) {
+  return fullImageSplitComponents.has(section.component);
 }
 
 function isFixedRatioSplitSection(section: WorkingSection) {
@@ -840,7 +864,7 @@ function createInitialWorkingStack(
         ? section.ratio ?? fixedRatioSplitRatioOptions[0].value
         : section.ratio,
     variant:
-      section.component === splitContentImageComponent
+      fullImageSplitComponents.has(section.component)
         ? section.variant ?? splitContentImageVariantOptions[0].value
         : section.component === fixedRatioSplitComponent
           ? section.variant ?? fixedRatioSplitVariantOptions[0].value
@@ -964,7 +988,7 @@ function updateSectionFromSwapOption(
         ? section.ratio ?? fixedRatioSplitRatioOptions[0].value
         : undefined,
     variant:
-      nextOption.component === splitContentImageComponent
+      fullImageSplitComponents.has(nextOption.component)
         ? section.variant ?? splitContentImageVariantOptions[0].value
         : nextOption.component === fixedRatioSplitComponent
           ? section.variant ?? fixedRatioSplitVariantOptions[0].value
@@ -1313,6 +1337,13 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
       "Use a content-height split layout when the section needs fixed-ratio imagery without hero-scale height.",
     mode: "Narrative",
     name: "Split content with fixed image",
+  },
+  {
+    component: "ContentSplitFullImageSectionV3",
+    instruction:
+      "Use a content-height split layout when the section needs one large cropped image running off the page edge without hero-scale height.",
+    mode: "Narrative",
+    name: "Split content with full image",
   },
   {
     component: "ContentStickyCardStreamSectionV2",
@@ -1685,6 +1716,10 @@ const innerOptionSignifiers: Partial<
     label: "Fixed-ratio split",
     pattern: "fixed",
   },
+  ContentSplitFullImageSectionV3: {
+    label: "Full image split",
+    pattern: "full",
+  },
   HeroCompactSectionV3: {
     label: "Compact hero",
     pattern: "align",
@@ -1831,7 +1866,7 @@ function buildPageInstruction({
    Mode: ${section.mode}
    Layout grid: ${getSectionLayoutGrid(section.component)} columns
    ${
-     isSplitContentImageSection(section)
+     usesFullImageSplitVariants(section)
        ? `Variant: ${
            getSplitContentImageVariantLabel(section.variant) ??
            splitContentImageVariantOptions[0].label
@@ -2779,7 +2814,7 @@ export function PagebuilderShell({
   ) {
     updateActiveStack((stack) =>
       stack.map((section) =>
-        section.id === sectionId && isSplitContentImageSection(section)
+        section.id === sectionId && usesFullImageSplitVariants(section)
           ? {
               ...section,
               variant,
@@ -3057,7 +3092,7 @@ export function PagebuilderShell({
           ? fixedRatioSplitRatioOptions[0].value
           : undefined,
       variant:
-        nextOption.component === splitContentImageComponent
+        fullImageSplitComponents.has(nextOption.component)
           ? splitContentImageVariantOptions[0].value
           : nextOption.component === fixedRatioSplitComponent
             ? fixedRatioSplitVariantOptions[0].value
@@ -3307,6 +3342,16 @@ export function PagebuilderShell({
               (section.variant ??
                 splitContentImageVariantOptions[0]
                   .value) as HeroSplitFullHeightVariant
+            }
+          />
+        ) : isContentFullImageSplitSection(section) ? (
+          <ContentSplitFullImageSectionV3
+            {...sectionLibraryV3Content.contentSplitFullImage}
+            colorRecipe={getSectionColorRecipe(section)}
+            variant={
+              (section.variant ??
+                splitContentImageVariantOptions[0]
+                  .value) as ContentSplitFullImageVariant
             }
           />
         ) : isFixedRatioSplitSection(section) ? (
@@ -4303,7 +4348,7 @@ export function PagebuilderShell({
                           ) : null}
                           </div>
 
-                          {isSplitContentImageSection(section) ? (
+                          {usesFullImageSplitVariants(section) ? (
                             <fieldset className="grid gap-2">
                               <legend className="type-caption font-semibold text-current">
                                 Split Version

@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "compact-utility",
       "recipeName": "Individual Service",
-      "savedAt": "2026-07-28T19:54:03.085Z",
+      "savedAt": "2026-07-28T20:09:43.049Z",
       "sectionCount": 11,
       "sections": [
         {
@@ -652,7 +652,7 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "variant": "right",
-          "colorRecipe": "default",
+          "colorRecipe": "muted",
           "cardFill": "solid"
         }
       ]

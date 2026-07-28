@@ -1,0 +1,352 @@
+import type { CSSProperties } from "react";
+import Image from "next/image";
+import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
+import { RequestServiceButton } from "@/components/request-service";
+import type { SectionColorRecipe } from "@/content/section-color-recipes";
+import type { SplitImageVariant } from "@/content/section-style-options";
+
+/**
+ * The narrative twin of `HeroSplitFullHeightSectionV3`: same full-bleed cropped
+ * image against a copy column, sized for the flow of a page rather than the top
+ * of one.
+ *
+ * It is a separate section rather than a prop on the hero because the two
+ * differ in the things a section is defined by. The hero asks copy for one
+ * punchy line and two mandatory CTAs; this asks for paragraphs with the CTAs
+ * optional, because most uses of this layout mid-page are pure explanation.
+ * The hero opens with an h1 and stands a full viewport tall; this opens with an
+ * h2 and takes its height from its content. Folding those into one component
+ * would mean a hero carrying a mode it must never use, and - because the copy
+ * contract keys off the component name - a mid-page section being handed the
+ * hero brief.
+ *
+ * Relationship to `ContentSplitFixedImageSectionV3`: identical copy shape and
+ * arrangement vocabulary, different image treatment. That one frames the image
+ * at a chosen aspect ratio inside the grid; this one crops it and runs it off
+ * the viewport edge.
+ */
+
+export type ContentSplitFullImageVariant = SplitImageVariant;
+
+export type ContentSplitFullImageHeadingSizeStep = -1 | 0 | 1;
+
+type ContentSplitFullImageSectionV3Props = {
+  bullets?: readonly string[];
+  colorRecipe?: SectionColorRecipe;
+  eyebrow: string;
+  headingLevel?: 2 | 3;
+  headingSizeStep?: ContentSplitFullImageHeadingSizeStep;
+  imageAlt: string;
+  imageSrc: string;
+  paragraphs: readonly string[];
+  primaryAction?: string;
+  secondaryAction?: string;
+  secondaryActionHref?: string;
+  stats?: readonly string[];
+  title: string;
+  variant?: ContentSplitFullImageVariant;
+};
+
+type FullImageVariantConfig = {
+  imageBleedClassName: string;
+  imageClassName: string;
+  textClassName: string;
+};
+
+// Fourteen columns with one empty column between the slots, matching the split
+// families: 6 | gutter | 7. The image bleeds past the grid frame on whichever
+// side it sits, so its panel also picks the direction of that bleed.
+const bleedRight = "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]";
+const bleedLeft = "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto";
+
+const stackedColumns =
+  "max-md:col-span-6 max-md:col-start-1 max-md:row-auto max-sm:col-span-2";
+
+const variantConfig: Record<
+  ContentSplitFullImageVariant,
+  FullImageVariantConfig
+> = {
+  "text-3-image-4-right": {
+    textClassName: `col-span-6 col-start-1 max-lg:col-span-4 max-lg:col-start-1 ${stackedColumns}`,
+    imageClassName: `col-span-7 col-start-8 max-lg:col-span-5 max-lg:col-start-6 ${stackedColumns}`,
+    imageBleedClassName: bleedRight,
+  },
+  "text-4-image-3-right": {
+    textClassName: `col-span-7 col-start-1 max-lg:col-span-5 max-lg:col-start-1 ${stackedColumns}`,
+    imageClassName: `col-span-6 col-start-9 max-lg:col-span-4 max-lg:col-start-7 ${stackedColumns}`,
+    imageBleedClassName: bleedRight,
+  },
+  "image-3-left-text-4": {
+    textClassName: `col-span-7 col-start-8 max-lg:col-span-5 max-lg:col-start-6 ${stackedColumns}`,
+    imageClassName: `col-span-6 col-start-1 max-lg:col-span-4 max-lg:col-start-1 ${stackedColumns}`,
+    imageBleedClassName: bleedLeft,
+  },
+  "image-4-left-text-3": {
+    textClassName: `col-span-6 col-start-9 max-lg:col-span-4 max-lg:col-start-7 ${stackedColumns}`,
+    imageClassName: `col-span-7 col-start-1 max-lg:col-span-5 max-lg:col-start-1 ${stackedColumns}`,
+    imageBleedClassName: bleedLeft,
+  },
+};
+
+// Ordered small -> large. The default is picked from how wide the text column
+// is for the active variant, then nudged by headingSizeStep. Tops out below the
+// hero's display scale on purpose - this is a section inside a page, not the
+// opening statement of one.
+const headingSizeScale = [
+  "type-heading-sm",
+  "type-heading-md",
+  "type-heading-lg",
+  "type-heading-xl",
+  "type-display-lg",
+] as const;
+
+function getDefaultHeadingSizeIndex(variant: ContentSplitFullImageVariant) {
+  const hasWideTextColumn =
+    variant === "text-4-image-3-right" || variant === "image-4-left-text-3";
+
+  return hasWideTextColumn ? 3 : 2;
+}
+
+const colorRecipeClassName: Record<
+  SectionColorRecipe,
+  {
+    action: string;
+    body: string;
+    eyebrow: string;
+    ink: string;
+    secondaryAction: string;
+    section: string;
+    stat: string;
+  }
+> = {
+  default: {
+    action: "",
+    body: "text-service-muted",
+    eyebrow: "text-service-accent",
+    ink: "text-service-ink",
+    secondaryAction: "",
+    section: "bg-bg-page",
+    stat: "border-service-border",
+  },
+  muted: {
+    action: "",
+    body: "text-service-muted",
+    eyebrow: "text-service-accent",
+    ink: "text-service-ink",
+    secondaryAction: "",
+    section: "bg-service-surface",
+    stat: "border-service-border",
+  },
+  dark: {
+    action: "!border-white !bg-white !text-bg-dark hover:!bg-service-surface",
+    body: "text-white/70",
+    eyebrow: "text-white",
+    ink: "text-white",
+    // Ghost/outline treatment: the default secondary style is a light pill
+    // (bg-bg-page), which would clash with a dark section - drop the fill so it
+    // reads as a lighter-weight, secondary action against the dark bg.
+    secondaryAction:
+      "!border-white/40 !bg-transparent !text-white hover:!border-white hover:!bg-white/10 hover:!text-white",
+    section: "bg-bg-dark",
+    stat: "border-white/25",
+  },
+  accent: {
+    // RequestServiceButton's own default fill is bg-service-accent - identical
+    // to this recipe's section background - so without this override the
+    // primary CTA is invisible against it.
+    action: "!border-white !bg-white !text-bg-dark hover:!bg-white/85",
+    body: "text-[var(--live-accent-muted-text)]",
+    eyebrow: "text-[var(--live-accent-ink)]",
+    ink: "text-[var(--live-accent-ink)]",
+    secondaryAction:
+      "!border-[color-mix(in_oklab,var(--live-accent-ink)_40%,transparent)] !bg-transparent !text-[var(--live-accent-ink)] hover:!border-[color:var(--live-accent-ink)] hover:!bg-white/10 hover:!text-[var(--live-accent-ink)]",
+    section: "bg-service-accent",
+    stat: "border-[color-mix(in_oklab,var(--live-accent-ink)_30%,transparent)]",
+  },
+};
+
+// Reaches past the grid frame's inline inset so the crop runs to the viewport
+// edge. Deliberately not past the block inset the way the hero does: mid-page
+// that would bleed into the neighbouring sections' spacing and break the page's
+// vertical rhythm, which is the whole reason this section exists.
+const bleedPanelStyle: CSSProperties = {
+  width: "calc(100% + var(--site-grid-inset-inline))",
+};
+
+function cx(...classes: Array<string | false | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
+
+function CroppedImagePanel({
+  bleedClassName,
+  imageAlt,
+  imageSrc,
+}: {
+  bleedClassName: string;
+  imageAlt: string;
+  imageSrc: string;
+}) {
+  return (
+    <div className="relative h-full min-h-[var(--media-min-medium)] w-full">
+      <div
+        className={cx(
+          "absolute inset-y-0 overflow-hidden bg-service-surface max-md:relative max-md:inset-auto max-md:h-full max-md:min-h-[var(--media-min-medium)] max-md:!w-full",
+          bleedClassName,
+        )}
+        style={bleedPanelStyle}
+      >
+        <Image
+          alt={imageAlt}
+          className="object-cover"
+          fill
+          sizes="(max-width: 767px) 100vw, (max-width: 1023px) 60vw, 52vw"
+          src={imageSrc}
+        />
+      </div>
+    </div>
+  );
+}
+
+export function ContentSplitFullImageSectionV3({
+  bullets,
+  colorRecipe = "default",
+  eyebrow,
+  headingLevel = 2,
+  headingSizeStep = 0,
+  imageAlt,
+  imageSrc,
+  paragraphs,
+  primaryAction,
+  secondaryAction,
+  secondaryActionHref = "#services",
+  stats = [],
+  title,
+  variant = "text-3-image-4-right",
+}: ContentSplitFullImageSectionV3Props) {
+  const config =
+    variantConfig[variant] ?? variantConfig["text-3-image-4-right"];
+  const HeadingTag = `h${headingLevel}` as const;
+  const colors = colorRecipeClassName[colorRecipe];
+  const headingSizeIndex = Math.min(
+    headingSizeScale.length - 1,
+    Math.max(0, getDefaultHeadingSizeIndex(variant) + headingSizeStep),
+  );
+  const headingSizeClassName = headingSizeScale[headingSizeIndex];
+  const hasBullets = Boolean(bullets && bullets.length > 0);
+  const hasCta = Boolean(primaryAction || secondaryAction);
+
+  return (
+    <section className={cx("relative", colors.section)}>
+      <LayoutGrid
+        className="section-min-medium items-center"
+        columns={14}
+        padding="med"
+      >
+        <LayoutGridItem
+          alignX="left"
+          alignY="middle"
+          className={cx("row-start-1", colors.ink, config.textClassName)}
+        >
+          <div className="fluid-type-frame w-full">
+            <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
+            <HeadingTag
+              className={cx(
+                headingSizeClassName,
+                "wrap-pretty mt-eyebrow-display",
+                colors.ink,
+              )}
+            >
+              {title}
+            </HeadingTag>
+
+            <div className="mt-display-body grid gap-4">
+              {paragraphs.map((paragraph, index) => (
+                <p
+                  className={cx(
+                    index === 0 ? "type-text-lg" : "type-text-md",
+                    "wrap-pretty",
+                    colors.body,
+                  )}
+                  key={paragraph}
+                >
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+
+            {hasBullets ? (
+              <ul className="mt-heading-body-md grid gap-3">
+                {bullets?.map((bullet) => (
+                  <li
+                    className={cx(
+                      "type-text-sm flex items-start gap-3",
+                      colors.ink,
+                    )}
+                    key={bullet}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="mt-[0.65em] size-1.5 shrink-0 rounded-full bg-service-accent"
+                    />
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+
+            {stats.length > 0 ? (
+              <ul className="mt-body-actions-md grid inline-gap-sml">
+                {stats.map((item) => (
+                  <li
+                    className={cx(
+                      "type-text-sm wrap-pretty border-l pl-4",
+                      colors.ink,
+                      colors.stat,
+                    )}
+                    key={item}
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+
+            {hasCta ? (
+              <div className="mt-body-actions-md flex flex-wrap inline-gap-med">
+                {primaryAction ? (
+                  <RequestServiceButton className={colors.action}>
+                    {primaryAction}
+                  </RequestServiceButton>
+                ) : null}
+                {secondaryAction ? (
+                  <Button
+                    className={colors.secondaryAction}
+                    href={secondaryActionHref}
+                    variant="secondary"
+                  >
+                    {secondaryAction}
+                  </Button>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        </LayoutGridItem>
+
+        <LayoutGridItem
+          alignX="stretch"
+          alignY="stretch"
+          className={cx(
+            "relative row-start-1 h-full min-h-0 overflow-visible max-md:h-auto",
+            config.imageClassName,
+          )}
+        >
+          <CroppedImagePanel
+            bleedClassName={config.imageBleedClassName}
+            imageAlt={imageAlt}
+            imageSrc={imageSrc}
+          />
+        </LayoutGridItem>
+      </LayoutGrid>
+    </section>
+  );
+}

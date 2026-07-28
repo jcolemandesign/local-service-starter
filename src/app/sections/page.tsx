@@ -77,6 +77,7 @@ import {
 import { HeroSplitFixedImageSectionLibraryDemo } from "@/components/sections/HeroSplitFixedImageSectionLibraryDemo";
 import { HeroSplitFullImageSectionLibraryDemo } from "@/components/sections/HeroSplitFullImageSectionLibraryDemo";
 import { ContentSplitFixedImageSectionLibraryDemo } from "@/components/sections/ContentSplitFixedImageSectionLibraryDemo";
+import { ContentSplitFullImageSectionLibraryDemo } from "@/components/sections/ContentSplitFullImageSectionLibraryDemo";
 import { ServiceCalloutSplitPanelSectionLibraryDemo } from "@/components/sections/ServiceCalloutSplitPanelSectionLibraryDemo";
 import { ServiceCalloutRevealGridSectionLibraryDemo } from "@/components/sections/ServiceCalloutRevealGridSectionLibraryDemo";
 import { ThreeCardLinkGridSectionLibraryDemo } from "@/components/sections/ThreeCardLinkGridSectionLibraryDemo";
@@ -219,6 +220,12 @@ const sectionElements = {
   "content-split-fixed-image-v3": (
     <ContentSplitFixedImageSectionLibraryDemo
       {...sectionLibraryV3Content.contentSplitFixedImage}
+      headingLevel={2}
+    />
+  ),
+  "content-split-full-image-v3": (
+    <ContentSplitFullImageSectionLibraryDemo
+      {...sectionLibraryV3Content.contentSplitFullImage}
       headingLevel={2}
     />
   ),

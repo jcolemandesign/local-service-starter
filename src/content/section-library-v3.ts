@@ -325,6 +325,11 @@ export const sectionLibraryV3Content = {
           "A planned replacement paired a properly sized heat pump with quieter airflow and a straightforward handoff for the homeowner.",
         imageAlt: "Heat pump equipment staged for a residential replacement project",
         imageSrc: "/images/hvac-unit-truck-wide.png",
+        // Intrinsic pixels. The gallery frames each print to its picture's own
+        // ratio; supplying it here makes the first paint exact instead of
+        // settling once the browser reports it.
+        imageWidth: 1774,
+        imageHeight: 887,
         equipment: [
           { label: "Equipment", value: "Variable-speed heat pump" },
           { label: "Scope", value: "System replacement" },
@@ -343,6 +348,8 @@ export const sectionLibraryV3Content = {
           "A focused maintenance visit documented the equipment condition and left the household with a practical plan for the coming season.",
         imageAlt: "Technician working on indoor HVAC equipment during a service visit",
         imageSrc: "/images/bg-image-sample%201.jpg",
+        imageWidth: 1448,
+        imageHeight: 1086,
         equipment: [
           { label: "Equipment", value: "High-efficiency furnace" },
           { label: "Scope", value: "Seasonal maintenance" },
@@ -1505,6 +1512,25 @@ export const sectionLibraryV3Content = {
     secondaryActionHref: "#services",
     stats: [],
   },
+  contentSplitFullImage: {
+    eyebrow: "How the work gets done",
+    title: "The crew that shows up is the crew that finishes.",
+    paragraphs: [
+      "Every visit is run by a technician who has seen the system before, or who has the full history in front of them when they arrive. Nothing gets handed off mid-job to someone starting from scratch.",
+      "That continuity is why the second visit is usually shorter than the first, and why the estimate you approve is the one you end up paying.",
+    ],
+    bullets: [
+      "One technician owns the job start to finish",
+      "Full service history on every visit",
+      "Written scope before any work begins",
+    ],
+    imageAlt: "Technician working on a rooftop unit",
+    imageSrc: "/images/fpo-image.svg",
+    primaryAction: "Request service",
+    secondaryAction: "View services",
+    secondaryActionHref: "#services",
+    stats: [],
+  },
   featurePortraitParagraph: {
     imageLabel: "Portrait feature",
     contentAlignX: "left" as const,
@@ -1758,6 +1784,10 @@ export const sectionLibraryV3Collections = [
         component: "content-split-fixed-image-v3",
       },
       {
+        label: "Split content with full image",
+        component: "content-split-full-image-v3",
+      },
+      {
         label: "Rule header",
         component: "content-rule-header-v2",
       },
@@ -1955,6 +1985,7 @@ export const sectionLibraryV3ComponentBySlug = {
   "content-three-column-mixed-v3": "ContentThreeColumnMixedSectionV3",
   "content-split-headline-image-v2": "ContentSplitHeadlineImageSectionV2",
   "content-split-fixed-image-v3": "ContentSplitFixedImageSectionV3",
+  "content-split-full-image-v3": "ContentSplitFullImageSectionV3",
   "content-rule-header-v2": "ContentRuleHeaderSectionV2",
   "feature-portrait-paragraph-v3": "FeaturePortraitParagraphSectionV3",
   "feature-overlap-rows-v3": "FeatureOverlapRowsSectionV3",

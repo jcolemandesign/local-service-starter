@@ -28,6 +28,10 @@ import {
   type ContentSplitFixedImageRatio,
   type ContentSplitFixedImageVariant,
 } from "@/components/sections/ContentSplitFixedImageSectionV3";
+import {
+  ContentSplitFullImageSectionV3,
+  type ContentSplitFullImageVariant,
+} from "@/components/sections/ContentSplitFullImageSectionV3";
 import { ContentStickyCardStreamSectionV2 } from "@/components/sections/ContentStickyCardStreamSectionV2";
 import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
 import { ContentStickyIdeasSectionV2 } from "@/components/sections/ContentStickyIdeasSectionV2";
@@ -286,6 +290,14 @@ function getCalloutSplitPanelVariant(section: PagebuilderRecipeSection) {
 function getCalloutRevealGridVariant(section: PagebuilderRecipeSection) {
   return calloutRevealGridVariantValues.has(section.variant ?? "")
     ? (section.variant as CalloutRevealGridVariant)
+    : undefined;
+}
+
+// Shares the hero full-height section's four arrangements, so it reuses that
+// value set rather than declaring a parallel one.
+function getContentSplitFullImageVariant(section: PagebuilderRecipeSection) {
+  return heroSplitFullHeightVariants.has(section.variant ?? "")
+    ? (section.variant as ContentSplitFullImageVariant)
     : undefined;
 }
 
@@ -567,6 +579,17 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           headingSizeStep={getContentSplitFixedImageHeadingSizeStep(section)}
           ratio={getContentSplitFixedImageRatio(section)}
           variant={getContentSplitFixedImageVariant(section)}
+        />
+      );
+    case "ContentSplitFullImageSectionV3":
+      return (
+        // No headingLevel: the surrounding renderer promotes a first section to
+        // h1, and this one is narrative - it is never the page's headline. It
+        // holds its h2 default wherever it lands.
+        <ContentSplitFullImageSectionV3
+          {...sectionLibraryV3Content.contentSplitFullImage}
+          colorRecipe={section.colorRecipe}
+          variant={getContentSplitFullImageVariant(section)}
         />
       );
     case "ContentMainIdeaGridSectionV3":
@@ -1179,6 +1202,12 @@ export function PagebuilderSection() {
       "ContentSplitFixedImageSectionV3",
       "Narrative",
       "Split content with fixed image",
+      4,
+    ),
+    ContentSplitFullImageSectionV3: previewCatalogEntry(
+      "ContentSplitFullImageSectionV3",
+      "Narrative",
+      "Split content with full image",
       4,
     ),
     ContentStickyCardStreamSectionV2: (

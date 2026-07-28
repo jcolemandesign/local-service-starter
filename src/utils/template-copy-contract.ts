@@ -1558,6 +1558,66 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  // The narrative full-image split takes the same copy as the fixed-ratio one -
+  // they are the same section with a different image treatment - so the two
+  // branches stay deliberately parallel. Matched before the fixed-image test
+  // below only because both contain "contentsplit"; the names are distinct
+  // enough that order does not actually decide it, but keeping the more
+  // specific string first avoids depending on that.
+  if (component.includes("contentsplitfullimage")) {
+    return [
+      {
+        example: "How the work gets done",
+        name: "eyebrow",
+        purpose: "Short context label above the split-content headline.",
+        target: "12-36 characters.",
+      },
+      {
+        example: "The crew that shows up is the crew that finishes",
+        name: "heading",
+        purpose: "Primary split-content headline.",
+        target: "36-76 characters.",
+      },
+      {
+        example:
+          "Every visit is run by a technician who has seen the system before, or who has the full history in front of them when they arrive.\n\nThat continuity is why the second visit is usually shorter than the first, and why the estimate you approve is the one you end up paying.",
+        format:
+          "Write 1-2 natural paragraphs. Put a hard return between paragraphs; each return becomes a separate visible paragraph.",
+        name: "body",
+        purpose:
+          "Main explanation beside the cropped image. The image runs off the page edge and carries the visual weight, so this copy should be able to stand on its own without describing the picture.",
+        target: "Length follows the argument, not a fixed character count.",
+      },
+      {
+        example: [
+          "One technician owns the job start to finish",
+          "Full service history on every visit",
+          "Written scope before any work begins",
+        ],
+        format:
+          "One short bullet per line. Omit this field entirely if the page doesn't need a bullet list here.",
+        itemCount: 3,
+        name: "bullets",
+        purpose:
+          "Optional scannable bullet list under the body copy. Only include it if it adds something the paragraphs don't already say - leave it out rather than padding it.",
+        target: "2-4 bullets, 3-8 words each, if used.",
+      },
+      {
+        example: "Request service",
+        name: "primaryAction",
+        purpose:
+          "Optional primary CTA. Only include this section's primaryAction/secondaryAction if the page needs a conversion path here - many uses of this layout are pure explanation with no CTA.",
+        target: "10-22 characters, if used.",
+      },
+      {
+        example: "View services",
+        name: "secondaryAction",
+        purpose: "Optional secondary CTA, paired with primaryAction.",
+        target: "10-22 characters, if used.",
+      },
+    ];
+  }
+
   if (component.includes("contentsplitfixedimage")) {
     return [
       {

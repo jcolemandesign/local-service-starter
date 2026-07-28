@@ -94,6 +94,10 @@ import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGri
 import { ServiceCalloutRevealGridSectionV3 } from "@/components/sections/ServiceCalloutRevealGridSectionV3";
 import { ServiceCalloutSplitPanelSectionV3 } from "@/components/sections/ServiceCalloutSplitPanelSectionV3";
 import {
+  ContentSplitFullImageSectionV3,
+  type ContentSplitFullImageVariant,
+} from "@/components/sections/ContentSplitFullImageSectionV3";
+import {
   CTAImageSectionV3,
   type CTAImageAlign,
 } from "@/components/sections/CTAImageSectionV3";
@@ -668,6 +672,17 @@ export function renderPageTemplateSection(
           variant={getContentSplitFixedImageVariant(section)}
         />
       );
+    case "ContentSplitFullImageSectionV3":
+      return (
+        // No headingLevel: the renderer promotes a first section to h1, and
+        // this one is narrative - it is never the page's headline. It holds its
+        // h2 default wherever it lands.
+        <ContentSplitFullImageSectionV3
+          {...contentSplitFullImageProps(fieldSection)}
+          colorRecipe={section.colorRecipe}
+          variant={getContentSplitFullImageVariant(section)}
+        />
+      );
     case "ContentMainIdeaGridSectionV3":
       return (
         <ContentMainIdeaGridSectionV3
@@ -936,6 +951,45 @@ function heroSplitProps(section: FieldSection) {
       sectionLibraryV3Content.heroSplitFullHeight.stats.join("\n"),
     ).slice(0, 3),
     title: getTitle(section, sectionLibraryV3Content.heroSplitFullHeight.title),
+  };
+}
+
+/**
+ * Same field names as `contentSplitFixedImageProps` - the two sections share a
+ * copy shape and differ only in image treatment - minus the ratio, which a
+ * cropped full-bleed panel has no use for.
+ *
+ * Every name read here is declared in this component's branch of
+ * `getTemplateCopyFieldsForSection` / `getTemplateAssetFieldsForSection`. A
+ * mismatch does not error; it silently renders section-library demo content.
+ */
+function contentSplitFullImageProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.contentSplitFullImage;
+  const body = getBody(section, "").trim();
+  const paragraphs = body
+    ? body.split(/\n\s*\n/).filter(Boolean)
+    : fallback.paragraphs;
+  // Bullets and CTAs are additive - if batch copy did not provide them they
+  // stay unset so the component skips them rather than falling back to demo
+  // content.
+  const bullets = getListValues(section, ["bullets"], "");
+  const primaryAction = getValue(section, "primaryAction", "");
+  const secondaryAction = getValue(section, "secondaryAction", "");
+
+  return {
+    ...fallback,
+    bullets: bullets.length > 0 ? bullets : undefined,
+    eyebrow: getValue(section, "eyebrow", fallback.eyebrow),
+    imageAlt: getAssetValue(section, "imageAlt", fallback.imageAlt),
+    imageSrc: getAssetValue(section, "imageSrc", fallback.imageSrc),
+    paragraphs,
+    primaryAction: primaryAction || undefined,
+    secondaryAction: secondaryAction || undefined,
+    // stats is deliberately not read from fields. The copy spec does not
+    // declare it, and reading a name the spec never asked for is the mismatch
+    // that silently falls back instead of erroring. It stays available for
+    // pages that compose this section directly, supplied by ...fallback.
+    title: getTitle(section, fallback.title),
   };
 }
 
@@ -2300,12 +2354,21 @@ function projectCaseStudyGalleryProps(section: FieldSection) {
       );
       const fallbackSlide = fallbackSlides[index % fallbackSlides.length];
       const assetSlide = assetSlides[index];
+      const imageSrc = assetSlide?.imageSrc ?? fallbackSlide.imageSrc;
+      // The library's intrinsic dimensions describe the library's image. Once a
+      // staged page points at a different file they describe nothing, and
+      // passing them on would frame the print to the wrong ratio until the
+      // browser corrected it - a visible jump. Carry them only for the image
+      // they were measured from.
+      const usesFallbackImage = imageSrc === fallbackSlide.imageSrc;
 
       return [
         {
           equipment,
           imageAlt: assetSlide?.imageAlt ?? fallbackSlide.imageAlt,
-          imageSrc: assetSlide?.imageSrc ?? fallbackSlide.imageSrc,
+          imageHeight: usesFallbackImage ? fallbackSlide.imageHeight : undefined,
+          imageSrc,
+          imageWidth: usesFallbackImage ? fallbackSlide.imageWidth : undefined,
           project: slide.project,
           summary: slide.summary,
           testimonial: {
@@ -2912,6 +2975,13 @@ function getCalloutSplitPanelVariant(section: PageTemplatePreviewSection) {
 function getCalloutRevealGridVariant(section: PageTemplatePreviewSection) {
   return calloutRevealGridVariantValues.has(section.variant ?? "")
     ? (section.variant as CalloutRevealGridVariant)
+    : undefined;
+}
+
+// Shares the hero full-height section's four arrangements and its value set.
+function getContentSplitFullImageVariant(section: PageTemplatePreviewSection) {
+  return heroSplitFullHeightVariants.has(section.variant ?? "")
+    ? (section.variant as ContentSplitFullImageVariant)
     : undefined;
 }
 
