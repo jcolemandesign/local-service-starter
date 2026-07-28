@@ -25,6 +25,10 @@
 .DS_Store
 *.pem
 
+# design reference screenshots - scratch material for a working session, not
+# project assets. Kept on disk, out of history.
+/reference images/
+
 # debug
 npm-debug.log*
 yarn-debug.log*
