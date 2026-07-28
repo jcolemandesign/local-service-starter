@@ -134,12 +134,16 @@ import {
 } from "@/content/section-library-v3";
 import {
   booleanStyleFields,
+  calloutRevealGridVariantValues,
+  calloutSplitPanelVariantValues,
   getSectionStyleFieldSpecs,
   resolveCardFill,
   servicesBentoVariantValues,
   splitImageRatioValues,
   splitImageVariantValues,
   styleFieldPrefix,
+  type CalloutRevealGridVariant,
+  type CalloutSplitPanelVariant,
 } from "@/content/section-style-options";
 import type { StagedPageField } from "@/utils/staged-pages";
 
@@ -547,17 +551,25 @@ export function renderPageTemplateSection(
     case "ServiceCalloutRevealGridSectionV3":
       return (
         <ServiceCalloutRevealGridSectionV3
-          {...serviceCalloutRevealGridProps(fieldSection)}
+          {...serviceCalloutRevealGridProps(
+            fieldSection,
+            getCalloutRevealGridVariant(section),
+          )}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+          variant={getCalloutRevealGridVariant(section)}
         />
       );
     case "ServiceCalloutSplitPanelSectionV3":
       return (
         <ServiceCalloutSplitPanelSectionV3
-          {...serviceCalloutSplitPanelProps(fieldSection)}
+          {...serviceCalloutSplitPanelProps(
+            fieldSection,
+            getCalloutSplitPanelVariant(section),
+          )}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+          variant={getCalloutSplitPanelVariant(section)}
         />
       );
     case "ServiceNeedsPriorityGridSectionV3":
@@ -1256,7 +1268,10 @@ function threeCardLinkGridProps(section: FieldSection) {
  * produce falls back to the library item at the same index, so a short or
  * missing field degrades one card rather than desynchronizing the rest.
  */
-function serviceCalloutRevealGridProps(section: FieldSection) {
+function serviceCalloutRevealGridProps(
+  section: FieldSection,
+  variant: CalloutRevealGridVariant | undefined,
+) {
   const fallback = sectionLibraryV3Content.serviceCalloutRevealGrid;
   const items = cardItemsWithFallback(
     section,
@@ -1265,11 +1280,15 @@ function serviceCalloutRevealGridProps(section: FieldSection) {
   );
   const panels = getListValues(section, ["calloutPanels", "panels"], "");
   const actions = getListValues(section, ["calloutActions", "actions"], "");
+  // Matches the section's own row limit. Trimming to four here would silently
+  // drop approved copy that the three-across arrangement is willing to render.
+  const cards =
+    variant === "three-across" ? items.slice(0, 6) : items.slice(0, 4);
 
   return {
     ...fallback,
     closeLabel: getValue(section, "closeLabel", fallback.closeLabel),
-    items: items.slice(0, 4).map((item, index) => {
+    items: cards.map((item, index) => {
       const fallbackItem = fallback.items[index % fallback.items.length];
       const panel = panels[index] ? parseCardItem(panels[index]) : undefined;
       const action = actions[index] ? parseCardItem(actions[index]) : undefined;
@@ -1301,7 +1320,10 @@ function serviceCalloutRevealGridProps(section: FieldSection) {
  * panel's opening state read from its own two fields - it has no card behind
  * it, so it cannot come out of the per-index merge.
  */
-function serviceCalloutSplitPanelProps(section: FieldSection) {
+function serviceCalloutSplitPanelProps(
+  section: FieldSection,
+  variant: CalloutSplitPanelVariant | undefined,
+) {
   const fallback = sectionLibraryV3Content.serviceCalloutSplitPanel;
   const items = cardItemsWithFallback(
     section,
@@ -1310,12 +1332,17 @@ function serviceCalloutSplitPanelProps(section: FieldSection) {
   );
   const panels = getListValues(section, ["calloutPanels", "panels"], "");
   const actions = getListValues(section, ["calloutActions", "actions"], "");
+  // The two-up grid is a fixed 2x2 and drops anything past the fourth card.
+  // The stacked column has no cap, so trimming here would silently discard
+  // approved copy that the section is willing to render.
+  const cards = variant === "stacked" ? items : items.slice(0, 4);
 
   return {
     ...fallback,
+    closeLabel: getValue(section, "closeLabel", "Close details"),
     introBody: getValue(section, "introBody", fallback.introBody),
     introHeading: getValue(section, "introHeading", fallback.introHeading),
-    items: items.slice(0, 4).map((item, index) => {
+    items: cards.map((item, index) => {
       const fallbackItem = fallback.items[index % fallback.items.length];
       const panel = panels[index] ? parseCardItem(panels[index]) : undefined;
       const action = actions[index] ? parseCardItem(actions[index]) : undefined;
@@ -2869,6 +2896,18 @@ function getCompactHeaderHeadingSize(
 function getServicesBentoVariant(section: PageTemplatePreviewSection) {
   return servicesBentoVariants.has(section.variant ?? "")
     ? (section.variant as ServicesBentoCardsVariant)
+    : undefined;
+}
+
+function getCalloutSplitPanelVariant(section: PageTemplatePreviewSection) {
+  return calloutSplitPanelVariantValues.has(section.variant ?? "")
+    ? (section.variant as CalloutSplitPanelVariant)
+    : undefined;
+}
+
+function getCalloutRevealGridVariant(section: PageTemplatePreviewSection) {
+  return calloutRevealGridVariantValues.has(section.variant ?? "")
+    ? (section.variant as CalloutRevealGridVariant)
     : undefined;
 }
 

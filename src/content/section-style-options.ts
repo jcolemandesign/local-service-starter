@@ -11,12 +11,17 @@
  */
 
 /** Text/image split orientation. Shared by the auto-height and fixed-ratio
- *  split families, which offer the same four arrangements. */
+ *  split families, which offer the same four arrangements.
+ *
+ *  These render on a 14-column grid with one empty column between the slots,
+ *  so the labels read 6/7 while the values still read 3/4 - the values are
+ *  persisted in project page data and are opaque ids, not column counts.
+ *  Renaming them would require migrating every saved page. */
 export const splitImageVariantOptions = [
-  { label: "Text 3 / Image 4", value: "text-3-image-4-right" },
-  { label: "Text 4 / Image 3", value: "text-4-image-3-right" },
-  { label: "Image 3 / Text 4", value: "image-3-left-text-4" },
-  { label: "Image 4 / Text 3", value: "image-4-left-text-3" },
+  { label: "Text 6 / Image 7", value: "text-3-image-4-right" },
+  { label: "Text 7 / Image 6", value: "text-4-image-3-right" },
+  { label: "Image 6 / Text 7", value: "image-3-left-text-4" },
+  { label: "Image 7 / Text 6", value: "image-4-left-text-3" },
 ] as const;
 
 export type SplitImageVariant =
@@ -53,6 +58,50 @@ export const splitImageRatioFieldOptions = [
   { label: "Use template default", value: "" },
   ...splitImageRatioOptions,
 ] as const;
+
+/**
+ * Card arrangement for the callout section that keeps its detail panel beside
+ * the cards.
+ *
+ * "default" is the existing two-up grid: a fixed 2x2, capped at four cards,
+ * panel held still beside it. "stacked" runs the cards one-up down a single
+ * column, takes any number of them, and makes the panel sticky so it stays in
+ * view as the taller stack scrolls past.
+ */
+export const calloutSplitPanelVariantOptions = [
+  { label: "Two-up grid", value: "default" },
+  { label: "Stacked rows", value: "stacked" },
+] as const;
+
+export type CalloutSplitPanelVariant =
+  (typeof calloutSplitPanelVariantOptions)[number]["value"];
+
+export const calloutSplitPanelVariantValues = new Set<string>(
+  calloutSplitPanelVariantOptions.map((option) => option.value),
+);
+
+/**
+ * Card arrangement for the callout section whose panel reveals over the cards.
+ *
+ * "default" is the existing two-across block, capped at four cards in a 2x2.
+ * "three-across" runs three to a row and takes up to six, so it sits right at
+ * either one full row of three or two full rows of six.
+ *
+ * Saved pages predate this axis and store no variant at all. Both the unset
+ * value and "default" have to resolve to the same layout and the same copy
+ * fields, or every approved page using this section goes stale on read.
+ */
+export const calloutRevealGridVariantOptions = [
+  { label: "Two across", value: "default" },
+  { label: "Three across", value: "three-across" },
+] as const;
+
+export type CalloutRevealGridVariant =
+  (typeof calloutRevealGridVariantOptions)[number]["value"];
+
+export const calloutRevealGridVariantValues = new Set<string>(
+  calloutRevealGridVariantOptions.map((option) => option.value),
+);
 
 export const servicesBentoVariantOptions = [
   { label: "Centered", value: "default" },

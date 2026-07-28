@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Button, SevenColumnGrid, SevenColumnGridItem } from "@/components/primitives";
+import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 import type { SectionColorRecipe } from "@/content/section-color-recipes";
 
@@ -45,33 +45,37 @@ type FixedImageVariantConfig = {
   textClassName: string;
 };
 
+// Fourteen columns with one empty column between the two slots, so the split is
+// 6 | gutter | 7 rather than two panels sharing only the grid gap. The variant
+// keys still read 3/4 because they are persisted in project page data - they
+// are opaque ids for "narrow text right image" etc., not column counts.
 const variantConfig: Record<
   ContentSplitFixedImageVariant,
   FixedImageVariantConfig
 > = {
   "text-3-image-4-right": {
     textClassName:
-      "col-span-3 col-start-1 row-start-1 max-lg:col-span-2 max-lg:col-start-1 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
+      "col-span-6 col-start-1 row-start-1 max-lg:col-span-4 max-lg:col-start-1 max-md:col-span-6 max-md:col-start-1 max-md:row-auto max-sm:col-span-2",
     imageClassName:
-      "col-span-4 col-start-4 row-start-1 max-lg:col-span-3 max-lg:col-start-3 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
+      "col-span-7 col-start-8 row-start-1 max-lg:col-span-5 max-lg:col-start-6 max-md:col-span-6 max-md:col-start-1 max-md:row-auto max-sm:col-span-2",
   },
   "text-4-image-3-right": {
     textClassName:
-      "col-span-4 col-start-1 row-start-1 max-lg:col-span-3 max-lg:col-start-1 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
+      "col-span-7 col-start-1 row-start-1 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-6 max-md:col-start-1 max-md:row-auto max-sm:col-span-2",
     imageClassName:
-      "col-span-3 col-start-5 row-start-1 max-lg:col-span-2 max-lg:col-start-4 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
+      "col-span-6 col-start-9 row-start-1 max-lg:col-span-4 max-lg:col-start-7 max-md:col-span-6 max-md:col-start-1 max-md:row-auto max-sm:col-span-2",
   },
   "image-3-left-text-4": {
     textClassName:
-      "col-span-4 col-start-4 row-start-1 max-lg:col-span-3 max-lg:col-start-3 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
+      "col-span-7 col-start-8 row-start-1 max-lg:col-span-5 max-lg:col-start-6 max-md:col-span-6 max-md:col-start-1 max-md:row-auto max-sm:col-span-2",
     imageClassName:
-      "col-span-3 col-start-1 row-start-1 max-lg:col-span-2 max-lg:col-start-1 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
+      "col-span-6 col-start-1 row-start-1 max-lg:col-span-4 max-lg:col-start-1 max-md:col-span-6 max-md:col-start-1 max-md:row-auto max-sm:col-span-2",
   },
   "image-4-left-text-3": {
     textClassName:
-      "col-span-3 col-start-5 row-start-1 max-lg:col-span-2 max-lg:col-start-4 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
+      "col-span-6 col-start-9 row-start-1 max-lg:col-span-4 max-lg:col-start-7 max-md:col-span-6 max-md:col-start-1 max-md:row-auto max-sm:col-span-2",
     imageClassName:
-      "col-span-4 col-start-1 row-start-1 max-lg:col-span-3 max-lg:col-start-1 max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-sm:col-span-1",
+      "col-span-7 col-start-1 row-start-1 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-6 max-md:col-start-1 max-md:row-auto max-sm:col-span-2",
   },
 };
 
@@ -97,10 +101,10 @@ const headingSizeScale = [
 ] as const;
 
 function getDefaultHeadingSizeIndex(variant: ContentSplitFixedImageVariant) {
-  const hasFourColumnText =
+  const hasWideTextColumn =
     variant === "text-4-image-3-right" || variant === "image-4-left-text-3";
 
-  return hasFourColumnText ? 3 : 2;
+  return hasWideTextColumn ? 3 : 2;
 }
 
 const colorRecipeClassName: Record<
@@ -196,8 +200,12 @@ export function ContentSplitFixedImageSectionV3({
 
   return (
     <section className="bg-bg-page">
-      <SevenColumnGrid className="section-min-none items-center" padding="med">
-        <SevenColumnGridItem
+      <LayoutGrid
+        className="section-min-none items-center"
+        columns={14}
+        padding="med"
+      >
+        <LayoutGridItem
           alignX="left"
           alignY={isFilled ? "stretch" : "middle"}
           className={cx("text-service-ink", config.textClassName)}
@@ -283,16 +291,16 @@ export function ContentSplitFixedImageSectionV3({
               </div>
             ) : null}
           </div>
-        </SevenColumnGridItem>
+        </LayoutGridItem>
 
-        <SevenColumnGridItem
+        <LayoutGridItem
           alignX="center"
           alignY="middle"
           className={config.imageClassName}
         >
           <FixedRatioImage alt={imageAlt} ratio={ratio} src={imageSrc} />
-        </SevenColumnGridItem>
-      </SevenColumnGrid>
+        </LayoutGridItem>
+      </LayoutGrid>
     </section>
   );
 }

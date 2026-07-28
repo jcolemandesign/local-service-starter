@@ -97,6 +97,10 @@ import {
   sectionLibraryV3Content,
 } from "@/content/section-library-v3";
 import {
+  calloutRevealGridVariantOptions,
+  calloutRevealGridVariantValues,
+  calloutSplitPanelVariantOptions,
+  calloutSplitPanelVariantValues,
   cardFillOptInComponents,
   sectionSupportsCardLinks,
   sectionSupportsCardStyle,
@@ -105,6 +109,8 @@ import {
   splitImageRatioOptions as fixedRatioSplitRatioOptions,
   splitImageVariantOptions as fixedRatioSplitVariantOptions,
   splitImageVariantOptions as splitContentImageVariantOptions,
+  type CalloutRevealGridVariant,
+  type CalloutSplitPanelVariant,
   type ServicesBentoVariant,
   type SplitImageRatio,
   type SplitImageVariant,
@@ -674,6 +680,18 @@ function getServicesBentoVariantLabel(variant: string | undefined) {
     ?.label;
 }
 
+function getCalloutSplitPanelVariantLabel(variant: string | undefined) {
+  return calloutSplitPanelVariantOptions.find(
+    (option) => option.value === variant,
+  )?.label;
+}
+
+function getCalloutRevealGridVariantLabel(variant: string | undefined) {
+  return calloutRevealGridVariantOptions.find(
+    (option) => option.value === variant,
+  )?.label;
+}
+
 function getHeroCompactAlign(section: WorkingSection) {
   const [align] = (section.variant ?? "").split("-");
 
@@ -750,6 +768,18 @@ function getServicesBentoVariant(section: WorkingSection) {
     : servicesBentoVariantOptions[0].value;
 }
 
+function getCalloutSplitPanelVariant(section: WorkingSection) {
+  return calloutSplitPanelVariantValues.has(section.variant ?? "")
+    ? (section.variant as CalloutSplitPanelVariant)
+    : calloutSplitPanelVariantOptions[0].value;
+}
+
+function getCalloutRevealGridVariant(section: WorkingSection) {
+  return calloutRevealGridVariantValues.has(section.variant ?? "")
+    ? (section.variant as CalloutRevealGridVariant)
+    : calloutRevealGridVariantOptions[0].value;
+}
+
 function getFourCardLinkGridVariant(
   section: WorkingSection,
 ): FourCardLinkGridVariant {
@@ -811,6 +841,10 @@ function createInitialWorkingStack(
                 ? section.variant ?? "center-display-xl"
               : isServicesBentoSection(section)
                 ? section.variant ?? servicesBentoVariantOptions[0].value
+              : isServiceCalloutSplitPanelSection(section)
+                ? section.variant ?? calloutSplitPanelVariantOptions[0].value
+              : isServiceCalloutRevealGridSection(section)
+                ? section.variant ?? calloutRevealGridVariantOptions[0].value
               : isFourCardLinkGridSection(section)
                 ? section.variant ?? fourCardLinkGridVariantOptions[0].value
                 : isThreeCardLinkGridSection(section)
@@ -925,6 +959,10 @@ function updateSectionFromSwapOption(
                 ? "center-display-xl"
               : nextOption.component === servicesBentoComponent
                 ? servicesBentoVariantOptions[0].value
+              : nextOption.component === serviceCalloutSplitPanelComponent
+                ? calloutSplitPanelVariantOptions[0].value
+              : nextOption.component === serviceCalloutRevealGridComponent
+                ? calloutRevealGridVariantOptions[0].value
               : nextOption.component === fourCardLinkGridComponent
                 ? fourCardLinkGridVariantOptions[0].value
               : undefined,
@@ -1793,6 +1831,16 @@ function buildPageInstruction({
              getServicesBentoVariantLabel(section.variant) ??
              servicesBentoVariantOptions[0].label
            } (${section.variant ?? servicesBentoVariantOptions[0].value})`
+       : isServiceCalloutSplitPanelSection(section)
+         ? `Variant: ${
+             getCalloutSplitPanelVariantLabel(section.variant) ??
+             calloutSplitPanelVariantOptions[0].label
+           } (${section.variant ?? calloutSplitPanelVariantOptions[0].value})`
+       : isServiceCalloutRevealGridSection(section)
+         ? `Variant: ${
+             getCalloutRevealGridVariantLabel(section.variant) ??
+             calloutRevealGridVariantOptions[0].label
+           } (${section.variant ?? calloutRevealGridVariantOptions[0].value})`
       : isFourCardLinkGridSection(section)
          ? `Variant: ${
              getFourCardLinkGridVariant(section) === "with-images"
@@ -2871,6 +2919,34 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateCalloutSplitPanelVariant(
+    sectionId: string,
+    variant: CalloutSplitPanelVariant,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && isServiceCalloutSplitPanelSection(section)
+          ? { ...section, variant }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
+  function updateCalloutRevealGridVariant(
+    sectionId: string,
+    variant: CalloutRevealGridVariant,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && isServiceCalloutRevealGridSection(section)
+          ? { ...section, variant }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateCardLinkGridVariant(
     sectionId: string,
     variant: ThreeCardLinkGridVariant,
@@ -2960,6 +3036,10 @@ export function PagebuilderShell({
                   ? "center-display-xl"
                 : nextOption.component === servicesBentoComponent
                   ? servicesBentoVariantOptions[0].value
+                : nextOption.component === serviceCalloutSplitPanelComponent
+                  ? calloutSplitPanelVariantOptions[0].value
+                : nextOption.component === serviceCalloutRevealGridComponent
+                  ? calloutRevealGridVariantOptions[0].value
                 : nextOption.component === fourCardLinkGridComponent
                   ? fourCardLinkGridVariantOptions[0].value
                   : nextOption.component === threeCardLinkGridComponent ||
@@ -3374,12 +3454,14 @@ export function PagebuilderShell({
             {...sectionLibraryV3Content.serviceCalloutRevealGrid}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
+            variant={getCalloutRevealGridVariant(section)}
           />
         ) : isServiceCalloutSplitPanelSection(section) ? (
           <ServiceCalloutSplitPanelSectionV3
             {...sectionLibraryV3Content.serviceCalloutSplitPanel}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
+            variant={getCalloutSplitPanelVariant(section)}
           />
         ) : isServiceNeedsPriorityGridSection(section) ? (
           <ServiceNeedsPriorityGridSectionV3
@@ -4990,6 +5072,92 @@ export function PagebuilderShell({
                               <p className="type-caption text-current/60">
                                 Choose centered, sticky split, or offset header
                                 layout.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
+                          {isServiceCalloutSplitPanelSection(section) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Card Layout
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2 max-md:grid-cols-1">
+                                {calloutSplitPanelVariantOptions.map(
+                                  (option) => {
+                                    const optionIsActive =
+                                      getCalloutSplitPanelVariant(section) ===
+                                      option.value;
+
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                          optionIsActive
+                                            ? "token-chrome-card-active"
+                                            : "token-chrome-card",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateCalloutSplitPanelVariant(
+                                            section.id,
+                                            option.value,
+                                          )
+                                        }
+                                        type="button"
+                                      >
+                                        {option.label}
+                                      </button>
+                                    );
+                                  },
+                                )}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Two-up caps at four cards. Stacked rows take any
+                                number and pin the panel beside them.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
+                          {isServiceCalloutRevealGridSection(section) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Card Layout
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2 max-md:grid-cols-1">
+                                {calloutRevealGridVariantOptions.map(
+                                  (option) => {
+                                    const optionIsActive =
+                                      getCalloutRevealGridVariant(section) ===
+                                      option.value;
+
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                          optionIsActive
+                                            ? "token-chrome-card-active"
+                                            : "token-chrome-card",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateCalloutRevealGridVariant(
+                                            section.id,
+                                            option.value,
+                                          )
+                                        }
+                                        type="button"
+                                      >
+                                        {option.label}
+                                      </button>
+                                    );
+                                  },
+                                )}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Two across is a 2x2 of four. Three across takes
+                                three or six, so the last row stays full.
                               </p>
                             </fieldset>
                           ) : null}

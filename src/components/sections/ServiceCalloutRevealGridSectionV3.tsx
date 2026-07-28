@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useId, useRef, useState } from "react";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
+import type { CalloutRevealGridVariant } from "@/content/section-style-options";
 import { CalloutCardAffordance } from "./CalloutCardAffordance";
 
 export type ServiceCalloutRevealGridItem = {
@@ -25,6 +26,7 @@ export type ServiceCalloutRevealGridSectionV3Props = {
   closeLabel?: string;
   items: readonly ServiceCalloutRevealGridItem[];
   openHint?: string;
+  variant?: CalloutRevealGridVariant;
 };
 
 const revealEase = [0.22, 1, 0.36, 1] as const;
@@ -39,13 +41,18 @@ export function ServiceCalloutRevealGridSectionV3({
   closeLabel = "Close details",
   items,
   openHint = "See what to do",
+  variant = "default",
 }: ServiceCalloutRevealGridSectionV3Props) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const closeRef = useRef<HTMLButtonElement | null>(null);
   const panelId = useId();
   const shouldReduceMotion = useReducedMotion();
-  const cards = items.slice(0, 4);
+  const isThreeAcross = variant === "three-across";
+  // Both arrangements only look right at a whole number of rows: four in a 2x2,
+  // or three and six across three columns. The cap is the row limit, not a
+  // content limit - anything past it would leave a ragged final row.
+  const cards = isThreeAcross ? items.slice(0, 6) : items.slice(0, 4);
   const activeItem = openIndex === null ? undefined : cards[openIndex];
 
   // The panel replaces the cards visually, so leaving focus on a card the user
@@ -96,7 +103,14 @@ export function ServiceCalloutRevealGridSectionV3({
         aria-controls={panelId}
         aria-expanded={openIndex === index}
         className={cx(
-          "group/callout card-min-short flex w-full min-w-0 cursor-pointer flex-col items-start overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-8 text-left text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent hover:bg-bg-page focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent max-md:p-6",
+          "group/callout flex w-full min-w-0 cursor-pointer flex-col items-start overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-left text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent hover:bg-bg-page focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
+          // Three across makes each card two columns narrower, so it steps the
+          // padding and type down a notch to keep the same density. The taller
+          // floor is what keeps a single row of three from leaving the reveal
+          // panel - which covers exactly this grid - too short for its own copy.
+          isThreeAcross
+            ? "card-min-medium p-6 max-md:p-5"
+            : "card-min-short p-8 max-md:p-6",
           cardFill === "none" && "!bg-transparent !shadow-none",
           cardBorder === "off" && "!border-transparent",
         )}
@@ -108,9 +122,21 @@ export function ServiceCalloutRevealGridSectionV3({
         type="button"
       >
         <span className="fluid-type-frame flex w-full flex-1 flex-col">
-          <span className="type-heading-lg wrap-pretty">{item.title}</span>
+          <span
+            className={cx(
+              "wrap-pretty",
+              isThreeAcross ? "type-heading-md" : "type-heading-lg",
+            )}
+          >
+            {item.title}
+          </span>
           {item.body ? (
-            <span className="type-text-md wrap-pretty mt-heading-body-sm text-service-muted">
+            <span
+              className={cx(
+                "wrap-pretty mt-heading-body-sm text-service-muted",
+                isThreeAcross ? "type-text-sm" : "type-text-md",
+              )}
+            >
               {item.body}
             </span>
           ) : null}
@@ -131,7 +157,16 @@ export function ServiceCalloutRevealGridSectionV3({
           className="col-span-12 col-start-2 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2"
         >
           <div className="relative">
-            <div className="grid auto-rows-fr grid-cols-2 gap-6 max-sm:grid-cols-1">
+            {/* Three across reduces to two before it stacks: dropping straight
+                from three to one would leave a very long column on tablet. */}
+            <div
+              className={cx(
+                "grid auto-rows-fr gap-6",
+                isThreeAcross
+                  ? "grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1"
+                  : "grid-cols-2 max-sm:grid-cols-1",
+              )}
+            >
               {cards.map((item, index) => renderCard(item, index))}
             </div>
 

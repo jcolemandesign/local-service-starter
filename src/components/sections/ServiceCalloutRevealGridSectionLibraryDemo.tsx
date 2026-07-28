@@ -3,29 +3,29 @@
 import { useState, type ComponentProps } from "react";
 import { Container } from "@/components/primitives";
 import {
-  HeroSplitFullHeightSectionV3,
-  type HeroSplitFullHeightVariant,
-} from "@/components/sections/HeroSplitFullHeightSectionV3";
-import { splitImageVariantOptions } from "@/content/section-style-options";
+  calloutRevealGridVariantOptions,
+  type CalloutRevealGridVariant,
+} from "@/content/section-style-options";
+import { ServiceCalloutRevealGridSectionV3 } from "@/components/sections/ServiceCalloutRevealGridSectionV3";
 
-type HeroSplitFullImageSectionLibraryDemoProps = Omit<
-  ComponentProps<typeof HeroSplitFullHeightSectionV3>,
+type ServiceCalloutRevealGridSectionLibraryDemoProps = Omit<
+  ComponentProps<typeof ServiceCalloutRevealGridSectionV3>,
   "variant"
 >;
 
-const layoutOptions = splitImageVariantOptions satisfies readonly {
+const layoutOptions = calloutRevealGridVariantOptions satisfies readonly {
   label: string;
-  value: HeroSplitFullHeightVariant;
+  value: CalloutRevealGridVariant;
 }[];
 
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-export function HeroSplitFullImageSectionLibraryDemo(
-  props: HeroSplitFullImageSectionLibraryDemoProps,
+export function ServiceCalloutRevealGridSectionLibraryDemo(
+  props: ServiceCalloutRevealGridSectionLibraryDemoProps,
 ) {
-  const [variant, setVariant] = useState<HeroSplitFullHeightVariant>(
+  const [variant, setVariant] = useState<CalloutRevealGridVariant>(
     layoutOptions[0].value,
   );
 
@@ -63,7 +63,7 @@ export function HeroSplitFullImageSectionLibraryDemo(
         </Container>
       </div>
 
-      <HeroSplitFullHeightSectionV3 {...props} variant={variant} />
+      <ServiceCalloutRevealGridSectionV3 {...props} variant={variant} />
     </div>
   );
 }

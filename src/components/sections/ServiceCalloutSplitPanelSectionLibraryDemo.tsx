@@ -3,29 +3,29 @@
 import { useState, type ComponentProps } from "react";
 import { Container } from "@/components/primitives";
 import {
-  HeroSplitFullHeightSectionV3,
-  type HeroSplitFullHeightVariant,
-} from "@/components/sections/HeroSplitFullHeightSectionV3";
-import { splitImageVariantOptions } from "@/content/section-style-options";
+  calloutSplitPanelVariantOptions,
+  type CalloutSplitPanelVariant,
+} from "@/content/section-style-options";
+import { ServiceCalloutSplitPanelSectionV3 } from "@/components/sections/ServiceCalloutSplitPanelSectionV3";
 
-type HeroSplitFullImageSectionLibraryDemoProps = Omit<
-  ComponentProps<typeof HeroSplitFullHeightSectionV3>,
+type ServiceCalloutSplitPanelSectionLibraryDemoProps = Omit<
+  ComponentProps<typeof ServiceCalloutSplitPanelSectionV3>,
   "variant"
 >;
 
-const layoutOptions = splitImageVariantOptions satisfies readonly {
+const layoutOptions = calloutSplitPanelVariantOptions satisfies readonly {
   label: string;
-  value: HeroSplitFullHeightVariant;
+  value: CalloutSplitPanelVariant;
 }[];
 
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-export function HeroSplitFullImageSectionLibraryDemo(
-  props: HeroSplitFullImageSectionLibraryDemoProps,
+export function ServiceCalloutSplitPanelSectionLibraryDemo(
+  props: ServiceCalloutSplitPanelSectionLibraryDemoProps,
 ) {
-  const [variant, setVariant] = useState<HeroSplitFullHeightVariant>(
+  const [variant, setVariant] = useState<CalloutSplitPanelVariant>(
     layoutOptions[0].value,
   );
 
@@ -63,7 +63,7 @@ export function HeroSplitFullImageSectionLibraryDemo(
         </Container>
       </div>
 
-      <HeroSplitFullHeightSectionV3 {...props} variant={variant} />
+      <ServiceCalloutSplitPanelSectionV3 {...props} variant={variant} />
     </div>
   );
 }

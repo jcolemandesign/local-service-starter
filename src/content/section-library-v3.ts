@@ -759,6 +759,27 @@ export const sectionLibraryV3Content = {
         actionLabel: "Request a written quote",
         actionHref: "/contact",
       },
+      // Cards five and six exist for the three-across arrangement, which runs
+      // to two full rows. The two-across arrangement slices to four and never
+      // sees them, so its demo output is unchanged.
+      {
+        title: "Rising Utility Bills",
+        body: "Nothing about the household has changed, but the heating or cooling portion of the bill keeps climbing month over month.",
+        panelHeading: "Find where the efficiency went",
+        panelBody:
+          "A system losing efficiency runs longer to reach the same temperature, and the bill is usually the first place it shows. A technician checks refrigerant charge, airflow, and cycle times to identify what is costing the extra runtime.",
+        actionLabel: "Book an efficiency check",
+        actionHref: "/contact",
+      },
+      {
+        title: "Humidity or Air Quality",
+        body: "The house feels damp or stuffy even at the right temperature, or dust returns almost immediately after cleaning.",
+        panelHeading: "Treat the air, not just the temperature",
+        panelBody:
+          "Comfort problems that persist at the correct temperature usually trace to humidity control, filtration, or ventilation rather than the equipment itself. The visit measures conditions before recommending any equipment change.",
+        actionLabel: "Request an air quality visit",
+        actionHref: "/contact",
+      },
     ],
   },
   serviceCalloutSplitPanel: {
@@ -1448,19 +1469,19 @@ export const sectionLibraryV3Content = {
     stats: ["Same-week visits", "Licensed pros", "Clear estimates"],
     variants: [
       {
-        label: "Text 3 / Image 4",
+        label: "Text 6 / Image 7",
         variant: "text-3-image-4-right",
       },
       {
-        label: "Text 4 / Image 3",
+        label: "Text 7 / Image 6",
         variant: "text-4-image-3-right",
       },
       {
-        label: "Image 3 / Text 4",
+        label: "Image 6 / Text 7",
         variant: "image-3-left-text-4",
       },
       {
-        label: "Image 4 / Text 3",
+        label: "Image 7 / Text 6",
         variant: "image-4-left-text-3",
       },
     ],

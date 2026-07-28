@@ -1194,7 +1194,15 @@ export function getTemplateCopyFieldsForSection(
   // to card 1. Splitting them this way keeps every line in the existing
   // "Title - Description" / "Label -> path" shapes the rest of the contract
   // uses, rather than inventing a wide per-card delimiter format.
+  // The three-across arrangement fills rows of three rather than a 2x2, so it
+  // wants three or six cards, and each card is two columns narrower - the
+  // teaser has to come down accordingly. Everything below keys off the variant
+  // rather than replacing the default branch: saved pages store no variant at
+  // all, and their fields have to stay byte-identical or approved copy goes
+  // stale on read.
   if (component.includes("servicecalloutrevealgrid")) {
+    const isThreeAcross = section.variant === "three-across";
+
     return [
       {
         example: [
@@ -1203,13 +1211,17 @@ export function getTemplateCopyFieldsForSection(
           "New Noises or Short Cycling - The system sounds different than it used to, or it starts and stops again within a few minutes of beginning a cycle.",
           "Planning a Replacement - The equipment is aging and still running, but you want the repair and replacement options in writing before deciding.",
         ],
-        format: "Exactly four lines as Title - Card teaser.",
-        itemCount: 4,
+        format: isThreeAcross
+          ? "Either three or six lines as Title - Card teaser."
+          : "Exactly four lines as Title - Card teaser.",
+        itemCount: isThreeAcross ? 6 : 4,
         name: "calloutItems",
-        purpose:
-          "The four clickable card faces, written as the problem the visitor is experiencing rather than the service name. Order maps left to right, top to bottom.",
-        target:
-          "Exactly 4 items. Titles 14-34 characters. Teasers 100-160 characters - two clauses that describe the symptom concretely, not a one-line label.",
+        purpose: isThreeAcross
+          ? "The clickable card faces, written as the problem the visitor is experiencing rather than the service name. Order maps left to right, top to bottom across rows of three."
+          : "The four clickable card faces, written as the problem the visitor is experiencing rather than the service name. Order maps left to right, top to bottom.",
+        target: isThreeAcross
+          ? "Exactly 3 or exactly 6 items so the last row stays full. Titles 14-34 characters. Teasers 80-130 characters - these cards are a third of the row, so keep the symptom to one tight sentence."
+          : "Exactly 4 items. Titles 14-34 characters. Teasers 100-160 characters - two clauses that describe the symptom concretely, not a one-line label.",
       },
       {
         example: [
@@ -1218,14 +1230,16 @@ export function getTemplateCopyFieldsForSection(
           "Have the change checked before it grows - New sounds and frequent cycling are early signals, and they are cheaper to address before the system fails outright. Note when the change started so the visit can focus there.",
           "Compare repair and replacement side by side - Older equipment does not always need replacing right away. You get the current condition, the realistic remaining life, and written pricing for both paths.",
         ],
-        format:
-          "Exactly four lines as Panel heading - Panel body. Line N is the panel for card N in calloutItems.",
-        itemCount: 4,
+        format: isThreeAcross
+          ? "One line per card as Panel heading - Panel body. Line N is the panel for card N in calloutItems."
+          : "Exactly four lines as Panel heading - Panel body. Line N is the panel for card N in calloutItems.",
+        itemCount: isThreeAcross ? 6 : 4,
         name: "calloutPanels",
         purpose:
           "Detail revealed over the grid when its card is clicked. Answer what is likely happening and what the visit involves, in the same order as calloutItems.",
-        target:
-          "Exactly 4 items. Headings 26-48 characters. Bodies 180-280 characters.",
+        target: isThreeAcross
+          ? "One per calloutItems entry. Headings 26-48 characters. Bodies 150-240 characters - a single row of three makes the panel shorter, so keep these tighter than a full grid would allow."
+          : "Exactly 4 items. Headings 26-48 characters. Bodies 180-280 characters.",
       },
       {
         example: [
@@ -1234,14 +1248,16 @@ export function getTemplateCopyFieldsForSection(
           "Schedule a diagnostic -> /contact",
           "Request a written quote -> /contact",
         ],
-        format:
-          "Exactly four lines as CTA label -> /destination-path. Line N is the CTA for card N in calloutItems.",
-        itemCount: 4,
+        format: isThreeAcross
+          ? "One line per card as CTA label -> /destination-path. Line N is the CTA for card N in calloutItems."
+          : "Exactly four lines as CTA label -> /destination-path. Line N is the CTA for card N in calloutItems.",
+        itemCount: isThreeAcross ? 6 : 4,
         name: "calloutActions",
         purpose:
           "The conversion action inside each reveal panel. Each label should name the action that specific callout leads to, not a generic Learn More.",
-        target:
-          "Exactly 4 items. Labels 14-28 characters. Every item needs a valid internal destination path.",
+        target: isThreeAcross
+          ? "One per calloutItems entry. Labels 14-28 characters. Every item needs a valid internal destination path."
+          : "Exactly 4 items. Labels 14-28 characters. Every item needs a valid internal destination path.",
       },
       {
         example: "See what to do",
@@ -1262,7 +1278,16 @@ export function getTemplateCopyFieldsForSection(
 
   // Same three parallel four-line fields as the reveal-grid variant, plus the
   // standing panel's opening state, which has no card behind it.
+  //
+  // The stacked arrangement changes what the copy has to be: cards run one per
+  // row down a column of any length, so the fixed count goes away, and each
+  // card is the full width of the column rather than half of it, so a teaser
+  // has room for a real sentence. `variant` is already part of the contract
+  // fingerprint, so switching arrangement correctly invalidates approved copy
+  // written against the other shape.
   if (component.includes("servicecalloutsplitpanel")) {
+    const isStacked = section.variant === "stacked";
+
     return [
       {
         example: [
@@ -1271,13 +1296,17 @@ export function getTemplateCopyFieldsForSection(
           "New Noises or Short Cycling - The system sounds different or cycles too often.",
           "Planning a Replacement - The equipment is aging and you want options in writing.",
         ],
-        format: "Exactly four lines as Title - Card teaser.",
-        itemCount: 4,
+        format: isStacked
+          ? "One line per card as Title - Card teaser."
+          : "Exactly four lines as Title - Card teaser.",
+        ...(isStacked ? {} : { itemCount: 4 }),
         name: "calloutItems",
-        purpose:
-          "The four selectable cards, written as the problem the visitor is experiencing rather than the service name. These sit three columns wide in a 2x2 block, so the teaser has to stay short.",
-        target:
-          "Exactly 4 items. Titles 14-34 characters. Teasers 45-75 characters.",
+        purpose: isStacked
+          ? "The selectable cards, written as the problem the visitor is experiencing rather than the service name. Each card is a full-width row, so the teaser has room for a complete sentence."
+          : "The four selectable cards, written as the problem the visitor is experiencing rather than the service name. These sit three columns wide in a 2x2 block, so the teaser has to stay short.",
+        target: isStacked
+          ? "4-8 items. Titles 14-34 characters. Teasers 60-120 characters."
+          : "Exactly 4 items. Titles 14-34 characters. Teasers 45-75 characters.",
       },
       {
         example: [
@@ -1286,14 +1315,16 @@ export function getTemplateCopyFieldsForSection(
           "Have the change checked before it grows - New sounds and frequent cycling are early signals, and they are cheaper to address before the system fails outright. Note when the change started so the visit can focus there.",
           "Compare repair and replacement side by side - Older equipment does not always need replacing right away. You get the current condition, the realistic remaining life, and written pricing for both paths.",
         ],
-        format:
-          "Exactly four lines as Panel heading - Panel body. Line N is the panel for card N in calloutItems.",
-        itemCount: 4,
+        format: isStacked
+          ? "One line per card as Panel heading - Panel body. Line N is the panel for card N in calloutItems."
+          : "Exactly four lines as Panel heading - Panel body. Line N is the panel for card N in calloutItems.",
+        ...(isStacked ? {} : { itemCount: 4 }),
         name: "calloutPanels",
         purpose:
           "What the standing right-hand panel shows once its card is selected. Answer what is likely happening and what the visit involves, in the same order as calloutItems.",
-        target:
-          "Exactly 4 items. Headings 26-48 characters. Bodies 180-280 characters.",
+        target: isStacked
+          ? "One per calloutItems entry. Headings 26-48 characters. Bodies 180-280 characters."
+          : "Exactly 4 items. Headings 26-48 characters. Bodies 180-280 characters.",
       },
       {
         example: [
@@ -1302,14 +1333,16 @@ export function getTemplateCopyFieldsForSection(
           "Schedule a diagnostic -> /contact",
           "Request a written quote -> /contact",
         ],
-        format:
-          "Exactly four lines as CTA label -> /destination-path. Line N is the CTA for card N in calloutItems.",
-        itemCount: 4,
+        format: isStacked
+          ? "One line per card as CTA label -> /destination-path. Line N is the CTA for card N in calloutItems."
+          : "Exactly four lines as CTA label -> /destination-path. Line N is the CTA for card N in calloutItems.",
+        ...(isStacked ? {} : { itemCount: 4 }),
         name: "calloutActions",
         purpose:
           "The conversion action shown in the panel for each card. Each label should name the action that specific callout leads to, not a generic Learn More.",
-        target:
-          "Exactly 4 items. Labels 14-28 characters. Every item needs a valid internal destination path.",
+        target: isStacked
+          ? "One per calloutItems entry. Labels 14-28 characters. Every item needs a valid internal destination path."
+          : "Exactly 4 items. Labels 14-28 characters. Every item needs a valid internal destination path.",
       },
       {
         example: "Start with what the system is actually doing",
@@ -1333,6 +1366,21 @@ export function getTemplateCopyFieldsForSection(
           "Shared prompt on every card telling the visitor the card updates the panel.",
         target: "10-22 characters.",
       },
+      // Only the stacked arrangement renders a close control: its card column
+      // can scroll long enough that the selected card leaves the screen, so the
+      // pinned panel needs its own way back. The two-up block is always fully
+      // visible, and re-clicking the card clears it.
+      ...(isStacked
+        ? [
+            {
+              example: "Close details",
+              name: "closeLabel",
+              purpose:
+                "Accessible label on the panel's close control. Not shown as visible text.",
+              target: "8-20 characters.",
+            },
+          ]
+        : []),
     ];
   }
 

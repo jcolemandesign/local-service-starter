@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useId, useState } from "react";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
+import type { CalloutSplitPanelVariant } from "@/content/section-style-options";
 import { CalloutCardAffordance } from "./CalloutCardAffordance";
 
 export type ServiceCalloutSplitPanelItem = {
@@ -22,10 +23,12 @@ export type ServiceCalloutSplitPanelItem = {
 export type ServiceCalloutSplitPanelSectionV3Props = {
   cardBorder?: "on" | "off";
   cardFill?: "solid" | "none";
+  closeLabel?: string;
   introBody?: string;
   introHeading?: string;
   items: readonly ServiceCalloutSplitPanelItem[];
   openHint?: string;
+  variant?: CalloutSplitPanelVariant;
 };
 
 const panelEase = [0.22, 1, 0.36, 1] as const;
@@ -37,15 +40,21 @@ function cx(...classes: Array<string | false | undefined>) {
 export function ServiceCalloutSplitPanelSectionV3({
   cardBorder = "on",
   cardFill = "solid",
+  closeLabel = "Close details",
   introBody = "",
   introHeading = "",
   items,
   openHint = "See what to do",
+  variant = "default",
 }: ServiceCalloutSplitPanelSectionV3Props) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const panelId = useId();
   const shouldReduceMotion = useReducedMotion();
-  const cards = items.slice(0, 4);
+  const isStacked = variant === "stacked";
+  // The two-up grid is a fixed 2x2, so a fifth card would leave a ragged row.
+  // The stacked column has no such limit - running as long as the content needs
+  // is the point of it.
+  const cards = isStacked ? items : items.slice(0, 4);
   const activeItem = activeIndex === null ? undefined : cards[activeIndex];
 
   function renderCard(item: ServiceCalloutSplitPanelItem, index: number) {
@@ -58,7 +67,11 @@ export function ServiceCalloutSplitPanelSectionV3({
         // state is the only thing tying a card to what the panel is showing.
         aria-pressed={isActive}
         className={cx(
-          "group/callout card-min-short flex w-full min-w-0 cursor-pointer flex-col items-start overflow-hidden rounded-[var(--radius-surface-token)] border bg-service-surface p-6 text-left text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent hover:bg-bg-page focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent max-md:p-5",
+          "group/callout card-min-short flex w-full min-w-0 cursor-pointer flex-col items-start overflow-hidden rounded-[var(--radius-surface-token)] border bg-service-surface text-left text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent hover:bg-bg-page focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
+          // A stacked card is the full width of the column rather than half of
+          // it, so it carries the roomier padding and type the extra width can
+          // hold - the two-up card would look overscaled at these values.
+          isStacked ? "p-8 max-md:p-6" : "p-6 max-md:p-5",
           isActive ? "border-service-accent" : "border-service-border",
           cardFill === "none" && "!bg-transparent !shadow-none",
           cardBorder === "off" && "!border-transparent",
@@ -70,9 +83,21 @@ export function ServiceCalloutSplitPanelSectionV3({
         type="button"
       >
         <span className="fluid-type-frame flex w-full flex-1 flex-col">
-          <span className="type-heading-md wrap-pretty">{item.title}</span>
+          <span
+            className={cx(
+              "wrap-pretty",
+              isStacked ? "type-heading-lg" : "type-heading-md",
+            )}
+          >
+            {item.title}
+          </span>
           {item.body ? (
-            <span className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
+            <span
+              className={cx(
+                "wrap-pretty mt-heading-body-sm text-service-muted",
+                isStacked ? "type-text-md" : "type-text-sm",
+              )}
+            >
               {item.body}
             </span>
           ) : null}
@@ -106,7 +131,15 @@ export function ServiceCalloutSplitPanelSectionV3({
           alignY="stretch"
           className="col-span-6 max-lg:col-span-10 max-md:col-span-6 max-sm:col-span-2"
         >
-          <div className="grid auto-rows-fr grid-cols-2 gap-6 max-sm:grid-cols-1">
+          {/* auto-rows-fr is what keeps the cards a consistent height: with a
+              content-driven container every row resolves to the tallest one, so
+              a card with a longer body does not leave its neighbours short. */}
+          <div
+            className={cx(
+              "grid auto-rows-fr gap-6",
+              isStacked ? "grid-cols-1" : "grid-cols-2 max-sm:grid-cols-1",
+            )}
+          >
             {cards.map((item, index) => renderCard(item, index))}
           </div>
         </LayoutGridItem>
@@ -118,12 +151,44 @@ export function ServiceCalloutSplitPanelSectionV3({
           <div
             aria-live="polite"
             className={cx(
-              "relative flex h-full flex-col justify-center overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-10 shadow-service max-md:p-8 max-sm:p-6",
+              "relative flex flex-col justify-center overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-10 shadow-service max-md:p-8 max-sm:p-6",
+              // Sticky only has somewhere to travel while the panel is shorter
+              // than the grid item holding it, and the item is stretched to a
+              // row as tall as the card stack. So the panel drops h-full and
+              // takes a min-height instead - that also stops it resizing as the
+              // copy changes between cards, which would jump a pinned panel.
+              isStacked
+                ? "card-min-tall sticky top-[var(--site-grid-inset-block)] h-fit max-lg:static"
+                : "h-full",
               cardFill === "none" && "!bg-transparent !shadow-none",
               cardBorder === "off" && "!border-transparent",
             )}
             id={panelId}
           >
+            {/* Re-clicking the active card still clears the panel, but once the
+                stack is long enough to scroll that card can be far off screen -
+                the pinned panel needs its own way back. */}
+            {isStacked && activeItem ? (
+              <button
+                aria-label={closeLabel}
+                className="absolute right-5 top-5 z-10 grid size-10 cursor-pointer place-items-center rounded-[var(--radius-sm-token)] border border-service-border bg-bg-surface text-service-muted transition-colors hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-service-accent"
+                onClick={() => setActiveIndex(null)}
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  className="size-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
+            ) : null}
+
             <AnimatePresence initial={false} mode="wait">
               {/* Block centered in the panel, copy still left-aligned. The
                   measure sits on the wrapper so the heading and body share one
@@ -144,7 +209,15 @@ export function ServiceCalloutSplitPanelSectionV3({
                     no new copy field. The opening state has no card behind it
                     and therefore no eyebrow. */}
                 {activeItem ? (
-                  <p className="type-label text-service-accent">
+                  <p
+                    className={cx(
+                      "type-label text-service-accent",
+                      // Only the eyebrow sits high enough to reach the close
+                      // button in the corner - the heading below it already
+                      // clears the button's bottom edge.
+                      isStacked && "pr-12",
+                    )}
+                  >
                     {activeItem.title}
                   </p>
                 ) : null}

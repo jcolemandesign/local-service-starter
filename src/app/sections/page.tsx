@@ -42,8 +42,6 @@ import {
   FooterSectionV3,
   FourCardLinkGridSectionV3,
   ThreeCardLinkGridSectionV3,
-  ServiceCalloutRevealGridSectionV3,
-  ServiceCalloutSplitPanelSectionV3,
   ServiceNeedsPriorityGridSectionV3,
   HeroCenteredFloatersSectionV2,
   HeroCompactSectionV3,
@@ -80,6 +78,8 @@ import {
 import { HeroSplitFixedImageSectionLibraryDemo } from "@/components/sections/HeroSplitFixedImageSectionLibraryDemo";
 import { HeroSplitFullImageSectionLibraryDemo } from "@/components/sections/HeroSplitFullImageSectionLibraryDemo";
 import { ContentSplitFixedImageSectionLibraryDemo } from "@/components/sections/ContentSplitFixedImageSectionLibraryDemo";
+import { ServiceCalloutSplitPanelSectionLibraryDemo } from "@/components/sections/ServiceCalloutSplitPanelSectionLibraryDemo";
+import { ServiceCalloutRevealGridSectionLibraryDemo } from "@/components/sections/ServiceCalloutRevealGridSectionLibraryDemo";
 import {
   sectionLibraryV3Collections,
   sectionLibraryV3Content,
@@ -314,12 +314,12 @@ const sectionElements = {
     />
   ),
   "service-callout-reveal-grid-v3": (
-    <ServiceCalloutRevealGridSectionV3
+    <ServiceCalloutRevealGridSectionLibraryDemo
       {...sectionLibraryV3Content.serviceCalloutRevealGrid}
     />
   ),
   "service-callout-split-panel-v3": (
-    <ServiceCalloutSplitPanelSectionV3
+    <ServiceCalloutSplitPanelSectionLibraryDemo
       {...sectionLibraryV3Content.serviceCalloutSplitPanel}
     />
   ),

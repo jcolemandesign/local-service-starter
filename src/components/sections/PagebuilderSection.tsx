@@ -121,6 +121,15 @@ import {
   getCanonicalSectionLabel,
   sectionLibraryV3Content,
 } from "@/content/section-library-v3";
+// The variant sets below this import predate the shared vocabulary and still
+// declare their values locally. New axes come from the shared list instead -
+// see the header of `section-style-options.ts` for why.
+import {
+  calloutRevealGridVariantValues,
+  calloutSplitPanelVariantValues,
+  type CalloutRevealGridVariant,
+  type CalloutSplitPanelVariant,
+} from "@/content/section-style-options";
 import type { PagebuilderRecipeSection } from "@/content/pagebuilder";
 
 const heroSplitFullHeightVariants = new Set<string>(
@@ -263,6 +272,18 @@ function getLargeSectionHeaderSize(
 function getServicesBentoVariant(section: PagebuilderRecipeSection) {
   return servicesBentoVariants.has(section.variant ?? "")
     ? (section.variant as ServicesBentoCardsVariant)
+    : undefined;
+}
+
+function getCalloutSplitPanelVariant(section: PagebuilderRecipeSection) {
+  return calloutSplitPanelVariantValues.has(section.variant ?? "")
+    ? (section.variant as CalloutSplitPanelVariant)
+    : undefined;
+}
+
+function getCalloutRevealGridVariant(section: PagebuilderRecipeSection) {
+  return calloutRevealGridVariantValues.has(section.variant ?? "")
+    ? (section.variant as CalloutRevealGridVariant)
     : undefined;
 }
 
@@ -421,6 +442,7 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.serviceCalloutRevealGrid}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+          variant={getCalloutRevealGridVariant(section)}
         />
       );
     case "ServiceCalloutSplitPanelSectionV3":
@@ -429,6 +451,7 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.serviceCalloutSplitPanel}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+          variant={getCalloutSplitPanelVariant(section)}
         />
       );
     case "ThreeCardLinkGridSectionV3":

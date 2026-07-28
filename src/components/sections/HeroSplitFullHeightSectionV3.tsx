@@ -2,8 +2,8 @@ import type { CSSProperties } from "react";
 import Image from "next/image";
 import {
   Button,
-  SevenColumnGrid,
-  SevenColumnGridItem,
+  LayoutGrid,
+  LayoutGridItem,
 } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 import type { SectionColorRecipe } from "@/content/section-color-recipes";
@@ -36,34 +36,38 @@ type HeroVariantConfig = {
   textClassName: string;
 };
 
+// Fourteen columns with one empty column between the two slots, so the split is
+// 6 | gutter | 7 rather than two panels sharing only the grid gap. The variant
+// keys still read 3/4 because they are persisted in project page data - they
+// are opaque ids for "narrow text right image" etc., not column counts.
 const variantConfig: Record<HeroSplitFullHeightVariant, HeroVariantConfig> = {
   "text-3-image-4-right": {
-    textClassName: "col-span-3 col-start-1",
-    imageClassName: "col-span-4 col-start-4",
+    textClassName: "col-span-6 col-start-1",
+    imageClassName: "col-span-7 col-start-8",
     imagePanelClassName:
       "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
-    imageSlotLabel: "Image area: columns 4-7",
+    imageSlotLabel: "Image area: columns 8-14",
   },
   "text-4-image-3-right": {
-    textClassName: "col-span-4 col-start-1",
-    imageClassName: "col-span-3 col-start-5",
+    textClassName: "col-span-7 col-start-1",
+    imageClassName: "col-span-6 col-start-9",
     imagePanelClassName:
       "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
-    imageSlotLabel: "Image area: columns 5-7",
+    imageSlotLabel: "Image area: columns 9-14",
   },
   "image-3-left-text-4": {
-    textClassName: "col-span-4 col-start-4",
-    imageClassName: "col-span-3 col-start-1",
+    textClassName: "col-span-7 col-start-8",
+    imageClassName: "col-span-6 col-start-1",
     imagePanelClassName:
       "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
-    imageSlotLabel: "Image area: columns 1-3",
+    imageSlotLabel: "Image area: columns 1-6",
   },
   "image-4-left-text-3": {
-    textClassName: "col-span-3 col-start-5",
-    imageClassName: "col-span-4 col-start-1",
+    textClassName: "col-span-6 col-start-9",
+    imageClassName: "col-span-7 col-start-1",
     imagePanelClassName:
       "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
-    imageSlotLabel: "Image area: columns 1-4",
+    imageSlotLabel: "Image area: columns 1-7",
   },
 };
 
@@ -178,12 +182,15 @@ export function HeroSplitFullHeightSectionV3({
 
   return (
     <section className={colors.section}>
-      <SevenColumnGrid className="section-min-screen h-[var(--section-min-screen)] grid-rows-[minmax(0,1fr)] max-lg:grid-rows-none max-md:h-auto">
-        <SevenColumnGridItem
+      <LayoutGrid
+        className="section-min-screen h-[var(--section-min-screen)] grid-rows-[minmax(0,1fr)] max-lg:grid-rows-none max-md:h-auto"
+        columns={14}
+      >
+        <LayoutGridItem
           alignX="left"
           alignY="middle"
           className={cx(
-            "content-padding-y radius-medium row-start-1 h-full min-h-0 max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto",
+            "content-padding-y radius-medium row-start-1 h-full min-h-0 max-lg:col-span-10 max-lg:col-start-1 max-lg:row-auto max-md:col-span-6 max-sm:col-span-2",
             colors.ink,
             config.textClassName,
           )}
@@ -242,13 +249,13 @@ export function HeroSplitFullHeightSectionV3({
               ))}
             </ul>
           </div>
-        </SevenColumnGridItem>
+        </LayoutGridItem>
 
-        <SevenColumnGridItem
+        <LayoutGridItem
           alignX="stretch"
           alignY="stretch"
           className={cx(
-            "relative row-start-1 h-full min-h-0 overflow-visible max-lg:media-min-medium max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto max-md:h-auto",
+            "relative row-start-1 h-full min-h-0 overflow-visible max-lg:media-min-medium max-lg:col-span-10 max-lg:col-start-1 max-lg:row-auto max-md:col-span-6 max-md:h-auto max-sm:col-span-2",
             config.imageClassName,
           )}
         >
@@ -258,8 +265,8 @@ export function HeroSplitFullHeightSectionV3({
             imageSrc={imageSrc}
             slotLabel={config.imageSlotLabel}
           />
-        </SevenColumnGridItem>
-      </SevenColumnGrid>
+        </LayoutGridItem>
+      </LayoutGrid>
     </section>
   );
 }

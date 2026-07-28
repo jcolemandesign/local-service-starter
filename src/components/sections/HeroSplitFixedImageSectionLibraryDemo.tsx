@@ -7,30 +7,14 @@ import {
   type HeroSplitFixedImageRatio,
   type HeroSplitFixedImageVariant,
 } from "@/components/sections/HeroSplitFixedImageSectionV3";
+import { splitImageVariantOptions } from "@/content/section-style-options";
 
 type HeroSplitFixedImageSectionLibraryDemoProps = Omit<
   ComponentProps<typeof HeroSplitFixedImageSectionV3>,
   "ratio" | "variant"
 >;
 
-const layoutOptions = [
-  {
-    label: "Text 3 / Image 4",
-    value: "text-3-image-4-right",
-  },
-  {
-    label: "Text 4 / Image 3",
-    value: "text-4-image-3-right",
-  },
-  {
-    label: "Image 3 / Text 4",
-    value: "image-3-left-text-4",
-  },
-  {
-    label: "Image 4 / Text 3",
-    value: "image-4-left-text-3",
-  },
-] as const satisfies readonly {
+const layoutOptions = splitImageVariantOptions satisfies readonly {
   label: string;
   value: HeroSplitFixedImageVariant;
 }[];
