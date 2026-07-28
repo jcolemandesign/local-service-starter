@@ -15,6 +15,7 @@ type PageTemplateSection = {
   originalIndex: number;
   reduceBottomPadding?: boolean;
   reduceTopPadding?: boolean;
+  align?: string;
   cardLinks?: string;
   ratio?: string;
   /** Stable rename anchor - see `SlottedSection` in @/utils/section-id. */
@@ -400,6 +401,7 @@ function normalizeSection(section: PageTemplateSection): PageTemplateSection {
       typeof section.cardBorder === "string" ? section.cardBorder : undefined,
     ratio: typeof section.ratio === "string" ? section.ratio : undefined,
     variant: typeof section.variant === "string" ? section.variant : undefined,
+    align: typeof section.align === "string" ? section.align : undefined,
   };
 }
 

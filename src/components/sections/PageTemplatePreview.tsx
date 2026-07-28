@@ -136,6 +136,7 @@ import {
   booleanStyleFields,
   calloutRevealGridVariantValues,
   calloutSplitPanelVariantValues,
+  cardLinkGridAlignValues,
   getSectionStyleFieldSpecs,
   resolveCardFill,
   servicesBentoVariantValues,
@@ -144,6 +145,7 @@ import {
   styleFieldPrefix,
   type CalloutRevealGridVariant,
   type CalloutSplitPanelVariant,
+  type CardLinkGridAlign,
 } from "@/content/section-style-options";
 import type { StagedPageField } from "@/utils/staged-pages";
 
@@ -158,6 +160,7 @@ export type PageTemplatePreviewSection = {
   name: string;
   reduceBottomPadding?: boolean;
   reduceTopPadding?: boolean;
+  align?: string;
   cardLinks?: string;
   ratio?: string;
   variant?: string;
@@ -542,6 +545,7 @@ export function renderPageTemplateSection(
       return (
         <ThreeCardLinkGridSectionV3
           {...threeCardLinkGridProps(fieldSection)}
+          align={getCardLinkGridAlign(section)}
           cardLinks={resolveCardLinks(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
@@ -2908,6 +2912,12 @@ function getCalloutSplitPanelVariant(section: PageTemplatePreviewSection) {
 function getCalloutRevealGridVariant(section: PageTemplatePreviewSection) {
   return calloutRevealGridVariantValues.has(section.variant ?? "")
     ? (section.variant as CalloutRevealGridVariant)
+    : undefined;
+}
+
+function getCardLinkGridAlign(section: PageTemplatePreviewSection) {
+  return cardLinkGridAlignValues.has(section.align ?? "")
+    ? (section.align as CardLinkGridAlign)
     : undefined;
 }
 

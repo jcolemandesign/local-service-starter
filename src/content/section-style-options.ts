@@ -103,6 +103,52 @@ export const calloutRevealGridVariantValues = new Set<string>(
   calloutRevealGridVariantOptions.map((option) => option.value),
 );
 
+/**
+ * Where the three-up card link row sits on the 14-column grid.
+ *
+ * The cards are four columns each, so twelve of the fourteen are spoken for and
+ * the two spare columns are what the alignment moves:
+ *
+ *   left       1-4  5-8  9-12   two spare columns trailing
+ *   center     2-5  6-9  10-13  one spare column either side (the default)
+ *   right      3-6  7-10 11-14  two spare columns leading
+ *   justified  1-4  6-9  11-14  one spare column between each card
+ *
+ * Deliberately its own axis rather than another value folded into `variant`.
+ * `variant` already carries this section's images on/off mode and is hashed
+ * into the copy-contract fingerprint, so compounding the two would make a
+ * purely visual nudge report every approved page's copy as stale. This sits
+ * with `cardFill` and `cardBorder` instead - copy-neutral, outside the
+ * fingerprint.
+ *
+ * Four-up is not offered this axis: four cards with a column between each needs
+ * 4w + 3 = 14, and there is no whole-column width that satisfies it.
+ */
+export const cardLinkGridAlignOptions = [
+  { label: "Left", value: "left" },
+  { label: "Center", value: "center" },
+  { label: "Right", value: "right" },
+  // Abbreviated so four buttons fit one row of the builder's control grid. The
+  // value stays spelled out - it is persisted on saved sections.
+  { label: "Just.", value: "justified" },
+] as const;
+
+export type CardLinkGridAlign =
+  (typeof cardLinkGridAlignOptions)[number]["value"];
+
+export const cardLinkGridAlignValues = new Set<string>(
+  cardLinkGridAlignOptions.map((option) => option.value),
+);
+
+/** Sections that read the `align` axis, so the builder only offers it there. */
+export const cardLinkGridAlignComponents = new Set<string>([
+  "ThreeCardLinkGridSectionV3",
+]);
+
+export function sectionSupportsCardLinkGridAlign(component: string) {
+  return cardLinkGridAlignComponents.has(component);
+}
+
 export const servicesBentoVariantOptions = [
   { label: "Centered", value: "default" },
   { label: "Split Header", value: "split-header" },

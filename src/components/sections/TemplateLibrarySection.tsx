@@ -43,6 +43,7 @@ export type PageTemplateSummary = {
     originalIndex?: number;
     reduceBottomPadding?: boolean;
     reduceTopPadding?: boolean;
+    align?: string;
     cardLinks?: string;
     ratio?: string;
     /** Stable rename anchor - see `SlottedSection` in @/utils/section-id. */
@@ -519,6 +520,7 @@ export function TemplateLibrarySection({
             reduceTopPadding: section.reduceTopPadding ?? false,
             cardFill: section.cardFill,
             colorRecipe: section.colorRecipe,
+            align: section.align,
             ratio: section.ratio,
             // Keeps the rename anchor attached across the pagebuilder round
             // trip, so re-promoting an edited template does not orphan copy.

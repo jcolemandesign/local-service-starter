@@ -10,6 +10,12 @@ export type PagebuilderRecipeSection = {
   component: string;
   mode: string;
   instruction: string;
+  /**
+   * Where a card row sits on the 14-column grid. Copy-neutral, so it stays off
+   * `variant` and out of the copy-contract fingerprint - see
+   * `cardLinkGridAlignOptions`.
+   */
+  align?: string;
   cardLinks?: string;
   ratio?: string;
   variant?: string;

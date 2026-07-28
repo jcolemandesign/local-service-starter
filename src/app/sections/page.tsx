@@ -41,7 +41,6 @@ import {
   FooterLinkPanelSectionV3,
   FooterSectionV3,
   FourCardLinkGridSectionV3,
-  ThreeCardLinkGridSectionV3,
   ServiceNeedsPriorityGridSectionV3,
   HeroCenteredFloatersSectionV2,
   HeroCompactSectionV3,
@@ -80,6 +79,7 @@ import { HeroSplitFullImageSectionLibraryDemo } from "@/components/sections/Hero
 import { ContentSplitFixedImageSectionLibraryDemo } from "@/components/sections/ContentSplitFixedImageSectionLibraryDemo";
 import { ServiceCalloutSplitPanelSectionLibraryDemo } from "@/components/sections/ServiceCalloutSplitPanelSectionLibraryDemo";
 import { ServiceCalloutRevealGridSectionLibraryDemo } from "@/components/sections/ServiceCalloutRevealGridSectionLibraryDemo";
+import { ThreeCardLinkGridSectionLibraryDemo } from "@/components/sections/ThreeCardLinkGridSectionLibraryDemo";
 import {
   sectionLibraryV3Collections,
   sectionLibraryV3Content,
@@ -304,7 +304,7 @@ const sectionElements = {
     />
   ),
   "three-card-link-grid-v3": (
-    <ThreeCardLinkGridSectionV3
+    <ThreeCardLinkGridSectionLibraryDemo
       {...sectionLibraryV3Content.threeCardLinkGrid}
     />
   ),

@@ -60,6 +60,8 @@ export type StagedPageField = {
 };
 
 export type StagedPageTemplateSection = {
+  /** Card row placement on the 14-column grid - see `cardLinkGridAlignOptions`. */
+  align?: string;
   cardBorder?: SectionCardBorder;
   cardFill?: SectionCardFill;
   colorRecipe?: SectionColorRecipe;

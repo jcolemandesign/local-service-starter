@@ -105,9 +105,10 @@ export function ServiceCalloutRevealGridSectionV3({
         className={cx(
           "group/callout flex w-full min-w-0 cursor-pointer flex-col items-start overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-left text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent hover:bg-bg-page focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
           // Three across makes each card two columns narrower, so it steps the
-          // padding and type down a notch to keep the same density. The taller
-          // floor is what keeps a single row of three from leaving the reveal
-          // panel - which covers exactly this grid - too short for its own copy.
+          // padding and body copy down a notch to keep the same density - the
+          // title holds its size in both. The taller floor is what keeps a
+          // single row of three from leaving the reveal panel - which covers
+          // exactly this grid - too short for its own copy.
           isThreeAcross
             ? "card-min-medium p-6 max-md:p-5"
             : "card-min-short p-8 max-md:p-6",
@@ -122,24 +123,30 @@ export function ServiceCalloutRevealGridSectionV3({
         type="button"
       >
         <span className="fluid-type-frame flex w-full flex-1 flex-col">
+          {/* Three across holds a taller floor so the card reads square, which
+              leaves more height than the copy fills. Claiming that slack here
+              and centring in it splits the leftover above and below the copy,
+              rather than letting the hint row's mt-auto push all of it into a
+              single gap under the body. Two across has no spare height to
+              distribute, so it keeps the copy hard against the top. */}
           <span
             className={cx(
-              "wrap-pretty",
-              isThreeAcross ? "type-heading-md" : "type-heading-lg",
+              "flex flex-col",
+              isThreeAcross && "flex-1 justify-center",
             )}
           >
-            {item.title}
+            <span className="type-heading-lg wrap-pretty">{item.title}</span>
+            {item.body ? (
+              <span
+                className={cx(
+                  "wrap-pretty mt-heading-body-sm text-service-muted",
+                  isThreeAcross ? "type-text-sm" : "type-text-md",
+                )}
+              >
+                {item.body}
+              </span>
+            ) : null}
           </span>
-          {item.body ? (
-            <span
-              className={cx(
-                "wrap-pretty mt-heading-body-sm text-service-muted",
-                isThreeAcross ? "type-text-sm" : "type-text-md",
-              )}
-            >
-              {item.body}
-            </span>
-          ) : null}
           <span className="mt-auto flex items-center justify-between gap-3 pt-3">
             <span className="type-label text-service-accent">{openHint}</span>
             <CalloutCardAffordance />

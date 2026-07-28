@@ -15,6 +15,7 @@ type SavedPagebuilderSection = {
   originalIndex: number;
   reduceBottomPadding?: boolean;
   reduceTopPadding?: boolean;
+  align?: string;
   cardLinks?: string;
   ratio?: string;
   /**
@@ -218,6 +219,7 @@ function normalizeSection(
     colorRecipe:
       typeof section.colorRecipe === "string" ? section.colorRecipe : undefined,
     cardFill: typeof section.cardFill === "string" ? section.cardFill : undefined,
+    align: typeof section.align === "string" ? section.align : undefined,
   };
 }
 

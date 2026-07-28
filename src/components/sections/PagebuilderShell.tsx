@@ -102,6 +102,9 @@ import {
   calloutSplitPanelVariantOptions,
   calloutSplitPanelVariantValues,
   cardFillOptInComponents,
+  cardLinkGridAlignOptions,
+  cardLinkGridAlignValues,
+  sectionSupportsCardLinkGridAlign,
   sectionSupportsCardLinks,
   sectionSupportsCardStyle,
   servicesBentoVariantOptions,
@@ -111,6 +114,7 @@ import {
   splitImageVariantOptions as splitContentImageVariantOptions,
   type CalloutRevealGridVariant,
   type CalloutSplitPanelVariant,
+  type CardLinkGridAlign,
   type ServicesBentoVariant,
   type SplitImageRatio,
   type SplitImageVariant,
@@ -780,6 +784,19 @@ function getCalloutRevealGridVariant(section: WorkingSection) {
     : calloutRevealGridVariantOptions[0].value;
 }
 
+// Centre is the arrangement this section shipped with, so an unset align has to
+// resolve to it rather than to the first option by position.
+function getCardLinkGridAlign(section: WorkingSection): CardLinkGridAlign {
+  return cardLinkGridAlignValues.has(section.align ?? "")
+    ? (section.align as CardLinkGridAlign)
+    : "center";
+}
+
+function getCardLinkGridAlignLabel(align: string | undefined) {
+  return cardLinkGridAlignOptions.find((option) => option.value === align)
+    ?.label;
+}
+
 function getFourCardLinkGridVariant(
   section: WorkingSection,
 ): FourCardLinkGridVariant {
@@ -873,6 +890,7 @@ function serializeWorkingSection(section: WorkingSection) {
     name: section.name,
     originalComponent: section.originalComponent,
     originalIndex: section.originalIndex,
+    align: section.align,
     cardLinks: section.cardLinks,
     ratio: section.ratio,
     slotId: section.slotId,
@@ -980,6 +998,7 @@ function copySharedNavigationSection(
     instruction: sharedNavigation.instruction,
     mode: sharedNavigation.mode,
     name: sharedNavigation.name,
+    align: sharedNavigation.align,
     ratio: sharedNavigation.ratio,
     variant: sharedNavigation.variant,
   };
@@ -1852,7 +1871,10 @@ function buildPageInstruction({
              getCardLinkGridVariant(section) === "with-images"
                ? "Images"
                : "No images"
-           } (${getCardLinkGridVariant(section)})`
+           } (${getCardLinkGridVariant(section)})
+   Row alignment: ${
+     getCardLinkGridAlignLabel(getCardLinkGridAlign(section)) ?? "Center"
+   } (${getCardLinkGridAlign(section)})`
       : section.component === contentStickyCardStreamComponent
         ? `Content image: ${
             getStickyCardStreamShowImage(section) ? "shown" : "hidden"
@@ -2933,6 +2955,18 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateCardLinkGridAlign(sectionId: string, align: CardLinkGridAlign) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId &&
+        sectionSupportsCardLinkGridAlign(section.component)
+          ? { ...section, align }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateCalloutRevealGridVariant(
     sectionId: string,
     variant: CalloutRevealGridVariant,
@@ -3220,6 +3254,7 @@ export function PagebuilderShell({
             reduceTopPadding: section.reduceTopPadding ?? false,
             colorRecipe: getSectionColorRecipe(section),
             cardFill: getSectionCardFill(section),
+            align: section.align,
             ratio: section.ratio,
             slotId: section.slotId,
             variant: section.variant,
@@ -3444,6 +3479,7 @@ export function PagebuilderShell({
         ) : isThreeCardLinkGridSection(section) ? (
           <ThreeCardLinkGridSectionV3
             {...sectionLibraryV3Content.threeCardLinkGrid}
+            align={getCardLinkGridAlign(section)}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
             cardLinks={getCardLinks(section)}
@@ -5115,6 +5151,49 @@ export function PagebuilderShell({
                               <p className="type-caption text-current/60">
                                 Two-up caps at four cards. Stacked rows take any
                                 number and pin the panel beside them.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
+                          {sectionSupportsCardLinkGridAlign(
+                            section.component,
+                          ) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Row Alignment
+                              </legend>
+                              <div className="grid grid-cols-4 gap-2 max-md:grid-cols-2">
+                                {cardLinkGridAlignOptions.map((option) => {
+                                  const optionIsActive =
+                                    getCardLinkGridAlign(section) ===
+                                    option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateCardLinkGridAlign(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Three four-column cards leave two spare columns.
+                                This decides where they fall.
                               </p>
                             </fieldset>
                           ) : null}

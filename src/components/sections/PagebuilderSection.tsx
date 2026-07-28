@@ -127,8 +127,10 @@ import {
 import {
   calloutRevealGridVariantValues,
   calloutSplitPanelVariantValues,
+  cardLinkGridAlignValues,
   type CalloutRevealGridVariant,
   type CalloutSplitPanelVariant,
+  type CardLinkGridAlign,
 } from "@/content/section-style-options";
 import type { PagebuilderRecipeSection } from "@/content/pagebuilder";
 
@@ -284,6 +286,12 @@ function getCalloutSplitPanelVariant(section: PagebuilderRecipeSection) {
 function getCalloutRevealGridVariant(section: PagebuilderRecipeSection) {
   return calloutRevealGridVariantValues.has(section.variant ?? "")
     ? (section.variant as CalloutRevealGridVariant)
+    : undefined;
+}
+
+function getCardLinkGridAlign(section: PagebuilderRecipeSection) {
+  return cardLinkGridAlignValues.has(section.align ?? "")
+    ? (section.align as CardLinkGridAlign)
     : undefined;
 }
 
@@ -458,6 +466,7 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <ThreeCardLinkGridSectionV3
           {...sectionLibraryV3Content.threeCardLinkGrid}
+          align={getCardLinkGridAlign(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           showImages={section.variant !== "text-only"}

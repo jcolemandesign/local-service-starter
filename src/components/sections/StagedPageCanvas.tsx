@@ -376,6 +376,7 @@ function toPreviewSection(
     name: section.name,
     reduceBottomPadding: section.reduceBottomPadding,
     reduceTopPadding: section.reduceTopPadding,
+    align: section.align,
     ratio: section.ratio,
     variant: section.variant,
   };
