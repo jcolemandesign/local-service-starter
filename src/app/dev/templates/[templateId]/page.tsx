@@ -46,7 +46,7 @@ export default async function TemplatePreviewPage({
     <StyleGuidePreviewSurface>
       <main className="min-h-svh bg-white text-service-ink">
         <PageTemplatePreview
-          fixedNavigation
+          overlayNavigation={false}
           sections={template.sections.map((section) => ({
             ...section,
             instruction: section.instruction ?? "",

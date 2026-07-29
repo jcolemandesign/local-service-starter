@@ -556,7 +556,7 @@ export function ContactSectionV3({
               <label className="type-text-sm grid card-grid-gap-sml font-semibold text-service-ink">
                 Name
                 <input
-                  className="radius-4 min-h-12 border border-service-border bg-bg-page px-4 text-base font-normal outline-none transition-colors focus:border-service-accent"
+                  className="radius-4 min-h-12 border border-service-border bg-surface-raised px-4 text-base font-normal outline-none transition-colors focus:border-service-accent"
                   placeholder="Jane Smith"
                   type="text"
                 />
@@ -564,7 +564,7 @@ export function ContactSectionV3({
               <label className="type-text-sm grid card-grid-gap-sml font-semibold text-service-ink">
                 Service needed
                 <input
-                  className="radius-4 min-h-12 border border-service-border bg-bg-page px-4 text-base font-normal outline-none transition-colors focus:border-service-accent"
+                  className="radius-4 min-h-12 border border-service-border bg-surface-raised px-4 text-base font-normal outline-none transition-colors focus:border-service-accent"
                   placeholder="Repair, installation, maintenance"
                   type="text"
                 />
@@ -572,7 +572,7 @@ export function ContactSectionV3({
               <label className="type-text-sm grid card-grid-gap-sml font-semibold text-service-ink">
                 Message
                 <textarea
-                  className="radius-4 min-h-32 border border-service-border bg-bg-page px-4 py-3 text-base font-normal outline-none transition-colors focus:border-service-accent"
+                  className="radius-4 min-h-32 border border-service-border bg-surface-raised px-4 py-3 text-base font-normal outline-none transition-colors focus:border-service-accent"
                   placeholder="Briefly describe the issue"
                 />
               </label>

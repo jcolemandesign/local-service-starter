@@ -113,6 +113,16 @@ export {
   ProcessStepsSectionV3,
   TestimonialsSectionV3,
 } from "./FeatureProcessTestimonialsSectionsV3";
+export {
+  ProcessStepsStaggeredSectionV3,
+  type ProcessStepsStaggeredItem,
+  type ProcessStepsStaggeredSectionV3Props,
+} from "./ProcessStepsStaggeredSectionV3";
+export {
+  ProcessStepsBranchingSectionV3,
+  type ProcessStepsBranchingItem,
+  type ProcessStepsBranchingSectionV3Props,
+} from "./ProcessStepsBranchingSectionV3";
 export { DecisionSplitDecisionSectionV3 } from "./DecisionSplitDecisionSectionV3";
 export {
   DecisionSplitDecisionLargeSectionV3,
@@ -130,6 +140,11 @@ export {
   DecisionQuestionTableFourSectionV3,
   type DecisionQuestionTableFourSectionV3Props,
 } from "./DecisionQuestionTableFourSectionV3";
+export {
+  DecisionMatrixCardSectionV3,
+  type DecisionMatrixCardQuadrant,
+  type DecisionMatrixCardSectionV3Props,
+} from "./DecisionMatrixCardSectionV3";
 export { FeatureAsymmetricCardsSectionV3 } from "./FeatureAsymmetricCardsSectionV3";
 export { FeatureStackedCardsSectionV3 } from "./FeatureStackedCardsSectionV3";
 export { FeatureOverlapRowsSection } from "./FeatureOverlapRowsSection";

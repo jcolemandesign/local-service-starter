@@ -1,11 +1,8 @@
-import Image from "next/image";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
 
 export type ServiceNeedsPriorityGridItem = {
   body: string;
   href: string;
-  imageAlt?: string;
-  imageSrc?: string;
   title: string;
 };
 
@@ -25,7 +22,6 @@ export type ServiceNeedsPriorityGridSectionV3Props = {
   priorityEyebrow?: string;
   secondaryAction?: string;
   secondaryActionHref?: string;
-  showImages?: boolean;
 };
 
 export type ServiceNeedsPriorityGridAlign = "left" | "right";
@@ -43,7 +39,6 @@ export function ServiceNeedsPriorityGridSectionV3({
   priorityEyebrow = "Priority need",
   secondaryAction = "Explore service options",
   secondaryActionHref = "/services",
-  showImages = true,
 }: ServiceNeedsPriorityGridSectionV3Props) {
   const priorityItem = items[3];
   const smallItems = items.slice(0, 3);
@@ -63,19 +58,6 @@ export function ServiceNeedsPriorityGridSectionV3({
           cardFill === "none" ? "!bg-transparent !shadow-none" : ""
         } ${cardBorder === "off" ? "!border-transparent" : ""}`}
       >
-        {showImages ? (
-          <div className="relative aspect-[4/3] overflow-hidden border-b border-service-border bg-bg-muted">
-            {item.imageSrc ? (
-              <Image
-                alt={item.imageAlt ?? item.title}
-                className="object-cover transition duration-300 ease-out group-hover/card:scale-[1.025]"
-                fill
-                sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 28vw"
-                src={item.imageSrc}
-              />
-            ) : null}
-          </div>
-        ) : null}
         <div
           className={`flex flex-1 flex-col ${
             isPriority ? "p-8 max-md:p-6" : "p-6 max-md:p-5"

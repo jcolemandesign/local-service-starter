@@ -54,6 +54,7 @@ import {
 } from "@/components/sections/FeatureProcessTestimonialsSectionsV3";
 import { FeatureAsymmetricCardsSectionV3 } from "@/components/sections/FeatureAsymmetricCardsSectionV3";
 import { FeatureStackedCardsSectionV3 } from "@/components/sections/FeatureStackedCardsSectionV3";
+import { DecisionMatrixCardSectionV3 } from "@/components/sections/DecisionMatrixCardSectionV3";
 import { DecisionQuestionTableFourSectionV3 } from "@/components/sections/DecisionQuestionTableFourSectionV3";
 import { DecisionQuestionTableSectionV3 } from "@/components/sections/DecisionQuestionTableSectionV3";
 import { DecisionSplitDecisionSectionV3 } from "@/components/sections/DecisionSplitDecisionSectionV3";
@@ -62,6 +63,11 @@ import {
   type DecisionSplitDecisionLargeAlign,
 } from "@/components/sections/DecisionSplitDecisionLargeSectionV3";
 import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
+import {
+  ProcessStepsBranchingSectionV3,
+  type ProcessStepsBranchingAlign,
+} from "@/components/sections/ProcessStepsBranchingSectionV3";
+import { ProcessStepsStaggeredSectionV3 } from "@/components/sections/ProcessStepsStaggeredSectionV3";
 import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
 import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
@@ -391,6 +397,7 @@ function TemplateSectionFrame({
         isFixed ? "fixed" : isOverlay ? "absolute" : "relative",
         className,
       )}
+      data-pagebuilder-card-border={section.cardBorder ?? "on"}
       data-pagebuilder-card-fill={resolveCardFill(
         section.component,
         section.cardFill,
@@ -593,7 +600,6 @@ export function renderPageTemplateSection(
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           compactPriorityCard={Boolean(section.variant?.includes("compact"))}
-          showImages={!section.variant?.includes("text-only")}
         />
       );
     case "ServicesHoverPanelSectionV2":
@@ -767,13 +773,28 @@ export function renderPageTemplateSection(
       return <DecisionSplitDecisionSectionV3 {...splitDecisionProps(fieldSection)} />;
     case "DecisionQuestionTableSectionV3":
       return (
-        <DecisionQuestionTableSectionV3 {...questionTableProps(fieldSection)} />
+        <DecisionQuestionTableSectionV3
+          {...questionTableProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
       );
     case "DecisionQuestionTableFourSectionV3":
       return (
         <DecisionQuestionTableFourSectionV3
           {...questionTableFourProps(fieldSection)}
           align={getTableCompareAlign(section)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
+    case "DecisionMatrixCardSectionV3":
+      return (
+        <DecisionMatrixCardSectionV3
+          {...decisionMatrixCardProps(fieldSection)}
+          align={getTableCompareAlign(section)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "DecisionSplitLargeCardsSectionV3":
@@ -826,7 +847,28 @@ export function renderPageTemplateSection(
     case "ProcessImageChecklistSectionV3":
       return <ProcessImageChecklistSectionV3 {...processImageChecklistProps(fieldSection)} />;
     case "ProcessStepsSectionV3":
-      return <ProcessStepsSectionV3 {...processProps(fieldSection)} />;
+      return (
+        <ProcessStepsSectionV3
+          {...processProps(fieldSection, navigationLinks)}
+        />
+      );
+    case "ProcessStepsStaggeredSectionV3":
+      return (
+        <ProcessStepsStaggeredSectionV3
+          {...processStepsStaggeredProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
+    case "ProcessStepsBranchingSectionV3":
+      return (
+        <ProcessStepsBranchingSectionV3
+          {...processStepsBranchingProps(fieldSection)}
+          align={processStepsBranchingAlign(section.align)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "CTASectionV3":
       return <CTASectionV3 {...ctaProps(fieldSection)} />;
     case "CTAImageSectionV3":
@@ -834,6 +876,7 @@ export function renderPageTemplateSection(
         <CTAImageSectionV3
           {...ctaImageProps(fieldSection)}
           align={getCTAImageAlign(section)}
+          secondaryActionHref={getServicesHref(navigationLinks)}
         />
       );
     case "CTAMutedSectionV3":
@@ -963,7 +1006,7 @@ function heroSplitProps(section: FieldSection) {
     stats: getListValues(
       section,
       ["supportingItems", "proofPoints", "stats", "items"],
-      sectionLibraryV3Content.heroSplitFullHeight.stats.join("\n"),
+      "",
     ).slice(0, 3),
     title: getTitle(section, sectionLibraryV3Content.heroSplitFullHeight.title),
   };
@@ -1000,10 +1043,13 @@ function contentSplitFullImageProps(section: FieldSection) {
     paragraphs,
     primaryAction: primaryAction || undefined,
     secondaryAction: secondaryAction || undefined,
-    // stats is deliberately not read from fields. The copy spec does not
-    // declare it, and reading a name the spec never asked for is the mismatch
-    // that silently falls back instead of erroring. It stays available for
-    // pages that compose this section directly, supplied by ...fallback.
+    // Proof points are optional. Keeping the fallback empty ensures a staged
+    // page without them does not inherit the section-library demo callouts.
+    stats: getListValues(
+      section,
+      ["supportingItems", "proofPoints", "stats", "items"],
+      "",
+    ).slice(0, 3),
     title: getTitle(section, fallback.title),
   };
 }
@@ -1033,7 +1079,7 @@ function contentSplitFixedImageProps(section: FieldSection) {
     stats: getListValues(
       section,
       ["supportingItems", "proofPoints", "stats", "items"],
-      fallback.stats.join("\n"),
+      "",
     ).slice(0, 3),
     title: getTitle(section, fallback.title),
   };
@@ -1057,7 +1103,7 @@ function heroBasicProps(section: FieldSection) {
     stats: getListValues(
       section,
       ["proofPoints", "stats", "items"],
-      sectionLibraryV3Content.hero.stats.join("\n"),
+      "",
     ).slice(0, 3),
     title: getTitle(section, sectionLibraryV3Content.hero.title),
   };
@@ -1486,7 +1532,6 @@ function contentThreeColumnMixedProps(section: FieldSection) {
 
 function serviceNeedsPriorityGridProps(section: FieldSection) {
   const fallback = sectionLibraryV3Content.serviceNeedsPriorityGrid;
-  const imageItems = getRepeatedAssetRecords(section, ["items"]);
   const items = cardItemsWithFallback(section, ["items", "cards", "services"], fallback.items);
 
   return {
@@ -1496,12 +1541,6 @@ function serviceNeedsPriorityGridProps(section: FieldSection) {
       ...fallback.items[index % fallback.items.length],
       ...item,
       href: item.href ?? fallback.items[index % fallback.items.length].href,
-      imageAlt:
-        imageItems[index]?.imageAlt ??
-        fallback.items[index % fallback.items.length].imageAlt,
-      imageSrc:
-        imageItems[index]?.imageSrc ??
-        fallback.items[index % fallback.items.length].imageSrc,
     })),
     linkLabel: getValue(section, "linkLabel", fallback.linkLabel),
     primaryAction: getValue(
@@ -1834,6 +1873,19 @@ function questionTableFourProps(section: FieldSection) {
   };
 }
 
+function decisionMatrixCardProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.decisionMatrixCard;
+  const quadrants = resolveMatrixQuadrants(section);
+
+  return {
+    ...fallback,
+    body: getBody(section, fallback.body),
+    eyebrow: getValue(section, "eyebrow", fallback.eyebrow),
+    quadrants: quadrants.length > 0 ? quadrants : fallback.quadrants,
+    title: getTitle(section, fallback.title),
+  };
+}
+
 function resolveQuestionColumns(section: FieldSection) {
   const records = getRepeatedRecords(section, ["columns"]);
 
@@ -1863,6 +1915,32 @@ function splitQuestionOptions(value: string) {
     .split(/\r?\n|\//)
     .map((option) => option.trim())
     .filter(Boolean);
+}
+
+function resolveMatrixQuadrants(section: FieldSection) {
+  const records = getRepeatedRecords(section, ["quadrants"]);
+
+  return (
+    records.length > 0
+      ? records.map((record) => ({
+          items: splitQuestionOptions(
+            record.items ?? record.options ?? record.body ?? "",
+          ),
+          title: (record.title ?? record.heading ?? "").trim(),
+        }))
+      : splitItems(getValue(section, "quadrants", "")).map(parseMatrixQuadrant)
+  )
+    .slice(0, 4)
+    .filter((quadrant) => quadrant.title.length > 0 && quadrant.items.length > 0);
+}
+
+function parseMatrixQuadrant(value: string) {
+  const column = parseQuestionColumn(value);
+
+  return {
+    items: column.options,
+    title: column.title,
+  };
 }
 
 function splitLargeCardsProps(section: FieldSection) {
@@ -2018,13 +2096,6 @@ function faqAccordionSidebarProps(section: FieldSection) {
   };
 }
 
-/**
- * The secondary action falls back to `""`, never to the library demo label.
- * Every other mapper falls back to demo content so an unwritten field still
- * renders something, but here that would force a second button onto every page
- * whether the copy asked for one or not. Empty means the copy did not call for
- * it, and the section renders no second action.
- */
 function ctaImageProps(section: FieldSection) {
   const fallback = sectionLibraryV3Content.ctaImage;
 
@@ -2039,6 +2110,11 @@ function ctaImageProps(section: FieldSection) {
     eyebrow: getValue(section, "eyebrow", fallback.eyebrow),
     imageAlt: getAssetValue(section, "imageAlt", fallback.imageAlt),
     imageSrc: getAssetValue(section, "imageSrc", fallback.imageSrc),
+    secondaryAction: getValue(
+      section,
+      "secondaryAction",
+      fallback.secondaryAction,
+    ),
     title: getTitle(section, fallback.title),
   };
 }
@@ -2256,7 +2332,10 @@ function footerProps(section: FieldSection) {
   };
 }
 
-function processProps(section: FieldSection) {
+function processProps(
+  section: FieldSection,
+  navigationLinks: SiteNavigationLink[] = [],
+) {
   return {
     ...sectionLibraryV3Content.process,
     body: getBody(section, sectionLibraryV3Content.process.body),
@@ -2270,7 +2349,51 @@ function processProps(section: FieldSection) {
       ["steps", "items", "supportingItems"],
       sectionLibraryV3Content.process.steps,
     ),
+    primaryAction: getValue(section, "primaryAction", ""),
+    secondaryAction: getValue(section, "secondaryAction", ""),
+    secondaryActionHref: getServicesHref(navigationLinks),
     title: getTitle(section, sectionLibraryV3Content.process.title),
+  };
+}
+
+function processStepsStaggeredProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.processStepsStaggered,
+    body: getBody(section, sectionLibraryV3Content.processStepsStaggered.body),
+    eyebrow: getValue(
+      section,
+      "eyebrow",
+      sectionLibraryV3Content.processStepsStaggered.eyebrow,
+    ),
+    steps: cardItemsWithFallback(
+      section,
+      ["steps"],
+      sectionLibraryV3Content.processStepsStaggered.steps,
+    ),
+    title: getTitle(section, sectionLibraryV3Content.processStepsStaggered.title),
+  };
+}
+
+function processStepsBranchingAlign(
+  align: string | undefined,
+): ProcessStepsBranchingAlign {
+  return align === "center" ? "center" : "left";
+}
+
+function processStepsBranchingProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.processStepsBranching,
+    outcomes: cardItemsWithFallback(
+      section,
+      ["outcomes"],
+      sectionLibraryV3Content.processStepsBranching.outcomes,
+    ),
+    steps: cardItemsWithFallback(
+      section,
+      ["steps"],
+      sectionLibraryV3Content.processStepsBranching.steps,
+    ),
+    title: getTitle(section, sectionLibraryV3Content.processStepsBranching.title),
   };
 }
 

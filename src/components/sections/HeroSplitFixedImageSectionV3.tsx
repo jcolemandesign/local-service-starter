@@ -35,7 +35,7 @@ type HeroSplitFixedImageSectionV3Props = {
   ratio?: HeroSplitFixedImageRatio;
   secondaryAction: string;
   secondaryActionHref?: string;
-  stats: readonly string[];
+  stats?: readonly string[];
   title: string;
   variant?: HeroSplitFixedImageVariant;
 };
@@ -189,7 +189,7 @@ export function HeroSplitFixedImageSectionV3({
   ratio = "3-2",
   secondaryAction,
   secondaryActionHref = "#services",
-  stats,
+  stats = [],
   title,
   variant = "text-3-image-4-right",
 }: HeroSplitFixedImageSectionV3Props) {
@@ -250,19 +250,21 @@ export function HeroSplitFixedImageSectionV3({
                 {secondaryAction}
               </Button>
             </div>
-            <ul className="mt-body-actions-lg grid grid-cols-3 card-grid-gap-med max-md:mt-body-actions-md max-md:grid-cols-1">
-              {stats.map((stat) => (
-                <li
-                  className={cx(
-                    "type-text-sm border-l border-service-border pl-4 font-semibold max-md:border-l-0 max-md:border-t max-md:pl-0 max-md:pt-3",
-                    colors.ink,
-                  )}
-                  key={stat}
-                >
-                  {stat}
-                </li>
-              ))}
-            </ul>
+            {stats.length > 0 ? (
+              <ul className="mt-body-actions-lg grid grid-cols-3 card-grid-gap-med max-md:mt-body-actions-md max-md:grid-cols-1">
+                {stats.map((stat) => (
+                  <li
+                    className={cx(
+                      "type-text-sm border-l border-service-border pl-4 font-semibold max-md:border-l-0 max-md:border-t max-md:pl-0 max-md:pt-3",
+                      colors.ink,
+                    )}
+                    key={stat}
+                  >
+                    {stat}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </div>
         </LayoutGridItem>
 

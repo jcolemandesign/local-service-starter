@@ -78,6 +78,33 @@ describe("card style control registry", () => {
       "these sections are offered the card controls but read neither prop - the toggles render and do nothing",
     ).toEqual([]);
   });
+
+  it("keeps both comparison-table card surfaces configurable", () => {
+    const tableComponents = [
+      "DecisionQuestionTableSectionV3",
+      "DecisionQuestionTableFourSectionV3",
+    ];
+
+    for (const component of tableComponents) {
+      expect(cardStyleComponents.has(component), component).toBe(true);
+
+      const source = readFileSync(
+        path.join(sectionsDir, `${component}.tsx`),
+        "utf8",
+      );
+
+      expect(source, `${component}: transparent fill is not rendered`).toContain(
+        'cardFill === "none"',
+      );
+      expect(source, `${component}: border-off is not rendered`).toContain(
+        'cardBorder === "off"',
+      );
+      expect(
+        source,
+        `${component}: internal border-off dividers do not inherit the section background`,
+      ).toContain('"border-bg-page"');
+    }
+  });
 });
 
 /**

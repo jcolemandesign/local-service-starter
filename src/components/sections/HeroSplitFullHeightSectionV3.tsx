@@ -23,7 +23,7 @@ type HeroSplitFullHeightSectionV3Props = {
   primaryAction: string;
   secondaryAction: string;
   secondaryActionHref?: string;
-  stats: readonly string[];
+  stats?: readonly string[];
   title: string;
   variant?: HeroSplitFullHeightVariant;
   colorRecipe?: SectionColorRecipe;
@@ -124,7 +124,7 @@ export function HeroSplitFullHeightSectionV3({
   primaryAction,
   secondaryAction,
   secondaryActionHref = "#services",
-  stats,
+  stats = [],
   title,
   variant = "text-3-image-4-right",
   colorRecipe = "default",
@@ -228,26 +228,28 @@ export function HeroSplitFullHeightSectionV3({
                 {secondaryAction}
               </Button>
             </div>
-            <ul
-              className={cx(
-                "mt-body-actions-lg grid grid-cols-3 card-grid-gap-med max-md:mt-body-actions-md max-md:grid-cols-1",
-              )}
-            >
-              {stats.map((stat) => (
-                <li
-                  className={cx(
-                    "type-text-sm font-semibold",
-                    colors.ink,
-                    isTextFourImageThree
-                      ? "relative overflow-hidden rounded-full border border-white/70 bg-white/78 px-5 py-3 shadow-service backdrop-blur-sm before:absolute before:inset-x-5 before:top-0 before:h-px before:bg-white/90"
-                      : cx("border-l pl-4 max-md:border-l-0 max-md:border-t max-md:pl-0 max-md:pt-3", colors.stat),
-                  )}
-                  key={stat}
-                >
-                  <span className="relative">{stat}</span>
-                </li>
-              ))}
-            </ul>
+            {stats.length > 0 ? (
+              <ul
+                className={cx(
+                  "mt-body-actions-lg grid grid-cols-3 card-grid-gap-med max-md:mt-body-actions-md max-md:grid-cols-1",
+                )}
+              >
+                {stats.map((stat) => (
+                  <li
+                    className={cx(
+                      "type-text-sm font-semibold",
+                      colors.ink,
+                      isTextFourImageThree
+                        ? "relative overflow-hidden rounded-full border border-white/70 bg-white/78 px-5 py-3 shadow-service backdrop-blur-sm before:absolute before:inset-x-5 before:top-0 before:h-px before:bg-white/90"
+                        : cx("border-l pl-4 max-md:border-l-0 max-md:border-t max-md:pl-0 max-md:pt-3", colors.stat),
+                    )}
+                    key={stat}
+                  >
+                    <span className="relative">{stat}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </div>
         </LayoutGridItem>
 

@@ -1115,6 +1115,30 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
+  decisionMatrixCard: {
+    align: "left" as const,
+    eyebrow: "Maintenance visit",
+    title: "What may be reviewed during the visit?",
+    body: "A simple matrix for showing the areas a technician may review without turning the visit into a rigid checklist.",
+    quadrants: [
+      {
+        title: "System controls",
+        items: ["Thermostat operation", "General response"],
+      },
+      {
+        title: "Airflow",
+        items: ["Filter condition", "General airflow review"],
+      },
+      {
+        title: "Visible equipment",
+        items: ["Outdoor-unit review", "Accessible components"],
+      },
+      {
+        title: "System performance",
+        items: ["General operation", "Notable changes"],
+      },
+    ],
+  },
   process: {
     eyebrow: "Process",
     title: "A simple path from request to resolved.",
@@ -1131,6 +1155,60 @@ export const sectionLibraryV3Content = {
       {
         title: "Resolve",
         body: "A trained pro completes the work and explains the result clearly.",
+      },
+    ],
+  },
+  processStepsStaggered: {
+    eyebrow: "Process",
+    title: "A clear path from the first change to the next step.",
+    body: "Move from the change you noticed to a clear diagnosis, exact pricing, and an approved next step.",
+    steps: [
+      {
+        title: "Describe the change",
+        body: "What stopped working, what still works, and when it began.",
+      },
+      {
+        title: "Inspect the system",
+        body: "Review the current operation and identify what needs attention.",
+      },
+      {
+        title: "Explain the findings",
+        body: "Understand the problem, the proposed scope, and the available options.",
+      },
+      {
+        title: "Review pricing",
+        body: "Exact repair pricing follows diagnosis rather than an online guess.",
+      },
+      {
+        title: "Approve the next step",
+        body: "Choose whether to proceed with the recommended work.",
+      },
+    ],
+  },
+  processStepsBranching: {
+    title: "From a cold home to a clear next step",
+    steps: [
+      {
+        title: "Understand the heat loss",
+        body: "How much heat remains, what changed, and whether the concern affects the whole home.",
+      },
+      {
+        title: "Inspect the system",
+        body: "Review current operation and identify what needs attention before pricing is discussed.",
+      },
+      {
+        title: "Explain the findings",
+        body: "Understand the problem, repair scope, and any broader condition concerns.",
+      },
+    ],
+    outcomes: [
+      {
+        title: "Repair",
+        body: "Address the current problem.",
+      },
+      {
+        title: "Larger decision",
+        body: "Discuss ongoing care or replacement.",
       },
     ],
   },
@@ -1342,6 +1420,8 @@ export const sectionLibraryV3Content = {
     title: "Book the visit that matches the problem.",
     body: "Share what the system is doing now and the office will confirm the right service path, timing, and pricing before any work begins.",
     action: "Start a request",
+    secondaryAction: "Explore services",
+    secondaryActionHref: "#services",
     imageAlt: "Technician arriving for a scheduled service visit",
     imageSrc: "/images/fpo-image.svg",
   },
@@ -1587,10 +1667,10 @@ export const sectionLibraryV3Content = {
     secondaryAction: "Call with questions",
     secondaryActionHref: "tel:7045550184",
     items: [
-      { title: "Weak or Uneven Performance", body: "Some rooms feel different or airflow feels limited.", href: "/services", imageAlt: "HVAC airflow placeholder", imageSrc: "/images/fpo-image.svg" },
-      { title: "Unusual Operation", body: "New sounds, frequent cycling, or other changes need a closer look.", href: "/services", imageAlt: "HVAC equipment placeholder", imageSrc: "/images/fpo-image.svg" },
-      { title: "Planning Ahead", body: "You are considering care, repair, or replacement.", href: "/services", imageAlt: "HVAC planning placeholder", imageSrc: "/images/fpo-image.svg" },
-      { title: "No Heating and Cooling", body: "If the system has stopped heating or cooling the home, start here. Share what changed, when the problem began, and whether the equipment is still running so the team can help identify the right next step.", href: "/contact", imageAlt: "HVAC system placeholder", imageSrc: "/images/fpo-image.svg" },
+      { title: "Weak or Uneven Performance", body: "Some rooms feel different or airflow feels limited.", href: "/services" },
+      { title: "Unusual Operation", body: "New sounds, frequent cycling, or other changes need a closer look.", href: "/services" },
+      { title: "Planning Ahead", body: "You are considering care, repair, or replacement.", href: "/services" },
+      { title: "No Heating and Cooling", body: "If the system has stopped heating or cooling the home, start here. Share what changed, when the problem began, and whether the equipment is still running so the team can help identify the right next step.", href: "/contact" },
     ],
   },
   servicesThreeCardsRight: {
@@ -1915,7 +1995,19 @@ export const sectionLibraryV3Collections = [
         label: "Table compare 4 col",
         component: "decision-question-table-four-v3",
       },
+      {
+        label: "Matrix card",
+        component: "decision-matrix-card-v3",
+      },
       { label: "Process steps", component: "process-steps-v3" },
+      {
+        label: "Process steps staggered",
+        component: "process-steps-staggered-v3",
+      },
+      {
+        label: "Process steps branching",
+        component: "process-steps-branching-v3",
+      },
       {
         label: "Process image checklist",
         component: "process-image-checklist-v3",
@@ -1947,11 +2039,6 @@ export const sectionLibraryV3Collections = [
         label: "Service area zip lookup",
         component: "service-area-zip-lookup-v3",
       },
-      {
-        label: "Contact section modal begin",
-        component: "contact-modal-begin-v3",
-      },
-      { label: "Contact section", component: "contact-v3" },
       { label: "Footer", component: "footer-v3" },
       { label: "Horizontal footer", component: "footer-horizontal-v3" },
       { label: "Condensed footer", component: "footer-compact-v3" },
@@ -1980,6 +2067,11 @@ export const sectionLibraryV3Collections = [
         label: "CTA fixed cover fade",
         component: "content-fixed-cover-fade-v2",
       },
+      {
+        label: "Contact section modal begin",
+        component: "contact-modal-begin-v3",
+      },
+      { label: "Contact section", component: "contact-v3" },
     ],
   },
 ] as const;
@@ -2060,7 +2152,10 @@ export const sectionLibraryV3ComponentBySlug = {
     "DecisionSplitDecisionLargeSectionV3",
   "decision-question-table-v3": "DecisionQuestionTableSectionV3",
   "decision-question-table-four-v3": "DecisionQuestionTableFourSectionV3",
+  "decision-matrix-card-v3": "DecisionMatrixCardSectionV3",
   "process-steps-v3": "ProcessStepsSectionV3",
+  "process-steps-staggered-v3": "ProcessStepsStaggeredSectionV3",
+  "process-steps-branching-v3": "ProcessStepsBranchingSectionV3",
   "process-image-checklist-v3": "ProcessImageChecklistSectionV3",
   "faq-v3": "FAQSectionV3",
   "faq-accordion-v3": "FAQAccordionSectionV3",

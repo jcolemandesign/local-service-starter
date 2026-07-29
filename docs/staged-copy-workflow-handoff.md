@@ -9,8 +9,8 @@
 > several refactors.
 >
 > The mechanism descriptions are still a good explanation of how staged copy
-> works. For current state and the outstanding phase plan, see
-> `architecture-review-2026-07.md`.
+> works. For the current process, see `builder-workflow.md`. For current state
+> and the outstanding phase plan, see `architecture-review-2026-07.md`.
 
 Investigation-only document. No application code, tests, config, persisted data, or other
 docs were modified while producing this file. All file:line references below were read

@@ -7,6 +7,8 @@ export type DecisionQuestionTableColumn = {
 
 export type DecisionQuestionTableSectionV3Props = {
   body: string;
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   columns: readonly DecisionQuestionTableColumn[];
   eyebrow: string;
   title: string;
@@ -32,10 +34,15 @@ function cx(...classes: Array<string | undefined>) {
  */
 export function DecisionQuestionTableSectionV3({
   body,
+  cardBorder = "on",
+  cardFill = "solid",
   columns,
   eyebrow,
   title,
 }: DecisionQuestionTableSectionV3Props) {
+  const dividerBorderClass =
+    cardBorder === "off" ? "border-bg-page" : "border-service-border";
+
   return (
     <section className="bg-bg-page">
       <LayoutGrid className="section-min-none items-start" columns={14} padding="lrg">
@@ -55,18 +62,31 @@ export function DecisionQuestionTableSectionV3({
         </LayoutGridItem>
 
         <LayoutGridItem className="col-span-9 col-start-6 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2">
-          <ul className="radius-medium grid grid-cols-3 grid-rows-[auto_1fr] overflow-hidden border border-service-border bg-service-surface max-sm:grid-cols-1">
+          <ul
+            className={cx(
+              "radius-medium grid grid-cols-3 grid-rows-[auto_1fr] overflow-hidden border border-service-border bg-service-surface max-sm:grid-cols-1",
+              cardFill === "none"
+                ? "!bg-transparent !shadow-none"
+                : undefined,
+              cardBorder === "off" ? "!border-transparent" : undefined,
+            )}
+          >
             {columns.slice(0, 3).map((column, index) => (
               <li
                 className={cx(
                   "row-span-2 grid grid-rows-subgrid max-sm:block",
                   index > 0
-                    ? "border-l border-service-border max-sm:border-l-0 max-sm:border-t"
+                    ? `border-l ${dividerBorderClass} max-sm:border-l-0 max-sm:border-t`
                     : undefined,
                 )}
                 key={column.title}
               >
-                <h3 className="type-label border-b border-service-border px-6 py-5 text-service-ink max-md:px-4 max-md:py-4">
+                <h3
+                  className={cx(
+                    "type-label border-b px-6 py-5 text-service-ink max-md:px-4 max-md:py-4",
+                    dividerBorderClass,
+                  )}
+                >
                   {column.title}
                 </h3>
                 {/* A step more vertical padding than the heading row's py-5, so

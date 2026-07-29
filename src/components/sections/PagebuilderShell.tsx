@@ -31,6 +31,11 @@ import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/Services
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
 import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
+import {
+  ProcessStepsBranchingSectionV3,
+  type ProcessStepsBranchingAlign,
+} from "@/components/sections/ProcessStepsBranchingSectionV3";
+import { ProcessStepsStaggeredSectionV3 } from "@/components/sections/ProcessStepsStaggeredSectionV3";
 import { HeroCompactServiceSectionV3 } from "@/components/sections/HeroCompactServiceSectionV3";
 import { SectionHeaderCompactSectionV3 } from "@/components/sections/SectionHeaderCompactSectionV3";
 import {
@@ -41,7 +46,9 @@ import {
   ServicesBentoCardsSectionV2,
   type ServicesBentoCardsVariant,
 } from "@/components/sections/ServicesBentoCardsSectionV2";
+import { DecisionMatrixCardSectionV3 } from "@/components/sections/DecisionMatrixCardSectionV3";
 import { DecisionQuestionTableFourSectionV3 } from "@/components/sections/DecisionQuestionTableFourSectionV3";
+import { DecisionQuestionTableSectionV3 } from "@/components/sections/DecisionQuestionTableSectionV3";
 import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import { ServiceCalloutRevealGridSectionV3 } from "@/components/sections/ServiceCalloutRevealGridSectionV3";
@@ -201,6 +208,10 @@ const faqComponent = "FAQSectionV3";
 const contentHorizontalCardCarouselComponent =
   "ContentHorizontalCardCarouselSectionV2";
 const decisionSplitLargeCardsComponent = "DecisionSplitLargeCardsSectionV3";
+const decisionQuestionTableComponent = "DecisionQuestionTableSectionV3";
+const decisionMatrixCardComponent = "DecisionMatrixCardSectionV3";
+const processStepsBranchingComponent = "ProcessStepsBranchingSectionV3";
+const processStepsStaggeredComponent = "ProcessStepsStaggeredSectionV3";
 const servicesScrollCardsComponent = "ServicesScrollCardsSectionV2";
 const servicesThreeCardsRightComponent = "ServicesThreeCardsRightSectionV3";
 const ctaSectionComponent = "CTASectionV3";
@@ -237,6 +248,10 @@ const ctaImageAlignOptions = [
 const mainIdeaGridAlignOptions = [
   { label: "Left", value: "left" },
   { label: "Right", value: "right" },
+] as const;
+const processStepsBranchingAlignOptions = [
+  { label: "Left", value: "left" },
+  { label: "Center", value: "center" },
 ] as const;
 const projectCaseStudyGalleryAlignOptions = [
   { label: "Image left", value: "left" },
@@ -617,6 +632,12 @@ function getSectionCardBorder(section: WorkingSection): SectionCardBorder {
   return section.cardBorder === "off" ? "off" : "on";
 }
 
+function getProcessStepsBranchingAlign(
+  section: WorkingSection,
+): ProcessStepsBranchingAlign {
+  return section.align === "center" ? "center" : "left";
+}
+
 function getDecisionSplitDecisionLargeAlign(
   section: WorkingSection,
 ): DecisionSplitDecisionLargeAlign {
@@ -679,10 +700,6 @@ function getFeatureAsymmetricCardsAlign(
   section: WorkingSection,
 ): FeatureAsymmetricCardsAlign {
   return section.variant === "right" ? "right" : "left";
-}
-
-function getServiceNeedsPriorityGridShowImages(section: WorkingSection) {
-  return !section.variant?.includes("text-only");
 }
 
 function getServiceNeedsPriorityGridCompactPriorityCard(
@@ -936,6 +953,7 @@ function serializeWorkingSection(section: WorkingSection) {
     slotId: section.slotId,
     variant: section.variant,
     colorRecipe: getSectionColorRecipe(section),
+    cardBorder: getSectionCardBorder(section),
     cardFill: getSectionCardFill(section),
   };
 }
@@ -1263,7 +1281,7 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
   {
     component: "ServiceNeedsPriorityGridSectionV3",
     instruction:
-      "Show three compact service-need cards and one wider priority card on the 14-column grid. Images may be toggled off for a shorter text-only layout.",
+      "Show three compact service-need cards and one wider priority card on the 14-column grid. The cards are text-only and carry no imagery.",
     layoutGrid: 14,
     mode: "Scan",
     name: "Service needs priority grid",
@@ -1585,6 +1603,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     name: "Table compare 4 col",
   },
   {
+    component: "DecisionMatrixCardSectionV3",
+    instruction:
+      "Use a 2x2 matrix card on a 14-column grid when the page needs a short review/checklist summary. Left alignment uses five columns of header copy, one blank column, and an eight-column matrix. Center places the header above the eight-column matrix. Right places the matrix first, then a blank column, then the header.",
+    layoutGrid: 14,
+    mode: "Decision",
+    name: "Matrix card",
+  },
+  {
     component: "DecisionQuestionTableSectionV3",
     instruction:
       "Use a three-question table on a 14-column grid when the visitor should recognize their own situation before booking. Each column is one question with three short, mutually exclusive answers a homeowner could pick without diagnosing anything.",
@@ -1598,6 +1624,22 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
       "Use current process steps when the page needs a clearer, more styled decision sequence.",
     mode: "Decision",
     name: "Process steps",
+  },
+  {
+    component: "ProcessStepsStaggeredSectionV3",
+    instruction:
+      "Use a four-column descriptive introduction beside five concise process steps in a connected flow, alternating left and right from top to bottom.",
+    layoutGrid: 14,
+    mode: "Decision",
+    name: "Process steps staggered",
+  },
+  {
+    component: "ProcessStepsBranchingSectionV3",
+    instruction:
+      "Use three connected process steps that split into two alternative outcome cards. The left layout uses a four-column heading sidebar; the centered layout removes the heading and centers the flow.",
+    layoutGrid: 14,
+    mode: "Decision",
+    name: "Process steps branching",
   },
   {
     component: "FAQSectionV3",
@@ -1637,7 +1679,7 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
   {
     component: "CTAImageSectionV3",
     instruction:
-      "Pair a conversion block with a full-bleed cropped image on the 14-column grid. Copy takes six columns with the action pinned to the bottom of the column; the image fills the opposing seven columns. The alignment toggle swaps which side the copy sits on.",
+      "Pair a two-action conversion block with a full-height cropped image on the 14-column grid. Copy takes six columns with both actions directly beneath the supporting text; the unradiused image fills the opposing half and bleeds to the section edge regardless of section spacing. The alignment toggle swaps which side the copy sits on.",
     layoutGrid: 14,
     mode: "Action",
     name: "CTA with image",
@@ -1681,14 +1723,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     component: "ContactSectionV3",
     instruction:
       "Close with phone, email, hours, and a simple form or request path.",
-    mode: "Utility",
+    mode: "Action",
     name: "Contact section",
   },
   {
     component: "ContactSectionModalBegin",
     instruction:
       "Begin the request flow in-page with system and service choices, then carry those answers into step two of the request modal.",
-    mode: "Utility",
+    mode: "Action",
     name: "Contact section modal begin",
   },
   {
@@ -1943,7 +1985,7 @@ function buildPageInstruction({
      getCardLinkGridAlignLabel(getCardLinkGridAlign(section)) ?? "Center"
    } (${getCardLinkGridAlign(section)})`
        : sectionSupportsTableCompareAlign(section.component)
-         ? `Table alignment: ${
+        ? `Alignment: ${
              getTableCompareAlignLabel(getTableCompareAlign(section)) ?? "Center"
            } (${getTableCompareAlign(section)})`
       : section.component === contentStickyCardStreamComponent
@@ -2587,6 +2629,21 @@ export function PagebuilderShell({
     );
   }
 
+  function updateProcessStepsBranchingAlign(
+    sectionId: string,
+    align: ProcessStepsBranchingAlign,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId &&
+        section.component === processStepsBranchingComponent
+          ? { ...section, align }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateDecisionSplitDecisionLargeAlign(
     sectionId: string,
     align: DecisionSplitDecisionLargeAlign,
@@ -2729,7 +2786,6 @@ export function PagebuilderShell({
     nextValue: Partial<{
       align: ServiceNeedsPriorityGridAlign;
       compactPriorityCard: boolean;
-      showImages: boolean;
     }>,
   ) {
     updateActiveStack((stack) =>
@@ -2739,17 +2795,13 @@ export function PagebuilderShell({
         }
 
         const align = nextValue.align ?? getServiceNeedsPriorityGridAlign(section);
-        const showImages =
-          nextValue.showImages ?? getServiceNeedsPriorityGridShowImages(section);
         const compactPriorityCard =
           nextValue.compactPriorityCard ??
           getServiceNeedsPriorityGridCompactPriorityCard(section);
 
         return {
           ...section,
-          variant: `${align}${showImages ? "" : "-text-only"}${
-            compactPriorityCard ? "-compact" : ""
-          }`,
+          variant: `${align}${compactPriorityCard ? "-compact" : ""}`,
         };
       }),
     );
@@ -3578,10 +3630,25 @@ export function PagebuilderShell({
             cardLinks={getCardLinks(section)}
             showImages={getCardLinkGridVariant(section) === "with-images"}
           />
+        ) : section.component === decisionQuestionTableComponent ? (
+          <DecisionQuestionTableSectionV3
+            {...sectionLibraryV3Content.decisionQuestionTable}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
+          />
+        ) : section.component === decisionMatrixCardComponent ? (
+          <DecisionMatrixCardSectionV3
+            {...sectionLibraryV3Content.decisionMatrixCard}
+            align={getTableCompareAlign(section)}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
+          />
         ) : sectionSupportsTableCompareAlign(section.component) ? (
           <DecisionQuestionTableFourSectionV3
             {...sectionLibraryV3Content.decisionQuestionTableFour}
             align={getTableCompareAlign(section)}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
           />
         ) : isServiceCalloutRevealGridSection(section) ? (
           <ServiceCalloutRevealGridSectionV3
@@ -3607,7 +3674,6 @@ export function PagebuilderShell({
               section,
             )}
             cardLinks={getCardLinks(section)}
-            showImages={getServiceNeedsPriorityGridShowImages(section)}
           />
         ) : isServicesBentoSection(section) ? (
           <ServicesBentoCardsSectionV2
@@ -3641,6 +3707,19 @@ export function PagebuilderShell({
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
           />
+        ) : section.component === processStepsStaggeredComponent ? (
+          <ProcessStepsStaggeredSectionV3
+            {...sectionLibraryV3Content.processStepsStaggered}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
+          />
+        ) : section.component === processStepsBranchingComponent ? (
+          <ProcessStepsBranchingSectionV3
+            {...sectionLibraryV3Content.processStepsBranching}
+            align={getProcessStepsBranchingAlign(section)}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
+          />
         ) : (
           previewCatalog[section.component] ??
           previewSections[activeRecipeIndex]?.[section.originalIndex] ??
@@ -3660,6 +3739,7 @@ export function PagebuilderShell({
           data-pagebuilder-section-id={section.id}
           data-pagebuilder-section-component={section.component}
           data-pagebuilder-section-mode={section.mode}
+          data-pagebuilder-card-border={getSectionCardBorder(section)}
           data-pagebuilder-card-fill={getSectionCardFill(section)}
           data-pagebuilder-color-recipe={getSectionColorRecipe(section)}
           data-pagebuilder-padding-top={
@@ -4137,6 +4217,50 @@ export function PagebuilderShell({
                               })}
                             </div>
                           </fieldset>
+
+                          {section.component ===
+                          processStepsBranchingComponent ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Header alignment
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {processStepsBranchingAlignOptions.map(
+                                  (option) => {
+                                    const optionIsActive =
+                                      getProcessStepsBranchingAlign(section) ===
+                                      option.value;
+
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                          optionIsActive
+                                            ? "token-chrome-card-active"
+                                            : "token-chrome-card",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateProcessStepsBranchingAlign(
+                                            section.id,
+                                            option.value,
+                                          )
+                                        }
+                                        type="button"
+                                      >
+                                        {option.label}
+                                      </button>
+                                    );
+                                  },
+                                )}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Left uses the four-column heading sidebar.
+                                Center removes the heading and centers the flow.
+                              </p>
+                            </fieldset>
+                          ) : null}
 
                           {sectionSupportsCardFill(section) ? (
                           <div className="grid grid-cols-2 items-start gap-4">
@@ -5109,37 +5233,6 @@ export function PagebuilderShell({
                               </fieldset>
                               <fieldset className="grid gap-2">
                                 <legend className="type-caption font-semibold text-current">
-                                  Card images
-                                </legend>
-                                <div className="flex items-center gap-2">
-                                  {fourCardLinkGridVariantOptions.map((option) => {
-                                    const optionIsActive =
-                                      getServiceNeedsPriorityGridShowImages(section) ===
-                                      (option.value === "with-images");
-
-                                    return (
-                                      <button
-                                        aria-pressed={optionIsActive}
-                                        className={cx(
-                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
-                                          optionIsActive ? "token-chrome-card-active" : "token-chrome-card",
-                                        )}
-                                        key={option.value}
-                                        onClick={() =>
-                                          updateServiceNeedsPriorityGrid(section.id, {
-                                            showImages: option.value === "with-images",
-                                          })
-                                        }
-                                        type="button"
-                                      >
-                                        {option.label}
-                                      </button>
-                                    );
-                                  })}
-                                </div>
-                              </fieldset>
-                              <fieldset className="grid gap-2">
-                                <legend className="type-caption font-semibold text-current">
                                   Priority card sizing
                                 </legend>
                                 <div className="grid grid-cols-2 gap-2">
@@ -5305,7 +5398,7 @@ export function PagebuilderShell({
                           ) ? (
                             <fieldset className="grid gap-2">
                               <legend className="type-caption font-semibold text-current">
-                                Table Alignment
+                                Alignment
                               </legend>
                               <div className="grid grid-cols-3 gap-2">
                                 {tableCompareAlignOptions.map((option) => {

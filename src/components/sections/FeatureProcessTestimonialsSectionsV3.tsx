@@ -2,9 +2,11 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import {
+  Button,
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import { RequestServiceButton } from "@/components/request-service";
 
 type FeatureOverlapItem = {
   body: string;
@@ -32,6 +34,9 @@ type FeatureOverlapRowsSectionV3Props = {
 type ProcessStepsSectionV3Props = {
   body: string;
   eyebrow: string;
+  primaryAction?: string;
+  secondaryAction?: string;
+  secondaryActionHref?: string;
   steps: readonly ProcessStep[];
   title: string;
 };
@@ -155,6 +160,9 @@ export function FeatureOverlapRowsSectionV3({
 export function ProcessStepsSectionV3({
   body,
   eyebrow,
+  primaryAction,
+  secondaryAction,
+  secondaryActionHref = "#services",
   steps,
   title,
 }: ProcessStepsSectionV3Props) {
@@ -175,6 +183,18 @@ export function ProcessStepsSectionV3({
             <p className="type-text-lg wrap-pretty mt-heading-body-lg text-service-muted">
               {body}
             </p>
+            {primaryAction || secondaryAction ? (
+              <div className="mt-body-actions-md flex flex-wrap inline-gap-med">
+                {primaryAction ? (
+                  <RequestServiceButton>{primaryAction}</RequestServiceButton>
+                ) : null}
+                {secondaryAction ? (
+                  <Button href={secondaryActionHref} variant="secondary">
+                    {secondaryAction}
+                  </Button>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </SevenColumnGridItem>
 

@@ -14,6 +14,8 @@ This project is a reusable local service business starter built with Next.js, Re
 
 The goal is to create a modular, reusable, visually polished system for local service business websites while keeping architecture, spacing, typography, motion, and responsiveness consistent across projects.
 
+For how the builder pipeline works end to end — adding a section, what each toggle does and where it is stored, the staged-page lifecycle, and export — read `docs/builder-workflow.md`. For why it is shaped that way, read `docs/architecture-review-2026-07.md`.
+
 ---
 
 ## Architecture
@@ -23,6 +25,8 @@ Every major page section is a standalone component in `src/components/sections/`
 Page files should compose imported section components. Do not leave large raw section markup directly inside `app/**/page.tsx`.
 
 Sections should use shared primitives for heading, subheading, body copy, containers, cards, buttons, and layout structure.
+
+Every new reusable section must use the shared `LayoutGrid` or `SevenColumnGrid` primitive with either the 14-column or 7-column system. Do not build a section around a standalone `Container` or a one-off top-level grid.
 
 Use existing shared primitives, design tokens, and layout patterns before creating new ones.
 
@@ -66,6 +70,10 @@ Before building a new section, read existing sections, shared primitives, and `t
 After any session where new reusable visual values are settled on — colors, type sizes, spacing, shadows, radii — update the shared design tokens or `tailwind.config.ts` with semantic names before the next session. The shared tokens/config are the living style guide.
 
 Use existing design tokens before creating new ones.
+
+Card-like and panel-like surfaces must inherit the shared radius settings through `--radius-surface-token` (or an existing semantic radius utility backed by that token). Do not hardcode a local radius.
+
+Any reusable section that renders a card or panel background must support the shared `cardFill` / `cardBorder` controls and be registered in `cardStyleComponents`. A filled card surface must always offer the transparent option; do not ship a permanently filled card. Structural dividers inside a composite card may remain when its outer border is disabled if they are necessary to preserve the content relationship.
 
 Tokens should be design-facing and easy to reference while building.
 

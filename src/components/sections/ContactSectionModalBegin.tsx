@@ -35,7 +35,7 @@ function SelectionButton({
       className={`radius-button min-h-12 cursor-pointer border px-4 type-caption font-semibold transition-colors ${
         isSelected
           ? "border-service-accent bg-service-accent text-text-inverse"
-          : "border-service-border bg-bg-page text-service-ink hover:border-service-accent hover:text-service-accent"
+          : "border-service-border bg-surface-raised text-service-ink hover:border-service-accent hover:text-service-accent"
       }`}
       onClick={onClick}
       type="button"

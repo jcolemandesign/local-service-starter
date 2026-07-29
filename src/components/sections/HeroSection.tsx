@@ -7,7 +7,7 @@ type HeroSectionProps = {
   body: string;
   primaryAction: string;
   secondaryAction: string;
-  stats: string[];
+  stats?: string[];
   headingLevel?: 1 | 2;
 };
 
@@ -17,7 +17,7 @@ export function HeroSection({
   body,
   primaryAction,
   secondaryAction,
-  stats,
+  stats = [],
   headingLevel = 1,
 }: HeroSectionProps) {
   const HeadingTag = `h${headingLevel}` as const;
@@ -42,16 +42,18 @@ export function HeroSection({
                 {secondaryAction}
               </Button>
             </div>
-            <ul className="mt-12 grid max-w-2xl grid-cols-3 gap-4 max-md:grid-cols-1">
-              {stats.map((stat) => (
-                <li
-                  className="border-l border-service-border pl-4 text-sm font-semibold text-service-ink"
-                  key={stat}
-                >
-                  {stat}
-                </li>
-              ))}
-            </ul>
+            {stats.length > 0 ? (
+              <ul className="mt-12 grid max-w-2xl grid-cols-3 gap-4 max-md:grid-cols-1">
+                {stats.map((stat) => (
+                  <li
+                    className="border-l border-service-border pl-4 text-sm font-semibold text-service-ink"
+                    key={stat}
+                  >
+                    {stat}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </div>
           <div className="rounded-lg border border-service-border bg-white p-6 shadow-service">
             <div className="aspect-video rounded-md bg-service-accent/10 p-6">

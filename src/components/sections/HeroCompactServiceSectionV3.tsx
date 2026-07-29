@@ -107,7 +107,7 @@ export function HeroCompactServiceSectionV3({
           alignY="middle"
           className={cx(columns.image, gridItemClassName)}
         >
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface shadow-service">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-surface-token)] bg-service-surface shadow-service">
             <Image
               alt={imageAlt}
               className="object-cover"

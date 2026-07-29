@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   getTemplateCopyContractFingerprint,
+  getTemplateCopyFieldsForSection,
   getTemplateCopyContractStatus,
   type TemplateCopyContractTemplate,
 } from "@/utils/template-copy-contract";
@@ -110,5 +111,39 @@ describe("getTemplateCopyContractStatus", () => {
         templateNowHasWidgetTwoAtPosition1,
       ),
     ).toBe("stale");
+  });
+});
+
+describe("split-section proof callouts", () => {
+  it.each([
+    "HeroSplitFixedImageSectionV3",
+    "HeroSplitFullHeightSectionV3",
+    "ContentSplitFixedImageSectionV3",
+    "ContentSplitFullImageSectionV3",
+  ])("makes proof points optional for %s", (component) => {
+    const proofPoints = getTemplateCopyFieldsForSection({
+      component,
+      mode: component.startsWith("Hero") ? "Hero" : "Narrative",
+      name: "Split section",
+    }).find((field) => field.name === "proofPoints");
+
+    expect(proofPoints).toMatchObject({ optional: true });
+  });
+});
+
+describe("decision matrix card fields", () => {
+  it("uses the matrix-specific quadrant contract", () => {
+    const fields = getTemplateCopyFieldsForSection({
+      component: "DecisionMatrixCardSectionV3",
+      mode: "Decision",
+      name: "Matrix card",
+    });
+
+    expect(fields.map((field) => field.name)).toEqual([
+      "eyebrow",
+      "heading",
+      "intro",
+      "quadrants",
+    ]);
   });
 });

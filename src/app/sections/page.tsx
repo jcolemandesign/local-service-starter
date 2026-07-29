@@ -26,6 +26,7 @@ import {
   CTAMutedSectionV3,
   CTASectionV3,
   CTAScrollRevealOfferSectionV3,
+  DecisionMatrixCardSectionV3,
   DecisionQuestionTableSectionV3,
   DecisionSplitDecisionSectionV3,
   DecisionSplitDecisionLargeSectionV3,
@@ -53,6 +54,8 @@ import {
   NavFloatingBentoSectionV2,
   NavPrimarySectionV2,
   ProcessImageChecklistSectionV3,
+  ProcessStepsBranchingSectionV3,
+  ProcessStepsStaggeredSectionV3,
   ProcessStepsSectionV3,
   QuickPageLinksSectionV2,
   ServicesBentoCardsSectionV2,
@@ -309,6 +312,11 @@ const sectionElements = {
       {...sectionLibraryV3Content.decisionQuestionTableFour}
     />
   ),
+  "decision-matrix-card-v3": (
+    <DecisionMatrixCardSectionV3
+      {...sectionLibraryV3Content.decisionMatrixCard}
+    />
+  ),
   "services-three-cards-right-v3": (
     <ServicesThreeCardsRightSectionV3
       {...sectionLibraryV3Content.servicesThreeCardsRight}
@@ -354,6 +362,16 @@ const sectionElements = {
   ),
   "process-steps-v3": (
     <ProcessStepsSectionV3 {...sectionLibraryV3Content.process} />
+  ),
+  "process-steps-staggered-v3": (
+    <ProcessStepsStaggeredSectionV3
+      {...sectionLibraryV3Content.processStepsStaggered}
+    />
+  ),
+  "process-steps-branching-v3": (
+    <ProcessStepsBranchingSectionV3
+      {...sectionLibraryV3Content.processStepsBranching}
+    />
   ),
   "process-image-checklist-v3": (
     <ProcessImageChecklistSectionV3

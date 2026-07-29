@@ -179,6 +179,7 @@ export const tableCompareAlignValues = new Set<string>(
 
 /** Sections that read the table-compare `align` axis. */
 export const tableCompareAlignComponents = new Set<string>([
+  "DecisionMatrixCardSectionV3",
   "DecisionQuestionTableFourSectionV3",
 ]);
 
@@ -212,11 +213,16 @@ export const cardStyleComponents = new Set<string>([
   "ContentSplitFixedImageSectionV3",
   "ContentStickyCardStreamSectionV2",
   "ContentThreeColumnMixedSectionV3",
+  "DecisionMatrixCardSectionV3",
+  "DecisionQuestionTableFourSectionV3",
+  "DecisionQuestionTableSectionV3",
   "DecisionSplitLargeCardsSectionV3",
   "FAQSectionV3",
   "FourCardLinkGridSectionV3",
   "HeroCompactServiceSectionV3",
   "HeroSplitFixedImageSectionV3",
+  "ProcessStepsBranchingSectionV3",
+  "ProcessStepsStaggeredSectionV3",
   "ProjectCaseStudyGallerySectionV3",
   "ServiceCalloutRevealGridSectionV3",
   "ServiceCalloutSplitPanelSectionV3",

@@ -46,6 +46,7 @@ type ExportIssue = {
 };
 
 type ResolvedSection = {
+  cardBorder: string;
   cardFill: string;
   colorRecipe: string;
   component: string;
@@ -427,6 +428,7 @@ function resolvePageSections(
 
     return [
       {
+        cardBorder: resolvedSection.cardBorder ?? "on",
         cardFill: resolveCardFill(section.component, resolvedSection.cardFill),
         colorRecipe: resolvedSection.colorRecipe ?? "default",
         component: section.component,
@@ -660,6 +662,7 @@ function buildPageFile({ page, sections }: ResolvedPage) {
     .map(
       (section) => `      <div
         className="pagebuilder-section-frame relative"
+        data-pagebuilder-card-border=${JSON.stringify(section.cardBorder)}
         data-pagebuilder-card-fill=${JSON.stringify(section.cardFill)}
         data-pagebuilder-color-recipe=${JSON.stringify(section.colorRecipe)}
         data-pagebuilder-padding-bottom=${JSON.stringify(

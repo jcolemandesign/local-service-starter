@@ -42,6 +42,7 @@ export type TemplateCopyFieldSpec = {
   format?: string;
   itemCount?: number;
   name: string;
+  optional?: boolean;
   purpose: string;
   target: string;
 };
@@ -266,6 +267,10 @@ export function buildTemplateCopyContract({
       lines.push(`  Purpose: ${field.purpose}`);
       lines.push(`  Target: ${field.target}`);
 
+      if (field.optional) {
+        lines.push("  Requirement: Optional; omit this field when it is not used.");
+      }
+
       if (field.itemCount) {
         lines.push(`  Item count: ${field.itemCount}`);
       }
@@ -305,6 +310,7 @@ export function getTemplateCopyContractFingerprint(
         format: field.format ?? "",
         itemCount: field.itemCount ?? 0,
         name: field.name,
+        optional: field.optional || undefined,
         purpose: field.purpose,
         target: field.target,
       })),
@@ -335,6 +341,7 @@ export function getTemplateCopySectionFingerprint(
       format: field.format ?? "",
       itemCount: field.itemCount ?? 0,
       name: field.name,
+      optional: field.optional || undefined,
       purpose: field.purpose,
       target: field.target,
     })),
@@ -478,7 +485,9 @@ export function getTemplateCopySectionStatuses(
 
     const missingFieldNames = getTemplateCopyFieldsForSection(section)
       .filter(
-        (field) => !suppliedSection.fields.has(normalizeContractFieldName(field.name)),
+        (field) =>
+          !field.optional &&
+          !suppliedSection.fields.has(normalizeContractFieldName(field.name)),
       )
       .map((field) => field.name);
 
@@ -553,8 +562,10 @@ function isBatchCopySchemaCompatible(
       return false;
     }
 
-    return getTemplateCopyFieldsForSection(section).every((field) =>
-      suppliedSection.fields.has(normalizeContractFieldName(field.name)),
+    return getTemplateCopyFieldsForSection(section).every(
+      (field) =>
+        field.optional ||
+        suppliedSection.fields.has(normalizeContractFieldName(field.name)),
     );
   });
 }
@@ -724,6 +735,86 @@ export function getTemplateCopyFieldsForSection(
   const mode = section.mode.toLowerCase();
   const sectionName = section.name.toLowerCase();
   const lookupValue = `${component} ${mode} ${sectionName}`;
+
+  if (component.includes("processstepsbranching")) {
+    return [
+      {
+        example: "From a cold home to a clear next step",
+        name: "heading",
+        purpose:
+          "Heading in the four-column introduction beside the branching flow.",
+        target: "32-64 characters.",
+      },
+      {
+        example: [
+          "Understand the heat loss - How much heat remains, what changed, and whether the concern affects the whole home.",
+          "Inspect the system - Review current operation and identify what needs attention before pricing is discussed.",
+          "Explain the findings - Understand the problem, repair scope, and any broader condition concerns.",
+        ],
+        format: "One item per line as Title - Description.",
+        itemCount: 3,
+        name: "steps",
+        purpose:
+          "The three ordered steps before the flow splits into alternative outcomes.",
+        target:
+          "Exactly 3 items. Titles 16-32 characters. Descriptions 60-120 characters.",
+      },
+      {
+        example: [
+          "Repair - Address the current problem.",
+          "Larger decision - Discuss ongoing care or replacement.",
+        ],
+        format: "One item per line as Title - Description.",
+        itemCount: 2,
+        name: "outcomes",
+        purpose:
+          "The two alternative paths shown after the third process step.",
+        target:
+          "Exactly 2 items. Titles 8-24 characters. Descriptions 25-80 characters.",
+      },
+    ];
+  }
+
+  if (component.includes("processstepsstaggered")) {
+    return [
+      {
+        example: "What happens before the work begins",
+        name: "eyebrow",
+        purpose: "Short process label above the descriptive heading.",
+        target: "12-28 characters.",
+      },
+      {
+        example: "A clear path from the first change to the next step",
+        name: "heading",
+        purpose: "Headline for the four-column descriptive introduction.",
+        target: "36-68 characters.",
+      },
+      {
+        example:
+          "Move from the change you noticed to a clear diagnosis, exact pricing, and an approved next step.",
+        name: "intro",
+        purpose:
+          "Short descriptive paragraph explaining what the connected process covers.",
+        target: "90-160 characters.",
+      },
+      {
+        example: [
+          "Describe the change - What stopped working, what still works, and when it began.",
+          "Inspect the system - Review the current operation and identify what needs attention.",
+          "Explain the findings - Understand the problem, the proposed scope, and the available options.",
+          "Review pricing - Exact repair pricing follows diagnosis rather than an online guess.",
+          "Approve the next step - Choose whether to proceed with the recommended work.",
+        ],
+        format: "One item per line as Title - Description.",
+        itemCount: 5,
+        name: "steps",
+        purpose:
+          "Five ordered steps for the connected staggered process flow.",
+        target:
+          "Exactly 5 items. Titles 16-32 characters. Descriptions 50-100 characters.",
+      },
+    ];
+  }
 
   // Matched on the component before the generic branches below: this section's
   // lookup value contains none of their keywords, so without an explicit branch
@@ -1075,8 +1166,11 @@ export function getTemplateCopyFieldsForSection(
         format: "One short proof point per line. Use sourced facts only.",
         itemCount: 3,
         name: "proofPoints",
-        purpose: "Stats, trust points, or short supporting claims if the layout uses them.",
-        target: "2-4 items, 28-70 characters each. Use sourced facts only.",
+        optional: true,
+        purpose:
+          "Optional short proof or callout row beneath the hero actions. Use it only when sourced claims materially strengthen this page; omit it rather than repeating the headline or adding unsupported promises.",
+        target:
+          "OPTIONAL. Omit when the hero does not need this row. When used: 2-4 items, 28-70 characters each, sourced facts only.",
       },
       {
         example: "Average rating from local customers",
@@ -1603,6 +1697,21 @@ export function getTemplateCopyFieldsForSection(
         target: "2-4 bullets, 3-8 words each, if used.",
       },
       {
+        example: [
+          "Clear explanations before work begins",
+          "Recommendations tied to system condition",
+          "A practical next step when needed",
+        ],
+        format:
+          "One short proof or callout per line. Omit this field entirely if the page does not need a callout row here.",
+        name: "proofPoints",
+        optional: true,
+        purpose:
+          "Optional compact callout row beneath the narrative copy. Use only for sourced, distinct proof points that add scan value beyond the paragraphs and bullets.",
+        target:
+          "OPTIONAL. Omit when the narrative does not need this row. When used: 2-4 items, 3-8 words each, sourced facts only.",
+      },
+      {
         example: "Request service",
         name: "primaryAction",
         purpose:
@@ -1653,6 +1762,21 @@ export function getTemplateCopyFieldsForSection(
         purpose:
           "Optional scannable bullet list under the body copy. Only include it if it adds something the paragraphs don't already say - leave it out rather than padding it.",
         target: "2-4 bullets, 3-8 words each, if used.",
+      },
+      {
+        example: [
+          "Clear explanations before work begins",
+          "Recommendations tied to system condition",
+          "A practical next step when needed",
+        ],
+        format:
+          "One short proof or callout per line. Omit this field entirely if the page does not need a callout row here.",
+        name: "proofPoints",
+        optional: true,
+        purpose:
+          "Optional compact callout row beneath the narrative copy. Use only for sourced, distinct proof points that add scan value beyond the paragraphs and bullets.",
+        target:
+          "OPTIONAL. Omit when the narrative does not need this row. When used: 2-4 items, 3-8 words each, sourced facts only.",
       },
       {
         example: "Request service",
@@ -2121,6 +2245,48 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  if (component.includes("decisionmatrixcard")) {
+    return [
+      {
+        example: "Maintenance visit",
+        name: "eyebrow",
+        purpose: "Short label above the matrix headline.",
+        target: "10-28 characters.",
+      },
+      {
+        example: "What may be reviewed during the visit?",
+        name: "heading",
+        purpose:
+          "Headline framing the matrix as a scannable review summary, not a guaranteed exhaustive checklist.",
+        target: "32-70 characters.",
+      },
+      {
+        example:
+          "A technician reviews visible and accessible system details, then explains any notable changes or next steps.",
+        name: "intro",
+        purpose:
+          "Short description beside or above the matrix, depending on alignment.",
+        target: "90-170 characters.",
+      },
+      {
+        example: [
+          "System controls - Thermostat operation / General response",
+          "Airflow - Filter condition / General airflow review",
+          "Visible equipment - Outdoor-unit review / Accessible components",
+          "System performance - General operation / Notable changes",
+        ],
+        format:
+          "Exactly 4 lines as Quadrant title - Item / Item. The title is the quadrant heading; the items are short review points separated by forward slashes.",
+        itemCount: 4,
+        name: "quadrants",
+        purpose:
+          "The four quadrants in the matrix card. Use concise review areas that can sit inside a 2x2 ruled card.",
+        target:
+          "Exactly 4 quadrants, 2-3 items each. Quadrant titles 1-3 words. Items 2-5 words, no ending period.",
+      },
+    ];
+  }
+
   // The header-less four-column table. Checked before the three-column branch
   // below, whose component substring it also contains, and specced without a
   // heading or lead: the section renders neither, so asking for them would put
@@ -2290,14 +2456,21 @@ export function getTemplateCopyFieldsForSection(
           "Share what the system is doing now and the office will confirm the right service path, timing, and pricing before any work begins.",
         name: "body",
         purpose:
-          "Supporting paragraph under the headline. The action sits at the bottom of this column, so this can run a little longer than a bar-style CTA.",
+          "Supporting paragraph under the headline and above the two actions.",
         target: "110-200 characters.",
       },
       {
         example: "Start a request",
         name: "primaryAction",
-        purpose: "Conversion button label, pinned to the bottom of the copy column.",
+        purpose: "Primary conversion button label beneath the supporting text.",
         target: "12-24 characters.",
+      },
+      {
+        example: "Explore services",
+        name: "secondaryAction",
+        purpose:
+          "Secondary CTA beside the primary button for visitors who want more context before requesting service.",
+        target: "10-22 characters.",
       },
     ];
   }
@@ -2461,6 +2634,24 @@ export function getTemplateCopyFieldsForSection(
         name: "steps",
         purpose: "Ordered steps, criteria, or comparison points.",
         target: "3-5 items. Titles 16-38 characters. Descriptions 90-180 characters.",
+      },
+      {
+        example: "Request service",
+        name: "primaryAction",
+        optional: true,
+        purpose:
+          "Available primary CTA button label beneath the process introduction. The section renders no primary CTA when this field is omitted or empty.",
+        target:
+          "OPTIONAL. Omit when the process section does not need an action. When used: 12-24 characters.",
+      },
+      {
+        example: "Explore services",
+        name: "secondaryAction",
+        optional: true,
+        purpose:
+          "Available secondary CTA button label beside the primary action. The section renders no secondary CTA when this field is omitted or empty.",
+        target:
+          "OPTIONAL. Omit when no lower-commitment path is needed. When used: 10-22 characters and clearly distinct from the primary action.",
       },
     ];
   }

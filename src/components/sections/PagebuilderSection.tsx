@@ -57,6 +57,8 @@ import { DecisionQuestionTableSectionV3 } from "@/components/sections/DecisionQu
 import { DecisionSplitDecisionSectionV3 } from "@/components/sections/DecisionSplitDecisionSectionV3";
 import { DecisionSplitDecisionLargeSectionV3 } from "@/components/sections/DecisionSplitDecisionLargeSectionV3";
 import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
+import { ProcessStepsBranchingSectionV3 } from "@/components/sections/ProcessStepsBranchingSectionV3";
+import { ProcessStepsStaggeredSectionV3 } from "@/components/sections/ProcessStepsStaggeredSectionV3";
 import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
 import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
@@ -502,7 +504,6 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           compactPriorityCard={Boolean(section.variant?.includes("compact"))}
-          showImages={!section.variant?.includes("text-only")}
         />
       );
     case "ServicesHoverPanelSectionV2":
@@ -722,6 +723,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <DecisionQuestionTableSectionV3
           {...sectionLibraryV3Content.decisionQuestionTable}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "DecisionQuestionTableFourSectionV3":
@@ -729,6 +732,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
         <DecisionQuestionTableFourSectionV3
           {...sectionLibraryV3Content.decisionQuestionTableFour}
           align={getTableCompareAlign(section)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "FAQSectionV3":
@@ -782,6 +787,21 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       );
     case "ProcessStepsSectionV3":
       return <ProcessStepsSectionV3 {...sectionLibraryV3Content.process} />;
+    case "ProcessStepsStaggeredSectionV3":
+      return (
+        <ProcessStepsStaggeredSectionV3
+          {...sectionLibraryV3Content.processStepsStaggered}
+        />
+      );
+    case "ProcessStepsBranchingSectionV3":
+      return (
+        <ProcessStepsBranchingSectionV3
+          {...sectionLibraryV3Content.processStepsBranching}
+          align={section.align === "center" ? "center" : "left"}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "CTASectionV3":
       return <CTASectionV3 {...sectionLibraryV3Content.cta} />;
     case "CTAImageSectionV3":
@@ -1415,6 +1435,18 @@ export function PagebuilderSection() {
       "Process steps",
       6,
     ),
+    ProcessStepsStaggeredSectionV3: previewCatalogEntry(
+      "ProcessStepsStaggeredSectionV3",
+      "Decision",
+      "Process steps staggered",
+      6,
+    ),
+    ProcessStepsBranchingSectionV3: previewCatalogEntry(
+      "ProcessStepsBranchingSectionV3",
+      "Decision",
+      "Process steps branching",
+      6,
+    ),
     DecisionSplitDecisionSectionV3: previewCatalogEntry(
       "DecisionSplitDecisionSectionV3",
       "Decision",
@@ -1515,7 +1547,7 @@ export function PagebuilderSection() {
           {
             component: "ContactSectionV3",
             instruction: "",
-            mode: "Utility",
+            mode: "Action",
             name: "Contact section",
           },
           7,
@@ -1543,7 +1575,7 @@ export function PagebuilderSection() {
     ),
     ContactSectionModalBegin: previewCatalogEntry(
       "ContactSectionModalBegin",
-      "Utility",
+      "Action",
       "Contact section modal begin",
       7,
     ),

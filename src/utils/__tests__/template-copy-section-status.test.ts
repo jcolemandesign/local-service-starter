@@ -169,4 +169,28 @@ describe("buildTemplateCopyContract", () => {
     expect(contract).toContain(`Section contract: ${expectedFingerprint}`);
     expect(contract).toContain("<!-- Section contract: <value> -->");
   });
+
+  it("marks Process Steps CTAs optional and accepts copy that omits them", () => {
+    const live = template("ProcessStepsSectionV3", "Process Steps");
+    live.sections[0].mode = "process";
+    const contract = buildTemplateCopyContract({
+      pageLabel: "Test Page",
+      pageSlug: "test-page",
+      template: live,
+    });
+    const copyWithoutCtas = [
+      "# Bulk Paste Copy",
+      "",
+      "### 01-process-steps",
+      "heading: A clear path from request to resolved",
+      "intro: See what happens from the first call through the completed work.",
+      "steps: Request - Tell us what changed and when it began.",
+    ].join("\n");
+    const statuses = getTemplateCopySectionStatuses(copyWithoutCtas, live);
+
+    expect(contract).toContain("- primaryAction");
+    expect(contract).toContain("- secondaryAction");
+    expect(contract.match(/Requirement: Optional/g)).toHaveLength(2);
+    expect(statuses[0]).toMatchObject({ status: "current" });
+  });
 });

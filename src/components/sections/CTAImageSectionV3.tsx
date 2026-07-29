@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
+import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 
 export type CTAImageAlign = "left" | "right";
@@ -12,20 +12,24 @@ export type CTAImageSectionV3Props = {
   eyebrow: string;
   imageAlt?: string;
   imageSrc?: string;
+  secondaryAction: string;
+  secondaryActionHref?: string;
   title: string;
 };
 
 const columnClasses: Record<
   CTAImageAlign,
-  { content: string; image: string }
+  { content: string; image: string; media: string }
 > = {
   left: {
     content: "col-span-6 col-start-1",
     image: "col-span-7 col-start-8",
+    media: "left-1/2 right-0",
   },
   right: {
     content: "col-span-6 col-start-9",
     image: "col-span-7 col-start-1",
+    media: "left-0 right-1/2",
   },
 };
 
@@ -43,12 +47,14 @@ export function CTAImageSectionV3({
   eyebrow,
   imageAlt,
   imageSrc,
+  secondaryAction,
+  secondaryActionHref = "#services",
   title,
 }: CTAImageSectionV3Props) {
   const columns = columnClasses[align];
 
   return (
-    <section className="bg-bg-page">
+    <section className="relative overflow-hidden bg-bg-page">
       <LayoutGrid
         className="section-min-none items-stretch"
         columns={14}
@@ -58,9 +64,6 @@ export function CTAImageSectionV3({
           alignY="stretch"
           className={cx(columns.content, stackedClasses)}
         >
-          {/* The action is pinned to the bottom of the copy column rather than
-              following the body, so it lines up with the base of the image
-              whatever length the copy runs to. */}
           <div className="flex h-full flex-col">
             <div className="fluid-type-frame">
               <p className="type-label text-service-accent">{eyebrow}</p>
@@ -72,10 +75,17 @@ export function CTAImageSectionV3({
               </p>
             </div>
 
-            <div className="mt-auto pt-body-actions-md">
+            <div className="mt-body-actions-md flex flex-wrap items-center gap-4 max-md:items-stretch">
               <RequestServiceButton className="w-auto shrink-0 max-md:w-full">
                 {action}
               </RequestServiceButton>
+              <Button
+                className="w-auto shrink-0 max-md:w-full"
+                href={secondaryActionHref}
+                variant="secondary"
+              >
+                {secondaryAction}
+              </Button>
             </div>
           </div>
         </LayoutGridItem>
@@ -84,7 +94,12 @@ export function CTAImageSectionV3({
           alignY="stretch"
           className={cx(columns.image, stackedClasses)}
         >
-          <div className="media-min-medium relative h-full overflow-hidden rounded-[var(--radius-surface-token)] bg-bg-muted">
+          <div
+            className={cx(
+              "media-min-medium absolute inset-y-0 !w-auto overflow-hidden bg-bg-muted max-lg:relative max-lg:inset-auto max-lg:-mx-[var(--site-grid-inset-inline)] max-lg:!w-[calc(100%+var(--site-grid-inset-inline)+var(--site-grid-inset-inline))]",
+              columns.media,
+            )}
+          >
             {imageSrc ? (
               <Image
                 alt={imageAlt ?? ""}

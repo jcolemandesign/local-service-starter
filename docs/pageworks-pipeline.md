@@ -9,8 +9,9 @@
 > deleted; the Content Editor now writes directly to staged pages via
 > `PATCH /api/staged-pages`.
 >
-> Read it for intent and vocabulary. For current architecture, sources of truth,
-> and the outstanding phase plan, see `architecture-review-2026-07.md`.
+> Read it for intent and vocabulary. For how the pipeline works today, see
+> `builder-workflow.md`. For current architecture, sources of truth, and the
+> outstanding phase plan, see `architecture-review-2026-07.md`.
 
 Pageworks is the overhaul name for the local service starter workflow. The goal
 is to move from reusable section experiments to baked, lightweight client pages
