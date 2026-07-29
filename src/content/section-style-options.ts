@@ -149,6 +149,43 @@ export function sectionSupportsCardLinkGridAlign(component: string) {
   return cardLinkGridAlignComponents.has(component);
 }
 
+/**
+ * Where the four-column compare table sits on the 14-column grid. The table is
+ * one twelve-column block, so unlike `cardLinkGridAlignOptions` there is nothing
+ * between the cells to redistribute - the two spare columns simply move:
+ *
+ *   left     1-12   two spare columns trailing
+ *   center   2-13   one spare column either side (the default)
+ *   right    3-14   two spare columns leading
+ *
+ * No "justified" value: that axis spreads spare columns *between* cards, and
+ * this section has no gaps between its cells to spread into.
+ *
+ * Shares the copy-neutral `align` field with the card-link axis rather than
+ * `variant`, so nudging the table does not report approved copy as stale.
+ */
+export const tableCompareAlignOptions = [
+  { label: "Left", value: "left" },
+  { label: "Center", value: "center" },
+  { label: "Right", value: "right" },
+] as const;
+
+export type TableCompareAlign =
+  (typeof tableCompareAlignOptions)[number]["value"];
+
+export const tableCompareAlignValues = new Set<string>(
+  tableCompareAlignOptions.map((option) => option.value),
+);
+
+/** Sections that read the table-compare `align` axis. */
+export const tableCompareAlignComponents = new Set<string>([
+  "DecisionQuestionTableFourSectionV3",
+]);
+
+export function sectionSupportsTableCompareAlign(component: string) {
+  return tableCompareAlignComponents.has(component);
+}
+
 export const servicesBentoVariantOptions = [
   { label: "Centered", value: "default" },
   { label: "Split Header", value: "split-header" },

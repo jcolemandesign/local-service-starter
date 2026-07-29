@@ -9,8 +9,8 @@
       "optionName": "Page Layout",
       "recipeId": "compact-utility",
       "recipeName": "Individual Service",
-      "savedAt": "2026-07-29T14:08:08.851Z",
-      "sectionCount": 4,
+      "savedAt": "2026-07-29T15:23:23.908Z",
+      "sectionCount": 5,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
@@ -70,6 +70,20 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "variant": "default",
+          "colorRecipe": "default",
+          "cardFill": "solid"
+        },
+        {
+          "component": "DecisionQuestionTableSectionV3",
+          "id": "compact-utility-DecisionQuestionTableSectionV3-added-1",
+          "included": true,
+          "instruction": "Use a three-question table on a 14-column grid when the visitor should recognize their own situation before booking. Each column is one question with three short, mutually exclusive answers a homeowner could pick without diagnosing anything.",
+          "mode": "Decision",
+          "name": "Table compare 3 col",
+          "originalComponent": "DecisionQuestionTableSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
           "colorRecipe": "default",
           "cardFill": "solid"
         }

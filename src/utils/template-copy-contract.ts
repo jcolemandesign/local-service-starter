@@ -2121,6 +2121,75 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  // The header-less four-column table. Checked before the three-column branch
+  // below, whose component substring it also contains, and specced without a
+  // heading or lead: the section renders neither, so asking for them would put
+  // copy in the contract that has nowhere to land.
+  if (component.includes("decisionquestiontablefour")) {
+    return [
+      {
+        example: [
+          "What changed? - No cooling / Weak airflow / New sound",
+          "When did it start? - Suddenly / Gradually / After a restart",
+          "Is it running? - Running normally / Running partly / Not starting",
+          "Where is it worst? - One room / Upstairs only / The whole home",
+        ],
+        format:
+          "Exactly 4 lines as Question - Option / Option / Option. The question is the column heading; the options are the cells beneath it, separated by forward slashes.",
+        itemCount: 4,
+        name: "columns",
+        purpose:
+          "The four table columns. This section has no heading or lead copy of its own, so the questions carry it - lead into the table from the section above.",
+        target:
+          "Exactly 4 columns, exactly 3 options each. Questions 12-24 characters. Options 2-4 words, mutually exclusive, no ending period.",
+      },
+    ];
+  }
+
+  // Ahead of the shared `mode === "decision"` branch below, which specs a
+  // process sequence. This section is not a sequence: it asks three parallel
+  // questions and lists the answers a homeowner could recognize without
+  // diagnosing anything.
+  if (component.includes("decisionquestiontable")) {
+    return [
+      {
+        example: "Service prep",
+        name: "eyebrow",
+        purpose: "Short label above the table headline.",
+        target: "10-28 characters.",
+      },
+      {
+        example: "Before the visit, three details help",
+        name: "heading",
+        purpose: "Headline framing what the visitor should notice before booking.",
+        target: "30-60 characters.",
+      },
+      {
+        example:
+          "You do not need to diagnose the problem. These details simply give the technician a clearer starting point.",
+        name: "intro",
+        purpose:
+          "Short reassurance under the headline that the visitor is not being asked to diagnose anything.",
+        target: "90-170 characters.",
+      },
+      {
+        example: [
+          "What changed? - No cooling / Weak airflow / New sound",
+          "When did it start? - Suddenly / Gradually / After a restart",
+          "Is it running? - Running normally / Running partly / Not starting",
+        ],
+        format:
+          "Exactly 3 lines as Question - Option / Option / Option. The question is the column heading; the options are the cells beneath it, separated by forward slashes.",
+        itemCount: 3,
+        name: "columns",
+        purpose:
+          "The three table columns. Each column is one question with the short answers a homeowner could pick out without diagnosing the system.",
+        target:
+          "Exactly 3 columns, exactly 3 options each. Questions 12-24 characters. Options 2-4 words, mutually exclusive, no ending period.",
+      },
+    ];
+  }
+
   if (component.includes("decisionsplitlarge")) {
     return [
       {

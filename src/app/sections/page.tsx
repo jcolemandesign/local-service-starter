@@ -26,6 +26,7 @@ import {
   CTAMutedSectionV3,
   CTASectionV3,
   CTAScrollRevealOfferSectionV3,
+  DecisionQuestionTableSectionV3,
   DecisionSplitDecisionSectionV3,
   DecisionSplitDecisionLargeSectionV3,
   DecisionSplitLargeCardsSectionV3,
@@ -81,6 +82,7 @@ import { ContentSplitFullImageSectionLibraryDemo } from "@/components/sections/C
 import { ServiceCalloutSplitPanelSectionLibraryDemo } from "@/components/sections/ServiceCalloutSplitPanelSectionLibraryDemo";
 import { ServiceCalloutRevealGridSectionLibraryDemo } from "@/components/sections/ServiceCalloutRevealGridSectionLibraryDemo";
 import { ThreeCardLinkGridSectionLibraryDemo } from "@/components/sections/ThreeCardLinkGridSectionLibraryDemo";
+import { DecisionQuestionTableFourSectionLibraryDemo } from "@/components/sections/DecisionQuestionTableFourSectionLibraryDemo";
 import {
   sectionLibraryV3Collections,
   sectionLibraryV3Content,
@@ -295,6 +297,16 @@ const sectionElements = {
   "decision-split-decision-large-v3": (
     <DecisionSplitDecisionLargeSectionV3
       {...sectionLibraryV3Content.decisionSplitDecisionLarge}
+    />
+  ),
+  "decision-question-table-v3": (
+    <DecisionQuestionTableSectionV3
+      {...sectionLibraryV3Content.decisionQuestionTable}
+    />
+  ),
+  "decision-question-table-four-v3": (
+    <DecisionQuestionTableFourSectionLibraryDemo
+      {...sectionLibraryV3Content.decisionQuestionTableFour}
     />
   ),
   "services-three-cards-right-v3": (

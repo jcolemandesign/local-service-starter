@@ -121,6 +121,15 @@ export {
   type DecisionSplitDecisionLargeSectionV3Props,
 } from "./DecisionSplitDecisionLargeSectionV3";
 export { DecisionSplitLargeCardsSectionV3 } from "./DecisionSplitLargeCardsSectionV3";
+export {
+  DecisionQuestionTableSectionV3,
+  type DecisionQuestionTableColumn,
+  type DecisionQuestionTableSectionV3Props,
+} from "./DecisionQuestionTableSectionV3";
+export {
+  DecisionQuestionTableFourSectionV3,
+  type DecisionQuestionTableFourSectionV3Props,
+} from "./DecisionQuestionTableFourSectionV3";
 export { FeatureAsymmetricCardsSectionV3 } from "./FeatureAsymmetricCardsSectionV3";
 export { FeatureStackedCardsSectionV3 } from "./FeatureStackedCardsSectionV3";
 export { FeatureOverlapRowsSection } from "./FeatureOverlapRowsSection";

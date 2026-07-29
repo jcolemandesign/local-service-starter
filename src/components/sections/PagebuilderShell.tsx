@@ -41,6 +41,7 @@ import {
   ServicesBentoCardsSectionV2,
   type ServicesBentoCardsVariant,
 } from "@/components/sections/ServicesBentoCardsSectionV2";
+import { DecisionQuestionTableFourSectionV3 } from "@/components/sections/DecisionQuestionTableFourSectionV3";
 import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import { ServiceCalloutRevealGridSectionV3 } from "@/components/sections/ServiceCalloutRevealGridSectionV3";
@@ -111,8 +112,11 @@ import {
   sectionSupportsCardLinkGridAlign,
   sectionSupportsCardLinks,
   sectionSupportsCardStyle,
+  sectionSupportsTableCompareAlign,
   servicesBentoVariantOptions,
   servicesBentoVariantValues,
+  tableCompareAlignOptions,
+  tableCompareAlignValues,
   splitImageRatioOptions as fixedRatioSplitRatioOptions,
   splitImageVariantOptions as fixedRatioSplitVariantOptions,
   splitImageVariantOptions as splitContentImageVariantOptions,
@@ -120,6 +124,7 @@ import {
   type CalloutSplitPanelVariant,
   type CardLinkGridAlign,
   type ServicesBentoVariant,
+  type TableCompareAlign,
   type SplitImageRatio,
   type SplitImageVariant,
 } from "@/content/section-style-options";
@@ -818,6 +823,17 @@ function getCardLinkGridAlign(section: WorkingSection): CardLinkGridAlign {
 
 function getCardLinkGridAlignLabel(align: string | undefined) {
   return cardLinkGridAlignOptions.find((option) => option.value === align)
+    ?.label;
+}
+
+function getTableCompareAlign(section: WorkingSection): TableCompareAlign {
+  return tableCompareAlignValues.has(section.align ?? "")
+    ? (section.align as TableCompareAlign)
+    : "center";
+}
+
+function getTableCompareAlignLabel(align: string | undefined) {
+  return tableCompareAlignOptions.find((option) => option.value === align)
     ?.label;
 }
 
@@ -1561,6 +1577,22 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     name: "Split decision large",
   },
   {
+    component: "DecisionQuestionTableFourSectionV3",
+    instruction:
+      "Use a four-question table on a 14-column grid when the questions carry the section on their own. There is no heading or lead copy here - write only the four column questions and their answers, and lead into it from the section above.",
+    layoutGrid: 14,
+    mode: "Decision",
+    name: "Table compare 4 col",
+  },
+  {
+    component: "DecisionQuestionTableSectionV3",
+    instruction:
+      "Use a three-question table on a 14-column grid when the visitor should recognize their own situation before booking. Each column is one question with three short, mutually exclusive answers a homeowner could pick without diagnosing anything.",
+    layoutGrid: 14,
+    mode: "Decision",
+    name: "Table compare 3 col",
+  },
+  {
     component: "ProcessStepsSectionV3",
     instruction:
       "Use current process steps when the page needs a clearer, more styled decision sequence.",
@@ -1910,6 +1942,10 @@ function buildPageInstruction({
    Row alignment: ${
      getCardLinkGridAlignLabel(getCardLinkGridAlign(section)) ?? "Center"
    } (${getCardLinkGridAlign(section)})`
+       : sectionSupportsTableCompareAlign(section.component)
+         ? `Table alignment: ${
+             getTableCompareAlignLabel(getTableCompareAlign(section)) ?? "Center"
+           } (${getTableCompareAlign(section)})`
       : section.component === contentStickyCardStreamComponent
         ? `Content image: ${
             getStickyCardStreamShowImage(section) ? "shown" : "hidden"
@@ -3002,6 +3038,18 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateTableCompareAlign(sectionId: string, align: TableCompareAlign) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId &&
+        sectionSupportsTableCompareAlign(section.component)
+          ? { ...section, align }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateCalloutRevealGridVariant(
     sectionId: string,
     variant: CalloutRevealGridVariant,
@@ -3529,6 +3577,11 @@ export function PagebuilderShell({
             cardFill={getSectionCardFill(section)}
             cardLinks={getCardLinks(section)}
             showImages={getCardLinkGridVariant(section) === "with-images"}
+          />
+        ) : sectionSupportsTableCompareAlign(section.component) ? (
+          <DecisionQuestionTableFourSectionV3
+            {...sectionLibraryV3Content.decisionQuestionTableFour}
+            align={getTableCompareAlign(section)}
           />
         ) : isServiceCalloutRevealGridSection(section) ? (
           <ServiceCalloutRevealGridSectionV3
@@ -5243,6 +5296,49 @@ export function PagebuilderShell({
                               <p className="type-caption text-current/60">
                                 Three four-column cards leave two spare columns.
                                 This decides where they fall.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
+                          {sectionSupportsTableCompareAlign(
+                            section.component,
+                          ) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Table Alignment
+                              </legend>
+                              <div className="grid grid-cols-3 gap-2">
+                                {tableCompareAlignOptions.map((option) => {
+                                  const optionIsActive =
+                                    getTableCompareAlign(section) ===
+                                    option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateTableCompareAlign(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                The twelve-column table leaves two spare
+                                columns. This decides where they fall.
                               </p>
                             </fieldset>
                           ) : null}

@@ -54,6 +54,8 @@ import {
 } from "@/components/sections/FeatureProcessTestimonialsSectionsV3";
 import { FeatureAsymmetricCardsSectionV3 } from "@/components/sections/FeatureAsymmetricCardsSectionV3";
 import { FeatureStackedCardsSectionV3 } from "@/components/sections/FeatureStackedCardsSectionV3";
+import { DecisionQuestionTableFourSectionV3 } from "@/components/sections/DecisionQuestionTableFourSectionV3";
+import { DecisionQuestionTableSectionV3 } from "@/components/sections/DecisionQuestionTableSectionV3";
 import { DecisionSplitDecisionSectionV3 } from "@/components/sections/DecisionSplitDecisionSectionV3";
 import {
   DecisionSplitDecisionLargeSectionV3,
@@ -147,9 +149,11 @@ import {
   splitImageRatioValues,
   splitImageVariantValues,
   styleFieldPrefix,
+  tableCompareAlignValues,
   type CalloutRevealGridVariant,
   type CalloutSplitPanelVariant,
   type CardLinkGridAlign,
+  type TableCompareAlign,
 } from "@/content/section-style-options";
 import type { StagedPageField } from "@/utils/staged-pages";
 
@@ -761,6 +765,17 @@ export function renderPageTemplateSection(
       return <FeatureStackedCardsSectionV3 {...featureAsymmetricProps(fieldSection)} />;
     case "DecisionSplitDecisionSectionV3":
       return <DecisionSplitDecisionSectionV3 {...splitDecisionProps(fieldSection)} />;
+    case "DecisionQuestionTableSectionV3":
+      return (
+        <DecisionQuestionTableSectionV3 {...questionTableProps(fieldSection)} />
+      );
+    case "DecisionQuestionTableFourSectionV3":
+      return (
+        <DecisionQuestionTableFourSectionV3
+          {...questionTableFourProps(fieldSection)}
+          align={getTableCompareAlign(section)}
+        />
+      );
     case "DecisionSplitLargeCardsSectionV3":
       return (
         <DecisionSplitLargeCardsSectionV3
@@ -1784,6 +1799,70 @@ function splitDecisionProps(section: FieldSection) {
       sectionLibraryV3Content.decisionSplitDecision.title,
     ),
   };
+}
+
+/**
+ * Columns arrive either as repeated records (`columns.0.title` /
+ * `columns.0.options`) from the content editor, or as one pasted copy field with
+ * a line per column. Both resolve to the same shape; a column missing either
+ * half is dropped rather than rendered as an empty cell.
+ */
+function questionTableProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.decisionQuestionTable;
+  const columns = resolveQuestionColumns(section);
+
+  return {
+    ...fallback,
+    body: getBody(section, fallback.body),
+    columns: columns.length > 0 ? columns : fallback.columns,
+    eyebrow: getValue(section, "eyebrow", fallback.eyebrow),
+    title: getTitle(section, fallback.title),
+  };
+}
+
+/**
+ * Same column parsing as the three-column table, against its own demo content
+ * and capped at four. No heading or lead copy: this section has none, so a
+ * `heading` written into its fields would have nowhere to render.
+ */
+function questionTableFourProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.decisionQuestionTableFour;
+  const columns = resolveQuestionColumns(section);
+
+  return {
+    columns: columns.length > 0 ? columns : fallback.columns,
+  };
+}
+
+function resolveQuestionColumns(section: FieldSection) {
+  const records = getRepeatedRecords(section, ["columns"]);
+
+  return (
+    records.length > 0
+      ? records.map((record) => ({
+          options: splitQuestionOptions(
+            record.options ?? record.items ?? record.body ?? "",
+          ),
+          title: (record.title ?? record.heading ?? "").trim(),
+        }))
+      : splitItems(getValue(section, "columns", "")).map(parseQuestionColumn)
+  ).filter((column) => column.title.length > 0 && column.options.length > 0);
+}
+
+function parseQuestionColumn(value: string) {
+  const [question, ...optionParts] = value.split(/\s+[—-]\s+/);
+
+  return {
+    options: splitQuestionOptions(optionParts.join(" - ")),
+    title: question.trim(),
+  };
+}
+
+function splitQuestionOptions(value: string) {
+  return value
+    .split(/\r?\n|\//)
+    .map((option) => option.trim())
+    .filter(Boolean);
 }
 
 function splitLargeCardsProps(section: FieldSection) {
@@ -2988,6 +3067,12 @@ function getContentSplitFullImageVariant(section: PageTemplatePreviewSection) {
 function getCardLinkGridAlign(section: PageTemplatePreviewSection) {
   return cardLinkGridAlignValues.has(section.align ?? "")
     ? (section.align as CardLinkGridAlign)
+    : undefined;
+}
+
+function getTableCompareAlign(section: PageTemplatePreviewSection) {
+  return tableCompareAlignValues.has(section.align ?? "")
+    ? (section.align as TableCompareAlign)
     : undefined;
 }
 

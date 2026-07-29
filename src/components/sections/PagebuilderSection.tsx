@@ -52,6 +52,8 @@ import {
 } from "@/components/sections/FeatureProcessTestimonialsSectionsV3";
 import { FeatureAsymmetricCardsSectionV3 } from "@/components/sections/FeatureAsymmetricCardsSectionV3";
 import { FeatureStackedCardsSectionV3 } from "@/components/sections/FeatureStackedCardsSectionV3";
+import { DecisionQuestionTableFourSectionV3 } from "@/components/sections/DecisionQuestionTableFourSectionV3";
+import { DecisionQuestionTableSectionV3 } from "@/components/sections/DecisionQuestionTableSectionV3";
 import { DecisionSplitDecisionSectionV3 } from "@/components/sections/DecisionSplitDecisionSectionV3";
 import { DecisionSplitDecisionLargeSectionV3 } from "@/components/sections/DecisionSplitDecisionLargeSectionV3";
 import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
@@ -132,9 +134,11 @@ import {
   calloutRevealGridVariantValues,
   calloutSplitPanelVariantValues,
   cardLinkGridAlignValues,
+  tableCompareAlignValues,
   type CalloutRevealGridVariant,
   type CalloutSplitPanelVariant,
   type CardLinkGridAlign,
+  type TableCompareAlign,
 } from "@/content/section-style-options";
 import type { PagebuilderRecipeSection } from "@/content/pagebuilder";
 
@@ -304,6 +308,12 @@ function getContentSplitFullImageVariant(section: PagebuilderRecipeSection) {
 function getCardLinkGridAlign(section: PagebuilderRecipeSection) {
   return cardLinkGridAlignValues.has(section.align ?? "")
     ? (section.align as CardLinkGridAlign)
+    : undefined;
+}
+
+function getTableCompareAlign(section: PagebuilderRecipeSection) {
+  return tableCompareAlignValues.has(section.align ?? "")
+    ? (section.align as TableCompareAlign)
     : undefined;
 }
 
@@ -706,6 +716,19 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <DecisionSplitDecisionLargeSectionV3
           {...sectionLibraryV3Content.decisionSplitDecisionLarge}
+        />
+      );
+    case "DecisionQuestionTableSectionV3":
+      return (
+        <DecisionQuestionTableSectionV3
+          {...sectionLibraryV3Content.decisionQuestionTable}
+        />
+      );
+    case "DecisionQuestionTableFourSectionV3":
+      return (
+        <DecisionQuestionTableFourSectionV3
+          {...sectionLibraryV3Content.decisionQuestionTableFour}
+          align={getTableCompareAlign(section)}
         />
       );
     case "FAQSectionV3":
@@ -1408,6 +1431,18 @@ export function PagebuilderSection() {
       "DecisionSplitDecisionLargeSectionV3",
       "Decision",
       "Split decision large",
+      6,
+    ),
+    DecisionQuestionTableSectionV3: previewCatalogEntry(
+      "DecisionQuestionTableSectionV3",
+      "Decision",
+      "Table compare 3 col",
+      6,
+    ),
+    DecisionQuestionTableFourSectionV3: previewCatalogEntry(
+      "DecisionQuestionTableFourSectionV3",
+      "Decision",
+      "Table compare 4 col",
       6,
     ),
     ProcessImageChecklistSectionV3: (

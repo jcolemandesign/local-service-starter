@@ -1076,6 +1076,45 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
+  decisionQuestionTable: {
+    eyebrow: "Service prep",
+    title: "Before the visit, three details help",
+    body: "You do not need to diagnose the problem. These details simply give the technician a clearer starting point.",
+    columns: [
+      {
+        title: "What changed?",
+        options: ["No cooling", "Weak airflow", "New sound"],
+      },
+      {
+        title: "When did it start?",
+        options: ["Suddenly", "Gradually", "After a restart"],
+      },
+      {
+        title: "Is it running?",
+        options: ["Running normally", "Running partly", "Not starting"],
+      },
+    ],
+  },
+  decisionQuestionTableFour: {
+    columns: [
+      {
+        title: "What changed?",
+        options: ["No cooling", "Weak airflow", "New sound"],
+      },
+      {
+        title: "When did it start?",
+        options: ["Suddenly", "Gradually", "After a restart"],
+      },
+      {
+        title: "Is it running?",
+        options: ["Running normally", "Running partly", "Not starting"],
+      },
+      {
+        title: "Where is it worst?",
+        options: ["One room", "Upstairs only", "The whole home"],
+      },
+    ],
+  },
   process: {
     eyebrow: "Process",
     title: "A simple path from request to resolved.",
@@ -1868,6 +1907,14 @@ export const sectionLibraryV3Collections = [
         label: "Split decision large",
         component: "decision-split-decision-large-v3",
       },
+      {
+        label: "Table compare 3 col",
+        component: "decision-question-table-v3",
+      },
+      {
+        label: "Table compare 4 col",
+        component: "decision-question-table-four-v3",
+      },
       { label: "Process steps", component: "process-steps-v3" },
       {
         label: "Process image checklist",
@@ -2011,6 +2058,8 @@ export const sectionLibraryV3ComponentBySlug = {
   "decision-split-large-cards-v3": "DecisionSplitLargeCardsSectionV3",
   "decision-split-decision-large-v3":
     "DecisionSplitDecisionLargeSectionV3",
+  "decision-question-table-v3": "DecisionQuestionTableSectionV3",
+  "decision-question-table-four-v3": "DecisionQuestionTableFourSectionV3",
   "process-steps-v3": "ProcessStepsSectionV3",
   "process-image-checklist-v3": "ProcessImageChecklistSectionV3",
   "faq-v3": "FAQSectionV3",
