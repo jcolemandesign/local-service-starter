@@ -16,7 +16,7 @@ export default function ClientIntakePage() {
           <div className="mx-auto grid max-w-5xl layout-gap-lrg">
             <div className="fluid-type-frame max-w-3xl">
               <p className="type-label text-service-accent">Client intake</p>
-              <h1 className="type-heading-xl mt-eyebrow-heading-md text-service-ink">
+              <h1 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
                 Choose the closest business type.
               </h1>
               <p className="type-text-lg mt-heading-body-md text-service-muted">

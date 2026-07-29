@@ -3662,7 +3662,11 @@ export function PagebuilderShell({
           ) {
             return (
               <div
-                className="pagebuilder-nav-hero-pair relative pt-[var(--section-space-sml)]"
+                // The nav is positioned absolutely against this wrapper, so the
+                // wrapper's top padding is the band it sits in. Reserving
+                // --section-space-sml here reserved 4rem for a taller nav,
+                // which is why it overhung the hero.
+                className="pagebuilder-nav-hero-pair relative pt-[var(--nav-height)]"
                 key={`${section.id}-${nextSection.id}`}
               >
                 {renderSectionFrame(section, {

@@ -73,6 +73,17 @@ export function HeroCompactServiceSectionV3({
 }: HeroCompactServiceSectionV3Props) {
   const HeadingTag = `h${headingLevel}` as const;
   const columns = alignColumnClassName[align];
+  /**
+   * Left puts the CTA panel in the first columns, ahead of the copy, where it
+   * reads as part of the opening statement rather than as a trailing aside. It
+   * gets a composed block - copy and actions together, centred as one, buttons
+   * at their own width.
+   *
+   * Centre and right keep the original arrangement: the panel sits beside or
+   * after the copy, where anchoring the actions to the bottom edge lines them
+   * up with the image and the copy block next to it.
+   */
+  const isLeftAligned = align === "left";
 
   return (
     <section className="bg-bg-page">
@@ -108,23 +119,42 @@ export function HeroCompactServiceSectionV3({
         </LayoutGridItem>
 
         <LayoutGridItem
-          alignY="stretch"
+          // Left sizes the panel to its content and lets the row centre it.
+          // Stretching is what made it full height, and h-full below is what
+          // gave the flex-1 spare space to push the actions into.
+          alignY={isLeftAligned ? "middle" : "stretch"}
           className={cx(columns.cta, gridItemClassName)}
         >
           <article
             className={cx(
-              "flex h-full flex-col rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-8 text-service-ink shadow-service max-md:p-6",
+              "flex flex-col rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-8 text-service-ink shadow-service max-md:p-6",
+              isLeftAligned ? undefined : "h-full",
               cardFill === "none" ? "!bg-transparent !shadow-none" : undefined,
               cardBorder === "off" ? "!border-transparent" : undefined,
             )}
           >
-            <div className="flex flex-1 flex-col justify-center">
+            <div
+              className={cx(
+                "flex flex-col",
+                isLeftAligned ? undefined : "flex-1 justify-center",
+              )}
+            >
               <h3 className="type-heading-sm text-service-accent">{ctaTitle}</h3>
               <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
                 {ctaBody}
               </p>
             </div>
-            <div className="flex flex-col items-stretch gap-3 pt-8">
+            <div
+              className={cx(
+                "flex gap-3",
+                isLeftAligned
+                  ? // Wrapping row rather than a stretched column, so each
+                    // button is only as wide as its label and they drop to
+                    // separate lines only when the panel is too narrow.
+                    "mt-body-actions-sm flex-wrap items-center"
+                  : "flex-col items-stretch pt-8",
+              )}
+            >
               <RequestServiceButton className="!text-sm !font-semibold">
                 {primaryAction}
               </RequestServiceButton>

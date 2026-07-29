@@ -236,26 +236,37 @@ export function ProjectCaseStudyGallerySectionV3({
         <LayoutGridItem
           className={`col-span-14 col-start-1 row-start-1 max-lg:col-span-10 max-lg:col-start-1 max-lg:row-auto max-md:col-span-6 max-sm:col-span-2`}
         >
-          {/* Spans the full fourteen. The image field keeps its eight columns
-              and the copy side takes the remaining six, so the extra column
-              goes to the card rather than sitting empty at one edge. */}
+          {/* Its own fourteen columns with the same gap as the page grid, and
+              it spans all fourteen of them - so these columns sit exactly on
+              the page's. The card takes 1-6 and the image 7-14, both by real
+              column spans, and the image closes the one gutter between them
+              with a negative margin so the two still read as one object. */}
           <div
-            className={`radius-medium grid overflow-hidden max-lg:grid-cols-1 ${
-              isImageRight ? "grid-cols-[6fr_8fr]" : "grid-cols-[8fr_6fr]"
-            } ${cardFill === "none" ? "" : "shadow-service"} ${
-              cardBorder === "off" ? "" : `border ${cardBorderClass}`
-            }`}
+            className={`radius-medium site-grid-gap grid grid-cols-14 overflow-hidden max-lg:grid-cols-1 ${
+              cardFill === "none" ? "" : "shadow-service"
+            } ${cardBorder === "off" ? "" : `border ${cardBorderClass}`}`}
           >
             {/* Recessed field behind the print. bg-bg-muted is the system's
                 existing step down from a surface, so the panel beside it reads
                 as the nearer plane without inventing a colour. */}
             <div
-              className={`relative grid aspect-[5/4] place-items-center p-[clamp(1.25rem,2.5vw,2.75rem)] max-lg:aspect-[16/10] ${
-                isImageRight ? "order-2" : "order-1"
+              className={`relative col-span-8 grid place-items-center p-[clamp(1.25rem,2.5vw,2.75rem)] max-lg:col-span-1 max-lg:col-start-1 max-lg:mx-0 ${
+                isImageRight
+                  ? "order-2 col-start-7 -ml-[var(--site-grid-gap)]"
+                  : "order-1 col-start-1 -mr-[var(--site-grid-gap)]"
               } max-lg:order-1 ${
                 cardFill === "none" ? "bg-transparent" : imageBackdropClass
               }`}
             >
+              {/* The 5/4 lives on this inner box, not the grid item above it.
+                  The wrapper stretches its items, and stretching sets a
+                  definite height, which makes aspect-ratio a no-op - so the
+                  field was taking its height from whatever the current photo
+                  happened to be. A 2:1 image left it short enough that the card
+                  became the taller side and drove the whole assembly, and the
+                  height moved every time the slide changed. Held here, the
+                  field measures the same on every slide whatever the ratio. */}
+              <div className="grid aspect-[5/4] w-full place-items-center max-lg:aspect-[16/10]">
               <AnimatePresence initial={false} mode="wait">
                 {/* Sized to the picture's own ratio, so the padding below is a
                     stroke of even width rather than a mat. The grey field
@@ -290,10 +301,13 @@ export function ProjectCaseStudyGallerySectionV3({
                   </div>
                 </motion.figure>
               </AnimatePresence>
+              </div>
             </div>
 
             <div
-              className={`grid ${isImageRight ? "order-1" : "order-2"} max-lg:order-2`}
+              className={`col-span-6 grid max-lg:col-span-1 max-lg:col-start-1 ${
+                isImageRight ? "order-1 col-start-1" : "order-2 col-start-9"
+              } max-lg:order-2`}
             >
               <AnimatePresence initial={false} mode="wait">
                 <motion.article
@@ -339,14 +353,20 @@ export function ProjectCaseStudyGallerySectionV3({
 
                 {activeSlide.testimonial.quote &&
                 activeSlide.testimonial.attribution ? (
-                  <blockquote className="mt-auto border-l-2 border-service-accent pl-4 pt-7">
-                    <p className={`type-text-sm ${cardTextClass}`}>
-                      “{activeSlide.testimonial.quote}”
-                    </p>
-                    <footer className={`type-caption mt-3 ${cardMutedTextClass}`}>
-                      {activeSlide.testimonial.attribution}
-                    </footer>
-                  </blockquote>
+                  // The gap above the quote belongs to this wrapper, not to the
+                  // blockquote. As padding inside the bordered element it was
+                  // part of what the accent rule spanned, so the stroke started
+                  // 28px above the first line and ran up into the block above.
+                  <div className="mt-auto pt-7">
+                    <blockquote className="border-l-2 border-service-accent pl-4">
+                      <p className={`type-text-sm ${cardTextClass}`}>
+                        “{activeSlide.testimonial.quote}”
+                      </p>
+                      <footer className={`type-caption mt-3 ${cardMutedTextClass}`}>
+                        {activeSlide.testimonial.attribution}
+                      </footer>
+                    </blockquote>
+                  </div>
                 ) : null}
                 </motion.article>
               </AnimatePresence>

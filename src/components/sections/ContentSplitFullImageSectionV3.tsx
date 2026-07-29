@@ -165,13 +165,27 @@ const colorRecipeClassName: Record<
   },
 };
 
-// Reaches past the grid frame's inline inset so the crop runs to the viewport
-// edge. Deliberately not past the block inset the way the hero does: mid-page
-// that would bleed into the neighbouring sections' spacing and break the page's
-// vertical rhythm, which is the whole reason this section exists.
+// Reaches past the grid frame's inline inset so the crop runs to the page edge.
 const bleedPanelStyle: CSSProperties = {
   width: "calc(100% + var(--site-grid-inset-inline))",
 };
+
+/**
+ * The grid carries no vertical padding; the copy column carries it instead.
+ *
+ * That is what lets the crop run the full height of the section. Pulling the
+ * image back out through the grid's padding with a negative margin does not
+ * work: the margin also shrinks what the item contributes to row sizing, so the
+ * row and the section disagree about how tall they are and the spacing doubles
+ * up at the bottom. With no padding on the grid there is nothing to escape -
+ * the image simply stretches to the row, and the row is the section.
+ *
+ * `section-space-med` rather than a `py-` utility so pagebuilder's reduced
+ * padding still reaches it: those overrides match `.section-space-med` by
+ * class name.
+ */
+const gridBlockPaddingReset = "!py-0";
+const copyBlockPadding = "section-space-med";
 
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -237,17 +251,21 @@ export function ContentSplitFullImageSectionV3({
 
   return (
     <section className={cx("relative", colors.section)}>
+      {/* No section floor, matching ContentSplitFixedImageSectionV3. The height
+          comes from the copy or the image panel's own --media-min-medium floor,
+          whichever is taller - which is what keeps this reading as a beat in
+          the page rather than a hero. */}
       <LayoutGrid
-        className="section-min-medium items-center"
+        className={cx("section-min-none items-stretch", gridBlockPaddingReset)}
         columns={14}
-        padding="med"
+        padding="none"
       >
         <LayoutGridItem
           alignX="left"
           alignY="middle"
           className={cx("row-start-1", colors.ink, config.textClassName)}
         >
-          <div className="fluid-type-frame w-full">
+          <div className={cx("fluid-type-frame w-full", copyBlockPadding)}>
             <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
             <HeadingTag
               className={cx(

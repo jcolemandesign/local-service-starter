@@ -112,9 +112,14 @@ export function WorkspaceNav({
               <WorkspaceNavIcon icon="intake" />
             </Link>
           </div>
-          <h1 className="strategy-toolbar-title type-caption">
+          {/* Not an h1: the page below carries its own heading, and this is a
+              caption-sized orientation label that stays pinned while scrolling.
+              Two h1s would be the wrong call for the sake of a toolbar string.
+              WorkspaceNav is only used by the strategy workspace, so nothing
+              else loses a heading by this. */}
+          <p className="strategy-toolbar-title type-caption">
             {pageTitle} | {formatWorkspaceClientName(clientSlug)}
-          </h1>
+          </p>
         </div>
 
         <div className="strategy-toolbar-tools">

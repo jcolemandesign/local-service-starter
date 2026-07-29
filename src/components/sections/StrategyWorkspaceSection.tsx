@@ -909,6 +909,16 @@ export function StrategyWorkspaceSection({
       />
       <div className="strategy-toolbar-content w-full px-[var(--container-gutter)]">
         <div className="grid layout-gap-lrg">
+          {/* The page's heading, at the same step as the Prompt Library's.
+              Outside the assembly-overview conditional below so it is there
+              whether or not a snapshot has been detected yet.
+
+              text-text-main rather than the service ink the Prompt Library
+              uses: this screen is builder chrome, and the heading beside it in
+              the overview block is already on that token. */}
+          <h1 className="type-heading-xl fluid-type-frame text-text-main">
+            Strategy Workspace
+          </h1>
           {showAssemblyOverview ? (
             <div>
               <div className="grid gap-5">

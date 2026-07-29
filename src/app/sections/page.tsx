@@ -468,7 +468,9 @@ export default function SectionsV3Page() {
         >
           <Container className="grid gap-4">
             <p className="token-chrome-muted type-label">Internal Library</p>
-            <h1 className="type-display-lg">Section Library</h1>
+            <h1 className="type-heading-xl mt-eyebrow-heading-lg">
+              Section Library
+            </h1>
             <p className="token-chrome-muted type-text-xl measure-copy wrap-pretty">
               {sectionTemplateCount} reusable section templates grouped by
               pagebuilder mode.

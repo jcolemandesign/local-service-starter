@@ -95,7 +95,7 @@ export default async function StagedPageDebug({
 
         <SevenColumnGridItem className="col-start-2 col-span-4 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <p className="type-label text-service-accent">Staged Debug</p>
-          <h1 className="type-display-lg mt-eyebrow-display text-service-ink">
+          <h1 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
             {page.pageLabel}
           </h1>
           <p className="type-text-xl wrap-pretty mt-display-body text-service-muted">
