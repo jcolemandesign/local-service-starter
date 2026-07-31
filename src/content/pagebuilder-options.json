@@ -9,8 +9,8 @@
       "optionName": "Page Layout",
       "recipeId": "compact-utility",
       "recipeName": "Individual Service",
-      "savedAt": "2026-07-31T01:02:29.033Z",
-      "sectionCount": 7,
+      "savedAt": "2026-07-31T01:24:58.601Z",
+      "sectionCount": 9,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
@@ -372,6 +372,37 @@
           "cardBorder": "off",
           "cardFill": "none",
           "align": "center"
+        },
+        {
+          "component": "ProcessImageChecklistSectionV3",
+          "id": "compact-utility-ProcessImageChecklistSectionV3-added-1",
+          "included": true,
+          "instruction": "Turn process uncertainty into clear expectations before contact.",
+          "mode": "Decision",
+          "name": "Process image checklist",
+          "originalComponent": "ProcessImageChecklistSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "colorRecipe": "default",
+          "cardBorder": "on",
+          "cardFill": "solid"
+        },
+        {
+          "component": "ContentSplitFullImageSectionV3",
+          "id": "compact-utility-ContentSplitFullImageSectionV3-added-2",
+          "included": true,
+          "instruction": "Use a content-height split layout when the section needs one large cropped image running off the page edge without hero-scale height.",
+          "mode": "Narrative",
+          "name": "Split content with full image",
+          "originalComponent": "ContentSplitFullImageSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "variant": "text-4-image-3-right",
+          "colorRecipe": "accent",
+          "cardBorder": "on",
+          "cardFill": "solid"
         }
       ]
     },

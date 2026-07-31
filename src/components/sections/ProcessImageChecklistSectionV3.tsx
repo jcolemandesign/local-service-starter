@@ -18,21 +18,26 @@ type ProcessImageChecklistSectionV3Props = {
 /**
  * Sticky media column.
  *
- * The frame imposes no height of its own - it is the full width of its columns
+ * The frame imposes no height of its own - it is as wide as its columns allow
  * and as tall as whatever it holds - so a real photo of any ratio sits here
  * uncropped. The 2:3 belongs to the placeholder alone, which needs a shape to
  * stand in at, and goes with it when an image replaces it.
  *
- * `h-fit` matters: the grid item stretches to the row, and a sticky child that
- * stretches with it has nothing to travel through. Sticky only holds while the
- * columns are side by side, so it is dropped at `max-lg` where they stack.
+ * The width cap is what keeps the stick working. Height follows width through
+ * the ratio, so bounding the width at `maxHeight x 2/3` bounds the height
+ * without the frame fighting its own aspect-ratio. Above roughly 1100px of
+ * column the frame stops widening rather than growing past the viewport.
+ *
+ * `h-fit` matters too: the grid item stretches to the row, and a sticky child
+ * that stretches with it has nothing to travel through. Sticky only holds
+ * while the columns are side by side, so it is dropped at `max-lg`.
  */
 function ProcessImage({ label }: { label: string }) {
   return (
-    <div className="sticky top-[var(--site-grid-inset-block)] h-fit w-full max-lg:static">
+    <div className="sticky top-[var(--sticky-media-inset)] h-fit w-full max-lg:static">
       <div
         aria-label={`${label} image placeholder`}
-        className="radius-medium relative aspect-[2/3] w-full overflow-hidden bg-service-border"
+        className="radius-medium relative aspect-[2/3] w-full max-w-[calc(var(--sticky-media-max-h)*2/3)] overflow-hidden bg-service-border"
       >
         <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.28),rgb(23_33_29_/_0.06)),linear-gradient(45deg,rgb(255_255_255_/_0.22)_0_1px,transparent_1px_18px)]" />
         <div className="absolute inset-0 bg-service-accent/10" />

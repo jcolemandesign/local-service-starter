@@ -58,6 +58,16 @@
     var(--section-min-screen) - var(--section-sliver-gap) -
       (2 * var(--site-grid-inset-block)) - (2 * var(--section-space-vsml))
   );
+  /* A sticky column parks this far below the top edge. Deliberately smaller
+     than --site-grid-inset-block, which the non-sticky columns use: that one
+     opens to 7rem on a wide screen, and a stuck element holding that much air
+     above it reads as detached from the page rather than pinned to it. */
+  --sticky-media-inset: var(--section-space-vsml);
+  /* Tallest a sticky media frame may be and still do its job: one screen, less
+     the offset it parks at and the same again beneath it. Taller than the
+     viewport and the frame can never be scrolled past its own bottom edge, so
+     it stops travelling and the stick stops meaning anything. */
+  --sticky-media-max-h: calc(100svh - (2 * var(--sticky-media-inset)));
   --section-min-story: 140svh;
   --section-min-sticky: 180svh;
   --card-min-short: 14rem;
@@ -1253,6 +1263,30 @@ body {
     --live-text-main: var(--live-accent-ink);
     --live-text-muted: var(--live-accent-muted-text);
     --live-text-accent: var(--live-accent-ink);
+  }
+
+  /* Bullet markers are drawn in the accent colour, which on an accent field is
+   * the same ink as the ground they sit on - they disappear. Re-point them at
+   * the recipe's own ink, which is contrast-picked against that field, so a
+   * dark accent gets light bullets and a light accent dark ones.
+   *
+   * Matched on the marker's own shape rather than by overriding
+   * --live-service-accent for the section: the accent token still has to paint
+   * the section background a few rules above, and the Narrative rule below
+   * reads it off the section element itself. `:not(section)` guards the
+   * section roots that legitimately carry bg-service-accent - the split heroes
+   * paint their whole field with it. */
+  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"]:not([data-pagebuilder-section-component="ServicesBentoCardsSectionV2"]):not([data-pagebuilder-section-component="ContentSplitHeadlineImageSectionV2"]):not([data-pagebuilder-section-component="HeroSplitFullHeightSectionV3"]):not([data-pagebuilder-section-component="HeroCompactSectionV3"]):not([data-pagebuilder-section-component="HeroSplitFixedImageSectionV3"])
+    .rounded-full.bg-service-accent:not(section) {
+    background-color: var(--live-accent-ink) !important;
+  }
+
+  /* Same defect in stroke form - marker icons drawn in the accent colour.
+   * Scoped to svg so it reaches the icons without touching accent eyebrows,
+   * which the recipe-aware sections already re-colour themselves. */
+  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"]:not([data-pagebuilder-section-component="ServicesBentoCardsSectionV2"]):not([data-pagebuilder-section-component="ContentSplitHeadlineImageSectionV2"]):not([data-pagebuilder-section-component="HeroSplitFullHeightSectionV3"]):not([data-pagebuilder-section-component="HeroCompactSectionV3"]):not([data-pagebuilder-section-component="HeroSplitFixedImageSectionV3"])
+    svg.text-service-accent {
+    color: var(--live-accent-ink) !important;
   }
 
   .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"]:is([data-pagebuilder-section-component="TrustMarqueeSection"], [data-pagebuilder-section-component="TrustMarqueeSectionV3"])
