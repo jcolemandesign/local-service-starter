@@ -1251,9 +1251,9 @@
       "promotedAt": "2026-07-29T19:50:36.110Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-29T20:14:44.768Z",
-        "id": "north-star-hvac-v21",
-        "version": 21
+        "createdAt": "2026-07-30T21:50:55.105Z",
+        "id": "north-star-hvac-v22",
+        "version": 22
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -2049,6 +2049,18 @@
           "value": ""
         },
         {
+          "id": "ac-repair.08-split-decision-large.style.cardFill",
+          "kind": "meta",
+          "path": "08-split-decision-large.style.cardFill",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.08-split-decision-large.style.cardBorder",
+          "kind": "meta",
+          "path": "08-split-decision-large.style.cardBorder",
+          "value": ""
+        },
+        {
           "id": "ac-repair.09-cta-with-image.contentDirection",
           "kind": "meta",
           "path": "09-cta-with-image.contentDirection",
@@ -2581,7 +2593,7 @@
         "copy": 98,
         "image": 7,
         "link": 0,
-        "meta": 77
+        "meta": 79
       },
       "navigation": [
         {
@@ -2667,9 +2679,9 @@
       "promotedAt": "2026-07-29T17:32:22.773Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-29T20:14:44.768Z",
-        "id": "north-star-hvac-v21",
-        "version": 21
+        "createdAt": "2026-07-30T21:50:55.105Z",
+        "id": "north-star-hvac-v22",
+        "version": 22
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -2874,7 +2886,7 @@
           "id": "system-replacement.strategy.pageCopy",
           "kind": "copy",
           "path": "strategy.pageCopy",
-          "value": "# Bulk Paste Copy\n\n<!-- Page target: System Replacement (/services/system-replacement) -->\n\n<!-- Template contract: tc-v2-1jmn7s0 -->\n\n### 02-fixed-ratio-split-image\n\n<!-- Section contract: sc-v1-1teowhm -->\n\neyebrow: System Replacement Around Lake Norman\nh1: Is Replacement the Right Next Step for Your System?\nintro: North Star HVAC helps homeowners compare repair and replacement with a clearer view of system condition, reliability, and what the home needs—without treating new equipment as the automatic answer.\nprimaryAction: Request a Quote\nsecondaryAction: Call With Questions\nproofPoints: Repair and replacement options explained clearly\nServing Huntersville and nearby Lake Norman communities\nLocally and family owned in Huntersville\nreviewLabel: 4.9 stars from local homeowners\nreviewDetail: Based on 187 Google reviews from HVAC visits across the Lake Norman area.\n\n### 03-large-section-header\n\n<!-- Section contract: sc-v1-1mraaw2 -->\n\neyebrow: Start With Your Situation\nheading: What has you thinking about system replacement?\nbody: You do not need to know the final answer before reaching out. Start with the concern that sounds closest to your situation, then review what it may mean for the repair-versus-replacement decision.\nitems: Start with what changed — Repeated repairs, uneven comfort, reliability concerns, or planning ahead.\nReview the context — Each situation opens a shared detail panel without changing the card layout.\n\n### 04-callout-cards-with-reveal-panel\n\n<!-- Section contract: sc-v1-1xemkbd -->\n\ncalloutItems: Repeated Repairs — The system keeps needing attention, and you are questioning whether another repair will restore a reasonable outlook or continue the same pattern.\nUneven Comfort — Some rooms remain warmer or cooler than others, and the current system no longer seems to serve the home as consistently as it once did.\nReliability Concerns — The equipment still runs, but recent issues have made it harder to trust through the next stretch of heating or cooling demand.\nPlanning Ahead — The system is operating today, but you want to understand the repair and replacement paths before the decision becomes more urgent.\ncalloutPanels: When repairs begin forming a pattern — Another repair may still be the practical choice. The useful question is whether it addresses one isolated problem and restores a reasonable reliability outlook, or whether recent work points to a larger system decision.\nWhen the home no longer feels evenly served — Uneven temperatures do not automatically require replacement. The visit should consider system condition, airflow, and how well the current setup still fits the home before either path is recommended.\nWhen confidence in the system is slipping — A system can still operate while becoming harder to depend on. Review what has changed, how often problems have appeared, and whether the proposed repair supports a reasonable longer-term outlook.\nWhen you want time to compare the options — Planning before a failure gives you more room to understand system condition, project scope, and replacement options. The request starts a conversation and does not commit you to new equipment.\ncalloutActions: Discuss repeated repairs -> /contact?service=system-replacement&concern=repeated-repairs\nDiscuss uneven comfort -> /contact?service=system-replacement&concern=uneven-comfort\nReview reliability concerns -> /contact?service=system-replacement&concern=reliability\nStart replacement planning -> /contact?service=system-replacement&concern=planning-ahead\nopenHint: See what this means\ncloseLabel: Close details\n\n### 05-main-idea-support-grid\n\n<!-- Section contract: sc-v1-17lkqd0 -->\n\neyebrow: Replacement Decision Factors\nheading: Replacement becomes clearer when several factors align\nbody: One symptom rarely tells the whole story. A useful recommendation considers the equipment itself, the pattern of recent work, the reliability outlook, and whether the current system still serves the home well.\npoints.1.title: System Condition\npoints.1.body: Start with what the inspection shows across the system, not age or one symptom by itself.\npoints.2.title: Repair History\npoints.2.body: Consider whether the current issue is isolated or part of a repeated pattern of service and repair.\npoints.3.title: Reliability Outlook\npoints.3.body: Ask whether the proposed repair is likely to restore a reasonable level of confidence in the system.\npoints.4.title: Fit for the Home\npoints.4.body: Review whether the current setup still supports the home’s heating, cooling, and room-to-room needs.\n\n### 06-large-section-header\n\n<!-- Section contract: sc-v1-1mraaw2 -->\n\neyebrow: Compare the Two Paths\nheading: Repair and replacement deserve a side-by-side look\nbody: Both paths can be valid. The right recommendation depends on whether the current problem can be addressed practically or whether broader condition and reliability concerns point toward replacement.\nitems: Repair remains valid — When the problem is isolated and the rest of the system has a workable outlook.\nReplacement becomes relevant — When condition, repair history, and reliability point beyond one more repair.\n\n### 07-split-decision-large\n\n<!-- Section contract: sc-v1-bd44ce -->\n\ncards.1.eyebrow: Repair Path\ncards.1.title: Keep the current system working when repair still fits\ncards.1.paragraphs.1: Repair may remain the practical path when the issue is isolated, the rest of the equipment is in workable condition, and the proposed work directly addresses the current problem.\ncards.1.paragraphs.2: The important question is not simply whether the system can be repaired, but whether the repair supports a reasonable outlook for continued use.\ncards.1.points.1: The diagnosis points to one defined problem rather than broad system decline.\ncards.1.points.2: The proposed repair restores a reasonable reliability outlook.\ncards.1.points.3: The overall condition does not create an immediate case for replacement.\ncards.1.actionLabel: Discuss a Repair\ncards.2.eyebrow: Replacement Path\ncards.2.title: Plan the next system with the full picture in view\ncards.2.paragraphs.1: Replacement becomes more relevant when repairs are forming a pattern, confidence in the equipment is declining, or the system no longer fits the needs of the home.\ncards.2.paragraphs.2: A replacement conversation should explain why the path is being recommended, what the proposed project includes, and what happens if you decide to proceed.\ncards.2.points.1: Recent repairs or system condition point beyond one isolated issue.\ncards.2.points.2: Reliability remains uncertain even after the proposed repair.\ncards.2.points.3: The current setup no longer serves the home as consistently as needed.\ncards.2.actionLabel: Plan a Replacement\n\n### 08-muted-cta\n\n<!-- Section contract: sc-v1-3ewlor -->\n\ntitle: Want a professional view of both paths?\nbody: Share what has been happening with the system, and North Star HVAC will help you begin with the condition and the decision in front of you.\nprimaryAction: Request an Evaluation\nsecondaryAction: Call With Questions\n\n### 09-project-case-study-gallery\n\n<!-- Section contract: sc-v1-1vdz21a -->\n\nslides.1.project: Huntersville Replacement\nslides.1.title: A planned replacement after repeated cooling repairs\nslides.1.summary: After several cooling repairs and growing reliability concerns, the homeowner compared one more repair with a full replacement. The project moved forward after the system condition and both paths were reviewed.\nslides.1.equipment.1.label: Location\nslides.1.equipment.1.value: Huntersville, North Carolina\nslides.1.equipment.2.label: Equipment\nslides.1.equipment.2.value: Two-stage heat pump system\nslides.1.equipment.3.label: Work Completed\nslides.1.equipment.3.value: Full heating and cooling replacement\nslides.1.testimonial.quote: North Star explained why replacement made sense for our situation and gave us room to ask questions before we decided.\nslides.1.testimonial.attribution: Megan R. · Huntersville homeowner\nslides.2.project: Davidson Replacement\nslides.2.title: A clearer long-term plan for uneven home comfort\nslides.2.summary: The homeowner was dealing with inconsistent temperatures and declining confidence in an aging heat pump. North Star reviewed the current setup, the repair outlook, and the scope of a planned replacement.\nslides.2.equipment.1.label: Location\nslides.2.equipment.1.value: Davidson, North Carolina\nslides.2.equipment.2.label: Equipment\nslides.2.equipment.2.value: Variable-speed heat pump system\nslides.2.equipment.3.label: Work Completed\nslides.2.equipment.3.value: Heat pump and air handler replacement\nslides.2.testimonial.quote: We understood what was being proposed, what the project involved, and why it was a better fit than continuing with repairs.\nslides.2.testimonial.attribution: Daniel K. · Davidson homeowner\n\n### 10-compact-section-header\n\n<!-- Section contract: sc-v1-3hfyap -->\n\neyebrow: Understand the Proposal\nheading: A replacement quote should clarify more than a price\nbody: Before deciding, you should understand what system direction is being proposed, what the project includes, and what the next steps would look like if you choose to move forward.\nitems: Read the proposal as a plan — It should explain the system direction, project scope, and next steps before you decide.\n\n### 11-card-links-3-up\n\n<!-- Section contract: sc-v1-gpnnj3 -->\n\nserviceItems: System Direction — Discuss what type of replacement may fit the home and what information supports that recommendation. -> /contact?service=system-replacement&topic=system-direction\nProject Scope — Review what the proposed work includes, what still needs confirmation, and how the installation would be planned. -> /contact?service=system-replacement&topic=project-scope\nFinancing Questions — Ask about financing that may be available for qualifying replacement projects without assuming approval or specific terms. -> /contact?service=system-replacement&topic=financing\nlinkLabel: Ask About This\n\n### 12-cta\n\n<!-- Section contract: sc-v1-16mmwjh -->\n\nheading: Get a clearer view of the system’s next step\nbody: Request a replacement conversation to review the current situation, the repair outlook, and what a planned replacement could involve. Financing questions can be discussed with the proposal.\nprimaryAction: Request a Quote\nsecondaryAction: Call Now\n\n### 13-testimonials\n\n<!-- Section contract: sc-v1-1vziube -->\n\nheading: What homeowners valued during the decision\nintro: Replacement is a large decision. Homeowners often remember whether the options were explained clearly, the project felt organized, and they had room to decide without pressure.\ntestimonials: “They explained why a repair still made sense at first and never tried to force the replacement conversation.” — Allison G. · Cornelius\n“We expected a sales pitch. Instead, we got a clear comparison of the repair outlook and the replacement scope.” — Marcus T. · Mooresville\n“The crew kept the project organized, protected the work area, and walked us through the new system before leaving.” — Priya S. · Davidson\n\n### 14-faq-accordion-sidebar\n\n<!-- Section contract: sc-v1-1txqype -->\n\nheading: Still weighing the decision?\nintro: Replacement questions are rarely just about the equipment. Reach out directly when you need help understanding the condition, proposal, or next step.\nprimaryAction: Contact North Star\nfaqs: Does an older HVAC system automatically need replacement? — No. Age can be part of the conversation, but system condition, repair history, reliability, and the needs of the home provide a more useful basis for comparing repair and replacement.\nCan I compare repair and replacement before deciding? — Yes. The purpose of the evaluation is to understand the current problem and the realistic paths forward. Replacement should not be treated as the automatic answer before the system is reviewed.\nIs financing available for a replacement project? — Financing is referenced as potentially available for replacement projects. Ask about current options, eligibility, and terms when reviewing the proposal. Approval and specific terms are not assumed.\nHow long does an HVAC replacement project take? — Timing depends on the home, selected equipment, project scope, current scheduling, and any work identified during planning. The expected sequence should be reviewed before the project is confirmed.\n\n### 15-contact-section-modal-begin\n\n<!-- Section contract: sc-v1-2n2ieh -->\n\neyebrow: Start a Replacement Request\nheading: Begin with the system and concern in front of you\nbody: Choose the system type and the reason you are considering replacement. Any situation selected earlier on the page can carry into the next step of the request.\nsystemPrompt: Which system are you replacing?\nrequestPrompt: What brings you here today?\ncontinueLabel: Continue\nhelperText: Your selections carry into the request form and do not commit you to new equipment.\n\n## Copy Notes\n\nThis page needs to help a homeowner decide whether replacement deserves serious consideration without assuming that new equipment is already the answer. Its strongest UX idea is that the visitor starts with their situation, learns how the decision is evaluated, and carries that context into the request flow.\n\n* Suggested page title: HVAC System Replacement in Huntersville, NC | North Star HVAC\n* Suggested meta description: Compare HVAC repair and replacement options with North Star HVAC. Serving homeowners in Huntersville and nearby Lake Norman communities.\n* Suggested H1: Is Replacement the Right Next Step for Your System?\n* Suggested URL slug: /services/system-replacement\n* Primary CTA pattern: Request a Quote\n* Secondary CTA pattern: Call With Questions or Call Now\n* Section 04 interaction: Keep all four card faces at equal height. Clicking a card should reveal one shared full-grid panel rather than expanding an individual card.\n* Section 04 selected state: Highlight the active card while the panel is open. Selecting another card replaces the panel content rather than stacking multiple panels.\n* Section 04 modal behavior: The panel CTA should open the contact modal with `service=system-replacement` and the selected concern prefilled. The internal paths provide a fallback when modal interception is unavailable.\n* Section 04 mobile behavior: Keep card heights stable. Show the selected detail immediately below the four-card grid or as a full-width replacement for the grid rather than creating an uneven two-column row.\n* Section 05 behavior: The condition, repair history, reliability, and home-fit points are static informational content. They should not look clickable or reuse the interactive card styling from Section 04.\n* Section 07 behavior: The repair and replacement cards are static comparison panels. Their role is decision support, not lead capture.\n* Section 09 proof assumption: Both replacement projects, equipment details, outcomes, and associated testimonials are fictional mock-project content created for this concept.\n* Section 11 interaction: These cards can route into the same request modal with a specific discussion topic prefilled.\n* Section 13 proof assumption: All three testimonials are fictional placeholders for the mock project.\n* Section 15 prefill logic: The page should automatically set the service to System Replacement. A concern selected in Section 04 should appear selected here and remain editable.\n* Form note: Treat the submission as a request for evaluation or discussion, not a confirmed appointment or commitment to replacement.\n* Financing note: Financing is mentioned only as potentially available. No provider, rate, approval, or eligibility claim is made.\n* Image direction: Use a technician/homeowner discussion in the hero and real-looking completed installation photography in the project gallery.\n\n## Copy QA\n\n* Unsupported claims avoided? Yes, except for fictional project and review content explicitly created for this mock project and identified in Copy Notes.\n* Service area accurate? Yes.\n* Emergency availability handled carefully? Yes; emergency messaging is not a focus of this non-urgent planning page.\n* Pricing language cautious? Yes.\n* Priority services emphasized? Yes; the page remains focused solely on system replacement and repair-versus-replacement guidance.\n* Services marked Non-priority or Do not promote not overpromoted? Yes.\n* CTA clear? Yes.\n* Mobile visitor needs considered? Yes.\n* Template field targets followed? Yes.\n* Every section ID preserved? Yes.\n* Voice matches the Protective Professional personality? Yes.\n* Avoided phrases from the voice packet kept out? Yes."
+          "value": "# Bulk Paste Copy\n\n<!-- Page target: System Replacement (/services/system-replacement) -->\n\n<!-- Template contract: tc-v2-16l6sop -->\n\n### 02-fixed-ratio-split-image\n\n<!-- Section contract: sc-v1-1msll49 -->\n\neyebrow: System Replacement Around Lake Norman\nh1: Plan Your HVAC Replacement With Clear Options\nintro: North Star HVAC helps homeowners compare repair and replacement after reviewing system condition, recent service history, reliability, and what the home needs next.\nprimaryAction: Request a Quote\nsecondaryAction: Call With Questions\nproofPoints: Clear repair-or-replace guidance\nServing Huntersville and nearby Lake Norman communities\nFinancing may be available for qualifying projects\nreviewLabel: NEEDS REVIEW: Approved review label missing.\nreviewDetail: NEEDS REVIEW: Verified rating, count, or review detail missing.\n\n### 03-large-section-header\n\n<!-- Section contract: sc-v1-1mraaw2 -->\n\neyebrow: Replacement Considerations\nheading: When does replacement deserve a closer look?\nbody: One repair or an older system does not automatically make replacement the right answer. Look at the broader pattern, what the inspection shows, and how confidently the equipment can continue serving the home.\nitems: Repeated repairs — Recent service calls are beginning to form a pattern rather than one isolated problem.\nUneven comfort — The current system no longer serves the home consistently from room to room.\nReliability concerns — You are planning ahead because confidence in the system continues to decline.\n\n### 04-callout-cards-with-reveal-panel\n\n<!-- Section contract: sc-v1-1xemkbd -->\n\ncalloutItems: Repairs Keep Adding Up - The system has needed attention more than once, and you want to understand whether another repair still supports a reasonable outlook.\nComfort Stays Uneven - Some rooms remain warmer or cooler than others, and the current system no longer serves the home as consistently as expected.\nReliability Is Hard to Trust - The equipment still operates, but repeated changes or recent service needs make it difficult to plan around the next season.\nPlanning Before a Failure - The system is still running, but you would rather compare the available paths before an urgent breakdown forces a faster decision.\ncalloutPanels: Look at the pattern behind the repairs - Another repair may still make sense. The useful question is whether the recent issues are isolated and addressable or whether they point toward a broader condition problem. Review the diagnosis, repair history, and expected outlook before deciding.\nReview how well the system serves the home - Uneven temperatures do not automatically mean replacement is needed. The inspection should consider system operation, airflow, current condition, and whether the existing setup still fits the way the home needs to be heated and cooled.\nBuild the decision around current condition - Reliability concerns become more useful when they are connected to evidence. Review what the system is doing now, how frequently it has needed service, and whether the proposed repair would restore a workable level of confidence.\nCompare the options while you have time - Planning before a complete failure gives you more room to understand the current system, ask questions, and review replacement scope without assuming that new equipment is already the only reasonable path.\ncalloutActions: Discuss recent repairs -> /contact?service=system-replacement&concern=repeated-repairs\nRequest a comfort review -> /contact?service=system-replacement&concern=uneven-comfort\nReview system condition -> /contact?service=system-replacement&concern=reliability\nPlan replacement options -> /contact?service=system-replacement&concern=planning-ahead\nopenHint: Review this factor\ncloseLabel: Close details\n\n### 05-main-idea-support-grid\n\n<!-- Section contract: sc-v1-17lkqd0 -->\n\neyebrow: A Balanced Replacement Decision\nheading: Replacement is a decision—not the default\nbody: Start with what the inspection shows, how the system has performed over time, and what each available path means for the home. The strongest recommendation should make repair and replacement easier to compare.\npoints.1.title: Current System Condition\npoints.1.body: Review the condition of the complete system rather than making the decision from equipment age or one symptom alone.\npoints.2.title: Recent Repair Pattern\npoints.2.body: Consider whether recent repairs are isolated events or part of a pattern that continues to affect confidence and reliability.\npoints.3.title: Comfort Through the Home\npoints.3.body: Look at temperature consistency, system operation, and whether the current setup still serves the home effectively.\npoints.4.title: Longer-Term Outlook\npoints.4.body: Compare what another repair is expected to address with what a planned replacement project would change.\n\n### 06-large-section-header\n\n<!-- Section contract: sc-v1-1mraaw2 -->\n\neyebrow: Repair or Replace\nheading: Compare both paths before choosing the next one\nbody: Repair may remain practical when it addresses a defined problem and supports a workable outlook. Replacement becomes more relevant when the system’s broader condition points beyond one isolated repair.\nitems: Repair path — Address the current issue when the recommendation supports continued operation.\nReplacement path — Plan a larger project when condition, reliability, and repair history support the change.\n\n### 07-split-decision-large\n\n<!-- Section contract: sc-v1-bd44ce -->\n\ncards.1.eyebrow: Repair Path\ncards.1.title: Keep the current system when repair still fits\ncards.1.paragraphs.1: Repair may remain the practical next step when the inspection identifies a defined problem and the broader system condition does not create an immediate replacement concern.\ncards.1.paragraphs.2: The important question is whether the proposed work addresses the current issue directly and supports a reasonable outlook for continued operation.\ncards.1.points.1: The diagnosis identifies a specific issue that can be addressed directly.\ncards.1.points.2: Recent service needs do not show a continuing pattern of problems.\ncards.1.points.3: The broader condition supports a workable reliability outlook.\ncards.1.actionLabel: Discuss the Repair Path\ncards.2.eyebrow: Replacement Path\ncards.2.title: Plan the next system when the evidence points further\ncards.2.paragraphs.1: Replacement becomes more relevant when repairs are forming a pattern, confidence in the equipment continues to decline, or the overall condition points beyond one isolated problem.\ncards.2.paragraphs.2: The proposal should explain why replacement is being considered, what the project includes, and how the selected system fits the home before you decide.\ncards.2.points.1: Recent repairs are becoming a repeated pattern rather than isolated events.\ncards.2.points.2: Reliability may remain uncertain even after the proposed repair.\ncards.2.points.3: The current system no longer serves the home as consistently as needed.\ncards.2.actionLabel: Explore Replacement\n\n### 08-muted-cta\n\n<!-- Section contract: sc-v1-3ewlor -->\n\ntitle: Ready to compare the options for your system?\nbody: Share what has been happening and North Star HVAC will help you begin with the inspection, estimate, or conversation that fits the situation.\nprimaryAction: Request a Quote\nsecondaryAction: Call With Questions\n\n### 09-project-case-study-gallery\n\n<!-- Section contract: sc-v1-1vdz21a -->\n\nslides.1.project: NEEDS REVIEW: Verified replacement project missing.\nslides.1.title: NEEDS REVIEW: Verified replacement project headline missing.\nslides.1.summary: NEEDS REVIEW: No verified project situation, completed scope, or outcome is available in the supplied sources.\nslides.1.equipment.1.label: Location\nslides.1.equipment.1.value: NEEDS REVIEW: Project location missing.\nslides.1.equipment.2.label: Equipment\nslides.1.equipment.2.value: NEEDS REVIEW: Installed equipment details missing.\nslides.1.equipment.3.label: Work Completed\nslides.1.equipment.3.value: NEEDS REVIEW: Verified project scope missing.\nslides.1.testimonial.quote: NEEDS REVIEW: Approved project testimonial missing.\nslides.1.testimonial.attribution: NEEDS REVIEW: Approved attribution missing.\nslides.2.project: NEEDS REVIEW: Second verified replacement project missing.\nslides.2.title: NEEDS REVIEW: Second replacement project headline missing.\nslides.2.summary: NEEDS REVIEW: No second verified project situation, completed scope, or outcome is available in the supplied sources.\nslides.2.equipment.1.label: Location\nslides.2.equipment.1.value: NEEDS REVIEW: Project location missing.\nslides.2.equipment.2.label: Equipment\nslides.2.equipment.2.value: NEEDS REVIEW: Installed equipment details missing.\nslides.2.equipment.3.label: Work Completed\nslides.2.equipment.3.value: NEEDS REVIEW: Verified project scope missing.\nslides.2.testimonial.quote: NEEDS REVIEW: Approved project testimonial missing.\nslides.2.testimonial.attribution: NEEDS REVIEW: Approved attribution missing.\n\n### 10-compact-section-header\n\n<!-- Section contract: sc-v1-3hfyap -->\n\neyebrow: Supporting Options\nheading: Keep the larger system decision connected\nbody: Replacement may involve equipment type, project financing, and the care that follows installation. Explore the supporting path that is most relevant to your current questions.\nitems: Heat pump service — Review heat pump repair, maintenance, and replacement guidance.\nOngoing maintenance — Plan seasonal care after the replacement project is complete.\nFinancing questions — Ask about current options that may apply to qualifying projects.\n\n### 11-card-links-3-up\n\n<!-- Section contract: sc-v1-gpnnj3 -->\n\nserviceItems: Heat Pump Service - Explore heat pump repair, maintenance, and replacement guidance when a heat pump may be part of the next system decision. -> /services/heat-pump-service\nMaintenance & Tune-Ups - Plan seasonal care after installation and keep track of how the new system is operating over time. -> /services/maintenance\nReplacement Financing - Ask about financing that may be available for qualifying replacement projects without assuming approval, rates, or terms. -> /financing\nlinkLabel: Explore This Option\n\n### 12-cta\n\n<!-- Section contract: sc-v1-16mmwjh -->\n\nheading: Start your replacement conversation with clearer context\nbody: Tell us what has been happening with the current system. North Star HVAC will help determine whether the next step is an inspection, repair discussion, or replacement quote.\nprimaryAction: Request a Quote\nsecondaryAction: Call Now\n\n### 13-testimonials\n\n<!-- Section contract: sc-v1-1vziube -->\n\nheading: What homeowners notice during a larger project\nintro: Replacement proof should show clear communication, an organized installation process, respectful work, and recommendations the homeowner could understand.\ntestimonials: NEEDS REVIEW: Approved replacement testimonial excerpt and attribution missing.\n\n### 14-faq-accordion-sidebar\n\n<!-- Section contract: sc-v1-1txqype -->\n\nheading: Questions about replacement?\nintro: A larger system decision should leave room for practical questions. Reach out directly when the answer you need is not covered here.\nprimaryAction: Contact North Star\nfaqs: How do I know whether repair or replacement makes more sense? - The decision should consider the diagnosis, overall system condition, recent repair history, reliability outlook, and how well the current setup serves the home. Replacement is not assumed from age or one repair alone.\nDo you provide free estimates for replacement projects? - Free estimates may apply to replacement projects, while repair visits usually require diagnosis and may involve a diagnostic fee. The final estimate and fee language should be confirmed before publication.\nIs financing available for a replacement system? - Financing is referenced as available for qualifying replacement projects. Current provider, eligibility, approval requirements, rates, terms, and required disclosures should be reviewed with the proposal.\nWhat happens after I request a replacement quote? - North Star HVAC reviews the request and may call or text to learn more about the home and current system. The next step may include an inspection or estimate, but submitting the form does not confirm an appointment.\n\n### 15-contact-section-modal-begin\n\n<!-- Section contract: sc-v1-2n2ieh -->\n\neyebrow: Start a Replacement Request\nheading: Begin with the system you are considering replacing\nbody: Choose the system and the type of replacement help you need. Those selections carry into the next step so North Star HVAC can review the request with the right context.\nsystemPrompt: Which system are you replacing?\nrequestPrompt: What would you like help with?\ncontinueLabel: Continue\nhelperText: Your selections carry into the request form and remain editable before submission.\n\n## Copy Notes\n\nThis page needs to help homeowners determine whether replacement deserves serious consideration, compare repair and replacement without pressure, and begin a qualified replacement request.\n\n* Suggested page title: HVAC System Replacement in Huntersville | North Star HVAC\n* Suggested meta description: Compare HVAC repair and replacement with North Star HVAC in Huntersville and nearby Lake Norman communities. Request a replacement quote or discuss your current system.\n* Suggested H1: Plan Your HVAC Replacement With Clear Options\n* Suggested URL slug: /services/system-replacement\n* Primary CTA pattern: Request a Quote\n* Secondary CTA pattern: Call With Questions\n* Hero proof note: The three short proof points use supported positioning. The separate review badge remains NEEDS REVIEW because no verified rating, count, or approved review statement was supplied.\n* Section 04 interaction: Keep all four cards equal-height in a 2×2 grid. Selecting one should open a shared reveal panel over the complete grid rather than expand an individual card.\n* Section 04 request behavior: Each CTA should carry `service=system-replacement` and the selected concern into the request flow.\n* Section 04 mobile behavior: Stack the card faces and place the selected detail panel beneath the full set. Do not rely on hover.\n* Section 05 purpose: The section establishes that replacement is a decision supported by evidence rather than a default response to age or one repair.\n* Section 07 hierarchy: Give the two paths equal structural clarity, but let the Replacement Path hold slightly stronger visual weight because this is the dedicated replacement page.\n* Section 08 purpose: This is a quiet mid-page conversion point after the visitor has reviewed the decision factors.\n* Section 09 proof requirement: No verified replacement projects, installed equipment, completed scopes, outcomes, or associated testimonials were provided. Both slides remain NEEDS REVIEW.\n* Section 11 route note: The Heat Pump Service route follows the staged page path `/services/heat-pump-service`, even though an earlier sitemap used `/services/heat-pumps`.\n* Financing note: Financing is described only as potentially available for qualifying projects. No provider, eligibility, approval, rate, or term claim is made.\n* Maintenance note: Ongoing maintenance is presented as post-installation care without promoting a formal membership plan.\n* Section 13 proof requirement: No approved replacement testimonial excerpt or attribution was supplied. The section should remain hidden until proof is added.\n* Section 15 prefill logic: The page should automatically establish System Replacement as the service category. A concern selected in Section 04 should remain selected but editable.\n* Form note: Useful later fields include system age, current problem, replacement timing, heat-pump interest, and financing interest. Keep them optional and do not turn the form into a technical equipment questionnaire.\n* Estimate note: A form submission begins a replacement request and does not confirm an appointment, project schedule, or financing approval.\n* Mock-project note: Although North Star HVAC is fictional, this run follows the supplied contract’s proof rules. Project details, review claims, and testimonials remain NEEDS REVIEW rather than being presented as verified facts.\n\n## Copy QA\n\n* Unsupported claims avoided? Yes.\n* Service area accurate? Yes.\n* Emergency availability handled carefully? Yes; emergency claims are not central to this page.\n* Pricing language cautious? Yes.\n* Priority services emphasized? Yes; replacement is the page’s clear primary service.\n* Services marked Non-priority or Do not promote not overpromoted? Yes.\n* CTA clear? Yes.\n* Mobile visitor needs considered? Yes.\n* Template field targets followed? Yes.\n* Every section ID preserved? Yes.\n* Voice matches the Protective Professional personality? Yes.\n* Avoided phrases from the voice packet kept out? Yes."
         },
         {
           "id": "system-replacement.strategy.contentPlan",
@@ -2952,13 +2964,13 @@
           "id": "system-replacement.02-fixed-ratio-split-image.h1",
           "kind": "copy",
           "path": "02-fixed-ratio-split-image.h1",
-          "value": "Is Replacement the Right Next Step for Your System?"
+          "value": "Plan Your HVAC Replacement With Clear Options"
         },
         {
           "id": "system-replacement.02-fixed-ratio-split-image.intro",
           "kind": "copy",
           "path": "02-fixed-ratio-split-image.intro",
-          "value": "North Star HVAC helps homeowners compare repair and replacement with a clearer view of system condition, reliability, and what the home needs—without treating new equipment as the automatic answer."
+          "value": "North Star HVAC helps homeowners compare repair and replacement after reviewing system condition, recent service history, reliability, and what the home needs next."
         },
         {
           "id": "system-replacement.02-fixed-ratio-split-image.primaryAction",
@@ -2976,19 +2988,19 @@
           "id": "system-replacement.02-fixed-ratio-split-image.proofPoints",
           "kind": "copy",
           "path": "02-fixed-ratio-split-image.proofPoints",
-          "value": "Repair and replacement options explained clearly\nServing Huntersville and nearby Lake Norman communities\nLocally and family owned in Huntersville"
+          "value": "Clear repair-or-replace guidance\nServing Huntersville and nearby Lake Norman communities\nFinancing may be available for qualifying projects"
         },
         {
           "id": "system-replacement.02-fixed-ratio-split-image.reviewLabel",
           "kind": "copy",
           "path": "02-fixed-ratio-split-image.reviewLabel",
-          "value": "4.9 stars from local homeowners"
+          "value": "NEEDS REVIEW: Approved review label missing."
         },
         {
           "id": "system-replacement.02-fixed-ratio-split-image.reviewDetail",
           "kind": "copy",
           "path": "02-fixed-ratio-split-image.reviewDetail",
-          "value": "Based on 187 Google reviews from HVAC visits across the Lake Norman area."
+          "value": "NEEDS REVIEW: Verified rating, count, or review detail missing."
         },
         {
           "id": "system-replacement.02-fixed-ratio-split-image.imageRatio",
@@ -3096,25 +3108,25 @@
           "id": "system-replacement.04-callout-cards-with-reveal-panel.calloutItems",
           "kind": "copy",
           "path": "04-callout-cards-with-reveal-panel.calloutItems",
-          "value": "Repeated Repairs — The system keeps needing attention, and you are questioning whether another repair will restore a reasonable outlook or continue the same pattern.\nUneven Comfort — Some rooms remain warmer or cooler than others, and the current system no longer seems to serve the home as consistently as it once did.\nReliability Concerns — The equipment still runs, but recent issues have made it harder to trust through the next stretch of heating or cooling demand.\nPlanning Ahead — The system is operating today, but you want to understand the repair and replacement paths before the decision becomes more urgent."
+          "value": "Repairs Keep Adding Up - The system has needed attention more than once, and you want to understand whether another repair still supports a reasonable outlook.\nComfort Stays Uneven - Some rooms remain warmer or cooler than others, and the current system no longer serves the home as consistently as expected.\nReliability Is Hard to Trust - The equipment still operates, but repeated changes or recent service needs make it difficult to plan around the next season.\nPlanning Before a Failure - The system is still running, but you would rather compare the available paths before an urgent breakdown forces a faster decision."
         },
         {
           "id": "system-replacement.04-callout-cards-with-reveal-panel.calloutPanels",
           "kind": "copy",
           "path": "04-callout-cards-with-reveal-panel.calloutPanels",
-          "value": "When repairs begin forming a pattern — Another repair may still be the practical choice. The useful question is whether it addresses one isolated problem and restores a reasonable reliability outlook, or whether recent work points to a larger system decision.\nWhen the home no longer feels evenly served — Uneven temperatures do not automatically require replacement. The visit should consider system condition, airflow, and how well the current setup still fits the home before either path is recommended.\nWhen confidence in the system is slipping — A system can still operate while becoming harder to depend on. Review what has changed, how often problems have appeared, and whether the proposed repair supports a reasonable longer-term outlook.\nWhen you want time to compare the options — Planning before a failure gives you more room to understand system condition, project scope, and replacement options. The request starts a conversation and does not commit you to new equipment."
+          "value": "Look at the pattern behind the repairs - Another repair may still make sense. The useful question is whether the recent issues are isolated and addressable or whether they point toward a broader condition problem. Review the diagnosis, repair history, and expected outlook before deciding.\nReview how well the system serves the home - Uneven temperatures do not automatically mean replacement is needed. The inspection should consider system operation, airflow, current condition, and whether the existing setup still fits the way the home needs to be heated and cooled.\nBuild the decision around current condition - Reliability concerns become more useful when they are connected to evidence. Review what the system is doing now, how frequently it has needed service, and whether the proposed repair would restore a workable level of confidence.\nCompare the options while you have time - Planning before a complete failure gives you more room to understand the current system, ask questions, and review replacement scope without assuming that new equipment is already the only reasonable path."
         },
         {
           "id": "system-replacement.04-callout-cards-with-reveal-panel.calloutActions",
           "kind": "copy",
           "path": "04-callout-cards-with-reveal-panel.calloutActions",
-          "value": "Discuss repeated repairs -> /contact?service=system-replacement&concern=repeated-repairs\nDiscuss uneven comfort -> /contact?service=system-replacement&concern=uneven-comfort\nReview reliability concerns -> /contact?service=system-replacement&concern=reliability\nStart replacement planning -> /contact?service=system-replacement&concern=planning-ahead"
+          "value": "Discuss recent repairs -> /contact?service=system-replacement&concern=repeated-repairs\nRequest a comfort review -> /contact?service=system-replacement&concern=uneven-comfort\nReview system condition -> /contact?service=system-replacement&concern=reliability\nPlan replacement options -> /contact?service=system-replacement&concern=planning-ahead"
         },
         {
           "id": "system-replacement.04-callout-cards-with-reveal-panel.openHint",
           "kind": "copy",
           "path": "04-callout-cards-with-reveal-panel.openHint",
-          "value": "See what this means"
+          "value": "Review this factor"
         },
         {
           "id": "system-replacement.04-callout-cards-with-reveal-panel.closeLabel",
@@ -3162,67 +3174,67 @@
           "id": "system-replacement.05-main-idea-support-grid.eyebrow",
           "kind": "copy",
           "path": "05-main-idea-support-grid.eyebrow",
-          "value": "Replacement Decision Factors"
+          "value": "A Balanced Replacement Decision"
         },
         {
           "id": "system-replacement.05-main-idea-support-grid.heading",
           "kind": "copy",
           "path": "05-main-idea-support-grid.heading",
-          "value": "Replacement becomes clearer when several factors align"
+          "value": "Replacement is a decision—not the default"
         },
         {
           "id": "system-replacement.05-main-idea-support-grid.body",
           "kind": "copy",
           "path": "05-main-idea-support-grid.body",
-          "value": "One symptom rarely tells the whole story. A useful recommendation considers the equipment itself, the pattern of recent work, the reliability outlook, and whether the current system still serves the home well."
+          "value": "Start with what the inspection shows, how the system has performed over time, and what each available path means for the home. The strongest recommendation should make repair and replacement easier to compare."
         },
         {
           "id": "system-replacement.05-main-idea-support-grid.points.1.title",
           "kind": "copy",
           "path": "05-main-idea-support-grid.points.1.title",
-          "value": "System Condition"
+          "value": "Current System Condition"
         },
         {
           "id": "system-replacement.05-main-idea-support-grid.points.1.body",
           "kind": "copy",
           "path": "05-main-idea-support-grid.points.1.body",
-          "value": "Start with what the inspection shows across the system, not age or one symptom by itself."
+          "value": "Review the condition of the complete system rather than making the decision from equipment age or one symptom alone."
         },
         {
           "id": "system-replacement.05-main-idea-support-grid.points.2.title",
           "kind": "copy",
           "path": "05-main-idea-support-grid.points.2.title",
-          "value": "Repair History"
+          "value": "Recent Repair Pattern"
         },
         {
           "id": "system-replacement.05-main-idea-support-grid.points.2.body",
           "kind": "copy",
           "path": "05-main-idea-support-grid.points.2.body",
-          "value": "Consider whether the current issue is isolated or part of a repeated pattern of service and repair."
+          "value": "Consider whether recent repairs are isolated events or part of a pattern that continues to affect confidence and reliability."
         },
         {
           "id": "system-replacement.05-main-idea-support-grid.points.3.title",
           "kind": "copy",
           "path": "05-main-idea-support-grid.points.3.title",
-          "value": "Reliability Outlook"
+          "value": "Comfort Through the Home"
         },
         {
           "id": "system-replacement.05-main-idea-support-grid.points.3.body",
           "kind": "copy",
           "path": "05-main-idea-support-grid.points.3.body",
-          "value": "Ask whether the proposed repair is likely to restore a reasonable level of confidence in the system."
+          "value": "Look at temperature consistency, system operation, and whether the current setup still serves the home effectively."
         },
         {
           "id": "system-replacement.05-main-idea-support-grid.points.4.title",
           "kind": "copy",
           "path": "05-main-idea-support-grid.points.4.title",
-          "value": "Fit for the Home"
+          "value": "Longer-Term Outlook"
         },
         {
           "id": "system-replacement.05-main-idea-support-grid.points.4.body",
           "kind": "copy",
           "path": "05-main-idea-support-grid.points.4.body",
-          "value": "Review whether the current setup still supports the home’s heating, cooling, and room-to-room needs."
+          "value": "Compare what another repair is expected to address with what a planned replacement project would change."
         },
         {
           "id": "system-replacement.05-main-idea-support-grid.style.colorRecipe",
@@ -3264,25 +3276,25 @@
           "id": "system-replacement.06-large-section-header.eyebrow",
           "kind": "copy",
           "path": "06-large-section-header.eyebrow",
-          "value": "Compare the Two Paths"
+          "value": "Repair or Replace"
         },
         {
           "id": "system-replacement.06-large-section-header.heading",
           "kind": "copy",
           "path": "06-large-section-header.heading",
-          "value": "Repair and replacement deserve a side-by-side look"
+          "value": "Compare both paths before choosing the next one"
         },
         {
           "id": "system-replacement.06-large-section-header.body",
           "kind": "copy",
           "path": "06-large-section-header.body",
-          "value": "Both paths can be valid. The right recommendation depends on whether the current problem can be addressed practically or whether broader condition and reliability concerns point toward replacement."
+          "value": "Repair may remain practical when it addresses a defined problem and supports a workable outlook. Replacement becomes more relevant when the system’s broader condition points beyond one isolated repair."
         },
         {
           "id": "system-replacement.06-large-section-header.items",
           "kind": "copy",
           "path": "06-large-section-header.items",
-          "value": "Repair remains valid — When the problem is isolated and the rest of the system has a workable outlook.\nReplacement becomes relevant — When condition, repair history, and reliability point beyond one more repair."
+          "value": "Repair path — Address the current issue when the recommendation supports continued operation.\nReplacement path — Plan a larger project when condition, reliability, and repair history support the change."
         },
         {
           "id": "system-replacement.06-large-section-header.style.colorRecipe",
@@ -3318,43 +3330,43 @@
           "id": "system-replacement.07-split-decision-large.cards.1.title",
           "kind": "copy",
           "path": "07-split-decision-large.cards.1.title",
-          "value": "Keep the current system working when repair still fits"
+          "value": "Keep the current system when repair still fits"
         },
         {
           "id": "system-replacement.07-split-decision-large.cards.1.paragraphs.1",
           "kind": "copy",
           "path": "07-split-decision-large.cards.1.paragraphs.1",
-          "value": "Repair may remain the practical path when the issue is isolated, the rest of the equipment is in workable condition, and the proposed work directly addresses the current problem."
+          "value": "Repair may remain the practical next step when the inspection identifies a defined problem and the broader system condition does not create an immediate replacement concern."
         },
         {
           "id": "system-replacement.07-split-decision-large.cards.1.paragraphs.2",
           "kind": "copy",
           "path": "07-split-decision-large.cards.1.paragraphs.2",
-          "value": "The important question is not simply whether the system can be repaired, but whether the repair supports a reasonable outlook for continued use."
+          "value": "The important question is whether the proposed work addresses the current issue directly and supports a reasonable outlook for continued operation."
         },
         {
           "id": "system-replacement.07-split-decision-large.cards.1.points.1",
           "kind": "copy",
           "path": "07-split-decision-large.cards.1.points.1",
-          "value": "The diagnosis points to one defined problem rather than broad system decline."
+          "value": "The diagnosis identifies a specific issue that can be addressed directly."
         },
         {
           "id": "system-replacement.07-split-decision-large.cards.1.points.2",
           "kind": "copy",
           "path": "07-split-decision-large.cards.1.points.2",
-          "value": "The proposed repair restores a reasonable reliability outlook."
+          "value": "Recent service needs do not show a continuing pattern of problems."
         },
         {
           "id": "system-replacement.07-split-decision-large.cards.1.points.3",
           "kind": "copy",
           "path": "07-split-decision-large.cards.1.points.3",
-          "value": "The overall condition does not create an immediate case for replacement."
+          "value": "The broader condition supports a workable reliability outlook."
         },
         {
           "id": "system-replacement.07-split-decision-large.cards.1.actionLabel",
           "kind": "copy",
           "path": "07-split-decision-large.cards.1.actionLabel",
-          "value": "Discuss a Repair"
+          "value": "Discuss the Repair Path"
         },
         {
           "id": "system-replacement.07-split-decision-large.cards.2.eyebrow",
@@ -3366,43 +3378,43 @@
           "id": "system-replacement.07-split-decision-large.cards.2.title",
           "kind": "copy",
           "path": "07-split-decision-large.cards.2.title",
-          "value": "Plan the next system with the full picture in view"
+          "value": "Plan the next system when the evidence points further"
         },
         {
           "id": "system-replacement.07-split-decision-large.cards.2.paragraphs.1",
           "kind": "copy",
           "path": "07-split-decision-large.cards.2.paragraphs.1",
-          "value": "Replacement becomes more relevant when repairs are forming a pattern, confidence in the equipment is declining, or the system no longer fits the needs of the home."
+          "value": "Replacement becomes more relevant when repairs are forming a pattern, confidence in the equipment continues to decline, or the overall condition points beyond one isolated problem."
         },
         {
           "id": "system-replacement.07-split-decision-large.cards.2.paragraphs.2",
           "kind": "copy",
           "path": "07-split-decision-large.cards.2.paragraphs.2",
-          "value": "A replacement conversation should explain why the path is being recommended, what the proposed project includes, and what happens if you decide to proceed."
+          "value": "The proposal should explain why replacement is being considered, what the project includes, and how the selected system fits the home before you decide."
         },
         {
           "id": "system-replacement.07-split-decision-large.cards.2.points.1",
           "kind": "copy",
           "path": "07-split-decision-large.cards.2.points.1",
-          "value": "Recent repairs or system condition point beyond one isolated issue."
+          "value": "Recent repairs are becoming a repeated pattern rather than isolated events."
         },
         {
           "id": "system-replacement.07-split-decision-large.cards.2.points.2",
           "kind": "copy",
           "path": "07-split-decision-large.cards.2.points.2",
-          "value": "Reliability remains uncertain even after the proposed repair."
+          "value": "Reliability may remain uncertain even after the proposed repair."
         },
         {
           "id": "system-replacement.07-split-decision-large.cards.2.points.3",
           "kind": "copy",
           "path": "07-split-decision-large.cards.2.points.3",
-          "value": "The current setup no longer serves the home as consistently as needed."
+          "value": "The current system no longer serves the home as consistently as needed."
         },
         {
           "id": "system-replacement.07-split-decision-large.cards.2.actionLabel",
           "kind": "copy",
           "path": "07-split-decision-large.cards.2.actionLabel",
-          "value": "Plan a Replacement"
+          "value": "Explore Replacement"
         },
         {
           "id": "system-replacement.07-split-decision-large.style.colorRecipe",
@@ -3423,6 +3435,18 @@
           "value": ""
         },
         {
+          "id": "system-replacement.07-split-decision-large.style.cardFill",
+          "kind": "meta",
+          "path": "07-split-decision-large.style.cardFill",
+          "value": ""
+        },
+        {
+          "id": "system-replacement.07-split-decision-large.style.cardBorder",
+          "kind": "meta",
+          "path": "07-split-decision-large.style.cardBorder",
+          "value": ""
+        },
+        {
           "id": "system-replacement.08-muted-cta.contentDirection",
           "kind": "meta",
           "path": "08-muted-cta.contentDirection",
@@ -3432,19 +3456,19 @@
           "id": "system-replacement.08-muted-cta.title",
           "kind": "copy",
           "path": "08-muted-cta.title",
-          "value": "Want a professional view of both paths?"
+          "value": "Ready to compare the options for your system?"
         },
         {
           "id": "system-replacement.08-muted-cta.body",
           "kind": "copy",
           "path": "08-muted-cta.body",
-          "value": "Share what has been happening with the system, and North Star HVAC will help you begin with the condition and the decision in front of you."
+          "value": "Share what has been happening and North Star HVAC will help you begin with the inspection, estimate, or conversation that fits the situation."
         },
         {
           "id": "system-replacement.08-muted-cta.primaryAction",
           "kind": "copy",
           "path": "08-muted-cta.primaryAction",
-          "value": "Request an Evaluation"
+          "value": "Request a Quote"
         },
         {
           "id": "system-replacement.08-muted-cta.secondaryAction",
@@ -3480,19 +3504,19 @@
           "id": "system-replacement.09-project-case-study-gallery.slides.1.project",
           "kind": "copy",
           "path": "09-project-case-study-gallery.slides.1.project",
-          "value": "Huntersville Replacement"
+          "value": "NEEDS REVIEW: Verified replacement project missing."
         },
         {
           "id": "system-replacement.09-project-case-study-gallery.slides.1.title",
           "kind": "copy",
           "path": "09-project-case-study-gallery.slides.1.title",
-          "value": "A planned replacement after repeated cooling repairs"
+          "value": "NEEDS REVIEW: Verified replacement project headline missing."
         },
         {
           "id": "system-replacement.09-project-case-study-gallery.slides.1.summary",
           "kind": "copy",
           "path": "09-project-case-study-gallery.slides.1.summary",
-          "value": "After several cooling repairs and growing reliability concerns, the homeowner compared one more repair with a full replacement. The project moved forward after the system condition and both paths were reviewed."
+          "value": "NEEDS REVIEW: No verified project situation, completed scope, or outcome is available in the supplied sources."
         },
         {
           "id": "system-replacement.09-project-case-study-gallery.slides.1.equipment.1.label",
@@ -3504,7 +3528,7 @@
           "id": "system-replacement.09-project-case-study-gallery.slides.1.equipment.1.value",
           "kind": "copy",
           "path": "09-project-case-study-gallery.slides.1.equipment.1.value",
-          "value": "Huntersville, North Carolina"
+          "value": "NEEDS REVIEW: Project location missing."
         },
         {
           "id": "system-replacement.09-project-case-study-gallery.slides.1.equipment.2.label",
@@ -3516,7 +3540,7 @@
           "id": "system-replacement.09-project-case-study-gallery.slides.1.equipment.2.value",
           "kind": "copy",
           "path": "09-project-case-study-gallery.slides.1.equipment.2.value",
-          "value": "Two-stage heat pump system"
+          "value": "NEEDS REVIEW: Installed equipment details missing."
         },
         {
           "id": "system-replacement.09-project-case-study-gallery.slides.1.equipment.3.label",
@@ -3528,37 +3552,37 @@
           "id": "system-replacement.09-project-case-study-gallery.slides.1.equipment.3.value",
           "kind": "copy",
           "path": "09-project-case-study-gallery.slides.1.equipment.3.value",
-          "value": "Full heating and cooling replacement"
+          "value": "NEEDS REVIEW: Verified project scope missing."
         },
         {
           "id": "system-replacement.09-project-case-study-gallery.slides.1.testimonial.quote",
           "kind": "copy",
           "path": "09-project-case-study-gallery.slides.1.testimonial.quote",
-          "value": "North Star explained why replacement made sense for our situation and gave us room to ask questions before we decided."
+          "value": "NEEDS REVIEW: Approved project testimonial missing."
         },
         {
           "id": "system-replacement.09-project-case-study-gallery.slides.1.testimonial.attribution",
           "kind": "copy",
           "path": "09-project-case-study-gallery.slides.1.testimonial.attribution",
-          "value": "Megan R. · Huntersville homeowner"
+          "value": "NEEDS REVIEW: Approved attribution missing."
         },
         {
           "id": "system-replacement.09-project-case-study-gallery.slides.2.project",
           "kind": "copy",
           "path": "09-project-case-study-gallery.slides.2.project",
-          "value": "Davidson Replacement"
+          "value": "NEEDS REVIEW: Second verified replacement project missing."
         },
         {
           "id": "system-replacement.09-project-case-study-gallery.slides.2.title",
           "kind": "copy",
           "path": "09-project-case-study-gallery.slides.2.title",
-          "value": "A clearer long-term plan for uneven home comfort"
+          "value": "NEEDS REVIEW: Second replacement project headline missing."
         },
         {
           "id": "system-replacement.09-project-case-study-gallery.slides.2.summary",
           "kind": "copy",
           "path": "09-project-case-study-gallery.slides.2.summary",
-          "value": "The homeowner was dealing with inconsistent temperatures and declining confidence in an aging heat pump. North Star reviewed the current setup, the repair outlook, and the scope of a planned replacement."
+          "value": "NEEDS REVIEW: No second verified project situation, completed scope, or outcome is available in the supplied sources."
         },
         {
           "id": "system-replacement.09-project-case-study-gallery.slides.2.equipment.1.label",
@@ -3570,7 +3594,7 @@
           "id": "system-replacement.09-project-case-study-gallery.slides.2.equipment.1.value",
           "kind": "copy",
           "path": "09-project-case-study-gallery.slides.2.equipment.1.value",
-          "value": "Davidson, North Carolina"
+          "value": "NEEDS REVIEW: Project location missing."
         },
         {
           "id": "system-replacement.09-project-case-study-gallery.slides.2.equipment.2.label",
@@ -3582,7 +3606,7 @@
           "id": "system-replacement.09-project-case-study-gallery.slides.2.equipment.2.value",
           "kind": "copy",
           "path": "09-project-case-study-gallery.slides.2.equipment.2.value",
-          "value": "Variable-speed heat pump system"
+          "value": "NEEDS REVIEW: Installed equipment details missing."
         },
         {
           "id": "system-replacement.09-project-case-study-gallery.slides.2.equipment.3.label",
@@ -3594,19 +3618,19 @@
           "id": "system-replacement.09-project-case-study-gallery.slides.2.equipment.3.value",
           "kind": "copy",
           "path": "09-project-case-study-gallery.slides.2.equipment.3.value",
-          "value": "Heat pump and air handler replacement"
+          "value": "NEEDS REVIEW: Verified project scope missing."
         },
         {
           "id": "system-replacement.09-project-case-study-gallery.slides.2.testimonial.quote",
           "kind": "copy",
           "path": "09-project-case-study-gallery.slides.2.testimonial.quote",
-          "value": "We understood what was being proposed, what the project involved, and why it was a better fit than continuing with repairs."
+          "value": "NEEDS REVIEW: Approved project testimonial missing."
         },
         {
           "id": "system-replacement.09-project-case-study-gallery.slides.2.testimonial.attribution",
           "kind": "copy",
           "path": "09-project-case-study-gallery.slides.2.testimonial.attribution",
-          "value": "Daniel K. · Davidson homeowner"
+          "value": "NEEDS REVIEW: Approved attribution missing."
         },
         {
           "id": "system-replacement.09-project-case-study-gallery.slides.1.imageAlt",
@@ -3672,25 +3696,25 @@
           "id": "system-replacement.10-compact-section-header.eyebrow",
           "kind": "copy",
           "path": "10-compact-section-header.eyebrow",
-          "value": "Understand the Proposal"
+          "value": "Supporting Options"
         },
         {
           "id": "system-replacement.10-compact-section-header.heading",
           "kind": "copy",
           "path": "10-compact-section-header.heading",
-          "value": "A replacement quote should clarify more than a price"
+          "value": "Keep the larger system decision connected"
         },
         {
           "id": "system-replacement.10-compact-section-header.body",
           "kind": "copy",
           "path": "10-compact-section-header.body",
-          "value": "Before deciding, you should understand what system direction is being proposed, what the project includes, and what the next steps would look like if you choose to move forward."
+          "value": "Replacement may involve equipment type, project financing, and the care that follows installation. Explore the supporting path that is most relevant to your current questions."
         },
         {
           "id": "system-replacement.10-compact-section-header.items",
           "kind": "copy",
           "path": "10-compact-section-header.items",
-          "value": "Read the proposal as a plan — It should explain the system direction, project scope, and next steps before you decide."
+          "value": "Heat pump service — Review heat pump repair, maintenance, and replacement guidance.\nOngoing maintenance — Plan seasonal care after the replacement project is complete.\nFinancing questions — Ask about current options that may apply to qualifying projects."
         },
         {
           "id": "system-replacement.10-compact-section-header.style.colorRecipe",
@@ -3720,13 +3744,13 @@
           "id": "system-replacement.11-card-links-3-up.serviceItems",
           "kind": "copy",
           "path": "11-card-links-3-up.serviceItems",
-          "value": "System Direction — Discuss what type of replacement may fit the home and what information supports that recommendation. -> /contact?service=system-replacement&topic=system-direction\nProject Scope — Review what the proposed work includes, what still needs confirmation, and how the installation would be planned. -> /contact?service=system-replacement&topic=project-scope\nFinancing Questions — Ask about financing that may be available for qualifying replacement projects without assuming approval or specific terms. -> /contact?service=system-replacement&topic=financing"
+          "value": "Heat Pump Service - Explore heat pump repair, maintenance, and replacement guidance when a heat pump may be part of the next system decision. -> /services/heat-pump-service\nMaintenance & Tune-Ups - Plan seasonal care after installation and keep track of how the new system is operating over time. -> /services/maintenance\nReplacement Financing - Ask about financing that may be available for qualifying replacement projects without assuming approval, rates, or terms. -> /financing"
         },
         {
           "id": "system-replacement.11-card-links-3-up.linkLabel",
           "kind": "copy",
           "path": "11-card-links-3-up.linkLabel",
-          "value": "Ask About This"
+          "value": "Explore This Option"
         },
         {
           "id": "system-replacement.11-card-links-3-up.items.1.imageAlt",
@@ -3804,13 +3828,13 @@
           "id": "system-replacement.12-cta.heading",
           "kind": "copy",
           "path": "12-cta.heading",
-          "value": "Get a clearer view of the system’s next step"
+          "value": "Start your replacement conversation with clearer context"
         },
         {
           "id": "system-replacement.12-cta.body",
           "kind": "copy",
           "path": "12-cta.body",
-          "value": "Request a replacement conversation to review the current situation, the repair outlook, and what a planned replacement could involve. Financing questions can be discussed with the proposal."
+          "value": "Tell us what has been happening with the current system. North Star HVAC will help determine whether the next step is an inspection, repair discussion, or replacement quote."
         },
         {
           "id": "system-replacement.12-cta.primaryAction",
@@ -3852,19 +3876,19 @@
           "id": "system-replacement.13-testimonials.heading",
           "kind": "copy",
           "path": "13-testimonials.heading",
-          "value": "What homeowners valued during the decision"
+          "value": "What homeowners notice during a larger project"
         },
         {
           "id": "system-replacement.13-testimonials.intro",
           "kind": "copy",
           "path": "13-testimonials.intro",
-          "value": "Replacement is a large decision. Homeowners often remember whether the options were explained clearly, the project felt organized, and they had room to decide without pressure."
+          "value": "Replacement proof should show clear communication, an organized installation process, respectful work, and recommendations the homeowner could understand."
         },
         {
           "id": "system-replacement.13-testimonials.testimonials",
           "kind": "copy",
           "path": "13-testimonials.testimonials",
-          "value": "“They explained why a repair still made sense at first and never tried to force the replacement conversation.” — Allison G. · Cornelius\n“We expected a sales pitch. Instead, we got a clear comparison of the repair outlook and the replacement scope.” — Marcus T. · Mooresville\n“The crew kept the project organized, protected the work area, and walked us through the new system before leaving.” — Priya S. · Davidson"
+          "value": "NEEDS REVIEW: Approved replacement testimonial excerpt and attribution missing."
         },
         {
           "id": "system-replacement.13-testimonials.style.colorRecipe",
@@ -3894,13 +3918,13 @@
           "id": "system-replacement.14-faq-accordion-sidebar.heading",
           "kind": "copy",
           "path": "14-faq-accordion-sidebar.heading",
-          "value": "Still weighing the decision?"
+          "value": "Questions about replacement?"
         },
         {
           "id": "system-replacement.14-faq-accordion-sidebar.intro",
           "kind": "copy",
           "path": "14-faq-accordion-sidebar.intro",
-          "value": "Replacement questions are rarely just about the equipment. Reach out directly when you need help understanding the condition, proposal, or next step."
+          "value": "A larger system decision should leave room for practical questions. Reach out directly when the answer you need is not covered here."
         },
         {
           "id": "system-replacement.14-faq-accordion-sidebar.primaryAction",
@@ -3912,7 +3936,7 @@
           "id": "system-replacement.14-faq-accordion-sidebar.faqs",
           "kind": "copy",
           "path": "14-faq-accordion-sidebar.faqs",
-          "value": "Does an older HVAC system automatically need replacement? — No. Age can be part of the conversation, but system condition, repair history, reliability, and the needs of the home provide a more useful basis for comparing repair and replacement.\nCan I compare repair and replacement before deciding? — Yes. The purpose of the evaluation is to understand the current problem and the realistic paths forward. Replacement should not be treated as the automatic answer before the system is reviewed.\nIs financing available for a replacement project? — Financing is referenced as potentially available for replacement projects. Ask about current options, eligibility, and terms when reviewing the proposal. Approval and specific terms are not assumed.\nHow long does an HVAC replacement project take? — Timing depends on the home, selected equipment, project scope, current scheduling, and any work identified during planning. The expected sequence should be reviewed before the project is confirmed."
+          "value": "How do I know whether repair or replacement makes more sense? - The decision should consider the diagnosis, overall system condition, recent repair history, reliability outlook, and how well the current setup serves the home. Replacement is not assumed from age or one repair alone.\nDo you provide free estimates for replacement projects? - Free estimates may apply to replacement projects, while repair visits usually require diagnosis and may involve a diagnostic fee. The final estimate and fee language should be confirmed before publication.\nIs financing available for a replacement system? - Financing is referenced as available for qualifying replacement projects. Current provider, eligibility, approval requirements, rates, terms, and required disclosures should be reviewed with the proposal.\nWhat happens after I request a replacement quote? - North Star HVAC reviews the request and may call or text to learn more about the home and current system. The next step may include an inspection or estimate, but submitting the form does not confirm an appointment."
         },
         {
           "id": "system-replacement.14-faq-accordion-sidebar.style.colorRecipe",
@@ -3948,13 +3972,13 @@
           "id": "system-replacement.15-contact-section-modal-begin.heading",
           "kind": "copy",
           "path": "15-contact-section-modal-begin.heading",
-          "value": "Begin with the system and concern in front of you"
+          "value": "Begin with the system you are considering replacing"
         },
         {
           "id": "system-replacement.15-contact-section-modal-begin.body",
           "kind": "copy",
           "path": "15-contact-section-modal-begin.body",
-          "value": "Choose the system type and the reason you are considering replacement. Any situation selected earlier on the page can carry into the next step of the request."
+          "value": "Choose the system and the type of replacement help you need. Those selections carry into the next step so North Star HVAC can review the request with the right context."
         },
         {
           "id": "system-replacement.15-contact-section-modal-begin.systemPrompt",
@@ -3966,7 +3990,7 @@
           "id": "system-replacement.15-contact-section-modal-begin.requestPrompt",
           "kind": "copy",
           "path": "15-contact-section-modal-begin.requestPrompt",
-          "value": "What brings you here today?"
+          "value": "What would you like help with?"
         },
         {
           "id": "system-replacement.15-contact-section-modal-begin.continueLabel",
@@ -3978,7 +4002,7 @@
           "id": "system-replacement.15-contact-section-modal-begin.helperText",
           "kind": "copy",
           "path": "15-contact-section-modal-begin.helperText",
-          "value": "Your selections carry into the request form and do not commit you to new equipment."
+          "value": "Your selections carry into the request form and remain editable before submission."
         },
         {
           "id": "system-replacement.15-contact-section-modal-begin.style.colorRecipe",
@@ -4075,7 +4099,7 @@
         "copy": 111,
         "image": 6,
         "link": 0,
-        "meta": 83
+        "meta": 85
       },
       "navigation": [
         {
@@ -4161,9 +4185,9 @@
       "promotedAt": "2026-07-27T22:54:23.099Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-29T20:14:44.768Z",
-        "id": "north-star-hvac-v21",
-        "version": 21
+        "createdAt": "2026-07-30T21:50:55.105Z",
+        "id": "north-star-hvac-v22",
+        "version": 22
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -4856,6 +4880,12 @@
           "value": ""
         },
         {
+          "id": "heat-pump-service.06-split-content-with-fixed-image.proofPoints",
+          "kind": "copy",
+          "path": "06-split-content-with-fixed-image.proofPoints",
+          "value": ""
+        },
+        {
           "id": "heat-pump-service.07-longform-with-feature-rail.contentDirection",
           "kind": "meta",
           "path": "07-longform-with-feature-rail.contentDirection",
@@ -5378,6 +5408,12 @@
           "value": ""
         },
         {
+          "id": "heat-pump-service.12-split-content-with-full-image.proofPoints",
+          "kind": "copy",
+          "path": "12-split-content-with-full-image.proofPoints",
+          "value": ""
+        },
+        {
           "id": "heat-pump-service.13-faq-accordion-sidebar.contentDirection",
           "kind": "meta",
           "path": "13-faq-accordion-sidebar.contentDirection",
@@ -5565,7 +5601,7 @@
         }
       ],
       "fieldCounts": {
-        "copy": 102,
+        "copy": 104,
         "image": 9,
         "link": 0,
         "meta": 84
@@ -5654,9 +5690,9 @@
       "promotedAt": "2026-07-28T22:33:22.082Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-29T20:14:44.768Z",
-        "id": "north-star-hvac-v21",
-        "version": 21
+        "createdAt": "2026-07-30T21:50:55.105Z",
+        "id": "north-star-hvac-v22",
+        "version": 22
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -6291,6 +6327,12 @@
           "value": ""
         },
         {
+          "id": "services.06-split-content-with-fixed-image.proofPoints",
+          "kind": "copy",
+          "path": "06-split-content-with-fixed-image.proofPoints",
+          "value": ""
+        },
+        {
           "id": "services.07-split-content-with-fixed-image.contentDirection",
           "kind": "meta",
           "path": "07-split-content-with-fixed-image.contentDirection",
@@ -6378,6 +6420,12 @@
           "id": "services.07-split-content-with-fixed-image.style.reduceBottomPadding",
           "kind": "meta",
           "path": "07-split-content-with-fixed-image.style.reduceBottomPadding",
+          "value": ""
+        },
+        {
+          "id": "services.07-split-content-with-fixed-image.proofPoints",
+          "kind": "copy",
+          "path": "07-split-content-with-fixed-image.proofPoints",
           "value": ""
         },
         {
@@ -6592,7 +6640,7 @@
         }
       ],
       "fieldCounts": {
-        "copy": 51,
+        "copy": 53,
         "image": 8,
         "link": 0,
         "meta": 60
@@ -6681,9 +6729,9 @@
       "promotedAt": "2026-07-27T23:32:15.630Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-29T20:14:44.768Z",
-        "id": "north-star-hvac-v21",
-        "version": 21
+        "createdAt": "2026-07-30T21:50:55.105Z",
+        "id": "north-star-hvac-v22",
+        "version": 22
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -7661,9 +7709,9 @@
       "promotedAt": "2026-07-27T18:41:25.603Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-07-29T20:14:44.768Z",
-        "id": "north-star-hvac-v21",
-        "version": 21
+        "createdAt": "2026-07-30T21:50:55.105Z",
+        "id": "north-star-hvac-v22",
+        "version": 22
       },
       "sourceStage": "strategy-template",
       "template": {

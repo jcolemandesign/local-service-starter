@@ -11,6 +11,7 @@ export type LayoutGridMinHeight =
   | "medium"
   | "tall"
   | "screen"
+  | "sliver"
   | "story";
 export type LayoutGridPadding = "none" | "sml" | "med" | "lrg";
 export type LayoutGridAlignX = "left" | "center" | "right" | "stretch";
@@ -73,6 +74,7 @@ const minHeightClasses: Record<LayoutGridMinHeight, string> = {
   medium: "section-min-medium",
   tall: "section-min-tall",
   screen: "section-min-screen",
+  sliver: "section-min-sliver",
   story: "section-min-story",
 };
 

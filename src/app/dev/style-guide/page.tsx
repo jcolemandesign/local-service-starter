@@ -1377,7 +1377,14 @@ export default function StyleGuidePage() {
       </nav>
 
       <Container className="grid gap-4 py-4 max-md:gap-3 max-md:py-3">
-      <StyleGuideSlotsPanel />
+      <GuideSection
+        eyebrow="Saved states"
+        id="style-guide-slots"
+        title="Style Guide Slots"
+        body="Save the current token set, then load it back later. Loading a slot replaces what is in the editor; it does not promote until you press Promote Style Guide."
+      >
+        <StyleGuideSlotsPanel />
+      </GuideSection>
       <GuideSection
         eyebrow="Type + Grid"
         id="typography"

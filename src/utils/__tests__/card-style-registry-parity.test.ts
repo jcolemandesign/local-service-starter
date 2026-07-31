@@ -117,6 +117,27 @@ describe("card style control registry", () => {
 describe("card links toggle", () => {
   const reading = componentsReadingCardStyleProps();
 
+  /**
+   * `getTemplateCopyFieldsForSection` resolves on component *and* mode *and*
+   * name, and several broad branches match on mode alone - `mode === "scan"`
+   * catches anything before the component-specific branches below it are
+   * reached. A synthetic `{ mode: "Scan", name: component }` therefore tests a
+   * lookup no real section performs, and silently passed the toggle assertions
+   * against a catch-all spec. Drive the real identity instead: the library's
+   * collection title is the semantic mode, and its label is the section name.
+   */
+  function specSectionFor(component: string) {
+    const entry = sectionLibraryV3Registry.find(
+      (candidate) => candidate.component === component,
+    );
+
+    if (!entry) {
+      throw new Error(`${component} is not in the section library registry`);
+    }
+
+    return { component, mode: entry.family, name: entry.label };
+  }
+
   it("is offered only where the section reads the prop", () => {
     const notReading = [...cardLinkComponents]
       .filter((component) => !reading.has(component))
@@ -130,7 +151,7 @@ describe("card links toggle", () => {
 
   it("changes the copy spec in both directions for every section", () => {
     for (const component of cardLinkComponents) {
-      const base = { component, mode: "Scan", name: component };
+      const base = specSectionFor(component);
       const on = getTemplateCopyFieldsForSection({ ...base, cardLinks: "on" });
       const off = getTemplateCopyFieldsForSection({ ...base, cardLinks: "off" });
 
@@ -148,7 +169,7 @@ describe("card links toggle", () => {
 
   it("defaults to links on when the axis is unset", () => {
     for (const component of cardLinkComponents) {
-      const base = { component, mode: "Scan", name: component };
+      const base = specSectionFor(component);
 
       expect(
         JSON.stringify(getTemplateCopyFieldsForSection(base)),

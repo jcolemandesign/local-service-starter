@@ -63,6 +63,7 @@ import {
   type DecisionSplitDecisionLargeAlign,
 } from "@/components/sections/DecisionSplitDecisionLargeSectionV3";
 import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
+import { SectionHeaderSplitLinkSectionV3 } from "@/components/sections/SectionHeaderSplitLinkSectionV3";
 import {
   ProcessStepsBranchingSectionV3,
   type ProcessStepsBranchingAlign,
@@ -91,6 +92,10 @@ import {
   type HeroSplitFixedImageRatio,
   type HeroSplitFixedImageVariant,
 } from "@/components/sections/HeroSplitFixedImageSectionV3";
+import {
+  HeroSplitBentoSectionV3,
+  type HeroSplitBentoVariant,
+} from "@/components/sections/HeroSplitBentoSectionV3";
 import { HeroFullscreenSectionV2 } from "@/components/sections/HeroFullscreenSectionV2";
 import {
   HeroSplitFullHeightSectionV3,
@@ -151,7 +156,9 @@ import {
   cardLinkGridAlignValues,
   getSectionStyleFieldSpecs,
   resolveCardFill,
+  sectionSupportsSectionSpacing,
   servicesBentoVariantValues,
+  splitBentoVariantValues,
   splitImageRatioValues,
   splitImageVariantValues,
   styleFieldPrefix,
@@ -211,6 +218,8 @@ const heroSplitFullHeightVariants = new Set<string>(
 const heroSplitFixedImageVariants = splitImageVariantValues;
 
 const heroSplitFixedImageRatios = splitImageRatioValues;
+
+const heroSplitBentoVariants = splitBentoVariantValues;
 
 const heroCompactAlignments = new Set<string>(["left", "center", "right"]);
 const mainIdeaGridAlignments = new Set<string>(["left", "right"]);
@@ -377,6 +386,25 @@ export function PageTemplatePreview({
   );
 }
 
+/**
+ * Resolved rather than read straight off the section: a template saved before
+ * its component stopped offering section spacing still carries the boolean, and
+ * with the control gone there would be no way to turn it back off. Applying the
+ * same rule the editor uses to offer the control keeps the two in step, on both
+ * the preview and the export.
+ */
+function resolvePaddingAttribute(
+  section: PageTemplatePreviewSection,
+  edge: "top" | "bottom",
+) {
+  const reduce =
+    edge === "top" ? section.reduceTopPadding : section.reduceBottomPadding;
+
+  return reduce && sectionSupportsSectionSpacing(section.component)
+    ? "none"
+    : "default";
+}
+
 function TemplateSectionFrame({
   children,
   className,
@@ -405,12 +433,11 @@ function TemplateSectionFrame({
       data-pagebuilder-color-recipe={section.colorRecipe ?? "default"}
       data-pagebuilder-section-component={section.component}
       data-pagebuilder-section-mode={section.mode}
-      data-pagebuilder-padding-bottom={
-        section.reduceBottomPadding ? "none" : "default"
-      }
-      data-pagebuilder-padding-top={
-        section.reduceTopPadding ? "none" : "default"
-      }
+      data-pagebuilder-padding-bottom={resolvePaddingAttribute(
+        section,
+        "bottom",
+      )}
+      data-pagebuilder-padding-top={resolvePaddingAttribute(section, "top")}
     >
       {children}
     </div>
@@ -449,13 +476,23 @@ export function renderPageTemplateSection(
       return (
         <HeroSplitFixedImageSectionV3
           {...heroSplitProps(fieldSection)}
-          cardBorder={section.cardBorder}
-          cardFill={section.cardFill}
           colorRecipe={section.colorRecipe}
           headingLevel={headingLevel}
           ratio={getHeroSplitFixedImageRatio(section, fieldSection)}
           secondaryActionHref={getServicesHref(navigationLinks)}
           variant={getHeroSplitFixedImageVariant(section)}
+        />
+      );
+    case "HeroSplitBentoSectionV3":
+      return (
+        <HeroSplitBentoSectionV3
+          {...heroSplitProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          colorRecipe={section.colorRecipe}
+          headingLevel={headingLevel}
+          secondaryActionHref={getServicesHref(navigationLinks)}
+          variant={getHeroSplitBentoVariant(section)}
         />
       );
     case "HeroFullscreenSectionV2":
@@ -770,7 +807,14 @@ export function renderPageTemplateSection(
     case "FeatureStackedCardsSectionV3":
       return <FeatureStackedCardsSectionV3 {...featureAsymmetricProps(fieldSection)} />;
     case "DecisionSplitDecisionSectionV3":
-      return <DecisionSplitDecisionSectionV3 {...splitDecisionProps(fieldSection)} />;
+      return (
+        <DecisionSplitDecisionSectionV3
+          {...splitDecisionProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          cardLinks={resolveCardLinks(section)}
+        />
+      );
     case "DecisionQuestionTableSectionV3":
       return (
         <DecisionQuestionTableSectionV3
@@ -801,8 +845,16 @@ export function renderPageTemplateSection(
       return (
         <DecisionSplitLargeCardsSectionV3
           {...splitLargeCardsProps(fieldSection)}
+          align={getTableCompareAlign(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+        />
+      );
+    case "SectionHeaderSplitLinkSectionV3":
+      return (
+        <SectionHeaderSplitLinkSectionV3
+          {...sectionHeaderSplitLinkProps(fieldSection)}
+          headingLevel={headingLevel}
         />
       );
     case "DecisionSplitDecisionLargeSectionV3":
@@ -810,6 +862,9 @@ export function renderPageTemplateSection(
         <DecisionSplitDecisionLargeSectionV3
           {...splitDecisionLargeDetailedProps(fieldSection)}
           align={getDecisionSplitDecisionLargeAlign(section)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          cardLinks={resolveCardLinks(section)}
         />
       );
     case "FAQSectionV3":
@@ -1943,6 +1998,21 @@ function parseMatrixQuadrant(value: string) {
   };
 }
 
+/**
+ * Field names here match the `sectionheadersplitlink` branch of
+ * `getTemplateCopyFieldsForSection` exactly. A mismatch does not error; it
+ * silently renders section-library demo content.
+ */
+function sectionHeaderSplitLinkProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.sectionHeaderSplitLink;
+
+  return {
+    actionLabel: getValue(section, "sectionAction", fallback.actionLabel),
+    body: getBody(section, fallback.body),
+    title: getTitle(section, fallback.title),
+  };
+}
+
 function splitLargeCardsProps(section: FieldSection) {
   const cards = cardItemsWithFallback(
     section,
@@ -1952,11 +2022,6 @@ function splitLargeCardsProps(section: FieldSection) {
 
   return {
     ...sectionLibraryV3Content.decisionSplitLargeCards,
-    actionLabel: getValue(
-      section,
-      "sectionAction",
-      sectionLibraryV3Content.decisionSplitLargeCards.actionLabel,
-    ),
     cards: cards.slice(0, 2).map((item, index) => ({
       body: item.body,
       eyebrow:
@@ -1967,10 +2032,6 @@ function splitLargeCardsProps(section: FieldSection) {
             ].eyebrow,
       title: item.title,
     })),
-    title: getTitle(
-      section,
-      sectionLibraryV3Content.decisionSplitLargeCards.title,
-    ),
   };
 }
 
@@ -3026,6 +3087,12 @@ function getHeroSplitFullHeightVariant(section: PageTemplatePreviewSection) {
 function getHeroSplitFixedImageVariant(section: PageTemplatePreviewSection) {
   return heroSplitFixedImageVariants.has(section.variant ?? "")
     ? (section.variant as HeroSplitFixedImageVariant)
+    : undefined;
+}
+
+function getHeroSplitBentoVariant(section: PageTemplatePreviewSection) {
+  return heroSplitBentoVariants.has(section.variant ?? "")
+    ? (section.variant as HeroSplitBentoVariant)
     : undefined;
 }
 

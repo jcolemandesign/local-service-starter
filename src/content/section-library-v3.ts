@@ -1028,9 +1028,12 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
-  decisionSplitLargeCards: {
+  sectionHeaderSplitLink: {
     title: "Two clear paths after the inspection.",
+    body: "Compare what each path involves before deciding, so the choice rests on the system's condition rather than on pressure.",
     actionLabel: "Compare options",
+  },
+  decisionSplitLargeCards: {
     cards: [
       {
         eyebrow: "Repair",
@@ -1794,15 +1797,19 @@ export const sectionLibraryV3Collections = [
         component: "hero-content-top-image-bottom-v2",
       },
       {
-        label: "Split content and full image hero",
+        label: "Full image split",
         component: "hero-split-full-height-v3",
       },
       {
-        label: "Fixed-ratio split image hero",
+        label: "Fixed-ratio split",
         component: "hero-split-fixed-image-v3",
       },
       {
-        label: "Compact page hero",
+        label: "Fixed-ratio split bento",
+        component: "hero-split-bento-v3",
+      },
+      {
+        label: "Compact hero",
         component: "hero-compact-v3",
       },
       {
@@ -1825,6 +1832,10 @@ export const sectionLibraryV3Collections = [
       {
         label: "Large section header",
         component: "section-header-large-v3",
+      },
+      {
+        label: "Split link header",
+        component: "section-header-split-link-v3",
       },
     ],
   },
@@ -1899,11 +1910,11 @@ export const sectionLibraryV3Collections = [
         component: "content-split-headline-image-v2",
       },
       {
-        label: "Split content with fixed image",
+        label: "Fixed-ratio split",
         component: "content-split-fixed-image-v3",
       },
       {
-        label: "Split content with full image",
+        label: "Full image split",
         component: "content-split-full-image-v3",
       },
       {
@@ -2094,11 +2105,13 @@ export const sectionLibraryV3ComponentBySlug = {
   "hero-content-top-image-bottom-v2": "HeroContentTopImageBottomSectionV2",
   "hero-split-full-height-v3": "HeroSplitFullHeightSectionV3",
   "hero-split-fixed-image-v3": "HeroSplitFixedImageSectionV3",
+  "hero-split-bento-v3": "HeroSplitBentoSectionV3",
   "hero-compact-v3": "HeroCompactSectionV3",
   "hero-services-v3": "HeroServicesSectionV3",
   "hero-compact-service-v3": "HeroCompactServiceSectionV3",
   "section-header-compact-v3": "SectionHeaderCompactSectionV3",
   "section-header-large-v3": "SectionHeaderLargeSectionV3",
+  "section-header-split-link-v3": "SectionHeaderSplitLinkSectionV3",
   "four-card-link-grid-v3": "FourCardLinkGridSectionV3",
   "three-card-link-grid-v3": "ThreeCardLinkGridSectionV3",
   "service-needs-priority-grid-v3": "ServiceNeedsPriorityGridSectionV3",

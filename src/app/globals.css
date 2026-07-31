@@ -42,6 +42,22 @@
      When these drifted apart the nav overhung the hero and the pair ran taller
      than the viewport. */
   --nav-height: 5rem;
+  /* How much of the following section stays visible above the fold when a
+     section asks for "a screen, minus a sliver". Deliberately a gap rather than
+     a 95svh height token: the sliver utility subtracts this from
+     --section-min-screen at the point of use, so the nav-hero retune below
+     still reaches it. */
+  --section-sliver-gap: 5svh;
+  /* Tallest a fixed-ratio media frame may be inside a sliver-height section:
+     the section floor, less the grid frame's own block padding, less a margin
+     on each side so the frame sits inside that padding with visible space
+     above and below rather than filling it edge to edge. Pairs with
+     `.section-min-sliver` - a section on a different floor needs its own
+     figure. */
+  --hero-media-max-h: calc(
+    var(--section-min-screen) - var(--section-sliver-gap) -
+      (2 * var(--site-grid-inset-block)) - (2 * var(--section-space-vsml))
+  );
   --section-min-story: 140svh;
   --section-min-sticky: 180svh;
   --card-min-short: 14rem;
@@ -862,6 +878,25 @@ body {
 
   .section-min-screen {
     min-height: var(--section-min-screen);
+  }
+
+  /* A screen minus a sliver, so the top of the next section is visible and the
+     page reads as scrollable. Derived here at the point of use rather than as
+     its own root token: a `--section-min-sliver: calc(var(--section-min-screen)
+     - ...)` declared on :root would substitute against the root screen value
+     and inherit already frozen, so the nav-hero pair retune could not reach
+     it. */
+  .section-min-sliver {
+    min-height: calc(var(--section-min-screen) - var(--section-sliver-gap));
+  }
+
+  /* Caps a fixed-ratio frame by its height while width stays the explicit
+     dimension. Since height = width / ratio, bounding the width at
+     ratio x max-height bounds the height without the frame having to fight its
+     own aspect-ratio - so the declared ratio holds and nothing is cropped.
+     `--hero-media-ratio` is the frame's ratio as a plain number. */
+  .hero-media-cap {
+    max-width: calc(var(--hero-media-max-h) * var(--hero-media-ratio, 1));
   }
 
   .section-min-story {

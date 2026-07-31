@@ -49,6 +49,25 @@ export const splitImageRatioValues = new Set<string>(
 );
 
 /**
+ * Handedness for the bento tray split.
+ *
+ * Two options rather than the four above because the tray's weighting is not a
+ * choice: the slots are always 6 and 8 adjacent columns, so the only
+ * arrangement left is which side the image tile lands on.
+ */
+export const splitBentoVariantOptions = [
+  { label: "Image right", value: "image-right" },
+  { label: "Image left", value: "image-left" },
+] as const;
+
+export type SplitBentoVariant =
+  (typeof splitBentoVariantOptions)[number]["value"];
+
+export const splitBentoVariantValues = new Set<string>(
+  splitBentoVariantOptions.map((option) => option.value),
+);
+
+/**
  * Content-editor form of the ratio list. The empty value is the "inherit"
  * signal: a staged page stores `""` to mean "use whatever ratio the template
  * saved", so pagebuilder stays the source of truth and an override reads as an
@@ -177,10 +196,18 @@ export const tableCompareAlignValues = new Set<string>(
   tableCompareAlignOptions.map((option) => option.value),
 );
 
-/** Sections that read the table-compare `align` axis. */
+/**
+ * Sections that read the table-compare `align` axis.
+ *
+ * Named for the comparison tables it was built for, but the axis is really
+ * "where do the spare columns go", and any section whose cells fill twelve of
+ * fourteen columns has the same three positions available. The split-large-cards
+ * section is one: two cards of six columns leave the same two spare.
+ */
 export const tableCompareAlignComponents = new Set<string>([
   "DecisionMatrixCardSectionV3",
   "DecisionQuestionTableFourSectionV3",
+  "DecisionSplitLargeCardsSectionV3",
 ]);
 
 export function sectionSupportsTableCompareAlign(component: string) {
@@ -216,11 +243,13 @@ export const cardStyleComponents = new Set<string>([
   "DecisionMatrixCardSectionV3",
   "DecisionQuestionTableFourSectionV3",
   "DecisionQuestionTableSectionV3",
+  "DecisionSplitDecisionLargeSectionV3",
+  "DecisionSplitDecisionSectionV3",
   "DecisionSplitLargeCardsSectionV3",
   "FAQSectionV3",
   "FourCardLinkGridSectionV3",
   "HeroCompactServiceSectionV3",
-  "HeroSplitFixedImageSectionV3",
+  "HeroSplitBentoSectionV3",
   "ProcessStepsBranchingSectionV3",
   "ProcessStepsStaggeredSectionV3",
   "ProjectCaseStudyGallerySectionV3",
@@ -247,9 +276,16 @@ export const cardStyleComponents = new Set<string>([
  * Scoped to ordinary link cards. CTA sections are excluded because their
  * buttons are the conversion action, and the callout sections are excluded
  * because their cards are controls rather than navigation.
+ *
+ * The two split-decision sections are the edge of that rule: their links are
+ * text links reading "talk through a repair", so they sit closer to navigation
+ * than to a CTA button, and a comparison block is often wanted as plain
+ * explanation with the conversion left to a later section.
  */
 export const cardLinkComponents = new Set<string>([
   "ContentThreeColumnMixedSectionV3",
+  "DecisionSplitDecisionLargeSectionV3",
+  "DecisionSplitDecisionSectionV3",
   "FourCardLinkGridSectionV3",
   "ServiceNeedsPriorityGridSectionV3",
   "ThreeCardLinkGridSectionV3",
@@ -265,7 +301,6 @@ export function sectionSupportsCardLinks(component: string) {
  * saved instance would suddenly gain a card panel behind its copy.
  */
 export const cardFillOptInComponents = new Set<string>([
-  "HeroSplitFixedImageSectionV3",
   "ContentSplitFixedImageSectionV3",
 ]);
 
@@ -374,9 +409,10 @@ const cardStyleFields: SectionStyleFieldSpec[] = [
 ];
 
 /**
- * Section spacing is available on every section: it moves the frame's padding
- * and nothing else, so it cannot change which fields a section renders or
- * invalidate approved copy.
+ * Section spacing moves the frame's padding and nothing else, so it can never
+ * change which fields a section renders or invalidate approved copy. Every
+ * content-height section offers it - see `viewportHeightComponents` for the
+ * ones that do not.
  */
 const spacingStyleFields: SectionStyleFieldSpec[] = [
   {
@@ -391,13 +427,54 @@ const spacingStyleFields: SectionStyleFieldSpec[] = [
   },
 ];
 
+/**
+ * Sections whose height is the viewport rather than their content - a full or
+ * near-full screen, a scroll-length story, or a sticky panel.
+ *
+ * These do not offer section spacing. Trimming the padding cannot shorten one
+ * of them, because the min-height immediately takes the space back; all it does
+ * is push the content nearer the edges. A control labelled "section spacing"
+ * that never changes the section's spacing on the page reads as broken, so it
+ * is not offered rather than left to confuse.
+ *
+ * Membership is a fact about the component's own layout: it belongs here if the
+ * section pins a viewport-derived min-height (`section-min-screen`,
+ * `-sliver`, `-story`, `-sticky`). Content-height sections - the compact heroes,
+ * section headers, and every ordinary content block - keep the control, because
+ * on those the padding really is the section's height.
+ */
+export const viewportHeightComponents = new Set<string>([
+  "ContentFixedCoverFadeSectionV2",
+  "ContentHorizontalCardCarouselSectionV2",
+  "ContentScrollWrittenRevealSectionV2",
+  "ContentSplitHeadlineImageSectionV2",
+  "ContentStickyImagePanelSectionV2",
+  "ContentStickyImagePanelSectionV3",
+  "HeroCenteredFloatersSectionV2",
+  "HeroContentTopImageBottomSectionV2",
+  "HeroFullscreenSectionV2",
+  "HeroImageTopContentBottomSectionV2",
+  "HeroSectionV2",
+  "HeroServicesSectionV3",
+  "HeroSplitBentoSectionV3",
+  "HeroSplitFixedImageSectionV3",
+  "HeroSplitFullHeightSectionV3",
+  "HeroStackedHeaderImageSectionV2",
+]);
+
+export function sectionSupportsSectionSpacing(component: string) {
+  return !viewportHeightComponents.has(component);
+}
+
 /** The style overrides a given section component offers. */
 export function getSectionStyleFieldSpecs(
   component: string,
 ): SectionStyleFieldSpec[] {
-  return sectionSupportsCardStyle(component)
-    ? [colorRecipeStyleField, ...cardStyleFields, ...spacingStyleFields]
-    : [colorRecipeStyleField, ...spacingStyleFields];
+  return [
+    colorRecipeStyleField,
+    ...(sectionSupportsCardStyle(component) ? cardStyleFields : []),
+    ...(sectionSupportsSectionSpacing(component) ? spacingStyleFields : []),
+  ];
 }
 
 export function isStyleFieldPath(path: string) {

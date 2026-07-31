@@ -18,6 +18,10 @@ import {
   type HeroSplitFixedImageVariant,
 } from "@/components/sections/HeroSplitFixedImageSectionV3";
 import {
+  HeroSplitBentoSectionV3,
+  type HeroSplitBentoVariant,
+} from "@/components/sections/HeroSplitBentoSectionV3";
+import {
   HeroSplitFullHeightSectionV3,
   type HeroSplitFullHeightVariant,
 } from "@/components/sections/HeroSplitFullHeightSectionV3";
@@ -31,6 +35,7 @@ import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/Services
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
 import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
+import { DecisionSplitDecisionSectionV3 } from "@/components/sections/DecisionSplitDecisionSectionV3";
 import {
   ProcessStepsBranchingSectionV3,
   type ProcessStepsBranchingAlign,
@@ -38,6 +43,7 @@ import {
 import { ProcessStepsStaggeredSectionV3 } from "@/components/sections/ProcessStepsStaggeredSectionV3";
 import { HeroCompactServiceSectionV3 } from "@/components/sections/HeroCompactServiceSectionV3";
 import { SectionHeaderCompactSectionV3 } from "@/components/sections/SectionHeaderCompactSectionV3";
+import { SectionHeaderSplitLinkSectionV3 } from "@/components/sections/SectionHeaderSplitLinkSectionV3";
 import {
   SectionHeaderLargeSectionV3,
   type LargeSectionHeaderSize,
@@ -119,11 +125,15 @@ import {
   sectionSupportsCardLinkGridAlign,
   sectionSupportsCardLinks,
   sectionSupportsCardStyle,
+  sectionSupportsSectionSpacing,
   sectionSupportsTableCompareAlign,
   servicesBentoVariantOptions,
   servicesBentoVariantValues,
   tableCompareAlignOptions,
   tableCompareAlignValues,
+  splitBentoVariantOptions,
+  splitBentoVariantValues,
+  splitImageVariantValues,
   splitImageRatioOptions as fixedRatioSplitRatioOptions,
   splitImageVariantOptions as fixedRatioSplitVariantOptions,
   splitImageVariantOptions as splitContentImageVariantOptions,
@@ -132,6 +142,7 @@ import {
   type CardLinkGridAlign,
   type ServicesBentoVariant,
   type TableCompareAlign,
+  type SplitBentoVariant,
   type SplitImageRatio,
   type SplitImageVariant,
 } from "@/content/section-style-options";
@@ -170,6 +181,7 @@ type PreviewVariableStyle = CSSProperties & Record<`--${string}`, string>;
 const normalSpacingClassName = "pagebuilder-density-normal";
 const splitContentImageComponent = "HeroSplitFullHeightSectionV3";
 const fixedRatioSplitComponent = "HeroSplitFixedImageSectionV3";
+const splitBentoComponent = "HeroSplitBentoSectionV3";
 const contentFixedRatioSplitComponent = "ContentSplitFixedImageSectionV3";
 const contentFullImageSplitComponent = "ContentSplitFullImageSectionV3";
 
@@ -208,8 +220,12 @@ const faqComponent = "FAQSectionV3";
 const contentHorizontalCardCarouselComponent =
   "ContentHorizontalCardCarouselSectionV2";
 const decisionSplitLargeCardsComponent = "DecisionSplitLargeCardsSectionV3";
+const decisionSplitDecisionComponent = "DecisionSplitDecisionSectionV3";
 const decisionQuestionTableComponent = "DecisionQuestionTableSectionV3";
 const decisionMatrixCardComponent = "DecisionMatrixCardSectionV3";
+const decisionQuestionTableFourComponent =
+  "DecisionQuestionTableFourSectionV3";
+const sectionHeaderSplitLinkComponent = "SectionHeaderSplitLinkSectionV3";
 const processStepsBranchingComponent = "ProcessStepsBranchingSectionV3";
 const processStepsStaggeredComponent = "ProcessStepsStaggeredSectionV3";
 const servicesScrollCardsComponent = "ServicesScrollCardsSectionV2";
@@ -518,6 +534,10 @@ function isAnyFixedRatioSplitSection(section: WorkingSection) {
   );
 }
 
+function isSplitBentoSection(section: WorkingSection) {
+  return section.component === splitBentoComponent;
+}
+
 function getContentSplitFixedImageVariant(section: WorkingSection) {
   return section.variant?.replace(/-size-(up|down)$/, "") as
     | ContentSplitFixedImageVariant
@@ -720,6 +740,11 @@ function getFixedRatioSplitVariantLabel(variant: string | undefined) {
   )?.label;
 }
 
+function getSplitBentoVariantLabel(variant: string | undefined) {
+  return splitBentoVariantOptions.find((option) => option.value === variant)
+    ?.label;
+}
+
 function getFixedRatioSplitRatioLabel(ratio: string | undefined) {
   return fixedRatioSplitRatioOptions.find((option) => option.value === ratio)
     ?.label;
@@ -903,6 +928,8 @@ function createInitialWorkingStack(
           ? section.variant ?? fixedRatioSplitVariantOptions[0].value
           : section.component === contentFixedRatioSplitComponent
             ? section.variant ?? fixedRatioSplitVariantOptions[0].value
+            : section.component === splitBentoComponent
+            ? section.variant ?? splitBentoVariantOptions[0].value
             : isCompactHeaderAlignmentSection(section)
               ? section.variant ?? sectionLibraryV3Content.heroCompact.align
               : isHeroCompactServiceSection(section)
@@ -1006,6 +1033,19 @@ function dedupeWorkingStackIds(stack: WorkingSection[]) {
   });
 }
 
+/**
+ * Keeps a section's saved variant across a swap when the incoming component
+ * shares the outgoing one's option list, and falls back to that list's first
+ * entry when it does not.
+ */
+function keepVariantForFamily(
+  variant: string | undefined,
+  family: ReadonlySet<string>,
+  fallback: string,
+) {
+  return variant && family.has(variant) ? variant : fallback;
+}
+
 function updateSectionFromSwapOption(
   section: WorkingSection,
   nextOption: (typeof sectionSwapOptions)[number],
@@ -1024,10 +1064,23 @@ function updateSectionFromSwapOption(
     variant:
       fullImageSplitComponents.has(nextOption.component)
         ? section.variant ?? splitContentImageVariantOptions[0].value
-        : nextOption.component === fixedRatioSplitComponent
-          ? section.variant ?? fixedRatioSplitVariantOptions[0].value
-          : nextOption.component === contentFixedRatioSplitComponent
-            ? section.variant ?? fixedRatioSplitVariantOptions[0].value
+        : nextOption.component === fixedRatioSplitComponent ||
+            nextOption.component === contentFixedRatioSplitComponent
+          ? // Carrying the old value forward only holds while both sides speak
+            // the same vocabulary. Swapping in from the bento would bring an
+            // "image-left" the fixed-ratio family does not recognise, which
+            // renders at the component default with no control lit up.
+            keepVariantForFamily(
+              section.variant,
+              splitImageVariantValues,
+              fixedRatioSplitVariantOptions[0].value,
+            )
+          : nextOption.component === splitBentoComponent
+            ? keepVariantForFamily(
+                section.variant,
+                splitBentoVariantValues,
+                splitBentoVariantOptions[0].value,
+              )
             : nextOption.component === heroCompactComponent ||
                 nextOption.component === sectionHeaderCompactComponent
               ? sectionLibraryV3Content.heroCompact.align
@@ -1206,6 +1259,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     name: "Fixed-ratio split image",
   },
   {
+    component: "HeroSplitBentoSectionV3",
+    instruction:
+      "Use a two-slot bento tray: copy in the narrower slot and a cropped image tile beside it, both filling the full height of the section.",
+    layoutGrid: 14,
+    mode: "Hero",
+    name: "Fixed-ratio split bento",
+  },
+  {
     component: "HeroFullscreenSectionV2",
     instruction:
       "Use a strong image, calm h1, review proof, and one visible request path.",
@@ -1247,6 +1308,13 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     layoutGrid: 14,
     mode: "Hero",
     name: "Compact service hero",
+  },
+  {
+    component: "SectionHeaderSplitLinkSectionV3",
+    instruction:
+      "Introduce the block below with a headline on one side and a short description over a single text link on the other.",
+    mode: "Section Header",
+    name: "Split link header",
   },
   {
     component: "SectionHeaderCompactSectionV3",
@@ -1582,7 +1650,7 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
   {
     component: "DecisionSplitLargeCardsSectionV3",
     instruction:
-      "Use two large three-column decision cards with a simple left-aligned header and link above them.",
+      "Use two large decision cards side by side. Add a section header above it when the block needs a headline.",
     mode: "Decision",
     name: "Split large cards",
   },
@@ -1770,42 +1838,29 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
   },
 ] as const;
 
+/**
+ * The layout glyph a section shows in the add panel. Pattern only - the text
+ * beside it is the canonical library label, same as every other surface. These
+ * used to carry their own shorter `label`, which is where the two vocabularies
+ * came from: the add panel read the signifier, the sections panel read the
+ * library. The short names won and moved into the library, so there is nothing
+ * left here to disagree with it.
+ */
 type InnerOptionSignifier = {
-  label: string;
   pattern: "align" | "full" | "fixed";
 };
 
 const innerOptionSignifiers: Partial<
   Record<SectionSwapOption["component"], InnerOptionSignifier>
 > = {
-  HeroSplitFullHeightSectionV3: {
-    label: "Full image split",
-    pattern: "full",
-  },
-  HeroSplitFixedImageSectionV3: {
-    label: "Fixed-ratio split",
-    pattern: "fixed",
-  },
-  ContentSplitFixedImageSectionV3: {
-    label: "Fixed-ratio split",
-    pattern: "fixed",
-  },
-  ContentSplitFullImageSectionV3: {
-    label: "Full image split",
-    pattern: "full",
-  },
-  HeroCompactSectionV3: {
-    label: "Compact hero",
-    pattern: "align",
-  },
-  SectionHeaderCompactSectionV3: {
-    label: "Section header content",
-    pattern: "align",
-  },
-  SectionHeaderLargeSectionV3: {
-    label: "Large section header",
-    pattern: "align",
-  },
+  HeroSplitFullHeightSectionV3: { pattern: "full" },
+  HeroSplitFixedImageSectionV3: { pattern: "fixed" },
+  HeroSplitBentoSectionV3: { pattern: "full" },
+  ContentSplitFixedImageSectionV3: { pattern: "fixed" },
+  ContentSplitFullImageSectionV3: { pattern: "full" },
+  HeroCompactSectionV3: { pattern: "align" },
+  SectionHeaderCompactSectionV3: { pattern: "align" },
+  SectionHeaderLargeSectionV3: { pattern: "align" },
 };
 
 function getInnerOptionSignifier(component: string) {
@@ -1814,17 +1869,13 @@ function getInnerOptionSignifier(component: string) {
 
 function sortSectionSwapOptions(options: readonly SectionSwapOption[]) {
   return [...options].sort((first, second) => {
-    const firstSignifier = getInnerOptionSignifier(first.component);
-    const secondSignifier = getInnerOptionSignifier(second.component);
-    const firstGroup = firstSignifier ? 0 : 1;
-    const secondGroup = secondSignifier ? 0 : 1;
+    const firstGroup = getInnerOptionSignifier(first.component) ? 0 : 1;
+    const secondGroup = getInnerOptionSignifier(second.component) ? 0 : 1;
 
     return (
       firstGroup - secondGroup ||
-      (
-        firstSignifier?.label ?? getSectionDisplayLabel(first)
-      ).localeCompare(
-        secondSignifier?.label ?? getSectionDisplayLabel(second),
+      getSectionDisplayLabel(first).localeCompare(
+        getSectionDisplayLabel(second),
       )
     );
   });
@@ -1863,10 +1914,24 @@ function SectionLayoutGridBadge({
   );
 }
 
+/** Names the glyph for the icon-only case, where no label sits beside it. */
+const innerOptionPatternLabels: Record<InnerOptionSignifier["pattern"], string> =
+  {
+    align: "Aligned content layout",
+    fixed: "Fixed-ratio image layout",
+    full: "Full image layout",
+  };
+
+/**
+ * Omit `label` where the section name is already on screen next to the pill -
+ * the glyph still carries the layout distinction without echoing the name.
+ */
 function InnerLayoutPill({
+  label,
   signifier,
   tone,
 }: {
+  label?: string;
   signifier: InnerOptionSignifier;
   tone: "dark" | "light";
 }) {
@@ -1897,15 +1962,18 @@ function InnerLayoutPill({
 
   return (
     <span
+      aria-label={label ? undefined : innerOptionPatternLabels[signifier.pattern]}
       className={cx(
         "inline-flex items-center gap-1.5 rounded-[var(--chrome-radius-control)] border px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-[0.08em]",
         tone === "dark"
           ? "token-chrome-badge"
           : "border-service-border bg-service-surface text-service-muted",
       )}
+      role={label ? undefined : "img"}
+      title={label ? undefined : innerOptionPatternLabels[signifier.pattern]}
     >
       {icon}
-      {signifier.label}
+      {label}
     </span>
   );
 }
@@ -1954,6 +2022,11 @@ function buildPageInstruction({
      getFixedRatioSplitRatioLabel(section.ratio) ??
      fixedRatioSplitRatioOptions[0].label
    } (${section.ratio ?? fixedRatioSplitRatioOptions[0].value})`
+       : isSplitBentoSection(section)
+         ? `Variant: ${
+             getSplitBentoVariantLabel(section.variant) ??
+             splitBentoVariantOptions[0].label
+           } (${section.variant ?? splitBentoVariantOptions[0].value})`
        : isServicesBentoSection(section)
          ? `Variant: ${
              getServicesBentoVariantLabel(section.variant) ??
@@ -2121,6 +2194,34 @@ function CardBorderIcon({ bordered }: { bordered: boolean }) {
         width="18"
         x="3"
         y="5"
+      />
+    </svg>
+  );
+}
+
+/**
+ * A plain check and cross rather than a drawing of a link: the axis is on/off,
+ * and the two glyphs read as a pair at 24px where a chain link and a broken
+ * chain link do not.
+ */
+function CardLinksIcon({ linked }: { linked: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d={
+          linked
+            ? "m5 12.5 4.5 4.5L19 7.5"
+            : "M6.75 6.75 17.25 17.25M17.25 6.75 6.75 17.25"
+        }
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
       />
     </svg>
   );
@@ -3145,6 +3246,20 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateSplitBentoVariant(
+    sectionId: string,
+    variant: SplitBentoVariant,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && isSplitBentoSection(section)
+          ? { ...section, variant }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateFixedRatioSplitRatio(
     sectionId: string,
     ratio: FixedRatioSplitRatio,
@@ -3196,6 +3311,8 @@ export function PagebuilderShell({
           ? splitContentImageVariantOptions[0].value
           : nextOption.component === fixedRatioSplitComponent
             ? fixedRatioSplitVariantOptions[0].value
+            : nextOption.component === splitBentoComponent
+              ? splitBentoVariantOptions[0].value
             : nextOption.component === contentFixedRatioSplitComponent
               ? fixedRatioSplitVariantOptions[0].value
               : nextOption.component === heroCompactComponent ||
@@ -3457,8 +3574,6 @@ export function PagebuilderShell({
         ) : isFixedRatioSplitSection(section) ? (
           <HeroSplitFixedImageSectionV3
             {...sectionLibraryV3Content.heroSplitFullHeight}
-            cardBorder={getSectionCardBorder(section)}
-            cardFill={getSectionCardFill(section)}
             colorRecipe={getSectionColorRecipe(section)}
             headingLevel={headingLevel}
             ratio={
@@ -3469,6 +3584,18 @@ export function PagebuilderShell({
               (section.variant ??
                 fixedRatioSplitVariantOptions[0]
                   .value) as HeroSplitFixedImageVariant
+            }
+          />
+        ) : isSplitBentoSection(section) ? (
+          <HeroSplitBentoSectionV3
+            {...sectionLibraryV3Content.heroSplitFullHeight}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
+            colorRecipe={getSectionColorRecipe(section)}
+            headingLevel={headingLevel}
+            variant={
+              (section.variant ??
+                splitBentoVariantOptions[0].value) as HeroSplitBentoVariant
             }
           />
         ) : isContentFixedRatioSplitSection(section) ? (
@@ -3604,6 +3731,9 @@ export function PagebuilderShell({
           <DecisionSplitDecisionLargeSectionV3
             {...sectionLibraryV3Content.decisionSplitDecisionLarge}
             align={getDecisionSplitDecisionLargeAlign(section)}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
+            cardLinks={getCardLinks(section)}
           />
         ) : section.component === contentStickyCardStreamComponent ? (
           <ContentStickyCardStreamSectionV2
@@ -3643,7 +3773,10 @@ export function PagebuilderShell({
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
           />
-        ) : sectionSupportsTableCompareAlign(section.component) ? (
+        ) : // Named outright rather than "whatever else reads the align axis":
+        // that axis is shared by sections this branch does not render, so a
+        // capability test here would preview the wrong component.
+        section.component === decisionQuestionTableFourComponent ? (
           <DecisionQuestionTableFourSectionV3
             {...sectionLibraryV3Content.decisionQuestionTableFour}
             align={getTableCompareAlign(section)}
@@ -3704,8 +3837,20 @@ export function PagebuilderShell({
         ) : section.component === decisionSplitLargeCardsComponent ? (
           <DecisionSplitLargeCardsSectionV3
             {...sectionLibraryV3Content.decisionSplitLargeCards}
+            align={getTableCompareAlign(section)}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
+          />
+        ) : section.component === sectionHeaderSplitLinkComponent ? (
+          <SectionHeaderSplitLinkSectionV3
+            {...sectionLibraryV3Content.sectionHeaderSplitLink}
+          />
+        ) : section.component === decisionSplitDecisionComponent ? (
+          <DecisionSplitDecisionSectionV3
+            {...sectionLibraryV3Content.decisionSplitDecision}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
+            cardLinks={getCardLinks(section)}
           />
         ) : section.component === processStepsStaggeredComponent ? (
           <ProcessStepsStaggeredSectionV3
@@ -3743,10 +3888,15 @@ export function PagebuilderShell({
           data-pagebuilder-card-fill={getSectionCardFill(section)}
           data-pagebuilder-color-recipe={getSectionColorRecipe(section)}
           data-pagebuilder-padding-top={
-            section.reduceTopPadding ? "none" : "default"
+            section.reduceTopPadding && sectionSupportsSectionSpacing(section.component)
+              ? "none"
+              : "default"
           }
           data-pagebuilder-padding-bottom={
-            section.reduceBottomPadding ? "none" : "default"
+            section.reduceBottomPadding &&
+            sectionSupportsSectionSpacing(section.component)
+              ? "none"
+              : "default"
           }
           key={section.id}
           onClick={(event) => {
@@ -4340,6 +4490,7 @@ export function PagebuilderShell({
                           ) : null}
 
                           <div className="grid grid-cols-2 items-start gap-4">
+                          {sectionSupportsSectionSpacing(section.component) ? (
                           <fieldset className="grid gap-2">
                             <legend className="type-caption font-semibold text-current">
                               Section spacing
@@ -4397,6 +4548,7 @@ export function PagebuilderShell({
                               </button>
                             </div>
                           </fieldset>
+                          ) : null}
 
                           {isCardLinkGridSection(section) ? (
                             <fieldset className="grid gap-2">
@@ -4857,7 +5009,7 @@ export function PagebuilderShell({
                               <legend className="type-caption font-semibold text-current">
                                 Card links
                               </legend>
-                              <div className="grid grid-cols-2 gap-2">
+                              <div className="flex items-center gap-2">
                                 {cardLinksOptions.map((option) => {
                                   const optionIsActive =
                                     getCardLinks(section) === option.value;
@@ -4866,18 +5018,23 @@ export function PagebuilderShell({
                                     <button
                                       aria-pressed={optionIsActive}
                                       className={cx(
-                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
-                                        optionIsActive
-                                          ? "token-chrome-card-active"
-                                          : "token-chrome-card",
+                                        "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                        optionIsActive &&
+                                          "token-chrome-card-active",
                                       )}
                                       key={option.value}
                                       onClick={() =>
                                         updateCardLinks(section.id, option.value)
                                       }
+                                      title={option.label}
                                       type="button"
                                     >
-                                      {option.label}
+                                      <CardLinksIcon
+                                        linked={option.value === "on"}
+                                      />
+                                      <span className="sr-only">
+                                        {option.label}
+                                      </span>
                                     </button>
                                   );
                                 })}
@@ -5430,7 +5587,7 @@ export function PagebuilderShell({
                                 })}
                               </div>
                               <p className="type-caption text-current/60">
-                                The twelve-column table leaves two spare
+                                The twelve-column body leaves two spare
                                 columns. This decides where they fall.
                               </p>
                             </fieldset>
@@ -5475,6 +5632,49 @@ export function PagebuilderShell({
                               <p className="type-caption text-current/60">
                                 Two across is a 2x2 of four. Three across takes
                                 three or six, so the last row stays full.
+                              </p>
+                            </fieldset>
+                          ) : null}
+
+                          {isSplitBentoSection(section) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Bento Layout
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {splitBentoVariantOptions.map((option) => {
+                                  const optionIsActive =
+                                    (section.variant ??
+                                      splitBentoVariantOptions[0].value) ===
+                                    option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateSplitBentoVariant(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="type-caption text-current/60">
+                                Two adjacent slots, copy 6 and image 8 columns,
+                                both the full height of the section. The image
+                                crops to whatever shape that leaves.
                               </p>
                             </fieldset>
                           ) : null}
@@ -5740,6 +5940,7 @@ export function PagebuilderShell({
                                 ) : null}
                                 {innerOptionSignifier ? (
                                   <InnerLayoutPill
+                                    label={getSectionDisplayLabel(option)}
                                     signifier={innerOptionSignifier}
                                     tone="dark"
                                   />
@@ -6111,6 +6312,7 @@ export function PagebuilderShell({
                                       ) : null}
                                       {innerOptionSignifier ? (
                                         <InnerLayoutPill
+                                          label={getSectionDisplayLabel(option)}
                                           signifier={innerOptionSignifier}
                                           tone="light"
                                         />

@@ -1228,9 +1228,13 @@ export function getTemplateAssetFieldsForSection(
     ];
   }
 
+  // `herosplitbento` joins the no-ratio group for the same reason
+  // `contentsplitfullimage` above does: its tile takes the tray's height and
+  // crops, so there is no frame to choose a ratio for.
   if (
     component.includes("herosplitfullheight") ||
     component.includes("herosplitfixedimage") ||
+    component.includes("herosplitbento") ||
     component.includes("herocontenttopimagebottom")
   ) {
     return [

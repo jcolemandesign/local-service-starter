@@ -12,8 +12,17 @@ export type DecisionSplitDecisionLargeCard = {
 
 export type DecisionSplitDecisionLargeSectionV3Props = {
   align?: DecisionSplitDecisionLargeAlign;
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
+  /** "off" drops each card's bottom-aligned text link, leaving the pair as
+   *  static comparison panels. */
+  cardLinks?: "on" | "off";
   cards: readonly DecisionSplitDecisionLargeCard[];
 };
+
+function cx(...classes: Array<string | false | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
 
 const cardStartClasses: Record<
   DecisionSplitDecisionLargeAlign,
@@ -26,6 +35,9 @@ const cardStartClasses: Record<
 
 export function DecisionSplitDecisionLargeSectionV3({
   align = "center",
+  cardBorder = "on",
+  cardFill = "solid",
+  cardLinks = "on",
   cards,
 }: DecisionSplitDecisionLargeSectionV3Props) {
   return (
@@ -45,7 +57,13 @@ export function DecisionSplitDecisionLargeSectionV3({
             className={`col-span-6 ${cardStartClasses[align][index]} max-lg:col-span-5 max-lg:col-start-auto max-md:col-span-6 max-sm:col-span-2`}
             key={card.title}
           >
-            <article className="fluid-type-frame flex h-full min-h-96 flex-col rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-8 text-service-ink shadow-service max-md:min-h-0 max-md:p-6">
+            <article
+              className={cx(
+                "fluid-type-frame flex h-full min-h-96 flex-col rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-8 text-service-ink shadow-service max-md:min-h-0 max-md:p-6",
+                cardFill === "none" && "!bg-transparent !shadow-none",
+                cardBorder === "off" && "!border-transparent",
+              )}
+            >
               <p className="type-label text-service-accent">{card.eyebrow}</p>
               <h2 className="type-heading-xl wrap-pretty mt-eyebrow-heading-lg text-service-ink">
                 {card.title}
@@ -77,12 +95,14 @@ export function DecisionSplitDecisionLargeSectionV3({
                 ))}
               </ul>
 
-              <a
-                className="type-label mt-auto inline-flex min-h-12 w-fit items-center border-b border-service-ink pt-8 text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-                href="#contact"
-              >
-                {card.actionLabel}
-              </a>
+              {cardLinks === "on" ? (
+                <a
+                  className="type-label mt-auto inline-flex min-h-12 w-fit items-center border-b border-service-ink pt-8 text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                  href="#contact"
+                >
+                  {card.actionLabel}
+                </a>
+              ) : null}
             </article>
           </LayoutGridItem>
         ))}

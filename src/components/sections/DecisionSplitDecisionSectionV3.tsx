@@ -15,10 +15,20 @@ type SplitDecisionCard = {
 type DecisionSplitDecisionSectionV3Props = {
   actionLabel: string;
   body: string;
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
+  /** The two comparison cards carry no links of their own, so "off" drops the
+   *  one text link under the left-column explanation and leaves the whole
+   *  section static. */
+  cardLinks?: "on" | "off";
   cards: readonly SplitDecisionCard[];
   eyebrow: string;
   title: string;
 };
+
+function cx(...classes: Array<string | false | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
 
 function getCardPulse(index: number) {
   return {
@@ -34,6 +44,9 @@ function getCardPulse(index: number) {
 export function DecisionSplitDecisionSectionV3({
   actionLabel,
   body,
+  cardBorder = "on",
+  cardFill = "solid",
+  cardLinks = "on",
   cards,
   eyebrow,
   title,
@@ -55,14 +68,16 @@ export function DecisionSplitDecisionSectionV3({
             <p className="type-text-lg wrap-pretty mt-heading-body-md text-service-muted">
               {body}
             </p>
-            <div className="mt-body-actions-md">
-              <a
-                className="type-label inline-flex min-h-12 items-center border-b border-service-ink text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-                href="#contact"
-              >
-                {actionLabel}
-              </a>
-            </div>
+            {cardLinks === "on" ? (
+              <div className="mt-body-actions-md">
+                <a
+                  className="type-label inline-flex min-h-12 items-center border-b border-service-ink text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                  href="#contact"
+                >
+                  {actionLabel}
+                </a>
+              </div>
+            ) : null}
           </div>
         </SevenColumnGridItem>
 
@@ -70,7 +85,11 @@ export function DecisionSplitDecisionSectionV3({
           <div className="grid grid-cols-2 items-stretch gap-[var(--site-grid-gap)] max-md:grid-cols-1">
             {cards.slice(0, 2).map((card, index) => (
               <motion.article
-                className="fluid-type-frame radius-medium min-h-56 border border-service-border bg-service-surface p-5 text-service-ink shadow-none max-md:min-h-0"
+                className={cx(
+                  "fluid-type-frame radius-medium min-h-56 border border-service-border bg-service-surface p-5 text-service-ink shadow-none max-md:min-h-0",
+                  cardFill === "none" && "!bg-transparent !shadow-none",
+                  cardBorder === "off" && "!border-transparent",
+                )}
                 initial={false}
                 key={card.title}
                 viewport={{ amount: 0.85, once: true }}

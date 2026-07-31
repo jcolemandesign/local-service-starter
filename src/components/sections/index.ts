@@ -131,6 +131,7 @@ export {
   type DecisionSplitDecisionLargeSectionV3Props,
 } from "./DecisionSplitDecisionLargeSectionV3";
 export { DecisionSplitLargeCardsSectionV3 } from "./DecisionSplitLargeCardsSectionV3";
+export { SectionHeaderSplitLinkSectionV3 } from "./SectionHeaderSplitLinkSectionV3";
 export {
   DecisionQuestionTableSectionV3,
   type DecisionQuestionTableColumn,
@@ -167,6 +168,7 @@ export { HeroImageTopContentBottomSectionV2 } from "./HeroImageTopContentBottomS
 export { HeroLogoStatementSection } from "./HeroLogoStatementSection";
 export { HeroSection } from "./HeroSection";
 export { HeroSectionV2 } from "./HeroSectionV2";
+export { HeroSplitBentoSectionV3 } from "./HeroSplitBentoSectionV3";
 export { HeroSplitFixedImageSectionV3 } from "./HeroSplitFixedImageSectionV3";
 export { HeroSplitFullHeightSectionV3 } from "./HeroSplitFullHeightSectionV3";
 export { HeroStackedHeaderImageSectionV2 } from "./HeroStackedHeaderImageSectionV2";

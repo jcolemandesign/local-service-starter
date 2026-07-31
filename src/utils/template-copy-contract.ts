@@ -711,17 +711,22 @@ function hashContractShape(value: string) {
  * for a shape it no longer has.
  */
 /**
- * Drops the shared link label from a spec when the template has card links
- * off. These two sections never asked copy for destinations - their links
- * resolve elsewhere - so the label is the only field the toggle removes.
+ * Drops a spec's link-label fields when the template has card links off. None
+ * of these sections ask copy for destinations - their links resolve elsewhere -
+ * so labels are the only fields the toggle removes.
+ *
+ * `isLinkField` defaults to the shared `linkLabel` used by the card-grid
+ * sections. The split-decision family names its labels per card, or per
+ * section, so it passes its own matcher.
  */
 function withCardLinkFields(
   section: TemplateCopyContractSection,
   fields: TemplateCopyFieldSpec[],
+  isLinkField: (name: string) => boolean = (name) => name === "linkLabel",
 ) {
   return wantsCardLinks(section)
     ? fields
-    : fields.filter((field) => field.name !== "linkLabel");
+    : fields.filter((field) => !isLinkField(field.name));
 }
 
 function wantsCardLinks(section: TemplateCopyContractSection) {
@@ -1028,7 +1033,9 @@ export function getTemplateCopyFieldsForSection(
   }
 
   if (component.includes("decisionsplitdecisionlarge")) {
-    return splitDecisionLargeFields();
+    return withCardLinkFields(section, splitDecisionLargeFields(), (name) =>
+      name.endsWith(".actionLabel"),
+    );
   }
 
   if (component.includes("projectcasestudygallery")) {
@@ -2211,38 +2218,44 @@ export function getTemplateCopyFieldsForSection(
   }
 
   if (component.includes("decisionsplitdecision")) {
-    return [
-      {
-        example: "Repair or replace? Start with the facts",
-        name: "heading",
-        purpose: "Comparison section headline.",
-        target: "36-74 characters.",
-      },
-      {
-        example:
-          "The right path depends on the system condition, the current issue, and what makes sense for the home.",
-        name: "intro",
-        purpose: "Short decision context in the left column.",
-        target: "90-180 characters.",
-      },
-      {
-        example: [
-          "Repair - Use a practical repair when the diagnosis and system condition support it.",
-          "Replacement - Consider the longer-term option when age, reliability, or repeat repairs change the equation.",
-        ],
-        format: "Exactly 2 items, one per line as Title - Description.",
-        itemCount: 2,
-        name: "decisionItems",
-        purpose: "The two visible comparison cards. Required; do not use steps for this section.",
-        target: "Exactly 2 items. Titles 12-32 characters. Descriptions 90-170 characters.",
-      },
-      {
-        example: "Talk through your options",
-        name: "sectionAction",
-        purpose: "Text link below the left-column explanation.",
-        target: "12-28 characters.",
-      },
-    ];
+    return withCardLinkFields(
+      section,
+      [
+        {
+          example: "Repair or replace? Start with the facts",
+          name: "heading",
+          purpose: "Comparison section headline.",
+          target: "36-74 characters.",
+        },
+        {
+          example:
+            "The right path depends on the system condition, the current issue, and what makes sense for the home.",
+          name: "intro",
+          purpose: "Short decision context in the left column.",
+          target: "90-180 characters.",
+        },
+        {
+          example: [
+            "Repair - Use a practical repair when the diagnosis and system condition support it.",
+            "Replacement - Consider the longer-term option when age, reliability, or repeat repairs change the equation.",
+          ],
+          format: "Exactly 2 items, one per line as Title - Description.",
+          itemCount: 2,
+          name: "decisionItems",
+          purpose:
+            "The two visible comparison cards. Required; do not use steps for this section.",
+          target:
+            "Exactly 2 items. Titles 12-32 characters. Descriptions 90-170 characters.",
+        },
+        {
+          example: "Talk through your options",
+          name: "sectionAction",
+          purpose: "Text link below the left-column explanation.",
+          target: "12-28 characters.",
+        },
+      ],
+      (name) => name === "sectionAction",
+    );
   }
 
   if (component.includes("decisionmatrixcard")) {
@@ -2356,14 +2369,11 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  // Heading and action label used to live here too. They moved out with the
+  // header itself - see `sectionheadersplitlink` below - so this section now
+  // asks for nothing but its two cards.
   if (component.includes("decisionsplitlarge")) {
     return [
-      {
-        example: "Choose the service path that fits your system",
-        name: "heading",
-        purpose: "Decision-card section headline.",
-        target: "36-74 characters.",
-      },
       {
         example: [
           "Repair the current system - Review the diagnosis, proposed repair, and what the system needs now.",
@@ -2375,10 +2385,29 @@ export function getTemplateCopyFieldsForSection(
         purpose: "The two visible decision cards. Required; do not use steps for this section.",
         target: "Exactly 2 items. Titles 12-32 characters. Descriptions 90-170 characters.",
       },
+    ];
+  }
+
+  if (component.includes("sectionheadersplitlink")) {
+    return [
+      {
+        example: "Choose the service path that fits your system",
+        name: "heading",
+        purpose: "Headline on one side of the split header.",
+        target: "36-74 characters.",
+      },
+      {
+        example:
+          "Compare what each path involves before deciding, so the choice rests on the system's condition rather than on pressure.",
+        name: "body",
+        purpose:
+          "Short description above the link, on the opposite side to the heading. One or two sentences; it introduces the block below rather than repeating the headline.",
+        target: "90-180 characters.",
+      },
       {
         example: "Compare your options",
         name: "sectionAction",
-        purpose: "Optional action label when the template shows one.",
+        purpose: "Label for the single text link under the description.",
         target: "12-28 characters.",
       },
     ];

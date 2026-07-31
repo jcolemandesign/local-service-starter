@@ -78,6 +78,8 @@ import {
   TrustMarqueeSection,
   TrustMarqueeSectionV3,
 } from "@/components/sections";
+import { HeroSplitBentoSectionLibraryDemo } from "@/components/sections/HeroSplitBentoSectionLibraryDemo";
+import { SectionHeaderSplitLinkSectionV3 } from "@/components/sections/SectionHeaderSplitLinkSectionV3";
 import { HeroSplitFixedImageSectionLibraryDemo } from "@/components/sections/HeroSplitFixedImageSectionLibraryDemo";
 import { HeroSplitFullImageSectionLibraryDemo } from "@/components/sections/HeroSplitFullImageSectionLibraryDemo";
 import { ContentSplitFixedImageSectionLibraryDemo } from "@/components/sections/ContentSplitFixedImageSectionLibraryDemo";
@@ -135,6 +137,12 @@ const sectionElements = {
   ),
   "hero-split-fixed-image-v3": (
     <HeroSplitFixedImageSectionLibraryDemo
+      {...sectionLibraryV3Content.heroSplitFullHeight}
+      headingLevel={2}
+    />
+  ),
+  "hero-split-bento-v3": (
+    <HeroSplitBentoSectionLibraryDemo
       {...sectionLibraryV3Content.heroSplitFullHeight}
       headingLevel={2}
     />
@@ -295,6 +303,11 @@ const sectionElements = {
   "decision-split-large-cards-v3": (
     <DecisionSplitLargeCardsSectionV3
       {...sectionLibraryV3Content.decisionSplitLargeCards}
+    />
+  ),
+  "section-header-split-link-v3": (
+    <SectionHeaderSplitLinkSectionV3
+      {...sectionLibraryV3Content.sectionHeaderSplitLink}
     />
   ),
   "decision-split-decision-large-v3": (

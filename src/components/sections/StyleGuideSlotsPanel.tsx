@@ -96,25 +96,22 @@ export function StyleGuideSlotsPanel() {
   }
 
   return (
-    <section className="grid gap-4 rounded-sm border border-service-border bg-white p-5">
-      <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <div>
-          <p className="type-label text-service-accent">Saved states</p>
-          <h2 className="type-heading-sm mt-2 text-service-ink">
-            Style Guide Slots
-          </h2>
-          <p className="type-caption mt-2 text-service-muted">
-            Save the current token set, then load it back later. Loading a slot
-            replaces what is in the editor; it does not promote until you press
-            Promote Style Guide.
-          </p>
-        </div>
-        {status ? (
-          <p className="type-caption text-service-muted" role="status">
-            {status}
-          </p>
-        ) : null}
-      </div>
+    // Heading, blurb and panel chrome belong to the GuideSection accordion this
+    // sits inside - see `/dev/style-guide`. Rendering its own would put a second
+    // title under the one in the summary.
+    //
+    // The accordion body pads its bottom but not its top, so the first row of
+    // slots would otherwise start flush against the summary. Padding it here
+    // rather than in GuideSection keeps every other section's spacing as it is.
+    <div className="grid gap-4 pt-6">
+      {status ? (
+        <p
+          className="type-caption justify-self-end text-service-muted"
+          role="status"
+        >
+          {status}
+        </p>
+      ) : null}
 
       <ul className="grid grid-cols-2 gap-3 max-lg:grid-cols-1">
         {slotIds.map((slotId, index) => {
@@ -208,7 +205,7 @@ export function StyleGuideSlotsPanel() {
           );
         })}
       </ul>
-    </section>
+    </div>
   );
 }
 

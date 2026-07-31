@@ -1616,7 +1616,7 @@
         },
         {
           "component": "DecisionSplitLargeCardsSectionV3",
-          "instruction": "Use two large three-column decision cards with a simple left-aligned header and link above them.",
+          "instruction": "Use two large decision cards side by side. Add a section header above it when the block needs a headline.",
           "mode": "Decision",
           "name": "Split large cards",
           "originalComponent": "DecisionSplitLargeCardsSectionV3",

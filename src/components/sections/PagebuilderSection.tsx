@@ -57,6 +57,7 @@ import { DecisionQuestionTableSectionV3 } from "@/components/sections/DecisionQu
 import { DecisionSplitDecisionSectionV3 } from "@/components/sections/DecisionSplitDecisionSectionV3";
 import { DecisionSplitDecisionLargeSectionV3 } from "@/components/sections/DecisionSplitDecisionLargeSectionV3";
 import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
+import { SectionHeaderSplitLinkSectionV3 } from "@/components/sections/SectionHeaderSplitLinkSectionV3";
 import { ProcessStepsBranchingSectionV3 } from "@/components/sections/ProcessStepsBranchingSectionV3";
 import { ProcessStepsStaggeredSectionV3 } from "@/components/sections/ProcessStepsStaggeredSectionV3";
 import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
@@ -82,6 +83,10 @@ import {
   type HeroSplitFixedImageRatio,
   type HeroSplitFixedImageVariant,
 } from "@/components/sections/HeroSplitFixedImageSectionV3";
+import {
+  HeroSplitBentoSectionV3,
+  type HeroSplitBentoVariant,
+} from "@/components/sections/HeroSplitBentoSectionV3";
 import { HeroFullscreenSectionV2 } from "@/components/sections/HeroFullscreenSectionV2";
 import {
   HeroSplitFullHeightSectionV3,
@@ -136,6 +141,7 @@ import {
   calloutRevealGridVariantValues,
   calloutSplitPanelVariantValues,
   cardLinkGridAlignValues,
+  splitBentoVariantValues,
   tableCompareAlignValues,
   type CalloutRevealGridVariant,
   type CalloutSplitPanelVariant,
@@ -188,6 +194,12 @@ function getHeroSplitFixedImageVariant(section: PagebuilderRecipeSection) {
 function getHeroSplitFixedImageRatio(section: PagebuilderRecipeSection) {
   return heroSplitFixedImageRatios.has(section.ratio ?? "")
     ? (section.ratio as HeroSplitFixedImageRatio)
+    : undefined;
+}
+
+function getHeroSplitBentoVariant(section: PagebuilderRecipeSection) {
+  return splitBentoVariantValues.has(section.variant ?? "")
+    ? (section.variant as HeroSplitBentoVariant)
     : undefined;
 }
 
@@ -356,11 +368,19 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <HeroSplitFixedImageSectionV3
           {...sectionLibraryV3Content.heroSplitFullHeight}
-          cardBorder={section.cardBorder}
-          cardFill={section.cardFill}
           headingLevel={headingLevel}
           ratio={getHeroSplitFixedImageRatio(section)}
           variant={getHeroSplitFixedImageVariant(section)}
+        />
+      );
+    case "HeroSplitBentoSectionV3":
+      return (
+        <HeroSplitBentoSectionV3
+          {...sectionLibraryV3Content.heroSplitFullHeight}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          headingLevel={headingLevel}
+          variant={getHeroSplitBentoVariant(section)}
         />
       );
     case "HeroFullscreenSectionV2":
@@ -709,8 +729,16 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       return (
         <DecisionSplitLargeCardsSectionV3
           {...sectionLibraryV3Content.decisionSplitLargeCards}
+          align={getTableCompareAlign(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+        />
+      );
+    case "SectionHeaderSplitLinkSectionV3":
+      return (
+        <SectionHeaderSplitLinkSectionV3
+          {...sectionLibraryV3Content.sectionHeaderSplitLink}
+          headingLevel={headingLevel}
         />
       );
     case "DecisionSplitDecisionLargeSectionV3":
@@ -947,6 +975,13 @@ export function PagebuilderSection() {
     HeroSplitFixedImageSectionV3: (
       <HeroSplitFixedImageSectionV3
         key="HeroSplitFixedImageSectionV3"
+        {...sectionLibraryV3Content.heroSplitFullHeight}
+        headingLevel={1}
+      />
+    ),
+    HeroSplitBentoSectionV3: (
+      <HeroSplitBentoSectionV3
+        key="HeroSplitBentoSectionV3"
         {...sectionLibraryV3Content.heroSplitFullHeight}
         headingLevel={1}
       />
@@ -1458,6 +1493,12 @@ export function PagebuilderSection() {
       "Decision",
       "Split large cards",
       6,
+    ),
+    SectionHeaderSplitLinkSectionV3: previewCatalogEntry(
+      "SectionHeaderSplitLinkSectionV3",
+      "Section Header",
+      "Split link header",
+      2,
     ),
     DecisionSplitDecisionLargeSectionV3: previewCatalogEntry(
       "DecisionSplitDecisionLargeSectionV3",

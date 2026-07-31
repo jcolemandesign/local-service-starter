@@ -189,7 +189,7 @@ The copy-contract fingerprint hashes: `component`, the derived field specs,
 |---|---|---|---|
 | `variant` | template | **Yes** | In the fingerprint directly |
 | `ratio` | template (staged override allowed) | **Yes** | In the fingerprint directly |
-| `cardLinks` | template | **Yes**, indirectly | `getTemplateCopyFieldsForSection` reads it (`section.cardLinks !== "off"`), so destinations and the shared link label come and go with it |
+| `cardLinks` | template | **Yes**, indirectly | `getTemplateCopyFieldsForSection` reads it (`section.cardLinks !== "off"`), so destinations and link labels come and go with it - the shared `linkLabel` on the card grids, `sectionAction` or per-card `actionLabel` on the split-decision sections |
 | `align` | template | No | Deliberately its own field, not folded into `variant`, so a purely visual nudge does not report every approved page's copy as stale |
 | `colorRecipe`, `cardFill`, `cardBorder` | template + staged override | No | Repaint only |
 | `reduceTopPadding`, `reduceBottomPadding` | template + staged override | No | Frame padding only; available on every section |

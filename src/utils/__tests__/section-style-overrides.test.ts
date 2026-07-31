@@ -173,7 +173,16 @@ describe("resolveSectionStyleOverrides", () => {
 describe("resolveCardFill", () => {
   it("defaults opt-in sections to unfilled, matching the component defaults", () => {
     expect(resolveCardFill("ContentSplitFixedImageSectionV3", undefined)).toBe("none");
-    expect(resolveCardFill("HeroSplitFixedImageSectionV3", undefined)).toBe("none");
+  });
+
+  // The hero split families are not opt-in: HeroSplitFixedImageSectionV3 reads
+  // neither card prop at all now, and its bento twin renders a filled tray by
+  // default. Both therefore take the ordinary "solid" branch.
+  it("defaults the hero splits to filled", () => {
+    expect(resolveCardFill("HeroSplitBentoSectionV3", undefined)).toBe("solid");
+    expect(resolveCardFill("HeroSplitFixedImageSectionV3", undefined)).toBe(
+      "solid",
+    );
   });
 
   it("defaults every other card section to filled", () => {

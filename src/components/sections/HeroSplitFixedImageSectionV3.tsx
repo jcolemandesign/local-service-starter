@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import {
   Button,
   LayoutGrid,
@@ -23,9 +24,6 @@ export type HeroSplitFixedImageRatio =
 
 type HeroSplitFixedImageSectionV3Props = {
   body: string;
-  cardBorder?: "on" | "off";
-  /** Defaults to "none" - this section renders no card until fill is turned on. */
-  cardFill?: "solid" | "none";
   colorRecipe?: SectionColorRecipe;
   eyebrow: string;
   headingLevel?: 1 | 2;
@@ -133,13 +131,19 @@ const variantConfig: Record<
   },
 };
 
-const ratioClassNames: Record<HeroSplitFixedImageRatio, string> = {
-  "3-2": "aspect-[3/2]",
-  "2-3": "aspect-[2/3]",
-  "4-3": "aspect-[4/3]",
-  "3-4": "aspect-[3/4]",
-  "5-4": "aspect-[5/4]",
-  "4-5": "aspect-[4/5]",
+// Each ratio twice: once as the aspect class the frame renders with, once as a
+// plain number for `.hero-media-cap`, which needs to multiply by it to turn a
+// height budget into the width bound that produces it.
+const ratioConfig: Record<
+  HeroSplitFixedImageRatio,
+  { aspectClassName: string; value: number }
+> = {
+  "3-2": { aspectClassName: "aspect-[3/2]", value: 3 / 2 },
+  "2-3": { aspectClassName: "aspect-[2/3]", value: 2 / 3 },
+  "4-3": { aspectClassName: "aspect-[4/3]", value: 4 / 3 },
+  "3-4": { aspectClassName: "aspect-[3/4]", value: 3 / 4 },
+  "5-4": { aspectClassName: "aspect-[5/4]", value: 5 / 4 },
+  "4-5": { aspectClassName: "aspect-[4/5]", value: 4 / 5 },
 };
 
 function cx(...classes: Array<string | undefined>) {
@@ -155,13 +159,16 @@ function FixedRatioImage({
   ratio: HeroSplitFixedImageRatio;
   src: string;
 }) {
+  const config = ratioConfig[ratio] ?? ratioConfig["3-2"];
+
   return (
     <div className="grid w-full place-items-center">
       <div
         className={cx(
-          "radius-medium relative w-full overflow-hidden bg-service-surface shadow-service",
-          ratioClassNames[ratio],
+          "hero-media-cap radius-medium relative w-full overflow-hidden bg-service-surface shadow-service",
+          config.aspectClassName,
         )}
+        style={{ "--hero-media-ratio": config.value } as CSSProperties}
       >
         <Image
           alt={alt}
@@ -178,8 +185,6 @@ function FixedRatioImage({
 
 export function HeroSplitFixedImageSectionV3({
   body,
-  cardBorder = "on",
-  cardFill = "none",
   colorRecipe = "default",
   eyebrow,
   headingLevel = 1,
@@ -197,35 +202,30 @@ export function HeroSplitFixedImageSectionV3({
     variantConfig[variant] ?? variantConfig["text-3-image-4-right"];
   const colors = colorRecipeClassName[colorRecipe];
   const HeadingTag = `h${headingLevel}` as const;
-  // Padding and radius belong to the card, not the grid item - with no card
-  // they would just inset the copy for no visible reason. Stretching the item
-  // makes the card fill the row, which is as tall as the copy or the image -
-  // whichever wins.
-  const isFilled = cardFill === "solid";
 
   return (
     <section className={colors.section}>
-      <LayoutGrid className="section-min-none items-center" columns={14}>
+      {/* A screen minus a sliver, so the next section peeks above the fold.
+          `content-center` keeps the row itself content-sized and centres it in
+          that taller box - without it the single auto row would stretch to the
+          floor and drag the copy column's alignment with it. The card
+          treatment lives on the bento twin; this one is copy on the section
+          background beside a framed image. */}
+      <LayoutGrid
+        className="content-center items-center"
+        columns={14}
+        minHeight="sliver"
+      >
         <LayoutGridItem
           alignX="left"
-          alignY={isFilled ? "stretch" : "middle"}
+          alignY="middle"
           className={cx(
             "row-start-1 max-md:row-auto",
             colors.ink,
             config.textClassName,
           )}
         >
-          <div
-            className={cx(
-              "fluid-type-frame w-full",
-              isFilled
-                ? "radius-medium flex h-full flex-col justify-center bg-service-surface p-14 shadow-service max-md:p-10"
-                : undefined,
-              isFilled && cardBorder === "on"
-                ? "border border-service-border"
-                : undefined,
-            )}
-          >
+          <div className="fluid-type-frame w-full">
             <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
             <HeadingTag
               className={cx(
