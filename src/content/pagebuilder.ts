@@ -17,6 +17,8 @@ export type PagebuilderRecipeSection = {
    */
   align?: string;
   cardLinks?: string;
+  /** Marker icons on/off - see `iconsOptions` in `section-style-options`. */
+  icons?: string;
   ratio?: string;
   variant?: string;
   colorRecipe?: import("@/content/section-color-recipes").SectionColorRecipe;

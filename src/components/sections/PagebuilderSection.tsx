@@ -141,6 +141,7 @@ import {
   calloutRevealGridVariantValues,
   calloutSplitPanelVariantValues,
   cardLinkGridAlignValues,
+  resolveSectionIcons,
   splitBentoVariantValues,
   tableCompareAlignValues,
   type CalloutRevealGridVariant,
@@ -281,16 +282,21 @@ function getLargeSectionHeaderAlign(section: PagebuilderRecipeSection) {
     : sectionLibraryV3Content.sectionHeaderLarge.align;
 }
 
+// The variant is `{align}-{size}`, so the size is its suffix.
+const largeSectionHeaderSizes: readonly LargeSectionHeaderSize[] = [
+  "heading-lg",
+  "heading-xl",
+  "display-lg",
+  "display-xl",
+];
+
 function getLargeSectionHeaderSize(
   section: PagebuilderRecipeSection,
 ): LargeSectionHeaderSize {
-  if (section.variant?.endsWith("heading-xl")) {
-    return "heading-xl";
-  }
-
-  return section.variant?.endsWith("display-lg")
-    ? "display-lg"
-    : "display-xl";
+  return (
+    largeSectionHeaderSizes.find((size) => section.variant?.endsWith(size)) ??
+    "display-xl"
+  );
 }
 
 function getServicesBentoVariant(section: PagebuilderRecipeSection) {
@@ -732,6 +738,8 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           align={getTableCompareAlign(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+          cardLinks={section.cardLinks === "off" ? "off" : "on"}
+          icons={resolveSectionIcons(section.icons)}
         />
       );
     case "SectionHeaderSplitLinkSectionV3":

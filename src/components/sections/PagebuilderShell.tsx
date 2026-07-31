@@ -120,6 +120,9 @@ import {
   calloutSplitPanelVariantOptions,
   calloutSplitPanelVariantValues,
   cardFillOptInComponents,
+  iconsOptions,
+  resolveSectionIcons,
+  sectionSupportsIcons,
   cardLinkGridAlignOptions,
   cardLinkGridAlignValues,
   sectionSupportsCardLinkGridAlign,
@@ -140,6 +143,7 @@ import {
   type CalloutRevealGridVariant,
   type CalloutSplitPanelVariant,
   type CardLinkGridAlign,
+  type SectionIcons,
   type ServicesBentoVariant,
   type TableCompareAlign,
   type SplitBentoVariant,
@@ -293,6 +297,7 @@ const heroCompactAlignments = new Set<string>(
 );
 
 const largeSectionHeaderSizeOptions = [
+  { label: "Heading LG", value: "heading-lg", iconSize: 12 },
   { label: "Heading XL", value: "heading-xl", iconSize: 17 },
   { label: "Display LG", value: "display-lg", iconSize: 23 },
   { label: "Display XL", value: "display-xl", iconSize: 29 },
@@ -670,6 +675,10 @@ function getCardLinks(section: WorkingSection): "on" | "off" {
   return section.cardLinks === "off" ? "off" : "on";
 }
 
+function getSectionIcons(section: WorkingSection) {
+  return resolveSectionIcons(section.icons);
+}
+
 function getCTAImageAlign(section: WorkingSection): CTAImageAlign {
   return section.variant === "right" ? "right" : "left";
 }
@@ -825,16 +834,17 @@ function getLargeSectionHeaderAlign(section: WorkingSection) {
     : sectionLibraryV3Content.sectionHeaderLarge.align;
 }
 
+// Matched on the suffix because the variant is `{align}-{size}`. Every size is
+// listed rather than only the non-default ones, so adding one is a single edit
+// here and not a silent fall-through to the default.
 function getLargeSectionHeaderSize(
   section: WorkingSection,
 ): LargeSectionHeaderSize {
-  if (section.variant?.endsWith("heading-xl")) {
-    return "heading-xl";
-  }
+  const size = largeSectionHeaderSizeOptions.find((option) =>
+    section.variant?.endsWith(option.value),
+  )?.value;
 
-  return section.variant?.endsWith("display-lg")
-    ? "display-lg"
-    : sectionLibraryV3Content.sectionHeaderLarge.size;
+  return size ?? sectionLibraryV3Content.sectionHeaderLarge.size;
 }
 
 function getServicesBentoVariant(section: WorkingSection) {
@@ -976,6 +986,7 @@ function serializeWorkingSection(section: WorkingSection) {
     originalIndex: section.originalIndex,
     align: section.align,
     cardLinks: section.cardLinks,
+    icons: section.icons,
     ratio: section.ratio,
     slotId: section.slotId,
     variant: section.variant,
@@ -2227,6 +2238,41 @@ function CardLinksIcon({ linked }: { linked: boolean }) {
   );
 }
 
+/** The marker glyph itself, struck through for the off state. */
+function SectionIconsIcon({ shown }: { shown: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M4 12h7M11.5 8.5 15 12l-3.5 3.5"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.75"
+      />
+      <path
+        d="M18 7v10"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeOpacity="0.3"
+        strokeWidth="1.75"
+      />
+      {shown ? null : (
+        <path
+          d="M4 20 20 4"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeWidth="2"
+        />
+      )}
+    </svg>
+  );
+}
+
 function CardFillIcon({ filled }: { filled: boolean }) {
   return (
     <svg
@@ -2753,6 +2799,17 @@ export function PagebuilderShell({
       stack.map((section) =>
         section.id === sectionId && isDecisionSplitDecisionLargeSection(section)
           ? { ...section, variant: align }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
+  function updateSectionIcons(sectionId: string, icons: SectionIcons) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId && sectionSupportsIcons(section.component)
+          ? { ...section, icons }
           : section,
       ),
     );
@@ -3840,6 +3897,8 @@ export function PagebuilderShell({
             align={getTableCompareAlign(section)}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
+            cardLinks={getCardLinks(section)}
+            icons={getSectionIcons(section)}
           />
         ) : section.component === sectionHeaderSplitLinkComponent ? (
           <SectionHeaderSplitLinkSectionV3
@@ -4405,10 +4464,6 @@ export function PagebuilderShell({
                                   },
                                 )}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Left uses the four-column heading sidebar.
-                                Center removes the heading and centers the flow.
-                              </p>
                             </fieldset>
                           ) : null}
 
@@ -4716,10 +4771,6 @@ export function PagebuilderShell({
                                   );
                                 })}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Choose the text/image column balance for this
-                                split hero.
-                              </p>
                             </fieldset>
                           ) : null}
 
@@ -4798,10 +4849,6 @@ export function PagebuilderShell({
                                   );
                                 })}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Choose where the compact title block sits on
-                                the seven-column grid.
-                              </p>
                             </fieldset>
                           ) : null}
 
@@ -4839,10 +4886,6 @@ export function PagebuilderShell({
                                   );
                                 })}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Choose where the request panel sits relative to
-                                the title block and photo frame.
-                              </p>
                             </fieldset>
                           ) : null}
 
@@ -4880,10 +4923,6 @@ export function PagebuilderShell({
                                   );
                                 })}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Choose the order of the image, CTA, and link
-                                rails across the three columns.
-                              </p>
                             </fieldset>
                           ) : null}
 
@@ -4893,7 +4932,7 @@ export function PagebuilderShell({
                                 <legend className="type-caption font-semibold text-current">
                                   Display Size
                                 </legend>
-                                <div className="grid grid-cols-3 gap-2">
+                                <div className="grid grid-cols-4 gap-2">
                                   {largeSectionHeaderSizeOptions.map((option) => {
                                     const optionIsActive =
                                       getLargeSectionHeaderSize(section) ===
@@ -4997,10 +5036,52 @@ export function PagebuilderShell({
                                   );
                                 })}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Position the two-card group left, centered, or
-                                right on the fourteen-column grid.
-                              </p>
+                            </fieldset>
+                          ) : null}
+
+                          {/* Two icon-button toggles of the same shape, paired
+                              so they sit side by side instead of stacking a
+                              near-empty row each. Either can be absent - the
+                              column simply goes unused. */}
+                          <div className="grid grid-cols-2 items-start gap-4">
+                          {sectionSupportsIcons(section.component) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                UX Icons
+                              </legend>
+                              <div className="flex items-center gap-2">
+                                {iconsOptions.map((option) => {
+                                  const optionIsActive =
+                                    getSectionIcons(section) === option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                        optionIsActive &&
+                                          "token-chrome-card-active",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateSectionIcons(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      title={option.label}
+                                      type="button"
+                                    >
+                                      <SectionIconsIcon
+                                        shown={option.value === "on"}
+                                      />
+                                      <span className="sr-only">
+                                        {option.label}
+                                      </span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
                             </fieldset>
                           ) : null}
 
@@ -5039,13 +5120,9 @@ export function PagebuilderShell({
                                   );
                                 })}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Static drops the card links and their label, and
-                                tells the page-copy spec not to write destinations.
-                                Changing this marks existing copy stale.
-                              </p>
                             </fieldset>
                           ) : null}
+                          </div>
 
                           {section.component === ctaImageSectionComponent ? (
                             <fieldset className="grid gap-2">
@@ -5077,10 +5154,6 @@ export function PagebuilderShell({
                                   );
                                 })}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Swaps which side the copy sits on. The image always
-                                takes the opposite columns.
-                              </p>
                             </fieldset>
                           ) : null}
 
@@ -5117,10 +5190,6 @@ export function PagebuilderShell({
                                   );
                                 })}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Right places the support cards in columns 1–6,
-                                leaves column 7 open, and starts the lead card in column 8.
-                              </p>
                             </fieldset>
                           ) : null}
 
@@ -5157,9 +5226,6 @@ export function PagebuilderShell({
                                   );
                                 })}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Right places the four-card group before the feature content.
-                              </p>
                             </fieldset>
                           ) : null}
 
@@ -5198,10 +5264,6 @@ export function PagebuilderShell({
                                     );
                                   })}
                                 </div>
-                                <p className="type-caption text-current/60">
-                                  Right places the sidebar beside the content on
-                                  the right; Left mirrors the desktop layout.
-                                </p>
                               </fieldset>
                               <fieldset className="grid gap-2">
                                 <legend className="type-caption font-semibold text-current">
@@ -5271,11 +5333,6 @@ export function PagebuilderShell({
                                   );
                                 })}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Left starts the pair at the left column;
-                                Center leaves a blank column on each side;
-                                Right leaves two blank columns on the left.
-                              </p>
                             </fieldset>
                           ) : null}
 
@@ -5313,10 +5370,6 @@ export function PagebuilderShell({
                                   );
                                 })}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Right places the sidebar panel beside the
-                                accordion on the right; Left swaps the sides.
-                              </p>
                             </fieldset>
                           ) : null}
 
@@ -5457,10 +5510,6 @@ export function PagebuilderShell({
                                   );
                                 })}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Choose centered, sticky split, or offset header
-                                layout.
-                              </p>
                             </fieldset>
                           ) : null}
 
@@ -5500,10 +5549,6 @@ export function PagebuilderShell({
                                   },
                                 )}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Two-up caps at four cards. Stacked rows take any
-                                number and pin the panel beside them.
-                              </p>
                             </fieldset>
                           ) : null}
 
@@ -5543,10 +5588,6 @@ export function PagebuilderShell({
                                   );
                                 })}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Three four-column cards leave two spare columns.
-                                This decides where they fall.
-                              </p>
                             </fieldset>
                           ) : null}
 
@@ -5586,10 +5627,6 @@ export function PagebuilderShell({
                                   );
                                 })}
                               </div>
-                              <p className="type-caption text-current/60">
-                                The twelve-column body leaves two spare
-                                columns. This decides where they fall.
-                              </p>
                             </fieldset>
                           ) : null}
 
@@ -5629,10 +5666,6 @@ export function PagebuilderShell({
                                   },
                                 )}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Two across is a 2x2 of four. Three across takes
-                                three or six, so the last row stays full.
-                              </p>
                             </fieldset>
                           ) : null}
 
@@ -5671,11 +5704,6 @@ export function PagebuilderShell({
                                   );
                                 })}
                               </div>
-                              <p className="type-caption text-current/60">
-                                Two adjacent slots, copy 6 and image 8 columns,
-                                both the full height of the section. The image
-                                crops to whatever shape that leaves.
-                              </p>
                             </fieldset>
                           ) : null}
 
@@ -5761,11 +5789,6 @@ export function PagebuilderShell({
                                       );
                                     })}
                                   </div>
-                                  <p className="type-caption text-current/60">
-                                    Default picks a heading size that fits the
-                                    text column&apos;s width; Smaller/Larger
-                                    move one step from that.
-                                  </p>
                                 </fieldset>
                               ) : null}
 
@@ -5803,10 +5826,6 @@ export function PagebuilderShell({
                                     );
                                   })}
                                 </div>
-                                <p className="type-caption text-current/60">
-                                  Sets the image frame to one of the preferred
-                                  landscape or portrait ratios.
-                                </p>
                               </fieldset>
                             </div>
                           ) : null}

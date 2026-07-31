@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "compact-utility",
       "recipeName": "Individual Service",
-      "savedAt": "2026-07-31T00:03:54.172Z",
+      "savedAt": "2026-07-31T01:02:29.033Z",
       "sectionCount": 7,
       "sections": [
         {
@@ -304,7 +304,7 @@
           "originalIndex": -1,
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
-          "variant": "center-heading-xl",
+          "variant": "left-heading-xl",
           "colorRecipe": "muted",
           "cardBorder": "on",
           "cardFill": "solid"
@@ -320,9 +320,26 @@
           "originalIndex": -1,
           "reduceBottomPadding": false,
           "reduceTopPadding": true,
+          "variant": "right",
           "colorRecipe": "muted",
           "cardBorder": "on",
           "cardFill": "none"
+        },
+        {
+          "component": "SectionHeaderCompactSectionV3",
+          "id": "compact-utility-SectionHeaderSplitLinkSectionV3-added-1-duplicate-2",
+          "included": true,
+          "instruction": "Use a no-min-height compact header to introduce a section before card grids, FAQs, decisions, or utility blocks.",
+          "mode": "Section Header",
+          "name": "Compact section header",
+          "originalComponent": "SectionHeaderSplitLinkSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "variant": "center-heading-xl",
+          "colorRecipe": "default",
+          "cardBorder": "on",
+          "cardFill": "solid"
         },
         {
           "component": "FourCardLinkGridSectionV3",
@@ -334,10 +351,10 @@
           "originalComponent": "FourCardLinkGridSectionV3",
           "originalIndex": -1,
           "reduceBottomPadding": true,
-          "reduceTopPadding": false,
+          "reduceTopPadding": true,
           "variant": "text-only",
           "colorRecipe": "default",
-          "cardBorder": "on",
+          "cardBorder": "off",
           "cardFill": "solid"
         },
         {
@@ -352,25 +369,9 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "colorRecipe": "default",
-          "cardBorder": "on",
-          "cardFill": "solid",
+          "cardBorder": "off",
+          "cardFill": "none",
           "align": "center"
-        },
-        {
-          "component": "SectionHeaderSplitLinkSectionV3",
-          "id": "compact-utility-SectionHeaderSplitLinkSectionV3-added-1",
-          "included": true,
-          "instruction": "Introduce the block below with a headline on one side and a short description over a single text link on the other.",
-          "mode": "Section Header",
-          "name": "Split link header",
-          "originalComponent": "SectionHeaderSplitLinkSectionV3",
-          "originalIndex": -1,
-          "reduceBottomPadding": false,
-          "reduceTopPadding": false,
-          "colorRecipe": "default",
-          "cardBorder": "on",
-          "cardFill": "solid",
-          "align": "left"
         }
       ]
     },

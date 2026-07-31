@@ -286,6 +286,7 @@ export const cardLinkComponents = new Set<string>([
   "ContentThreeColumnMixedSectionV3",
   "DecisionSplitDecisionLargeSectionV3",
   "DecisionSplitDecisionSectionV3",
+  "DecisionSplitLargeCardsSectionV3",
   "FourCardLinkGridSectionV3",
   "ServiceNeedsPriorityGridSectionV3",
   "ThreeCardLinkGridSectionV3",
@@ -293,6 +294,42 @@ export const cardLinkComponents = new Set<string>([
 
 export function sectionSupportsCardLinks(component: string) {
   return cardLinkComponents.has(component);
+}
+
+/**
+ * Whether a section draws its small marker icons.
+ *
+ * One shared on/off axis, but deliberately no shared icon: what the marker is
+ * and where it goes is a layout decision each section makes for itself - split
+ * large cards indents every paragraph chunk with one, another section might
+ * mark list rows or headings. The axis says whether, the section says how.
+ *
+ * Copy-neutral, so it sits with `cardFill`, `cardBorder` and `align` rather
+ * than on `variant`: a marker cannot change what the page agent is asked to
+ * write, and `variant` is hashed into the copy-contract fingerprint.
+ */
+export const iconsOptions = [
+  { label: "Icons on", value: "on" },
+  { label: "Icons off", value: "off" },
+] as const;
+
+export type SectionIcons = (typeof iconsOptions)[number]["value"];
+
+export const iconsValues = new Set<string>(
+  iconsOptions.map((option) => option.value),
+);
+
+export const iconComponents = new Set<string>([
+  "DecisionSplitLargeCardsSectionV3",
+]);
+
+export function sectionSupportsIcons(component: string) {
+  return iconComponents.has(component);
+}
+
+/** Icons default on, so a section that offers them shows them unless told not to. */
+export function resolveSectionIcons(icons: string | undefined): SectionIcons {
+  return icons === "off" ? "off" : "on";
 }
 
 /**

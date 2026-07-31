@@ -5,6 +5,7 @@ import {
 import type { HeroCompactAlign } from "./HeroCompactSectionV3";
 
 export type LargeSectionHeaderSize =
+  | "heading-lg"
   | "heading-xl"
   | "display-lg"
   | "display-xl";
@@ -30,6 +31,7 @@ const alignClassName: Record<
 };
 
 const sizeClassName: Record<LargeSectionHeaderSize, string> = {
+  "heading-lg": "type-heading-lg",
   "heading-xl": "type-heading-xl",
   "display-lg": "type-display-lg",
   "display-xl": "type-display-xl",

@@ -1,9 +1,13 @@
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
-import type { TableCompareAlign } from "@/content/section-style-options";
+import type {
+  SectionIcons,
+  TableCompareAlign,
+} from "@/content/section-style-options";
 
 type SplitLargeCard = {
-  body: string;
+  actionLabel: string;
   eyebrow: string;
+  paragraphs: readonly string[];
   title: string;
 };
 
@@ -11,8 +15,33 @@ type DecisionSplitLargeCardsSectionV3Props = {
   align?: TableCompareAlign;
   cardBorder?: "on" | "off";
   cardFill?: "solid" | "none";
+  /** "off" drops each card's bottom-aligned link and the space it reserved. */
+  cardLinks?: "on" | "off";
   cards: readonly SplitLargeCard[];
+  /** This section's take on the shared icons axis: a marker indenting every
+   *  paragraph chunk. See `iconsOptions` in `section-style-options`. */
+  icons?: SectionIcons;
 };
+
+/** Small enough to sit in the gutter beside a paragraph without competing with it. */
+function ChunkIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="mt-1.5 size-4 shrink-0 text-service-accent"
+      fill="none"
+      viewBox="0 0 16 16"
+    >
+      <path
+        d="M2.5 8h10M8.5 4l4 4-4 4"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.75"
+      />
+    </svg>
+  );
+}
 
 /**
  * Two adjacent cards of six columns each, leaving two spare columns for the
@@ -57,15 +86,20 @@ export function DecisionSplitLargeCardsSectionV3({
   align = "center",
   cardBorder = "on",
   cardFill = "solid",
+  cardLinks = "on",
   cards,
+  icons = "on",
 }: DecisionSplitLargeCardsSectionV3Props) {
   const columns = alignClassName[align] ?? alignClassName.center;
   const tabletColumns = tabletClassName[align] ?? tabletClassName.center;
 
   return (
     <section className="bg-bg-page">
+      {/* Stretched, so however much copy each card carries the pair still ends
+          level. No floor height: with the link off there is nothing to reserve
+          space for, and a minimum would show as dead space under short copy. */}
       <LayoutGrid
-        className="section-min-tiny items-start"
+        className="section-min-tiny items-stretch"
         columns={14}
         padding="med"
       >
@@ -74,6 +108,7 @@ export function DecisionSplitLargeCardsSectionV3({
 
           return card ? (
             <LayoutGridItem
+              alignY="stretch"
               className={cx(
                 cardSpanClassName,
                 columns[slot],
@@ -86,6 +121,8 @@ export function DecisionSplitLargeCardsSectionV3({
                 card={card}
                 cardBorder={cardBorder}
                 cardFill={cardFill}
+                cardLinks={cardLinks}
+                icons={icons}
               />
             </LayoutGridItem>
           ) : null;
@@ -99,15 +136,21 @@ function SplitLargeCard({
   card,
   cardBorder,
   cardFill,
+  cardLinks,
+  icons,
 }: {
   card: SplitLargeCard;
   cardBorder: "on" | "off";
   cardFill: "solid" | "none";
+  cardLinks: "on" | "off";
+  icons: SectionIcons;
 }) {
+  const paragraphs = card.paragraphs.filter((paragraph) => paragraph.trim());
+
   return (
     <article
       className={cx(
-        "fluid-type-frame radius-medium min-h-64 border border-service-border bg-service-surface p-6 text-service-ink shadow-none max-md:min-h-0",
+        "fluid-type-frame radius-medium flex h-full flex-col border border-service-border bg-service-surface p-6 text-service-ink shadow-none",
         cardFill === "none" && "!bg-transparent !shadow-none",
         cardBorder === "off" && "!border-transparent",
       )}
@@ -116,9 +159,36 @@ function SplitLargeCard({
       <h3 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
         {card.title}
       </h3>
-      <p className="type-text-lg wrap-pretty mt-heading-body-md text-service-muted">
-        {card.body}
-      </p>
+
+      {/* Each paragraph is a chunk, divided by a rule rather than only by
+          space, so a card carrying several of them still reads as distinct
+          points instead of one long column of prose. The rule goes before
+          every chunk but the first, which is what keeps it between them and
+          off the bottom edge. */}
+      <div className="mt-heading-body-md grid gap-6">
+        {paragraphs.map((paragraph, index) => (
+          <div key={paragraph}>
+            {index > 0 ? (
+              <hr className="mb-6 border-t border-service-border" />
+            ) : null}
+            <div className="flex gap-3">
+              {icons === "on" ? <ChunkIcon /> : null}
+              <p className="type-text-lg wrap-pretty text-service-muted">
+                {paragraph}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {cardLinks === "on" ? (
+        <a
+          className="type-label mt-auto inline-flex w-fit items-center border-b border-service-ink pt-8 text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+          href="#contact"
+        >
+          {card.actionLabel}
+        </a>
+      ) : null}
     </article>
   );
 }

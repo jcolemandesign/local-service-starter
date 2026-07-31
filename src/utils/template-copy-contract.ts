@@ -2369,23 +2369,13 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
-  // Heading and action label used to live here too. They moved out with the
-  // header itself - see `sectionheadersplitlink` below - so this section now
-  // asks for nothing but its two cards.
+  // A section heading and action label used to live here too. They moved out
+  // with the header itself - see `sectionheadersplitlink` below - so this
+  // section now asks for nothing but its two cards.
   if (component.includes("decisionsplitlarge")) {
-    return [
-      {
-        example: [
-          "Repair the current system - Review the diagnosis, proposed repair, and what the system needs now.",
-          "Plan a replacement - Compare the longer-term option when condition and reliability make it relevant.",
-        ],
-        format: "Exactly 2 items, one per line as Title - Description.",
-        itemCount: 2,
-        name: "decisionItems",
-        purpose: "The two visible decision cards. Required; do not use steps for this section.",
-        target: "Exactly 2 items. Titles 12-32 characters. Descriptions 90-170 characters.",
-      },
-    ];
+    return withCardLinkFields(section, splitLargeCardsFields(), (name) =>
+      name.endsWith(".actionLabel"),
+    );
   }
 
   if (component.includes("sectionheadersplitlink")) {
@@ -2793,6 +2783,63 @@ function mainIdeaGridFields(): TemplateCopyFieldSpec[] {
       },
     ]).flat(),
   ];
+}
+
+/**
+ * Two cards, each carrying as many paragraph chunks as the section needs. The
+ * first chunk is required and the rest are optional, so a short pair and a long
+ * pair are both expressible; the length targets ask for the two cards to come
+ * out roughly level, because they render side by side and stretch to the taller
+ * one - a card with half the copy of its neighbour shows the difference as
+ * empty space.
+ */
+function splitLargeCardsFields(): TemplateCopyFieldSpec[] {
+  const maxParagraphs = 4;
+
+  return Array.from({ length: 2 }, (_, cardIndex) => {
+    const cardNumber = cardIndex + 1;
+
+    return [
+      {
+        example: cardIndex === 0 ? "Repair" : "Replace",
+        name: `cards.${cardNumber}.eyebrow`,
+        purpose: `Decision card ${cardNumber} context label.`,
+        target: "6-24 characters.",
+      },
+      {
+        example:
+          cardIndex === 0
+            ? "Stabilize the current system"
+            : "Plan the longer-term move",
+        name: `cards.${cardNumber}.title`,
+        purpose: `Decision card ${cardNumber} heading.`,
+        target: "18-44 characters.",
+      },
+      ...Array.from({ length: maxParagraphs }, (_, paragraphIndex) => ({
+        example:
+          "Explain what this path involves, what the homeowner should weigh, and which condition would change the recommendation.",
+        name: `cards.${cardNumber}.paragraphs.${paragraphIndex + 1}`,
+        ...(paragraphIndex === 0 ? {} : { optional: true }),
+        purpose:
+          paragraphIndex === 0
+            ? `Decision card ${cardNumber}, opening chunk.`
+            : `Decision card ${cardNumber}, chunk ${paragraphIndex + 1}. Rendered below a dividing rule, so it should be a distinct point rather than a continuation of the sentence above.`,
+        target:
+          paragraphIndex === 0
+            ? "90-180 characters."
+            : `OPTIONAL. Omit when the card does not need it. When used: 90-180 characters, and keep card ${cardNumber} within one chunk of the other card.`,
+      })),
+      {
+        example:
+          cardIndex === 0
+            ? "Talk through a repair"
+            : "Explore replacement options",
+        name: `cards.${cardNumber}.actionLabel`,
+        purpose: `Bottom-aligned link label for decision card ${cardNumber}.`,
+        target: "12-30 characters.",
+      },
+    ];
+  }).flat();
 }
 
 function splitDecisionLargeFields(): TemplateCopyFieldSpec[] {

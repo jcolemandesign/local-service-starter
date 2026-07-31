@@ -156,6 +156,7 @@ import {
   cardLinkGridAlignValues,
   getSectionStyleFieldSpecs,
   resolveCardFill,
+  resolveSectionIcons,
   sectionSupportsSectionSpacing,
   servicesBentoVariantValues,
   splitBentoVariantValues,
@@ -183,6 +184,7 @@ export type PageTemplatePreviewSection = {
   reduceTopPadding?: boolean;
   align?: string;
   cardLinks?: string;
+  icons?: string;
   ratio?: string;
   variant?: string;
 };
@@ -848,6 +850,8 @@ export function renderPageTemplateSection(
           align={getTableCompareAlign(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+          cardLinks={resolveCardLinks(section)}
+          icons={resolveSectionIcons(section.icons)}
         />
       );
     case "SectionHeaderSplitLinkSectionV3":
@@ -1334,16 +1338,22 @@ function getLargeSectionHeaderAlign(section: PageTemplatePreviewSection) {
     : sectionLibraryV3Content.sectionHeaderLarge.align;
 }
 
+// The variant is `{align}-{size}`, so the size is its suffix. Ordered longest
+// match first is unnecessary here - no size is a suffix of another.
+const largeSectionHeaderSizes: readonly LargeSectionHeaderSize[] = [
+  "heading-lg",
+  "heading-xl",
+  "display-lg",
+  "display-xl",
+];
+
 function getLargeSectionHeaderSize(
   section: PageTemplatePreviewSection,
 ): LargeSectionHeaderSize {
-  if (section.variant?.endsWith("heading-xl")) {
-    return "heading-xl";
-  }
-
-  return section.variant?.endsWith("display-lg")
-    ? "display-lg"
-    : "display-xl";
+  return (
+    largeSectionHeaderSizes.find((size) => section.variant?.endsWith(size)) ??
+    "display-xl"
+  );
 }
 
 
@@ -2013,25 +2023,42 @@ function sectionHeaderSplitLinkProps(section: FieldSection) {
   };
 }
 
+/**
+ * Reads the `cards.N.*` fields the spec declares, and still understands the
+ * flat `decisionItems` shape this section used before it took paragraph chunks
+ * - a page staged against the old contract keeps its copy as a single chunk
+ * rather than falling back to demo content.
+ */
 function splitLargeCardsProps(section: FieldSection) {
-  const cards = cardItemsWithFallback(
-    section,
-    ["decisionItems", "steps", "supportingItems", "cards", "items"],
-    sectionLibraryV3Content.decisionSplitLargeCards.cards,
-  );
+  const fallbackCards = sectionLibraryV3Content.decisionSplitLargeCards.cards;
+  const structuredCards = getRepeatedRecords(section, ["cards"]);
+  const parsedCards = cardItems(section, [
+    "decisionItems",
+    "cards",
+    "items",
+    "supportingItems",
+  ]);
 
   return {
-    ...sectionLibraryV3Content.decisionSplitLargeCards,
-    cards: cards.slice(0, 2).map((item, index) => ({
-      body: item.body,
-      eyebrow:
-        "eyebrow" in item && typeof item.eyebrow === "string"
-          ? item.eyebrow
-          : sectionLibraryV3Content.decisionSplitLargeCards.cards[
-              index % sectionLibraryV3Content.decisionSplitLargeCards.cards.length
-            ].eyebrow,
-      title: item.title,
-    })),
+    cards: fallbackCards.map((fallbackCard, index) => {
+      const structuredCard = structuredCards[index];
+      const parsedCard = parsedCards[index];
+      const structuredParagraphs = structuredCard
+        ? getIndexedRecordValues(structuredCard, "paragraphs")
+        : [];
+
+      return {
+        actionLabel: structuredCard?.actionLabel || fallbackCard.actionLabel,
+        eyebrow: structuredCard?.eyebrow || fallbackCard.eyebrow,
+        paragraphs:
+          structuredParagraphs.length > 0
+            ? structuredParagraphs
+            : parsedCard?.body
+              ? [parsedCard.body]
+              : fallbackCard.paragraphs,
+        title: structuredCard?.title || parsedCard?.title || fallbackCard.title,
+      };
+    }),
   };
 }
 

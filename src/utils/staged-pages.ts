@@ -74,6 +74,8 @@ export type StagedPageTemplateSection = {
   reduceBottomPadding?: boolean;
   reduceTopPadding?: boolean;
   cardLinks?: string;
+  /** Marker icons on/off - see `iconsOptions` in `section-style-options`. */
+  icons?: string;
   ratio?: string;
   /** Stable rename anchor - see `SlottedSection` in @/utils/section-id. */
   slotId?: string;

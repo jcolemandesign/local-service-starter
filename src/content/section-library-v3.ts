@@ -1038,12 +1038,20 @@ export const sectionLibraryV3Content = {
       {
         eyebrow: "Repair",
         title: "Stabilize the current system",
-        body: "Use this card for practical repair guidance, short-term reliability, and what the homeowner should watch after the visit.",
+        paragraphs: [
+          "Use this card for practical repair guidance, short-term reliability, and what the homeowner should watch after the visit.",
+          "A second chunk can cover what the repair does not address, so the homeowner knows which conditions would change the recommendation.",
+        ],
+        actionLabel: "Talk through a repair",
       },
       {
         eyebrow: "Replace",
         title: "Plan the longer-term move",
-        body: "Use this card for replacement fit, estimate timing, financing notes, and the conditions that make upgrade planning useful.",
+        paragraphs: [
+          "Use this card for replacement fit, estimate timing, financing notes, and the conditions that make upgrade planning useful.",
+          "Keep the chunks roughly level with the other card, so the pair reads as a comparison rather than a recommendation with a footnote.",
+        ],
+        actionLabel: "Explore replacement options",
       },
     ],
   },
@@ -1830,7 +1838,7 @@ export const sectionLibraryV3Collections = [
         component: "section-header-compact-v3",
       },
       {
-        label: "Large section header",
+        label: "Section Header Simple",
         component: "section-header-large-v3",
       },
       {

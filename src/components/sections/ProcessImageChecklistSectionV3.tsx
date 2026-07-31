@@ -15,16 +15,30 @@ type ProcessImageChecklistSectionV3Props = {
   title: string;
 };
 
+/**
+ * Sticky media column.
+ *
+ * The frame imposes no height of its own - it is the full width of its columns
+ * and as tall as whatever it holds - so a real photo of any ratio sits here
+ * uncropped. The 2:3 belongs to the placeholder alone, which needs a shape to
+ * stand in at, and goes with it when an image replaces it.
+ *
+ * `h-fit` matters: the grid item stretches to the row, and a sticky child that
+ * stretches with it has nothing to travel through. Sticky only holds while the
+ * columns are side by side, so it is dropped at `max-lg` where they stack.
+ */
 function ProcessImage({ label }: { label: string }) {
   return (
-    <div
-      aria-label={`${label} image placeholder`}
-      className="radius-medium relative min-h-[34rem] overflow-hidden bg-service-border max-lg:min-h-[26rem] max-md:min-h-[18rem]"
-    >
-      <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.28),rgb(23_33_29_/_0.06)),linear-gradient(45deg,rgb(255_255_255_/_0.22)_0_1px,transparent_1px_18px)]" />
-      <div className="absolute inset-0 bg-service-accent/10" />
-      <div className="radius-medium absolute bottom-6 left-6 border border-white/45 bg-white/25 px-4 py-3 text-sm font-semibold uppercase text-service-ink backdrop-blur-sm">
-        {label}
+    <div className="sticky top-[var(--site-grid-inset-block)] h-fit w-full max-lg:static">
+      <div
+        aria-label={`${label} image placeholder`}
+        className="radius-medium relative aspect-[2/3] w-full overflow-hidden bg-service-border"
+      >
+        <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.28),rgb(23_33_29_/_0.06)),linear-gradient(45deg,rgb(255_255_255_/_0.22)_0_1px,transparent_1px_18px)]" />
+        <div className="absolute inset-0 bg-service-accent/10" />
+        <div className="radius-medium absolute bottom-6 left-6 border border-white/45 bg-white/25 px-4 py-3 text-sm font-semibold uppercase text-service-ink backdrop-blur-sm">
+          {label}
+        </div>
       </div>
     </div>
   );
