@@ -156,6 +156,7 @@ import {
   cardLinkGridAlignValues,
   getSectionStyleFieldSpecs,
   resolveCardFill,
+  resolveHeadlineWrap,
   resolveSectionIcons,
   sectionSupportsSectionSpacing,
   servicesBentoVariantValues,
@@ -185,6 +186,7 @@ export type PageTemplatePreviewSection = {
   align?: string;
   cardLinks?: string;
   icons?: string;
+  headlineWrap?: string;
   ratio?: string;
   variant?: string;
 };
@@ -560,6 +562,7 @@ export function renderPageTemplateSection(
           {...sectionHeaderLargeProps(fieldSection)}
           align={getLargeSectionHeaderAlign(section)}
           headingLevel={2}
+          headlineWrap={resolveHeadlineWrap(section.headlineWrap)}
           size={getLargeSectionHeaderSize(section)}
         />
       );
@@ -890,7 +893,11 @@ export function renderPageTemplateSection(
     case "TestimonialsSectionV3":
       return <TestimonialsSectionV3 {...testimonialsProps(fieldSection)} />;
     case "TestimonialsCarouselSectionV3":
-      return <TestimonialsCarouselSectionV3 {...testimonialsCarouselProps(fieldSection)} />;
+      return (
+        <TestimonialsCarouselSectionV3
+          {...testimonialsCarouselSlidesProps(fieldSection)}
+        />
+      );
     case "TestimonialsCarouselCondensedSectionV3":
       return (
         <TestimonialsCarouselCondensedSectionV3
@@ -2124,6 +2131,13 @@ function testimonialsProps(section: FieldSection) {
     ),
     items: testimonialItems(section),
     title: getTitle(section, sectionLibraryV3Content.testimonials.title),
+  };
+}
+
+// The full carousel renders slides only - no eyebrow, heading, or intro.
+function testimonialsCarouselSlidesProps(section: FieldSection) {
+  return {
+    items: testimonialItems(section),
   };
 }
 

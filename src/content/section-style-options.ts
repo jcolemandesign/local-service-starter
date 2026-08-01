@@ -10,6 +10,8 @@
  * fields. One list per axis, imported everywhere.
  */
 
+import type { WrapMode } from "@/content/type-palettes";
+
 /** Text/image split orientation. Shared by the auto-height and fixed-ratio
  *  split families, which offer the same four arrangements.
  *
@@ -330,6 +332,52 @@ export function sectionSupportsIcons(component: string) {
 /** Icons default on, so a section that offers them shows them unless told not to. */
 export function resolveSectionIcons(icons: string | undefined): SectionIcons {
   return icons === "off" ? "off" : "on";
+}
+
+/**
+ * How a section's headline breaks across lines.
+ *
+ * The style guide already sets a wrap mode per type scale; this is the
+ * per-section override for sections whose headline is the whole composition,
+ * where the difference between an evenly balanced block and a merely widow-free
+ * one is the layout decision rather than a typographic default. Same three
+ * values as `WrapMode` so both screens speak one vocabulary.
+ *
+ * Copy-neutral, so it sits with `cardFill`, `align`, and `icons` rather than on
+ * `variant`: where a headline breaks cannot change what the page agent is asked
+ * to write, and `variant` is hashed into the copy-contract fingerprint.
+ */
+export const headlineWrapOptions = [
+  { label: "Balanced", value: "balance" },
+  { label: "Pretty", value: "pretty" },
+  { label: "Default", value: "wrap" },
+] as const satisfies ReadonlyArray<{ label: string; value: WrapMode }>;
+
+export type SectionHeadlineWrap = WrapMode;
+
+export const headlineWrapValues = new Set<string>(
+  headlineWrapOptions.map((option) => option.value),
+);
+
+export const headlineWrapComponents = new Set<string>([
+  "SectionHeaderLargeSectionV3",
+]);
+
+export function sectionSupportsHeadlineWrap(component: string) {
+  return headlineWrapComponents.has(component);
+}
+
+/**
+ * Every heading scale ships `text-wrap: balance`, so an unset value resolves to
+ * balance and saved sections keep rendering exactly as they did before the axis
+ * existed.
+ */
+export function resolveHeadlineWrap(
+  wrap: string | undefined,
+): SectionHeadlineWrap {
+  return headlineWrapValues.has(wrap ?? "")
+    ? (wrap as SectionHeadlineWrap)
+    : "balance";
 }
 
 /**

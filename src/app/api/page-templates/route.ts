@@ -18,6 +18,7 @@ type PageTemplateSection = {
   align?: string;
   cardLinks?: string;
   icons?: string;
+  headlineWrap?: string;
   ratio?: string;
   /** Stable rename anchor - see `SlottedSection` in @/utils/section-id. */
   slotId?: string;

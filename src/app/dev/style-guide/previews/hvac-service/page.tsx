@@ -57,7 +57,7 @@ export default function HvacServicePreviewPage() {
           imageLabel="Lake Norman service area"
         />
         <TestimonialsCarouselSectionV3
-          {...northStarHvacContent.testimonials}
+          items={northStarHvacContent.testimonials.items}
         />
         <div id="faq">
           <FAQSectionV3 {...northStarHvacContent.faq} />

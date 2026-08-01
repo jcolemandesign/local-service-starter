@@ -120,8 +120,11 @@ import {
   calloutSplitPanelVariantOptions,
   calloutSplitPanelVariantValues,
   cardFillOptInComponents,
+  headlineWrapOptions,
   iconsOptions,
+  resolveHeadlineWrap,
   resolveSectionIcons,
+  sectionSupportsHeadlineWrap,
   sectionSupportsIcons,
   cardLinkGridAlignOptions,
   cardLinkGridAlignValues,
@@ -143,6 +146,7 @@ import {
   type CalloutRevealGridVariant,
   type CalloutSplitPanelVariant,
   type CardLinkGridAlign,
+  type SectionHeadlineWrap,
   type SectionIcons,
   type ServicesBentoVariant,
   type TableCompareAlign,
@@ -679,6 +683,10 @@ function getSectionIcons(section: WorkingSection) {
   return resolveSectionIcons(section.icons);
 }
 
+function getSectionHeadlineWrap(section: WorkingSection) {
+  return resolveHeadlineWrap(section.headlineWrap);
+}
+
 function getCTAImageAlign(section: WorkingSection): CTAImageAlign {
   return section.variant === "right" ? "right" : "left";
 }
@@ -987,6 +995,7 @@ function serializeWorkingSection(section: WorkingSection) {
     align: section.align,
     cardLinks: section.cardLinks,
     icons: section.icons,
+    headlineWrap: section.headlineWrap,
     ratio: section.ratio,
     slotId: section.slotId,
     variant: section.variant,
@@ -2816,6 +2825,21 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateSectionHeadlineWrap(
+    sectionId: string,
+    headlineWrap: SectionHeadlineWrap,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId &&
+        sectionSupportsHeadlineWrap(section.component)
+          ? { ...section, headlineWrap }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateCardLinks(sectionId: string, cardLinks: "on" | "off") {
     updateActiveStack((stack) =>
       stack.map((section) =>
@@ -3707,6 +3731,7 @@ export function PagebuilderShell({
             {...sectionLibraryV3Content.sectionHeaderLarge}
             align={getLargeSectionHeaderAlign(section)}
             headingLevel={2}
+            headlineWrap={getSectionHeadlineWrap(section)}
             size={getLargeSectionHeaderSize(section)}
           />
         ) : section.component === contentSplitHeadlineImageComponent ? (
@@ -5000,6 +5025,43 @@ export function PagebuilderShell({
                                 </div>
                               </fieldset>
                             </div>
+                          ) : null}
+
+                          {sectionSupportsHeadlineWrap(section.component) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Headline Wrap
+                              </legend>
+                              <div className="grid grid-cols-3 gap-2">
+                                {headlineWrapOptions.map((option) => {
+                                  const optionIsActive =
+                                    getSectionHeadlineWrap(section) ===
+                                    option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateSectionHeadlineWrap(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </fieldset>
                           ) : null}
 
                           {isDecisionSplitDecisionLargeSection(section) ? (

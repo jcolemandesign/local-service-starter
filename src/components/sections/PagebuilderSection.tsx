@@ -141,6 +141,7 @@ import {
   calloutRevealGridVariantValues,
   calloutSplitPanelVariantValues,
   cardLinkGridAlignValues,
+  resolveHeadlineWrap,
   resolveSectionIcons,
   splitBentoVariantValues,
   tableCompareAlignValues,
@@ -451,6 +452,7 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.sectionHeaderLarge}
           align={getLargeSectionHeaderAlign(section)}
           headingLevel={2}
+          headlineWrap={resolveHeadlineWrap(section.headlineWrap)}
           size={getLargeSectionHeaderSize(section)}
         />
       );
@@ -788,7 +790,7 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
     case "TestimonialsCarouselSectionV3":
       return (
         <TestimonialsCarouselSectionV3
-          {...sectionLibraryV3Content.testimonialsCarousel}
+          items={sectionLibraryV3Content.testimonialsCarousel.items}
         />
       );
     case "TestimonialsCarouselCondensedSectionV3":

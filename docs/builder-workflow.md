@@ -153,7 +153,7 @@ section (`page-templates.json` / `pagebuilder-options.json`, and on
 `WorkingSection` while editing):
 
 ```txt
-variant     ratio     cardLinks     align
+variant     ratio     cardLinks     align   icons   headlineWrap
 colorRecipe cardFill  cardBorder    reduceTopPadding  reduceBottomPadding
 ```
 
@@ -191,6 +191,8 @@ The copy-contract fingerprint hashes: `component`, the derived field specs,
 | `ratio` | template (staged override allowed) | **Yes** | In the fingerprint directly |
 | `cardLinks` | template | **Yes**, indirectly | `getTemplateCopyFieldsForSection` reads it (`section.cardLinks !== "off"`), so destinations and link labels come and go with it - the shared `linkLabel` on the card grids, `sectionAction` or per-card `actionLabel` on the split-decision sections |
 | `align` | template | No | Deliberately its own field, not folded into `variant`, so a purely visual nudge does not report every approved page's copy as stale |
+| `icons` | template | No | Marker icons on/off; same reasoning as `align` |
+| `headlineWrap` | template | No | `text-wrap` on the section's headline (`balance` / `pretty` / `wrap`); same reasoning as `align` |
 | `colorRecipe`, `cardFill`, `cardBorder` | template + staged override | No | Repaint only |
 | `reduceTopPadding`, `reduceBottomPadding` | template + staged override | No | Frame padding only; available on every section |
 
@@ -211,6 +213,10 @@ renders that silently does nothing. The membership sets live in
   are controls, not navigation) are excluded
 - `cardLinkGridAlignComponents`, `tableCompareAlignComponents` — the two
   alignment axes
+- `iconComponents` / `sectionSupportsIcons` — sections that draw marker icons
+- `headlineWrapComponents` / `sectionSupportsHeadlineWrap` — sections whose
+  headline is the whole composition, where how it breaks is a layout decision
+  rather than the type scale's default
 - `cardFillOptInComponents` — sections that render **no** card by default, so an
   unset value means `none` rather than the usual `solid`. `resolveCardFill()`
   exists because `globals.css` keys off `data-pagebuilder-card-fill`, and

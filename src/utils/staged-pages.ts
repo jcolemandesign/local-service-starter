@@ -76,6 +76,8 @@ export type StagedPageTemplateSection = {
   cardLinks?: string;
   /** Marker icons on/off - see `iconsOptions` in `section-style-options`. */
   icons?: string;
+  /** Headline wrap - see `headlineWrapOptions` in `section-style-options`. */
+  headlineWrap?: string;
   ratio?: string;
   /** Stable rename anchor - see `SlottedSection` in @/utils/section-id. */
   slotId?: string;

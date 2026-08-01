@@ -2,6 +2,7 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import type { SectionHeadlineWrap } from "@/content/section-style-options";
 import type { HeroCompactAlign } from "./HeroCompactSectionV3";
 
 export type LargeSectionHeaderSize =
@@ -13,6 +14,10 @@ export type LargeSectionHeaderSize =
 type SectionHeaderLargeSectionV3Props = {
   align?: HeroCompactAlign;
   headingLevel?: 1 | 2;
+  /** This section's take on the shared headline wrap axis: the title is the
+   *  whole composition here, so how it breaks is the layout. See
+   *  `headlineWrapOptions` in `section-style-options`. */
+  headlineWrap?: SectionHeadlineWrap;
   size?: LargeSectionHeaderSize;
   title: string;
 };
@@ -40,6 +45,7 @@ const sizeClassName: Record<LargeSectionHeaderSize, string> = {
 export function SectionHeaderLargeSectionV3({
   align = "center",
   headingLevel = 2,
+  headlineWrap = "balance",
   size = "display-xl",
   title,
 }: SectionHeaderLargeSectionV3Props) {
@@ -58,8 +64,13 @@ export function SectionHeaderLargeSectionV3({
           className="col-span-7 col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
         >
           <div className={cx("fluid-type-frame", textAlignment)}>
+            {/* Set inline rather than with the `wrap-*` utility: every
+                `type-*` utility declares `text-wrap` itself and is emitted
+                after the wrap utilities in the same layer, so the class would
+                lose the cascade and the control would read as dead. */}
             <Heading
               className={cx(sizeClassName[size], "text-service-ink")}
+              style={{ textWrap: headlineWrap }}
             >
               {title}
             </Heading>

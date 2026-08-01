@@ -18,6 +18,7 @@ type SavedPagebuilderSection = {
   align?: string;
   cardLinks?: string;
   icons?: string;
+  headlineWrap?: string;
   ratio?: string;
   /**
    * Carried through so a template edited in pagebuilder keeps its rename

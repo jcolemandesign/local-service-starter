@@ -396,7 +396,7 @@ const sectionElements = {
   ),
   "testimonials-carousel-v3": (
     <TestimonialsCarouselSectionV3
-      {...sectionLibraryV3Content.testimonialsCarousel}
+      items={sectionLibraryV3Content.testimonialsCarousel.items}
     />
   ),
   "testimonials-carousel-condensed-v3": (

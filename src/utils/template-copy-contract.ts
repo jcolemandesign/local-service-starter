@@ -1847,6 +1847,26 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  // Ahead of the generic testimonials branch: this carousel renders slides
+  // only, so it must not be asked for a heading or intro.
+  if (component.includes("testimonialscarouselsectionv3")) {
+    return [
+      {
+        example: [
+          "From the first call to the final walkthrough the team made a stressful repair feel manageable. - Amanda Reeves, Franklin, Emergency repair",
+          "We had put off replacing the old system because every estimate felt confusing. This plan was straightforward. - Marcus Bennett, Brentwood, System installation",
+        ],
+        format:
+          "One testimonial per line as Quote - Attribution. Use NEEDS REVIEW when source proof is missing.",
+        name: "testimonials",
+        purpose:
+          "Carousel slides. This section has no header - do not write an eyebrow, heading, or intro for it.",
+        target:
+          "3-5 testimonials. Use only testimonials visible in approved sources. Do not invent reviews.",
+      },
+    ];
+  }
+
   if (lookupValue.includes("testimonials") || lookupValue.includes("review")) {
     return [
       {
