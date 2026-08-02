@@ -65,6 +65,7 @@ describe("section toggle props", () => {
         cardBorder: "off",
         cardFill: "none",
         cardLinks: "off",
+        colorRecipe: "dark",
         component,
         headlineWrap: "pretty",
         icons: "off",
@@ -76,6 +77,7 @@ describe("section toggle props", () => {
 
       // The prebuilt element is preserved, not replaced.
       expect(props["data-prebuilt"]).toBe("yes");
+      expect(props.colorRecipe, `${component} colorRecipe`).toBe("dark");
 
       if (cardStyleComponents.has(component)) {
         expect(props.cardFill, `${component} cardFill`).toBe("none");
@@ -139,10 +141,27 @@ describe("section toggle props", () => {
     );
   });
 
-  it("leaves non-toggle sections untouched", () => {
-    const element = prebuiltElement();
-    const same = withSectionToggles(element, { component: "NavPrimarySectionV2" });
+  it("gives a section with no toggle sets only the colour recipe", () => {
+    const props = getSectionToggleProps({
+      colorRecipe: "dark",
+      component: "NavPrimarySectionV2",
+    });
 
-    expect(same).toBe(element);
+    // Offered on every section, so it always flows.
+    expect(props.colorRecipe).toBe("dark");
+    expect(Object.keys(props).sort()).toEqual(["colorRecipe"]);
+  });
+
+  it("falls back to the default recipe rather than passing an unknown value", () => {
+    expect(
+      getSectionToggleProps({ colorRecipe: "", component: "NavPrimarySectionV2" })
+        .colorRecipe,
+    ).toBe("default");
+    expect(
+      getSectionToggleProps({
+        colorRecipe: "not-a-recipe",
+        component: "NavPrimarySectionV2",
+      }).colorRecipe,
+    ).toBe("default");
   });
 });

@@ -75,17 +75,6 @@ const swapComponents = new Set(
   ].map((match) => match[1]),
 );
 
-const previewComponents = new Set(
-  [
-    ...balancedBlock(
-      read("PagebuilderSection.tsx"),
-      /const previewCatalog\s*=\s*\{/,
-      "{",
-      "}",
-    ).matchAll(/^ {4}(\w+):/gm),
-  ].map((match) => match[1]),
-);
-
 /**
  * The two renderer switches. Being in a catalog only gets a section as far as
  * the picker: without a `case` it renders the `UnknownSection` placeholder
@@ -105,7 +94,7 @@ const registryComponents = sectionLibraryV3Registry.map((entry) => entry.compone
 describe("pagebuilder catalog parity", () => {
   it("parses both catalogs", () => {
     expect(swapComponents.size).toBeGreaterThan(40);
-    expect(previewComponents.size).toBeGreaterThan(40);
+    expect(previewRendererCases.size).toBeGreaterThan(40);
   });
 
   it("offers every library section in pagebuilder", () => {
@@ -116,17 +105,6 @@ describe("pagebuilder catalog parity", () => {
     expect(
       missing,
       "these sections are in the library but pagebuilder never offers them - add them to sectionSwapOptions in PagebuilderShell.tsx",
-    ).toEqual([]);
-  });
-
-  it("renders a gallery preview for every library section", () => {
-    const missing = registryComponents
-      .filter((component) => !previewComponents.has(component))
-      .sort();
-
-    expect(
-      missing,
-      "these sections can be chosen but have no preview - add them to previewCatalog in PagebuilderSection.tsx",
     ).toEqual([]);
   });
 

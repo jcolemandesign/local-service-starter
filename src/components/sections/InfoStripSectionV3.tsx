@@ -1,4 +1,5 @@
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
+import type { SectionColorRecipe } from "@/content/section-color-recipes";
 import type { SectionIcons } from "@/content/section-style-options";
 
 export type InfoStripSectionV3Props = {
@@ -6,9 +7,52 @@ export type InfoStripSectionV3Props = {
   cardBorder?: "on" | "off";
   cardFill?: "solid" | "none";
   cardLabel: string;
+  colorRecipe?: SectionColorRecipe;
   /** This section's take on the shared icons axis: a marker in the card's top
    *  corner. See `iconsOptions` in `section-style-options`. */
   icons?: SectionIcons;
+};
+
+/**
+ * Per-recipe colours.
+ *
+ * The card is a surface inside the section rather than the section background,
+ * so it needs its own entry: on the dark and accent recipes the section colour
+ * is the card's default fill, and a card left on `bg-service-surface` would sit
+ * as a pale block on it.
+ */
+const colorRecipeClassName: Record<
+  SectionColorRecipe,
+  { body: string; card: string; cardBorder: string; label: string; section: string }
+> = {
+  default: {
+    body: "text-service-ink",
+    card: "bg-service-surface",
+    cardBorder: "border-service-border",
+    label: "text-service-accent",
+    section: "bg-bg-page",
+  },
+  muted: {
+    body: "text-service-ink",
+    card: "bg-bg-page",
+    cardBorder: "border-service-border",
+    label: "text-service-accent",
+    section: "bg-service-surface",
+  },
+  dark: {
+    body: "text-white",
+    card: "bg-white/10",
+    cardBorder: "border-white/25",
+    label: "text-white",
+    section: "bg-bg-dark",
+  },
+  accent: {
+    body: "text-[var(--live-accent-ink)]",
+    card: "bg-white/15",
+    cardBorder: "border-[color-mix(in_oklab,var(--live-accent-ink)_30%,transparent)]",
+    label: "text-[var(--live-accent-ink)]",
+    section: "bg-service-accent",
+  },
 };
 
 /**
@@ -17,11 +61,11 @@ export type InfoStripSectionV3Props = {
  * space between the two, and any space there reads as the card failing to fill
  * itself. `mt-0.5` optically centres the glyph against that first line.
  */
-function StripIcon() {
+function StripIcon({ className }: { className: string }) {
   return (
     <svg
       aria-hidden="true"
-      className="mt-0.5 size-5 shrink-0 text-service-accent"
+      className={`mt-0.5 size-5 shrink-0 ${className}`}
       fill="none"
       viewBox="0 0 20 20"
     >
@@ -63,10 +107,13 @@ export function InfoStripSectionV3({
   cardBorder = "on",
   cardFill = "solid",
   cardLabel,
+  colorRecipe = "default",
   icons = "on",
 }: InfoStripSectionV3Props) {
+  const colors = colorRecipeClassName[colorRecipe];
+
   return (
-    <section className="bg-bg-page">
+    <section className={colors.section}>
       <LayoutGrid className="section-min-none" columns={14} padding="sml">
         <LayoutGridItem
           alignY="middle"
@@ -74,16 +121,18 @@ export function InfoStripSectionV3({
         >
           <div
             className={cx(
-              "fluid-type-frame flex min-w-0 items-start gap-4 rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-8 text-service-ink shadow-service max-md:p-6",
+              "fluid-type-frame flex min-w-0 items-start gap-4 rounded-[var(--radius-surface-token)] border p-8 shadow-service max-md:p-6",
+              colors.card,
+              colors.cardBorder,
               cardFill === "none" && "!bg-transparent !shadow-none",
               cardBorder === "off" && "!border-transparent",
             )}
           >
-            <p className="type-eyebrow wrap-pretty min-w-0 flex-1 text-service-accent">
+            <p className={cx("type-eyebrow wrap-pretty min-w-0 flex-1", colors.label)}>
               {cardLabel}
             </p>
 
-            {icons === "on" ? <StripIcon /> : null}
+            {icons === "on" ? <StripIcon className={colors.label} /> : null}
           </div>
         </LayoutGridItem>
 
@@ -92,7 +141,7 @@ export function InfoStripSectionV3({
           className="col-span-9 col-start-6 max-lg:col-span-6 max-lg:col-start-5 max-md:col-span-6 max-md:col-start-1 max-sm:col-span-2 max-sm:col-start-1"
           measure="copyWide"
         >
-          <p className="type-text-lg wrap-pretty text-service-ink">{body}</p>
+          <p className={cx("type-text-lg wrap-pretty", colors.body)}>{body}</p>
         </LayoutGridItem>
       </LayoutGrid>
     </section>

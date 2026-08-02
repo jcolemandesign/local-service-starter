@@ -35,7 +35,6 @@ import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/Services
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
 import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
-import { withSectionToggles } from "@/components/sections/section-toggle-props";
 import { DecisionSplitDecisionSectionV3 } from "@/components/sections/DecisionSplitDecisionSectionV3";
 import {
   ProcessStepsBranchingSectionV3,
@@ -157,9 +156,23 @@ import {
 } from "@/content/section-style-options";
 
 type PagebuilderShellProps = {
-  previewCatalog: Record<string, ReactNode>;
-  previewSections: ReactNode[][];
   recipes: PagebuilderRecipe[];
+  /**
+   * Renders a section from library demo content with its toggles applied.
+   *
+   * Passed in rather than imported because `PagebuilderSection` renders this
+   * component, so importing back from it would be a cycle.
+   *
+   * This replaced a prebuilt `previewCatalog` map of one element per component.
+   * That map was a second place every section had to be registered, and being
+   * prebuilt from a synthetic section it could not carry live toggle values -
+   * each entry was also wrapped in a <div>, so props cloned onto one landed on a
+   * DOM node rather than the section.
+   */
+  renderLibrarySection: (
+    section: PagebuilderRecipe["sectionStack"][number],
+    index: number,
+  ) => ReactNode;
   sectionModes: SectionMode[];
 };
 
@@ -2383,9 +2396,8 @@ function subscribeToHydration() {
 }
 
 export function PagebuilderShell({
-  previewCatalog,
-  previewSections,
   recipes,
+  renderLibrarySection,
   sectionModes,
 }: PagebuilderShellProps) {
   const [activeRecipeId, setActiveRecipeId] = useState(recipes[0]?.id ?? "");
@@ -3959,19 +3971,11 @@ export function PagebuilderShell({
             cardFill={getSectionCardFill(section)}
           />
         ) : (
-          // Everything without a hand-written branch above renders from a
-          // prebuilt `previewCatalog` entry, which is created once from a
-          // synthetic section carrying no toggle values. `withSectionToggles`
-          // clones the live values on at render time, so cardFill, cardBorder,
-          // icons and cardLinks work for every section rather than only for the
-          // ones listed above - a new section is wired by default instead of
-          // shipping with controls that render and do nothing.
-          withSectionToggles(
-            previewCatalog[section.component] ??
-              previewSections[activeRecipeIndex]?.[section.originalIndex] ??
-              null,
-            section,
-          )
+          // Everything without a hand-written branch above renders through the
+          // shared library renderer, given the *live* section so its toggles
+          // apply. The branches above remain only for axes the toggle helper
+          // does not cover - variant, heading level, colour recipe.
+          renderLibrarySection(section, sectionIndex)
         );
 
       return (
