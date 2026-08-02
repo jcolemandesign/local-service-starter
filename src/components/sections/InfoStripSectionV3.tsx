@@ -34,11 +34,20 @@ const colorRecipeClassName: Record<
   },
   muted: {
     body: "text-service-ink",
-    card: "bg-bg-page",
+    // The raised surface, not the page token. A filled card on the muted recipe
+    // has to lift off a section that is already surface-coloured, and the page
+    // token sits below it rather than above - the two read as one flat field.
+    // `globals.css` does the same lift for cards it can reach by selector.
+    card: "bg-surface-raised",
     cardBorder: "border-service-border",
     label: "text-service-accent",
     section: "bg-service-surface",
   },
+  // Dark and accent stay on explicit translucent whites rather than
+  // `bg-surface-raised`. That token is only re-pointed at a dark/accent-derived
+  // colour inside `.pagebuilder-section-frame`, so on an exported page it would
+  // still resolve to the light default and put a near-white card on a dark
+  // section. A translucent white is correct in both places.
   dark: {
     body: "text-white",
     card: "bg-white/10",
