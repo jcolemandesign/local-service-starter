@@ -1730,6 +1730,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     name: "Process steps branching",
   },
   {
+    component: "InfoStripSectionV3",
+    instruction:
+      "State one safety or eligibility condition and what the reader should do about it. Use when a single instruction has to be read before anything else on the page.",
+    layoutGrid: 14,
+    mode: "Utility",
+    name: "Info strip",
+  },
+  {
     component: "FAQSectionV3",
     instruction:
       "Include only the questions that affect whether someone contacts you.",

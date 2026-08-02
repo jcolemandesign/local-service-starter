@@ -186,13 +186,6 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
           "Show 3-5 priority services the business wants listed first before the full all-services section.",
       },
       {
-        name: "Info strip",
-        component: "InfoStripSectionV3",
-        mode: "Utility",
-        instruction:
-          "State one safety or eligibility condition and what the reader should do about it, ahead of any booking path.",
-      },
-      {
         name: "FAQ",
         component: "FAQSectionV3",
         mode: "Utility",

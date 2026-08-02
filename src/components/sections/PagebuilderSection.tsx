@@ -1586,6 +1586,12 @@ export function PagebuilderSection() {
       "Fixed cover fade",
       7,
     ),
+    InfoStripSectionV3: previewCatalogEntry(
+      "InfoStripSectionV3",
+      "Utility",
+      "Info strip",
+      7,
+    ),
     ServiceAreaZipLookupSectionV3: previewCatalogEntry(
       "ServiceAreaZipLookupSectionV3",
       "Utility",
