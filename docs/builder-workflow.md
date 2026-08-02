@@ -95,6 +95,9 @@ these exist — the checklist is in `.claude/skills/add-section/SKILL.md`, and
    (`src/utils/template-copy-contract.ts`)
 8. An asset field spec if it renders images — a branch in
    `getTemplateAssetFieldsForSection` (`src/utils/staged-pages.ts`)
+9. Membership in the toggle sets it qualifies for in
+   `src/content/section-style-options.ts` — the decision list is in the
+   add-section skill; §3 below explains each set
 
 ### The failure that does not error
 
@@ -194,7 +197,7 @@ The copy-contract fingerprint hashes: `component`, the derived field specs,
 | `icons` | template | No | Marker icons on/off; same reasoning as `align` |
 | `headlineWrap` | template | No | `text-wrap` on the section's headline (`balance` / `pretty` / `wrap`); same reasoning as `align` |
 | `colorRecipe`, `cardFill`, `cardBorder` | template + staged override | No | Repaint only |
-| `reduceTopPadding`, `reduceBottomPadding` | template + staged override | No | Frame padding only; available on every section |
+| `reduceTopPadding`, `reduceBottomPadding` | template + staged override | No | Frame padding only; offered to content-height sections, not to `viewportHeightComponents` — min-height takes the space back, so the control would read as broken |
 
 Flipping a copy-affecting toggle moves the fingerprint, which flips affected
 sections to `stale`. That is expected and safe — it surfaces warnings on
@@ -221,6 +224,9 @@ renders that silently does nothing. The membership sets live in
   unset value means `none` rather than the usual `solid`. `resolveCardFill()`
   exists because `globals.css` keys off `data-pagebuilder-card-fill`, and
   reporting `solid` on an opt-in section applies the wrong recipe rules.
+- `viewportHeightComponents` / `sectionSupportsSectionSpacing` — the inverse of
+  the others: membership *removes* the spacing controls. These sections pin a
+  viewport-derived min-height, so trimming padding never shortens them.
 
 Every reusable section with a card or panel background must read `cardFill` and
 `cardBorder` and appear in `cardStyleComponents`. Transparency is a required

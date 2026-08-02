@@ -52,12 +52,13 @@ A new section is not complete until it is:
 - given a render `case` and a `xxxProps()` mapper in `PageTemplatePreview.tsx`
 - given a copy field spec in `getTemplateCopyFieldsForSection` (`src/utils/template-copy-contract.ts`)
 - given an asset field spec in `getTemplateAssetFieldsForSection` (`src/utils/staged-pages.ts`) if it renders images
+- registered in the toggle membership sets it qualifies for in `src/content/section-style-options.ts` — card style, card links, icons, headline wrap, the align axes, and `viewportHeightComponents` for viewport-height sections. A section missing from a set it qualifies for does not error; the control is silently never offered. The decision list is in `.claude/skills/add-section/SKILL.md`.
 
 The field names a section's `xxxProps()` mapper reads must exactly match the field names its copy/asset specs declare. A mismatch does not error — the renderer silently falls back to section-library demo content, and export validation cannot detect it. See `.claude/skills/add-section/SKILL.md`.
 
 Do not add a section only to pagebuilder. Pagebuilder should reference sections that already exist in the section library.
 
-Before finishing, verify the section appears in `/sections`, appears in pagebuilder under the matching semantic mode, and passes lint/build.
+Before finishing, verify the section appears in `/sections`, appears in pagebuilder under the matching semantic mode, and passes lint, typecheck (`npx tsc --noEmit`), and tests — the demo-content leak guard (`src/utils/__tests__/section-demo-content-leak.test.ts`) is the mechanical check for the copy-spec/mapper contract.
 
 For the full section-registration checklist, see `.claude/skills/add-section/SKILL.md`.
 
@@ -74,6 +75,10 @@ Use existing design tokens before creating new ones.
 Card-like and panel-like surfaces must inherit the shared radius settings through `--radius-surface-token` (or an existing semantic radius utility backed by that token). Do not hardcode a local radius.
 
 Any reusable section that renders a card or panel background must support the shared `cardFill` / `cardBorder` controls and be registered in `cardStyleComponents`. A filled card surface must always offer the transparent option; do not ship a permanently filled card. Structural dividers inside a composite card may remain when its outer border is disabled if they are necessary to preserve the content relationship.
+
+Sections whose height is viewport-derived (a `section-min-*` min-height) must be registered in `viewportHeightComponents` so the section-spacing control is not offered where it cannot work.
+
+New toggle axes follow the copy-affecting vs copy-neutral rule in `docs/builder-workflow.md` §3: axes that change which copy fields a section asks for ride `variant` / `ratio` / the field specs; purely visual axes get their own field and must never be folded into `variant`.
 
 Tokens should be design-facing and easy to reference while building.
 
@@ -121,6 +126,7 @@ Typography should scale smoothly where appropriate using responsive values or `c
 For task-specific workflows, reference files in `.agents/skills/`.
 
 - Intake analysis → `.agents/skills/intake-to-website-content-map.md`
+- Existing-site content extraction → `.agents/skills/existing-website-content-extraction.md`
 ---
 
 ## Motion / Animation Rules

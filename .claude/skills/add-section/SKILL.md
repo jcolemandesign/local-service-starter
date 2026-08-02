@@ -17,12 +17,35 @@ A new section is not complete until it is:
 - given a render `case` **and** a `xxxProps()` mapper in `PageTemplatePreview.tsx`
 - **given a copy field spec** — a branch in `getTemplateCopyFieldsForSection` (`src/utils/template-copy-contract.ts`)
 - **given an asset field spec** if it renders images — a branch in `getTemplateAssetFieldsForSection` (`src/utils/staged-pages.ts`)
+- **registered in the toggle membership sets it qualifies for** in `src/content/section-style-options.ts` (see below)
 
 Do not add a section only to pagebuilder. Pagebuilder should reference sections that already exist in the section library.
 
+## Toggle registration
+
+Pagebuilder and the content editor only offer a toggle to sections listed in the matching membership set in `src/content/section-style-options.ts`. A section missing from a set it qualifies for does not error — the control is silently never offered (or, for spacing, offered where it cannot work). Walk this list for every new section:
+
+- renders a card or panel background → `cardStyleComponents` (required — a filled card must always offer the transparent option)
+- card surface is **unfilled by default** → also `cardFillOptInComponents`, so unset resolves to `none` instead of `solid`
+- cards are ordinary navigation links → `cardLinkComponents` (CTA sections and control-card callouts stay out)
+- draws marker icons → `iconComponents`
+- the headline is the whole composition → `headlineWrapComponents`
+- content fills 12 of 14 columns → `tableCompareAlignComponents`; a three-card row → `cardLinkGridAlignComponents`
+- pins a viewport-derived min-height (`section-min-screen` / `-sliver` / `-story` / `-sticky`) → `viewportHeightComponents`, which *removes* the spacing control — min-height takes the space back, so the control would read as broken
+
+## Adding a new toggle axis
+
+If the section needs an axis that does not exist yet:
+
+- **Copy-affecting** (changes which fields the section asks for) → it rides `variant`, `ratio`, or the field specs, all hashed into the copy-contract fingerprint. Flipping it flips approved pages to `stale` — deliberate, but do it knowingly.
+- **Copy-neutral** (repaint only) → its own field beside `cardFill` / `align` / `icons`, never folded into `variant`, so a visual nudge cannot stale approved copy.
+- One option list per axis, declared in `section-style-options.ts` and imported everywhere — duplicated lists drift silently.
+- `""` always means "inherit the template". Persisted values are opaque ids — never rename one.
+- An **unset value must resolve to the pre-axis rendering and the pre-axis copy fields**, or every saved page using the section changes or goes stale on read.
+
 ## The two steps that fail silently
 
-The last two are the ones that get skipped, and they do **not** produce an error — they produce wrong output on a client site.
+The copy and asset field specs are the steps that get skipped, and they do **not** produce an error — they produce wrong output on a client site.
 
 Every `xxxProps()` mapper spreads `...sectionLibraryV3Content.X` as its fallback base. If a field name the mapper reads is missing from the field spec, that field is never requested from the LLM, never written to `page.fields`, and the renderer silently falls back to **section-library demo content**. Export validation cannot catch this: it only inspects fields that exist in `page.fields`, and a field that was never specced does not exist there.
 
@@ -30,6 +53,16 @@ So the rule is: **the field names your `xxxProps()` mapper reads must exactly ma
 
 If a section has no branch in `getTemplateCopyFieldsForSection`, it falls through to `fallbackFields` (`eyebrow`/`heading`/`body`/`items`) — which is almost never what a custom section actually renders.
 
+Both spec functions match sections on a fuzzy `component + mode + name` string via `.includes(...)`, so **the order of the if-chain is semantically significant** — place a new branch where a broader match cannot shadow it.
+
 ## Before finishing
 
-Verify the section appears in `/sections`, appears in pagebuilder under the matching semantic mode, that its spec and props mapper agree on every field name, and that it passes lint/build.
+Verify the section appears in `/sections`, appears in pagebuilder under the matching semantic mode, that its spec and props mapper agree on every field name, and that these pass:
+
+```bash
+npm run lint
+npx tsc --noEmit
+npm run test
+```
+
+`src/utils/__tests__/section-demo-content-leak.test.ts` is the mechanical check for the silent-fallback failure above — it renders every registered section from its declared spec fields and fails if demo content leaks through. A new section must pass it, not be added to its `KNOWN_GAPS` list.
