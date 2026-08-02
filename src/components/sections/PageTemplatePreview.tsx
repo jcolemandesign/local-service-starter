@@ -102,6 +102,7 @@ import {
   HeroSplitFullHeightSectionV3,
   type HeroSplitFullHeightVariant,
 } from "@/components/sections/HeroSplitFullHeightSectionV3";
+import { HeroServiceAreaZipLookupSectionV3 } from "@/components/sections/HeroServiceAreaZipLookupSectionV3";
 import { FooterSectionV2 } from "@/components/sections/FooterSectionV2";
 import { FooterLinkPanelSectionV3 } from "@/components/sections/FooterLinkPanelSectionV3";
 import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
@@ -115,6 +116,7 @@ import {
   CTAImageSectionV3,
   type CTAImageAlign,
 } from "@/components/sections/CTAImageSectionV3";
+import { FeaturedOfferSectionV3 } from "@/components/sections/FeaturedOfferSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import type { ServiceNeedsPriorityGridAlign } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
@@ -474,6 +476,15 @@ export function renderPageTemplateSection(
           colorRecipe={section.colorRecipe}
           headingLevel={headingLevel}
           secondaryActionHref={getServicesHref(navigationLinks)}
+          variant={getHeroSplitFullHeightVariant(section)}
+        />
+      );
+    case "HeroServiceAreaZipLookupSectionV3":
+      return (
+        <HeroServiceAreaZipLookupSectionV3
+          {...heroServiceAreaZipLookupProps(fieldSection)}
+          colorRecipe={section.colorRecipe}
+          headingLevel={headingLevel}
           variant={getHeroSplitFullHeightVariant(section)}
         />
       );
@@ -898,6 +909,8 @@ export function renderPageTemplateSection(
         <FAQAccordionSidebarSectionV3
           {...faqAccordionSidebarProps(fieldSection)}
           align={section.variant === "left" ? "left" : "right"}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "TestimonialsSectionV3":
@@ -953,6 +966,15 @@ export function renderPageTemplateSection(
           {...ctaImageProps(fieldSection)}
           align={getCTAImageAlign(section)}
           secondaryActionHref={getServicesHref(navigationLinks)}
+        />
+      );
+    case "FeaturedOfferSectionV3":
+      return (
+        <FeaturedOfferSectionV3
+          {...featuredOfferProps(fieldSection)}
+          align={section.variant === "right" ? "right" : "left"}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "CTAMutedSectionV3":
@@ -1085,6 +1107,38 @@ function heroSplitProps(section: FieldSection) {
       "",
     ).slice(0, 3),
     title: getTitle(section, sectionLibraryV3Content.heroSplitFullHeight.title),
+  };
+}
+
+function heroServiceAreaZipLookupProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.heroServiceAreaZipLookup;
+
+  return {
+    ...fallback,
+    body: getBody(section, fallback.body),
+    eyebrow: getValue(section, "eyebrow", fallback.eyebrow),
+    imageAlt: getAssetValue(section, "imageAlt", fallback.imageAlt),
+    imageSrc: getAssetValue(section, "imageSrc", fallback.imageSrc),
+    inputLabel: getValue(section, "inputLabel", fallback.inputLabel),
+    inputPlaceholder: getValue(
+      section,
+      "inputPlaceholder",
+      fallback.inputPlaceholder,
+    ),
+    serviceAreaText: getValue(
+      section,
+      "serviceAreaText",
+      fallback.serviceAreaText,
+    ),
+    submitLabel: getValue(section, "submitLabel", fallback.submitLabel),
+    successActionLabel: getValue(
+      section,
+      "successActionLabel",
+      fallback.successActionLabel,
+    ),
+    successBody: getValue(section, "successBody", fallback.successBody),
+    successTitle: getValue(section, "successTitle", fallback.successTitle),
+    title: getTitle(section, fallback.title),
   };
 }
 
@@ -2228,6 +2282,33 @@ function ctaImageProps(section: FieldSection) {
       fallback.secondaryAction,
     ),
     title: getTitle(section, fallback.title),
+  };
+}
+
+function featuredOfferProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.featuredOffer;
+
+  return {
+    ...fallback,
+    action: getValue(section, "primaryAction", fallback.action),
+    bannerLabel: getValue(section, "bannerLabel", fallback.bannerLabel),
+    benefitBody: getValue(section, "benefitBody", fallback.benefitBody),
+    benefitTitle: getValue(section, "benefitTitle", fallback.benefitTitle),
+    bullets: getListValues(
+      section,
+      ["bullets"],
+      fallback.bullets.join("\n"),
+    ),
+    dateLabel: getValue(section, "dateLabel", fallback.dateLabel),
+    dateValue: getValue(section, "dateValue", fallback.dateValue),
+    eyebrow: getValue(section, "eyebrow", fallback.eyebrow),
+    heading: getValue(section, "heading", fallback.heading),
+    imageAlt: getAssetValue(section, "imageAlt", fallback.imageAlt),
+    imageSrc: getAssetValue(section, "imageSrc", fallback.imageSrc),
+    includesLabel: getValue(section, "includesLabel", fallback.includesLabel),
+    priceLabel: getValue(section, "priceLabel", fallback.priceLabel),
+    priceValue: getValue(section, "priceValue", fallback.priceValue),
+    terms: getValue(section, "terms", fallback.terms),
   };
 }
 

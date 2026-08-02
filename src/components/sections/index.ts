@@ -109,6 +109,11 @@ export {
   type CTAImageSectionV3Props,
 } from "./CTAImageSectionV3";
 export {
+  FeaturedOfferSectionV3,
+  type FeaturedOfferAlign,
+  type FeaturedOfferSectionV3Props,
+} from "./FeaturedOfferSectionV3";
+export {
   FeatureOverlapRowsSectionV3,
   ProcessStepsSectionV3,
   TestimonialsSectionV3,
@@ -171,6 +176,7 @@ export { HeroSectionV2 } from "./HeroSectionV2";
 export { HeroSplitBentoSectionV3 } from "./HeroSplitBentoSectionV3";
 export { HeroSplitFixedImageSectionV3 } from "./HeroSplitFixedImageSectionV3";
 export { HeroSplitFullHeightSectionV3 } from "./HeroSplitFullHeightSectionV3";
+export { HeroServiceAreaZipLookupSectionV3 } from "./HeroServiceAreaZipLookupSectionV3";
 export { HeroStackedHeaderImageSectionV2 } from "./HeroStackedHeaderImageSectionV2";
 export { InfoStripSectionV3 } from "./InfoStripSectionV3";
 export { NavFloatingBentoSection } from "./NavFloatingBentoSection";

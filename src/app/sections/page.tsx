@@ -23,6 +23,7 @@ import {
   ContactSectionV3,
   CTAFullscreenSectionV3,
   CTAImageSectionV3,
+  FeaturedOfferSectionV3,
   CTAMutedSectionV3,
   CTASectionV3,
   CTAScrollRevealOfferSectionV3,
@@ -83,6 +84,7 @@ import { HeroSplitBentoSectionLibraryDemo } from "@/components/sections/HeroSpli
 import { SectionHeaderSplitLinkSectionV3 } from "@/components/sections/SectionHeaderSplitLinkSectionV3";
 import { HeroSplitFixedImageSectionLibraryDemo } from "@/components/sections/HeroSplitFixedImageSectionLibraryDemo";
 import { HeroSplitFullImageSectionLibraryDemo } from "@/components/sections/HeroSplitFullImageSectionLibraryDemo";
+import { HeroServiceAreaZipLookupSectionLibraryDemo } from "@/components/sections/HeroServiceAreaZipLookupSectionLibraryDemo";
 import { ContentSplitFixedImageSectionLibraryDemo } from "@/components/sections/ContentSplitFixedImageSectionLibraryDemo";
 import { ContentSplitFullImageSectionLibraryDemo } from "@/components/sections/ContentSplitFullImageSectionLibraryDemo";
 import { ServiceCalloutSplitPanelSectionLibraryDemo } from "@/components/sections/ServiceCalloutSplitPanelSectionLibraryDemo";
@@ -133,6 +135,12 @@ const sectionElements = {
   "hero-split-full-height-v3": (
     <HeroSplitFullImageSectionLibraryDemo
       {...sectionLibraryV3Content.heroSplitFullHeight}
+      headingLevel={2}
+    />
+  ),
+  "hero-service-area-zip-lookup-v3": (
+    <HeroServiceAreaZipLookupSectionLibraryDemo
+      {...sectionLibraryV3Content.heroServiceAreaZipLookup}
       headingLevel={2}
     />
   ),
@@ -423,6 +431,9 @@ const sectionElements = {
   "cta-v3": <CTASectionV3 {...sectionLibraryV3Content.cta} />,
   "cta-image-v3": (
     <CTAImageSectionV3 {...sectionLibraryV3Content.ctaImage} />
+  ),
+  "featured-offer-v3": (
+    <FeaturedOfferSectionV3 {...sectionLibraryV3Content.featuredOffer} />
   ),
   "cta-muted-v3": <CTAMutedSectionV3 {...sectionLibraryV3Content.ctaMuted} />,
   "cta-fullscreen-v3": (

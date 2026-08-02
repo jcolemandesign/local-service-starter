@@ -8,6 +8,10 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import type {
+  SectionCardBorder,
+  SectionCardFill,
+} from "@/content/section-color-recipes";
 
 const accordionEase = [0.22, 1, 0.36, 1] as const;
 
@@ -20,6 +24,8 @@ export type FAQAccordionSidebarAlign = "left" | "right";
 
 type FAQAccordionSidebarSectionV3Props = {
   align?: FAQAccordionSidebarAlign;
+  cardBorder?: SectionCardBorder;
+  cardFill?: SectionCardFill;
   items: readonly FAQItem[];
   primaryAction: string;
   primaryActionHref?: string;
@@ -33,6 +39,8 @@ function cx(...classes: Array<string | false | undefined>) {
 
 export function FAQAccordionSidebarSectionV3({
   align = "right",
+  cardBorder = "on",
+  cardFill = "solid",
   items,
   primaryAction,
   primaryActionHref = "/contact",
@@ -57,6 +65,12 @@ export function FAQAccordionSidebarSectionV3({
   // padding on whichever edge of the accordion faces the panel instead.
   const accordionGutterClassName =
     align === "left" ? "pl-8 max-md:pl-0" : "pr-8 max-md:pr-0";
+  const panelFillClassName =
+    cardFill === "none"
+      ? "bg-transparent shadow-none"
+      : "bg-service-surface shadow-service";
+  const panelBorderClassName =
+    cardBorder === "off" ? "border-transparent" : "border-service-border";
 
   function toggleItem(question: string) {
     setOpenItems((currentItems) =>
@@ -133,7 +147,13 @@ export function FAQAccordionSidebarSectionV3({
             "max-lg:col-span-5 max-lg:col-start-1 max-lg:row-auto max-lg:mt-12 max-md:col-span-3 max-sm:col-span-1",
           )}
         >
-          <article className="fluid-type-frame rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-8 text-service-ink shadow-service max-md:p-6">
+          <article
+            className={cx(
+              "fluid-type-frame rounded-[var(--radius-surface-token)] border p-8 text-service-ink max-md:p-6",
+              panelBorderClassName,
+              panelFillClassName,
+            )}
+          >
             <h2 className="type-heading-lg wrap-pretty text-service-ink">
               {title}
             </h2>

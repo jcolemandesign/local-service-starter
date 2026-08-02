@@ -26,6 +26,10 @@ import {
   type HeroSplitFullHeightVariant,
 } from "@/components/sections/HeroSplitFullHeightSectionV3";
 import {
+  HeroServiceAreaZipLookupSectionV3,
+  type HeroServiceAreaZipLookupVariant,
+} from "@/components/sections/HeroServiceAreaZipLookupSectionV3";
+import {
   HeroCompactSectionV3,
   type HeroCompactAlign,
   type HeroCompactHeadingSize,
@@ -63,6 +67,10 @@ import {
   CTAImageSectionV3,
   type CTAImageAlign,
 } from "@/components/sections/CTAImageSectionV3";
+import {
+  FeaturedOfferSectionV3,
+  type FeaturedOfferAlign,
+} from "@/components/sections/FeaturedOfferSectionV3";
 import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import type { ServiceNeedsPriorityGridAlign } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
@@ -206,6 +214,8 @@ const fixedRatioSplitComponent = "HeroSplitFixedImageSectionV3";
 const splitBentoComponent = "HeroSplitBentoSectionV3";
 const contentFixedRatioSplitComponent = "ContentSplitFixedImageSectionV3";
 const contentFullImageSplitComponent = "ContentSplitFullImageSectionV3";
+const heroServiceAreaZipLookupComponent =
+  "HeroServiceAreaZipLookupSectionV3";
 
 /**
  * The hero and its narrative twin offer the same four arrangements and share
@@ -216,6 +226,7 @@ const contentFullImageSplitComponent = "ContentSplitFullImageSectionV3";
 const fullImageSplitComponents = new Set<string>([
   splitContentImageComponent,
   contentFullImageSplitComponent,
+  heroServiceAreaZipLookupComponent,
 ]);
 const heroCompactComponent = "HeroCompactSectionV3";
 const heroServicesComponent = "HeroServicesSectionV3";
@@ -255,6 +266,7 @@ const servicesThreeCardsRightComponent = "ServicesThreeCardsRightSectionV3";
 const ctaSectionComponent = "CTASectionV3";
 const ctaMutedSectionComponent = "CTAMutedSectionV3";
 const ctaImageSectionComponent = "CTAImageSectionV3";
+const featuredOfferSectionComponent = "FeaturedOfferSectionV3";
 const contentFixedCoverFadeComponent = "ContentFixedCoverFadeSectionV2";
 const decisionSplitDecisionLargeComponent = "DecisionSplitDecisionLargeSectionV3";
 const fourCardLinkGridVariantOptions = [
@@ -282,6 +294,10 @@ const cardLinksOptions = [
 const ctaImageAlignOptions = [
   { label: "Copy left", value: "left" },
   { label: "Copy right", value: "right" },
+] as const;
+const featuredOfferAlignOptions = [
+  { label: "Image left", value: "left" },
+  { label: "Image right", value: "right" },
 ] as const;
 const mainIdeaGridAlignOptions = [
   { label: "Left", value: "left" },
@@ -539,6 +555,10 @@ function isContentFullImageSplitSection(section: WorkingSection) {
   return section.component === contentFullImageSplitComponent;
 }
 
+function isHeroServiceAreaZipLookupSection(section: WorkingSection) {
+  return section.component === heroServiceAreaZipLookupComponent;
+}
+
 function usesFullImageSplitVariants(section: WorkingSection) {
   return fullImageSplitComponents.has(section.component);
 }
@@ -702,6 +722,10 @@ function getSectionHeadlineWrap(section: WorkingSection) {
 }
 
 function getCTAImageAlign(section: WorkingSection): CTAImageAlign {
+  return section.variant === "right" ? "right" : "left";
+}
+
+function getFeaturedOfferAlign(section: WorkingSection): FeaturedOfferAlign {
   return section.variant === "right" ? "right" : "left";
 }
 
@@ -1286,6 +1310,13 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     name: "Split content and full image",
   },
   {
+    component: "HeroServiceAreaZipLookupSectionV3",
+    instruction:
+      "Use a split hero when visitors should confirm ZIP-code coverage before starting a service request.",
+    mode: "Hero",
+    name: "Service area ZIP lookup",
+  },
+  {
     component: "HeroSplitFixedImageSectionV3",
     instruction:
       "Use a split hero with a bounded fixed-ratio image frame instead of a full-screen image.",
@@ -1795,6 +1826,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     name: "CTA with image",
   },
   {
+    component: "FeaturedOfferSectionV3",
+    instruction:
+      "Feature one time-sensitive offer in a shared surface: a tall promotional image with a callout banner, full-width offer heading and details, then an included-services list beside the conversion panel. The alignment toggle moves the image to either side.",
+    layoutGrid: 14,
+    mode: "Action",
+    name: "Featured offer",
+  },
+  {
     component: "CTAMutedSectionV3",
     instruction:
       "Use a quieter service-card CTA when the page needs a softer next step between content sections.",
@@ -1896,6 +1935,7 @@ const innerOptionSignifiers: Partial<
   Record<SectionSwapOption["component"], InnerOptionSignifier>
 > = {
   HeroSplitFullHeightSectionV3: { pattern: "full" },
+  HeroServiceAreaZipLookupSectionV3: { pattern: "full" },
   HeroSplitFixedImageSectionV3: { pattern: "fixed" },
   HeroSplitBentoSectionV3: { pattern: "full" },
   ContentSplitFixedImageSectionV3: { pattern: "fixed" },
@@ -2884,6 +2924,21 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateFeaturedOfferAlign(
+    sectionId: string,
+    align: FeaturedOfferAlign,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId &&
+        section.component === featuredOfferSectionComponent
+          ? { ...section, variant: align }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateMainIdeaGridAlign(
     sectionId: string,
     align: ContentMainIdeaGridAlign,
@@ -3652,7 +3707,18 @@ export function PagebuilderShell({
         (includedSection) => includedSection.id === section.id,
       );
       const headingLevel = sectionIndex === 1 ? 1 : 2;
-      const renderedSectionPreview = isSplitContentImageSection(section) ? (
+      const renderedSectionPreview = isHeroServiceAreaZipLookupSection(section) ? (
+          <HeroServiceAreaZipLookupSectionV3
+            {...sectionLibraryV3Content.heroServiceAreaZipLookup}
+            colorRecipe={getSectionColorRecipe(section)}
+            headingLevel={headingLevel}
+            variant={
+              (section.variant ??
+                splitContentImageVariantOptions[0]
+                  .value) as HeroServiceAreaZipLookupVariant
+            }
+          />
+        ) : isSplitContentImageSection(section) ? (
           <HeroSplitFullHeightSectionV3
             {...sectionLibraryV3Content.heroSplitFullHeight}
             colorRecipe={getSectionColorRecipe(section)}
@@ -3792,6 +3858,8 @@ export function PagebuilderShell({
           <FAQAccordionSidebarSectionV3
             {...sectionLibraryV3Content.faqAccordionSidebar}
             align={getFAQAccordionSidebarAlign(section)}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
           />
         ) : section.component === ctaSectionComponent ? (
           <CTASectionV3
@@ -3802,6 +3870,13 @@ export function PagebuilderShell({
           <CTAImageSectionV3
             {...sectionLibraryV3Content.ctaImage}
             align={getCTAImageAlign(section)}
+          />
+        ) : section.component === featuredOfferSectionComponent ? (
+          <FeaturedOfferSectionV3
+            {...sectionLibraryV3Content.featuredOffer}
+            align={getFeaturedOfferAlign(section)}
+            cardBorder={getSectionCardBorder(section)}
+            cardFill={getSectionCardFill(section)}
           />
         ) : section.component === ctaMutedSectionComponent ? (
           <CTAMutedSectionV3
@@ -5231,6 +5306,42 @@ export function PagebuilderShell({
                                       key={option.value}
                                       onClick={() =>
                                         updateCTAImageAlign(section.id, option.value)
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </fieldset>
+                          ) : null}
+
+                          {section.component === featuredOfferSectionComponent ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Alignment
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {featuredOfferAlignOptions.map((option) => {
+                                  const optionIsActive =
+                                    getFeaturedOfferAlign(section) === option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateFeaturedOfferAlign(
+                                          section.id,
+                                          option.value,
+                                        )
                                       }
                                       type="button"
                                     >

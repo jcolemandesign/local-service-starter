@@ -1120,6 +1120,75 @@ export function getTemplateCopyFieldsForSection(
     return contactModalBeginFields();
   }
 
+  if (component.includes("heroserviceareaziplookup")) {
+    return [
+      {
+        example: "Service area",
+        name: "eyebrow",
+        purpose: "Immediate coverage context above the hero headline.",
+        target: "12-30 characters.",
+      },
+      {
+        example: "Do we come to your home?",
+        name: "h1",
+        purpose: "Main service-area lookup headline.",
+        target: "30-70 characters. One H1 only.",
+      },
+      {
+        example:
+          "Enter your ZIP code to see whether your address is within our regular or availability-based service area.",
+        name: "intro",
+        purpose: "Short explanation of what the ZIP lookup does.",
+        target: "90-180 characters.",
+      },
+      {
+        example: "ZIP code lookup",
+        name: "inputLabel",
+        purpose: "Accessible label for the ZIP code field.",
+        target: "12-30 characters.",
+      },
+      {
+        example: "ZIP code",
+        name: "inputPlaceholder",
+        purpose: "Short placeholder shown inside the ZIP code field.",
+        target: "6-20 characters.",
+      },
+      {
+        example: "Check coverage",
+        name: "submitLabel",
+        purpose: "Action label that submits the ZIP lookup.",
+        target: "10-24 characters.",
+      },
+      {
+        example: "We service your area.",
+        name: "successTitle",
+        purpose: "Short confirmation heading shown after the lookup.",
+        target: "18-45 characters. Do not make unsupported coverage claims.",
+      },
+      {
+        example:
+          "Send a request and the team will confirm timing and availability.",
+        name: "successBody",
+        purpose:
+          "Confirmation detail shown after lookup submission. Do not promise response times or availability that are not sourced.",
+        target: "45-100 characters.",
+      },
+      {
+        example: "Request service",
+        name: "successActionLabel",
+        purpose: "CTA label shown in the lookup confirmation.",
+        target: "10-24 characters.",
+      },
+      {
+        example:
+          "Serving Huntersville, Cornelius, Davidson, Mooresville, and nearby Lake Norman communities.",
+        name: "serviceAreaText",
+        purpose: "Sourced service-area summary shown beneath the lookup.",
+        target: "55-150 characters. Use approved locations only.",
+      },
+    ];
+  }
+
   if (component.includes("heroservices")) {
     return [
       {
@@ -2544,6 +2613,100 @@ export function getTemplateCopyFieldsForSection(
         name: "faqs",
         purpose: "Expandable FAQ rows. This section has no header - do not write a heading or intro for it.",
         target: "4-8 FAQs. Questions 35-90 characters. Answers 120-260 characters.",
+      },
+    ];
+  }
+
+  // Ahead of the generic Action/CTA branch: this composite offer has its own
+  // metadata, inclusion list, benefit panel, and terms fields.
+  if (component.includes("featuredoffer")) {
+    return [
+      {
+        example: "Featured offer",
+        name: "bannerLabel",
+        purpose: "Short callout label over the top of the offer image.",
+        target: "12-24 characters.",
+      },
+      {
+        example: "Spring service special",
+        name: "eyebrow",
+        purpose: "Season or category label above the offer headline.",
+        target: "14-32 characters.",
+      },
+      {
+        example: "Spring AC tune-up special",
+        name: "heading",
+        purpose: "Primary headline naming the featured offer.",
+        target: "28-60 characters.",
+      },
+      {
+        example: "Offer price",
+        name: "priceLabel",
+        purpose: "Short label identifying the price or pricing condition.",
+        target: "8-20 characters.",
+      },
+      {
+        example: "$89",
+        name: "priceValue",
+        purpose: "Approved price or pricing qualification for the offer.",
+        target: "2-32 characters. Use NEEDS REVIEW when pricing is not approved.",
+      },
+      {
+        example: "Valid dates",
+        name: "dateLabel",
+        purpose: "Short label identifying the offer availability window.",
+        target: "8-20 characters.",
+      },
+      {
+        example: "March 1 through May 31",
+        name: "dateValue",
+        purpose: "Approved dates or availability condition for the offer.",
+        target: "12-44 characters. Use NEEDS REVIEW when dates are not approved.",
+      },
+      {
+        example: "Includes",
+        name: "includesLabel",
+        purpose: "Label above the list of services included in the offer.",
+        target: "8-20 characters.",
+      },
+      {
+        example: [
+          "Thermostat check",
+          "Filter check",
+          "Airflow review",
+          "Outdoor-unit inspection",
+          "General system performance check",
+        ],
+        format: "One included service per line.",
+        itemCount: 5,
+        name: "bullets",
+        purpose: "Specific checks, services, or deliverables included in the offer.",
+        target: "4-6 items, each 16-48 characters.",
+      },
+      {
+        example: "A more dependable system starts here.",
+        name: "benefitTitle",
+        purpose: "Short benefit headline in the adjacent conversion panel.",
+        target: "28-60 characters.",
+      },
+      {
+        example:
+          "Prevent surprise breakdowns, improve efficiency, and stay comfortable through the season.",
+        name: "benefitBody",
+        purpose: "Concise benefit statement supporting the conversion action.",
+        target: "70-150 characters.",
+      },
+      {
+        example: "Request the tune-up",
+        name: "primaryAction",
+        purpose: "Primary conversion button label for the featured offer.",
+        target: "12-24 characters.",
+      },
+      {
+        example: "Terms and availability apply.",
+        name: "terms",
+        purpose: "Short qualification or terms line beneath the action.",
+        target: "24-80 characters.",
       },
     ];
   }

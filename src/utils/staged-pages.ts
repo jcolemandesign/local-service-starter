@@ -1130,6 +1130,21 @@ export function getTemplateAssetFieldsForSection(
 ): TemplateAssetField[] {
   const component = section.component.toLowerCase();
 
+  if (component.includes("heroserviceareaziplookup")) {
+    return [
+      {
+        kind: "meta",
+        name: "imageAlt",
+        value: sectionLibraryV3Content.heroServiceAreaZipLookup.imageAlt,
+      },
+      {
+        kind: "image",
+        name: "imageSrc",
+        value: sectionLibraryV3Content.heroServiceAreaZipLookup.imageSrc,
+      },
+    ];
+  }
+
   if (component.includes("projectcasestudygallery")) {
     return sectionLibraryV3Content.projectCaseStudyGallery.slides.flatMap(
       (slide, index) => [
@@ -1290,6 +1305,21 @@ export function getTemplateAssetFieldsForSection(
         kind: "image",
         name: "imageSrc",
         value: sectionLibraryV3Content.ctaImage.imageSrc,
+      },
+    ];
+  }
+
+  if (component.includes("featuredoffer")) {
+    return [
+      {
+        kind: "meta",
+        name: "imageAlt",
+        value: sectionLibraryV3Content.featuredOffer.imageAlt,
+      },
+      {
+        kind: "image",
+        name: "imageSrc",
+        value: sectionLibraryV3Content.featuredOffer.imageSrc,
       },
     ];
   }

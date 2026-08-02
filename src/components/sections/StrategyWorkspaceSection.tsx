@@ -12,7 +12,6 @@ import {
 } from "@/components/sections/WorkspaceNav";
 import {
   getCopySeedingNotice,
-  getCopySeedingWarning,
   type CopySeedingSummary,
   type PageTemplateSummary,
 } from "@/components/sections/TemplateLibrarySection";
@@ -845,17 +844,9 @@ export function StrategyWorkspaceSection({
           : null,
       );
 
-      // Real page copy that reached no field means the paste is malformed, so
-      // hold the picker open with the reason rather than closing on what looks
-      // like a success. Staging before any page copy exists is the normal first
-      // step and closes as usual, reporting the next action on the overview.
-      const copySeedingWarning = getCopySeedingWarning(result.copySeeding);
-
-      if (copySeedingWarning) {
-        setTemplatePickerError(copySeedingWarning);
-        return;
-      }
-
+      // Strategy stages the template shell before page copy can be prompted,
+      // so an empty copy seed is not an error here. Close the picker after the
+      // successful stage and, when applicable, show the normal next-step note.
       setStagedCopyNotice(getCopySeedingNotice(result.copySeeding));
       closeTemplatePicker();
     } catch {

@@ -101,12 +101,14 @@ import {
   HeroSplitFullHeightSectionV3,
   type HeroSplitFullHeightVariant,
 } from "@/components/sections/HeroSplitFullHeightSectionV3";
+import { HeroServiceAreaZipLookupSectionV3 } from "@/components/sections/HeroServiceAreaZipLookupSectionV3";
 import { FooterSectionV2 } from "@/components/sections/FooterSectionV2";
 import { FooterLinkPanelSectionV3 } from "@/components/sections/FooterLinkPanelSectionV3";
 import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGridSectionV3";
 import { ServiceCalloutRevealGridSectionV3 } from "@/components/sections/ServiceCalloutRevealGridSectionV3";
 import { ServiceCalloutSplitPanelSectionV3 } from "@/components/sections/ServiceCalloutSplitPanelSectionV3";
 import { CTAImageSectionV3 } from "@/components/sections/CTAImageSectionV3";
+import { FeaturedOfferSectionV3 } from "@/components/sections/FeaturedOfferSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import {
@@ -397,6 +399,15 @@ function renderSectionElement(
       return (
         <HeroSplitFullHeightSectionV3
           {...sectionLibraryV3Content.heroSplitFullHeight}
+          headingLevel={headingLevel}
+          variant={getHeroSplitFullHeightVariant(section)}
+        />
+      );
+    case "HeroServiceAreaZipLookupSectionV3":
+      return (
+        <HeroServiceAreaZipLookupSectionV3
+          {...sectionLibraryV3Content.heroServiceAreaZipLookup}
+          colorRecipe={section.colorRecipe}
           headingLevel={headingLevel}
           variant={getHeroSplitFullHeightVariant(section)}
         />
@@ -882,7 +893,21 @@ function renderSectionElement(
     case "CTASectionV3":
       return <CTASectionV3 {...sectionLibraryV3Content.cta} />;
     case "CTAImageSectionV3":
-      return <CTAImageSectionV3 {...sectionLibraryV3Content.ctaImage} />;
+      return (
+        <CTAImageSectionV3
+          {...sectionLibraryV3Content.ctaImage}
+          align={section.variant === "right" ? "right" : "left"}
+        />
+      );
+    case "FeaturedOfferSectionV3":
+      return (
+        <FeaturedOfferSectionV3
+          {...sectionLibraryV3Content.featuredOffer}
+          align={section.variant === "right" ? "right" : "left"}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "CTAMutedSectionV3":
       return <CTAMutedSectionV3 {...sectionLibraryV3Content.ctaMuted} />;
     case "CTAFullscreenSectionV2":

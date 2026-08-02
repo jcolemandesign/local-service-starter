@@ -249,6 +249,8 @@ export const cardStyleComponents = new Set<string>([
   "DecisionSplitDecisionSectionV3",
   "DecisionSplitLargeCardsSectionV3",
   "FAQSectionV3",
+  "FAQAccordionSidebarSectionV3",
+  "FeaturedOfferSectionV3",
   "FourCardLinkGridSectionV3",
   "HeroCompactServiceSectionV3",
   "HeroSplitBentoSectionV3",
@@ -546,6 +548,7 @@ export const viewportHeightComponents = new Set<string>([
   "HeroSplitBentoSectionV3",
   "HeroSplitFixedImageSectionV3",
   "HeroSplitFullHeightSectionV3",
+  "HeroServiceAreaZipLookupSectionV3",
   "HeroStackedHeaderImageSectionV2",
 ]);
 
