@@ -51,11 +51,8 @@ export function TestimonialsMasonrySection({
             transition={revealTransition}
           >
             <div className="columns-3 gap-6 max-lg:columns-2 max-md:columns-1">
-              {items.map((item) => (
-                <Card
-                  className="mb-6 break-inside-avoid p-7"
-                  key={`${item.author}-${item.detail}`}
-                >
+              {items.map((item, index) => (
+                <Card className="mb-6 break-inside-avoid p-7" key={index}>
                   <blockquote className="text-xl font-medium leading-8 text-service-ink">
                     &quot;{item.quote}&quot;
                   </blockquote>

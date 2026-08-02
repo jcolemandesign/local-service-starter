@@ -92,11 +92,11 @@ export function TestimonialsCarouselSectionV3({
 
             <div className="flex-1 max-md:order-first max-md:basis-full">
               <div className="grid">
-                {items.map((item) => (
+                {items.map((item, index) => (
                   <figure
                     aria-hidden="true"
                     className="content-padding radius-medium invisible col-start-1 row-start-1 border border-service-border bg-bg-page text-center shadow-service"
-                    key={`${item.author}-size`}
+                    key={`${index}-size`}
                   >
                     <TestimonialCardContent item={item} />
                   </figure>
@@ -106,7 +106,7 @@ export function TestimonialsCarouselSectionV3({
                   <motion.figure
                     aria-live="polite"
                     className="content-padding radius-medium col-start-1 row-start-1 border border-service-border bg-bg-page text-center shadow-service"
-                    key={activeItem.author}
+                    key={activeIndex}
                     initial={{
                       opacity: 0,
                       x: shouldReduceMotion ? 0 : 10,
@@ -127,7 +127,7 @@ export function TestimonialsCarouselSectionV3({
                 aria-label="Testimonial slides"
                 className="mt-body-actions-sm flex items-center justify-center inline-gap-sml"
               >
-                {items.map((item, index) => {
+                {items.map((_item, index) => {
                   const isActive = index === activeIndex;
 
                   return (
@@ -137,7 +137,7 @@ export function TestimonialsCarouselSectionV3({
                       className={`size-3 cursor-pointer rounded-full border border-service-accent transition-colors ${
                         isActive ? "bg-service-accent" : "bg-transparent"
                       }`}
-                      key={item.author}
+                      key={index}
                       onClick={() => setActiveIndex(index)}
                       type="button"
                     />

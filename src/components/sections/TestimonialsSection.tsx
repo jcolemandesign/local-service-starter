@@ -25,8 +25,8 @@ export function TestimonialsSection({
         <div className="grid grid-cols-2 gap-12 max-lg:grid-cols-1 max-lg:gap-10">
           <SectionHeading eyebrow={eyebrow} title={title} body={body} />
           <div className="grid grid-cols-2 gap-6 max-md:grid-cols-1">
-            {items.map((item) => (
-              <Card className="p-7" key={item.author}>
+            {items.map((item, index) => (
+              <Card className="p-7" key={index}>
                 <blockquote className="text-xl font-medium leading-8 text-service-ink">
                   &quot;{item.quote}&quot;
                 </blockquote>

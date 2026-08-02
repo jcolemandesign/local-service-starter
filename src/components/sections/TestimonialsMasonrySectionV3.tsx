@@ -62,10 +62,10 @@ export function TestimonialsMasonrySectionV3({
               transition={revealTransition}
             >
               <div className="columns-3 gap-6 max-lg:columns-2 max-md:columns-1">
-                {items.map((item) => (
+                {items.map((item, index) => (
                   <article
                     className="fluid-type-frame radius-medium mb-6 break-inside-avoid border border-service-border bg-bg-page p-7 shadow-service"
-                    key={`${item.author}-${item.detail}`}
+                    key={index}
                   >
                     <blockquote className="type-text-lg wrap-pretty font-medium text-service-ink">
                       &quot;{item.quote}&quot;

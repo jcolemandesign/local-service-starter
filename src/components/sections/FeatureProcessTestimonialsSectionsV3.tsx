@@ -274,10 +274,10 @@ export function TestimonialsSectionV3({
           alignY="stretch"
         >
           <div className="grid h-full grid-cols-2 gap-6 max-md:grid-cols-1">
-            {items.map((item) => (
+            {items.map((item, index) => (
               <article
                 className="fluid-type-frame radius-medium border border-service-border bg-service-surface p-8 shadow-service"
-                key={item.author}
+                key={index}
               >
                 <blockquote className="type-text-xl wrap-pretty font-medium text-service-ink">
                   &quot;{item.quote}&quot;

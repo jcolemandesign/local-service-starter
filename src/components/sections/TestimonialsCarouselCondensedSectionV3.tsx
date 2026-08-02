@@ -197,10 +197,10 @@ export function TestimonialsCarouselCondensedSectionV3({
                     {getVisibleTestimonials(
                       carouselItems,
                       index * visibleTestimonialCount,
-                    ).map((item) => (
+                    ).map((item, itemIndex) => (
                       <TestimonialCard
                         item={item}
-                        key={`${item.author}-${item.service}-size`}
+                        key={`${itemIndex}-size`}
                       />
                     ))}
                   </div>
@@ -223,11 +223,8 @@ export function TestimonialsCarouselCondensedSectionV3({
                   }}
                   transition={cardTransition}
                 >
-                  {visibleItems.map((item) => (
-                    <TestimonialCard
-                      item={item}
-                      key={`${item.author}-${item.service}`}
-                    />
+                  {visibleItems.map((item, itemIndex) => (
+                    <TestimonialCard item={item} key={itemIndex} />
                   ))}
                 </motion.div>
               </AnimatePresence>

@@ -104,9 +104,9 @@ export function TestimonialsCarouselSection({
 
             <div className="flex-1 max-md:order-first max-md:basis-full">
               <div className="grid">
-                {items.map((item) => (
+                {items.map((item, index) => (
                   <figure
-                    key={`${item.author}-size`}
+                    key={`${index}-size`}
                     aria-hidden="true"
                     className="invisible col-start-1 row-start-1 rounded-lg border border-service-border bg-white px-16 py-14 shadow-service max-lg:px-10 max-md:px-6 max-md:py-10"
                   >
@@ -116,7 +116,7 @@ export function TestimonialsCarouselSection({
 
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.figure
-                    key={activeItem.author}
+                    key={activeIndex}
                     aria-live="polite"
                     className="col-start-1 row-start-1 rounded-lg border border-service-border bg-white px-16 py-14 shadow-service max-lg:px-10 max-md:px-6 max-md:py-10"
                     initial={{
@@ -139,12 +139,12 @@ export function TestimonialsCarouselSection({
                 className="mt-8 flex items-center justify-center gap-3"
                 aria-label="Testimonial slides"
               >
-                {items.map((item, index) => {
+                {items.map((_item, index) => {
                   const isActive = index === activeIndex;
 
                   return (
                     <button
-                      key={item.author}
+                      key={index}
                       type="button"
                       aria-label={`Show testimonial ${index + 1}`}
                       aria-current={isActive ? "true" : undefined}
