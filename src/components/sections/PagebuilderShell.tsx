@@ -331,10 +331,13 @@ const heroCompactAlignments = new Set<string>(
 );
 
 const largeSectionHeaderSizeOptions = [
-  { label: "Heading LG", value: "heading-lg", iconSize: 12 },
-  { label: "Heading XL", value: "heading-xl", iconSize: 17 },
-  { label: "Display LG", value: "display-lg", iconSize: 23 },
-  { label: "Display XL", value: "display-xl", iconSize: 29 },
+  { label: "display-xl", value: "display-xl" },
+  { label: "display-lg", value: "display-lg" },
+  { label: "heading-xl", value: "heading-xl" },
+  { label: "heading-lg", value: "heading-lg" },
+  { label: "heading-md", value: "heading-md" },
+  { label: "heading-sm", value: "heading-sm" },
+  { label: "eyebrow", value: "eyebrow" },
 ] as const;
 
 const compactHeaderHeadingSizeOptions = [
@@ -1412,6 +1415,22 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     name: "Card Links 3 Up",
   },
   {
+    component: "HorizontalCardLinkGridSectionV3",
+    instruction:
+      "Show three linked service cards on the shared 14-column grid. Each four-column card pairs a compact copy panel with an adjacent service image.",
+    layoutGrid: 14,
+    mode: "Scan",
+    name: "Horizontal Card Links 3 Up",
+  },
+  {
+    component: "HorizontalCardLinkGridTwoUpSectionV3",
+    instruction:
+      "Show two linked service cards on the shared 14-column grid. Each six-column card pairs a compact copy panel with an adjacent service image.",
+    layoutGrid: 14,
+    mode: "Scan",
+    name: "Horizontal Card Links 2 Up",
+  },
+  {
     component: "ServiceNeedsPriorityGridSectionV3",
     instruction:
       "Show three compact service-need cards and one wider priority card on the 14-column grid. The cards are text-only and carry no imagery.",
@@ -1744,6 +1763,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     name: "Matrix card",
   },
   {
+    component: "OfferTermsSectionV3",
+    instruction:
+      "Clarify an offer's eligibility and restrictions, explain the four-step request process, and close with a concise availability assurance and request action.",
+    layoutGrid: 14,
+    mode: "Decision",
+    name: "Offer terms",
+  },
+  {
     component: "DecisionQuestionTableSectionV3",
     instruction:
       "Use a three-question table on a 14-column grid when the visitor should recognize their own situation before booking. Each column is one question with three short, mutually exclusive answers a homeowner could pick without diagnosing anything.",
@@ -1781,6 +1808,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     layoutGrid: 14,
     mode: "Utility",
     name: "Info strip",
+  },
+  {
+    component: "FinancingCalculatorSectionV3",
+    instruction:
+      "Provide an informational HVAC financing estimator with synchronized project-cost controls, standard and clearly separate promotional terms, immediate amortized payment estimates, lender disclosure, and quote-request handoff context. Never present the estimate as approval or a financing offer.",
+    layoutGrid: 14,
+    mode: "Utility",
+    name: "Financing calculator",
   },
   {
     component: "FAQSectionV3",
@@ -5062,9 +5097,9 @@ export function PagebuilderShell({
                             <div className="grid gap-4">
                               <fieldset className="grid gap-2">
                                 <legend className="type-caption font-semibold text-current">
-                                  Display Size
+                                  Type class
                                 </legend>
-                                <div className="grid grid-cols-4 gap-2">
+                                <div className="grid grid-cols-2 gap-2">
                                   {largeSectionHeaderSizeOptions.map((option) => {
                                     const optionIsActive =
                                       getLargeSectionHeaderSize(section) ===
@@ -5072,10 +5107,9 @@ export function PagebuilderShell({
 
                                     return (
                                       <button
-                                        aria-label={option.label}
                                         aria-pressed={optionIsActive}
                                         className={cx(
-                                          "flex min-h-11 items-center justify-center rounded-[var(--chrome-radius-control)] border px-2 transition-colors",
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
                                           optionIsActive
                                             ? "token-chrome-card-active"
                                             : "token-chrome-card",
@@ -5087,11 +5121,8 @@ export function PagebuilderShell({
                                           })
                                         }
                                         type="button"
-                                        title={option.label}
                                       >
-                                        <HeadingScaleIcon
-                                          iconSize={option.iconSize}
-                                        />
+                                        {option.label}
                                       </button>
                                     );
                                   })}

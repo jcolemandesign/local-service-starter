@@ -31,7 +31,6 @@ export type AdditionalOffer = {
 export type AdditionalOffersSectionV3Props = {
   cardBorder?: SectionCardBorder;
   cardFill?: SectionCardFill;
-  heading: string;
   icons?: SectionIcons;
   offers: readonly AdditionalOffer[];
 };
@@ -208,7 +207,6 @@ function cx(...classes: Array<string | false | undefined>) {
 export function AdditionalOffersSectionV3({
   cardBorder = "on",
   cardFill = "solid",
-  heading,
   icons = "on",
   offers,
 }: AdditionalOffersSectionV3Props) {
@@ -254,10 +252,6 @@ export function AdditionalOffersSectionV3({
   return (
     <section className="bg-bg-page">
       <LayoutGrid columns={14} minHeight="none" padding="sml">
-        <LayoutGridItem className="col-span-14 col-start-1 max-lg:col-span-10 max-md:col-span-6 max-sm:col-span-2">
-          <h2 className="type-eyebrow text-service-accent">{heading}</h2>
-        </LayoutGridItem>
-
         <LayoutGridItem className="relative col-span-14 col-start-1 max-lg:col-span-10 max-md:col-span-6 max-sm:col-span-2">
           <div className="grid overflow-hidden">
             {hasMultiplePages ? (

@@ -1353,6 +1353,20 @@ export function getTemplateAssetFieldsForSection(
     );
   }
 
+  if (component.includes("horizontalcardlinkgridtwoup")) {
+    return imageCollectionFields(
+      "items",
+      sectionLibraryV3Content.horizontalCardLinkGridTwoUp.items,
+    );
+  }
+
+  if (component.includes("horizontalcardlinkgrid")) {
+    return imageCollectionFields(
+      "items",
+      sectionLibraryV3Content.horizontalCardLinkGrid.items,
+    );
+  }
+
   if (component.includes("threecardlinkgrid")) {
     return imageCollectionFields(
       "items",

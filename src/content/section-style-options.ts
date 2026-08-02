@@ -163,6 +163,7 @@ export const cardLinkGridAlignValues = new Set<string>(
 
 /** Sections that read the `align` axis, so the builder only offers it there. */
 export const cardLinkGridAlignComponents = new Set<string>([
+  "HorizontalCardLinkGridSectionV3",
   "ThreeCardLinkGridSectionV3",
 ]);
 
@@ -210,6 +211,7 @@ export const tableCompareAlignComponents = new Set<string>([
   "DecisionMatrixCardSectionV3",
   "DecisionQuestionTableFourSectionV3",
   "DecisionSplitLargeCardsSectionV3",
+  "HorizontalCardLinkGridTwoUpSectionV3",
 ]);
 
 export function sectionSupportsTableCompareAlign(component: string) {
@@ -252,10 +254,14 @@ export const cardStyleComponents = new Set<string>([
   "FAQSectionV3",
   "FAQAccordionSidebarSectionV3",
   "FeaturedOfferSectionV3",
+  "FinancingCalculatorSectionV3",
   "FourCardLinkGridSectionV3",
   "HeroCompactServiceSectionV3",
   "HeroSplitBentoSectionV3",
+  "HorizontalCardLinkGridSectionV3",
+  "HorizontalCardLinkGridTwoUpSectionV3",
   "InfoStripSectionV3",
+  "OfferTermsSectionV3",
   "ProcessStepsBranchingSectionV3",
   "ProcessStepsStaggeredSectionV3",
   "ProjectCaseStudyGallerySectionV3",
@@ -294,6 +300,8 @@ export const cardLinkComponents = new Set<string>([
   "DecisionSplitDecisionSectionV3",
   "DecisionSplitLargeCardsSectionV3",
   "FourCardLinkGridSectionV3",
+  "HorizontalCardLinkGridSectionV3",
+  "HorizontalCardLinkGridTwoUpSectionV3",
   "ServiceNeedsPriorityGridSectionV3",
   "ThreeCardLinkGridSectionV3",
 ]);
@@ -329,7 +337,11 @@ export const iconComponents = new Set<string>([
   "AdditionalOffersSectionV3",
   "DecisionSplitLargeCardsSectionV3",
   "FeaturedOfferSectionV3",
+  "FinancingCalculatorSectionV3",
+  "HorizontalCardLinkGridSectionV3",
+  "HorizontalCardLinkGridTwoUpSectionV3",
   "InfoStripSectionV3",
+  "OfferTermsSectionV3",
 ]);
 
 export function sectionSupportsIcons(component: string) {

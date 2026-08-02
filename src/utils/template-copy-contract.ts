@@ -821,6 +821,86 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  if (component.includes("financingcalculator")) {
+    return [
+      {
+        example: "Estimate a monthly HVAC payment",
+        name: "heading",
+        purpose: "Planning-tool headline above the project cost controls.",
+        target: "30-60 characters. Do not imply approval or guaranteed terms.",
+      },
+      {
+        example:
+          "See how financing could fit your project budget before you request a replacement quote.",
+        name: "body",
+        purpose: "Short explanation of what the estimator helps the visitor plan.",
+        target: "70-140 characters. Describe an estimate, never an offer.",
+      },
+      {
+        example:
+          "Available on approved credit for qualifying projects.",
+        name: "promotionalEligibilityNote",
+        purpose:
+          "Approval and eligibility qualifier shown with the separate promotional program.",
+        target:
+          "Use lender-approved language verbatim. If it is not supplied, write NEEDS REVIEW.",
+      },
+      {
+        example: [
+          "Qualifying repair and replacement projects",
+          "$3,000 minimum project",
+          "12–120 month terms",
+          "0% APR for 18 months on approved credit",
+          "No prepayment penalty",
+        ],
+        format: "Exactly five short lender terms, one per line.",
+        itemCount: 5,
+        name: "termItems",
+        purpose:
+          "Financing terms shown as an unheaded checklist beneath the calculated result.",
+        target:
+          "Exactly 5 items, 18-55 characters each. Use only lender-approved terms; write NEEDS REVIEW when a term is not confirmed.",
+      },
+      {
+        example:
+          "Estimate only. This is not a financing offer. Actual rates, payments, eligibility, and terms are determined by the third-party lender after application.",
+        name: "disclosure",
+        purpose:
+          "Required financing-estimator disclosure shown directly beneath the result.",
+        target:
+          "Use lender-approved legal language verbatim. Do not rewrite it as marketing copy; write NEEDS REVIEW when unavailable.",
+      },
+      {
+        example:
+          "Financing approval does not confirm project scope, equipment availability, or installation timing.",
+        name: "projectTimingDisclosure",
+        purpose:
+          "Separates financing approval from the HVAC scope and scheduling decision.",
+        target: "80-150 characters in direct, non-promotional language.",
+      },
+      {
+        example:
+          "Ask the team about current financing options for qualifying HVAC projects.",
+        name: "fallbackMessage",
+        purpose: "Safe message shown when the financing configuration is invalid.",
+        target: "60-120 characters. Keep current options unconfirmed.",
+      },
+      {
+        example: "Request a Replacement Quote",
+        name: "primaryAction",
+        purpose:
+          "Primary project-request action. This must request HVAC scope, not apply for financing.",
+        target: "18-32 characters. Never use Apply Now.",
+      },
+      {
+        example: "Ask About Financing",
+        name: "secondaryAction",
+        purpose: "Optional lower-emphasis financing question action.",
+        target: "14-26 characters.",
+      },
+    ];
+  }
+
   // Ahead of every generic branch. This section renders exactly two strings and
   // nothing else - no heading, no list, no action - so any broader branch that
   // caught it would brief the copywriter for fields it cannot render.
@@ -1664,6 +1744,110 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  if (component.includes("horizontalcardlinkgridtwoup")) {
+    const sharedFields: TemplateCopyFieldSpec[] = [
+      {
+        example: "Related services",
+        name: "heading",
+        purpose: "Short section label above the two-card service row.",
+        target: "2-5 words.",
+      },
+    ];
+
+    if (!wantsCardLinks(section)) {
+      return [
+        ...sharedFields,
+        {
+          example: [
+            "AC Repair - Fast, reliable repairs to restore dependable home comfort.",
+            "Maintenance & Tune-Ups - Seasonal system care that helps equipment run efficiently year-round.",
+          ],
+          format: "Exactly two lines as Title - Description.",
+          name: "serviceItems",
+          purpose:
+            "Two static horizontal service cards. Their order maps left to right across the row.",
+          target:
+            "Exactly 2 items. Titles 10-32 characters. Descriptions 45-110 characters. Do not write destination paths.",
+        },
+      ];
+    }
+
+    return [
+      ...sharedFields,
+      {
+        example: [
+          "AC Repair - Fast, reliable repairs to restore dependable home comfort. -> /services/ac-repair",
+          "Maintenance & Tune-Ups - Seasonal system care that helps equipment run efficiently year-round. -> /services/maintenance",
+        ],
+        format: "Exactly two lines as Title - Description -> /destination-path.",
+        name: "serviceItems",
+        purpose:
+          "Two linked horizontal service cards. Their order maps left to right across the row.",
+        target:
+          "Exactly 2 items. Titles 10-32 characters. Descriptions 45-110 characters. Every item needs a valid internal destination path.",
+      },
+      {
+        example: "View service",
+        name: "linkLabel",
+        purpose: "Shared action label at the bottom of both cards.",
+        target: "8-20 characters.",
+      },
+    ];
+  }
+
+  if (component.includes("horizontalcardlinkgrid")) {
+    const sharedFields: TemplateCopyFieldSpec[] = [
+      {
+        example: "Related services",
+        name: "heading",
+        purpose: "Short section label above the horizontal service-card row.",
+        target: "2-5 words.",
+      },
+    ];
+
+    if (!wantsCardLinks(section)) {
+      return [
+        ...sharedFields,
+        {
+          example: [
+            "Maintenance & Tune-Ups - Keep your system running efficiently year-round.",
+            "AC Repair - Fast, reliable repairs to restore your comfort.",
+            "System Replacement - High-efficiency solutions built for your home.",
+          ],
+          format: "Exactly three lines as Title - Description.",
+          name: "serviceItems",
+          purpose:
+            "Three static horizontal service cards. Their order maps left to right across the row.",
+          target:
+            "Exactly 3 items. Titles 10-32 characters. Descriptions 45-100 characters. Do not write destination paths.",
+        },
+      ];
+    }
+
+    return [
+      ...sharedFields,
+      {
+        example: [
+          "Maintenance & Tune-Ups - Keep your system running efficiently year-round. -> /services/maintenance",
+          "AC Repair - Fast, reliable repairs to restore your comfort. -> /services/ac-repair",
+          "System Replacement - High-efficiency solutions built for your home. -> /services/system-replacement",
+        ],
+        format: "Exactly three lines as Title - Description -> /destination-path.",
+        name: "serviceItems",
+        purpose:
+          "Three linked horizontal service cards. Their order maps left to right across the row.",
+        target:
+          "Exactly 3 items. Titles 10-32 characters. Descriptions 45-100 characters. Every item needs a valid internal destination path.",
+      },
+      {
+        example: "View service",
+        name: "linkLabel",
+        purpose: "Shared action label at the bottom of each card.",
+        target: "8-20 characters.",
+      },
+    ];
+  }
+
   if (component.includes("threecardlinkgrid")) {
     if (!wantsCardLinks(section)) {
       return [
@@ -2421,6 +2605,61 @@ export function getTemplateCopyFieldsForSection(
     );
   }
 
+  if (component.includes("offerterms")) {
+    return [
+      {
+        example: "Offer details",
+        name: "detailsHeading",
+        purpose: "Heading above the eligibility and restriction details.",
+        target: "2-4 words.",
+      },
+      {
+        example: [
+          "Valid through - May 31, 2026",
+          "Eligible systems - One residential central AC system",
+          "Service area - Huntersville, Cornelius, Davidson, and Mooresville",
+          "Exclusions - Repairs, parts, refrigerant, and after-hours service",
+          "Combining offers - Cannot be combined with other discounts",
+        ],
+        format: "Exactly five lines as Label - Value.",
+        name: "detailItems",
+        purpose: "The offer's date, eligibility, coverage, exclusions, and combination rules.",
+        target: "Exactly 5 items. Labels 8-24 characters. Values 8-90 characters.",
+      },
+      {
+        example: "What happens next",
+        name: "stepsHeading",
+        purpose: "Heading above the request and scheduling timeline.",
+        target: "3-5 words.",
+      },
+      {
+        example: [
+          "Submit your request - Tell us your ZIP code, system type, and preferred timing.",
+          "We confirm the offer - We verify eligibility, address, and current availability.",
+          "We schedule the visit - Our team reaches out to lock in a convenient appointment window.",
+          "We perform the tune-up - Your technician completes the included checks and explains any findings.",
+        ],
+        format: "Exactly four lines as Step title - Description.",
+        name: "stepItems",
+        purpose: "The four-step path from request through completed service.",
+        target: "Exactly 4 items. Titles 12-30 characters. Descriptions 45-105 characters.",
+      },
+      {
+        example:
+          "Submitting a request does not reserve promotional availability. Your appointment is confirmed after our team contacts you.",
+        name: "assuranceBody",
+        purpose: "Plain-language availability and confirmation disclaimer.",
+        target: "100-180 characters.",
+      },
+      {
+        example: "Request this offer",
+        name: "action",
+        purpose: "Primary offer request button label.",
+        target: "12-24 characters.",
+      },
+    ];
+  }
+
   if (component.includes("decisionmatrixcard")) {
     return [
       {
@@ -2621,12 +2860,6 @@ export function getTemplateCopyFieldsForSection(
   // fixed cards with their own status, date, detail, and action fields.
   if (component.includes("additionaloffers")) {
     return [
-      {
-        example: "Additional offers",
-        name: "heading",
-        purpose: "Compact heading introducing the secondary offers.",
-        target: "18-36 characters.",
-      },
       ...[1, 2, 3].flatMap((index) => [
         {
           example:

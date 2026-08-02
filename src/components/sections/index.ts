@@ -94,6 +94,23 @@ export {
   type ThreeCardLinkGridSectionV3Props,
 } from "./ThreeCardLinkGridSectionV3";
 export {
+  HorizontalCardLinkGridSectionV3,
+  HorizontalCardLink,
+  type HorizontalCardLinkProps,
+  type HorizontalCardLinkGridItem,
+  type HorizontalCardLinkGridSectionV3Props,
+} from "./HorizontalCardLinkGridSectionV3";
+export {
+  HorizontalCardLinkGridTwoUpSectionV3,
+  type HorizontalCardLinkGridTwoUpSectionV3Props,
+} from "./HorizontalCardLinkGridTwoUpSectionV3";
+export {
+  OfferTermsSectionV3,
+  type OfferTermDetail,
+  type OfferTermStep,
+  type OfferTermsSectionV3Props,
+} from "./OfferTermsSectionV3";
+export {
   ServiceCalloutRevealGridSectionV3,
   type ServiceCalloutRevealGridItem,
   type ServiceCalloutRevealGridSectionV3Props,
@@ -184,6 +201,7 @@ export { HeroSplitFullHeightSectionV3 } from "./HeroSplitFullHeightSectionV3";
 export { HeroServiceAreaZipLookupSectionV3 } from "./HeroServiceAreaZipLookupSectionV3";
 export { HeroStackedHeaderImageSectionV2 } from "./HeroStackedHeaderImageSectionV2";
 export { InfoStripSectionV3 } from "./InfoStripSectionV3";
+export { FinancingCalculatorSectionV3 } from "./FinancingCalculatorSectionV3";
 export { NavFloatingBentoSection } from "./NavFloatingBentoSection";
 export { NavFloatingBentoSectionV2 } from "./NavFloatingBentoSectionV2";
 export { NavCenterLogoSection, NavPrimarySection } from "./NavPrimarySection";

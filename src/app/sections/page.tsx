@@ -35,6 +35,7 @@ import {
   FAQAccordionSectionV3,
   FAQAccordionSidebarSectionV3,
   FAQSectionV3,
+  FinancingCalculatorSectionV3,
   InfoStripSectionV3,
   FeatureAsymmetricCardsSectionV3,
   FeatureStackedCardsSectionV3,
@@ -45,6 +46,9 @@ import {
   FooterLinkPanelSectionV3,
   FooterSectionV3,
   FourCardLinkGridSectionV3,
+  HorizontalCardLinkGridSectionV3,
+  HorizontalCardLinkGridTwoUpSectionV3,
+  OfferTermsSectionV3,
   ServiceNeedsPriorityGridSectionV3,
   HeroCenteredFloatersSectionV2,
   HeroCompactSectionV3,
@@ -340,6 +344,9 @@ const sectionElements = {
       {...sectionLibraryV3Content.decisionMatrixCard}
     />
   ),
+  "offer-terms-v3": (
+    <OfferTermsSectionV3 {...sectionLibraryV3Content.offerTerms} />
+  ),
   "services-three-cards-right-v3": (
     <ServicesThreeCardsRightSectionV3
       {...sectionLibraryV3Content.servicesThreeCardsRight}
@@ -356,6 +363,16 @@ const sectionElements = {
   "three-card-link-grid-v3": (
     <ThreeCardLinkGridSectionLibraryDemo
       {...sectionLibraryV3Content.threeCardLinkGrid}
+    />
+  ),
+  "horizontal-card-link-grid-v3": (
+    <HorizontalCardLinkGridSectionV3
+      {...sectionLibraryV3Content.horizontalCardLinkGrid}
+    />
+  ),
+  "horizontal-card-link-grid-two-up-v3": (
+    <HorizontalCardLinkGridTwoUpSectionV3
+      {...sectionLibraryV3Content.horizontalCardLinkGridTwoUp}
     />
   ),
   "service-needs-priority-grid-v3": (
@@ -420,6 +437,11 @@ const sectionElements = {
     />
   ),
   "info-strip-v3": <InfoStripSectionV3 {...sectionLibraryV3Content.infoStrip} />,
+  "financing-calculator-v3": (
+    <FinancingCalculatorSectionV3
+      {...sectionLibraryV3Content.financingCalculator}
+    />
+  ),
   "faq-v3": <FAQSectionV3 {...sectionLibraryV3Content.faq} />,
   "faq-accordion-v3": (
     <FAQAccordionSectionV3 {...sectionLibraryV3Content.faqAccordion} />

@@ -73,6 +73,7 @@ import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/Feature
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
 import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
 import { InfoStripSectionV3 } from "@/components/sections/InfoStripSectionV3";
+import { FinancingCalculatorSectionV3 } from "@/components/sections/FinancingCalculatorSectionV3";
 import { FAQAccordionSidebarSectionV3 } from "@/components/sections/FAQAccordionSidebarSectionV3";
 import { HeroCenteredFloatersSectionV2 } from "@/components/sections/HeroCenteredFloatersSectionV2";
 import {
@@ -118,6 +119,9 @@ import {
 } from "@/components/sections/CTAImageSectionV3";
 import { FeaturedOfferSectionV3 } from "@/components/sections/FeaturedOfferSectionV3";
 import { AdditionalOffersSectionV3 } from "@/components/sections/AdditionalOffersSectionV3";
+import { HorizontalCardLinkGridSectionV3 } from "@/components/sections/HorizontalCardLinkGridSectionV3";
+import { HorizontalCardLinkGridTwoUpSectionV3 } from "@/components/sections/HorizontalCardLinkGridTwoUpSectionV3";
+import { OfferTermsSectionV3 } from "@/components/sections/OfferTermsSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import type { ServiceNeedsPriorityGridAlign } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
@@ -969,11 +973,52 @@ export function renderPageTemplateSection(
           secondaryActionHref={getServicesHref(navigationLinks)}
         />
       );
+    case "FinancingCalculatorSectionV3":
+      return (
+        <FinancingCalculatorSectionV3
+          {...financingCalculatorProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          colorRecipe={section.colorRecipe}
+          icons={resolveSectionIcons(section.icons)}
+        />
+      );
     case "FeaturedOfferSectionV3":
       return (
         <FeaturedOfferSectionV3
           {...featuredOfferProps(fieldSection)}
           align={section.variant === "right" ? "right" : "left"}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          icons={resolveSectionIcons(section.icons)}
+        />
+      );
+    case "HorizontalCardLinkGridSectionV3":
+      return (
+        <HorizontalCardLinkGridSectionV3
+          {...horizontalCardLinkGridProps(fieldSection)}
+          align={getCardLinkGridAlign(section)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          cardLinks={resolveCardLinks(section)}
+          icons={resolveSectionIcons(section.icons)}
+        />
+      );
+    case "HorizontalCardLinkGridTwoUpSectionV3":
+      return (
+        <HorizontalCardLinkGridTwoUpSectionV3
+          {...horizontalCardLinkGridTwoUpProps(fieldSection)}
+          align={getTableCompareAlign(section)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          cardLinks={resolveCardLinks(section)}
+          icons={resolveSectionIcons(section.icons)}
+        />
+      );
+    case "OfferTermsSectionV3":
+      return (
+        <OfferTermsSectionV3
+          {...offerTermsProps(fieldSection)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           icons={resolveSectionIcons(section.icons)}
@@ -1423,6 +1468,9 @@ function getLargeSectionHeaderAlign(section: PageTemplatePreviewSection) {
 // The variant is `{align}-{size}`, so the size is its suffix. Ordered longest
 // match first is unnecessary here - no size is a suffix of another.
 const largeSectionHeaderSizes: readonly LargeSectionHeaderSize[] = [
+  "eyebrow",
+  "heading-sm",
+  "heading-md",
   "heading-lg",
   "heading-xl",
   "display-lg",
@@ -2296,6 +2344,102 @@ function ctaImageProps(section: FieldSection) {
   };
 }
 
+function horizontalCardLinkGridProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.horizontalCardLinkGrid;
+  const imageItems = getRepeatedAssetRecords(section, ["items"]);
+  const items = cardItemsWithFallback(
+    section,
+    ["serviceItems", "items", "cards"],
+    fallback.items,
+  );
+
+  return {
+    ...fallback,
+    heading: getValue(section, "heading", fallback.heading),
+    items: items.slice(0, 3).map((item, index) => {
+      const fallbackItem = fallback.items[index % fallback.items.length];
+
+      return {
+        ...fallbackItem,
+        ...item,
+        href: item.href ?? fallbackItem.href,
+        imageAlt: imageItems[index]?.imageAlt ?? fallbackItem.imageAlt,
+        imageSrc: imageItems[index]?.imageSrc ?? fallbackItem.imageSrc,
+      };
+    }),
+    linkLabel: getValue(section, "linkLabel", fallback.linkLabel),
+  };
+}
+
+function horizontalCardLinkGridTwoUpProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.horizontalCardLinkGridTwoUp;
+  const imageItems = getRepeatedAssetRecords(section, ["items"]);
+  const items = cardItemsWithFallback(
+    section,
+    ["serviceItems", "items", "cards"],
+    fallback.items,
+  );
+
+  return {
+    ...fallback,
+    heading: getValue(section, "heading", fallback.heading),
+    items: items.slice(0, 2).map((item, index) => {
+      const fallbackItem = fallback.items[index % fallback.items.length];
+
+      return {
+        ...fallbackItem,
+        ...item,
+        href: item.href ?? fallbackItem.href,
+        imageAlt: imageItems[index]?.imageAlt ?? fallbackItem.imageAlt,
+        imageSrc: imageItems[index]?.imageSrc ?? fallbackItem.imageSrc,
+      };
+    }),
+    linkLabel: getValue(section, "linkLabel", fallback.linkLabel),
+  };
+}
+
+function offerTermsProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.offerTerms;
+  const detailItems = cardItemsWithFallback(
+    section,
+    ["detailItems", "details"],
+    fallback.details.map((detail) => ({
+      body: detail.value,
+      title: detail.label,
+    })),
+  );
+  const steps = cardItemsWithFallback(
+    section,
+    ["stepItems", "steps"],
+    fallback.steps,
+  );
+
+  return {
+    ...fallback,
+    action: getValue(section, "action", fallback.action),
+    assuranceBody: getValue(
+      section,
+      "assuranceBody",
+      fallback.assuranceBody,
+    ),
+    details: detailItems.slice(0, 5).map((item) => ({
+      label: item.title,
+      value: item.body,
+    })),
+    detailsHeading: getValue(
+      section,
+      "detailsHeading",
+      fallback.detailsHeading,
+    ),
+    steps: steps.slice(0, 4),
+    stepsHeading: getValue(
+      section,
+      "stepsHeading",
+      fallback.stepsHeading,
+    ),
+  };
+}
+
 function featuredOfferProps(section: FieldSection) {
   const fallback = sectionLibraryV3Content.featuredOffer;
 
@@ -2328,7 +2472,6 @@ function additionalOffersProps(section: FieldSection) {
 
   return {
     ...fallback,
-    heading: getValue(section, "heading", fallback.heading),
     offers: fallback.offers.map((offer, index) => {
       const fieldPrefix = `offers.${index + 1}`;
 
@@ -2639,6 +2782,62 @@ function infoStripProps(section: FieldSection) {
       "cardLabel",
       sectionLibraryV3Content.infoStrip.cardLabel,
     ),
+  };
+}
+
+function financingCalculatorProps(section: FieldSection) {
+  const demo = sectionLibraryV3Content.financingCalculator;
+
+  return {
+    ...demo,
+    body: getBody(section, demo.body),
+    fallbackMessage: getValue(
+      section,
+      "fallbackMessage",
+      demo.fallbackMessage,
+    ),
+    primaryAction: getValue(
+      section,
+      "primaryAction",
+      demo.primaryAction,
+    ),
+    program: {
+      ...demo.program,
+      disclosure: getValue(
+        section,
+        "disclosure",
+        demo.program.disclosure,
+      ),
+      promotionalPrograms: demo.program.promotionalPrograms?.map(
+        (promotion, index) => ({
+          ...promotion,
+          eligibilityNote:
+            index === 0
+              ? getValue(
+                  section,
+                  "promotionalEligibilityNote",
+                  promotion.eligibilityNote,
+                )
+              : promotion.eligibilityNote,
+        }),
+      ),
+      termsAtGlance: getListValues(
+        section,
+        ["termItems"],
+        demo.program.termsAtGlance.join("\n"),
+      ).slice(0, 5),
+    },
+    projectTimingDisclosure: getValue(
+      section,
+      "projectTimingDisclosure",
+      demo.projectTimingDisclosure,
+    ),
+    secondaryAction: getValue(
+      section,
+      "secondaryAction",
+      demo.secondaryAction,
+    ),
+    title: getTitle(section, demo.title),
   };
 }
 

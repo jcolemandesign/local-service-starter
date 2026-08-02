@@ -1,3 +1,4 @@
+import { northStarFinancingProgram } from "@/content/financing";
 import { thankYouPageContent } from "@/content/thank-you";
 
 export const sectionLibraryV3Content = {
@@ -1227,6 +1228,25 @@ export const sectionLibraryV3Content = {
     cardLabel: "Gas odor · Smoke or fire · Carbon monoxide alarm",
     body: "Leave the home immediately. Once outside, call 911. If you suspect a gas leak, also contact your gas utility. Do not wait for an HVAC appointment.",
   },
+  financingCalculator: {
+    title: "Estimate a Monthly Payment",
+    body: "See how financing could fit your project budget before you request a replacement quote.",
+    projectCostLabel: "Project Cost",
+    standardFinancingLabel: "Standard Financing",
+    promotionalOptionLabel: "Promotional Option",
+    estimatedPaymentLabel: "Estimated Monthly Payment",
+    estimatedAprLabel: "Estimated APR",
+    totalPaymentsLabel: "Total of Payments",
+    projectTimingDisclosure:
+      "Financing approval does not confirm project scope, equipment availability, or installation timing.",
+    fallbackMessage:
+      "Ask the team about current financing options for qualifying HVAC projects.",
+    primaryAction: "Request a Replacement Quote",
+    primaryActionHref: "/contact",
+    secondaryAction: "Ask About Financing",
+    secondaryActionHref: "/contact",
+    program: northStarFinancingProgram,
+  },
   processImageChecklist: {
     eyebrow: "How it works",
     title: "A prepared visit starts before anyone reaches the door.",
@@ -1465,7 +1485,6 @@ export const sectionLibraryV3Content = {
     terms: "Terms and availability apply.",
   },
   additionalOffers: {
-    heading: "Additional offers",
     offers: [
       {
         action: "View offer",
@@ -1490,6 +1509,85 @@ export const sectionLibraryV3Content = {
         dateLabel: "Valid dates",
         dateValue: "Needs review",
         title: "Whole-home comfort offer",
+      },
+    ],
+  },
+  offerTerms: {
+    detailsHeading: "Offer details",
+    details: [
+      { label: "Valid through", value: "May 31, 2026" },
+      { label: "Eligible systems", value: "One residential central AC system" },
+      { label: "Service area", value: "Huntersville, Cornelius, Davidson, and Mooresville" },
+      { label: "Exclusions", value: "Repairs, parts, refrigerant, and after-hours service" },
+      { label: "Combining offers", value: "Cannot be combined with other discounts" },
+    ],
+    stepsHeading: "What happens next",
+    steps: [
+      {
+        title: "Submit your request",
+        body: "Tell us your ZIP code, system type, and preferred timing.",
+      },
+      {
+        title: "We confirm the offer",
+        body: "We verify eligibility, address, and current availability.",
+      },
+      {
+        title: "We schedule the visit",
+        body: "Our team reaches out to lock in a convenient appointment window.",
+      },
+      {
+        title: "We perform the tune-up",
+        body: "Your technician completes the included checks and explains any findings.",
+      },
+    ],
+    assuranceBody:
+      "Submitting a request does not reserve promotional availability. Your appointment is confirmed after our team contacts you.",
+    action: "Request this offer",
+  },
+  horizontalCardLinkGrid: {
+    heading: "Related services",
+    linkLabel: "View service",
+    items: [
+      {
+        title: "Maintenance & Tune-Ups",
+        body: "Keep your system running efficiently year-round.",
+        href: "/services/maintenance",
+        imageAlt: "Technician performing seasonal HVAC maintenance",
+        imageSrc: "/images/fpo-image.svg",
+      },
+      {
+        title: "AC Repair",
+        body: "Fast, reliable repairs to restore your comfort.",
+        href: "/services/ac-repair",
+        imageAlt: "Technician repairing residential cooling equipment",
+        imageSrc: "/images/fpo-image.svg",
+      },
+      {
+        title: "System Replacement",
+        body: "High-efficiency solutions built for your home.",
+        href: "/services/system-replacement",
+        imageAlt: "High-efficiency outdoor HVAC system",
+        imageSrc: "/images/fpo-image.svg",
+      },
+    ],
+  },
+  horizontalCardLinkGridTwoUp: {
+    heading: "Related services",
+    linkLabel: "View service",
+    items: [
+      {
+        title: "AC Repair",
+        body: "Fast, reliable repairs to restore dependable home comfort.",
+        href: "/services/ac-repair",
+        imageAlt: "Technician repairing residential cooling equipment",
+        imageSrc: "/images/fpo-image.svg",
+      },
+      {
+        title: "Maintenance & Tune-Ups",
+        body: "Seasonal system care that helps equipment run efficiently year-round.",
+        href: "/services/maintenance",
+        imageAlt: "Technician performing seasonal HVAC maintenance",
+        imageSrc: "/images/fpo-image.svg",
       },
     ],
   },
@@ -1929,6 +2027,14 @@ export const sectionLibraryV3Collections = [
       items: [
         { label: "Card links 4-up", component: "four-card-link-grid-v3" },
         { label: "Card links 3-up", component: "three-card-link-grid-v3" },
+        {
+          label: "Horizontal card links 3-up",
+          component: "horizontal-card-link-grid-v3",
+        },
+        {
+          label: "Horizontal card links 2-up",
+          component: "horizontal-card-link-grid-two-up-v3",
+        },
         { label: "Service needs priority grid", component: "service-needs-priority-grid-v3" },
       {
         label: "Services card carousel",
@@ -2095,6 +2201,7 @@ export const sectionLibraryV3Collections = [
         label: "Matrix card",
         component: "decision-matrix-card-v3",
       },
+      { label: "Offer terms", component: "offer-terms-v3" },
       { label: "Process steps", component: "process-steps-v3" },
       {
         label: "Process steps staggered",
@@ -2122,6 +2229,10 @@ export const sectionLibraryV3Collections = [
     title: "Utility",
     items: [
       { label: "Info strip", component: "info-strip-v3" },
+      {
+        label: "Financing calculator",
+        component: "financing-calculator-v3",
+      },
       { label: "FAQ", component: "faq-v3" },
       { label: "FAQ accordion", component: "faq-accordion-v3" },
       {
@@ -2203,6 +2314,9 @@ export const sectionLibraryV3ComponentBySlug = {
   "section-header-split-link-v3": "SectionHeaderSplitLinkSectionV3",
   "four-card-link-grid-v3": "FourCardLinkGridSectionV3",
   "three-card-link-grid-v3": "ThreeCardLinkGridSectionV3",
+  "horizontal-card-link-grid-v3": "HorizontalCardLinkGridSectionV3",
+  "horizontal-card-link-grid-two-up-v3":
+    "HorizontalCardLinkGridTwoUpSectionV3",
   "service-needs-priority-grid-v3": "ServiceNeedsPriorityGridSectionV3",
   "service-callout-reveal-grid-v3": "ServiceCalloutRevealGridSectionV3",
   "service-callout-split-panel-v3": "ServiceCalloutSplitPanelSectionV3",
@@ -2255,11 +2369,13 @@ export const sectionLibraryV3ComponentBySlug = {
   "decision-question-table-v3": "DecisionQuestionTableSectionV3",
   "decision-question-table-four-v3": "DecisionQuestionTableFourSectionV3",
   "decision-matrix-card-v3": "DecisionMatrixCardSectionV3",
+  "offer-terms-v3": "OfferTermsSectionV3",
   "process-steps-v3": "ProcessStepsSectionV3",
   "process-steps-staggered-v3": "ProcessStepsStaggeredSectionV3",
   "process-steps-branching-v3": "ProcessStepsBranchingSectionV3",
   "process-image-checklist-v3": "ProcessImageChecklistSectionV3",
   "info-strip-v3": "InfoStripSectionV3",
+  "financing-calculator-v3": "FinancingCalculatorSectionV3",
   "faq-v3": "FAQSectionV3",
   "faq-accordion-v3": "FAQAccordionSectionV3",
   "faq-accordion-sidebar-v3": "FAQAccordionSidebarSectionV3",

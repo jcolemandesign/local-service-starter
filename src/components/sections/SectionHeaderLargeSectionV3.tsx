@@ -6,6 +6,9 @@ import type { SectionHeadlineWrap } from "@/content/section-style-options";
 import type { HeroCompactAlign } from "./HeroCompactSectionV3";
 
 export type LargeSectionHeaderSize =
+  | "eyebrow"
+  | "heading-sm"
+  | "heading-md"
   | "heading-lg"
   | "heading-xl"
   | "display-lg"
@@ -36,6 +39,9 @@ const alignClassName: Record<
 };
 
 const sizeClassName: Record<LargeSectionHeaderSize, string> = {
+  eyebrow: "type-eyebrow",
+  "heading-sm": "type-heading-sm",
+  "heading-md": "type-heading-md",
   "heading-lg": "type-heading-lg",
   "heading-xl": "type-heading-xl",
   "display-lg": "type-display-lg",
@@ -51,13 +57,19 @@ export function SectionHeaderLargeSectionV3({
 }: SectionHeaderLargeSectionV3Props) {
   const Heading = headingLevel === 1 ? "h1" : "h2";
   const textAlignment = alignClassName[align];
+  const usesCompactSectionSpacing =
+    size === "heading-sm" || size === "eyebrow";
 
   return (
     <section className="bg-bg-page">
       <SevenColumnGrid
         minHeight="none"
         padding="none"
-        style={{ paddingBlock: "var(--section-space-med)" }}
+        style={{
+          paddingBlock: usesCompactSectionSpacing
+            ? "var(--section-space-vsml)"
+            : "var(--section-space-med)",
+        }}
       >
         <SevenColumnGridItem
           alignX={align}

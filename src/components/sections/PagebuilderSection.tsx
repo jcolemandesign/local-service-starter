@@ -110,6 +110,9 @@ import { ServiceCalloutSplitPanelSectionV3 } from "@/components/sections/Service
 import { CTAImageSectionV3 } from "@/components/sections/CTAImageSectionV3";
 import { FeaturedOfferSectionV3 } from "@/components/sections/FeaturedOfferSectionV3";
 import { AdditionalOffersSectionV3 } from "@/components/sections/AdditionalOffersSectionV3";
+import { HorizontalCardLinkGridSectionV3 } from "@/components/sections/HorizontalCardLinkGridSectionV3";
+import { HorizontalCardLinkGridTwoUpSectionV3 } from "@/components/sections/HorizontalCardLinkGridTwoUpSectionV3";
+import { OfferTermsSectionV3 } from "@/components/sections/OfferTermsSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import {
@@ -126,6 +129,7 @@ import {
 import { ServicesHoverPanelSectionV2 } from "@/components/sections/ServicesHoverPanelSectionV2";
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { InfoStripSectionV3 } from "@/components/sections/InfoStripSectionV3";
+import { FinancingCalculatorSectionV3 } from "@/components/sections/FinancingCalculatorSectionV3";
 import { withSectionToggles } from "@/components/sections/section-toggle-props";
 import { ServiceAreaZipLookupSectionV3 } from "@/components/sections/ServiceAreaZipLookupSectionV3";
 import { ThankYouConfirmationSectionV3 } from "@/components/sections/ThankYouConfirmationSectionV3";
@@ -299,6 +303,9 @@ function getLargeSectionHeaderAlign(section: PagebuilderRecipeSection) {
 
 // The variant is `{align}-{size}`, so the size is its suffix.
 const largeSectionHeaderSizes: readonly LargeSectionHeaderSize[] = [
+  "eyebrow",
+  "heading-sm",
+  "heading-md",
   "heading-lg",
   "heading-xl",
   "display-lg",
@@ -564,6 +571,26 @@ function renderSectionElement(
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           showImages={section.variant !== "text-only"}
+        />
+      );
+    case "HorizontalCardLinkGridSectionV3":
+      return (
+        <HorizontalCardLinkGridSectionV3
+          {...sectionLibraryV3Content.horizontalCardLinkGrid}
+          align={getCardLinkGridAlign(section)}
+        />
+      );
+    case "HorizontalCardLinkGridTwoUpSectionV3":
+      return (
+        <HorizontalCardLinkGridTwoUpSectionV3
+          {...sectionLibraryV3Content.horizontalCardLinkGridTwoUp}
+          align={getTableCompareAlign(section)}
+        />
+      );
+    case "OfferTermsSectionV3":
+      return (
+        <OfferTermsSectionV3
+          {...sectionLibraryV3Content.offerTerms}
         />
       );
     case "ServiceNeedsPriorityGridSectionV3":
@@ -947,6 +974,12 @@ function renderSectionElement(
       return <ContactSectionV2 {...sectionLibraryV3Content.contact} />;
     case "InfoStripSectionV3":
       return <InfoStripSectionV3 {...sectionLibraryV3Content.infoStrip} />;
+    case "FinancingCalculatorSectionV3":
+      return (
+        <FinancingCalculatorSectionV3
+          {...sectionLibraryV3Content.financingCalculator}
+        />
+      );
     case "ServiceAreaZipLookupSectionV3":
       return (
         <ServiceAreaZipLookupSectionV3
