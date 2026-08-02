@@ -172,6 +172,7 @@ export { HeroSplitBentoSectionV3 } from "./HeroSplitBentoSectionV3";
 export { HeroSplitFixedImageSectionV3 } from "./HeroSplitFixedImageSectionV3";
 export { HeroSplitFullHeightSectionV3 } from "./HeroSplitFullHeightSectionV3";
 export { HeroStackedHeaderImageSectionV2 } from "./HeroStackedHeaderImageSectionV2";
+export { InfoStripSectionV3 } from "./InfoStripSectionV3";
 export { NavFloatingBentoSection } from "./NavFloatingBentoSection";
 export { NavFloatingBentoSectionV2 } from "./NavFloatingBentoSectionV2";
 export { NavCenterLogoSection, NavPrimarySection } from "./NavPrimarySection";

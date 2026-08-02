@@ -34,6 +34,7 @@ import {
   FAQAccordionSectionV3,
   FAQAccordionSidebarSectionV3,
   FAQSectionV3,
+  InfoStripSectionV3,
   FeatureAsymmetricCardsSectionV3,
   FeatureStackedCardsSectionV3,
   FeatureOverlapRowsSectionV3,
@@ -409,6 +410,7 @@ const sectionElements = {
       {...sectionLibraryV3Content.testimonialsMasonry}
     />
   ),
+  "info-strip-v3": <InfoStripSectionV3 {...sectionLibraryV3Content.infoStrip} />,
   "faq-v3": <FAQSectionV3 {...sectionLibraryV3Content.faq} />,
   "faq-accordion-v3": (
     <FAQAccordionSectionV3 {...sectionLibraryV3Content.faqAccordion} />

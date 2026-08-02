@@ -72,6 +72,7 @@ import { ProcessStepsStaggeredSectionV3 } from "@/components/sections/ProcessSte
 import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
 import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
+import { InfoStripSectionV3 } from "@/components/sections/InfoStripSectionV3";
 import { FAQAccordionSidebarSectionV3 } from "@/components/sections/FAQAccordionSidebarSectionV3";
 import { HeroCenteredFloatersSectionV2 } from "@/components/sections/HeroCenteredFloatersSectionV2";
 import {
@@ -879,6 +880,15 @@ export function renderPageTemplateSection(
         <FAQSectionV3
           {...faqProps(fieldSection)}
           colorRecipe={section.colorRecipe}
+        />
+      );
+    case "InfoStripSectionV3":
+      return (
+        <InfoStripSectionV3
+          {...infoStripProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          icons={resolveSectionIcons(section.icons)}
         />
       );
     case "FAQAccordionSectionV3":
@@ -2496,6 +2506,18 @@ function processStepsBranchingProps(section: FieldSection) {
       sectionLibraryV3Content.processStepsBranching.steps,
     ),
     title: getTitle(section, sectionLibraryV3Content.processStepsBranching.title),
+  };
+}
+
+function infoStripProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.infoStrip,
+    body: getBody(section, sectionLibraryV3Content.infoStrip.body),
+    cardLabel: getValue(
+      section,
+      "cardLabel",
+      sectionLibraryV3Content.infoStrip.cardLabel,
+    ),
   };
 }
 

@@ -252,6 +252,7 @@ export const cardStyleComponents = new Set<string>([
   "FourCardLinkGridSectionV3",
   "HeroCompactServiceSectionV3",
   "HeroSplitBentoSectionV3",
+  "InfoStripSectionV3",
   "ProcessStepsBranchingSectionV3",
   "ProcessStepsStaggeredSectionV3",
   "ProjectCaseStudyGallerySectionV3",
@@ -323,6 +324,7 @@ export const iconsValues = new Set<string>(
 
 export const iconComponents = new Set<string>([
   "DecisionSplitLargeCardsSectionV3",
+  "InfoStripSectionV3",
 ]);
 
 export function sectionSupportsIcons(component: string) {

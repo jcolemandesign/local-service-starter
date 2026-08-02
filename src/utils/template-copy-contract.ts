@@ -821,6 +821,31 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  // Ahead of every generic branch. This section renders exactly two strings and
+  // nothing else - no heading, no list, no action - so any broader branch that
+  // caught it would brief the copywriter for fields it cannot render.
+  if (component.includes("infostrip")) {
+    return [
+      {
+        example: "Gas odor · Smoke or fire · Carbon monoxide alarm",
+        name: "cardLabel",
+        purpose:
+          "The conditions this notice applies to, shown in the card beside the copy.",
+        target:
+          "18-60 characters. Name the conditions only - the response belongs in the body.",
+      },
+      {
+        example:
+          "Leave the home immediately. Once outside, call 911. If you suspect a gas leak, also contact your gas utility. Do not wait for an HVAC appointment.",
+        name: "body",
+        purpose:
+          "What the reader should do, written as direct instructions in the order they should happen.",
+        target:
+          "120-260 characters. Plain imperative sentences. No marketing language and no booking prompt.",
+      },
+    ];
+  }
+
   // Ahead of the generic process branch, which this section's name would
   // otherwise match. That branch asks for `steps` as Title - Description pairs;
   // this section renders each item as a single numbered line, so it needs its

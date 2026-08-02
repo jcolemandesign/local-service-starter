@@ -1223,6 +1223,10 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
+  infoStrip: {
+    cardLabel: "Gas odor · Smoke or fire · Carbon monoxide alarm",
+    body: "Leave the home immediately. Once outside, call 911. If you suspect a gas leak, also contact your gas utility. Do not wait for an HVAC appointment.",
+  },
   processImageChecklist: {
     eyebrow: "How it works",
     title: "A prepared visit starts before anyone reaches the door.",
@@ -2044,6 +2048,7 @@ export const sectionLibraryV3Collections = [
   {
     title: "Utility",
     items: [
+      { label: "Info strip", component: "info-strip-v3" },
       { label: "FAQ", component: "faq-v3" },
       { label: "FAQ accordion", component: "faq-accordion-v3" },
       {
@@ -2178,6 +2183,7 @@ export const sectionLibraryV3ComponentBySlug = {
   "process-steps-staggered-v3": "ProcessStepsStaggeredSectionV3",
   "process-steps-branching-v3": "ProcessStepsBranchingSectionV3",
   "process-image-checklist-v3": "ProcessImageChecklistSectionV3",
+  "info-strip-v3": "InfoStripSectionV3",
   "faq-v3": "FAQSectionV3",
   "faq-accordion-v3": "FAQAccordionSectionV3",
   "faq-accordion-sidebar-v3": "FAQAccordionSidebarSectionV3",
