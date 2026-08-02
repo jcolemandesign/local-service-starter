@@ -111,7 +111,11 @@ export function FeatureAsymmetricCardsSectionV3({
   const displayCards = cards.slice(0, 4);
 
   return (
-    <section className="bg-service-surface">
+    // The neutral page token, not the surface token. The colour recipe paints
+    // the section frame and force-overrides `> section` on muted, but leaves the
+    // section's own background alone on default - so a section painted with the
+    // surface token has no default state and reads as muted at every recipe.
+    <section className="bg-bg-page">
       <SevenColumnGrid className="section-min-none items-start" padding="med">
         <SevenColumnGridItem
           className={`col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1 ${
