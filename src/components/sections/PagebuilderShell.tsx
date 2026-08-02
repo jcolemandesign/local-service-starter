@@ -35,7 +35,7 @@ import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/Services
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { ContentHorizontalCardCarouselSectionV2 } from "@/components/sections/ContentHorizontalCardCarouselSectionV2";
 import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
-import { InfoStripSectionV3 } from "@/components/sections/InfoStripSectionV3";
+import { withSectionToggles } from "@/components/sections/section-toggle-props";
 import { DecisionSplitDecisionSectionV3 } from "@/components/sections/DecisionSplitDecisionSectionV3";
 import {
   ProcessStepsBranchingSectionV3,
@@ -229,7 +229,6 @@ const faqComponent = "FAQSectionV3";
 const contentHorizontalCardCarouselComponent =
   "ContentHorizontalCardCarouselSectionV2";
 const decisionSplitLargeCardsComponent = "DecisionSplitLargeCardsSectionV3";
-const infoStripComponent = "InfoStripSectionV3";
 const decisionSplitDecisionComponent = "DecisionSplitDecisionSectionV3";
 const decisionQuestionTableComponent = "DecisionQuestionTableSectionV3";
 const decisionMatrixCardComponent = "DecisionMatrixCardSectionV3";
@@ -3959,24 +3958,20 @@ export function PagebuilderShell({
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
           />
-        ) : section.component === infoStripComponent ? (
-          <InfoStripSectionV3
-            {...sectionLibraryV3Content.infoStrip}
-            cardBorder={getSectionCardBorder(section)}
-            cardFill={getSectionCardFill(section)}
-            icons={getSectionIcons(section)}
-          />
         ) : (
-          // Falling through here renders a statically built element from
-          // `previewCatalog`, which is created once from a synthetic section
-          // carrying no toggle values. A section that reads cardFill,
-          // cardBorder, icons, cardLinks or an align axis therefore shows the
-          // control in the panel and ignores every change made with it, so it
-          // needs an explicit branch above. `pagebuilder-toggle-wiring` pins
-          // that.
-          previewCatalog[section.component] ??
-          previewSections[activeRecipeIndex]?.[section.originalIndex] ??
-          null
+          // Everything without a hand-written branch above renders from a
+          // prebuilt `previewCatalog` entry, which is created once from a
+          // synthetic section carrying no toggle values. `withSectionToggles`
+          // clones the live values on at render time, so cardFill, cardBorder,
+          // icons and cardLinks work for every section rather than only for the
+          // ones listed above - a new section is wired by default instead of
+          // shipping with controls that render and do nothing.
+          withSectionToggles(
+            previewCatalog[section.component] ??
+              previewSections[activeRecipeIndex]?.[section.originalIndex] ??
+              null,
+            section,
+          )
         );
 
       return (

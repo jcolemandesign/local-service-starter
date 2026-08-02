@@ -29,19 +29,11 @@ There are **three render paths**, and a section needs wiring in each:
 - `renderPreviewSection` in `PagebuilderSection.tsx` — the gallery. Renders from `sectionLibraryV3Content` demo content. Without a `case` the section falls to `UnknownSection`, which renders "Preview unavailable" — it looks like a broken section rather than a missing registration.
 - **the ternary chain in `PagebuilderShell.tsx`** — the builder canvas. This one is a nested `? :` chain, not a `switch`, so grepping for `switch (section.component)` will not find it.
 
-That third path is the one that silently eats toggles. Its final fallback renders a `previewCatalog` element, which is built **once** from a synthetic section carrying no toggle values. A section without its own branch there still appears and still looks correct — but `cardFill`, `cardBorder`, `icons`, `cardLinks` and the align axes show their controls in the panel and do nothing when changed. Give any toggle-supporting section a branch passing the resolvers:
+**You do not need a branch in that third chain for toggles.** Its fallback passes every section through `withSectionToggles` (`section-toggle-props.ts`), which clones the live `cardFill`, `cardBorder`, `icons`, `cardLinks`, `headlineWrap` and `align` values onto whatever was rendered, gated by the same membership sets that decide whether the control is offered. Register the section in the right sets and its toggles work.
 
-```tsx
-) : section.component === myComponent ? (
-  <MySectionV3
-    {...sectionLibraryV3Content.mySection}
-    cardBorder={getSectionCardBorder(section)}
-    cardFill={getSectionCardFill(section)}
-    icons={getSectionIcons(section)}
-  />
-```
+Add a branch there only for what the toggle helper does not cover — a `variant` axis, a heading level, or a section-specific alignment that is not one of the two shared align axes.
 
-Note these are the `getSection*` resolvers, not raw `section.cardFill` — they apply the opt-in and default rules.
+This used to require a hand-written branch per section, which is why a section could sit in `cardStyleComponents`, render its control, and ignore every click.
 
 "Referenced by pagebuilder" then means two more lists, and neither of them is `src/content/pagebuilder.ts`:
 

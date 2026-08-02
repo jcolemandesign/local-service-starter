@@ -99,9 +99,9 @@ these exist — the checklist is in `.claude/skills/add-section/SKILL.md`, and
    `page.fields`); `renderPreviewSection` in `PagebuilderSection.tsx` (the
    gallery, rendering from library demo content — a missing case renders the
    "Preview unavailable" placeholder); and the ternary chain in
-   `PagebuilderShell.tsx` (the builder canvas). A toggle-supporting section
-   needs its own branch in that chain passing the `getSection*` resolvers, or
-   its controls render and do nothing — see §3
+   `PagebuilderShell.tsx` (the builder canvas). That chain applies toggles
+   centrally through `withSectionToggles`, so a branch there is needed only for
+   a `variant` axis or heading level — see §3
 7. A copy field spec — a branch in `getTemplateCopyFieldsForSection`
    (`src/utils/template-copy-contract.ts`)
 8. An asset field spec if it renders images — a branch in
@@ -247,13 +247,27 @@ outer outline while structural internal dividers may remain.
 
 `getSectionStyleFieldSpecs(component)` returns what a given section offers.
 
-Membership only decides whether the **control appears**. For the control to do
-anything in the builder, the section also needs its own branch in the render
-chain in `PagebuilderShell.tsx` passing the `getSection*` resolvers. The chain's
-fallback renders a `previewCatalog` element built once from a synthetic section
-with no toggle values, so a section that is in the set but not in the chain
-shows every control and ignores all of them. `pagebuilder-catalog-parity.test.ts`
-pins the two together.
+Membership decides both whether the **control appears** and whether its value
+**reaches the component**. `getSectionToggleProps` in
+`src/components/sections/section-toggle-props.ts` reads the same sets, so the two
+answers cannot disagree, and `withSectionToggles` clones the resolved values onto
+whatever the builder rendered.
+
+That matters because the builder canvas renders most sections from a
+`previewCatalog` element built once from a synthetic section carrying no toggle
+values. Toggles used to reach a section only if someone had hand-written a branch
+for it in the render chain in `PagebuilderShell.tsx`; 51 of 93 sections had no
+such branch, so their controls rendered and did nothing. `section-toggle-props.test.ts`
+asserts the values land on the element for every registered section.
+
+Note the older CSS mechanism still exists alongside this: the section frame
+carries `data-pagebuilder-card-fill` / `-card-border` / `-color-recipe`, and
+`globals.css` implements them with selectors that guess at markup
+(`> section.bg-service-surface`, `article` scoped to four modes, `a.bg-service-surface`
+for two named components). It works only for sections whose DOM happens to match,
+which is why a card that is a `div.bg-service-surface` under mode Utility was
+unaffected by either mechanism before the props path was made universal. Prefer
+the props path; treat the CSS rules as legacy.
 
 ### Two traps when adding an axis
 
