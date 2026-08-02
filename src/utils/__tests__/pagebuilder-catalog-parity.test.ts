@@ -86,6 +86,20 @@ const previewComponents = new Set(
   ].map((match) => match[1]),
 );
 
+/**
+ * The two renderer switches. Being in a catalog only gets a section as far as
+ * the picker: without a `case` it renders the `UnknownSection` placeholder
+ * ("Preview unavailable"), which looks like a broken section rather than a
+ * missing registration.
+ */
+const previewRendererCases = new Set(
+  [...read("PagebuilderSection.tsx").matchAll(/case "(\w+)":/g)].map((m) => m[1]),
+);
+
+const templateRendererCases = new Set(
+  [...read("PageTemplatePreview.tsx").matchAll(/case "(\w+)":/g)].map((m) => m[1]),
+);
+
 const registryComponents = sectionLibraryV3Registry.map((entry) => entry.component);
 
 describe("pagebuilder catalog parity", () => {
@@ -113,6 +127,28 @@ describe("pagebuilder catalog parity", () => {
     expect(
       missing,
       "these sections can be chosen but have no preview - add them to previewCatalog in PagebuilderSection.tsx",
+    ).toEqual([]);
+  });
+
+  it("has a pagebuilder renderer case for every library section", () => {
+    const missing = registryComponents
+      .filter((component) => !previewRendererCases.has(component))
+      .sort();
+
+    expect(
+      missing,
+      'these sections render the "Preview unavailable" placeholder - add a case to renderPreviewSection in PagebuilderSection.tsx',
+    ).toEqual([]);
+  });
+
+  it("has a template renderer case for every library section", () => {
+    const missing = registryComponents
+      .filter((component) => !templateRendererCases.has(component))
+      .sort();
+
+    expect(
+      missing,
+      'these sections render the "Preview unavailable" placeholder on staged pages - add a case to renderPageTemplateSection in PageTemplatePreview.tsx',
     ).toEqual([]);
   });
 

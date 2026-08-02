@@ -49,7 +49,7 @@ A new section is not complete until it is:
 - added to `src/content/section-library-v3.ts` in the correct semantic collection
 - added to the `/sections` preview map in `src/app/sections/page.tsx`
 - added to **both** pagebuilder lists, using the same semantic mode as the section library — `sectionSwapOptions` in `PagebuilderShell.tsx` (what the builder offers) and `previewCatalog` in `PagebuilderSection.tsx` (what the gallery renders). Neither is the recipe stacks in `src/content/pagebuilder.ts`; those are a page's default composition, not the catalog
-- given a render `case` and a `xxxProps()` mapper in `PageTemplatePreview.tsx`
+- given a render `case` in **both** switches — `renderPageTemplateSection` in `PageTemplatePreview.tsx` (with a `xxxProps()` mapper, for staged pages) and `renderPreviewSection` in `PagebuilderSection.tsx` (from library demo content, for the builder). A missing case renders the "Preview unavailable" placeholder, which reads as a broken section rather than a missing registration
 - given a copy field spec in `getTemplateCopyFieldsForSection` (`src/utils/template-copy-contract.ts`)
 - given an asset field spec in `getTemplateAssetFieldsForSection` (`src/utils/staged-pages.ts`) if it renders images
 - registered in the toggle membership sets it qualifies for in `src/content/section-style-options.ts` — card style, card links, icons, headline wrap, the align axes, and `viewportHeightComponents` for viewport-height sections. A section missing from a set it qualifies for does not error; the control is silently never offered. The decision list is in `.claude/skills/add-section/SKILL.md`.

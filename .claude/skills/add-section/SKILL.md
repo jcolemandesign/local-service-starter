@@ -14,7 +14,7 @@ A new section is not complete until it is:
 - added to `src/content/section-library-v3.ts` in the correct semantic collection
 - added to the `/sections` preview map in `src/app/sections/page.tsx`
 - added to **both** pagebuilder lists under the same semantic mode as the library (see below)
-- given a render `case` **and** a `xxxProps()` mapper in `PageTemplatePreview.tsx`
+- given a render `case` in **both** renderer switches (see below), including the `xxxProps()` mapper in `PageTemplatePreview.tsx`
 - **given a copy field spec** — a branch in `getTemplateCopyFieldsForSection` (`src/utils/template-copy-contract.ts`)
 - **given an asset field spec** if it renders images — a branch in `getTemplateAssetFieldsForSection` (`src/utils/staged-pages.ts`)
 - **registered in the toggle membership sets it qualifies for** in `src/content/section-style-options.ts` (see below)
@@ -23,7 +23,14 @@ Do not add a section only to pagebuilder. Pagebuilder should reference sections 
 
 ## Reaching pagebuilder
 
-"Referenced by pagebuilder" means two lists, and neither of them is `src/content/pagebuilder.ts`:
+There are **two renderer switches**, and a section needs a `case` in each:
+
+- `renderPageTemplateSection` in `PageTemplatePreview.tsx` — staged pages and export. Renders from `page.fields` via the section's `xxxProps()` mapper.
+- `renderPreviewSection` in `PagebuilderSection.tsx` — the builder and its gallery. Renders from `sectionLibraryV3Content` demo content directly, with the toggle props passed through from the section record.
+
+Without a case the section falls to `UnknownSection`, which renders "Preview unavailable" — it looks like a broken section rather than a missing registration.
+
+"Referenced by pagebuilder" then means two more lists, and neither of them is `src/content/pagebuilder.ts`:
 
 - `sectionSwapOptions` in `PagebuilderShell.tsx` — the list the builder offers. Missing here means the section cannot be chosen at all.
 - `previewCatalog` in `PagebuilderSection.tsx` — the gallery preview. Missing here means it can be chosen but renders nothing in the picker.

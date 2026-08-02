@@ -56,6 +56,7 @@ import { DecisionQuestionTableFourSectionV3 } from "@/components/sections/Decisi
 import { DecisionQuestionTableSectionV3 } from "@/components/sections/DecisionQuestionTableSectionV3";
 import { DecisionSplitDecisionSectionV3 } from "@/components/sections/DecisionSplitDecisionSectionV3";
 import { DecisionSplitDecisionLargeSectionV3 } from "@/components/sections/DecisionSplitDecisionLargeSectionV3";
+import { DecisionMatrixCardSectionV3 } from "@/components/sections/DecisionMatrixCardSectionV3";
 import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/DecisionSplitLargeCardsSectionV3";
 import { SectionHeaderSplitLinkSectionV3 } from "@/components/sections/SectionHeaderSplitLinkSectionV3";
 import { ProcessStepsBranchingSectionV3 } from "@/components/sections/ProcessStepsBranchingSectionV3";
@@ -113,6 +114,7 @@ import {
 } from "@/components/sections/ServicesBentoCardsSectionV2";
 import { ServicesHoverPanelSectionV2 } from "@/components/sections/ServicesHoverPanelSectionV2";
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
+import { InfoStripSectionV3 } from "@/components/sections/InfoStripSectionV3";
 import { ServiceAreaZipLookupSectionV3 } from "@/components/sections/ServiceAreaZipLookupSectionV3";
 import { ThankYouConfirmationSectionV3 } from "@/components/sections/ThankYouConfirmationSectionV3";
 import { ServicesThreeCardsRightSectionV3 } from "@/components/sections/ServicesThreeCardsRightSectionV3";
@@ -733,6 +735,15 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
           {...sectionLibraryV3Content.decisionSplitDecision}
         />
       );
+    case "DecisionMatrixCardSectionV3":
+      return (
+        <DecisionMatrixCardSectionV3
+          {...sectionLibraryV3Content.decisionMatrixCard}
+          align={getTableCompareAlign(section)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "DecisionSplitLargeCardsSectionV3":
       return (
         <DecisionSplitLargeCardsSectionV3
@@ -870,6 +881,15 @@ function renderPreviewSection(section: PagebuilderRecipeSection, index: number) 
       );
     case "ContactSectionV2":
       return <ContactSectionV2 {...sectionLibraryV3Content.contact} />;
+    case "InfoStripSectionV3":
+      return (
+        <InfoStripSectionV3
+          {...sectionLibraryV3Content.infoStrip}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          icons={resolveSectionIcons(section.icons)}
+        />
+      );
     case "ServiceAreaZipLookupSectionV3":
       return (
         <ServiceAreaZipLookupSectionV3

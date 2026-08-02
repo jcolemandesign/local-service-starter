@@ -94,7 +94,11 @@ these exist — the checklist is in `.claude/skills/add-section/SKILL.md`, and
    and `previewCatalog` in `PagebuilderSection.tsx` (what the gallery renders).
    The `sectionStack` arrays in `pagebuilder.ts` are recipe defaults, not the
    catalog; `pagebuilder-catalog-parity.test.ts` pins both against the registry
-6. A render `case` **and** an `xxxProps()` mapper in `PageTemplatePreview.tsx`
+6. A render `case` in **both** switches — `renderPageTemplateSection` in
+   `PageTemplatePreview.tsx` (with an `xxxProps()` mapper, rendering from
+   `page.fields`) and `renderPreviewSection` in `PagebuilderSection.tsx`
+   (rendering from library demo content). A missing case renders the
+   "Preview unavailable" placeholder
 7. A copy field spec — a branch in `getTemplateCopyFieldsForSection`
    (`src/utils/template-copy-contract.ts`)
 8. An asset field spec if it renders images — a branch in
