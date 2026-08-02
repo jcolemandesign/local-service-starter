@@ -1,3 +1,11 @@
+"use client";
+
+// Client, because `renderPreviewSection` is handed to `PagebuilderShell` as a
+// prop and functions cannot cross the server/client boundary. This used to be a
+// server component passing `previewCatalog`, a plain map of already-rendered
+// ReactNode, which serialises fine - but a prebuilt element cannot carry the
+// live toggle values the canvas needs. Nothing server-only is left in this file.
+
 import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAboutCompanySectionV2";
 import { ContentAboutStorySectionV3 } from "@/components/sections/ContentAboutStorySectionV3";
 import { ContentNarrativeFeatureRailSectionV3 } from "@/components/sections/ContentNarrativeFeatureRailSectionV3";
