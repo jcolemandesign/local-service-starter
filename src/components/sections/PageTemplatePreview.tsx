@@ -2510,7 +2510,7 @@ function processImageChecklistProps(section: FieldSection) {
     ),
     items: getListValues(
       section,
-      ["items", "proofItems", "supportingItems"],
+      ["items", "proofItems", "supportingItems", "steps"],
       sectionLibraryV3Content.processImageChecklist.items.join("\n"),
     ),
     title: getTitle(section, sectionLibraryV3Content.processImageChecklist.title),
