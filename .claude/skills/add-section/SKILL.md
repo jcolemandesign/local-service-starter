@@ -23,12 +23,25 @@ Do not add a section only to pagebuilder. Pagebuilder should reference sections 
 
 ## Reaching pagebuilder
 
-There are **two renderer switches**, and a section needs a `case` in each:
+There are **three render paths**, and a section needs wiring in each:
 
 - `renderPageTemplateSection` in `PageTemplatePreview.tsx` — staged pages and export. Renders from `page.fields` via the section's `xxxProps()` mapper.
-- `renderPreviewSection` in `PagebuilderSection.tsx` — the builder and its gallery. Renders from `sectionLibraryV3Content` demo content directly, with the toggle props passed through from the section record.
+- `renderPreviewSection` in `PagebuilderSection.tsx` — the gallery. Renders from `sectionLibraryV3Content` demo content. Without a `case` the section falls to `UnknownSection`, which renders "Preview unavailable" — it looks like a broken section rather than a missing registration.
+- **the ternary chain in `PagebuilderShell.tsx`** — the builder canvas. This one is a nested `? :` chain, not a `switch`, so grepping for `switch (section.component)` will not find it.
 
-Without a case the section falls to `UnknownSection`, which renders "Preview unavailable" — it looks like a broken section rather than a missing registration.
+That third path is the one that silently eats toggles. Its final fallback renders a `previewCatalog` element, which is built **once** from a synthetic section carrying no toggle values. A section without its own branch there still appears and still looks correct — but `cardFill`, `cardBorder`, `icons`, `cardLinks` and the align axes show their controls in the panel and do nothing when changed. Give any toggle-supporting section a branch passing the resolvers:
+
+```tsx
+) : section.component === myComponent ? (
+  <MySectionV3
+    {...sectionLibraryV3Content.mySection}
+    cardBorder={getSectionCardBorder(section)}
+    cardFill={getSectionCardFill(section)}
+    icons={getSectionIcons(section)}
+  />
+```
+
+Note these are the `getSection*` resolvers, not raw `section.cardFill` — they apply the opt-in and default rules.
 
 "Referenced by pagebuilder" then means two more lists, and neither of them is `src/content/pagebuilder.ts`:
 

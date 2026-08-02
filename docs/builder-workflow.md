@@ -94,11 +94,14 @@ these exist — the checklist is in `.claude/skills/add-section/SKILL.md`, and
    and `previewCatalog` in `PagebuilderSection.tsx` (what the gallery renders).
    The `sectionStack` arrays in `pagebuilder.ts` are recipe defaults, not the
    catalog; `pagebuilder-catalog-parity.test.ts` pins both against the registry
-6. A render `case` in **both** switches — `renderPageTemplateSection` in
+6. Wiring in **all three render paths** — `renderPageTemplateSection` in
    `PageTemplatePreview.tsx` (with an `xxxProps()` mapper, rendering from
-   `page.fields`) and `renderPreviewSection` in `PagebuilderSection.tsx`
-   (rendering from library demo content). A missing case renders the
-   "Preview unavailable" placeholder
+   `page.fields`); `renderPreviewSection` in `PagebuilderSection.tsx` (the
+   gallery, rendering from library demo content — a missing case renders the
+   "Preview unavailable" placeholder); and the ternary chain in
+   `PagebuilderShell.tsx` (the builder canvas). A toggle-supporting section
+   needs its own branch in that chain passing the `getSection*` resolvers, or
+   its controls render and do nothing — see §3
 7. A copy field spec — a branch in `getTemplateCopyFieldsForSection`
    (`src/utils/template-copy-contract.ts`)
 8. An asset field spec if it renders images — a branch in
@@ -243,6 +246,14 @@ For composite cards such as comparison tables, `cardBorder="off"` removes the
 outer outline while structural internal dividers may remain.
 
 `getSectionStyleFieldSpecs(component)` returns what a given section offers.
+
+Membership only decides whether the **control appears**. For the control to do
+anything in the builder, the section also needs its own branch in the render
+chain in `PagebuilderShell.tsx` passing the `getSection*` resolvers. The chain's
+fallback renders a `previewCatalog` element built once from a synthetic section
+with no toggle values, so a section that is in the set but not in the chain
+shows every control and ignores all of them. `pagebuilder-catalog-parity.test.ts`
+pins the two together.
 
 ### Two traps when adding an axis
 

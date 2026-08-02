@@ -3,6 +3,11 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { sectionLibraryV3Registry } from "@/content/section-library-v3";
+import {
+  cardLinkComponents,
+  cardStyleComponents,
+  iconComponents,
+} from "@/content/section-style-options";
 
 /**
  * A section reaches pagebuilder through two lists, and neither is the section
@@ -149,6 +154,43 @@ describe("pagebuilder catalog parity", () => {
     expect(
       missing,
       'these sections render the "Preview unavailable" placeholder on staged pages - add a case to renderPageTemplateSection in PageTemplatePreview.tsx',
+    ).toEqual([]);
+  });
+
+  /**
+   * The builder canvas renders through a ternary chain in `PagebuilderShell`
+   * whose final fallback is a `previewCatalog` element - built once, from a
+   * synthetic section that carries no toggle values. A section that reads a
+   * toggle but has no explicit branch in that chain therefore shows the control
+   * in the panel and ignores every change made with it. Nothing else catches
+   * that: the set membership is right, the component reads the prop, the
+   * control renders, and it still does nothing.
+   */
+  it("renders every toggle-supporting section explicitly in the builder chain", () => {
+    const shellJsx = new Set(
+      [...read("PagebuilderShell.tsx").matchAll(/<(\w*Section\w*)\b/g)].map(
+        (m) => m[1],
+      ),
+    );
+
+    const inLibrary = new Set<string>(registryComponents);
+    const toggleSupporting = [
+      ...new Set([
+        ...cardStyleComponents,
+        ...iconComponents,
+        ...cardLinkComponents,
+      ]),
+    ].filter((component) => inLibrary.has(component));
+
+    expect(toggleSupporting.length).toBeGreaterThan(20);
+
+    const dead = toggleSupporting
+      .filter((component) => !shellJsx.has(component))
+      .sort();
+
+    expect(
+      dead,
+      "these sections support a pagebuilder toggle but fall through to previewCatalog, so the control renders and does nothing - give them a branch in the render chain in PagebuilderShell.tsx that passes getSectionCardFill/getSectionCardBorder/getSectionIcons",
     ).toEqual([]);
   });
 
