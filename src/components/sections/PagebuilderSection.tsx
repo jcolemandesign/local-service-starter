@@ -1516,6 +1516,12 @@ export function PagebuilderSection() {
       "Split decision large",
       6,
     ),
+    DecisionMatrixCardSectionV3: previewCatalogEntry(
+      "DecisionMatrixCardSectionV3",
+      "Decision",
+      "Matrix card",
+      6,
+    ),
     DecisionQuestionTableSectionV3: previewCatalogEntry(
       "DecisionQuestionTableSectionV3",
       "Decision",

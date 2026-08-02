@@ -13,13 +13,24 @@ A new section is not complete until it is:
 - exported from `src/components/sections/index.ts`
 - added to `src/content/section-library-v3.ts` in the correct semantic collection
 - added to the `/sections` preview map in `src/app/sections/page.tsx`
-- referenced by pagebuilder using the same semantic mode/category as the section library
+- added to **both** pagebuilder lists under the same semantic mode as the library (see below)
 - given a render `case` **and** a `xxxProps()` mapper in `PageTemplatePreview.tsx`
 - **given a copy field spec** — a branch in `getTemplateCopyFieldsForSection` (`src/utils/template-copy-contract.ts`)
 - **given an asset field spec** if it renders images — a branch in `getTemplateAssetFieldsForSection` (`src/utils/staged-pages.ts`)
 - **registered in the toggle membership sets it qualifies for** in `src/content/section-style-options.ts` (see below)
 
 Do not add a section only to pagebuilder. Pagebuilder should reference sections that already exist in the section library.
+
+## Reaching pagebuilder
+
+"Referenced by pagebuilder" means two lists, and neither of them is `src/content/pagebuilder.ts`:
+
+- `sectionSwapOptions` in `PagebuilderShell.tsx` — the list the builder offers. Missing here means the section cannot be chosen at all.
+- `previewCatalog` in `PagebuilderSection.tsx` — the gallery preview. Missing here means it can be chosen but renders nothing in the picker.
+
+The `sectionStack` arrays in `src/content/pagebuilder.ts` are a *recipe's default composition* — the sections a new page of that type starts with. Adding a section there does not make it available; it forces it into every page built from that recipe. That is almost never what a new section wants.
+
+`pagebuilder-catalog-parity.test.ts` pins both lists against the library registry, so an omission fails loudly instead of silently.
 
 ## Toggle registration
 

@@ -48,7 +48,7 @@ A new section is not complete until it is:
 - exported from `src/components/sections/index.ts`
 - added to `src/content/section-library-v3.ts` in the correct semantic collection
 - added to the `/sections` preview map in `src/app/sections/page.tsx`
-- referenced by pagebuilder using the same semantic mode/category as the section library
+- added to **both** pagebuilder lists, using the same semantic mode as the section library — `sectionSwapOptions` in `PagebuilderShell.tsx` (what the builder offers) and `previewCatalog` in `PagebuilderSection.tsx` (what the gallery renders). Neither is the recipe stacks in `src/content/pagebuilder.ts`; those are a page's default composition, not the catalog
 - given a render `case` and a `xxxProps()` mapper in `PageTemplatePreview.tsx`
 - given a copy field spec in `getTemplateCopyFieldsForSection` (`src/utils/template-copy-contract.ts`)
 - given an asset field spec in `getTemplateAssetFieldsForSection` (`src/utils/staged-pages.ts`) if it renders images

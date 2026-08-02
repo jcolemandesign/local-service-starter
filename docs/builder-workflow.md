@@ -89,7 +89,11 @@ these exist — the checklist is in `.claude/skills/add-section/SKILL.md`, and
 2. Export from `src/components/sections/index.ts`
 3. Entry in `src/content/section-library-v3.ts`, in the right semantic collection
 4. Entry in the `/sections` preview map (`src/app/sections/page.tsx`)
-5. Referenced by pagebuilder under the **same semantic mode** as the library
+5. Added to **both** pagebuilder lists under the **same semantic mode** as the
+   library — `sectionSwapOptions` in `PagebuilderShell.tsx` (what is offered)
+   and `previewCatalog` in `PagebuilderSection.tsx` (what the gallery renders).
+   The `sectionStack` arrays in `pagebuilder.ts` are recipe defaults, not the
+   catalog; `pagebuilder-catalog-parity.test.ts` pins both against the registry
 6. A render `case` **and** an `xxxProps()` mapper in `PageTemplatePreview.tsx`
 7. A copy field spec — a branch in `getTemplateCopyFieldsForSection`
    (`src/utils/template-copy-contract.ts`)
