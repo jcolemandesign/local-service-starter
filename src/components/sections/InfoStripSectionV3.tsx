@@ -12,15 +12,16 @@ export type InfoStripSectionV3Props = {
 };
 
 /**
- * The card's marker. Sits in the top-right corner rather than beside the label
- * because the label wraps to several lines at four columns, and a leading glyph
- * would leave the wrapped lines hanging off it.
+ * The card's marker. Sits on the label's first line rather than on a row of its
+ * own: the label is the card's only content, so a separate icon row would need
+ * space between the two, and any space there reads as the card failing to fill
+ * itself. `mt-0.5` optically centres the glyph against that first line.
  */
 function StripIcon() {
   return (
     <svg
       aria-hidden="true"
-      className="size-5 shrink-0 text-service-accent"
+      className="mt-0.5 size-5 shrink-0 text-service-accent"
       fill="none"
       viewBox="0 0 20 20"
     >
@@ -51,6 +52,11 @@ function cx(...classes: Array<string | false | undefined>) {
  * The strip carries a single paragraph by design. It is the section reached for
  * when one thing has to be said plainly and quickly - the first use is an
  * emergency notice - so there is no list, no action, and nothing to scan.
+ *
+ * The card is deliberately not stretched to the row. Its only content is a short
+ * label, so matching the copy column's height would leave it mostly empty, and
+ * an empty panel reads as a section that failed to load rather than a small one.
+ * It hugs its label; the copy sits centred against it.
  */
 export function InfoStripSectionV3({
   body,
@@ -61,31 +67,23 @@ export function InfoStripSectionV3({
 }: InfoStripSectionV3Props) {
   return (
     <section className="bg-bg-page">
-      <LayoutGrid
-        className="section-min-none items-stretch"
-        columns={14}
-        padding="sml"
-      >
+      <LayoutGrid className="section-min-none" columns={14} padding="sml">
         <LayoutGridItem
-          alignY="stretch"
+          alignY="middle"
           className="col-span-4 col-start-1 max-lg:col-span-3 max-md:col-span-6 max-sm:col-span-2"
         >
           <div
             className={cx(
-              "fluid-type-frame flex h-full min-w-0 flex-col justify-between gap-6 rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface content-padding text-service-ink shadow-service",
+              "fluid-type-frame flex min-w-0 items-start gap-4 rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-8 text-service-ink shadow-service max-md:p-6",
               cardFill === "none" && "!bg-transparent !shadow-none",
               cardBorder === "off" && "!border-transparent",
             )}
           >
-            {icons === "on" ? (
-              <div className="flex justify-end">
-                <StripIcon />
-              </div>
-            ) : null}
-
-            <p className="type-eyebrow wrap-pretty text-service-accent">
+            <p className="type-eyebrow wrap-pretty min-w-0 flex-1 text-service-accent">
               {cardLabel}
             </p>
+
+            {icons === "on" ? <StripIcon /> : null}
           </div>
         </LayoutGridItem>
 
