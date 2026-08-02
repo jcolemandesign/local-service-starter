@@ -114,6 +114,11 @@ export {
   type FeaturedOfferSectionV3Props,
 } from "./FeaturedOfferSectionV3";
 export {
+  AdditionalOffersSectionV3,
+  type AdditionalOffer,
+  type AdditionalOffersSectionV3Props,
+} from "./AdditionalOffersSectionV3";
+export {
   FeatureOverlapRowsSectionV3,
   ProcessStepsSectionV3,
   TestimonialsSectionV3,

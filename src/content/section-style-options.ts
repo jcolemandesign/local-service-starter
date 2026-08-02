@@ -236,6 +236,7 @@ export const servicesBentoVariantValues = new Set<string>(
  * props - keep in sync when a section starts or stops accepting them.
  */
 export const cardStyleComponents = new Set<string>([
+  "AdditionalOffersSectionV3",
   "ContentCardTwoUpSectionV3",
   "ContentHorizontalCardCarouselSectionV2",
   "ContentMainIdeaGridSectionV3",
@@ -325,7 +326,9 @@ export const iconsValues = new Set<string>(
 );
 
 export const iconComponents = new Set<string>([
+  "AdditionalOffersSectionV3",
   "DecisionSplitLargeCardsSectionV3",
+  "FeaturedOfferSectionV3",
   "InfoStripSectionV3",
 ]);
 

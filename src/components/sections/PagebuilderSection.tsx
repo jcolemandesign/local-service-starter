@@ -109,6 +109,7 @@ import { ServiceCalloutRevealGridSectionV3 } from "@/components/sections/Service
 import { ServiceCalloutSplitPanelSectionV3 } from "@/components/sections/ServiceCalloutSplitPanelSectionV3";
 import { CTAImageSectionV3 } from "@/components/sections/CTAImageSectionV3";
 import { FeaturedOfferSectionV3 } from "@/components/sections/FeaturedOfferSectionV3";
+import { AdditionalOffersSectionV3 } from "@/components/sections/AdditionalOffersSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import {
@@ -906,6 +907,16 @@ function renderSectionElement(
           align={section.variant === "right" ? "right" : "left"}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+          icons={resolveSectionIcons(section.icons)}
+        />
+      );
+    case "AdditionalOffersSectionV3":
+      return (
+        <AdditionalOffersSectionV3
+          {...sectionLibraryV3Content.additionalOffers}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          icons={resolveSectionIcons(section.icons)}
         />
       );
     case "CTAMutedSectionV3":

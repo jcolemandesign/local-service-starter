@@ -2617,6 +2617,68 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  // Ahead of the generic Action/CTA branch: this follow-up offer row has two
+  // fixed cards with their own status, date, detail, and action fields.
+  if (component.includes("additionaloffers")) {
+    return [
+      {
+        example: "Additional offers",
+        name: "heading",
+        purpose: "Compact heading introducing the secondary offers.",
+        target: "18-36 characters.",
+      },
+      ...[1, 2, 3].flatMap((index) => [
+        {
+          example:
+            index === 1 ? "Planning" : index === 2 ? "Upcoming" : "Home comfort",
+          name: `offers.${index}.badge`,
+          purpose: `Short status label for offer ${index}.`,
+          target: "8-20 characters.",
+        },
+        {
+          example:
+            index === 1
+              ? "Replacement planning offer"
+              : index === 2
+                ? "Future seasonal offer"
+                : "Whole-home comfort offer",
+          name: `offers.${index}.title`,
+          purpose: `Headline naming offer ${index}.`,
+          target: "24-52 characters.",
+        },
+        {
+          example:
+            index === 1
+              ? "Plan ahead with a system evaluation and clear recommendations."
+              : index === 2
+                ? "Check back soon for the next approved seasonal promotion."
+                : "Ask about an indoor comfort evaluation for rooms that feel uneven through the season.",
+          name: `offers.${index}.body`,
+          purpose: `One concise explanation of offer ${index}.`,
+          target: "60-130 characters.",
+        },
+        {
+          example: "Valid dates",
+          name: `offers.${index}.dateLabel`,
+          purpose: `Short availability label for offer ${index}.`,
+          target: "8-20 characters.",
+        },
+        {
+          example: "NEEDS REVIEW",
+          name: `offers.${index}.dateValue`,
+          purpose: `Approved availability window for offer ${index}.`,
+          target: "12-44 characters. Use NEEDS REVIEW until dates are approved.",
+        },
+        {
+          example: "View offer",
+          name: `offers.${index}.action`,
+          purpose: `Conversion button label for offer ${index}.`,
+          target: "10-22 characters.",
+        },
+      ]),
+    ];
+  }
+
   // Ahead of the generic Action/CTA branch: this composite offer has its own
   // metadata, inclusion list, benefit panel, and terms fields.
   if (component.includes("featuredoffer")) {

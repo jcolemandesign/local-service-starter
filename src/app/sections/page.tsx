@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/primitives";
 import {
   ContentAboutCompanySectionV2,
+  AdditionalOffersSectionV3,
   ContentAboutStorySectionV3,
   ContentNarrativeFeatureRailSectionV3,
   ContentCardTwoUpSectionV3,
@@ -23,7 +24,6 @@ import {
   ContactSectionV3,
   CTAFullscreenSectionV3,
   CTAImageSectionV3,
-  FeaturedOfferSectionV3,
   CTAMutedSectionV3,
   CTASectionV3,
   CTAScrollRevealOfferSectionV3,
@@ -80,6 +80,7 @@ import {
   TrustMarqueeSection,
   TrustMarqueeSectionV3,
 } from "@/components/sections";
+import { FeaturedOfferSectionLibraryDemo } from "@/components/sections/FeaturedOfferSectionLibraryDemo";
 import { HeroSplitBentoSectionLibraryDemo } from "@/components/sections/HeroSplitBentoSectionLibraryDemo";
 import { SectionHeaderSplitLinkSectionV3 } from "@/components/sections/SectionHeaderSplitLinkSectionV3";
 import { HeroSplitFixedImageSectionLibraryDemo } from "@/components/sections/HeroSplitFixedImageSectionLibraryDemo";
@@ -433,7 +434,14 @@ const sectionElements = {
     <CTAImageSectionV3 {...sectionLibraryV3Content.ctaImage} />
   ),
   "featured-offer-v3": (
-    <FeaturedOfferSectionV3 {...sectionLibraryV3Content.featuredOffer} />
+    <FeaturedOfferSectionLibraryDemo
+      {...sectionLibraryV3Content.featuredOffer}
+    />
+  ),
+  "additional-offers-v3": (
+    <AdditionalOffersSectionV3
+      {...sectionLibraryV3Content.additionalOffers}
+    />
   ),
   "cta-muted-v3": <CTAMutedSectionV3 {...sectionLibraryV3Content.ctaMuted} />,
   "cta-fullscreen-v3": (

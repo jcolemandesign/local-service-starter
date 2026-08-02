@@ -117,6 +117,7 @@ import {
   type CTAImageAlign,
 } from "@/components/sections/CTAImageSectionV3";
 import { FeaturedOfferSectionV3 } from "@/components/sections/FeaturedOfferSectionV3";
+import { AdditionalOffersSectionV3 } from "@/components/sections/AdditionalOffersSectionV3";
 import { ThreeCardLinkGridSectionV3 } from "@/components/sections/ThreeCardLinkGridSectionV3";
 import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import type { ServiceNeedsPriorityGridAlign } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
@@ -975,6 +976,16 @@ export function renderPageTemplateSection(
           align={section.variant === "right" ? "right" : "left"}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+          icons={resolveSectionIcons(section.icons)}
+        />
+      );
+    case "AdditionalOffersSectionV3":
+      return (
+        <AdditionalOffersSectionV3
+          {...additionalOffersProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          icons={resolveSectionIcons(section.icons)}
         />
       );
     case "CTAMutedSectionV3":
@@ -2309,6 +2320,35 @@ function featuredOfferProps(section: FieldSection) {
     priceLabel: getValue(section, "priceLabel", fallback.priceLabel),
     priceValue: getValue(section, "priceValue", fallback.priceValue),
     terms: getValue(section, "terms", fallback.terms),
+  };
+}
+
+function additionalOffersProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.additionalOffers;
+
+  return {
+    ...fallback,
+    heading: getValue(section, "heading", fallback.heading),
+    offers: fallback.offers.map((offer, index) => {
+      const fieldPrefix = `offers.${index + 1}`;
+
+      return {
+        action: getValue(section, `${fieldPrefix}.action`, offer.action),
+        badge: getValue(section, `${fieldPrefix}.badge`, offer.badge),
+        body: getValue(section, `${fieldPrefix}.body`, offer.body),
+        dateLabel: getValue(
+          section,
+          `${fieldPrefix}.dateLabel`,
+          offer.dateLabel,
+        ),
+        dateValue: getValue(
+          section,
+          `${fieldPrefix}.dateValue`,
+          offer.dateValue,
+        ),
+        title: getValue(section, `${fieldPrefix}.title`, offer.title),
+      };
+    }),
   };
 }
 

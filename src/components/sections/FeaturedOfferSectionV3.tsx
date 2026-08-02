@@ -5,6 +5,7 @@ import type {
   SectionCardBorder,
   SectionCardFill,
 } from "@/content/section-color-recipes";
+import type { SectionIcons } from "@/content/section-style-options";
 
 export type FeaturedOfferAlign = "left" | "right";
 
@@ -24,6 +25,7 @@ export type FeaturedOfferSectionV3Props = {
   imageAlt?: string;
   imageSrc?: string;
   includesLabel: string;
+  icons?: SectionIcons;
   priceLabel: string;
   priceValue: string;
   terms: string;
@@ -54,6 +56,44 @@ function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+function SeasonIcon() {
+  return (
+    <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24">
+      <path
+        d="M19.5 4.5C12.2 4.8 7.4 8 6.2 13.4c-.7 3.2 1 5.6 3.9 5.6 5.5 0 8.7-6.8 9.4-14.5Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+      <path d="M5 20c1.6-4.4 4.7-7.6 9.3-9.8" stroke="currentColor" strokeLinecap="round" strokeWidth="1.8" />
+    </svg>
+  );
+}
+
+function PriceIcon() {
+  return (
+    <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24">
+      <path
+        d="M3.8 11.2 11.2 3.8h6.3l2.7 2.7v6.3l-7.4 7.4a2 2 0 0 1-2.8 0L3.8 14a2 2 0 0 1 0-2.8Z"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+      <circle cx="15.8" cy="8.2" r="1.25" fill="currentColor" />
+    </svg>
+  );
+}
+
+function CalendarIcon() {
+  return (
+    <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 24 24">
+      <rect x="3.5" y="5.5" width="17" height="15" rx="2" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M8 3.5v4M16 3.5v4M3.5 10h17" stroke="currentColor" strokeLinecap="round" strokeWidth="1.8" />
+    </svg>
+  );
+}
+
 export function FeaturedOfferSectionV3({
   action,
   align = "left",
@@ -70,6 +110,7 @@ export function FeaturedOfferSectionV3({
   imageAlt,
   imageSrc,
   includesLabel,
+  icons = "on",
   priceLabel,
   priceValue,
   terms,
@@ -95,7 +136,7 @@ export function FeaturedOfferSectionV3({
           >
             <div
               className={cx(
-                "media-min-tall relative overflow-hidden bg-bg-muted max-md:media-min-medium",
+                "relative min-h-[var(--media-min-tall)] overflow-hidden bg-bg-muted max-md:min-h-[var(--media-min-medium)]",
                 placement.image,
                 stackedClasses,
               )}
@@ -122,20 +163,37 @@ export function FeaturedOfferSectionV3({
               )}
             >
               <header className="fluid-type-frame">
-                <p className="type-label text-service-accent">{eyebrow}</p>
+                <p className="type-label flex items-center gap-2 text-service-accent">
+                  {icons === "on" ? <SeasonIcon /> : null}
+                  <span>{eyebrow}</span>
+                </p>
                 <h2 className="type-heading-xl wrap-pretty mt-eyebrow-heading-lg text-service-ink">
                   {heading}
                 </h2>
               </header>
 
               <dl className="mt-heading-body-lg grid grid-cols-2 gap-6 border-b border-service-border pb-8 max-sm:grid-cols-1">
-                <div>
-                  <dt className="type-caption text-service-muted">{priceLabel}</dt>
-                  <dd className="type-heading-sm mt-1 text-service-ink">{priceValue}</dd>
+                <div className="flex items-start gap-4">
+                  {icons === "on" ? (
+                    <span className="flex size-11 shrink-0 items-center justify-center rounded-full border border-service-border text-service-accent">
+                      <PriceIcon />
+                    </span>
+                  ) : null}
+                  <div>
+                    <dt className="type-caption text-service-muted">{priceLabel}</dt>
+                    <dd className="type-heading-sm mt-1 text-service-ink">{priceValue}</dd>
+                  </div>
                 </div>
-                <div>
-                  <dt className="type-caption text-service-muted">{dateLabel}</dt>
-                  <dd className="type-heading-sm mt-1 text-service-ink">{dateValue}</dd>
+                <div className="flex items-start gap-4">
+                  {icons === "on" ? (
+                    <span className="flex size-11 shrink-0 items-center justify-center rounded-full border border-service-border text-service-accent">
+                      <CalendarIcon />
+                    </span>
+                  ) : null}
+                  <div>
+                    <dt className="type-caption text-service-muted">{dateLabel}</dt>
+                    <dd className="type-text-xl mt-1 font-semibold text-service-ink">{dateValue}</dd>
+                  </div>
                 </div>
               </dl>
 

@@ -1834,6 +1834,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     name: "Featured offer",
   },
   {
+    component: "AdditionalOffersSectionV3",
+    instruction:
+      "Follow a primary promotion with secondary offer cards shown two at a time. Each card uses one icon column, a larger offer-detail column, and a right-side conversion column; additional pairs advance together through the slider.",
+    layoutGrid: 14,
+    mode: "Action",
+    name: "Additional offers",
+  },
+  {
     component: "CTAMutedSectionV3",
     instruction:
       "Use a quieter service-card CTA when the page needs a softer next step between content sections.",
@@ -3877,6 +3885,7 @@ export function PagebuilderShell({
             align={getFeaturedOfferAlign(section)}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
+            icons={getSectionIcons(section)}
           />
         ) : section.component === ctaMutedSectionComponent ? (
           <CTAMutedSectionV3
