@@ -2502,6 +2502,11 @@ function processStepsBranchingProps(section: FieldSection) {
 function processImageChecklistProps(section: FieldSection) {
   return {
     ...sectionLibraryV3Content.processImageChecklist,
+    action: getValue(
+      section,
+      "primaryAction",
+      sectionLibraryV3Content.processImageChecklist.action,
+    ),
     body: getBody(section, sectionLibraryV3Content.processImageChecklist.body),
     eyebrow: getValue(
       section,

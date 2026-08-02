@@ -64,7 +64,7 @@ export function ProcessImageChecklistSectionV2({
               {items.map((item, index) => (
                 <motion.li
                   className="radius-medium grid grid-cols-[2rem_minmax(0,1fr)] items-start inline-gap-med border border-service-border bg-service-surface p-5"
-                  key={item}
+                  key={index}
                   variants={{
                     hidden: { opacity: 0, y: 18 },
                     visible: { opacity: 1, y: 0 },

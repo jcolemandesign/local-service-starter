@@ -821,6 +821,55 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  // Ahead of the generic process branch, which this section's name would
+  // otherwise match. That branch asks for `steps` as Title - Description pairs;
+  // this section renders each item as a single numbered line, so it needs its
+  // own shape rather than the decision-step one.
+  if (component.includes("processimagechecklist")) {
+    return [
+      {
+        example: "How it works",
+        name: "eyebrow",
+        purpose: "Short process label above the heading.",
+        target: "12-28 characters.",
+      },
+      {
+        example: "A prepared visit starts before anyone reaches the door",
+        name: "heading",
+        purpose: "Headline beside the sticky process image.",
+        target: "36-70 characters.",
+      },
+      {
+        example:
+          "Every visit is planned around the details you share, so the work starts with context rather than guesswork.",
+        name: "body",
+        purpose:
+          "Short paragraph introducing the checklist beneath the heading.",
+        target: "90-180 characters.",
+      },
+      {
+        example: [
+          "Confirm the request details and preferred contact method.",
+          "Review the service history, location notes, and likely materials.",
+          "Share timing expectations before the visit is locked in.",
+          "Document findings with clear notes and practical recommendations.",
+        ],
+        format: "One item per line. No Title - Description split.",
+        itemCount: 4,
+        name: "items",
+        purpose:
+          "Numbered checklist points describing what happens during the visit.",
+        target: "3-5 items. Each item one sentence of 40-90 characters.",
+      },
+      {
+        example: "Talk through the process",
+        name: "primaryAction",
+        purpose: "Text link label beneath the checklist.",
+        target: "12-28 characters.",
+      },
+    ];
+  }
+
   // Matched on the component before the generic branches below: this section's
   // lookup value contains none of their keywords, so without an explicit branch
   // it would fall through to fallbackFields and silently render demo copy.
