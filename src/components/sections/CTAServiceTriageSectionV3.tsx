@@ -65,7 +65,7 @@ const recipeClasses: Record<
     card: "bg-surface-raised",
     cardBorder: "border-service-border",
     choice:
-      "!border-service-border !bg-bg-page !text-service-accent hover:!border-service-accent hover:!bg-service-surface",
+      "!border-service-border !bg-surface-raised !text-service-accent hover:!border-service-accent hover:!bg-surface-raised",
     icon: "text-service-accent",
     iconShell: "bg-service-accent/10",
     muted: "text-service-muted",
@@ -213,15 +213,17 @@ export function CTAServiceTriageSectionV3({
   const choiceClassName = transparentAccentCards
     ? "!border-[color-mix(in_oklab,var(--live-accent-ink)_30%,transparent)] !bg-transparent !text-[var(--live-accent-ink)] hover:!border-[color:var(--live-accent-ink)] hover:!bg-transparent"
     : colors.choice;
+  const serviceActionClassName =
+    colorRecipe === "dark" || (colorRecipe === "accent" && cardFill === "solid")
+      ? "!border-white !bg-white !text-bg-dark hover:!bg-white/85"
+      : transparentAccentCards
+        ? "!border-bg-dark !bg-bg-dark !text-white hover:!bg-bg-dark/90"
+        : "!border-transparent !bg-service-accent !text-text-inverse hover:!bg-bg-dark";
   const cardActionText = transparentAccentCards
     ? "!text-[var(--live-accent-ink)]"
     : colorRecipe === "dark" || colorRecipe === "accent"
       ? "!text-white"
       : "!text-service-ink";
-  const serviceActionText =
-    colorRecipe === "default" || colorRecipe === "muted"
-      ? "!text-service-accent hover:!text-service-ink"
-      : cardActionText;
   const cardClassName = cx(
     "fluid-type-frame flex h-full min-w-0 flex-col rounded-[var(--radius-surface-token)] border p-8 shadow-service max-md:p-6",
     colors.card,
@@ -266,12 +268,12 @@ export function CTAServiceTriageSectionV3({
 
             <RequestServiceButton
               className={cx(
-                "mt-6 w-full max-w-sm !justify-between !bg-transparent !px-2 hover:!bg-transparent",
-                serviceActionText,
+                "mt-6 w-full !border !py-2 !text-sm !font-semibold !duration-200 !ease-out",
+                serviceActionClassName,
               )}
             >
-              <span>{serviceAction}</span>
-              {icons === "on" ? <span aria-hidden="true">→</span> : null}
+              {serviceAction}
+              {icons === "on" ? <span aria-hidden="true" className="ml-3">→</span> : null}
             </RequestServiceButton>
           </article>
         </LayoutGridItem>
@@ -337,7 +339,11 @@ export function CTAServiceTriageSectionV3({
             </div>
 
             <div className="mt-9 flex items-center gap-4">
-              {icons === "on" ? <MessageIcon /> : null}
+              {icons === "on" ? (
+                <span className={cardIcon}>
+                  <MessageIcon />
+                </span>
+              ) : null}
               <a
                 className={cx(
                   "type-heading-sm wrap-pretty min-w-0 text-left no-underline transition-colors",
