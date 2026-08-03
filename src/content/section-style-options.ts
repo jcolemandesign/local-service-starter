@@ -239,11 +239,16 @@ export const servicesBentoVariantValues = new Set<string>(
  */
 export const cardStyleComponents = new Set<string>([
   "AdditionalOffersSectionV3",
+  "CTASmallBandImageSectionV3",
+  "CTAServiceTriageSectionV3",
+  "ContactStripBentoSectionV3",
+  "ContactStripSmallSectionV3",
   "ContentCardTwoUpSectionV3",
   "ContentHorizontalCardCarouselSectionV2",
   "ContentMainIdeaGridSectionV3",
   "ContentSplitFixedImageSectionV3",
   "ContentStickyCardStreamSectionV2",
+  "ContentStickyIdeasSectionV2",
   "ContentThreeColumnMixedSectionV3",
   "DecisionMatrixCardSectionV3",
   "DecisionQuestionTableFourSectionV3",
@@ -263,6 +268,7 @@ export const cardStyleComponents = new Set<string>([
   "InfoStripSectionV3",
   "OfferTermsSectionV3",
   "ProcessStepsBranchingSectionV3",
+  "ProcessStripSectionV3",
   "ProcessStepsStaggeredSectionV3",
   "ProjectCaseStudyGallerySectionV3",
   "ServiceCalloutRevealGridSectionV3",
@@ -335,6 +341,9 @@ export const iconsValues = new Set<string>(
 
 export const iconComponents = new Set<string>([
   "AdditionalOffersSectionV3",
+  "CTAServiceTriageSectionV3",
+  "ContactStripBentoSectionV3",
+  "ContactStripSmallSectionV3",
   "DecisionSplitLargeCardsSectionV3",
   "FeaturedOfferSectionV3",
   "FinancingCalculatorSectionV3",
@@ -342,6 +351,7 @@ export const iconComponents = new Set<string>([
   "HorizontalCardLinkGridTwoUpSectionV3",
   "InfoStripSectionV3",
   "OfferTermsSectionV3",
+  "ProcessStripSectionV3",
 ]);
 
 export function sectionSupportsIcons(component: string) {

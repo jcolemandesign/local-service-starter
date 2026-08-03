@@ -1170,6 +1170,26 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
+  processStrip: {
+    steps: [
+      {
+        title: "Review the system",
+        body: "We evaluate your HVAC system and discuss your comfort goals.",
+      },
+      {
+        title: "Get project options",
+        body: "You receive clear options and pricing for the project.",
+      },
+      {
+        title: "Apply for financing",
+        body: "Apply in minutes through the current secure lender process.",
+      },
+      {
+        title: "Schedule the work",
+        body: "Once approved, the team confirms installation or repair timing.",
+      },
+    ],
+  },
   processStepsStaggered: {
     eyebrow: "Process",
     title: "A clear path from the first change to the next step.",
@@ -1227,6 +1247,32 @@ export const sectionLibraryV3Content = {
   infoStrip: {
     cardLabel: "Gas odor · Smoke or fire · Carbon monoxide alarm",
     body: "Leave the home immediately. Once outside, call 911. If you suspect a gas leak, also contact your gas utility. Do not wait for an HVAC appointment.",
+  },
+  contactStripSmall: {
+    phoneLabel: "Call us",
+    phone: "(704) 555-0184",
+    emailLabel: "Email us",
+    email: "service@northstarhvac.com",
+    hoursLabel: "Office hours",
+    hours: "Mon–Fri · 7:00 AM–6:00 PM\nSat · 8:00 AM–2:00 PM",
+    afterHoursLabel: "After hours",
+    afterHoursBody:
+      "Leave a message and we follow up when the office reopens. For an urgent safety concern, call 911.",
+    locationLabel: "Visit us",
+    address: "123 Commerce Drive\nHuntersville, NC 28078",
+  },
+  contactStripBento: {
+    phoneLabel: "Call us",
+    phone: "(704) 555-0184",
+    emailLabel: "Email us",
+    email: "service@northstarhvac.com",
+    hoursLabel: "Office hours",
+    hours: "Monday–Friday · 7:00 AM–6:00 PM\nSaturday · 8:00 AM–2:00 PM",
+    afterHoursLabel: "After-hours support",
+    afterHoursBody:
+      "Leave a message after hours and our team will follow up when the office reopens. For an urgent safety concern, call 911.",
+    locationLabel: "Visit our office",
+    address: "123 Commerce Drive\nHuntersville, NC 28078",
   },
   financingCalculator: {
     title: "Estimate a Monthly Payment",
@@ -1459,6 +1505,48 @@ export const sectionLibraryV3Content = {
     secondaryActionHref: "#services",
     imageAlt: "Technician arriving for a scheduled service visit",
     imageSrc: "/images/fpo-image.svg",
+  },
+  ctaSmallBandImage: {
+    action: "Request a replacement quote",
+    body: "Let’s find the right solution for your home and your budget.",
+    imageAlt: "New HVAC equipment arriving for a residential installation",
+    imageSrc: "/images/hvac-unit-truck-wide.png",
+    title: "Start with the HVAC project",
+  },
+  ctaServiceTriage: {
+    serviceTitle: "Need service?",
+    serviceBody:
+      "Choose the path that best matches your system, then continue through the request flow.",
+    serviceChoices: [
+      {
+        label: "AC repair",
+        prefill: { requestType: "repair" as const, systemType: "cooling" as const },
+      },
+      {
+        label: "Heating repair",
+        prefill: { requestType: "repair" as const, systemType: "heating" as const },
+      },
+      {
+        label: "AC tune-up",
+        prefill: { requestType: "maintenance" as const, systemType: "cooling" as const },
+      },
+      {
+        label: "Heating tune-up",
+        prefill: { requestType: "maintenance" as const, systemType: "heating" as const },
+      },
+    ],
+    serviceAction: "Start service request",
+    urgentTitle: "Not working now?",
+    urgentBody: "Urgent heating or cooling issues should call the office directly.",
+    urgentPhone: "704-555-0184",
+    urgentAction: "Call for urgent service",
+    urgentHelper: "For immediate help, please call.",
+    customerTitle: "Already a customer?",
+    customerBody:
+      "Reschedule, ask about an invoice, or follow up on recently completed work.",
+    customerAction: "Use the message form below",
+    customerActionHref: "#contact",
+    customerHelper: "We’re happy to help.",
   },
   featuredOffer: {
     action: "Request the tune-up",
@@ -2203,6 +2291,7 @@ export const sectionLibraryV3Collections = [
       },
       { label: "Offer terms", component: "offer-terms-v3" },
       { label: "Process steps", component: "process-steps-v3" },
+      { label: "Process strip", component: "process-strip-v3" },
       {
         label: "Process steps staggered",
         component: "process-steps-staggered-v3",
@@ -2229,6 +2318,8 @@ export const sectionLibraryV3Collections = [
     title: "Utility",
     items: [
       { label: "Info strip", component: "info-strip-v3" },
+      { label: "Contact strip bento", component: "contact-strip-bento-v3" },
+      { label: "Contact strip small", component: "contact-strip-small-v3" },
       {
         label: "Financing calculator",
         component: "financing-calculator-v3",
@@ -2262,6 +2353,14 @@ export const sectionLibraryV3Collections = [
       },
       { label: "CTA", component: "cta-v3" },
       { label: "CTA with image", component: "cta-image-v3" },
+      {
+        label: "CTA small band with image",
+        component: "cta-small-band-image-v3",
+      },
+      {
+        label: "Service Request Catch-all",
+        component: "cta-service-triage-v3",
+      },
       { label: "Featured offer", component: "featured-offer-v3" },
       { label: "Additional offers", component: "additional-offers-v3" },
       { label: "Muted CTA", component: "cta-muted-v3" },
@@ -2371,10 +2470,13 @@ export const sectionLibraryV3ComponentBySlug = {
   "decision-matrix-card-v3": "DecisionMatrixCardSectionV3",
   "offer-terms-v3": "OfferTermsSectionV3",
   "process-steps-v3": "ProcessStepsSectionV3",
+  "process-strip-v3": "ProcessStripSectionV3",
   "process-steps-staggered-v3": "ProcessStepsStaggeredSectionV3",
   "process-steps-branching-v3": "ProcessStepsBranchingSectionV3",
   "process-image-checklist-v3": "ProcessImageChecklistSectionV3",
   "info-strip-v3": "InfoStripSectionV3",
+  "contact-strip-bento-v3": "ContactStripBentoSectionV3",
+  "contact-strip-small-v3": "ContactStripSmallSectionV3",
   "financing-calculator-v3": "FinancingCalculatorSectionV3",
   "faq-v3": "FAQSectionV3",
   "faq-accordion-v3": "FAQAccordionSectionV3",
@@ -2390,6 +2492,8 @@ export const sectionLibraryV3ComponentBySlug = {
   "trust-marquee-legacy": "TrustMarqueeSection",
   "cta-v3": "CTASectionV3",
   "cta-image-v3": "CTAImageSectionV3",
+  "cta-small-band-image-v3": "CTASmallBandImageSectionV3",
+  "cta-service-triage-v3": "CTAServiceTriageSectionV3",
   "featured-offer-v3": "FeaturedOfferSectionV3",
   "additional-offers-v3": "AdditionalOffersSectionV3",
   "cta-muted-v3": "CTAMutedSectionV3",

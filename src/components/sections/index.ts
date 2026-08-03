@@ -126,6 +126,14 @@ export {
   type CTAImageSectionV3Props,
 } from "./CTAImageSectionV3";
 export {
+  CTASmallBandImageSectionV3,
+  type CTASmallBandImageSectionV3Props,
+} from "./CTASmallBandImageSectionV3";
+export {
+  CTAServiceTriageSectionV3,
+  type CTAServiceTriageSectionV3Props,
+} from "./CTAServiceTriageSectionV3";
+export {
   FeaturedOfferSectionV3,
   type FeaturedOfferAlign,
   type FeaturedOfferSectionV3Props,
@@ -210,6 +218,15 @@ export { PageworksPlaceholderSection } from "./PageworksPlaceholderSection";
 export { ProcessImageChecklistSectionV2 } from "./ProcessImageChecklistSectionV2";
 export { ProcessImageChecklistSectionV3 } from "./ProcessImageChecklistSectionV3";
 export { ProcessStepsSection } from "./ProcessStepsSection";
+export { ProcessStripSectionV3 } from "./ProcessStripSectionV3";
+export {
+  ContactStripBentoSectionV3,
+  type ContactStripBentoSectionV3Props,
+} from "./ContactStripBentoSectionV3";
+export {
+  ContactStripSmallSectionV3,
+  type ContactStripSmallSectionV3Props,
+} from "./ContactStripSmallSectionV3";
 export { ProcessStepsSectionV2 } from "./ProcessStepsSectionV2";
 export { ServicesBentoCardsSection } from "./ServicesBentoCardsSection";
 export { ServicesBentoCardsSectionV2 } from "./ServicesBentoCardsSectionV2";

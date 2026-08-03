@@ -24,6 +24,10 @@ import {
   ContactSectionV3,
   CTAFullscreenSectionV3,
   CTAImageSectionV3,
+  CTASmallBandImageSectionV3,
+  CTAServiceTriageSectionV3,
+  ContactStripBentoSectionV3,
+  ContactStripSmallSectionV3,
   CTAMutedSectionV3,
   CTASectionV3,
   CTAScrollRevealOfferSectionV3,
@@ -60,6 +64,7 @@ import {
   NavFloatingBentoSectionV2,
   NavPrimarySectionV2,
   ProcessImageChecklistSectionV3,
+  ProcessStripSectionV3,
   ProcessStepsBranchingSectionV3,
   ProcessStepsStaggeredSectionV3,
   ProcessStepsSectionV3,
@@ -403,6 +408,9 @@ const sectionElements = {
   "process-steps-v3": (
     <ProcessStepsSectionV3 {...sectionLibraryV3Content.process} />
   ),
+  "process-strip-v3": (
+    <ProcessStripSectionV3 {...sectionLibraryV3Content.processStrip} />
+  ),
   "process-steps-staggered-v3": (
     <ProcessStepsStaggeredSectionV3
       {...sectionLibraryV3Content.processStepsStaggered}
@@ -437,6 +445,12 @@ const sectionElements = {
     />
   ),
   "info-strip-v3": <InfoStripSectionV3 {...sectionLibraryV3Content.infoStrip} />,
+  "contact-strip-small-v3": (
+    <ContactStripSmallSectionV3 {...sectionLibraryV3Content.contactStripSmall} />
+  ),
+  "contact-strip-bento-v3": (
+    <ContactStripBentoSectionV3 {...sectionLibraryV3Content.contactStripBento} />
+  ),
   "financing-calculator-v3": (
     <FinancingCalculatorSectionV3
       {...sectionLibraryV3Content.financingCalculator}
@@ -454,6 +468,16 @@ const sectionElements = {
   "cta-v3": <CTASectionV3 {...sectionLibraryV3Content.cta} />,
   "cta-image-v3": (
     <CTAImageSectionV3 {...sectionLibraryV3Content.ctaImage} />
+  ),
+  "cta-small-band-image-v3": (
+    <CTASmallBandImageSectionV3
+      {...sectionLibraryV3Content.ctaSmallBandImage}
+    />
+  ),
+  "cta-service-triage-v3": (
+    <CTAServiceTriageSectionV3
+      {...sectionLibraryV3Content.ctaServiceTriage}
+    />
   ),
   "featured-offer-v3": (
     <FeaturedOfferSectionLibraryDemo

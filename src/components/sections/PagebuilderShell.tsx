@@ -1786,6 +1786,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     name: "Process steps",
   },
   {
+    component: "ProcessStripSectionV3",
+    instruction:
+      "Summarize a short three- or four-step customer process in one compact horizontal strip. Keep every step concrete, sequential, and brief enough to scan without a section header.",
+    layoutGrid: 14,
+    mode: "Decision",
+    name: "Process strip",
+  },
+  {
     component: "ProcessStepsStaggeredSectionV3",
     instruction:
       "Use a four-column descriptive introduction beside five concise process steps in a connected flow, alternating left and right from top to bottom.",
@@ -1808,6 +1816,22 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     layoutGrid: 14,
     mode: "Utility",
     name: "Info strip",
+  },
+  {
+    component: "ContactStripSmallSectionV3",
+    instruction:
+      "Present phone, email, office hours, after-hours guidance, and the physical location as a single row of five equal tiles. Use when the contact details belong on one compact band rather than a stacked composition. Keep every value short - each tile is about a fifth of the row.",
+    layoutGrid: 14,
+    mode: "Utility",
+    name: "Contact strip small",
+  },
+  {
+    component: "ContactStripBentoSectionV3",
+    instruction:
+      "Present the primary phone number, lower-emphasis email address, office hours, after-hours guidance, and physical location in a centered five-card bento contact strip. Keep every item concise, practical, and directly usable.",
+    layoutGrid: 14,
+    mode: "Utility",
+    name: "Contact strip bento",
   },
   {
     component: "FinancingCalculatorSectionV3",
@@ -1859,6 +1883,22 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     layoutGrid: 14,
     mode: "Action",
     name: "CTA with image",
+  },
+  {
+    component: "CTASmallBandImageSectionV3",
+    instruction:
+      "Use a compact conversion band on the 14-column grid: six columns of short headline and support copy, four columns for one primary action, and four columns for a tightly cropped contextual image. Let content and compact padding set the band height, keep the image full-bleed against the top, bottom, and right edges, and simplify into additional rows on smaller screens.",
+    layoutGrid: 14,
+    mode: "Action",
+    name: "CTA small band with image",
+  },
+  {
+    component: "CTAServiceTriageSectionV3",
+    instruction:
+      "Route visitors into three clear next steps: begin the service-request modal from a six-column card, call directly for an urgent issue from the center card, or reach the existing-customer contact path from the final card. Keep all three paths concise and operationally distinct.",
+    layoutGrid: 14,
+    mode: "Action",
+    name: "Service Request Catch-all",
   },
   {
     component: "FeaturedOfferSectionV3",
@@ -2753,6 +2793,13 @@ export function PagebuilderShell({
           : recipeSlots,
       ),
     );
+  }
+
+  function selectRecipe(recipeId: string) {
+    setActiveRecipeId(recipeId);
+    setSelectedSectionId(null);
+    setOptionSaveStatus("");
+    setOptionSaveError("");
   }
 
   function clearDragState() {
@@ -3913,6 +3960,7 @@ export function PagebuilderShell({
           <CTAImageSectionV3
             {...sectionLibraryV3Content.ctaImage}
             align={getCTAImageAlign(section)}
+            colorRecipe={getSectionColorRecipe(section)}
           />
         ) : section.component === featuredOfferSectionComponent ? (
           <FeaturedOfferSectionV3
@@ -4112,6 +4160,9 @@ export function PagebuilderShell({
           data-pagebuilder-section-mode={section.mode}
           data-pagebuilder-card-border={getSectionCardBorder(section)}
           data-pagebuilder-card-fill={getSectionCardFill(section)}
+          data-pagebuilder-card-style={
+            sectionSupportsCardStyle(section.component) ? "true" : "false"
+          }
           data-pagebuilder-color-recipe={getSectionColorRecipe(section)}
           data-pagebuilder-padding-top={
             section.reduceTopPadding && sectionSupportsSectionSpacing(section.component)
@@ -4277,10 +4328,7 @@ export function PagebuilderShell({
                             ? "token-chrome-card-active"
                             : "token-chrome-card",
                         )}
-                        onClick={() => {
-                          setActiveRecipeId(recipe.id);
-                          setSelectedSectionId(null);
-                        }}
+                        onClick={() => selectRecipe(recipe.id)}
                         type="button"
                       >
                         <span>{recipe.name}</span>
@@ -6298,10 +6346,7 @@ export function PagebuilderShell({
                       )}
                       id={`tab-${recipe.id}`}
                       key={recipe.id}
-                      onClick={() => {
-                        setActiveRecipeId(recipe.id);
-                        setSelectedSectionId(null);
-                      }}
+                      onClick={() => selectRecipe(recipe.id)}
                       role="tab"
                       type="button"
                     >

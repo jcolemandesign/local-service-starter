@@ -34,6 +34,7 @@ type RequestServiceContextValue = {
 
 type RequestServiceButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode;
+  prefill?: RequestServicePrefill;
   variant?: "primary" | "secondary";
 };
 
@@ -353,6 +354,7 @@ export function RequestServiceButton({
   children,
   className = "",
   onClick,
+  prefill,
   variant = "primary",
   ...props
 }: RequestServiceButtonProps) {
@@ -370,7 +372,7 @@ export function RequestServiceButton({
         onClick?.(event);
 
         if (!event.defaultPrevented) {
-          openRequestService();
+          openRequestService(prefill);
         }
       }}
       {...props}

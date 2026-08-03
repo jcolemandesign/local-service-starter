@@ -69,10 +69,13 @@ import {
   type ProcessStepsBranchingAlign,
 } from "@/components/sections/ProcessStepsBranchingSectionV3";
 import { ProcessStepsStaggeredSectionV3 } from "@/components/sections/ProcessStepsStaggeredSectionV3";
+import { ProcessStripSectionV3 } from "@/components/sections/ProcessStripSectionV3";
 import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
 import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
 import { InfoStripSectionV3 } from "@/components/sections/InfoStripSectionV3";
+import { ContactStripBentoSectionV3 } from "@/components/sections/ContactStripBentoSectionV3";
+import { ContactStripSmallSectionV3 } from "@/components/sections/ContactStripSmallSectionV3";
 import { FinancingCalculatorSectionV3 } from "@/components/sections/FinancingCalculatorSectionV3";
 import { FAQAccordionSidebarSectionV3 } from "@/components/sections/FAQAccordionSidebarSectionV3";
 import { HeroCenteredFloatersSectionV2 } from "@/components/sections/HeroCenteredFloatersSectionV2";
@@ -117,6 +120,8 @@ import {
   CTAImageSectionV3,
   type CTAImageAlign,
 } from "@/components/sections/CTAImageSectionV3";
+import { CTASmallBandImageSectionV3 } from "@/components/sections/CTASmallBandImageSectionV3";
+import { CTAServiceTriageSectionV3 } from "@/components/sections/CTAServiceTriageSectionV3";
 import { FeaturedOfferSectionV3 } from "@/components/sections/FeaturedOfferSectionV3";
 import { AdditionalOffersSectionV3 } from "@/components/sections/AdditionalOffersSectionV3";
 import { HorizontalCardLinkGridSectionV3 } from "@/components/sections/HorizontalCardLinkGridSectionV3";
@@ -166,6 +171,7 @@ import {
   resolveCardFill,
   resolveHeadlineWrap,
   resolveSectionIcons,
+  sectionSupportsCardStyle,
   sectionSupportsSectionSpacing,
   servicesBentoVariantValues,
   splitBentoVariantValues,
@@ -442,6 +448,9 @@ function TemplateSectionFrame({
         section.component,
         section.cardFill,
       )}
+      data-pagebuilder-card-style={
+        sectionSupportsCardStyle(section.component) ? "true" : "false"
+      }
       data-pagebuilder-color-recipe={section.colorRecipe ?? "default"}
       data-pagebuilder-section-component={section.component}
       data-pagebuilder-section-mode={section.mode}
@@ -773,7 +782,14 @@ export function renderPageTemplateSection(
         />
       );
     case "ContentStickyIdeasSectionV2":
-      return <ContentStickyIdeasSectionV2 {...stickyIdeasProps(fieldSection)} />;
+      return (
+        <ContentStickyIdeasSectionV2
+          {...stickyIdeasProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          colorRecipe={section.colorRecipe}
+        />
+      );
     case "ContentAboutCompanySectionV2":
       return <ContentAboutCompanySectionV2 {...aboutCompanyProps(fieldSection)} />;
     case "ContentAboutStorySectionV3":
@@ -946,6 +962,36 @@ export function renderPageTemplateSection(
           {...processProps(fieldSection, navigationLinks)}
         />
       );
+    case "ContactStripBentoSectionV3":
+      return (
+        <ContactStripBentoSectionV3
+          {...contactStripBentoProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          colorRecipe={section.colorRecipe}
+          icons={resolveSectionIcons(section.icons)}
+        />
+      );
+    case "ContactStripSmallSectionV3":
+      return (
+        <ContactStripSmallSectionV3
+          {...contactStripSmallProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          colorRecipe={section.colorRecipe}
+          icons={resolveSectionIcons(section.icons)}
+        />
+      );
+    case "ProcessStripSectionV3":
+      return (
+        <ProcessStripSectionV3
+          {...processStripProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          colorRecipe={section.colorRecipe}
+          icons={resolveSectionIcons(section.icons)}
+        />
+      );
     case "ProcessStepsStaggeredSectionV3":
       return (
         <ProcessStepsStaggeredSectionV3
@@ -970,7 +1016,27 @@ export function renderPageTemplateSection(
         <CTAImageSectionV3
           {...ctaImageProps(fieldSection)}
           align={getCTAImageAlign(section)}
+          colorRecipe={section.colorRecipe}
           secondaryActionHref={getServicesHref(navigationLinks)}
+        />
+      );
+    case "CTASmallBandImageSectionV3":
+      return (
+        <CTASmallBandImageSectionV3
+          {...ctaSmallBandImageProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          colorRecipe={section.colorRecipe}
+        />
+      );
+    case "CTAServiceTriageSectionV3":
+      return (
+        <CTAServiceTriageSectionV3
+          {...ctaServiceTriageProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          colorRecipe={section.colorRecipe}
+          icons={resolveSectionIcons(section.icons)}
         />
       );
     case "FinancingCalculatorSectionV3":
@@ -2344,6 +2410,47 @@ function ctaImageProps(section: FieldSection) {
   };
 }
 
+function ctaSmallBandImageProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.ctaSmallBandImage;
+
+  return {
+    ...fallback,
+    action: getValue(section, "primaryAction", fallback.action),
+    body: getBody(section, fallback.body),
+    imageAlt: getAssetValue(section, "imageAlt", fallback.imageAlt),
+    imageSrc: getAssetValue(section, "imageSrc", fallback.imageSrc),
+    title: getTitle(section, fallback.title),
+  };
+}
+
+function ctaServiceTriageProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.ctaServiceTriage;
+
+  return {
+    ...fallback,
+    customerAction: getValue(section, "customerAction", fallback.customerAction),
+    customerBody: getValue(section, "customerBody", fallback.customerBody),
+    customerHelper: getValue(section, "customerHelper", fallback.customerHelper),
+    customerTitle: getValue(section, "customerTitle", fallback.customerTitle),
+    serviceAction: getValue(section, "serviceAction", fallback.serviceAction),
+    serviceBody: getValue(section, "serviceBody", fallback.serviceBody),
+    serviceChoices: fallback.serviceChoices.map((choice, index) => ({
+      ...choice,
+      label: getValue(
+        section,
+        `serviceChoices.${index + 1}.label`,
+        choice.label,
+      ),
+    })),
+    serviceTitle: getValue(section, "serviceTitle", fallback.serviceTitle),
+    urgentAction: getValue(section, "urgentAction", fallback.urgentAction),
+    urgentBody: getValue(section, "urgentBody", fallback.urgentBody),
+    urgentHelper: getValue(section, "urgentHelper", fallback.urgentHelper),
+    urgentPhone: getValue(section, "urgentPhone", fallback.urgentPhone),
+    urgentTitle: getValue(section, "urgentTitle", fallback.urgentTitle),
+  };
+}
+
 function horizontalCardLinkGridProps(section: FieldSection) {
   const fallback = sectionLibraryV3Content.horizontalCardLinkGrid;
   const imageItems = getRepeatedAssetRecords(section, ["items"]);
@@ -2782,6 +2889,69 @@ function infoStripProps(section: FieldSection) {
       "cardLabel",
       sectionLibraryV3Content.infoStrip.cardLabel,
     ),
+  };
+}
+
+function contactStripSmallProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.contactStripSmall;
+
+  return {
+    ...fallback,
+    address: getValue(section, "address", fallback.address),
+    afterHoursBody: getValue(section, "afterHoursBody", fallback.afterHoursBody),
+    afterHoursLabel: getValue(
+      section,
+      "afterHoursLabel",
+      fallback.afterHoursLabel,
+    ),
+    email: getValue(section, "email", fallback.email),
+    emailLabel: getValue(section, "emailLabel", fallback.emailLabel),
+    hours: getValue(section, "hours", fallback.hours),
+    hoursLabel: getValue(section, "hoursLabel", fallback.hoursLabel),
+    locationLabel: getValue(section, "locationLabel", fallback.locationLabel),
+    phone: getValue(section, "phone", fallback.phone),
+    phoneLabel: getValue(section, "phoneLabel", fallback.phoneLabel),
+  };
+}
+
+function contactStripBentoProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.contactStripBento;
+
+  return {
+    ...fallback,
+    address: getValue(section, "address", fallback.address),
+    afterHoursBody: getValue(
+      section,
+      "afterHoursBody",
+      fallback.afterHoursBody,
+    ),
+    afterHoursLabel: getValue(
+      section,
+      "afterHoursLabel",
+      fallback.afterHoursLabel,
+    ),
+    email: getValue(section, "email", fallback.email),
+    emailLabel: getValue(section, "emailLabel", fallback.emailLabel),
+    hours: getValue(section, "hours", fallback.hours),
+    hoursLabel: getValue(section, "hoursLabel", fallback.hoursLabel),
+    locationLabel: getValue(
+      section,
+      "locationLabel",
+      fallback.locationLabel,
+    ),
+    phone: getValue(section, "phone", fallback.phone),
+    phoneLabel: getValue(section, "phoneLabel", fallback.phoneLabel),
+  };
+}
+
+function processStripProps(section: FieldSection) {
+  return {
+    ...sectionLibraryV3Content.processStrip,
+    steps: cardItemsWithFallback(
+      section,
+      ["steps"],
+      sectionLibraryV3Content.processStrip.steps,
+    ).slice(0, 4),
   };
 }
 

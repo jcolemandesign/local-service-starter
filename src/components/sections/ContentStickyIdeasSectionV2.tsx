@@ -5,8 +5,12 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import type { SectionColorRecipe } from "@/content/section-color-recipes";
 
 type ContentStickyIdeasSectionV2Props = {
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
+  colorRecipe?: SectionColorRecipe;
   eyebrow: string;
   ideasLabel?: string;
   title: string;
@@ -26,9 +30,15 @@ function clamp(value: number, min: number, max: number) {
 }
 
 function ImportantIdeasBoxV2({
+  cardBorder,
+  cardFill,
+  colorRecipe,
   ideas,
   label,
 }: {
+  cardBorder: "on" | "off";
+  cardFill: "solid" | "none";
+  colorRecipe: SectionColorRecipe;
   ideas: readonly string[];
   label: string;
 }) {
@@ -96,20 +106,51 @@ function ImportantIdeasBoxV2({
       className={cx(
         "radius-medium",
         "fluid-type-frame",
-        "border border-service-border bg-bg-page p-7 shadow-service will-change-transform max-lg:will-change-auto",
+        "border p-7 will-change-transform max-lg:will-change-auto",
+        cardBorder === "off"
+          ? "border-transparent"
+          : "border-service-border",
+        cardFill === "none"
+          ? "bg-transparent shadow-none"
+          : colorRecipe === "default"
+            ? "bg-service-surface shadow-service"
+            : colorRecipe === "accent"
+              ? "bg-bg-dark shadow-service"
+              : "bg-surface-raised shadow-service",
       )}
       ref={boxRef}
       style={{ transform: `translate3d(0, ${offset}px, 0)` }}
     >
-      <p className={cx("type-label", "text-service-accent")}>
+      <p
+        className={cx(
+          "type-label",
+          colorRecipe === "accent" && cardFill === "solid"
+            ? "text-white"
+            : colorRecipe === "accent"
+              ? "text-[var(--live-accent-ink)]"
+            : "text-service-accent",
+        )}
+      >
         {label}
       </p>
-      <ul className="mt-6 grid gap-4">
+      <ul
+        className={cx(
+          "mt-6 grid list-disc gap-4 pl-6",
+          colorRecipe === "accent" && cardFill === "solid"
+            ? "marker:text-white"
+            : colorRecipe === "accent"
+              ? "marker:text-[var(--live-accent-ink)]"
+            : "marker:text-service-accent",
+        )}
+      >
         {ideas.map((idea) => (
           <li
             className={cx(
               "type-heading-sm",
-              "border-l border-service-border pl-4 text-service-ink",
+              "pl-1",
+              colorRecipe === "accent" && cardFill === "solid"
+                ? "text-white"
+                : "text-service-ink",
             )}
             key={idea}
           >
@@ -122,6 +163,9 @@ function ImportantIdeasBoxV2({
 }
 
 export function ContentStickyIdeasSectionV2({
+  cardBorder = "on",
+  cardFill = "solid",
+  colorRecipe = "default",
   eyebrow,
   ideasLabel = "What matters",
   title,
@@ -129,14 +173,21 @@ export function ContentStickyIdeasSectionV2({
   ideas,
 }: ContentStickyIdeasSectionV2Props) {
   return (
-    <section className="bg-service-surface">
+    <section className="bg-transparent">
       <SevenColumnGrid minHeight="none">
         <SevenColumnGridItem
           className="col-span-5 max-lg:col-span-7"
           alignY="middle"
         >
           <div className="fluid-type-frame">
-            <p className={cx("type-label", "text-service-accent")}>
+            <p
+              className={cx(
+                "type-label",
+                colorRecipe === "accent"
+                  ? "text-[var(--live-accent-ink)]"
+                  : "text-service-accent",
+              )}
+            >
               {eyebrow}
             </p>
             <h2
@@ -169,7 +220,13 @@ export function ContentStickyIdeasSectionV2({
           className="col-span-2 col-start-6 max-lg:col-span-7 max-lg:col-start-1 max-lg:order-first"
           alignY="top"
         >
-          <ImportantIdeasBoxV2 ideas={ideas} label={ideasLabel} />
+          <ImportantIdeasBoxV2
+            cardBorder={cardBorder}
+            cardFill={cardFill}
+            colorRecipe={colorRecipe}
+            ideas={ideas}
+            label={ideasLabel}
+          />
         </SevenColumnGridItem>
       </SevenColumnGrid>
     </section>

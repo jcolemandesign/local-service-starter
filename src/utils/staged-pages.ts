@@ -1294,6 +1294,21 @@ export function getTemplateAssetFieldsForSection(
     ];
   }
 
+  if (component.includes("ctasmallbandimage")) {
+    return [
+      {
+        kind: "meta",
+        name: "imageAlt",
+        value: sectionLibraryV3Content.ctaSmallBandImage.imageAlt,
+      },
+      {
+        kind: "image",
+        name: "imageSrc",
+        value: sectionLibraryV3Content.ctaSmallBandImage.imageSrc,
+      },
+    ];
+  }
+
   if (component.includes("ctaimage")) {
     return [
       {

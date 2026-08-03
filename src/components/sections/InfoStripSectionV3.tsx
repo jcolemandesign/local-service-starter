@@ -56,10 +56,10 @@ const colorRecipeClassName: Record<
     section: "bg-bg-dark",
   },
   accent: {
-    body: "text-[var(--live-accent-ink)]",
-    card: "bg-white/15",
-    cardBorder: "border-[color-mix(in_oklab,var(--live-accent-ink)_30%,transparent)]",
-    label: "text-[var(--live-accent-ink)]",
+    body: "text-white",
+    card: "bg-bg-dark",
+    cardBorder: "border-white/25",
+    label: "text-white",
     section: "bg-service-accent",
   },
 };

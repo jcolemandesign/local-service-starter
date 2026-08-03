@@ -96,11 +96,11 @@ export function ContentMainIdeaGridSectionV3({
       section: "bg-bg-dark",
     },
     accent: {
-      body: "text-[var(--live-accent-muted-text)]",
-      card: "border-[color-mix(in_oklab,var(--live-accent-ink)_20%,transparent)] bg-white/10",
-      eyebrow: "text-[var(--live-accent-ink)]",
-      heading: "text-[var(--live-accent-ink)]",
-      index: "text-[var(--live-accent-ink)]",
+      body: "text-white/70",
+      card: "border-white/25 bg-bg-dark",
+      eyebrow: "text-white/70",
+      heading: "text-white",
+      index: "text-white/50",
       section: "bg-service-accent",
     },
   }[colorRecipe];

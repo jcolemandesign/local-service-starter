@@ -1,0 +1,359 @@
+import type { ReactNode } from "react";
+import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
+import {
+  RequestServiceButton,
+  type RequestServicePrefill,
+} from "@/components/request-service";
+import type { SectionColorRecipe } from "@/content/section-color-recipes";
+import type { SectionIcons } from "@/content/section-style-options";
+
+type ServiceChoice = {
+  label: string;
+  prefill: RequestServicePrefill;
+};
+
+export type CTAServiceTriageSectionV3Props = {
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
+  colorRecipe?: SectionColorRecipe;
+  customerAction: string;
+  customerActionHref?: string;
+  customerBody: string;
+  customerHelper: string;
+  customerTitle: string;
+  icons?: SectionIcons;
+  serviceAction: string;
+  serviceBody: string;
+  serviceChoices: readonly ServiceChoice[];
+  serviceTitle: string;
+  urgentAction: string;
+  urgentBody: string;
+  urgentHelper: string;
+  urgentPhone: string;
+  urgentTitle: string;
+};
+
+function cx(...classes: Array<string | false | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
+
+const recipeClasses: Record<
+  SectionColorRecipe,
+  {
+    card: string;
+    cardBorder: string;
+    choice: string;
+    icon: string;
+    iconShell: string;
+    muted: string;
+    section: string;
+    text: string;
+  }
+> = {
+  default: {
+    card: "bg-service-surface",
+    cardBorder: "border-service-border",
+    choice:
+      "!border-service-border !bg-bg-page !text-service-accent hover:!border-service-accent hover:!bg-bg-page",
+    icon: "text-service-accent",
+    iconShell: "bg-service-accent/10",
+    muted: "text-service-muted",
+    section: "bg-bg-page",
+    text: "text-service-ink",
+  },
+  muted: {
+    card: "bg-surface-raised",
+    cardBorder: "border-service-border",
+    choice:
+      "!border-service-border !bg-bg-page !text-service-accent hover:!border-service-accent hover:!bg-service-surface",
+    icon: "text-service-accent",
+    iconShell: "bg-service-accent/10",
+    muted: "text-service-muted",
+    section: "bg-service-surface",
+    text: "text-service-ink",
+  },
+  dark: {
+    card: "bg-white/10",
+    cardBorder: "border-white/25",
+    choice:
+      "!border-white/25 !bg-white/10 !text-white hover:!border-white/50 hover:!bg-white/15",
+    icon: "text-white",
+    iconShell: "bg-white/10",
+    muted: "text-white/72",
+    section: "bg-bg-dark",
+    text: "text-white",
+  },
+  accent: {
+    card: "bg-bg-dark",
+    cardBorder: "border-white/25",
+    choice:
+      "!border-white/25 !bg-white/10 !text-white hover:!border-white/50 hover:!bg-white/15",
+    icon: "text-white",
+    iconShell: "bg-white/10",
+    muted: "text-white/72",
+    section: "bg-service-accent",
+    text: "text-white",
+  },
+};
+
+function ToolIcon() {
+  return (
+    <svg aria-hidden="true" className="size-8" fill="none" viewBox="0 0 32 32">
+      <path
+        d="m18.5 6.25 7.25 7.25-3.5 3.5-2.1-2.1L9.4 25.65a2.45 2.45 0 0 1-3.45-3.45L16.7 11.45l-2.2-2.2 4-3Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M7.75 6.25a5 5 0 0 0 6.6 6.6M6.25 7.75l3 3"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1.8"
+      />
+    </svg>
+  );
+}
+
+function AlertIcon() {
+  return (
+    <svg aria-hidden="true" className="size-8" fill="none" viewBox="0 0 32 32">
+      <circle cx="16" cy="16" r="10.5" stroke="currentColor" strokeWidth="1.8" />
+      <path
+        d="M16 10.25v7.25M16 22v.25"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="2.2"
+      />
+    </svg>
+  );
+}
+
+function CustomerIcon() {
+  return (
+    <svg aria-hidden="true" className="size-8" fill="none" viewBox="0 0 32 32">
+      <circle cx="16" cy="11.5" r="4.5" stroke="currentColor" strokeWidth="1.8" />
+      <path
+        d="M8.5 26v-2.25A7.5 7.5 0 0 1 16 16.25a7.5 7.5 0 0 1 7.5 7.5V26h-15Z"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+    </svg>
+  );
+}
+
+function MessageIcon() {
+  return (
+    <svg aria-hidden="true" className="size-10 shrink-0" fill="none" viewBox="0 0 32 32">
+      <path
+        d="M6 23.75 4.75 28l4.75-1.5A11 11 0 1 0 6 23.75Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+    </svg>
+  );
+}
+
+function CardIcon({ children, className }: { children: ReactNode; className: string }) {
+  return (
+    <span
+      className={cx(
+        "grid size-14 shrink-0 place-items-center rounded-full",
+        className,
+      )}
+    >
+      {children}
+    </span>
+  );
+}
+
+function phoneHref(phone: string) {
+  const normalized = phone.replace(/[^\d+]/g, "");
+  return `tel:${normalized}`;
+}
+
+export function CTAServiceTriageSectionV3({
+  cardBorder = "on",
+  cardFill = "solid",
+  colorRecipe = "default",
+  customerAction,
+  customerActionHref = "#contact",
+  customerBody,
+  customerHelper,
+  customerTitle,
+  icons = "on",
+  serviceAction,
+  serviceBody,
+  serviceChoices,
+  serviceTitle,
+  urgentAction,
+  urgentBody,
+  urgentHelper,
+  urgentPhone,
+  urgentTitle,
+}: CTAServiceTriageSectionV3Props) {
+  const colors = recipeClasses[colorRecipe];
+  const transparentAccentCards = colorRecipe === "accent" && cardFill === "none";
+  const cardText = transparentAccentCards
+    ? "text-[var(--live-accent-ink)]"
+    : colors.text;
+  const cardMuted = transparentAccentCards
+    ? "text-[var(--live-accent-muted-text)]"
+    : colors.muted;
+  const cardIcon = transparentAccentCards
+    ? "text-[var(--live-accent-ink)]"
+    : colors.icon;
+  const cardIconShell = transparentAccentCards
+    ? "bg-[color-mix(in_oklab,var(--live-accent-ink)_10%,transparent)]"
+    : colors.iconShell;
+  const choiceClassName = transparentAccentCards
+    ? "!border-[color-mix(in_oklab,var(--live-accent-ink)_30%,transparent)] !bg-transparent !text-[var(--live-accent-ink)] hover:!border-[color:var(--live-accent-ink)] hover:!bg-transparent"
+    : colors.choice;
+  const cardActionText = transparentAccentCards
+    ? "!text-[var(--live-accent-ink)]"
+    : colorRecipe === "dark" || colorRecipe === "accent"
+      ? "!text-white"
+      : "!text-service-ink";
+  const serviceActionText =
+    colorRecipe === "default" || colorRecipe === "muted"
+      ? "!text-service-accent hover:!text-service-ink"
+      : cardActionText;
+  const cardClassName = cx(
+    "fluid-type-frame flex h-full min-w-0 flex-col rounded-[var(--radius-surface-token)] border p-8 shadow-service max-md:p-6",
+    colors.card,
+    colors.cardBorder,
+    cardFill === "none" && "!bg-transparent !shadow-none",
+    cardBorder === "off" && "!border-transparent",
+  );
+
+  return (
+    <section className={colors.section}>
+      <LayoutGrid className="section-min-none" columns={14} padding="med">
+        <LayoutGridItem className="col-span-6 max-lg:col-span-7 max-md:col-span-6 max-sm:col-span-2">
+          <article className={cardClassName}>
+            <div className="flex items-start gap-5">
+              {icons === "on" ? (
+                <CardIcon className={cx(cardIconShell, cardIcon)}>
+                  <ToolIcon />
+                </CardIcon>
+              ) : null}
+              <div className="min-w-0">
+                <h2 className={cx("type-heading-md wrap-pretty", cardText)}>
+                  {serviceTitle}
+                </h2>
+                <p className={cx("type-text-md mt-2 wrap-pretty", cardMuted)}>
+                  {serviceBody}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-7 grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+              {serviceChoices.slice(0, 4).map((choice) => (
+                <RequestServiceButton
+                  className={cx("w-full !px-3", choiceClassName)}
+                  key={`${choice.prefill.systemType}-${choice.prefill.requestType}`}
+                  prefill={choice.prefill}
+                  variant="secondary"
+                >
+                  {choice.label}
+                </RequestServiceButton>
+              ))}
+            </div>
+
+            <RequestServiceButton
+              className={cx(
+                "mt-6 w-full max-w-sm !justify-between !bg-transparent !px-2 hover:!bg-transparent",
+                serviceActionText,
+              )}
+            >
+              <span>{serviceAction}</span>
+              {icons === "on" ? <span aria-hidden="true">→</span> : null}
+            </RequestServiceButton>
+          </article>
+        </LayoutGridItem>
+
+        <LayoutGridItem className="col-span-4 max-lg:col-span-7 max-md:col-span-3 max-sm:col-span-2">
+          <article className={cardClassName}>
+            <div className="flex items-start gap-5">
+              {icons === "on" ? (
+                <CardIcon className={cx(cardIconShell, cardIcon)}>
+                  <AlertIcon />
+                </CardIcon>
+              ) : null}
+              <div className="min-w-0">
+                <h2 className={cx("type-heading-md wrap-pretty", cardText)}>
+                  {urgentTitle}
+                </h2>
+                <p className={cx("type-text-md mt-2 wrap-pretty", cardMuted)}>
+                  {urgentBody}
+                </p>
+              </div>
+            </div>
+
+            <p className={cx("type-heading-lg mt-8 wrap-pretty", cardText)}>
+              Call <span className={cardIcon}>{urgentPhone}</span>
+            </p>
+            <Button
+              className={cx(
+                "mt-6 w-full",
+                colorRecipe === "dark" || (colorRecipe === "accent" && cardFill === "solid")
+                  ? "!border-white !bg-white !text-bg-dark hover:!bg-white/85"
+                  : undefined,
+                transparentAccentCards
+                  ? "!border-bg-dark !bg-bg-dark !text-white hover:!bg-bg-dark/90"
+                  : undefined,
+              )}
+              href={phoneHref(urgentPhone)}
+            >
+              {urgentAction}
+              {icons === "on" ? <span aria-hidden="true" className="ml-3">→</span> : null}
+            </Button>
+            <p className={cx("type-caption mt-4 text-center", cardMuted)}>
+              {urgentHelper}
+            </p>
+          </article>
+        </LayoutGridItem>
+
+        <LayoutGridItem className="col-span-4 max-lg:col-span-7 max-md:col-span-3 max-sm:col-span-2">
+          <article className={cardClassName}>
+            <div className="flex items-start gap-5">
+              {icons === "on" ? (
+                <CardIcon className={cx(cardIconShell, cardIcon)}>
+                  <CustomerIcon />
+                </CardIcon>
+              ) : null}
+              <div className="min-w-0">
+                <h2 className={cx("type-heading-md wrap-pretty", cardText)}>
+                  {customerTitle}
+                </h2>
+                <p className={cx("type-text-md mt-2 wrap-pretty", cardMuted)}>
+                  {customerBody}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-9 flex items-center gap-4">
+              {icons === "on" ? <MessageIcon /> : null}
+              <a
+                className={cx(
+                  "type-heading-sm wrap-pretty min-w-0 text-left no-underline transition-colors",
+                  cardActionText,
+                )}
+                href={customerActionHref}
+              >
+                {customerAction}
+              </a>
+            </div>
+            <p className={cx("type-caption mt-auto pt-8", cardMuted)}>
+              {customerHelper}
+            </p>
+          </article>
+        </LayoutGridItem>
+      </LayoutGrid>
+    </section>
+  );
+}

@@ -780,6 +780,25 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  if (component.includes("processstrip")) {
+    return [
+      {
+        example: [
+          "Review the system - We evaluate your HVAC system and discuss your comfort goals.",
+          "Get project options - You receive clear options and pricing for the project.",
+          "Apply for financing - Apply in minutes through the current secure lender process.",
+          "Schedule the work - Once approved, the team confirms installation or repair timing.",
+        ],
+        format: "One ordered step per line as Title - Description.",
+        name: "steps",
+        purpose:
+          "Three or four compact cards describing the customer's next steps in sequence.",
+        target:
+          "3-4 items. Titles 10-28 characters. Descriptions 45-90 characters.",
+      },
+    ];
+  }
+
   if (component.includes("processstepsstaggered")) {
     return [
       {
@@ -1198,6 +1217,144 @@ export function getTemplateCopyFieldsForSection(
 
   if (component.includes("contactsectionmodalbegin")) {
     return contactModalBeginFields();
+  }
+
+  // Same five items as the bento strip, but every value shares a row rather than
+  // a stacked composition, so the targets are shorter. Ahead of the bento branch
+  // only for readability - the two component names do not overlap.
+  if (component.includes("contactstripsmall")) {
+    return [
+      {
+        example: "Call us",
+        name: "phoneLabel",
+        purpose: "Short label above the phone number.",
+        target: "6-14 characters. One tile is a fifth of the row.",
+      },
+      {
+        example: "(704) 555-0184",
+        name: "phone",
+        purpose: "Primary customer-facing phone number.",
+        target: "A valid display-formatted phone number.",
+      },
+      {
+        example: "Email us",
+        name: "emailLabel",
+        purpose: "Short label above the customer service email address.",
+        target: "6-14 characters.",
+      },
+      {
+        example: "service@northstarhvac.com",
+        name: "email",
+        purpose: "Customer service email address.",
+        target: "One valid email address.",
+      },
+      {
+        example: "Office hours",
+        name: "hoursLabel",
+        purpose: "Label for the normal business-hours tile.",
+        target: "8-16 characters.",
+      },
+      {
+        example: "Mon–Fri · 7:00 AM–6:00 PM\nSat · 8:00 AM–2:00 PM",
+        name: "hours",
+        purpose: "Days and times when the office answers customers.",
+        target:
+          "One or two short lines. Abbreviate day names - the tile is narrow.",
+      },
+      {
+        example: "After hours",
+        name: "afterHoursLabel",
+        purpose: "Label for guidance outside normal office hours.",
+        target: "8-16 characters.",
+      },
+      {
+        example:
+          "Leave a message and we follow up when the office reopens. For an urgent safety concern, call 911.",
+        name: "afterHoursBody",
+        purpose:
+          "What customers should expect and do outside normal office hours.",
+        target:
+          "70-120 characters, shorter than the bento strip's. Distinguish routine follow-up from emergencies.",
+      },
+      {
+        example: "Visit us",
+        name: "locationLabel",
+        purpose: "Label for the physical business location.",
+        target: "6-16 characters.",
+      },
+      {
+        example: "123 Commerce Drive\nHuntersville, NC 28078",
+        name: "address",
+        purpose: "Public street address for the location tile.",
+        target: "One complete, map-ready street address on two short lines.",
+      },
+    ];
+  }
+
+  if (component.includes("contactstripbento")) {
+    return [
+      {
+        example: "Call us",
+        name: "phoneLabel",
+        purpose: "Short label above the primary phone number.",
+        target: "6-18 characters.",
+      },
+      {
+        example: "(704) 555-0184",
+        name: "phone",
+        purpose: "Primary customer-facing phone number.",
+        target: "A valid display-formatted phone number.",
+      },
+      {
+        example: "Email us",
+        name: "emailLabel",
+        purpose: "Short label above the customer service email address.",
+        target: "6-18 characters.",
+      },
+      {
+        example: "service@northstarhvac.com",
+        name: "email",
+        purpose: "Customer service email address.",
+        target: "One valid email address.",
+      },
+      {
+        example: "Office hours",
+        name: "hoursLabel",
+        purpose: "Heading for the normal business-hours card.",
+        target: "8-24 characters.",
+      },
+      {
+        example: "Monday–Friday · 7:00 AM–6:00 PM\nSaturday · 8:00 AM–2:00 PM",
+        name: "hours",
+        purpose: "Concise days and times when the office answers customers.",
+        target: "One or two short lines. Include days, opening times, and closing times.",
+      },
+      {
+        example: "After-hours support",
+        name: "afterHoursLabel",
+        purpose: "Heading for guidance outside normal office hours.",
+        target: "12-28 characters.",
+      },
+      {
+        example:
+          "Leave a message after hours and our team will follow up when the office reopens. For an urgent safety concern, call 911.",
+        name: "afterHoursBody",
+        purpose: "What customers should expect and do outside normal office hours.",
+        target: "80-170 characters. Distinguish routine follow-up from emergencies.",
+      },
+      {
+        example: "Visit our office",
+        name: "locationLabel",
+        purpose: "Heading for the physical business location.",
+        target: "8-24 characters.",
+      },
+      {
+        example: "123 Commerce Drive\nHuntersville, NC 28078",
+        name: "address",
+        purpose: "Public street address for the location card.",
+        target: "One complete, map-ready street address.",
+      },
+    ];
   }
 
   if (component.includes("heroserviceareaziplookup")) {
@@ -3002,6 +3159,128 @@ export function getTemplateCopyFieldsForSection(
         name: "terms",
         purpose: "Short qualification or terms line beneath the action.",
         target: "24-80 characters.",
+      },
+    ];
+  }
+
+  // Ahead of the generic CTA branch: each card has a distinct operational
+  // role, so its copy cannot be collapsed into one headline/body/action set.
+  if (component.includes("ctaservicetriage")) {
+    const choiceExamples = [
+      "AC repair",
+      "Heating repair",
+      "AC tune-up",
+      "Heating tune-up",
+    ];
+
+    return [
+      {
+        example: "Need service?",
+        name: "serviceTitle",
+        purpose: "Headline for the card that begins the request modal.",
+        target: "14-32 characters.",
+      },
+      {
+        example:
+          "Choose the path that best matches your system, then continue through the request flow.",
+        name: "serviceBody",
+        purpose: "Brief instructions above the four modal-start choices.",
+        target: "70-130 characters.",
+      },
+      ...choiceExamples.map((example, index) => ({
+        example,
+        name: `serviceChoices.${index + 1}.label`,
+        purpose: `Short service-choice label ${index + 1} in the modal-start card.`,
+        target: "8-22 characters.",
+      })),
+      {
+        example: "Start service request",
+        name: "serviceAction",
+        purpose: "General modal-launch action beneath the service choices.",
+        target: "14-28 characters.",
+      },
+      {
+        example: "Not working now?",
+        name: "urgentTitle",
+        purpose: "Headline for visitors with an urgent system problem.",
+        target: "16-34 characters.",
+      },
+      {
+        example:
+          "Urgent heating or cooling issues should call the office directly.",
+        name: "urgentBody",
+        purpose: "Direct visitors with urgent issues toward the phone path.",
+        target: "55-110 characters.",
+      },
+      {
+        example: "704-555-0184",
+        name: "urgentPhone",
+        purpose:
+          "Approved customer-facing phone number. The section derives the tel link from this exact value.",
+        target: "Use the approved business phone number only.",
+      },
+      {
+        example: "Call for urgent service",
+        name: "urgentAction",
+        purpose: "Phone CTA label in the urgent-service card.",
+        target: "12-26 characters.",
+      },
+      {
+        example: "For immediate help, please call.",
+        name: "urgentHelper",
+        purpose: "Short qualification beneath the urgent phone CTA.",
+        target: "24-60 characters.",
+      },
+      {
+        example: "Already a customer?",
+        name: "customerTitle",
+        purpose: "Headline for the existing-customer path.",
+        target: "18-36 characters.",
+      },
+      {
+        example:
+          "Reschedule, ask about an invoice, or follow up on recently completed work.",
+        name: "customerBody",
+        purpose: "Examples of issues the existing-customer path should handle.",
+        target: "65-125 characters.",
+      },
+      {
+        example: "Use the message form below",
+        name: "customerAction",
+        purpose: "In-page contact CTA for existing customers.",
+        target: "14-30 characters.",
+      },
+      {
+        example: "We’re happy to help.",
+        name: "customerHelper",
+        purpose: "Short reassurance beneath the existing-customer action.",
+        target: "18-45 characters.",
+      },
+    ];
+  }
+
+  if (component.includes("ctasmallbandimage")) {
+    return [
+      {
+        example: "Start with the HVAC project",
+        name: "title",
+        purpose:
+          "Short conversion headline in the left side of the compact image band.",
+        target: "24-48 characters.",
+      },
+      {
+        example:
+          "Let’s find the right solution for your home and your budget.",
+        name: "body",
+        purpose:
+          "One concise support sentence beneath the compact band headline.",
+        target: "45-85 characters.",
+      },
+      {
+        example: "Request a replacement quote",
+        name: "primaryAction",
+        purpose: "Single conversion button label in the center of the band.",
+        target: "14-30 characters.",
       },
     ];
   }

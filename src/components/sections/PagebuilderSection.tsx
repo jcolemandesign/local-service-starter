@@ -69,6 +69,7 @@ import { DecisionSplitLargeCardsSectionV3 } from "@/components/sections/Decision
 import { SectionHeaderSplitLinkSectionV3 } from "@/components/sections/SectionHeaderSplitLinkSectionV3";
 import { ProcessStepsBranchingSectionV3 } from "@/components/sections/ProcessStepsBranchingSectionV3";
 import { ProcessStepsStaggeredSectionV3 } from "@/components/sections/ProcessStepsStaggeredSectionV3";
+import { ProcessStripSectionV3 } from "@/components/sections/ProcessStripSectionV3";
 import { FeaturePortraitParagraphSectionV3 } from "@/components/sections/FeaturePortraitParagraphSectionV3";
 import { CTAScrollRevealOfferSectionV3 } from "@/components/sections/CTAScrollRevealOfferSectionV3";
 import { FAQAccordionSectionV3 } from "@/components/sections/FAQAccordionSectionV3";
@@ -108,6 +109,8 @@ import { FourCardLinkGridSectionV3 } from "@/components/sections/FourCardLinkGri
 import { ServiceCalloutRevealGridSectionV3 } from "@/components/sections/ServiceCalloutRevealGridSectionV3";
 import { ServiceCalloutSplitPanelSectionV3 } from "@/components/sections/ServiceCalloutSplitPanelSectionV3";
 import { CTAImageSectionV3 } from "@/components/sections/CTAImageSectionV3";
+import { CTASmallBandImageSectionV3 } from "@/components/sections/CTASmallBandImageSectionV3";
+import { CTAServiceTriageSectionV3 } from "@/components/sections/CTAServiceTriageSectionV3";
 import { FeaturedOfferSectionV3 } from "@/components/sections/FeaturedOfferSectionV3";
 import { AdditionalOffersSectionV3 } from "@/components/sections/AdditionalOffersSectionV3";
 import { HorizontalCardLinkGridSectionV3 } from "@/components/sections/HorizontalCardLinkGridSectionV3";
@@ -129,6 +132,8 @@ import {
 import { ServicesHoverPanelSectionV2 } from "@/components/sections/ServicesHoverPanelSectionV2";
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { InfoStripSectionV3 } from "@/components/sections/InfoStripSectionV3";
+import { ContactStripBentoSectionV3 } from "@/components/sections/ContactStripBentoSectionV3";
+import { ContactStripSmallSectionV3 } from "@/components/sections/ContactStripSmallSectionV3";
 import { FinancingCalculatorSectionV3 } from "@/components/sections/FinancingCalculatorSectionV3";
 import { withSectionToggles } from "@/components/sections/section-toggle-props";
 import { ServiceAreaZipLookupSectionV3 } from "@/components/sections/ServiceAreaZipLookupSectionV3";
@@ -903,6 +908,8 @@ function renderSectionElement(
       );
     case "ProcessStepsSectionV3":
       return <ProcessStepsSectionV3 {...sectionLibraryV3Content.process} />;
+    case "ProcessStripSectionV3":
+      return <ProcessStripSectionV3 {...sectionLibraryV3Content.processStrip} />;
     case "ProcessStepsStaggeredSectionV3":
       return (
         <ProcessStepsStaggeredSectionV3
@@ -925,6 +932,25 @@ function renderSectionElement(
         <CTAImageSectionV3
           {...sectionLibraryV3Content.ctaImage}
           align={section.variant === "right" ? "right" : "left"}
+        />
+      );
+    case "CTASmallBandImageSectionV3":
+      return (
+        <CTASmallBandImageSectionV3
+          {...sectionLibraryV3Content.ctaSmallBandImage}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          colorRecipe={section.colorRecipe}
+        />
+      );
+    case "CTAServiceTriageSectionV3":
+      return (
+        <CTAServiceTriageSectionV3
+          {...sectionLibraryV3Content.ctaServiceTriage}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          colorRecipe={section.colorRecipe}
+          icons={resolveSectionIcons(section.icons)}
         />
       );
     case "FeaturedOfferSectionV3":
@@ -974,6 +1000,26 @@ function renderSectionElement(
       return <ContactSectionV2 {...sectionLibraryV3Content.contact} />;
     case "InfoStripSectionV3":
       return <InfoStripSectionV3 {...sectionLibraryV3Content.infoStrip} />;
+    case "ContactStripSmallSectionV3":
+      return (
+        <ContactStripSmallSectionV3
+          {...sectionLibraryV3Content.contactStripSmall}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          colorRecipe={section.colorRecipe}
+          icons={resolveSectionIcons(section.icons)}
+        />
+      );
+    case "ContactStripBentoSectionV3":
+      return (
+        <ContactStripBentoSectionV3
+          {...sectionLibraryV3Content.contactStripBento}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          colorRecipe={section.colorRecipe}
+          icons={resolveSectionIcons(section.icons)}
+        />
+      );
     case "FinancingCalculatorSectionV3":
       return (
         <FinancingCalculatorSectionV3

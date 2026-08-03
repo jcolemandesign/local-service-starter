@@ -62,11 +62,21 @@ export function ContentStickyCardStreamSectionV2({
           // --live-bg-page onto the service surface, so a page-colored card
           // renders as the same flat field as the section behind it.
           card: "bg-surface-raised",
+          cardEyebrow: "text-service-accent",
+          cardMuted: "text-service-muted",
+          cardText: "text-service-ink",
           eyebrow: "text-service-accent",
           section: "bg-service-surface",
         }
       : {
-          card: "bg-service-surface",
+          card:
+            colorRecipe === "accent" ? "bg-bg-dark" : "bg-service-surface",
+          cardEyebrow:
+            colorRecipe === "accent" ? "text-white" : "text-service-accent",
+          cardMuted:
+            colorRecipe === "accent" ? "text-white/70" : "text-service-muted",
+          cardText:
+            colorRecipe === "accent" ? "text-white" : "text-service-ink",
           eyebrow:
             colorRecipe === "accent"
               ? "text-[var(--live-accent-ink)]"
@@ -133,20 +143,20 @@ export function ContentStickyCardStreamSectionV2({
                 key={card.title}
               >
                 <div className="flex items-start justify-between gap-6">
-                  <p className={cx("type-label", colors.eyebrow)}>
+                  <p className={cx("type-label", colors.cardEyebrow)}>
                     {card.eyebrow}
                   </p>
-                  <span className="type-caption shrink-0 text-service-muted">
+                  <span className={cx("type-caption shrink-0", colors.cardMuted)}>
                     {String(index + 1).padStart(2, "0")}
                   </span>
                 </div>
                 {transparentCards ? (
                   <div className="mt-3 border-t border-service-border" />
                 ) : null}
-                <h3 className="type-heading-lg mt-eyebrow-heading-md text-service-ink">
+                <h3 className={cx("type-heading-lg mt-eyebrow-heading-md", colors.cardText)}>
                   {card.title}
                 </h3>
-                <p className="type-text-md measure-copy wrap-pretty mt-heading-body-md text-service-muted">
+                <p className={cx("type-text-md measure-copy wrap-pretty mt-heading-body-md", colors.cardMuted)}>
                   {card.body}
                 </p>
               </motion.article>

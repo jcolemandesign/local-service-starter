@@ -1265,6 +1265,29 @@ body {
     --live-text-accent: var(--live-accent-ink);
   }
 
+  /* Accent is the section field; filled cards on that field use the shared
+   * dark surface token. Keep the contrast remap on the card itself so headings
+   * and supporting copy outside the card retain the accent recipe's ink. */
+  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"][data-pagebuilder-card-style="true"][data-pagebuilder-card-fill="solid"]
+    :is(
+      article,
+      .shadow-service.bg-bg-page:not(section),
+      .shadow-service.bg-bg-surface:not(section),
+      .shadow-service.bg-service-surface:not(section),
+      .shadow-service.bg-surface-raised:not(section)
+    ) {
+    --live-service-ink: #ffffff;
+    --live-service-muted: rgb(255 255 255 / 0.72);
+    --live-service-border: rgb(255 255 255 / 0.2);
+    --live-border-default: rgb(255 255 255 / 0.2);
+    --live-text-main: #ffffff;
+    --live-text-muted: rgb(255 255 255 / 0.72);
+    --live-text-accent: #ffffff;
+    --live-accent-ink: #ffffff;
+    --live-accent-muted-text: rgb(255 255 255 / 0.72);
+    background-color: var(--color-bg-dark) !important;
+  }
+
   /* Bullet markers are drawn in the accent colour, which on an accent field is
    * the same ink as the ground they sit on - they disappear. Re-point them at
    * the recipe's own ink, which is contrast-picked against that field, so a

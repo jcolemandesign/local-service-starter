@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
+import type { SectionColorRecipe } from "@/content/section-color-recipes";
 
 export type CTAImageAlign = "left" | "right";
 
@@ -9,6 +10,7 @@ export type CTAImageSectionV3Props = {
   /** Which side the copy sits on; the image always takes the opposite side. */
   align?: CTAImageAlign;
   body: string;
+  colorRecipe?: SectionColorRecipe;
   eyebrow: string;
   imageAlt?: string;
   imageSrc?: string;
@@ -44,6 +46,7 @@ export function CTAImageSectionV3({
   action,
   align = "left",
   body,
+  colorRecipe = "default",
   eyebrow,
   imageAlt,
   imageSrc,
@@ -76,7 +79,13 @@ export function CTAImageSectionV3({
             </div>
 
             <div className="mt-body-actions-md flex flex-wrap items-center gap-4 max-md:items-stretch">
-              <RequestServiceButton className="w-auto shrink-0 max-md:w-full">
+              <RequestServiceButton
+                className={cx(
+                  "w-auto shrink-0 max-md:w-full",
+                  colorRecipe === "accent" &&
+                    "!bg-bg-dark !text-white hover:!bg-service-ink",
+                )}
+              >
                 {action}
               </RequestServiceButton>
               <Button

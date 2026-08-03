@@ -87,9 +87,9 @@ const colorRecipeClasses = {
   },
   accent: {
     body: "text-[var(--live-accent-muted-text)]",
-    card: "bg-service-surface",
-    cardText: "text-service-ink",
-    cardMuted: "text-service-muted",
+    card: "bg-bg-dark",
+    cardText: "text-white",
+    cardMuted: "text-white/70",
     eyebrow: "text-[var(--live-accent-ink)]",
     heading: "text-[var(--live-accent-ink)]",
     section: "bg-service-accent",

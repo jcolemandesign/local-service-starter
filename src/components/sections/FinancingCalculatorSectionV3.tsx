@@ -88,14 +88,13 @@ const colorRecipeClassName: Record<
     text: "text-white",
   },
   accent: {
-    card: "bg-white/15",
-    cardBorder:
-      "border-[color-mix(in_oklab,var(--live-accent-ink)_30%,transparent)]",
+    card: "bg-bg-dark",
+    cardBorder: "border-white/25",
     input:
-      "bg-white/15 border-[color-mix(in_oklab,var(--live-accent-ink)_30%,transparent)]",
-    muted: "text-[color-mix(in_oklab,var(--live-accent-ink)_72%,transparent)]",
+      "bg-white/10 border-white/25",
+    muted: "text-white/75",
     section: "bg-service-accent",
-    text: "text-[var(--live-accent-ink)]",
+    text: "text-white",
   },
 };
 
@@ -435,7 +434,11 @@ export function FinancingCalculatorSectionV3({
 
             </div>
 
-            <div className="mt-body-actions-lg">
+            <div className="mt-body-actions-lg relative">
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-0 -top-5 border-t border-service-border"
+              />
               <ul className="grid gap-3">
                 {activeProgram.termsAtGlance.map((term) => (
                   <li
