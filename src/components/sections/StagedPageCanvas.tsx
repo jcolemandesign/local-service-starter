@@ -210,6 +210,16 @@ function buildStagedNavigationLinks(pages: StagedPage[]) {
         return false;
       }
 
+      // A thank-you page is only ever reached by completing a form. It is
+      // excluded here, at the point the links are built, rather than only in the
+      // nav components: those match on `href !== "/thank-you"`, which is the
+      // exported path and never the staged preview's
+      // `/dev/staged-pages/thank-you?client=...`, so the page showed up in every
+      // staged nav and disappeared only after export.
+      if (isThankYouPage(stagedPage)) {
+        return false;
+      }
+
       if (isIndividualServicePage(stagedPage)) {
         return false;
       }
@@ -326,6 +336,23 @@ function isHomePage(page: StagedPage) {
     page.pageHref === "/" ||
     page.pageLabel.toLowerCase() === "home" ||
     page.pageLabel.toLowerCase() === "homepage"
+  );
+}
+
+/**
+ * Matched on several fields rather than one, because the pages that reach here
+ * are identified inconsistently: `pageId` and `pageHref` are reliable for the
+ * standard slug, `pageType` carries it for pages promoted from the thank-you
+ * template, and the label is the last resort for a hand-named page.
+ */
+function isThankYouPage(page: StagedPage) {
+  const normalizedType = normalizePageType(page.template?.pageType ?? "");
+
+  return (
+    page.pageId === "thank-you" ||
+    page.pageHref === "/thank-you" ||
+    normalizedType === "thankyou" ||
+    normalizePageType(page.pageLabel) === "thankyou"
   );
 }
 
