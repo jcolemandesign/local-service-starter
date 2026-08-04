@@ -792,9 +792,12 @@ function FieldEditor({
 
   return (
     <div
+      // col-span-full rather than col-span-2: the grid drops to one column on
+      // narrow screens, and a 2-column span there would create an implicit
+      // second column and break the stack.
       className={`grid gap-4 rounded-sm border bg-white p-4 shadow-sm ${
-        isEmpty ? "border-service-accent" : "border-service-border"
-      }`}
+        isLongFormField(field) ? "col-span-full" : ""
+      } ${isEmpty ? "border-service-accent" : "border-service-border"}`}
     >
       <div className="grid content-start gap-2">
         <span className="flex flex-wrap items-center gap-2">
@@ -1154,12 +1157,22 @@ function shouldUseTextarea(field: ContentEditorField, value: string) {
   return multilineFieldPathParts.some((part) => normalizedPath.includes(part));
 }
 
-function getTextareaMinimumHeight(field: ContentEditorField) {
+/**
+ * Fields written as paragraphs or as one entry per line - bodies, bullets,
+ * card and step lists, testimonials.
+ *
+ * The same test drives the taller textarea and the full-width card, because
+ * they answer the same question: this field holds more than a phrase. A
+ * separate list for the layout would drift from the one for the height.
+ */
+function isLongFormField(field: ContentEditorField) {
   const normalizedPath = field.path.toLowerCase();
 
-  return multilineFieldPathParts.some((part) => normalizedPath.includes(part))
-    ? "min-h-40"
-    : "min-h-28";
+  return multilineFieldPathParts.some((part) => normalizedPath.includes(part));
+}
+
+function getTextareaMinimumHeight(field: ContentEditorField) {
+  return isLongFormField(field) ? "min-h-40" : "min-h-28";
 }
 
 const multilineFieldPathParts = [
