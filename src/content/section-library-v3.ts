@@ -1277,12 +1277,9 @@ export const sectionLibraryV3Content = {
   financingCalculator: {
     title: "Estimate a Monthly Payment",
     body: "See how financing could fit your project budget before you request a replacement quote.",
-    projectCostLabel: "Project Cost",
-    standardFinancingLabel: "Standard Financing",
-    promotionalOptionLabel: "Promotional Option",
-    estimatedPaymentLabel: "Estimated Monthly Payment",
-    estimatedAprLabel: "Estimated APR",
-    totalPaymentsLabel: "Total of Payments",
+    // The control and result labels are fixed UI chrome and default inside
+    // FinancingCalculatorSectionV3. Holding them here made them demo content
+    // the mapper spread onto client pages with no field to author them.
     projectTimingDisclosure:
       "Financing approval does not confirm project scope, equipment availability, or installation timing.",
     fallbackMessage:

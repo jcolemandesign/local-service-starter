@@ -12,26 +12,41 @@ import {
   validateFinancingProgram,
 } from "@/utils/financing-calculator";
 
+/**
+ * The six control and result labels are fixed UI chrome, not client copy, so
+ * they default here instead of living in the section library.
+ *
+ * They are the calculator's own furniture - what each control adjusts and what
+ * each figure is - and they read the same for every business. Holding them in
+ * the library made them indistinguishable from demo copy, which is how
+ * estimatedPaymentLabel showed up as a leak.
+ *
+ * They are deliberately not copy fields. "Estimated Monthly Payment",
+ * "Estimated APR" and "Total of Payments" are careful non-promotional wording
+ * on a financing estimator; the copy contract already requires lender-approved
+ * language verbatim for the disclosure, and per-client rewrites of the figure
+ * labels are the last thing this section wants.
+ */
 export type FinancingCalculatorSectionV3Props = {
   body: string;
   cardBorder?: "on" | "off";
   cardFill?: "solid" | "none";
   colorRecipe?: SectionColorRecipe;
-  estimatedAprLabel: string;
-  estimatedPaymentLabel: string;
+  estimatedAprLabel?: string;
+  estimatedPaymentLabel?: string;
   fallbackMessage: string;
   icons?: SectionIcons;
   primaryAction: string;
   primaryActionHref: string;
   program?: FinancingProgram;
-  projectCostLabel: string;
+  projectCostLabel?: string;
   projectTimingDisclosure: string;
-  promotionalOptionLabel: string;
+  promotionalOptionLabel?: string;
   secondaryAction: string;
   secondaryActionHref: string;
-  standardFinancingLabel: string;
+  standardFinancingLabel?: string;
   title: string;
-  totalPaymentsLabel: string;
+  totalPaymentsLabel?: string;
 };
 
 const invalidProgram: FinancingProgram = {
@@ -124,21 +139,21 @@ export function FinancingCalculatorSectionV3({
   cardBorder = "on",
   cardFill = "solid",
   colorRecipe = "default",
-  estimatedAprLabel,
-  estimatedPaymentLabel,
+  estimatedAprLabel = "Estimated APR",
+  estimatedPaymentLabel = "Estimated Monthly Payment",
   fallbackMessage,
   icons = "on",
   primaryAction,
   primaryActionHref,
   program,
-  projectCostLabel,
+  projectCostLabel = "Project Cost",
   projectTimingDisclosure,
-  promotionalOptionLabel,
+  promotionalOptionLabel = "Promotional Option",
   secondaryAction,
   secondaryActionHref,
-  standardFinancingLabel,
+  standardFinancingLabel = "Standard Financing",
   title,
-  totalPaymentsLabel,
+  totalPaymentsLabel = "Total of Payments",
 }: FinancingCalculatorSectionV3Props) {
   const activeProgram = program ?? invalidProgram;
   const isValid = validateFinancingProgram(activeProgram);

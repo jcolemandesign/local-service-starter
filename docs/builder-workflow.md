@@ -148,6 +148,17 @@ Note that `getTemplateCopyFieldsForSection` and
 string via `.includes(...)`, so **the order of the if-chain is semantically
 significant**. Add branches with that in mind.
 
+Two consequences worth stating outright, because each shipped a bug:
+
+- **A specific branch must sit above every generic branch that could claim its
+  name.** `CTAServiceTriageSectionV3` carried a full 13-field spec that never
+  ran: the generic `lookupValue.includes("service")` branch matched first,
+  because the *component name* contains "service". A shadowed branch is
+  invisible — no error, no unused-code warning, just demo copy on the page.
+- **Match on the shortest distinctive substring, not the full name.** The asset
+  spec tested `photogallerycarousel`, which silently missed the Large variant's
+  `photogallerylargecarousel` and returned no fields at all.
+
 Before finishing: the section appears in `/sections` and in pagebuilder under
 the matching mode, spec and mapper agree on every field name, and
 `npm run lint` / `npx tsc --noEmit` / `npm run test` pass.

@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
@@ -54,10 +56,12 @@ const NON_COPY_PROPS = new Set([
  * getTemplateAssetFieldsForSection for images/alt text), then delete the entry.
  * Expect affected sections to flip to "stale" - the contract fingerprint changes.
  */
-// Swept to empty on 2026-07-25: every field a mapper reads is now declared by
-// the copy or asset contract, so it comes from batch copy and stays editable in
-// the content editor. Anything added here again is a section shipping demo
-// content to a real client - close the gap rather than record it.
+// Swept to empty on 2026-07-25 and held empty on 2026-08-04, when the guard was
+// re-pointed from page-templates.json to the full builder catalog and six more
+// leaks surfaced in sections it had never checked. Every field a mapper reads is
+// now declared by the copy or asset contract, so it comes from batch copy and
+// stays editable in the content editor. Anything added here again is a section
+// shipping demo content to a real client - close the gap rather than record it.
 const KNOWN_GAPS = new Set<string>([]);
 
 function collectDemoStrings(value: unknown, out: Set<string>) {
@@ -104,25 +108,107 @@ collectDemoStrings(sectionLibraryV3Content, allDemoStrings);
 
 type TemplateSection = { component: string; mode?: string; name?: string };
 
-const liveSections = new Map<string, TemplateSection>();
+/**
+ * Checked sections come from two places, because neither alone is the set a
+ * client can actually receive.
+ *
+ * `page-templates.json` is what the default templates compose today - real
+ * mode and name values, but only about two thirds of the renderable sections.
+ * Driving the guard from it alone left the rest unchecked, and four sections
+ * were quietly leaking there: two galleries, a reveal offer, and a card
+ * carousel shipping the library's own authoring notes.
+ *
+ * `sectionSwapOptions` is every section the builder offers, so anything a user
+ * can pick is covered whether or not a template happens to use it.
+ *
+ * Entries are keyed by component AND mode/name, not component alone: the copy
+ * contract branches on all three, so the same component reached through a
+ * different mode can resolve to a different field set. Both are checked.
+ */
+const sectionsDir = path.join(process.cwd(), "src", "components", "sections");
+
+function balancedBlock(source: string, header: RegExp, open: string, close: string) {
+  const match = header.exec(source);
+
+  if (!match) {
+    throw new Error(`could not find ${header} - the declaration was renamed`);
+  }
+
+  let depth = 0;
+  // Start at the last character of the header, not its start: the type
+  // annotation contains an empty [] that would balance immediately.
+  const start = match.index + match[0].length - 1;
+
+  for (let i = start; i < source.length; i += 1) {
+    if (source[i] === open) depth += 1;
+    else if (source[i] === close) {
+      depth -= 1;
+      if (depth === 0) return source.slice(start, i + 1);
+    }
+  }
+
+  throw new Error(`unbalanced ${open}${close} block`);
+}
+
+const checkedSections = new Map<string, Required<TemplateSection>>();
+
+function addSection(section: TemplateSection) {
+  if (!section.component) return;
+
+  const entry = {
+    component: section.component,
+    mode: section.mode ?? "",
+    name: section.name ?? "",
+  };
+
+  checkedSections.set(
+    `${entry.component}|${entry.mode}|${entry.name}`,
+    entry,
+  );
+}
+
 for (const template of (pageTemplates as { templates?: Array<{ sections?: TemplateSection[] }> })
   .templates ?? []) {
-  for (const section of template.sections ?? []) {
-    if (section?.component) liveSections.set(section.component, section);
-  }
+  for (const section of template.sections ?? []) addSection(section);
+}
+
+// Read from source rather than imported: sectionSwapOptions is module-private,
+// the same reason pagebuilder-catalog-parity.test.ts parses it this way.
+const swapBlock = balancedBlock(
+  readFileSync(path.join(sectionsDir, "PagebuilderShell.tsx"), "utf8"),
+  /const sectionSwapOptions[^=]*=\s*\[/,
+  "[",
+  "]",
+);
+
+for (const match of swapBlock.matchAll(
+  /component:\s*"(\w+)"[\s\S]*?mode:\s*"([^"]*)"[\s\S]*?name:\s*"([^"]*)"/g,
+)) {
+  addSection({ component: match[1], mode: match[2], name: match[3] });
 }
 
 describe("section demo-content leak guard", () => {
   it("finds live template sections to check", () => {
-    expect(liveSections.size).toBeGreaterThan(0);
+    expect(checkedSections.size).toBeGreaterThan(0);
   });
 
-  for (const [component, section] of liveSections) {
-    it(`${component} does not fall back to demo content for specced fields`, () => {
+  /**
+   * Catches the guard silently checking almost nothing if either source stops
+   * parsing - a renamed declaration or a reshaped template file would
+   * otherwise leave a green suite covering a handful of sections.
+   */
+  it("covers the whole builder catalog", () => {
+    expect(checkedSections.size).toBeGreaterThan(90);
+  });
+
+  for (const [key, section] of checkedSections) {
+    const { component } = section;
+
+    it(`${key} does not fall back to demo content for specced fields`, () => {
       const contractSection = {
         component,
-        mode: section.mode ?? "",
-        name: section.name ?? "",
+        mode: section.mode,
+        name: section.name,
       };
       // Fill every field the contract declares - copy AND asset - with a
       // unique sentinel. Anything still showing demo content after that is a
