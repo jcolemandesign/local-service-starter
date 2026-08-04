@@ -303,6 +303,8 @@ async function resolveSiteExport(requestedClientSlug: string) {
     }
   }
 
+  await validateReferencedAssets(resolvedPages, issues);
+
   if (!resolvedPages.some(({ page }) => page.pageHref === "/")) {
     warnings.push("No approved homepage was found; the generated root route will be absent.");
   }
@@ -1154,28 +1156,85 @@ async function resolveLocalImport(importPath: string, importer: string) {
   return null;
 }
 
-async function copyReferencedAssets(
-  outputPath: string,
-  pages: ResolvedPage[],
-) {
+/**
+ * Turns a referenced URL path into the file it names on disk.
+ *
+ * Asset values are URL paths, so a filename with a space arrives as
+ * `/images/bg-image-sample%201.jpg` while the file is `bg-image-sample 1.jpg`.
+ * Resolving the raw string found nothing, and the copy loop skipped it in
+ * silence - which is how the first real export shipped a page whose two images
+ * both 404ed while reporting no issues.
+ *
+ * Malformed encoding falls back to the raw value rather than throwing; a path
+ * that decodes to nothing useful is reported as missing further down, which is
+ * the same outcome by a clearer route.
+ */
+function decodeAssetPath(assetPath: string) {
+  const relative = assetPath.slice(1);
+
+  try {
+    return decodeURIComponent(relative);
+  } catch {
+    return relative;
+  }
+}
+
+function collectPageAssetPaths(pages: ResolvedPage[]) {
   const assetPaths = new Set<string>();
 
   pages.forEach(({ sections }) =>
     sections.forEach(({ props }) => collectAssetPaths(props, assetPaths)),
   );
 
-  for (const assetPath of assetPaths) {
+  return assetPaths;
+}
+
+/**
+ * A referenced asset that is not on disk ships as a broken image, so it fails
+ * the export rather than warning. The check lives in the analysis so a dry run
+ * catches it before anything is written.
+ */
+async function validateReferencedAssets(
+  pages: ResolvedPage[],
+  issues: ExportIssue[],
+) {
+  for (const assetPath of collectPageAssetPaths(pages)) {
     const sourcePath = path.join(
       /*turbopackIgnore: true*/ process.cwd(),
       "public",
-      assetPath.slice(1),
+      decodeAssetPath(assetPath),
+    );
+
+    if (await isFile(sourcePath)) {
+      continue;
+    }
+
+    issues.push({
+      code: "missing-asset",
+      message: `Referenced asset is not in /public: ${assetPath}`,
+    });
+  }
+}
+
+async function copyReferencedAssets(
+  outputPath: string,
+  pages: ResolvedPage[],
+) {
+  for (const assetPath of collectPageAssetPaths(pages)) {
+    const relative = decodeAssetPath(assetPath);
+    const sourcePath = path.join(
+      /*turbopackIgnore: true*/ process.cwd(),
+      "public",
+      relative,
     );
 
     if (!(await isFile(sourcePath))) {
       continue;
     }
 
-    const destinationPath = path.join(outputPath, "public", assetPath.slice(1));
+    // Written under the decoded name, which is what a browser asks for once it
+    // has decoded the URL in the markup.
+    const destinationPath = path.join(outputPath, "public", relative);
     await mkdir(path.dirname(destinationPath), { recursive: true });
     await copyFile(sourcePath, destinationPath);
   }
@@ -1188,12 +1247,18 @@ function collectAssetPaths(
 ) {
   if (typeof value === "string") {
     const key = keyPath.at(-1)?.toLowerCase() ?? "";
+    const cleanValue = value.split(/[?#]/)[0];
+
     if (
-      value.startsWith("/") &&
-      !value.startsWith("//") &&
-      /(image|photo|logo|src|poster)/.test(key)
+      cleanValue.startsWith("/") &&
+      !cleanValue.startsWith("//") &&
+      /(image|photo|logo|src|poster)/.test(key) &&
+      // Must name a file. `logoHref` on the nav is "/" - a route, matched by
+      // the key pattern but not an asset, and reported as a missing file once
+      // absence became an error rather than a silent skip.
+      /\.[a-z0-9]{2,5}$/i.test(cleanValue)
     ) {
-      assets.add(value.split(/[?#]/)[0]);
+      assets.add(cleanValue);
     }
     return;
   }
