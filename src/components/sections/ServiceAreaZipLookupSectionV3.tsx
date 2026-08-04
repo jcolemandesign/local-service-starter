@@ -8,17 +8,28 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives/SevenColumnGrid";
 
+/**
+ * The form furniture - field label, placeholder, submit, map caption - defaults
+ * here rather than living in the section library. It is the same call made for
+ * the financing calculator's result labels: these read identically for every
+ * business, and holding them in the library made them demo content the mapper
+ * spread onto client pages with no field to author them.
+ *
+ * successTitle and successActionLabel are deliberately NOT in this group. They
+ * sit beside successBody, which is already a copy field, and they say something
+ * about the business rather than about the form.
+ */
 type ServiceAreaZipLookupSectionV3Props = {
   title: string;
   prompt: string;
-  inputLabel: string;
-  inputPlaceholder: string;
-  submitLabel: string;
+  inputLabel?: string;
+  inputPlaceholder?: string;
+  submitLabel?: string;
   successTitle: string;
   successBody: string;
   successActionLabel: string;
   successActionHref: string;
-  mapLabel: string;
+  mapLabel?: string;
   columns: readonly (readonly string[])[];
 };
 
@@ -56,14 +67,14 @@ function ServiceAreaMapPlaceholder({
 export function ServiceAreaZipLookupSectionV3({
   title,
   prompt,
-  inputLabel,
-  inputPlaceholder,
-  submitLabel,
+  inputLabel = "ZIP code lookup",
+  inputPlaceholder = "Enter ZIP code",
+  submitLabel = "Check",
   successTitle,
   successBody,
   successActionLabel,
   successActionHref,
-  mapLabel,
+  mapLabel = "Local coverage map",
   columns,
 }: ServiceAreaZipLookupSectionV3Props) {
   const [hasSubmitted, setHasSubmitted] = useState(false);

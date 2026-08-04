@@ -116,12 +116,13 @@ function isIgnoredPropPath(propPath: string) {
  * three groups, listed separately because they do not have the same fix:
  */
 const KNOWN_GAPS = new Set<string>([
-  // 1. Client-specific facts. The most serious of the three: these are not
-  //    generic filler but wrong information about a real business - a fake
-  //    phone number and email, demo city names, an invented review score.
-  "ContactSectionV3", // details[]: "(555) 014-2250", "hello@examplelocal.com"
-  "ServiceAreaZipLookupSectionV3", // columns[][]: "Huntersville", "Cornelius"
-  "HeroFullscreenSectionV2", // review.rating "4.9", trustSignals[].value "2,400+"
+  // 1. Client-specific facts - closed 2026-08-04. These were the serious ones:
+  //    not generic filler but wrong information about a real business. The
+  //    contact section published "(555) 014-2250" and
+  //    "hello@examplelocal.com", the ZIP lookup advertised coverage of
+  //    Huntersville and Cornelius, and the fullscreen hero claimed a 4.9
+  //    rating and 2,400+ completed visits. All three now come from sourced
+  //    copy fields that say NEEDS REVIEW rather than carrying an example over.
 
   // 2. Unspecced eyebrows. The largest group and the most mechanical: the
   //    mapper reads an eyebrow the contract branch never declares.

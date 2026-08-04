@@ -1584,6 +1584,31 @@ export function getTemplateCopyFieldsForSection(
           "Supporting detail under the review badge. Do not describe verification the business cannot evidence.",
         target: "40-90 characters. Use sourced facts only.",
       },
+      {
+        // The rating sat beside reviewLabel and reviewDetail but was never
+        // declared, so the badge published the demo library's 4.9 next to
+        // whatever label the copy run wrote for it.
+        example: "4.9",
+        name: "reviewRating",
+        optional: true,
+        purpose:
+          "The numeric rating shown in the review badge. A factual claim about the business, not a design placeholder.",
+        target:
+          "OPTIONAL. Omit the badge entirely when no rating is sourced. Write NEEDS REVIEW rather than estimating one.",
+      },
+      {
+        // Same failure as the rating: value and label both rendered from the
+        // library, so a client hero claimed "2,400+ Completed visits".
+        example: ["2,400+ - Completed visits", "Same-week - Scheduling"],
+        format: "One per line as Value - Label.",
+        itemCount: 2,
+        name: "trustSignals",
+        optional: true,
+        purpose:
+          "Short proof figures beside the hero review badge. Every value is a factual claim about the business.",
+        target:
+          "OPTIONAL. Omit when no figures are sourced. When used: exactly 2 items, values 4-12 characters, labels 10-24 characters. Write NEEDS REVIEW rather than inventing a number.",
+      },
     ];
   }
 
@@ -3535,6 +3560,56 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  // Ahead of the generic CTA branch. The contact sections ship with mode
+  // "Action", so that branch claimed them and offered only heading, body and
+  // two action labels - leaving the eyebrow and the contact details block
+  // rendering from the library. That meant a client page published the demo
+  // phone number and email, "(555) 014-2250" and "hello@examplelocal.com".
+  //
+  // The utility/contact branch further down does declare `details`, but it is
+  // unreachable for these: it sits below the generic CTA branch, and it cannot
+  // simply be moved up because it also matches mode "utility" and would then
+  // steal the FAQ and ZIP lookup sections.
+  //
+  // ContactSectionModalBegin and the contact strips have their own branches
+  // much earlier in the chain, so this cannot claim them.
+  if (component.includes("contactsection")) {
+    return [
+      {
+        example: "Contact",
+        name: "eyebrow",
+        purpose: "Short label above the contact headline.",
+        target: "8-24 characters.",
+      },
+      {
+        example: "Make it easy for customers to reach the team",
+        name: "heading",
+        purpose: "Contact section headline.",
+        target: "30-66 characters.",
+      },
+      {
+        example:
+          "Send a request and the team will follow up to confirm timing and the right service path.",
+        name: "body",
+        purpose: "Short supporting copy beside the contact details.",
+        target: "80-170 characters.",
+      },
+      {
+        example: [
+          "704-555-0184",
+          "hello@example.com",
+          "Mon-Fri, 8am-6pm",
+        ],
+        format: "One contact detail per line.",
+        name: "contactDetails",
+        purpose:
+          "Phone, email, and hours shown with the contact form. These are published verbatim on a client site.",
+        target:
+          "Sourced facts only. Write NEEDS REVIEW for any detail that was not supplied - never carry over an example number or address.",
+      },
+    ];
+  }
+
   if (mode === "action" || lookupValue.includes("cta")) {
     return [
       {
@@ -3600,10 +3675,36 @@ export function getTemplateCopyFieldsForSection(
   if (component.includes("serviceareaziplookup")) {
     return [
       {
+        example: "Service areas",
+        name: "eyebrow",
+        purpose: "Short label above the coverage headline.",
+        target: "12-30 characters.",
+      },
+      {
         example: "Check whether we cover your address",
         name: "heading",
         purpose: "Service area lookup headline.",
         target: "36-70 characters.",
+      },
+      {
+        // The two columns of town names under the lookup. Undeclared, these
+        // rendered the demo library's towns - so a client site advertised
+        // coverage of Huntersville and Cornelius regardless of where the
+        // business actually works.
+        example: [
+          "Huntersville",
+          "Cornelius",
+          "Davidson",
+          "Concord",
+          "North Charlotte",
+          "Lake Norman Area",
+        ],
+        format: "One town, city, or area per line. The section splits them into two columns.",
+        name: "serviceItems",
+        purpose:
+          "The towns and areas this business actually serves, listed beneath the lookup.",
+        target:
+          "Use sourced coverage only. Write NEEDS REVIEW when the service area is not confirmed - never infer it from the business address.",
       },
       {
         example:
@@ -3619,11 +3720,24 @@ export function getTemplateCopyFieldsForSection(
         target: "28-60 characters.",
       },
       {
+        example: "We service your area.",
+        name: "successTitle",
+        purpose:
+          "Confirmation headline after a successful lookup. States that the business covers the visitor's address.",
+        target: "16-40 characters. Do not confirm coverage the business has not stated.",
+      },
+      {
         example: "Send the request and the team will confirm timing.",
         name: "successBody",
         purpose:
           "Confirmation message after a successful lookup. Do not promise a response time the business has not committed to.",
         target: "40-90 characters.",
+      },
+      {
+        example: "Request service",
+        name: "successActionLabel",
+        purpose: "Action label shown with the successful-lookup confirmation.",
+        target: "12-26 characters.",
       },
       {
         example: "Coverage varies at the edge of the service area.",

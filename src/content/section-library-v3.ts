@@ -1689,14 +1689,12 @@ export const sectionLibraryV3Content = {
     title: "Serving Huntersville and nearby North Charlotte communities.",
     body: "Give visitors a quick way to confirm coverage before they start a service request.",
     prompt: "Not sure if we service your area?",
-    inputLabel: "ZIP code lookup",
-    inputPlaceholder: "Enter ZIP code",
-    submitLabel: "Check",
     successTitle: "We service your area.",
     successBody: "Send the request and the team will confirm timing.",
     successActionLabel: "Request service",
     successActionHref: "/contact",
-    mapLabel: "Local coverage map",
+    // inputLabel, inputPlaceholder, submitLabel and mapLabel are form furniture
+    // and default inside ServiceAreaZipLookupSectionV3.
     columns: [
       ["Huntersville", "Cornelius", "Davidson"],
       ["Concord", "North Charlotte", "Lake Norman Area"],

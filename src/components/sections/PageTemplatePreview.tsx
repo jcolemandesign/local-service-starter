@@ -1382,39 +1382,40 @@ function heroBasicProps(section: FieldSection) {
   };
 }
 
+/**
+ * The review rating and the trust signal figures are factual claims about the
+ * business - a star rating and counts like "2,400+ completed visits". Both used
+ * to render straight from the library, so a client hero published the demo
+ * numbers beside whatever labels the copy run wrote.
+ */
 function heroFullscreenProps(section: FieldSection) {
+  const demo = sectionLibraryV3Content.heroFullscreen;
+  const trustSignals = cardItems(section, ["trustSignals"]);
+
   return {
-    ...sectionLibraryV3Content.heroFullscreen,
-    body: getBody(section, sectionLibraryV3Content.heroFullscreen.body),
-    eyebrow: getValue(
-      section,
-      "eyebrow",
-      sectionLibraryV3Content.heroFullscreen.eyebrow,
-    ),
-    primaryAction: getValue(
-      section,
-      "primaryAction",
-      sectionLibraryV3Content.heroFullscreen.primaryAction,
-    ),
+    ...demo,
+    body: getBody(section, demo.body),
+    eyebrow: getValue(section, "eyebrow", demo.eyebrow),
+    primaryAction: getValue(section, "primaryAction", demo.primaryAction),
     review: {
-      ...sectionLibraryV3Content.heroFullscreen.review,
-      detail: getValue(
-        section,
-        "reviewDetail",
-        sectionLibraryV3Content.heroFullscreen.review.detail,
-      ),
-      label: getValue(
-        section,
-        "reviewLabel",
-        sectionLibraryV3Content.heroFullscreen.review.label,
-      ),
+      ...demo.review,
+      detail: getValue(section, "reviewDetail", demo.review.detail),
+      label: getValue(section, "reviewLabel", demo.review.label),
+      rating: getValue(section, "reviewRating", demo.review.rating),
     },
+    trustSignals:
+      trustSignals.length > 0
+        ? trustSignals.map((item) => ({
+            label: item.body,
+            value: item.title,
+          }))
+        : demo.trustSignals,
     secondaryAction: getValue(
       section,
       "secondaryAction",
-      sectionLibraryV3Content.heroFullscreen.secondaryAction,
+      demo.secondaryAction,
     ),
-    title: getTitle(section, sectionLibraryV3Content.heroFullscreen.title),
+    title: getTitle(section, demo.title),
   };
 }
 
@@ -3088,10 +3089,20 @@ function serviceAreaProps(section: FieldSection) {
       "prompt",
       sectionLibraryV3Content.serviceAreaZipLookup.prompt,
     ),
+    successActionLabel: getValue(
+      section,
+      "successActionLabel",
+      sectionLibraryV3Content.serviceAreaZipLookup.successActionLabel,
+    ),
     successBody: getValue(
       section,
       "successBody",
       sectionLibraryV3Content.serviceAreaZipLookup.successBody,
+    ),
+    successTitle: getValue(
+      section,
+      "successTitle",
+      sectionLibraryV3Content.serviceAreaZipLookup.successTitle,
     ),
     title: getTitle(section, sectionLibraryV3Content.serviceAreaZipLookup.title),
   };
