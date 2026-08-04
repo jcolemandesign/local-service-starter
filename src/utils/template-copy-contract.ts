@@ -1547,6 +1547,20 @@ export function getTemplateCopyFieldsForSection(
         component: "HeroSection",
       }),
       {
+        example: "Average rating from local customers",
+        name: "reviewLabel",
+        purpose:
+          "Label for the review badge. This is a factual claim about the business - use a sourced value or NEEDS REVIEW.",
+        target: "24-50 characters. Use sourced facts only.",
+      },
+      {
+        example: "Based on verified service visits across the service area.",
+        name: "reviewDetail",
+        purpose:
+          "Supporting detail under the review badge. Do not describe verification the business cannot evidence.",
+        target: "40-90 characters. Use sourced facts only.",
+      },
+      {
         // The rating sat beside reviewLabel and reviewDetail but was never
         // declared, so the badge published the demo library's 4.9 next to
         // whatever label the copy run wrote for it.
@@ -1621,20 +1635,6 @@ export function getTemplateCopyFieldsForSection(
           "Optional short proof or callout row beneath the hero actions. Use it only when sourced claims materially strengthen this page; omit it rather than repeating the headline or adding unsupported promises.",
         target:
           "OPTIONAL. Omit when the hero does not need this row. When used: 2-4 items, 28-70 characters each, sourced facts only.",
-      },
-      {
-        example: "Average rating from local customers",
-        name: "reviewLabel",
-        purpose:
-          "Label for the review badge. This is a factual claim about the business - use a sourced value or NEEDS REVIEW.",
-        target: "24-50 characters. Use sourced facts only.",
-      },
-      {
-        example: "Based on verified service visits across the service area.",
-        name: "reviewDetail",
-        purpose:
-          "Supporting detail under the review badge. Do not describe verification the business cannot evidence.",
-        target: "40-90 characters. Use sourced facts only.",
       },
     ];
   }
