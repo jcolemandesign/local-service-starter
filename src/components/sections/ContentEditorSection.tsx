@@ -310,14 +310,14 @@ export function ContentEditorSection({
   }
 
   return (
-    <section className="min-h-svh bg-bg-surface text-service-ink">
+    <section className="min-h-svh bg-zinc-100 text-zinc-900">
       <SevenColumnGrid className="fluid-type-frame" minHeight="none" padding="med">
         <SevenColumnGridItem className="col-start-2 col-span-4 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-          <p className="type-label text-service-accent">Pageworks / Content Editor</p>
-          <h1 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
+          <p className="type-label text-zinc-900">Pageworks / Content Editor</p>
+          <h1 className="type-heading-xl mt-eyebrow-heading-lg text-zinc-900">
             Content Editor
           </h1>
-          <p className="type-text-xl wrap-pretty mt-display-body text-service-muted">
+          <p className="type-text-xl wrap-pretty mt-display-body text-zinc-500">
             Fill the selected page template with reviewed copy. Use the
             template directions as reference, edit only the fields that need
             human judgment, then save back to the staged preview.
@@ -331,19 +331,19 @@ export function ContentEditorSection({
         <SevenColumnGridItem className="col-start-2 col-span-2 max-lg:col-start-1 max-lg:col-span-2 max-md:col-span-3 max-sm:col-span-1">
           <section
             aria-label="Site identity"
-            className="mb-4 rounded-sm border border-service-border bg-white p-4 shadow-service"
+            className="mb-4 rounded-sm border border-zinc-200 bg-white p-4 shadow-sm"
           >
-            <h2 className="type-caption font-semibold text-service-ink">
+            <h2 className="type-caption font-semibold text-zinc-900">
               Site identity
             </h2>
-            <p className="type-caption mt-1 text-service-muted">
+            <p className="type-caption mt-1 text-zinc-500">
               Shared by every nav and footer for {activeClientSlug || "this client"}.
             </p>
 
-            <label className="type-caption mt-3 block font-semibold text-service-muted">
+            <label className="type-caption mt-3 block font-semibold text-zinc-500">
               Business name
               <input
-                className="type-text-sm mt-1 block w-full rounded-sm border border-service-border bg-bg-page px-3 py-2 font-normal text-service-ink"
+                className="type-text-sm mt-1 block w-full rounded-sm border border-zinc-200 bg-white px-3 py-2 font-normal text-zinc-900"
                 onChange={(event) =>
                   updateIdentityDraft({ businessName: event.target.value })
                 }
@@ -353,10 +353,10 @@ export function ContentEditorSection({
               />
             </label>
 
-            <label className="type-caption mt-3 block font-semibold text-service-muted">
+            <label className="type-caption mt-3 block font-semibold text-zinc-500">
               Logo path
               <input
-                className="type-text-sm mt-1 block w-full rounded-sm border border-service-border bg-bg-page px-3 py-2 font-normal text-service-ink"
+                className="type-text-sm mt-1 block w-full rounded-sm border border-zinc-200 bg-white px-3 py-2 font-normal text-zinc-900"
                 onChange={(event) =>
                   updateIdentityDraft({ logoSrc: event.target.value })
                 }
@@ -365,13 +365,13 @@ export function ContentEditorSection({
                 value={identityDraft.logoSrc}
               />
             </label>
-            <p className="type-caption mt-1 text-service-muted">
+            <p className="type-caption mt-1 text-zinc-500">
               A file in /public, e.g. /images/logo.svg. Leave empty to show the
               business name as text.
             </p>
 
             <button
-              className="radius-4 mt-3 min-h-9 w-full border border-service-ink bg-service-ink px-3 type-caption font-semibold text-white transition-colors disabled:opacity-50"
+              className="radius-4 mt-3 min-h-9 w-full border border-zinc-900 bg-zinc-900 px-3 type-caption font-semibold text-white transition-colors disabled:opacity-50"
               disabled={isSavingIdentity || !isIdentityDirty || !activeClientSlug}
               onClick={saveSiteIdentity}
               type="button"
@@ -380,7 +380,7 @@ export function ContentEditorSection({
             </button>
 
             {identityStatus ? (
-              <p className="type-caption mt-2 text-service-muted">
+              <p className="type-caption mt-2 text-zinc-500">
                 {identityStatus}
               </p>
             ) : null}
@@ -403,8 +403,8 @@ export function ContentEditorSection({
                   onClick={() => selectPage(page.key)}
                   className={`rounded-sm border px-3 py-3 text-left transition-colors ${
                     isActive
-                      ? "border-service-accent bg-white text-service-ink shadow-service"
-                      : "border-service-border bg-transparent text-service-muted hover:border-service-accent hover:text-service-accent"
+                      ? "border-zinc-900 bg-white text-zinc-900 shadow-sm"
+                      : "border-zinc-200 bg-transparent text-zinc-500 hover:border-zinc-400 hover:text-zinc-900"
                   }`}
                 >
                   <span className="type-caption block font-semibold">
@@ -426,12 +426,12 @@ export function ContentEditorSection({
         <SevenColumnGridItem className="col-start-4 col-span-4 max-lg:col-start-3 max-lg:col-span-3 max-md:col-start-1 max-md:col-span-3 max-sm:col-span-1">
           {activePage ? (
             <div className="grid gap-5">
-              <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 rounded-sm border border-service-border bg-white p-5 shadow-service max-md:grid-cols-1">
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 rounded-sm border border-zinc-200 bg-white p-5 shadow-sm max-md:grid-cols-1">
                 <div>
-                  <p className="type-heading-lg text-service-ink">
+                  <p className="type-heading-lg text-zinc-900">
                     {activePage.label}
                   </p>
-                  <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+                  <h2 className="type-heading-md mt-eyebrow-heading-sm text-zinc-900">
                     {activePage.href}
                   </h2>
                   <div className="mt-4 flex flex-wrap gap-2">
@@ -442,7 +442,7 @@ export function ContentEditorSection({
                     <StatusPill label={`${activeDirtyCount} edited`} />
                     <StatusPill label={`${activeEmptyCount} empty`} />
                   </div>
-                  <p className="type-caption mt-3 rounded-sm border border-service-border bg-service-surface px-3 py-2 text-service-muted">
+                  <p className="type-caption mt-3 rounded-sm bg-zinc-50 px-3 py-2 text-zinc-600">
                     Start with copy fields. Meta fields explain the template
                     intent and should usually be left alone.
                   </p>
@@ -456,8 +456,8 @@ export function ContentEditorSection({
                           type="button"
                           className={`radius-4 min-h-9 border px-3 type-caption font-semibold transition-colors ${
                             isActive
-                              ? "border-service-ink bg-service-ink text-white"
-                              : "border-service-border bg-service-surface text-service-muted hover:border-service-accent hover:text-service-accent"
+                              ? "border-zinc-900 bg-zinc-900 text-white"
+                              : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400 hover:text-zinc-900"
                           }`}
                           onClick={() => setFieldFilter(option.value)}
                         >
@@ -467,13 +467,13 @@ export function ContentEditorSection({
                     })}
                   </div>
                   {fieldFilter !== "all" ? (
-                    <p className="type-caption mt-3 rounded-sm border border-service-border bg-service-surface px-3 py-2 text-service-muted">
+                    <p className="type-caption mt-3 rounded-sm bg-zinc-50 px-3 py-2 text-zinc-600">
                       Showing {visibleActiveFieldCount} of{" "}
                       {activeFields.length} fields. Switch to All fields to see
                       hidden copy, media, and links together.
                     </p>
                   ) : null}
-                  <div className="mt-4 flex flex-wrap gap-2 border-t border-service-border pt-4">
+                  <div className="mt-4 flex flex-wrap gap-2 border-t border-zinc-200 pt-4">
                     <ControlButton
                       disabled={activeEmptySectionIds.length === 0}
                       onClick={() => openFirstSection(activeEmptySectionIds)}
@@ -510,7 +510,7 @@ export function ContentEditorSection({
                   </ActionButton>
                 </div>
                 {status || savedAt ? (
-                  <div className="type-caption col-span-2 flex flex-wrap gap-3 border-t border-service-border pt-4 text-service-muted max-md:col-span-1">
+                  <div className="type-caption col-span-2 flex flex-wrap gap-3 border-t border-zinc-200 pt-4 text-zinc-500 max-md:col-span-1">
                     {status ? <span>{status}</span> : null}
                     {savedAt ? <span>Saved {formatDate(savedAt)}</span> : null}
                   </div>
@@ -551,7 +551,7 @@ export function ContentEditorSection({
                     <section
                       key={section.id}
                       aria-labelledby={buttonId}
-                      className="overflow-hidden rounded-sm border border-service-border bg-white shadow-service"
+                      className="overflow-hidden rounded-sm bg-white shadow-sm"
                     >
                       <button
                         id={buttonId}
@@ -559,13 +559,13 @@ export function ContentEditorSection({
                         aria-controls={panelId}
                         aria-expanded={isOpen}
                         onClick={() => toggleSection(section.id)}
-                        className="flex w-full items-start justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-service-surface/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-service-accent focus-visible:ring-inset"
+                        className="flex w-full items-start justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-zinc-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-inset"
                       >
                         <span className="min-w-0">
-                          <span className="type-label block text-service-accent">
+                          <span className="type-label block text-zinc-900">
                             {section.id}
                           </span>
-                          <span className="type-heading-sm mt-eyebrow-heading-sm block text-service-ink">
+                          <span className="type-heading-sm mt-eyebrow-heading-sm block text-zinc-900">
                             {section.label}
                           </span>
                           <span className="mt-3 flex flex-wrap gap-2">
@@ -585,7 +585,7 @@ export function ContentEditorSection({
                         </span>
                         <span
                           aria-hidden="true"
-                          className={`mt-1 flex size-9 shrink-0 items-center justify-center rounded-sm border border-service-border text-service-accent transition-transform ${
+                          className={`mt-1 flex size-9 shrink-0 items-center justify-center rounded-sm border border-zinc-200 text-zinc-900 transition-transform ${
                             isOpen ? "rotate-180" : ""
                           }`}
                         >
@@ -602,10 +602,10 @@ export function ContentEditorSection({
                           // field cards then read as forward without needing a
                           // border each, and the shift in surface replaces the
                           // rule that used to divide header from body.
-                          className="grid gap-3 bg-service-surface p-5"
+                          className="grid gap-3 bg-zinc-100 p-5"
                         >
                           {fieldFilter !== "all" ? (
-                            <p className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-2 text-service-muted">
+                            <p className="type-caption rounded-sm bg-zinc-50 px-3 py-2 text-zinc-600">
                               This section is filtered to{" "}
                               {getFieldFilterLabel(fieldFilter)}. Switch to All
                               fields to see hidden copy, media, and links
@@ -682,7 +682,7 @@ export function ContentEditorSection({
                               ) : null}
                             </>
                           ) : (
-                            <p className="type-text-sm rounded-sm border border-service-border bg-service-surface p-4 text-service-muted">
+                            <p className="type-text-sm rounded-sm bg-zinc-50 p-4 text-zinc-600">
                               No {fieldFilter} fields in this section.
                             </p>
                           )}
@@ -694,12 +694,12 @@ export function ContentEditorSection({
               </div>
             </div>
           ) : (
-            <div className="rounded-sm border border-service-border bg-white p-6 shadow-service">
-              <p className="type-label text-service-accent">No pages connected</p>
-              <h2 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
+            <div className="rounded-sm border border-zinc-200 bg-white p-6 shadow-sm">
+              <p className="type-label text-zinc-900">No pages connected</p>
+              <h2 className="type-heading-md mt-eyebrow-heading-sm text-zinc-900">
                 Waiting for clean template output
               </h2>
-              <p className="type-text-md mt-heading-body text-service-muted">
+              <p className="type-text-md mt-heading-body text-zinc-500">
                 The old generated page inventory has been retired. This editor
                 is ready to receive pages from the completed template builder.
               </p>
@@ -713,7 +713,7 @@ export function ContentEditorSection({
           viewport, and only appears while something is actually open. */}
       {openSectionId ? (
         <button
-          className="radius-button fixed bottom-5 right-5 z-50 min-h-10 border border-service-border bg-bg-page/88 px-3.5 text-xs font-semibold text-service-muted shadow-sm backdrop-blur transition-colors hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+          className="radius-button fixed bottom-5 right-5 z-50 min-h-10 border border-zinc-200 bg-white/88 px-3.5 text-xs font-semibold text-zinc-500 shadow-sm backdrop-blur transition-colors hover:border-zinc-400 hover:text-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-900"
           onClick={() => setOpenSectionId(null)}
           type="button"
         >
@@ -804,35 +804,35 @@ function FieldEditor({
       // separates it - a border per card drew a box around every field and
       // made a long section read as a grid of outlines. Empty fields tint
       // rather than outline; they already carry an "empty" pill.
-      className={`grid gap-4 rounded-sm p-4 ${
+      className={`grid gap-4 rounded-sm bg-white p-4 shadow-sm ${
         isLongFormField(field) ? "col-span-full" : ""
-      } ${isEmpty ? "bg-service-accent/5" : "bg-white"}`}
+      }`}
     >
       <div className="grid content-start gap-2">
         <span className="flex flex-wrap items-center gap-2">
           <span
             className={`type-caption rounded-sm px-2 py-0.5 font-semibold ${
               isDirty
-                ? "bg-service-accent text-white"
-                : "border border-service-border bg-white text-service-muted"
+                ? "bg-zinc-900 text-white"
+                : "border border-zinc-200 bg-white text-zinc-500"
             }`}
           >
             {field.kind}
           </span>
           {isDirty ? (
-            <span className="type-caption font-semibold text-service-accent">
+            <span className="type-caption font-semibold text-zinc-900">
               edited
             </span>
           ) : null}
           {isEmpty ? (
-            <span className="type-caption rounded-sm bg-service-accent px-2 py-0.5 font-semibold text-white">
+            <span className="type-caption rounded-sm bg-zinc-900 px-2 py-0.5 font-semibold text-white">
               empty
             </span>
           ) : null}
         </span>
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
           <label
-            className="type-text-sm font-semibold text-service-ink"
+            className="type-text-sm font-semibold text-zinc-900"
             htmlFor={controlId}
           >
             {field.label}
@@ -847,7 +847,7 @@ function FieldEditor({
         // puts the box back. The recessed surface reads as writable, and the
         // focus ring - not a border colour - carries the focus state.
         <AutoGrowingTextarea
-          className={`${getTextareaMinimumHeight(field)} ${hierarchyClass} w-full resize-none overflow-y-hidden rounded-sm bg-service-surface px-4 py-3 text-service-ink outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-service-accent max-md:text-sm`}
+          className={`${getTextareaMinimumHeight(field)} ${hierarchyClass} w-full resize-none overflow-y-hidden rounded-sm border border-zinc-200 bg-white px-4 py-3 text-zinc-900 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-zinc-900 max-md:text-sm`}
           id={controlId}
           onChange={onChange}
           placeholder={helperText}
@@ -855,7 +855,7 @@ function FieldEditor({
         />
       ) : (
         <input
-          className={`min-h-14 ${hierarchyClass} w-full rounded-sm bg-service-surface px-4 text-service-ink outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-service-accent max-md:text-sm`}
+          className={`min-h-14 ${hierarchyClass} w-full rounded-sm border border-zinc-200 bg-white px-4 text-zinc-900 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-zinc-900 max-md:text-sm`}
           id={controlId}
           onChange={(event) => onChange(event.target.value)}
           placeholder={helperText}
@@ -868,19 +868,19 @@ function FieldEditor({
         you scroll past to reach the thing you came to edit.
       */}
       <details className="group">
-        <summary className="type-caption cursor-pointer list-none text-service-muted transition-colors hover:text-service-accent">
+        <summary className="type-caption cursor-pointer list-none text-zinc-500 transition-colors hover:text-zinc-900">
           <span className="group-open:hidden">Details</span>
           <span className="hidden group-open:inline">Hide details</span>
         </summary>
         <div className="grid gap-3 pt-3">
-          <p className="type-caption text-service-muted">{helperText}</p>
+          <p className="type-caption text-zinc-500">{helperText}</p>
           {field.spec?.target ? (
-            <p className="type-caption text-service-muted">
-              <span className="font-semibold text-service-ink">Target: </span>
+            <p className="type-caption text-zinc-500">
+              <span className="font-semibold text-zinc-900">Target: </span>
               {field.spec.target}
             </p>
           ) : null}
-          <p className="type-caption break-words text-service-muted">
+          <p className="type-caption break-words text-zinc-500">
             {field.path}
           </p>
           {reference ? <FieldReferenceBlock reference={reference} /> : null}
@@ -975,10 +975,10 @@ function CharacterCounter({
   const isOver = length > target.max;
   const isUnder = length > 0 && length < target.min;
   const tone = isOver
-    ? "text-service-accent font-semibold"
+    ? "text-zinc-900 font-semibold"
     : isUnder
-      ? "text-service-muted"
-      : "text-service-muted";
+      ? "text-zinc-500"
+      : "text-zinc-500";
 
   return (
     <span className={`type-caption ${tone}`}>
@@ -1004,15 +1004,15 @@ function FieldReferenceBlock({
   const shouldCollapse =
     reference.value.length > 240 || reference.value.split(/\r?\n/).length > 3;
   const contentClassName =
-    "type-text-sm whitespace-pre-wrap break-words leading-6 text-service-ink";
+    "type-text-sm whitespace-pre-wrap break-words leading-6 text-zinc-900";
 
   if (!shouldCollapse) {
     return (
-      <div className="rounded-sm bg-service-surface p-4">
-        <p className="type-caption font-semibold text-service-accent">
+      <div className="rounded-sm bg-zinc-50 p-4">
+        <p className="type-caption font-semibold text-zinc-900">
           {reference.label}
         </p>
-        <p className="type-caption mt-1 text-service-muted">
+        <p className="type-caption mt-1 text-zinc-500">
           {reference.description}
         </p>
         <p className={`${contentClassName} mt-3`}>{reference.value}</p>
@@ -1021,18 +1021,18 @@ function FieldReferenceBlock({
   }
 
   return (
-    <details className="group/reference rounded-sm bg-service-surface p-4">
+    <details className="group/reference rounded-sm bg-zinc-50 p-4">
       <summary className="cursor-pointer list-none">
         <span className="flex items-start justify-between gap-4">
           <span>
-            <span className="type-caption block font-semibold text-service-accent">
+            <span className="type-caption block font-semibold text-zinc-900">
               {reference.label}
             </span>
-            <span className="type-caption mt-1 block text-service-muted">
+            <span className="type-caption mt-1 block text-zinc-500">
               {reference.description}
             </span>
           </span>
-          <span className="type-caption shrink-0 font-semibold text-service-accent">
+          <span className="type-caption shrink-0 font-semibold text-zinc-900">
             <span className="group-open/reference:hidden">Show full</span>
             <span className="hidden group-open/reference:inline">Collapse</span>
           </span>
@@ -1043,7 +1043,7 @@ function FieldReferenceBlock({
           {reference.value}
         </span>
       </summary>
-      <p className={`${contentClassName} mt-3 border-t border-service-border pt-3`}>
+      <p className={`${contentClassName} mt-3 border-t border-zinc-200 pt-3`}>
         {reference.value}
       </p>
     </details>
@@ -1220,10 +1220,10 @@ function ActionButton({
 }) {
   const toneClass =
     tone === "dark"
-      ? "border-service-ink bg-service-ink text-white hover:border-service-accent hover:bg-service-accent"
+      ? "border-zinc-900 bg-zinc-900 text-white hover:border-zinc-400 hover:bg-zinc-900"
       : tone === "quiet"
-        ? "border-service-border bg-white text-service-muted hover:border-service-accent hover:text-service-accent"
-        : "border-service-accent bg-service-accent text-white hover:border-service-ink hover:bg-service-ink";
+        ? "border-zinc-200 bg-white text-zinc-500 hover:border-zinc-400 hover:text-zinc-900"
+        : "border-zinc-900 bg-zinc-900 text-white hover:border-zinc-800 hover:bg-zinc-800";
 
   return (
     <button
@@ -1265,15 +1265,15 @@ function OptionToggleFieldEditor({
   const isDirty = value !== originalValue;
 
   return (
-    <fieldset className="grid content-start gap-3 rounded-sm bg-white p-4">
+    <fieldset className="grid content-start gap-3 rounded-sm bg-white p-4 shadow-sm">
       <legend className="sr-only">{legend}</legend>
       <div className="grid gap-1">
         <span className="flex flex-wrap items-center gap-2">
-          <span className="type-text-sm font-semibold text-service-ink">
+          <span className="type-text-sm font-semibold text-zinc-900">
             {field.label}
           </span>
           {isDirty ? (
-            <span className="type-caption font-semibold text-service-accent">
+            <span className="type-caption font-semibold text-zinc-900">
               edited
             </span>
           ) : null}
@@ -1284,10 +1284,10 @@ function OptionToggleFieldEditor({
           read once and then never again.
         */}
         <details>
-          <summary className="type-caption cursor-pointer list-none text-service-muted transition-colors hover:text-service-accent">
+          <summary className="type-caption cursor-pointer list-none text-zinc-500 transition-colors hover:text-zinc-900">
             {badge}
           </summary>
-          <p className="type-caption pt-2 text-service-muted">{helperText}</p>
+          <p className="type-caption pt-2 text-zinc-500">{helperText}</p>
         </details>
       </div>
       <div className="flex flex-wrap gap-2" role="group" aria-label={legend}>
@@ -1299,8 +1299,8 @@ function OptionToggleFieldEditor({
               aria-pressed={isActive}
               className={`min-h-9 rounded-sm border px-3 text-xs font-semibold transition-colors ${
                 isActive
-                  ? "border-service-accent bg-service-accent text-white"
-                  : "border-service-border bg-white text-service-muted hover:border-service-accent hover:text-service-accent"
+                  ? "border-zinc-900 bg-zinc-900 text-white"
+                  : "border-zinc-200 bg-white text-zinc-500 hover:border-zinc-400 hover:text-zinc-900"
               }`}
               key={option.value || "template-default"}
               onClick={() => onChange(option.value)}
@@ -1329,7 +1329,7 @@ function ControlButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="inline-flex min-h-9 items-center justify-center rounded-sm border border-service-border bg-white px-3 text-xs font-semibold text-service-muted transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-50"
+      className="inline-flex min-h-9 items-center justify-center rounded-sm border border-zinc-200 bg-white px-3 text-xs font-semibold text-zinc-500 transition-colors hover:border-zinc-400 hover:text-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
     >
       {children}
     </button>
@@ -1351,8 +1351,8 @@ function ActionLink({
 }) {
   const toneClass =
     tone === "quiet"
-      ? "border-service-border bg-white text-service-muted hover:border-service-accent hover:text-service-accent"
-      : "border-service-ink bg-service-ink text-white hover:border-service-accent hover:bg-service-accent";
+      ? "border-zinc-200 bg-white text-zinc-500 hover:border-zinc-400 hover:text-zinc-900"
+      : "border-zinc-900 bg-zinc-900 text-white hover:border-zinc-400 hover:bg-zinc-900";
 
   return (
     <Link
@@ -1435,12 +1435,10 @@ function ImageFieldEditor({
     // of its own while every neighbour was bordered, so it read as loose
     // content rather than a field.
     <div
-      className={`grid content-start gap-3 rounded-sm p-4 ${
-        isPlaceholder ? "bg-service-accent/5" : "bg-white"
-      }`}
+      className={"grid content-start gap-3 rounded-sm bg-white p-4 shadow-sm"}
     >
       <div className="flex items-center justify-between gap-4">
-        <label className="type-label text-service-ink" htmlFor={controlId}>
+        <label className="type-label text-zinc-900" htmlFor={controlId}>
           {field.label}
         </label>
         <div className="flex items-center gap-2">
@@ -1451,8 +1449,8 @@ function ImageFieldEditor({
 
       <div className="flex items-start gap-4 max-sm:flex-col">
         <div
-          className={`radius-4 relative size-24 shrink-0 overflow-hidden border bg-service-surface ${
-            isPlaceholder ? "border-service-accent" : "border-service-border"
+          className={`radius-4 relative size-24 shrink-0 overflow-hidden border bg-zinc-100 ${
+            isPlaceholder ? "border-zinc-900" : "border-zinc-200"
           }`}
         >
           {trimmed ? (
@@ -1466,7 +1464,7 @@ function ImageFieldEditor({
               src={trimmed}
             />
           ) : (
-            <span className="type-caption absolute inset-0 grid place-items-center text-service-muted">
+            <span className="type-caption absolute inset-0 grid place-items-center text-zinc-500">
               none
             </span>
           )}
@@ -1475,7 +1473,7 @@ function ImageFieldEditor({
         <div className="grid min-w-0 flex-1 gap-2">
           {assets.length > 0 ? (
             <select
-              className="type-text-sm radius-4 w-full bg-service-surface px-3 py-2 text-service-ink outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-service-accent"
+              className="type-text-sm radius-4 w-full border border-zinc-200 bg-white px-3 py-2 text-zinc-900 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-zinc-900"
               onChange={(event) => onChange(event.target.value)}
               value={isKnownAsset ? trimmed : ""}
             >
@@ -1491,14 +1489,14 @@ function ImageFieldEditor({
           ) : null}
 
           <input
-            className="type-text-sm radius-4 w-full bg-service-surface px-3 py-2 text-service-ink outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-service-accent"
+            className="type-text-sm radius-4 w-full border border-zinc-200 bg-white px-3 py-2 text-zinc-900 outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-zinc-900"
             id={controlId}
             onChange={(event) => onChange(event.target.value)}
             spellCheck={false}
             value={value}
           />
 
-          <p className="type-caption text-service-muted">
+          <p className="type-caption text-zinc-500">
             {isPlaceholder
               ? "Still the section library's placeholder. The export refuses a site with any of these left."
               : "Pick from public/images, or paste any path the site can serve."}
@@ -1520,7 +1518,7 @@ function isToggleField(field: ContentEditorField) {
 
 function StatusPill({ label }: { label: string }) {
   return (
-    <span className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-1 text-service-muted">
+    <span className="type-caption rounded-sm bg-zinc-100 px-3 py-1 text-zinc-600">
       {label}
     </span>
   );
