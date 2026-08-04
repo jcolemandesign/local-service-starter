@@ -567,9 +567,9 @@
       "promotedAt": "2026-08-03T19:52:18.107Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-03T19:54:44.013Z",
-        "id": "north-star-hvac-v33",
-        "version": 33
+        "createdAt": "2026-08-04T04:22:08.330Z",
+        "id": "north-star-hvac-v35",
+        "version": 35
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -1405,9 +1405,9 @@
       "promotedAt": "2026-08-03T13:57:30.940Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-03T19:54:44.013Z",
-        "id": "north-star-hvac-v33",
-        "version": 33
+        "createdAt": "2026-08-04T04:22:08.330Z",
+        "id": "north-star-hvac-v35",
+        "version": 35
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -2248,9 +2248,9 @@
       "promotedAt": "2026-08-03T13:20:40.893Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-03T19:54:44.013Z",
-        "id": "north-star-hvac-v33",
-        "version": 33
+        "createdAt": "2026-08-04T04:22:08.330Z",
+        "id": "north-star-hvac-v35",
+        "version": 35
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -2671,9 +2671,9 @@
       "promotedAt": "2026-08-02T21:29:44.982Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-03T19:54:44.013Z",
-        "id": "north-star-hvac-v33",
-        "version": 33
+        "createdAt": "2026-08-04T04:22:08.330Z",
+        "id": "north-star-hvac-v35",
+        "version": 35
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -3609,9 +3609,9 @@
       "promotedAt": "2026-08-02T21:24:44.838Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-03T19:54:44.013Z",
-        "id": "north-star-hvac-v33",
-        "version": 33
+        "createdAt": "2026-08-04T04:22:08.330Z",
+        "id": "north-star-hvac-v35",
+        "version": 35
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -4546,9 +4546,9 @@
       "promotedAt": "2026-08-02T18:25:52.687Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-03T19:54:44.013Z",
-        "id": "north-star-hvac-v33",
-        "version": 33
+        "createdAt": "2026-08-04T04:22:08.330Z",
+        "id": "north-star-hvac-v35",
+        "version": 35
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -5282,9 +5282,9 @@
       "promotedAt": "2026-08-02T18:05:37.312Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-03T19:54:44.013Z",
-        "id": "north-star-hvac-v33",
-        "version": 33
+        "createdAt": "2026-08-04T04:22:08.330Z",
+        "id": "north-star-hvac-v35",
+        "version": 35
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -6091,9 +6091,9 @@
       "promotedAt": "2026-08-02T17:02:15.412Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-03T19:54:44.013Z",
-        "id": "north-star-hvac-v33",
-        "version": 33
+        "createdAt": "2026-08-04T04:22:08.330Z",
+        "id": "north-star-hvac-v35",
+        "version": 35
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -7346,9 +7346,9 @@
       "promotedAt": "2026-08-01T21:22:16.799Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-03T19:54:44.013Z",
-        "id": "north-star-hvac-v33",
-        "version": 33
+        "createdAt": "2026-08-04T04:22:08.330Z",
+        "id": "north-star-hvac-v35",
+        "version": 35
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -7557,7 +7557,7 @@
           "id": "home.strategy.pageCopy",
           "kind": "copy",
           "path": "strategy.pageCopy",
-          "value": "# Bulk Paste Copy\n\n<!-- Page target: Home (/) -->\n\n<!-- Template contract: tc-v2-1u5hnn0 -->\n\n### 02-split-content-and-full-image\n\n<!-- Section contract: sc-v1-tu4hd4 -->\n\neyebrow: HVAC Service Around Lake Norman\nh1: Clear HVAC Help for Repair, Replacement, and Ongoing Care\nintro: North Star HVAC helps homeowners around Huntersville and Lake Norman repair, replace, and maintain heating and cooling systems with clear explanations and practical next steps.\nprimaryAction: Request a Quote\nsecondaryAction: View Services\nproofPoints: Repair, replacement, heat pumps, and maintenance\nServing Huntersville and nearby Lake Norman communities\nClear options before work begins\nreviewLabel: NEEDS REVIEW: Approved review rating missing.\nreviewDetail: NEEDS REVIEW: Verified review count and source missing.\n\n### 03-trust-marquee\n\n<!-- Section contract: sc-v1-1gte7mm -->\n\nheading: Practical service with clear expectations\nproofItems: Over a decade of HVAC experience\nLocally and family owned\nClean, respectful service in your home\n\n### 04-services-bento-cards\n\n<!-- Section contract: sc-v1-1np32qr -->\n\neyebrow: Residential HVAC Services\nheading: Heating and cooling help for every season\nintro: Choose the service that matches the problem or plan ahead with replacement guidance, heat pump support, and seasonal maintenance.\nserviceItems: System Replacement - Compare repair and replacement when system condition, recent repairs, or reliability concerns create a larger decision.\nAC Repair - Get help when the AC stops cooling, airflow changes, or the system begins operating differently.\nHeating Repair - Start with how much heat remains and get a clear next step when the home is not warming normally.\nHeat Pump Service - Request repair, maintenance, or replacement guidance for a heat pump that heats and cools the home.\nEmergency HVAC Service - Call directly for urgent heating or cooling problems. Availability depends on schedule, distance, and technician capacity.\nMaintenance & Tune-Ups - Prepare for heavier seasonal use with planned heating or cooling checks and a clear explanation of the system’s current condition.\nsectionAction: View All Services\n\n### 05-split-large-cards\n\n<!-- Section contract: sc-v1-dcvr1t -->\n\ncards.1.eyebrow: Repair\ncards.1.title: Address the problem with a focused repair\ncards.1.paragraphs.1: Repair may remain the practical next step when an inspection identifies a defined issue and the broader system condition supports continued operation.\ncards.1.paragraphs.2: North Star HVAC explains what needs attention, what the proposed repair addresses, and how pricing works before approved work begins.\ncards.1.paragraphs.3: Urgent loss of heating or cooling should be handled by phone so the team can discuss the problem and current availability directly.\ncards.1.actionLabel: Explore Repair Options\ncards.2.eyebrow: Replace\ncards.2.title: Plan the next system with clearer context\ncards.2.paragraphs.1: Replacement becomes more relevant when repairs form a pattern, reliability continues to decline, or the current system no longer serves the home consistently.\ncards.2.paragraphs.2: The recommendation should explain why replacement is being considered, what the project includes, and how the proposed system fits the home.\ncards.2.paragraphs.3: Financing may be available for qualifying replacement projects. Current provider, eligibility, approval requirements, rates, and terms need confirmation.\ncards.2.actionLabel: Explore Replacement\n\n### 06-stacked-feature-cards\n\n<!-- Section contract: sc-v1-1pge7im -->\n\neyebrow: Why Homeowners Choose North Star\nheading: Clear recommendations without pressure or guesswork\nbody: North Star HVAC helps homeowners understand what is happening with the system, which options fit the current situation, and what should happen next. The goal is a practical recommendation you can evaluate without scare tactics or a push toward the most expensive path.\nsupportingItems: Clear Explanations - Understand what the technician found, what needs attention, and why a particular repair or replacement path is being recommended.\nRespect for Your Home - Expect clean, professional service and straightforward communication throughout the visit.\nPractical Next Steps - Repair is explained when it makes sense, and replacement is discussed when the broader condition supports it.\n\n### 07-service-area-zip-lookup\n\n<!-- Section contract: sc-v1-1ofwbs7 -->\n\nheading: Check whether your home is in our service area\nintro: North Star HVAC serves Huntersville, Cornelius, Davidson, Mooresville, and nearby Lake Norman communities, generally within about 25–30 miles of Huntersville.\nprompt: Enter your ZIP code to check coverage\nsuccessBody: Your ZIP is in our general service area. Send a request to confirm the address.\nhelperText: Coverage can vary near the edge of the normal service area.\n\n### 08-process-steps\n\n<!-- Section contract: sc-v1-1n2n5rk -->\n\nheading: From the first request to a clear next step\nintro: Start with what the system is doing or what you are planning. North Star HVAC will review the request, inspect when needed, and explain the practical options.\nsteps: Tell Us What You Need - Request service online for non-urgent needs, or call directly when the home has lost heating or cooling and the problem cannot wait.\nReview the System - The team confirms the request details and inspects the system when diagnosis or replacement guidance is needed.\nUnderstand the Options - Review what was found, what each recommendation addresses, and which next step fits the system and the home.\nprimaryAction: Request a Quote\nsecondaryAction: Call Now\n\n### 09-faq-accordion\n\n<!-- Section contract: sc-v1-1xh0kju -->\n\nfaqs: What should I do if the heating or cooling stops working? - Call North Star HVAC directly when the home has lost heating or cooling or the problem cannot wait. Limited urgent service may be available depending on schedule, distance, and technician capacity.\nDo you serve my town or ZIP code? - North Star HVAC serves homeowners in Huntersville, Cornelius, Davidson, Mooresville, and nearby Lake Norman communities. Regular service generally extends about 25–30 miles from Huntersville, with coverage confirmed by address.\nCan you give me a repair price before inspecting the system? - Exact repair pricing depends on what the diagnosis shows. Repair visits usually require a diagnostic fee, but the exact amount and any credit toward approved work need confirmation.\nHow do I know whether repair or replacement makes more sense? - The decision should consider the diagnosis, overall system condition, recent repair history, reliability, and how well the equipment serves the home. Replacement is not assumed from age or one repair alone.\nWhat happens after I submit a quote or service request? - North Star HVAC reviews the information and may call or text to confirm the problem, location, and appropriate service path. Submitting the form starts a request and does not confirm an appointment.\n\n### 10-fixed-cover-fade\n\n<!-- Section contract: sc-v1-cbnzrx -->\n\nbackgroundLabel: Ready When You Are\nbackgroundTitle: Get a clear next step for the system your home depends on\nbackgroundBody: Whether you need repair, replacement guidance, heat pump service, or seasonal maintenance, start with the problem or goal and North Star HVAC will help route the request.\nforegroundEyebrow: Request Service\nforegroundTitle: Tell us what your heating or cooling system needs\nforegroundBody: Share the service, location, and urgency. North Star HVAC may call or text to confirm details and discuss the appropriate next step. A submitted request does not confirm an appointment.\ncontactDetails: 704-555-0184\nMonday–Friday, 8am–6pm\nHuntersville and nearby Lake Norman communities\n\n## Copy Notes\n\nThis homepage needs to establish local fit immediately, make the primary residential HVAC services easy to scan, distinguish repair from replacement, and route urgent visitors to the phone while keeping the quote form dominant for non-urgent needs.\n\n* Suggested page title: HVAC Repair, Replacement & Maintenance in Huntersville | North Star HVAC\n* Suggested meta description: North Star HVAC provides repair, system replacement, heat pump service, maintenance, and seasonal tune-ups for homeowners around Huntersville and Lake Norman.\n* Suggested H1: Clear HVAC Help for Repair, Replacement, and Ongoing Care\n* Suggested URL slug: /\n* Primary CTA pattern: Request a Quote\n* Secondary CTA pattern: Call Now for urgent needs; View Services for visitors still choosing a path.\n* Contract update: Section 05 now uses two large repair-versus-replacement cards. Each card contains three balanced content chunks so the comparison remains visually even.\n* Services-grid layout: Six items preserve the requested two-large and four-small rhythm. System Replacement occupies the first large slot and Maintenance & Tune-Ups occupies the second.\n* Services-grid priority: Heat Pump Service remains visible as a priority service even though its card is one of the smaller positions.\n* Hero image: Use a real technician-homeowner interaction, branded truck, or residential service image. Avoid generic equipment-only stock photography.\n* Hero review badge: Keep hidden or visibly marked for review until an approved rating, review count, and supporting source exist.\n* Repair-versus-replacement behavior: Repair should feel fully available. Replacement receives strategic weight without implying that older or malfunctioning equipment automatically needs to be replaced.\n* ZIP lookup behavior: Treat a positive ZIP result as general coverage, not a guaranteed appointment or service commitment. The specific address should still be confirmed.\n* Process behavior: The first step should keep the urgent call route visually distinct from the non-urgent quote path.\n* FAQ behavior: Keep answers concise on mobile and place the urgent call answer first.\n* Closing section: The fixed-cover statement should hold visually before the request panel enters. The background and foreground headlines intentionally perform different jobs.\n* Form note: Collect service type and urgency separately. Submission begins a request and does not create a confirmed appointment.\n* Proof note: Reviews, ratings, license language, certifications, warranties, and financing details should remain editable until approved.\n* Maintenance-plan conflict: The supplied strategy references a future maintenance membership, but the current project direction says North Star does not offer one. No membership language appears in the homepage copy.\n* Service-path note: AC Repair and Heating Repair are separate cards so homeowners can recognize the problem quickly without relying on a generic HVAC Repair label.\n\n## Copy QA\n\n* Unsupported claims avoided? Yes.\n* Service area accurate? Yes.\n* Emergency availability handled carefully? Yes.\n* Pricing language cautious? Yes.\n* Priority services emphasized? Yes.\n* Services marked Non-priority or Do not promote not overpromoted? Yes.\n* CTA clear? Yes.\n* Mobile visitor needs considered? Yes.\n* Template field targets followed? Yes.\n* Every section ID preserved? Yes.\n* Voice matches the Protective Professional personality? Yes.\n* Avoided phrases from the voice packet kept out? Yes."
+          "value": "# Bulk Paste Copy\n\n<!-- Page target: Home (/) -->\n\n<!-- Template contract: tc-v2-1o60yqm -->\n\n### 02-split-content-and-full-image\n\n<!-- Section contract: sc-v1-tu4hd4 -->\n\neyebrow: Serving Huntersville and Lake Norman\nh1: Clear HVAC Guidance for Repair, Replacement, and Ongoing Care\nintro: North Star HVAC helps local homeowners understand what their system needs, compare practical options, and move forward without pressure. Request non-urgent service online, or call directly for an urgent heating or cooling problem.\nprimaryAction: Request a Quote\nsecondaryAction: View Services\nproofPoints: Repair, replacement, and maintenance\nServing Huntersville and nearby towns\nClear options before work begins\nreviewLabel: 4.8 Stars From Local Customers\nreviewDetail: Based on more than 150 Google reviews from homeowners in the service area.\n\n### 03-trust-marquee\n\n<!-- Section contract: sc-v1-1gte7mm -->\n\nheading: Local Service Built Around Clear Recommendations\nproofItems: Family-owned and serving Lake Norman homeowners\n12 years of residential HVAC experience\n4.8 stars from more than 150 Google reviews\n\n### 04-services-bento-cards\n\n<!-- Section contract: sc-v1-1np32qr -->\n\neyebrow: Residential HVAC Services\nheading: The Right Service Path Starts With the System\nintro: Choose the path that matches what is happening now, from urgent repair and diagnosis to planned replacement, seasonal care, and ongoing maintenance.\nserviceItems: [large] System Replacement - Understand when repair still makes sense and when replacement may offer the stronger long-term path for your home.\nHVAC Repair - Diagnose heating and cooling problems before deciding what repair is needed and what it will cost.\nAC Repair - Get help with cooling failures, weak airflow, uneven temperatures, or noticeable changes in system performance.\nHeating Repair - Address a loss of heat or other heating concerns with inspection-first guidance and a direct urgent call path.\nSeasonal Tune-Ups - Prepare the system for peak heating or cooling demand and identify developing concerns before the season changes.\n[large] Maintenance & Comfort Plan - Schedule ongoing seasonal care and ask about the North Star Comfort Plan for continued system support.\n[large] Heat Pump Service - Plan heat pump repair, maintenance, or replacement around the condition and performance of the system.\nEmergency HVAC Service - Call directly for urgent heating or cooling problems and check current after-hours availability.\nIndoor Air Quality - Ask about available options for filtration, humidity, airflow, and other indoor air concerns.\nsectionAction: View All Services\n\n### 05-split-large-cards\n\n<!-- Section contract: sc-v1-nbq2kb -->\n\ncards.1.eyebrow: Repair\ncards.1.title: Stabilize the Current System\ncards.1.paragraphs.1: Start with diagnosis, understand what failed, and review whether a practical repair can address the immediate problem without leaving major concerns unresolved.\ncards.1.paragraphs.2: Repair may be the better path when the issue is isolated, the remaining equipment is still serviceable, and the work restores reasonable confidence in the system.\ncards.1.actionLabel: Talk Through a Repair\ncards.2.eyebrow: Replacement\ncards.2.title: Plan the Longer-Term Move\ncards.2.paragraphs.1: Compare system condition, repair history, reliability, and what another repair is likely to accomplish before deciding that replacement is the stronger path.\ncards.2.paragraphs.2: Replacement may deserve consideration when problems keep returning, wear affects more than one component, or the current system no longer fits the needs of the home.\ncards.2.actionLabel: Explore Replacement\n\n### 06-stacked-feature-cards\n\n<!-- Section contract: sc-v1-1pge7im -->\n\neyebrow: Why North Star HVAC\nheading: Clear Recommendations Without Pressure or Scare Tactics\nbody: North Star HVAC helps homeowners make informed decisions by explaining the issue, laying out practical options, and keeping the process straightforward. The goal is not to sell the most expensive answer—it is to recommend what makes sense for the system and the home.\nsupportingItems: Clear Explanations - We describe what the inspection found, what the options mean, and what should happen before work begins.\nPractical Recommendations - If repair makes sense, we explain it. If replacement is the better long-term path, we walk through why.\nRespectful Service - Our team works carefully around the home, keeps the work area clean, and communicates throughout the visit.\n\n### 07-service-area-zip-lookup\n\n<!-- Section contract: sc-v1-1ofwbs7 -->\n\nheading: Check Service Availability Near Your Home\nintro: Enter your ZIP code to see whether your home falls within the regular service area before starting a request.\nprompt: Not Sure Whether We Serve Your ZIP?\nsuccessBody: Your ZIP is in the regular service area. Send a request to confirm timing.\nhelperText: Urgent availability may still depend on distance, schedule, and technician capacity.\n\n### 08-process-steps\n\n<!-- Section contract: sc-v1-1n2n5rk -->\n\nheading: A Straightforward Process From Request to Recommendation\nintro: Share what is happening, confirm the service need, and receive clear options based on an inspection of the system.\nsteps: Share the Problem - Tell us what changed, where you are located, and whether you need repair, replacement, maintenance, or urgent help.\nConfirm the Next Step - We call or text to review the request, clarify urgency, and discuss available scheduling options.\nInspect and Explain - A technician evaluates the system, explains the findings, and presents practical recommendations before work moves forward.\n\n### 09-faq-accordion\n\n<!-- Section contract: sc-v1-1xh0kju -->\n\nfaqs: Do you provide service in my area? - North Star HVAC serves Huntersville, Cornelius, Davidson, Mooresville, North Charlotte, Denver, and nearby Lake Norman communities. Contact us to confirm availability for your address.\nHow do I know whether to repair or replace my system? - The right answer depends on the diagnosis, system condition, repair history, reliability, and longer-term needs. We explain both paths before recommending the next step.\nIs there a diagnostic fee for repair visits? - A standard $89 diagnostic fee applies to repair visits. The fee may be credited toward an approved repair or replacement when the customer moves forward with the recommended work.\nDo you offer urgent or after-hours HVAC service? - After-hours help may be available for urgent heating and cooling problems depending on schedule, distance, and technician availability. Call directly to check current availability.\nWhat happens after I submit a quote request? - North Star HVAC reviews the information and follows up by phone or text to clarify the request and discuss scheduling. Submitting the form does not create a confirmed appointment.\n\n### 10-fixed-cover-fade\n\n<!-- Section contract: sc-v1-cbnzrx -->\n\nbackgroundLabel: Ready When You Are\nbackgroundTitle: Get Clear on What Your System Needs Before You Commit\nbackgroundBody: Repair, replacement, and maintenance decisions are easier when the problem, available options, and next step are explained in plain language.\nforegroundEyebrow: Request Service\nforegroundTitle: Tell Us What Is Happening With Your System\nforegroundBody: Send the details for a repair, replacement, heat pump, tune-up, or maintenance request. North Star HVAC will follow up to confirm the need and discuss the next step.\ncontactDetails: 704-555-0184\n[hello@northstarhvac.com](mailto:hello@northstarhvac.com)\nMonday–Friday, 8am–6pm\n\n## Copy Notes\n\nThis is a contract migration of the earlier homepage copy, not a new homepage strategy or voice pass.\n\nSuggested page title: HVAC Repair, Replacement & Maintenance in Huntersville | North Star HVAC\n\nSuggested meta description: North Star HVAC provides repair, replacement, heat pump service, maintenance, and seasonal tune-ups for homeowners around Huntersville and Lake Norman.\n\nSuggested H1: Clear HVAC Guidance for Repair, Replacement, and Ongoing Care\n\nSuggested URL slug: /\n\nPrimary CTA pattern: Request a Quote\n\nSecondary CTA pattern: View Services, with the persistent phone path used for urgent issues.\n\nForm interaction: Route the closing request area into the shared service-request flow. Keep urgency as a separate field and clarify that submission does not confirm an appointment.\n\nMobile interaction: Keep the persistent Call Now and Request Quote action bar.\n\nThe following approved fictional-project details were retained from the earlier homepage batch:\n\n* 4.8 stars from more than 150 Google reviews\n* $89 diagnostic fee\n* North Star Comfort Plan\n* [hello@northstarhvac.com](mailto:hello@northstarhvac.com)\n* 12 years of residential HVAC experience\n\nContract migration changes:\n\n* Removed navigation and footer because they are now site-level copy.\n* Added the hero review-label fields.\n* Rebuilt Section 05 using the current two-card field structure.\n* Replaced the ZIP lookup’s obsolete `details` field with `prompt` and `successBody`.\n* Removed the obsolete FAQ heading and introduction fields.\n* Added the required final-CTA `backgroundLabel`.\n* Added the current section-contract comments.\n\n## Copy QA\n\n* Unsupported claims avoided? Yes, within the approved fictional-project assumptions retained from the earlier batch.\n* Service area accurate? Yes.\n* Emergency availability handled carefully? Yes.\n* Pricing language cautious? Yes.\n* Priority services emphasized? Yes.\n* Services marked Non-priority or Do not promote not overpromoted? Yes.\n* CTA clear? Yes.\n* Mobile visitor needs considered? Yes.\n* Template field targets followed? Yes.\n* Every current section ID preserved? Yes.\n* Site chrome excluded? Yes.\n* Voice matches the selected personality in the Copywriting Voice Packet? Yes.\n* Avoided phrases from the voice packet kept out? Yes."
         },
         {
           "id": "home.strategy.contentPlan",
@@ -7629,19 +7629,19 @@
           "id": "home.02-split-content-and-full-image.eyebrow",
           "kind": "copy",
           "path": "02-split-content-and-full-image.eyebrow",
-          "value": "HVAC Service Around Lake Norman"
+          "value": "Serving Huntersville and Lake Norman"
         },
         {
           "id": "home.02-split-content-and-full-image.h1",
           "kind": "copy",
           "path": "02-split-content-and-full-image.h1",
-          "value": "Clear HVAC Help for Repair, Replacement, and Ongoing Care"
+          "value": "Clear HVAC Guidance for Repair, Replacement, and Ongoing Care"
         },
         {
           "id": "home.02-split-content-and-full-image.intro",
           "kind": "copy",
           "path": "02-split-content-and-full-image.intro",
-          "value": "North Star HVAC helps homeowners around Huntersville and Lake Norman repair, replace, and maintain heating and cooling systems with clear explanations and practical next steps."
+          "value": "North Star HVAC helps local homeowners understand what their system needs, compare practical options, and move forward without pressure. Request non-urgent service online, or call directly for an urgent heating or cooling problem."
         },
         {
           "id": "home.02-split-content-and-full-image.primaryAction",
@@ -7659,19 +7659,19 @@
           "id": "home.02-split-content-and-full-image.proofPoints",
           "kind": "copy",
           "path": "02-split-content-and-full-image.proofPoints",
-          "value": "Repair, replacement, heat pumps, and maintenance\nServing Huntersville and nearby Lake Norman communities\nClear options before work begins"
+          "value": "Repair, replacement, and maintenance\nServing Huntersville and nearby towns\nClear options before work begins"
         },
         {
           "id": "home.02-split-content-and-full-image.reviewLabel",
           "kind": "copy",
           "path": "02-split-content-and-full-image.reviewLabel",
-          "value": "NEEDS REVIEW: Approved review rating missing."
+          "value": "4.8 Stars From Local Customers"
         },
         {
           "id": "home.02-split-content-and-full-image.reviewDetail",
           "kind": "copy",
           "path": "02-split-content-and-full-image.reviewDetail",
-          "value": "NEEDS REVIEW: Verified review count and source missing."
+          "value": "Based on more than 150 Google reviews from homeowners in the service area."
         },
         {
           "id": "home.02-split-content-and-full-image.imageAlt",
@@ -7701,13 +7701,13 @@
           "id": "home.03-trust-marquee.heading",
           "kind": "copy",
           "path": "03-trust-marquee.heading",
-          "value": "Practical service with clear expectations"
+          "value": "Local Service Built Around Clear Recommendations"
         },
         {
           "id": "home.03-trust-marquee.proofItems",
           "kind": "copy",
           "path": "03-trust-marquee.proofItems",
-          "value": "Over a decade of HVAC experience\nLocally and family owned\nClean, respectful service in your home"
+          "value": "Family-owned and serving Lake Norman homeowners\n12 years of residential HVAC experience\n4.8 stars from more than 150 Google reviews"
         },
         {
           "id": "home.03-trust-marquee.style.colorRecipe",
@@ -7743,19 +7743,19 @@
           "id": "home.04-services-bento-cards.heading",
           "kind": "copy",
           "path": "04-services-bento-cards.heading",
-          "value": "Heating and cooling help for every season"
+          "value": "The Right Service Path Starts With the System"
         },
         {
           "id": "home.04-services-bento-cards.intro",
           "kind": "copy",
           "path": "04-services-bento-cards.intro",
-          "value": "Choose the service that matches the problem or plan ahead with replacement guidance, heat pump support, and seasonal maintenance."
+          "value": "Choose the path that matches what is happening now, from urgent repair and diagnosis to planned replacement, seasonal care, and ongoing maintenance."
         },
         {
           "id": "home.04-services-bento-cards.serviceItems",
           "kind": "copy",
           "path": "04-services-bento-cards.serviceItems",
-          "value": "System Replacement - Compare repair and replacement when system condition, recent repairs, or reliability concerns create a larger decision.\nAC Repair - Get help when the AC stops cooling, airflow changes, or the system begins operating differently.\nHeating Repair - Start with how much heat remains and get a clear next step when the home is not warming normally.\nHeat Pump Service - Request repair, maintenance, or replacement guidance for a heat pump that heats and cools the home.\nEmergency HVAC Service - Call directly for urgent heating or cooling problems. Availability depends on schedule, distance, and technician capacity.\nMaintenance & Tune-Ups - Prepare for heavier seasonal use with planned heating or cooling checks and a clear explanation of the system’s current condition."
+          "value": "[large] System Replacement - Understand when repair still makes sense and when replacement may offer the stronger long-term path for your home.\nHVAC Repair - Diagnose heating and cooling problems before deciding what repair is needed and what it will cost.\nAC Repair - Get help with cooling failures, weak airflow, uneven temperatures, or noticeable changes in system performance.\nHeating Repair - Address a loss of heat or other heating concerns with inspection-first guidance and a direct urgent call path.\nSeasonal Tune-Ups - Prepare the system for peak heating or cooling demand and identify developing concerns before the season changes.\n[large] Maintenance & Comfort Plan - Schedule ongoing seasonal care and ask about the North Star Comfort Plan for continued system support.\n[large] Heat Pump Service - Plan heat pump repair, maintenance, or replacement around the condition and performance of the system.\nEmergency HVAC Service - Call directly for urgent heating or cooling problems and check current after-hours availability.\nIndoor Air Quality - Ask about available options for filtration, humidity, airflow, and other indoor air concerns."
         },
         {
           "id": "home.04-services-bento-cards.sectionAction",
@@ -7917,19 +7917,19 @@
           "id": "home.05-split-large-cards.cards.1.title",
           "kind": "copy",
           "path": "05-split-large-cards.cards.1.title",
-          "value": "Address the problem with a focused repair"
+          "value": "Stabilize the Current System"
         },
         {
           "id": "home.05-split-large-cards.cards.1.paragraphs.1",
           "kind": "copy",
           "path": "05-split-large-cards.cards.1.paragraphs.1",
-          "value": "Repair may remain the practical next step when an inspection identifies a defined issue and the broader system condition supports continued operation."
+          "value": "Start with diagnosis, understand what failed, and review whether a practical repair can address the immediate problem without leaving major concerns unresolved."
         },
         {
           "id": "home.05-split-large-cards.cards.1.paragraphs.2",
           "kind": "copy",
           "path": "05-split-large-cards.cards.1.paragraphs.2",
-          "value": "North Star HVAC explains what needs attention, what the proposed repair addresses, and how pricing works before approved work begins."
+          "value": "Repair may be the better path when the issue is isolated, the remaining equipment is still serviceable, and the work restores reasonable confidence in the system."
         },
         {
           "id": "home.05-split-large-cards.cards.1.paragraphs.3",
@@ -7947,31 +7947,31 @@
           "id": "home.05-split-large-cards.cards.1.actionLabel",
           "kind": "copy",
           "path": "05-split-large-cards.cards.1.actionLabel",
-          "value": "Explore Repair Options"
+          "value": "Talk Through a Repair"
         },
         {
           "id": "home.05-split-large-cards.cards.2.eyebrow",
           "kind": "copy",
           "path": "05-split-large-cards.cards.2.eyebrow",
-          "value": "Replace"
+          "value": "Replacement"
         },
         {
           "id": "home.05-split-large-cards.cards.2.title",
           "kind": "copy",
           "path": "05-split-large-cards.cards.2.title",
-          "value": "Plan the next system with clearer context"
+          "value": "Plan the Longer-Term Move"
         },
         {
           "id": "home.05-split-large-cards.cards.2.paragraphs.1",
           "kind": "copy",
           "path": "05-split-large-cards.cards.2.paragraphs.1",
-          "value": "Replacement becomes more relevant when repairs form a pattern, reliability continues to decline, or the current system no longer serves the home consistently."
+          "value": "Compare system condition, repair history, reliability, and what another repair is likely to accomplish before deciding that replacement is the stronger path."
         },
         {
           "id": "home.05-split-large-cards.cards.2.paragraphs.2",
           "kind": "copy",
           "path": "05-split-large-cards.cards.2.paragraphs.2",
-          "value": "The recommendation should explain why replacement is being considered, what the project includes, and how the proposed system fits the home."
+          "value": "Replacement may deserve consideration when problems keep returning, wear affects more than one component, or the current system no longer fits the needs of the home."
         },
         {
           "id": "home.05-split-large-cards.cards.2.paragraphs.3",
@@ -8031,25 +8031,25 @@
           "id": "home.06-stacked-feature-cards.eyebrow",
           "kind": "copy",
           "path": "06-stacked-feature-cards.eyebrow",
-          "value": "Why Homeowners Choose North Star"
+          "value": "Why North Star HVAC"
         },
         {
           "id": "home.06-stacked-feature-cards.heading",
           "kind": "copy",
           "path": "06-stacked-feature-cards.heading",
-          "value": "Clear recommendations without pressure or guesswork"
+          "value": "Clear Recommendations Without Pressure or Scare Tactics"
         },
         {
           "id": "home.06-stacked-feature-cards.body",
           "kind": "copy",
           "path": "06-stacked-feature-cards.body",
-          "value": "North Star HVAC helps homeowners understand what is happening with the system, which options fit the current situation, and what should happen next. The goal is a practical recommendation you can evaluate without scare tactics or a push toward the most expensive path."
+          "value": "North Star HVAC helps homeowners make informed decisions by explaining the issue, laying out practical options, and keeping the process straightforward. The goal is not to sell the most expensive answer—it is to recommend what makes sense for the system and the home."
         },
         {
           "id": "home.06-stacked-feature-cards.supportingItems",
           "kind": "copy",
           "path": "06-stacked-feature-cards.supportingItems",
-          "value": "Clear Explanations - Understand what the technician found, what needs attention, and why a particular repair or replacement path is being recommended.\nRespect for Your Home - Expect clean, professional service and straightforward communication throughout the visit.\nPractical Next Steps - Repair is explained when it makes sense, and replacement is discussed when the broader condition supports it."
+          "value": "Clear Explanations - We describe what the inspection found, what the options mean, and what should happen before work begins.\nPractical Recommendations - If repair makes sense, we explain it. If replacement is the better long-term path, we walk through why.\nRespectful Service - Our team works carefully around the home, keeps the work area clean, and communicates throughout the visit."
         },
         {
           "id": "home.06-stacked-feature-cards.style.colorRecipe",
@@ -8079,31 +8079,31 @@
           "id": "home.07-service-area-zip-lookup.heading",
           "kind": "copy",
           "path": "07-service-area-zip-lookup.heading",
-          "value": "Check whether your home is in our service area"
+          "value": "Check Service Availability Near Your Home"
         },
         {
           "id": "home.07-service-area-zip-lookup.intro",
           "kind": "copy",
           "path": "07-service-area-zip-lookup.intro",
-          "value": "North Star HVAC serves Huntersville, Cornelius, Davidson, Mooresville, and nearby Lake Norman communities, generally within about 25–30 miles of Huntersville."
+          "value": "Enter your ZIP code to see whether your home falls within the regular service area before starting a request."
         },
         {
           "id": "home.07-service-area-zip-lookup.prompt",
           "kind": "copy",
           "path": "07-service-area-zip-lookup.prompt",
-          "value": "Enter your ZIP code to check coverage"
+          "value": "Not Sure Whether We Serve Your ZIP?"
         },
         {
           "id": "home.07-service-area-zip-lookup.successBody",
           "kind": "copy",
           "path": "07-service-area-zip-lookup.successBody",
-          "value": "Your ZIP is in our general service area. Send a request to confirm the address."
+          "value": "Your ZIP is in the regular service area. Send a request to confirm timing."
         },
         {
           "id": "home.07-service-area-zip-lookup.helperText",
           "kind": "copy",
           "path": "07-service-area-zip-lookup.helperText",
-          "value": "Coverage can vary near the edge of the normal service area."
+          "value": "Urgent availability may still depend on distance, schedule, and technician capacity."
         },
         {
           "id": "home.07-service-area-zip-lookup.style.colorRecipe",
@@ -8133,19 +8133,19 @@
           "id": "home.08-process-steps.heading",
           "kind": "copy",
           "path": "08-process-steps.heading",
-          "value": "From the first request to a clear next step"
+          "value": "A Straightforward Process From Request to Recommendation"
         },
         {
           "id": "home.08-process-steps.intro",
           "kind": "copy",
           "path": "08-process-steps.intro",
-          "value": "Start with what the system is doing or what you are planning. North Star HVAC will review the request, inspect when needed, and explain the practical options."
+          "value": "Share what is happening, confirm the service need, and receive clear options based on an inspection of the system."
         },
         {
           "id": "home.08-process-steps.steps",
           "kind": "copy",
           "path": "08-process-steps.steps",
-          "value": "Tell Us What You Need - Request service online for non-urgent needs, or call directly when the home has lost heating or cooling and the problem cannot wait.\nReview the System - The team confirms the request details and inspects the system when diagnosis or replacement guidance is needed.\nUnderstand the Options - Review what was found, what each recommendation addresses, and which next step fits the system and the home."
+          "value": "Share the Problem - Tell us what changed, where you are located, and whether you need repair, replacement, maintenance, or urgent help.\nConfirm the Next Step - We call or text to review the request, clarify urgency, and discuss available scheduling options.\nInspect and Explain - A technician evaluates the system, explains the findings, and presents practical recommendations before work moves forward."
         },
         {
           "id": "home.08-process-steps.primaryAction",
@@ -8187,7 +8187,7 @@
           "id": "home.09-faq-accordion.faqs",
           "kind": "copy",
           "path": "09-faq-accordion.faqs",
-          "value": "What should I do if the heating or cooling stops working? - Call North Star HVAC directly when the home has lost heating or cooling or the problem cannot wait. Limited urgent service may be available depending on schedule, distance, and technician capacity.\nDo you serve my town or ZIP code? - North Star HVAC serves homeowners in Huntersville, Cornelius, Davidson, Mooresville, and nearby Lake Norman communities. Regular service generally extends about 25–30 miles from Huntersville, with coverage confirmed by address.\nCan you give me a repair price before inspecting the system? - Exact repair pricing depends on what the diagnosis shows. Repair visits usually require a diagnostic fee, but the exact amount and any credit toward approved work need confirmation.\nHow do I know whether repair or replacement makes more sense? - The decision should consider the diagnosis, overall system condition, recent repair history, reliability, and how well the equipment serves the home. Replacement is not assumed from age or one repair alone.\nWhat happens after I submit a quote or service request? - North Star HVAC reviews the information and may call or text to confirm the problem, location, and appropriate service path. Submitting the form starts a request and does not confirm an appointment."
+          "value": "Do you provide service in my area? - North Star HVAC serves Huntersville, Cornelius, Davidson, Mooresville, North Charlotte, Denver, and nearby Lake Norman communities. Contact us to confirm availability for your address.\nHow do I know whether to repair or replace my system? - The right answer depends on the diagnosis, system condition, repair history, reliability, and longer-term needs. We explain both paths before recommending the next step.\nIs there a diagnostic fee for repair visits? - A standard $89 diagnostic fee applies to repair visits. The fee may be credited toward an approved repair or replacement when the customer moves forward with the recommended work.\nDo you offer urgent or after-hours HVAC service? - After-hours help may be available for urgent heating and cooling problems depending on schedule, distance, and technician availability. Call directly to check current availability.\nWhat happens after I submit a quote request? - North Star HVAC reviews the information and follows up by phone or text to clarify the request and discuss scheduling. Submitting the form does not create a confirmed appointment."
         },
         {
           "id": "home.09-faq-accordion.style.colorRecipe",
@@ -8223,13 +8223,13 @@
           "id": "home.10-fixed-cover-fade.backgroundTitle",
           "kind": "copy",
           "path": "10-fixed-cover-fade.backgroundTitle",
-          "value": "Get a clear next step for the system your home depends on"
+          "value": "Get Clear on What Your System Needs Before You Commit"
         },
         {
           "id": "home.10-fixed-cover-fade.backgroundBody",
           "kind": "copy",
           "path": "10-fixed-cover-fade.backgroundBody",
-          "value": "Whether you need repair, replacement guidance, heat pump service, or seasonal maintenance, start with the problem or goal and North Star HVAC will help route the request."
+          "value": "Repair, replacement, and maintenance decisions are easier when the problem, available options, and next step are explained in plain language."
         },
         {
           "id": "home.10-fixed-cover-fade.foregroundEyebrow",
@@ -8241,19 +8241,19 @@
           "id": "home.10-fixed-cover-fade.foregroundTitle",
           "kind": "copy",
           "path": "10-fixed-cover-fade.foregroundTitle",
-          "value": "Tell us what your heating or cooling system needs"
+          "value": "Tell Us What Is Happening With Your System"
         },
         {
           "id": "home.10-fixed-cover-fade.foregroundBody",
           "kind": "copy",
           "path": "10-fixed-cover-fade.foregroundBody",
-          "value": "Share the service, location, and urgency. North Star HVAC may call or text to confirm details and discuss the appropriate next step. A submitted request does not confirm an appointment."
+          "value": "Send the details for a repair, replacement, heat pump, tune-up, or maintenance request. North Star HVAC will follow up to confirm the need and discuss the next step."
         },
         {
           "id": "home.10-fixed-cover-fade.contactDetails",
           "kind": "copy",
           "path": "10-fixed-cover-fade.contactDetails",
-          "value": "704-555-0184\nMonday–Friday, 8am–6pm\nHuntersville and nearby Lake Norman communities"
+          "value": "704-555-0184\n[hello@northstarhvac.com](mailto:hello@northstarhvac.com)\nMonday–Friday, 8am–6pm"
         },
         {
           "id": "home.10-fixed-cover-fade.style.colorRecipe",
@@ -8424,9 +8424,9 @@
       "promotedAt": "2026-07-31T01:09:55.862Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-03T19:54:44.013Z",
-        "id": "north-star-hvac-v33",
-        "version": 33
+        "createdAt": "2026-08-04T04:22:08.330Z",
+        "id": "north-star-hvac-v35",
+        "version": 35
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -9846,9 +9846,9 @@
       "promotedAt": "2026-07-29T19:50:36.110Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-03T19:54:44.013Z",
-        "id": "north-star-hvac-v33",
-        "version": 33
+        "createdAt": "2026-08-04T04:22:08.330Z",
+        "id": "north-star-hvac-v35",
+        "version": 35
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -11286,9 +11286,9 @@
       "promotedAt": "2026-07-29T17:32:22.773Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-03T19:54:44.013Z",
-        "id": "north-star-hvac-v33",
-        "version": 33
+        "createdAt": "2026-08-04T04:22:08.330Z",
+        "id": "north-star-hvac-v35",
+        "version": 35
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -12804,9 +12804,9 @@
       "promotedAt": "2026-07-27T22:54:23.099Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-03T19:54:44.013Z",
-        "id": "north-star-hvac-v33",
-        "version": 33
+        "createdAt": "2026-08-04T04:22:08.330Z",
+        "id": "north-star-hvac-v35",
+        "version": 35
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -13040,7 +13040,7 @@
           "id": "heat-pump-service.strategy.pageCopy",
           "kind": "copy",
           "path": "strategy.pageCopy",
-          "value": "# Bulk Paste Copy\n\n<!-- Page target: Heat Pump Service (/services/heat-pump-service) -->\n\n<!-- Template contract: tc-v2-1sc9up4 -->\n\n### 02-compact-service-hero\n\n<!-- Section contract: sc-v1-osfxvb -->\n\neyebrow: Heat Pump Service Around Lake Norman\nh1: Heat Pump Repair, Maintenance, and Replacement Guidance\nintro: North Star HVAC helps homeowners understand what their heat pump needs now, from diagnosing an operating problem to planning seasonal care or comparing replacement.\nctaTitle: Need Heat Pump Help Now?\nctaBody: No heating or cooling? Call directly to discuss the problem and current service availability.\nprimaryAction: Request Heat Pump Help\nsecondaryAction: Call Now\n\n### 03-large-section-header\n\n<!-- Section contract: sc-v1-1mraaw2 -->\n\neyebrow: Start With What You Need\nheading: Which heat pump service path fits the situation?\nbody: You do not need to diagnose the system before reaching out. Start with what has changed, whether you are planning seasonal care, or whether replacement has entered the conversation.\nitems: Something changed — The system is no longer heating, cooling, or operating the way it normally does.\nPlanned care — The heat pump is working, but it is due for maintenance or a seasonal review.\nReplacement questions — You want to compare continued repair with a planned system replacement.\n\n### 04-callout-cards-with-reveal-panel\n\n<!-- Section contract: sc-v1-ig8dqb -->\n\ncalloutItems: No Heating or Cooling — The heat pump is running or trying to run, but the home is no longer holding the temperature set at the thermostat.\nUneven Temperatures — Some rooms stay warmer or cooler than the rest of the home even while the heat pump continues to operate.\nNew Noises or Cycling — The system sounds different, runs in shorter bursts, or starts and stops more often than it did before.\nSeasonal Care Due — The heat pump is operating, but it is due for a planned review before the next stretch of heavier seasonal use.\nRepeated Repairs — The system has needed attention more than once, and you want to know whether another repair still makes practical sense.\nPlanning Replacement — The heat pump still operates, but you want time to compare continued repair with a planned replacement.\ncalloutPanels: Get a clear next step for lost service — A loss of heating or cooling can have more than one possible cause. Call directly when the problem cannot wait, or send the current symptoms so North Star can review the request and confirm the appropriate next step.\nFind out what changed in the home — Uneven temperatures do not automatically point to one repair or to replacement. The visit should consider heat pump operation, airflow, system condition, and how consistently the current setup serves the home.\nHave the operating change reviewed — New sounds or frequent cycling are signs that the system is operating differently. Note when the change began and what the heat pump is doing now so the inspection can start with the clearest available information.\nReview the system before peak demand — Planned maintenance creates an opportunity to review heat pump operation and visible equipment concerns before heavier seasonal use. The exact visit scope should match the approved maintenance service.\nLook at the pattern behind the repairs — Another repair may still be practical. The useful question is whether it addresses one isolated issue and restores a reasonable outlook, or whether the recent pattern points toward a broader system decision.\nCompare the repair and replacement paths — An older or repeatedly repaired heat pump does not automatically need replacement. Review system condition, repair history, reliability, and fit for the home before choosing the next path.\ncalloutActions: Request urgent help -> /contact?service=heat-pump-service&concern=no-heating-or-cooling\nRequest a system check -> /contact?service=heat-pump-service&concern=uneven-temperatures\nRequest a diagnosis -> /contact?service=heat-pump-service&concern=operating-change\nRequest maintenance -> /contact?service=heat-pump-service&concern=seasonal-care\nDiscuss repair history -> /contact?service=heat-pump-service&concern=repeated-repairs\nDiscuss replacement -> /contact?service=heat-pump-service&concern=replacement-planning\nopenHint: See what this means\ncloseLabel: Close details\n\n### 05-main-idea-support-grid\n\n<!-- Section contract: sc-v1-khztrp -->\n\neyebrow: Understanding System Condition\nheading: The right path starts with what the heat pump is doing\nbody: Repair, maintenance, and replacement are different responses to different conditions. A useful recommendation considers current performance, operating changes, service history, and how well the system still fits the home.\npoints.1.title: Current Performance\npoints.1.body: Start with whether the heat pump is heating and cooling consistently or struggling to reach the expected temperature.\npoints.2.title: Operating Changes\npoints.2.body: Note changes in sound, airflow, cycling, thermostat response, or the way the system moves between heating and cooling.\npoints.3.title: Service History\npoints.3.body: Consider whether this is one isolated concern or part of a repeated pattern of repairs and service calls.\npoints.4.title: Fit for the Home\npoints.4.body: Review whether the current system still serves the home’s heating, cooling, and room-to-room needs consistently.\n\n### 06-split-content-with-fixed-image\n\n<!-- Section contract: sc-v1-yzye97 -->\n\neyebrow: Heat Pump Repair\nheading: When operation changes, begin with diagnosis\nbody: A heat pump problem may appear as a loss of heating or cooling, uneven temperatures, weak airflow, new sounds, frequent cycling, or another noticeable change in operation. Those symptoms can have more than one cause.\n\nNorth Star HVAC inspects the system before presenting the repair scope and pricing. You receive a clearer explanation of what needs attention and whether repair remains the practical next step.\nbullets: Describe what changed\nInspect before pricing\nReview the repair path\nprimaryAction: Request Heat Pump Help\nsecondaryAction: Call Now\n\n### 07-longform-with-feature-rail\n\n<!-- Section contract: sc-v1-hpub4p -->\n\neyebrow: Planned Care and Support\nheading: Support for seasonal care and larger heat pump decisions\nbody: Not every heat pump visit begins with a failure. Planned care gives homeowners a chance to review operation, ask about developing concerns, and prepare the system for heavier seasonal use.\n\nA heat pump maintenance visit may include thermostat, filter, airflow, outdoor-unit, and general performance checks. The final scope should follow North Star’s approved service checklist rather than a generic list of promises.\n\nWhen replacement enters the conversation, financing may be available for qualifying projects. Current options, eligibility, and terms should be discussed with the proposal. Ongoing maintenance is available without presenting an unconfirmed membership or recurring plan.\nsupportingItems: Seasonal Heat Pump Care — Ask about planned maintenance before heavier seasonal use. A heat-pump-specific promotion, price, and offer terms are not confirmed.\nReplacement Financing — Financing may be available for qualifying replacement projects. Provider, approval requirements, rates, and terms require confirmation.\nOngoing Heat Pump Care — Schedule maintenance as needed to review operation and developing concerns without assuming a formal membership plan.\nbullets: Planned service before heavier seasonal use\nMaintenance scope should match the approved checklist\nFinancing details belong with the replacement proposal\ntextLinkLabel: Explore heat pump service options\n\n### 08-compact-section-header\n\n<!-- Section contract: sc-v1-s6vx05 -->\n\neyebrow: Replacement Guidance\nheading: When replacement becomes part of the conversation\nbody: Replacement becomes more relevant when system condition, repair history, reliability, and fit for the home begin pointing beyond one isolated repair.\nitems: Current condition — Start with what the inspection shows across the heat pump system.\nRepair outlook — Consider whether another repair restores a reasonable reliability outlook.\nLong-term fit — Review whether the current system still serves the home consistently.\n\n### 09-card-links-3-up\n\n<!-- Section contract: sc-v1-gpnnj3 -->\n\nserviceItems: Heat Pump Repair — Start with diagnosis when the system stops heating, cooling, or operating the way it normally does. -> /contact?service=heat-pump-service&request=repair\nHeat Pump Maintenance — Request planned care to review system operation and prepare for heavier seasonal use. -> /services/maintenance\nSystem Replacement — Compare repair and replacement when condition, reliability, or recent service history creates a larger decision. -> /services/system-replacement\nlinkLabel: Explore This Path\n\n### 10-process-steps\n\n<!-- Section contract: sc-v1-b1454i -->\n\nheading: How the right heat pump path gets clearer\nintro: Whether the need is repair, maintenance, or replacement guidance, the process begins with the current situation and moves toward a practical next step.\nsteps: Describe the current need — Share what has changed, whether the system is still operating, and whether you are requesting repair, planned care, or replacement guidance.\nReview the heat pump — Inspect the system’s current operation and condition rather than choosing a service path from one symptom or the age of the equipment alone.\nChoose the next step — Review the relevant repair, maintenance, or replacement recommendation and approve the work that fits the system and home.\n\n### 11-project-case-study-gallery\n\n<!-- Section contract: sc-v1-12nmyd0 -->\n\nslides.1.project: NEEDS REVIEW: Project facts missing.\nslides.1.title: NEEDS REVIEW: Verified heat pump project headline missing.\nslides.1.summary: NEEDS REVIEW: No verified heat pump project summary is available in the supplied sources.\nslides.1.equipment.1.label: Location\nslides.1.equipment.1.value: NEEDS REVIEW: Project location missing.\nslides.1.equipment.2.label: Equipment\nslides.1.equipment.2.value: NEEDS REVIEW: Equipment details missing.\nslides.1.equipment.3.label: Work Completed\nslides.1.equipment.3.value: NEEDS REVIEW: Completed work missing.\nslides.1.testimonial.quote: NEEDS REVIEW: Approved project testimonial missing.\nslides.1.testimonial.attribution: NEEDS REVIEW: Approved attribution missing.\nslides.2.project: NEEDS REVIEW: Project facts missing.\nslides.2.title: NEEDS REVIEW: Verified heat pump project headline missing.\nslides.2.summary: NEEDS REVIEW: No second verified heat pump project summary is available in the supplied sources.\nslides.2.equipment.1.label: Location\nslides.2.equipment.1.value: NEEDS REVIEW: Project location missing.\nslides.2.equipment.2.label: Equipment\nslides.2.equipment.2.value: NEEDS REVIEW: Equipment details missing.\nslides.2.equipment.3.label: Work Completed\nslides.2.equipment.3.value: NEEDS REVIEW: Completed work missing.\nslides.2.testimonial.quote: NEEDS REVIEW: Approved project testimonial missing.\nslides.2.testimonial.attribution: NEEDS REVIEW: Approved attribution missing.\n\n### 12-split-content-with-full-image\n\n<!-- Section contract: sc-v1-1hif1lg -->\n\neyebrow: Local Heat Pump Service\nheading: Serving Huntersville and nearby Lake Norman homes\nbody: North Star HVAC provides residential heat pump service from its Huntersville base, with priority coverage around Huntersville, Cornelius, Davidson, and Mooresville. Regular service generally extends about 25–30 miles from Huntersville.\n\nAvailability for a specific address can be confirmed when the request is reviewed. Urgent service may depend on location, distance, the current schedule, and technician availability.\nbullets: Clear service recommendations\nClean and respectful work\nLocal service-area knowledge\nprimaryAction: Check Your Area\nsecondaryAction: Request Service\n\n### 13-faq-accordion-sidebar\n\n<!-- Section contract: sc-v1-1txqype -->\n\nheading: Questions about your heat pump?\nintro: Heat pump problems and planning questions do not always fit one simple category. Reach out directly when you need help choosing the next step.\nprimaryAction: Contact North Star\nfaqs: Do you repair and maintain heat pump systems? — Heat pump repair and maintenance are confirmed North Star services. The right starting point depends on whether something has changed, the system needs planned care, or replacement has entered the conversation.\nShould I call if my heat pump stops heating or cooling? — Yes. Call directly for an urgent loss of heating or cooling so North Star can discuss the problem and current availability. Service depends on the schedule, location, distance, and technician capacity.\nHow do you decide between heat pump repair and replacement? — The decision should consider the diagnosis, overall system condition, repair history, reliability outlook, and how well the current setup serves the home. Replacement is not assumed from age or one repair alone.\nWhat may be reviewed during heat pump maintenance? — A maintenance visit may include thermostat, filter, airflow, outdoor-unit, and general system performance checks. The exact heat pump checklist and visit scope should be confirmed before publication.\n\n### 14-contact-section-modal-begin\n\n<!-- Section contract: sc-v1-2n2ieh -->\n\neyebrow: Start a Heat Pump Request\nheading: Begin with what your heat pump needs now\nbody: Choose the system and whether you need repair, planned maintenance, or replacement guidance. Any selection made earlier on the page can carry into the next step.\nsystemPrompt: Which system needs attention?\nrequestPrompt: What kind of help do you need?\ncontinueLabel: Continue\nhelperText: Your selections carry into the request form and remain editable before submission.\n\n## Copy Notes\n\nThis page needs to organize heat pump service around three possible visitor needs: an active operating problem, planned maintenance, or a replacement question. It should guide each visitor toward the correct path without turning the page into either a repair-only page or a replacement sales page.\n\n* Suggested page title: Heat Pump Service in Huntersville, NC | North Star HVAC\n* Suggested meta description: Request heat pump repair, maintenance, or replacement guidance from North Star HVAC in Huntersville and nearby Lake Norman communities.\n* Suggested H1: Heat Pump Repair, Maintenance, and Replacement Guidance\n* Suggested URL slug: /services/heat-pump-service\n* Primary CTA pattern: Request Heat Pump Help\n* Secondary CTA pattern: Call Now\n* Route conflict: The earlier sitemap plan lists `/services/heat-pumps`, while the Template Copy Contract specifies `/services/heat-pump-service`. This copy follows the contract.\n* Section 02 urgent route: The boxed CTA handles urgent loss of heating or cooling without making the entire page feel emergency-driven.\n* Section 04 interaction: All six cards should remain equal-height. Clicking a card should open one shared reveal panel over or below the complete grid rather than expand an individual card.\n* Section 04 mobile behavior: Stack the six card faces, then place the selected detail panel below the complete card set. Do not rely on hover.\n* Section 04 request behavior: Each panel CTA should open the contact modal with `service=heat-pump-service` and the selected concern prefilled. Query-string paths provide a fallback.\n* Section 05 behavior: The four condition factors are static informational points and should not share the clickable visual styling used in Section 04.\n* Section 06 image direction: Use a technician inspecting or discussing a real residential heat pump system.\n* Section 07 template constraint: The feature rail requires seasonal, financing, and ongoing-care slots. The copy avoids inventing a heat-pump promotion, financing terms, or a maintenance membership.\n* Section 08 and 09 relationship: Section 08 introduces replacement considerations. Section 09 provides the deeper links into repair, maintenance, and the dedicated System Replacement page.\n* Section 11 proof requirement: No verified heat pump project facts, equipment details, or associated customer quotes were supplied. Both slides remain NEEDS REVIEW rather than using invented mock projects.\n* Section 12 service area: Huntersville, Cornelius, Davidson, and Mooresville receive priority visibility. North Charlotte and Denver are not emphasized while their preferred visibility remains unconfirmed.\n* Section 14 prefill logic: The page should automatically establish Heat Pump Service as the service category. A path or concern chosen in Section 04 should remain selected but editable.\n* Form note: Keep urgency separate from the service type. Form submission starts a request and does not confirm an appointment.\n* Maintenance note: General maintenance is promoted without presenting a formal maintenance plan or membership.\n* FAQ note: Avoid technical equipment-type, brand, certification, warranty, and performance claims until those details are confirmed.\n\n## Copy QA\n\n* Unsupported claims avoided? Yes.\n* Service area accurate? Yes.\n* Emergency availability handled carefully? Yes.\n* Pricing language cautious? Yes.\n* Priority services emphasized? Yes; repair, maintenance, and replacement remain the three central heat pump paths.\n* Services marked Non-priority or Do not promote not overpromoted? Yes.\n* CTA clear? Yes.\n* Mobile visitor needs considered? Yes.\n* Template field targets followed? Yes.\n* Every section ID preserved? Yes.\n* Voice matches the Protective Professional personality? Yes.\n* Avoided phrases from the voice packet kept out? Yes."
+          "value": "# Bulk Paste Copy\n\n<!-- Page target: Heat Pump Service (/services/heat-pump-service) -->\n\n<!-- Template contract: tc-v2-1a01mpc -->\n\n### 02-compact-service-hero\n\n<!-- Section contract: sc-v1-osfxvb -->\n\neyebrow: Heat Pump Service Around Lake Norman\nh1: Heat Pump Repair, Maintenance, and Replacement Guidance\nintro: North Star HVAC helps homeowners understand what their heat pump needs now, from diagnosing an operating problem to planning seasonal care or comparing replacement.\nctaTitle: Need Heat Pump Help Now?\nctaBody: No heating or cooling? Call directly to discuss the problem and current service availability.\nprimaryAction: Request Heat Pump Help\nsecondaryAction: Call Now\n\n### 03-large-section-header\n\n<!-- Section contract: sc-v1-1mraaw2 -->\n\neyebrow: Start With What You Need\nheading: Which Heat Pump Service Path Fits the Situation?\nbody: You do not need to diagnose the system before reaching out. Start with what has changed, whether you are planning seasonal care, or whether replacement has entered the conversation.\nitems: Something Changed — The system is no longer heating, cooling, or operating the way it normally does.\nPlanned Care — The heat pump is working, but it is due for maintenance or a seasonal review.\nReplacement Questions — You want to compare continued repair with a planned system replacement.\n\n### 04-callout-cards-with-reveal-panel\n\n<!-- Section contract: sc-v1-ig8dqb -->\n\ncalloutItems: No Heating or Cooling — The heat pump is running or trying to run, but the home is no longer holding the temperature set at the thermostat.\nUneven Temperatures — Some rooms stay warmer or cooler than the rest of the home even while the heat pump continues to operate.\nNew Noises or Cycling — The system sounds different, runs in shorter bursts, or starts and stops more often than it did before.\nSeasonal Care Due — The heat pump is operating, but it is due for a planned review before the next stretch of heavier seasonal use.\nRepeated Repairs — The system has needed attention more than once, and you want to know whether another repair still makes practical sense.\nPlanning Replacement — The heat pump still operates, but you want time to compare continued repair with a planned replacement.\ncalloutPanels: Get a Clear Next Step for Lost Service — A loss of heating or cooling can have more than one possible cause. Call directly when the problem cannot wait, or send the current symptoms so North Star can review the request and confirm the appropriate next step.\nFind Out What Changed in the Home — Uneven temperatures do not automatically point to one repair or replacement. The visit should consider heat pump operation, airflow, system condition, and how consistently the current setup serves the home.\nHave the Operating Change Reviewed — New sounds or frequent cycling are signs that the system is operating differently. Note when the change began and what the heat pump is doing now so the inspection can start with the clearest available information.\nReview the System Before Peak Demand — Planned maintenance creates an opportunity to review heat pump operation and visible equipment concerns before heavier seasonal use. The exact visit scope should match the approved maintenance service.\nLook at the Pattern Behind the Repairs — Another repair may still be practical. The useful question is whether it addresses one isolated issue and restores a reasonable outlook, or whether the recent pattern points toward a broader system decision.\nCompare the Repair and Replacement Paths — An older or repeatedly repaired heat pump does not automatically need replacement. Review system condition, repair history, reliability, and fit for the home before choosing the next path.\ncalloutActions: Request Urgent Help -> /contact?service=heat-pump-service&concern=no-heating-or-cooling\nRequest a System Check -> /contact?service=heat-pump-service&concern=uneven-temperatures\nRequest a Diagnosis -> /contact?service=heat-pump-service&concern=operating-change\nRequest Maintenance -> /contact?service=heat-pump-service&concern=seasonal-care\nDiscuss Repair History -> /contact?service=heat-pump-service&concern=repeated-repairs\nDiscuss Replacement -> /contact?service=heat-pump-service&concern=replacement-planning\nopenHint: See What This Means\ncloseLabel: Close Details\n\n### 05-main-idea-support-grid\n\n<!-- Section contract: sc-v1-khztrp -->\n\neyebrow: Understanding System Condition\nheading: The Right Path Starts With What the Heat Pump Is Doing\nbody: Repair, maintenance, and replacement are different responses to different conditions. A useful recommendation considers current performance, operating changes, service history, and how well the system still fits the home.\npoints.1.title: Current Performance\npoints.1.body: Start with whether the heat pump is heating and cooling consistently or struggling to reach the expected temperature.\npoints.2.title: Operating Changes\npoints.2.body: Note changes in sound, airflow, cycling, thermostat response, or the way the system moves between heating and cooling.\npoints.3.title: Service History\npoints.3.body: Consider whether this is one isolated concern or part of a repeated pattern of repairs and service calls.\npoints.4.title: Fit for the Home\npoints.4.body: Review whether the current system still serves the home’s heating, cooling, and room-to-room needs consistently.\n\n### 06-split-content-with-fixed-image\n\n<!-- Section contract: sc-v1-13dqacn -->\n\neyebrow: Heat Pump Repair\nheading: When Operation Changes, Begin With Diagnosis\nbody: A heat pump problem may appear as a loss of heating or cooling, uneven temperatures, weak airflow, new sounds, frequent cycling, or another noticeable change in operation. Those symptoms can have more than one cause.\n\nNorth Star HVAC inspects the system before presenting the repair scope and pricing. You receive a clearer explanation of what needs attention and whether repair remains the practical next step.\nbullets: Describe What Changed\nInspect Before Pricing\nReview the Repair Path\nprimaryAction: Request Heat Pump Help\nsecondaryAction: Call Now\n\n### 07-longform-with-feature-rail\n\n<!-- Section contract: sc-v1-hpub4p -->\n\neyebrow: Planned Care and Support\nheading: Support for Seasonal Care and Larger Heat Pump Decisions\nbody: Not every heat pump visit begins with a failure. Planned care gives homeowners a chance to review operation, ask about developing concerns, and prepare the system for heavier seasonal use.\n\nA heat pump maintenance visit may include thermostat, filter, airflow, outdoor-unit, and general performance checks. The final scope should follow North Star’s approved service checklist rather than a generic list of promises.\n\nWhen replacement enters the conversation, financing may be available for qualifying projects. Current options, eligibility, and terms should be discussed with the proposal. Ongoing maintenance is available without presenting an unconfirmed membership or recurring plan.\nsupportingItems: Seasonal Heat Pump Care — Ask about planned maintenance before heavier seasonal use. A heat-pump-specific promotion, price, and offer terms are not confirmed.\nReplacement Financing — Financing may be available for qualifying replacement projects. Provider, approval requirements, rates, and terms require confirmation.\nOngoing Heat Pump Care — Schedule maintenance as needed to review operation and developing concerns without assuming a formal membership plan.\nbullets: Planned service before heavier seasonal use\nMaintenance scope should match the approved checklist\nFinancing details belong with the replacement proposal\ntextLinkLabel: Explore Heat Pump Service Options\n\n### 08-compact-section-header\n\n<!-- Section contract: sc-v1-s6vx05 -->\n\neyebrow: Replacement Guidance\nheading: When Replacement Becomes Part of the Conversation\nbody: Replacement becomes more relevant when system condition, repair history, reliability, and fit for the home begin pointing beyond one isolated repair.\nitems: Current Condition — Start with what the inspection shows across the heat pump system.\nRepair Outlook — Consider whether another repair restores a reasonable reliability outlook.\nLong-Term Fit — Review whether the current system still serves the home consistently.\n\n### 09-card-links-3-up\n\n<!-- Section contract: sc-v1-gpnnj3 -->\n\nserviceItems: Heat Pump Repair — Start with diagnosis when the system stops heating, cooling, or operating the way it normally does. -> /contact?service=heat-pump-service&request=repair\nHeat Pump Maintenance — Request planned care to review system operation and prepare for heavier seasonal use. -> /services/maintenance\nSystem Replacement — Compare repair and replacement when condition, reliability, or recent service history creates a larger decision. -> /services/system-replacement\nlinkLabel: Explore This Path\n\n### 10-process-steps\n\n<!-- Section contract: sc-v1-1n2n5rk -->\n\nheading: How the Right Heat Pump Path Gets Clearer\nintro: Whether the need is repair, maintenance, or replacement guidance, the process begins with the current situation and moves toward a practical next step.\nsteps: Describe the Current Need — Share what has changed, whether the system is still operating, and whether you are requesting repair, planned care, or replacement guidance.\nReview the Heat Pump — Inspect the system’s current operation and condition rather than choosing a service path from one symptom or the age of the equipment alone.\nChoose the Next Step — Review the relevant repair, maintenance, or replacement recommendation and approve the work that fits the system and home.\n\n### 11-project-case-study-gallery\n\n<!-- Section contract: sc-v1-12nmyd0 -->\n\nslides.1.project: NEEDS REVIEW: Project facts missing.\nslides.1.title: NEEDS REVIEW: Verified heat pump project headline missing.\nslides.1.summary: NEEDS REVIEW: No verified heat pump project summary is available in the supplied sources.\nslides.1.equipment.1.label: Location\nslides.1.equipment.1.value: NEEDS REVIEW: Project location missing.\nslides.1.equipment.2.label: Equipment\nslides.1.equipment.2.value: NEEDS REVIEW: Equipment details missing.\nslides.1.equipment.3.label: Work Completed\nslides.1.equipment.3.value: NEEDS REVIEW: Completed work missing.\nslides.1.testimonial.quote: NEEDS REVIEW: Approved project testimonial missing.\nslides.1.testimonial.attribution: NEEDS REVIEW: Approved attribution missing.\nslides.2.project: NEEDS REVIEW: Project facts missing.\nslides.2.title: NEEDS REVIEW: Verified heat pump project headline missing.\nslides.2.summary: NEEDS REVIEW: No second verified heat pump project summary is available in the supplied sources.\nslides.2.equipment.1.label: Location\nslides.2.equipment.1.value: NEEDS REVIEW: Project location missing.\nslides.2.equipment.2.label: Equipment\nslides.2.equipment.2.value: NEEDS REVIEW: Equipment details missing.\nslides.2.equipment.3.label: Work Completed\nslides.2.equipment.3.value: NEEDS REVIEW: Completed work missing.\nslides.2.testimonial.quote: NEEDS REVIEW: Approved project testimonial missing.\nslides.2.testimonial.attribution: NEEDS REVIEW: Approved attribution missing.\n\n### 12-split-content-with-full-image\n\n<!-- Section contract: sc-v1-812i6a -->\n\neyebrow: Local Heat Pump Service\nheading: Serving Huntersville and Nearby Lake Norman Homes\nbody: North Star HVAC provides residential heat pump service from its Huntersville base, with priority coverage around Huntersville, Cornelius, Davidson, and Mooresville. Regular service generally extends about 25–30 miles from Huntersville.\n\nAvailability for a specific address can be confirmed when the request is reviewed. Urgent service may depend on location, distance, the current schedule, and technician availability.\nbullets: Clear Service Recommendations\nClean and Respectful Work\nLocal Service-Area Knowledge\nprimaryAction: Check Your Area\nsecondaryAction: Request Service\n\n### 13-faq-accordion-sidebar\n\n<!-- Section contract: sc-v1-1txqype -->\n\nheading: Questions About Your Heat Pump?\nintro: Heat pump problems and planning questions do not always fit one simple category. Reach out directly when you need help choosing the next step.\nprimaryAction: Contact North Star\nfaqs: Do you repair and maintain heat pump systems? — Heat pump repair and maintenance are confirmed North Star services. The right starting point depends on whether something has changed, the system needs planned care, or replacement has entered the conversation.\nShould I call if my heat pump stops heating or cooling? — Yes. Call directly for an urgent loss of heating or cooling so North Star can discuss the problem and current availability. Service depends on the schedule, location, distance, and technician capacity.\nHow do you decide between heat pump repair and replacement? — The decision should consider the diagnosis, overall system condition, repair history, reliability outlook, and how well the current setup serves the home. Replacement is not assumed from age or one repair alone.\nWhat may be reviewed during heat pump maintenance? — A maintenance visit may include thermostat, filter, airflow, outdoor-unit, and general system performance checks. The exact heat pump checklist and visit scope should be confirmed before publication.\n\n### 14-contact-section-modal-begin\n\n<!-- Section contract: sc-v1-2n2ieh -->\n\neyebrow: Start a Heat Pump Request\nheading: Begin With What Your Heat Pump Needs Now\nbody: Choose the system and whether you need repair, planned maintenance, or replacement guidance. Any selection made earlier on the page can carry into the next step.\nsystemPrompt: Which System Needs Attention?\nrequestPrompt: What Kind of Help Do You Need?\ncontinueLabel: Continue\nhelperText: Your selections carry into the request form and remain editable before submission.\n\n## Copy Notes\n\nThis is a contract migration of the existing Heat Pump Service copy. The page strategy, three-path service model, routing behavior, and wording remain intact.\n\nSuggested page title: Heat Pump Service in Huntersville, NC | North Star HVAC\n\nSuggested meta description: Request heat pump repair, maintenance, or replacement guidance from North Star HVAC in Huntersville and nearby Lake Norman communities.\n\nSuggested H1: Heat Pump Repair, Maintenance, and Replacement Guidance\n\nSuggested URL slug: /services/heat-pump-service\n\nPrimary CTA pattern: Request Heat Pump Help\n\nSecondary CTA pattern: Call Now\n\nRoute conflict: The earlier sitemap plan lists `/services/heat-pumps`, while the current contract specifies `/services/heat-pump-service`. This copy follows the contract.\n\nSection 02 urgent route: The boxed CTA handles urgent loss of heating or cooling without making the entire page feel emergency-driven.\n\nSection 04 interaction: All six cards should remain equal-height. Clicking a card should open one shared reveal panel over or below the complete grid rather than expand an individual card.\n\nSection 04 mobile behavior: Stack the six card faces, then place the selected detail panel below the complete card set. Do not rely on hover.\n\nSection 04 request behavior: Each panel CTA should open the request flow with `service=heat-pump-service` and the selected concern prefilled. Query-string paths provide a fallback.\n\nSection 05 behavior: The four condition factors are static informational points and should not share the clickable visual styling used in Section 04.\n\nSection 06 image direction: Use a technician inspecting or discussing a real residential heat pump system.\n\nSection 07 template constraint: The feature rail requires seasonal, financing, and ongoing-care slots. The copy avoids inventing a heat-pump promotion, financing terms, or maintenance membership.\n\nSection 08 and 09 relationship: Section 08 introduces replacement considerations. Section 09 provides deeper links into repair, maintenance, and the dedicated System Replacement page.\n\nSection 11 proof requirement: No verified heat pump project facts, equipment details, or associated customer quotes were supplied. Both slides remain NEEDS REVIEW rather than using invented projects.\n\nSection 12 service area: Huntersville, Cornelius, Davidson, and Mooresville receive priority visibility. North Charlotte and Denver are not emphasized while their preferred visibility remains unconfirmed.\n\nSection 14 prefill logic: The page should automatically establish Heat Pump Service as the service category. A path or concern chosen in Section 04 should remain selected but editable.\n\nForm note: Keep urgency separate from service type. Form submission starts a request and does not confirm an appointment.\n\nMaintenance note: General maintenance is promoted without presenting a formal maintenance plan or membership.\n\nFAQ note: Avoid technical equipment-type, brand, certification, warranty, and performance claims until those details are confirmed.\n\nContract migration changes:\n\n* Updated the template fingerprint from `tc-v2-1sc9up4` to `tc-v2-1a01mpc`.\n* Updated Section 06 from `sc-v1-yzye97` to `sc-v1-13dqacn`.\n* Updated Section 10 from `sc-v1-b1454i` to `sc-v1-1n2n5rk`.\n* Updated Section 12 from `sc-v1-1hif1lg` to `sc-v1-812i6a`.\n* Preserved every current section ID and supported field.\n* Did not add the optional `proofPoints` fields in Sections 06 or 12 because the existing body and bullet content already provide sufficient scan value.\n* Did not add optional process CTAs in Section 10 because the page already provides conversion paths immediately before and after the process section.\n\n## Copy QA\n\n* Unsupported claims avoided? Yes.\n* Service area accurate? Yes.\n* Emergency availability handled carefully? Yes.\n* Pricing language cautious? Yes.\n* Priority services emphasized? Yes; repair, maintenance, and replacement remain the three central heat pump paths.\n* Services marked Non-priority or Do not promote not overpromoted? Yes.\n* CTA clear? Yes.\n* Mobile visitor needs considered? Yes.\n* Template field targets followed? Yes.\n* Every current section ID preserved? Yes.\n* Site chrome excluded? Yes.\n* Voice matches the Protective Professional personality? Yes.\n* Avoided phrases from the voice packet kept out? Yes."
         },
         {
           "id": "heat-pump-service.strategy.contentPlan",
@@ -13208,7 +13208,7 @@
           "id": "heat-pump-service.03-large-section-header.heading",
           "kind": "copy",
           "path": "03-large-section-header.heading",
-          "value": "Which heat pump service path fits the situation?"
+          "value": "Which Heat Pump Service Path Fits the Situation?"
         },
         {
           "id": "heat-pump-service.03-large-section-header.body",
@@ -13220,7 +13220,7 @@
           "id": "heat-pump-service.03-large-section-header.items",
           "kind": "copy",
           "path": "03-large-section-header.items",
-          "value": "Something changed — The system is no longer heating, cooling, or operating the way it normally does.\nPlanned care — The heat pump is working, but it is due for maintenance or a seasonal review.\nReplacement questions — You want to compare continued repair with a planned system replacement."
+          "value": "Something Changed — The system is no longer heating, cooling, or operating the way it normally does.\nPlanned Care — The heat pump is working, but it is due for maintenance or a seasonal review.\nReplacement Questions — You want to compare continued repair with a planned system replacement."
         },
         {
           "id": "heat-pump-service.03-large-section-header.style.colorRecipe",
@@ -13256,25 +13256,25 @@
           "id": "heat-pump-service.04-callout-cards-with-reveal-panel.calloutPanels",
           "kind": "copy",
           "path": "04-callout-cards-with-reveal-panel.calloutPanels",
-          "value": "Get a clear next step for lost service — A loss of heating or cooling can have more than one possible cause. Call directly when the problem cannot wait, or send the current symptoms so North Star can review the request and confirm the appropriate next step.\nFind out what changed in the home — Uneven temperatures do not automatically point to one repair or to replacement. The visit should consider heat pump operation, airflow, system condition, and how consistently the current setup serves the home.\nHave the operating change reviewed — New sounds or frequent cycling are signs that the system is operating differently. Note when the change began and what the heat pump is doing now so the inspection can start with the clearest available information.\nReview the system before peak demand — Planned maintenance creates an opportunity to review heat pump operation and visible equipment concerns before heavier seasonal use. The exact visit scope should match the approved maintenance service.\nLook at the pattern behind the repairs — Another repair may still be practical. The useful question is whether it addresses one isolated issue and restores a reasonable outlook, or whether the recent pattern points toward a broader system decision.\nCompare the repair and replacement paths — An older or repeatedly repaired heat pump does not automatically need replacement. Review system condition, repair history, reliability, and fit for the home before choosing the next path."
+          "value": "Get a Clear Next Step for Lost Service — A loss of heating or cooling can have more than one possible cause. Call directly when the problem cannot wait, or send the current symptoms so North Star can review the request and confirm the appropriate next step.\nFind Out What Changed in the Home — Uneven temperatures do not automatically point to one repair or replacement. The visit should consider heat pump operation, airflow, system condition, and how consistently the current setup serves the home.\nHave the Operating Change Reviewed — New sounds or frequent cycling are signs that the system is operating differently. Note when the change began and what the heat pump is doing now so the inspection can start with the clearest available information.\nReview the System Before Peak Demand — Planned maintenance creates an opportunity to review heat pump operation and visible equipment concerns before heavier seasonal use. The exact visit scope should match the approved maintenance service.\nLook at the Pattern Behind the Repairs — Another repair may still be practical. The useful question is whether it addresses one isolated issue and restores a reasonable outlook, or whether the recent pattern points toward a broader system decision.\nCompare the Repair and Replacement Paths — An older or repeatedly repaired heat pump does not automatically need replacement. Review system condition, repair history, reliability, and fit for the home before choosing the next path."
         },
         {
           "id": "heat-pump-service.04-callout-cards-with-reveal-panel.calloutActions",
           "kind": "copy",
           "path": "04-callout-cards-with-reveal-panel.calloutActions",
-          "value": "Request urgent help -> /contact?service=heat-pump-service&concern=no-heating-or-cooling\nRequest a system check -> /contact?service=heat-pump-service&concern=uneven-temperatures\nRequest a diagnosis -> /contact?service=heat-pump-service&concern=operating-change\nRequest maintenance -> /contact?service=heat-pump-service&concern=seasonal-care\nDiscuss repair history -> /contact?service=heat-pump-service&concern=repeated-repairs\nDiscuss replacement -> /contact?service=heat-pump-service&concern=replacement-planning"
+          "value": "Request Urgent Help -> /contact?service=heat-pump-service&concern=no-heating-or-cooling\nRequest a System Check -> /contact?service=heat-pump-service&concern=uneven-temperatures\nRequest a Diagnosis -> /contact?service=heat-pump-service&concern=operating-change\nRequest Maintenance -> /contact?service=heat-pump-service&concern=seasonal-care\nDiscuss Repair History -> /contact?service=heat-pump-service&concern=repeated-repairs\nDiscuss Replacement -> /contact?service=heat-pump-service&concern=replacement-planning"
         },
         {
           "id": "heat-pump-service.04-callout-cards-with-reveal-panel.openHint",
           "kind": "copy",
           "path": "04-callout-cards-with-reveal-panel.openHint",
-          "value": "See what this means"
+          "value": "See What This Means"
         },
         {
           "id": "heat-pump-service.04-callout-cards-with-reveal-panel.closeLabel",
           "kind": "copy",
           "path": "04-callout-cards-with-reveal-panel.closeLabel",
-          "value": "Close details"
+          "value": "Close Details"
         },
         {
           "id": "heat-pump-service.04-callout-cards-with-reveal-panel.style.colorRecipe",
@@ -13322,7 +13322,7 @@
           "id": "heat-pump-service.05-main-idea-support-grid.heading",
           "kind": "copy",
           "path": "05-main-idea-support-grid.heading",
-          "value": "The right path starts with what the heat pump is doing"
+          "value": "The Right Path Starts With What the Heat Pump Is Doing"
         },
         {
           "id": "heat-pump-service.05-main-idea-support-grid.body",
@@ -13424,7 +13424,7 @@
           "id": "heat-pump-service.06-split-content-with-fixed-image.heading",
           "kind": "copy",
           "path": "06-split-content-with-fixed-image.heading",
-          "value": "When operation changes, begin with diagnosis"
+          "value": "When Operation Changes, Begin With Diagnosis"
         },
         {
           "id": "heat-pump-service.06-split-content-with-fixed-image.body",
@@ -13436,7 +13436,7 @@
           "id": "heat-pump-service.06-split-content-with-fixed-image.bullets",
           "kind": "copy",
           "path": "06-split-content-with-fixed-image.bullets",
-          "value": "Describe what changed\nInspect before pricing\nReview the repair path"
+          "value": "Describe What Changed\nInspect Before Pricing\nReview the Repair Path"
         },
         {
           "id": "heat-pump-service.06-split-content-with-fixed-image.primaryAction",
@@ -13520,7 +13520,7 @@
           "id": "heat-pump-service.07-longform-with-feature-rail.heading",
           "kind": "copy",
           "path": "07-longform-with-feature-rail.heading",
-          "value": "Support for seasonal care and larger heat pump decisions"
+          "value": "Support for Seasonal Care and Larger Heat Pump Decisions"
         },
         {
           "id": "heat-pump-service.07-longform-with-feature-rail.body",
@@ -13544,7 +13544,7 @@
           "id": "heat-pump-service.07-longform-with-feature-rail.textLinkLabel",
           "kind": "copy",
           "path": "07-longform-with-feature-rail.textLinkLabel",
-          "value": "Explore heat pump service options"
+          "value": "Explore Heat Pump Service Options"
         },
         {
           "id": "heat-pump-service.07-longform-with-feature-rail.imageAlt",
@@ -13592,7 +13592,7 @@
           "id": "heat-pump-service.08-compact-section-header.heading",
           "kind": "copy",
           "path": "08-compact-section-header.heading",
-          "value": "When replacement becomes part of the conversation"
+          "value": "When Replacement Becomes Part of the Conversation"
         },
         {
           "id": "heat-pump-service.08-compact-section-header.body",
@@ -13604,7 +13604,7 @@
           "id": "heat-pump-service.08-compact-section-header.items",
           "kind": "copy",
           "path": "08-compact-section-header.items",
-          "value": "Current condition — Start with what the inspection shows across the heat pump system.\nRepair outlook — Consider whether another repair restores a reasonable reliability outlook.\nLong-term fit — Review whether the current system still serves the home consistently."
+          "value": "Current Condition — Start with what the inspection shows across the heat pump system.\nRepair Outlook — Consider whether another repair restores a reasonable reliability outlook.\nLong-Term Fit — Review whether the current system still serves the home consistently."
         },
         {
           "id": "heat-pump-service.08-compact-section-header.style.colorRecipe",
@@ -13718,7 +13718,7 @@
           "id": "heat-pump-service.10-process-steps.heading",
           "kind": "copy",
           "path": "10-process-steps.heading",
-          "value": "How the right heat pump path gets clearer"
+          "value": "How the Right Heat Pump Path Gets Clearer"
         },
         {
           "id": "heat-pump-service.10-process-steps.intro",
@@ -13730,7 +13730,7 @@
           "id": "heat-pump-service.10-process-steps.steps",
           "kind": "copy",
           "path": "10-process-steps.steps",
-          "value": "Describe the current need — Share what has changed, whether the system is still operating, and whether you are requesting repair, planned care, or replacement guidance.\nReview the heat pump — Inspect the system’s current operation and condition rather than choosing a service path from one symptom or the age of the equipment alone.\nChoose the next step — Review the relevant repair, maintenance, or replacement recommendation and approve the work that fits the system and home."
+          "value": "Describe the Current Need — Share what has changed, whether the system is still operating, and whether you are requesting repair, planned care, or replacement guidance.\nReview the Heat Pump — Inspect the system’s current operation and condition rather than choosing a service path from one symptom or the age of the equipment alone.\nChoose the Next Step — Review the relevant repair, maintenance, or replacement recommendation and approve the work that fits the system and home."
         },
         {
           "id": "heat-pump-service.10-process-steps.style.colorRecipe",
@@ -13970,7 +13970,7 @@
           "id": "heat-pump-service.12-split-content-with-full-image.heading",
           "kind": "copy",
           "path": "12-split-content-with-full-image.heading",
-          "value": "Serving Huntersville and nearby Lake Norman homes"
+          "value": "Serving Huntersville and Nearby Lake Norman Homes"
         },
         {
           "id": "heat-pump-service.12-split-content-with-full-image.body",
@@ -13982,7 +13982,7 @@
           "id": "heat-pump-service.12-split-content-with-full-image.bullets",
           "kind": "copy",
           "path": "12-split-content-with-full-image.bullets",
-          "value": "Clear service recommendations\nClean and respectful work\nLocal service-area knowledge"
+          "value": "Clear Service Recommendations\nClean and Respectful Work\nLocal Service-Area Knowledge"
         },
         {
           "id": "heat-pump-service.12-split-content-with-full-image.primaryAction",
@@ -14042,7 +14042,7 @@
           "id": "heat-pump-service.13-faq-accordion-sidebar.heading",
           "kind": "copy",
           "path": "13-faq-accordion-sidebar.heading",
-          "value": "Questions about your heat pump?"
+          "value": "Questions About Your Heat Pump?"
         },
         {
           "id": "heat-pump-service.13-faq-accordion-sidebar.intro",
@@ -14108,7 +14108,7 @@
           "id": "heat-pump-service.14-contact-section-modal-begin.heading",
           "kind": "copy",
           "path": "14-contact-section-modal-begin.heading",
-          "value": "Begin with what your heat pump needs now"
+          "value": "Begin With What Your Heat Pump Needs Now"
         },
         {
           "id": "heat-pump-service.14-contact-section-modal-begin.body",
@@ -14120,13 +14120,13 @@
           "id": "heat-pump-service.14-contact-section-modal-begin.systemPrompt",
           "kind": "copy",
           "path": "14-contact-section-modal-begin.systemPrompt",
-          "value": "Which system needs attention?"
+          "value": "Which System Needs Attention?"
         },
         {
           "id": "heat-pump-service.14-contact-section-modal-begin.requestPrompt",
           "kind": "copy",
           "path": "14-contact-section-modal-begin.requestPrompt",
-          "value": "What kind of help do you need?"
+          "value": "What Kind of Help Do You Need?"
         },
         {
           "id": "heat-pump-service.14-contact-section-modal-begin.continueLabel",
@@ -14321,9 +14321,9 @@
       "promotedAt": "2026-07-28T22:33:22.082Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-03T19:54:44.013Z",
-        "id": "north-star-hvac-v33",
-        "version": 33
+        "createdAt": "2026-08-04T04:22:08.330Z",
+        "id": "north-star-hvac-v35",
+        "version": 35
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -14547,7 +14547,7 @@
           "id": "services.strategy.pageCopy",
           "kind": "copy",
           "path": "strategy.pageCopy",
-          "value": "# Bulk Paste Copy\n\n<!-- Page target: Services Overview (/services) -->\n\n<!-- Template contract: tc-v2-1jds98t -->\n\n### 02-compact-section-header\n\n<!-- Section contract: sc-v1-3hfyap -->\n\neyebrow: Residential HVAC Services\nheading: Find the right help for your heating or cooling system\nbody: Whether the system has stopped working, needs seasonal attention, or is reaching a larger decision point, start with the service path that best matches what is happening now.\nitems: Restore operation — Start with repair and diagnosis when heating or cooling is not working normally.\nPlan the next system — Compare repair and replacement when reliability or condition becomes a larger concern.\nStay ahead of the season — Use maintenance and tune-ups to review operation before peak demand.\n\n### 03-priority-service-cards\n\n<!-- Section contract: sc-v1-1u2ysmj -->\n\neyebrow: Priority HVAC Services\ntitle: Start with the services homeowners rely on most\npriorityServices: System Replacement — Compare repair and replacement after reviewing system condition, recent issues, reliability, and what the home needs next.\nHVAC Repair — Start with diagnosis for a heating or cooling problem, then review the repair scope and pricing before approving work.\nHeat Pump Service — Request heat pump repair, maintenance, or replacement guidance based on how the system is operating and what the inspection shows.\nHVAC Maintenance — Keep track of system condition with planned service focused on operation, airflow, visible equipment, and developing concerns.\nSeasonal Tune-Ups — Prepare heating or cooling equipment for heavier seasonal use with a focused system and performance check.\n\n### 04-services-hover-panel\n\n<!-- Section contract: sc-v1-6hu474 -->\n\neyebrow: More Ways We Can Help\nheading: Specific support for the rest of your HVAC system\nintro: Explore repair categories, system checks, installation support, urgent call routing, and smaller upgrades that sit alongside North Star’s priority services.\nserviceItems: AC Repair — Request help when the cooling system stops working, struggles to reach the set temperature, or begins operating differently than usual.\nHeating Repair — Get a heating problem inspected and explained, or call directly when a loss of heat requires a faster conversation about current availability.\nUrgent HVAC Help — Call for an urgent heating or cooling issue. Availability depends on the schedule, location, distance, and technician capacity.\nInspection & Diagnosis — Begin with a system inspection so the issue and practical service options can be explained before exact repair pricing is discussed.\nSystem Installation — Plan new heating and cooling equipment as part of a replacement project based on the home, selected system, and approved scope.\nIndoor Air Quality — Discuss indoor air concerns and the specific service options North Star currently offers without assuming a particular product or package.\nSmart Thermostat Installation — Request help installing or replacing a thermostat and confirming that the selected controls fit the existing HVAC system.\nReplacement Financing — Ask about financing that may be available for qualifying replacement projects without assuming approval, provider, rates, or terms.\nDuctless Mini-Split Service — Ask whether repair or service is available for a ductless system. This remains a supporting service rather than a primary focus.\n\n### 05-muted-cta\n\n<!-- Section contract: sc-v1-3ewlor -->\n\ntitle: Not sure which service matches the problem?\nbody: Tell us what the system is doing and where you are located. We will help route the request toward the right service path.\nprimaryAction: Request a Quote\nsecondaryAction: Call Now\n\n### 06-split-content-with-fixed-image\n\n<!-- Section contract: sc-v1-rz64pf -->\n\neyebrow: Repair and diagnosis\nheading: When the system changes, start with a clear diagnosis\nbody: Loss of heating or cooling, weak airflow, uneven temperatures, unusual sounds, and frequent cycling can have more than one possible cause. Start by describing what changed and whether the equipment is still operating.\n\nNorth Star HVAC inspects the system before presenting the repair scope and pricing. You receive a clearer explanation of the issue, what needs attention, and which next step is practical.\nbullets: Describe what changed\nInspect before pricing\nReview the repair options\nprimaryAction: Request Repair\nsecondaryAction: Call Now\n\n### 07-split-content-with-fixed-image\n\n<!-- Section contract: sc-v1-xf1hzs -->\n\neyebrow: Replacement and care\nheading: Plan ahead for replacement, heat pumps, and seasonal care\nbody: Replacement is not the automatic answer whenever equipment gets older or needs repair. System condition, repair history, reliability, and the needs of the home all belong in the decision.\n\nHeat pump service, maintenance, and seasonal tune-ups provide additional paths for homeowners who need focused equipment support or want to review system operation before heavier seasonal demand.\nbullets: Compare both system paths\nReview heat pump condition\nPrepare for seasonal demand\nprimaryAction: Explore Replacement\nsecondaryAction: Request Maintenance\n\n### 08-sticky-card-stream-content\n\n<!-- Section contract: sc-v1-1afb1gz -->\n\neyebrow: What Happens Next\nheading: Move from the first request to a clear next step\nbody: Start with the system, the service need, and how urgent the situation feels. North Star reviews the request, inspects the equipment when needed, and explains the practical options before you approve work or plan a larger project.\nsupportingItems: Start with the need — Request non-urgent service online, or call directly when a heating or cooling problem cannot wait.\nInspect and explain — A technician reviews the equipment, identifies the issue, and explains the relevant repair, maintenance, or replacement paths.\nChoose how to proceed — Review the recommendation and pricing, ask questions, and approve the option that makes sense for the system and home.\n\n### 09-contact-section-modal-begin\n\n<!-- Section contract: sc-v1-2n2ieh -->\n\neyebrow: Start Your Service Request\nheading: Begin with the system and service you need\nbody: Choose the system that needs attention and the service path that best matches the situation. Those answers carry into the next step of the request.\nsystemPrompt: Which system needs attention?\nrequestPrompt: What kind of help do you need?\ncontinueLabel: Continue\nhelperText: Your selections carry into the request form so you do not need to enter them again.\n\n## Copy Notes\n\nThis page needs to help visitors identify the correct service category quickly while preserving a clear hierarchy between North Star’s priority work and its supporting services.\n\n* Suggested page title: Residential HVAC Services in Huntersville | North Star HVAC\n* Suggested meta description: Explore HVAC repair, replacement, heat pump, maintenance, tune-up, and supporting services for homeowners around Huntersville and Lake Norman.\n* Suggested H1: Find the Right HVAC Service for Your System\n* Suggested URL slug: /services\n* Primary CTA pattern: Request a Quote\n* Secondary CTA pattern: Call Now\n* Priority-service structure: System Replacement, HVAC Repair, Heat Pump Service, HVAC Maintenance, and Seasonal Tune-Ups appear first.\n* Repair structure: HVAC Repair is the broad priority path. AC Repair and Heating Repair remain distinct supporting categories so homeowners can recognize the specific problem.\n* Installation treatment: System Installation is presented as part of replacement rather than as a competing primary service.\n* Financing treatment: Replacement Financing is presented as project support rather than a standalone service. No provider, eligibility, rate, approval, or term claims are made.\n* Ductless treatment: Included once and kept deliberately low-emphasis.\n* Excluded services: Duct cleaning and large commercial HVAC are not promoted.\n* Section 04 desktop interaction: Hover may control the detail panel, but every item should also be keyboard-focusable and clickable.\n* Section 04 mobile interaction: Do not depend on hover. Use tap-to-select behavior, an accordion, or a selected detail panel beneath the service list.\n* Section 06 urgent routing: Call Now should remain visible for a visitor dealing with an immediate loss of heating or cooling.\n* Section 07 image direction: Use completed replacement, heat pump, or maintenance photography rather than generic equipment stock imagery.\n* Section 09 request behavior: Preserve both the selected system and service category when the modal opens.\n* Form note: Keep urgency separate from service type. A form submission starts a request and does not confirm an appointment.\n* FAQ note: This template has no dedicated FAQ section. Detailed questions about diagnosis, pricing, replacement, financing, and availability should live on the relevant service page or contact flow.\n\n## Copy QA\n\n* Unsupported claims avoided? Yes.\n* Service area accurate? Yes.\n* Emergency availability handled carefully? Yes.\n* Pricing language cautious? Yes.\n* Priority services emphasized? Yes.\n* Services marked Non-priority or Do not promote not overpromoted? Yes.\n* CTA clear? Yes.\n* Mobile visitor needs considered? Yes.\n* Template field targets followed? Yes.\n* Every section ID preserved? Yes.\n* Voice matches the Protective Professional personality? Yes.\n* Avoided phrases from the voice packet kept out? Yes."
+          "value": "# Bulk Paste Copy\n\n<!-- Page target: Services Overview (/services) -->\n\n<!-- Template contract: tc-v2-5jb617 -->\n\n### 02-compact-section-header\n\n<!-- Section contract: sc-v1-3hfyap -->\n\neyebrow: Residential HVAC Services\nheading: Find the Right Help for Your Heating or Cooling System\nbody: Whether the system has stopped working, needs seasonal attention, or is reaching a larger decision point, start with the service path that best matches what is happening now.\nitems: Restore Operation — Start with repair and diagnosis when heating or cooling is not working normally.\nPlan the Next System — Compare repair and replacement when reliability or condition becomes a larger concern.\nStay Ahead of the Season — Use maintenance and tune-ups to review operation before peak demand.\n\n### 03-priority-service-cards\n\n<!-- Section contract: sc-v1-1u2ysmj -->\n\neyebrow: Priority HVAC Services\ntitle: Start With the Services Homeowners Rely on Most\npriorityServices: System Replacement — Compare repair and replacement after reviewing system condition, recent issues, reliability, and what the home needs next.\nHVAC Repair — Start with diagnosis for a heating or cooling problem, then review the repair scope and pricing before approving work.\nHeat Pump Service — Request heat pump repair, maintenance, or replacement guidance based on how the system is operating and what the inspection shows.\nHVAC Maintenance — Keep track of system condition with planned service focused on operation, airflow, visible equipment, and developing concerns.\nSeasonal Tune-Ups — Prepare heating or cooling equipment for heavier seasonal use with a focused system and performance check.\n\n### 04-services-hover-panel\n\n<!-- Section contract: sc-v1-6hu474 -->\n\neyebrow: More Ways We Can Help\nheading: Specific Support for the Rest of Your HVAC System\nintro: Explore repair categories, system checks, installation support, urgent call routing, and smaller upgrades that sit alongside North Star’s priority services.\nserviceItems: AC Repair — Request help when the cooling system stops working, struggles to reach the set temperature, or begins operating differently than usual.\nHeating Repair — Get a heating problem inspected and explained, or call directly when a loss of heat requires a faster conversation about current availability.\nUrgent HVAC Help — Call for an urgent heating or cooling issue. Availability depends on the schedule, location, distance, and technician capacity.\nInspection & Diagnosis — Begin with a system inspection so the issue and practical service options can be explained before exact repair pricing is discussed.\nSystem Installation — Plan new heating and cooling equipment as part of a replacement project based on the home, selected system, and approved scope.\nIndoor Air Quality — Discuss indoor air concerns and the specific service options North Star currently offers without assuming a particular product or package.\nSmart Thermostat Installation — Request help installing or replacing a thermostat and confirming that the selected controls fit the existing HVAC system.\nReplacement Financing — Ask about financing that may be available for qualifying replacement projects without assuming approval, provider, rates, or terms.\nDuctless Mini-Split Service — Ask whether repair or service is available for a ductless system. This remains a supporting service rather than a primary focus.\n\n### 05-muted-cta\n\n<!-- Section contract: sc-v1-3ewlor -->\n\ntitle: Not Sure Which Service Matches the Problem?\nbody: Tell us what the system is doing and where you are located. We will help route the request toward the right service path.\nprimaryAction: Request a Quote\nsecondaryAction: Call Now\n\n### 06-split-content-with-fixed-image\n\n<!-- Section contract: sc-v1-lfq2y7 -->\n\neyebrow: Repair and Diagnosis\nheading: When the System Changes, Start With a Clear Diagnosis\nbody: Loss of heating or cooling, weak airflow, uneven temperatures, unusual sounds, and frequent cycling can have more than one possible cause. Start by describing what changed and whether the equipment is still operating.\n\nNorth Star HVAC inspects the system before presenting the repair scope and pricing. You receive a clearer explanation of the issue, what needs attention, and which next step is practical.\nbullets: Describe What Changed\nInspect Before Pricing\nReview the Repair Options\nprimaryAction: Request Repair\nsecondaryAction: Call Now\n\n### 07-split-content-with-fixed-image\n\n<!-- Section contract: sc-v1-16pu80c -->\n\neyebrow: Replacement and Care\nheading: Plan Ahead for Replacement, Heat Pumps, and Seasonal Care\nbody: Replacement is not the automatic answer whenever equipment gets older or needs repair. System condition, repair history, reliability, and the needs of the home all belong in the decision.\n\nHeat pump service, maintenance, and seasonal tune-ups provide additional paths for homeowners who need focused equipment support or want to review system operation before heavier seasonal demand.\nbullets: Compare Both System Paths\nReview Heat Pump Condition\nPrepare for Seasonal Demand\nprimaryAction: Explore Replacement\nsecondaryAction: Request Maintenance\n\n### 08-sticky-card-stream-content\n\n<!-- Section contract: sc-v1-1afb1gz -->\n\neyebrow: What Happens Next\nheading: Move From the First Request to a Clear Next Step\nbody: Start with the system, the service need, and how urgent the situation feels. North Star reviews the request, inspects the equipment when needed, and explains the practical options before you approve work or plan a larger project.\nsupportingItems: Start With the Need — Request non-urgent service online, or call directly when a heating or cooling problem cannot wait.\nInspect and Explain — A technician reviews the equipment, identifies the issue, and explains the relevant repair, maintenance, or replacement paths.\nChoose How to Proceed — Review the recommendation and pricing, ask questions, and approve the option that makes sense for the system and home.\n\n### 09-contact-section-modal-begin\n\n<!-- Section contract: sc-v1-2n2ieh -->\n\neyebrow: Start Your Service Request\nheading: Begin With the System and Service You Need\nbody: Choose the system that needs attention and the service path that best matches the situation. Those answers carry into the next step of the request.\nsystemPrompt: Which System Needs Attention?\nrequestPrompt: What Kind of Help Do You Need?\ncontinueLabel: Continue\nhelperText: Your selections carry into the request form so you do not need to enter them again.\n\n## Copy Notes\n\nThis is a contract migration of the existing Services Overview copy. The page strategy, service hierarchy, interaction model, and wording remain intact.\n\nSuggested page title: Residential HVAC Services in Huntersville | North Star HVAC\n\nSuggested meta description: Explore HVAC repair, replacement, heat pump, maintenance, tune-up, and supporting services for homeowners around Huntersville and Lake Norman.\n\nSuggested H1: Find the Right HVAC Service for Your System\n\nSuggested URL slug: /services\n\nPrimary CTA pattern: Request a Quote\n\nSecondary CTA pattern: Call Now\n\nPriority-service structure: System Replacement, HVAC Repair, Heat Pump Service, HVAC Maintenance, and Seasonal Tune-Ups appear first.\n\nRepair structure: HVAC Repair is the broad priority path. AC Repair and Heating Repair remain distinct supporting categories so homeowners can recognize the specific problem.\n\nInstallation treatment: System Installation is presented as part of replacement rather than as a competing primary service.\n\nFinancing treatment: Replacement Financing is presented as project support rather than a standalone service. No provider, eligibility, rate, approval, or term claims are made.\n\nDuctless treatment: Included once and kept deliberately low-emphasis.\n\nExcluded services: Duct cleaning and large commercial HVAC are not promoted.\n\nSection 04 desktop interaction: Hover may control the detail panel, but every item should also be keyboard-focusable and clickable.\n\nSection 04 mobile interaction: Do not depend on hover. Use tap-to-select behavior, an accordion, or a selected detail panel beneath the service list.\n\nSection 06 urgent routing: Call Now should remain visible for a visitor dealing with an immediate loss of heating or cooling.\n\nSection 07 image direction: Use completed replacement, heat pump, or maintenance photography rather than generic equipment stock imagery.\n\nSection 09 request behavior: Preserve both the selected system and service category when the modal opens.\n\nForm note: Keep urgency separate from service type. A form submission starts a request and does not confirm an appointment.\n\nFAQ note: This template has no dedicated FAQ section. Detailed questions about diagnosis, pricing, replacement, financing, and availability should live on the relevant service page or contact flow.\n\nContract migration changes:\n\n* Updated the template fingerprint from `tc-v2-1jds98t` to `tc-v2-5jb617`.\n* Updated Section 06 from `sc-v1-rz64pf` to `sc-v1-lfq2y7`.\n* Updated Section 07 from `sc-v1-xf1hzs` to `sc-v1-16pu80c`.\n* Preserved all current section IDs and supported fields.\n* Did not add the new optional `proofPoints` fields because the existing bullets and body copy already provide the needed scan value.\n\n## Copy QA\n\n* Unsupported claims avoided? Yes.\n* Service area accurate? Yes.\n* Emergency availability handled carefully? Yes.\n* Pricing language cautious? Yes.\n* Priority services emphasized? Yes.\n* Services marked Non-priority or Do not promote not overpromoted? Yes.\n* CTA clear? Yes.\n* Mobile visitor needs considered? Yes.\n* Template field targets followed? Yes.\n* Every current section ID preserved? Yes.\n* Voice matches the Protective Professional personality? Yes.\n* Avoided phrases from the voice packet kept out? Yes."
         },
         {
           "id": "services.strategy.contentPlan",
@@ -14625,7 +14625,7 @@
           "id": "services.02-compact-section-header.heading",
           "kind": "copy",
           "path": "02-compact-section-header.heading",
-          "value": "Find the right help for your heating or cooling system"
+          "value": "Find the Right Help for Your Heating or Cooling System"
         },
         {
           "id": "services.02-compact-section-header.body",
@@ -14637,7 +14637,7 @@
           "id": "services.02-compact-section-header.items",
           "kind": "copy",
           "path": "02-compact-section-header.items",
-          "value": "Restore operation — Start with repair and diagnosis when heating or cooling is not working normally.\nPlan the next system — Compare repair and replacement when reliability or condition becomes a larger concern.\nStay ahead of the season — Use maintenance and tune-ups to review operation before peak demand."
+          "value": "Restore Operation — Start with repair and diagnosis when heating or cooling is not working normally.\nPlan the Next System — Compare repair and replacement when reliability or condition becomes a larger concern.\nStay Ahead of the Season — Use maintenance and tune-ups to review operation before peak demand."
         },
         {
           "id": "services.02-compact-section-header.style.colorRecipe",
@@ -14673,7 +14673,7 @@
           "id": "services.03-priority-service-cards.title",
           "kind": "copy",
           "path": "03-priority-service-cards.title",
-          "value": "Start with the services homeowners rely on most"
+          "value": "Start With the Services Homeowners Rely on Most"
         },
         {
           "id": "services.03-priority-service-cards.priorityServices",
@@ -14787,7 +14787,7 @@
           "id": "services.04-services-hover-panel.heading",
           "kind": "copy",
           "path": "04-services-hover-panel.heading",
-          "value": "Specific support for the rest of your HVAC system"
+          "value": "Specific Support for the Rest of Your HVAC System"
         },
         {
           "id": "services.04-services-hover-panel.intro",
@@ -14829,7 +14829,7 @@
           "id": "services.05-muted-cta.title",
           "kind": "copy",
           "path": "05-muted-cta.title",
-          "value": "Not sure which service matches the problem?"
+          "value": "Not Sure Which Service Matches the Problem?"
         },
         {
           "id": "services.05-muted-cta.body",
@@ -14877,13 +14877,13 @@
           "id": "services.06-split-content-with-fixed-image.eyebrow",
           "kind": "copy",
           "path": "06-split-content-with-fixed-image.eyebrow",
-          "value": "Repair and diagnosis"
+          "value": "Repair and Diagnosis"
         },
         {
           "id": "services.06-split-content-with-fixed-image.heading",
           "kind": "copy",
           "path": "06-split-content-with-fixed-image.heading",
-          "value": "When the system changes, start with a clear diagnosis"
+          "value": "When the System Changes, Start With a Clear Diagnosis"
         },
         {
           "id": "services.06-split-content-with-fixed-image.body",
@@ -14895,7 +14895,7 @@
           "id": "services.06-split-content-with-fixed-image.bullets",
           "kind": "copy",
           "path": "06-split-content-with-fixed-image.bullets",
-          "value": "Describe what changed\nInspect before pricing\nReview the repair options"
+          "value": "Describe What Changed\nInspect Before Pricing\nReview the Repair Options"
         },
         {
           "id": "services.06-split-content-with-fixed-image.primaryAction",
@@ -14973,13 +14973,13 @@
           "id": "services.07-split-content-with-fixed-image.eyebrow",
           "kind": "copy",
           "path": "07-split-content-with-fixed-image.eyebrow",
-          "value": "Replacement and care"
+          "value": "Replacement and Care"
         },
         {
           "id": "services.07-split-content-with-fixed-image.heading",
           "kind": "copy",
           "path": "07-split-content-with-fixed-image.heading",
-          "value": "Plan ahead for replacement, heat pumps, and seasonal care"
+          "value": "Plan Ahead for Replacement, Heat Pumps, and Seasonal Care"
         },
         {
           "id": "services.07-split-content-with-fixed-image.body",
@@ -14991,7 +14991,7 @@
           "id": "services.07-split-content-with-fixed-image.bullets",
           "kind": "copy",
           "path": "07-split-content-with-fixed-image.bullets",
-          "value": "Compare both system paths\nReview heat pump condition\nPrepare for seasonal demand"
+          "value": "Compare Both System Paths\nReview Heat Pump Condition\nPrepare for Seasonal Demand"
         },
         {
           "id": "services.07-split-content-with-fixed-image.primaryAction",
@@ -15075,7 +15075,7 @@
           "id": "services.08-sticky-card-stream-content.heading",
           "kind": "copy",
           "path": "08-sticky-card-stream-content.heading",
-          "value": "Move from the first request to a clear next step"
+          "value": "Move From the First Request to a Clear Next Step"
         },
         {
           "id": "services.08-sticky-card-stream-content.body",
@@ -15087,7 +15087,7 @@
           "id": "services.08-sticky-card-stream-content.supportingItems",
           "kind": "copy",
           "path": "08-sticky-card-stream-content.supportingItems",
-          "value": "Start with the need — Request non-urgent service online, or call directly when a heating or cooling problem cannot wait.\nInspect and explain — A technician reviews the equipment, identifies the issue, and explains the relevant repair, maintenance, or replacement paths.\nChoose how to proceed — Review the recommendation and pricing, ask questions, and approve the option that makes sense for the system and home."
+          "value": "Start With the Need — Request non-urgent service online, or call directly when a heating or cooling problem cannot wait.\nInspect and Explain — A technician reviews the equipment, identifies the issue, and explains the relevant repair, maintenance, or replacement paths.\nChoose How to Proceed — Review the recommendation and pricing, ask questions, and approve the option that makes sense for the system and home."
         },
         {
           "id": "services.08-sticky-card-stream-content.imageAlt",
@@ -15147,7 +15147,7 @@
           "id": "services.09-contact-section-modal-begin.heading",
           "kind": "copy",
           "path": "09-contact-section-modal-begin.heading",
-          "value": "Begin with the system and service you need"
+          "value": "Begin With the System and Service You Need"
         },
         {
           "id": "services.09-contact-section-modal-begin.body",
@@ -15159,13 +15159,13 @@
           "id": "services.09-contact-section-modal-begin.systemPrompt",
           "kind": "copy",
           "path": "09-contact-section-modal-begin.systemPrompt",
-          "value": "Which system needs attention?"
+          "value": "Which System Needs Attention?"
         },
         {
           "id": "services.09-contact-section-modal-begin.requestPrompt",
           "kind": "copy",
           "path": "09-contact-section-modal-begin.requestPrompt",
-          "value": "What kind of help do you need?"
+          "value": "What Kind of Help Do You Need?"
         },
         {
           "id": "services.09-contact-section-modal-begin.continueLabel",
@@ -15360,9 +15360,9 @@
       "promotedAt": "2026-07-27T23:32:15.630Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-03T19:54:44.013Z",
-        "id": "north-star-hvac-v33",
-        "version": 33
+        "createdAt": "2026-08-04T04:22:08.330Z",
+        "id": "north-star-hvac-v35",
+        "version": 35
       },
       "sourceStage": "strategy-template",
       "template": {
