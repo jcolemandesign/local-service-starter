@@ -598,7 +598,11 @@ export function ContentEditorSection({
                           id={panelId}
                           role="region"
                           aria-labelledby={buttonId}
-                          className="grid gap-3 border-t border-service-border p-5"
+                          // Recessed against the white header above it. The
+                          // field cards then read as forward without needing a
+                          // border each, and the shift in surface replaces the
+                          // rule that used to divide header from body.
+                          className="grid gap-3 bg-service-surface p-5"
                         >
                           {fieldFilter !== "all" ? (
                             <p className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-2 text-service-muted">
@@ -795,9 +799,14 @@ function FieldEditor({
       // col-span-full rather than col-span-2: the grid drops to one column on
       // narrow screens, and a 2-column span there would create an implicit
       // second column and break the stack.
-      className={`grid gap-4 rounded-sm border bg-white p-4 shadow-sm ${
+      //
+      // No border. The card sits on the recessed panel, so the surface change
+      // separates it - a border per card drew a box around every field and
+      // made a long section read as a grid of outlines. Empty fields tint
+      // rather than outline; they already carry an "empty" pill.
+      className={`grid gap-4 rounded-sm p-4 ${
         isLongFormField(field) ? "col-span-full" : ""
-      } ${isEmpty ? "border-service-accent" : "border-service-border"}`}
+      } ${isEmpty ? "bg-service-accent/5" : "bg-white"}`}
     >
       <div className="grid content-start gap-2">
         <span className="flex flex-wrap items-center gap-2">
@@ -834,8 +843,11 @@ function FieldEditor({
         </div>
       </div>
       {useTextarea ? (
+        // Inset rather than outlined: on a borderless card a bordered control
+        // puts the box back. The recessed surface reads as writable, and the
+        // focus ring - not a border colour - carries the focus state.
         <AutoGrowingTextarea
-          className={`${getTextareaMinimumHeight(field)} ${hierarchyClass} w-full resize-none overflow-y-hidden rounded-sm border border-service-border bg-white px-4 py-3 text-service-ink outline-none transition-colors focus:border-service-accent max-md:text-sm`}
+          className={`${getTextareaMinimumHeight(field)} ${hierarchyClass} w-full resize-none overflow-y-hidden rounded-sm bg-service-surface px-4 py-3 text-service-ink outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-service-accent max-md:text-sm`}
           id={controlId}
           onChange={onChange}
           placeholder={helperText}
@@ -843,7 +855,7 @@ function FieldEditor({
         />
       ) : (
         <input
-          className={`min-h-14 ${hierarchyClass} w-full rounded-sm border border-service-border bg-white px-4 text-service-ink outline-none transition-colors focus:border-service-accent max-md:text-sm`}
+          className={`min-h-14 ${hierarchyClass} w-full rounded-sm bg-service-surface px-4 text-service-ink outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-service-accent max-md:text-sm`}
           id={controlId}
           onChange={(event) => onChange(event.target.value)}
           placeholder={helperText}
@@ -996,7 +1008,7 @@ function FieldReferenceBlock({
 
   if (!shouldCollapse) {
     return (
-      <div className="rounded-sm border border-service-border bg-service-surface p-4">
+      <div className="rounded-sm bg-service-surface p-4">
         <p className="type-caption font-semibold text-service-accent">
           {reference.label}
         </p>
@@ -1009,7 +1021,7 @@ function FieldReferenceBlock({
   }
 
   return (
-    <details className="group/reference rounded-sm border border-service-border bg-service-surface p-4">
+    <details className="group/reference rounded-sm bg-service-surface p-4">
       <summary className="cursor-pointer list-none">
         <span className="flex items-start justify-between gap-4">
           <span>
@@ -1253,7 +1265,7 @@ function OptionToggleFieldEditor({
   const isDirty = value !== originalValue;
 
   return (
-    <fieldset className="grid content-start gap-3 rounded-sm border border-service-border bg-white p-4 shadow-sm">
+    <fieldset className="grid content-start gap-3 rounded-sm bg-white p-4">
       <legend className="sr-only">{legend}</legend>
       <div className="grid gap-1">
         <span className="flex flex-wrap items-center gap-2">
@@ -1419,7 +1431,14 @@ function ImageFieldEditor({
   const isKnownAsset = assets.includes(trimmed);
 
   return (
-    <div className="grid gap-3">
+    // Carries the same card surface as the copy and toggle fields. It had none
+    // of its own while every neighbour was bordered, so it read as loose
+    // content rather than a field.
+    <div
+      className={`grid content-start gap-3 rounded-sm p-4 ${
+        isPlaceholder ? "bg-service-accent/5" : "bg-white"
+      }`}
+    >
       <div className="flex items-center justify-between gap-4">
         <label className="type-label text-service-ink" htmlFor={controlId}>
           {field.label}
@@ -1456,7 +1475,7 @@ function ImageFieldEditor({
         <div className="grid min-w-0 flex-1 gap-2">
           {assets.length > 0 ? (
             <select
-              className="type-text-sm radius-4 w-full border border-service-border bg-service-surface px-3 py-2 text-service-ink"
+              className="type-text-sm radius-4 w-full bg-service-surface px-3 py-2 text-service-ink outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-service-accent"
               onChange={(event) => onChange(event.target.value)}
               value={isKnownAsset ? trimmed : ""}
             >
@@ -1472,7 +1491,7 @@ function ImageFieldEditor({
           ) : null}
 
           <input
-            className="type-text-sm radius-4 w-full border border-service-border bg-service-surface px-3 py-2 text-service-ink"
+            className="type-text-sm radius-4 w-full bg-service-surface px-3 py-2 text-service-ink outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-service-accent"
             id={controlId}
             onChange={(event) => onChange(event.target.value)}
             spellCheck={false}
