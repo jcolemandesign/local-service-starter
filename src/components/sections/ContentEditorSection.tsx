@@ -1502,9 +1502,13 @@ function ImageFieldEditor({
           />
 
           <p className="type-caption text-zinc-500">
+            {/*
+              The badge already says "placeholder", so this carries the
+              consequence instead of repeating the state.
+            */}
             {isPlaceholder
-              ? "Still the section library's placeholder. The export refuses a site with any of these left."
-              : "Pick from public/images, or paste any path the site can serve."}
+              ? "Blocks export until replaced."
+              : "Pick from public/images, or paste a path."}
           </p>
         </div>
       </div>
