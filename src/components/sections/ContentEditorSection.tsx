@@ -331,7 +331,7 @@ export function ContentEditorSection({
         <SevenColumnGridItem className="col-start-2 col-span-2 max-lg:col-start-1 max-lg:col-span-2 max-md:col-span-3 max-sm:col-span-1">
           <section
             aria-label="Site identity"
-            className="mb-4 rounded-sm border border-zinc-200 bg-white p-4 shadow-sm"
+            className="mb-4 rounded-sm bg-zinc-100 p-4 shadow-md"
           >
             <h2 className="type-caption font-semibold text-zinc-900">
               Site identity
@@ -403,8 +403,8 @@ export function ContentEditorSection({
                   onClick={() => selectPage(page.key)}
                   className={`rounded-sm border px-3 py-3 text-left transition-colors ${
                     isActive
-                      ? "border-zinc-900 bg-white text-zinc-900 shadow"
-                      : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400 hover:text-zinc-900"
+                      ? "border-zinc-900 bg-zinc-50 text-zinc-900 shadow"
+                      : "border-zinc-200 bg-zinc-50 text-zinc-600 hover:border-zinc-400 hover:text-zinc-900"
                   }`}
                 >
                   <span className="type-caption block font-semibold">
@@ -426,7 +426,7 @@ export function ContentEditorSection({
         <SevenColumnGridItem className="col-start-4 col-span-4 max-lg:col-start-3 max-lg:col-span-3 max-md:col-start-1 max-md:col-span-3 max-sm:col-span-1">
           {activePage ? (
             <div className="grid gap-5">
-              <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 rounded-sm border border-zinc-200 bg-white p-5 shadow-sm max-md:grid-cols-1">
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 rounded-sm bg-zinc-100 p-5 shadow-md max-md:grid-cols-1">
                 <div>
                   <p className="type-heading-lg text-zinc-900">
                     {activePage.label}
@@ -551,7 +551,7 @@ export function ContentEditorSection({
                     <section
                       key={section.id}
                       aria-labelledby={buttonId}
-                      className="overflow-hidden rounded-sm bg-white shadow-md"
+                      className="overflow-hidden rounded-sm bg-zinc-100 shadow-md"
                     >
                       <button
                         id={buttonId}
@@ -694,7 +694,7 @@ export function ContentEditorSection({
               </div>
             </div>
           ) : (
-            <div className="rounded-sm border border-zinc-200 bg-white p-6 shadow-sm">
+            <div className="rounded-sm bg-zinc-100 p-6 shadow-md">
               <p className="type-label text-zinc-900">No pages connected</p>
               <h2 className="type-heading-md mt-eyebrow-heading-sm text-zinc-900">
                 Waiting for clean template output
@@ -804,7 +804,7 @@ function FieldEditor({
       // separates it - a border per card drew a box around every field and
       // made a long section read as a grid of outlines. Empty fields tint
       // rather than outline; they already carry an "empty" pill.
-      className={`grid gap-4 rounded-sm bg-white p-4 shadow ${
+      className={`grid gap-4 rounded-sm bg-zinc-50 p-4 shadow ${
         isLongFormField(field) ? "col-span-full" : ""
       }`}
     >
@@ -1008,7 +1008,7 @@ function FieldReferenceBlock({
 
   if (!shouldCollapse) {
     return (
-      <div className="rounded-sm bg-zinc-50 p-4">
+      <div className="rounded-sm bg-white p-4">
         <p className="type-caption font-semibold text-zinc-900">
           {reference.label}
         </p>
@@ -1021,7 +1021,7 @@ function FieldReferenceBlock({
   }
 
   return (
-    <details className="group/reference rounded-sm bg-zinc-50 p-4">
+    <details className="group/reference rounded-sm bg-white p-4">
       <summary className="cursor-pointer list-none">
         <span className="flex items-start justify-between gap-4">
           <span>
@@ -1265,7 +1265,7 @@ function OptionToggleFieldEditor({
   const isDirty = value !== originalValue;
 
   return (
-    <fieldset className="grid content-start gap-3 rounded-sm bg-white p-4 shadow">
+    <fieldset className="grid content-start gap-3 rounded-sm bg-zinc-50 p-4 shadow">
       <legend className="sr-only">{legend}</legend>
       <div className="grid gap-1">
         <span className="flex flex-wrap items-center gap-2">
@@ -1435,7 +1435,7 @@ function ImageFieldEditor({
     // of its own while every neighbour was bordered, so it read as loose
     // content rather than a field.
     <div
-      className={"grid content-start gap-3 rounded-sm bg-white p-4 shadow"}
+      className={"grid content-start gap-3 rounded-sm bg-zinc-50 p-4 shadow"}
     >
       <div className="flex items-center justify-between gap-4">
         <label className="type-label text-zinc-900" htmlFor={controlId}>
