@@ -18,7 +18,13 @@ describe("content editor field references", () => {
           (field) =>
             field.kind === "copy" &&
             !field.path.startsWith("strategy.") &&
-            !field.value.trim(),
+            !field.value.trim() &&
+            // Orphans are exempt. A field the contract no longer declares -
+            // `reviewLabel` after the review badge moved to the fullscreen hero
+            // - keeps its stored value but has no spec, so there is no example
+            // for it to carry. It cannot render either; the demo-content leak
+            // guard proves no mapper reads an undeclared field.
+            field.spec !== undefined,
         ),
       ),
     );

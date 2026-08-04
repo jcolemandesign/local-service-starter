@@ -34,30 +34,40 @@ function sampleMarked(page: Page) {
 }
 
 describe("sample marker detection", () => {
-  it("finds the financing calculator's stand-in lender copy", () => {
-    const flagged = pages.flatMap(sampleMarked);
+  /**
+   * Deliberately not pinned to a field list. An earlier version asserted the
+   * three financing stand-ins by path and broke the moment those were replaced
+   * with real lender copy - which is the outcome the marker exists to lead to,
+   * so a test that fails on success is the wrong test. What has to hold is that
+   * any marker still present is reported.
+   */
+  it("reports every marked field it is given", () => {
+    const marked = pages.flatMap(sampleMarked);
+    const values = pages.flatMap((page) =>
+      (page.fields ?? [])
+        .filter(
+          (field) =>
+            field.kind !== "meta" && /\[SAMPLE\b/i.test(field.value),
+        )
+        .map((field) => `${page.pageId}/${field.path}`),
+    );
 
-    expect(flagged).toEqual([
-      "financing/03-financing-calculator.promotionalLabel",
-      "financing/03-financing-calculator.promotionalEligibilityNote",
-      "financing/03-financing-calculator.disclosure",
-    ]);
+    expect(marked.sort()).toEqual(values.sort());
   });
 
   /**
-   * The three stand-ins must not also carry NEEDS REVIEW, or they would block
-   * the export they were written to unblock.
+   * A stand-in must not also carry NEEDS REVIEW, or it would block the export
+   * it was written to unblock.
    */
-  it("keeps the stand-ins clear of the blocking marker", () => {
-    const financing = pages.find((page) => page.pageId === "financing");
-    const flagged = sampleMarked(financing as Page);
+  it("keeps any stand-in clear of the blocking marker", () => {
+    for (const page of pages) {
+      for (const path of sampleMarked(page)) {
+        const field = (page.fields ?? []).find(
+          (candidate) => `${page.pageId}/${candidate.path}` === path,
+        );
 
-    for (const path of flagged) {
-      const field = (financing?.fields ?? []).find(
-        (candidate) => `${financing?.pageId}/${candidate.path}` === path,
-      );
-
-      expect(field?.value).not.toMatch(/\bNEEDS REVIEW\b/i);
+        expect(field?.value).not.toMatch(/\bNEEDS REVIEW\b/i);
+      }
     }
   });
 

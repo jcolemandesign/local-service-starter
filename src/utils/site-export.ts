@@ -38,7 +38,10 @@ import {
   type StagedPage,
 } from "@/utils/staged-pages";
 import { getSectionId } from "@/utils/section-id";
-import { isSiteChromeSection } from "@/utils/template-copy-contract";
+import {
+  getTemplateCopyFieldsForSection,
+  isSiteChromeSection,
+} from "@/utils/template-copy-contract";
 import { sanitizeClientSlug } from "@/utils/strategy-workspace";
 import type { SiteIdentity } from "@/content/site-identity";
 import { readSiteIdentity } from "@/utils/site-identity";
@@ -365,6 +368,39 @@ function getSiteChromeSectionIds(page: StagedPage) {
 }
 
 /**
+ * Copy paths the current contract still asks for, per section.
+ *
+ * A field the contract no longer declares is left behind on the staged page
+ * when a spec changes - moving `reviewLabel` and `reviewDetail` onto the
+ * fullscreen hero stranded both on every other hero. The value stays on disk,
+ * holding whatever the last copy run wrote, including NEEDS REVIEW, and blocks
+ * an export over copy for a badge the section does not render.
+ *
+ * Skipping them is safe because an undeclared field is provably dead: the
+ * demo-content leak guard renders every catalog section from its declared
+ * fields alone and its KNOWN_GAPS list is empty, so no mapper reads a field the
+ * contract does not declare. Nothing undeclared can reach a page.
+ */
+function getDeclaredCopyPaths(page: StagedPage) {
+  const declared = new Set<string>();
+
+  (page.template?.sections ?? []).forEach((section, index) => {
+    const sectionId = getSectionId(section, index);
+
+    for (const field of getTemplateCopyFieldsForSection(section)) {
+      declared.add(`${sectionId}.${field.name}`);
+    }
+
+    // Asset specs cover alt text and captions, which are stored as copy.
+    for (const field of getTemplateAssetFieldsForSection(section)) {
+      declared.add(`${sectionId}.${field.name}`);
+    }
+  });
+
+  return declared;
+}
+
+/**
  * Surfaces stand-in copy that is well-formed enough to pass every gate.
  *
  * `NEEDS REVIEW` blocks an export, which is correct for a field nobody has
@@ -396,9 +432,18 @@ function validateStagedFields(page: StagedPage, issues: ExportIssue[]) {
   // empty required copy fields, and 180 of them were nav and footer fields
   // that are supposed to be empty - so the gate blocked on its own convention.
   const chromeSectionIds = getSiteChromeSectionIds(page);
+  const declaredCopyPaths = getDeclaredCopyPaths(page);
 
   for (const field of page.fields) {
     if (field.kind === "meta" || field.path.startsWith("strategy.")) {
+      continue;
+    }
+
+    // Left over from an earlier version of a spec. Scoped to copy: an orphaned
+    // image or link would still be worth surfacing, but an orphaned copy field
+    // cannot render, so blocking an export on its contents is blocking on data
+    // nothing reads.
+    if (field.kind === "copy" && !declaredCopyPaths.has(field.path)) {
       continue;
     }
 
