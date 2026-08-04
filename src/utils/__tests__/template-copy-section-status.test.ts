@@ -182,6 +182,7 @@ describe("buildTemplateCopyContract", () => {
       "# Bulk Paste Copy",
       "",
       "### 01-process-steps",
+      "eyebrow: How we work",
       "heading: A clear path from request to resolved",
       "intro: See what happens from the first call through the completed work.",
       "steps: Request - Tell us what changed and when it began.",

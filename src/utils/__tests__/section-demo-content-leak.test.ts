@@ -124,18 +124,14 @@ const KNOWN_GAPS = new Set<string>([
   //    rating and 2,400+ completed visits. All three now come from sourced
   //    copy fields that say NEEDS REVIEW rather than carrying an example over.
 
-  // 2. Unspecced eyebrows. The largest group and the most mechanical: the
-  //    mapper reads an eyebrow the contract branch never declares.
-  "CTAFullscreenSectionV3",
-  "ContentNarrativeFeatureRailSectionV3",
-  "ContentStickyCardStreamSectionV2",
-  "DecisionSplitDecisionSectionV3",
-  "FAQSectionV3",
-  "FeatureOverlapRowsSectionV3",
-  "ProcessStepsSectionV3",
-  "TestimonialsCarouselCondensedSectionV3",
-  "TestimonialsMasonrySectionV3",
-  "TestimonialsSectionV3",
+  // 2. Unspecced eyebrows - closed 2026-08-04 for the seven whose branch simply
+  //    had no eyebrow field. The remaining three leak a PER-CARD eyebrow rather
+  //    than the section's own, which their branch does declare; those need
+  //    indexed sub-fields like the card carousel, so they sit in group 3 below.
+  "ContentNarrativeFeatureRailSectionV3", // cards[].eyebrow, cards[].actionLabel
+  "ContentStickyCardStreamSectionV2", // cards[].eyebrow
+  "DecisionSplitDecisionSectionV3", // cards[].eyebrow
+  "FeatureOverlapRowsSectionV3", // items[].eyebrow
 
   // 3. Labels that need a chrome-or-copy decision first, the same call made for
   //    the financing calculator's result labels: fixed UI furniture belongs in

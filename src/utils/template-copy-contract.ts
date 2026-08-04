@@ -2651,6 +2651,12 @@ export function getTemplateCopyFieldsForSection(
   if (lookupValue.includes("testimonials") || lookupValue.includes("review")) {
     return [
       {
+        example: "Testimonials",
+        name: "eyebrow",
+        purpose: "Short label above the proof headline.",
+        target: "10-30 characters.",
+      },
+      {
         example: "What local HVAC customers notice",
         name: "heading",
         purpose: "Proof section headline.",
@@ -3022,6 +3028,12 @@ export function getTemplateCopyFieldsForSection(
     return withCardLinkFields(
       section,
       [
+        {
+          example: "Compare options",
+          name: "eyebrow",
+          purpose: "Short label above the comparison headline.",
+          target: "10-30 characters.",
+        },
         {
           example: "Repair or replace? Start with the facts",
           name: "heading",
@@ -3613,6 +3625,12 @@ export function getTemplateCopyFieldsForSection(
   if (mode === "action" || lookupValue.includes("cta")) {
     return [
       {
+        example: "Next step",
+        name: "eyebrow",
+        purpose: "Short label above the CTA headline.",
+        target: "8-24 characters.",
+      },
+      {
         example: "Ready to plan your next HVAC service?",
         name: "heading",
         purpose: "Conversion-focused CTA headline.",
@@ -3642,6 +3660,12 @@ export function getTemplateCopyFieldsForSection(
 
   if (lookupValue.includes("faq")) {
     return [
+      {
+        example: "Common questions",
+        name: "eyebrow",
+        purpose: "Short label above the FAQ headline.",
+        target: "10-30 characters.",
+      },
       {
         example: "Common HVAC questions answered",
         name: "heading",
@@ -3750,6 +3774,12 @@ export function getTemplateCopyFieldsForSection(
 
   if (lookupValue.includes("process") || mode === "decision") {
     return [
+      {
+        example: "How we work",
+        name: "eyebrow",
+        purpose: "Short label above the process headline.",
+        target: "10-30 characters.",
+      },
       {
         example: "How the service decision gets clearer",
         name: "heading",
