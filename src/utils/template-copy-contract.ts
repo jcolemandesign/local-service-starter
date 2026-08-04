@@ -392,10 +392,39 @@ export function getTemplateCopyContractStatus(
     return "unverified";
   }
 
-  return copyFingerprint === getTemplateCopyContractFingerprint(template) ||
-    isBatchCopySchemaCompatible(copy, template)
-    ? "current"
-    : "stale";
+  // Decided from the sections rather than the whole-template fingerprint, in
+  // both directions. A matching page fingerprint is not proof the sections are
+  // fine - the two move independently, and three of North Star's pages carried a
+  // matching `tc-v2-` while holding a section whose `sc-v1-` had moved. A
+  // mismatched one is not proof of trouble either, since adding a section
+  // anywhere on the page moves it.
+  //
+  // This used to fall through to a page-wide field-name compatibility check,
+  // which reported "current" whenever the pasted copy still supplied the field
+  // names the template asked for. That check cannot see a section whose spec has
+  // *gained* fields, because it only looks for the names it already knows: when
+  // the offers and financing sections were given real copy specs, the workspace
+  // kept reporting those pages clean while Staged Pages correctly reported the
+  // sections stale. Two screens, two answers, and the reassuring one was wrong.
+  //
+  // Aggregating the per-section statuses keeps the legacy tolerance where it
+  // belongs - a section with no `sc-v1-` fingerprint still verifies by heading
+  // slug and field names - while a section whose fingerprint has genuinely moved
+  // now surfaces on both screens.
+  const sectionStatuses = getTemplateCopySectionStatuses(copy, template).filter(
+    // Nav/footer copy is never written per page, so it can never be stale here.
+    (section) => section.status !== "site-level",
+  );
+
+  if (sectionStatuses.some((section) => section.status === "stale")) {
+    return "stale";
+  }
+
+  if (sectionStatuses.some((section) => section.status === "unverified")) {
+    return "unverified";
+  }
+
+  return "current";
 }
 
 /**
@@ -507,66 +536,6 @@ export function getTemplateCopySectionStatuses(
       sectionId,
       status: "current",
     };
-  });
-}
-
-function isBatchCopySchemaCompatible(
-  copy: string,
-  template: TemplateCopyContractTemplate,
-) {
-  const sectionsByOrdinal = getBatchCopyFieldsBySectionOrdinal(
-    copy,
-    getOrdinalsByCopyFingerprint(template),
-  );
-
-  // Chrome sections are not requested in the spec, so pasted copy is expected to
-  // be short by exactly those blocks. Copy written before that change still
-  // carries them, so anything between "every requested section" and "every
-  // template section" is a valid block count.
-  const requestedSections = template.sections.filter(
-    (section) => !isSiteChromeSection(section),
-  );
-
-  if (
-    sectionsByOrdinal.size < requestedSections.length ||
-    sectionsByOrdinal.size > template.sections.length
-  ) {
-    return false;
-  }
-
-  return template.sections.every((section, index) => {
-    if (isSiteChromeSection(section)) {
-      return true;
-    }
-
-    const sectionOrdinal = String(index + 1).padStart(2, "0");
-    const suppliedSection = sectionsByOrdinal.get(sectionOrdinal);
-
-    if (!suppliedSection) {
-      return false;
-    }
-
-    // A slug present in the pasted heading must identify the same section the
-    // template currently has at this ordinal. Without this check, two different
-    // components sharing overlapping field names (eyebrow/headline/body/...) at
-    // the same position would both satisfy the field-name check below and the
-    // status would incorrectly report "current" for copy written for a
-    // component that is no longer there. Copy with no slug in its heading
-    // (older pasted format) can't be checked this way and falls through to the
-    // field-name-only comparison, unchanged from prior behavior.
-    const expectedSlug = slugify(
-      section.name || section.mode || section.component,
-    );
-
-    if (suppliedSection.slug && suppliedSection.slug !== expectedSlug) {
-      return false;
-    }
-
-    return getTemplateCopyFieldsForSection(section).every(
-      (field) =>
-        field.optional ||
-        suppliedSection.fields.has(normalizeContractFieldName(field.name)),
-    );
   });
 }
 
