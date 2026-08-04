@@ -310,7 +310,7 @@ export function ContentEditorSection({
   }
 
   return (
-    <section className="min-h-svh bg-zinc-100 text-zinc-900">
+    <section className="min-h-svh bg-zinc-200 text-zinc-900">
       <SevenColumnGrid className="fluid-type-frame" minHeight="none" padding="med">
         <SevenColumnGridItem className="col-start-2 col-span-4 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <p className="type-label text-zinc-900">Pageworks / Content Editor</p>
@@ -403,8 +403,8 @@ export function ContentEditorSection({
                   onClick={() => selectPage(page.key)}
                   className={`rounded-sm border px-3 py-3 text-left transition-colors ${
                     isActive
-                      ? "border-zinc-900 bg-white text-zinc-900 shadow-sm"
-                      : "border-zinc-200 bg-transparent text-zinc-500 hover:border-zinc-400 hover:text-zinc-900"
+                      ? "border-zinc-900 bg-white text-zinc-900 shadow"
+                      : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400 hover:text-zinc-900"
                   }`}
                 >
                   <span className="type-caption block font-semibold">
@@ -551,7 +551,7 @@ export function ContentEditorSection({
                     <section
                       key={section.id}
                       aria-labelledby={buttonId}
-                      className="overflow-hidden rounded-sm bg-white shadow-sm"
+                      className="overflow-hidden rounded-sm bg-white shadow-md"
                     >
                       <button
                         id={buttonId}
@@ -804,7 +804,7 @@ function FieldEditor({
       // separates it - a border per card drew a box around every field and
       // made a long section read as a grid of outlines. Empty fields tint
       // rather than outline; they already carry an "empty" pill.
-      className={`grid gap-4 rounded-sm bg-white p-4 shadow-sm ${
+      className={`grid gap-4 rounded-sm bg-white p-4 shadow ${
         isLongFormField(field) ? "col-span-full" : ""
       }`}
     >
@@ -1265,7 +1265,7 @@ function OptionToggleFieldEditor({
   const isDirty = value !== originalValue;
 
   return (
-    <fieldset className="grid content-start gap-3 rounded-sm bg-white p-4 shadow-sm">
+    <fieldset className="grid content-start gap-3 rounded-sm bg-white p-4 shadow">
       <legend className="sr-only">{legend}</legend>
       <div className="grid gap-1">
         <span className="flex flex-wrap items-center gap-2">
@@ -1435,7 +1435,7 @@ function ImageFieldEditor({
     // of its own while every neighbour was bordered, so it read as loose
     // content rather than a field.
     <div
-      className={"grid content-start gap-3 rounded-sm bg-white p-4 shadow-sm"}
+      className={"grid content-start gap-3 rounded-sm bg-white p-4 shadow"}
     >
       <div className="flex items-center justify-between gap-4">
         <label className="type-label text-zinc-900" htmlFor={controlId}>
