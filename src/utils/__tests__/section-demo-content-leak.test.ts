@@ -5,7 +5,10 @@ import { describe, expect, it } from "vitest";
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
 import pageTemplates from "@/content/page-templates.json";
 import { renderPageTemplateSection } from "@/components/sections/PageTemplatePreview";
-import { getTemplateCopyFieldsForSection } from "@/utils/template-copy-contract";
+import {
+  getTemplateCopyFieldsForSection,
+  isSiteChromeSection,
+} from "@/utils/template-copy-contract";
 import {
   getTemplateAssetFieldsForSection,
   type StagedPageField,
@@ -31,16 +34,62 @@ import {
 
 const SENTINEL = "__SPECCED__";
 
-// Fields that are intentionally not copy fields. Hrefs and action targets are
-// resolved from site navigation and passed explicitly in the render switch, so
-// they legitimately fall back to library defaults.
-const NON_COPY_PROPS = new Set([
+/**
+ * Props that are legitimately library-owned, so matching demo content in them
+ * is not a leak.
+ *
+ * This replaced a 25-character floor on what counted as demo content. The floor
+ * was a proxy for "long enough to be prose", and it silently exempted every
+ * short string: eyebrows, stat values, button labels, and - the case that
+ * exposed it - five of the financing calculator's six result labels, while the
+ * sixth was one character over and failed. Short strings are exactly where
+ * client-specific facts live, so the rule is now structural rather than
+ * length-based.
+ */
+
+// Link targets, resolved from site navigation and passed explicitly by the
+// render switch rather than written as copy.
+const LINK_PROPS = new Set([
   "primaryActionHref",
   "secondaryActionHref",
   "sectionAction",
   "action",
   "href",
+  "customerActionHref",
+  "successActionHref",
 ]);
+
+// Layout and enum tokens. These are design configuration the section library
+// legitimately owns - a card is "large", a split is "text-3-image-4-right" -
+// and no copy field should ever supply them.
+const CONFIG_PROPS = new Set([
+  "align",
+  "cardBorder",
+  "cardFill",
+  "cardSize",
+  "colorRecipe",
+  "contentAlignX",
+  "contentAlignY",
+  "headingSize",
+  "headlineWrap",
+  "icons",
+  "objectPosition",
+  "position",
+  "ratio",
+  "requestType",
+  "size",
+  "systemType",
+  "variant",
+  // The builder's own ratio picker metadata, stored on the library entry.
+  "variants",
+]);
+
+function isIgnoredPropPath(propPath: string) {
+  return propPath
+    .split(/[.[]/)
+    .map((segment) => segment.replace(/\]$/, ""))
+    .some((segment) => LINK_PROPS.has(segment) || CONFIG_PROPS.has(segment));
+}
 
 /**
  * Live sections that currently render demo content for at least one prop the
@@ -56,20 +105,61 @@ const NON_COPY_PROPS = new Set([
  * getTemplateAssetFieldsForSection for images/alt text), then delete the entry.
  * Expect affected sections to flip to "stale" - the contract fingerprint changes.
  */
-// Swept to empty on 2026-07-25 and held empty on 2026-08-04, when the guard was
-// re-pointed from page-templates.json to the full builder catalog and six more
-// leaks surfaced in sections it had never checked. Every field a mapper reads is
-// now declared by the copy or asset contract, so it comes from batch copy and
-// stays editable in the content editor. Anything added here again is a section
-// shipping demo content to a real client - close the gap rather than record it.
-const KNOWN_GAPS = new Set<string>([]);
+/**
+ * Repopulated on 2026-08-04, when the 25-character floor was replaced by the
+ * structural rule above. The list had been swept to empty twice, but both
+ * sweeps were measured with the floor in place - so "empty" only ever meant no
+ * section leaked a string of 25 characters or more.
+ *
+ * Removing the floor surfaced 24 sections. None of these are new regressions;
+ * they are pre-existing leaks the guard was never able to see. They fall into
+ * three groups, listed separately because they do not have the same fix:
+ */
+const KNOWN_GAPS = new Set<string>([
+  // 1. Client-specific facts. The most serious of the three: these are not
+  //    generic filler but wrong information about a real business - a fake
+  //    phone number and email, demo city names, an invented review score.
+  "ContactSectionV3", // details[]: "(555) 014-2250", "hello@examplelocal.com"
+  "ServiceAreaZipLookupSectionV3", // columns[][]: "Huntersville", "Cornelius"
+  "HeroFullscreenSectionV2", // review.rating "4.9", trustSignals[].value "2,400+"
+
+  // 2. Unspecced eyebrows. The largest group and the most mechanical: the
+  //    mapper reads an eyebrow the contract branch never declares.
+  "CTAFullscreenSectionV3",
+  "ContentNarrativeFeatureRailSectionV3",
+  "ContentStickyCardStreamSectionV2",
+  "DecisionSplitDecisionSectionV3",
+  "FAQSectionV3",
+  "FeatureOverlapRowsSectionV3",
+  "ProcessStepsSectionV3",
+  "TestimonialsCarouselCondensedSectionV3",
+  "TestimonialsMasonrySectionV3",
+  "TestimonialsSectionV3",
+
+  // 3. Labels that need a chrome-or-copy decision first, the same call made for
+  //    the financing calculator's result labels: fixed UI furniture belongs in
+  //    component defaults, anything business-specific needs a copy field.
+  "ContentAboutCompanySectionV2", // images[].label
+  "ContentSplitHeadlineImageSectionV2", // headlineBottom, imageLabel
+  "FeatureAsymmetricCardsSectionV3", // actionLabel, cards[].iconLabel
+  "FeaturePortraitParagraphSectionV3", // imageLabel
+  "FeatureStackedCardsSectionV3", // actionLabel, cards[].iconLabel
+  "FinancingCalculatorSectionV3", // program.promotionalPrograms[].label
+  "ProcessImageChecklistSectionV3", // imageLabel
+  "ServiceCalloutSplitPanelSectionV3", // closeLabel
+  "ServicesScrollCardsSectionV2", // items[].imageLabel
+  "TrustMarqueeSection", // actionLabel
+  "TrustMarqueeSectionV3", // actionLabel
+]);
 
 function collectDemoStrings(value: unknown, out: Set<string>) {
   if (typeof value === "string") {
     const trimmed = value.trim();
-    // Ignore short tokens and routes - they collide with legitimate values and
-    // are not the client-facing prose this test is protecting against.
-    if (trimmed.length >= 25 && !trimmed.startsWith("/")) out.add(trimmed);
+    // Routes and anchors only - no length floor. Everything else is compared
+    // structurally, by which prop it landed in.
+    if (trimmed && !trimmed.startsWith("/") && !trimmed.startsWith("#")) {
+      out.add(trimmed);
+    }
     return;
   }
   if (Array.isArray(value)) {
@@ -161,6 +251,12 @@ function addSection(section: TemplateSection) {
     name: section.name ?? "",
   };
 
+  // Nav and footer resolve their business name, phone, link lists and service
+  // areas from siteIdentity, which this guard deliberately does not supply.
+  // Their fallback to library values is an artifact of that, not a copy leak -
+  // and isSiteChromeSection is the same test the copy prompt uses to skip them.
+  if (isSiteChromeSection(entry)) return;
+
   checkedSections.set(
     `${entry.component}|${entry.mode}|${entry.name}`,
     entry,
@@ -248,10 +344,7 @@ describe("section demo-content leak guard", () => {
       collectPropStrings((element as { props: unknown }).props, "", props);
 
       const leaked = props.filter(
-        (p) =>
-          allDemoStrings.has(p.value) &&
-          !NON_COPY_PROPS.has(p.path.split(".").pop() ?? "") &&
-          !p.path.split(/[.[]/).some((seg) => NON_COPY_PROPS.has(seg)),
+        (p) => allDemoStrings.has(p.value) && !isIgnoredPropPath(p.path),
       );
 
       const report = leaked.map(
