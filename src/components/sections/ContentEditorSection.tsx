@@ -636,9 +636,14 @@ export function ContentEditorSection({
                                 Toggles are a label and a short button row, so
                                 a full-width card wasted most of it and pushed
                                 the copy further down.
+
+                                Two across, not three: at a third of the row
+                                the wider option sets - colour recipe carries
+                                five - wrapped onto a second line, so the cards
+                                were taller than the row they saved.
                               */}
                               {toggleFields.length > 0 ? (
-                                <div className="grid grid-cols-3 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
+                                <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1">
                                   {toggleFields.map((field) => (
                                     <FieldEditor
                                       key={field.id}
