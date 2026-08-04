@@ -309,6 +309,16 @@ async function resolveSiteExport(requestedClientSlug: string) {
     warnings.push("No approved homepage was found; the generated root route will be absent.");
   }
 
+  const deadLinks = findDeadInternalLinks(resolvedPages);
+
+  if (deadLinks.length > 0) {
+    warnings.push(
+      `${deadLinks.length} link(s) point to routes this export does not generate and will 404: ${deadLinks
+        .slice(0, 8)
+        .join(", ")}${deadLinks.length > 8 ? ", ..." : ""}. Approve those pages or remove the links before launch.`,
+    );
+  }
+
   const sampleFields = findSampleMarkedFields(approvedPages);
 
   if (sampleFields.length > 0) {
@@ -1227,6 +1237,83 @@ function collectPageAssetPaths(pages: ResolvedPage[]) {
   );
 
   return assetPaths;
+}
+
+/**
+ * Internal routes the exported pages link to but do not generate.
+ *
+ * Nav and footer links resolve from the client's whole sitemap, not from the
+ * approved subset - `publicHref` maps a preview href to that page's public
+ * href whether or not the page is being exported. So a site exported from two
+ * approved pages ships a nav pointing at every other page in the sitemap, and
+ * each one 404s.
+ *
+ * This warns rather than blocks. Approving pages a few at a time is a normal
+ * way to work, and an export of one finished page is a legitimate thing to
+ * want. What is not legitimate is finding out after deploying, which is the
+ * only way it surfaced before.
+ */
+function findDeadInternalLinks(pages: ResolvedPage[]) {
+  return findDeadRouteLinks(
+    pages.flatMap(({ sections }) => sections.map(({ props }) => props)),
+    pages.map(({ page }) => page.pageHref),
+  );
+}
+
+export function findDeadRouteLinks(
+  propsList: unknown[],
+  generatedRoutes: string[],
+) {
+  const generated = new Set(generatedRoutes.map(normalizeRoute));
+  const linked = new Set<string>();
+
+  propsList.forEach((props) => collectRouteLinks(props, linked));
+
+  return Array.from(linked)
+    .filter((route) => !generated.has(route))
+    .sort();
+}
+
+function collectRouteLinks(
+  value: unknown,
+  routes: Set<string>,
+  keyPath: string[] = [],
+) {
+  if (typeof value === "string") {
+    const key = keyPath.at(-1)?.toLowerCase() ?? "";
+    const cleanValue = value.split(/[?#]/)[0];
+
+    if (
+      key.includes("href") &&
+      cleanValue.startsWith("/") &&
+      !cleanValue.startsWith("//") &&
+      // An href naming a file is an asset link, not a route, and
+      // `validateReferencedAssets` already owns those.
+      !/\.[a-z0-9]{2,5}$/i.test(cleanValue)
+    ) {
+      routes.add(normalizeRoute(cleanValue));
+    }
+    return;
+  }
+
+  if (Array.isArray(value)) {
+    value.forEach((item, index) =>
+      collectRouteLinks(item, routes, [...keyPath, String(index)]),
+    );
+    return;
+  }
+
+  if (value && typeof value === "object") {
+    Object.entries(value).forEach(([key, child]) =>
+      collectRouteLinks(child, routes, [...keyPath, key]),
+    );
+  }
+}
+
+function normalizeRoute(value: string) {
+  const trimmed = value.trim().replace(/\/+$/, "");
+
+  return trimmed || "/";
 }
 
 /**
