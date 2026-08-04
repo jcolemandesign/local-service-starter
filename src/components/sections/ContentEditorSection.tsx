@@ -610,20 +610,24 @@ export function ContentEditorSection({
                           ) : null}
                           {visibleFields.length > 0 ? (
                             <>
-                              {imageFields.map((field) => (
-                                <FieldEditor
-                                  key={field.id}
-                                  assets={imageAssets}
-                                  field={field}
-                                  value={values[field.id] ?? field.value}
-                                  originalValue={
-                                    baselineValues[field.id] ?? field.value
-                                  }
-                                  onChange={(nextValue) =>
-                                    updateField(field.id, nextValue)
-                                  }
-                                />
-                              ))}
+                              {imageFields.length > 0 ? (
+                                <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1">
+                                  {imageFields.map((field) => (
+                                    <FieldEditor
+                                      key={field.id}
+                                      assets={imageAssets}
+                                      field={field}
+                                      value={values[field.id] ?? field.value}
+                                      originalValue={
+                                        baselineValues[field.id] ?? field.value
+                                      }
+                                      onChange={(nextValue) =>
+                                        updateField(field.id, nextValue)
+                                      }
+                                    />
+                                  ))}
+                                </div>
+                              ) : null}
                               {/*
                                 Toggles are a label and a short button row, so
                                 a full-width card wasted most of it and pushed
@@ -647,20 +651,31 @@ export function ContentEditorSection({
                                   ))}
                                 </div>
                               ) : null}
-                              {copyFields.map((field) => (
-                                <FieldEditor
-                                  key={field.id}
-                                  assets={imageAssets}
-                                  field={field}
-                                  value={values[field.id] ?? field.value}
-                                  originalValue={
-                                    baselineValues[field.id] ?? field.value
-                                  }
-                                  onChange={(nextValue) =>
-                                    updateField(field.id, nextValue)
-                                  }
-                                />
-                              ))}
+                              {/*
+                                Two up, with each card sized to its own
+                                content rather than stretched to the row: the
+                                textareas auto-grow, so a long body beside a
+                                short heading would otherwise leave the short
+                                one mostly empty.
+                              */}
+                              {copyFields.length > 0 ? (
+                                <div className="grid grid-cols-2 items-start gap-3 max-md:grid-cols-1">
+                                  {copyFields.map((field) => (
+                                    <FieldEditor
+                                      key={field.id}
+                                      assets={imageAssets}
+                                      field={field}
+                                      value={values[field.id] ?? field.value}
+                                      originalValue={
+                                        baselineValues[field.id] ?? field.value
+                                      }
+                                      onChange={(nextValue) =>
+                                        updateField(field.id, nextValue)
+                                      }
+                                    />
+                                  ))}
+                                </div>
+                              ) : null}
                             </>
                           ) : (
                             <p className="type-text-sm rounded-sm border border-service-border bg-service-surface p-4 text-service-muted">
