@@ -553,16 +553,27 @@ async function writeGeneratedSite(
     const destinationPath = path.join(outputPath, dependencyPath);
 
     await mkdir(path.dirname(destinationPath), { recursive: true });
-    await copyFile(sourcePath, destinationPath);
+
+    // Text source is rewritten rather than copied so its builder vocabulary
+    // matches the renamed stylesheet. In shipped sections this only reaches
+    // comments - none of them emit the attributes themselves - but a comment
+    // pointing at `.pagebuilder-section-frame` in a client repo describes a
+    // selector that no longer exists there.
+    if (/\.(ts|tsx|js|jsx|mjs|css)$/.test(dependencyPath)) {
+      const contents = await readFile(sourcePath, "utf8");
+
+      await writeFile(destinationPath, neutralizeBuilderVocabulary(contents));
+    } else {
+      await copyFile(sourcePath, destinationPath);
+    }
   }
 
   const sourceGlobals = await readFile(
     path.join(sourceRoot, "app", "globals.css"),
     "utf8",
   );
-  const frozenGlobals = freezeStyleTokens(
-    sourceGlobals,
-    resolved.state.styleTokenCss,
+  const frozenGlobals = neutralizeBuilderVocabulary(
+    freezeStyleTokens(sourceGlobals, resolved.state.styleTokenCss),
   );
 
   await writeFile(
@@ -635,7 +646,7 @@ async function writeRoute(outputPath: string, resolvedPage: ResolvedPage) {
   );
   await writeFile(
     path.join(destination, "page.tsx"),
-    buildPageFile(resolvedPage),
+    neutralizeBuilderVocabulary(buildPageFile(resolvedPage)),
   );
 }
 
@@ -1102,6 +1113,37 @@ function pruneOptionalPlaceholderLinks(value: unknown): unknown {
   }
 
   return value;
+}
+
+/**
+ * Renames the builder's own vocabulary out of exported source.
+ *
+ * Every exported section is wrapped in a frame carrying
+ * `pagebuilder-section-frame` plus seven `data-pagebuilder-*` attributes, and
+ * the stylesheet selects on all of them. Shipped as-is, the word "pagebuilder"
+ * appears eight times per section in a client's DOM, announcing the tool that
+ * generated the site.
+ *
+ * The attributes cannot simply be dropped - all seven are load-bearing, and
+ * `--live-*` is remapped through them per colour recipe - so this renames
+ * rather than removes. The same transform runs over the emitted page source
+ * and the copied stylesheet, which is what keeps the selectors matching.
+ *
+ * Order matters, longest form first. The `...-section-` variants are collapsed
+ * ahead of the plain ones so the result reads `data-section-component` rather
+ * than `data-section-section-component` - a stutter that would advertise a
+ * mechanical rename as plainly as the original name advertised the builder.
+ * The bare `pagebuilder-` rule runs last, or it would consume the prefixes of
+ * the longer forms and strand their remainders.
+ */
+export function neutralizeBuilderVocabulary(source: string) {
+  return source
+    .replaceAll("data-pagebuilder-section-", "data-section-")
+    .replaceAll("data-pagebuilder-", "data-section-")
+    .replaceAll("--pagebuilder-section-", "--section-")
+    .replaceAll("--pagebuilder-", "--section-")
+    .replaceAll("pagebuilder-section-frame", "site-section-frame")
+    .replaceAll("pagebuilder-", "site-");
 }
 
 function freezeStyleTokens(css: string, styleTokenCss: string) {
