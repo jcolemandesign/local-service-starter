@@ -318,7 +318,11 @@ export function ContentEditorSection({
           </p>
         </SevenColumnGridItem>
 
-        <SevenColumnGridItem className="col-start-2 col-span-1 max-lg:col-start-1 max-lg:col-span-1 max-md:col-span-3 max-sm:col-span-1">
+        {/* Two columns rather than one: the page list carries a recipe name, a
+         * page label and a field count per row, and the site identity panel
+         * above it holds two labelled inputs. At one column those wrapped to
+         * three or four lines each. */}
+        <SevenColumnGridItem className="col-start-2 col-span-2 max-lg:col-start-1 max-lg:col-span-2 max-md:col-span-3 max-sm:col-span-1">
           <section
             aria-label="Site identity"
             className="mb-4 rounded-sm border border-service-border bg-white p-4 shadow-service"
@@ -413,7 +417,7 @@ export function ContentEditorSection({
           </nav>
         </SevenColumnGridItem>
 
-        <SevenColumnGridItem className="col-start-3 col-span-5 max-lg:col-start-2 max-lg:col-span-4 max-md:col-start-1 max-md:col-span-3 max-sm:col-span-1">
+        <SevenColumnGridItem className="col-start-4 col-span-4 max-lg:col-start-3 max-lg:col-span-3 max-md:col-start-1 max-md:col-span-3 max-sm:col-span-1">
           {activePage ? (
             <div className="grid gap-5">
               <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 rounded-sm border border-service-border bg-white p-5 shadow-service max-md:grid-cols-1">

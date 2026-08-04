@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import {
@@ -50,6 +50,33 @@ export async function readSiteIdentity(
     );
   } catch {
     return emptySiteIdentity;
+  }
+}
+
+/**
+ * Whether a sanitised `logoSrc` actually resolves to a file under `public/`.
+ *
+ * Shape alone is not enough. A mistyped or half-pasted path still starts with
+ * `/` and saves cleanly, then renders nothing - and the exporter skips assets it
+ * cannot find, so the broken path reaches the client's site as an empty image
+ * rather than an error. Checking at save is the only point where someone is
+ * around to read the message.
+ */
+export async function logoFileExists(logoSrc: string) {
+  if (!logoSrc) {
+    return true;
+  }
+
+  try {
+    const target = path.join(
+      process.cwd(),
+      "public",
+      ...logoSrc.replace(/^\//, "").split("/"),
+    );
+
+    return (await stat(target)).isFile();
+  } catch {
+    return false;
   }
 }
 

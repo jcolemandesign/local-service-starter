@@ -1,6 +1,11 @@
 import { requireBuilderApiAccess } from "@/utils/builder-access";
 import { sanitizeClientSlug } from "@/utils/strategy-workspace";
-import { readSiteIdentity, writeSiteIdentity } from "@/utils/site-identity";
+import { sanitizeSiteIdentity } from "@/content/site-identity";
+import {
+  logoFileExists,
+  readSiteIdentity,
+  writeSiteIdentity,
+} from "@/utils/site-identity";
 
 export const runtime = "nodejs";
 
@@ -72,10 +77,22 @@ export async function PUT(request: Request) {
   }
 
   try {
-    const identity = await writeSiteIdentity(clientSlug, {
+    const requested = sanitizeSiteIdentity({
       businessName: body.businessName,
       logoSrc: body.logoSrc,
     });
+
+    // Reject a path that resolves to nothing before it is stored. It would save
+    // cleanly, render as an empty logo, and be skipped by the exporter - a
+    // broken mark on the client's site with no error anywhere.
+    if (requested.logoSrc && !(await logoFileExists(requested.logoSrc))) {
+      return Response.json({
+        error: `No file at public${requested.logoSrc}. Check the path.`,
+        ok: false,
+      }, { status: 400 });
+    }
+
+    const identity = await writeSiteIdentity(clientSlug, requested);
 
     // Echo the sanitised record back: `logoSrc` is dropped unless it is a
     // same-origin path, so the editor can show what was actually stored rather
