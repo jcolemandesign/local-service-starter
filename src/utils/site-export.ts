@@ -33,9 +33,11 @@ import {
 import { readSiteExportState } from "@/utils/site-export-state";
 import {
   getActiveStagedPages,
+  getTemplateAssetFieldsForSection,
   readStagedPages,
   type StagedPage,
 } from "@/utils/staged-pages";
+import { getSectionId } from "@/utils/section-id";
 import { sanitizeClientSlug } from "@/utils/strategy-workspace";
 import type { SiteIdentity } from "@/content/site-identity";
 import { readSiteIdentity } from "@/utils/site-identity";
@@ -257,6 +259,7 @@ async function resolveSiteExport(requestedClientSlug: string) {
 
   for (const page of approvedPages) {
     validateStagedFields(page, issues);
+    validatePlaceholderAssets(page, issues);
     const renderData = getStagedPageRenderData(page, clientPages);
     const sections = resolvePageSections(
       page,
@@ -366,6 +369,58 @@ function validateStagedFields(page: StagedPage, issues: ExportIssue[]) {
       });
     }
   }
+}
+
+/**
+ * Blocks an export whose images are still the section library's own.
+ *
+ * `validateStagedFields` only catches an image field that is empty. A field
+ * holding `/images/fpo-image.svg` is populated and well-formed, so it passed -
+ * and the section then rendered its FPO placeholder, a grey gradient box
+ * labelled "Texture" or "Process", onto a live client site. That is the most
+ * visible templatization tell the export can emit, and more obvious to an
+ * ordinary visitor than anything in the generated source.
+ *
+ * A placeholder is identified by comparing against the asset contract's own
+ * default rather than a list of filenames: `getTemplateAssetFieldsForSection`
+ * carries the library value for each field, so a value still equal to it was
+ * never replaced. A blocklist would go stale the moment a sample asset was
+ * renamed; this cannot.
+ *
+ * A missing field counts too. The mapper falls back to library demo content
+ * when a field is absent, so an unwritten image field renders exactly the same
+ * placeholder as an unchanged one.
+ */
+function validatePlaceholderAssets(page: StagedPage, issues: ExportIssue[]) {
+  const sections = page.template?.sections ?? [];
+  const valueByPath = new Map(
+    page.fields.map((field) => [field.path, field.value.trim()]),
+  );
+
+  sections.forEach((section, index) => {
+    const sectionId = getSectionId(section, index);
+    const assetFields = getTemplateAssetFieldsForSection(section);
+
+    for (const spec of assetFields) {
+      if (spec.kind !== "image") {
+        continue;
+      }
+
+      const staged = valueByPath.get(`${sectionId}.${spec.name}`);
+      const isUnchanged = staged === undefined || staged === spec.value.trim();
+
+      if (!isUnchanged) {
+        continue;
+      }
+
+      issues.push({
+        code: "placeholder-image",
+        message: `Replace the placeholder image at ${sectionId}.${spec.name} with a real asset before exporting.`,
+        pageId: page.pageId,
+        sectionId,
+      });
+    }
+  });
 }
 
 function resolvePageSections(
