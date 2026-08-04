@@ -13,6 +13,10 @@ import {
   readStrategyWorkspace,
   sanitizeClientSlug,
 } from "@/utils/strategy-workspace";
+import {
+  buildCopywritingAgentInstructions,
+  buildGlobalCopywritingAgentInstructions,
+} from "@/content/copywriting-personality-packets";
 import { buildTemplateCopyContract } from "@/utils/template-copy-contract";
 import { StyleGuideCloseAllButton } from "@/components/sections/StyleGuideCloseAllButton";
 
@@ -51,8 +55,21 @@ export default async function PromptLibraryPage({
     ? await readStrategyWorkspace(selectedProject.clientSlug)
     : null;
   const stagedPages = await readStagedPages();
+  // Built once per client and handed to every page spec, so a copied page
+  // prompt carries its own voice rather than depending on being pasted into
+  // the project-level agent instructions.
+  const copywriting = strategyWorkspace
+    ? [
+        buildGlobalCopywritingAgentInstructions(),
+        buildCopywritingAgentInstructions(strategyWorkspace.fields),
+      ].join("\n\n")
+    : undefined;
   const stagedPageContracts = selectedProject
-    ? buildStagedPageContracts(stagedPages, selectedProject.clientSlug)
+    ? buildStagedPageContracts(
+        stagedPages,
+        selectedProject.clientSlug,
+        copywriting,
+      )
     : [];
   const strategyPages =
     strategyWorkspace && selectedProject
@@ -77,7 +94,11 @@ export default async function PromptLibraryPage({
   );
 }
 
-function buildStagedPageContracts(pages: StagedPage[], clientSlug: string) {
+function buildStagedPageContracts(
+  pages: StagedPage[],
+  clientSlug: string,
+  copywriting?: string,
+) {
   // One contract per live page. Alts share their base page's copy contract, so
   // including them would list the same contract twice.
   return getActiveStagedPages(pages)
@@ -85,6 +106,7 @@ function buildStagedPageContracts(pages: StagedPage[], clientSlug: string) {
     .filter((page) => page.template?.sections?.length)
     .map((page) => ({
       contract: buildTemplateCopyContract({
+        copywriting,
         pageLabel: page.pageLabel,
         pageSlug: page.pageId,
         template: {

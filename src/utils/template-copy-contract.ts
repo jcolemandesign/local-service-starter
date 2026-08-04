@@ -32,6 +32,20 @@ export type TemplateCopyContractStrategySnapshot = {
 };
 
 type BuildTemplateCopyContractInput = {
+  /**
+   * The client's copywriting voice packet, emitted at the top of the spec.
+   *
+   * It used to live only in the project-level agent instructions document,
+   * with this spec pasted into a placeholder near its end. That made a page
+   * prompt useless on its own, and a prompt sent without its other half looked
+   * completely normal - it just produced copy with no voice, no business
+   * snapshot and no claim guardrails. Carrying it here makes a page prompt
+   * self-sufficient.
+   *
+   * Optional so a caller with no strategy workspace still produces a spec;
+   * the document then says so rather than pretending voice was considered.
+   */
+  copywriting?: string;
   pageLabel: string;
   pageSlug: string;
   strategySnapshot?: TemplateCopyContractStrategySnapshot;
@@ -123,6 +137,7 @@ const fallbackFields: TemplateCopyFieldSpec[] = [
 ];
 
 export function buildTemplateCopyContract({
+  copywriting,
   pageLabel,
   pageSlug,
   strategySnapshot,
@@ -135,9 +150,27 @@ export function buildTemplateCopyContract({
   const lines = [
     "# Page Template Copy Spec",
     "",
-    "Use this spec with the project-level page-copy agent instructions. Write copy for this exact staged page instance and preserve the section IDs, field names, section order, repeatable item counts, and copy-fit limits.",
+    copywriting
+      ? "Write copy for this exact staged page instance in the voice below, preserving the section IDs, field names, section order, repeatable item counts, and copy-fit limits."
+      : "Use this spec with the project-level page-copy agent instructions. Write copy for this exact staged page instance and preserve the section IDs, field names, section order, repeatable item counts, and copy-fit limits.",
     "",
     "Former name: Template Copy Contract.",
+  ];
+
+  // Ahead of the page target and the field specs: the voice governs how every
+  // field below is written, so it has to be read before them, not appended
+  // after. A model that meets the field list first has already started
+  // composing by the time it reaches the personality.
+  if (copywriting) {
+    lines.push("", copywriting.trim());
+  } else {
+    lines.push(
+      "",
+      "> No copywriting voice packet was attached to this spec. Copy written from it alone will have no personality, business snapshot, or claim guardrails - pair it with the project-level agent instructions before generating.",
+    );
+  }
+
+  lines.push(
     "",
     "## Page Target",
     `Page label: ${pageLabel}`,
@@ -148,7 +181,7 @@ export function buildTemplateCopyContract({
     `Contract fingerprint: ${contractFingerprint}`,
     `Page type: ${template.pageType}`,
     `Page relationship: ${relationshipLabel}`,
-  ];
+  );
 
   if (isRepeatable) {
     lines.push(

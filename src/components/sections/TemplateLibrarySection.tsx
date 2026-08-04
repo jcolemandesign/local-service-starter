@@ -61,6 +61,13 @@ type TemplateLibrarySectionProps = {
    * the per-client config lives on disk; clients with no entry fall back to the
    * shared skeleton.
    */
+  /**
+   * Each client's copywriting voice packet, keyed by slug. Built on the server
+   * because it reads the strategy workspace from disk, and passed in so a
+   * copied page spec carries its own voice instead of depending on being
+   * pasted into the project-level agent instructions.
+   */
+  copywritingByClient?: Record<string, string>;
   pageSlotsByClient: Record<string, StrategyPageDefinition[]>;
   stagedTemplateAssignments: StagedTemplateAssignment[];
   strategySnapshots: StrategySnapshotSummary[];
@@ -164,6 +171,7 @@ type StagedTemplateAssignment = {
 };
 
 export function TemplateLibrarySection({
+  copywritingByClient = {},
   pageSlotsByClient,
   stagedTemplateAssignments,
   strategySnapshots,
@@ -282,6 +290,7 @@ export function TemplateLibrarySection({
     );
 
     return buildTemplateCopyContract({
+      copywriting: copywritingByClient[activeClientSlug],
       pageLabel: draft.label,
       pageSlug: draft.slug,
       strategySnapshot: selectedSnapshot,

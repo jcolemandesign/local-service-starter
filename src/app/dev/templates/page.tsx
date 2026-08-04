@@ -10,6 +10,11 @@ import { readStrategyPageSlots } from "@/utils/client-page-slots";
 import { getStagedPreviewHref } from "@/utils/staged-page-links";
 import { getActiveStagedPages, readStagedPages } from "@/utils/staged-pages";
 import { listLatestStrategySnapshotSummaries } from "@/utils/strategy-snapshots";
+import { readStrategyWorkspace } from "@/utils/strategy-workspace";
+import {
+  buildCopywritingAgentInstructions,
+  buildGlobalCopywritingAgentInstructions,
+} from "@/content/copywriting-personality-packets";
 import { StyleGuideCloseAllButton } from "@/components/sections/StyleGuideCloseAllButton";
 
 export const metadata: Metadata = {
@@ -48,10 +53,31 @@ export default async function TemplatesPage() {
     ),
   );
 
+  // One packet per client, read here because the strategy workspace is on
+  // disk and the template library is a client component.
+  const copywritingByClient = Object.fromEntries(
+    await Promise.all(
+      [...new Set(strategySnapshots.map((snapshot) => snapshot.clientSlug))].map(
+        async (clientSlug) => {
+          const workspace = await readStrategyWorkspace(clientSlug);
+
+          return [
+            clientSlug,
+            [
+              buildGlobalCopywritingAgentInstructions(),
+              buildCopywritingAgentInstructions(workspace.fields),
+            ].join("\n\n"),
+          ] as const;
+        },
+      ),
+    ),
+  );
+
   return (
     <StyleGuidePreviewSurface>
       <main>
         <TemplateLibrarySection
+          copywritingByClient={copywritingByClient}
           pageSlotsByClient={pageSlotsByClient}
           stagedTemplateAssignments={getActiveStagedPages(stagedPages)
             .filter((page) => page.template?.id)
