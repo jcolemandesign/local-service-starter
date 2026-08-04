@@ -1396,7 +1396,14 @@ export function getTemplateAssetFieldsForSection(
     );
   }
 
-  if (component.includes("photogallerycarousel")) {
+  // Matches on "photogallery" rather than "photogallerycarousel" so the Large
+  // variant is caught too: its component name is ...PhotoGalleryLargeCarousel...,
+  // which the narrower substring missed. Both variants share photoGalleryProps
+  // and this library entry, so both need the same fields; without this the
+  // Large variant returned no asset spec and shipped every demo alt and caption.
+  // The projectcasestudygallery branch above already claimed the only other
+  // gallery component, so this cannot over-match.
+  if (component.includes("photogallery")) {
     return sectionLibraryV3Content.contentPhotoGalleryCarousel.images.flatMap(
       (image, index) => [
         {
@@ -1427,6 +1434,14 @@ export function getTemplateAssetFieldsForSection(
         kind: "meta" as const,
         name: `images.${index + 1}.alt`,
         value: image.alt,
+      },
+      {
+        // Rendered beneath each frame, so it is client-facing copy - the same
+        // reason the gallery branch above declares it. The mapper already read
+        // `caption`; nothing declared it, so every strip shipped the demo one.
+        kind: "meta" as const,
+        name: `images.${index + 1}.caption`,
+        value: image.caption,
       },
       {
         kind: "image" as const,

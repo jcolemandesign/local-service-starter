@@ -1,3 +1,4 @@
+import { sectionLibraryV3Content } from "@/content/section-library-v3";
 import { getSectionId, getSectionOrdinal } from "@/utils/section-id";
 import {
   getPathFromSlugForPageType,
@@ -2295,6 +2296,267 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  // Ahead of the generic scan branch, which claimed this section and offered a
+  // flat serviceItems list. The shared cardItems() helper cannot carry a card
+  // eyebrow or meta, so both rendered straight from the library - shipping the
+  // demo eyebrows and, worse, the library's authoring notes ("Best for process,
+  // proof, or service highlights") onto client pages.
+  //
+  // Cards are addressed by index rather than as a list because the section's
+  // layout assigns a fixed size per position. `meta` is optional per card: the
+  // mapper falls back to empty rather than to the library when it is omitted,
+  // so skipping it renders nothing instead of resurrecting the demo note.
+  if (component.includes("contenthorizontalcardcarousel")) {
+    // Derived, not hardcoded: the mapper walks the library's cards, so a count
+    // written here by hand goes stale the moment a card is added and the extra
+    // cards silently fall back to demo copy. The asset specs in staged-pages.ts
+    // derive their per-item fields from the library for the same reason.
+    const cardCount =
+      sectionLibraryV3Content.contentHorizontalCardCarousel.cards.length;
+
+    return [
+      {
+        example: "Capabilities",
+        name: "eyebrow",
+        purpose: "Short category label above the section headline.",
+        target: "10-28 characters.",
+      },
+      {
+        example: "A swipeable card stream for related proof points",
+        name: "title",
+        purpose: "Section headline above the card stream.",
+        target: "36-72 characters.",
+      },
+      {
+        example:
+          "Use this section when several service details need to feel connected and easy to browse without a dense grid.",
+        name: "body",
+        purpose: "Supporting copy introducing the card stream.",
+        target: "100-190 characters.",
+      },
+      ...Array.from({ length: cardCount }).flatMap<TemplateCopyFieldSpec>((_, index) => {
+        const position = index + 1;
+
+        return [
+          {
+            example: "Scheduling",
+            name: `cards.${position}.eyebrow`,
+            purpose: `Short category label on card ${position}.`,
+            target: "8-22 characters.",
+          },
+          {
+            example: "Arrival windows stay clear from the first request",
+            name: `cards.${position}.title`,
+            purpose: `Headline for card ${position}.`,
+            target: "34-70 characters.",
+          },
+          {
+            example:
+              "Cards can carry practical details like booking expectations, confirmation steps, and follow-up.",
+            name: `cards.${position}.body`,
+            purpose: `Supporting copy for card ${position}.`,
+            target: "90-170 characters.",
+          },
+          {
+            example: "Same-day windows in most areas",
+            name: `cards.${position}.meta`,
+            optional: true,
+            purpose: `Short qualifying caption beneath card ${position}. Customer-facing detail only - never a note about when to use the section.`,
+            target: "18-48 characters, or omit when the card does not need one.",
+          },
+        ];
+      }),
+    ];
+  }
+
+  // Ahead of both generic branches for the same reason as the triage section
+  // below: the component name starts with "cta", so the generic CTA branch
+  // claimed it and offered only heading/body/primaryAction/secondaryAction.
+  // The section renders three separate panels - a lead-in, the revealed offer,
+  // and a closing panel - so seven of its eleven strings had no field at all
+  // and shipped demo copy.
+  if (component.includes("ctascrollrevealoffer")) {
+    return [
+      {
+        example: "Seasonal offer",
+        name: "introEyebrow",
+        purpose: "Small label on the lead-in panel, before the offer reveals.",
+        target: "10-28 characters.",
+      },
+      {
+        example: "A quiet lead-in before the offer takes over the page",
+        name: "introTitle",
+        purpose: "Headline on the panel that scrolls away to reveal the offer.",
+        target: "40-80 characters. Keep distinct from offerTitle.",
+      },
+      {
+        example:
+          "The panel above moves away first, letting the offer feel like it was waiting underneath the page.",
+        name: "introBody",
+        purpose: "Supporting copy on the lead-in panel.",
+        target: "90-180 characters.",
+      },
+      {
+        example: "Limited time service offer",
+        name: "offerEyebrow",
+        purpose: "Short label above the revealed offer headline.",
+        target: "12-32 characters.",
+      },
+      {
+        example: "Save 15% on your first scheduled maintenance visit",
+        name: "offerTitle",
+        purpose: "The offer itself - the largest statement in the section.",
+        target:
+          "40-80 characters. State the actual offer; do not imply terms that were not supplied.",
+      },
+      {
+        example:
+          "A full-bleed reveal for seasonal promotions and service specials the visitor should feel they discovered.",
+        name: "offerBody",
+        purpose: "Supporting copy beneath the offer headline.",
+        target: "100-190 characters.",
+      },
+      {
+        example:
+          "Offer terms can live here: new customers, eligible service visits, and availability windows.",
+        name: "offerDetail",
+        purpose:
+          "Eligibility and terms line for the offer. This is the qualifying small print, not a second sales pitch.",
+        target:
+          "70-150 characters. Use supplied terms only; write NEEDS REVIEW when they are not confirmed.",
+      },
+      {
+        example: "Claim the offer",
+        name: "primaryAction",
+        purpose: "Action label on the revealed offer panel.",
+        target: "12-24 characters.",
+      },
+      {
+        example: "Next step",
+        name: "closeEyebrow",
+        purpose: "Small label on the closing panel after the offer.",
+        target: "8-24 characters.",
+      },
+      {
+        example:
+          "The follow-up section covers the offer and returns the page to its normal rhythm",
+        name: "closeTitle",
+        purpose:
+          "Closing headline that transitions the page back out of the offer.",
+        target: "45-90 characters. Keep distinct from introTitle and offerTitle.",
+      },
+      {
+        example:
+          "Use the closing panel for reassurance, eligibility details, or a softer transition back into services.",
+        name: "closeBody",
+        purpose: "Supporting copy on the closing panel.",
+        target: "90-180 characters.",
+      },
+    ];
+  }
+
+  // Each card has a distinct operational role, so its copy cannot be collapsed
+  // into one headline/body/action set.
+  //
+  // This must stay ahead of BOTH generic branches. The component name contains
+  // "service", so the generic service branch below claimed it first and handed
+  // the section a field set its mapper never reads - every string fell back to
+  // demo content while the copy prompt asked for five fields the section
+  // cannot render. Moving it below either generic branch reintroduces that.
+  if (component.includes("ctaservicetriage")) {
+    const choiceExamples = [
+      "AC repair",
+      "Heating repair",
+      "AC tune-up",
+      "Heating tune-up",
+    ];
+
+    return [
+      {
+        example: "Need service?",
+        name: "serviceTitle",
+        purpose: "Headline for the card that begins the request modal.",
+        target: "14-32 characters.",
+      },
+      {
+        example:
+          "Choose the path that best matches your system, then continue through the request flow.",
+        name: "serviceBody",
+        purpose: "Brief instructions above the four modal-start choices.",
+        target: "70-130 characters.",
+      },
+      ...choiceExamples.map((example, index) => ({
+        example,
+        name: `serviceChoices.${index + 1}.label`,
+        purpose: `Short service-choice label ${index + 1} in the modal-start card.`,
+        target: "8-22 characters.",
+      })),
+      {
+        example: "Start service request",
+        name: "serviceAction",
+        purpose: "General modal-launch action beneath the service choices.",
+        target: "14-28 characters.",
+      },
+      {
+        example: "Not working now?",
+        name: "urgentTitle",
+        purpose: "Headline for visitors with an urgent system problem.",
+        target: "16-34 characters.",
+      },
+      {
+        example:
+          "Urgent heating or cooling issues should call the office directly.",
+        name: "urgentBody",
+        purpose: "Direct visitors with urgent issues toward the phone path.",
+        target: "55-110 characters.",
+      },
+      {
+        example: "704-555-0184",
+        name: "urgentPhone",
+        purpose:
+          "Approved customer-facing phone number. The section derives the tel link from this exact value.",
+        target: "Use the approved business phone number only.",
+      },
+      {
+        example: "Call for urgent service",
+        name: "urgentAction",
+        purpose: "Phone CTA label in the urgent-service card.",
+        target: "12-26 characters.",
+      },
+      {
+        example: "For immediate help, please call.",
+        name: "urgentHelper",
+        purpose: "Short qualification beneath the urgent phone CTA.",
+        target: "24-60 characters.",
+      },
+      {
+        example: "Already a customer?",
+        name: "customerTitle",
+        purpose: "Headline for the existing-customer path.",
+        target: "18-36 characters.",
+      },
+      {
+        example:
+          "Reschedule, ask about an invoice, or follow up on recently completed work.",
+        name: "customerBody",
+        purpose: "Examples of issues the existing-customer path should handle.",
+        target: "65-125 characters.",
+      },
+      {
+        example: "Use the message form below",
+        name: "customerAction",
+        purpose: "In-page contact CTA for existing customers.",
+        target: "14-30 characters.",
+      },
+      {
+        example: "We’re happy to help.",
+        name: "customerHelper",
+        purpose: "Short reassurance beneath the existing-customer action.",
+        target: "18-45 characters.",
+      },
+    ];
+  }
+
   if ((lookupValue.includes("service") && mode !== "utility") || mode === "scan") {
     return [
       {
@@ -3169,102 +3431,6 @@ export function getTemplateCopyFieldsForSection(
         name: "terms",
         purpose: "Short qualification or terms line beneath the action.",
         target: "24-80 characters.",
-      },
-    ];
-  }
-
-  // Ahead of the generic CTA branch: each card has a distinct operational
-  // role, so its copy cannot be collapsed into one headline/body/action set.
-  if (component.includes("ctaservicetriage")) {
-    const choiceExamples = [
-      "AC repair",
-      "Heating repair",
-      "AC tune-up",
-      "Heating tune-up",
-    ];
-
-    return [
-      {
-        example: "Need service?",
-        name: "serviceTitle",
-        purpose: "Headline for the card that begins the request modal.",
-        target: "14-32 characters.",
-      },
-      {
-        example:
-          "Choose the path that best matches your system, then continue through the request flow.",
-        name: "serviceBody",
-        purpose: "Brief instructions above the four modal-start choices.",
-        target: "70-130 characters.",
-      },
-      ...choiceExamples.map((example, index) => ({
-        example,
-        name: `serviceChoices.${index + 1}.label`,
-        purpose: `Short service-choice label ${index + 1} in the modal-start card.`,
-        target: "8-22 characters.",
-      })),
-      {
-        example: "Start service request",
-        name: "serviceAction",
-        purpose: "General modal-launch action beneath the service choices.",
-        target: "14-28 characters.",
-      },
-      {
-        example: "Not working now?",
-        name: "urgentTitle",
-        purpose: "Headline for visitors with an urgent system problem.",
-        target: "16-34 characters.",
-      },
-      {
-        example:
-          "Urgent heating or cooling issues should call the office directly.",
-        name: "urgentBody",
-        purpose: "Direct visitors with urgent issues toward the phone path.",
-        target: "55-110 characters.",
-      },
-      {
-        example: "704-555-0184",
-        name: "urgentPhone",
-        purpose:
-          "Approved customer-facing phone number. The section derives the tel link from this exact value.",
-        target: "Use the approved business phone number only.",
-      },
-      {
-        example: "Call for urgent service",
-        name: "urgentAction",
-        purpose: "Phone CTA label in the urgent-service card.",
-        target: "12-26 characters.",
-      },
-      {
-        example: "For immediate help, please call.",
-        name: "urgentHelper",
-        purpose: "Short qualification beneath the urgent phone CTA.",
-        target: "24-60 characters.",
-      },
-      {
-        example: "Already a customer?",
-        name: "customerTitle",
-        purpose: "Headline for the existing-customer path.",
-        target: "18-36 characters.",
-      },
-      {
-        example:
-          "Reschedule, ask about an invoice, or follow up on recently completed work.",
-        name: "customerBody",
-        purpose: "Examples of issues the existing-customer path should handle.",
-        target: "65-125 characters.",
-      },
-      {
-        example: "Use the message form below",
-        name: "customerAction",
-        purpose: "In-page contact CTA for existing customers.",
-        target: "14-30 characters.",
-      },
-      {
-        example: "We’re happy to help.",
-        name: "customerHelper",
-        purpose: "Short reassurance beneath the existing-customer action.",
-        target: "18-45 characters.",
       },
     ];
   }

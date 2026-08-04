@@ -3127,27 +3127,48 @@ function extractServiceAreaNames(value: string) {
     .filter((item) => item.length > 1);
 }
 
+/**
+ * Cards are read by index rather than through the shared cardItems() helper,
+ * which has no eyebrow or meta in its return shape - so both used to come
+ * straight from the library and shipped demo content to client pages.
+ *
+ * `legacy` keeps pages staged against the old flat serviceItems list rendering
+ * their written title and body until they are re-run, the same fallback shape
+ * scrollRevealOfferProps uses. Card size stays library-owned: it is layout for
+ * a fixed position, not copy.
+ *
+ * `meta` deliberately falls back to empty rather than to the library. It is
+ * optional, and the component hides an empty one - so an omitted meta renders
+ * nothing instead of restoring the library's authoring note.
+ */
 function horizontalCardsProps(section: FieldSection) {
+  const demo = sectionLibraryV3Content.contentHorizontalCardCarousel;
+  const legacy = cardItems(section, ["cards", "items", "serviceItems"]);
+
   return {
-    ...sectionLibraryV3Content.contentHorizontalCardCarousel,
-    body: getBody(section, sectionLibraryV3Content.contentHorizontalCardCarousel.body),
-    cards: cardItems(section, ["cards", "items", "serviceItems"]).map(
-      (item, index) => ({
-        ...sectionLibraryV3Content.contentHorizontalCardCarousel.cards[
-          index % sectionLibraryV3Content.contentHorizontalCardCarousel.cards.length
-        ],
-        ...item,
-      }),
-    ),
-    eyebrow: getValue(
-      section,
-      "eyebrow",
-      sectionLibraryV3Content.contentHorizontalCardCarousel.eyebrow,
-    ),
-    title: getTitle(
-      section,
-      sectionLibraryV3Content.contentHorizontalCardCarousel.title,
-    ),
+    ...demo,
+    body: getBody(section, demo.body),
+    cards: demo.cards.map((card, index) => {
+      const position = index + 1;
+
+      return {
+        ...card,
+        body: getValue(
+          section,
+          `cards.${position}.body`,
+          legacy[index]?.body || card.body,
+        ),
+        eyebrow: getValue(section, `cards.${position}.eyebrow`, card.eyebrow),
+        meta: getValue(section, `cards.${position}.meta`, ""),
+        title: getValue(
+          section,
+          `cards.${position}.title`,
+          legacy[index]?.title || card.title,
+        ),
+      };
+    }),
+    eyebrow: getValue(section, "eyebrow", demo.eyebrow),
+    title: getTitle(section, demo.title),
   };
 }
 
@@ -3570,21 +3591,39 @@ function featureOverlapRowsProps(section: FieldSection) {
   };
 }
 
+/**
+ * Shared by the V2 and V3 reveal sections. The intro and closing panels were
+ * spread straight from the library and never read a field, so both variants
+ * shipped demo copy for seven of their eleven strings.
+ *
+ * The offer panel keeps its generic fallbacks (title/body/eyebrow) behind the
+ * specific field names, the same way fixedCoverFadeProps does, so pages staged
+ * before those fields existed keep rendering their written copy.
+ */
 function scrollRevealOfferProps(section: FieldSection) {
+  const demo = sectionLibraryV3Content.ctaScrollRevealOffer;
+
   return {
-    ...sectionLibraryV3Content.ctaScrollRevealOffer,
-    action: getValue(
-      section,
-      "primaryAction",
-      sectionLibraryV3Content.ctaScrollRevealOffer.action,
-    ),
-    offerBody: getBody(section, sectionLibraryV3Content.ctaScrollRevealOffer.offerBody),
+    ...demo,
+    action: getValue(section, "primaryAction", demo.action),
+    closeBody: getValue(section, "closeBody", demo.closeBody),
+    closeEyebrow: getValue(section, "closeEyebrow", demo.closeEyebrow),
+    closeTitle: getValue(section, "closeTitle", demo.closeTitle),
+    introBody: getValue(section, "introBody", demo.introBody),
+    introEyebrow: getValue(section, "introEyebrow", demo.introEyebrow),
+    introTitle: getValue(section, "introTitle", demo.introTitle),
+    offerBody: getValue(section, "offerBody", getBody(section, demo.offerBody)),
+    offerDetail: getValue(section, "offerDetail", demo.offerDetail),
     offerEyebrow: getValue(
       section,
-      "eyebrow",
-      sectionLibraryV3Content.ctaScrollRevealOffer.offerEyebrow,
+      "offerEyebrow",
+      getValue(section, "eyebrow", demo.offerEyebrow),
     ),
-    offerTitle: getTitle(section, sectionLibraryV3Content.ctaScrollRevealOffer.offerTitle),
+    offerTitle: getValue(
+      section,
+      "offerTitle",
+      getTitle(section, demo.offerTitle),
+    ),
   };
 }
 
