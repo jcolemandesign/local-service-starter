@@ -1714,10 +1714,16 @@
           "value": "Adjust the project cost and financing term to see an informational monthly estimate before requesting a repair or replacement quote."
         },
         {
+          "id": "financing.03-financing-calculator.promotionalLabel",
+          "kind": "copy",
+          "path": "03-financing-calculator.promotionalLabel",
+          "value": "0% APR for 00 months [SAMPLE]"
+        },
+        {
           "id": "financing.03-financing-calculator.promotionalEligibilityNote",
           "kind": "copy",
           "path": "03-financing-calculator.promotionalEligibilityNote",
-          "value": "NEEDS REVIEW: Insert the lender-approved promotional eligibility statement verbatim."
+          "value": "[SAMPLE] Eligibility and approval terms pending lender confirmation. Not an offer of credit."
         },
         {
           "id": "financing.03-financing-calculator.termItems",
@@ -1729,7 +1735,7 @@
           "id": "financing.03-financing-calculator.disclosure",
           "kind": "copy",
           "path": "03-financing-calculator.disclosure",
-          "value": "NEEDS REVIEW: Insert the financing provider’s required estimator and advertising disclosure verbatim."
+          "value": "[SAMPLE DISCLOSURE - REPLACE BEFORE LAUNCH] Estimate only. This is not an offer of credit. Rates, payments, eligibility, and terms are determined by the third-party lender after application. This is placeholder text and must be replaced with the lender's required disclosure language."
         },
         {
           "id": "financing.03-financing-calculator.projectTimingDisclosure",
@@ -2159,7 +2165,7 @@
         }
       ],
       "fieldCounts": {
-        "copy": 56,
+        "copy": 57,
         "image": 2,
         "link": 0,
         "meta": 43

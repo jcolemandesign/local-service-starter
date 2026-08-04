@@ -304,6 +304,16 @@ async function resolveSiteExport(requestedClientSlug: string) {
     warnings.push("No approved homepage was found; the generated root route will be absent.");
   }
 
+  const sampleFields = findSampleMarkedFields(approvedPages);
+
+  if (sampleFields.length > 0) {
+    warnings.push(
+      `${sampleFields.length} field(s) still contain a [SAMPLE] marker and must be replaced before launch: ${sampleFields
+        .slice(0, 8)
+        .join(", ")}${sampleFields.length > 8 ? ", ..." : ""}`,
+    );
+  }
+
   return {
     clientSlug,
     componentFiles,
@@ -351,6 +361,33 @@ function getSiteChromeSectionIds(page: StagedPage) {
       .map((section, index) => ({ id: getSectionId(section, index), section }))
       .filter(({ section }) => isSiteChromeSection(section))
       .map(({ id }) => id),
+  );
+}
+
+/**
+ * Surfaces stand-in copy that is well-formed enough to pass every gate.
+ *
+ * `NEEDS REVIEW` blocks an export, which is correct for a field nobody has
+ * answered yet - but it also makes a page unexportable, so it cannot be used
+ * for copy that deliberately stands in while the pipeline is being tested. The
+ * `[SAMPLE]` convention exists for that, and by design it passes validation.
+ *
+ * That is precisely why it needs surfacing. A `[SAMPLE]` disclosure on a
+ * financing calculator is a plausible, well-formed sentence that is not true,
+ * and no other check in this file looks for untrue - only for missing,
+ * malformed, or left at a library default. This warns on every dry run and
+ * every export without blocking either.
+ */
+function findSampleMarkedFields(pages: StagedPage[]) {
+  return pages.flatMap((page) =>
+    page.fields
+      .filter(
+        (field) =>
+          field.kind !== "meta" &&
+          !field.path.startsWith("strategy.") &&
+          /\[SAMPLE\b/i.test(field.value),
+      )
+      .map((field) => `${page.pageId}/${field.path}`),
   );
 }
 
