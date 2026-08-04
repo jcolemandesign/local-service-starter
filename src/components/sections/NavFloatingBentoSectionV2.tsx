@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import Image from "next/image";
 import { useState } from "react";
 import { Button, DownArrowIcon } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
@@ -24,6 +25,8 @@ type NavLink = {
 type NavFloatingBentoSectionV2Props = {
   logoHref?: string;
   logoLabel: string;
+  /** Public path to a logo image. Empty renders the lettered placeholder. */
+  logoSrc?: string;
   phone: string;
   action: string;
   links: readonly NavLink[];
@@ -48,7 +51,39 @@ function PhoneIcon() {
   );
 }
 
-function FloatingLogo({ href = "#", label }: { href?: string; label: string }) {
+function FloatingLogo({
+  href = "#",
+  label,
+  src,
+}: {
+  href?: string;
+  label: string;
+  src?: string;
+}) {
+  // This nav floats over the hero, so unlike the primary nav its panel is kept
+  // even with a real logo - the mark needs a surface to stay legible against
+  // whatever image is behind it.
+  if (src) {
+    return (
+      <a
+        className={cx(
+          "radius-surface",
+          "relative block h-12 w-36 shrink-0 cursor-pointer border border-service-border bg-bg-page/90 p-2 shadow-service backdrop-blur-md",
+        )}
+        href={href}
+      >
+        <Image
+          alt={label}
+          className="object-contain"
+          fill
+          priority
+          sizes="144px"
+          src={src}
+        />
+      </a>
+    );
+  }
+
   return (
     <a
       className={cx(
@@ -165,6 +200,7 @@ function ModalMenu({
 export function NavFloatingBentoSectionV2({
   logoHref,
   logoLabel,
+  logoSrc,
   phone,
   action,
   links,
@@ -199,7 +235,7 @@ export function NavFloatingBentoSectionV2({
       <nav aria-label="Floating bento v2 preview navigation">
         <div className="pointer-events-none relative z-30 grid grid-cols-[1fr_auto_1fr] items-center px-[var(--site-grid-inset-inline)] py-[var(--inline-gap-active)] max-lg:hidden">
           <div className="pointer-events-auto col-start-1 flex justify-self-start">
-            <FloatingLogo href={logoHref} label={logoLabel} />
+            <FloatingLogo href={logoHref} label={logoLabel} src={logoSrc} />
           </div>
 
           <ul
@@ -324,7 +360,7 @@ export function NavFloatingBentoSectionV2({
         </div>
 
         <div className="relative z-50 hidden items-center justify-between inline-gap-med px-[var(--site-grid-inset-inline)] py-[var(--inline-gap-active)] max-lg:flex">
-          <FloatingLogo href={logoHref} label={logoLabel} />
+          <FloatingLogo href={logoHref} label={logoLabel} src={logoSrc} />
 
           <button
             aria-controls="floating-bento-v2-nav-menu"

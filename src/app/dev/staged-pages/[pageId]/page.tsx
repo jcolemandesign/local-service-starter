@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { StagedPageCanvas } from "@/components/sections";
+import { readSiteIdentity } from "@/utils/site-identity";
 import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import { isAltStagedPage, readStagedPages } from "@/utils/staged-pages";
 
@@ -70,7 +71,12 @@ export default async function StagedPagePreview({
   return (
     <StyleGuidePreviewSurface>
       <main className="min-h-svh bg-bg-page text-service-ink">
-        <StagedPageCanvas allPages={stagedPages} chrome={false} page={page} />
+        <StagedPageCanvas
+          allPages={stagedPages}
+          chrome={false}
+          page={page}
+          siteIdentity={await readSiteIdentity(page.snapshot.clientSlug)}
+        />
       </main>
     </StyleGuidePreviewSurface>
   );

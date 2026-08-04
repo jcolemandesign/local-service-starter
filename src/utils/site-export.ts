@@ -37,6 +37,8 @@ import {
   type StagedPage,
 } from "@/utils/staged-pages";
 import { sanitizeClientSlug } from "@/utils/strategy-workspace";
+import type { SiteIdentity } from "@/content/site-identity";
+import { readSiteIdentity } from "@/utils/site-identity";
 
 type ExportIssue = {
   code: string;
@@ -207,10 +209,13 @@ async function resolveSiteExport(requestedClientSlug: string) {
     throw new Error("Missing client slug.");
   }
 
-  const [allPages, state, componentRegistry] = await Promise.all([
+  const [allPages, state, componentRegistry, siteIdentity] = await Promise.all([
     readStagedPages(),
     readSiteExportState(clientSlug),
     buildComponentRegistry(),
+    // Read once for the whole export: the nav logo and footer business name are
+    // client-level, so every page's chrome resolves from the same value.
+    readSiteIdentity(clientSlug),
   ]);
   // Archived alts are never exportable - they are alternates of a slug the
   // site already fills. Dropping them here means a stale approval naming an
@@ -259,6 +264,7 @@ async function resolveSiteExport(requestedClientSlug: string) {
       clientPages,
       componentRegistry,
       issues,
+      siteIdentity,
     );
 
     resolvedPages.push({ page, sections });
@@ -368,6 +374,7 @@ function resolvePageSections(
   clientPages: StagedPage[],
   componentRegistry: Map<string, string>,
   issues: ExportIssue[],
+  siteIdentity: SiteIdentity,
 ) {
   return renderData.sections.flatMap((section, index) => {
     const sourcePath = componentRegistry.get(section.component);
@@ -393,6 +400,7 @@ function resolvePageSections(
       sectionFields,
       publicNavigationLinks(renderData.navigationLinks, clientPages),
       publicHref(renderData.homeHref, clientPages),
+      siteIdentity,
     );
 
     if (!isValidElement(element)) {

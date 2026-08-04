@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ContentEditorSection } from "@/components/sections";
 import { getContentEditorPages } from "@/content/content-editor";
+import { readSiteIdentity } from "@/utils/site-identity";
 
 export const metadata: Metadata = {
   title: "Content Editor",
@@ -29,6 +30,19 @@ export default async function ContentEditorPage({
     ? clientParam[0]
     : clientParam;
   const pages = await getContentEditorPages();
+  // One read per client represented in the editor, not per page - the identity
+  // is shared by every page that client owns.
+  const clientSlugs = [...new Set(pages.map((page) => page.clientSlug))].filter(
+    Boolean,
+  );
+  const siteIdentities = Object.fromEntries(
+    await Promise.all(
+      clientSlugs.map(
+        async (clientSlug) =>
+          [clientSlug, await readSiteIdentity(clientSlug)] as const,
+      ),
+    ),
+  );
 
   return (
     <main>
@@ -36,6 +50,7 @@ export default async function ContentEditorPage({
         initialClientSlug={initialClientSlug}
         initialPageId={initialPageId}
         pages={pages}
+        siteIdentities={siteIdentities}
       />
     </main>
   );

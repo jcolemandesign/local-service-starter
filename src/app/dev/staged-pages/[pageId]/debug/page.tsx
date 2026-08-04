@@ -8,6 +8,7 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 import { StagedPageCanvas } from "@/components/sections";
+import { readSiteIdentity } from "@/utils/site-identity";
 import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import { getStagedPreviewHref } from "@/utils/staged-page-links";
 import {
@@ -119,7 +120,11 @@ export default async function StagedPageDebug({
 
         <SevenColumnGridItem className="col-start-2 col-span-5 max-lg:col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <div className="grid gap-5">
-            <StagedPageCanvas allPages={stagedPages} page={page} />
+            <StagedPageCanvas
+              allPages={stagedPages}
+              page={page}
+              siteIdentity={await readSiteIdentity(page.snapshot.clientSlug)}
+            />
 
             <Card className="p-5 shadow-none">
               <p className="type-label text-service-accent">Strategy Copy</p>

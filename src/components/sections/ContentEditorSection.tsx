@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DownArrowIcon } from "@/components/primitives";
+import {
+  emptySiteIdentity,
+  type SiteIdentity,
+} from "@/content/site-identity";
 import type {
   ContentEditorField,
   ContentEditorPage,
@@ -21,6 +25,12 @@ type ContentEditorSectionProps = {
   initialClientSlug?: string;
   initialPageId?: string;
   pages: ContentEditorPage[];
+  /**
+   * Per-client site chrome identity, keyed by client slug. Edited here rather
+   * than per page because the nav and footer are shared: one value drives every
+   * page's logo and business name.
+   */
+  siteIdentities?: Record<string, SiteIdentity>;
 };
 
 // "style" is not a field kind - style overrides are stored as `meta` and
@@ -28,6 +38,15 @@ type ContentEditorSectionProps = {
 type FieldFilter = "all" | "style" | ContentEditorField["kind"];
 type SaveStagedPageResponse =
   | {
+      ok: true;
+    }
+  | {
+      error?: string;
+      ok: false;
+    };
+type SaveSiteIdentityResponse =
+  | {
+      identity: SiteIdentity;
       ok: true;
     }
   | {
@@ -49,6 +68,7 @@ export function ContentEditorSection({
   initialClientSlug,
   initialPageId,
   pages,
+  siteIdentities = {},
 }: ContentEditorSectionProps) {
   const initialPageKey = initialClientSlug && initialPageId
     ? `${initialClientSlug}:${initialPageId}`
@@ -67,6 +87,17 @@ export function ContentEditorSection({
   const [isSavingPage, setIsSavingPage] = useState(false);
   const [savedAt, setSavedAt] = useState("");
   const [status, setStatus] = useState("");
+  const [isSavingIdentity, setIsSavingIdentity] = useState(false);
+  const [identityStatus, setIdentityStatus] = useState("");
+  // Keyed by client slug rather than mirrored into a single draft, so switching
+  // to another client's page cannot carry one client's edits onto another - and
+  // no effect is needed to resync when the selection changes.
+  const [identityDrafts, setIdentityDrafts] = useState<
+    Record<string, SiteIdentity>
+  >({});
+  const [identitySaves, setIdentitySaves] = useState<
+    Record<string, SiteIdentity>
+  >({});
   const [openSectionId, setOpenSectionId] = useState<string | null>(null);
   const [fieldFilter, setFieldFilter] = useState<FieldFilter>("all");
 
@@ -82,6 +113,22 @@ export function ContentEditorSection({
   }
 
   const activePage = pages.find((page) => page.key === activePageKey) ?? pages[0];
+  const activeClientSlug = activePage?.clientSlug ?? "";
+  const savedIdentity =
+    identitySaves[activeClientSlug] ??
+    siteIdentities[activeClientSlug] ??
+    emptySiteIdentity;
+  const identityDraft = identityDrafts[activeClientSlug] ?? savedIdentity;
+  const isIdentityDirty =
+    identityDraft.businessName !== savedIdentity.businessName ||
+    identityDraft.logoSrc !== savedIdentity.logoSrc;
+
+  function updateIdentityDraft(patch: Partial<SiteIdentity>) {
+    setIdentityDrafts((current) => ({
+      ...current,
+      [activeClientSlug]: { ...identityDraft, ...patch },
+    }));
+  }
   const allFields = pages.flatMap((page) =>
     page.sections.flatMap((section) => section.fields),
   );
@@ -157,6 +204,54 @@ export function ContentEditorSection({
     setStatus("Page reset.");
   }
 
+  async function saveSiteIdentity() {
+    const clientSlug = activePage?.clientSlug;
+
+    if (!clientSlug) {
+      return;
+    }
+
+    setIsSavingIdentity(true);
+    setIdentityStatus("");
+
+    try {
+      const response = await fetch("/api/site-identity", {
+        body: JSON.stringify({ ...identityDraft, clientSlug }),
+        headers: { "Content-Type": "application/json" },
+        method: "PUT",
+      });
+      const result = (await response.json()) as SaveSiteIdentityResponse;
+
+      if (!response.ok || !result.ok) {
+        setIdentityStatus(
+          result.ok ? "Save failed." : (result.error ?? "Save failed."),
+        );
+        return;
+      }
+
+      // Show what was stored, not what was typed - the route drops a logo path
+      // that is not same-origin, and silently keeping the typed value would
+      // make it look saved.
+      setIdentitySaves((current) => ({
+        ...current,
+        [clientSlug]: result.identity,
+      }));
+      setIdentityDrafts((current) => ({
+        ...current,
+        [clientSlug]: result.identity,
+      }));
+      setIdentityStatus(
+        identityDraft.logoSrc && !result.identity.logoSrc
+          ? "Saved. Logo path ignored - it must start with / and point at /public."
+          : "Site identity saved. Reload a staged page to see it.",
+      );
+    } catch {
+      setIdentityStatus("Save failed.");
+    } finally {
+      setIsSavingIdentity(false);
+    }
+  }
+
   async function savePage() {
     if (!activePage) {
       return;
@@ -224,6 +319,63 @@ export function ContentEditorSection({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-start-2 col-span-1 max-lg:col-start-1 max-lg:col-span-1 max-md:col-span-3 max-sm:col-span-1">
+          <section
+            aria-label="Site identity"
+            className="mb-4 rounded-sm border border-service-border bg-white p-4 shadow-service"
+          >
+            <h2 className="type-caption font-semibold text-service-ink">
+              Site identity
+            </h2>
+            <p className="type-caption mt-1 text-service-muted">
+              Shared by every nav and footer for {activeClientSlug || "this client"}.
+            </p>
+
+            <label className="type-caption mt-3 block font-semibold text-service-muted">
+              Business name
+              <input
+                className="type-text-sm mt-1 block w-full rounded-sm border border-service-border bg-bg-page px-3 py-2 font-normal text-service-ink"
+                onChange={(event) =>
+                  updateIdentityDraft({ businessName: event.target.value })
+                }
+                placeholder="North Star HVAC"
+                type="text"
+                value={identityDraft.businessName}
+              />
+            </label>
+
+            <label className="type-caption mt-3 block font-semibold text-service-muted">
+              Logo path
+              <input
+                className="type-text-sm mt-1 block w-full rounded-sm border border-service-border bg-bg-page px-3 py-2 font-normal text-service-ink"
+                onChange={(event) =>
+                  updateIdentityDraft({ logoSrc: event.target.value })
+                }
+                placeholder="/images/north-star-logo.svg"
+                type="text"
+                value={identityDraft.logoSrc}
+              />
+            </label>
+            <p className="type-caption mt-1 text-service-muted">
+              A file in /public, e.g. /images/logo.svg. Leave empty to show the
+              business name as text.
+            </p>
+
+            <button
+              className="radius-4 mt-3 min-h-9 w-full border border-service-ink bg-service-ink px-3 type-caption font-semibold text-white transition-colors disabled:opacity-50"
+              disabled={isSavingIdentity || !isIdentityDirty || !activeClientSlug}
+              onClick={saveSiteIdentity}
+              type="button"
+            >
+              {isSavingIdentity ? "Saving..." : "Save site identity"}
+            </button>
+
+            {identityStatus ? (
+              <p className="type-caption mt-2 text-service-muted">
+                {identityStatus}
+              </p>
+            ) : null}
+          </section>
+
           <nav aria-label="Content pages" className="grid gap-2">
             {pages.map((page) => {
               const pageFields = page.sections.flatMap(

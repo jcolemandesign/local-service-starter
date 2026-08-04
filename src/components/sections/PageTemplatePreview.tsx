@@ -185,6 +185,10 @@ import {
   type TableCompareAlign,
 } from "@/content/section-style-options";
 import type { StagedPageField } from "@/utils/staged-pages";
+import {
+  emptySiteIdentity,
+  type SiteIdentity,
+} from "@/content/site-identity";
 
 export type PageTemplatePreviewSection = {
   component: string;
@@ -212,6 +216,7 @@ type PageTemplatePreviewProps = {
   navigationLinks?: SiteNavigationLink[];
   overlayNavigation?: boolean;
   sections: PageTemplatePreviewSection[];
+  siteIdentity?: SiteIdentity;
 };
 
 type FieldSection = {
@@ -307,6 +312,7 @@ export function PageTemplatePreview({
   navigationLinks = [],
   overlayNavigation = true,
   sections,
+  siteIdentity = emptySiteIdentity,
 }: PageTemplatePreviewProps) {
   const includedSections = sections
     .filter(Boolean)
@@ -350,6 +356,7 @@ export function PageTemplatePreview({
                     fieldsBySection[section.id ?? ""],
                     navigationLinks,
                     homeHref,
+                    siteIdentity,
                   )}
                 </TemplateSectionFrame>
                 <TemplateSectionFrame section={nextSection}>
@@ -359,6 +366,7 @@ export function PageTemplatePreview({
                     fieldsBySection[nextSection.id ?? ""],
                     navigationLinks,
                     homeHref,
+                    siteIdentity,
                   )}
                 </TemplateSectionFrame>
               </div>
@@ -382,6 +390,7 @@ export function PageTemplatePreview({
                   fieldsBySection[section.id ?? ""],
                   navigationLinks,
                   homeHref,
+                  siteIdentity,
                 )}
               </TemplateSectionFrame>
             );
@@ -395,6 +404,7 @@ export function PageTemplatePreview({
                 fieldsBySection[section.id ?? ""],
                 navigationLinks,
                 homeHref,
+                siteIdentity,
               )}
             </TemplateSectionFrame>
           );
@@ -471,6 +481,10 @@ export function renderPageTemplateSection(
   fields: StagedPageField[] = [],
   navigationLinks: SiteNavigationLink[] = [],
   homeHref?: string,
+  // Client-level identity for the site chrome. Optional and defaulting to empty,
+  // so every existing caller - including the demo-content leak guard - keeps its
+  // current behaviour and falls through to the section-library default.
+  siteIdentity: SiteIdentity = emptySiteIdentity,
 ) {
   const headingLevel = index === 1 ? 1 : 2;
   const fieldSection = { fields };
@@ -478,11 +492,11 @@ export function renderPageTemplateSection(
 
   switch (section.component) {
     case "NavPrimarySectionV2":
-      return <NavPrimarySectionV2 {...navProps(fieldSection, navigationLinks, homeHref)} />;
+      return <NavPrimarySectionV2 {...navProps(fieldSection, navigationLinks, homeHref, siteIdentity)} />;
     case "NavCenterLogoSectionV2":
-      return <NavCenterLogoSectionV2 {...navProps(fieldSection, navigationLinks, homeHref)} />;
+      return <NavCenterLogoSectionV2 {...navProps(fieldSection, navigationLinks, homeHref, siteIdentity)} />;
     case "NavFloatingBentoSectionV2":
-      return <NavFloatingBentoSectionV2 {...navProps(fieldSection, navigationLinks, homeHref)} />;
+      return <NavFloatingBentoSectionV2 {...navProps(fieldSection, navigationLinks, homeHref, siteIdentity)} />;
     case "HeroSplitFullHeightSectionV3":
       return (
         <HeroSplitFullHeightSectionV3
@@ -1136,15 +1150,15 @@ export function renderPageTemplateSection(
         />
       );
     case "FooterSectionV2":
-      return <FooterSectionV2 {...footerProps(fieldSection)} />;
+      return <FooterSectionV2 {...footerProps(fieldSection, siteIdentity)} />;
     case "FooterSectionV3":
-      return <FooterSectionV3 {...footerProps(fieldSection)} />;
+      return <FooterSectionV3 {...footerProps(fieldSection, siteIdentity)} />;
     case "FooterHorizontalSectionV3":
-      return <FooterHorizontalSectionV3 {...footerProps(fieldSection)} />;
+      return <FooterHorizontalSectionV3 {...footerProps(fieldSection, siteIdentity)} />;
     case "FooterCompactSectionV3":
-      return <FooterCompactSectionV3 {...footerProps(fieldSection)} />;
+      return <FooterCompactSectionV3 {...footerProps(fieldSection, siteIdentity)} />;
     case "FooterLinkPanelSectionV3":
-      return <FooterLinkPanelSectionV3 {...footerProps(fieldSection)} />;
+      return <FooterLinkPanelSectionV3 {...footerProps(fieldSection, siteIdentity)} />;
     default:
       return <UnknownSection section={section} />;
   }
@@ -1154,6 +1168,7 @@ function navProps(
   section: FieldSection,
   navigationLinks: SiteNavigationLink[] = [],
   homeHref?: string,
+  siteIdentity: SiteIdentity = emptySiteIdentity,
 ) {
   const links = getListValues(section, ["navLinks", "footerLinks"], "")
     .map(parseLink)
@@ -1176,12 +1191,18 @@ function navProps(
         : links.length > 0
           ? links
           : sectionLibraryV3Content.navPrimary.links,
+    // Per-page field first, then the client's site identity, then the library
+    // demo. `getValue` treats an empty field as absent, so a page that has never
+    // set a logo inherits the site's - which is every page today.
     logoLabel: getValue(
       section,
       "logoLabel",
-      sectionLibraryV3Content.navPrimary.logoLabel,
+      siteIdentity.businessName || sectionLibraryV3Content.navPrimary.logoLabel,
     ),
     logoHref: homeHref,
+    // Site-level only, deliberately: the point of the slot is one logo across
+    // every nav, so there is no per-page field to override it with.
+    logoSrc: siteIdentity.logoSrc,
     phone: getValue(section, "phone", sectionLibraryV3Content.navPrimary.phone),
   };
 }
@@ -2754,7 +2775,10 @@ function thankYouConfirmationProps(section: FieldSection) {
   };
 }
 
-function footerProps(section: FieldSection) {
+function footerProps(
+  section: FieldSection,
+  siteIdentity: SiteIdentity = emptySiteIdentity,
+) {
   const footerLinks = getListValues(section, ["footerLinks", "links"], "").map(
     parseLink,
   );
@@ -2769,10 +2793,18 @@ function footerProps(section: FieldSection) {
 
   return {
     ...sectionLibraryV3Content.footer,
+    // Same precedence as the nav logo, with the existing businessName ->
+    // logoLabel chain kept ahead of the site value so a page that really did set
+    // one still wins.
     businessName: getValue(
       section,
       "businessName",
-      getValue(section, "logoLabel", sectionLibraryV3Content.footer.businessName),
+      getValue(
+        section,
+        "logoLabel",
+        siteIdentity.businessName ||
+          sectionLibraryV3Content.footer.businessName,
+      ),
     ),
     contact: {
       ...sectionLibraryV3Content.footer.contact,

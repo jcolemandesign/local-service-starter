@@ -3,6 +3,10 @@ import {
   type PageTemplatePreviewSection,
   type SiteNavigationLink,
 } from "@/components/sections/PageTemplatePreview";
+import {
+  emptySiteIdentity,
+  type SiteIdentity,
+} from "@/content/site-identity";
 import { getSectionId } from "@/utils/section-id";
 import { getStagedPreviewHref } from "@/utils/staged-page-links";
 import { isAltStagedPage } from "@/utils/staged-page-variant";
@@ -16,6 +20,13 @@ type StagedPageCanvasProps = {
   allPages?: StagedPage[];
   chrome?: boolean;
   page: StagedPage;
+  /**
+   * Client-level identity for the nav logo and footer business name. Read on the
+   * server and passed in, because this component is reachable from a client
+   * component and the reader touches the filesystem. Omitted, the chrome falls
+   * back to the section-library default exactly as before.
+   */
+  siteIdentity?: SiteIdentity;
 };
 
 export type StagedPageRenderData = {
@@ -29,11 +40,18 @@ export function StagedPageCanvas({
   allPages,
   chrome = true,
   page,
+  siteIdentity = emptySiteIdentity,
 }: StagedPageCanvasProps) {
   const renderData = getStagedPageRenderData(page, allPages ?? [page]);
 
   if (!chrome) {
-    return <PageTemplatePreview {...renderData} overlayNavigation={false} />;
+    return (
+      <PageTemplatePreview
+        {...renderData}
+        overlayNavigation={false}
+        siteIdentity={siteIdentity}
+      />
+    );
   }
 
   return (
@@ -44,7 +62,7 @@ export function StagedPageCanvas({
           {page.template?.name ?? page.sourceStage} / {page.pageLabel}
         </p>
       </div>
-      <PageTemplatePreview {...renderData} />
+      <PageTemplatePreview {...renderData} siteIdentity={siteIdentity} />
     </div>
   );
 }

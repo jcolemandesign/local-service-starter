@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import Image from "next/image";
 import { useState } from "react";
 import { Button, DownArrowIcon } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
@@ -24,6 +25,8 @@ type NavLink = {
 type NavPrimarySectionV2Props = {
   logoHref?: string;
   logoLabel: string;
+  /** Public path to a logo image. Empty renders the lettered placeholder. */
+  logoSrc?: string;
   phone: string;
   action: string;
   links: readonly NavLink[];
@@ -66,15 +69,44 @@ function getDropdownItemKey(item: NavDropdownItem) {
   return `${getDropdownItemLabel(item)}-${getDropdownItemHref(item)}`;
 }
 
+/**
+ * The lettered placeholder box is dropped once a real logo is set - a mark
+ * inside a bordered panel reads as a placeholder that someone forgot to finish.
+ * `fill` with `object-contain` because the image's aspect ratio is whatever the
+ * client's file happens to be; the box only caps it.
+ */
 function Logo({
   isMenuOpen,
   href = "#",
   label,
+  src,
 }: {
   href?: string;
   isMenuOpen: boolean;
   label: string;
+  src?: string;
 }) {
+  if (src) {
+    return (
+      <a
+        className="relative block h-12 w-36 shrink-0 cursor-pointer"
+        href={href}
+      >
+        <Image
+          alt={label}
+          className="object-contain object-left"
+          fill
+          // Eager: the logo is above-the-fold chrome on every page, and the
+          // default lazy loading never fires inside the staged preview's
+          // container - the image element renders with an empty currentSrc.
+          priority
+          sizes="144px"
+          src={src}
+        />
+      </a>
+    );
+  }
+
   return (
     <a
       className={cx(
@@ -95,6 +127,7 @@ function Logo({
 export function NavPrimarySectionV2({
   logoHref,
   logoLabel,
+  logoSrc,
   phone,
   action,
   links,
@@ -106,6 +139,7 @@ export function NavPrimarySectionV2({
       links={links}
       logoHref={logoHref}
       logoLabel={logoLabel}
+      logoSrc={logoSrc}
       phone={phone}
     />
   );
@@ -114,6 +148,7 @@ export function NavPrimarySectionV2({
 export function NavCenterLogoSectionV2({
   logoHref,
   logoLabel,
+  logoSrc,
   phone,
   action,
   links,
@@ -125,6 +160,7 @@ export function NavCenterLogoSectionV2({
       links={links}
       logoHref={logoHref}
       logoLabel={logoLabel}
+      logoSrc={logoSrc}
       phone={phone}
     />
   );
@@ -133,6 +169,7 @@ export function NavCenterLogoSectionV2({
 function NavPrimaryLayoutSection({
   logoHref,
   logoLabel,
+  logoSrc,
   phone,
   action,
   links,
@@ -183,7 +220,7 @@ function NavPrimaryLayoutSection({
           }
         >
           {!isCenterLogo ? (
-            <Logo href={logoHref} isMenuOpen={isMenuOpen} label={logoLabel} />
+            <Logo href={logoHref} isMenuOpen={isMenuOpen} label={logoLabel} src={logoSrc} />
           ) : null}
 
           <ul
@@ -295,7 +332,7 @@ function NavPrimaryLayoutSection({
         </div>
 
         {isCenterLogo ? (
-          <Logo href={logoHref} isMenuOpen={isMenuOpen} label={logoLabel} />
+          <Logo href={logoHref} isMenuOpen={isMenuOpen} label={logoLabel} src={logoSrc} />
         ) : null}
 
         <button
