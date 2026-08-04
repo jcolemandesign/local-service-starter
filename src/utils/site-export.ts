@@ -38,6 +38,7 @@ import {
   type StagedPage,
 } from "@/utils/staged-pages";
 import { getSectionId } from "@/utils/section-id";
+import { isSiteChromeSection } from "@/utils/template-copy-contract";
 import { sanitizeClientSlug } from "@/utils/strategy-workspace";
 import type { SiteIdentity } from "@/content/site-identity";
 import { readSiteIdentity } from "@/utils/site-identity";
@@ -334,9 +335,44 @@ function toAnalysis(resolved: Awaited<ReturnType<typeof resolveSiteExport>>) {
   } satisfies SiteExportAnalysis;
 }
 
+/**
+ * Section ids whose copy and links come from site identity rather than page
+ * copy, so an empty field there is correct rather than unfinished.
+ *
+ * Nav and footer hold the business name, phone, primary action, footer contact
+ * block and link lists. Those are set once per client and resolved at render
+ * time, which is exactly why the copy prompt skips these sections - see
+ * `isSiteChromeSection`. Their page-level fields are therefore empty on every
+ * page by design.
+ */
+function getSiteChromeSectionIds(page: StagedPage) {
+  return new Set(
+    (page.template?.sections ?? [])
+      .map((section, index) => ({ id: getSectionId(section, index), section }))
+      .filter(({ section }) => isSiteChromeSection(section))
+      .map(({ id }) => id),
+  );
+}
+
 function validateStagedFields(page: StagedPage, issues: ExportIssue[]) {
+  // Without this the export refuses every site it is given. North Star had 192
+  // empty required copy fields, and 180 of them were nav and footer fields
+  // that are supposed to be empty - so the gate blocked on its own convention.
+  const chromeSectionIds = getSiteChromeSectionIds(page);
+
   for (const field of page.fields) {
     if (field.kind === "meta" || field.path.startsWith("strategy.")) {
+      continue;
+    }
+
+    // Images are still checked on chrome sections. Only copy and links resolve
+    // from site identity; an image there would be a real gap. As it happens
+    // nav and footer declare no asset fields at all, so this is a guard
+    // against a future one rather than a live case.
+    if (
+      chromeSectionIds.has(field.path.split(".")[0]) &&
+      (field.kind === "copy" || field.kind === "link")
+    ) {
       continue;
     }
 
