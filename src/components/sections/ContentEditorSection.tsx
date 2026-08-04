@@ -22,6 +22,11 @@ import {
 } from "@/content/section-style-options";
 
 type ContentEditorSectionProps = {
+  /**
+   * Paths under `public/images`, offered as a picker on image fields. Empty is
+   * valid - the manual path input still works, it just has nothing to suggest.
+   */
+  imageAssets?: string[];
   initialClientSlug?: string;
   initialPageId?: string;
   pages: ContentEditorPage[];
@@ -65,6 +70,7 @@ const fieldFilterOptions: Array<{ label: string; value: FieldFilter }> = [
 const imageRatioOptions = splitImageRatioFieldOptions;
 
 export function ContentEditorSection({
+  imageAssets = [],
   initialClientSlug,
   initialPageId,
   pages,
@@ -595,6 +601,7 @@ export function ContentEditorSection({
                             visibleFields.map((field) => (
                               <FieldEditor
                                 key={field.id}
+                                assets={imageAssets}
                                 field={field}
                                 value={values[field.id] ?? field.value}
                                 originalValue={
@@ -649,16 +656,32 @@ export function ContentEditorSection({
 }
 
 function FieldEditor({
+  assets,
   field,
   onChange,
   originalValue,
   value,
 }: {
+  assets: string[];
   field: ContentEditorField;
   onChange: (value: string) => void;
   originalValue: string;
   value: string;
 }) {
+  // Ahead of the generic controls: an image field is a path, and a text input
+  // gives no way to tell a correct one from a typo or a leftover placeholder.
+  if (field.kind === "image") {
+    return (
+      <ImageFieldEditor
+        assets={assets}
+        field={field}
+        onChange={onChange}
+        originalValue={originalValue}
+        value={value}
+      />
+    );
+  }
+
   if (field.path.endsWith(".imageRatio")) {
     return (
       <OptionToggleFieldEditor
@@ -1119,6 +1142,142 @@ function ActionLink({
     >
       {children}
     </Link>
+  );
+}
+
+/**
+ * An image field still holding the value its section library ships with.
+ *
+ * The editor already carries that default: asset specs are recorded as an
+ * exact `template-default` fallback, so this reuses it rather than keeping a
+ * second list of placeholder paths in sync with the export's guard. A field
+ * with no value counts too - the renderer falls back to library demo content
+ * when one is absent, so blank renders the same placeholder as unchanged.
+ */
+function isPlaceholderImageValue(field: ContentEditorField, value: string) {
+  if (field.kind !== "image") {
+    return false;
+  }
+
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return true;
+  }
+
+  return (
+    field.fallback?.source === "template-default" &&
+    trimmed === field.fallback.value.trim()
+  );
+}
+
+function decodeAssetLabel(assetPath: string) {
+  const name = assetPath.split("/").pop() ?? assetPath;
+
+  try {
+    return decodeURIComponent(name);
+  } catch {
+    return name;
+  }
+}
+
+/**
+ * Image fields were plain text inputs, so replacing one meant typing a path
+ * from memory and a typo produced a broken image with nothing to catch it.
+ *
+ * The preview is the real check - it resolves the value the same way the page
+ * will, so a wrong path shows as a broken thumbnail here rather than on a
+ * client site. The picker covers the common case; the text input stays for
+ * anything not yet in `public/images`.
+ */
+function ImageFieldEditor({
+  assets,
+  field,
+  onChange,
+  originalValue,
+  value,
+}: {
+  assets: string[];
+  field: ContentEditorField;
+  onChange: (value: string) => void;
+  originalValue: string;
+  value: string;
+}) {
+  const controlId = getFieldControlId(field);
+  const isDirty = value !== originalValue;
+  const isPlaceholder = isPlaceholderImageValue(field, value);
+  const trimmed = value.trim();
+  const isKnownAsset = assets.includes(trimmed);
+
+  return (
+    <div className="grid gap-3">
+      <div className="flex items-center justify-between gap-4">
+        <label className="type-label text-service-ink" htmlFor={controlId}>
+          {field.label}
+        </label>
+        <div className="flex items-center gap-2">
+          {isDirty ? <StatusPill label="edited" /> : null}
+          <StatusPill label={isPlaceholder ? "placeholder" : "set"} />
+        </div>
+      </div>
+
+      <div className="flex items-start gap-4 max-sm:flex-col">
+        <div
+          className={`radius-4 relative size-24 shrink-0 overflow-hidden border bg-service-surface ${
+            isPlaceholder ? "border-service-accent" : "border-service-border"
+          }`}
+        >
+          {trimmed ? (
+            // Deliberately a plain img, not next/image: the value is arbitrary
+            // user input and may not resolve at all, which is exactly what the
+            // preview is here to reveal.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              alt=""
+              className="size-full object-cover"
+              src={trimmed}
+            />
+          ) : (
+            <span className="type-caption absolute inset-0 grid place-items-center text-service-muted">
+              none
+            </span>
+          )}
+        </div>
+
+        <div className="grid min-w-0 flex-1 gap-2">
+          {assets.length > 0 ? (
+            <select
+              className="type-text-sm radius-4 w-full border border-service-border bg-service-surface px-3 py-2 text-service-ink"
+              onChange={(event) => onChange(event.target.value)}
+              value={isKnownAsset ? trimmed : ""}
+            >
+              <option value="">
+                {isKnownAsset ? "Choose an image..." : "Custom path (below)"}
+              </option>
+              {assets.map((asset) => (
+                <option key={asset} value={asset}>
+                  {decodeAssetLabel(asset)}
+                </option>
+              ))}
+            </select>
+          ) : null}
+
+          <input
+            className="type-text-sm radius-4 w-full border border-service-border bg-service-surface px-3 py-2 text-service-ink"
+            id={controlId}
+            onChange={(event) => onChange(event.target.value)}
+            spellCheck={false}
+            value={value}
+          />
+
+          <p className="type-caption text-service-muted">
+            {isPlaceholder
+              ? "Still the section library's placeholder. The export refuses a site with any of these left."
+              : "Pick from public/images, or paste any path the site can serve."}
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 

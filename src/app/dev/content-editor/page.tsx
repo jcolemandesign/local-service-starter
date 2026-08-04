@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ContentEditorSection } from "@/components/sections";
 import { getContentEditorPages } from "@/content/content-editor";
+import { getAvailableImageAssets } from "@/utils/image-assets";
 import { readSiteIdentity } from "@/utils/site-identity";
 
 export const metadata: Metadata = {
@@ -44,9 +45,12 @@ export default async function ContentEditorPage({
     ),
   );
 
+  const imageAssets = await getAvailableImageAssets();
+
   return (
     <main>
       <ContentEditorSection
+        imageAssets={imageAssets}
         initialClientSlug={initialClientSlug}
         initialPageId={initialPageId}
         pages={pages}
