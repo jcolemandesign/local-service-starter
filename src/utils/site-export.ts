@@ -383,14 +383,28 @@ function getSiteChromeSectionIds(page: StagedPage) {
  * fields alone and its KNOWN_GAPS list is empty, so no mapper reads a field the
  * contract does not declare. Nothing undeclared can reach a page.
  */
+/**
+ * Every copy path a section's specs declare, split by whether the contract
+ * lets the field be left empty.
+ *
+ * Asset specs carry no optional flag, so their alt text and captions are all
+ * required.
+ */
 function getDeclaredCopyPaths(page: StagedPage) {
   const declared = new Set<string>();
+  const optional = new Set<string>();
 
   (page.template?.sections ?? []).forEach((section, index) => {
     const sectionId = getSectionId(section, index);
 
     for (const field of getTemplateCopyFieldsForSection(section)) {
-      declared.add(`${sectionId}.${field.name}`);
+      const fieldPath = `${sectionId}.${field.name}`;
+
+      declared.add(fieldPath);
+
+      if (field.optional) {
+        optional.add(fieldPath);
+      }
     }
 
     // Asset specs cover alt text and captions, which are stored as copy.
@@ -399,7 +413,29 @@ function getDeclaredCopyPaths(page: StagedPage) {
     }
   });
 
-  return declared;
+  return { declared, optional };
+}
+
+/**
+ * Whether a declared copy field still needs an answer.
+ *
+ * `optional: true` on a field spec is not advisory - the prompt passes it to
+ * the copywriter verbatim ("OPTIONAL. Omit when the card does not need it"),
+ * and `getTemplateCopySectionStatuses` already excludes optional fields when
+ * deciding whether a section's copy is complete. But staging seeds every
+ * declared field, optional ones included, so a field the copywriter was told
+ * to omit arrives here as an empty string. Reading that as unresolved refuses
+ * to export a page whose copy is exactly what the contract asked for, and the
+ * message tells the user to resolve a field that is meant to stay blank.
+ *
+ * A NEEDS REVIEW marker still blocks either way. The copywriter reached for
+ * the field and reported missing source material, which is a different answer
+ * from declining to use the field at all.
+ */
+export function isUnresolvedCopy(value: string, { optional = false } = {}) {
+  const trimmed = value.trim();
+
+  return /\bNEEDS REVIEW\b/i.test(trimmed) || (!trimmed && !optional);
 }
 
 /**
@@ -434,7 +470,8 @@ function validateStagedFields(page: StagedPage, issues: ExportIssue[]) {
   // empty required copy fields, and 180 of them were nav and footer fields
   // that are supposed to be empty - so the gate blocked on its own convention.
   const chromeSectionIds = getSiteChromeSectionIds(page);
-  const declaredCopyPaths = getDeclaredCopyPaths(page);
+  const { declared: declaredCopyPaths, optional: optionalCopyPaths } =
+    getDeclaredCopyPaths(page);
 
   for (const field of page.fields) {
     if (field.kind === "meta" || field.path.startsWith("strategy.")) {
@@ -462,7 +499,10 @@ function validateStagedFields(page: StagedPage, issues: ExportIssue[]) {
 
     const value = field.value.trim();
 
-    if (field.kind === "copy" && (!value || /\bNEEDS REVIEW\b/i.test(value))) {
+    if (
+      field.kind === "copy" &&
+      isUnresolvedCopy(value, { optional: optionalCopyPaths.has(field.path) })
+    ) {
       issues.push({
         code: "unresolved-copy",
         message: `Resolve copy field ${field.path}.`,
