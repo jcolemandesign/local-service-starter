@@ -408,14 +408,10 @@ export const sectionLibraryV3Content = {
     summary:
       "Meet the team, values, and process behind every visit.",
     action: "Visit about page",
-    images: [
-      {
-        label: "Team",
-      },
-      {
-        label: "Service",
-      },
-    ],
+    // Two placeholder slots. Their screen-reader labels default per position
+    // inside ContentAboutCompanySectionV2 - they describe the slot, not the
+    // business, so they are not demo copy for a client page.
+    images: [{}, {}],
   },
   contentAboutStory: {
     eyebrow: "About North Star",
@@ -531,7 +527,6 @@ export const sectionLibraryV3Content = {
   contentSplitHeadlineImage: {
     headlineTop: "Useful service pages",
     headlineBottom: "feel calm first",
-    imageLabel: "Texture",
     body: "A concise editorial content block for pairing a large positioning line with a quiet image moment.",
   },
   trustBar: {
@@ -703,7 +698,8 @@ export const sectionLibraryV3Content = {
     ],
   },
   serviceCalloutRevealGrid: {
-    closeLabel: "Close details",
+    // closeLabel is the close button's aria-label and defaults in the section
+    // component. It describes a control, not the business.
     openHint: "See what to do",
     items: [
       {
@@ -937,22 +933,18 @@ export const sectionLibraryV3Content = {
     actionLabel: "About the team",
     cards: [
       {
-        iconLabel: "01",
         title: "Clear Recommendations",
         body: "Repair, maintenance, and replacement guidance based on the home, budget, and timing.",
       },
       {
-        iconLabel: "02",
         title: "Repair-First Approach",
         body: "Explain what is happening, what can wait, and what needs attention now.",
       },
       {
-        iconLabel: "03",
         title: "Fast Response",
         body: "Keep scheduling practical with clear next steps and responsive appointment windows.",
       },
       {
-        iconLabel: "04",
         title: "Local Team",
         body: "Ground the experience in nearby service areas, familiar homes, and steady follow-through.",
       },
@@ -965,22 +957,18 @@ export const sectionLibraryV3Content = {
     actionLabel: "About the team",
     cards: [
       {
-        iconLabel: "01",
         title: "Clear Recommendations",
         body: "Repair, maintenance, and replacement guidance based on the home, budget, and timing.",
       },
       {
-        iconLabel: "02",
         title: "Repair-First Approach",
         body: "Explain what is happening, what can wait, and what needs attention now.",
       },
       {
-        iconLabel: "03",
         title: "Fast Response",
         body: "Keep scheduling practical with clear next steps and responsive appointment windows.",
       },
       {
-        iconLabel: "04",
         title: "Local Team",
         body: "Ground the experience in nearby service areas, familiar homes, and steady follow-through.",
       },
@@ -1269,7 +1257,6 @@ export const sectionLibraryV3Content = {
     eyebrow: "How it works",
     title: "A prepared visit starts before anyone reaches the door.",
     body: "Use this process pattern when the page needs a quieter explanation with supporting checklist details that arrive after the main message has time to land.",
-    imageLabel: "Process",
     items: [
       "Confirm the request details and preferred contact method.",
       "Review the service history, location notes, and likely materials.",
@@ -1891,7 +1878,6 @@ export const sectionLibraryV3Content = {
     stats: [],
   },
   featurePortraitParagraph: {
-    imageLabel: "Portrait feature",
     contentAlignX: "left" as const,
     contentAlignY: "middle" as const,
     body: "A large portrait image gives the section a clear visual anchor while the adjacent paragraph carries the main service idea with enough room to feel editorial, direct, and easy to read.",

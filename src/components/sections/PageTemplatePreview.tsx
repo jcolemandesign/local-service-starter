@@ -1689,7 +1689,7 @@ function serviceCalloutRevealGridProps(
 
   return {
     ...fallback,
-    closeLabel: getValue(section, "closeLabel", fallback.closeLabel),
+    closeLabel: getValue(section, "closeLabel", "Close details"),
     items: cards.map((item, index) => {
       const fallbackItem = fallback.items[index % fallback.items.length];
       const panel = panels[index] ? parseCardItem(panels[index]) : undefined;
@@ -1919,14 +1919,15 @@ function servicesScrollCardsProps(section: FieldSection) {
       "eyebrow",
       sectionLibraryV3Content.servicesScrollCards.eyebrow,
     ),
-    items: serviceItems.map(
-      (item, index) => ({
-        ...sectionLibraryV3Content.servicesScrollCards.items[
-          index % sectionLibraryV3Content.servicesScrollCards.items.length
-        ],
-        title: item.title,
-      }),
-    ),
+    // imageLabel tracks the authored title. Left to the library spread it kept
+    // the demo card labels ("Repair", "Care", "Install") on client pages.
+    items: serviceItems.map((item, index) => ({
+      ...sectionLibraryV3Content.servicesScrollCards.items[
+        index % sectionLibraryV3Content.servicesScrollCards.items.length
+      ],
+      imageLabel: item.title,
+      title: item.title,
+    })),
     title: getTitle(section, sectionLibraryV3Content.servicesScrollCards.title),
     viewAllLabel: getValue(
       section,
@@ -3062,6 +3063,10 @@ function financingCalculatorProps(section: FieldSection) {
                   promotion.eligibilityNote,
                 )
               : promotion.eligibilityNote,
+          label:
+            index === 0
+              ? getValue(section, "promotionalLabel", promotion.label)
+              : promotion.label,
         }),
       ),
       termsAtGlance: getListValues(
@@ -3429,19 +3434,30 @@ function scrollWrittenRevealProps(section: FieldSection) {
   };
 }
 
+/**
+ * The two headline lines are explicit fields now. Deriving them by splitting
+ * the title on a comma or period meant a headline containing neither produced
+ * no second line at all, and it fell back to the library's "feel calm first".
+ * The split is kept behind the fields so pages staged before them still render.
+ */
 function splitHeadlineImageProps(section: FieldSection) {
+  const demo = sectionLibraryV3Content.contentSplitHeadlineImage;
   const title = getTitle(section, "");
-  const [headlineTop, ...headlineRest] = title.split(/[,.]/);
+  const [derivedTop, ...derivedRest] = title.split(/[,.]/);
 
   return {
-    ...sectionLibraryV3Content.contentSplitHeadlineImage,
-    body: getBody(section, sectionLibraryV3Content.contentSplitHeadlineImage.body),
-    headlineBottom:
-      headlineRest.join(" ").trim() ||
-      sectionLibraryV3Content.contentSplitHeadlineImage.headlineBottom,
-    headlineTop:
-      headlineTop.trim() ||
-      sectionLibraryV3Content.contentSplitHeadlineImage.headlineTop,
+    ...demo,
+    body: getBody(section, demo.body),
+    headlineBottom: getValue(
+      section,
+      "headlineBottom",
+      derivedRest.join(" ").trim() || demo.headlineBottom,
+    ),
+    headlineTop: getValue(
+      section,
+      "headlineTop",
+      derivedTop.trim() || demo.headlineTop,
+    ),
   };
 }
 

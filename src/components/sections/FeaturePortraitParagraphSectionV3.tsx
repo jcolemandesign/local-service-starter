@@ -10,14 +10,15 @@ type FeaturePortraitParagraphSectionV3Props = {
   body: string;
   contentAlignX?: ContentAlignX;
   contentAlignY?: ContentAlignY;
-  imageLabel: string;
+  /** Label on the FPO image placeholder. Not client copy. */
+  imageLabel?: string;
 };
 
 export function FeaturePortraitParagraphSectionV3({
   body,
   contentAlignX = "left",
   contentAlignY = "middle",
-  imageLabel,
+  imageLabel = "Portrait feature",
 }: FeaturePortraitParagraphSectionV3Props) {
   return (
     <section className="bg-bg-page">

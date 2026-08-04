@@ -8,7 +8,8 @@ import {
 
 type FeatureStackedCard = {
   body: string;
-  iconLabel: string;
+  /** Ordinal marker on the icon placeholder. Derived from position when unset. */
+  iconLabel?: string;
   title: string;
 };
 
@@ -147,7 +148,11 @@ export function FeatureStackedCardsSectionV3({
                   whileInView={whileInView}
                 >
                   <motion.div custom={cardIndex} variants={iconAnimation}>
-                    <FeatureIconPlaceholder label={card.iconLabel} />
+                    <FeatureIconPlaceholder
+                      label={
+                        card.iconLabel ?? String(cardIndex + 1).padStart(2, "0")
+                      }
+                    />
                   </motion.div>
                   <div className="max-w-2xl">
                     <motion.h3

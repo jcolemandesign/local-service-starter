@@ -5,8 +5,15 @@ import {
 } from "@/components/primitives";
 
 type AboutImage = {
-  label: string;
+  /**
+   * Screen-reader label for the FPO placeholder. Not client copy - it describes
+   * the slot, so it defaults per position rather than living in the section
+   * library where it read as demo content bound for a client page.
+   */
+  label?: string;
 };
+
+const defaultImageLabels = ["Team", "Service"];
 
 type ContentAboutCompanySectionV2Props = {
   eyebrow: string;
@@ -80,9 +87,9 @@ export function ContentAboutCompanySectionV2({
               index === 0 ? "col-span-2" : "col-span-2 col-start-3",
               "max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3",
             )}
-            key={image.label}
+            key={image.label ?? index}
           >
-            <BentoImage label={image.label} />
+            <BentoImage label={image.label ?? defaultImageLabels[index]} />
           </SevenColumnGridItem>
         ))}
 

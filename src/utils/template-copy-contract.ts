@@ -867,6 +867,18 @@ export function getTemplateCopyFieldsForSection(
         target: "70-140 characters. Describe an estimate, never an offer.",
       },
       {
+        // The promotional program's headline term. It sat beside the
+        // eligibility note, which was already a copy field, but was never
+        // declared - so every client calculator advertised the portfolio's
+        // "0% APR for 18 months" whatever the real lender offered.
+        example: "0% APR for 18 months",
+        name: "promotionalLabel",
+        purpose:
+          "Headline term for the promotional financing program. A lender-set figure, not a marketing line.",
+        target:
+          "Use the lender's approved wording verbatim. Write NEEDS REVIEW when the promotional term is not confirmed.",
+      },
+      {
         example:
           "Available on approved credit for qualifying projects.",
         name: "promotionalEligibilityNote",
@@ -2681,6 +2693,37 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  // Ahead of the generic proof/trust branch: the component name contains
+  // "trust", so that branch claimed it and offered only heading and
+  // proofItems - leaving the action label rendering from the library.
+  if (component.includes("trustmarquee")) {
+    return [
+      {
+        example: "Trusted across the service area",
+        name: "heading",
+        purpose: "Headline above the scrolling proof banner.",
+        target: "28-64 characters.",
+      },
+      {
+        example: [
+          "Licensed and insured",
+          "Same-week scheduling",
+          "Clear estimates before work begins",
+        ],
+        format: "One short proof point per line.",
+        name: "proofItems",
+        purpose: "The scrolling proof points. Sourced facts only.",
+        target: "3-6 items, 16-40 characters each.",
+      },
+      {
+        example: "Request service",
+        name: "sectionAction",
+        purpose: "Action label beside the proof banner.",
+        target: "12-26 characters.",
+      },
+    ];
+  }
+
   if (mode === "proof" || lookupValue.includes("trust")) {
     return [
       {
@@ -3985,6 +4028,90 @@ export function getTemplateCopyFieldsForSection(
       },
     ];
   }
+
+  // These three sit on the generic narrative branch, which gives them
+  // eyebrow/heading/body/supportingItems. Each renders one or two strings
+  // beyond that set, so each had them falling back to the library. They get
+  // their own branches rather than widening the narrative branch, which would
+  // brief every narrative section for fields most of them cannot render.
+  if (
+    component.includes("featureasymmetriccards") ||
+    component.includes("featurestackedcards")
+  ) {
+    return [
+      {
+        example: "How we work",
+        name: "eyebrow",
+        purpose: "Short context label above the section headline.",
+        target: "12-36 characters.",
+      },
+      {
+        example: "The parts of the service worth knowing about",
+        name: "heading",
+        purpose: "Feature section headline.",
+        target: "36-76 characters.",
+      },
+      {
+        example:
+          "Set up the cards with a short explanation of what connects them.",
+        name: "body",
+        purpose: "Supporting copy above the feature cards.",
+        target: "80-170 characters.",
+      },
+      {
+        example: [
+          "Clear diagnosis - Explain what the system is doing before any work is quoted.",
+          "Practical options - Lay out the realistic paths and what separates them.",
+        ],
+        format: "One item per line as Title - Description.",
+        name: "supportingItems",
+        purpose: "The feature cards. Each is numbered automatically by position.",
+        target: "2-4 items. Titles 12-34 characters. Descriptions 80-160 characters.",
+      },
+      {
+        example: "About the team",
+        name: "sectionAction",
+        purpose: "Text link below the feature cards.",
+        target: "12-28 characters.",
+      },
+    ];
+  }
+
+  if (component.includes("contentsplitheadlineimage")) {
+    return [
+      {
+        example: "How we work",
+        name: "eyebrow",
+        purpose: "Short context label above the split headline.",
+        target: "12-36 characters.",
+      },
+      {
+        // The headline renders as two visually distinct lines. The mapper used
+        // to derive the second by splitting the title on a comma or period,
+        // which silently fell back to the demo phrase whenever the written
+        // headline contained neither.
+        example: "A service visit should",
+        name: "headlineTop",
+        purpose: "First line of the two-part headline.",
+        target: "18-42 characters.",
+      },
+      {
+        example: "feel calm first",
+        name: "headlineBottom",
+        purpose:
+          "Second line of the two-part headline, set apart from the first.",
+        target: "12-32 characters.",
+      },
+      {
+        example:
+          "Explain what the section is showing without repeating the headline.",
+        name: "body",
+        purpose: "Supporting copy beside the image.",
+        target: "80-170 characters.",
+      },
+    ];
+  }
+
 
   if (mode === "narrative") {
     return [

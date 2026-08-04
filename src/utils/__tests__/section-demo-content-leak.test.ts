@@ -131,20 +131,11 @@ const KNOWN_GAPS = new Set<string>([
   //    The four per-card cases were closed on 2026-08-04 with indexed
   //    sub-fields, following the card carousel.
 
-  // 3. Labels that need a chrome-or-copy decision first, the same call made for
-  //    the financing calculator's result labels: fixed UI furniture belongs in
-  //    component defaults, anything business-specific needs a copy field.
-  "ContentAboutCompanySectionV2", // images[].label
-  "ContentSplitHeadlineImageSectionV2", // headlineBottom, imageLabel
-  "FeatureAsymmetricCardsSectionV3", // actionLabel, cards[].iconLabel
-  "FeaturePortraitParagraphSectionV3", // imageLabel
-  "FeatureStackedCardsSectionV3", // actionLabel, cards[].iconLabel
-  "FinancingCalculatorSectionV3", // program.promotionalPrograms[].label
-  "ProcessImageChecklistSectionV3", // imageLabel
-  "ServiceCalloutSplitPanelSectionV3", // closeLabel
-  "ServicesScrollCardsSectionV2", // items[].imageLabel
-  "TrustMarqueeSection", // actionLabel
-  "TrustMarqueeSectionV3", // actionLabel
+  // 3. Labels needing a chrome-or-copy decision - closed 2026-08-04. Image and
+  //    icon placeholder labels, and the callout's close-button aria-label, are
+  //    chrome and default in their components. Action labels, the split
+  //    headline's second line, and the financing promotional term are copy and
+  //    are now declared fields.
 ]);
 
 function collectDemoStrings(value: unknown, out: Set<string>) {

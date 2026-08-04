@@ -8,7 +8,8 @@ import {
 
 type FeatureAsymmetricCard = {
   body: string;
-  iconLabel: string;
+  /** Ordinal marker on the icon placeholder. Derived from position when unset. */
+  iconLabel?: string;
   title: string;
 };
 
@@ -175,7 +176,11 @@ export function FeatureAsymmetricCardsSectionV3({
                         custom={cardIndex}
                         variants={iconAnimation}
                       >
-                        <FeatureIconPlaceholder label={card.iconLabel} />
+                        <FeatureIconPlaceholder
+                      label={
+                        card.iconLabel ?? String(cardIndex + 1).padStart(2, "0")
+                      }
+                    />
                       </motion.div>
                       <motion.h3
                         className="type-heading-sm mt-body-actions-md text-service-ink"

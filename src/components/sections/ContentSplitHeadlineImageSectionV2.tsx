@@ -8,7 +8,8 @@ import type { SectionColorRecipe } from "@/content/section-color-recipes";
 type ContentSplitHeadlineImageSectionV2Props = {
   headlineTop: string;
   headlineBottom: string;
-  imageLabel: string;
+  /** Label on the FPO image placeholder. Not client copy. */
+  imageLabel?: string;
   body: string;
   colorRecipe?: SectionColorRecipe;
 };
@@ -39,7 +40,7 @@ function TexturedImage({ label, surfaceClass }: { label: string; surfaceClass: s
 export function ContentSplitHeadlineImageSectionV2({
   headlineTop,
   headlineBottom,
-  imageLabel,
+  imageLabel = "Texture",
   body,
   colorRecipe = "default",
 }: ContentSplitHeadlineImageSectionV2Props) {

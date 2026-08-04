@@ -6,7 +6,8 @@ type ProcessImageChecklistSectionV2Props = {
   eyebrow: string;
   title: string;
   body: string;
-  imageLabel: string;
+  /** Label on the FPO image placeholder. Not client copy. */
+  imageLabel?: string;
   items: string[];
   action: string;
 };
@@ -34,7 +35,7 @@ export function ProcessImageChecklistSectionV2({
   eyebrow,
   title,
   body,
-  imageLabel,
+  imageLabel = "Process",
   items,
   action,
 }: ProcessImageChecklistSectionV2Props) {
