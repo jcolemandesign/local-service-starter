@@ -24,6 +24,21 @@ export type ContentEditorFieldFallback = {
   value: string;
 };
 
+/**
+ * What the copy contract asks of a field, carried through so the editor can
+ * show it instead of guessing.
+ *
+ * `target` in particular is the one piece of layout truth the editor has: the
+ * section was designed around a length, and a headline at twice it overflows.
+ * The editor used to infer a description from the field path; the contract has
+ * had the real one all along.
+ */
+export type ContentEditorFieldSpec = {
+  optional?: boolean;
+  purpose?: string;
+  target?: string;
+};
+
 export type ContentEditorField = {
   fallback?: ContentEditorFieldFallback;
   id: string;
@@ -31,6 +46,7 @@ export type ContentEditorField = {
   label: string;
   path: string;
   sourceId?: string;
+  spec?: ContentEditorFieldSpec;
   value: string;
 };
 
@@ -139,7 +155,8 @@ function mapStagedPageToContentEditorPage(
     ...getMissingImageRatioFields(page),
     ...getMissingStyleFields(page),
   ];
-  const fallbacksByPath = getFieldFallbacksByPath(page);
+  const { fallbacks: fallbacksByPath, specs: specsByPath } =
+    getFieldFallbacksByPath(page);
   const sectionLabelsById = getSectionLabelsById(page);
   const sectionsById = fields.reduce<Record<string, ContentEditorField[]>>(
     (sections, field) => {
@@ -156,6 +173,7 @@ function mapStagedPageToContentEditorPage(
             label: humanizePath(field.path.split(".").slice(1)),
             path: field.path,
             sourceId: field.id,
+            spec: specsByPath.get(field.path),
             value: field.value,
           },
         ],
@@ -209,6 +227,7 @@ function getSectionLabelsById(page: StagedEditorPage) {
 
 function getFieldFallbacksByPath(page: StagedEditorPage) {
   const fallbacks = new Map<string, ContentEditorFieldFallback>();
+  const specs = new Map<string, ContentEditorFieldSpec>();
 
   (page.template?.sections ?? []).forEach((section, index) => {
     const component = section.component?.trim() ?? "";
@@ -230,6 +249,12 @@ function getFieldFallbacksByPath(page: StagedEditorPage) {
     const sectionId = getSectionId(normalizedSection, index);
 
     getTemplateCopyFieldsForSection(normalizedSection).forEach((field) => {
+      specs.set(`${sectionId}.${field.name}`, {
+        optional: field.optional,
+        purpose: field.purpose,
+        target: field.target,
+      });
+
       const value = Array.isArray(field.example)
         ? field.example.join("\n")
         : field.example?.trim() ?? "";
@@ -258,7 +283,7 @@ function getFieldFallbacksByPath(page: StagedEditorPage) {
     });
   });
 
-  return fallbacks;
+  return { fallbacks, specs };
 }
 
 function getStagedEditorPageLabel(page: StagedEditorPage, pageId: string) {

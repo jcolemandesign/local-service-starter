@@ -716,10 +716,14 @@ function FieldEditor({
 
   const isDirty = value !== originalValue;
   const isEmpty = isEmptyEditableField(field, value);
-  const helperText = getFieldHelperText(field);
+  // The contract's own purpose line when it has one; the path heuristic only
+  // as a fallback for fields no spec declares, such as style and ratio meta.
+  const helperText = field.spec?.purpose ?? getFieldHelperText(field);
   const controlId = getFieldControlId(field);
   const reference = getFieldReference(field, originalValue);
   const useTextarea = shouldUseTextarea(field, value);
+  const characterTarget = getCharacterTarget(field.spec?.target);
+  const hierarchyClass = hierarchyClassName[getFieldHierarchy(field)];
 
   return (
     <div
@@ -749,21 +753,21 @@ function FieldEditor({
             </span>
           ) : null}
         </span>
-        <label
-          className="type-text-sm font-semibold text-service-ink"
-          htmlFor={controlId}
-        >
-          {field.label}
-        </label>
-        <span className="type-caption text-service-muted">{helperText}</span>
-        <span className="type-caption break-words text-service-muted">
-          {field.path}
-        </span>
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <label
+            className="type-text-sm font-semibold text-service-ink"
+            htmlFor={controlId}
+          >
+            {field.label}
+          </label>
+          {characterTarget ? (
+            <CharacterCounter target={characterTarget} value={value} />
+          ) : null}
+        </div>
       </div>
-      {reference ? <FieldReferenceBlock reference={reference} /> : null}
       {useTextarea ? (
         <AutoGrowingTextarea
-          className={`${getTextareaMinimumHeight(field)} w-full resize-none overflow-y-hidden rounded-sm border border-service-border bg-white px-4 py-3 text-base leading-8 text-service-ink outline-none transition-colors focus:border-service-accent max-md:text-sm`}
+          className={`${getTextareaMinimumHeight(field)} ${hierarchyClass} w-full resize-none overflow-y-hidden rounded-sm border border-service-border bg-white px-4 py-3 text-service-ink outline-none transition-colors focus:border-service-accent max-md:text-sm`}
           id={controlId}
           onChange={onChange}
           placeholder={helperText}
@@ -771,14 +775,138 @@ function FieldEditor({
         />
       ) : (
         <input
-          className="min-h-14 w-full rounded-sm border border-service-border bg-white px-4 text-base text-service-ink outline-none transition-colors focus:border-service-accent max-md:text-sm"
+          className={`min-h-14 ${hierarchyClass} w-full rounded-sm border border-service-border bg-white px-4 text-service-ink outline-none transition-colors focus:border-service-accent max-md:text-sm`}
           id={controlId}
           onChange={(event) => onChange(event.target.value)}
           placeholder={helperText}
           value={value}
         />
       )}
+      {/*
+        Everything below the input is reference, not the task. Inline it was
+        four lines of prose per field, which on a 56-field page is most of what
+        you scroll past to reach the thing you came to edit.
+      */}
+      <details className="group">
+        <summary className="type-caption cursor-pointer list-none text-service-muted transition-colors hover:text-service-accent">
+          <span className="group-open:hidden">Details</span>
+          <span className="hidden group-open:inline">Hide details</span>
+        </summary>
+        <div className="grid gap-3 pt-3">
+          <p className="type-caption text-service-muted">{helperText}</p>
+          {field.spec?.target ? (
+            <p className="type-caption text-service-muted">
+              <span className="font-semibold text-service-ink">Target: </span>
+              {field.spec.target}
+            </p>
+          ) : null}
+          <p className="type-caption break-words text-service-muted">
+            {field.path}
+          </p>
+          {reference ? <FieldReferenceBlock reference={reference} /> : null}
+        </div>
+      </details>
     </div>
+  );
+}
+
+/**
+ * Reads a character range out of a contract `target` string.
+ *
+ * Targets are prose written for a copywriter - "35-70 characters.", "OPTIONAL.
+ * When used: 2-4 items, 28-70 characters each." - not structured data, so this
+ * takes the first range that is explicitly about characters and ignores the
+ * rest. An item count like "2-4 items" must not be read as a length, which is
+ * why the unit has to follow the number rather than the range being taken on
+ * its own.
+ *
+ * Returning null is the normal case for list and asset fields. The editor
+ * simply shows no counter rather than inventing a limit.
+ */
+function getCharacterTarget(target?: string) {
+  if (!target) {
+    return null;
+  }
+
+  const range = /(\d+)\s*[-–]\s*(\d+)\s*characters/i.exec(target);
+
+  if (range) {
+    const min = Number(range[1]);
+    const max = Number(range[2]);
+
+    return max > min ? { max, min } : null;
+  }
+
+  const upTo = /(?:under|up to|max(?:imum)?)\s*(\d+)\s*characters/i.exec(target);
+
+  return upTo ? { max: Number(upTo[1]), min: 0 } : null;
+}
+
+/**
+ * A four-step size hint, not a type preview.
+ *
+ * Which type token a field actually renders with lives in each section's JSX,
+ * and the same field name is not always the same size across sections - so an
+ * exact preview would need a fifth registry to keep in sync with the
+ * components. This deliberately conveys hierarchy only, capped well below real
+ * display sizes: the editor is for finding and writing a field among fifty,
+ * and true display type would make that harder, not easier.
+ *
+ * `getFieldHelperText` already infers meaning from the path the same way.
+ */
+function getFieldHierarchy(field: ContentEditorField) {
+  const name = field.path.split(".").pop()?.toLowerCase() ?? "";
+
+  if (name === "h1" || name === "headline" || name.endsWith("headlinetop")) {
+    return "display";
+  }
+
+  if (
+    name === "heading" ||
+    name === "title" ||
+    name.endsWith("title") ||
+    name.endsWith("heading")
+  ) {
+    return "heading";
+  }
+
+  if (name === "eyebrow" || name.endsWith("eyebrow") || name.endsWith("label")) {
+    return "label";
+  }
+
+  return "body";
+}
+
+const hierarchyClassName: Record<string, string> = {
+  body: "text-base leading-8",
+  display: "text-xl font-semibold leading-8",
+  heading: "text-lg font-semibold leading-8",
+  label: "text-sm font-semibold uppercase tracking-wide",
+};
+
+function CharacterCounter({
+  target,
+  value,
+}: {
+  target: { max: number; min: number };
+  value: string;
+}) {
+  const length = value.trim().length;
+  const isOver = length > target.max;
+  const isUnder = length > 0 && length < target.min;
+  const tone = isOver
+    ? "text-service-accent font-semibold"
+    : isUnder
+      ? "text-service-muted"
+      : "text-service-muted";
+
+  return (
+    <span className={`type-caption ${tone}`}>
+      {length}
+      {" / "}
+      {target.min ? `${target.min}-${target.max}` : target.max}
+      {isOver ? " over" : ""}
+    </span>
   );
 }
 
