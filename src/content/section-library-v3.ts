@@ -236,35 +236,10 @@ export const sectionLibraryV3Content = {
         size: "large" as const,
       },
       {
-        eyebrow: "Follow-up",
-        title: "The final card can close with a simple trust point.",
-        body: "The native scroll track stops at the end, and the arrow controls provide a secondary way through the same content.",
-        size: "medium" as const,
-      },
-      {
         eyebrow: "Handoff",
         title: "Internal notes keep the next visit from starting cold.",
         body: "Use extra cards to show how the business carries context from one interaction to the next.",
         meta: "Useful for recurring service plans",
-        size: "small" as const,
-      },
-      {
-        eyebrow: "Coverage",
-        title: "Service area details can live in the same browsable flow.",
-        body: "The rail can stretch for dense local proof without forcing every item into a static grid.",
-        size: "medium" as const,
-      },
-      {
-        eyebrow: "Confidence",
-        title: "Larger cards can punctuate the stream with stronger claims.",
-        body: "A featured item gives the carousel a rhythm shift while still staying part of the same horizontal browsing pattern.",
-        meta: "Good for warranties, guarantees, or standout proof",
-        size: "large" as const,
-      },
-      {
-        eyebrow: "Care",
-        title: "Small practical details are easier to skim in motion.",
-        body: "Short cards keep the interaction light and prevent the section from feeling like a long article turned sideways.",
         size: "small" as const,
       },
       {
