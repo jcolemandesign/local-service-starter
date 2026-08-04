@@ -128,10 +128,8 @@ const KNOWN_GAPS = new Set<string>([
   //    had no eyebrow field. The remaining three leak a PER-CARD eyebrow rather
   //    than the section's own, which their branch does declare; those need
   //    indexed sub-fields like the card carousel, so they sit in group 3 below.
-  "ContentNarrativeFeatureRailSectionV3", // cards[].eyebrow, cards[].actionLabel
-  "ContentStickyCardStreamSectionV2", // cards[].eyebrow
-  "DecisionSplitDecisionSectionV3", // cards[].eyebrow
-  "FeatureOverlapRowsSectionV3", // items[].eyebrow
+  //    The four per-card cases were closed on 2026-08-04 with indexed
+  //    sub-fields, following the card carousel.
 
   // 3. Labels that need a chrome-or-copy decision first, the same call made for
   //    the financing calculator's result labels: fixed UI furniture belongs in

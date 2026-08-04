@@ -2034,11 +2034,35 @@ function contentNarrativeFeatureRailProps(section: FieldSection) {
 
   return {
     ...fallback,
-    cards: supportingItems.slice(0, 3).map((item, index) => ({
-      ...fallback.cards[index % fallback.cards.length],
-      body: item.body,
-      title: item.title,
-    })),
+    // Read by index: the per-card eyebrow and action label have no home in
+    // cardItemsWithFallback's return shape, so both rendered from the library.
+    cards: fallback.cards.map((card, index) => {
+      const position = index + 1;
+
+      return {
+        ...card,
+        actionLabel: getValue(
+          section,
+          `supportingItems.${position}.actionLabel`,
+          card.actionLabel,
+        ),
+        body: getValue(
+          section,
+          `supportingItems.${position}.body`,
+          supportingItems[index]?.body || card.body,
+        ),
+        eyebrow: getValue(
+          section,
+          `supportingItems.${position}.eyebrow`,
+          card.eyebrow,
+        ),
+        title: getValue(
+          section,
+          `supportingItems.${position}.title`,
+          supportingItems[index]?.title || card.title,
+        ),
+      };
+    }),
     bullets: getListValues(section, ["bullets"], fallback.bullets.join("\n")),
     eyebrow: getValue(section, "eyebrow", fallback.eyebrow),
     imageAlt: getAssetValue(section, "imageAlt", fallback.imageAlt),
@@ -2101,16 +2125,32 @@ function splitDecisionProps(section: FieldSection) {
       sectionLibraryV3Content.decisionSplitDecision.actionLabel,
     ),
     body: getBody(section, sectionLibraryV3Content.decisionSplitDecision.body),
-    cards: cards.slice(0, 2).map((item, index) => ({
-      body: item.body,
-      eyebrow:
-        "eyebrow" in item && typeof item.eyebrow === "string"
-          ? item.eyebrow
-          : sectionLibraryV3Content.decisionSplitDecision.cards[
-              index % sectionLibraryV3Content.decisionSplitDecision.cards.length
-            ].eyebrow,
-      title: item.title,
-    })),
+    // Read by index so the per-card eyebrow can be authored. The previous
+    // `"eyebrow" in item` check could never fire: cardItemsWithFallback has no
+    // eyebrow in either of its return shapes, so it always took the library's.
+    cards: sectionLibraryV3Content.decisionSplitDecision.cards.map(
+      (card, index) => {
+        const position = index + 1;
+
+        return {
+          body: getValue(
+            section,
+            `decisionItems.${position}.body`,
+            cards[index]?.body || card.body,
+          ),
+          eyebrow: getValue(
+            section,
+            `decisionItems.${position}.eyebrow`,
+            card.eyebrow,
+          ),
+          title: getValue(
+            section,
+            `decisionItems.${position}.title`,
+            cards[index]?.title || card.title,
+          ),
+        };
+      },
+    ),
     eyebrow: getValue(
       section,
       "eyebrow",
@@ -3588,17 +3628,40 @@ function featurePortraitProps(section: FieldSection) {
   };
 }
 
+/**
+ * Rows are read by index so the per-row eyebrow can be authored. The shared
+ * cardItems() helper has no eyebrow in its return shape, so spreading the
+ * library row as a base left it rendering demo content on every client page.
+ *
+ * imageLabel deliberately tracks the resolved title rather than the library
+ * row, which is what cardItems() did for it before.
+ */
 function featureOverlapRowsProps(section: FieldSection) {
+  const demo = sectionLibraryV3Content.featureOverlapRows;
+  const legacy = cardItems(section, ["items", "supportingItems", "cards"]);
+
   return {
-    ...sectionLibraryV3Content.featureOverlapRows,
-    items: cardItems(section, ["items", "supportingItems", "cards"]).map(
-      (item, index) => ({
-        ...sectionLibraryV3Content.featureOverlapRows.items[
-          index % sectionLibraryV3Content.featureOverlapRows.items.length
-        ],
+    ...demo,
+    items: demo.items.map((item, index) => {
+      const position = index + 1;
+      const title = getValue(
+        section,
+        `items.${position}.title`,
+        legacy[index]?.title || item.title,
+      );
+
+      return {
         ...item,
-      }),
-    ),
+        body: getValue(
+          section,
+          `items.${position}.body`,
+          legacy[index]?.body || item.body,
+        ),
+        eyebrow: getValue(section, `items.${position}.eyebrow`, item.eyebrow),
+        imageLabel: title,
+        title,
+      };
+    }),
   };
 }
 

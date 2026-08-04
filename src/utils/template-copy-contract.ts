@@ -2823,6 +2823,93 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  // Both sections address their cards by index for the same reason as the card
+  // carousel: each card carries an eyebrow, and the shared list helpers have no
+  // eyebrow in their return shape, so it rendered from the library on every
+  // client page. Counts come from the library so they cannot drift.
+  if (component.includes("contentstickycardstream")) {
+    return [
+      {
+        example: "Service clarity",
+        name: "eyebrow",
+        purpose: "Short context label above the section headline.",
+        target: "16-40 characters.",
+      },
+      {
+        example: "What each stage of the visit actually involves",
+        name: "heading",
+        purpose: "Section headline beside the sticky card stream.",
+        target: "36-76 characters.",
+      },
+      {
+        example:
+          "Each card holds one stage of the service, so the sequence stays readable while the image column stays fixed.",
+        name: "body",
+        purpose: "Supporting copy introducing the card stream.",
+        target: "90-180 characters.",
+      },
+      ...Array.from({
+        length: sectionLibraryV3Content.contentStickyCardStream.cards.length,
+      }).flatMap<TemplateCopyFieldSpec>((_, index) => {
+        const position = index + 1;
+
+        return [
+          {
+            example: "First response",
+            name: `cards.${position}.eyebrow`,
+            purpose: `Short stage label on card ${position}.`,
+            target: "10-28 characters.",
+          },
+          {
+            example: "The first call establishes what changed and when",
+            name: `cards.${position}.title`,
+            purpose: `Headline for card ${position}.`,
+            target: "30-64 characters.",
+          },
+          {
+            example:
+              "Describe what happens at this stage and what the customer can expect before the next one begins.",
+            name: `cards.${position}.body`,
+            purpose: `Supporting copy for card ${position}.`,
+            target: "80-160 characters.",
+          },
+        ];
+      }),
+    ];
+  }
+
+  if (component.includes("featureoverlaprows")) {
+    return [
+      ...Array.from({
+        length: sectionLibraryV3Content.featureOverlapRows.items.length,
+      }).flatMap<TemplateCopyFieldSpec>((_, index) => {
+        const position = index + 1;
+
+        return [
+          {
+            example: "How we work",
+            name: `items.${position}.eyebrow`,
+            purpose: `Short category label on row ${position}.`,
+            target: "12-30 characters.",
+          },
+          {
+            example: "Straightforward visits, explained before they start",
+            name: `items.${position}.title`,
+            purpose: `Headline for row ${position}. Also used as the image label.`,
+            target: "34-70 characters.",
+          },
+          {
+            example:
+              "Explain what this part of the service looks like in practice, in terms a homeowner can picture.",
+            name: `items.${position}.body`,
+            purpose: `Supporting copy for row ${position}.`,
+            target: "90-170 characters.",
+          },
+        ];
+      }),
+    ];
+  }
+
   if (component.includes("contentnarrativefeaturerail")) {
     return [
       {
@@ -2847,19 +2934,42 @@ export function getTemplateCopyFieldsForSection(
           "Intro lead plus the longform narrative that runs beside the feature rail.",
         target: "Length follows the argument, not a fixed character count.",
       },
-      {
-        example: [
-          "Seasonal offer - Feature a current promotion without interrupting the page's primary service decision.",
-          "Payment options - Ask about financing for qualified projects, with terms and approval details appropriately qualified.",
-          "Ongoing care - Introduce a maintenance plan or recurring visits in a compact callout.",
-        ],
-        format: "One item per line as Title - Description.",
-        itemCount: 3,
-        name: "supportingItems",
-        purpose:
-          "The feature rail's callout cards. Each one should be a seasonal offer, payment or financing option, maintenance plan, or promotional discount - not a generic feature or benefit.",
-        target: "1-3 items. Titles 12-36 characters. Descriptions 80-150 characters.",
-      },
+      // Addressed by index rather than as a flat Title - Description list: each
+      // card also carries an eyebrow and its own action label, and neither has
+      // a home in a two-part line. Both used to render from the library.
+      ...Array.from({
+        length: sectionLibraryV3Content.contentNarrativeFeatureRail.cards.length,
+      }).flatMap<TemplateCopyFieldSpec>((_, index) => {
+        const position = index + 1;
+
+        return [
+          {
+            example: "Seasonal offer",
+            name: `supportingItems.${position}.eyebrow`,
+            purpose: `Short category label on callout card ${position}.`,
+            target: "12-30 characters.",
+          },
+          {
+            example: "Feature a current promotion",
+            name: `supportingItems.${position}.title`,
+            purpose: `Headline for callout card ${position}. Each card should be a seasonal offer, payment or financing option, maintenance plan, or promotional discount - not a generic feature.`,
+            target: "12-36 characters.",
+          },
+          {
+            example:
+              "Ask about financing for qualified projects, with terms and approval details appropriately qualified.",
+            name: `supportingItems.${position}.body`,
+            purpose: `Supporting copy for callout card ${position}.`,
+            target: "80-150 characters.",
+          },
+          {
+            example: "View current offers",
+            name: `supportingItems.${position}.actionLabel`,
+            purpose: `Action label on callout card ${position}.`,
+            target: "14-30 characters.",
+          },
+        ];
+      }),
       {
         example: [
           "Keep secondary offers connected to the page story.",
@@ -3047,19 +3157,36 @@ export function getTemplateCopyFieldsForSection(
           purpose: "Short decision context in the left column.",
           target: "90-180 characters.",
         },
-        {
-          example: [
-            "Repair - Use a practical repair when the diagnosis and system condition support it.",
-            "Replacement - Consider the longer-term option when age, reliability, or repeat repairs change the equation.",
-          ],
-          format: "Exactly 2 items, one per line as Title - Description.",
-          itemCount: 2,
-          name: "decisionItems",
-          purpose:
-            "The two visible comparison cards. Required; do not use steps for this section.",
-          target:
-            "Exactly 2 items. Titles 12-32 characters. Descriptions 90-170 characters.",
-        },
+        // Addressed by index rather than as a Title - Description list: each
+        // card also carries an eyebrow, which a two-part line cannot hold, so
+        // it rendered from the library on every client page.
+        ...Array.from({
+          length: sectionLibraryV3Content.decisionSplitDecision.cards.length,
+        }).flatMap<TemplateCopyFieldSpec>((_, index) => {
+          const position = index + 1;
+
+          return [
+            {
+              example: "Repair path",
+              name: `decisionItems.${position}.eyebrow`,
+              purpose: `Short label on comparison card ${position}.`,
+              target: "8-24 characters.",
+            },
+            {
+              example: "Repair",
+              name: `decisionItems.${position}.title`,
+              purpose: `Headline for comparison card ${position}.`,
+              target: "12-32 characters.",
+            },
+            {
+              example:
+                "Use a practical repair when the diagnosis and system condition support it.",
+              name: `decisionItems.${position}.body`,
+              purpose: `Supporting copy for comparison card ${position}.`,
+              target: "90-170 characters.",
+            },
+          ];
+        }),
         {
           example: "Talk through your options",
           name: "sectionAction",
