@@ -746,7 +746,7 @@ function wantsCardLinks(section: TemplateCopyContractSection) {
 
 export function getTemplateCopyFieldsForSection(
   section: TemplateCopyContractSection,
-) {
+): TemplateCopyFieldSpec[] {
   const component = section.component.toLowerCase();
   const mode = section.mode.toLowerCase();
   const sectionName = section.name.toLowerCase();
@@ -1534,6 +1534,46 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  // Ahead of the generic hero branch, and scoped deliberately: only the
+  // fullscreen hero renders a review badge and trust figures. Declaring them on
+  // the generic branch briefed seven heroes for fields they cannot display,
+  // which is the mirror of the leak problem - copy written and then dropped.
+  if (component.includes("herofullscreen")) {
+    return [
+      ...getTemplateCopyFieldsForSection({
+        ...section,
+        // Reuse the generic hero field set verbatim so this branch cannot drift
+        // from it; only the badge fields below are additional.
+        component: "HeroSection",
+      }),
+      {
+        // The rating sat beside reviewLabel and reviewDetail but was never
+        // declared, so the badge published the demo library's 4.9 next to
+        // whatever label the copy run wrote for it.
+        example: "4.9",
+        name: "reviewRating",
+        optional: true,
+        purpose:
+          "The numeric rating shown in the review badge. A factual claim about the business, not a design placeholder.",
+        target:
+          "OPTIONAL. Omit the badge entirely when no rating is sourced. Write NEEDS REVIEW rather than estimating one.",
+      },
+      {
+        // Same failure as the rating: value and label both rendered from the
+        // library, so a client hero claimed "2,400+ Completed visits".
+        example: ["2,400+ - Completed visits", "Same-week - Scheduling"],
+        format: "One per line as Value - Label.",
+        itemCount: 2,
+        name: "trustSignals",
+        optional: true,
+        purpose:
+          "Short proof figures beside the hero review badge. Every value is a factual claim about the business.",
+        target:
+          "OPTIONAL. Omit when no figures are sourced. When used: exactly 2 items, values 4-12 characters, labels 10-24 characters. Write NEEDS REVIEW rather than inventing a number.",
+      },
+    ];
+  }
+
   if (lookupValue.includes("hero")) {
     return [
       {
@@ -1595,31 +1635,6 @@ export function getTemplateCopyFieldsForSection(
         purpose:
           "Supporting detail under the review badge. Do not describe verification the business cannot evidence.",
         target: "40-90 characters. Use sourced facts only.",
-      },
-      {
-        // The rating sat beside reviewLabel and reviewDetail but was never
-        // declared, so the badge published the demo library's 4.9 next to
-        // whatever label the copy run wrote for it.
-        example: "4.9",
-        name: "reviewRating",
-        optional: true,
-        purpose:
-          "The numeric rating shown in the review badge. A factual claim about the business, not a design placeholder.",
-        target:
-          "OPTIONAL. Omit the badge entirely when no rating is sourced. Write NEEDS REVIEW rather than estimating one.",
-      },
-      {
-        // Same failure as the rating: value and label both rendered from the
-        // library, so a client hero claimed "2,400+ Completed visits".
-        example: ["2,400+ - Completed visits", "Same-week - Scheduling"],
-        format: "One per line as Value - Label.",
-        itemCount: 2,
-        name: "trustSignals",
-        optional: true,
-        purpose:
-          "Short proof figures beside the hero review badge. Every value is a factual claim about the business.",
-        target:
-          "OPTIONAL. Omit when no figures are sourced. When used: exactly 2 items, values 4-12 characters, labels 10-24 characters. Write NEEDS REVIEW rather than inventing a number.",
       },
     ];
   }
