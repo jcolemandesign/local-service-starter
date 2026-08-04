@@ -526,6 +526,17 @@ export function ContentEditorSection({
                       : section.fields.filter((field) =>
                           matchesFieldFilter(field, fieldFilter),
                         );
+                  // Media and styling first, then the copy. They are the
+                  // decisions you make once per section, and leaving them
+                  // interleaved with fifty copy fields meant scrolling past
+                  // the writing to reach the framing.
+                  const imageFields = visibleFields.filter(
+                    (field) => field.kind === "image",
+                  );
+                  const toggleFields = visibleFields.filter(isToggleField);
+                  const copyFields = visibleFields.filter(
+                    (field) => field.kind !== "image" && !isToggleField(field),
+                  );
                   const sectionDirtyCount = section.fields.filter((field) =>
                     dirtyFieldIds.includes(field.id),
                   ).length;
@@ -598,20 +609,59 @@ export function ContentEditorSection({
                             </p>
                           ) : null}
                           {visibleFields.length > 0 ? (
-                            visibleFields.map((field) => (
-                              <FieldEditor
-                                key={field.id}
-                                assets={imageAssets}
-                                field={field}
-                                value={values[field.id] ?? field.value}
-                                originalValue={
-                                  baselineValues[field.id] ?? field.value
-                                }
-                                onChange={(nextValue) =>
-                                  updateField(field.id, nextValue)
-                                }
-                              />
-                            ))
+                            <>
+                              {imageFields.map((field) => (
+                                <FieldEditor
+                                  key={field.id}
+                                  assets={imageAssets}
+                                  field={field}
+                                  value={values[field.id] ?? field.value}
+                                  originalValue={
+                                    baselineValues[field.id] ?? field.value
+                                  }
+                                  onChange={(nextValue) =>
+                                    updateField(field.id, nextValue)
+                                  }
+                                />
+                              ))}
+                              {/*
+                                Toggles are a label and a short button row, so
+                                a full-width card wasted most of it and pushed
+                                the copy further down.
+                              */}
+                              {toggleFields.length > 0 ? (
+                                <div className="grid grid-cols-3 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
+                                  {toggleFields.map((field) => (
+                                    <FieldEditor
+                                      key={field.id}
+                                      assets={imageAssets}
+                                      field={field}
+                                      value={values[field.id] ?? field.value}
+                                      originalValue={
+                                        baselineValues[field.id] ?? field.value
+                                      }
+                                      onChange={(nextValue) =>
+                                        updateField(field.id, nextValue)
+                                      }
+                                    />
+                                  ))}
+                                </div>
+                              ) : null}
+                              {copyFields.map((field) => (
+                                <FieldEditor
+                                  key={field.id}
+                                  assets={imageAssets}
+                                  field={field}
+                                  value={values[field.id] ?? field.value}
+                                  originalValue={
+                                    baselineValues[field.id] ?? field.value
+                                  }
+                                  onChange={(nextValue) =>
+                                    updateField(field.id, nextValue)
+                                  }
+                                />
+                              ))}
+                            </>
                           ) : (
                             <p className="type-text-sm rounded-sm border border-service-border bg-service-surface p-4 text-service-muted">
                               No {fieldFilter} fields in this section.
@@ -1175,16 +1225,12 @@ function OptionToggleFieldEditor({
   const isDirty = value !== originalValue;
 
   return (
-    <fieldset className="grid gap-3 rounded-sm border border-service-border bg-white p-4 shadow-sm">
+    <fieldset className="grid content-start gap-3 rounded-sm border border-service-border bg-white p-4 shadow-sm">
       <legend className="sr-only">{legend}</legend>
-      <div className="grid gap-2">
+      <div className="grid gap-1">
         <span className="flex flex-wrap items-center gap-2">
-          <span className={`type-caption rounded-sm px-2 py-0.5 font-semibold ${
-            isDirty
-              ? "bg-service-accent text-white"
-              : "border border-service-border bg-white text-service-muted"
-          }`}>
-            {badge}
+          <span className="type-text-sm font-semibold text-service-ink">
+            {field.label}
           </span>
           {isDirty ? (
             <span className="type-caption font-semibold text-service-accent">
@@ -1192,10 +1238,17 @@ function OptionToggleFieldEditor({
             </span>
           ) : null}
         </span>
-        <span className="type-text-sm font-semibold text-service-ink">
-          {field.label}
-        </span>
-        <span className="type-caption text-service-muted">{helperText}</span>
+        {/*
+          The badge and the explanation move into the disclosure. At a third of
+          the row the label and its options are what has to fit; the rest is
+          read once and then never again.
+        */}
+        <details>
+          <summary className="type-caption cursor-pointer list-none text-service-muted transition-colors hover:text-service-accent">
+            {badge}
+          </summary>
+          <p className="type-caption pt-2 text-service-muted">{helperText}</p>
+        </details>
       </div>
       <div className="flex flex-wrap gap-2" role="group" aria-label={legend}>
         {options.map((option) => {
@@ -1407,6 +1460,15 @@ function ImageFieldEditor({
       </div>
     </div>
   );
+}
+
+/**
+ * Fields rendered as a button row rather than a text control - the style axes
+ * plus image framing. They share a layout because they share a shape: a label
+ * and two to four short options.
+ */
+function isToggleField(field: ContentEditorField) {
+  return Boolean(getStyleFieldSpec(field)) || field.path.endsWith(".imageRatio");
 }
 
 function StatusPill({ label }: { label: string }) {
