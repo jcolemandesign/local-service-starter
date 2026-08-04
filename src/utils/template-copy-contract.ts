@@ -543,29 +543,53 @@ export function getTemplateCopySectionStatuses(
  * Maps each section's contract fingerprint to its ordinal, so a pasted block
  * can be located by fingerprint when it has no `### NN-slug` heading.
  */
+/**
+ * Fingerprint to the ordinals that carry it, in page order.
+ *
+ * A list rather than one ordinal because a section fingerprint is not unique: it
+ * hashes component, mode, name, instruction, variant and ratio, so a page using
+ * the same section twice - two "Large section header" blocks, say - produces the
+ * same value for both. Keyed one-to-one, the second write silently replaced the
+ * first and the earlier block lost its position.
+ */
 function getOrdinalsByCopyFingerprint(template: TemplateCopyContractTemplate) {
-  const ordinalByFingerprint = new Map<string, string>();
+  const ordinalsByFingerprint = new Map<string, string[]>();
 
   template.sections.forEach((section, index) => {
-    ordinalByFingerprint.set(
-      getTemplateCopySectionFingerprint(section),
-      getSectionOrdinal(index),
-    );
+    const fingerprint = getTemplateCopySectionFingerprint(section);
+    const ordinals = ordinalsByFingerprint.get(fingerprint);
+
+    if (ordinals) {
+      ordinals.push(getSectionOrdinal(index));
+      return;
+    }
+
+    ordinalsByFingerprint.set(fingerprint, [getSectionOrdinal(index)]);
   });
 
-  return ordinalByFingerprint;
+  return ordinalsByFingerprint;
 }
 
 function getBatchCopyFieldsBySectionOrdinal(
   copy: string,
-  ordinalByFingerprint?: ReadonlyMap<string, string>,
+  ordinalsByFingerprint?: ReadonlyMap<string, readonly string[]>,
 ) {
   const sectionsByOrdinal = new Map<
     string,
     { fields: Set<string>; fingerprint: string; slug: string }
   >();
   const lines = extractContractBulkPasteCopy(copy).split(/\r?\n/);
+  // Ordinals already taken, however they were taken - by their own heading or by
+  // a fingerprint lookup. A page repeating a section hands the second block the
+  // next free ordinal rather than both landing on the same one. Counting claims
+  // per fingerprint instead is not enough: an ordinal opened by a heading never
+  // touches the fingerprint map, so a later heading-less block would re-take it.
+  const usedOrdinals = new Set<string>();
   let currentSectionOrdinal = "";
+  // Whether the block now being read was opened by its own `### NN-slug`
+  // heading. A heading names the position outright, so the fingerprint comment
+  // that follows it must annotate that block rather than relocate it.
+  let openedByHeading = false;
 
   lines.forEach((rawLine) => {
     const line = rawLine.trim();
@@ -573,6 +597,8 @@ function getBatchCopyFieldsBySectionOrdinal(
 
     if (sectionMatch) {
       currentSectionOrdinal = sectionMatch[1].padStart(2, "0");
+      openedByHeading = true;
+      usedOrdinals.add(currentSectionOrdinal);
       const existing = sectionsByOrdinal.get(currentSectionOrdinal);
       sectionsByOrdinal.set(currentSectionOrdinal, {
         fields: existing?.fields ?? new Set<string>(),
@@ -588,15 +614,34 @@ function getBatchCopyFieldsBySectionOrdinal(
 
     if (sectionFingerprintMatch) {
       const fingerprint = sectionFingerprintMatch[1];
-      // A contract comment opens a section by itself. Models reliably copy
-      // these back while dropping the `### NN-slug` heading, and without this
-      // the whole page resolves to "unverified", no ordinal is allowed to
-      // seed, and the page stages with every field empty - which the renderer
-      // then fills with section-library demo content.
-      const mappedOrdinal = ordinalByFingerprint?.get(fingerprint);
+      const current = currentSectionOrdinal
+        ? sectionsByOrdinal.get(currentSectionOrdinal)
+        : undefined;
+
+      // The heading immediately above already placed this block. Record the
+      // fingerprint against it and stop: looking the fingerprint up here is what
+      // moved a correctly-headed block onto another section's ordinal whenever a
+      // page used the same section twice. Clearing the flag means a later
+      // fingerprint with no heading of its own still opens a block below.
+      if (openedByHeading && current) {
+        current.fingerprint = fingerprint;
+        openedByHeading = false;
+        return;
+      }
+
+      // No heading for this block. A contract comment opens a section by itself:
+      // models reliably copy these back while dropping the `### NN-slug`
+      // heading, and without this the whole page resolves to "unverified", no
+      // ordinal is allowed to seed, and the page stages with every field empty -
+      // which the renderer then fills with section-library demo content.
+      const mappedOrdinal = ordinalsByFingerprint
+        ?.get(fingerprint)
+        ?.find((ordinal) => !usedOrdinals.has(ordinal));
 
       if (mappedOrdinal) {
+        usedOrdinals.add(mappedOrdinal);
         currentSectionOrdinal = mappedOrdinal;
+        openedByHeading = false;
         const existing = sectionsByOrdinal.get(mappedOrdinal);
         sectionsByOrdinal.set(mappedOrdinal, {
           fields: existing?.fields ?? new Set<string>(),
@@ -605,10 +650,6 @@ function getBatchCopyFieldsBySectionOrdinal(
         });
         return;
       }
-
-      const current = currentSectionOrdinal
-        ? sectionsByOrdinal.get(currentSectionOrdinal)
-        : undefined;
 
       if (current) {
         current.fingerprint = fingerprint;
