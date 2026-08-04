@@ -1,6 +1,4 @@
-"use client";
-
-import { motion, type Variants, useReducedMotion } from "motion/react";
+import type { CSSProperties } from "react";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
@@ -19,62 +17,6 @@ type FeatureStackedCardsSectionV3Props = {
   cards: readonly FeatureStackedCard[];
   eyebrow: string;
   title: string;
-};
-
-const cardEase = "easeOut" as const;
-const cardSequenceDelay = 0.12;
-
-const cardAnimation: Variants = {
-  hidden: { opacity: 0, y: 18 },
-  visible: (index: number) => ({
-    opacity: 1,
-    transition: {
-      delay: cardSequenceDelay + index * 0.1,
-      duration: 0.34,
-      ease: cardEase,
-    },
-    y: 0,
-  }),
-};
-
-const iconAnimation: Variants = {
-  hidden: { opacity: 0, scale: 0.88, y: 12 },
-  visible: (index: number) => ({
-    opacity: 1,
-    scale: 1,
-    transition: {
-      delay: cardSequenceDelay + index * 0.1,
-      duration: 0.28,
-      ease: cardEase,
-    },
-    y: 0,
-  }),
-};
-
-const headingAnimation: Variants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: (index: number) => ({
-    opacity: 1,
-    transition: {
-      delay: cardSequenceDelay + index * 0.1 + 0.1,
-      duration: 0.22,
-      ease: cardEase,
-    },
-    y: 0,
-  }),
-};
-
-const bodyAnimation: Variants = {
-  hidden: { opacity: 0, y: 8 },
-  visible: (index: number) => ({
-    opacity: 1,
-    transition: {
-      delay: cardSequenceDelay + index * 0.1 + 0.16,
-      duration: 0.22,
-      ease: cardEase,
-    },
-    y: 0,
-  }),
 };
 
 function FeatureIconPlaceholder({ label }: { label: string }) {
@@ -103,8 +45,6 @@ export function FeatureStackedCardsSectionV3({
   eyebrow,
   title,
 }: FeatureStackedCardsSectionV3Props) {
-  const shouldReduceMotion = useReducedMotion();
-
   return (
     <section className="bg-service-surface">
       <SevenColumnGrid className="section-min-none items-start" padding="med">
@@ -133,46 +73,25 @@ export function FeatureStackedCardsSectionV3({
 
         <SevenColumnGridItem className="col-span-4 col-start-4 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1">
           <div className="grid gap-[var(--site-grid-gap)]">
-            {cards.slice(0, 4).map((card, cardIndex) => {
-              const initial = shouldReduceMotion ? false : "hidden";
-              const whileInView = shouldReduceMotion ? undefined : "visible";
-
-              return (
-                <motion.article
-                  className="fluid-type-frame flex min-h-44 items-start gap-7 border-t border-service-border py-7 text-service-ink first:border-t-0 first:pt-0 max-md:gap-5 max-sm:min-h-0 max-sm:flex-col"
-                  custom={cardIndex}
-                  initial={initial}
-                  key={card.title}
-                  variants={cardAnimation}
-                  viewport={{ amount: 0.35, once: true }}
-                  whileInView={whileInView}
-                >
-                  <motion.div custom={cardIndex} variants={iconAnimation}>
-                    <FeatureIconPlaceholder
-                      label={
-                        card.iconLabel ?? String(cardIndex + 1).padStart(2, "0")
-                      }
-                    />
-                  </motion.div>
-                  <div className="max-w-2xl">
-                    <motion.h3
-                      className="type-heading-md text-service-ink"
-                      custom={cardIndex}
-                      variants={headingAnimation}
-                    >
-                      {card.title}
-                    </motion.h3>
-                    <motion.p
-                      className="type-text-md wrap-pretty mt-heading-body-sm text-service-muted"
-                      custom={cardIndex}
-                      variants={bodyAnimation}
-                    >
-                      {card.body}
-                    </motion.p>
-                  </div>
-                </motion.article>
-              );
-            })}
+            {cards.slice(0, 4).map((card, cardIndex) => (
+              <article
+                className="reveal-on-scroll fluid-type-frame flex min-h-44 items-start gap-7 border-t border-service-border py-7 text-service-ink first:border-t-0 first:pt-0 max-md:gap-5 max-sm:min-h-0 max-sm:flex-col"
+                key={card.title}
+                style={{ "--reveal-index": cardIndex } as CSSProperties}
+              >
+                <FeatureIconPlaceholder
+                  label={card.iconLabel ?? String(cardIndex + 1).padStart(2, "0")}
+                />
+                <div className="max-w-2xl">
+                  <h3 className="type-heading-md text-service-ink">
+                    {card.title}
+                  </h3>
+                  <p className="type-text-md wrap-pretty mt-heading-body-sm text-service-muted">
+                    {card.body}
+                  </p>
+                </div>
+              </article>
+            ))}
           </div>
         </SevenColumnGridItem>
       </SevenColumnGrid>

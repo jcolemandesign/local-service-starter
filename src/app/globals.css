@@ -114,6 +114,74 @@
   --animate-violator-spin: violator-spin 4.25s linear infinite;
 }
 
+/*
+ * Scroll entrance reveal.
+ *
+ * Replaces Motion's `whileInView` in sections that used it for nothing but a
+ * decorative entrance. That single effect forced each of those sections to be
+ * a client component and pulled the Motion runtime onto pages that otherwise
+ * ship no JavaScript at all.
+ *
+ * Content is visible by default. It is only hidden inside the @supports block,
+ * so a browser without scroll-driven animations shows the content immediately
+ * rather than a blank section - the failure mode this ordering exists to
+ * prevent. Firefox currently lands there and simply gets no entrance.
+ *
+ * Set --reveal-index on staggered children to offset each one's range, which
+ * is how a scroll-driven timeline staggers; animation-delay does not apply.
+ */
+@keyframes section-reveal {
+  from {
+    opacity: 0;
+    translate: 0 18px;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal-on-scroll {
+      animation: section-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry calc(var(--reveal-index, 0) * 7%) entry
+        calc(52% + var(--reveal-index, 0) * 7%);
+    }
+  }
+}
+
+/*
+ * Entrance pulse, for cards that drew attention with a brief scale blip rather
+ * than a fade. Driven by the same view() timeline, so the pulse plays as the
+ * card scrolls through its entry range instead of firing once on a timer. The
+ * intent - a subtle nudge as the card arrives - survives; the exact timing is
+ * tied to scroll position rather than to the clock.
+ */
+@keyframes section-card-pulse {
+  0%,
+  100% {
+    scale: 1;
+  }
+
+  50% {
+    scale: 1.025;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .pulse-on-scroll {
+      animation: section-card-pulse ease-in-out both;
+      animation-timeline: view();
+      animation-range: entry calc(20% + var(--reveal-index, 0) * 10%) entry
+        calc(85% + var(--reveal-index, 0) * 10%);
+    }
+  }
+}
+
 @keyframes trust-marquee {
   from {
     transform: translateX(0);

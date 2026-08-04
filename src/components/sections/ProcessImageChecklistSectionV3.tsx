@@ -1,6 +1,4 @@
-"use client";
-
-import { motion, useReducedMotion } from "motion/react";
+import type { CSSProperties } from "react";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
@@ -58,8 +56,6 @@ export function ProcessImageChecklistSectionV3({
   items,
   title,
 }: ProcessImageChecklistSectionV3Props) {
-  const shouldReduceMotion = useReducedMotion();
-
   return (
     <section className="bg-bg-page">
       <SevenColumnGrid className="section-min-none" padding="med">
@@ -84,25 +80,12 @@ export function ProcessImageChecklistSectionV3({
               {body}
             </p>
 
-            <motion.ul
-              className="mt-body-actions-md grid card-grid-gap-med"
-              initial={shouldReduceMotion ? false : "hidden"}
-              viewport={{ once: true, amount: 0.42 }}
-              whileInView="visible"
-            >
+            <ul className="mt-body-actions-md grid card-grid-gap-med">
               {items.map((item, index) => (
-                <motion.li
-                  className="content-padding radius-medium grid grid-cols-[2rem_minmax(0,1fr)] items-start inline-gap-med border border-service-border bg-service-surface"
+                <li
+                  className="reveal-on-scroll content-padding radius-medium grid grid-cols-[2rem_minmax(0,1fr)] items-start inline-gap-med border border-service-border bg-service-surface"
                   key={index}
-                  variants={{
-                    hidden: { opacity: 0, y: 18 },
-                    visible: { opacity: 1, y: 0 },
-                  }}
-                  transition={{
-                    delay: shouldReduceMotion ? 0 : 0.15 + index * 0.462,
-                    duration: shouldReduceMotion ? 0 : 0.44,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
+                  style={{ "--reveal-index": index } as CSSProperties}
                 >
                   <span className="radius-4 flex size-8 shrink-0 items-center justify-center bg-service-ink text-xs font-semibold text-white">
                     {String(index + 1).padStart(2, "0")}
@@ -110,9 +93,9 @@ export function ProcessImageChecklistSectionV3({
                   <span className="type-text-md wrap-pretty min-w-0 pt-0.5 font-medium text-service-ink">
                     {item}
                   </span>
-                </motion.li>
+                </li>
               ))}
-            </motion.ul>
+            </ul>
 
             <a
               className="type-label mt-body-actions-md inline-flex cursor-pointer items-center text-service-accent transition-colors hover:text-service-ink"

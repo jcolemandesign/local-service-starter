@@ -1,7 +1,5 @@
-"use client";
-
+import type { CSSProperties } from "react";
 import Image from "next/image";
-import { motion, useReducedMotion } from "motion/react";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
@@ -47,7 +45,6 @@ export function ContentStickyCardStreamSectionV2({
   imageWidth,
   showImage = false,
 }: ContentStickyCardStreamSectionV2Props) {
-  const shouldReduceMotion = useReducedMotion();
   const transparentCards = cardFill === "none";
   // Section/card backgrounds and ink/muted text below use the generic
   // service-ink/bg-page tokens, which the pagebuilder-section-frame wrapper
@@ -122,25 +119,17 @@ export function ContentStickyCardStreamSectionV2({
         >
           <div className="grid card-grid-gap-xlrg">
             {cards.map((card, index) => (
-              <motion.article
+              <article
                 className={cx(
+                  "reveal-on-scroll",
                   "fluid-type-frame",
                   "radius-medium",
                   "border border-service-border p-8 shadow-service max-md:p-6",
                   transparentCards ? "!bg-transparent !shadow-none" : colors.card,
                   cardBorder === "off" ? "!border-transparent" : undefined,
                 )}
-                initial={
-                  shouldReduceMotion ? false : { opacity: 0, y: 36 }
-                }
-                transition={{
-                  delay: shouldReduceMotion ? 0 : 0.12 + index * 0.08,
-                  duration: shouldReduceMotion ? 0 : 0.62,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                viewport={{ once: true, amount: 0.48 }}
-                whileInView={{ opacity: 1, y: 0 }}
                 key={card.title}
+                style={{ "--reveal-index": index } as CSSProperties}
               >
                 <div className="flex items-start justify-between gap-6">
                   <p className={cx("type-label", colors.cardEyebrow)}>
@@ -159,7 +148,7 @@ export function ContentStickyCardStreamSectionV2({
                 <p className={cx("type-text-md measure-copy wrap-pretty mt-heading-body-md", colors.cardMuted)}>
                   {card.body}
                 </p>
-              </motion.article>
+              </article>
             ))}
           </div>
         </SevenColumnGridItem>
