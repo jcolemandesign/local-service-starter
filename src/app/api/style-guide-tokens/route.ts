@@ -16,6 +16,7 @@ type StyleGuideTokenDraft = {
   serviceMuted: string;
   serviceAccent: string;
   serviceSurface: string;
+  surfaceRaised: string;
   serviceBorder: string;
   bgPage: string;
   bgDark: string;
@@ -117,6 +118,7 @@ function normalizeTokens(tokens: Partial<StyleGuideTokenDraft> | undefined) {
     serviceMuted: normalizeColor(tokens.serviceMuted, "service muted"),
     serviceAccent: normalizeColor(tokens.serviceAccent, "service accent"),
     serviceSurface: normalizeColor(tokens.serviceSurface, "service surface"),
+    surfaceRaised: normalizeColor(tokens.surfaceRaised, "raised surface"),
     serviceBorder: normalizeColor(tokens.serviceBorder, "service border"),
     bgPage: normalizeColor(tokens.bgPage, "page background"),
     bgDark: normalizeColor(tokens.bgDark, "dark background"),
@@ -522,6 +524,7 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --live-service-muted: ${tokens.serviceMuted};
   --live-service-accent: ${tokens.serviceAccent};
   --live-service-surface: ${tokens.serviceSurface};
+  --live-surface-raised: ${tokens.surfaceRaised};
   --live-service-border: ${tokens.serviceBorder};
   --live-bg-page: ${tokens.bgPage};
   --live-bg-surface: ${tokens.serviceSurface};
@@ -539,6 +542,7 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --color-service-muted: ${tokens.serviceMuted};
   --color-service-accent: ${tokens.serviceAccent};
   --color-service-surface: ${tokens.serviceSurface};
+  --color-surface-raised: ${tokens.surfaceRaised};
   --color-service-border: ${tokens.serviceBorder};
   --color-bg-page: ${tokens.bgPage};
   --color-bg-surface: ${tokens.serviceSurface};
