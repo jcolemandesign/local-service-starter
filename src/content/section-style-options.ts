@@ -759,7 +759,6 @@ export const viewportHeightComponents = new Set<string>([
   "ContentFixedCoverFadeSectionV2",
   "ContentHorizontalCardCarouselSectionV2",
   "ContentScrollWrittenRevealSectionV2",
-  "ContentSplitHeadlineImageSectionV2",
   "ContentStickyImagePanelSectionV2",
   "ContentStickyImagePanelSectionV3",
   "HeroCenteredFloatersSectionV2",

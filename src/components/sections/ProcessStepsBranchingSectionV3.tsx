@@ -58,18 +58,18 @@ export function ProcessStepsBranchingSectionV3({
         <LayoutGridItem
           className={[
             centered
-              ? "col-span-10 col-start-3"
-              : "col-span-10 col-start-5",
+              ? "col-span-8 col-start-4"
+              : "col-span-8 col-start-6",
             centered
-              ? "max-lg:col-span-8 max-lg:col-start-2"
-              : "max-lg:col-span-7 max-lg:col-start-4",
+              ? "max-lg:col-span-6 max-lg:col-start-3"
+              : "max-lg:col-span-6 max-lg:col-start-5",
             centered
               ? "max-md:col-span-6 max-md:col-start-1"
               : "max-md:col-span-6 max-md:col-start-1 max-md:mt-12",
             "max-sm:col-span-2",
           ].join(" ")}
         >
-          <div className="mx-auto max-w-5xl">
+          <div className="mx-auto max-w-4xl">
             <ol>
               {steps.map((step, index) => (
                 <li key={`${step.title}-${index}`}>
@@ -97,7 +97,7 @@ export function ProcessStepsBranchingSectionV3({
                       aria-hidden="true"
                       className="flex h-12 justify-center"
                     >
-                      <span className="h-full border-l border-service-border" />
+                      <span className="h-full border-l border-service-border [border-left-width:var(--border-surface-width-token)]" />
                     </div>
                   ) : null}
                 </li>
@@ -108,23 +108,23 @@ export function ProcessStepsBranchingSectionV3({
               aria-hidden="true"
               className="relative mx-auto h-20 max-sm:h-16"
             >
-              <span className="absolute left-1/2 top-0 h-1/2 border-l border-service-border max-sm:h-1/2" />
-              <span className="absolute left-1/4 top-1/2 h-1/2 w-1/4 rounded-tl-[var(--radius-surface-token)] border-l border-t border-service-border max-sm:hidden" />
-              <span className="absolute right-1/4 top-1/2 h-1/2 w-1/4 rounded-tr-[var(--radius-surface-token)] border-r border-t border-service-border max-sm:hidden" />
-              <span className="absolute left-5 top-1/2 hidden h-1/2 w-[calc(50%-1.25rem)] rounded-tl-[var(--radius-surface-token)] border-l border-t border-service-border max-sm:block" />
+              <span className="absolute left-1/2 top-0 h-1/2 border-l border-service-border [border-left-width:var(--border-surface-width-token)] max-sm:h-1/2" />
+              <span className="absolute left-1/4 top-1/2 h-1/2 w-1/4 rounded-tl-[var(--radius-surface-token)] border-l border-t border-service-border [border-left-width:var(--border-surface-width-token)] [border-top-width:var(--border-surface-width-token)] max-sm:hidden" />
+              <span className="absolute right-1/4 top-1/2 h-1/2 w-1/4 rounded-tr-[var(--radius-surface-token)] border-r border-t border-service-border [border-right-width:var(--border-surface-width-token)] [border-top-width:var(--border-surface-width-token)] max-sm:hidden" />
+              <span className="absolute left-5 top-1/2 hidden h-1/2 w-[calc(50%-1.25rem)] rounded-tl-[var(--radius-surface-token)] border-l border-t border-service-border [border-left-width:var(--border-surface-width-token)] [border-top-width:var(--border-surface-width-token)] max-sm:block" />
             </div>
 
             <div className="relative">
               <span
                 aria-hidden="true"
-                className="absolute bottom-1/4 left-5 top-0 hidden border-l border-service-border max-sm:block"
+                className="absolute bottom-1/4 left-5 top-0 hidden border-l border-service-border [border-left-width:var(--border-surface-width-token)] max-sm:block"
               />
               <ul className="relative grid auto-rows-fr grid-cols-2 gap-6 max-sm:grid-cols-1 max-sm:pl-10">
                 {outcomes.map((outcome) => (
                   <li className="relative flex" key={outcome.title}>
                     <span
                       aria-hidden="true"
-                      className="absolute -left-5 top-1/2 hidden w-5 border-t border-service-border max-sm:block"
+                      className="absolute -left-5 top-1/2 hidden w-5 border-t border-service-border [border-top-width:var(--border-surface-width-token)] max-sm:block"
                     />
                     <article
                       className={`${cardClassName(

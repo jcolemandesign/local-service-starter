@@ -62,7 +62,7 @@ function ServiceScrollCard({
       className={cx(
         "fluid-type-frame",
         "radius-medium",
-        "group/service-card flex w-[min(39vw,495px)] shrink-0 cursor-pointer flex-col overflow-hidden border border-service-border bg-bg-page shadow-service transition-transform duration-300 ease-out hover:-translate-y-2 max-lg:w-full",
+        "group/service-card flex w-[min(39vw,495px)] shrink-0 cursor-pointer flex-col overflow-hidden border border-service-border bg-service-surface shadow-service transition-transform duration-300 ease-out hover:-translate-y-2 max-lg:w-full",
         cardFill === "none" ? "!bg-transparent !shadow-none" : undefined,
         cardBorder === "off" ? "!border-transparent" : undefined,
       )}
@@ -211,7 +211,7 @@ export function ServicesScrollCardsSectionV2({
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[240svh] bg-service-surface max-lg:min-h-0"
+      className="relative min-h-[240svh] bg-bg-page max-lg:min-h-0"
     >
       <div className="sticky top-0 flex min-h-svh items-center overflow-hidden py-16 max-lg:static max-lg:min-h-0 max-lg:overflow-visible">
         <div className="w-full">

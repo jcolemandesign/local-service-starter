@@ -73,7 +73,6 @@ import {
 } from "@/components/sections/FeaturedOfferSectionV3";
 import { ServiceNeedsPriorityGridSectionV3 } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
 import type { ServiceNeedsPriorityGridAlign } from "@/components/sections/ServiceNeedsPriorityGridSectionV3";
-import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
 import {
   ContentMainIdeaGridSectionV3,
   type ContentMainIdeaGridAlign,
@@ -251,7 +250,6 @@ const serviceNeedsPriorityGridComponent = "ServiceNeedsPriorityGridSectionV3";
 const serviceCalloutRevealGridComponent = "ServiceCalloutRevealGridSectionV3";
 const serviceCalloutSplitPanelComponent = "ServiceCalloutSplitPanelSectionV3";
 const featureAsymmetricCardsComponent = "FeatureAsymmetricCardsSectionV3";
-const contentSplitHeadlineImageComponent = "ContentSplitHeadlineImageSectionV2";
 const contentMainIdeaGridComponent = "ContentMainIdeaGridSectionV3";
 const contentNarrativeFeatureRailComponent =
   "ContentNarrativeFeatureRailSectionV3";
@@ -1532,13 +1530,6 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
       "Use written reveal copy when a narrative point should build in short, readable beats.",
     mode: "Narrative",
     name: "Scroll written reveal",
-  },
-  {
-    component: "ContentSplitHeadlineImageSectionV2",
-    instruction:
-      "Translate regular content into an image-led editorial texture with one large positioning line.",
-    mode: "Narrative",
-    name: "Split headline image content",
   },
   {
     component: "ContentSplitFixedImageSectionV3",
@@ -3981,11 +3972,6 @@ export function PagebuilderShell({
             headingLevel={2}
             headlineWrap={getSectionHeadlineWrap(section)}
             size={getLargeSectionHeaderSize(section)}
-          />
-        ) : section.component === contentSplitHeadlineImageComponent ? (
-          <ContentSplitHeadlineImageSectionV2
-            {...sectionLibraryV3Content.contentSplitHeadlineImage}
-            colorRecipe={getSectionColorRecipe(section)}
           />
         ) : section.component === contentMainIdeaGridComponent ? (
           <ContentMainIdeaGridSectionV3

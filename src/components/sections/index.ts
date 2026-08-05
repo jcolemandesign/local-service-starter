@@ -47,8 +47,6 @@ export { ContentRevealParagraphSectionV2 } from "./ContentRevealParagraphSection
 export { ContentRuleHeaderSectionV2 } from "./ContentRuleHeaderSectionV2";
 export { ContentScrollWrittenRevealSectionV2 } from "./ContentScrollWrittenRevealSectionV2";
 export { ServicesThreeCardsRightSectionV3 } from "./ServicesThreeCardsRightSectionV3";
-export { ContentSplitHeadlineImageSection } from "./ContentSplitHeadlineImageSection";
-export { ContentSplitHeadlineImageSectionV2 } from "./ContentSplitHeadlineImageSectionV2";
 export { ContentSplitFixedImageSectionV3 } from "./ContentSplitFixedImageSectionV3";
 export { ContentSplitFullImageSectionV3 } from "./ContentSplitFullImageSectionV3";
 export { ContentStickyIdeasSection } from "./ContentStickyIdeasSection";

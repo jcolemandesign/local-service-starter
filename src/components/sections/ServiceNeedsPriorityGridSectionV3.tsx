@@ -118,8 +118,19 @@ export function ServiceNeedsPriorityGridSectionV3({
 
         <LayoutGridItem alignY="middle" className={smallCardsPosition}>
           <div className="grid auto-rows-fr grid-cols-3 gap-6 max-lg:grid-cols-2 max-md:grid-cols-1">
-            {smallItems.map((item) => (
-              <div className="flex" key={item.title}>
+            {smallItems.map((item, index) => (
+              <div
+                className={
+                  cardFill === "none" && index > 0
+                    ? `relative flex before:absolute before:inset-y-0 before:-left-3 before:border-l before:border-service-border before:[border-left-width:var(--border-surface-width-token)] ${
+                        index === 2
+                          ? "max-lg:before:hidden"
+                          : "max-md:before:hidden"
+                      }`
+                    : "flex"
+                }
+                key={item.title}
+              >
                 {renderCard(item, false)}
               </div>
             ))}

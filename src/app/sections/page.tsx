@@ -18,7 +18,6 @@ import {
   ContentScrollWrittenRevealSectionV2,
   ContentStickyCardStreamSectionV2,
   ContentStickyIdeasSectionV2,
-  ContentSplitHeadlineImageSectionV2,
   ImageStripSectionV3,
   ContactSectionModalBegin,
   ContactSectionV3,
@@ -242,11 +241,6 @@ const sectionElements = {
   "content-three-column-mixed-v3": (
     <ContentThreeColumnMixedSectionV3
       {...sectionLibraryV3Content.contentThreeColumnMixed}
-    />
-  ),
-  "content-split-headline-image-v2": (
-    <ContentSplitHeadlineImageSectionV2
-      {...sectionLibraryV3Content.contentSplitHeadlineImage}
     />
   ),
   "content-split-fixed-image-v3": (

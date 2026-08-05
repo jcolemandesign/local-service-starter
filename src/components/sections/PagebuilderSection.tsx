@@ -41,7 +41,6 @@ import {
   type ContentSplitFullImageVariant,
 } from "@/components/sections/ContentSplitFullImageSectionV3";
 import { ContentStickyCardStreamSectionV2 } from "@/components/sections/ContentStickyCardStreamSectionV2";
-import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
 import { ContentStickyIdeasSectionV2 } from "@/components/sections/ContentStickyIdeasSectionV2";
 import {
   ContactSectionV3,
@@ -674,12 +673,6 @@ function renderSectionElement(
       return (
         <ContentScrollWrittenRevealSectionV2
           {...sectionLibraryV3Content.contentScrollWrittenReveal}
-        />
-      );
-    case "ContentSplitHeadlineImageSectionV2":
-      return (
-        <ContentSplitHeadlineImageSectionV2
-          {...sectionLibraryV3Content.contentSplitHeadlineImage}
         />
       );
     case "ContentSplitFixedImageSectionV3":

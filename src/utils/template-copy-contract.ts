@@ -4125,42 +4125,6 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
-  if (component.includes("contentsplitheadlineimage")) {
-    return [
-      {
-        example: "How we work",
-        name: "eyebrow",
-        purpose: "Short context label above the split headline.",
-        target: "12-36 characters.",
-      },
-      {
-        // The headline renders as two visually distinct lines. The mapper used
-        // to derive the second by splitting the title on a comma or period,
-        // which silently fell back to the demo phrase whenever the written
-        // headline contained neither.
-        example: "A service visit should",
-        name: "headlineTop",
-        purpose: "First line of the two-part headline.",
-        target: "18-42 characters.",
-      },
-      {
-        example: "feel calm first",
-        name: "headlineBottom",
-        purpose:
-          "Second line of the two-part headline, set apart from the first.",
-        target: "12-32 characters.",
-      },
-      {
-        example:
-          "Explain what the section is showing without repeating the headline.",
-        name: "body",
-        purpose: "Supporting copy beside the image.",
-        target: "80-170 characters.",
-      },
-    ];
-  }
-
-
   if (mode === "narrative") {
     return [
       {

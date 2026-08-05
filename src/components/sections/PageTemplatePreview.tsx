@@ -35,7 +35,6 @@ import {
   type ContentSplitFixedImageVariant,
 } from "@/components/sections/ContentSplitFixedImageSectionV3";
 import { ContentStickyCardStreamSectionV2 } from "@/components/sections/ContentStickyCardStreamSectionV2";
-import { ContentSplitHeadlineImageSectionV2 } from "@/components/sections/ContentSplitHeadlineImageSectionV2";
 import { ContentStickyIdeasSectionV2 } from "@/components/sections/ContentStickyIdeasSectionV2";
 import {
   ContactSectionV3,
@@ -875,13 +874,6 @@ export function renderPageTemplateSection(
       return (
         <ContentScrollWrittenRevealSectionV2
           {...scrollWrittenRevealProps(fieldSection)}
-        />
-      );
-    case "ContentSplitHeadlineImageSectionV2":
-      return (
-        <ContentSplitHeadlineImageSectionV2
-          {...splitHeadlineImageProps(fieldSection)}
-          colorRecipe={section.colorRecipe}
         />
       );
     case "ContentSplitFixedImageSectionV3":
@@ -3564,33 +3556,6 @@ function scrollWrittenRevealProps(section: FieldSection) {
     lines: body
       ? splitItems(body)
       : sectionLibraryV3Content.contentScrollWrittenReveal.lines,
-  };
-}
-
-/**
- * The two headline lines are explicit fields now. Deriving them by splitting
- * the title on a comma or period meant a headline containing neither produced
- * no second line at all, and it fell back to the library's "feel calm first".
- * The split is kept behind the fields so pages staged before them still render.
- */
-function splitHeadlineImageProps(section: FieldSection) {
-  const demo = sectionLibraryV3Content.contentSplitHeadlineImage;
-  const title = getTitle(section, "");
-  const [derivedTop, ...derivedRest] = title.split(/[,.]/);
-
-  return {
-    ...demo,
-    body: getBody(section, demo.body),
-    headlineBottom: getValue(
-      section,
-      "headlineBottom",
-      derivedRest.join(" ").trim() || demo.headlineBottom,
-    ),
-    headlineTop: getValue(
-      section,
-      "headlineTop",
-      derivedTop.trim() || demo.headlineTop,
-    ),
   };
 }
 

@@ -84,20 +84,20 @@ export function ProcessStepsStaggeredSectionV3({
                   >
                     {isLeft ? (
                       <>
-                        <span className="col-start-1 row-start-1 h-full w-1/2 justify-self-end rounded-bl-[var(--radius-surface-token)] border-b border-l border-service-border max-md:hidden" />
-                        <span className="col-start-2 row-start-1 h-full border-b border-service-border max-md:hidden" />
-                        <span className="col-start-3 row-start-2 h-full w-1/2 justify-self-start rounded-tr-[var(--radius-surface-token)] border-r border-t border-service-border max-md:hidden" />
+                        <span className="col-start-1 row-start-1 h-full w-1/2 justify-self-end rounded-bl-[var(--radius-surface-token)] border-b border-l border-service-border [border-bottom-width:var(--border-surface-width-token)] [border-left-width:var(--border-surface-width-token)] max-md:hidden" />
+                        <span className="col-start-2 row-start-1 h-full border-b border-service-border [border-bottom-width:var(--border-surface-width-token)] max-md:hidden" />
+                        <span className="col-start-3 row-start-2 h-full w-1/2 justify-self-start rounded-tr-[var(--radius-surface-token)] border-r border-t border-service-border [border-right-width:var(--border-surface-width-token)] [border-top-width:var(--border-surface-width-token)] max-md:hidden" />
                       </>
                     ) : (
                       <>
-                        <span className="col-start-3 row-start-1 h-full w-1/2 justify-self-start rounded-br-[var(--radius-surface-token)] border-b border-r border-service-border max-md:hidden" />
-                        <span className="col-start-2 row-start-1 h-full border-b border-service-border max-md:hidden" />
-                        <span className="col-start-1 row-start-2 h-full w-1/2 justify-self-end rounded-tl-[var(--radius-surface-token)] border-l border-t border-service-border max-md:hidden" />
+                        <span className="col-start-3 row-start-1 h-full w-1/2 justify-self-start rounded-br-[var(--radius-surface-token)] border-b border-r border-service-border [border-bottom-width:var(--border-surface-width-token)] [border-right-width:var(--border-surface-width-token)] max-md:hidden" />
+                        <span className="col-start-2 row-start-1 h-full border-b border-service-border [border-bottom-width:var(--border-surface-width-token)] max-md:hidden" />
+                        <span className="col-start-1 row-start-2 h-full w-1/2 justify-self-end rounded-tl-[var(--radius-surface-token)] border-l border-t border-service-border [border-left-width:var(--border-surface-width-token)] [border-top-width:var(--border-surface-width-token)] max-md:hidden" />
                       </>
                     )}
 
-                    <span className="absolute left-6 top-0 hidden h-1/2 w-8 rounded-tl-[var(--radius-surface-token)] border-l border-t border-service-border max-md:block" />
-                    <span className="absolute bottom-0 left-6 hidden h-1/2 w-8 rounded-bl-[var(--radius-surface-token)] border-b border-l border-service-border max-md:block" />
+                    <span className="absolute left-6 top-0 hidden h-1/2 w-8 rounded-tl-[var(--radius-surface-token)] border-l border-t border-service-border [border-left-width:var(--border-surface-width-token)] [border-top-width:var(--border-surface-width-token)] max-md:block" />
+                    <span className="absolute bottom-0 left-6 hidden h-1/2 w-8 rounded-bl-[var(--radius-surface-token)] border-b border-l border-service-border [border-bottom-width:var(--border-surface-width-token)] [border-left-width:var(--border-surface-width-token)] max-md:block" />
                   </div>
                 ) : null}
               </li>

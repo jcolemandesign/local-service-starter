@@ -524,11 +524,6 @@ export const sectionLibraryV3Content = {
       },
     ],
   },
-  contentSplitHeadlineImage: {
-    headlineTop: "Useful service pages",
-    headlineBottom: "feel calm first",
-    body: "A concise editorial content block for pairing a large positioning line with a quiet image moment.",
-  },
   trustBar: {
     label: "Trusted by homeowners and small businesses across the metro area",
     items: [
@@ -2141,10 +2136,6 @@ export const sectionLibraryV3Collections = [
         component: "content-three-column-mixed-v3",
       },
       {
-        label: "Split headline image",
-        component: "content-split-headline-image-v2",
-      },
-      {
         label: "Fixed-ratio split",
         component: "content-split-fixed-image-v3",
       },
@@ -2393,7 +2384,6 @@ export const sectionLibraryV3ComponentBySlug = {
     "ContentNarrativeFeatureRailSectionV3",
   "content-card-two-up-v3": "ContentCardTwoUpSectionV3",
   "content-three-column-mixed-v3": "ContentThreeColumnMixedSectionV3",
-  "content-split-headline-image-v2": "ContentSplitHeadlineImageSectionV2",
   "content-split-fixed-image-v3": "ContentSplitFixedImageSectionV3",
   "content-split-full-image-v3": "ContentSplitFullImageSectionV3",
   "content-rule-header-v2": "ContentRuleHeaderSectionV2",
