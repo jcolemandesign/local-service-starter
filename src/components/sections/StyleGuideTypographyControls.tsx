@@ -377,7 +377,7 @@ export function StyleGuideTypographyControls() {
   }
 
   return (
-    <Card className="style-guide-control-panel max-h-[calc(100svh-5rem)] overflow-y-auto p-6 shadow-none max-sm:max-h-none max-sm:overflow-visible">
+    <Card className="style-guide-control-panel max-h-[calc(100svh-var(--style-guide-panel-top,4.5rem)-1.5rem)] overflow-y-auto overscroll-contain p-6 shadow-none max-lg:max-h-none max-lg:overflow-visible">
       <div className="border-b border-service-border pb-5">
         <p className="type-label text-service-accent">Typography controls</p>
         <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">

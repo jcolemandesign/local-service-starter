@@ -361,7 +361,7 @@ export function RequestServiceButton({
   const { openRequestService } = useRequestService();
   const styles =
     variant === "primary"
-      ? "bg-service-accent text-white hover:bg-service-ink"
+      ? "bg-cta-primary text-white hover:bg-cta-primary-hover"
       : "border border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent";
 
   return (

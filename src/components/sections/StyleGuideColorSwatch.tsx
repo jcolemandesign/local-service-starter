@@ -23,6 +23,9 @@ type StyleGuideColorSwatchProps = {
       | "surfaceRaised"
       | "serviceSurface"
     >;
+    /** Set when the token is computed from another token rather than picked. */
+    derivedFrom?: string;
+    label: string;
     name: string;
     surface: string;
     text: string;
@@ -109,8 +112,10 @@ export function StyleGuideColorSwatch({ color }: StyleGuideColorSwatchProps) {
             "style-guide-live-swatch grid content-between p-4",
           )}
         >
-          <p className="type-label opacity-75">{color.name}</p>
-          <p className="type-caption mt-3 opacity-80">{value}</p>
+          <p className="type-label opacity-75">{color.label}</p>
+          <p className="type-caption mt-3 opacity-80">
+            {color.derivedFrom ?? value}
+          </p>
         </div>
         <div className="grid content-between gap-4 p-4">
           <div>
@@ -125,7 +130,7 @@ export function StyleGuideColorSwatch({ color }: StyleGuideColorSwatchProps) {
             <div className="flex min-h-11 items-center gap-3 rounded-sm border border-service-border bg-service-surface px-3">
               <label className="flex shrink-0 cursor-pointer overflow-hidden rounded-sm border border-service-border">
                 <input
-                  aria-label={`Select ${color.name}`}
+                  aria-label={`Select ${color.label}`}
                   className="sr-only"
                   onChange={(event) =>
                     updateDraft(color.controlKey!, event.target.value)
@@ -166,7 +171,9 @@ export function StyleGuideColorSwatch({ color }: StyleGuideColorSwatchProps) {
             </div>
           ) : (
             <p className="type-caption rounded-sm border border-service-border bg-service-surface px-3 py-2 text-service-muted">
-              Reference token
+              {color.derivedFrom
+                ? `Derived from ${color.derivedFrom}`
+                : "Reference token"}
             </p>
           )}
         </div>

@@ -20,7 +20,7 @@ const standardButtonBaseClassName =
 
 const standardButtonVariantClassNames = {
   primary:
-    "border-transparent bg-service-accent text-text-inverse hover:bg-bg-dark",
+    "border-transparent bg-cta-primary text-text-inverse hover:bg-cta-primary-hover",
   secondary:
     "border-service-border bg-bg-page text-service-ink hover:border-service-accent hover:bg-service-surface hover:text-service-accent",
 } as const;
@@ -79,7 +79,7 @@ export function ExpandingArrowButton({
   return (
     <a
       className={cx(
-        "group/button radius-button relative isolate inline-flex min-h-12 cursor-pointer items-center overflow-hidden border border-bg-dark bg-bg-dark px-6 py-2 pr-16 text-sm font-semibold text-service-accent transition-colors duration-300 ease-out hover:text-bg-dark",
+        "group/button radius-button relative isolate inline-flex min-h-12 cursor-pointer items-center overflow-hidden border border-bg-dark bg-bg-dark px-6 py-2 pr-16 text-sm font-semibold text-cta-primary transition-colors duration-300 ease-out hover:text-bg-dark",
         buttonFocusClassName,
         className,
       )}
@@ -87,7 +87,7 @@ export function ExpandingArrowButton({
     >
       <span
         aria-hidden="true"
-        className="radius-button absolute right-1.5 top-1/2 -z-10 h-9 w-9 -translate-y-1/2 bg-service-accent transition-all duration-300 ease-out group-hover/button:right-0 group-hover/button:h-full group-hover/button:w-full"
+        className="radius-button absolute right-1.5 top-1/2 -z-10 h-9 w-9 -translate-y-1/2 bg-cta-primary transition-all duration-300 ease-out group-hover/button:right-0 group-hover/button:h-full group-hover/button:w-full"
       />
       <span>{children}</span>
       <span
@@ -142,7 +142,7 @@ export function TextLiftButton({
   return (
     <a
       className={cx(
-        "group/button radius-button relative inline-flex min-h-12 cursor-pointer items-center justify-center overflow-hidden border border-transparent bg-service-accent px-7 py-2 text-sm font-semibold text-text-inverse transition duration-200 ease-out hover:scale-[0.97] hover:bg-bg-dark",
+        "group/button radius-button relative inline-flex min-h-12 cursor-pointer items-center justify-center overflow-hidden border border-transparent bg-cta-primary px-7 py-2 text-sm font-semibold text-text-inverse transition duration-200 ease-out hover:scale-[0.97] hover:bg-cta-primary-hover",
         buttonFocusClassName,
         className,
       )}

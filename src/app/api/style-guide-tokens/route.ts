@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { derivedColorValues } from "@/content/color-derivations";
 import { requireBuilderApiAccess } from "@/utils/builder-access";
 import {
   type CapitalizationStyle,
@@ -525,15 +526,15 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --live-service-accent: ${tokens.serviceAccent};
   --live-service-surface: ${tokens.serviceSurface};
   --live-surface-raised: ${tokens.surfaceRaised};
-  --live-service-border: ${tokens.serviceBorder};
+  --live-service-border: ${derivedColorValues.serviceBorder};
   --live-bg-page: ${tokens.bgPage};
   --live-bg-surface: ${tokens.serviceSurface};
-  --live-bg-muted: ${tokens.serviceBorder};
+  --live-bg-muted: ${derivedColorValues.bgMuted};
   --live-bg-dark: ${tokens.bgDark};
   --live-text-main: ${tokens.serviceInk};
   --live-text-muted: ${tokens.serviceMuted};
   --live-text-accent: ${tokens.serviceAccent};
-  --live-border-default: ${tokens.serviceBorder};
+  --live-border-default: ${derivedColorValues.serviceBorder};
   --live-accent: ${tokens.accent};
   --live-accent-ink: ${tokens.accentInk};
   --live-accent-muted-text: ${tokens.accentMutedText};
@@ -543,16 +544,16 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --color-service-accent: ${tokens.serviceAccent};
   --color-service-surface: ${tokens.serviceSurface};
   --color-surface-raised: ${tokens.surfaceRaised};
-  --color-service-border: ${tokens.serviceBorder};
+  --color-service-border: ${derivedColorValues.serviceBorder};
   --color-bg-page: ${tokens.bgPage};
   --color-bg-surface: ${tokens.serviceSurface};
-  --color-bg-muted: ${tokens.serviceBorder};
+  --color-bg-muted: ${derivedColorValues.bgMuted};
   --color-bg-dark: ${tokens.bgDark};
   --color-text-main: ${tokens.serviceInk};
   --color-text-muted: ${tokens.serviceMuted};
   --color-text-inverse: #ffffff;
   --color-text-accent: ${tokens.serviceAccent};
-  --color-border-default: ${tokens.serviceBorder};
+  --color-border-default: ${derivedColorValues.serviceBorder};
   --color-accent: ${tokens.accent};
   --card-grid-gap-active: ${tokens.activeCardGapValue};
   --inline-gap-active: ${tokens.activeInlineGapValue};

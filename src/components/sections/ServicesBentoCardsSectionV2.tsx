@@ -297,9 +297,14 @@ export function ServicesBentoCardsSectionV2({
                 className={cx(
                   "fluid-type-frame",
                   "radius-medium",
-                  "group/service-card relative flex cursor-pointer flex-col overflow-hidden border border-service-border transition-transform duration-300 ease-out hover:scale-[1.015]",
+                  "group/service-card relative flex cursor-pointer flex-col overflow-hidden transition-transform duration-300 ease-out hover:scale-[1.015]",
                   transparentCards ? "bg-transparent shadow-none" : `${colors.card} shadow-service`,
-                  cardBorder === "off" ? "!border-transparent" : undefined,
+                  // The media is flush to the card edge and `overflow-hidden`
+                  // clips to the padding box, so a transparent border would
+                  // still hold it inside a ring of card fill. Drop the border
+                  // box entirely instead. `border-0` alone cannot do this --
+                  // the global `.border` width rule is `!important`.
+                  cardBorder === "off" ? "border-0" : "border border-service-border",
                   isSplitHeader ? "h-full" : undefined,
                   cardSpanPattern[index % cardSpanPattern.length],
                 )}

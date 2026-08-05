@@ -2,6 +2,7 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { derivedColorValues } from "@/content/color-derivations";
 import { resolveBorderWidthOption } from "@/content/section-style-options";
 import { type TypeRole, typePalettes } from "@/content/type-palettes";
 
@@ -19,11 +20,7 @@ export type StyleGuideColorTokens = {
   surfaceRaised: string;
 };
 
-export type StyleGuideColorPaletteId = "evergreen" | "harbor" | "sunset";
-
 export type StyleGuideTokenDraft = StyleGuideColorTokens & {
-  activeColorPaletteId: StyleGuideColorPaletteId;
-  colorPaletteTokens: Record<StyleGuideColorPaletteId, StyleGuideColorTokens>;
   activeButtonRadiusName: string;
   activeButtonRadiusValue: string;
   activeSurfaceRadiusName: string;
@@ -91,7 +88,6 @@ type StyleGuideTokenContextValue = {
    */
   replaceDraft: (next: StyleGuideTokenDraft) => void;
   resetDraft: () => void;
-  selectColorPalette: (paletteId: StyleGuideColorPaletteId) => void;
   updateDraft: <K extends keyof StyleGuideTokenDraft>(
     key: K,
     value: StyleGuideTokenDraft[K],
@@ -103,74 +99,27 @@ type StyleVariableProperties = CSSProperties & Record<`--${string}`, string>;
 
 export const styleGuideStorageKey = "pageworks-styleguide-token-draft-v1";
 
-export const styleGuideColorPalettes: Array<{
-  id: StyleGuideColorPaletteId;
-  name: string;
-  tokens: StyleGuideColorTokens;
-}> = [
-  {
-    id: "evergreen",
-    name: "Evergreen",
-    tokens: {
-      accent: "#c45a2c",
-      accentInk: "#ffffff",
-      accentMutedText: "#dcefe7",
-      bgDark: "#10141b",
-      bgPage: "#fbfaf6",
-      serviceAccent: "#1f7a5a",
-      serviceBorder: "#dfe7e1",
-      serviceInk: "#17211d",
-      serviceMuted: "#5f6f68",
-      serviceSurface: "#f4f7f3",
-      surfaceRaised: "#fafcf9",
-    },
-  },
-  {
-    id: "harbor",
-    name: "Harbor",
-    tokens: {
-      accent: "#d46b32",
-      accentInk: "#ffffff",
-      accentMutedText: "#dcecf4",
-      bgDark: "#10202b",
-      bgPage: "#f8fbfc",
-      serviceAccent: "#176b8a",
-      serviceBorder: "#d7e3e8",
-      serviceInk: "#152c36",
-      serviceMuted: "#57717c",
-      serviceSurface: "#edf5f7",
-      surfaceRaised: "#ffffff",
-    },
-  },
-  {
-    id: "sunset",
-    name: "Sunset",
-    tokens: {
-      accent: "#2d5b87",
-      accentInk: "#24140e",
-      accentMutedText: "#4d281b",
-      bgDark: "#261b18",
-      bgPage: "#fffaf5",
-      serviceAccent: "#efb16c",
-      serviceBorder: "#ecdcca",
-      serviceInk: "#34241c",
-      serviceMuted: "#725f52",
-      serviceSurface: "#fff1e2",
-      surfaceRaised: "#ffffff",
-    },
-  },
-];
+/** Shipped starting colors. Saved token sets live in Style Guide Slots. */
+const defaultColorTokens: StyleGuideColorTokens = {
+  accent: "#c45a2c",
+  accentInk: "#ffffff",
+  accentMutedText: "#dcefe7",
+  bgDark: "#10141b",
+  bgPage: "#fbfaf6",
+  serviceAccent: "#1f7a5a",
+  serviceBorder: "#dfe7e1",
+  serviceInk: "#17211d",
+  serviceMuted: "#5f6f68",
+  serviceSurface: "#f4f7f3",
+  surfaceRaised: "#fafcf9",
+};
 
-const colorTokenKeys = Object.keys(
-  styleGuideColorPalettes[0].tokens,
-) as Array<keyof StyleGuideColorTokens>;
+const colorTokenKeys = Object.keys(defaultColorTokens) as Array<
+  keyof StyleGuideColorTokens
+>;
 
 export const defaultStyleGuideTokenDraft: StyleGuideTokenDraft = {
-  ...styleGuideColorPalettes[0].tokens,
-  activeColorPaletteId: "evergreen",
-  colorPaletteTokens: Object.fromEntries(
-    styleGuideColorPalettes.map((palette) => [palette.id, palette.tokens]),
-  ) as Record<StyleGuideColorPaletteId, StyleGuideColorTokens>,
+  ...defaultColorTokens,
   activeButtonRadiusName: "radius-sm / radius-4",
   activeButtonRadiusValue: "4px",
   activeSurfaceRadiusName: "radius-md / radius-medium",
@@ -306,50 +255,31 @@ function hexToRgbChannels(value: string) {
   return `${red} ${green} ${blue}`;
 }
 
-function isColorPaletteId(value: unknown): value is StyleGuideColorPaletteId {
-  return styleGuideColorPalettes.some((palette) => palette.id === value);
-}
-
-function colorTokensFromDraft(draft: StyleGuideTokenDraft): StyleGuideColorTokens {
-  return Object.fromEntries(
-    colorTokenKeys.map((key) => [key, draft[key]]),
-  ) as StyleGuideColorTokens;
-}
-
 function normalizeStyleGuideDraft(value: unknown): StyleGuideTokenDraft {
   const savedDraft =
     value && typeof value === "object"
       ? (value as Partial<StyleGuideTokenDraft>)
       : {};
-  const activeColorPaletteId = isColorPaletteId(savedDraft.activeColorPaletteId)
-    ? savedDraft.activeColorPaletteId
-    : defaultStyleGuideTokenDraft.activeColorPaletteId;
-  const savedPaletteTokens = (savedDraft.colorPaletteTokens ?? {}) as Partial<
-    Record<StyleGuideColorPaletteId, StyleGuideColorTokens>
-  >;
-  const colorPaletteTokens = Object.fromEntries(
-    styleGuideColorPalettes.map((palette) => [
-      palette.id,
-      {
-        ...palette.tokens,
-        ...savedPaletteTokens[palette.id],
-      },
-    ]),
-  ) as Record<StyleGuideColorPaletteId, StyleGuideColorTokens>;
-  const activeTokens = savedDraft.colorPaletteTokens
-    ? colorPaletteTokens[activeColorPaletteId]
-    : {
-        ...colorPaletteTokens[activeColorPaletteId],
-        ...colorTokenKeys.reduce<Partial<StyleGuideColorTokens>>((tokens, key) => {
-          const value = savedDraft[key];
+  // Colors are flat keys on the draft. Anything that is not a string falls back
+  // to the shipped default rather than riding through as a bad token value.
+  const savedColorTokens = colorTokenKeys.reduce<Partial<StyleGuideColorTokens>>(
+    (tokens, key) => {
+      const tokenValue = savedDraft[key];
 
-          if (typeof value === "string") {
-            tokens[key] = value;
-          }
+      if (typeof tokenValue === "string") {
+        tokens[key] = tokenValue;
+      }
 
-          return tokens;
-        }, {}),
-      };
+      return tokens;
+    },
+    {},
+  );
+
+  // Drafts saved before the palette feature was removed carry two dead keys.
+  // Drop them so they do not ride along and get written back to storage.
+  const savedRest: Record<string, unknown> = { ...savedDraft };
+  delete savedRest.activeColorPaletteId;
+  delete savedRest.colorPaletteTokens;
 
   // Style guides saved while `border-none` was still an option carry a `0px`
   // width, which reads as a borderless site with no slider stop explaining it.
@@ -361,52 +291,11 @@ function normalizeStyleGuideDraft(value: unknown): StyleGuideTokenDraft {
 
   return {
     ...defaultStyleGuideTokenDraft,
-    ...savedDraft,
-    ...activeTokens,
+    ...(savedRest as Partial<StyleGuideTokenDraft>),
+    ...defaultColorTokens,
+    ...savedColorTokens,
     activeBorderWidthName: borderWidthOption.name,
     activeBorderWidthValue: borderWidthOption.value,
-    activeColorPaletteId,
-    colorPaletteTokens: {
-      ...colorPaletteTokens,
-      [activeColorPaletteId]: activeTokens,
-    },
-  };
-}
-
-function syncActivePaletteTokens(
-  draft: StyleGuideTokenDraft,
-  updates: Partial<StyleGuideTokenDraft>,
-): StyleGuideTokenDraft {
-  const tokenUpdates = colorTokenKeys.reduce<Partial<StyleGuideColorTokens>>(
-    (tokens, key) => {
-      const value = updates[key];
-
-      if (typeof value === "string") {
-        tokens[key] = value;
-      }
-
-      return tokens;
-    },
-    {},
-  );
-
-  if (Object.keys(tokenUpdates).length === 0) {
-    return { ...draft, ...updates };
-  }
-
-  const activeTokens = {
-    ...draft.colorPaletteTokens[draft.activeColorPaletteId],
-    ...tokenUpdates,
-  };
-
-  return {
-    ...draft,
-    ...updates,
-    ...activeTokens,
-    colorPaletteTokens: {
-      ...draft.colorPaletteTokens,
-      [draft.activeColorPaletteId]: activeTokens,
-    },
   };
 }
 
@@ -439,12 +328,15 @@ export function buildStyleVariables(
     "--live-accent-ink": draft.accentInk,
     "--live-accent-muted-text": draft.accentMutedText,
     "--live-bg-dark": draft.bgDark,
-    "--live-bg-muted": draft.serviceBorder,
+    // Derived from the surface, not from a shared border field. See
+    // `derivedColorValues` for why these are CSS text rather than a resolved
+    // value.
+    "--live-bg-muted": derivedColorValues.bgMuted,
     "--live-bg-page": draft.bgPage,
     "--live-bg-surface": draft.serviceSurface,
-    "--live-border-default": draft.serviceBorder,
+    "--live-border-default": derivedColorValues.serviceBorder,
     "--live-service-accent": draft.serviceAccent,
-    "--live-service-border": draft.serviceBorder,
+    "--live-service-border": derivedColorValues.serviceBorder,
     "--live-service-ink": draft.serviceInk,
     "--live-service-muted": draft.serviceMuted,
     "--live-service-surface": draft.serviceSurface,
@@ -527,30 +419,11 @@ export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) 
     key: K,
     value: StyleGuideTokenDraft[K],
   ) {
-    setDraft((currentDraft) =>
-      syncActivePaletteTokens(currentDraft, { [key]: value }),
-    );
+    setDraft((currentDraft) => ({ ...currentDraft, [key]: value }));
   }
 
   function updateDrafts(updates: Partial<StyleGuideTokenDraft>) {
-    setDraft((currentDraft) => syncActivePaletteTokens(currentDraft, updates));
-  }
-
-  function selectColorPalette(paletteId: StyleGuideColorPaletteId) {
-    setDraft((currentDraft) => {
-      const colorPaletteTokens = {
-        ...currentDraft.colorPaletteTokens,
-        [currentDraft.activeColorPaletteId]: colorTokensFromDraft(currentDraft),
-      };
-      const nextTokens = colorPaletteTokens[paletteId];
-
-      return {
-        ...currentDraft,
-        ...nextTokens,
-        activeColorPaletteId: paletteId,
-        colorPaletteTokens,
-      };
-    });
+    setDraft((currentDraft) => ({ ...currentDraft, ...updates }));
   }
 
   function replaceDraft(next: StyleGuideTokenDraft) {
@@ -570,7 +443,6 @@ export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) 
         draft,
         replaceDraft,
         resetDraft,
-        selectColorPalette,
         updateDraft,
         updateDrafts,
       }}

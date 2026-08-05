@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import {
   Button,
   Card,
@@ -152,9 +153,13 @@ const typeTokens = [
   },
 ];
 
+// `name` stays the token identity (React key, reset lookups). `label` is the
+// human-facing swatch heading; the full token is still shown underneath as the
+// `surface / text` class pair.
 const colors = [
   {
     name: "service-ink",
+    label: "Ink",
     controlKey: "serviceInk",
     value: "#17211d",
     surface: "bg-service-ink",
@@ -166,6 +171,7 @@ const colors = [
   },
   {
     name: "service-muted",
+    label: "Muted",
     controlKey: "serviceMuted",
     value: "#5f6f68",
     surface: "bg-service-muted",
@@ -177,6 +183,7 @@ const colors = [
   },
   {
     name: "service-accent",
+    label: "Accent",
     controlKey: "serviceAccent",
     value: "#1f7a5a",
     surface: "bg-service-accent",
@@ -188,6 +195,7 @@ const colors = [
   },
   {
     name: "service-surface",
+    label: "Surface",
     controlKey: "serviceSurface",
     value: "#f4f7f3",
     surface: "bg-service-surface",
@@ -199,6 +207,7 @@ const colors = [
   },
   {
     name: "surface-raised",
+    label: "Surface Raised",
     controlKey: "surfaceRaised",
     value: "#fafcf9",
     surface: "bg-surface-raised",
@@ -210,7 +219,10 @@ const colors = [
   },
   {
     name: "service-border",
-    controlKey: "serviceBorder",
+    label: "Border",
+    // No controlKey: this is derived from Surface, not picked. See
+    // `derivedColorValues` in src/content/color-derivations.ts.
+    derivedFrom: "Surface, lightness −0.30 (≈3:1)",
     value: "#dfe7e1",
     surface: "bg-service-border",
     text: "text-service-ink",
@@ -221,6 +233,7 @@ const colors = [
   },
   {
     name: "bg-page",
+    label: "Page",
     controlKey: "bgPage",
     value: "#fbfaf6",
     surface: "bg-bg-page",
@@ -232,6 +245,7 @@ const colors = [
   },
   {
     name: "bg-dark",
+    label: "Dark",
     controlKey: "bgDark",
     value: "#10141b",
     surface: "bg-bg-dark",
@@ -243,6 +257,7 @@ const colors = [
   },
   {
     name: "accent",
+    label: "Highlight",
     controlKey: "accent",
     value: "#c45a2c",
     surface: "bg-accent",
@@ -795,13 +810,6 @@ const styleGuideToc = [
   { href: "#styles-in-context", label: "Context" },
 ];
 
-const styleGuidePreviewPages = [
-  {
-    href: "/dev/style-guide/previews/hvac-service",
-    label: "HVAC flow",
-  },
-];
-
 function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
@@ -1171,7 +1179,7 @@ function GuideSection({
 
   return (
     <section
-      className="style-guide-accordion token-chrome token-chrome-panel-strong scroll-mt-12 overflow-hidden rounded-[var(--chrome-radius-panel)] border"
+      className="style-guide-accordion token-chrome token-chrome-panel-strong scroll-mt-12 overflow-clip rounded-[var(--chrome-radius-panel)] border"
       id={id}
     >
       <details
@@ -1359,20 +1367,12 @@ export default function StyleGuidePage() {
         <div className="style-guide-nav-actions ml-auto flex shrink-0 items-center gap-3 border-l border-service-border pl-5">
           <StyleGuideResetButton />
           <StyleGuidePromoteTokensButton />
-          <span className="type-caption font-semibold uppercase text-service-muted">
-            Preview pages
-          </span>
-          {styleGuidePreviewPages.map((item) => (
-            <a
-              className="type-text-xs max-w-none shrink-0 font-semibold text-service-ink underline decoration-service-accent decoration-1 underline-offset-4 transition-colors hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
-              href={item.href}
-              key={item.href}
-              rel="noreferrer"
-              target="_blank"
-            >
-              {item.label}
-            </a>
-          ))}
+          <Link
+            className="type-text-xs max-w-none shrink-0 font-semibold text-service-ink underline decoration-service-accent decoration-1 underline-offset-4 transition-colors hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+            href="/"
+          >
+            Home
+          </Link>
         </div>
       </nav>
 
@@ -1394,7 +1394,7 @@ export default function StyleGuidePage() {
       >
         <div className="style-guide-control-band grid border-y px-[var(--site-grid-inset-inline)] py-4">
           <SevenColumnGrid frame="none" minHeight="none" padding="none">
-            <SevenColumnGridItem className="sticky top-16 col-span-2 self-start max-lg:col-span-5 max-md:col-span-3 max-sm:static max-sm:col-span-1">
+            <SevenColumnGridItem className="sticky top-[var(--style-guide-panel-top)] col-span-2 self-start [--style-guide-panel-top:4.5rem] max-xl:[--style-guide-panel-top:7.5rem] max-lg:static max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
               <StyleGuideTypographyControls />
             </SevenColumnGridItem>
 

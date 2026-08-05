@@ -93,17 +93,22 @@
   --color-service-accent: var(--live-service-accent, #1f7a5a);
   --color-service-surface: var(--live-service-surface, #f4f7f3);
   --color-surface-raised: var(--live-surface-raised, #fafcf9);
-  --color-service-border: var(--live-service-border, #dfe7e1);
+  --color-service-border: var(--live-service-border, oklch(from var(--live-service-surface, #f4f7f3) calc(l - 0.30) c h));
   --color-bg-page: var(--live-bg-page, #fbfaf6);
   --color-bg-surface: var(--live-bg-surface, #f4f7f3);
-  --color-bg-muted: var(--live-bg-muted, #dfe7e1);
+  --color-bg-muted: var(--live-bg-muted, oklch(from var(--live-service-surface, #f4f7f3) calc(l - 0.03) c h));
   --color-bg-dark: var(--live-bg-dark, #10141b);
   --color-text-main: var(--live-text-main, #17211d);
   --color-text-muted: var(--live-text-muted, #5f6f68);
   --color-text-inverse: #ffffff;
   --color-text-accent: var(--live-text-accent, #1f7a5a);
-  --color-border-default: var(--live-border-default, #dfe7e1);
+  --color-border-default: var(--live-border-default, oklch(from var(--live-service-surface, #f4f7f3) calc(l - 0.30) c h));
   --color-accent: var(--live-accent, #c45a2c);
+  /* Primary CTA field. Follows the ground the button sits on rather than being
+   * pinned to the brand accent: on a dark field the accent loses its lift, so
+   * the dark-ground rule below repoints these at the highlight token. */
+  --color-cta-primary: var(--live-cta-primary, var(--live-service-accent, #1f7a5a));
+  --color-cta-primary-hover: var(--live-cta-primary-hover, var(--live-bg-dark, #10141b));
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --shadow-service: var(--live-shadow-service, 0 18px 50px rgb(23 33 29 / 0.08));
@@ -112,6 +117,29 @@
   --leading-heading: 1.08;
   --animate-trust-marquee: trust-marquee 44s linear infinite;
   --animate-violator-spin: violator-spin 4.25s linear infinite;
+}
+
+/*
+ * Dark ground repoints the primary CTA at the highlight token.
+ *
+ * Keyed on the classes that actually paint a dark field rather than on the
+ * builder's recipe frame, so it also reaches a dark card sitting inside a light
+ * section, and holds on hand-written pages and in export, where no frame wraps
+ * the section. Inheritance does the scoping: the vars land on the dark element
+ * and every CTA beneath it reads them.
+ *
+ * The hover pairs with it - the light-ground hover darkens toward bg-dark,
+ * which on a dark field would sink the button into its own ground, so dark
+ * ground lightens instead.
+ */
+.bg-bg-dark,
+.bg-service-ink {
+  --live-cta-primary: var(--live-accent, #c45a2c);
+  --live-cta-primary-hover: color-mix(
+    in srgb,
+    var(--live-accent, #c45a2c) 82%,
+    white
+  );
 }
 
 /*
@@ -722,14 +750,12 @@ body {
   background-image: none;
 }
 
-.style-guide-control-band .style-guide-live-swatch.bg-bg-page,
-.style-guide-control-band .style-guide-palette-tab.bg-bg-page {
+.style-guide-control-band .style-guide-live-swatch.bg-bg-page {
   background-color: var(--live-bg-page, #fbfaf6) !important;
   background-image: none;
 }
 
-.style-guide-control-band .style-guide-live-swatch.bg-service-surface,
-.style-guide-control-band .style-guide-palette-tab.bg-service-surface {
+.style-guide-control-band .style-guide-live-swatch.bg-service-surface {
   background-color: var(--live-service-surface, #f4f7f3) !important;
   background-image: none;
 }
@@ -739,27 +765,16 @@ body {
   background-image: none;
 }
 
-.style-guide-control-band .style-guide-live-swatch.text-service-ink,
-.style-guide-control-band .style-guide-palette-tab .text-service-ink {
+.style-guide-control-band .style-guide-live-swatch.text-service-ink {
   color: var(--live-service-ink, #17211d) !important;
 }
 
-.style-guide-control-band .style-guide-live-swatch.text-service-muted,
-.style-guide-control-band .style-guide-palette-tab .text-service-muted {
+.style-guide-control-band .style-guide-live-swatch.text-service-muted {
   color: var(--live-service-muted, #5f6f68) !important;
 }
 
-.style-guide-control-band .style-guide-live-swatch.text-service-accent,
-.style-guide-control-band .style-guide-palette-tab .text-service-accent {
+.style-guide-control-band .style-guide-live-swatch.text-service-accent {
   color: var(--live-service-accent, #1f7a5a) !important;
-}
-
-.style-guide-control-band .style-guide-palette-tab.border-service-border {
-  border-color: var(--live-service-border, #dfe7e1) !important;
-}
-
-.style-guide-control-band .style-guide-palette-tab.border-service-accent {
-  border-color: var(--live-service-accent, #1f7a5a) !important;
 }
 
 .style-guide-nav {
@@ -2136,40 +2151,40 @@ body {
 
 /* BEGIN PAGEWORKS STYLEGUIDE TOKEN OVERRIDES */
 :root {
-  --live-service-ink: #1a1924;
-  --live-service-muted: #4b4a4f;
+  --live-service-ink: #232834;
+  --live-service-muted: #224b59;
   --live-service-accent: #175c82;
-  --live-service-surface: #f5f5f5;
-  --live-surface-raised: #ffffff;
-  --live-service-border: #cccbcd;
-  --live-bg-page: #e6e6e6;
-  --live-bg-surface: #f5f5f5;
-  --live-bg-muted: #cccbcd;
+  --live-service-surface: #bacad4;
+  --live-surface-raised: #ced6de;
+  --live-service-border: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
+  --live-bg-page: #b5c1c4;
+  --live-bg-surface: #bacad4;
+  --live-bg-muted: oklch(from var(--live-service-surface) calc(l - 0.03) c h);
   --live-bg-dark: #0d4356;
-  --live-text-main: #1a1924;
-  --live-text-muted: #4b4a4f;
+  --live-text-main: #232834;
+  --live-text-muted: #224b59;
   --live-text-accent: #175c82;
-  --live-border-default: #cccbcd;
-  --live-accent: #ce0019;
+  --live-border-default: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
+  --live-accent: #bf0d22;
   --live-accent-ink: #ffffff;
   --live-accent-muted-text: #dcefe7;
-  --live-shadow-service: 8px 10px 22px rgb(129 122 116 / 0.1369);
-  --color-service-ink: #1a1924;
-  --color-service-muted: #4b4a4f;
+  --live-shadow-service: 8px 10px 22px rgb(27 45 65 / 0.1369);
+  --color-service-ink: #232834;
+  --color-service-muted: #224b59;
   --color-service-accent: #175c82;
-  --color-service-surface: #f5f5f5;
-  --color-surface-raised: #ffffff;
-  --color-service-border: #cccbcd;
-  --color-bg-page: #e6e6e6;
-  --color-bg-surface: #f5f5f5;
-  --color-bg-muted: #cccbcd;
+  --color-service-surface: #bacad4;
+  --color-surface-raised: #ced6de;
+  --color-service-border: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
+  --color-bg-page: #b5c1c4;
+  --color-bg-surface: #bacad4;
+  --color-bg-muted: oklch(from var(--live-service-surface) calc(l - 0.03) c h);
   --color-bg-dark: #0d4356;
-  --color-text-main: #1a1924;
-  --color-text-muted: #4b4a4f;
+  --color-text-main: #232834;
+  --color-text-muted: #224b59;
   --color-text-inverse: #ffffff;
   --color-text-accent: #175c82;
-  --color-border-default: #cccbcd;
-  --color-accent: #ce0019;
+  --color-border-default: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
+  --color-accent: #bf0d22;
   --card-grid-gap-active: 2.25rem;
   --inline-gap-active: 2.25rem;
   --layout-gap-active: 2.25rem;
@@ -2199,12 +2214,12 @@ body {
   --site-grid-inset-block: clamp(2.5rem, 5vw, 8rem);
   --site-grid-inset-inline: clamp(0.75rem, 4vw, 8rem);
   --site-grid-gap: clamp(0.75rem, 1vw, 1.5rem);
-  --shadow-service: 8px 10px 22px rgb(129 122 116 / 0.1369);
+  --shadow-service: 8px 10px 22px rgb(27 45 65 / 0.1369);
   --type-display-xl-font: "Zalando Sans SemiExpanded", var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --type-display-xl-size: clamp(3.5rem, calc(4.8611cqw + 2.3333rem), 7rem);
   --type-display-xl-leading: 0.83;
   --type-display-xl-measure: 14ch;
-  --type-display-xl-weight: 390;
+  --type-display-xl-weight: 300;
   --type-display-xl-tracking: 0em;
   --type-display-xl-wrap: balance;
   --type-display-xl-transform: none;
@@ -2212,7 +2227,7 @@ body {
   --type-display-lg-size: clamp(2.75rem, calc(3.8194cqw + 1.8333rem), 5.5rem);
   --type-display-lg-leading: 0.84;
   --type-display-lg-measure: 18ch;
-  --type-display-lg-weight: 400;
+  --type-display-lg-weight: 300;
   --type-display-lg-tracking: 0em;
   --type-display-lg-wrap: balance;
   --type-display-lg-transform: none;
@@ -2248,7 +2263,7 @@ body {
   --type-heading-sm-tracking: 0em;
   --type-heading-sm-wrap: balance;
   --type-heading-sm-transform: none;
-  --type-text-xl-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --type-text-xl-font: "Aileron", var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --type-text-xl-size: clamp(1.1875rem, calc(1.0417cqw + 0.9375rem), 1.9375rem);
   --type-text-xl-leading: 1.5;
   --type-text-xl-measure: 52ch;
@@ -2256,23 +2271,23 @@ body {
   --type-text-xl-tracking: 0em;
   --type-text-xl-wrap: pretty;
   --type-text-xl-transform: none;
-  --type-text-lg-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  --type-text-lg-size: clamp(1.0625rem, calc(0.2604cqw + 1rem), 1.25rem);
+  --type-text-lg-font: "Aileron", var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --type-text-lg-size: clamp(1rem, calc(0.9549cqw + 0.7708rem), 1.6875rem);
   --type-text-lg-leading: 1.6;
   --type-text-lg-measure: 60ch;
   --type-text-lg-weight: 400;
   --type-text-lg-tracking: 0em;
   --type-text-lg-wrap: pretty;
   --type-text-lg-transform: none;
-  --type-text-md-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  --type-text-md-size: clamp(1rem, calc(0.1736cqw + 0.9583rem), 1.125rem);
+  --type-text-md-font: "Aileron", var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --type-text-md-size: clamp(0.9375rem, calc(0.434cqw + 0.8333rem), 1.25rem);
   --type-text-md-leading: 1.65;
   --type-text-md-measure: 60ch;
   --type-text-md-weight: 400;
   --type-text-md-tracking: 0em;
   --type-text-md-wrap: pretty;
   --type-text-md-transform: none;
-  --type-text-sm-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --type-text-sm-font: "Aileron", var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --type-text-sm-size: clamp(0.875rem, calc(0.1042cqw + 0.85rem), 0.95rem);
   --type-text-sm-leading: 1.6;
   --type-text-sm-measure: 70ch;
@@ -2280,7 +2295,7 @@ body {
   --type-text-sm-tracking: 0em;
   --type-text-sm-wrap: pretty;
   --type-text-sm-transform: none;
-  --type-text-xs-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --type-text-xs-font: "Aileron", var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --type-text-xs-size: clamp(0.8125rem, calc(0.0868cqw + 0.7917rem), 0.875rem);
   --type-text-xs-leading: 1.55;
   --type-text-xs-measure: 48ch;
@@ -2288,7 +2303,7 @@ body {
   --type-text-xs-tracking: 0em;
   --type-text-xs-wrap: pretty;
   --type-text-xs-transform: none;
-  --type-caption-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --type-caption-font: "Aileron", var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --type-caption-size: clamp(0.75rem, calc(0.0868cqw + 0.7292rem), 0.8125rem);
   --type-caption-leading: 1.5;
   --type-caption-measure: 48ch;
@@ -2296,12 +2311,12 @@ body {
   --type-caption-tracking: 0em;
   --type-caption-wrap: pretty;
   --type-caption-transform: none;
-  --type-label-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  --type-label-size: clamp(0.8125rem, calc(0.0868cqw + 0.7917rem), 0.875rem);
+  --type-label-font: "Aileron", var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --type-label-size: clamp(0.8125rem, calc(0.434cqw + 0.7083rem), 1.125rem);
   --type-label-leading: 1.2;
-  --type-label-measure: 30ch;
-  --type-label-weight: 750;
-  --type-label-tracking: 0.12em;
+  --type-label-measure: 35ch;
+  --type-label-weight: 490;
+  --type-label-tracking: 0.1em;
   --type-label-wrap: wrap;
   --type-label-transform: uppercase;
 }
