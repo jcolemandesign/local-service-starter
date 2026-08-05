@@ -65,8 +65,8 @@ function SelectionButton({
       aria-pressed={isSelected}
       className={`radius-button min-h-12 cursor-pointer border px-4 type-caption font-semibold transition-colors ${
         isSelected
-          ? "border-service-accent bg-service-accent text-text-inverse"
-          : "border-service-border bg-bg-page text-service-ink hover:border-service-accent hover:text-service-accent"
+          ? "border-bg-dark bg-bg-dark text-white shadow-service"
+          : "border-service-border bg-surface-raised text-service-ink shadow-service hover:border-service-accent hover:text-service-accent"
       }`}
       onClick={onClick}
       type="button"
@@ -127,7 +127,7 @@ function ModalPrefillForm() {
         // See ContactSectionModalBegin: service-muted is a text token that the
         // dark/accent recipes remap to a near-white, so using it as the
         // disabled fill hid the white label. Dim both together instead.
-        className="radius-button type-label min-h-12 cursor-pointer bg-service-accent px-6 text-text-inverse transition-colors hover:bg-bg-dark disabled:cursor-not-allowed disabled:opacity-50"
+        className="radius-button type-label min-h-12 cursor-pointer border border-bg-dark bg-bg-dark px-6 text-white shadow-service transition-colors hover:border-service-accent hover:bg-service-accent disabled:cursor-not-allowed disabled:opacity-50"
         disabled={!canContinue}
         type="submit"
       >
@@ -214,7 +214,7 @@ export function ContentFixedCoverFadeSectionV2({
                 <input
                   className={cx(
                     "radius-4",
-                    "min-h-12 w-full border border-service-border bg-bg-page px-4 text-base font-normal outline-none transition-colors focus:border-service-accent",
+                    "min-h-12 w-full border border-service-border bg-surface-raised px-4 text-base font-normal shadow-service outline-none transition-colors focus:border-service-accent",
                   )}
                   placeholder="Jane Smith"
                   type="text"
@@ -230,7 +230,7 @@ export function ContentFixedCoverFadeSectionV2({
                 <input
                   className={cx(
                     "radius-4",
-                    "min-h-12 w-full border border-service-border bg-bg-page px-4 text-base font-normal outline-none transition-colors focus:border-service-accent",
+                    "min-h-12 w-full border border-service-border bg-surface-raised px-4 text-base font-normal shadow-service outline-none transition-colors focus:border-service-accent",
                   )}
                   placeholder="Repair, installation, maintenance"
                   type="text"
@@ -246,7 +246,7 @@ export function ContentFixedCoverFadeSectionV2({
                 <textarea
                   className={cx(
                     "radius-4",
-                    "min-h-36 w-full border border-service-border bg-bg-page px-4 py-3 text-base font-normal outline-none transition-colors focus:border-service-accent",
+                    "min-h-36 w-full border border-service-border bg-surface-raised px-4 py-3 text-base font-normal shadow-service outline-none transition-colors focus:border-service-accent",
                   )}
                   placeholder="Briefly describe the issue"
                 />
@@ -255,7 +255,7 @@ export function ContentFixedCoverFadeSectionV2({
                 className={cx(
                   "radius-button",
                   "type-label",
-                  "min-h-12 cursor-pointer bg-service-accent px-6 text-white transition-colors hover:bg-bg-dark",
+                  "min-h-12 cursor-pointer border border-bg-dark bg-bg-dark px-6 text-white shadow-service transition-colors hover:border-service-accent hover:bg-service-accent",
                 )}
                 type="button"
               >

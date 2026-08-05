@@ -32,7 +32,7 @@ export function CalloutCardAffordance({
         "grid size-11 shrink-0 place-items-center rounded-[var(--radius-sm-token)] border text-lg leading-none transition-colors duration-200 ease-out",
         isActive
           ? "border-service-accent bg-service-accent text-white"
-          : "border-service-border bg-bg-page text-service-accent group-hover/callout:border-service-accent group-hover/callout:bg-service-accent group-hover/callout:text-white group-focus-visible/callout:border-service-accent group-focus-visible/callout:bg-service-accent group-focus-visible/callout:text-white",
+          : "border-service-border bg-surface-raised text-service-accent shadow-service group-hover/callout:border-service-accent group-hover/callout:bg-service-accent group-hover/callout:text-white group-focus-visible/callout:border-service-accent group-focus-visible/callout:bg-service-accent group-focus-visible/callout:text-white",
       )}
     >
       &rarr;

@@ -6,9 +6,12 @@ import {
   cardLinkGridAlignComponents,
   cardLinkGridAlignValues,
   cardStyleComponents,
+  backgroundFillComponents,
   headlineWrapComponents,
   iconComponents,
   resolveCardFill,
+  resolveCardBorder,
+  resolveBackgroundFill,
   resolveHeadlineWrap,
   resolveSectionIcons,
   tableCompareAlignComponents,
@@ -22,6 +25,7 @@ import {
  */
 export type SectionToggleSource = {
   align?: string;
+  backgroundFill?: string;
   cardBorder?: string;
   cardFill?: string;
   cardLinks?: string;
@@ -53,9 +57,13 @@ export function getSectionToggleProps(section: SectionToggleSource) {
     ? section.colorRecipe
     : "default";
 
+  if (backgroundFillComponents.has(section.component)) {
+    props.backgroundFill = resolveBackgroundFill(section.backgroundFill);
+  }
+
   if (cardStyleComponents.has(section.component)) {
     props.cardFill = resolveCardFill(section.component, section.cardFill);
-    props.cardBorder = section.cardBorder === "off" ? "off" : "on";
+    props.cardBorder = resolveCardBorder(section.component, section.cardBorder);
   }
 
   if (iconComponents.has(section.component)) {

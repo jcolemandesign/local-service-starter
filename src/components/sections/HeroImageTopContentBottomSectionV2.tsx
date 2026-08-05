@@ -87,7 +87,7 @@ export function HeroImageTopContentBottomSectionV2({
 
   return (
     <section className="overflow-hidden bg-service-surface text-service-ink">
-      <SevenColumnGrid className="section-min-screen grid-rows-[minmax(var(--media-min-medium),1fr)_auto] max-lg:grid-rows-none">
+      <SevenColumnGrid className="section-min-sliver grid-rows-[minmax(var(--media-min-medium),1fr)_auto] max-lg:grid-rows-none">
         <SevenColumnGridItem
           alignX="stretch"
           alignY="stretch"

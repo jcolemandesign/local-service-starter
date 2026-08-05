@@ -11,6 +11,11 @@
  */
 
 import type { WrapMode } from "@/content/type-palettes";
+import type {
+  SectionBackgroundFill,
+  SectionCardBorder,
+  SectionCardFill,
+} from "@/content/section-color-recipes";
 
 /** Text/image split orientation. Shared by the auto-height and fixed-ratio
  *  split families, which offer the same four arrangements.
@@ -266,6 +271,8 @@ export const cardStyleComponents = new Set<string>([
   "HorizontalCardLinkGridSectionV3",
   "HorizontalCardLinkGridTwoUpSectionV3",
   "InfoStripSectionV3",
+  "NavCenterLogoSectionV2",
+  "NavPrimarySectionV2",
   "OfferTermsSectionV3",
   "ProcessStepsBranchingSectionV3",
   "ProcessStripSectionV3",
@@ -416,6 +423,14 @@ export function resolveHeadlineWrap(
  */
 export const cardFillOptInComponents = new Set<string>([
   "ContentSplitFixedImageSectionV3",
+  "NavCenterLogoSectionV2",
+  "NavPrimarySectionV2",
+]);
+
+/** Sections whose grouped surfaces are borderless until explicitly outlined. */
+export const cardBorderOptInComponents = new Set<string>([
+  "NavCenterLogoSectionV2",
+  "NavPrimarySectionV2",
 ]);
 
 export function sectionSupportsCardStyle(component: string) {
@@ -432,12 +447,40 @@ export function sectionSupportsCardStyle(component: string) {
 export function resolveCardFill(
   component: string,
   cardFill: string | undefined,
-) {
+): SectionCardFill {
   if (cardFill === "none" || cardFill === "solid") {
     return cardFill;
   }
 
   return cardFillOptInComponents.has(component) ? "none" : "solid";
+}
+
+export function resolveCardBorder(
+  component: string,
+  cardBorder: string | undefined,
+): SectionCardBorder {
+  if (cardBorder === "on" || cardBorder === "off") {
+    return cardBorder;
+  }
+
+  return cardBorderOptInComponents.has(component) ? "off" : "on";
+}
+
+/** Navigation is the first family where section paint and grouped-card paint
+ *  are independently useful, so it alone offers this axis for now. */
+export const backgroundFillComponents = new Set<string>([
+  "NavCenterLogoSectionV2",
+  "NavPrimarySectionV2",
+]);
+
+export function sectionSupportsBackgroundFill(component: string) {
+  return backgroundFillComponents.has(component);
+}
+
+export function resolveBackgroundFill(
+  backgroundFill: string | undefined,
+): SectionBackgroundFill {
+  return backgroundFill === "none" ? "none" : "solid";
 }
 
 /**
@@ -457,6 +500,11 @@ export function resolveCardFill(
 export const styleFieldPrefix = "style";
 
 export const styleFieldOptions = {
+  backgroundFill: [
+    { label: "Use template default", value: "" },
+    { label: "Background on", value: "solid" },
+    { label: "Transparent", value: "none" },
+  ],
   cardBorder: [
     { label: "Use template default", value: "" },
     { label: "Border on", value: "on" },
@@ -511,6 +559,12 @@ const colorRecipeStyleField: SectionStyleFieldSpec = {
   label: "Color recipe",
   name: "colorRecipe",
   options: styleFieldOptions.colorRecipe,
+};
+
+const backgroundFillStyleField: SectionStyleFieldSpec = {
+  label: "Background",
+  name: "backgroundFill",
+  options: styleFieldOptions.backgroundFill,
 };
 
 const cardStyleFields: SectionStyleFieldSpec[] = [
@@ -587,6 +641,9 @@ export function getSectionStyleFieldSpecs(
 ): SectionStyleFieldSpec[] {
   return [
     colorRecipeStyleField,
+    ...(sectionSupportsBackgroundFill(component)
+      ? [backgroundFillStyleField]
+      : []),
     ...(sectionSupportsCardStyle(component) ? cardStyleFields : []),
     ...(sectionSupportsSectionSpacing(component) ? spacingStyleFields : []),
   ];

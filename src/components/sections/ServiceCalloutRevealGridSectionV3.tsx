@@ -204,7 +204,7 @@ export function ServiceCalloutRevealGridSectionV3({
                   <div className="relative flex h-full w-full flex-col justify-center overflow-y-auto rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-10 shadow-service max-md:p-8 max-sm:p-6">
                     <button
                       aria-label={closeLabel}
-                      className="absolute right-5 top-5 grid size-10 cursor-pointer place-items-center rounded-[var(--radius-sm-token)] border border-service-border bg-bg-surface text-service-muted transition-colors hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-service-accent"
+                      className="absolute right-5 top-5 grid size-10 cursor-pointer place-items-center rounded-[var(--radius-sm-token)] border border-service-border bg-surface-raised text-service-muted shadow-service transition-colors hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-service-accent"
                       onClick={closePanel}
                       ref={closeRef}
                       type="button"

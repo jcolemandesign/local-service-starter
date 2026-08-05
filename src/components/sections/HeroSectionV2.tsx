@@ -42,7 +42,7 @@ export function HeroSectionV2({
 
   return (
     <section className="bg-service-surface">
-      <SevenColumnGrid className="section-min-screen">
+      <SevenColumnGrid className="section-min-sliver">
         <SevenColumnGridItem
           alignX="left"
           alignY="middle"

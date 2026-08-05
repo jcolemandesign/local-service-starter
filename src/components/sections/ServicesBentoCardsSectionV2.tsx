@@ -78,9 +78,9 @@ const colorRecipeClasses = {
   },
   dark: {
     body: "text-white/70",
-    card: "bg-service-surface",
-    cardText: "text-service-ink",
-    cardMuted: "text-service-muted",
+    card: "bg-service-ink",
+    cardText: "text-service-surface",
+    cardMuted: "text-service-surface/72",
     eyebrow: "text-white",
     heading: "text-white",
     section: "bg-bg-dark",
@@ -97,15 +97,22 @@ const colorRecipeClasses = {
 } as const;
 
 function ServiceImage({
+  isWide = false,
   label,
   src,
 }: {
+  isWide?: boolean;
   label: string;
   src?: string;
 }) {
+  const frameClassName = cx(
+    "relative overflow-hidden bg-service-border",
+    isWide ? "aspect-[3/2] max-lg:aspect-[5/4]" : "aspect-[5/4]",
+  );
+
   if (src) {
     return (
-      <div className="relative aspect-[5/4] overflow-hidden bg-service-border">
+      <div className={frameClassName}>
         <Image
           alt={label}
           className="object-cover"
@@ -118,7 +125,7 @@ function ServiceImage({
   }
 
   return (
-    <div className="relative aspect-[5/4] overflow-hidden bg-service-border" aria-hidden="true">
+    <div className={frameClassName} aria-hidden="true">
       <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.26),rgb(23_33_29_/_0.05)),linear-gradient(45deg,rgb(255_255_255_/_0.22)_0_1px,transparent_1px_18px)]" />
       <div className="absolute inset-0 bg-service-accent/10" />
     </div>
@@ -298,11 +305,20 @@ export function ServicesBentoCardsSectionV2({
                 )}
                 key={item.title}
               >
-                <ServiceImage label={item.imageLabel} src={item.imageSrc} />
+                <ServiceImage
+                  isWide={
+                    !isSplitHeader &&
+                    cardSpanPattern[index % cardSpanPattern.length].startsWith(
+                      "col-span-3",
+                    )
+                  }
+                  label={item.imageLabel}
+                  src={item.imageSrc}
+                />
                 <div
                   className={cx(
                     "radius-medium",
-                    "absolute right-3 top-3 flex size-12 items-center justify-center border border-service-border bg-bg-page/90 text-xl font-semibold leading-none text-service-ink shadow-service transition-colors group-hover/service-card:bg-service-accent group-hover/service-card:text-white",
+                    "absolute right-3 top-3 flex size-12 items-center justify-center border border-service-border bg-surface-raised text-xl font-semibold leading-none text-service-ink shadow-service transition-colors group-hover/service-card:bg-service-accent group-hover/service-card:text-white",
                   )}
                 >
                   <span aria-hidden="true">-&gt;</span>

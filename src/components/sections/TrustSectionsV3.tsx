@@ -174,7 +174,7 @@ export function TrustBarFloatingBentoSectionV3({
 
 export function TrustMarqueeSectionV3({ items }: TrustItemsProps) {
   return (
-    <section className="section-min-none section-space-vsml overflow-hidden bg-bg-page">
+    <section className="flex min-h-[var(--section-space-sml)] items-center overflow-hidden bg-bg-page">
       <MeasuredMarquee className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
         <TextMarqueeItems items={items} />
       </MeasuredMarquee>

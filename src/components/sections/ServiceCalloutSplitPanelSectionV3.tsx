@@ -171,7 +171,7 @@ export function ServiceCalloutSplitPanelSectionV3({
             {isStacked && activeItem ? (
               <button
                 aria-label={closeLabel}
-                className="absolute right-5 top-5 z-10 grid size-10 cursor-pointer place-items-center rounded-[var(--radius-sm-token)] border border-service-border bg-bg-surface text-service-muted transition-colors hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-service-accent"
+                className="absolute right-5 top-5 z-10 grid size-10 cursor-pointer place-items-center rounded-[var(--radius-sm-token)] border border-service-border bg-surface-raised text-service-muted shadow-service transition-colors hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-service-accent"
                 onClick={() => setActiveIndex(null)}
                 type="button"
               >

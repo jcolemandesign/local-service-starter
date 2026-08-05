@@ -1342,9 +1342,9 @@ export default function StyleGuidePage() {
       <StyleGuideCloseAllButton />
       <nav
         aria-label="Style guide table of contents"
-        className="style-guide-nav token-chrome inline-gap-lrg sticky top-0 z-40 flex w-full items-center overflow-x-auto border-b px-[var(--site-grid-inset-inline)] py-2 backdrop-blur"
+        className="style-guide-nav token-chrome inline-gap-lrg sticky top-0 z-40 flex w-full items-center border-b px-[var(--site-grid-inset-inline)] py-2 backdrop-blur"
       >
-        <div className="inline-gap-lrg flex shrink-0 items-center">
+        <div className="style-guide-nav-toc inline-gap-lrg flex shrink-0 items-center">
           {styleGuideToc.map((item) => (
             <a
               className="type-text-xs max-w-none shrink-0 font-semibold transition-colors hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
@@ -1356,7 +1356,7 @@ export default function StyleGuidePage() {
           ))}
         </div>
 
-        <div className="ml-auto flex shrink-0 items-center gap-3 border-l border-service-border pl-5">
+        <div className="style-guide-nav-actions ml-auto flex shrink-0 items-center gap-3 border-l border-service-border pl-5">
           <StyleGuideResetButton />
           <StyleGuidePromoteTokensButton />
           <span className="type-caption font-semibold uppercase text-service-muted">

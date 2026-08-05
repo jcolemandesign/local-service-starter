@@ -27,7 +27,7 @@ function ArrowMark({ className = "" }: { className?: string }) {
     <span
       aria-hidden="true"
       className={cx(
-        "flex items-center justify-center rounded-full border border-service-border bg-bg-page text-service-accent transition-colors group-hover/service-card:border-service-accent group-hover/service-card:bg-service-accent group-hover/service-card:text-white",
+        "flex items-center justify-center rounded-full border border-service-border bg-surface-raised text-service-accent shadow-service transition-colors group-hover/service-card:border-service-accent group-hover/service-card:bg-service-accent group-hover/service-card:text-white",
         className,
       )}
     >

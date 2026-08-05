@@ -144,12 +144,20 @@ describe("section toggle props", () => {
   it("gives a section with no toggle sets only the colour recipe", () => {
     const props = getSectionToggleProps({
       colorRecipe: "dark",
-      component: "NavPrimarySectionV2",
+      component: "FooterSectionV3",
     });
 
     // Offered on every section, so it always flows.
     expect(props.colorRecipe).toBe("dark");
     expect(Object.keys(props).sort()).toEqual(["colorRecipe"]);
+  });
+
+  it("preserves the navigation appearance when its new surface controls are unset", () => {
+    const props = getSectionToggleProps({ component: "NavPrimarySectionV2" });
+
+    expect(props.backgroundFill).toBe("solid");
+    expect(props.cardFill).toBe("none");
+    expect(props.cardBorder).toBe("off");
   });
 
   it("falls back to the default recipe rather than passing an unknown value", () => {

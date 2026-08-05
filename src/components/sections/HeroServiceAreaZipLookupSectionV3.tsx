@@ -171,7 +171,7 @@ export function HeroServiceAreaZipLookupSectionV3({
   return (
     <section className={cx("relative", colors.section)}>
       <LayoutGrid
-        className="section-min-screen h-[var(--section-min-screen)] grid-rows-[minmax(0,1fr)] max-lg:grid-rows-none max-md:h-auto"
+        className="section-min-sliver h-[calc(var(--section-min-screen)-var(--section-sliver-gap))] grid-rows-[minmax(0,1fr)] max-lg:grid-rows-none max-md:h-auto"
         columns={14}
       >
         <LayoutGridItem

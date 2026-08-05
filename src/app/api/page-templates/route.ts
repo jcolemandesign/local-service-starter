@@ -24,6 +24,7 @@ type PageTemplateSection = {
   slotId?: string;
   variant?: string;
   colorRecipe?: string;
+  backgroundFill?: string;
   cardFill?: string;
   cardBorder?: string;
 };
@@ -398,6 +399,10 @@ function normalizeSection(section: PageTemplateSection): PageTemplateSection {
     reduceTopPadding: Boolean(section.reduceTopPadding),
     colorRecipe:
       typeof section.colorRecipe === "string" ? section.colorRecipe : undefined,
+    backgroundFill:
+      typeof section.backgroundFill === "string"
+        ? section.backgroundFill
+        : undefined,
     cardFill: typeof section.cardFill === "string" ? section.cardFill : undefined,
     cardBorder:
       typeof section.cardBorder === "string" ? section.cardBorder : undefined,

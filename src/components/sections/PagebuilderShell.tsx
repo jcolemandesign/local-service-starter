@@ -116,6 +116,7 @@ import {
   sectionColorRecipes,
   type SectionCardBorder,
   type SectionCardFill,
+  type SectionBackgroundFill,
   type SectionColorRecipe,
 } from "@/content/section-color-recipes";
 import {
@@ -128,6 +129,9 @@ import {
   calloutSplitPanelVariantOptions,
   calloutSplitPanelVariantValues,
   cardFillOptInComponents,
+  resolveBackgroundFill,
+  resolveCardBorder,
+  resolveCardFill,
   headlineWrapOptions,
   iconsOptions,
   resolveHeadlineWrap,
@@ -139,6 +143,7 @@ import {
   sectionSupportsCardLinkGridAlign,
   sectionSupportsCardLinks,
   sectionSupportsCardStyle,
+  sectionSupportsBackgroundFill,
   sectionSupportsSectionSpacing,
   sectionSupportsTableCompareAlign,
   servicesBentoVariantOptions,
@@ -688,6 +693,12 @@ function getSectionCardFill(section: WorkingSection): SectionCardFill {
   return cardFillOptInComponents.has(section.component) ? "none" : "solid";
 }
 
+function getSectionBackgroundFill(
+  section: WorkingSection,
+): SectionBackgroundFill {
+  return resolveBackgroundFill(section.backgroundFill);
+}
+
 function sectionSupportsCardFill(
   section: PagebuilderRecipe["sectionStack"][number],
 ) {
@@ -695,7 +706,7 @@ function sectionSupportsCardFill(
 }
 
 function getSectionCardBorder(section: WorkingSection): SectionCardBorder {
-  return section.cardBorder === "off" ? "off" : "on";
+  return resolveCardBorder(section.component, section.cardBorder);
 }
 
 function getProcessStepsBranchingAlign(
@@ -974,7 +985,8 @@ function createInitialWorkingStack(
     reduceTopPadding: false,
     reduceBottomPadding: false,
     colorRecipe: section.colorRecipe ?? "default",
-    cardFill: section.cardFill ?? "solid",
+    backgroundFill: section.backgroundFill ?? "solid",
+    cardFill: resolveCardFill(section.component, section.cardFill),
     ratio:
       section.component === fixedRatioSplitComponent ||
       section.component === contentFixedRatioSplitComponent
@@ -1041,6 +1053,7 @@ function serializeWorkingSection(section: WorkingSection) {
     slotId: section.slotId,
     variant: section.variant,
     colorRecipe: getSectionColorRecipe(section),
+    backgroundFill: getSectionBackgroundFill(section),
     cardBorder: getSectionCardBorder(section),
     cardFill: getSectionCardFill(section),
   };
@@ -1171,6 +1184,10 @@ function copySharedNavigationSection(
     mode: sharedNavigation.mode,
     name: sharedNavigation.name,
     align: sharedNavigation.align,
+    backgroundFill: sharedNavigation.backgroundFill,
+    cardBorder: sharedNavigation.cardBorder,
+    cardFill: sharedNavigation.cardFill,
+    colorRecipe: sharedNavigation.colorRecipe,
     ratio: sharedNavigation.ratio,
     variant: sharedNavigation.variant,
   };
@@ -2490,7 +2507,12 @@ function PagebuilderPreviewWindow({
         </div>
       </div>
 
-      <div className={cx("min-h-0 overflow-auto bg-bg-page", screenClassName)}>
+      <div
+        className={cx(
+          "min-h-0 overflow-auto bg-bg-page [container-type:size]",
+          screenClassName,
+        )}
+      >
         <div
           className={cx(
             "min-h-full w-full bg-bg-page",
@@ -2498,7 +2520,11 @@ function PagebuilderPreviewWindow({
             responsiveClassName,
             !showSectionMarkers && "pagebuilder-hide-markers",
           )}
-          style={previewStyle}
+          style={{
+            ...previewStyle,
+            "--section-viewport-height": "100cqh",
+            "--section-min-screen": "var(--section-viewport-height)",
+          } as PreviewVariableStyle}
         >
           <div
             className={cx(
@@ -2932,6 +2958,17 @@ export function PagebuilderShell({
     updateActiveStack((stack) =>
       stack.map((section) =>
         section.id === sectionId ? { ...section, cardFill } : section,
+      ),
+    );
+  }
+
+  function updateSectionBackgroundFill(
+    sectionId: string,
+    backgroundFill: SectionBackgroundFill,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId ? { ...section, backgroundFill } : section,
       ),
     );
   }
@@ -3752,7 +3789,9 @@ export function PagebuilderShell({
             reduceBottomPadding: section.reduceBottomPadding ?? false,
             reduceTopPadding: section.reduceTopPadding ?? false,
             colorRecipe: getSectionColorRecipe(section),
+            backgroundFill: getSectionBackgroundFill(section),
             cardFill: getSectionCardFill(section),
+            cardBorder: getSectionCardBorder(section),
             align: section.align,
             ratio: section.ratio,
             slotId: section.slotId,
@@ -4158,6 +4197,7 @@ export function PagebuilderShell({
           data-pagebuilder-section-id={section.id}
           data-pagebuilder-section-component={section.component}
           data-pagebuilder-section-mode={section.mode}
+          data-pagebuilder-background-fill={getSectionBackgroundFill(section)}
           data-pagebuilder-card-border={getSectionCardBorder(section)}
           data-pagebuilder-card-fill={getSectionCardFill(section)}
           data-pagebuilder-card-style={
@@ -4674,6 +4714,51 @@ export function PagebuilderShell({
                                         type="button"
                                       >
                                         {option.label}
+                                      </button>
+                                    );
+                                  },
+                                )}
+                              </div>
+                            </fieldset>
+                          ) : null}
+
+                          {sectionSupportsBackgroundFill(section.component) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Background
+                              </legend>
+                              <div className="flex items-center gap-2">
+                                {(["solid", "none"] as const).map(
+                                  (backgroundFill) => {
+                                    const isActive =
+                                      getSectionBackgroundFill(section) ===
+                                      backgroundFill;
+                                    const label =
+                                      backgroundFill === "solid"
+                                        ? "Background on"
+                                        : "Transparent";
+
+                                    return (
+                                      <button
+                                        aria-pressed={isActive}
+                                        className={cx(
+                                          "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                          isActive && "token-chrome-card-active",
+                                        )}
+                                        key={backgroundFill}
+                                        onClick={() =>
+                                          updateSectionBackgroundFill(
+                                            section.id,
+                                            backgroundFill,
+                                          )
+                                        }
+                                        title={label}
+                                        type="button"
+                                      >
+                                        <CardFillIcon
+                                          filled={backgroundFill === "solid"}
+                                        />
+                                        <span className="sr-only">{label}</span>
                                       </button>
                                     );
                                   },

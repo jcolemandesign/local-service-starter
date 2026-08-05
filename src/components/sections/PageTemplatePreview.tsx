@@ -168,6 +168,8 @@ import {
   calloutSplitPanelVariantValues,
   cardLinkGridAlignValues,
   getSectionStyleFieldSpecs,
+  resolveBackgroundFill,
+  resolveCardBorder,
   resolveCardFill,
   resolveHeadlineWrap,
   resolveSectionIcons,
@@ -196,6 +198,7 @@ export type PageTemplatePreviewSection = {
   instruction: string;
   mode: string;
   colorRecipe?: import("@/content/section-color-recipes").SectionColorRecipe;
+  backgroundFill?: import("@/content/section-color-recipes").SectionBackgroundFill;
   cardFill?: import("@/content/section-color-recipes").SectionCardFill;
   cardBorder?: import("@/content/section-color-recipes").SectionCardBorder;
   name: string;
@@ -453,7 +456,13 @@ function TemplateSectionFrame({
         isFixed ? "fixed" : isOverlay ? "absolute" : "relative",
         className,
       )}
-      data-pagebuilder-card-border={section.cardBorder ?? "on"}
+      data-pagebuilder-background-fill={resolveBackgroundFill(
+        section.backgroundFill,
+      )}
+      data-pagebuilder-card-border={resolveCardBorder(
+        section.component,
+        section.cardBorder,
+      )}
       data-pagebuilder-card-fill={resolveCardFill(
         section.component,
         section.cardFill,
@@ -492,9 +501,23 @@ export function renderPageTemplateSection(
 
   switch (section.component) {
     case "NavPrimarySectionV2":
-      return <NavPrimarySectionV2 {...navProps(fieldSection, navigationLinks, homeHref, siteIdentity)} />;
+      return (
+        <NavPrimarySectionV2
+          {...navProps(fieldSection, navigationLinks, homeHref, siteIdentity)}
+          backgroundFill={resolveBackgroundFill(section.backgroundFill)}
+          cardBorder={resolveCardBorder(section.component, section.cardBorder)}
+          cardFill={resolveCardFill(section.component, section.cardFill)}
+        />
+      );
     case "NavCenterLogoSectionV2":
-      return <NavCenterLogoSectionV2 {...navProps(fieldSection, navigationLinks, homeHref, siteIdentity)} />;
+      return (
+        <NavCenterLogoSectionV2
+          {...navProps(fieldSection, navigationLinks, homeHref, siteIdentity)}
+          backgroundFill={resolveBackgroundFill(section.backgroundFill)}
+          cardBorder={resolveCardBorder(section.component, section.cardBorder)}
+          cardFill={resolveCardFill(section.component, section.cardFill)}
+        />
+      );
     case "NavFloatingBentoSectionV2":
       return <NavFloatingBentoSectionV2 {...navProps(fieldSection, navigationLinks, homeHref, siteIdentity)} />;
     case "HeroSplitFullHeightSectionV3":

@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, DownArrowIcon } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 import { useScrollLock } from "@/hooks/useScrollLock";
@@ -23,6 +23,9 @@ type NavLink = {
 };
 
 type NavPrimarySectionV2Props = {
+  backgroundFill?: "solid" | "none";
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   logoHref?: string;
   logoLabel: string;
   /** Public path to a logo image. Empty renders the lettered placeholder. */
@@ -89,7 +92,7 @@ function Logo({
   if (src) {
     return (
       <a
-        className="relative block h-12 w-36 shrink-0 cursor-pointer"
+        className="relative block h-[3.6rem] w-[10.8rem] shrink-0 cursor-pointer"
         href={href}
       >
         <Image
@@ -100,7 +103,7 @@ function Logo({
           // default lazy loading never fires inside the staged preview's
           // container - the image element renders with an empty currentSrc.
           priority
-          sizes="144px"
+          sizes="173px"
           src={src}
         />
       </a>
@@ -112,7 +115,7 @@ function Logo({
       className={cx(
         "type-label",
         "radius-medium",
-        "flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center border transition-colors",
+        "flex h-[3.6rem] w-[10.8rem] shrink-0 cursor-pointer items-center justify-center border transition-colors",
         isMenuOpen
           ? "border-white/20 bg-white/5 text-white"
           : "border-service-border bg-service-surface text-service-muted hover:border-service-accent hover:text-service-accent",
@@ -125,6 +128,9 @@ function Logo({
 }
 
 export function NavPrimarySectionV2({
+  backgroundFill,
+  cardBorder,
+  cardFill,
   logoHref,
   logoLabel,
   logoSrc,
@@ -135,6 +141,9 @@ export function NavPrimarySectionV2({
   return (
     <NavPrimaryLayoutSection
       action={action}
+      backgroundFill={backgroundFill}
+      cardBorder={cardBorder}
+      cardFill={cardFill}
       layout="default"
       links={links}
       logoHref={logoHref}
@@ -146,6 +155,9 @@ export function NavPrimarySectionV2({
 }
 
 export function NavCenterLogoSectionV2({
+  backgroundFill,
+  cardBorder,
+  cardFill,
   logoHref,
   logoLabel,
   logoSrc,
@@ -156,6 +168,9 @@ export function NavCenterLogoSectionV2({
   return (
     <NavPrimaryLayoutSection
       action={action}
+      backgroundFill={backgroundFill}
+      cardBorder={cardBorder}
+      cardFill={cardFill}
       layout="centerLogo"
       links={links}
       logoHref={logoHref}
@@ -167,6 +182,9 @@ export function NavCenterLogoSectionV2({
 }
 
 function NavPrimaryLayoutSection({
+  backgroundFill = "solid",
+  cardBorder = "off",
+  cardFill = "none",
   logoHref,
   logoLabel,
   logoSrc,
@@ -186,17 +204,101 @@ function NavPrimaryLayoutSection({
   const phoneHref = `tel:${phone.replace(/\D/g, "")}`;
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNavHidden, setIsNavHidden] = useState(false);
+  const [isPagebuilderPreview, setIsPagebuilderPreview] = useState(false);
   const [lockActive, setLockActive] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const transition = shouldReduceMotion
     ? { duration: 0 }
     : { duration: 0.24, ease: menuEase };
   const isCenterLogo = layout === "centerLogo";
+  const hasGroupSurface = cardFill === "solid" || cardBorder === "on";
+  const groupSurfaceClassName = cx(
+    "radius-medium",
+    cardFill === "solid"
+      ? "px-8 py-2"
+      : hasGroupSurface
+        ? "p-2"
+        : undefined,
+    cardFill === "solid" ? "bg-service-surface shadow-service" : undefined,
+    cardBorder === "on" ? "border border-service-border" : undefined,
+  );
   useScrollLock(lockActive);
 
+  useEffect(() => {
+    const isEmbeddedPagebuilder = Boolean(
+      navRef.current?.closest(".pagebuilder-section-frame") &&
+        !navRef.current?.closest(".page-template-preview"),
+    );
+
+    if (isEmbeddedPagebuilder) {
+      setIsPagebuilderPreview(true);
+      return;
+    }
+
+    let lastScrollY = window.scrollY;
+
+    const getFollowingHero = () => {
+      const navSection = navRef.current?.closest("section");
+
+      if (!navSection) {
+        return null;
+      }
+
+      const adjacentSection = navSection.nextElementSibling;
+
+      if (adjacentSection?.tagName === "SECTION") {
+        return adjacentSection;
+      }
+
+      const adjacentFrame = navSection.parentElement?.nextElementSibling;
+
+      return adjacentFrame?.querySelector("section") ?? null;
+    };
+
+    const updateNavVisibility = () => {
+      const currentScrollY = window.scrollY;
+      const scrollDelta = currentScrollY - lastScrollY;
+      const hero = getFollowingHero();
+      const navHeight = navRef.current?.offsetHeight ?? 0;
+      const hasPassedHero = hero
+        ? hero.getBoundingClientRect().bottom <= navHeight
+        : currentScrollY > window.innerHeight;
+
+      if (!hasPassedHero || currentScrollY <= 0) {
+        setIsNavHidden(false);
+      } else if (Math.abs(scrollDelta) > 6) {
+        setIsNavHidden(scrollDelta > 0);
+      }
+
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", updateNavVisibility, { passive: true });
+    window.addEventListener("resize", updateNavVisibility);
+    updateNavVisibility();
+
+    return () => {
+      window.removeEventListener("scroll", updateNavVisibility);
+      window.removeEventListener("resize", updateNavVisibility);
+    };
+  }, []);
+
   return (
-    <section className={cx("relative bg-bg-page", "fluid-type-frame")}>
-      <nav
+    <section
+      className={cx(
+        "relative",
+        isPagebuilderPreview ? "fluid-type-frame" : "min-h-20",
+        backgroundFill === "solid" ? "bg-bg-page" : "bg-transparent",
+      )}
+      style={
+        backgroundFill === "none"
+          ? { backgroundColor: "transparent" }
+          : undefined
+      }
+    >
+      <motion.nav
         aria-label={
           isCenterLogo
             ? "Center logo v2 preview navigation"
@@ -206,11 +308,30 @@ function NavPrimaryLayoutSection({
           isCenterLogo
             ? "grid grid-cols-[1fr_auto_1fr] max-lg:flex max-lg:justify-between"
             : "flex justify-between",
-          "relative z-30 min-h-20 w-full items-center gap-8 border-b px-8 max-md:px-6",
+          isPagebuilderPreview
+            ? "relative z-30 min-h-20 w-full items-center gap-8 border-b px-8 max-md:px-6"
+            : "fixed inset-x-0 top-0 z-30 min-h-20 w-full items-center gap-8 border-b px-8 max-md:px-6",
           isMenuOpen
             ? "border-transparent bg-transparent max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-50 max-lg:text-white"
-            : "border-service-border bg-bg-page",
+            : cx(
+                "border-service-border",
+                backgroundFill === "solid" ? "bg-bg-page" : "bg-transparent",
+              ),
         )}
+        style={
+          backgroundFill === "none"
+            ? { backgroundColor: "transparent" }
+            : undefined
+        }
+        animate={{
+          y: isPagebuilderPreview || isMenuOpen || !isNavHidden ? 0 : "-100%",
+        }}
+        transition={
+          shouldReduceMotion
+            ? { duration: 0 }
+            : { duration: 0.22, ease: menuEase }
+        }
+        ref={navRef}
       >
         <div
           className={
@@ -227,6 +348,7 @@ function NavPrimaryLayoutSection({
             className={cx(
               "type-text-sm",
               "flex items-center gap-7 font-semibold text-service-ink max-lg:hidden",
+              groupSurfaceClassName,
             )}
           >
             {visibleLinks.map((link) => {
@@ -365,7 +487,7 @@ function NavPrimaryLayoutSection({
           </Button>
           <RequestServiceButton>{action}</RequestServiceButton>
         </div>
-      </nav>
+      </motion.nav>
 
       <AnimatePresence
         initial={false}

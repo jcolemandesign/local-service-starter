@@ -42,7 +42,7 @@ export function HeroContentTopImageBottomSectionV2({
 
   return (
     <section className="bg-bg-page text-service-ink">
-      <SevenColumnGrid className="section-min-screen grid-rows-[auto_minmax(var(--media-min-medium),1fr)] max-lg:grid-rows-none">
+      <SevenColumnGrid className="section-min-sliver grid-rows-[auto_minmax(var(--media-min-medium),1fr)] max-lg:grid-rows-none">
         <SevenColumnGridItem
           alignX="left"
           alignY="bottom"

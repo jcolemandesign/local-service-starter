@@ -14,7 +14,7 @@ export function HeroStackedHeaderImageSectionV2({
 }: HeroStackedHeaderImageSectionV2Props) {
   return (
     <section className="overflow-hidden bg-white text-service-ink">
-      <SevenColumnGrid className="section-min-screen">
+      <SevenColumnGrid className="section-min-sliver">
         <SevenColumnGridItem className="col-span-7">
           <HeroStackedHeaderImageVisual
             eyebrow={eyebrow}

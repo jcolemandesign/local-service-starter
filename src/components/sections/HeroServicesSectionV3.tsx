@@ -91,7 +91,7 @@ export function HeroServicesSectionV3({
 
   return (
     <section className="bg-bg-page">
-      <SevenColumnGrid className="section-min-screen h-[var(--section-min-screen)] grid-rows-[minmax(0,1fr)] max-md:h-auto max-md:grid-rows-none">
+      <SevenColumnGrid className="section-min-sliver h-[calc(var(--section-min-screen)-var(--section-sliver-gap))] grid-rows-[minmax(0,1fr)] max-md:h-auto max-md:grid-rows-none">
         <SevenColumnGridItem
           alignY="middle"
           className="content-padding-y col-span-3 col-start-1 row-start-1 h-full min-h-0 max-lg:col-span-2 max-md:col-span-3 max-md:row-auto max-sm:col-span-1"

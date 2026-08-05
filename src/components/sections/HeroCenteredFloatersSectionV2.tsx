@@ -27,7 +27,7 @@ export function HeroCenteredFloatersSectionV2({
 
   return (
     <section className="relative overflow-hidden bg-service-surface text-service-ink">
-      <SevenColumnGrid className="section-min-screen">
+      <SevenColumnGrid className="section-min-sliver">
         <SevenColumnGridItem
           alignX="stretch"
           alignY="middle"

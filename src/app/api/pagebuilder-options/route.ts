@@ -28,6 +28,7 @@ type SavedPagebuilderSection = {
   slotId?: string;
   variant?: string;
   colorRecipe?: string;
+  backgroundFill?: string;
   cardBorder?: string;
   cardFill?: string;
 };
@@ -221,6 +222,10 @@ function normalizeSection(
     variant: typeof section.variant === "string" ? section.variant : undefined,
     colorRecipe:
       typeof section.colorRecipe === "string" ? section.colorRecipe : undefined,
+    backgroundFill:
+      typeof section.backgroundFill === "string"
+        ? section.backgroundFill
+        : undefined,
     cardBorder:
       typeof section.cardBorder === "string" ? section.cardBorder : undefined,
     cardFill: typeof section.cardFill === "string" ? section.cardFill : undefined,

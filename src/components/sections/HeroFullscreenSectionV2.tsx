@@ -61,7 +61,7 @@ export function HeroFullscreenSectionV2({
         aria-hidden="true"
       />
 
-      <SevenColumnGrid className="section-min-screen relative z-10 content-end">
+      <SevenColumnGrid className="section-min-sliver relative z-10 content-end">
         <SevenColumnGridItem
           alignX="left"
           alignY="bottom"

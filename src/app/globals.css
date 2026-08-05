@@ -35,19 +35,19 @@
   --section-min-short: 36rem;
   --section-min-medium: 54rem;
   --section-min-tall: 72rem;
-  --section-min-screen: 100svh;
+  --section-viewport-height: 100svh;
+  --section-min-screen: var(--section-viewport-height);
   /* Height reserved for the navigation above a hero. One value, because it has
      to be agreed on in two places at once: the band the nav sits in, and the
      amount a fullscreen hero gives back so the pair still measures one screen.
      When these drifted apart the nav overhung the hero and the pair ran taller
      than the viewport. */
   --nav-height: 5rem;
-  /* How much of the following section stays visible above the fold when a
-     section asks for "a screen, minus a sliver". Deliberately a gap rather than
-     a 95svh height token: the sliver utility subtracts this from
-     --section-min-screen at the point of use, so the nav-hero retune below
-     still reaches it. */
-  --section-sliver-gap: 5svh;
+  /* One shared vertical rhythm for the hero's next-section peek, ordinary
+     section padding, and compact horizontal bands. Keeping the sliver tied to
+     the existing base spacing token makes those three transitions read as one
+     repeated interval rather than unrelated heights. */
+  --section-sliver-gap: var(--section-space-sml);
   /* Tallest a fixed-ratio media frame may be inside a sliver-height section:
      the section floor, less the grid frame's own block padding, less a margin
      on each side so the frame sits inside that padding with visible space
@@ -340,7 +340,7 @@ body {
   }
 
   .token-chrome-card-active {
-    border-color: var(--chrome-border-strong);
+    border: 1px solid var(--chrome-accent);
     background-color: var(--chrome-panel-strong);
     background-image: var(--chrome-field-sheen);
     color: var(--chrome-text);
@@ -785,6 +785,37 @@ body {
 .style-guide-nav :is(.bg-white, .bg-bg-surface, .bg-service-surface) {
   background-color: var(--chrome-panel-muted) !important;
   background-image: var(--chrome-field-sheen);
+}
+
+@media (max-width: 1279px) {
+  .style-guide-nav {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+    padding-block: 0.75rem !important;
+  }
+
+  .style-guide-nav-toc,
+  .style-guide-nav-actions {
+    min-width: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .style-guide-nav-actions {
+    margin-left: 0 !important;
+    padding-top: 0.75rem;
+    padding-left: 0 !important;
+    border-top: 1px solid var(--chrome-border-soft);
+    border-left: 0 !important;
+  }
+}
+
+@media (max-width: 639px) {
+  .style-guide-nav-toc,
+  .style-guide-nav-actions {
+    justify-content: flex-start;
+  }
 }
 
   .token-footer-inverse {
@@ -1264,6 +1295,11 @@ body {
     background-color: var(--live-service-accent);
   }
 
+  .pagebuilder-section-frame[data-pagebuilder-background-fill="none"] {
+    background-color: transparent !important;
+    background-image: none !important;
+  }
+
   .pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"]
     > section,
   .pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"]
@@ -1421,7 +1457,7 @@ body {
     box-shadow: none !important;
   }
 
-  .pagebuilder-section-frame[data-pagebuilder-card-fill="none"][data-pagebuilder-section-mode="Navigation"]
+  .pagebuilder-section-frame[data-pagebuilder-background-fill="none"][data-pagebuilder-section-mode="Navigation"]
     :is(section, nav) {
     background-color: transparent !important;
   }
@@ -1496,8 +1532,8 @@ body {
      which is the pairing it is most often used in. */
   .pagebuilder-density-normal
     [data-pagebuilder-section-component="HeroFullscreenSectionV2"]
-    .section-min-screen {
-    min-height: var(--section-min-screen);
+    .section-min-sliver {
+    min-height: calc(var(--section-min-screen) - var(--section-sliver-gap));
   }
 
   /* A hero directly under a nav gives back exactly the band the nav occupies,
@@ -1506,11 +1542,13 @@ body {
      100svh.
 
      Retuning the variable rather than setting min-height covers both ways a
-     section asks for full height - `.section-min-screen` and the sections that
-     also pin `h-[var(--section-min-screen)]`, which a min-height override would
-     leave at the full viewport. */
+     section asks for viewport height - `.section-min-sliver` and the sections
+     that also pin the matching calc height, which a min-height override would
+     leave taller than the intended peek. */
   .pagebuilder-nav-hero-pair > [data-pagebuilder-section-mode="Hero"] {
-    --section-min-screen: calc(100svh - var(--nav-height));
+    --section-min-screen: calc(
+      var(--section-viewport-height) - var(--nav-height)
+    );
   }
 
   /* The fixed-nav preview reserves the band with the hero's own padding, since
@@ -2099,48 +2137,48 @@ body {
 /* BEGIN PAGEWORKS STYLEGUIDE TOKEN OVERRIDES */
 :root {
   --live-service-ink: #1a1924;
-  --live-service-muted: #35343d;
-  --live-service-accent: #1f5f7a;
-  --live-service-surface: #e8e6e3;
-  --live-service-border: #9e9e9e;
-  --live-bg-page: #d6d6d6;
-  --live-bg-surface: #e8e6e3;
-  --live-bg-muted: #9e9e9e;
-  --live-bg-dark: #253046;
+  --live-service-muted: #707070;
+  --live-service-accent: #175c82;
+  --live-service-surface: #f5f5f5;
+  --live-service-border: #9aa4a7;
+  --live-bg-page: #e6e6e6;
+  --live-bg-surface: #f5f5f5;
+  --live-bg-muted: #9aa4a7;
+  --live-bg-dark: #0d4356;
   --live-text-main: #1a1924;
-  --live-text-muted: #35343d;
-  --live-text-accent: #1f5f7a;
-  --live-border-default: #9e9e9e;
-  --live-accent: #427f9a;
+  --live-text-muted: #707070;
+  --live-text-accent: #175c82;
+  --live-border-default: #9aa4a7;
+  --live-accent: #ce0019;
   --live-accent-ink: #ffffff;
   --live-accent-muted-text: #dcefe7;
-  --live-shadow-service: 8px 10px 0px rgb(222 222 222 / 0);
+  --live-shadow-service: 8px 10px 22px rgb(129 122 116 / 0.04409999999999999);
   --color-service-ink: #1a1924;
-  --color-service-muted: #35343d;
-  --color-service-accent: #1f5f7a;
-  --color-service-surface: #e8e6e3;
-  --color-service-border: #9e9e9e;
-  --color-bg-page: #d6d6d6;
-  --color-bg-surface: #e8e6e3;
-  --color-bg-muted: #9e9e9e;
-  --color-bg-dark: #253046;
+  --color-service-muted: #707070;
+  --color-service-accent: #175c82;
+  --color-service-surface: #f5f5f5;
+  --color-service-border: #9aa4a7;
+  --color-bg-page: #e6e6e6;
+  --color-bg-surface: #f5f5f5;
+  --color-bg-muted: #9aa4a7;
+  --color-bg-dark: #0d4356;
   --color-text-main: #1a1924;
-  --color-text-muted: #35343d;
+  --color-text-muted: #707070;
   --color-text-inverse: #ffffff;
-  --color-text-accent: #1f5f7a;
-  --color-border-default: #9e9e9e;
-  --color-accent: #427f9a;
+  --color-text-accent: #175c82;
+  --color-border-default: #9aa4a7;
+  --color-accent: #ce0019;
   --card-grid-gap-active: 2.25rem;
   --inline-gap-active: 2.25rem;
   --layout-gap-active: 2.25rem;
-  --border-surface-width-token: 1px;
+  --border-surface-width-token: 2px;
   --radius-sm-token: 4px;
   --radius-md-token: 8px;
   --radius-lg-token: 24px;
   --radius-xl-token: 40px;
   --radius-round-token: 9999px;
   --radius-surface-token: 24px;
-  --radius-button-token: 9999px;
+  --radius-button-token: 24px;
   --section-min-active: 54rem;
   --section-space-vsml: 2rem;
   --section-space-sml: 4rem;
@@ -2159,7 +2197,7 @@ body {
   --site-grid-inset-block: clamp(2.5rem, 5vw, 8rem);
   --site-grid-inset-inline: clamp(0.75rem, 4vw, 8rem);
   --site-grid-gap: clamp(0.75rem, 1vw, 1.5rem);
-  --shadow-service: 8px 10px 0px rgb(222 222 222 / 0);
+  --shadow-service: 8px 10px 22px rgb(129 122 116 / 0.04409999999999999);
   --type-display-xl-font: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --type-display-xl-size: clamp(3.5rem, calc(4.8611cqw + 2.3333rem), 7rem);
   --type-display-xl-leading: 0.92;
@@ -2645,15 +2683,56 @@ body {
 
 @media (max-width: 1279px) {
   .strategy-chrome .strategy-toolbar {
-    overflow-x: auto;
+    padding-block: 0.75rem;
   }
 
   .strategy-chrome .strategy-toolbar-nav {
-    min-width: max-content;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem 1rem;
+  }
+
+  .strategy-chrome .strategy-toolbar-identity {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .strategy-chrome .strategy-toolbar-utilities {
+    grid-column: 2;
+    grid-row: 1;
+    justify-content: flex-end;
   }
 
   .strategy-chrome .strategy-toolbar-tools {
-    flex-wrap: nowrap;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--chrome-border-soft);
+  }
+}
+
+@media (max-width: 639px) {
+  .strategy-chrome .strategy-toolbar-nav {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .strategy-chrome .strategy-toolbar-identity,
+  .strategy-chrome .strategy-toolbar-utilities,
+  .strategy-chrome .strategy-toolbar-tools {
+    grid-column: 1;
+  }
+
+  .strategy-chrome .strategy-toolbar-utilities {
+    grid-row: 2;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .strategy-chrome .strategy-toolbar-tools {
+    grid-row: 3;
+    justify-content: flex-start;
   }
 }
 
