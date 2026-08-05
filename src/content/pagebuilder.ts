@@ -21,6 +21,14 @@ export type PagebuilderRecipeSection = {
   icons?: string;
   /** Headline wrap - see `headlineWrapOptions` in `section-style-options`. */
   headlineWrap?: string;
+  /**
+   * `"join"` puts this section in the same background band as the one above it -
+   * see `joinAbove` in `section-style-options`. Absent means its own background,
+   * which is why every stack saved before bands existed still renders as it did.
+   */
+  joinAbove?: string;
+  /** Ground texture - see `backgroundTreatment` in `section-style-options`. */
+  backgroundTreatment?: string;
   ratio?: string;
   variant?: string;
   colorRecipe?: import("@/content/section-color-recipes").SectionColorRecipe;

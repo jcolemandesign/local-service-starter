@@ -107,62 +107,14 @@ function getDefaultHeadingSizeIndex(variant: ContentSplitFullImageVariant) {
   return hasWideTextColumn ? 3 : 2;
 }
 
-const colorRecipeClassName: Record<
-  SectionColorRecipe,
-  {
-    action: string;
-    body: string;
-    eyebrow: string;
-    ink: string;
-    secondaryAction: string;
-    section: string;
-    stat: string;
-  }
-> = {
-  default: {
-    action: "",
-    body: "text-service-muted",
-    eyebrow: "text-service-accent",
-    ink: "text-service-ink",
-    secondaryAction: "",
-    section: "bg-bg-page",
-    stat: "border-service-border",
-  },
-  muted: {
-    action: "",
-    body: "text-service-muted",
-    eyebrow: "text-service-accent",
-    ink: "text-service-ink",
-    secondaryAction: "",
-    section: "bg-service-surface",
-    stat: "border-service-border",
-  },
-  dark: {
-    action: "!border-white !bg-white !text-bg-dark hover:!bg-service-surface",
-    body: "text-white/70",
-    eyebrow: "text-white",
-    ink: "text-white",
-    // Ghost/outline treatment: the default secondary style is a light pill
-    // (bg-bg-page), which would clash with a dark section - drop the fill so it
-    // reads as a lighter-weight, secondary action against the dark bg.
-    secondaryAction:
-      "!border-white/40 !bg-transparent !text-white hover:!border-white hover:!bg-white/10 hover:!text-white",
-    section: "bg-bg-dark",
-    stat: "border-white/25",
-  },
-  accent: {
-    // RequestServiceButton's own default fill is bg-service-accent - identical
-    // to this recipe's section background - so without this override the
-    // primary CTA is invisible against it.
-    action: "!border-white !bg-white !text-bg-dark hover:!bg-white/85",
-    body: "text-[var(--live-accent-muted-text)]",
-    eyebrow: "text-[var(--live-accent-ink)]",
-    ink: "text-[var(--live-accent-ink)]",
-    secondaryAction:
-      "!border-[color-mix(in_oklab,var(--live-accent-ink)_40%,transparent)] !bg-transparent !text-[var(--live-accent-ink)] hover:!border-[color:var(--live-accent-ink)] hover:!bg-white/10 hover:!text-[var(--live-accent-ink)]",
-    section: "bg-service-accent",
-    stat: "border-[color-mix(in_oklab,var(--live-accent-ink)_30%,transparent)]",
-  },
+const colorRecipeClassName = {
+  action: "",
+  body: "text-service-muted",
+  eyebrow: "text-service-accent",
+  ink: "text-service-ink",
+  secondaryAction: "",
+  section: "bg-bg-page",
+  stat: "border-service-border",
 };
 
 // Reaches past the grid frame's inline inset so the crop runs to the page edge.
@@ -223,7 +175,6 @@ function CroppedImagePanel({
 
 export function ContentSplitFullImageSectionV3({
   bullets,
-  colorRecipe = "default",
   eyebrow,
   headingLevel = 2,
   headingSizeStep = 0,
@@ -240,7 +191,7 @@ export function ContentSplitFullImageSectionV3({
   const config =
     variantConfig[variant] ?? variantConfig["text-3-image-4-right"];
   const HeadingTag = `h${headingLevel}` as const;
-  const colors = colorRecipeClassName[colorRecipe];
+  const colors = colorRecipeClassName;
   const headingSizeIndex = Math.min(
     headingSizeScale.length - 1,
     Math.max(0, getDefaultHeadingSizeIndex(variant) + headingSizeStep),

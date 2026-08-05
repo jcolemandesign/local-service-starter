@@ -15,44 +15,12 @@ export type ProcessStripSectionV3Props = {
   steps: ProcessStripItem[];
 };
 
-const colorRecipeClassName: Record<
-  SectionColorRecipe,
-  {
-    card: string;
-    cardBorder: string;
-    muted: string;
-    section: string;
-    text: string;
-  }
-> = {
-  default: {
-    card: "bg-service-surface",
-    cardBorder: "border-service-border",
-    muted: "text-service-muted",
-    section: "bg-bg-page",
-    text: "text-service-ink",
-  },
-  muted: {
-    card: "bg-surface-raised",
-    cardBorder: "border-service-border",
-    muted: "text-service-muted",
-    section: "bg-service-surface",
-    text: "text-service-ink",
-  },
-  dark: {
-    card: "bg-white/10",
-    cardBorder: "border-white/25",
-    muted: "text-white/75",
-    section: "bg-bg-dark",
-    text: "text-white",
-  },
-  accent: {
-    card: "bg-bg-dark",
-    cardBorder: "border-white/25",
-    muted: "text-white/75",
-    section: "bg-service-accent",
-    text: "text-white",
-  },
+const colorRecipeClassName = {
+  card: "bg-service-surface",
+  cardBorder: "border-service-border",
+  muted: "text-service-muted",
+  section: "bg-bg-page",
+  text: "text-service-ink",
 };
 
 function cx(...classes: Array<string | false | undefined>) {
@@ -107,12 +75,11 @@ function StepIcon({ index }: { index: number }) {
 export function ProcessStripSectionV3({
   cardBorder = "on",
   cardFill = "solid",
-  colorRecipe = "default",
   icons = "on",
   steps,
 }: ProcessStripSectionV3Props) {
   const visibleSteps = steps.slice(0, 4);
-  const colors = colorRecipeClassName[colorRecipe];
+  const colors = colorRecipeClassName;
   const columnsClassName =
     visibleSteps.length === 3 ? "grid-cols-3" : "grid-cols-4";
 

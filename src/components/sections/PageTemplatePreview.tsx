@@ -169,6 +169,9 @@ import {
   cardLinkGridAlignValues,
   getSectionStyleFieldSpecs,
   resolveBackgroundFill,
+  resolveBackgroundImage,
+  resolveBackgroundTreatment,
+  treatmentUsesGroundImage,
   resolveCardBorder,
   resolveCardFill,
   resolveHeadlineWrap,
@@ -186,6 +189,13 @@ import {
   type CardLinkGridAlign,
   type TableCompareAlign,
 } from "@/content/section-style-options";
+import {
+  groupSectionsIntoBands,
+  withBandRecipe,
+  type SectionBand,
+} from "@/utils/section-bands";
+import type { CSSProperties } from "react";
+import { resolveSectionColorRecipe } from "@/content/section-color-recipes";
 import type { StagedPageField } from "@/utils/staged-pages";
 import {
   emptySiteIdentity,
@@ -206,6 +216,11 @@ export type PageTemplatePreviewSection = {
   reduceTopPadding?: boolean;
   align?: string;
   cardLinks?: string;
+  /** `"join"` shares the background of the section above - see
+   *  `groupSectionsIntoBands` in `@/utils/section-bands`. */
+  joinAbove?: string;
+  /** Ground texture - see `backgroundTreatment` in `section-style-options`. */
+  backgroundTreatment?: string;
   icons?: string;
   headlineWrap?: string;
   ratio?: string;
@@ -322,6 +337,87 @@ export function PageTemplatePreview({
     .map((section) =>
       resolveSectionStyleOverrides(section, fieldsBySection[section.id ?? ""]),
     );
+  const bands = groupSectionsIntoBands(includedSections);
+
+  function renderSection(
+    section: PageTemplatePreviewSection,
+    index: number,
+    frameProps: {
+      className?: string;
+      inBand?: boolean;
+      isFixed?: boolean;
+      isOverlay?: boolean;
+    } = {},
+  ) {
+    return (
+      <TemplateSectionFrame
+        backgroundImage={
+          frameProps.inBand
+            ? undefined
+            : backgroundImageStyle(
+                resolveBackgroundTreatment(section.backgroundTreatment),
+                fieldsBySection[section.id ?? ""],
+              )
+        }
+        key={section.id ?? index}
+        section={section}
+        {...frameProps}
+      >
+        {renderPageTemplateSection(
+          section,
+          index,
+          fieldsBySection[section.id ?? ""],
+          navigationLinks,
+          homeHref,
+          siteIdentity,
+        )}
+      </TemplateSectionFrame>
+    );
+  }
+
+  /**
+   * A run of one renders as a bare frame, which is what every page that uses no
+   * bands is made of - so this path emits exactly the DOM it did before bands
+   * existed. A longer run gets the wrapper, which becomes the paint surface:
+   * it carries the recipe, and its members are made inert by `inBand` so their
+   * frames neither paint nor re-run the recipe's token rewrite.
+   */
+  function renderBand(band: SectionBand<PageTemplatePreviewSection>) {
+    const [first] = band.sections;
+
+    if (!band.isBand) {
+      return renderSection(first, band.startIndex);
+    }
+
+    return (
+      <div
+        className="pagebuilder-section-band pagebuilder-paint-surface"
+        data-pagebuilder-background-treatment={resolveBackgroundTreatment(
+          first.backgroundTreatment,
+        )}
+        data-pagebuilder-color-recipe={
+          resolveSectionColorRecipe(first.colorRecipe) ?? "default"
+        }
+        key={`band-${first.id ?? band.startIndex}`}
+        // The run's first section supplies the image, the same section that
+        // supplies the band's recipe and texture.
+        style={backgroundImageStyle(
+          resolveBackgroundTreatment(first.backgroundTreatment),
+          fieldsBySection[first.id ?? ""],
+        )}
+      >
+        {withBandRecipe(band).map((section, offset) =>
+          renderSection(section, band.startIndex + offset, { inBand: true }),
+        )}
+      </div>
+    );
+  }
+
+  function isNavigationBand(band: SectionBand<PageTemplatePreviewSection> | undefined) {
+    return Boolean(
+      band && band.sections.length === 1 && isNavigationSection(band.sections[0]),
+    );
+  }
 
   return (
     <div
@@ -331,86 +427,46 @@ export function PageTemplatePreview({
       )}
     >
       <div className="min-h-full w-full bg-bg-page">
-        {includedSections.map((section, index) => {
-          const nextSection = includedSections[index + 1];
-          const previousSection = includedSections[index - 1];
+        {bands.map((band, bandIndex) => {
+          const [first] = band.sections;
+          const nextBand = bands[bandIndex + 1];
+          const previousBand = bands[bandIndex - 1];
 
-          if (isNavigationSection(section) && isHeroSection(nextSection)) {
+          // Navigation never joins a band, so a nav run is always a single
+          // section - see `navigationComponents`. That is what lets the pair
+          // wrapper below hold a nav frame beside a whole run without nesting
+          // two wrappers around the same element.
+          if (isNavigationBand(band) && nextBand && isHeroSection(nextBand.sections[0])) {
             return (
               <div
                 className="pagebuilder-nav-hero-pair relative"
-                key={`${section.id ?? index}-${nextSection.id ?? index + 1}`}
+                key={`${first.id ?? band.startIndex}-pair`}
               >
-                <TemplateSectionFrame
-                  className={
-                    fixedNavigation
-                      ? "inset-x-0 top-0 z-50"
-                      : overlayNavigation
-                        ? "inset-x-0 top-0 z-20"
-                        : undefined
-                  }
-                  isFixed={fixedNavigation}
-                  isOverlay={!fixedNavigation && overlayNavigation}
-                  section={section}
-                >
-                  {renderPageTemplateSection(
-                    section,
-                    index,
-                    fieldsBySection[section.id ?? ""],
-                    navigationLinks,
-                    homeHref,
-                    siteIdentity,
-                  )}
-                </TemplateSectionFrame>
-                <TemplateSectionFrame section={nextSection}>
-                  {renderPageTemplateSection(
-                    nextSection,
-                    index + 1,
-                    fieldsBySection[nextSection.id ?? ""],
-                    navigationLinks,
-                    homeHref,
-                    siteIdentity,
-                  )}
-                </TemplateSectionFrame>
+                {renderSection(first, band.startIndex, {
+                  className: fixedNavigation
+                    ? "inset-x-0 top-0 z-50"
+                    : overlayNavigation
+                      ? "inset-x-0 top-0 z-20"
+                      : undefined,
+                  isFixed: fixedNavigation,
+                  isOverlay: !fixedNavigation && overlayNavigation,
+                })}
+                {renderBand(nextBand)}
               </div>
             );
           }
 
-          if (isHeroSection(section) && isNavigationSection(previousSection)) {
+          if (isNavigationBand(previousBand) && isHeroSection(first)) {
             return null;
           }
 
-          if (isNavigationSection(section) && nextSection && !isHeroSection(nextSection)) {
-            return (
-              <TemplateSectionFrame
-                className="mb-[var(--section-space-sml)]"
-                key={section.id ?? index}
-                section={section}
-              >
-                {renderPageTemplateSection(
-                  section,
-                  index,
-                  fieldsBySection[section.id ?? ""],
-                  navigationLinks,
-                  homeHref,
-                  siteIdentity,
-                )}
-              </TemplateSectionFrame>
-            );
+          if (isNavigationBand(band) && nextBand) {
+            return renderSection(first, band.startIndex, {
+              className: "mb-[var(--section-space-sml)]",
+            });
           }
 
-          return (
-            <TemplateSectionFrame key={section.id ?? index} section={section}>
-              {renderPageTemplateSection(
-                section,
-                index,
-                fieldsBySection[section.id ?? ""],
-                navigationLinks,
-                homeHref,
-                siteIdentity,
-              )}
-            </TemplateSectionFrame>
-          );
+          return renderBand(band);
         })}
       </div>
     </div>
@@ -436,15 +492,56 @@ function resolvePaddingAttribute(
     : "default";
 }
 
+/**
+ * The inline custom property that carries a ground image into the stylesheet.
+ *
+ * Returned as a style object rather than a `background-image` declaration so the
+ * image composes with the other treatments instead of competing with them: all
+ * five paint the same `::before`, and only the source of this one is per-section
+ * data. Empty when there is no image, so nothing is set at all.
+ */
+function backgroundImageStyle(
+  treatment: string,
+  fields: StagedPageField[] = [],
+): CSSProperties {
+  if (!treatmentUsesGroundImage(treatment)) {
+    return {};
+  }
+
+  const source = resolveBackgroundImage(
+    getAssetValue({ fields }, "backgroundImage", ""),
+  );
+
+  return source
+    ? ({
+        "--section-background-image": `url("${source}")`,
+      } as CSSProperties)
+    : {};
+}
+
 function TemplateSectionFrame({
+  backgroundImage,
   children,
   className,
+  inBand = false,
   isFixed = false,
   isOverlay = false,
   section,
 }: {
+  /** Inline custom property carrying the ground image, if this frame has one. */
+  backgroundImage?: CSSProperties;
   children: React.ReactNode;
   className?: string;
+  /**
+   * True for every member of a background band. The band is the paint surface,
+   * so its members must be inert in two ways: they must not paint a ground of
+   * their own, and they must not re-run the recipe's token rewrite. The recipe
+   * rules are written as "capture on the container, rewrite on the children",
+   * so a member that kept a live recipe value would apply the rewrite a second
+   * time and compound every `color-mix` - muted text mixed twice, borders mixed
+   * twice - against a ground that had already been remapped.
+   */
+  inBand?: boolean;
   isFixed?: boolean;
   isOverlay?: boolean;
   section: PageTemplatePreviewSection;
@@ -452,13 +549,16 @@ function TemplateSectionFrame({
   return (
     <div
       className={cx(
-        "pagebuilder-section-frame group/pagebuilder-section outline outline-0 outline-offset-0 transition-shadow",
+        "pagebuilder-section-frame pagebuilder-paint-surface group/pagebuilder-section outline outline-0 outline-offset-0 transition-shadow",
         isFixed ? "fixed" : isOverlay ? "absolute" : "relative",
         className,
       )}
-      data-pagebuilder-background-fill={resolveBackgroundFill(
-        section.backgroundFill,
-      )}
+      data-pagebuilder-background-fill={
+        // Reuses the existing transparency mechanism rather than inventing one:
+        // this attribute already zeroes both background-color and
+        // background-image on a frame.
+        inBand ? "none" : resolveBackgroundFill(section.backgroundFill)
+      }
       data-pagebuilder-card-border={resolveCardBorder(
         section.component,
         section.cardBorder,
@@ -470,7 +570,16 @@ function TemplateSectionFrame({
       data-pagebuilder-card-style={
         sectionSupportsCardStyle(section.component) ? "true" : "false"
       }
-      data-pagebuilder-color-recipe={section.colorRecipe ?? "default"}
+      data-pagebuilder-background-treatment={
+        // The band owns the texture for its run, so a member never draws its
+        // own - two stacked layers would double the wash.
+        inBand ? "none" : resolveBackgroundTreatment(section.backgroundTreatment)
+      }
+      data-pagebuilder-color-recipe={
+        inBand
+          ? "inherit"
+          : (resolveSectionColorRecipe(section.colorRecipe) ?? "default")
+      }
       data-pagebuilder-section-component={section.component}
       data-pagebuilder-section-mode={section.mode}
       data-pagebuilder-padding-bottom={resolvePaddingAttribute(
@@ -478,6 +587,7 @@ function TemplateSectionFrame({
         "bottom",
       )}
       data-pagebuilder-padding-top={resolvePaddingAttribute(section, "top")}
+      style={backgroundImage}
     >
       {children}
     </div>

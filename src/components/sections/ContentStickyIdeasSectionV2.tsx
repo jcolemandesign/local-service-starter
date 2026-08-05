@@ -32,7 +32,6 @@ function clamp(value: number, min: number, max: number) {
 function ImportantIdeasBoxV2({
   cardBorder,
   cardFill,
-  colorRecipe,
   ideas,
   label,
 }: {
@@ -112,11 +111,7 @@ function ImportantIdeasBoxV2({
           : "border-service-border",
         cardFill === "none"
           ? "bg-transparent shadow-none"
-          : colorRecipe === "default"
-            ? "bg-service-surface shadow-service"
-            : colorRecipe === "accent"
-              ? "bg-bg-dark shadow-service"
-              : "bg-surface-raised shadow-service",
+          : "bg-service-surface shadow-service",
       )}
       ref={boxRef}
       style={{ transform: `translate3d(0, ${offset}px, 0)` }}
@@ -124,11 +119,7 @@ function ImportantIdeasBoxV2({
       <p
         className={cx(
           "type-label",
-          colorRecipe === "accent" && cardFill === "solid"
-            ? "text-white"
-            : colorRecipe === "accent"
-              ? "text-[var(--live-accent-ink)]"
-            : "text-service-accent",
+          "text-service-accent",
         )}
       >
         {label}
@@ -136,11 +127,7 @@ function ImportantIdeasBoxV2({
       <ul
         className={cx(
           "mt-6 grid list-disc gap-4 pl-6",
-          colorRecipe === "accent" && cardFill === "solid"
-            ? "marker:text-white"
-            : colorRecipe === "accent"
-              ? "marker:text-[var(--live-accent-ink)]"
-            : "marker:text-service-accent",
+          "marker:text-service-accent",
         )}
       >
         {ideas.map((idea) => (
@@ -148,9 +135,7 @@ function ImportantIdeasBoxV2({
             className={cx(
               "type-heading-sm",
               "pl-1",
-              colorRecipe === "accent" && cardFill === "solid"
-                ? "text-white"
-                : "text-service-ink",
+              "text-service-ink",
             )}
             key={idea}
           >
@@ -183,9 +168,7 @@ export function ContentStickyIdeasSectionV2({
             <p
               className={cx(
                 "type-label",
-                colorRecipe === "accent"
-                  ? "text-[var(--live-accent-ink)]"
-                  : "text-service-accent",
+                "text-service-accent",
               )}
             >
               {eyebrow}

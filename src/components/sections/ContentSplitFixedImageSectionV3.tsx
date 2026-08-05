@@ -107,31 +107,7 @@ function getDefaultHeadingSizeIndex(variant: ContentSplitFixedImageVariant) {
   return hasWideTextColumn ? 3 : 2;
 }
 
-const colorRecipeClassName: Record<
-  SectionColorRecipe,
-  { action: string; eyebrow: string; secondaryAction: string }
-> = {
-  default: { action: "", eyebrow: "text-service-accent", secondaryAction: "" },
-  muted: { action: "", eyebrow: "text-service-accent", secondaryAction: "" },
-  dark: {
-    action: "!border-white !bg-white !text-bg-dark hover:!bg-service-surface",
-    eyebrow: "text-white",
-    // Ghost/outline treatment: the default secondary style is a light pill
-    // (bg-bg-page), which would clash with a dark section - drop the fill so
-    // it reads as a lighter-weight, secondary action against the dark bg.
-    secondaryAction:
-      "!border-white/40 !bg-transparent !text-white hover:!border-white hover:!bg-white/10 hover:!text-white",
-  },
-  accent: {
-    // RequestServiceButton's own default fill is bg-service-accent - identical
-    // to this recipe's section background - so without this override the
-    // primary CTA is invisible against it.
-    action: "!border-white !bg-white !text-bg-dark hover:!bg-white/85",
-    eyebrow: "text-[var(--live-accent-ink)]",
-    secondaryAction:
-      "!border-[color-mix(in_oklab,var(--live-accent-ink)_40%,transparent)] !bg-transparent !text-[var(--live-accent-ink)] hover:!border-[color:var(--live-accent-ink)] hover:!bg-white/10 hover:!text-[var(--live-accent-ink)]",
-  },
-};
+const colorRecipeClassName = { action: "", eyebrow: "text-service-accent", secondaryAction: "" };
 
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -168,7 +144,6 @@ export function ContentSplitFixedImageSectionV3({
   bullets,
   cardBorder = "on",
   cardFill = "none",
-  colorRecipe = "default",
   eyebrow,
   headingLevel = 2,
   headingSizeStep = 0,
@@ -186,7 +161,7 @@ export function ContentSplitFixedImageSectionV3({
   const config =
     variantConfig[variant] ?? variantConfig["text-3-image-4-right"];
   const HeadingTag = `h${headingLevel}` as const;
-  const colors = colorRecipeClassName[colorRecipe];
+  const colors = colorRecipeClassName;
   const headingSizeIndex = Math.min(
     headingSizeScale.length - 1,
     Math.max(0, getDefaultHeadingSizeIndex(variant) + headingSizeStep),

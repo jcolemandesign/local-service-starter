@@ -49,6 +49,8 @@ describe("section style override specs", () => {
 
     expect(cardNames).toEqual([
       "colorRecipe",
+      "joinAbove",
+      "backgroundTreatment",
       "cardFill",
       "cardBorder",
       "reduceTopPadding",
@@ -58,9 +60,24 @@ describe("section style override specs", () => {
     // gets it - only the card controls are conditional.
     expect(plainNames).toEqual([
       "colorRecipe",
+      "joinAbove",
+      "backgroundTreatment",
       "reduceTopPadding",
       "reduceBottomPadding",
     ]);
+  });
+
+  /**
+   * Navigation is chrome that spends most of its life out of flow, so it can
+   * neither join a band nor carry a ground texture - see `navigationComponents`.
+   */
+  it("does not offer the band or texture controls on navigation", () => {
+    const navNames = getSectionStyleFieldSpecs("NavPrimarySectionV2").map(
+      (spec) => spec.name,
+    );
+
+    expect(navNames).not.toContain("joinAbove");
+    expect(navNames).not.toContain("backgroundTreatment");
   });
 
   it("seeds every declared style field empty so a fresh page inherits the template", () => {
@@ -71,11 +88,13 @@ describe("section style override specs", () => {
       name: "Card Two Up",
     });
 
-    expect(fields).toHaveLength(5);
+    expect(fields).toHaveLength(7);
     expect(fields.every((field) => field.value === "")).toBe(true);
     expect(fields.every((field) => field.kind === "meta")).toBe(true);
     expect(fields.map((field) => field.name)).toEqual([
       `${styleFieldPrefix}.colorRecipe`,
+      `${styleFieldPrefix}.joinAbove`,
+      `${styleFieldPrefix}.backgroundTreatment`,
       `${styleFieldPrefix}.cardFill`,
       `${styleFieldPrefix}.cardBorder`,
       `${styleFieldPrefix}.reduceTopPadding`,

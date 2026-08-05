@@ -14,58 +14,15 @@ export type CTASmallBandImageSectionV3Props = {
   title: string;
 };
 
-const recipeClasses: Record<
-  SectionColorRecipe,
-  {
-    action: string;
-    band: string;
-    body: string;
-    border: string;
-    fade: string;
-    heading: string;
-    section: string;
-  }
-> = {
-  default: {
-    action:
-      "!border-service-accent !bg-service-accent !text-white hover:!border-service-ink hover:!bg-service-ink",
-    band: "bg-service-surface shadow-service",
-    body: "text-service-muted",
-    border: "border-service-border",
-    fade: "from-service-surface",
-    heading: "text-service-ink",
-    section: "bg-bg-page",
-  },
-  muted: {
-    action:
-      "!border-service-ink !bg-service-ink !text-white hover:!border-service-accent hover:!bg-service-accent",
-    band: "bg-surface-raised shadow-service",
-    body: "text-service-muted",
-    border: "border-service-border",
-    fade: "from-surface-raised",
-    heading: "text-service-ink",
-    section: "bg-service-surface",
-  },
-  dark: {
-    action:
-      "!border-white !bg-white !text-bg-dark hover:!border-white/80 hover:!bg-white/85",
-    band: "bg-bg-dark shadow-service",
-    body: "text-white/72",
-    border: "border-white/20",
-    fade: "from-bg-dark",
-    heading: "text-white",
-    section: "bg-bg-page",
-  },
-  accent: {
-    action:
-      "!border-white !bg-white !text-bg-dark hover:!border-white/85 hover:!bg-white/85",
-    band: "bg-bg-dark shadow-service",
-    body: "text-white/72",
-    border: "border-white/20",
-    fade: "from-bg-dark",
-    heading: "text-white",
-    section: "bg-bg-page",
-  },
+const recipeClasses = {
+  action:
+    "!border-service-accent !bg-service-accent !text-white hover:!border-service-ink hover:!bg-service-ink",
+  band: "bg-service-surface shadow-service",
+  body: "text-service-muted",
+  border: "border-service-border",
+  fade: "from-service-surface",
+  heading: "text-service-ink",
+  section: "bg-bg-page",
 };
 
 function cx(...classes: Array<string | false | undefined>) {
@@ -78,12 +35,11 @@ export function CTASmallBandImageSectionV3({
   body,
   cardBorder = "on",
   cardFill = "solid",
-  colorRecipe = "accent",
   imageAlt,
   imageSrc,
   title,
 }: CTASmallBandImageSectionV3Props) {
-  const colors = recipeClasses[colorRecipe];
+  const colors = recipeClasses;
   const isFilled = cardFill === "solid";
 
   return (

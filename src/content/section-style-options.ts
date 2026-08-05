@@ -473,6 +473,43 @@ export const backgroundFillComponents = new Set<string>([
   "NavPrimarySectionV2",
 ]);
 
+/**
+ * Navigation sections, which cannot join a background band.
+ *
+ * A nav frame is positioned `fixed` or `absolute` in the overlay and fixed-nav
+ * modes, so it is out of flow and a band wrapped around it would measure the
+ * wrong height. The nav/hero pair already wraps it for the same reason, and two
+ * wrappers competing for one element is the case worth not having. Excluding
+ * nav keeps bands to a single level of nesting.
+ */
+export const navigationComponents = new Set<string>([
+  "NavCenterLogoSection",
+  "NavCenterLogoSectionV2",
+  "NavFloatingBentoSection",
+  "NavFloatingBentoSectionV2",
+  "NavPrimarySection",
+  "NavPrimarySectionV2",
+]);
+
+export function sectionSupportsJoinAbove(component: string) {
+  return !navigationComponents.has(component);
+}
+
+export function resolveJoinAbove(joinAbove: string | undefined) {
+  return joinAbove === "join";
+}
+
+/**
+ * Navigation is excluded for the same reason it cannot join a band: it is site
+ * chrome that spends most of its life out of flow, and a texture on it would
+ * travel over the sections it floats above. Everything else may carry one -
+ * a treatment on a single section is the same feature as one on a band, which
+ * is why the CSS keys on the attribute rather than on either box.
+ */
+export function sectionSupportsBackgroundTreatment(component: string) {
+  return !navigationComponents.has(component);
+}
+
 export function sectionSupportsBackgroundFill(component: string) {
   return backgroundFillComponents.has(component);
 }
@@ -505,6 +542,44 @@ export const styleFieldOptions = {
     { label: "Background on", value: "solid" },
     { label: "Transparent", value: "none" },
   ],
+  /**
+   * Whether this section shares the section above's background.
+   *
+   * Consecutive sections set to `join` render inside one band element, which
+   * becomes the paint surface for the whole run - see `groupSectionsIntoBands`
+   * in `@/utils/section-bands`. Copy-neutral: it changes which box paints the
+   * ground, never which fields the section renders.
+   *
+   * Stored as a string rather than a boolean. `reduceTopPadding` and
+   * `reduceBottomPadding` are booleans for historical reasons and are the
+   * documented trap in this file; every other axis here is a string, and a
+   * string needs no special case in `resolveSectionStyleOverrides`.
+   */
+  joinAbove: [
+    { label: "Use template default", value: "" },
+    { label: "Own background", value: "separate" },
+    { label: "Join above", value: "join" },
+  ],
+  /**
+   * Texture laid over the ground, on top of whatever the colour recipe paints.
+   *
+   * Every value is drawn from the live tokens rather than from fixed colours, so
+   * one treatment reads correctly on all five recipes. `drift` is the only one
+   * that moves, and it animates the same image `gradient` paints, so reduced
+   * motion degrades to that rather than to nothing.
+   *
+   * Copy-neutral: it changes what the ground looks like, never which fields a
+   * section renders.
+   */
+  backgroundTreatment: [
+    { label: "Use template default", value: "" },
+    { label: "None", value: "none" },
+    { label: "Gradient", value: "gradient" },
+    { label: "Grain", value: "grain" },
+    { label: "Drift", value: "drift" },
+    { label: "Image", value: "image" },
+    { label: "Parallax", value: "image-parallax" },
+  ],
   cardBorder: [
     { label: "Use template default", value: "" },
     { label: "Border on", value: "on" },
@@ -518,9 +593,10 @@ export const styleFieldOptions = {
   colorRecipe: [
     { label: "Use template default", value: "" },
     { label: "Default", value: "default" },
-    { label: "Muted", value: "muted" },
+    { label: "Surface", value: "surface" },
     { label: "Dark", value: "dark" },
     { label: "Accent", value: "accent" },
+    { label: "Ink", value: "ink" },
   ],
   reduceTopPadding: [
     { label: "Use template default", value: "" },
@@ -547,6 +623,62 @@ export const booleanStyleFields = new Set<SectionStyleFieldName>([
   "reduceTopPadding",
 ]);
 
+/** Declared after `styleFieldOptions` so it is not read inside its own TDZ. */
+const backgroundTreatmentValues = new Set<string>(
+  styleFieldOptions.backgroundTreatment
+    .map((option) => option.value)
+    .filter(Boolean),
+);
+
+/**
+ * Falls back to `none` for anything unrecognised, so a template saved with a
+ * treatment that has since been removed renders an untextured ground rather
+ * than an attribute no stylesheet matches.
+ */
+export function resolveBackgroundTreatment(
+  backgroundTreatment: string | undefined,
+) {
+  return backgroundTreatment &&
+    backgroundTreatmentValues.has(backgroundTreatment)
+    ? backgroundTreatment
+    : "none";
+}
+
+/**
+ * A background image path, safe to interpolate into a CSS `url()`.
+ *
+ * The value arrives from a staged page's asset field, which is hand-edited
+ * content rather than a fixed constant, and it is placed into a stylesheet
+ * rather than into markup. React escapes what it puts in the DOM, but it does
+ * not parse CSS, so a value carrying a quote, a paren, a backslash, or a
+ * semicolon could close the `url()` early and append declarations of its own.
+ *
+ * Allowlisted rather than escaped: an image reference here is a site-relative
+ * path or an http(s) URL, and anything that is not one of those is far more
+ * likely to be a mistake than an image nobody thought of. Anything rejected
+ * renders as no image, never as unquoted CSS.
+ */
+/**
+ * Treatments that need a ground image supplied.
+ *
+ * `image` and `image-parallax` are the same picture pinned differently, so they
+ * share one asset field rather than each asking for their own - switching
+ * between them keeps the image an editor already chose.
+ */
+const groundImageTreatments = new Set(["image", "image-parallax"]);
+
+export function treatmentUsesGroundImage(treatment: string | undefined) {
+  return groundImageTreatments.has(treatment ?? "");
+}
+
+const safeImageReference = /^(?:\/|https?:\/\/)[\w\-./%?=&,:+~@]*$/;
+
+export function resolveBackgroundImage(backgroundImage: string | undefined) {
+  const trimmed = backgroundImage?.trim() ?? "";
+
+  return safeImageReference.test(trimmed) ? trimmed : "";
+}
+
 export type SectionStyleFieldName = keyof typeof styleFieldOptions;
 
 export type SectionStyleFieldSpec = {
@@ -565,6 +697,18 @@ const backgroundFillStyleField: SectionStyleFieldSpec = {
   label: "Background",
   name: "backgroundFill",
   options: styleFieldOptions.backgroundFill,
+};
+
+const joinAboveStyleField: SectionStyleFieldSpec = {
+  label: "Background band",
+  name: "joinAbove",
+  options: styleFieldOptions.joinAbove,
+};
+
+const backgroundTreatmentStyleField: SectionStyleFieldSpec = {
+  label: "Background texture",
+  name: "backgroundTreatment",
+  options: styleFieldOptions.backgroundTreatment,
 };
 
 const cardStyleFields: SectionStyleFieldSpec[] = [
@@ -641,6 +785,10 @@ export function getSectionStyleFieldSpecs(
 ): SectionStyleFieldSpec[] {
   return [
     colorRecipeStyleField,
+    ...(sectionSupportsJoinAbove(component) ? [joinAboveStyleField] : []),
+    ...(sectionSupportsBackgroundTreatment(component)
+      ? [backgroundTreatmentStyleField]
+      : []),
     ...(sectionSupportsBackgroundFill(component)
       ? [backgroundFillStyleField]
       : []),

@@ -38,7 +38,6 @@ export function ContentStickyCardStreamSectionV2({
   title,
   body,
   cards,
-  colorRecipe = "default",
   imageAlt,
   imageHeight,
   imageSrc,
@@ -46,40 +45,14 @@ export function ContentStickyCardStreamSectionV2({
   showImage = false,
 }: ContentStickyCardStreamSectionV2Props) {
   const transparentCards = cardFill === "none";
-  // Section/card backgrounds and ink/muted text below use the generic
-  // service-ink/bg-page tokens, which the pagebuilder-section-frame wrapper
-  // already re-tints correctly for dark/accent recipes. text-service-accent
-  // is the one token that stays a constant brand color regardless of recipe,
-  // so it needs an explicit swap here or the eyebrow becomes invisible
-  // against an accent-colored background.
-  const colors =
-    colorRecipe === "muted"
-      ? {
-          // surface-raised, not bg-bg-page: the muted frame remaps
-          // --live-bg-page onto the service surface, so a page-colored card
-          // renders as the same flat field as the section behind it.
-          card: "bg-surface-raised",
-          cardEyebrow: "text-service-accent",
-          cardMuted: "text-service-muted",
-          cardText: "text-service-ink",
-          eyebrow: "text-service-accent",
-          section: "bg-service-surface",
-        }
-      : {
-          card:
-            colorRecipe === "accent" ? "bg-bg-dark" : "bg-service-surface",
-          cardEyebrow:
-            colorRecipe === "accent" ? "text-white" : "text-service-accent",
-          cardMuted:
-            colorRecipe === "accent" ? "text-white/70" : "text-service-muted",
-          cardText:
-            colorRecipe === "accent" ? "text-white" : "text-service-ink",
-          eyebrow:
-            colorRecipe === "accent"
-              ? "text-[var(--live-accent-ink)]"
-              : "text-service-accent",
-          section: "bg-bg-page",
-        };
+  const colors = {
+    card: "bg-service-surface",
+    cardEyebrow: "text-service-accent",
+    cardMuted: "text-service-muted",
+    cardText: "text-service-ink",
+    eyebrow: "text-service-accent",
+    section: "bg-bg-page",
+  };
 
   return (
     <section className={colors.section}>

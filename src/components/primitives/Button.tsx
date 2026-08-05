@@ -18,11 +18,20 @@ const buttonFocusClassName =
 const standardButtonBaseClassName =
   "radius-button inline-flex min-h-12 cursor-pointer items-center justify-center whitespace-nowrap border px-6 py-2 text-sm font-semibold transition duration-200 ease-out";
 
+/**
+ * Both variants read CTA tokens rather than the palette directly, so a colour
+ * recipe decides what they are without any section overriding them.
+ *
+ * The secondary is an outline, not a filled pill. Every recipe table gives it a
+ * transparent fill, which makes it a property of the button rather than of any
+ * one ground - and the filled version it replaces read as a second primary on a
+ * light section and had to be overridden by hand on every dark one.
+ */
 const standardButtonVariantClassNames = {
   primary:
-    "border-transparent bg-cta-primary text-text-inverse hover:bg-cta-primary-hover",
+    "border-transparent bg-cta-primary text-cta-primary-ink hover:bg-cta-primary-hover",
   secondary:
-    "border-service-border bg-bg-page text-service-ink hover:border-service-accent hover:bg-service-surface hover:text-service-accent",
+    "border-cta-secondary-border bg-transparent text-cta-secondary-ink hover:bg-cta-secondary-border/10",
 } as const;
 
 export function Button({
@@ -142,7 +151,7 @@ export function TextLiftButton({
   return (
     <a
       className={cx(
-        "group/button radius-button relative inline-flex min-h-12 cursor-pointer items-center justify-center overflow-hidden border border-transparent bg-cta-primary px-7 py-2 text-sm font-semibold text-text-inverse transition duration-200 ease-out hover:scale-[0.97] hover:bg-cta-primary-hover",
+        "group/button radius-button relative inline-flex min-h-12 cursor-pointer items-center justify-center overflow-hidden border border-transparent bg-cta-primary px-7 py-2 text-sm font-semibold text-cta-primary-ink transition duration-200 ease-out hover:scale-[0.97] hover:bg-cta-primary-hover",
         buttonFocusClassName,
         className,
       )}

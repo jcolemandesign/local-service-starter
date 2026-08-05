@@ -70,67 +70,17 @@ const fullBleedImagePanelStyle: CSSProperties = {
   width: "calc(100% + var(--site-grid-inset-inline))",
 };
 
-const colorRecipeClassName: Record<
-  SectionColorRecipe,
-  {
-    body: string;
-    eyebrow: string;
-    ink: string;
-    marker: string;
-    section: string;
-    serviceArea: string;
-    submit: string;
-    success: string;
-    successAction: string;
-  }
-> = {
-  default: {
-    body: "text-service-muted",
-    eyebrow: "text-service-accent",
-    ink: "text-service-ink",
-    marker: "bg-service-accent",
-    section: "bg-bg-page",
-    serviceArea: "text-service-muted",
-    submit:
-      "border-service-accent bg-service-accent text-white hover:border-service-ink hover:bg-service-ink",
-    success: "border-service-accent/35 bg-service-accent/10",
-    successAction: "",
-  },
-  muted: {
-    body: "text-service-muted",
-    eyebrow: "text-service-accent",
-    ink: "text-service-ink",
-    marker: "bg-service-accent",
-    section: "bg-service-surface",
-    serviceArea: "text-service-muted",
-    submit:
-      "border-service-accent bg-service-accent text-white hover:border-service-ink hover:bg-service-ink",
-    success: "border-service-accent/35 bg-service-accent/10",
-    successAction: "",
-  },
-  dark: {
-    body: "text-white/70",
-    eyebrow: "text-white",
-    ink: "text-white",
-    marker: "bg-white",
-    section: "bg-bg-dark",
-    serviceArea: "text-white/70",
-    submit: "border-white bg-white text-bg-dark hover:bg-service-surface",
-    success: "border-white/35 bg-white/10",
-    successAction:
-      "!border-white !bg-white !text-bg-dark hover:!bg-service-surface",
-  },
-  accent: {
-    body: "text-[var(--live-accent-muted-text)]",
-    eyebrow: "text-[var(--live-accent-ink)]",
-    ink: "text-[var(--live-accent-ink)]",
-    marker: "bg-[var(--live-accent-ink)]",
-    section: "bg-service-accent",
-    serviceArea: "text-[var(--live-accent-muted-text)]",
-    submit: "border-white bg-white text-bg-dark hover:bg-white/85",
-    success: "border-white/40 bg-white/10",
-    successAction: "!border-white !bg-white !text-bg-dark hover:!bg-white/85",
-  },
+const colorRecipeClassName = {
+  body: "text-service-muted",
+  eyebrow: "text-service-accent",
+  ink: "text-service-ink",
+  marker: "bg-service-accent",
+  section: "bg-bg-page",
+  serviceArea: "text-service-muted",
+  submit:
+    "border-service-accent bg-service-accent text-white hover:border-service-ink hover:bg-service-ink",
+  success: "border-service-accent/35 bg-service-accent/10",
+  successAction: "",
 };
 
 function cx(...classes: Array<string | false | undefined>) {
@@ -139,7 +89,6 @@ function cx(...classes: Array<string | false | undefined>) {
 
 export function HeroServiceAreaZipLookupSectionV3({
   body,
-  colorRecipe = "default",
   eyebrow,
   headingLevel = 1,
   imageAlt,
@@ -158,7 +107,7 @@ export function HeroServiceAreaZipLookupSectionV3({
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const inputId = useId();
   const config = variantConfig[variant] ?? variantConfig["text-3-image-4-right"];
-  const colors = colorRecipeClassName[colorRecipe];
+  const colors = colorRecipeClassName;
   const HeadingTag = `h${headingLevel}` as const;
   const hasWideTextColumn =
     variant === "text-4-image-3-right" || variant === "image-3-left-text-4";

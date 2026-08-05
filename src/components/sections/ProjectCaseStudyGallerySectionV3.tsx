@@ -143,7 +143,6 @@ export function ProjectCaseStudyGallerySectionV3({
   align = "left",
   cardBorder = "on",
   cardFill = "solid",
-  colorRecipe = "default",
   slides,
 }: ProjectCaseStudyGallerySectionV3Props) {
   const isImageRight = align === "right";
@@ -164,16 +163,10 @@ export function ProjectCaseStudyGallerySectionV3({
   const imageTransition = shouldReduceMotion
     ? { duration: 0 }
     : { duration: 0.26, ease: sliderEase };
-  const hasDarkCard = colorRecipe === "dark" && cardFill === "solid";
-  const cardBorderClass = hasDarkCard ? "border-white/20" : "border-service-border";
-  const cardTextClass = hasDarkCard ? "text-white" : "text-service-ink";
-  const cardMutedTextClass = hasDarkCard ? "text-white/70" : "text-service-muted";
-  // text-service-accent stays a constant brand color regardless of recipe
-  // (unlike text-service-ink/muted above, which the pagebuilder-section-frame
-  // wrapper already re-tints for dark/accent), so the eyebrow needs an
-  // explicit swap here or it becomes invisible against an accent background.
-  const eyebrowClass =
-    colorRecipe === "accent" ? "text-[var(--live-accent-ink)]" : "text-service-accent";
+  const cardBorderClass = "border-service-border";
+  const cardTextClass = "text-service-ink";
+  const cardMutedTextClass = "text-service-muted";
+  const eyebrowClass = "text-service-accent";
   // The field behind the print is the border colour at 30%. No per-recipe map
   // is needed: globals.css already redefines --live-service-border for the dark
   // and accent recipes, so the field follows whatever the section's own edges
@@ -313,11 +306,7 @@ export function ProjectCaseStudyGallerySectionV3({
                 <motion.article
                   aria-live="polite"
                   className={`flex flex-col col-start-1 row-start-1 p-7 max-md:p-6 ${
-                    cardFill === "none"
-                      ? "bg-transparent"
-                      : hasDarkCard
-                        ? "bg-bg-dark"
-                        : "bg-service-surface"
+                    cardFill === "none" ? "bg-transparent" : "bg-service-surface"
                   }`}
                   exit={{ opacity: 0, x: shouldReduceMotion ? 0 : -6 }}
                   initial={{ opacity: 0, x: shouldReduceMotion ? 0 : 10 }}

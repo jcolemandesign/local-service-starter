@@ -112,7 +112,7 @@ import {
 import { DownArrowIcon } from "@/components/primitives";
 import type { PagebuilderRecipe, SectionMode } from "@/content/pagebuilder";
 import {
-  isSectionColorRecipe,
+  resolveSectionColorRecipe,
   sectionColorRecipes,
   type SectionCardBorder,
   type SectionCardFill,
@@ -144,7 +144,12 @@ import {
   sectionSupportsCardLinks,
   sectionSupportsCardStyle,
   sectionSupportsBackgroundFill,
+  sectionSupportsJoinAbove,
+  sectionSupportsBackgroundTreatment,
   sectionSupportsSectionSpacing,
+  resolveBackgroundTreatment,
+  styleFieldOptions,
+  treatmentUsesGroundImage,
   sectionSupportsTableCompareAlign,
   servicesBentoVariantOptions,
   servicesBentoVariantValues,
@@ -167,6 +172,7 @@ import {
   type SplitImageRatio,
   type SplitImageVariant,
 } from "@/content/section-style-options";
+import { groupSectionsIntoBands, withBandRecipe } from "@/utils/section-bands";
 
 type PagebuilderShellProps = {
   recipes: PagebuilderRecipe[];
@@ -682,7 +688,7 @@ function isDecisionSplitDecisionLargeSection(
 }
 
 function getSectionColorRecipe(section: WorkingSection): SectionColorRecipe {
-  return isSectionColorRecipe(section.colorRecipe) ? section.colorRecipe : "default";
+  return resolveSectionColorRecipe(section.colorRecipe) ?? "default";
 }
 
 function getSectionCardFill(section: WorkingSection): SectionCardFill {
@@ -2942,6 +2948,25 @@ export function PagebuilderShell({
     );
   }
 
+  function updateSectionJoinAbove(sectionId: string, joinAbove: string) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId ? { ...section, joinAbove } : section,
+      ),
+    );
+  }
+
+  function updateSectionBackgroundTreatment(
+    sectionId: string,
+    backgroundTreatment: string,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId ? { ...section, backgroundTreatment } : section,
+      ),
+    );
+  }
+
   function updateSectionCardBorder(
     sectionId: string,
     cardBorder: SectionCardBorder,
@@ -3829,7 +3854,14 @@ export function PagebuilderShell({
   function renderPreviewWindow() {
     function renderSectionFrame(
       section: WorkingSection,
-      options: { className?: string; isOverlay?: boolean } = {},
+      options: {
+        className?: string;
+        /** Member of a background band - the band paints, this frame does not.
+         *  See `TemplateSectionFrame` in `PageTemplatePreview` for why the
+         *  recipe has to go inert rather than stay set. */
+        inBand?: boolean;
+        isOverlay?: boolean;
+      } = {},
     ) {
       const isSelected = section.id === selectedSectionId;
       const sectionIndex = includedSections.findIndex(
@@ -4187,7 +4219,7 @@ export function PagebuilderShell({
       return (
         <div
           className={cx(
-            "pagebuilder-section-frame group/pagebuilder-section cursor-pointer outline outline-0 outline-offset-0 transition-shadow",
+            "pagebuilder-section-frame pagebuilder-paint-surface group/pagebuilder-section cursor-pointer outline outline-0 outline-offset-0 transition-shadow",
             options.isOverlay ? "absolute" : "relative",
             options.isOverlay && "pointer-events-none",
             options.className,
@@ -4197,13 +4229,22 @@ export function PagebuilderShell({
           data-pagebuilder-section-id={section.id}
           data-pagebuilder-section-component={section.component}
           data-pagebuilder-section-mode={section.mode}
-          data-pagebuilder-background-fill={getSectionBackgroundFill(section)}
+          data-pagebuilder-background-fill={
+            options.inBand ? "none" : getSectionBackgroundFill(section)
+          }
           data-pagebuilder-card-border={getSectionCardBorder(section)}
           data-pagebuilder-card-fill={getSectionCardFill(section)}
           data-pagebuilder-card-style={
             sectionSupportsCardStyle(section.component) ? "true" : "false"
           }
-          data-pagebuilder-color-recipe={getSectionColorRecipe(section)}
+          data-pagebuilder-background-treatment={
+            options.inBand
+              ? "none"
+              : resolveBackgroundTreatment(section.backgroundTreatment)
+          }
+          data-pagebuilder-color-recipe={
+            options.inBand ? "inherit" : getSectionColorRecipe(section)
+          }
           data-pagebuilder-padding-top={
             section.reduceTopPadding && sectionSupportsSectionSpacing(section.component)
               ? "none"
@@ -4252,14 +4293,43 @@ export function PagebuilderShell({
         sizeLabel={selectedViewport.sizeLabel}
         spacingClassName={normalSpacingClassName}
       >
-        {includedSections.map((section, index) => {
-          const nextSection = includedSections[index + 1];
-          const previousSection = includedSections[index - 1];
+        {groupSectionsIntoBands(includedSections).map((band, bandIndex, allBands) => {
+          const [first] = band.sections;
+          const nextBand = allBands[bandIndex + 1];
+          const previousBand = allBands[bandIndex - 1];
+          const isNavigationBand = (
+            candidate: (typeof allBands)[number] | undefined,
+          ) =>
+            Boolean(
+              candidate &&
+                candidate.sections.length === 1 &&
+                isPreviewNavigationSection(candidate.sections[0]),
+            );
 
-          if (
-            isPreviewNavigationSection(section) &&
-            isPreviewHeroSection(nextSection)
-          ) {
+          // A run of one is the common case and renders as a bare frame, so a
+          // page using no bands emits the same DOM it did before bands existed.
+          const renderBand = () =>
+            band.isBand ? (
+              <div
+                className="pagebuilder-section-band pagebuilder-paint-surface"
+                data-pagebuilder-background-treatment={resolveBackgroundTreatment(
+                  first.backgroundTreatment,
+                )}
+                data-pagebuilder-color-recipe={getSectionColorRecipe(first)}
+                key={`band-${first.id}`}
+              >
+                {withBandRecipe(band).map((section) =>
+                  renderSectionFrame(section, { inBand: true }),
+                )}
+              </div>
+            ) : (
+              renderSectionFrame(first)
+            );
+
+          // Navigation never joins a band, so a nav run is always one section.
+          // That is what lets this wrapper hold the nav beside a whole run
+          // without two wrappers competing for the same element.
+          if (isNavigationBand(band) && nextBand && isPreviewHeroSection(nextBand.sections[0])) {
             return (
               <div
                 // The nav is positioned absolutely against this wrapper, so the
@@ -4267,36 +4337,44 @@ export function PagebuilderShell({
                 // --section-space-sml here reserved 4rem for a taller nav,
                 // which is why it overhung the hero.
                 className="pagebuilder-nav-hero-pair relative pt-[var(--nav-height)]"
-                key={`${section.id}-${nextSection.id}`}
+                key={`${first.id}-pair`}
               >
-                {renderSectionFrame(section, {
+                {renderSectionFrame(first, {
                   className: "inset-x-0 top-0 z-20",
                   isOverlay: true,
                 })}
-                {renderSectionFrame(nextSection)}
+                {nextBand.isBand ? (
+                  <div
+                    className="pagebuilder-section-band pagebuilder-paint-surface"
+                    data-pagebuilder-background-treatment={resolveBackgroundTreatment(
+                      nextBand.sections[0].backgroundTreatment,
+                    )}
+                    data-pagebuilder-color-recipe={getSectionColorRecipe(
+                      nextBand.sections[0],
+                    )}
+                  >
+                    {withBandRecipe(nextBand).map((section) =>
+                      renderSectionFrame(section, { inBand: true }),
+                    )}
+                  </div>
+                ) : (
+                  renderSectionFrame(nextBand.sections[0])
+                )}
               </div>
             );
           }
 
-          if (
-            isPreviewHeroSection(section) &&
-            previousSection &&
-            isPreviewNavigationSection(previousSection)
-          ) {
+          if (isNavigationBand(previousBand) && isPreviewHeroSection(first)) {
             return null;
           }
 
-          if (
-            isPreviewNavigationSection(section) &&
-            nextSection &&
-            !isPreviewHeroSection(nextSection)
-          ) {
-            return renderSectionFrame(section, {
+          if (isNavigationBand(band) && nextBand) {
+            return renderSectionFrame(first, {
               className: "mb-[var(--section-space-sml)]",
             });
           }
 
-          return renderSectionFrame(section);
+          return renderBand();
         })}
       </PagebuilderPreviewWindow>
     );
@@ -4648,11 +4726,20 @@ export function PagebuilderShell({
                             </span>
                           </label>
 
-                          <fieldset className="grid gap-2">
+                          {/* Hidden on a joined section. The band paints the
+                              ground for its whole run, so a recipe chosen here
+                              could never take effect - and an offered control
+                              that does nothing is worse than an absent one. */}
+                          <fieldset
+                            className={cx(
+                              "grid gap-2",
+                              section.joinAbove === "join" && "hidden",
+                            )}
+                          >
                             <legend className="type-caption font-semibold text-current">
                               Color recipe
                             </legend>
-                            <div className="grid grid-cols-4 gap-2 max-md:grid-cols-2">
+                            <div className="grid grid-cols-5 gap-2 max-md:grid-cols-2">
                               {sectionColorRecipes.map((recipe) => {
                                 const isActive =
                                   getSectionColorRecipe(section) === recipe.id;
@@ -4681,6 +4768,110 @@ export function PagebuilderShell({
                               })}
                             </div>
                           </fieldset>
+
+                          {/* Offered on everything but navigation, which cannot
+                              join a band - see `navigationComponents`. Hidden on
+                              the first section too, since it has nothing above
+                              it to join. */}
+                          {sectionSupportsJoinAbove(section.component) &&
+                          includedSections[0]?.id !== section.id ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Background band
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {styleFieldOptions.joinAbove
+                                  .filter((option) => option.value !== "")
+                                  .map((option) => {
+                                    const optionIsActive =
+                                      (section.joinAbove === "join") ===
+                                      (option.value === "join");
+
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-2 text-center text-xs font-semibold transition-colors",
+                                          optionIsActive
+                                            ? "token-chrome-card-active"
+                                            : "token-chrome-card",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateSectionJoinAbove(
+                                            section.id,
+                                            option.value,
+                                          )
+                                        }
+                                        type="button"
+                                      >
+                                        {option.label}
+                                      </button>
+                                    );
+                                  })}
+                              </div>
+                              <span className="type-caption text-current/70">
+                                Joining shares the background of the section
+                                above, so an image or gradient can span both.
+                              </span>
+                            </fieldset>
+                          ) : null}
+
+                          {/* On a joined section this control is hidden: the
+                              run's first section owns the band's texture, and
+                              two stacked layers would double the wash. */}
+                          {sectionSupportsBackgroundTreatment(
+                            section.component,
+                          ) && section.joinAbove !== "join" ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Background texture
+                              </legend>
+                              <div className="grid grid-cols-3 gap-2 max-md:grid-cols-2">
+                                {styleFieldOptions.backgroundTreatment
+                                  .filter((option) => option.value !== "")
+                                  .map((option) => {
+                                    const optionIsActive =
+                                      resolveBackgroundTreatment(
+                                        section.backgroundTreatment,
+                                      ) === option.value;
+
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-2 text-center text-xs font-semibold transition-colors",
+                                          optionIsActive
+                                            ? "token-chrome-card-active"
+                                            : "token-chrome-card",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateSectionBackgroundTreatment(
+                                            section.id,
+                                            option.value,
+                                          )
+                                        }
+                                        type="button"
+                                      >
+                                        {option.label}
+                                      </button>
+                                    );
+                                  })}
+                              </div>
+                              {treatmentUsesGroundImage(
+                                resolveBackgroundTreatment(
+                                  section.backgroundTreatment,
+                                ),
+                              ) ? (
+                                <span className="type-caption text-current/70">
+                                  The image itself is set per page, alongside
+                                  the section&rsquo;s other assets — the canvas
+                                  shows the ground until then.
+                                </span>
+                              ) : null}
+                            </fieldset>
+                          ) : null}
 
                           {section.component ===
                           processStepsBranchingComponent ? (

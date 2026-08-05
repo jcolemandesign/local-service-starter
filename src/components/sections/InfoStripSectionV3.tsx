@@ -21,47 +21,12 @@ export type InfoStripSectionV3Props = {
  * is the card's default fill, and a card left on `bg-service-surface` would sit
  * as a pale block on it.
  */
-const colorRecipeClassName: Record<
-  SectionColorRecipe,
-  { body: string; card: string; cardBorder: string; label: string; section: string }
-> = {
-  default: {
-    body: "text-service-ink",
-    card: "bg-service-surface",
-    cardBorder: "border-service-border",
-    label: "text-service-accent",
-    section: "bg-bg-page",
-  },
-  muted: {
-    body: "text-service-ink",
-    // The raised surface, not the page token. A filled card on the muted recipe
-    // has to lift off a section that is already surface-coloured, and the page
-    // token sits below it rather than above - the two read as one flat field.
-    // `globals.css` does the same lift for cards it can reach by selector.
-    card: "bg-surface-raised",
-    cardBorder: "border-service-border",
-    label: "text-service-accent",
-    section: "bg-service-surface",
-  },
-  // Dark and accent stay on explicit translucent whites rather than
-  // `bg-surface-raised`. That token is only re-pointed at a dark/accent-derived
-  // colour inside `.pagebuilder-section-frame`, so on an exported page it would
-  // still resolve to the light default and put a near-white card on a dark
-  // section. A translucent white is correct in both places.
-  dark: {
-    body: "text-white",
-    card: "bg-white/10",
-    cardBorder: "border-white/25",
-    label: "text-white",
-    section: "bg-bg-dark",
-  },
-  accent: {
-    body: "text-white",
-    card: "bg-bg-dark",
-    cardBorder: "border-white/25",
-    label: "text-white",
-    section: "bg-service-accent",
-  },
+const colorRecipeClassName = {
+  body: "text-service-ink",
+  card: "bg-service-surface",
+  cardBorder: "border-service-border",
+  label: "text-service-accent",
+  section: "bg-bg-page",
 };
 
 /**
@@ -116,10 +81,9 @@ export function InfoStripSectionV3({
   cardBorder = "on",
   cardFill = "solid",
   cardLabel,
-  colorRecipe = "default",
   icons = "on",
 }: InfoStripSectionV3Props) {
-  const colors = colorRecipeClassName[colorRecipe];
+  const colors = colorRecipeClassName;
 
   return (
     <section className={colors.section}>

@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-08-05T04:55:43.378Z",
+      "savedAt": "2026-08-05T21:22:25.714Z",
       "sectionCount": 11,
       "sections": [
         {
@@ -24,8 +24,8 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "slotId": "slot-60617e1dbb11",
-          "colorRecipe": "muted",
-          "backgroundFill": "none",
+          "colorRecipe": "dark",
+          "backgroundFill": "solid",
           "cardBorder": "off",
           "cardFill": "none"
         },
@@ -42,7 +42,7 @@
           "reduceTopPadding": false,
           "slotId": "slot-81cda615566f",
           "variant": "image-3-left-text-4",
-          "colorRecipe": "dark",
+          "colorRecipe": "default",
           "backgroundFill": "solid",
           "cardBorder": "off",
           "cardFill": "solid"
@@ -59,7 +59,7 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "slotId": "slot-31fbb463a07b",
-          "colorRecipe": "muted",
+          "colorRecipe": "default",
           "backgroundFill": "solid",
           "cardBorder": "on",
           "cardFill": "solid"
@@ -77,9 +77,9 @@
           "reduceTopPadding": false,
           "slotId": "slot-e1fa6e1734bc",
           "variant": "default",
-          "colorRecipe": "dark",
+          "colorRecipe": "surface",
           "backgroundFill": "solid",
-          "cardBorder": "on",
+          "cardBorder": "off",
           "cardFill": "solid"
         },
         {
@@ -94,7 +94,7 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "slotId": "slot-5f292a5a59ac",
-          "colorRecipe": "muted",
+          "colorRecipe": "dark",
           "backgroundFill": "solid",
           "cardBorder": "off",
           "cardFill": "none"
@@ -128,7 +128,7 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "slotId": "slot-51fc48ccc1f8",
-          "colorRecipe": "default",
+          "colorRecipe": "dark",
           "backgroundFill": "solid",
           "cardBorder": "on",
           "cardFill": "solid"
@@ -145,7 +145,7 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "slotId": "slot-352d6f54c6f1",
-          "colorRecipe": "default",
+          "colorRecipe": "dark",
           "backgroundFill": "solid",
           "cardBorder": "on",
           "cardFill": "solid"
@@ -162,7 +162,7 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "slotId": "slot-f30b08eb5ae5",
-          "colorRecipe": "muted",
+          "colorRecipe": "dark",
           "backgroundFill": "solid",
           "cardBorder": "on",
           "cardFill": "solid"

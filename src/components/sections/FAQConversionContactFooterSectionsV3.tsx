@@ -231,56 +231,32 @@ function PlaceholderBackground() {
   );
 }
 
-const faqRecipeClasses: Record<
-  SectionColorRecipe,
-  {
-    body: string;
-    card: string;
-    eyebrow: string;
-    heading: string;
-    section: string;
-  }
-> = {
-  default: {
-    body: "text-service-muted",
-    card: "border-service-border bg-service-surface shadow-service",
-    eyebrow: "text-service-accent",
-    heading: "text-service-ink",
-    section: "bg-bg-page",
-  },
-  muted: {
-    body: "text-service-muted",
-    card: "border-service-border bg-surface-raised shadow-service",
-    eyebrow: "text-service-accent",
-    heading: "text-service-ink",
-    section: "bg-service-surface",
-  },
-  dark: {
-    body: "text-white/72",
-    card: "border-white/16 bg-bg-dark shadow-service",
-    eyebrow: "text-white/68",
-    heading: "text-white",
-    section: "bg-service-surface",
-  },
-  accent: {
-    body: "text-white/72",
-    card: "border-white/20 bg-bg-dark shadow-service",
-    eyebrow: "text-white/68",
-    heading: "text-white",
-    section: "bg-service-accent",
-  },
+/**
+ * Semantic classes only. Which colour each one resolves to is the colour
+ * recipe's decision, made once in the recipe blocks in `globals.css` - so this
+ * section cannot disagree with the table, and gets a new recipe for free.
+ *
+ * The per-recipe map this replaces is also where a real bug lived: on `dark` it
+ * painted the section `bg-service-surface` - the light token - while setting
+ * headings to `text-white`, so the whole section rendered white on near-white.
+ */
+const faqRecipeClasses = {
+  body: "text-service-muted",
+  card: "border-service-border bg-service-surface shadow-service",
+  eyebrow: "text-service-accent",
+  heading: "text-service-ink",
+  section: "bg-bg-page",
 };
 
 export function FAQSectionV3({
   body,
   cardBorder = "on",
   cardFill = "solid",
-  colorRecipe = "default",
   eyebrow,
   items,
   title,
 }: FAQSectionV3Props) {
-  const colors = faqRecipeClasses[colorRecipe];
+  const colors = faqRecipeClasses;
 
   return (
     <section className={colors.section}>
@@ -324,60 +300,27 @@ export function FAQSectionV3({
   );
 }
 
-const ctaRecipeClasses: Record<
-  SectionColorRecipe,
-  {
-    action: string;
-    body: string;
-    card: string;
-    eyebrow: string;
-    heading: string;
-    section: string;
-  }
-> = {
-  default: {
-    action:
-      "!border-service-accent !bg-service-accent !text-white hover:!border-service-ink hover:!bg-service-ink",
-    body: "text-service-muted",
-    card: "border-service-border bg-service-surface text-service-ink shadow-service",
-    eyebrow: "text-service-accent",
-    heading: "text-service-ink",
-    section: "bg-bg-page",
-  },
-  muted: {
-    action:
-      "!border-service-ink !bg-service-ink !text-white hover:!border-service-accent hover:!bg-service-accent",
-    body: "text-service-muted",
-    card: "border-service-border bg-bg-page text-service-ink shadow-service",
-    eyebrow: "text-service-accent",
-    heading: "text-service-ink",
-    section: "bg-service-surface",
-  },
-  dark: {
-    action: "!border-white !bg-white !text-bg-dark hover:!bg-service-surface",
-    body: "text-white/72",
-    card: "border-white/16 bg-white/8 text-white",
-    eyebrow: "text-white/68",
-    heading: "text-white",
-    section: "bg-bg-dark text-white",
-  },
-  accent: {
-    action: "!border-white !bg-white !text-bg-dark hover:!bg-white/85",
-    body: "text-white/72",
-    card: "border-white/20 bg-bg-dark text-white",
-    eyebrow: "text-white/68",
-    heading: "text-white",
-    section: "bg-service-accent text-[var(--live-accent-ink)]",
-  },
+/**
+ * `action` is empty in every case now. Each recipe used to invent a button
+ * colour because the section field had already taken the accent; the CTA tokens
+ * carry that decision instead, so the button arrives correct for whatever
+ * ground it lands on.
+ */
+const ctaRecipeClasses = {
+  action: "",
+  body: "text-service-muted",
+  card: "border-service-border bg-service-surface text-service-ink shadow-service",
+  eyebrow: "text-service-accent",
+  heading: "text-service-ink",
+  section: "bg-bg-page",
 };
 
 export function CTASectionV3({
   action,
   body,
-  colorRecipe = "dark",
   title,
 }: CTASectionV3Props) {
-  const colors = ctaRecipeClasses[colorRecipe];
+  const colors = ctaRecipeClasses;
 
   return (
     <section className={colors.section}>
@@ -426,12 +369,11 @@ export function CTASectionV3({
 export function CTAMutedSectionV3({
   action,
   body,
-  colorRecipe = "muted",
   secondaryAction,
   secondaryActionHref,
   title,
 }: CTAMutedSectionV3Props) {
-  const colors = ctaRecipeClasses[colorRecipe];
+  const colors = ctaRecipeClasses;
 
   return (
     <section className={colors.section}>

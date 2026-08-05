@@ -55,7 +55,6 @@ export function ContentMainIdeaGridSectionV3({
   body,
   cardBorder = "on",
   cardFill = "solid",
-  colorRecipe = "default",
   eyebrow,
   points,
   title,
@@ -68,42 +67,13 @@ export function ContentMainIdeaGridSectionV3({
     cardBorder === "off" ? "!border-transparent" : undefined,
   );
   const colors = {
-    default: {
-      body: "text-service-muted",
-      card: "border-service-border bg-service-surface shadow-service",
-      eyebrow: "text-service-accent",
-      heading: "text-service-ink",
-      index: "text-service-accent",
-      section: "bg-bg-page",
-    },
-    muted: {
-      body: "text-service-muted",
-      // surface-raised rather than bg-bg-page - the muted frame remaps
-      // --live-bg-page onto the service surface, which flattens the card into
-      // the section behind it.
-      card: "border-service-border bg-surface-raised shadow-service",
-      eyebrow: "text-service-accent",
-      heading: "text-service-ink",
-      index: "text-service-accent",
-      section: "bg-service-surface",
-    },
-    dark: {
-      body: "text-white/70",
-      card: "border-white/25 bg-white/5",
-      eyebrow: "text-white/70",
-      heading: "text-white",
-      index: "text-white/50",
-      section: "bg-bg-dark",
-    },
-    accent: {
-      body: "text-white/70",
-      card: "border-white/25 bg-bg-dark",
-      eyebrow: "text-white/70",
-      heading: "text-white",
-      index: "text-white/50",
-      section: "bg-service-accent",
-    },
-  }[colorRecipe];
+    body: "text-service-muted",
+    card: "border-service-border bg-service-surface shadow-service",
+    eyebrow: "text-service-accent",
+    heading: "text-service-ink",
+    index: "text-service-accent",
+    section: "bg-bg-page",
+  };
 
   return (
     <section className={colors.section}>

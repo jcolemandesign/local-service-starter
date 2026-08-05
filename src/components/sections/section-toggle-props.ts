@@ -1,6 +1,6 @@
 import { cloneElement, isValidElement, type ReactNode } from "react";
 
-import { isSectionColorRecipe } from "@/content/section-color-recipes";
+import { resolveSectionColorRecipe } from "@/content/section-color-recipes";
 import {
   cardLinkComponents,
   cardLinkGridAlignComponents,
@@ -53,9 +53,8 @@ export function getSectionToggleProps(section: SectionToggleSource) {
   // Offered on every section (`getSectionStyleFieldSpecs` always includes it),
   // so it is passed unconditionally. Sections that do not accept the prop
   // ignore it - these are components with named props, not DOM nodes.
-  props.colorRecipe = isSectionColorRecipe(section.colorRecipe)
-    ? section.colorRecipe
-    : "default";
+  props.colorRecipe =
+    resolveSectionColorRecipe(section.colorRecipe) ?? "default";
 
   if (backgroundFillComponents.has(section.component)) {
     props.backgroundFill = resolveBackgroundFill(section.backgroundFill);

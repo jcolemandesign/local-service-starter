@@ -109,6 +109,30 @@
    * the dark-ground rule below repoints these at the highlight token. */
   --color-cta-primary: var(--live-cta-primary, var(--live-service-accent, #1f7a5a));
   --color-cta-primary-hover: var(--live-cta-primary-hover, var(--live-bg-dark, #10141b));
+  /* The primary CTA's label, and the secondary CTA's label and edge.
+   *
+   * These are separate from the accent token because two rows of the recipe
+   * tables disagree with it. On the dark ground the eyebrow is the surface
+   * token while the secondary CTA is the page token; on ink the eyebrow is
+   * dark while the CTA edge is the highlight. Both read the accent token
+   * today, so one of the two would always be wrong. */
+  --color-cta-primary-ink: var(--live-cta-primary-ink, #ffffff);
+  --color-cta-secondary-ink: var(--live-cta-secondary-ink, var(--live-service-accent, #1f7a5a));
+  --color-cta-secondary-border: var(--live-cta-secondary-border, var(--live-service-accent, #1f7a5a));
+  /* The muted token in its ink-recipe card role.
+   *
+   * A section on the ink recipe cannot reach its own card colour by naming
+   * `service-muted`: inside the builder frame that token has already been
+   * rewritten to the recipe's secondary text. The frame republishes the
+   * original as --recipe-ink-card, and the fallback resolves to the token
+   * itself everywhere no frame wraps the section - an export, a hand-written
+   * page - so one class name gives the same fill in all three places. */
+  --color-recipe-ink-card: var(--recipe-ink-card, var(--live-service-muted, #5f6f68));
+  /* The ink token in its ink-recipe ground role, republished for the same
+   * reason: below the frame, `service-ink` is the text colour. A section needs
+   * this to sink something under the card - an input, a well - because on this
+   * recipe depth is a step toward the ground, not a wash of white. */
+  --color-recipe-ink-ground: var(--recipe-ink-ground, var(--live-service-ink, #17211d));
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --shadow-service: var(--live-shadow-service, 0 18px 50px rgb(23 33 29 / 0.08));
@@ -133,7 +157,8 @@
  * ground lightens instead.
  */
 .bg-bg-dark,
-.bg-service-ink {
+.bg-service-ink,
+.pagebuilder-paint-surface[data-pagebuilder-color-recipe="ink"] {
   --live-cta-primary: var(--live-accent, #c45a2c);
   --live-cta-primary-hover: color-mix(
     in srgb,
@@ -178,6 +203,34 @@
       animation-range: entry calc(var(--reveal-index, 0) * 7%) entry
         calc(52% + var(--reveal-index, 0) * 7%);
     }
+  }
+}
+
+/*
+ * Ground texture drift.
+ *
+ * Moves the wash `gradient` paints rather than introducing an image of its own,
+ * so the two treatments are the same picture at rest and reduced motion has
+ * somewhere sensible to land.
+ *
+ * Animates background-position rather than a transform. A transform would be
+ * cheaper, but it would need the layer inset past the box and the box clipped
+ * to hide it - and `overflow: hidden` on a section or band breaks every
+ * `position: sticky` inside it, which is most of the hero and scroll-story
+ * library. Over 26 seconds the paint cost of a two-stop gradient is not the
+ * thing that matters.
+ */
+@keyframes section-background-drift {
+  from {
+    background-position:
+      0% 0%,
+      100% 100%;
+  }
+
+  to {
+    background-position:
+      14% 9%,
+      86% 91%;
   }
 }
 
@@ -1292,175 +1345,435 @@ body {
     --pagebuilder-section-gap-before: 0;
   }
 
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="default"] {
-    background-color: var(--color-bg-page);
+  /* Background bands.
+   *
+   * A section frame can only paint its own box, so a background with geometry -
+   * an image that must not restart at every seam, a gradient that runs the full
+   * height of a run, an animation that should read as one field - needs a
+   * container around the run. `groupSectionsIntoBands` decides where those go.
+   *
+   * The band and the frame both carry `.pagebuilder-paint-surface`, so every
+   * recipe rule below applies to either box with no duplication. The rules that
+   * are deliberately *not* on that class - card fill, card border, section
+   * padding - stay frame-scoped, because they are about a section's own cards
+   * and spacing rather than about the ground it sits on.
+   *
+   * Members carry `data-pagebuilder-color-recipe="inherit"`, which matches none
+   * of the recipe selectors. That is what makes them inert: the recipes work by
+   * capturing on a container and rewriting tokens on its children, so a member
+   * that kept a live recipe value would run the rewrite a second time and
+   * compound every color-mix against a ground that was already remapped. */
+  .pagebuilder-section-band {
+    position: relative;
   }
 
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"] {
-    background-color: var(--color-service-surface);
-    --live-bg-page: var(--live-service-surface);
-    --live-bg-surface: var(--live-service-surface);
-  }
-
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="dark"] {
-    background-color: var(--live-bg-dark);
-  }
-
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"] {
-    background-color: var(--live-service-accent);
-  }
-
-  .pagebuilder-section-frame[data-pagebuilder-background-fill="none"] {
-    background-color: transparent !important;
-    background-image: none !important;
-  }
-
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"]
+  /* Sections that paint their own root would lay their colour over the band and
+   * leave nothing of it visible. The member frame is already transparent
+   * through `background-fill="none"`, but that only reaches the frame; this
+   * reaches the section inside it. Scoped to `inherit` so a deliberate
+   * per-section recipe override inside a band still paints. */
+  .pagebuilder-section-band
+    [data-pagebuilder-color-recipe="inherit"]
     > section,
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"]
+  .pagebuilder-section-band
+    [data-pagebuilder-color-recipe="inherit"]
     > *
     > section {
-    background-color: var(--color-service-surface) !important;
+    background-color: transparent !important;
   }
 
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"][data-pagebuilder-section-mode="Navigation"]
-    nav {
-    background-color: var(--color-service-surface) !important;
-  }
-
-  /* Filled cards on a muted section.
+  /* No automatic seam collapse.
    *
-   * Muted paints the section with the service surface and remaps --live-bg-page
-   * and --live-bg-surface onto it, so every card token collapses to the section
-   * colour and filled cards read as one flat field. --live-surface-raised is
-   * deliberately not remapped, so it is the one surface that still layers.
+   * A band used to zero the top padding of every member after the first, on the
+   * theory that two stacked paddings on one continuous ground read as a gap
+   * rather than as rhythm. In use it read as the sections losing their spacing:
+   * the rhythm inside a band is the same rhythm as everywhere else, and a band
+   * that silently tightens it is a band changing something it was not asked to
+   * change. Spacing stays where it already lived - the per-section top and
+   * bottom controls - so a tighter seam is a decision rather than a side effect.
+   */
+
+  /* Ground textures.
    *
-   * Scoped to card-fill="solid": a transparent card is meant to disappear into
-   * the section, so it must keep doing that. `:not(section)` protects sections
-   * that paint themselves with the same utility - lifting those would repaint
-   * the field this rule is trying to lift cards off. */
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"][data-pagebuilder-card-fill="solid"]
-    .bg-service-surface:not(section) {
-    background-color: var(--color-surface-raised) !important;
-  }
-
-  /* These two build their cards from the page token instead of the surface
-   * token - their sections are surface-coloured even at the default recipe - so
-   * the rule above cannot see them. Component-scoped so the page token keeps its
-   * normal meaning everywhere else, where it is also used for form controls and
-   * full-bleed wrappers that must not become raised panels. */
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"][data-pagebuilder-card-fill="solid"][data-pagebuilder-section-component="ContentHorizontalCardCarouselSectionV2"]
-    .bg-bg-page:not(section),
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"][data-pagebuilder-card-fill="solid"][data-pagebuilder-section-component="ServicesScrollCardsSectionV2"]
-    .bg-bg-page:not(section) {
-    background-color: var(--color-surface-raised) !important;
-  }
-
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="dark"]:not([data-pagebuilder-section-component="ServicesBentoCardsSectionV2"]):not([data-pagebuilder-section-component="ContentSplitHeadlineImageSectionV2"]):not([data-pagebuilder-section-component="HeroSplitFullHeightSectionV3"]):not([data-pagebuilder-section-component="HeroCompactSectionV3"]):not([data-pagebuilder-section-component="HeroSplitFixedImageSectionV3"]) {
-    --live-bg-page: var(--live-bg-dark);
-    --live-bg-surface: color-mix(in srgb, var(--live-bg-dark) 88%, white);
-    --live-service-surface: color-mix(in srgb, var(--live-bg-dark) 88%, white);
-    --live-surface-raised: color-mix(in srgb, var(--live-bg-dark) 80%, white);
-    --live-service-ink: #ffffff;
-    --live-service-muted: rgb(255 255 255 / 0.7);
-    --live-service-border: rgb(255 255 255 / 0.18);
-    --live-border-default: rgb(255 255 255 / 0.18);
-    --live-text-main: #ffffff;
-    --live-text-muted: rgb(255 255 255 / 0.7);
-    --live-text-accent: #ffffff;
-  }
-
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"]:not([data-pagebuilder-section-component="ServicesBentoCardsSectionV2"]):not([data-pagebuilder-section-component="ContentSplitHeadlineImageSectionV2"]):not([data-pagebuilder-section-component="HeroSplitFullHeightSectionV3"]):not([data-pagebuilder-section-component="HeroCompactSectionV3"]):not([data-pagebuilder-section-component="HeroSplitFixedImageSectionV3"]) {
-    --live-bg-page: var(--live-service-accent);
-    --live-bg-surface: color-mix(in srgb, var(--live-service-accent) 86%, white);
-    --live-service-surface: color-mix(in srgb, var(--live-service-accent) 86%, white);
-    --live-surface-raised: color-mix(in srgb, var(--live-service-accent) 78%, white);
-    --live-service-ink: var(--live-accent-ink);
-    --live-service-muted: var(--live-accent-muted-text);
-    --live-service-border: color-mix(in srgb, var(--live-accent-ink) 22%, transparent);
-    --live-border-default: color-mix(in srgb, var(--live-accent-ink) 22%, transparent);
-    --live-text-main: var(--live-accent-ink);
-    --live-text-muted: var(--live-accent-muted-text);
-    --live-text-accent: var(--live-accent-ink);
-  }
-
-  /* Accent is the section field; filled cards on that field use the shared
-   * dark surface token. Keep the contrast remap on the card itself so headings
-   * and supporting copy outside the card retain the accent recipe's ink. */
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"][data-pagebuilder-card-style="true"][data-pagebuilder-card-fill="solid"]
-    :is(
-      article,
-      .shadow-service.bg-bg-page:not(section),
-      .shadow-service.bg-bg-surface:not(section),
-      .shadow-service.bg-service-surface:not(section),
-      .shadow-service.bg-surface-raised:not(section)
+   * Keyed on the attribute alone rather than on a class, which is the whole
+   * point: a section frame and a band are different boxes, and a texture is the
+   * same feature on either. One rule set serves both, and a treatment chosen on
+   * a single section keeps working when that section is later joined into a run.
+   *
+   * Drawn on a pseudo-element rather than as the element's own background. The
+   * ground is already spoken for - the colour recipe paints it - and
+   * `background-fill="none"` clears `background-image` with `!important`, so a
+   * texture applied to the element itself would be erased on exactly the frames
+   * that sit inside a band.
+   *
+   * `isolation` gives the box a stacking context so the layer at `z-index: -1`
+   * lands between its background and its content. Without it the negative index
+   * escapes to an ancestor's stacking context and the texture disappears behind
+   * the ground it was meant to sit on. Deliberately not setting `position`
+   * here: every frame is already positioned, and overriding it would drop the
+   * nav out of its fixed and overlay modes. */
+  [data-pagebuilder-background-treatment]:not(
+      [data-pagebuilder-background-treatment="none"]
     ) {
-    --live-service-ink: #ffffff;
-    --live-service-muted: rgb(255 255 255 / 0.72);
-    --live-service-border: rgb(255 255 255 / 0.2);
-    --live-border-default: rgb(255 255 255 / 0.2);
-    --live-text-main: #ffffff;
-    --live-text-muted: rgb(255 255 255 / 0.72);
-    --live-text-accent: #ffffff;
-    --live-accent-ink: #ffffff;
-    --live-accent-muted-text: rgb(255 255 255 / 0.72);
-    background-color: var(--color-bg-dark) !important;
+    isolation: isolate;
   }
 
-  /* Bullet markers are drawn in the accent colour, which on an accent field is
-   * the same ink as the ground they sit on - they disappear. Re-point them at
-   * the recipe's own ink, which is contrast-picked against that field, so a
-   * dark accent gets light bullets and a light accent dark ones.
+  [data-pagebuilder-background-treatment]:not(
+      [data-pagebuilder-background-treatment="none"]
+    )::before {
+    content: "";
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
+    z-index: -1;
+  }
+
+  /* Strength lives in the layer's opacity, not in the colours.
    *
-   * Matched on the marker's own shape rather than by overriding
-   * --live-service-accent for the section: the accent token still has to paint
-   * the section background a few rules above, and the Narrative rule below
-   * reads it off the section element itself. `:not(section)` guards the
-   * section roots that legitimately carry bg-service-accent - the split heroes
-   * paint their whole field with it. */
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"]:not([data-pagebuilder-section-component="ServicesBentoCardsSectionV2"]):not([data-pagebuilder-section-component="ContentSplitHeadlineImageSectionV2"]):not([data-pagebuilder-section-component="HeroSplitFullHeightSectionV3"]):not([data-pagebuilder-section-component="HeroCompactSectionV3"]):not([data-pagebuilder-section-component="HeroSplitFixedImageSectionV3"])
+   * The obvious way to write these is `color-mix(… 20%, transparent)`, and it is
+   * wrong here. The build splits every color-mix into an @supports rule and a
+   * fallback with the mix removed - which for a text colour degrades to the same
+   * colour, but for a wash degrades to the accent at *full* strength: a solid
+   * slab over the section instead of a hint of one. Fading the whole
+   * pseudo-element has no fallback cliff, is supported everywhere, and leaves
+   * the strength of each treatment as one number to tune. */
+
+  /* Two soft off-centre washes in the brand accent, so the same treatment reads
+     on a paper ground and on ink. */
+  [data-pagebuilder-background-treatment="gradient"]::before,
+  [data-pagebuilder-background-treatment="drift"]::before {
+    background-image:
+      radial-gradient(
+        110% 75% at 12% 0%,
+        var(--color-service-accent),
+        transparent 62%
+      ),
+      radial-gradient(
+        95% 70% at 88% 100%,
+        var(--color-service-accent),
+        transparent 45%
+      );
+    background-repeat: no-repeat;
+    background-size:
+      140% 140%,
+      140% 140%;
+    opacity: 0.18;
+  }
+
+  /* A single image covering the whole box, which on a band is the whole run -
+     one photograph behind several sections rather than the same photograph
+     restarting at each seam.
+
+     The URL arrives as a custom property set inline, so this rule stays a static
+     stylesheet rule and the value stays a value. `--section-background-image`
+     is unset unless a staged page supplied one, in which case the layer paints
+     nothing rather than a broken reference. */
+  [data-pagebuilder-background-treatment="image"]::before,
+  [data-pagebuilder-background-treatment="image-parallax"]::before {
+    background-image: var(--section-background-image);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  /* The same 22px rule grid the split-headline section draws its texture with,
+     lifted to the ground so any section can carry it. */
+  [data-pagebuilder-background-treatment="grain"]::before {
+    background-image:
+      linear-gradient(90deg, var(--color-service-ink) 1px, transparent 1px),
+      linear-gradient(180deg, var(--color-service-ink) 1px, transparent 1px);
+    background-size: 22px 22px;
+    opacity: 0.05;
+  }
+
+  /* Motion is the only thing reduced motion takes away. The image is identical
+     to `gradient`, so what is left is a still version of the same ground rather
+     than an empty one. */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-pagebuilder-background-treatment="drift"]::before {
+      animation: section-background-drift 26s ease-in-out infinite alternate;
+    }
+
+    /* Parallax: the image is sized and positioned against the viewport rather
+     * than the box, so it holds still while the box scrolls over it. On a band
+     * that box is the whole run, which is what makes several sections read as
+     * passing across one photograph.
+     *
+     * This is the generalisation of what `ContentFixedCoverFadeSectionV2` does
+     * with a sticky layer inside one deliberately tall section - here the
+     * runway is however many real sections were joined, and no section has to
+     * be padded out to provide it.
+     *
+     * Attachment rather than a transform, for the reason the drift keyframes
+     * give: a transformed layer needs the box clipped to contain it, and
+     * `overflow: hidden` on a band breaks every sticky element inside it. iOS
+     * Safari ignores `fixed` attachment and renders a normal cover image, which
+     * is the same thing reduced motion gets. */
+    [data-pagebuilder-background-treatment="image-parallax"]::before {
+      background-attachment: fixed;
+    }
+  }
+
+  /* ==================================================================
+   * Colour recipes.
+   *
+   * Each recipe is one element/token table, written once. A section names
+   * semantic classes - `text-service-ink` for a headline, `text-service-muted`
+   * for body copy, `bg-service-surface` for a card - and the recipe decides
+   * what those resolve to. That is why no section carries a per-recipe colour
+   * map any more: a table that lives in one place cannot drift from itself,
+   * and a section cannot quietly disagree with it.
+   *
+   * The base palette is captured before anything is rewritten, because the
+   * remaps below need to read the very tokens they redefine. Read on the same
+   * element, `var(--live-service-ink)` would already be the recipe's headline
+   * colour rather than the ink the table means. Capturing on the painting
+   * surface and rewriting on its children keeps the two apart.
+   * ================================================================== */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    ) {
+    --palette-page: var(--live-bg-page);
+    --palette-surface: var(--live-service-surface);
+    --palette-raised: var(--live-surface-raised);
+    --palette-ink: var(--live-service-ink);
+    --palette-muted: var(--live-service-muted);
+    --palette-dark: var(--live-bg-dark);
+    --palette-accent: var(--live-service-accent);
+    --palette-highlight: var(--live-accent);
+
+    background-color: var(--recipe-ground);
+  }
+
+  /* Section ground, one row of each table. Held in a variable rather than
+     applied directly so the rule that stops sections painting over it can read
+     the same value without knowing which recipe is active. */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="default"] {
+    --recipe-ground: var(--palette-page);
+  }
+
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="surface"] {
+    --recipe-ground: var(--palette-surface);
+  }
+
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="dark"] {
+    --recipe-ground: var(--palette-dark);
+  }
+
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="accent"] {
+    --recipe-ground: var(--palette-accent);
+  }
+
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="ink"] {
+    --recipe-ground: var(--palette-ink);
+  }
+
+  /* A section that paints its own root would lay that colour over the ground
+     and leave none of it visible. Default is exempt: it is the ground every
+     section was drawn against, so a section painting a surface panel there is
+     doing what it was designed to do rather than fighting the recipe. */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    ):not([data-pagebuilder-color-recipe="default"]):not(
+      [data-pagebuilder-background-fill="none"]
+    )
+    > section,
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    ):not([data-pagebuilder-color-recipe="default"]):not(
+      [data-pagebuilder-background-fill="none"]
+    )
+    > *
+    > section {
+    background-color: var(--recipe-ground) !important;
+  }
+
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    ):not([data-pagebuilder-color-recipe="default"])[data-pagebuilder-section-mode="Navigation"]
+    nav {
+    background-color: var(--recipe-ground) !important;
+  }
+
+  /* ---- Default: page ground ---- */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="default"] > * {
+    --live-service-accent: var(--palette-accent);
+    --live-text-accent: var(--palette-accent);
+    --live-service-ink: var(--palette-ink);
+    --live-text-main: var(--palette-ink);
+    --live-service-muted: var(--palette-muted);
+    --live-text-muted: var(--palette-muted);
+    --live-bg-page: var(--palette-page);
+    --live-service-surface: var(--palette-surface);
+    --live-bg-surface: var(--palette-surface);
+    --live-service-border: var(--palette-muted);
+    --live-border-default: var(--palette-muted);
+    --live-cta-primary: var(--palette-accent);
+    --live-cta-primary-ink: var(--palette-page);
+    --live-cta-secondary-ink: var(--palette-accent);
+    --live-cta-secondary-border: var(--palette-accent);
+    --recipe-special-card-fill: var(--palette-muted);
+    --recipe-special-card-ink: var(--palette-raised);
+  }
+
+  /* ---- Surface: the service surface as ground ---- */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="surface"] > * {
+    --live-service-accent: var(--palette-accent);
+    --live-text-accent: var(--palette-accent);
+    --live-service-ink: var(--palette-ink);
+    --live-text-main: var(--palette-ink);
+    --live-service-muted: var(--palette-muted);
+    --live-text-muted: var(--palette-muted);
+    /* Ground, so a section or control built from the page token sits flat in
+       the field rather than cutting a paper rectangle out of it. */
+    --live-bg-page: var(--palette-surface);
+    /* Cards lift to the raised token - the surface itself is now the ground,
+       so a surface card would be the same flat field as the section. */
+    --live-service-surface: var(--palette-raised);
+    --live-bg-surface: var(--palette-raised);
+    --live-service-border: var(--palette-muted);
+    --live-border-default: var(--palette-muted);
+    --live-cta-primary: var(--palette-accent);
+    --live-cta-primary-ink: var(--palette-page);
+    --live-cta-secondary-ink: var(--palette-accent);
+    --live-cta-secondary-border: var(--palette-accent);
+    --recipe-special-card-fill: var(--palette-accent);
+    --recipe-special-card-ink: var(--palette-raised);
+  }
+
+  /* ---- Dark ---- */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="dark"] > * {
+    --live-service-accent: var(--palette-surface);
+    --live-text-accent: var(--palette-surface);
+    --live-service-ink: var(--palette-raised);
+    --live-text-main: var(--palette-raised);
+    --live-service-muted: var(--palette-surface);
+    --live-text-muted: var(--palette-surface);
+    --live-bg-page: var(--palette-dark);
+    /* A light card on a dark ground. Its own text is corrected below, since
+       body copy out here is light and would vanish on it. */
+    --live-service-surface: var(--palette-surface);
+    --live-bg-surface: var(--palette-surface);
+    --live-service-border: var(--palette-muted);
+    --live-border-default: var(--palette-muted);
+    --live-cta-primary: var(--palette-accent);
+    --live-cta-primary-ink: var(--palette-page);
+    --live-cta-secondary-ink: var(--palette-page);
+    --live-cta-secondary-border: var(--palette-page);
+    --recipe-special-card-fill: var(--palette-accent);
+    --recipe-special-card-ink: var(--palette-raised);
+  }
+
+  /* ---- Accent ---- */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="accent"] > * {
+    --live-service-accent: var(--palette-raised);
+    --live-text-accent: var(--palette-raised);
+    --live-service-ink: var(--palette-page);
+    --live-text-main: var(--palette-page);
+    --live-service-muted: var(--palette-raised);
+    --live-text-muted: var(--palette-raised);
+    --live-bg-page: var(--palette-accent);
+    --live-service-surface: var(--palette-dark);
+    --live-bg-surface: var(--palette-dark);
+    --live-service-border: var(--palette-surface);
+    --live-border-default: var(--palette-surface);
+    --live-cta-primary: var(--palette-raised);
+    --live-cta-primary-ink: var(--palette-ink);
+    --live-cta-secondary-ink: var(--palette-raised);
+    --live-cta-secondary-border: var(--palette-raised);
+    --recipe-special-card-fill: var(--palette-raised);
+    --recipe-special-card-ink: var(--palette-dark);
+  }
+
+  /* ---- Ink ---- */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="ink"] > * {
+    /* The table asks for the dark token here. On every palette tried it is
+       darker than the ink ground it sits on, so the eyebrow lands near 1.2:1
+       and is effectively invisible. Kept faithful rather than silently
+       corrected - it is one value in the style guide away from working. */
+    --live-service-accent: var(--palette-dark);
+    --live-text-accent: var(--palette-dark);
+    --live-service-ink: var(--palette-raised);
+    --live-text-main: var(--palette-raised);
+    --live-service-muted: var(--palette-surface);
+    --live-text-muted: var(--palette-surface);
+    --live-bg-page: var(--palette-ink);
+    --live-service-surface: var(--palette-dark);
+    --live-bg-surface: var(--palette-dark);
+    --live-service-border: var(--palette-surface);
+    --live-border-default: var(--palette-surface);
+    --live-cta-primary: var(--palette-highlight);
+    --live-cta-primary-ink: var(--palette-page);
+    --live-cta-secondary-ink: var(--palette-page);
+    --live-cta-secondary-border: var(--palette-highlight);
+    --recipe-special-card-fill: var(--palette-accent);
+    --recipe-special-card-ink: var(--palette-raised);
+  }
+
+  /* Card text, where a card's own ground differs enough from the section's
+   * that body copy cannot follow it in.
+   *
+   * Dark is the case that forces this: its cards are the surface token - light
+   * - while body copy out on the ground is light too, so an uncorrected card
+   * would be surface text on a surface fill. Ink has the mirror problem in
+   * milder form. The other three recipes give card text and body copy the same
+   * value, so they need nothing here.
+   *
+   * Matched on the card *fill* rather than on the shape a card tends to take.
+   *
+   * The first version of this copied the accent recipe's selector, which leads
+   * with `article` and requires `shadow-service` alongside the fill. Both parts
+   * were wrong here, in opposite directions. `article` matched things that are
+   * not cards at all - the FAQ accordion wraps each question in a bare
+   * `<article>` with no fill - and pulled dark text onto the dark ground. The
+   * shadow requirement then missed real cards that simply do not carry one, so
+   * the ZIP lookup's light panel kept the section's light text and went
+   * invisible against itself.
+   *
+   * An element painting the card fill *is* a card surface; one that paints
+   * nothing is not, whatever tag it uses. `bg-bg-page` is deliberately absent -
+   * on these recipes it resolves to the ground, so an element carrying it is
+   * ground-coloured and its text should stay as it is. */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="dark"][data-pagebuilder-card-fill="solid"]
+    :is(
+      .bg-bg-surface:not(section),
+      .bg-service-surface:not(section),
+      .bg-surface-raised:not(section)
+    ) {
+    --live-service-ink: var(--palette-ink);
+    --live-text-main: var(--palette-ink);
+    --live-service-muted: var(--palette-muted);
+    --live-text-muted: var(--palette-muted);
+    --live-service-accent: var(--palette-accent);
+    --live-text-accent: var(--palette-accent);
+  }
+
+  /* Ink's cards are the dark token, so only the body copy moves - the headline
+     is already the raised token out on the ground. `bg-surface-raised` is left
+     out: this recipe does not rewrite that token, so an element carrying it is
+     near-white and wants the dark-card treatment above, not this one. */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="ink"][data-pagebuilder-card-fill="solid"]
+    :is(.bg-bg-surface:not(section), .bg-service-surface:not(section)) {
+    --live-service-muted: var(--palette-raised);
+    --live-text-muted: var(--palette-raised);
+  }
+
+  /* Bullets and marker icons are drawn in the accent colour, which on the
+   * accent ground is the ground itself and on ink is nearly it. Repointed by
+   * the marker's own shape rather than by rewriting the accent token, which
+   * would take every accent-filled button on the page with it. */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="accent"]
+    .rounded-full.bg-service-accent:not(section),
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="ink"]
     .rounded-full.bg-service-accent:not(section) {
-    background-color: var(--live-accent-ink) !important;
+    background-color: var(--palette-raised) !important;
   }
 
-  /* Same defect in stroke form - marker icons drawn in the accent colour.
-   * Scoped to svg so it reaches the icons without touching accent eyebrows,
-   * which the recipe-aware sections already re-colour themselves. */
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"]:not([data-pagebuilder-section-component="ServicesBentoCardsSectionV2"]):not([data-pagebuilder-section-component="ContentSplitHeadlineImageSectionV2"]):not([data-pagebuilder-section-component="HeroSplitFullHeightSectionV3"]):not([data-pagebuilder-section-component="HeroCompactSectionV3"]):not([data-pagebuilder-section-component="HeroSplitFixedImageSectionV3"])
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="accent"]
+    svg.text-service-accent,
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="ink"]
     svg.text-service-accent {
-    color: var(--live-accent-ink) !important;
-  }
-
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"]:is([data-pagebuilder-section-component="TrustMarqueeSection"], [data-pagebuilder-section-component="TrustMarqueeSectionV3"])
-    .text-service-muted {
-    color: rgb(255 255 255 / 0.86) !important;
-  }
-
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"]:is([data-pagebuilder-section-component="TrustMarqueeSection"], [data-pagebuilder-section-component="TrustMarqueeSectionV3"])
-    .bg-service-accent {
-    background-color: rgb(255 255 255 / 0.72) !important;
-  }
-
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"]:is([data-pagebuilder-section-component="FourCardLinkGridSectionV3"], [data-pagebuilder-section-component="ThreeCardLinkGridSectionV3"])
-    .text-service-ink,
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"]:is([data-pagebuilder-section-component="FourCardLinkGridSectionV3"], [data-pagebuilder-section-component="ThreeCardLinkGridSectionV3"])
-    .text-service-accent {
-    color: #fff !important;
-  }
-
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"]:is([data-pagebuilder-section-component="FourCardLinkGridSectionV3"], [data-pagebuilder-section-component="ThreeCardLinkGridSectionV3"])
-    .text-service-muted {
-    color: rgb(255 255 255 / 0.78) !important;
-  }
-
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="dark"][data-pagebuilder-section-mode="Narrative"]
-    > section.bg-service-surface {
-    background-color: var(--live-bg-dark) !important;
-  }
-
-  .pagebuilder-section-frame[data-pagebuilder-color-recipe="accent"][data-pagebuilder-section-mode="Narrative"]
-    > section.bg-service-surface {
-    background-color: var(--live-service-accent) !important;
+    color: var(--palette-raised) !important;
   }
 
   .pagebuilder-section-frame[data-pagebuilder-card-fill="none"][data-pagebuilder-section-mode]
@@ -1560,7 +1873,12 @@ body {
      section asks for viewport height - `.section-min-sliver` and the sections
      that also pin the matching calc height, which a min-height override would
      leave taller than the intended peek. */
-  .pagebuilder-nav-hero-pair > [data-pagebuilder-section-mode="Hero"] {
+  /* The hero may now be the first member of a background band, in which case it
+     is a grandchild of the pair rather than a child - hence the second reach. */
+  .pagebuilder-nav-hero-pair > [data-pagebuilder-section-mode="Hero"],
+  .pagebuilder-nav-hero-pair
+    > .pagebuilder-section-band
+    > [data-pagebuilder-section-mode="Hero"] {
     --section-min-screen: calc(
       var(--section-viewport-height) - var(--nav-height)
     );
@@ -1570,6 +1888,11 @@ body {
      a fixed nav is out of flow and there is no wrapper padding holding it. */
   .page-template-preview-fixed-nav
     .pagebuilder-nav-hero-pair
+    > [data-pagebuilder-section-mode="Hero"]
+    .site-grid-frame,
+  .page-template-preview-fixed-nav
+    .pagebuilder-nav-hero-pair
+    > .pagebuilder-section-band
     > [data-pagebuilder-section-mode="Hero"]
     .site-grid-frame {
     padding-top: min(
@@ -2154,11 +2477,11 @@ body {
   --live-service-ink: #232834;
   --live-service-muted: #224b59;
   --live-service-accent: #175c82;
-  --live-service-surface: #bacad4;
-  --live-surface-raised: #ced6de;
+  --live-service-surface: #d0dde2;
+  --live-surface-raised: #e0e6eb;
   --live-service-border: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
-  --live-bg-page: #b5c1c4;
-  --live-bg-surface: #bacad4;
+  --live-bg-page: #e5eaef;
+  --live-bg-surface: #d0dde2;
   --live-bg-muted: oklch(from var(--live-service-surface) calc(l - 0.03) c h);
   --live-bg-dark: #0d4356;
   --live-text-main: #232834;
@@ -2172,11 +2495,11 @@ body {
   --color-service-ink: #232834;
   --color-service-muted: #224b59;
   --color-service-accent: #175c82;
-  --color-service-surface: #bacad4;
-  --color-surface-raised: #ced6de;
+  --color-service-surface: #d0dde2;
+  --color-surface-raised: #e0e6eb;
   --color-service-border: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
-  --color-bg-page: #b5c1c4;
-  --color-bg-surface: #bacad4;
+  --color-bg-page: #e5eaef;
+  --color-bg-surface: #d0dde2;
   --color-bg-muted: oklch(from var(--live-service-surface) calc(l - 0.03) c h);
   --color-bg-dark: #0d4356;
   --color-text-main: #232834;
@@ -2435,7 +2758,7 @@ body {
   border-color: transparent !important;
 }
 
-.pagebuilder-section-frame[data-pagebuilder-color-recipe="muted"][data-pagebuilder-card-fill="solid"][data-pagebuilder-section-component="ProcessStepsBranchingSectionV3"]
+.pagebuilder-paint-surface[data-pagebuilder-color-recipe="surface"][data-pagebuilder-card-fill="solid"][data-pagebuilder-section-component="ProcessStepsBranchingSectionV3"]
   article {
   background-color: var(--color-service-surface) !important;
   background-image: none !important;

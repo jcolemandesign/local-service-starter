@@ -24,59 +24,15 @@ function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-const recipeClasses: Record<
-  SectionColorRecipe,
-  {
-    card: string;
-    cardBorder: string;
-    divider: string;
-    icon: string;
-    iconShell: string;
-    muted: string;
-    section: string;
-    text: string;
-  }
-> = {
-  default: {
-    card: "bg-service-surface",
-    cardBorder: "border-service-border",
-    divider: "border-service-border",
-    icon: "text-service-accent",
-    iconShell: "bg-service-accent/10",
-    muted: "text-service-muted",
-    section: "bg-bg-page",
-    text: "text-service-ink",
-  },
-  muted: {
-    card: "bg-surface-raised",
-    cardBorder: "border-service-border",
-    divider: "border-service-border",
-    icon: "text-service-accent",
-    iconShell: "bg-service-accent/10",
-    muted: "text-service-muted",
-    section: "bg-service-surface",
-    text: "text-service-ink",
-  },
-  dark: {
-    card: "bg-white/10",
-    cardBorder: "border-white/25",
-    divider: "border-white/20",
-    icon: "text-white",
-    iconShell: "bg-white/10",
-    muted: "text-white/72",
-    section: "bg-bg-dark",
-    text: "text-white",
-  },
-  accent: {
-    card: "bg-bg-dark",
-    cardBorder: "border-white/25",
-    divider: "border-white/20",
-    icon: "text-white",
-    iconShell: "bg-white/10",
-    muted: "text-white/72",
-    section: "bg-service-accent",
-    text: "text-white",
-  },
+const recipeClasses = {
+  card: "bg-service-surface",
+  cardBorder: "border-service-border",
+  divider: "border-service-border",
+  icon: "text-service-accent",
+  iconShell: "bg-service-accent/10",
+  muted: "text-service-muted",
+  section: "bg-bg-page",
+  text: "text-service-ink",
 };
 
 function PhoneIcon() {
@@ -150,7 +106,6 @@ export function ContactStripBentoSectionV3({
   afterHoursLabel,
   cardBorder = "on",
   cardFill = "solid",
-  colorRecipe = "default",
   email,
   emailLabel,
   hours,
@@ -160,23 +115,12 @@ export function ContactStripBentoSectionV3({
   phone,
   phoneLabel,
 }: ContactStripBentoSectionV3Props) {
-  const colors = recipeClasses[colorRecipe];
-  const transparentAccentCards = colorRecipe === "accent" && cardFill === "none";
-  const textClassName = transparentAccentCards
-    ? "text-[var(--live-accent-ink)]"
-    : colors.text;
-  const mutedClassName = transparentAccentCards
-    ? "text-[var(--live-accent-muted-text)]"
-    : colors.muted;
-  const iconClassName = transparentAccentCards
-    ? "text-[var(--live-accent-ink)]"
-    : colors.icon;
-  const iconShellClassName = transparentAccentCards
-    ? "bg-[color-mix(in_oklab,var(--live-accent-ink)_10%,transparent)]"
-    : colors.iconShell;
-  const dividerClassName = transparentAccentCards
-    ? "border-[color-mix(in_oklab,var(--live-accent-ink)_24%,transparent)]"
-    : colors.divider;
+  const colors = recipeClasses;
+  const textClassName = colors.text;
+  const mutedClassName = colors.muted;
+  const iconClassName = colors.icon;
+  const iconShellClassName = colors.iconShell;
+  const dividerClassName = colors.divider;
   const cardClassName = cx(
     "h-full min-w-0 rounded-[var(--radius-surface-token)] border shadow-service",
     colors.card,

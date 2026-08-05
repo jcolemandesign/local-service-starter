@@ -54,46 +54,13 @@ function getSectionHeaderText(title: string) {
 }
 
 const colorRecipeClasses = {
-  default: {
-    body: "text-service-muted",
-    card: "bg-service-surface",
-    cardText: "text-service-ink",
-    cardMuted: "text-service-muted",
-    eyebrow: "text-service-accent",
-    heading: "text-service-ink",
-    section: "bg-bg-page",
-  },
-  muted: {
-    body: "text-service-muted",
-    // Not bg-bg-page: the muted frame remaps --live-bg-page to the service
-    // surface, so a page-colored card renders as the same flat field as the
-    // section behind it. surface-raised is not remapped, so a filled card still
-    // reads as a layer. See the muted card rules in globals.css.
-    card: "bg-surface-raised",
-    cardText: "text-service-ink",
-    cardMuted: "text-service-muted",
-    eyebrow: "text-service-accent",
-    heading: "text-service-ink",
-    section: "bg-service-surface",
-  },
-  dark: {
-    body: "text-white/70",
-    card: "bg-service-ink",
-    cardText: "text-service-surface",
-    cardMuted: "text-service-surface/72",
-    eyebrow: "text-white",
-    heading: "text-white",
-    section: "bg-bg-dark",
-  },
-  accent: {
-    body: "text-[var(--live-accent-muted-text)]",
-    card: "bg-bg-dark",
-    cardText: "text-white",
-    cardMuted: "text-white/70",
-    eyebrow: "text-[var(--live-accent-ink)]",
-    heading: "text-[var(--live-accent-ink)]",
-    section: "bg-service-accent",
-  },
+  body: "text-service-muted",
+  card: "bg-service-surface",
+  cardText: "text-service-ink",
+  cardMuted: "text-service-muted",
+  eyebrow: "text-service-accent",
+  heading: "text-service-ink",
+  section: "bg-bg-page",
 } as const;
 
 function ServiceImage({
@@ -159,7 +126,6 @@ export function ServicesBentoCardsSectionV2({
   body,
   items,
   variant = "default",
-  colorRecipe = "default",
   cardBorder = "on",
   cardFill = "solid",
 }: ServicesBentoCardsSectionV2Props) {
@@ -179,20 +145,12 @@ export function ServicesBentoCardsSectionV2({
   ]
     .filter(Boolean)
     .join(" ");
-  const colors = colorRecipeClasses[colorRecipe];
+  const colors = colorRecipeClasses;
   const transparentCards = cardFill === "none";
-  const transparentCardText =
-    colorRecipe === "dark"
-      ? "text-white"
-      : colorRecipe === "accent"
-        ? "text-[var(--live-accent-ink)]"
-        : "text-service-ink";
-  const transparentCardMuted =
-    colorRecipe === "dark"
-      ? "text-white/70"
-      : colorRecipe === "accent"
-        ? "text-[var(--live-accent-muted-text)]"
-        : "text-service-muted";
+  // A transparent card puts its text straight onto the section ground, so it
+  // takes the section's text tokens rather than the card's.
+  const transparentCardText = "text-service-ink";
+  const transparentCardMuted = "text-service-muted";
 
   return (
     <section id="services-bento" className={colors.section}>

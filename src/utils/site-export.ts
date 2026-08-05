@@ -23,7 +23,13 @@ import {
   renderPageTemplateSection,
   resolveSectionStyleOverrides,
 } from "@/components/sections/PageTemplatePreview";
-import { resolveCardFill } from "@/content/section-style-options";
+import { resolveSectionColorRecipe } from "@/content/section-color-recipes";
+import {
+  resolveBackgroundImage,
+  resolveBackgroundTreatment,
+  resolveCardFill,
+  treatmentUsesGroundImage,
+} from "@/content/section-style-options";
 import {
   exportManifestFile,
   listGeneratedFiles,
@@ -37,6 +43,7 @@ import {
   readStagedPages,
   type StagedPage,
 } from "@/utils/staged-pages";
+import { groupSectionsIntoBands, withBandRecipe } from "@/utils/section-bands";
 import { getSectionId } from "@/utils/section-id";
 import {
   getTemplateCopyFieldsForSection,
@@ -59,6 +66,13 @@ type ResolvedSection = {
   colorRecipe: string;
   component: string;
   contentKey: string;
+  /** `"join"` shares the background of the section above - see
+   *  `groupSectionsIntoBands`. */
+  joinAbove: string;
+  /** Ground texture - see `backgroundTreatment` in `section-style-options`. */
+  backgroundTreatment: string;
+  /** Sanitised ground image path, empty unless the treatment is `image`. */
+  backgroundImage: string;
   mode: string;
   props: Record<string, unknown>;
   reduceBottomPadding: boolean;
@@ -601,6 +615,31 @@ function resolvePageSections(
   issues: ExportIssue[],
   siteIdentity: SiteIdentity,
 ) {
+  /**
+   * The ground colour each section renders against, once bands are accounted
+   * for. A band member's own recipe never paints, so its component has to be
+   * given the band's or it styles its text and cards for a ground that is not
+   * there. Resolved up front because this loop is flat and cannot otherwise see
+   * which run a section belongs to.
+   */
+  type SectionRecipe = ReturnType<
+    typeof resolveSectionStyleOverrides
+  >["colorRecipe"];
+  const bandRecipeBySection = new Map<string, SectionRecipe>();
+
+  groupSectionsIntoBands(
+    renderData.sections.map((section) =>
+      resolveSectionStyleOverrides(
+        section,
+        renderData.fieldsBySection[section.id ?? ""] ?? [],
+      ),
+    ),
+  ).forEach((band) => {
+    withBandRecipe(band).forEach((section) => {
+      bandRecipeBySection.set(section.id ?? "", section.colorRecipe);
+    });
+  });
+
   return renderData.sections.flatMap((section, index) => {
     const sourcePath = componentRegistry.get(section.component);
 
@@ -618,9 +657,12 @@ function resolvePageSections(
     // The frame below is rebuilt rather than rendered, so it has to read the
     // same style-resolved section the component props were built from - not the
     // raw template section, which is blind to staged overrides.
-    const resolvedSection = resolveSectionStyleOverrides(section, sectionFields);
+    const resolvedSection = {
+      ...resolveSectionStyleOverrides(section, sectionFields),
+      colorRecipe: bandRecipeBySection.get(section.id ?? ""),
+    };
     const element = renderPageTemplateSection(
-      section,
+      resolvedSection,
       index,
       sectionFields,
       publicNavigationLinks(renderData.navigationLinks, clientPages),
@@ -663,9 +705,26 @@ function resolvePageSections(
       {
         cardBorder: resolvedSection.cardBorder ?? "on",
         cardFill: resolveCardFill(section.component, resolvedSection.cardFill),
-        colorRecipe: resolvedSection.colorRecipe ?? "default",
+        colorRecipe:
+          resolveSectionColorRecipe(resolvedSection.colorRecipe) ?? "default",
         component: section.component,
         contentKey: `section${String(index + 1).padStart(2, "0")}`,
+        joinAbove: resolvedSection.joinAbove ?? "",
+        backgroundTreatment: resolveBackgroundTreatment(
+          resolvedSection.backgroundTreatment,
+        ),
+        // Read off the same staged fields the component props were built from,
+        // so a ground image set on a staged page reaches the export the way any
+        // other asset does.
+        backgroundImage: treatmentUsesGroundImage(
+          resolveBackgroundTreatment(resolvedSection.backgroundTreatment),
+        )
+          ? resolveBackgroundImage(
+              sectionFields.find((field) =>
+                field.path.endsWith(".backgroundImage"),
+              )?.value,
+            )
+          : "",
         mode: section.mode,
         props,
         reduceBottomPadding: Boolean(resolvedSection.reduceBottomPadding),
@@ -883,6 +942,97 @@ function buildContentFile({ sections }: ResolvedPage) {
   return `export const content = ${JSON.stringify(content, null, 2)} as const;\n`;
 }
 
+function buildSectionFrameJsx(
+  section: ResolvedSection,
+  indent: string,
+  inBand: boolean,
+) {
+  return `${indent}<div
+${indent}  className="pagebuilder-section-frame pagebuilder-paint-surface relative"
+${indent}  data-pagebuilder-background-fill=${JSON.stringify(inBand ? "none" : "solid")}
+${indent}  data-pagebuilder-background-treatment=${JSON.stringify(
+    inBand ? "none" : resolveBackgroundTreatment(section.backgroundTreatment),
+  )}
+${indent}  data-pagebuilder-card-border=${JSON.stringify(section.cardBorder)}
+${indent}  data-pagebuilder-card-fill=${JSON.stringify(section.cardFill)}
+${indent}  data-pagebuilder-color-recipe=${JSON.stringify(
+    inBand ? "inherit" : section.colorRecipe,
+  )}
+${indent}  data-pagebuilder-padding-bottom=${JSON.stringify(
+    section.reduceBottomPadding ? "none" : "default",
+  )}
+${indent}  data-pagebuilder-padding-top=${JSON.stringify(
+    section.reduceTopPadding ? "none" : "default",
+  )}
+${indent}  data-pagebuilder-section-component=${JSON.stringify(section.component)}
+${indent}  data-pagebuilder-section-mode=${JSON.stringify(section.mode)}
+${indent}  key=${JSON.stringify(section.sectionId)}${
+    inBand ? "" : backgroundImageStyleJsx(section, `${indent}  `)
+  }
+${indent}>
+${indent}  <${section.component} {...(content.${section.contentKey} as unknown as ComponentProps<typeof ${section.component}>)} />
+${indent}</div>`;
+}
+
+/**
+ * The inline custom property carrying a ground image, as a JSX `style` prop.
+ *
+ * Emitted only when there is an image to emit, so an ordinary section keeps the
+ * attribute list it had before. `backgroundImage` is already sanitised by
+ * `resolveBackgroundImage` at resolve time - it reaches a stylesheet rather than
+ * markup, where React's escaping does not apply - and is serialised through
+ * JSON.stringify here so the generated source is valid whatever it holds.
+ */
+function backgroundImageStyleJsx(section: ResolvedSection, indent: string) {
+  if (!section.backgroundImage) {
+    return "";
+  }
+
+  return `\n${indent}style={{ ${JSON.stringify("--section-background-image")}: ${JSON.stringify(
+    `url("${section.backgroundImage}")`,
+  )} } as CSSProperties}`;
+}
+
+/**
+ * The page's section markup.
+ *
+ * Emitted through the band grouping rather than straight off the list, so a
+ * background spanning several sections survives export. A run of one produces
+ * no wrapper, which is every page that uses no bands - so an export of an
+ * existing page is byte-identical to what it was before bands existed.
+ *
+ * Exported for its test. This builds a string, so the compiler cannot see
+ * inside it: a malformed wrapper here would type-check cleanly and only fail
+ * later, when the generated site is built.
+ */
+export function buildSectionJsx(sections: ResolvedSection[]) {
+  return groupSectionsIntoBands(sections)
+    .map((band) => {
+      const [first] = band.sections;
+
+      if (!band.isBand) {
+        return buildSectionFrameJsx(first, "      ", false);
+      }
+
+      return `      <div
+        className="pagebuilder-section-band pagebuilder-paint-surface"
+        data-pagebuilder-background-treatment=${JSON.stringify(
+          resolveBackgroundTreatment(first.backgroundTreatment),
+        )}
+        data-pagebuilder-color-recipe=${JSON.stringify(first.colorRecipe)}
+        key=${JSON.stringify(`band-${first.sectionId}`)}${backgroundImageStyleJsx(
+          first,
+          "        ",
+        )}
+      >
+${band.sections
+  .map((section) => buildSectionFrameJsx(section, "        ", true))
+  .join("\n")}
+      </div>`;
+    })
+    .join("\n");
+}
+
 function buildPageFile({ page, sections }: ResolvedPage) {
   const importsByPath = new Map<string, Set<string>>();
 
@@ -902,30 +1052,15 @@ function buildPageFile({ page, sections }: ResolvedPage) {
   const metadataDescription =
     findMetaValue(page, "description") ||
     `${page.pageLabel} information and service details.`;
-  const sectionJsx = sections
-    .map(
-      (section) => `      <div
-        className="pagebuilder-section-frame relative"
-        data-pagebuilder-card-border=${JSON.stringify(section.cardBorder)}
-        data-pagebuilder-card-fill=${JSON.stringify(section.cardFill)}
-        data-pagebuilder-color-recipe=${JSON.stringify(section.colorRecipe)}
-        data-pagebuilder-padding-bottom=${JSON.stringify(
-          section.reduceBottomPadding ? "none" : "default",
-        )}
-        data-pagebuilder-padding-top=${JSON.stringify(
-          section.reduceTopPadding ? "none" : "default",
-        )}
-        data-pagebuilder-section-component=${JSON.stringify(section.component)}
-        data-pagebuilder-section-mode=${JSON.stringify(section.mode)}
-        key=${JSON.stringify(section.sectionId)}
-      >
-        <${section.component} {...(content.${section.contentKey} as unknown as ComponentProps<typeof ${section.component}>)} />
-      </div>`,
-    )
-    .join("\n");
+  const sectionJsx = buildSectionJsx(sections);
+  // Imported only where it is used. An unused type import would fail lint in
+  // the generated site, on pages that never asked for a ground image.
+  const reactTypeImports = sectionJsx.includes("as CSSProperties")
+    ? "ComponentProps, CSSProperties"
+    : "ComponentProps";
 
   return `import type { Metadata } from "next";
-import type { ComponentProps } from "react";
+import type { ${reactTypeImports} } from "react";
 ${imports}
 import { content } from "./content";
 

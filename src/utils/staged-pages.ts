@@ -9,6 +9,7 @@ import { sectionLibraryV3Content } from "@/content/section-library-v3";
 import {
   getSectionStyleFieldSpecs,
   styleFieldPrefix,
+  treatmentUsesGroundImage,
 } from "@/content/section-style-options";
 import { readStrategyPageSlots } from "@/utils/client-page-slots";
 import { getSectionId, getSectionIdRenames } from "@/utils/section-id";
@@ -79,6 +80,13 @@ export type StagedPageTemplateSection = {
   icons?: string;
   /** Headline wrap - see `headlineWrapOptions` in `section-style-options`. */
   headlineWrap?: string;
+  /**
+   * `"join"` puts this section in the same background band as the one above it -
+   * see `joinAbove` in `section-style-options`.
+   */
+  joinAbove?: string;
+  /** Ground texture - see `backgroundTreatment` in `section-style-options`. */
+  backgroundTreatment?: string;
   ratio?: string;
   /** Stable rename anchor - see `SlottedSection` in @/utils/section-id. */
   slotId?: string;
@@ -1126,7 +1134,35 @@ export function getTemplateStyleFieldsForSection(
   }));
 }
 
-export function getTemplateAssetFieldsForSection(
+/**
+ * The ground image, asked for only when the section is set to carry one.
+ *
+ * Gated on the treatment rather than offered everywhere on purpose. A page runs
+ * to a dozen sections, and an unconditional field would put a dozen empty image
+ * slots in front of an editor for a feature almost none of those sections use.
+ * Choosing "Image" in the builder is what creates the contract, which is the
+ * same way a section's component decides the rest of its fields.
+ *
+ * Decorative by definition - it is a CSS background, not content - so it takes
+ * no alt text. A background that carries meaning belongs in the section's own
+ * image fields, where it renders as an `<img>` and can be described.
+ */
+function getBackgroundImageAssetFields(
+  section: StagedPageTemplateSection,
+): TemplateAssetField[] {
+  return treatmentUsesGroundImage(section.backgroundTreatment)
+    ? [{ kind: "image" as const, name: "backgroundImage", value: "" }]
+    : [];
+}
+
+/**
+ * The asset fields a section's own component declares.
+ *
+ * Kept separate from the exported entry point so the ground image can be added
+ * once, rather than appended to each of the twenty-odd component branches below
+ * - where one missed branch would silently drop the field for that section.
+ */
+function getComponentAssetFields(
   section: StagedPageTemplateSection,
 ): TemplateAssetField[] {
   const component = section.component.toLowerCase();
@@ -1453,6 +1489,17 @@ export function getTemplateAssetFieldsForSection(
   }
 
   return [];
+}
+
+export function getTemplateAssetFieldsForSection(
+  section: StagedPageTemplateSection,
+): TemplateAssetField[] {
+  // Ground image last: the section's own content is what an editor came to
+  // fill in, and the decorative background is the afterthought it should be.
+  return [
+    ...getComponentAssetFields(section),
+    ...getBackgroundImageAssetFields(section),
+  ];
 }
 
 /**

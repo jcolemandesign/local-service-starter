@@ -67,50 +67,13 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
   currency: "USD",
 });
 
-const colorRecipeClassName: Record<
-  SectionColorRecipe,
-  {
-    card: string;
-    cardBorder: string;
-    input: string;
-    muted: string;
-    section: string;
-    text: string;
-  }
-> = {
-  default: {
-    card: "bg-service-surface",
-    cardBorder: "border-service-border",
-    input: "bg-bg-page border-service-border",
-    muted: "text-service-muted",
-    section: "bg-bg-page",
-    text: "text-service-ink",
-  },
-  muted: {
-    card: "bg-surface-raised",
-    cardBorder: "border-service-border",
-    input: "bg-bg-page border-service-border",
-    muted: "text-service-muted",
-    section: "bg-service-surface",
-    text: "text-service-ink",
-  },
-  dark: {
-    card: "bg-white/10",
-    cardBorder: "border-white/25",
-    input: "bg-white/10 border-white/25",
-    muted: "text-white/75",
-    section: "bg-bg-dark",
-    text: "text-white",
-  },
-  accent: {
-    card: "bg-bg-dark",
-    cardBorder: "border-white/25",
-    input:
-      "bg-white/10 border-white/25",
-    muted: "text-white/75",
-    section: "bg-service-accent",
-    text: "text-white",
-  },
+const colorRecipeClassName = {
+  card: "bg-service-surface",
+  cardBorder: "border-service-border",
+  input: "bg-bg-page border-service-border",
+  muted: "text-service-muted",
+  section: "bg-bg-page",
+  text: "text-service-ink",
 };
 
 function cx(...classes: Array<string | false | undefined>) {
@@ -138,7 +101,6 @@ export function FinancingCalculatorSectionV3({
   body,
   cardBorder = "on",
   cardFill = "solid",
-  colorRecipe = "default",
   estimatedAprLabel = "Estimated APR",
   estimatedPaymentLabel = "Estimated Monthly Payment",
   fallbackMessage,
@@ -167,7 +129,7 @@ export function FinancingCalculatorSectionV3({
   const [promotionIndex, setPromotionIndex] = useState<number | null>(null);
   const inputId = useId();
   const disclosureId = useId();
-  const colors = colorRecipeClassName[colorRecipe];
+  const colors = colorRecipeClassName;
   const cardClassName = cx(
     "content-padding radius-medium h-full border shadow-service",
     colors.card,

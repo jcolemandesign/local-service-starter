@@ -38,58 +38,13 @@ type HeroSplitFixedImageSectionV3Props = {
   variant?: HeroSplitFixedImageVariant;
 };
 
-const colorRecipeClassName: Record<
-  SectionColorRecipe,
-  {
-    action: string;
-    body: string;
-    eyebrow: string;
-    ink: string;
-    secondaryAction: string;
-    section: string;
-  }
-> = {
-  default: {
-    action: "",
-    body: "text-service-muted",
-    eyebrow: "text-service-accent",
-    ink: "text-service-ink",
-    secondaryAction: "",
-    section: "bg-bg-page",
-  },
-  muted: {
-    action: "",
-    body: "text-service-muted",
-    eyebrow: "text-service-accent",
-    ink: "text-service-ink",
-    secondaryAction: "",
-    section: "bg-service-surface",
-  },
-  dark: {
-    action: "!border-white !bg-white !text-bg-dark hover:!bg-service-surface",
-    body: "text-white/70",
-    eyebrow: "text-white",
-    ink: "text-white",
-    // Ghost/outline treatment: the default secondary style is a light pill
-    // (bg-bg-page), which would clash with a dark section - drop the fill
-    // so it reads as a lighter-weight, secondary action against the dark bg.
-    secondaryAction:
-      "!border-white/40 !bg-transparent !text-white hover:!border-white hover:!bg-white/10 hover:!text-white",
-    section: "bg-bg-dark",
-  },
-  accent: {
-    // RequestServiceButton's/Button's own defaults are bg-service-accent and
-    // bg-bg-page respectively - both get re-tinted to this recipe's own
-    // accent background by the pagebuilder-section-frame wrapper, so without
-    // this override both CTAs are invisible against the section.
-    action: "!border-white !bg-white !text-bg-dark hover:!bg-white/85",
-    body: "text-[var(--live-accent-muted-text)]",
-    eyebrow: "text-[var(--live-accent-ink)]",
-    ink: "text-[var(--live-accent-ink)]",
-    secondaryAction:
-      "!border-[color-mix(in_oklab,var(--live-accent-ink)_40%,transparent)] !bg-transparent !text-[var(--live-accent-ink)] hover:!border-[color:var(--live-accent-ink)] hover:!bg-white/10 hover:!text-[var(--live-accent-ink)]",
-    section: "bg-service-accent",
-  },
+const colorRecipeClassName = {
+  action: "",
+  body: "text-service-muted",
+  eyebrow: "text-service-accent",
+  ink: "text-service-ink",
+  secondaryAction: "",
+  section: "bg-bg-page",
 };
 
 type FixedImageVariantConfig = {
@@ -185,7 +140,6 @@ function FixedRatioImage({
 
 export function HeroSplitFixedImageSectionV3({
   body,
-  colorRecipe = "default",
   eyebrow,
   headingLevel = 1,
   imageAlt,
@@ -200,7 +154,7 @@ export function HeroSplitFixedImageSectionV3({
 }: HeroSplitFixedImageSectionV3Props) {
   const config =
     variantConfig[variant] ?? variantConfig["text-3-image-4-right"];
-  const colors = colorRecipeClassName[colorRecipe];
+  const colors = colorRecipeClassName;
   const HeadingTag = `h${headingLevel}` as const;
 
   return (

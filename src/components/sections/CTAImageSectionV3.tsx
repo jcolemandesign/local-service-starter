@@ -46,7 +46,6 @@ export function CTAImageSectionV3({
   action,
   align = "left",
   body,
-  colorRecipe = "default",
   eyebrow,
   imageAlt,
   imageSrc,
@@ -79,13 +78,7 @@ export function CTAImageSectionV3({
             </div>
 
             <div className="mt-body-actions-md flex flex-wrap items-center gap-4 max-md:items-stretch">
-              <RequestServiceButton
-                className={cx(
-                  "w-auto shrink-0 max-md:w-full",
-                  colorRecipe === "accent" &&
-                    "!bg-bg-dark !text-white hover:!bg-service-ink",
-                )}
-              >
+              <RequestServiceButton className="w-auto shrink-0 max-md:w-full">
                 {action}
               </RequestServiceButton>
               <Button

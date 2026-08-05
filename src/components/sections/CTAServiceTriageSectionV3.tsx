@@ -37,63 +37,16 @@ function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-const recipeClasses: Record<
-  SectionColorRecipe,
-  {
-    card: string;
-    cardBorder: string;
-    choice: string;
-    icon: string;
-    iconShell: string;
-    muted: string;
-    section: string;
-    text: string;
-  }
-> = {
-  default: {
-    card: "bg-service-surface",
-    cardBorder: "border-service-border",
-    choice:
-      "!border-service-border !bg-bg-page !text-service-accent hover:!border-service-accent hover:!bg-bg-page",
-    icon: "text-service-accent",
-    iconShell: "bg-service-accent/10",
-    muted: "text-service-muted",
-    section: "bg-bg-page",
-    text: "text-service-ink",
-  },
-  muted: {
-    card: "bg-surface-raised",
-    cardBorder: "border-service-border",
-    choice:
-      "!border-service-border !bg-surface-raised !text-service-accent hover:!border-service-accent hover:!bg-surface-raised",
-    icon: "text-service-accent",
-    iconShell: "bg-service-accent/10",
-    muted: "text-service-muted",
-    section: "bg-service-surface",
-    text: "text-service-ink",
-  },
-  dark: {
-    card: "bg-white/10",
-    cardBorder: "border-white/25",
-    choice:
-      "!border-white/25 !bg-white/10 !text-white hover:!border-white/50 hover:!bg-white/15",
-    icon: "text-white",
-    iconShell: "bg-white/10",
-    muted: "text-white/72",
-    section: "bg-bg-dark",
-    text: "text-white",
-  },
-  accent: {
-    card: "bg-bg-dark",
-    cardBorder: "border-white/25",
-    choice:
-      "!border-white/25 !bg-white/10 !text-white hover:!border-white/50 hover:!bg-white/15",
-    icon: "text-white",
-    iconShell: "bg-white/10",
-    muted: "text-white/72",
-    section: "bg-service-accent",
-    text: "text-white",
-  },
+const recipeClasses = {
+  card: "bg-service-surface",
+  cardBorder: "border-service-border",
+  choice:
+    "!border-service-border !bg-bg-page !text-service-accent hover:!border-service-accent hover:!bg-bg-page",
+  icon: "text-service-accent",
+  iconShell: "bg-service-accent/10",
+  muted: "text-service-muted",
+  section: "bg-bg-page",
+  text: "text-service-ink",
 };
 
 function ToolIcon() {
@@ -179,7 +132,6 @@ function phoneHref(phone: string) {
 export function CTAServiceTriageSectionV3({
   cardBorder = "on",
   cardFill = "solid",
-  colorRecipe = "default",
   customerAction,
   customerActionHref = "#contact",
   customerBody,
@@ -196,34 +148,17 @@ export function CTAServiceTriageSectionV3({
   urgentPhone,
   urgentTitle,
 }: CTAServiceTriageSectionV3Props) {
-  const colors = recipeClasses[colorRecipe];
-  const transparentAccentCards = colorRecipe === "accent" && cardFill === "none";
-  const cardText = transparentAccentCards
-    ? "text-[var(--live-accent-ink)]"
-    : colors.text;
-  const cardMuted = transparentAccentCards
-    ? "text-[var(--live-accent-muted-text)]"
-    : colors.muted;
-  const cardIcon = transparentAccentCards
-    ? "text-[var(--live-accent-ink)]"
-    : colors.icon;
-  const cardIconShell = transparentAccentCards
-    ? "bg-[color-mix(in_oklab,var(--live-accent-ink)_10%,transparent)]"
-    : colors.iconShell;
-  const choiceClassName = transparentAccentCards
-    ? "!border-[color-mix(in_oklab,var(--live-accent-ink)_30%,transparent)] !bg-transparent !text-[var(--live-accent-ink)] hover:!border-[color:var(--live-accent-ink)] hover:!bg-transparent"
-    : colors.choice;
+  const colors = recipeClasses;
+  const cardText = colors.text;
+  const cardMuted = colors.muted;
+  const cardIcon = colors.icon;
+  const cardIconShell = colors.iconShell;
+  const choiceClassName = colors.choice;
+  // Hand-styled rather than a Button, so it names the CTA tokens directly to
+  // get what a Button would have got for free.
   const serviceActionClassName =
-    colorRecipe === "dark" || (colorRecipe === "accent" && cardFill === "solid")
-      ? "!border-white !bg-white !text-bg-dark hover:!bg-white/85"
-      : transparentAccentCards
-        ? "!border-bg-dark !bg-bg-dark !text-white hover:!bg-bg-dark/90"
-        : "!border-transparent !bg-service-accent !text-text-inverse hover:!bg-bg-dark";
-  const cardActionText = transparentAccentCards
-    ? "!text-[var(--live-accent-ink)]"
-    : colorRecipe === "dark" || colorRecipe === "accent"
-      ? "!text-white"
-      : "!text-service-ink";
+    "!border-transparent !bg-cta-primary !text-cta-primary-ink hover:!bg-cta-primary-hover";
+  const cardActionText = "!text-service-ink";
   const cardClassName = cx(
     "fluid-type-frame flex h-full min-w-0 flex-col rounded-[var(--radius-surface-token)] border p-8 shadow-service max-md:p-6",
     colors.card,
@@ -302,12 +237,6 @@ export function CTAServiceTriageSectionV3({
             <Button
               className={cx(
                 "mt-6 w-full",
-                colorRecipe === "dark" || (colorRecipe === "accent" && cardFill === "solid")
-                  ? "!border-white !bg-white !text-bg-dark hover:!bg-white/85"
-                  : undefined,
-                transparentAccentCards
-                  ? "!border-bg-dark !bg-bg-dark !text-white hover:!bg-bg-dark/90"
-                  : undefined,
               )}
               href={phoneHref(urgentPhone)}
             >
