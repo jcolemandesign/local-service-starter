@@ -14,6 +14,7 @@ type ExportSection = Parameters<typeof buildSectionJsx>[0][number];
 
 function section(overrides: Partial<ExportSection> = {}): ExportSection {
   return {
+    backgroundConfig: null,
     backgroundImage: "",
     backgroundTreatment: "none",
     cardBorder: "on",

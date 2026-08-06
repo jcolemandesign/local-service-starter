@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { resolveBackgroundConfig } from "@/content/background-config";
 import { requireBuilderApiAccess } from "@/utils/builder-access";
 
 export const runtime = "nodejs";
@@ -42,6 +43,15 @@ type SavedPagebuilderSection = {
    */
   backgroundTreatment?: string;
   joinAbove?: string;
+  /**
+   * The tuned gradient, stored as the editor's own shape. Held as `unknown`
+   * here because this route is a transport boundary, not the authority on the
+   * model - `resolveBackgroundConfig` sanitises it at render time, on the same
+   * "allowlist and drop" basis as every other value that reaches CSS, so a
+   * hand-edited or stale JSON blob degrades to the stylesheet default rather
+   * than painting something unvalidated.
+   */
+  backgroundConfig?: unknown;
   cardBorder?: string;
   cardFill?: string;
 };
@@ -249,6 +259,7 @@ function normalizeSection(
         : undefined,
     joinAbove:
       typeof section.joinAbove === "string" ? section.joinAbove : undefined,
+    backgroundConfig: resolveBackgroundConfig(section.backgroundConfig) ?? undefined,
     // Declared in the saved type but never returned here, so these three were
     // dropped on save exactly like the two above - the client sent them and
     // this function quietly built an object without them.

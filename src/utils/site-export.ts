@@ -25,6 +25,10 @@ import {
 } from "@/components/sections/PageTemplatePreview";
 import { resolveSectionColorRecipe } from "@/content/section-color-recipes";
 import {
+  buildBackgroundConfigStyle,
+  resolveBackgroundConfig,
+} from "@/content/background-config";
+import {
   resolveBackgroundImage,
   resolveBackgroundTreatment,
   resolveCardFill,
@@ -73,6 +77,8 @@ type ResolvedSection = {
   backgroundTreatment: string;
   /** Sanitised ground image path, empty unless the treatment is `image`. */
   backgroundImage: string;
+  /** Sanitised gradient tuning, null when the section keeps the CSS default. */
+  backgroundConfig: import("@/content/background-config").BackgroundConfig | null;
   mode: string;
   props: Record<string, unknown>;
   reduceBottomPadding: boolean;
@@ -725,6 +731,12 @@ function resolvePageSections(
               )?.value,
             )
           : "",
+        // Sanitised here rather than at emit time, so anything malformed in a
+        // saved template degrades to the stylesheet default instead of being
+        // written into the exported source.
+        backgroundConfig: resolveBackgroundConfig(
+          resolvedSection.backgroundConfig,
+        ),
         mode: section.mode,
         props,
         reduceBottomPadding: Boolean(resolvedSection.reduceBottomPadding),
@@ -984,13 +996,34 @@ ${indent}</div>`;
  * JSON.stringify here so the generated source is valid whatever it holds.
  */
 function backgroundImageStyleJsx(section: ResolvedSection, indent: string) {
-  if (!section.backgroundImage) {
+  const entries: [string, string][] = [];
+
+  if (section.backgroundImage) {
+    entries.push([
+      "--section-background-image",
+      `url("${section.backgroundImage}")`,
+    ]);
+  }
+
+  // The tuned gradient rides the same style prop. Both are already sanitised -
+  // the image by `resolveBackgroundImage`, the config by
+  // `resolveBackgroundConfig` - which is what makes it safe to interpolate them
+  // into CSS that React never parses and therefore never escapes.
+  if (section.backgroundConfig) {
+    entries.push(
+      ...Object.entries(buildBackgroundConfigStyle(section.backgroundConfig)),
+    );
+  }
+
+  if (entries.length === 0) {
     return "";
   }
 
-  return `\n${indent}style={{ ${JSON.stringify("--section-background-image")}: ${JSON.stringify(
-    `url("${section.backgroundImage}")`,
-  )} } as CSSProperties}`;
+  const properties = entries
+    .map(([name, value]) => `${JSON.stringify(name)}: ${JSON.stringify(value)}`)
+    .join(", ");
+
+  return `\n${indent}style={{ ${properties} } as CSSProperties}`;
 }
 
 /**

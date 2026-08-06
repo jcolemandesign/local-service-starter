@@ -162,6 +162,10 @@ import {
   sectionLibraryV3Content,
 } from "@/content/section-library-v3";
 import {
+  buildBackgroundConfigStyle,
+  resolveBackgroundConfig,
+} from "@/content/background-config";
+import {
   booleanStyleFields,
   calloutRevealGridVariantValues,
   calloutSplitPanelVariantValues,
@@ -220,6 +224,8 @@ export type PageTemplatePreviewSection = {
   joinAbove?: string;
   /** Ground texture - see `backgroundTreatment` in `section-style-options`. */
   backgroundTreatment?: string;
+  /** Tuned gradient - see `background-config`. Absent keeps the CSS default. */
+  backgroundConfig?: import("@/content/background-config").BackgroundConfig;
   icons?: string;
   headlineWrap?: string;
   ratio?: string;
@@ -353,10 +359,7 @@ export function PageTemplatePreview({
         backgroundImage={
           frameProps.inBand
             ? undefined
-            : backgroundImageStyle(
-                resolveBackgroundTreatment(section.backgroundTreatment),
-                fieldsBySection[section.id ?? ""],
-              )
+            : backgroundLayerStyle(section, fieldsBySection[section.id ?? ""])
         }
         key={section.id ?? index}
         section={section}
@@ -398,12 +401,9 @@ export function PageTemplatePreview({
           resolveSectionColorRecipe(first.colorRecipe) ?? "default"
         }
         key={`band-${first.id ?? band.startIndex}`}
-        // The run's first section supplies the image, the same section that
-        // supplies the band's recipe and texture.
-        style={backgroundImageStyle(
-          resolveBackgroundTreatment(first.backgroundTreatment),
-          fieldsBySection[first.id ?? ""],
-        )}
+        // The run's first section supplies the image and the tuned gradient,
+        // the same section that supplies the band's recipe and texture.
+        style={backgroundLayerStyle(first, fieldsBySection[first.id ?? ""])}
       >
         {withBandRecipe(band).map((section, offset) =>
           renderSection(section, band.startIndex + offset, { inBand: true }),
@@ -516,6 +516,27 @@ function backgroundImageStyle(
         "--section-background-image": `url("${source}")`,
       } as CSSProperties)
     : {};
+}
+
+/**
+ * Everything a frame or band needs to paint its ground, as one style object.
+ *
+ * The image and the tuned gradient are separate features that happen to share a
+ * destination, so they are resolved separately and merged here rather than each
+ * call site remembering both. A section carrying neither yields `{}` and sets
+ * no properties at all, which is what leaves the stylesheet's defaults intact.
+ */
+function backgroundLayerStyle(
+  section: PageTemplatePreviewSection,
+  fields: StagedPageField[] = [],
+): CSSProperties {
+  const treatment = resolveBackgroundTreatment(section.backgroundTreatment);
+  const config = resolveBackgroundConfig(section.backgroundConfig);
+
+  return {
+    ...backgroundImageStyle(treatment, fields),
+    ...(config ? buildBackgroundConfigStyle(config) : {}),
+  } as CSSProperties;
 }
 
 function TemplateSectionFrame({

@@ -3,6 +3,10 @@
 import type { CSSProperties, DragEvent, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
+  buildBackgroundConfigStyle,
+  resolveBackgroundConfig,
+} from "@/content/background-config";
+import {
   ContentSplitFullImageSectionV3,
   type ContentSplitFullImageVariant,
 } from "@/components/sections/ContentSplitFullImageSectionV3";
@@ -1063,6 +1067,7 @@ function serializeWorkingSection(section: WorkingSection) {
     // once it learned the fields.
     backgroundTreatment: section.backgroundTreatment,
     joinAbove: section.joinAbove,
+    backgroundConfig: section.backgroundConfig,
     cardBorder: getSectionCardBorder(section),
     cardFill: getSectionCardFill(section),
   };
@@ -1070,6 +1075,19 @@ function serializeWorkingSection(section: WorkingSection) {
 
 function getSectionSwapOption(component: string) {
   return sectionSwapOptions.find((option) => option.component === component);
+}
+
+/**
+ * The inline custom properties a tuned gradient paints through, or `undefined`
+ * so a section that has never been tuned sets no style attribute at all and
+ * keeps the stylesheet's own two washes.
+ */
+function backgroundConfigStyle(config: unknown): CSSProperties | undefined {
+  const resolved = resolveBackgroundConfig(config);
+
+  return resolved
+    ? (buildBackgroundConfigStyle(resolved) as CSSProperties)
+    : undefined;
 }
 
 function normalizeSectionMetadata(section: WorkingSection): WorkingSection {
@@ -4253,6 +4271,14 @@ export function PagebuilderShell({
             event.stopPropagation();
             setSelectedSectionId(section.id);
           }}
+          // A band member paints nothing of its own: the wrapper below carries
+          // the run's tuned gradient, and setting it here too would stack two
+          // identical layers.
+          style={
+            options.inBand
+              ? undefined
+              : backgroundConfigStyle(section.backgroundConfig)
+          }
         >
           {renderedSectionPreview}
           <button
@@ -4308,6 +4334,7 @@ export function PagebuilderShell({
                 )}
                 data-pagebuilder-color-recipe={getSectionColorRecipe(first)}
                 key={`band-${first.id}`}
+                style={backgroundConfigStyle(first.backgroundConfig)}
               >
                 {withBandRecipe(band).map((section) =>
                   renderSectionFrame(section, { inBand: true }),

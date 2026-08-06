@@ -235,6 +235,28 @@
 }
 
 /*
+ * The animation for a tuned background, which may have any number of nodes.
+ *
+ * `section-background-drift` above names one background-position per layer and
+ * so only works for exactly the two washes it was written against - with three
+ * nodes the values repeat and the third sits still. Moving the whole layer
+ * instead is node-count independent, and being a transform on a pseudo-element
+ * it composites rather than repainting.
+ *
+ * The scale is what keeps the edges covered: translating a layer that is
+ * exactly the size of its box would drag a bare corner into view.
+ */
+@keyframes section-background-float {
+  from {
+    transform: translate3d(-1.5%, -1%, 0) scale(1.06);
+  }
+
+  to {
+    transform: translate3d(1.5%, 1%, 0) scale(1.12);
+  }
+}
+
+/*
  * Entrance pulse, for cards that drew attention with a brief scale blip rather
  * than a fade. Driven by the same view() timeline, so the pulse plays as the
  * card scrolls through its entry range instead of firing once on a timer. The
@@ -1439,25 +1461,33 @@ body {
    * the strength of each treatment as one number to tune. */
 
   /* Two soft off-centre washes in the brand accent, so the same treatment reads
-     on a paper ground and on ink. */
+     on a paper ground and on ink.
+   *
+   * Every value here is now the *fallback* of a custom property the background
+   * editor can set per section. Written this way round on purpose: a section
+   * with no config touches none of these properties, so it resolves to the
+   * literal defaults below and is provably unchanged by the editor existing.
+   * `buildBackgroundConfigStyle` in `src/content/background-config.ts` supplies
+   * the overrides. */
   [data-pagebuilder-background-treatment="gradient"]::before,
   [data-pagebuilder-background-treatment="drift"]::before {
-    background-image:
+    background-image: var(
+      --section-background-layers,
       radial-gradient(
-        110% 75% at 12% 0%,
-        var(--color-service-accent),
-        transparent 62%
-      ),
+          110% 75% at 12% 0%,
+          var(--color-service-accent),
+          transparent 62%
+        ),
       radial-gradient(
         95% 70% at 88% 100%,
         var(--color-service-accent),
         transparent 45%
-      );
+      )
+    );
     background-repeat: no-repeat;
-    background-size:
-      140% 140%,
-      140% 140%;
-    opacity: 0.18;
+    background-size: var(--section-background-size, 140% 140%);
+    mix-blend-mode: var(--section-background-blend, normal);
+    opacity: var(--section-background-strength, 0.18);
   }
 
   /* A single image covering the whole box, which on a band is the whole run -
@@ -1490,8 +1520,18 @@ body {
      to `gradient`, so what is left is a still version of the same ground rather
      than an empty one. */
   @media (prefers-reduced-motion: no-preference) {
+    /* The default lands on the frame rather than on its ::before so that an
+     * inline custom property - which is set on the frame too - can outrank it.
+     * Declared straight on the pseudo-element it would win by specificity over
+     * an inherited value, and a tuned background could never stop drifting. */
+    [data-pagebuilder-background-treatment="drift"] {
+      --section-background-animation: section-background-drift 26s ease-in-out
+        infinite alternate;
+    }
+
+    [data-pagebuilder-background-treatment="gradient"]::before,
     [data-pagebuilder-background-treatment="drift"]::before {
-      animation: section-background-drift 26s ease-in-out infinite alternate;
+      animation: var(--section-background-animation, none);
     }
 
     /* Parallax: the image is sized and positioned against the viewport rather

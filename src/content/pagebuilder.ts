@@ -29,6 +29,12 @@ export type PagebuilderRecipeSection = {
   joinAbove?: string;
   /** Ground texture - see `backgroundTreatment` in `section-style-options`. */
   backgroundTreatment?: string;
+  /**
+   * Per-section tuning for the gradient treatments - node colours, positions,
+   * radii, strength and motion. Absent means the stylesheet's own two washes,
+   * so a section that has never been tuned is unaffected by this existing.
+   */
+  backgroundConfig?: import("@/content/background-config").BackgroundConfig;
   ratio?: string;
   variant?: string;
   colorRecipe?: import("@/content/section-color-recipes").SectionColorRecipe;
