@@ -16,7 +16,10 @@ function section(overrides: Partial<ExportSection> = {}): ExportSection {
   return {
     backgroundConfig: null,
     backgroundImage: "",
+    backgroundImageFit: "",
+    backgroundImageFocus: "",
     backgroundTreatment: "none",
+    borderTone: "dark",
     cardBorder: "on",
     cardFill: "solid",
     colorRecipe: "default",
@@ -178,6 +181,59 @@ describe("exported section markup", () => {
     // Members are inert, so none of the three frames carries a second set.
     expect(countOccurrences(jsx, 'data-pagebuilder-background-treatment="none"')).toBe(3);
     expect(isBalanced(jsx)).toBe(true);
+  });
+
+  /**
+   * The framing rides the same style prop as the image and the tuned gradient,
+   * and is emitted only where it differs from the stylesheet's own defaults -
+   * so an export of pages that framed nothing is byte-identical to what it was
+   * before the controls existed.
+   */
+  it("emits the framing alongside the image", () => {
+    const jsx = buildSectionJsx([
+      section({
+        sectionId: "a",
+        backgroundTreatment: "image",
+        backgroundImage: "/images/ground.jpg",
+        backgroundImageFit: "fit",
+        backgroundImageFocus: "62 38",
+      }),
+    ]);
+
+    expect(jsx).toContain('"--section-background-image-fit": "contain"');
+    expect(jsx).toContain('"--section-background-image-position": "62% 38%"');
+    expect(jsx).toContain("CSSProperties");
+  });
+
+  it("emits no framing when it matches the stylesheet default", () => {
+    const jsx = buildSectionJsx([
+      section({
+        sectionId: "a",
+        backgroundTreatment: "image",
+        backgroundImage: "/images/ground.jpg",
+        backgroundImageFit: "fill",
+        backgroundImageFocus: "50 50",
+      }),
+    ]);
+
+    expect(jsx).toContain("--section-background-image");
+    expect(jsx).not.toContain("--section-background-image-fit");
+    expect(jsx).not.toContain("--section-background-image-position");
+  });
+
+  it("drops a framing value the sanitiser rejects", () => {
+    const jsx = buildSectionJsx([
+      section({
+        sectionId: "a",
+        backgroundTreatment: "image",
+        backgroundImage: "/images/ground.jpg",
+        backgroundImageFit: "retired",
+        backgroundImageFocus: '50 50"; background-image: url(evil.png)',
+      }),
+    ]);
+
+    expect(jsx).not.toContain("evil.png");
+    expect(jsx).not.toContain("--section-background-image-position");
   });
 
   /**

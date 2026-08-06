@@ -2,6 +2,7 @@ import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type {
   SectionCardBorder,
+  SectionCardBorderTone,
   SectionCardFill,
   SectionColorRecipe,
 } from "@/content/section-color-recipes";
@@ -64,6 +65,9 @@ export type StagedPageTemplateSection = {
   /** Card row placement on the 14-column grid - see `cardLinkGridAlignOptions`. */
   align?: string;
   backgroundFill?: import("@/content/section-color-recipes").SectionBackgroundFill;
+  /** Which border-color formula an outlined card draws with - see
+   *  `SectionCardBorderTone` in `section-color-recipes`. */
+  borderTone?: SectionCardBorderTone;
   cardBorder?: SectionCardBorder;
   cardFill?: SectionCardFill;
   colorRecipe?: SectionColorRecipe;
@@ -87,6 +91,9 @@ export type StagedPageTemplateSection = {
   joinAbove?: string;
   /** Ground texture - see `backgroundTreatment` in `section-style-options`. */
   backgroundTreatment?: string;
+  /** Ground image sizing and focal point - see `background-image-config`. */
+  backgroundImageFit?: string;
+  backgroundImageFocus?: string;
   ratio?: string;
   /** Stable rename anchor - see `SlottedSection` in @/utils/section-id. */
   slotId?: string;

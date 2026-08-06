@@ -19,7 +19,9 @@ import {
   isStyleFieldPath,
   splitImageRatioFieldOptions,
   styleFieldOptions,
+  styleFieldPrefix,
 } from "@/content/section-style-options";
+import { BackgroundImageFocusEditor } from "@/components/sections/BackgroundImageFocusEditor";
 
 type ContentEditorSectionProps = {
   /**
@@ -537,6 +539,28 @@ export function ContentEditorSection({
                   const copyFields = visibleFields.filter(
                     (field) => field.kind !== "image" && !isToggleField(field),
                   );
+                  /**
+                   * The focal-point widget is the one control that needs two of
+                   * its section's other fields: the fit, which decides whether
+                   * a focal point does anything at all, and the chosen image,
+                   * which is what it is dragged against. Both are siblings, and
+                   * `FieldEditor` sees one field at a time - so they are read
+                   * here, where the section's own fields and their live edited
+                   * values are both in scope.
+                   */
+                  const readSectionField = (suffix: string) => {
+                    const match = section.fields.find((field) =>
+                      field.path.endsWith(suffix),
+                    );
+
+                    return match
+                      ? (values[match.id] ?? match.value).trim()
+                      : "";
+                  };
+                  const imageFraming = {
+                    fit: readSectionField(`.${styleFieldPrefix}.backgroundImageFit`),
+                    imageSrc: readSectionField(".backgroundImage"),
+                  };
                   const sectionDirtyCount = section.fields.filter((field) =>
                     dirtyFieldIds.includes(field.id),
                   ).length;
@@ -621,6 +645,7 @@ export function ContentEditorSection({
                                       key={field.id}
                                       assets={imageAssets}
                                       field={field}
+                                      imageFraming={imageFraming}
                                       value={values[field.id] ?? field.value}
                                       originalValue={
                                         baselineValues[field.id] ?? field.value
@@ -649,6 +674,7 @@ export function ContentEditorSection({
                                       key={field.id}
                                       assets={imageAssets}
                                       field={field}
+                                      imageFraming={imageFraming}
                                       value={values[field.id] ?? field.value}
                                       originalValue={
                                         baselineValues[field.id] ?? field.value
@@ -674,6 +700,7 @@ export function ContentEditorSection({
                                       key={field.id}
                                       assets={imageAssets}
                                       field={field}
+                                      imageFraming={imageFraming}
                                       value={values[field.id] ?? field.value}
                                       originalValue={
                                         baselineValues[field.id] ?? field.value
@@ -732,12 +759,18 @@ export function ContentEditorSection({
 function FieldEditor({
   assets,
   field,
+  imageFraming,
   onChange,
   originalValue,
   value,
 }: {
   assets: string[];
   field: ContentEditorField;
+  /**
+   * The section's fit id and chosen ground image, read from sibling fields by
+   * the caller. Only the focal-point control uses them.
+   */
+  imageFraming?: { fit: string; imageSrc: string };
   onChange: (value: string) => void;
   originalValue: string;
   value: string;
@@ -768,6 +801,29 @@ function FieldEditor({
         originalValue={originalValue}
         value={value}
       />
+    );
+  }
+
+  /**
+   * Ahead of the generic style control below, which renders a toggle row from
+   * an option list - a focal point has no such list. This is the mount that
+   * draws the real photograph: the content editor is where the ground image is
+   * chosen, so it is the only place the node can be placed against what will
+   * actually ship.
+   */
+  if (field.path.endsWith(`.${styleFieldPrefix}.backgroundImageFocus`)) {
+    return (
+      <div className="grid gap-2 rounded-sm bg-zinc-50 p-4">
+        <span className="type-caption font-semibold text-zinc-700">
+          Image focal point
+        </span>
+        <BackgroundImageFocusEditor
+          fit={imageFraming?.fit}
+          imageSrc={imageFraming?.imageSrc || undefined}
+          onChange={onChange}
+          value={value}
+        />
+      </div>
     );
   }
 
@@ -1522,7 +1578,13 @@ function ImageFieldEditor({
  * and two to four short options.
  */
 function isToggleField(field: ContentEditorField) {
-  return Boolean(getStyleFieldSpec(field)) || field.path.endsWith(".imageRatio");
+  return (
+    Boolean(getStyleFieldSpec(field)) ||
+    field.path.endsWith(".imageRatio") ||
+    // No option list, so `getStyleFieldSpec` returns nothing for it - but it is
+    // a framing decision and belongs beside the image, not adrift in the copy.
+    field.path.endsWith(`.${styleFieldPrefix}.backgroundImageFocus`)
+  );
 }
 
 function StatusPill({ label }: { label: string }) {

@@ -2181,6 +2181,10 @@ export const sectionLibraryV3Collections = [
         component: "content-photo-gallery-large-carousel-v3",
       },
       {
+        label: "Photo band carousel",
+        component: "content-photo-gallery-band-carousel-v3",
+      },
+      {
         label: "Project case study gallery",
         component: "project-case-study-gallery-v3",
       },
@@ -2396,6 +2400,8 @@ export const sectionLibraryV3ComponentBySlug = {
     "ContentPhotoGalleryCarouselSectionV3",
   "content-photo-gallery-large-carousel-v3":
     "ContentPhotoGalleryLargeCarouselSectionV3",
+  "content-photo-gallery-band-carousel-v3":
+    "ContentPhotoGalleryBandCarouselSectionV3",
   "project-case-study-gallery-v3": "ProjectCaseStudyGallerySectionV3",
   "trust-bar-v3": "TrustBarSectionV3",
   "trust-bar-floating-bento-v3": "TrustBarFloatingBentoSectionV3",

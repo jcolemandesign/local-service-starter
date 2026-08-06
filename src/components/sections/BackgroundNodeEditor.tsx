@@ -186,7 +186,7 @@ export function BackgroundNodeEditor({
       </label>
 
       <div
-        className="relative h-32 w-full overflow-hidden rounded-[var(--chrome-radius-control)] border border-current/25 bg-white"
+        className="token-chrome-canvas relative h-32 w-full overflow-hidden rounded-[var(--chrome-radius-control)] border"
         ref={previewRef}
       >
         <div

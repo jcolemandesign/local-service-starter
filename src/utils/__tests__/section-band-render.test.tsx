@@ -218,6 +218,134 @@ describe("background band rendering", () => {
     expect(markup).toContain(
       '--section-background-image:url(&quot;/images/ground.jpg&quot;)',
     );
+    // Framed by nothing, so neither framing property is written and the
+    // stylesheet's own `cover` from `center` is what paints.
+    expect(markup).not.toContain("--section-background-image-fit");
+    expect(markup).not.toContain("--section-background-image-position");
+  });
+
+  /**
+   * Fit and focal point are section values; the image is a page asset. They
+   * only mean anything together, so the pairing is asserted rather than each
+   * half on its own.
+   */
+  it("carries the framing alongside the image", () => {
+    const markup = renderToStaticMarkup(
+      <PageTemplatePreview
+        fieldsBySection={{
+          a: [
+            {
+              id: "page.a.backgroundImage",
+              kind: "image",
+              path: "a.backgroundImage",
+              value: "/images/ground.jpg",
+            },
+          ],
+        }}
+        sections={[
+          section({
+            component: header,
+            id: "a",
+            backgroundTreatment: "image",
+            backgroundImageFit: "fit",
+            backgroundImageFocus: "62 38",
+          }),
+        ]}
+      />,
+    );
+
+    expect(markup).toContain("--section-background-image-fit:contain");
+    expect(markup).toContain("--section-background-image-position:62% 38%");
+  });
+
+  it("writes no framing for a section with no image to frame", () => {
+    // The properties ride with the image, so a gradient section carrying a
+    // stale fit from a treatment switch paints nothing unexpected.
+    const markup = render([
+      section({
+        component: header,
+        id: "a",
+        backgroundTreatment: "gradient",
+        backgroundImageFit: "stretch",
+        backgroundImageFocus: "10 90",
+      }),
+    ]);
+
+    expect(markup).not.toContain("--section-background-image");
+  });
+
+  /**
+   * A per-page override of a continuous axis. This is the path the widget in
+   * the content editor writes to, and the one the spec extension exists for -
+   * an enumerated allowlist could not have validated it.
+   */
+  it("honours a staged focal-point override", () => {
+    const markup = renderToStaticMarkup(
+      <PageTemplatePreview
+        fieldsBySection={{
+          a: [
+            {
+              id: "page.a.backgroundImage",
+              kind: "image",
+              path: "a.backgroundImage",
+              value: "/images/ground.jpg",
+            },
+            {
+              id: "page.a.style.backgroundImageFocus",
+              kind: "meta",
+              path: "a.style.backgroundImageFocus",
+              value: "20 80",
+            },
+          ],
+        }}
+        sections={[
+          section({
+            component: header,
+            id: "a",
+            backgroundTreatment: "image",
+            backgroundImageFocus: "62 38",
+          }),
+        ]}
+      />,
+    );
+
+    expect(markup).toContain("--section-background-image-position:20% 80%");
+    expect(markup).not.toContain("62% 38%");
+  });
+
+  it("ignores a staged focal point that is not a legal pair", () => {
+    const markup = renderToStaticMarkup(
+      <PageTemplatePreview
+        fieldsBySection={{
+          a: [
+            {
+              id: "page.a.backgroundImage",
+              kind: "image",
+              path: "a.backgroundImage",
+              value: "/images/ground.jpg",
+            },
+            {
+              id: "page.a.style.backgroundImageFocus",
+              kind: "meta",
+              path: "a.style.backgroundImageFocus",
+              value: "9999 red",
+            },
+          ],
+        }}
+        sections={[
+          section({
+            component: header,
+            id: "a",
+            backgroundTreatment: "image",
+            backgroundImageFocus: "62 38",
+          }),
+        ]}
+      />,
+    );
+
+    // Falls back to the section's own value rather than to the junk.
+    expect(markup).toContain("--section-background-image-position:62% 38%");
+    expect(markup).not.toContain("9999");
   });
 
   it("hands the run's image to the band, not to its members", () => {

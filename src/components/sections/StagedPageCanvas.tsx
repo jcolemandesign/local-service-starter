@@ -411,6 +411,7 @@ function toPreviewSection(
   id: string,
 ): PageTemplatePreviewSection {
   return {
+    borderTone: section.borderTone,
     cardBorder: section.cardBorder,
     cardFill: section.cardFill,
     colorRecipe: section.colorRecipe,

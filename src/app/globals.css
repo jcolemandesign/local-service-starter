@@ -76,6 +76,12 @@
   --media-min-short: 18rem;
   --media-min-medium: 28rem;
   --media-min-tall: 38rem;
+  /* Height of a shallow horizontal media band - imagery used as texture
+     between two sections rather than as a subject to study. A quarter screen
+     is the figure that reads as a band instead of a section, clamped at both
+     ends so a laptop does not squash it into a stripe and a tall monitor does
+     not promote it back into a gallery. */
+  --media-band-height: clamp(9rem, calc(var(--section-viewport-height) / 4), 18rem);
   --radius-none-token: 0;
   --radius-tiny-token: 2px;
   --radius-sm-token: 4px;
@@ -94,6 +100,7 @@
   --color-service-surface: var(--live-service-surface, #f4f7f3);
   --color-surface-raised: var(--live-surface-raised, #fafcf9);
   --color-service-border: var(--live-service-border, oklch(from var(--live-service-surface, #f4f7f3) calc(l - 0.30) c h));
+  --color-service-border-light: var(--live-service-border-light, oklch(from var(--live-service-surface, #f4f7f3) calc(l + 0.30) c h));
   --color-bg-page: var(--live-bg-page, #fbfaf6);
   --color-bg-surface: var(--live-bg-surface, #f4f7f3);
   --color-bg-muted: var(--live-bg-muted, oklch(from var(--live-service-surface, #f4f7f3) calc(l - 0.03) c h));
@@ -466,6 +473,21 @@ body {
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 0.065),
       0 8px 20px rgb(0 0 0 / 0.14);
+  }
+
+  /* The backdrop a gradient is tuned against. Mid grey rather than the panel's
+     near-black or a plain white: a node can be white, black, or any brand
+     colour, and only a middle value keeps all three visible. The grid reads as
+     builder chrome - the same "this is a canvas, not the page" signal a design
+     tool gives - and doubles as a position reference while dragging nodes. */
+  .token-chrome-canvas {
+    --chrome-canvas-grid: rgb(255 255 255 / 0.14);
+    border-color: var(--chrome-border-strong);
+    background-color: #6a707a;
+    background-image:
+      linear-gradient(to right, var(--chrome-canvas-grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--chrome-canvas-grid) 1px, transparent 1px);
+    background-size: 16px 16px;
   }
 
   .token-chrome-card {
@@ -1162,6 +1184,13 @@ body {
     min-height: var(--section-min-active, var(--section-min-short));
   }
 
+  /* A fixed height, not a min-height: the band's whole job is that every photo
+     in it lines up on one baseline, which a min-height would let content
+     break. */
+  .media-band-height {
+    height: var(--media-band-height);
+  }
+
   .card-min-short {
     min-height: var(--card-min-short);
   }
@@ -1566,9 +1595,16 @@ body {
   [data-pagebuilder-background-treatment="image"]::before,
   [data-pagebuilder-background-treatment="image-parallax"]::before {
     background-image: var(--section-background-image);
-    background-position: center;
+    /* Both written as fallbacks of a custom property, the same way round as the
+     * gradient layers above: a section that has never been framed sets neither
+     * property and resolves to these literals, which is what it has always
+     * painted. `buildBackgroundImageStyle` in
+     * `src/content/background-image-config.ts` supplies the overrides, and only
+     * where they differ from these two - so an untouched section emits nothing
+     * at all rather than restating the default inline. */
+    background-position: var(--section-background-image-position, center);
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: var(--section-background-image-fit, cover);
   }
 
   /* The same 22px rule grid the split-headline section draws its texture with,
@@ -1957,6 +1993,25 @@ body {
     --live-cta-secondary-border: var(--palette-highlight);
     --recipe-special-card-fill: var(--palette-accent);
     --recipe-special-card-ink: var(--palette-raised);
+  }
+
+  /* Card border tone, chosen per section rather than baked into a recipe row.
+   *
+   * `serviceBorder` (the darken-from-surface formula every recipe above
+   * defaults to) only reaches 3:1 on light card surfaces; below roughly L 0.45
+   * no downward step gets there. `serviceBorderLight` is its mirror - the same
+   * offset stepped up instead of down - correct only on dark card surfaces.
+   * Neither is safe to bake into a recipe row site-wide, because a business's
+   * accent color (and therefore its card surface under some recipes) can land
+   * on either side of that line. So this is a builder toggle: the editor picks
+   * whichever tone reads against the card they are looking at, and both values
+   * still come from the Style Guide's surface color, not a hand-picked hex.
+   *
+   * Placed after all five recipe blocks so it wins the cascade regardless of
+   * which recipe is active - equal-specificity attribute selectors resolve by
+   * source order, not by which one names the color recipe. */
+  .pagebuilder-paint-surface[data-pagebuilder-border-tone="light"] > * {
+    --live-service-border: var(--live-service-border-light);
   }
 
   /* Ink's generic accent role is intentionally dark, which makes it suitable
@@ -2755,17 +2810,18 @@ body {
 /* BEGIN PAGEWORKS STYLEGUIDE TOKEN OVERRIDES */
 :root {
   --live-service-ink: #232834;
-  --live-service-muted: #224b59;
+  --live-service-muted: #1f4e51;
   --live-service-accent: #175c82;
   --live-service-surface: #e3e6e8;
   --live-surface-raised: #e0e6eb;
   --live-service-border: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
+  --live-service-border-light: oklch(from var(--live-service-surface) calc(l + 0.30) c h);
   --live-bg-page: #dbdbdb;
   --live-bg-surface: #e3e6e8;
   --live-bg-muted: oklch(from var(--live-service-surface) calc(l - 0.03) c h);
   --live-bg-dark: #0d4356;
   --live-text-main: #232834;
-  --live-text-muted: #224b59;
+  --live-text-muted: #1f4e51;
   --live-text-accent: #175c82;
   --live-border-default: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
   --live-accent: #bf0d22;
@@ -2773,17 +2829,18 @@ body {
   --live-accent-muted-text: #dcefe7;
   --live-shadow-service: 8px 10px 22px rgb(27 45 65 / 0.1369);
   --color-service-ink: #232834;
-  --color-service-muted: #224b59;
+  --color-service-muted: #1f4e51;
   --color-service-accent: #175c82;
   --color-service-surface: #e3e6e8;
   --color-surface-raised: #e0e6eb;
   --color-service-border: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
+  --color-service-border-light: oklch(from var(--live-service-surface) calc(l + 0.30) c h);
   --color-bg-page: #dbdbdb;
   --color-bg-surface: #e3e6e8;
   --color-bg-muted: oklch(from var(--live-service-surface) calc(l - 0.03) c h);
   --color-bg-dark: #0d4356;
   --color-text-main: #232834;
-  --color-text-muted: #224b59;
+  --color-text-muted: #1f4e51;
   --color-text-inverse: #ffffff;
   --color-text-accent: #175c82;
   --color-border-default: oklch(from var(--live-service-surface) calc(l - 0.30) c h);

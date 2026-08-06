@@ -40,6 +40,7 @@ export {
   ContentPhotoGalleryCarouselSectionV3,
   ContentPhotoGalleryLargeCarouselSectionV3,
 } from "./ContentPhotoGalleryCarouselSectionV3";
+export { ContentPhotoGalleryBandCarouselSectionV3 } from "./ContentPhotoGalleryBandCarouselSectionV3";
 export { ProjectCaseStudyGallerySectionV3 } from "./ProjectCaseStudyGallerySectionV3";
 export { ImageStripSectionV3 } from "./ImageStripSectionV3";
 export { ContentRevealParagraphSection } from "./ContentRevealParagraphSection";

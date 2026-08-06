@@ -17,6 +17,7 @@ import {
   ContentPhotoGalleryCarouselSectionV3,
   ContentPhotoGalleryLargeCarouselSectionV3,
 } from "@/components/sections/ContentPhotoGalleryCarouselSectionV3";
+import { ContentPhotoGalleryBandCarouselSectionV3 } from "@/components/sections/ContentPhotoGalleryBandCarouselSectionV3";
 import {
   ProjectCaseStudyGallerySectionV3,
   type ProjectCaseStudyGalleryAlign,
@@ -166,16 +167,19 @@ import {
   buildBackgroundConfigStyle,
   resolveBackgroundConfig,
 } from "@/content/background-config";
+import { buildBackgroundImageStyle } from "@/content/background-image-config";
 import {
   booleanStyleFields,
   calloutRevealGridVariantValues,
   calloutSplitPanelVariantValues,
   cardLinkGridAlignValues,
   getSectionStyleFieldSpecs,
+  isValidStyleFieldValue,
   resolveBackgroundFill,
   resolveBackgroundImage,
   resolveBackgroundTreatment,
   treatmentUsesGroundImage,
+  resolveBorderTone,
   resolveCardBorder,
   resolveCardFill,
   resolveHeadlineWrap,
@@ -215,6 +219,7 @@ export type PageTemplatePreviewSection = {
   backgroundFill?: import("@/content/section-color-recipes").SectionBackgroundFill;
   cardFill?: import("@/content/section-color-recipes").SectionCardFill;
   cardBorder?: import("@/content/section-color-recipes").SectionCardBorder;
+  borderTone?: import("@/content/section-color-recipes").SectionCardBorderTone;
   name: string;
   reduceBottomPadding?: boolean;
   reduceTopPadding?: boolean;
@@ -227,6 +232,10 @@ export type PageTemplatePreviewSection = {
   backgroundTreatment?: string;
   /** Tuned gradient - see `background-config`. Absent keeps the CSS default. */
   backgroundConfig?: import("@/content/background-config").BackgroundConfig;
+  /** Ground image sizing - see `background-image-config`. Absent means `fill`. */
+  backgroundImageFit?: string;
+  /** Ground image focal point as `"<x> <y>"`. Absent means centred. */
+  backgroundImageFocus?: string;
   icons?: string;
   headlineWrap?: string;
   ratio?: string;
@@ -304,7 +313,10 @@ export function resolveSectionStyleOverrides(
       .find((field) => field.path.endsWith(`.${styleFieldPrefix}.${spec.name}`))
       ?.value.trim();
 
-    if (value && spec.options.some((option) => option.value === value)) {
+    // `isValidStyleFieldValue` is what reconciles the two spec shapes - an
+    // enumerated axis is checked against its list, a continuous one against its
+    // predicate - so this fold does not have to know which it is holding.
+    if (value && isValidStyleFieldValue(spec, value)) {
       // The spacing fields are stored as booleans on the section. Spreading the
       // raw option string would make "default" truthy and reduce the padding it
       // was chosen to restore.
@@ -504,6 +516,7 @@ function resolvePaddingAttribute(
  * data. Empty when there is no image, so nothing is set at all.
  */
 function backgroundImageStyle(
+  section: PageTemplatePreviewSection,
   treatment: string,
   fields: StagedPageField[] = [],
 ): CSSProperties {
@@ -518,6 +531,12 @@ function backgroundImageStyle(
   return source
     ? ({
         "--section-background-image": `url("${source}")`,
+        // Fit and focal point come off the already-resolved section, so a staged
+        // override has been folded on before this runs.
+        ...buildBackgroundImageStyle(
+          section.backgroundImageFit,
+          section.backgroundImageFocus,
+        ),
       } as CSSProperties)
     : {};
 }
@@ -538,7 +557,7 @@ function backgroundLayerStyle(
   const config = resolveBackgroundConfig(section.backgroundConfig);
 
   return {
-    ...backgroundImageStyle(treatment, fields),
+    ...backgroundImageStyle(section, treatment, fields),
     ...(config ? buildBackgroundConfigStyle(config) : {}),
   } as CSSProperties;
 }
@@ -583,6 +602,7 @@ function TemplateSectionFrame({
         // background-image on a frame.
         inBand ? "none" : resolveBackgroundFill(section.backgroundFill)
       }
+      data-pagebuilder-border-tone={resolveBorderTone(section.borderTone)}
       data-pagebuilder-card-border={resolveCardBorder(
         section.component,
         section.cardBorder,
@@ -891,6 +911,14 @@ export function renderPageTemplateSection(
       return (
         <ContentPhotoGalleryLargeCarouselSectionV3
           {...photoGalleryProps(fieldSection)}
+        />
+      );
+    case "ContentPhotoGalleryBandCarouselSectionV3":
+      return (
+        <ContentPhotoGalleryBandCarouselSectionV3
+          {...photoGalleryProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "ProjectCaseStudyGallerySectionV3":

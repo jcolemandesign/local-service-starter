@@ -115,12 +115,15 @@ import {
   FAQSectionV3,
 } from "@/components/sections/FAQConversionContactFooterSectionsV3";
 import { BackgroundTreatmentOverlay } from "@/components/primitives/AmbientDrift";
+import { BackgroundImageFocusEditor } from "@/components/sections/BackgroundImageFocusEditor";
+import { resolveBackgroundImageFitId } from "@/content/background-image-config";
 import { DownArrowIcon } from "@/components/primitives";
 import type { PagebuilderRecipe, SectionMode } from "@/content/pagebuilder";
 import {
   resolveSectionColorRecipe,
   sectionColorRecipes,
   type SectionCardBorder,
+  type SectionCardBorderTone,
   type SectionCardFill,
   type SectionBackgroundFill,
   type SectionColorRecipe,
@@ -136,6 +139,7 @@ import {
   calloutSplitPanelVariantValues,
   cardFillOptInComponents,
   resolveBackgroundFill,
+  resolveBorderTone,
   resolveCardBorder,
   resolveCardFill,
   headlineWrapOptions,
@@ -147,6 +151,7 @@ import {
   cardLinkGridAlignOptions,
   cardLinkGridAlignValues,
   sectionSupportsCardLinkGridAlign,
+  sectionSupportsBorderTone,
   sectionSupportsCardLinks,
   sectionSupportsCardStyle,
   sectionSupportsBackgroundFill,
@@ -721,6 +726,10 @@ function getSectionCardBorder(section: WorkingSection): SectionCardBorder {
   return resolveCardBorder(section.component, section.cardBorder);
 }
 
+function getSectionBorderTone(section: WorkingSection): SectionCardBorderTone {
+  return resolveBorderTone(section.borderTone);
+}
+
 function getProcessStepsBranchingAlign(
   section: WorkingSection,
 ): ProcessStepsBranchingAlign {
@@ -1072,8 +1081,11 @@ function serializeWorkingSection(section: WorkingSection) {
     backgroundTreatment: section.backgroundTreatment,
     joinAbove: section.joinAbove,
     backgroundConfig: section.backgroundConfig,
+    backgroundImageFit: section.backgroundImageFit,
+    backgroundImageFocus: section.backgroundImageFocus,
     cardBorder: getSectionCardBorder(section),
     cardFill: getSectionCardFill(section),
+    borderTone: getSectionBorderTone(section),
   };
 }
 
@@ -1652,6 +1664,13 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
       "Use a larger mixed-size photo gallery when the images should become a stronger editorial moment.",
     mode: "Images",
     name: "Large photo gallery carousel",
+  },
+  {
+    component: "ContentPhotoGalleryBandCarouselSectionV3",
+    instruction:
+      "Use a shallow looping photo band when imagery should read as texture between two sections - one uniform height, no captions, dragged rather than read.",
+    mode: "Images",
+    name: "Photo band carousel",
   },
   {
     component: "ProjectCaseStudyGallerySectionV3",
@@ -2492,6 +2511,68 @@ function CardFillIcon({ filled }: { filled: boolean }) {
   );
 }
 
+function BorderToneIcon({ tone }: { tone: SectionCardBorderTone }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <rect
+        height="14"
+        rx="1.5"
+        stroke="currentColor"
+        strokeWidth="2.25"
+        width="18"
+        x="3"
+        y="5"
+      />
+      {tone === "light" ? (
+        <g stroke="currentColor" strokeLinecap="round" strokeWidth="1">
+          <circle cx="17" cy="8.5" fill="currentColor" r="1.4" stroke="none" />
+          <path d="M17 5.6v.9M17 10.5v.9M13.9 8.5h.9M19.2 8.5h.9M15.1 6.6l.65.65M18.25 9.75l.65.65M18.9 6.6l-.65.65M15.75 9.75l-.65.65" />
+        </g>
+      ) : (
+        <path
+          d="M18.4 6.3a2.4 2.4 0 1 0 2.7 3.3 3.2 3.2 0 0 1-2.7-3.3Z"
+          fill="currentColor"
+        />
+      )}
+    </svg>
+  );
+}
+
+function BackgroundBandIcon({ joined }: { joined: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <rect
+        height="7"
+        rx="1.25"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        width="18"
+        x="3"
+        y="4"
+      />
+      <rect
+        height="7"
+        rx="1.25"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        width="18"
+        x="3"
+        y={joined ? "11" : "14"}
+      />
+    </svg>
+  );
+}
+
 function PagebuilderPreviewWindow({
   activePageLabel,
   children,
@@ -2985,6 +3066,30 @@ export function PagebuilderShell({
     );
   }
 
+  function updateSectionBackgroundImageFit(
+    sectionId: string,
+    backgroundImageFit: string,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId ? { ...section, backgroundImageFit } : section,
+      ),
+    );
+  }
+
+  function updateSectionBackgroundImageFocus(
+    sectionId: string,
+    backgroundImageFocus: string,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId
+          ? { ...section, backgroundImageFocus }
+          : section,
+      ),
+    );
+  }
+
   function updateSectionBackgroundTreatment(
     sectionId: string,
     backgroundTreatment: string,
@@ -3003,6 +3108,18 @@ export function PagebuilderShell({
     updateActiveStack((stack) =>
       stack.map((section) =>
         section.id === sectionId ? { ...section, cardBorder } : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
+  function updateSectionBorderTone(
+    sectionId: string,
+    borderTone: SectionCardBorderTone,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId ? { ...section, borderTone } : section,
       ),
     );
     setSelectedSectionId(sectionId);
@@ -3846,6 +3963,7 @@ export function PagebuilderShell({
             backgroundFill: getSectionBackgroundFill(section),
             cardFill: getSectionCardFill(section),
             cardBorder: getSectionCardBorder(section),
+            borderTone: getSectionBorderTone(section),
             align: section.align,
             ratio: section.ratio,
             slotId: section.slotId,
@@ -4256,6 +4374,7 @@ export function PagebuilderShell({
           data-pagebuilder-background-fill={
             options.inBand ? "none" : getSectionBackgroundFill(section)
           }
+          data-pagebuilder-border-tone={getSectionBorderTone(section)}
           data-pagebuilder-card-border={getSectionCardBorder(section)}
           data-pagebuilder-card-fill={getSectionCardFill(section)}
           data-pagebuilder-card-style={
@@ -4828,54 +4947,6 @@ export function PagebuilderShell({
                             </div>
                           </fieldset>
 
-                          {/* Offered on everything but navigation, which cannot
-                              join a band - see `navigationComponents`. Hidden on
-                              the first section too, since it has nothing above
-                              it to join. */}
-                          {sectionSupportsJoinAbove(section.component) &&
-                          includedSections[0]?.id !== section.id ? (
-                            <fieldset className="grid gap-2">
-                              <legend className="type-caption font-semibold text-current">
-                                Background band
-                              </legend>
-                              <div className="grid grid-cols-2 gap-2">
-                                {styleFieldOptions.joinAbove
-                                  .filter((option) => option.value !== "")
-                                  .map((option) => {
-                                    const optionIsActive =
-                                      (section.joinAbove === "join") ===
-                                      (option.value === "join");
-
-                                    return (
-                                      <button
-                                        aria-pressed={optionIsActive}
-                                        className={cx(
-                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-2 text-center text-xs font-semibold transition-colors",
-                                          optionIsActive
-                                            ? "token-chrome-card-active"
-                                            : "token-chrome-card",
-                                        )}
-                                        key={option.value}
-                                        onClick={() =>
-                                          updateSectionJoinAbove(
-                                            section.id,
-                                            option.value,
-                                          )
-                                        }
-                                        type="button"
-                                      >
-                                        {option.label}
-                                      </button>
-                                    );
-                                  })}
-                              </div>
-                              <span className="type-caption text-current/70">
-                                Joining shares the background of the section
-                                above, so an image or gradient can span both.
-                              </span>
-                            </fieldset>
-                          ) : null}
-
                           {/* On a joined section this control is hidden: the
                               run's first section owns the band's texture, and
                               two stacked layers would double the wash. */}
@@ -4923,11 +4994,77 @@ export function PagebuilderShell({
                                   section.backgroundTreatment,
                                 ),
                               ) ? (
-                                <span className="type-caption text-current/70">
-                                  The image itself is set per page, alongside
-                                  the section&rsquo;s other assets — the canvas
-                                  shows the ground until then.
-                                </span>
+                                <>
+                                  <span className="type-caption text-current/70">
+                                    The image itself is set per page, alongside
+                                    the section&rsquo;s other assets — the
+                                    canvas shows the ground until then.
+                                  </span>
+
+                                  <fieldset className="grid gap-2">
+                                    <legend className="type-caption font-semibold text-current">
+                                      Image fit
+                                    </legend>
+                                    <div className="grid grid-cols-3 gap-2">
+                                      {styleFieldOptions.backgroundImageFit
+                                        .filter((option) => option.value !== "")
+                                        .map((option) => {
+                                          const fitIsActive =
+                                            resolveBackgroundImageFitId(
+                                              section.backgroundImageFit,
+                                            ) === option.value;
+
+                                          return (
+                                            <button
+                                              aria-pressed={fitIsActive}
+                                              className={cx(
+                                                "min-h-10 rounded-[var(--chrome-radius-control)] border px-2 text-center text-xs font-semibold transition-colors",
+                                                fitIsActive
+                                                  ? "token-chrome-card-active"
+                                                  : "token-chrome-card",
+                                              )}
+                                              key={option.value}
+                                              onClick={() =>
+                                                updateSectionBackgroundImageFit(
+                                                  section.id,
+                                                  option.value,
+                                                )
+                                              }
+                                              type="button"
+                                            >
+                                              {option.label}
+                                            </button>
+                                          );
+                                        })}
+                                    </div>
+                                  </fieldset>
+
+                                  {/* No image to draw against here in the
+                                      normal case, so the widget shows a
+                                      placeholder - see the note above. */}
+                                  <BackgroundImageFocusEditor
+                                    fit={section.backgroundImageFit}
+                                    onChange={(backgroundImageFocus) =>
+                                      updateSectionBackgroundImageFocus(
+                                        section.id,
+                                        backgroundImageFocus,
+                                      )
+                                    }
+                                    value={section.backgroundImageFocus}
+                                  />
+
+                                  {resolveBackgroundTreatment(
+                                    section.backgroundTreatment,
+                                  ) === "image-parallax" ? (
+                                    <span className="type-caption text-current/70">
+                                      Parallax pins the image to the viewport
+                                      rather than to this section, so fit and
+                                      focal point are measured against the
+                                      screen — the preview above can only
+                                      approximate it.
+                                    </span>
+                                  ) : null}
+                                </>
                               ) : null}
 
                               {/* Only the gradient treatments read a config -
@@ -5039,6 +5176,120 @@ export function PagebuilderShell({
                             </fieldset>
                           ) : null}
 
+                          {(sectionSupportsJoinAbove(section.component) &&
+                            includedSections[0]?.id !== section.id) ||
+                          sectionSupportsSectionSpacing(section.component) ? (
+                          <div className="grid grid-cols-2 items-start gap-4">
+                          {/* Hidden on the first section, which has nothing
+                              above it to join, and on anything that cannot join
+                              a band at all - see `navigationComponents`. */}
+                          {sectionSupportsJoinAbove(section.component) &&
+                          includedSections[0]?.id !== section.id ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Background band
+                              </legend>
+                              <div className="flex items-center gap-2">
+                                {styleFieldOptions.joinAbove
+                                  .filter((option) => option.value !== "")
+                                  .map((option) => {
+                                    const optionIsActive =
+                                      (section.joinAbove === "join") ===
+                                      (option.value === "join");
+
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                          optionIsActive &&
+                                            "token-chrome-card-active",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateSectionJoinAbove(
+                                            section.id,
+                                            option.value,
+                                          )
+                                        }
+                                        title={option.label}
+                                        type="button"
+                                      >
+                                        <BackgroundBandIcon
+                                          joined={option.value === "join"}
+                                        />
+                                        <span className="sr-only">
+                                          {option.label}
+                                        </span>
+                                      </button>
+                                    );
+                                  })}
+                              </div>
+                            </fieldset>
+                          ) : null}
+
+                          {sectionSupportsSectionSpacing(section.component) ? (
+                          <fieldset className="grid gap-2">
+                            <legend className="type-caption font-semibold text-current">
+                              Section spacing
+                            </legend>
+                            <div className="flex items-center gap-2">
+                              <button
+                                aria-pressed={section.reduceTopPadding ?? false}
+                                className={cx(
+                                  "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                  (section.reduceTopPadding ?? false) &&
+                                    "token-chrome-card-active",
+                                )}
+                                onClick={() =>
+                                  updateSectionPadding(
+                                    section.id,
+                                    "top",
+                                    !(section.reduceTopPadding ?? false),
+                                  )
+                                }
+                                title="Toggle top padding"
+                                type="button"
+                              >
+                                <PaddingPrismIcon
+                                  active={section.reduceTopPadding ?? false}
+                                  edge="top"
+                                />
+                                <span className="sr-only">
+                                  Toggle top padding
+                                </span>
+                              </button>
+                              <button
+                                aria-pressed={section.reduceBottomPadding ?? false}
+                                className={cx(
+                                  "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                  (section.reduceBottomPadding ?? false) &&
+                                    "token-chrome-card-active",
+                                )}
+                                onClick={() =>
+                                  updateSectionPadding(
+                                    section.id,
+                                    "bottom",
+                                    !(section.reduceBottomPadding ?? false),
+                                  )
+                                }
+                                title="Toggle bottom padding"
+                                type="button"
+                              >
+                                <PaddingPrismIcon
+                                  active={section.reduceBottomPadding ?? false}
+                                  edge="bottom"
+                                />
+                                <span className="sr-only">
+                                  Toggle bottom padding
+                                </span>
+                              </button>
+                            </div>
+                          </fieldset>
+                          ) : null}
+                          </div>
+                          ) : null}
+
                           {sectionSupportsCardFill(section) ? (
                           <div className="grid grid-cols-2 items-start gap-4">
                           <fieldset className="grid gap-2">
@@ -5116,67 +5367,49 @@ export function PagebuilderShell({
                           </div>
                           ) : null}
 
+                          {sectionSupportsBorderTone(section.component) ? (
                           <div className="grid grid-cols-2 items-start gap-4">
-                          {sectionSupportsSectionSpacing(section.component) ? (
                           <fieldset className="grid gap-2">
                             <legend className="type-caption font-semibold text-current">
-                              Section spacing
+                              Border tone
                             </legend>
                             <div className="flex items-center gap-2">
-                              <button
-                                aria-pressed={section.reduceTopPadding ?? false}
-                                className={cx(
-                                  "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
-                                  (section.reduceTopPadding ?? false) &&
-                                    "token-chrome-card-active",
-                                )}
-                                onClick={() =>
-                                  updateSectionPadding(
-                                    section.id,
-                                    "top",
-                                    !(section.reduceTopPadding ?? false),
-                                  )
-                                }
-                                title="Toggle top padding"
-                                type="button"
-                              >
-                                <PaddingPrismIcon
-                                  active={section.reduceTopPadding ?? false}
-                                  edge="top"
-                                />
-                                <span className="sr-only">
-                                  Toggle top padding
-                                </span>
-                              </button>
-                              <button
-                                aria-pressed={section.reduceBottomPadding ?? false}
-                                className={cx(
-                                  "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
-                                  (section.reduceBottomPadding ?? false) &&
-                                    "token-chrome-card-active",
-                                )}
-                                onClick={() =>
-                                  updateSectionPadding(
-                                    section.id,
-                                    "bottom",
-                                    !(section.reduceBottomPadding ?? false),
-                                  )
-                                }
-                                title="Toggle bottom padding"
-                                type="button"
-                              >
-                                <PaddingPrismIcon
-                                  active={section.reduceBottomPadding ?? false}
-                                  edge="bottom"
-                                />
-                                <span className="sr-only">
-                                  Toggle bottom padding
-                                </span>
-                              </button>
+                              {(["dark", "light"] as const).map((borderTone) => {
+                                const isActive =
+                                  getSectionBorderTone(section) === borderTone;
+                                const label =
+                                  borderTone === "dark"
+                                    ? "Dark border"
+                                    : "Light border";
+
+                                return (
+                                  <button
+                                    aria-pressed={isActive}
+                                    className={cx(
+                                      "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                      isActive && "token-chrome-card-active",
+                                    )}
+                                    key={borderTone}
+                                    onClick={() =>
+                                      updateSectionBorderTone(
+                                        section.id,
+                                        borderTone,
+                                      )
+                                    }
+                                    title={label}
+                                    type="button"
+                                  >
+                                    <BorderToneIcon tone={borderTone} />
+                                    <span className="sr-only">{label}</span>
+                                  </button>
+                                );
+                              })}
                             </div>
                           </fieldset>
+                          </div>
                           ) : null}
 
+                          <div className="grid grid-cols-2 items-start gap-4">
                           {isCardLinkGridSection(section) ? (
                             <fieldset className="grid gap-2">
                               <legend className="type-caption font-semibold text-current">

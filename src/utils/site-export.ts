@@ -31,10 +31,12 @@ import {
 import {
   resolveBackgroundImage,
   resolveBackgroundTreatment,
+  resolveBorderTone,
   resolveCardFill,
   treatmentRendersOverlay,
   treatmentUsesGroundImage,
 } from "@/content/section-style-options";
+import { buildBackgroundImageStyle } from "@/content/background-image-config";
 import {
   exportManifestFile,
   listGeneratedFiles,
@@ -66,6 +68,7 @@ type ExportIssue = {
 };
 
 type ResolvedSection = {
+  borderTone: string;
   cardBorder: string;
   cardFill: string;
   colorRecipe: string;
@@ -80,6 +83,9 @@ type ResolvedSection = {
   backgroundImage: string;
   /** Sanitised gradient tuning, null when the section keeps the CSS default. */
   backgroundConfig: import("@/content/background-config").BackgroundConfig | null;
+  /** Ground image framing - see `background-image-config`. */
+  backgroundImageFit: string;
+  backgroundImageFocus: string;
   mode: string;
   props: Record<string, unknown>;
   reduceBottomPadding: boolean;
@@ -718,6 +724,7 @@ function resolvePageSections(
 
     return [
       {
+        borderTone: resolveBorderTone(resolvedSection.borderTone),
         cardBorder: resolvedSection.cardBorder ?? "on",
         cardFill: resolveCardFill(section.component, resolvedSection.cardFill),
         colorRecipe:
@@ -746,6 +753,11 @@ function resolvePageSections(
         backgroundConfig: resolveBackgroundConfig(
           resolvedSection.backgroundConfig,
         ),
+        // Taken off the resolved section, so a staged page's per-page override
+        // is already folded on. Left raw here and sanitised at emit time by
+        // `buildBackgroundImageStyle`, which drops anything unrecognised.
+        backgroundImageFit: resolvedSection.backgroundImageFit ?? "",
+        backgroundImageFocus: resolvedSection.backgroundImageFocus ?? "",
         mode: section.mode,
         props,
         reduceBottomPadding: Boolean(resolvedSection.reduceBottomPadding),
@@ -974,6 +986,7 @@ ${indent}  data-pagebuilder-background-fill=${JSON.stringify(inBand ? "none" : "
 ${indent}  data-pagebuilder-background-treatment=${JSON.stringify(
     inBand ? "none" : resolveBackgroundTreatment(section.backgroundTreatment),
   )}
+${indent}  data-pagebuilder-border-tone=${JSON.stringify(section.borderTone)}
 ${indent}  data-pagebuilder-card-border=${JSON.stringify(section.cardBorder)}
 ${indent}  data-pagebuilder-card-fill=${JSON.stringify(section.cardFill)}
 ${indent}  data-pagebuilder-color-recipe=${JSON.stringify(
@@ -1030,6 +1043,17 @@ function backgroundImageStyleJsx(section: ResolvedSection, indent: string) {
       "--section-background-image",
       `url("${section.backgroundImage}")`,
     ]);
+    // Framing rides with the image and only where it differs from the
+    // stylesheet's own `cover` from `center`, so a section that was never
+    // framed emits exactly the one property it did before this existed.
+    entries.push(
+      ...Object.entries(
+        buildBackgroundImageStyle(
+          section.backgroundImageFit,
+          section.backgroundImageFocus,
+        ),
+      ),
+    );
   }
 
   // The tuned gradient rides the same style prop. Both are already sanitised -

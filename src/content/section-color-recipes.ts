@@ -21,6 +21,18 @@ export type SectionCardFill = "solid" | "none";
 /** Card outline. Independent of SectionCardFill, so a card can be transparent
  *  but still outlined, or filled with no outline. */
 export type SectionCardBorder = "on" | "off";
+/**
+ * Which of the two border-color formulas an outlined card draws with.
+ *
+ * "dark" steps lightness down from the card surface and only reaches
+ * meaningful contrast on a light card; "light" steps up and only reaches it
+ * on a dark card. Which one is correct depends on the color recipe *and* the
+ * business's own accent color, so it is a per-section choice rather than
+ * something baked into a recipe row. Independent of SectionCardBorder - the
+ * tone only matters once the border is on. See `derivedColorValues` in
+ * `color-derivations.ts` for the two formulas.
+ */
+export type SectionCardBorderTone = "dark" | "light";
 /** Section-level background paint. Kept separate from card fill so navigation
  *  can expose transparent chrome without also removing grouped nav surfaces. */
 export type SectionBackgroundFill = "solid" | "none";

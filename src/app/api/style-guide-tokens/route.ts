@@ -527,6 +527,7 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --live-service-surface: ${tokens.serviceSurface};
   --live-surface-raised: ${tokens.surfaceRaised};
   --live-service-border: ${derivedColorValues.serviceBorder};
+  --live-service-border-light: ${derivedColorValues.serviceBorderLight};
   --live-bg-page: ${tokens.bgPage};
   --live-bg-surface: ${tokens.serviceSurface};
   --live-bg-muted: ${derivedColorValues.bgMuted};
@@ -545,6 +546,7 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --color-service-surface: ${tokens.serviceSurface};
   --color-surface-raised: ${tokens.surfaceRaised};
   --color-service-border: ${derivedColorValues.serviceBorder};
+  --color-service-border-light: ${derivedColorValues.serviceBorderLight};
   --color-bg-page: ${tokens.bgPage};
   --color-bg-surface: ${tokens.serviceSurface};
   --color-bg-muted: ${derivedColorValues.bgMuted};

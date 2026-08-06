@@ -31,6 +31,15 @@ export const derivedColorValues = {
    * accent recipes set `--live-service-border` explicitly for their subtree.
    */
   serviceBorder: "oklch(from var(--live-service-surface) calc(l - 0.30) c h)",
+  /**
+   * Mirror of `serviceBorder` for a card sitting on a dark ground: below
+   * roughly L 0.45 no downward step reaches 3:1 (see the note above), so this
+   * steps lightness up instead of down. Correct only on dark grounds for the
+   * same reason `serviceBorder` is correct only on light ones - a section
+   * picks whichever of the two suits the recipe it is rendered under, via the
+   * `borderTone` toggle rather than a hand-picked value per recipe.
+   */
+  serviceBorderLight: "oklch(from var(--live-service-surface) calc(l + 0.30) c h)",
   /** Subordinate fill: barely separated from the surface it sits on. */
   bgMuted: "oklch(from var(--live-service-surface) calc(l - 0.03) c h)",
 } as const;

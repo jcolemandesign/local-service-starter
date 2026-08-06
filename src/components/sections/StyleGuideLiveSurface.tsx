@@ -337,6 +337,7 @@ export function buildStyleVariables(
     "--live-border-default": derivedColorValues.serviceBorder,
     "--live-service-accent": draft.serviceAccent,
     "--live-service-border": derivedColorValues.serviceBorder,
+    "--live-service-border-light": derivedColorValues.serviceBorderLight,
     "--live-service-ink": draft.serviceInk,
     "--live-service-muted": draft.serviceMuted,
     "--live-service-surface": draft.serviceSurface,

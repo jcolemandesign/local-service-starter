@@ -35,11 +35,21 @@ export type PagebuilderRecipeSection = {
    * so a section that has never been tuned is unaffected by this existing.
    */
   backgroundConfig?: import("@/content/background-config").BackgroundConfig;
+  /**
+   * Ground image sizing and focal point - see `background-image-config`. Both
+   * absent means the stylesheet's original `cover` from `center`, so a section
+   * that has never been framed is unaffected by these existing.
+   */
+  backgroundImageFit?: string;
+  backgroundImageFocus?: string;
   ratio?: string;
   variant?: string;
   colorRecipe?: import("@/content/section-color-recipes").SectionColorRecipe;
   cardFill?: import("@/content/section-color-recipes").SectionCardFill;
   cardBorder?: import("@/content/section-color-recipes").SectionCardBorder;
+  /** Which border-color formula an outlined card draws with - see
+   *  `SectionCardBorderTone` in `section-color-recipes`. */
+  borderTone?: import("@/content/section-color-recipes").SectionCardBorderTone;
   backgroundFill?: import("@/content/section-color-recipes").SectionBackgroundFill;
 };
 

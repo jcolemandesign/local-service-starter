@@ -52,7 +52,17 @@ type SavedPagebuilderSection = {
    * than painting something unvalidated.
    */
   backgroundConfig?: unknown;
+  /**
+   * Ground image sizing and focal point. Plain strings rather than a parsed
+   * shape, for the reason above: this route is a transport boundary, and
+   * `background-image-config` sanitises both at render time - an unrecognised
+   * fit or an out-of-range focal point falls back to the stylesheet's `cover`
+   * from `center` rather than painting something unvalidated.
+   */
+  backgroundImageFit?: string;
+  backgroundImageFocus?: string;
   cardBorder?: string;
+  borderTone?: string;
   cardFill?: string;
 };
 
@@ -251,6 +261,8 @@ function normalizeSection(
         : undefined,
     cardBorder:
       typeof section.cardBorder === "string" ? section.cardBorder : undefined,
+    borderTone:
+      typeof section.borderTone === "string" ? section.borderTone : undefined,
     cardFill: typeof section.cardFill === "string" ? section.cardFill : undefined,
     align: typeof section.align === "string" ? section.align : undefined,
     backgroundTreatment:
@@ -260,6 +272,14 @@ function normalizeSection(
     joinAbove:
       typeof section.joinAbove === "string" ? section.joinAbove : undefined,
     backgroundConfig: resolveBackgroundConfig(section.backgroundConfig) ?? undefined,
+    backgroundImageFit:
+      typeof section.backgroundImageFit === "string"
+        ? section.backgroundImageFit
+        : undefined,
+    backgroundImageFocus:
+      typeof section.backgroundImageFocus === "string"
+        ? section.backgroundImageFocus
+        : undefined,
     // Declared in the saved type but never returned here, so these three were
     // dropped on save exactly like the two above - the client sent them and
     // this function quietly built an object without them.

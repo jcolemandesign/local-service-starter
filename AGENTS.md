@@ -40,27 +40,16 @@ Business-specific content should live in `src/content/` so component shells stay
 
 ### Section registration
 
-When adding a new reusable section, treat the section library as the source of truth.
+A new section is not complete until it is registered everywhere the section
+library is referenced — the section index, `section-library-v3.ts`, the
+`/sections` preview, both pagebuilder lists, all three render paths, the copy
+and asset field specs, and the toggle membership sets.
 
-A new section is not complete until it is:
+Do not add a section only to pagebuilder. Pagebuilder should reference sections
+that already exist in the section library.
 
-- implemented in `src/components/sections/`
-- exported from `src/components/sections/index.ts`
-- added to `src/content/section-library-v3.ts` in the correct semantic collection
-- added to the `/sections` preview map in `src/app/sections/page.tsx`
-- added to **both** pagebuilder lists, using the same semantic mode as the section library — `sectionSwapOptions` in `PagebuilderShell.tsx` (what the builder offers) and `previewCatalog` in `PagebuilderSection.tsx` (what the gallery renders). Neither is the recipe stacks in `src/content/pagebuilder.ts`; those are a page's default composition, not the catalog
-- wired into **all three render paths** — `renderPageTemplateSection` in `PageTemplatePreview.tsx` (with a `xxxProps()` mapper, for staged pages), `renderPreviewSection` in `PagebuilderSection.tsx` (the gallery; a missing case renders the "Preview unavailable" placeholder), and the ternary chain in `PagebuilderShell.tsx` (the builder canvas). The third chain applies toggles centrally via `withSectionToggles`, so registering a section in the right membership sets is enough to make `cardFill`/`cardBorder`/`icons`/`cardLinks`/`headlineWrap`/`align` work; add a branch there only for a `variant` axis or heading level, which the helper does not cover
-- given a copy field spec in `getTemplateCopyFieldsForSection` (`src/utils/template-copy-contract.ts`)
-- given an asset field spec in `getTemplateAssetFieldsForSection` (`src/utils/staged-pages.ts`) if it renders images
-- registered in the toggle membership sets it qualifies for in `src/content/section-style-options.ts` — card style, card links, icons, headline wrap, the align axes, and `viewportHeightComponents` for viewport-height sections. A section missing from a set it qualifies for does not error; the control is silently never offered. The decision list is in `.claude/skills/add-section/SKILL.md`.
-
-The field names a section's `xxxProps()` mapper reads must exactly match the field names its copy/asset specs declare. A mismatch does not error — the renderer silently falls back to section-library demo content, and export validation cannot detect it. See `.claude/skills/add-section/SKILL.md`.
-
-Do not add a section only to pagebuilder. Pagebuilder should reference sections that already exist in the section library.
-
-Before finishing, verify the section appears in `/sections`, appears in pagebuilder under the matching semantic mode, and passes lint, typecheck (`npx tsc --noEmit`), and tests — the demo-content leak guard (`src/utils/__tests__/section-demo-content-leak.test.ts`) is the mechanical check for the copy-spec/mapper contract.
-
-For the full section-registration checklist, see `.claude/skills/add-section/SKILL.md`.
+**Follow `.claude/skills/add-section/SKILL.md` — it is the full checklist,
+including the two steps that fail silently.**
 
 ---
 

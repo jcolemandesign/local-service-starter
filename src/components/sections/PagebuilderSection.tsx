@@ -21,6 +21,7 @@ import {
   ContentPhotoGalleryCarouselSectionV3,
   ContentPhotoGalleryLargeCarouselSectionV3,
 } from "@/components/sections/ContentPhotoGalleryCarouselSectionV3";
+import { ContentPhotoGalleryBandCarouselSectionV3 } from "@/components/sections/ContentPhotoGalleryBandCarouselSectionV3";
 import { ProjectCaseStudyGallerySectionV3 } from "@/components/sections/ProjectCaseStudyGallerySectionV3";
 import { ImageStripSectionV3 } from "@/components/sections/ImageStripSectionV3";
 import { QuickPageLinksSectionV2 } from "@/components/sections/QuickPageLinksSectionV2";
@@ -647,6 +648,14 @@ function renderSectionElement(
       return (
         <ContentPhotoGalleryLargeCarouselSectionV3
           {...sectionLibraryV3Content.contentPhotoGalleryCarousel}
+        />
+      );
+    case "ContentPhotoGalleryBandCarouselSectionV3":
+      return (
+        <ContentPhotoGalleryBandCarouselSectionV3
+          {...sectionLibraryV3Content.contentPhotoGalleryCarousel}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "ProjectCaseStudyGallerySectionV3":

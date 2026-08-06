@@ -43,6 +43,8 @@ type ProcessStepsSectionV3Props = {
 
 type TestimonialsSectionV3Props = {
   body: string;
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   eyebrow: string;
   items: readonly Testimonial[];
   title: string;
@@ -249,6 +251,8 @@ export function ProcessStepsSectionV3({
 
 export function TestimonialsSectionV3({
   body,
+  cardBorder = "on",
+  cardFill = "solid",
   eyebrow,
   items,
   title,
@@ -276,7 +280,15 @@ export function TestimonialsSectionV3({
           <div className="grid h-full grid-cols-2 gap-6 max-md:grid-cols-1">
             {items.map((item, index) => (
               <article
-                className="fluid-type-frame radius-medium border border-service-border bg-service-surface p-8 shadow-service"
+                className={cx(
+                  "fluid-type-frame radius-medium border p-8",
+                  cardFill === "none"
+                    ? "bg-transparent shadow-none"
+                    : "bg-service-surface shadow-service",
+                  cardBorder === "off"
+                    ? "border-transparent"
+                    : "border-service-border",
+                )}
                 key={index}
               >
                 <blockquote className="type-text-xl wrap-pretty font-medium text-service-ink">

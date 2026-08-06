@@ -109,6 +109,12 @@ describe("pagebuilder option save round-trip", () => {
     for (const axis of [
       "align",
       "backgroundFill",
+      // Both halves of the ground-image framing. Pinned by name for the reason
+      // above: the subset check passes trivially while the builder sends
+      // neither, which is exactly how a control saves nothing and reverts on
+      // the next load.
+      "backgroundImageFit",
+      "backgroundImageFocus",
       "backgroundTreatment",
       "cardBorder",
       "cardFill",

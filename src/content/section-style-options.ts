@@ -10,10 +10,12 @@
  * fields. One list per axis, imported everywhere.
  */
 
+import { isBackgroundImageFocusValue } from "@/content/background-image-config";
 import type { WrapMode } from "@/content/type-palettes";
 import type {
   SectionBackgroundFill,
   SectionCardBorder,
+  SectionCardBorderTone,
   SectionCardFill,
 } from "@/content/section-color-recipes";
 
@@ -251,6 +253,7 @@ export const cardStyleComponents = new Set<string>([
   "ContentCardTwoUpSectionV3",
   "ContentHorizontalCardCarouselSectionV2",
   "ContentMainIdeaGridSectionV3",
+  "ContentPhotoGalleryBandCarouselSectionV3",
   "ContentSplitFixedImageSectionV3",
   "ContentStickyCardStreamSectionV2",
   "ContentStickyIdeasSectionV2",
@@ -285,6 +288,7 @@ export const cardStyleComponents = new Set<string>([
   "ServicesScrollCardsSectionV2",
   "ServicesThreeCardsRightSectionV3",
   "ThreeCardLinkGridSectionV3",
+  "TestimonialsSectionV3",
   "TrustBarFloatingBentoSectionV3",
 ]);
 
@@ -467,6 +471,34 @@ export function resolveCardBorder(
   return cardBorderOptInComponents.has(component) ? "off" : "on";
 }
 
+/**
+ * Which border-color formula an outlined card draws with. Offered on every
+ * section that offers `cardBorder` at all - the tone is inert until the
+ * border is on, but there is no case where a section takes one and not the
+ * other, so one membership set covers both. See `SectionCardBorderTone` for
+ * why this cannot be baked into the recipe tables instead.
+ */
+export const borderToneOptions = [
+  { label: "Dark border", value: "dark" },
+  { label: "Light border", value: "light" },
+] as const satisfies ReadonlyArray<{ label: string; value: SectionCardBorderTone }>;
+
+export const borderToneValues = new Set<string>(
+  borderToneOptions.map((option) => option.value),
+);
+
+export function sectionSupportsBorderTone(component: string) {
+  return cardStyleComponents.has(component);
+}
+
+/** Defaults dark: the formula every recipe row already assumed before this
+ *  toggle existed, so an unset value renders exactly as it did before. */
+export function resolveBorderTone(
+  borderTone: string | undefined,
+): SectionCardBorderTone {
+  return borderTone === "light" ? "light" : "dark";
+}
+
 /** Navigation is the first family where section paint and grouped-card paint
  *  are independently useful, so it alone offers this axis for now. */
 export const backgroundFillComponents = new Set<string>([
@@ -588,6 +620,24 @@ export const styleFieldOptions = {
     { label: "Ambient", value: "ambient" },
     { label: "Image", value: "image" },
     { label: "Parallax", value: "image-parallax" },
+  ],
+  /**
+   * How a ground image is fitted into its box.
+   *
+   * `fill` is what every ground image has always done, so it is what an unset
+   * value resolves to and no saved page moves. See `background-image-config.ts`
+   * for the `background-size` each id paints.
+   *
+   * Offered alongside `backgroundTreatment` rather than gated on it, because
+   * the treatment is itself overridable per page - a section set to Gradient on
+   * the template can be switched to Image here, and a fit that only appeared
+   * afterwards would need a second save to become reachable.
+   */
+  backgroundImageFit: [
+    { label: "Use template default", value: "" },
+    { label: "Fill", value: "fill" },
+    { label: "Fit", value: "fit" },
+    { label: "Stretch", value: "stretch" },
   ],
   cardBorder: [
     { label: "Use template default", value: "" },
@@ -724,13 +774,62 @@ export function resolveBackgroundImage(backgroundImage: string | undefined) {
   return safeImageReference.test(trimmed) ? trimmed : "";
 }
 
-export type SectionStyleFieldName = keyof typeof styleFieldOptions;
+/**
+ * Style axes whose value is continuous rather than one of a fixed list.
+ *
+ * Kept beside `styleFieldOptions` rather than in it: every entry there is a
+ * list the content editor renders as a toggle row, and a percentage pair has no
+ * such list. Declared here, the name is still a real `SectionStyleFieldName`,
+ * so it rides the same override path, the same staged-page seeding and the same
+ * `style.` prefix as every enumerated axis.
+ */
+export const continuousStyleFieldNames = ["backgroundImageFocus"] as const;
 
-export type SectionStyleFieldSpec = {
+export type SectionStyleFieldName =
+  | keyof typeof styleFieldOptions
+  | (typeof continuousStyleFieldNames)[number];
+
+/**
+ * One overridable style axis.
+ *
+ * Two shapes, and exactly one of them per spec. `options` is the original and
+ * still the common case - a fixed list, rendered as a toggle row and validated
+ * by membership. `validate` is for an axis whose values cannot be enumerated,
+ * such as a focal point: same storage, same resolution path, but the stored
+ * string is checked by a predicate instead of looked up in a list.
+ *
+ * The alternative was a second override path for continuous values, which is
+ * the duplication this registry exists to prevent - four consumers read it, and
+ * a parallel path would have to be remembered in all four.
+ */
+type SectionStyleFieldSpecBase = {
   label: string;
   name: SectionStyleFieldName;
-  options: ReadonlyArray<{ label: string; value: string }>;
 };
+
+export type SectionStyleFieldSpec = SectionStyleFieldSpecBase &
+  (
+    | {
+        options: ReadonlyArray<{ label: string; value: string }>;
+        validate?: never;
+      }
+    | { options?: never; validate: (value: string) => boolean }
+  );
+
+/**
+ * Whether a stored override is a value this axis actually accepts.
+ *
+ * The one place the two spec shapes are reconciled, so no consumer has to know
+ * which kind it is holding.
+ */
+export function isValidStyleFieldValue(
+  spec: SectionStyleFieldSpec,
+  value: string,
+) {
+  return spec.validate
+    ? spec.validate(value)
+    : spec.options.some((option) => option.value === value);
+}
 
 const colorRecipeStyleField: SectionStyleFieldSpec = {
   label: "Color recipe",
@@ -755,6 +854,27 @@ const backgroundTreatmentStyleField: SectionStyleFieldSpec = {
   name: "backgroundTreatment",
   options: styleFieldOptions.backgroundTreatment,
 };
+
+/**
+ * The two ground-image axes, offered together with the treatment above.
+ *
+ * The focal point is the continuous one: `isBackgroundImageFocusValue` accepts
+ * `"<x> <y>"` in 0-100 and rejects everything else, so a stale or hand-edited
+ * value falls back to the stylesheet's `center` rather than painting a position
+ * nobody chose.
+ */
+const backgroundImageStyleFields: SectionStyleFieldSpec[] = [
+  {
+    label: "Image fit",
+    name: "backgroundImageFit",
+    options: styleFieldOptions.backgroundImageFit,
+  },
+  {
+    label: "Image focal point",
+    name: "backgroundImageFocus",
+    validate: isBackgroundImageFocusValue,
+  },
+];
 
 const cardStyleFields: SectionStyleFieldSpec[] = [
   { label: "Card fill", name: "cardFill", options: styleFieldOptions.cardFill },
@@ -831,7 +951,7 @@ export function getSectionStyleFieldSpecs(
     colorRecipeStyleField,
     ...(sectionSupportsJoinAbove(component) ? [joinAboveStyleField] : []),
     ...(sectionSupportsBackgroundTreatment(component)
-      ? [backgroundTreatmentStyleField]
+      ? [backgroundTreatmentStyleField, ...backgroundImageStyleFields]
       : []),
     ...(sectionSupportsBackgroundFill(component)
       ? [backgroundFillStyleField]

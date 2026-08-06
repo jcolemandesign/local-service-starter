@@ -9,8 +9,8 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-08-06T05:27:45.648Z",
-      "sectionCount": 13,
+      "savedAt": "2026-08-06T20:30:03.022Z",
+      "sectionCount": 12,
       "sections": [
         {
           "component": "NavPrimarySectionV2",
@@ -27,95 +27,109 @@
           "colorRecipe": "dark",
           "backgroundFill": "solid",
           "cardBorder": "off",
+          "borderTone": "dark",
           "cardFill": "none"
         },
         {
-          "component": "HeroSplitFixedImageSectionV3",
+          "component": "HeroContentTopImageBottomSectionV2",
           "id": "classic-service-template-home-split-hero-trust-marquee-service-card-grid-1",
           "included": true,
-          "instruction": "Use a split hero with a bounded fixed-ratio image frame instead of a full-screen image.",
+          "instruction": "Lead with direct copy first, then use the image below to keep the page useful and quick to understand.",
           "mode": "Hero",
-          "name": "Fixed-ratio split image",
+          "name": "Content top image bottom",
           "originalComponent": "HeroSplitFullHeightSectionV3",
           "originalIndex": 1,
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
-          "ratio": "4-5",
           "slotId": "slot-81cda615566f",
-          "variant": "text-4-image-3-right",
-          "colorRecipe": "default",
+          "colorRecipe": "dark",
           "backgroundFill": "solid",
           "cardBorder": "off",
+          "borderTone": "dark",
           "cardFill": "solid",
           "backgroundTreatment": "gradient",
           "backgroundConfig": {
             "nodes": [
               {
-                "color": "ink",
-                "x": 29,
-                "y": 26,
-                "size": 110,
-                "fade": 62
+                "color": "surface",
+                "x": 28,
+                "y": 28,
+                "size": 133,
+                "fade": 31,
+                "opacity": 100
               },
               {
                 "color": "accent",
-                "x": 56,
-                "y": 70,
+                "x": 33,
+                "y": 37,
                 "size": 95,
-                "fade": 45
+                "fade": 100,
+                "opacity": 100
+              },
+              {
+                "color": "ink",
+                "x": 13,
+                "y": 93,
+                "size": 90,
+                "fade": 55,
+                "opacity": 100
+              },
+              {
+                "color": "surface",
+                "x": 66,
+                "y": 80,
+                "size": 90,
+                "fade": 55,
+                "opacity": 100
               }
             ],
-            "strength": 18,
+            "strength": 24,
             "animate": false,
             "speed": 100,
             "blend": "normal"
           }
         },
         {
-          "component": "TestimonialsCarouselSectionV3",
+          "component": "TestimonialsSectionV3",
           "id": "classic-service-template-home-split-hero-trust-marquee-service-card-grid-2",
           "included": true,
-          "instruction": "Use longer customer stories only if they contain useful service detail.",
+          "instruction": "Use the current testimonial section when proof needs a polished structured presentation.",
           "mode": "Proof",
-          "name": "Customer stories",
+          "name": "Testimonials",
           "originalComponent": "TrustBarSectionV3",
           "originalIndex": 2,
-          "reduceBottomPadding": true,
+          "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "slotId": "slot-31fbb463a07b",
-          "colorRecipe": "dark",
+          "colorRecipe": "default",
           "backgroundFill": "solid",
           "cardBorder": "on",
-          "cardFill": "solid",
+          "borderTone": "light",
+          "cardFill": "none",
           "backgroundTreatment": "gradient",
-          "joinAbove": "separate",
+          "joinAbove": "join",
           "backgroundConfig": {
             "nodes": [
               {
+                "color": "highlight",
+                "x": 12,
+                "y": 0,
+                "size": 110,
+                "fade": 75,
+                "opacity": 87
+              },
+              {
                 "color": "accent",
-                "x": 13,
-                "y": 84,
-                "size": 133,
-                "fade": 89
-              },
-              {
-                "color": "highlight",
-                "x": 75,
-                "y": 73,
-                "size": 68,
-                "fade": 45
-              },
-              {
-                "color": "highlight",
-                "x": 41,
-                "y": 30,
-                "size": 87,
-                "fade": 27
+                "x": 88,
+                "y": 100,
+                "size": 95,
+                "fade": 45,
+                "opacity": 100
               }
             ],
-            "strength": 56,
-            "animate": true,
-            "speed": 100,
+            "strength": 69,
+            "animate": false,
+            "speed": 168,
             "blend": "normal"
           }
         },
@@ -134,24 +148,28 @@
           "colorRecipe": "ink",
           "backgroundFill": "solid",
           "cardBorder": "on",
-          "cardFill": "none"
+          "borderTone": "dark",
+          "cardFill": "solid",
+          "joinAbove": "join"
         },
         {
-          "component": "ContentPhotoGalleryLargeCarouselSectionV3",
+          "component": "ContentPhotoGalleryBandCarouselSectionV3",
           "id": "classic-service-ContentPhotoGalleryLargeCarouselSectionV3-added-1",
           "included": true,
-          "instruction": "Use a larger mixed-size photo gallery when the images should become a stronger editorial moment.",
+          "instruction": "Use a shallow looping photo band when imagery should read as texture between two sections - one uniform height, no captions, dragged rather than read.",
           "mode": "Images",
-          "name": "Large photo gallery carousel",
+          "name": "Photo band carousel",
           "originalComponent": "ContentPhotoGalleryLargeCarouselSectionV3",
           "originalIndex": -1,
-          "reduceBottomPadding": false,
-          "reduceTopPadding": false,
-          "colorRecipe": "default",
+          "reduceBottomPadding": true,
+          "reduceTopPadding": true,
+          "colorRecipe": "dark",
           "backgroundFill": "solid",
-          "cardBorder": "on",
-          "cardFill": "solid",
-          "backgroundTreatment": "gradient",
+          "cardBorder": "off",
+          "borderTone": "dark",
+          "cardFill": "none",
+          "backgroundTreatment": "none",
+          "joinAbove": "join",
           "backgroundConfig": {
             "nodes": [
               {
@@ -159,14 +177,16 @@
                 "x": 36,
                 "y": 63,
                 "size": 110,
-                "fade": 62
+                "fade": 62,
+                "opacity": 100
               },
               {
                 "color": "accent",
                 "x": 88,
                 "y": 100,
                 "size": 95,
-                "fade": 45
+                "fade": 45,
+                "opacity": 100
               }
             ],
             "strength": 18,
@@ -190,7 +210,9 @@
           "colorRecipe": "default",
           "backgroundFill": "solid",
           "cardBorder": "on",
-          "cardFill": "solid"
+          "borderTone": "dark",
+          "cardFill": "solid",
+          "joinAbove": "join"
         },
         {
           "component": "SectionHeaderLargeSectionV3",
@@ -207,6 +229,7 @@
           "colorRecipe": "default",
           "backgroundFill": "solid",
           "cardBorder": "on",
+          "borderTone": "dark",
           "cardFill": "solid"
         },
         {
@@ -224,6 +247,7 @@
           "colorRecipe": "surface",
           "backgroundFill": "solid",
           "cardBorder": "off",
+          "borderTone": "dark",
           "cardFill": "none",
           "align": "center"
         },
@@ -242,47 +266,8 @@
           "colorRecipe": "dark",
           "backgroundFill": "solid",
           "cardBorder": "off",
+          "borderTone": "dark",
           "cardFill": "none"
-        },
-        {
-          "component": "ProcessStepsSectionV3",
-          "id": "classic-service-template-home-split-hero-trust-marquee-service-card-grid-7",
-          "included": true,
-          "instruction": "Use current process steps when the page needs a clearer, more styled decision sequence.",
-          "mode": "Decision",
-          "name": "Process steps",
-          "originalComponent": "ProcessStepsSectionV3",
-          "originalIndex": -1,
-          "reduceBottomPadding": false,
-          "reduceTopPadding": false,
-          "slotId": "slot-352d6f54c6f1",
-          "colorRecipe": "dark",
-          "backgroundFill": "solid",
-          "cardBorder": "on",
-          "cardFill": "solid",
-          "backgroundTreatment": "drift",
-          "backgroundConfig": {
-            "nodes": [
-              {
-                "color": "#cfc9ab",
-                "x": 14,
-                "y": 93,
-                "size": 110,
-                "fade": 62
-              },
-              {
-                "color": "#cd7a7a",
-                "x": 71,
-                "y": 90,
-                "size": 191,
-                "fade": 59
-              }
-            ],
-            "strength": 100,
-            "animate": true,
-            "speed": 246,
-            "blend": "normal"
-          }
         },
         {
           "component": "FAQAccordionSectionV3",
@@ -299,6 +284,7 @@
           "colorRecipe": "dark",
           "backgroundFill": "solid",
           "cardBorder": "on",
+          "borderTone": "dark",
           "cardFill": "solid"
         },
         {
@@ -317,6 +303,7 @@
           "colorRecipe": "dark",
           "backgroundFill": "solid",
           "cardBorder": "on",
+          "borderTone": "dark",
           "cardFill": "solid"
         },
         {
@@ -334,6 +321,7 @@
           "colorRecipe": "default",
           "backgroundFill": "solid",
           "cardBorder": "on",
+          "borderTone": "dark",
           "cardFill": "solid"
         }
       ]

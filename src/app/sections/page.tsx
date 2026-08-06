@@ -10,6 +10,7 @@ import {
   ContentFixedCoverFadeSectionV2,
   ContentHorizontalCardCarouselSectionV2,
   ContentMainIdeaGridSectionV3,
+  ContentPhotoGalleryBandCarouselSectionV3,
   ContentPhotoGalleryCarouselSectionV3,
   ContentPhotoGalleryLargeCarouselSectionV3,
   ProjectCaseStudyGallerySectionV3,
@@ -272,6 +273,11 @@ const sectionElements = {
   ),
   "content-photo-gallery-large-carousel-v3": (
     <ContentPhotoGalleryLargeCarouselSectionV3
+      {...sectionLibraryV3Content.contentPhotoGalleryCarousel}
+    />
+  ),
+  "content-photo-gallery-band-carousel-v3": (
+    <ContentPhotoGalleryBandCarouselSectionV3
       {...sectionLibraryV3Content.contentPhotoGalleryCarousel}
     />
   ),

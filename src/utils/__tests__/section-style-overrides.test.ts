@@ -38,6 +38,19 @@ function styleField(sectionId: string, name: string, value: string): StagedPageF
 const cardComponent = "ContentCardTwoUpSectionV3";
 const plainComponent = "SectionHeaderLargeSectionV3";
 
+/**
+ * A legal value for each axis whose spec carries `validate` instead of an
+ * option list.
+ *
+ * The enumerated specs are self-describing - the test reads a sample straight
+ * off `options` - but a continuous axis has nothing to read, so its sample is
+ * named here. Keyed by field name so a new continuous axis with no entry fails
+ * the resolver test rather than silently going unexercised.
+ */
+const continuousSamples: Record<string, string> = {
+  backgroundImageFocus: "62 38",
+};
+
 describe("section style override specs", () => {
   it("offers a color recipe on every section and card controls only on card sections", () => {
     const cardNames = getSectionStyleFieldSpecs(cardComponent).map(
@@ -47,10 +60,16 @@ describe("section style override specs", () => {
       (spec) => spec.name,
     );
 
+    // The two image-framing axes ride with the texture control rather than
+    // being gated on the treatment being an image one: the treatment is itself
+    // overridable per page, so a fit that only appeared after that override
+    // would need a second save to become reachable.
     expect(cardNames).toEqual([
       "colorRecipe",
       "joinAbove",
       "backgroundTreatment",
+      "backgroundImageFit",
+      "backgroundImageFocus",
       "cardFill",
       "cardBorder",
       "reduceTopPadding",
@@ -62,6 +81,8 @@ describe("section style override specs", () => {
       "colorRecipe",
       "joinAbove",
       "backgroundTreatment",
+      "backgroundImageFit",
+      "backgroundImageFocus",
       "reduceTopPadding",
       "reduceBottomPadding",
     ]);
@@ -88,13 +109,15 @@ describe("section style override specs", () => {
       name: "Card Two Up",
     });
 
-    expect(fields).toHaveLength(7);
+    expect(fields).toHaveLength(9);
     expect(fields.every((field) => field.value === "")).toBe(true);
     expect(fields.every((field) => field.kind === "meta")).toBe(true);
     expect(fields.map((field) => field.name)).toEqual([
       `${styleFieldPrefix}.colorRecipe`,
       `${styleFieldPrefix}.joinAbove`,
       `${styleFieldPrefix}.backgroundTreatment`,
+      `${styleFieldPrefix}.backgroundImageFit`,
+      `${styleFieldPrefix}.backgroundImageFocus`,
       `${styleFieldPrefix}.cardFill`,
       `${styleFieldPrefix}.cardBorder`,
       `${styleFieldPrefix}.reduceTopPadding`,
@@ -135,12 +158,18 @@ describe("resolveSectionStyleOverrides", () => {
     // The point of the test: drive each spec'd name through the resolver and
     // require it to land. A renamed field on either side fails here.
     getSectionStyleFieldSpecs(cardComponent).forEach((spec) => {
-      const override = spec.options.find((option) => option.value !== "");
+      // Two spec shapes. An enumerated axis supplies its own sample; a
+      // continuous one has no list to draw from, so a valid value is named
+      // here - which means adding a continuous axis without one fails this
+      // test rather than quietly going unchecked.
+      const override = spec.options
+        ? spec.options.find((option) => option.value !== "")?.value
+        : continuousSamples[spec.name];
 
-      expect(override).toBeDefined();
+      expect(override, `no sample value for ${spec.name}`).toBeDefined();
 
       const resolved = resolveSectionStyleOverrides(section, [
-        styleField("card-1", spec.name, override?.value ?? ""),
+        styleField("card-1", spec.name, override ?? ""),
       ]) as Record<string, unknown>;
 
       // The spacing fields are stored as booleans on the section, so the
@@ -148,8 +177,8 @@ describe("resolveSectionStyleOverrides", () => {
       // "default" would be truthy and reduce the padding it should restore.
       expect(resolved[spec.name]).toBe(
         booleanStyleFields.has(spec.name)
-          ? override?.value === "reduced"
-          : override?.value,
+          ? override === "reduced"
+          : override,
       );
     });
   });
