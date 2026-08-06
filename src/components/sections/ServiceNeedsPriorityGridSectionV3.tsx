@@ -85,7 +85,7 @@ export function ServiceNeedsPriorityGridSectionV3({
             {item.body}
           </p>
           {isPriority ? (
-            <div className="mt-auto flex flex-col items-start gap-3 pt-8">
+            <div className="mt-auto flex flex-wrap items-center gap-3 pt-8">
               <Button href={primaryActionHref}>{primaryAction}</Button>
               <Button href={secondaryActionHref} variant="secondary">
                 {secondaryAction}

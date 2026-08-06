@@ -1710,6 +1710,14 @@ body {
     --recipe-special-card-ink: var(--palette-raised);
   }
 
+  /* Ink's generic accent role is intentionally dark, which makes it suitable
+     for controls on raised surfaces but invisible for this eyebrow on the ink
+     ground. Keep the section label on the raised token instead. */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="ink"][data-pagebuilder-section-component="ContentAboutCompanySectionV2"]
+    .content-about-company-eyebrow {
+    color: var(--palette-raised) !important;
+  }
+
   /* Card text, where a card's own ground differs enough from the section's
    * that body copy cannot follow it in.
    *

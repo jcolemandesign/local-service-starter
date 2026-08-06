@@ -103,7 +103,7 @@ export function TrustBarSectionV3({
     <section className={cx(className ?? "bg-bg-page")}>
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem
-          className="content-padding-y col-span-3 border-y border-service-border max-lg:col-span-7"
+          className="content-padding-y col-span-3 max-lg:col-span-7"
           measure="copy"
         >
           <p className="type-text-md wrap-pretty font-semibold text-service-ink">
@@ -112,13 +112,18 @@ export function TrustBarSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem
-          className="content-padding-y col-span-4 col-start-4 border-y border-service-border max-lg:col-span-7 max-lg:col-start-1 max-lg:border-t-0 max-lg:pt-0"
+          className="content-padding-y col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1 max-lg:pt-0"
           alignY="middle"
         >
           <ul className="grid grid-cols-4 card-grid-gap-med max-md:grid-cols-2 max-sm:grid-cols-1">
-            {items.map((item) => (
+            {items.map((item, index) => (
               <li
-                className="type-text-sm wrap-pretty font-medium text-service-muted"
+                className={cx(
+                  "type-text-sm wrap-pretty font-medium text-service-muted",
+                  index > 0 &&
+                    "relative pl-4 before:absolute before:inset-y-0 before:left-0 before:border-l before:border-service-border before:[border-left-width:var(--border-surface-width-token)] max-sm:before:hidden max-sm:pl-0",
+                  index > 0 && index % 2 === 0 && "max-md:before:hidden max-md:pl-0",
+                )}
                 key={item}
               >
                 {item}

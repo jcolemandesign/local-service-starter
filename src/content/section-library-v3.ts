@@ -252,8 +252,8 @@ export const sectionLibraryV3Content = {
   },
   contentPhotoGalleryCarousel: {
     eyebrow: "Field Notes",
-    title: "A flexible image rail for people, projects, and proof.",
-    body: "A compact rail for mixed project, crew, and proof images.",
+    title: "",
+    body: "",
     images: [
       {
         alt: "Technician working on indoor HVAC equipment",
@@ -1891,7 +1891,7 @@ export const sectionLibraryV3Content = {
       { title: "Weak or Uneven Performance", body: "Some rooms feel different or airflow feels limited.", href: "/services" },
       { title: "Unusual Operation", body: "New sounds, frequent cycling, or other changes need a closer look.", href: "/services" },
       { title: "Planning Ahead", body: "You are considering care, repair, or replacement.", href: "/services" },
-      { title: "No Heating and Cooling", body: "If the system has stopped heating or cooling the home, start here. Share what changed, when the problem began, and whether the equipment is still running so the team can help identify the right next step.", href: "/contact" },
+      { title: "No Heating and Cooling", body: "The system has stopped heating or cooling and needs prompt attention.", href: "/contact" },
     ],
   },
   servicesThreeCardsRight: {

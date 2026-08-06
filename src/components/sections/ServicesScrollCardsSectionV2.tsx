@@ -240,8 +240,11 @@ export function ServicesScrollCardsSectionV2({
             </SevenColumnGridItem>
           </SevenColumnGrid>
 
+          {/* The desktop rail must mask horizontal travel, but the cards lift by
+              0.5rem on hover. The vertical buffer gives that lift room without
+              changing the rail's visible starting position or its X bounds. */}
           <div
-            className="mt-14 overflow-hidden max-lg:overflow-visible"
+            className="mt-11 overflow-hidden py-3 max-lg:mt-14 max-lg:overflow-visible max-lg:py-0"
             ref={railViewportRef}
           >
             <div className="px-[var(--site-grid-inset-inline)] max-lg:grid max-lg:gap-4">

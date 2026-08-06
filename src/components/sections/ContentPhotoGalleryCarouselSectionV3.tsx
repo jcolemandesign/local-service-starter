@@ -408,6 +408,7 @@ export function ContentPhotoGalleryCarouselSectionV3({
   };
 
   const isFreeScrolling = isDragging || isCoasting;
+  const hasHeaderCopy = Boolean(title || body);
 
   return (
     <section className="bg-service-surface">
@@ -417,24 +418,30 @@ export function ContentPhotoGalleryCarouselSectionV3({
       >
         <SevenColumnGridItem className="col-span-7">
           <div className="fluid-type-frame flex items-end justify-between gap-8 max-md:flex-col max-md:items-start">
-            <div className="max-w-[var(--measure-copy-wide)]">
-              <h2
-                className={cx(
-                  "text-service-ink",
-                  scale === "large" ? "type-display-lg" : "type-heading-md",
-                )}
-              >
-                {title}
-              </h2>
-              <p
-                className={cx(
-                  "measure-copy wrap-pretty mt-heading-body-sm text-service-muted",
-                  scale === "large" ? "type-text-md" : "type-text-sm",
-                )}
-              >
-                {body}
-              </p>
-            </div>
+            {hasHeaderCopy ? (
+              <div className="max-w-[var(--measure-copy-wide)]">
+                {title ? (
+                  <h2
+                    className={cx(
+                      "text-service-ink",
+                      scale === "large" ? "type-display-lg" : "type-heading-md",
+                    )}
+                  >
+                    {title}
+                  </h2>
+                ) : null}
+                {body ? (
+                  <p
+                    className={cx(
+                      "measure-copy wrap-pretty mt-heading-body-sm text-service-muted",
+                      scale === "large" ? "type-text-md" : "type-text-sm",
+                    )}
+                  >
+                    {body}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
 
             <div className="flex shrink-0 items-center self-end justify-self-end inline-gap-sml">
               <ArrowButton
@@ -468,7 +475,7 @@ export function ContentPhotoGalleryCarouselSectionV3({
             className={scale === "large" ? "mt-heading-body-xl" : "mt-heading-body-lg"}
           >
             <div
-              aria-label={`${title} gallery`}
+              aria-label={title ? `${title} gallery` : "Image gallery"}
               className={cx(
                 "-mx-[var(--site-grid-inset-inline)] touch-pan-y overflow-x-auto overscroll-x-contain pl-[var(--site-grid-inset-inline)] pr-[var(--site-grid-inset-inline)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
                 isFreeScrolling

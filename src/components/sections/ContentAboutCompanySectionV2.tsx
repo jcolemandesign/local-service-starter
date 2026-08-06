@@ -1,5 +1,6 @@
 
 import {
+  Button,
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
@@ -62,7 +63,13 @@ export function ContentAboutCompanySectionV2({
     <section id="about" className="bg-bg-page">
       <SevenColumnGrid className={cx("section-min-none", sectionSpaceClass)}>
         <SevenColumnGridItem className="col-span-2 max-lg:col-span-5 max-md:col-span-3">
-          <p className={cx("type-label", "text-service-accent")}>
+          <p
+            className={cx(
+              "content-about-company-eyebrow",
+              "type-label",
+              "text-service-accent",
+            )}
+          >
             {eyebrow}
           </p>
         </SevenColumnGridItem>
@@ -114,15 +121,9 @@ export function ContentAboutCompanySectionV2({
             >
               {summary}
             </p>
-            <a
-              className={cx(
-                "radius-medium",
-                "mt-10 inline-flex min-h-12 w-fit cursor-pointer items-center justify-center whitespace-nowrap bg-service-ink px-6 text-sm font-semibold text-white transition-colors hover:bg-service-accent",
-              )}
-              href="#about"
-            >
+            <Button className="mt-10 w-fit" href="#about">
               {action}
-            </a>
+            </Button>
           </div>
         </SevenColumnGridItem>
       </SevenColumnGrid>
