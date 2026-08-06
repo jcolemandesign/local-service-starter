@@ -317,6 +317,17 @@ export function BackgroundNodeEditor({
             type="checkbox"
           />
         </label>
+
+        {value.animate ? (
+          <SliderRow
+            label="Speed"
+            max={300}
+            min={10}
+            onChange={(speed) => onChange({ ...value, speed })}
+            value={value.speed}
+            valueLabel={`${((20 * 100) / value.speed).toFixed(1)}s`}
+          />
+        ) : null}
       </div>
     </div>
   );

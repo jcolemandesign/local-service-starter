@@ -220,39 +220,32 @@
  * library. Over 26 seconds the paint cost of a two-stop gradient is not the
  * thing that matters.
  */
-@keyframes section-background-drift {
-  from {
-    background-position:
-      0% 0%,
-      100% 100%;
-  }
-
-  to {
-    background-position:
-      14% 9%,
-      86% 91%;
-  }
-}
-
 /*
- * The animation for a tuned background, which may have any number of nodes.
+ * The animation for a ground gradient, at any number of nodes.
  *
- * `section-background-drift` above names one background-position per layer and
- * so only works for exactly the two washes it was written against - with three
- * nodes the values repeat and the third sits still. Moving the whole layer
- * instead is node-count independent, and being a transform on a pseudo-element
- * it composites rather than repainting.
+ * This replaced a `section-background-drift` that named one background-position
+ * per layer, and so only worked for exactly the two washes it was written
+ * against - with three nodes the values repeated and the third sat still.
+ * Moving the whole layer instead is node-count independent, and being a
+ * transform on a pseudo-element it composites rather than repainting.
+ *
+ * The travel is deliberately large. The first version moved 1.5% and scaled 6%
+ * over 26 seconds on a layer at 18% opacity, which is a few pixels a minute on
+ * something barely visible - it animated correctly and read as completely
+ * static. A soft wash needs to move a long way before the eye reads it as
+ * moving at all.
  *
  * The scale is what keeps the edges covered: translating a layer that is
- * exactly the size of its box would drag a bare corner into view.
+ * exactly the size of its box would drag a bare corner into view. At scale 1.3
+ * the layer overhangs by 15% each side, comfortably past the 8% of travel.
  */
 @keyframes section-background-float {
   from {
-    transform: translate3d(-1.5%, -1%, 0) scale(1.06);
+    transform: translate3d(-8%, -5%, 0) scale(1.14) rotate(-1.5deg);
   }
 
   to {
-    transform: translate3d(1.5%, 1%, 0) scale(1.12);
+    transform: translate3d(8%, 5%, 0) scale(1.3) rotate(1.5deg);
   }
 }
 
@@ -1520,12 +1513,15 @@ body {
      to `gradient`, so what is left is a still version of the same ground rather
      than an empty one. */
   @media (prefers-reduced-motion: no-preference) {
-    /* The default lands on the frame rather than on its ::before so that an
+    /* Drift is Gradient in motion, and now says so with the same keyframes
+     * rather than its own two-layer ones.
+     *
+     * The default lands on the frame rather than on its ::before so that an
      * inline custom property - which is set on the frame too - can outrank it.
      * Declared straight on the pseudo-element it would win by specificity over
      * an inherited value, and a tuned background could never stop drifting. */
     [data-pagebuilder-background-treatment="drift"] {
-      --section-background-animation: section-background-drift 26s ease-in-out
+      --section-background-animation: section-background-float 20s ease-in-out
         infinite alternate;
     }
 

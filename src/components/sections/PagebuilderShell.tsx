@@ -4384,6 +4384,14 @@ export function PagebuilderShell({
                     data-pagebuilder-color-recipe={getSectionColorRecipe(
                       nextBand.sections[0],
                     )}
+                    // The third band wrapper, and the one that is easy to
+                    // forget: a hero joined to the section below it renders
+                    // through here rather than through `renderBand` above, so
+                    // a tuned gradient set on that hero reached the DOM
+                    // everywhere except the one path it actually took.
+                    style={backgroundConfigStyle(
+                      nextBand.sections[0].backgroundConfig,
+                    )}
                   >
                     {withBandRecipe(nextBand).map((section) =>
                       renderSectionFrame(section, { inBand: true }),

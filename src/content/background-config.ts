@@ -61,8 +61,17 @@ export type BackgroundConfig = {
   /** Layer opacity, 0-100. The old hardcoded value was 18. */
   strength: number;
   animate: boolean;
+  /**
+   * Motion rate as a percentage of the 20s base cycle, so 100 is 20s and 200
+   * is 10s. Expressed as speed rather than duration because that is the way
+   * round it reads on a slider - right is faster.
+   */
+  speed: number;
   blend: BackgroundBlendMode;
 };
+
+/** One full cycle at speed 100, in seconds. */
+const baseAnimationSeconds = 20;
 
 /**
  * The two washes the stylesheet has always drawn, expressed in the new model.
@@ -79,6 +88,7 @@ export const defaultBackgroundConfig: BackgroundConfig = {
   ],
   strength: 18,
   animate: false,
+  speed: 100,
   blend: "normal",
 };
 
@@ -161,6 +171,9 @@ export function resolveBackgroundConfig(
     nodes,
     strength: clamp(candidate.strength, 0, 100, defaultBackgroundConfig.strength),
     animate: Boolean(candidate.animate),
+    // Floored well above zero: speed 0 would divide into an infinite duration
+    // and the layer would freeze mid-cycle rather than simply moving slowly.
+    speed: clamp(candidate.speed, 10, 300, defaultBackgroundConfig.speed),
     blend: backgroundBlendModes.includes(candidate.blend as BackgroundBlendMode)
       ? (candidate.blend as BackgroundBlendMode)
       : "normal",
@@ -202,7 +215,10 @@ export function buildBackgroundConfigStyle(
     "--section-background-strength": String(config.strength / 100),
     "--section-background-blend": config.blend,
     "--section-background-animation": config.animate
-      ? "section-background-float 26s ease-in-out infinite alternate"
+      ? `section-background-float ${(
+          (baseAnimationSeconds * 100) /
+          config.speed
+        ).toFixed(1)}s ease-in-out infinite alternate`
       : "none",
   };
 }

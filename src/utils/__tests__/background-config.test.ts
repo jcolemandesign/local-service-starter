@@ -166,6 +166,42 @@ describe("buildBackgroundConfigStyle", () => {
     ).toContain("section-background-float");
   });
 
+  it("turns speed into a duration, faster to the right", () => {
+    const slow = buildBackgroundConfigStyle({
+      ...defaultBackgroundConfig,
+      animate: true,
+      speed: 50,
+    })["--section-background-animation"];
+    const fast = buildBackgroundConfigStyle({
+      ...defaultBackgroundConfig,
+      animate: true,
+      speed: 200,
+    })["--section-background-animation"];
+
+    expect(slow).toContain("40.0s");
+    expect(fast).toContain("10.0s");
+  });
+
+  /**
+   * Speed 0 would divide into an infinite duration, which freezes the layer
+   * mid-cycle rather than simply moving it slowly - a "slowest" setting that
+   * silently means "off".
+   */
+  it("never produces a non-finite duration", () => {
+    for (const speed of [0, -10, Number.NaN, Number.POSITIVE_INFINITY]) {
+      const resolved = resolveBackgroundConfig({
+        nodes: [{ color: "accent" }],
+        animate: true,
+        speed,
+      });
+
+      expect(resolved?.speed).toBeGreaterThan(0);
+      expect(
+        buildBackgroundConfigStyle(resolved!)["--section-background-animation"],
+      ).not.toContain("Infinity");
+    }
+  });
+
   it("pins the paint area so node radii are not scaled twice", () => {
     expect(
       buildBackgroundConfigStyle(defaultBackgroundConfig)[
