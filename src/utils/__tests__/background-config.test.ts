@@ -147,23 +147,21 @@ describe("buildBackgroundConfigStyle", () => {
   });
 
   /**
-   * The stylesheet's drift keyframes name a background-position per layer and
-   * so only animate two of them. A config must therefore always state its own
-   * animation - inheriting drift's default with three nodes would leave the
-   * third sitting still.
+   * A config must always state its own animation rather than falling through to
+   * drift's default, so that turning motion off actually stops it.
    */
   it("always states an animation, including when motion is off", () => {
     expect(
       buildBackgroundConfigStyle({ ...defaultBackgroundConfig, animate: false })[
-        "--section-background-animation"
+        "--section-background-animation-name"
       ],
     ).toBe("none");
 
     expect(
       buildBackgroundConfigStyle({ ...defaultBackgroundConfig, animate: true })[
-        "--section-background-animation"
+        "--section-background-animation-name"
       ],
-    ).toContain("section-background-float");
+    ).toBe("section-background-float");
   });
 
   it("turns speed into a duration, faster to the right", () => {
@@ -171,15 +169,32 @@ describe("buildBackgroundConfigStyle", () => {
       ...defaultBackgroundConfig,
       animate: true,
       speed: 50,
-    })["--section-background-animation"];
+    })["--section-background-animation-duration"];
     const fast = buildBackgroundConfigStyle({
       ...defaultBackgroundConfig,
       animate: true,
       speed: 200,
-    })["--section-background-animation"];
+    })["--section-background-animation-duration"];
 
-    expect(slow).toContain("40.0s");
-    expect(fast).toContain("10.0s");
+    expect(slow).toBe("40.0s");
+    expect(fast).toBe("10.0s");
+  });
+
+  /**
+   * The shorthand form of this - `animation: var(--x)` - produced no motion at
+   * all: a shorthand whose whole value is one variable is opaque at build time
+   * and can be dropped by a pipeline that re-serialises shorthands. Pinning the
+   * longhand property names keeps that from being reintroduced by a tidy-up.
+   */
+  it("emits animation longhands, never the shorthand", () => {
+    const style = buildBackgroundConfigStyle({
+      ...defaultBackgroundConfig,
+      animate: true,
+    });
+
+    expect(style).toHaveProperty("--section-background-animation-name");
+    expect(style).toHaveProperty("--section-background-animation-duration");
+    expect(style).not.toHaveProperty("--section-background-animation");
   });
 
   /**
@@ -196,9 +211,14 @@ describe("buildBackgroundConfigStyle", () => {
       });
 
       expect(resolved?.speed).toBeGreaterThan(0);
-      expect(
-        buildBackgroundConfigStyle(resolved!)["--section-background-animation"],
-      ).not.toContain("Infinity");
+
+      const duration = buildBackgroundConfigStyle(resolved!)[
+        "--section-background-animation-duration"
+      ];
+
+      expect(duration).not.toContain("Infinity");
+      expect(Number.parseFloat(duration)).toBeGreaterThan(0);
+      expect(Number.isFinite(Number.parseFloat(duration))).toBe(true);
     }
   });
 

@@ -235,24 +235,32 @@
  * static. A soft wash needs to move a long way before the eye reads it as
  * moving at all.
  *
- * The scale is what keeps the edges covered, and it has to beat the travel at
- * *both* ends of the cycle: a scale of S overhangs by (S-1)/2 on each side, so
- * 1.28 gives 14% against 6% of travel. An earlier pass paired 8% of travel with
- * scale 1.14 - a 7% overhang - and dragged a bare wedge of ground into view at
- * the extremes.
+ * A pan at constant scale. Both of the other things tried here failed, in
+ * opposite directions, and the constraint that survives them is simple: a scale
+ * of S overhangs the box by (S-1)/2 per side, and that overhang must exceed the
+ * travel or a bare wedge of ground swings into view.
  *
- * No rotation. It was the more interesting motion, but a rotation of angle t
- * needs vertical coverage of about width x sin(t) - and on a section five times
- * wider than it is tall, even 1.5deg demands ~13% where the scale supplied 7%.
- * The exposed diagonal edge read as the whole section sitting crooked.
+ * Rotation went first. A rotation of angle t needs vertical coverage of about
+ * width x sin(t), so on a section five times wider than it is tall even 1.5deg
+ * demands ~13% where the scale supplied 7% - the uncovered diagonal read as the
+ * whole section sitting crooked.
+ *
+ * Scaling *up* to cover more travel then backfired: at 1.28-1.42 the gradient
+ * is blown so far past the box that what remains inside it is the flat middle
+ * of the wash, and panning a near-uniform field is indistinguishable from not
+ * moving at all. Coverage was perfect and the motion was invisible.
+ *
+ * So: the smallest scale that clears the travel, and no zoom. 1.26 overhangs by
+ * 13% against 10% of horizontal travel, which keeps the nodes near their
+ * designed size - close enough to the box that moving them actually shows.
  */
 @keyframes section-background-float {
   from {
-    transform: translate3d(-6%, -4%, 0) scale(1.28);
+    transform: translate3d(-10%, -6%, 0) scale(1.26);
   }
 
   to {
-    transform: translate3d(6%, 4%, 0) scale(1.42);
+    transform: translate3d(10%, 6%, 0) scale(1.26);
   }
 }
 
@@ -1539,15 +1547,26 @@ body {
      * The default lands on the frame rather than on its ::before so that an
      * inline custom property - which is set on the frame too - can outrank it.
      * Declared straight on the pseudo-element it would win by specificity over
-     * an inherited value, and a tuned background could never stop drifting. */
+     * an inherited value, and a tuned background could never stop drifting.
+     *
+     * Longhands, not the `animation` shorthand. This was written as
+     * `animation: var(--section-background-animation, none)` - a shorthand
+     * whose whole value is one variable - and nothing moved: that form is
+     * fragile through a CSS pipeline that parses and re-serialises shorthands,
+     * because the variable is opaque at build time and the declaration can be
+     * dropped rather than passed through. A variable inside a longhand is only
+     * ever a value, so there is nothing to mis-parse. */
     [data-pagebuilder-background-treatment="drift"] {
-      --section-background-animation: section-background-float 20s ease-in-out
-        infinite alternate;
+      --section-background-animation-name: section-background-float;
     }
 
     [data-pagebuilder-background-treatment="gradient"]::before,
     [data-pagebuilder-background-treatment="drift"]::before {
-      animation: var(--section-background-animation, none);
+      animation-name: var(--section-background-animation-name, none);
+      animation-duration: var(--section-background-animation-duration, 20s);
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
     }
 
     /* Parallax: the image is sized and positioned against the viewport rather

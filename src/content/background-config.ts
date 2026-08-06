@@ -214,11 +214,16 @@ export function buildBackgroundConfigStyle(
     "--section-background-size": "100% 100%",
     "--section-background-strength": String(config.strength / 100),
     "--section-background-blend": config.blend,
-    "--section-background-animation": config.animate
-      ? `section-background-float ${(
-          (baseAnimationSeconds * 100) /
-          config.speed
-        ).toFixed(1)}s ease-in-out infinite alternate`
+    // Longhands rather than the `animation` shorthand - see the note in
+    // globals.css: a shorthand whose whole value is one variable is fragile
+    // through a pipeline that re-serialises shorthands, and silently produced
+    // no motion at all.
+    "--section-background-animation-name": config.animate
+      ? "section-background-float"
       : "none",
+    "--section-background-animation-duration": `${(
+      (baseAnimationSeconds * 100) /
+      config.speed
+    ).toFixed(1)}s`,
   };
 }
