@@ -122,7 +122,10 @@ export function BackgroundNodeEditor({
 
     onChange({
       ...value,
-      nodes: [...value.nodes, { color: "accent", x: 50, y: 50, size: 90, fade: 55 }],
+      nodes: [
+        ...value.nodes,
+        { color: "accent", x: 50, y: 50, size: 90, fade: 55, opacity: 100 },
+      ],
     });
     setSelectedIndex(value.nodes.length);
   }
@@ -272,12 +275,22 @@ export function BackgroundNodeEditor({
             value={activeNode.fade}
             valueLabel={`${activeNode.fade}%`}
           />
+          <SliderRow
+            label="Intensity"
+            max={100}
+            min={0}
+            onChange={(opacity) => updateNode(selectedIndex, { opacity })}
+            value={activeNode.opacity}
+            valueLabel={`${activeNode.opacity}%`}
+          />
         </div>
       ) : null}
 
       <div className="grid gap-2 border-t border-current/15 pt-3">
+        {/* Named for the whole layer, since it moves every node together -
+            per-node tuning is the Intensity slider above. */}
         <SliderRow
-          label="Strength"
+          label="Overall strength"
           max={100}
           min={0}
           onChange={(strength) => onChange({ ...value, strength })}

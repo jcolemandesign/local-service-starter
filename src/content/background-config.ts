@@ -54,6 +54,15 @@ export type BackgroundNode = {
   size: number;
   /** Where the wash reaches full transparency, as a percentage of its radius. */
   fade: number;
+  /**
+   * This node's own intensity, 0-100, applied as alpha on its colour.
+   *
+   * Distinct from the section's `strength`, which is one opacity on the whole
+   * layer and therefore moves every node together. Without this there is no way
+   * to sit a strong wash beside a faint one - the composition can only be
+   * turned up or down as a block.
+   */
+  opacity: number;
 };
 
 export type BackgroundConfig = {
@@ -83,8 +92,8 @@ const baseAnimationSeconds = 20;
  */
 export const defaultBackgroundConfig: BackgroundConfig = {
   nodes: [
-    { color: "accent", x: 12, y: 0, size: 110, fade: 62 },
-    { color: "accent", x: 88, y: 100, size: 95, fade: 45 },
+    { color: "accent", x: 12, y: 0, size: 110, fade: 62, opacity: 100 },
+    { color: "accent", x: 88, y: 100, size: 95, fade: 45, opacity: 100 },
   ],
   strength: 18,
   animate: false,
@@ -141,6 +150,9 @@ function resolveNode(node: unknown): BackgroundNode | null {
     y: clamp(candidate.y, 0, 100, 50),
     size: clamp(candidate.size, 10, 200, 100),
     fade: clamp(candidate.fade, 5, 100, 60),
+    // Defaults to fully opaque so a node saved before per-node intensity
+    // existed keeps rendering at the strength it was tuned to.
+    opacity: clamp(candidate.opacity, 0, 100, 100),
   };
 }
 
@@ -180,11 +192,35 @@ export function resolveBackgroundConfig(
   };
 }
 
+/**
+ * A node's colour at its own intensity.
+ *
+ * Alpha is applied with relative colour syntax rather than `color-mix`, which
+ * `globals.css` warns against for exactly this job: the build splits a
+ * color-mix into an @supports rule plus a fallback with the mix removed, and a
+ * wash degrades to full strength - a solid slab instead of a hint of one.
+ * `oklch(from …)` is already how the border token is derived here, and it
+ * carries no such fallback hazard.
+ *
+ * A fully opaque node is left alone so the common case stays the plain token.
+ */
+function nodeColorAtOpacity(color: string, opacity: number) {
+  const resolved = resolveBackgroundNodeColor(color);
+
+  if (resolved === null) {
+    return null;
+  }
+
+  return opacity >= 100
+    ? resolved
+    : `oklch(from ${resolved} l c h / ${(opacity / 100).toFixed(2)})`;
+}
+
 /** One `radial-gradient()` per node, in the order the editor lists them. */
 export function buildBackgroundLayers(config: BackgroundConfig): string {
   return config.nodes
     .map((node) => {
-      const color = resolveBackgroundNodeColor(node.color);
+      const color = nodeColorAtOpacity(node.color, node.opacity);
 
       return `radial-gradient(${node.size}% ${node.size}% at ${node.x}% ${node.y}%, ${color}, transparent ${node.fade}%)`;
     })

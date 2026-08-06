@@ -127,6 +127,42 @@ describe("buildBackgroundLayers", () => {
     expect(layers.match(/radial-gradient\(/g)).toHaveLength(2);
   });
 
+  /**
+   * Per-node intensity is the whole point of the field: `strength` is one
+   * opacity on the layer and moves every node together, so without this a
+   * strong wash cannot sit beside a faint one.
+   */
+  it("gives each node its own alpha", () => {
+    const layers = buildBackgroundLayers({
+      ...defaultBackgroundConfig,
+      nodes: [
+        { color: "accent", x: 10, y: 10, size: 100, fade: 60, opacity: 100 },
+        { color: "accent", x: 90, y: 90, size: 100, fade: 60, opacity: 25 },
+      ],
+    });
+
+    // The opaque node stays the plain token; only the faint one is wrapped.
+    expect(layers).toContain("oklch(from var(--color-service-accent) l c h / 0.25)");
+    expect(layers.match(/oklch\(/g)).toHaveLength(1);
+  });
+
+  /**
+   * `color-mix` is the obvious way to apply alpha and is wrong here - globals.css
+   * documents why: the build splits it into an @supports rule plus a fallback
+   * with the mix removed, and a wash degrades to full strength, painting a solid
+   * slab instead of a hint of one.
+   */
+  it("never reaches for color-mix", () => {
+    const layers = buildBackgroundLayers({
+      ...defaultBackgroundConfig,
+      nodes: [
+        { color: "accent", x: 10, y: 10, size: 100, fade: 60, opacity: 40 },
+      ],
+    });
+
+    expect(layers).not.toContain("color-mix");
+  });
+
   it("reproduces the positions the stylesheet has always drawn", () => {
     const layers = buildBackgroundLayers(defaultBackgroundConfig);
 

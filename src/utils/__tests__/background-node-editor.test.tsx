@@ -40,7 +40,7 @@ describe("BackgroundNodeEditor", () => {
           ...defaultBackgroundConfig,
           nodes: [
             ...defaultBackgroundConfig.nodes,
-            { color: "ink", x: 40, y: 60, size: 80, fade: 50 },
+            { color: "ink", x: 40, y: 60, size: 80, fade: 50, opacity: 100 },
           ],
         }}
         onChange={() => {}}
@@ -57,7 +57,7 @@ describe("BackgroundNodeEditor", () => {
       <BackgroundNodeEditor
         config={{
           ...defaultBackgroundConfig,
-          nodes: [{ color: "accent", x: 50, y: 50, size: 90, fade: 55 }],
+          nodes: [{ color: "accent", x: 50, y: 50, size: 90, fade: 55, opacity: 100 }],
         }}
         onChange={() => {}}
       />,
