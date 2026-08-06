@@ -515,6 +515,19 @@ body {
     border-color: var(--chrome-border-strong);
   }
 
+  /* The open dropdown is drawn by the browser, not by this stylesheet, and it
+   * does not inherit the control's dark chrome - it defaults to a white list
+   * while `color` still inherits the chrome's near-white text. White on white,
+   * on every select in the builder rather than only on a new one.
+   *
+   * Repainted light with dark text rather than dark-on-dark, matching the rule
+   * the style guide already carries for its own selects. */
+  .token-chrome-select option,
+  .token-chrome-select optgroup {
+    background-color: #f3f4f6;
+    color: #17211d;
+  }
+
   .token-chrome-frame {
     border-color: var(--chrome-border-soft);
     background-color: #0b1016;

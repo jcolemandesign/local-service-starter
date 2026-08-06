@@ -159,7 +159,7 @@ export function BackgroundNodeEditor({
           Start from
         </span>
         <select
-          className="min-h-8 w-full rounded-[var(--chrome-radius-control)] border border-current/25 bg-transparent px-2 text-xs font-semibold"
+          className="token-chrome-select min-h-8 w-full rounded-[var(--chrome-radius-control)] border px-2 text-xs font-semibold outline-none"
           onChange={(event) => {
             const preset = getBackgroundPreset(event.target.value);
 
@@ -340,7 +340,7 @@ export function BackgroundNodeEditor({
         <label className="flex items-center justify-between gap-3">
           <span className="type-caption font-semibold text-current">Blend</span>
           <select
-            className="min-h-8 rounded-[var(--chrome-radius-control)] border border-current/25 bg-transparent px-2 text-xs font-semibold"
+            className="token-chrome-select min-h-8 rounded-[var(--chrome-radius-control)] border px-2 text-xs font-semibold outline-none"
             onChange={(event) =>
               onChange({
                 ...value,
