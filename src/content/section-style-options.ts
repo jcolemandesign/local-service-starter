@@ -636,6 +636,24 @@ const backgroundTreatmentValues = new Set<string>(
  * treatment that has since been removed renders an untextured ground rather
  * than an attribute no stylesheet matches.
  */
+/**
+ * Treatments that paint from a node config.
+ *
+ * Grain draws a fixed rule grid and the image treatments paint a photograph, so
+ * neither reads the gradient layers - offering node tuning there would be a
+ * control that silently does nothing, the same failure the per-component
+ * membership sets above exist to prevent.
+ */
+const backgroundConfigTreatments = new Set<string>(["gradient", "drift"]);
+
+export function treatmentUsesBackgroundConfig(
+  backgroundTreatment: string | undefined,
+) {
+  return backgroundConfigTreatments.has(
+    resolveBackgroundTreatment(backgroundTreatment),
+  );
+}
+
 export function resolveBackgroundTreatment(
   backgroundTreatment: string | undefined,
 ) {

@@ -5,7 +5,9 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "reac
 import {
   buildBackgroundConfigStyle,
   resolveBackgroundConfig,
+  type BackgroundConfig,
 } from "@/content/background-config";
+import { BackgroundNodeEditor } from "@/components/sections/BackgroundNodeEditor";
 import {
   ContentSplitFullImageSectionV3,
   type ContentSplitFullImageVariant,
@@ -152,6 +154,7 @@ import {
   sectionSupportsSectionSpacing,
   resolveBackgroundTreatment,
   styleFieldOptions,
+  treatmentUsesBackgroundConfig,
   treatmentUsesGroundImage,
   sectionSupportsTableCompareAlign,
   servicesBentoVariantOptions,
@@ -2970,6 +2973,17 @@ export function PagebuilderShell({
     );
   }
 
+  function updateSectionBackgroundConfig(
+    sectionId: string,
+    backgroundConfig: BackgroundConfig,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId ? { ...section, backgroundConfig } : section,
+      ),
+    );
+  }
+
   function updateSectionBackgroundTreatment(
     sectionId: string,
     backgroundTreatment: string,
@@ -4887,6 +4901,28 @@ export function PagebuilderShell({
                                   the section&rsquo;s other assets — the canvas
                                   shows the ground until then.
                                 </span>
+                              ) : null}
+
+                              {/* Only the gradient treatments read a config -
+                                  grain draws a rule grid and the image ones
+                                  paint a photograph, so node tuning would be a
+                                  control that does nothing there. */}
+                              {treatmentUsesBackgroundConfig(
+                                resolveBackgroundTreatment(
+                                  section.backgroundTreatment,
+                                ),
+                              ) ? (
+                                <BackgroundNodeEditor
+                                  config={resolveBackgroundConfig(
+                                    section.backgroundConfig,
+                                  )}
+                                  onChange={(backgroundConfig) =>
+                                    updateSectionBackgroundConfig(
+                                      section.id,
+                                      backgroundConfig,
+                                    )
+                                  }
+                                />
                               ) : null}
                             </fieldset>
                           ) : null}
