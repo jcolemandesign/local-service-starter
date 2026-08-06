@@ -265,6 +265,37 @@
 }
 
 /*
+ * The two cycles behind the `ambient` treatment - see `.ambient-drift` further
+ * down and `src/components/primitives/AmbientDrift.tsx`.
+ *
+ * A pass runs -100% to 100% of the container width, so a sprite is fully off
+ * one edge at each end and the loop has no visible seam. Negative delays
+ * pre-distribute the twelve sprites mid-flight, which is why the overlay looks
+ * settled on first paint rather than filling up over the first minute.
+ */
+@keyframes ambient-drift-x {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Asymmetric on purpose: an even ±8px reads as a bounce, an uneven drift reads
+ * as air. */
+@keyframes ambient-drift-y {
+  from {
+    transform: translateY(-7px);
+  }
+
+  to {
+    transform: translateY(9px);
+  }
+}
+
+/*
  * Entrance pulse, for cards that drew attention with a brief scale blip rather
  * than a fade. Driven by the same view() timeline, so the pulse plays as the
  * card scrolls through its entry range instead of firing once on a timer. The
@@ -1550,6 +1581,76 @@ body {
     opacity: 0.05;
   }
 
+  /* Ambient: drawn linework drifting across the ground.
+   *
+   * The one treatment whose paint is markup rather than a rule - twelve sprites
+   * on independent cycles do not fit in a single `::before`. The component is
+   * `src/components/primitives/AmbientDrift.tsx`; everything static about it
+   * lives here so the component ships no inline <style> and the values stay
+   * tunable from the stylesheet like every other treatment's.
+   *
+   * `z-index: -1` puts the overlay in the exact layer the other treatments'
+   * `::before` occupies: above the frame's own background, below its in-flow
+   * content. That is what lets this drop into an existing frame without any
+   * section needing a positioned content wrapper - the reference version sat at
+   * z-index 0 and required one. The frame is already `isolation: isolate` and
+   * `overflow: clip` from the rule at the top of this block, so the negative
+   * index cannot escape the section and the sprites are clipped to it. */
+  .ambient-drift {
+    --ambient-drift-color: var(--color-service-accent);
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    position: absolute;
+    z-index: -1;
+  }
+
+  /* The still composition is the base state and motion is added on top, rather
+   * than the other way round. Each sprite rests where its negative delay would
+   * have carried it, so reduced motion gets a frozen frame of the drift instead
+   * of all twelve wisps stacked on the start line. */
+  .ambient-drift-wisp {
+    height: 0;
+    left: 0;
+    position: absolute;
+    transform: translateX(var(--ambient-drift-rest));
+    width: 100%;
+  }
+
+  /* The along-path fade, which the reference drew with an SVG <linearGradient>
+   * in <defs>. A mask instead: defs need a document-unique id, an id needs
+   * `useId`, and `useId` would make this a client component for a purely
+   * decorative layer. Same asymmetric profile, no hydration. */
+  .ambient-drift-sprite {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent,
+      rgb(0 0 0 / 0.5) 18%,
+      rgb(0 0 0 / 1) 44%,
+      rgb(0 0 0 / 0.55) 74%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      rgb(0 0 0 / 0.5) 18%,
+      rgb(0 0 0 / 1) 44%,
+      rgb(0 0 0 / 0.55) 74%,
+      transparent
+    );
+    height: auto;
+    left: 0;
+    overflow: visible;
+    position: absolute;
+    top: 0;
+    transform: translateY(-50%);
+    width: var(--ambient-drift-width);
+  }
+
+  .ambient-drift-sprite path {
+    stroke: var(--ambient-drift-color);
+  }
+
   /* Motion is the only thing reduced motion takes away. The image is identical
      to `gradient`, so what is left is a still version of the same ground rather
      than an empty one. */
@@ -1577,6 +1678,35 @@ body {
     [data-pagebuilder-background-treatment="drift"]::before {
       animation-name: var(--section-background-animation-name, none);
       animation-duration: var(--section-background-animation-duration, 20s);
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+    }
+
+    /* Longhands here for the same reason, and because the duration is a
+     * calc() over two inherited variables - a per-sprite cycle and the
+     * overlay's speed multiplier - which a shorthand would have to carry
+     * whole. */
+    .ambient-drift-wisp {
+      animation-name: ambient-drift-x;
+      animation-duration: calc(
+        var(--ambient-drift-duration) * var(--ambient-drift-speed)
+      );
+      animation-delay: calc(
+        var(--ambient-drift-delay) * var(--ambient-drift-speed)
+      );
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      will-change: transform;
+    }
+
+    /* Bob periods are deliberately non-harmonic with the pass durations above,
+     * so the two cycles do not visibly re-sync into a repeating pattern. */
+    .ambient-drift-bob {
+      animation-name: ambient-drift-y;
+      animation-duration: calc(
+        var(--ambient-drift-bob) * var(--ambient-drift-speed)
+      );
       animation-timing-function: ease-in-out;
       animation-iteration-count: infinite;
       animation-direction: alternate;

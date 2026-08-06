@@ -1,3 +1,4 @@
+import { BackgroundTreatmentOverlay } from "@/components/primitives/AmbientDrift";
 import { ContentAboutCompanySectionV2 } from "@/components/sections/ContentAboutCompanySectionV2";
 import { ContentAboutStorySectionV3 } from "@/components/sections/ContentAboutStorySectionV3";
 import { ContentFixedCoverFadeSectionV2 } from "@/components/sections/ContentFixedCoverFadeSectionV2";
@@ -405,6 +406,9 @@ export function PageTemplatePreview({
         // the same section that supplies the band's recipe and texture.
         style={backgroundLayerStyle(first, fieldsBySection[first.id ?? ""])}
       >
+        <BackgroundTreatmentOverlay
+          treatment={resolveBackgroundTreatment(first.backgroundTreatment)}
+        />
         {withBandRecipe(band).map((section, offset) =>
           renderSection(section, band.startIndex + offset, { inBand: true }),
         )}
@@ -609,6 +613,14 @@ function TemplateSectionFrame({
       data-pagebuilder-padding-top={resolvePaddingAttribute(section, "top")}
       style={backgroundImage}
     >
+      {/* Sits beside the treatment attribute above and takes the same `inBand`
+          decision, so a member never draws a second set of sprites over the
+          band's own. */}
+      <BackgroundTreatmentOverlay
+        treatment={
+          inBand ? "none" : resolveBackgroundTreatment(section.backgroundTreatment)
+        }
+      />
       {children}
     </div>
   );

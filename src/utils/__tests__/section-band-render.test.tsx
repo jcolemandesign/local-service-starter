@@ -152,6 +152,45 @@ describe("background band rendering", () => {
   });
 
   /**
+   * `ambient` is the only treatment that paints by rendering markup rather than
+   * through a stylesheet rule, so it is the only one whose presence can be
+   * asserted from the DOM at all - and the only one that can go missing on a
+   * render path while its attribute still travels correctly. Both placements
+   * are pinned here for the same reason the attribute ones above are.
+   */
+  it("renders the ambient overlay inside a lone section's frame", () => {
+    const markup = render([
+      section({ component: header, id: "a", backgroundTreatment: "ambient" }),
+    ]);
+
+    expect(markup).toContain('data-pagebuilder-background-treatment="ambient"');
+    expect(countOccurrences(markup, 'class="ambient-drift"')).toBe(1);
+  });
+
+  it("draws the ambient overlay once per band, not once per member", () => {
+    const markup = render([
+      section({ component: header, id: "a", backgroundTreatment: "ambient" }),
+      section({ component: content, id: "b", joinAbove: "join" }),
+      section({ component: content, id: "c", joinAbove: "join" }),
+    ]);
+
+    // The band owns the run's texture and its members go inert, so three
+    // frames yield exactly one set of sprites rather than three stacked ones.
+    expect(countOccurrences(markup, 'class="ambient-drift"')).toBe(1);
+    expect(countOccurrences(markup, 'data-pagebuilder-background-treatment="none"')).toBe(3);
+  });
+
+  it("renders no overlay for the treatments that are stylesheet rules", () => {
+    const markup = render([
+      section({ component: header, id: "a", backgroundTreatment: "drift" }),
+      section({ component: content, id: "b", backgroundTreatment: "gradient" }),
+      section({ component: content, id: "c", backgroundTreatment: "grain" }),
+    ]);
+
+    expect(markup).not.toContain("ambient-drift");
+  });
+
+  /**
    * The image is the one treatment whose value is per-page data rather than a
    * fixed rule, so it travels a different route: an asset field read at render
    * time, handed to the stylesheet as a custom property.

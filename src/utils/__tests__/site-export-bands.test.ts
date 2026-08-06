@@ -140,6 +140,47 @@ describe("exported section markup", () => {
   });
 
   /**
+   * `ambient` is the only treatment the exporter has to emit a child for -
+   * every other one is the data attribute and nothing else. Two things can go
+   * wrong silently: the overlay is emitted for a treatment that does not want
+   * one (which would import a component the page never needs and fail lint in
+   * the generated site), or it is omitted for the one that does (which builds
+   * fine and ships a section missing its texture).
+   */
+  it("emits the overlay child only for the ambient treatment", () => {
+    const jsx = buildSectionJsx([
+      section({ sectionId: "a", backgroundTreatment: "ambient" }),
+    ]);
+
+    expect(countOccurrences(jsx, "<BackgroundTreatmentOverlay")).toBe(1);
+    expect(jsx).toContain('treatment="ambient"');
+    expect(isBalanced(jsx)).toBe(true);
+  });
+
+  it("emits no overlay for treatments that are stylesheet rules", () => {
+    const jsx = buildSectionJsx([
+      section({ sectionId: "a", backgroundTreatment: "drift" }),
+      section({ sectionId: "b", contentKey: "section02", backgroundTreatment: "grain" }),
+      section({ sectionId: "c", contentKey: "section03", backgroundTreatment: "none" }),
+    ]);
+
+    expect(jsx).not.toContain("BackgroundTreatmentOverlay");
+  });
+
+  it("emits the band's overlay once, not once per member", () => {
+    const jsx = buildSectionJsx([
+      section({ sectionId: "a", backgroundTreatment: "ambient" }),
+      section({ sectionId: "b", contentKey: "section02", joinAbove: "join" }),
+      section({ sectionId: "c", contentKey: "section03", joinAbove: "join" }),
+    ]);
+
+    expect(countOccurrences(jsx, "<BackgroundTreatmentOverlay")).toBe(1);
+    // Members are inert, so none of the three frames carries a second set.
+    expect(countOccurrences(jsx, 'data-pagebuilder-background-treatment="none"')).toBe(3);
+    expect(isBalanced(jsx)).toBe(true);
+  });
+
+  /**
    * The band and paint-surface class names are new vocabulary, and the export
    * only stays anonymous if the rename covers them too.
    */

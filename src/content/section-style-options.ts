@@ -565,9 +565,16 @@ export const styleFieldOptions = {
    * Texture laid over the ground, on top of whatever the colour recipe paints.
    *
    * Every value is drawn from the live tokens rather than from fixed colours, so
-   * one treatment reads correctly on all five recipes. `drift` is the only one
-   * that moves, and it animates the same image `gradient` paints, so reduced
-   * motion degrades to that rather than to nothing.
+   * one treatment reads correctly on all five recipes. `drift` and `ambient`
+   * both move: `drift` animates the same image `gradient` paints, so reduced
+   * motion degrades to that rather than to nothing, and `ambient` freezes its
+   * sprites mid-flight for the same reason.
+   *
+   * `ambient` is the one treatment that is not a stylesheet rule - it renders
+   * markup, through `BackgroundTreatmentOverlay`. It is deliberately a value
+   * beside `drift` rather than a replacement for it: repurposing `drift` would
+   * have silently repainted every section and preset already tuned to it, which
+   * is the same thing preset copying and promotion exist to prevent.
    *
    * Copy-neutral: it changes what the ground looks like, never which fields a
    * section renders.
@@ -578,6 +585,7 @@ export const styleFieldOptions = {
     { label: "Gradient", value: "gradient" },
     { label: "Grain", value: "grain" },
     { label: "Drift", value: "drift" },
+    { label: "Ambient", value: "ambient" },
     { label: "Image", value: "image" },
     { label: "Parallax", value: "image-parallax" },
   ],
@@ -639,10 +647,11 @@ const backgroundTreatmentValues = new Set<string>(
 /**
  * Treatments that paint from a node config.
  *
- * Grain draws a fixed rule grid and the image treatments paint a photograph, so
- * neither reads the gradient layers - offering node tuning there would be a
- * control that silently does nothing, the same failure the per-component
- * membership sets above exist to prevent.
+ * Grain draws a fixed rule grid, the image treatments paint a photograph, and
+ * `ambient` draws strokes rather than washes, so none of them read the gradient
+ * layers - offering node tuning there would be a control that silently does
+ * nothing, the same failure the per-component membership sets above exist to
+ * prevent.
  */
 const backgroundConfigTreatments = new Set<string>(["gradient", "drift"]);
 
@@ -652,6 +661,23 @@ export function treatmentUsesBackgroundConfig(
   return backgroundConfigTreatments.has(
     resolveBackgroundTreatment(backgroundTreatment),
   );
+}
+
+/**
+ * Treatments that paint by rendering markup instead of by a stylesheet rule.
+ *
+ * Every other treatment travels as a data attribute alone, which is why the
+ * builder, the preview, staged pages and the exporter all get it for free. One
+ * that needs a DOM child has to be dropped in at each frame and band, and the
+ * exporter has to emit it into generated JSX and pull the component into the
+ * copied file set. This predicate is what those call sites agree on, so adding
+ * the next such treatment is one entry here rather than six string comparisons
+ * that can fall out of step.
+ */
+const overlayTreatments = new Set<string>(["ambient"]);
+
+export function treatmentRendersOverlay(backgroundTreatment: string | undefined) {
+  return overlayTreatments.has(resolveBackgroundTreatment(backgroundTreatment));
 }
 
 export function resolveBackgroundTreatment(

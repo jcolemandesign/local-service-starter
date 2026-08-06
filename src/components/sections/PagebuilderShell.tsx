@@ -114,6 +114,7 @@ import {
   CTAMutedSectionV3,
   FAQSectionV3,
 } from "@/components/sections/FAQConversionContactFooterSectionsV3";
+import { BackgroundTreatmentOverlay } from "@/components/primitives/AmbientDrift";
 import { DownArrowIcon } from "@/components/primitives";
 import type { PagebuilderRecipe, SectionMode } from "@/content/pagebuilder";
 import {
@@ -4294,6 +4295,16 @@ export function PagebuilderShell({
               : backgroundConfigStyle(section.backgroundConfig)
           }
         >
+          {/* Takes the same `inBand` decision as the treatment attribute
+              above - the band wrapper draws the run's sprites, a member draws
+              none. */}
+          <BackgroundTreatmentOverlay
+            treatment={
+              options.inBand
+                ? "none"
+                : resolveBackgroundTreatment(section.backgroundTreatment)
+            }
+          />
           {renderedSectionPreview}
           <button
             aria-label={`Delete ${getSectionDisplayLabel(section)}`}
@@ -4350,6 +4361,9 @@ export function PagebuilderShell({
                 key={`band-${first.id}`}
                 style={backgroundConfigStyle(first.backgroundConfig)}
               >
+                <BackgroundTreatmentOverlay
+                  treatment={resolveBackgroundTreatment(first.backgroundTreatment)}
+                />
                 {withBandRecipe(band).map((section) =>
                   renderSectionFrame(section, { inBand: true }),
                 )}
@@ -4393,6 +4407,11 @@ export function PagebuilderShell({
                       nextBand.sections[0].backgroundConfig,
                     )}
                   >
+                    <BackgroundTreatmentOverlay
+                      treatment={resolveBackgroundTreatment(
+                        nextBand.sections[0].backgroundTreatment,
+                      )}
+                    />
                     {withBandRecipe(nextBand).map((section) =>
                       renderSectionFrame(section, { inBand: true }),
                     )}

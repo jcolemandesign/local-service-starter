@@ -32,6 +32,7 @@ import {
   resolveBackgroundImage,
   resolveBackgroundTreatment,
   resolveCardFill,
+  treatmentRendersOverlay,
   treatmentUsesGroundImage,
 } from "@/content/section-style-options";
 import {
@@ -310,6 +311,12 @@ async function resolveSiteExport(requestedClientSlug: string) {
     ),
     path.join(sourceRoot, "components", "request-service", "index.ts"),
     path.join(sourceRoot, "app", "fonts.ts"),
+    // A root rather than a discovered dependency. The closure walks imports out
+    // of the copied section files, and no section imports this - the overlay is
+    // emitted into generated page JSX, which is source text this walk never
+    // sees. Left to be discovered it would simply never be copied, and the
+    // export would build against a missing module.
+    path.join(sourceRoot, "components", "primitives", "AmbientDrift.tsx"),
   ]);
 
   for (const file of dependencyFiles) {
@@ -984,8 +991,26 @@ ${indent}  key=${JSON.stringify(section.sectionId)}${
     inBand ? "" : backgroundImageStyleJsx(section, `${indent}  `)
   }
 ${indent}>
-${indent}  <${section.component} {...(content.${section.contentKey} as unknown as ComponentProps<typeof ${section.component}>)} />
+${overlayJsx(inBand ? "none" : section.backgroundTreatment, `${indent}  `)}${indent}  <${section.component} {...(content.${section.contentKey} as unknown as ComponentProps<typeof ${section.component}>)} />
 ${indent}</div>`;
+}
+
+/**
+ * The overlay child for a treatment that paints by markup rather than by a
+ * rule, as generated JSX.
+ *
+ * Every other treatment needs nothing here: the data attribute above is the
+ * whole of it, and the exported site's copy of `globals.css` does the painting.
+ * `ambient` is the exception, so this emits a line for it and an empty string
+ * for all the rest - which keeps the generated output byte-identical to what it
+ * was for every page that does not use the treatment.
+ */
+function overlayJsx(backgroundTreatment: string | undefined, indent: string) {
+  return treatmentRendersOverlay(backgroundTreatment)
+    ? `${indent}<BackgroundTreatmentOverlay treatment=${JSON.stringify(
+        resolveBackgroundTreatment(backgroundTreatment),
+      )} />\n`
+    : "";
 }
 
 /**
@@ -1060,7 +1085,7 @@ export function buildSectionJsx(sections: ResolvedSection[]) {
           "        ",
         )}
       >
-${band.sections
+${overlayJsx(first.backgroundTreatment, "        ")}${band.sections
   .map((section) => buildSectionFrameJsx(section, "        ", true))
   .join("\n")}
       </div>`;
@@ -1093,9 +1118,15 @@ function buildPageFile({ page, sections }: ResolvedPage) {
   const reactTypeImports = sectionJsx.includes("as CSSProperties")
     ? "ComponentProps, CSSProperties"
     : "ComponentProps";
+  // Same rule as the type import above, for the same reason: a page whose
+  // sections use no markup-rendering treatment must not carry an unused import
+  // into the generated site, where lint would fail on it.
+  const overlayImport = sectionJsx.includes("<BackgroundTreatmentOverlay")
+    ? '\nimport { BackgroundTreatmentOverlay } from "@/components/primitives/AmbientDrift";'
+    : "";
 
   return `import type { Metadata } from "next";
-import type { ${reactTypeImports} } from "react";
+import type { ${reactTypeImports} } from "react";${overlayImport}
 ${imports}
 import { content } from "./content";
 
