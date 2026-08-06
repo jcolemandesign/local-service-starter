@@ -1,5 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { resolveBackgroundConfig } from "@/content/background-config";
+import { sectionToggleFieldNames } from "@/content/section-style-options";
 import { requireBuilderApiAccess } from "@/utils/builder-access";
 import { createSlotId } from "@/utils/section-id";
 import { validateTemplateStructure } from "@/utils/template-structure";
@@ -28,6 +30,23 @@ type PageTemplateSection = {
   cardFill?: string;
   cardBorder?: string;
   borderTone?: string;
+  /**
+   * `"join"` shares the background of the section above - see
+   * `groupSectionsIntoBands`. Without this a promoted template loses every
+   * band, and the exported page renders each member painting its own ground.
+   */
+  joinAbove?: string;
+  /** Ground texture - see `backgroundTreatment` in `section-style-options`. */
+  backgroundTreatment?: string;
+  /**
+   * Tuned gradient, held loosely because this route is a transport boundary
+   * rather than the authority on the model - `resolveBackgroundConfig`
+   * sanitises it at render time, so a hand-edited blob degrades to the
+   * stylesheet default rather than painting something unvalidated.
+   */
+  backgroundConfig?: unknown;
+  backgroundImageFit?: string;
+  backgroundImageFocus?: string;
 };
 
 type PageTemplateRequest = {
@@ -398,21 +417,52 @@ function normalizeSection(section: PageTemplateSection): PageTemplateSection {
       : 0,
     reduceBottomPadding: Boolean(section.reduceBottomPadding),
     reduceTopPadding: Boolean(section.reduceTopPadding),
-    colorRecipe:
-      typeof section.colorRecipe === "string" ? section.colorRecipe : undefined,
-    backgroundFill:
-      typeof section.backgroundFill === "string"
-        ? section.backgroundFill
-        : undefined,
-    cardFill: typeof section.cardFill === "string" ? section.cardFill : undefined,
-    cardBorder:
-      typeof section.cardBorder === "string" ? section.cardBorder : undefined,
-    borderTone:
-      typeof section.borderTone === "string" ? section.borderTone : undefined,
-    ratio: typeof section.ratio === "string" ? section.ratio : undefined,
-    variant: typeof section.variant === "string" ? section.variant : undefined,
-    align: typeof section.align === "string" ? section.align : undefined,
+    // Every remaining axis the section carries, kept as sent.
+    //
+    // Previously each one was named here by hand, and three - `cardLinks`,
+    // `icons`, `headlineWrap` - were declared on the type above but never
+    // copied, while band membership and ground texture were not declared at
+    // all. Both mistakes are silent: promotion succeeds and the template is
+    // simply missing the settings. Driving the copy from the shared name list
+    // means an axis added to the builder arrives here without a second edit.
+    ...normalizeToggleFields(section),
   };
+}
+
+/**
+ * Copies the toggle axes off a request section, dropping anything that is not
+ * the type it should be.
+ *
+ * Same "allowlist and drop" basis the rest of this route uses: a value of the
+ * wrong shape is left unset so the section falls back to its own default,
+ * rather than being written through to a template that later renders it.
+ */
+function normalizeToggleFields(section: PageTemplateSection) {
+  const normalized: Record<string, unknown> = {};
+
+  for (const name of sectionToggleFieldNames) {
+    const value = (section as Record<string, unknown>)[name];
+
+    // The gradient is the one non-string axis, and it is sanitised rather than
+    // type-checked - `resolveBackgroundConfig` returns null for anything it
+    // does not recognise, which is the same "fall back to the default" answer
+    // the string guard below gives.
+    if (name === "backgroundConfig") {
+      const config = resolveBackgroundConfig(value);
+
+      if (config) {
+        normalized[name] = config;
+      }
+
+      continue;
+    }
+
+    if (typeof value === "string") {
+      normalized[name] = value;
+    }
+  }
+
+  return normalized;
 }
 
 function normalizeRequiredString(value: unknown, message: string) {

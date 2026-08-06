@@ -288,6 +288,7 @@ export const cardStyleComponents = new Set<string>([
   "ServicesScrollCardsSectionV2",
   "ServicesThreeCardsRightSectionV3",
   "ThreeCardLinkGridSectionV3",
+  "TestimonialsCarouselCondensedSectionV3",
   "TestimonialsSectionV3",
   "TrustBarFloatingBentoSectionV3",
 ]);
@@ -497,6 +498,68 @@ export function resolveBorderTone(
   borderTone: string | undefined,
 ): SectionCardBorderTone {
   return borderTone === "light" ? "light" : "dark";
+}
+
+/**
+ * Every per-section setting that has to survive the trip from the builder to
+ * the exported site.
+ *
+ * A section's settings are copied by hand at three hops - the promote-to-
+ * template request, the template route's normaliser, and the staged page's
+ * preview mapping - and each hop is an allowlist. Adding an axis to the
+ * builder without adding it to all three drops it silently: the control works
+ * in pagebuilder, the value saves to the working stack, and then promotion
+ * quietly discards it. That is how band membership and ground textures were
+ * lost between a staged page and its template.
+ *
+ * So the names live here once and the three hops read them. Deliberately not
+ * split by the copy-affecting vs copy-neutral rule in `docs/builder-workflow.md`
+ * §3 - that distinction decides what invalidates approved copy, and it does not
+ * apply here, because every one of these has to arrive intact either way.
+ */
+export const sectionToggleFieldNames = [
+  "align",
+  "backgroundConfig",
+  "backgroundFill",
+  "backgroundImageFit",
+  "backgroundImageFocus",
+  "backgroundTreatment",
+  "borderTone",
+  "cardBorder",
+  "cardFill",
+  "cardLinks",
+  "colorRecipe",
+  "headlineWrap",
+  "icons",
+  "joinAbove",
+  "ratio",
+  "variant",
+] as const;
+
+export type SectionToggleFieldName = (typeof sectionToggleFieldNames)[number];
+
+/**
+ * The settings a section is actually carrying, ready to spread onto the next
+ * shape it travels as.
+ *
+ * Unset fields are left out rather than written as `undefined`, so spreading
+ * the result over a section cannot blank a value the target already holds, and
+ * a promoted template gains no keys for axes the section never used.
+ */
+export function pickSectionToggleFields<T extends object>(
+  section: T,
+): Pick<T, Extract<keyof T, SectionToggleFieldName>> {
+  const picked = {} as Record<string, unknown>;
+
+  for (const name of sectionToggleFieldNames) {
+    const value = (section as Record<string, unknown>)[name];
+
+    if (value !== undefined) {
+      picked[name] = value;
+    }
+  }
+
+  return picked as Pick<T, Extract<keyof T, SectionToggleFieldName>>;
 }
 
 /** Navigation is the first family where section paint and grouped-card paint

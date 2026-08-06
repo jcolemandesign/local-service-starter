@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { sectionToggleFieldNames } from "@/content/section-style-options";
+
 /**
  * Every field the builder sends must survive the save route.
  *
@@ -51,6 +53,11 @@ const routePath = path.join(
  *
  * Shorthand counts: `normalizeSection` hoists `component` into a local first
  * and returns it bare, so matching only `key:` would report it as dropped.
+ *
+ * A `...pickSectionToggleFields(section)` spread counts as every name in
+ * `sectionToggleFieldNames`, which is what it actually copies. Resolving it
+ * against the real exported list rather than a second copy here keeps this
+ * honest: shrink that list and these assertions fail, which is the point.
  */
 function returnedObjectKeys(source: string, functionName: string) {
   const start = source.indexOf(`function ${functionName}(`);
@@ -67,11 +74,18 @@ function returnedObjectKeys(source: string, functionName: string) {
     -1,
   );
 
-  return new Set(
-    [...body.slice(0, end).matchAll(/^ {4}(\w+)\s*[,:]/gm)].map(
-      (match) => match[1],
-    ),
+  const returned = body.slice(0, end);
+  const keys = new Set(
+    [...returned.matchAll(/^ {4}(\w+)\s*[,:]/gm)].map((match) => match[1]),
   );
+
+  if (returned.includes("...pickSectionToggleFields(")) {
+    for (const name of sectionToggleFieldNames) {
+      keys.add(name);
+    }
+  }
+
+  return keys;
 }
 
 describe("pagebuilder option save round-trip", () => {

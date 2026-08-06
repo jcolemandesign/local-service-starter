@@ -91,6 +91,11 @@ export type StagedPageTemplateSection = {
   joinAbove?: string;
   /** Ground texture - see `backgroundTreatment` in `section-style-options`. */
   backgroundTreatment?: string;
+  /**
+   * Tuned gradient - see `background-config`. Absent keeps the stylesheet's own
+   * two washes, so a section that has never been tuned is unaffected.
+   */
+  backgroundConfig?: import("@/content/background-config").BackgroundConfig;
   /** Ground image sizing and focal point - see `background-image-config`. */
   backgroundImageFit?: string;
   backgroundImageFocus?: string;

@@ -64,23 +64,52 @@ describe("background band rendering", () => {
    * request-service context that several sections need, which tests the
    * providers rather than the grouping. The pass is what decides whether a
    * wrapper appears, so it is the honest place to assert.
+   *
+   * This used to assert the corpus was band-free, which held only because
+   * promotion was silently dropping `joinAbove` before it ever reached a
+   * template - the test was pinning the bug rather than the behaviour. What is
+   * worth holding is that a join in saved data means something: a section
+   * marked to join must actually land inside a band. A join that groups
+   * nothing is a control the editor set and the page ignored, which is exactly
+   * the failure the assertion is here to catch.
    */
-  it("leaves every saved template band-free", () => {
+  it("resolves every join in the saved templates into a real band", () => {
     const templates = (
-      pageTemplates as { templates?: Array<{ sections?: unknown[] }> }
+      pageTemplates as {
+        templates?: Array<{
+          id?: string;
+          sections?: Array<{ joinAbove?: string }>;
+        }>;
+      }
     ).templates;
 
     expect(templates?.length).toBeGreaterThan(0);
 
-    const banded = (templates ?? []).flatMap((template) =>
-      groupSectionsIntoBands(
-        (template.sections ?? []) as PageTemplatePreviewSection[],
-      )
-        .filter((band) => band.isBand)
-        .map((band) => band.sections.map((entry) => entry.component)),
-    );
+    for (const template of templates ?? []) {
+      const sections = (template.sections ?? []) as PageTemplatePreviewSection[];
+      const joinCount = sections.filter(
+        (entry) => entry.joinAbove === "join",
+      ).length;
 
-    expect(banded).toEqual([]);
+      if (joinCount === 0) {
+        continue;
+      }
+
+      const bands = groupSectionsIntoBands(sections).filter(
+        (band) => band.isBand,
+      );
+      // Each band of n sections absorbs n-1 joiners: the run's opener does not
+      // carry a join of its own, it is the thing being joined to.
+      const absorbed = bands.reduce(
+        (total, band) => total + band.sections.length - 1,
+        0,
+      );
+
+      expect(
+        absorbed,
+        `${template.id}: ${joinCount} section(s) are set to join but only ${absorbed} ended up in a band - the rest join nothing and paint their own ground`,
+      ).toBe(joinCount);
+    }
   });
 
   it("wraps a run of joiners in one band and makes its members inert", () => {

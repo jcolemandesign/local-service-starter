@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-08-06T20:33:53.616Z",
+      "savedAt": "2026-08-06T22:56:35.330Z",
       "sectionCount": 12,
       "sections": [
         {
@@ -105,7 +105,7 @@
           "backgroundFill": "solid",
           "cardBorder": "off",
           "borderTone": "light",
-          "cardFill": "none",
+          "cardFill": "solid",
           "backgroundTreatment": "gradient",
           "joinAbove": "join",
           "backgroundConfig": {
@@ -149,7 +149,7 @@
           "backgroundFill": "solid",
           "cardBorder": "on",
           "borderTone": "light",
-          "cardFill": "none",
+          "cardFill": "solid",
           "joinAbove": "join"
         },
         {
@@ -230,7 +230,48 @@
           "backgroundFill": "solid",
           "cardBorder": "on",
           "borderTone": "dark",
-          "cardFill": "solid"
+          "cardFill": "solid",
+          "backgroundTreatment": "drift",
+          "backgroundConfig": {
+            "nodes": [
+              {
+                "color": "accent",
+                "x": 18,
+                "y": 12,
+                "size": 120,
+                "fade": 58,
+                "opacity": 100
+              },
+              {
+                "color": "highlight",
+                "x": 82,
+                "y": 22,
+                "size": 105,
+                "fade": 52,
+                "opacity": 70
+              },
+              {
+                "color": "ink",
+                "x": 68,
+                "y": 88,
+                "size": 130,
+                "fade": 60,
+                "opacity": 45
+              },
+              {
+                "color": "accent",
+                "x": 8,
+                "y": 82,
+                "size": 95,
+                "fade": 48,
+                "opacity": 60
+              }
+            ],
+            "strength": 26,
+            "animate": true,
+            "speed": 130,
+            "blend": "normal"
+          }
         },
         {
           "component": "DecisionSplitDecisionLargeSectionV3",
@@ -248,8 +289,9 @@
           "backgroundFill": "solid",
           "cardBorder": "off",
           "borderTone": "dark",
-          "cardFill": "none",
-          "align": "center"
+          "cardFill": "solid",
+          "align": "center",
+          "joinAbove": "join"
         },
         {
           "component": "ContentAboutCompanySectionV2",

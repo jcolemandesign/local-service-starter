@@ -138,6 +138,7 @@ import {
   calloutSplitPanelVariantOptions,
   calloutSplitPanelVariantValues,
   cardFillOptInComponents,
+  pickSectionToggleFields,
   resolveBackgroundFill,
   resolveBorderTone,
   resolveCardBorder,
@@ -1066,23 +1067,13 @@ function serializeWorkingSection(section: WorkingSection) {
     name: section.name,
     originalComponent: section.originalComponent,
     originalIndex: section.originalIndex,
-    align: section.align,
-    cardLinks: section.cardLinks,
-    icons: section.icons,
-    headlineWrap: section.headlineWrap,
-    ratio: section.ratio,
     slotId: section.slotId,
-    variant: section.variant,
+    // Ground texture and band membership ride along here rather than being
+    // named one by one - see `sectionToggleFieldNames`.
+    ...pickSectionToggleFields(section),
+    // Resolved after the spread, since these carry per-component defaults.
     colorRecipe: getSectionColorRecipe(section),
     backgroundFill: getSectionBackgroundFill(section),
-    // The texture and its band membership. Absent here until now, so the
-    // builder never sent them and the save route had nothing to store even
-    // once it learned the fields.
-    backgroundTreatment: section.backgroundTreatment,
-    joinAbove: section.joinAbove,
-    backgroundConfig: section.backgroundConfig,
-    backgroundImageFit: section.backgroundImageFit,
-    backgroundImageFocus: section.backgroundImageFocus,
     cardBorder: getSectionCardBorder(section),
     cardFill: getSectionCardFill(section),
     borderTone: getSectionBorderTone(section),
@@ -2139,6 +2130,45 @@ function SectionLayoutGridBadge({
   );
 }
 
+/**
+ * Marks which section a background band's color recipe and texture actually
+ * come from. Band membership hides those controls on every joined section -
+ * see the "Background band" fieldset - but a hidden control does not say
+ * where the value went. Reading the list top to bottom, "Band" is the one
+ * setting it and "Joined" is following along.
+ */
+function BandRoleBadge({
+  isMember,
+  isOwner,
+  tone,
+}: {
+  isMember: boolean;
+  isOwner: boolean;
+  tone: "dark" | "light";
+}) {
+  if (!isOwner && !isMember) {
+    return null;
+  }
+
+  return (
+    <span
+      className={cx(
+        "inline-flex shrink-0 items-center rounded-[var(--chrome-radius-control)] border px-1.5 py-0.5 text-[0.5625rem] font-semibold uppercase leading-none tracking-[0.06em]",
+        tone === "dark"
+          ? "token-chrome-badge"
+          : "border-service-border bg-service-surface text-service-muted",
+      )}
+      title={
+        isOwner
+          ? "Color recipe and background texture here also apply to the joined sections below."
+          : "Shares the color recipe and background texture of the section above."
+      }
+    >
+      {isOwner ? "Band" : "Joined"}
+    </span>
+  );
+}
+
 /** Names the glyph for the icon-only case, where no label sits beside it. */
 const innerOptionPatternLabels: Record<InnerOptionSignifier["pattern"], string> =
   {
@@ -2530,12 +2560,12 @@ function BorderToneIcon({ tone }: { tone: SectionCardBorderTone }) {
       />
       {tone === "light" ? (
         <g stroke="currentColor" strokeLinecap="round" strokeWidth="1">
-          <circle cx="17" cy="8.5" fill="currentColor" r="1.4" stroke="none" />
-          <path d="M17 5.6v.9M17 10.5v.9M13.9 8.5h.9M19.2 8.5h.9M15.1 6.6l.65.65M18.25 9.75l.65.65M18.9 6.6l-.65.65M15.75 9.75l-.65.65" />
+          <circle cx="12" cy="12" fill="currentColor" r="2.6" stroke="none" />
+          <path d="M12 8.8v-1.2M12 15.2v1.2M8.8 12h-1.2M15.2 12h1.2M9.737 9.737l-.848-.848M14.263 9.737l.848-.848M9.737 14.263l-.848.848M14.263 14.263l.848.848" />
         </g>
       ) : (
         <path
-          d="M18.4 6.3a2.4 2.4 0 1 0 2.7 3.3 3.2 3.2 0 0 1-2.7-3.3Z"
+          d="M12 7.8a4.2 4.2 0 1 0 0 8.4 3.3 3.3 0 0 1 0-8.4Z"
           fill="currentColor"
         />
       )}
@@ -2543,6 +2573,13 @@ function BorderToneIcon({ tone }: { tone: SectionCardBorderTone }) {
   );
 }
 
+/**
+ * Two touching rects reading as "joined" vs "separate" tested badly - at 24px
+ * the seam between two abutting rects and the gap between two close ones look
+ * nearly identical. Joined now draws one unbroken block with an upward arrow,
+ * so the glyph itself says "pulls its background from the section above"
+ * rather than relying on the viewer to notice a missing few pixels of gap.
+ */
 function BackgroundBandIcon({ joined }: { joined: boolean }) {
   return (
     <svg
@@ -2551,24 +2588,53 @@ function BackgroundBandIcon({ joined }: { joined: boolean }) {
       fill="none"
       viewBox="0 0 24 24"
     >
-      <rect
-        height="7"
-        rx="1.25"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        width="18"
-        x="3"
-        y="4"
-      />
-      <rect
-        height="7"
-        rx="1.25"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        width="18"
-        x="3"
-        y={joined ? "11" : "14"}
-      />
+      {joined ? (
+        <>
+          <rect
+            height="16"
+            rx="1.5"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            width="18"
+            x="3"
+            y="4"
+          />
+          <path
+            d="M9 9 12 6 15 9"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="1.75"
+          />
+          <path
+            d="M12 6.5v6"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeWidth="1.75"
+          />
+        </>
+      ) : (
+        <>
+          <rect
+            height="6.5"
+            rx="1.25"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            width="18"
+            x="3"
+            y="4"
+          />
+          <rect
+            height="6.5"
+            rx="1.25"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            width="18"
+            x="3"
+            y="13.5"
+          />
+        </>
+      )}
     </svg>
   );
 }
@@ -3959,15 +4025,18 @@ export function PagebuilderShell({
             originalIndex: section.originalIndex,
             reduceBottomPadding: section.reduceBottomPadding ?? false,
             reduceTopPadding: section.reduceTopPadding ?? false,
+            slotId: section.slotId,
+            // Everything the section is carrying - band membership and ground
+            // texture included, which a hand-written list here used to drop.
+            ...pickSectionToggleFields(section),
+            // Resolved after the spread: these four have per-component
+            // defaults, and a template records what the section renders today
+            // rather than leaving the next reader to re-derive it.
             colorRecipe: getSectionColorRecipe(section),
             backgroundFill: getSectionBackgroundFill(section),
             cardFill: getSectionCardFill(section),
             cardBorder: getSectionCardBorder(section),
             borderTone: getSectionBorderTone(section),
-            align: section.align,
-            ratio: section.ratio,
-            slotId: section.slotId,
-            variant: section.variant,
           })),
           sourceOptionName: activeSlotLabel,
           sourceRecipeId: activeRecipe.id,
@@ -4733,6 +4802,15 @@ export function PagebuilderShell({
                       (option) => option.mode === section.mode,
                     ),
                   );
+                  // The section a joined run's color recipe and background
+                  // texture actually come from - the one right above the first
+                  // member. Surfaced on the collapsed row so band membership
+                  // reads from the list without opening every section to find
+                  // which one the hidden controls moved to.
+                  const isBandOwner =
+                    section.joinAbove !== "join" &&
+                    includedSections[index + 1]?.joinAbove === "join";
+                  const isBandMember = section.joinAbove === "join";
 
                   return (
                     <div
@@ -4835,6 +4913,11 @@ export function PagebuilderShell({
                           <span className="mt-1 flex shrink-0 items-center gap-1.5">
                             <SectionLayoutGridBadge
                               component={section.component}
+                              tone="dark"
+                            />
+                            <BandRoleBadge
+                              isOwner={isBandOwner}
+                              isMember={isBandMember}
                               tone="dark"
                             />
                             <span

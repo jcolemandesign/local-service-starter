@@ -61,6 +61,8 @@ const fallbackTestimonials: CarouselTestimonial[] = [
 
 type TestimonialsCarouselCondensedSectionV3Props = {
   body?: string;
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   eyebrow?: string;
   items: readonly CarouselTestimonial[];
   title?: string;
@@ -113,16 +115,24 @@ function cx(...classes: Array<string | false | undefined>) {
 }
 
 function TestimonialCard({
+  cardBorder,
+  cardFill,
   className,
   item,
 }: {
+  cardBorder: "on" | "off";
+  cardFill: "solid" | "none";
   className?: string;
   item: CarouselTestimonial;
 }) {
   return (
     <figure
       className={cx(
-        "radius-medium flex min-h-full flex-col justify-between border border-service-border bg-bg-page p-8 shadow-service max-md:p-6",
+        "radius-medium flex min-h-full flex-col justify-between border p-8 max-md:p-6",
+        cardFill === "none"
+          ? "bg-transparent shadow-none"
+          : "bg-bg-page shadow-service",
+        cardBorder === "off" ? "border-transparent" : "border-service-border",
         className,
       )}
     >
@@ -142,6 +152,8 @@ function TestimonialCard({
 }
 
 export function TestimonialsCarouselCondensedSectionV3({
+  cardBorder = "on",
+  cardFill = "solid",
   items,
 }: TestimonialsCarouselCondensedSectionV3Props) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -189,6 +201,8 @@ export function TestimonialsCarouselCondensedSectionV3({
                     index * visibleTestimonialCount,
                   ).map((item, itemIndex) => (
                     <TestimonialCard
+                      cardBorder={cardBorder}
+                      cardFill={cardFill}
                       item={item}
                       key={`${itemIndex}-size`}
                     />
@@ -214,7 +228,12 @@ export function TestimonialsCarouselCondensedSectionV3({
                 transition={cardTransition}
               >
                 {visibleItems.map((item, itemIndex) => (
-                  <TestimonialCard item={item} key={itemIndex} />
+                  <TestimonialCard
+                    cardBorder={cardBorder}
+                    cardFill={cardFill}
+                    item={item}
+                    key={itemIndex}
+                  />
                 ))}
               </motion.div>
             </AnimatePresence>

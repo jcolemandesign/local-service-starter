@@ -1141,7 +1141,13 @@ export function renderPageTemplateSection(
         />
       );
     case "TestimonialsSectionV3":
-      return <TestimonialsSectionV3 {...testimonialsProps(fieldSection)} />;
+      return (
+        <TestimonialsSectionV3
+          {...testimonialsProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "TestimonialsCarouselSectionV3":
       return (
         <TestimonialsCarouselSectionV3
@@ -1152,6 +1158,8 @@ export function renderPageTemplateSection(
       return (
         <TestimonialsCarouselCondensedSectionV3
           {...testimonialsCarouselProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "TestimonialsMasonrySectionV2":

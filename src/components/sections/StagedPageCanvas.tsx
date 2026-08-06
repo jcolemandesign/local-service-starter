@@ -3,6 +3,7 @@ import {
   type PageTemplatePreviewSection,
   type SiteNavigationLink,
 } from "@/components/sections/PageTemplatePreview";
+import { pickSectionToggleFields } from "@/content/section-style-options";
 import {
   emptySiteIdentity,
   type SiteIdentity,
@@ -411,10 +412,6 @@ function toPreviewSection(
   id: string,
 ): PageTemplatePreviewSection {
   return {
-    borderTone: section.borderTone,
-    cardBorder: section.cardBorder,
-    cardFill: section.cardFill,
-    colorRecipe: section.colorRecipe,
     component: section.component,
     id,
     instruction: section.instruction,
@@ -422,9 +419,12 @@ function toPreviewSection(
     name: section.name,
     reduceBottomPadding: section.reduceBottomPadding,
     reduceTopPadding: section.reduceTopPadding,
-    align: section.align,
-    ratio: section.ratio,
-    variant: section.variant,
+    // Everything else the section carries. This mapping used to name each
+    // axis, and omitted `joinAbove` - which is what `groupSectionsIntoBands`
+    // reads - so a staged page built from a banded template rendered, and
+    // exported, with every band broken apart. Ground texture went the same
+    // way. See `sectionToggleFieldNames`.
+    ...pickSectionToggleFields(section),
   };
 }
 
