@@ -235,17 +235,24 @@
  * static. A soft wash needs to move a long way before the eye reads it as
  * moving at all.
  *
- * The scale is what keeps the edges covered: translating a layer that is
- * exactly the size of its box would drag a bare corner into view. At scale 1.3
- * the layer overhangs by 15% each side, comfortably past the 8% of travel.
+ * The scale is what keeps the edges covered, and it has to beat the travel at
+ * *both* ends of the cycle: a scale of S overhangs by (S-1)/2 on each side, so
+ * 1.28 gives 14% against 6% of travel. An earlier pass paired 8% of travel with
+ * scale 1.14 - a 7% overhang - and dragged a bare wedge of ground into view at
+ * the extremes.
+ *
+ * No rotation. It was the more interesting motion, but a rotation of angle t
+ * needs vertical coverage of about width x sin(t) - and on a section five times
+ * wider than it is tall, even 1.5deg demands ~13% where the scale supplied 7%.
+ * The exposed diagonal edge read as the whole section sitting crooked.
  */
 @keyframes section-background-float {
   from {
-    transform: translate3d(-8%, -5%, 0) scale(1.14) rotate(-1.5deg);
+    transform: translate3d(-6%, -4%, 0) scale(1.28);
   }
 
   to {
-    transform: translate3d(8%, 5%, 0) scale(1.3) rotate(1.5deg);
+    transform: translate3d(6%, 4%, 0) scale(1.42);
   }
 }
 
@@ -1426,11 +1433,24 @@ body {
    * escapes to an ancestor's stacking context and the texture disappears behind
    * the ground it was meant to sit on. Deliberately not setting `position`
    * here: every frame is already positioned, and overriding it would drop the
-   * nav out of its fixed and overlay modes. */
+   * nav out of its fixed and overlay modes.
+   *
+   * `overflow: clip` keeps the layer inside its own section. It costs nothing
+   * for a static treatment, whose background painting is clipped to the box
+   * anyway, and is load-bearing for an animated one: that layer moves by
+   * transform, and a transform is not clipped by anything, so a scaled wash
+   * would spill several percent into the sections above and below.
+   *
+   * `clip` rather than `hidden` specifically. `hidden` creates a scroll
+   * container, which redefines the scrollport every `position: sticky`
+   * descendant sticks to - it is what breaks sticky inside a band, noted again
+   * on the parallax rule below. `clip` does not, so sticky sections keep
+   * working inside a treated frame. */
   [data-pagebuilder-background-treatment]:not(
       [data-pagebuilder-background-treatment="none"]
     ) {
     isolation: isolate;
+    overflow: clip;
   }
 
   [data-pagebuilder-background-treatment]:not(
