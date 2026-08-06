@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-08-06T20:30:03.022Z",
+      "savedAt": "2026-08-06T20:33:53.616Z",
       "sectionCount": 12,
       "sections": [
         {
@@ -90,12 +90,12 @@
           }
         },
         {
-          "component": "TestimonialsSectionV3",
+          "component": "TestimonialsCarouselCondensedSectionV3",
           "id": "classic-service-template-home-split-hero-trust-marquee-service-card-grid-2",
           "included": true,
-          "instruction": "Use the current testimonial section when proof needs a polished structured presentation.",
+          "instruction": "Use condensed customer stories when the page needs three testimonial cards visible at once without introductory copy.",
           "mode": "Proof",
-          "name": "Testimonials",
+          "name": "Customer stories condensed",
           "originalComponent": "TrustBarSectionV3",
           "originalIndex": 2,
           "reduceBottomPadding": false,
@@ -103,7 +103,7 @@
           "slotId": "slot-31fbb463a07b",
           "colorRecipe": "default",
           "backgroundFill": "solid",
-          "cardBorder": "on",
+          "cardBorder": "off",
           "borderTone": "light",
           "cardFill": "none",
           "backgroundTreatment": "gradient",
@@ -143,13 +143,13 @@
           "originalComponent": "ServicesBentoCardsSectionV2",
           "originalIndex": -1,
           "reduceBottomPadding": false,
-          "reduceTopPadding": false,
+          "reduceTopPadding": true,
           "slotId": "slot-e1fa6e1734bc",
           "colorRecipe": "ink",
           "backgroundFill": "solid",
           "cardBorder": "on",
-          "borderTone": "dark",
-          "cardFill": "solid",
+          "borderTone": "light",
+          "cardFill": "none",
           "joinAbove": "join"
         },
         {

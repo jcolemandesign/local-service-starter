@@ -91,7 +91,7 @@ export function HeroContentTopImageBottomSectionV2({
         <SevenColumnGridItem
           alignX="stretch"
           alignY="stretch"
-          className="col-span-7 row-start-2 max-lg:row-auto"
+          className="col-span-7 row-start-2 -mb-[var(--site-grid-inset-block)] max-lg:row-auto"
         >
           <BottomImagePlaceholder />
         </SevenColumnGridItem>

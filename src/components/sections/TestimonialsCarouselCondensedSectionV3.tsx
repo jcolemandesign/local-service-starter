@@ -2,10 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
-import {
-  SevenColumnGrid,
-  SevenColumnGridItem,
-} from "@/components/primitives";
+import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 
 const testimonialEase = [0.22, 1, 0.36, 1] as const;
 const visibleTestimonialCount = 3;
@@ -125,7 +122,7 @@ function TestimonialCard({
   return (
     <figure
       className={cx(
-        "content-padding radius-medium flex min-h-full flex-col justify-between border border-service-border bg-bg-page shadow-service",
+        "radius-medium flex min-h-full flex-col justify-between border border-service-border bg-bg-page p-8 shadow-service max-md:p-6",
         className,
       )}
     >
@@ -175,95 +172,136 @@ export function TestimonialsCarouselCondensedSectionV3({
 
   return (
     <section className="bg-service-surface">
-      <SevenColumnGrid className="section-min-none" padding="med">
-        <SevenColumnGridItem className="col-span-7">
-          <div className="flex items-center inline-gap-xlrg max-md:flex-wrap">
+      <LayoutGrid className="section-min-none" columns={14} padding="med">
+        <LayoutGridItem className="relative col-span-14">
+          <div className="grid overflow-hidden">
+            <div
+              aria-hidden="true"
+              className="invisible col-start-1 row-start-1 grid"
+            >
+              {Array.from({ length: groupCount }, (_, index) => (
+                <div
+                  className="col-start-1 row-start-1 grid grid-cols-3 inline-gap-xlrg max-lg:grid-cols-2 max-md:grid-cols-1"
+                  key={`size-group-${index}`}
+                >
+                  {getVisibleTestimonials(
+                    carouselItems,
+                    index * visibleTestimonialCount,
+                  ).map((item, itemIndex) => (
+                    <TestimonialCard
+                      item={item}
+                      key={`${itemIndex}-size`}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+
+            <AnimatePresence initial={false} mode="wait">
+              <motion.div
+                aria-live="polite"
+                className="col-start-1 row-start-1 grid grid-cols-3 inline-gap-xlrg max-lg:grid-cols-2 max-md:grid-cols-1"
+                key={activeIndex}
+                initial={{
+                  opacity: 0,
+                  x: shouldReduceMotion ? 0 : 10,
+                }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{
+                  opacity: 0,
+                  x: shouldReduceMotion ? 0 : -6,
+                }}
+                transition={cardTransition}
+              >
+                {visibleItems.map((item, itemIndex) => (
+                  <TestimonialCard item={item} key={itemIndex} />
+                ))}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          <div
+            aria-label="Testimonial groups"
+            className="mt-body-actions-sm flex items-center justify-center inline-gap-sml max-lg:hidden"
+          >
+            {Array.from({ length: groupCount }, (_, index) => {
+              const isActive = index === activeGroupIndex;
+
+              return (
+                <button
+                  aria-current={isActive ? "true" : undefined}
+                  aria-label={`Show testimonial group ${index + 1}`}
+                  className={`size-3 cursor-pointer rounded-full border border-service-accent transition-colors ${
+                    isActive ? "bg-service-accent" : "bg-transparent"
+                  }`}
+                  key={index}
+                  onClick={() =>
+                    setActiveIndex(index * visibleTestimonialCount)
+                  }
+                  type="button"
+                />
+              );
+            })}
+          </div>
+
+          <div
+            className="absolute top-1/2 !w-auto -translate-x-1/2 -translate-y-1/2 max-lg:hidden"
+            style={{ left: "calc(var(--site-grid-inset-inline) / -2)" }}
+          >
             <SliderButton
               direction="previous"
               label="Show previous testimonials"
               onClick={showPrevious}
             />
-
-            <div className="grid min-w-0 flex-1 max-md:order-first max-md:basis-full">
-              <div
-                aria-hidden="true"
-                className="invisible col-start-1 row-start-1 grid"
-              >
-                {Array.from({ length: groupCount }, (_, index) => (
-                  <div
-                    className="col-start-1 row-start-1 grid grid-cols-3 inline-gap-xlrg max-lg:grid-cols-2 max-md:grid-cols-1"
-                    key={`size-group-${index}`}
-                  >
-                    {getVisibleTestimonials(
-                      carouselItems,
-                      index * visibleTestimonialCount,
-                    ).map((item, itemIndex) => (
-                      <TestimonialCard
-                        item={item}
-                        key={`${itemIndex}-size`}
-                      />
-                    ))}
-                  </div>
-                ))}
-              </div>
-
-              <AnimatePresence initial={false} mode="wait">
-                <motion.div
-                  aria-live="polite"
-                  className="col-start-1 row-start-1 grid grid-cols-3 inline-gap-xlrg max-lg:grid-cols-2 max-md:grid-cols-1"
-                  key={activeIndex}
-                  initial={{
-                    opacity: 0,
-                    x: shouldReduceMotion ? 0 : 10,
-                  }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{
-                    opacity: 0,
-                    x: shouldReduceMotion ? 0 : -6,
-                  }}
-                  transition={cardTransition}
-                >
-                  {visibleItems.map((item, itemIndex) => (
-                    <TestimonialCard item={item} key={itemIndex} />
-                  ))}
-                </motion.div>
-              </AnimatePresence>
-
-              <div className="col-start-1 row-start-2">
-                <div
-                  aria-label="Testimonial groups"
-                  className="mt-body-actions-sm flex items-center justify-center inline-gap-sml"
-                >
-                  {Array.from({ length: groupCount }, (_, index) => {
-                    const isActive = index === activeGroupIndex;
-
-                    return (
-                      <button
-                        aria-current={isActive ? "true" : undefined}
-                        aria-label={`Show testimonial group ${index + 1}`}
-                        className={`size-3 cursor-pointer rounded-full border border-service-accent transition-colors ${
-                          isActive ? "bg-service-accent" : "bg-transparent"
-                        }`}
-                        key={index}
-                        onClick={() =>
-                          setActiveIndex(index * visibleTestimonialCount)
-                        }
-                        type="button"
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
+          </div>
+          <div
+            className="absolute top-1/2 !w-auto translate-x-1/2 -translate-y-1/2 max-lg:hidden"
+            style={{ right: "calc(var(--site-grid-inset-inline) / -2)" }}
+          >
             <SliderButton
               direction="next"
               label="Show next testimonials"
               onClick={showNext}
             />
           </div>
-        </SevenColumnGridItem>
-      </SevenColumnGrid>
+
+          <div className="mt-4 hidden grid-cols-[auto_1fr_auto] items-center gap-3 max-lg:grid">
+            <SliderButton
+              direction="previous"
+              label="Show previous testimonials"
+              onClick={showPrevious}
+            />
+            <div
+              aria-label="Testimonial groups"
+              className="col-start-2 flex items-center justify-center inline-gap-sml"
+            >
+              {Array.from({ length: groupCount }, (_, index) => {
+                const isActive = index === activeGroupIndex;
+
+                return (
+                  <button
+                    aria-current={isActive ? "true" : undefined}
+                    aria-label={`Show testimonial group ${index + 1}`}
+                    className={`size-3 cursor-pointer rounded-full border border-service-accent transition-colors ${
+                      isActive ? "bg-service-accent" : "bg-transparent"
+                    }`}
+                    key={index}
+                    onClick={() =>
+                      setActiveIndex(index * visibleTestimonialCount)
+                    }
+                    type="button"
+                  />
+                );
+              })}
+            </div>
+            <SliderButton
+              direction="next"
+              label="Show next testimonials"
+              onClick={showNext}
+            />
+          </div>
+        </LayoutGridItem>
+      </LayoutGrid>
     </section>
   );
 }
