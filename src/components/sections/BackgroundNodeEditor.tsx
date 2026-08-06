@@ -13,6 +13,10 @@ import {
   type BackgroundConfig,
   type BackgroundNode,
 } from "@/content/background-config";
+import {
+  backgroundPresets,
+  getBackgroundPreset,
+} from "@/content/background-presets";
 
 /**
  * The tuning panel for a section's gradient background.
@@ -146,6 +150,41 @@ export function BackgroundNodeEditor({
 
   return (
     <div className="grid gap-3">
+      {/* Presets are copied onto the section, not linked. A section that stayed
+          tied to its preset would repaint every time the preset was retuned,
+          including on pages already approved - the same reason promotion
+          severs the tie everywhere else in this pipeline. */}
+      <label className="grid gap-1">
+        <span className="type-caption font-semibold text-current">
+          Start from
+        </span>
+        <select
+          className="min-h-8 w-full rounded-[var(--chrome-radius-control)] border border-current/25 bg-transparent px-2 text-xs font-semibold"
+          onChange={(event) => {
+            const preset = getBackgroundPreset(event.target.value);
+
+            if (preset) {
+              // Deep-copied: the nodes array is handed to a section that will
+              // mutate it through updateNode, and the preset is a module
+              // constant shared by every section that ever picks it.
+              onChange({
+                ...preset.config,
+                nodes: preset.config.nodes.map((node) => ({ ...node })),
+              });
+              setSelectedIndex(0);
+            }
+          }}
+          value=""
+        >
+          <option value="">Preset…</option>
+          {backgroundPresets.map((preset) => (
+            <option key={preset.id} title={preset.hint} value={preset.id}>
+              {preset.label}
+            </option>
+          ))}
+        </select>
+      </label>
+
       <div
         className="relative h-32 w-full overflow-hidden rounded-[var(--chrome-radius-control)] border border-current/25 bg-white"
         ref={previewRef}

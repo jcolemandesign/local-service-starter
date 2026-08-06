@@ -1113,6 +1113,15 @@ type TemplateAssetField = {
   kind: "image" | "meta";
   name: string;
   value: string;
+  /**
+   * Leaving this empty is a real answer, not an unfinished one.
+   *
+   * Copy specs have carried this flag from the start; asset specs did not, so
+   * every declared image was required and the placeholder gate blocked export
+   * until each one held a real file. That is right for content images and wrong
+   * for a decorative ground, which the section renders perfectly well without.
+   */
+  optional?: boolean;
 };
 
 /**
@@ -1146,12 +1155,25 @@ export function getTemplateStyleFieldsForSection(
  * Decorative by definition - it is a CSS background, not content - so it takes
  * no alt text. A background that carries meaning belongs in the section's own
  * image fields, where it renders as an `<img>` and can be described.
+ *
+ * Optional, unlike every other image a section asks for. The section is whole
+ * without it - the colour recipe already paints the ground - so an empty one is
+ * a decision, not an omission. Required, it meant that picking "Image" in the
+ * builder and not following through wedged the whole export on a field that
+ * exists to be decorative.
  */
 function getBackgroundImageAssetFields(
   section: StagedPageTemplateSection,
 ): TemplateAssetField[] {
   return treatmentUsesGroundImage(section.backgroundTreatment)
-    ? [{ kind: "image" as const, name: "backgroundImage", value: "" }]
+    ? [
+        {
+          kind: "image" as const,
+          name: "backgroundImage",
+          optional: true,
+          value: "",
+        },
+      ]
     : [];
 }
 

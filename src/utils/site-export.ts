@@ -592,7 +592,9 @@ function validatePlaceholderAssets(page: StagedPage, issues: ExportIssue[]) {
     const assetFields = getTemplateAssetFieldsForSection(section);
 
     for (const spec of assetFields) {
-      if (spec.kind !== "image") {
+      // An optional asset is allowed to stay empty - the ground image is the
+      // only one so far, and a section renders complete without it.
+      if (spec.kind !== "image" || spec.optional) {
         continue;
       }
 

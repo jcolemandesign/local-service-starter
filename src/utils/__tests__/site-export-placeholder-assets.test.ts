@@ -99,4 +99,44 @@ describe("placeholder asset guard", () => {
 
     expect(placeholderFieldsFor(page).length).toBeGreaterThan(0);
   });
+
+  /**
+   * ...except where the contract says empty is an answer.
+   *
+   * The ground image is decorative - the colour recipe already paints the
+   * section - so a section set to the image treatment and left without one is
+   * finished, not unfinished. While it was required, choosing "Image" in the
+   * builder and not following through wedged the entire export on a field that
+   * exists to be optional.
+   */
+  it("does not block export on an empty ground image", () => {
+    const section = {
+      backgroundTreatment: "image",
+      component: "HeroSplitFixedImageSectionV3",
+      mode: "Hero",
+      name: "Fixed ratio split image",
+    };
+
+    const groundImage = getTemplateAssetFieldsForSection(
+      section as never,
+    ).find((spec: { name: string }) => spec.name === "backgroundImage");
+
+    expect(groundImage, "the image treatment should declare a ground image").toBeDefined();
+    expect(groundImage?.optional).toBe(true);
+  });
+
+  it("still declares no ground image when the treatment does not use one", () => {
+    const section = {
+      backgroundTreatment: "gradient",
+      component: "HeroSplitFixedImageSectionV3",
+      mode: "Hero",
+      name: "Fixed ratio split image",
+    };
+
+    expect(
+      getTemplateAssetFieldsForSection(section as never).some(
+        (spec: { name: string }) => spec.name === "backgroundImage",
+      ),
+    ).toBe(false);
+  });
 });
