@@ -1058,6 +1058,11 @@ function serializeWorkingSection(section: WorkingSection) {
     variant: section.variant,
     colorRecipe: getSectionColorRecipe(section),
     backgroundFill: getSectionBackgroundFill(section),
+    // The texture and its band membership. Absent here until now, so the
+    // builder never sent them and the save route had nothing to store even
+    // once it learned the fields.
+    backgroundTreatment: section.backgroundTreatment,
+    joinAbove: section.joinAbove,
     cardBorder: getSectionCardBorder(section),
     cardFill: getSectionCardFill(section),
   };

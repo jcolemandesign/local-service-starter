@@ -156,7 +156,7 @@ export function HeroServiceAreaZipLookupSectionV3({
               <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 max-sm:grid-cols-1">
                 <input
                   autoComplete="postal-code"
-                  className="radius-button min-h-12 border border-service-border bg-white px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent"
+                  className="radius-button min-h-12 border border-service-border bg-surface-raised px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent"
                   id={inputId}
                   inputMode="numeric"
                   name="zip-code"

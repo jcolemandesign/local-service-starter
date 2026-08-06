@@ -1,4 +1,6 @@
 import {
+  LayoutGrid,
+  LayoutGridItem,
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
@@ -120,9 +122,12 @@ export function TrustBarSectionV3({
               <li
                 className={cx(
                   "type-text-sm wrap-pretty font-medium text-service-muted",
-                  index > 0 &&
-                    "relative pl-4 before:absolute before:inset-y-0 before:left-0 before:border-l before:border-service-border before:[border-left-width:var(--border-surface-width-token)] max-sm:before:hidden max-sm:pl-0",
-                  index > 0 && index % 2 === 0 && "max-md:before:hidden max-md:pl-0",
+                  index > 0
+                    ? "relative pl-4 before:absolute before:inset-y-0 before:left-0 before:border-l before:border-service-border before:[border-left-width:var(--border-surface-width-token)] max-sm:before:hidden max-sm:pl-0"
+                    : undefined,
+                  index > 0 && index % 2 === 0
+                    ? "max-md:before:hidden max-md:pl-0"
+                    : undefined,
                 )}
                 key={item}
               >
@@ -136,43 +141,68 @@ export function TrustBarSectionV3({
   );
 }
 
+type TrustBarFloatingBentoSectionV3Props = TrustItemsProps & {
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
+};
+
+/** Column position for each of the three stat cards on a 14-column grid: the
+ *  label card takes the first 5, leaving 9 for three 3-column cards. */
+const trustBarStatPositions = [
+  "col-span-3 col-start-6 max-lg:col-span-3 max-lg:col-start-1 max-md:col-span-2 max-md:col-start-1 max-sm:col-span-2 max-sm:col-start-1",
+  "col-span-3 col-start-9 max-lg:col-span-3 max-lg:col-start-4 max-md:col-span-2 max-md:col-start-3 max-sm:col-span-2 max-sm:col-start-1",
+  "col-span-3 col-start-12 max-lg:col-span-3 max-lg:col-start-7 max-md:col-span-2 max-md:col-start-5 max-sm:col-span-2 max-sm:col-start-1",
+];
+
 export function TrustBarFloatingBentoSectionV3({
+  cardBorder = "on",
+  cardFill = "solid",
   items,
   label,
-}: TrustItemsProps) {
+}: TrustBarFloatingBentoSectionV3Props) {
+  const statItems = items.slice(0, 3);
+
   return (
     <section className="bg-service-surface">
-      <SevenColumnGrid className="section-min-none" padding="sml">
-        <SevenColumnGridItem
+      <LayoutGrid className="section-min-none" columns={14} padding="sml">
+        <LayoutGridItem
           alignY="stretch"
-          className="col-span-3 max-lg:col-span-7"
+          className="col-span-5 col-start-1 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-md:col-start-1 max-sm:col-span-2 max-sm:col-start-1"
         >
-          <div className="content-padding radius-medium flex min-h-44 items-end bg-service-ink text-white max-md:min-h-0">
-            <p className="type-heading-sm">{label}</p>
+          <div
+            className={cx(
+              "radius-medium flex min-h-44 items-end p-7 border border-service-border bg-service-surface text-service-ink max-md:min-h-0 max-md:p-6",
+              cardFill === "none" ? "!bg-transparent" : undefined,
+              cardBorder === "off" ? "!border-transparent" : undefined,
+            )}
+          >
+            <p className="type-text-lg">{label}</p>
           </div>
-        </SevenColumnGridItem>
+        </LayoutGridItem>
 
-        <SevenColumnGridItem
-          alignY="stretch"
-          className="col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1"
-        >
-          <ul className="grid h-full grid-cols-4 card-grid-gap-sml max-lg:grid-cols-2 max-sm:grid-cols-1">
-            {items.map((item, index) => (
-              <li
-                className="p-6 radius-medium flex min-h-32 flex-col justify-between border border-service-border bg-bg-page shadow-service max-md:p-5 max-md:min-h-0"
-                key={item}
-              >
-                <span className="type-caption text-service-muted">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <p className="type-text-sm wrap-pretty font-semibold text-service-ink">
-                  {item}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </SevenColumnGridItem>
-      </SevenColumnGrid>
+        {statItems.map((item, index) => (
+          <LayoutGridItem
+            alignY="stretch"
+            className={trustBarStatPositions[index]}
+            key={item}
+          >
+            <div
+              className={cx(
+                "p-6 radius-medium flex h-full min-h-32 flex-col justify-between border border-service-border bg-service-surface shadow-service max-md:p-5 max-md:min-h-0",
+                cardFill === "none" ? "!bg-transparent !shadow-none" : undefined,
+                cardBorder === "off" ? "!border-transparent" : undefined,
+              )}
+            >
+              <span className="type-caption text-service-muted">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <p className="type-text-sm wrap-pretty font-semibold text-service-ink">
+                {item}
+              </p>
+            </div>
+          </LayoutGridItem>
+        ))}
+      </LayoutGrid>
     </section>
   );
 }

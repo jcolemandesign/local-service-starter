@@ -27,7 +27,7 @@ describe("ProcessStepsBranchingSectionV3", () => {
     expect(html).toContain("type-heading-lg");
     expect(html).toContain(content.title);
     expect(html).toContain("col-span-4");
-    expect(html).toContain("col-span-10 col-start-5");
+    expect(html).toContain("col-span-8 col-start-6");
   });
 
   it("removes the header from the centered flow", () => {
@@ -37,7 +37,7 @@ describe("ProcessStepsBranchingSectionV3", () => {
 
     expect(html).not.toContain(content.title);
     expect(html).not.toContain("type-heading-lg");
-    expect(html).toContain("col-span-10 col-start-3");
+    expect(html).toContain("col-span-8 col-start-4");
   });
 
   it("keeps connector strokes when card fill and border are disabled", () => {

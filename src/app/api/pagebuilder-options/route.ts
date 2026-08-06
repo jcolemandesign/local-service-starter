@@ -29,6 +29,19 @@ type SavedPagebuilderSection = {
   variant?: string;
   colorRecipe?: string;
   backgroundFill?: string;
+  /**
+   * The ground texture and the band membership that decides who owns it.
+   *
+   * Both were missing here for as long as the controls have existed, and
+   * `normalizeSection` drops anything it does not name, so every value the
+   * builder wrote died on save: the canvas repainted from React state and
+   * then reverted on the next load. `pagebuilder-options.json` held no
+   * occurrence of either field. Kept adjacent to the other paint axes so the
+   * next one added lands beside them rather than being forgotten again -
+   * `pagebuilder-options-round-trip.test.ts` is the mechanical guard.
+   */
+  backgroundTreatment?: string;
+  joinAbove?: string;
   cardBorder?: string;
   cardFill?: string;
 };
@@ -230,6 +243,22 @@ function normalizeSection(
       typeof section.cardBorder === "string" ? section.cardBorder : undefined,
     cardFill: typeof section.cardFill === "string" ? section.cardFill : undefined,
     align: typeof section.align === "string" ? section.align : undefined,
+    backgroundTreatment:
+      typeof section.backgroundTreatment === "string"
+        ? section.backgroundTreatment
+        : undefined,
+    joinAbove:
+      typeof section.joinAbove === "string" ? section.joinAbove : undefined,
+    // Declared in the saved type but never returned here, so these three were
+    // dropped on save exactly like the two above - the client sent them and
+    // this function quietly built an object without them.
+    cardLinks:
+      typeof section.cardLinks === "string" ? section.cardLinks : undefined,
+    icons: typeof section.icons === "string" ? section.icons : undefined,
+    headlineWrap:
+      typeof section.headlineWrap === "string"
+        ? section.headlineWrap
+        : undefined,
   };
 }
 

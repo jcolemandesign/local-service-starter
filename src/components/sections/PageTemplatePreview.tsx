@@ -741,7 +741,13 @@ export function renderPageTemplateSection(
     case "TrustBarSectionV3":
       return <TrustBarSectionV3 {...trustBarProps(fieldSection)} />;
     case "TrustBarFloatingBentoSectionV3":
-      return <TrustBarFloatingBentoSectionV3 {...trustBarProps(fieldSection)} />;
+      return (
+        <TrustBarFloatingBentoSectionV3
+          {...trustBarProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "TrustMarqueeSection":
       return <TrustMarqueeSection {...trustMarqueeProps(fieldSection)} />;
     case "TrustMarqueeSectionV3":

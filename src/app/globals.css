@@ -1595,6 +1595,37 @@ body {
     background-color: var(--recipe-ground) !important;
   }
 
+  /* ...but a ground texture has to be able to reach the eye.
+   *
+   * The texture is drawn on the frame's ::before at `z-index: -1`. Inside the
+   * frame's `isolation: isolate` stacking context, a negative-z-index child
+   * paints *before* in-flow block-level descendants - so the rule above, and
+   * a section's own `bg-bg-page` on the default recipe, both land on top of
+   * the texture and hide it outright. Until now that made every treatment a
+   * no-op except on sections explicitly set to `background-fill="none"`.
+   *
+   * Handing the section `transparent` loses nothing: the frame already paints
+   * `--recipe-ground` itself (see the capture rule above), so the ground still
+   * reads exactly as before - now with the texture layered over it rather than
+   * buried under it.
+   *
+   * Specificity is deliberately matched to the rule above at (0,5,1) and this
+   * block placed after it, which is what lets it win between two `!important`
+   * declarations. Band members carry `background-treatment="none"` and so do
+   * not match - correct, the band wrapper owns the run's texture and its
+   * members are already forced transparent where the bands are handled. */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe][data-pagebuilder-background-treatment]:not(
+      [data-pagebuilder-background-treatment="none"]
+    ):not([data-pagebuilder-color-recipe="inherit"])
+    > section,
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe][data-pagebuilder-background-treatment]:not(
+      [data-pagebuilder-background-treatment="none"]
+    ):not([data-pagebuilder-color-recipe="inherit"])
+    > *
+    > section {
+    background-color: transparent !important;
+  }
+
   /* ---- Default: page ground ---- */
   .pagebuilder-paint-surface[data-pagebuilder-color-recipe="default"] > * {
     --live-service-accent: var(--palette-accent);
@@ -1712,8 +1743,15 @@ body {
 
   /* Ink's generic accent role is intentionally dark, which makes it suitable
      for controls on raised surfaces but invisible for this eyebrow on the ink
-     ground. Keep the section label on the raised token instead. */
+     ground. Keep the section label on the raised token instead.
+     Same band exception as the card-text fix below: a banded member reads
+     `data-pagebuilder-color-recipe="inherit"` on its own frame, so the
+     compound (same-element) form never matches inside a band - reached
+     instead by keying off the band's recipe. */
   .pagebuilder-paint-surface[data-pagebuilder-color-recipe="ink"][data-pagebuilder-section-component="ContentAboutCompanySectionV2"]
+    .content-about-company-eyebrow,
+  .pagebuilder-section-band[data-pagebuilder-color-recipe="ink"]
+    [data-pagebuilder-section-component="ContentAboutCompanySectionV2"]
     .content-about-company-eyebrow {
     color: var(--palette-raised) !important;
   }
@@ -1741,8 +1779,21 @@ body {
    * An element painting the card fill *is* a card surface; one that paints
    * nothing is not, whatever tag it uses. `bg-bg-page` is deliberately absent -
    * on these recipes it resolves to the ground, so an element carrying it is
-   * ground-coloured and its text should stay as it is. */
+   * ground-coloured and its text should stay as it is.
+   *
+   * Two forms of each selector: a member joined into a background band carries
+   * its own `data-pagebuilder-card-fill` but reads `data-pagebuilder-color-
+   * recipe="inherit"` - the band, not the frame, holds the real recipe - so the
+   * compound (same-element) form never matches inside a band. The descendant
+   * form reaches it by keying off the band's recipe instead. */
   .pagebuilder-paint-surface[data-pagebuilder-color-recipe="dark"][data-pagebuilder-card-fill="solid"]
+    :is(
+      .bg-bg-surface:not(section),
+      .bg-service-surface:not(section),
+      .bg-surface-raised:not(section)
+    ),
+  .pagebuilder-section-band[data-pagebuilder-color-recipe="dark"]
+    [data-pagebuilder-card-fill="solid"]
     :is(
       .bg-bg-surface:not(section),
       .bg-service-surface:not(section),
@@ -1761,6 +1812,9 @@ body {
      out: this recipe does not rewrite that token, so an element carrying it is
      near-white and wants the dark-card treatment above, not this one. */
   .pagebuilder-paint-surface[data-pagebuilder-color-recipe="ink"][data-pagebuilder-card-fill="solid"]
+    :is(.bg-bg-surface:not(section), .bg-service-surface:not(section)),
+  .pagebuilder-section-band[data-pagebuilder-color-recipe="ink"]
+    [data-pagebuilder-card-fill="solid"]
     :is(.bg-bg-surface:not(section), .bg-service-surface:not(section)) {
     --live-service-muted: var(--palette-raised);
     --live-text-muted: var(--palette-raised);
@@ -2767,6 +2821,9 @@ body {
 }
 
 .pagebuilder-paint-surface[data-pagebuilder-color-recipe="surface"][data-pagebuilder-card-fill="solid"][data-pagebuilder-section-component="ProcessStepsBranchingSectionV3"]
+  article,
+.pagebuilder-section-band[data-pagebuilder-color-recipe="surface"]
+  [data-pagebuilder-card-fill="solid"][data-pagebuilder-section-component="ProcessStepsBranchingSectionV3"]
   article {
   background-color: var(--color-service-surface) !important;
   background-image: none !important;

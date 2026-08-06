@@ -285,6 +285,7 @@ export const cardStyleComponents = new Set<string>([
   "ServicesScrollCardsSectionV2",
   "ServicesThreeCardsRightSectionV3",
   "ThreeCardLinkGridSectionV3",
+  "TrustBarFloatingBentoSectionV3",
 ]);
 
 /**

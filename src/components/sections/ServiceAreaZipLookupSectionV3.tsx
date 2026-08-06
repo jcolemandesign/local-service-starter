@@ -137,7 +137,7 @@ export function ServiceAreaZipLookupSectionV3({
                     inputMode="numeric"
                     autoComplete="postal-code"
                     placeholder={inputPlaceholder}
-                    className="radius-button min-h-12 border border-service-border bg-bg-page px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent"
+                    className="radius-button min-h-12 border border-service-border bg-surface-raised px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent"
                   />
                   <button
                     type="submit"
