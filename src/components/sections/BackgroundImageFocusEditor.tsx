@@ -72,8 +72,14 @@ export function BackgroundImageFocusEditor({
 
   return (
     <div className="grid gap-2">
+      {/* Square, matching the gradient node map: the focal point is a pair of
+          percentages, so the box's aspect changes nothing that is stored, and a
+          square gives the node room to be placed near the top or bottom of a
+          tall section. The trade is that `cover` crops to this box rather than
+          to the section's real shape, so the preview shows framing intent, not
+          a literal crop. */}
       <div
-        className="relative h-32 w-full overflow-hidden rounded-[var(--chrome-radius-control)] border border-current/25 bg-bg-muted"
+        className="relative aspect-square w-full overflow-hidden rounded-[var(--chrome-radius-control)] border border-current/25 bg-bg-muted"
         ref={previewRef}
       >
         {imageSrc ? (
@@ -84,8 +90,9 @@ export function BackgroundImageFocusEditor({
               {
                 backgroundImage: `url("${imageSrc}")`,
                 // Painted through the same two values the section resolves, so
-                // what is dragged here is what renders. A preview that framed
-                // the image its own way would make every placement wrong.
+                // the placement being dragged is the placement that renders -
+                // only the frame around it is squared off. Resolving the fit
+                // some other way here would make every placement wrong.
                 backgroundPosition: `${focus.x}% ${focus.y}%`,
                 backgroundSize: resolveBackgroundImageFit(fit),
               } as CSSProperties

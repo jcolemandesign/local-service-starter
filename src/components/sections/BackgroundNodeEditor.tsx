@@ -185,8 +185,13 @@ export function BackgroundNodeEditor({
         </select>
       </label>
 
+      {/* Square rather than banner-shaped: node positions are percentages, so
+          the map's own aspect changes nothing that is stored, and a vertically
+          stacked group of nodes needs the room to be dragged apart. The gradient inside
+          still paints through the real custom properties - only the frame it is
+          previewed in is squared off. */}
       <div
-        className="token-chrome-canvas relative h-32 w-full overflow-hidden rounded-[var(--chrome-radius-control)] border"
+        className="token-chrome-canvas relative aspect-square w-full overflow-hidden rounded-[var(--chrome-radius-control)] border"
         ref={previewRef}
       >
         <div
