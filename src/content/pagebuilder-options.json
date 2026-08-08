@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-08-07T16:35:03.608Z",
+      "savedAt": "2026-08-07T19:09:58.626Z",
       "sectionCount": 11,
       "sections": [
         {
@@ -130,20 +130,20 @@
           "reduceTopPadding": false,
           "slotId": "slot-e1fa6e1734bc",
           "variant": "offset-header",
-          "colorRecipe": "surface",
+          "colorRecipe": "dark",
           "backgroundFill": "solid",
           "cardBorder": "on",
           "borderTone": "dark",
-          "cardFill": "none",
-          "joinAbove": "join"
+          "cardFill": "solid",
+          "joinAbove": "separate"
         },
         {
-          "component": "DecisionSplitLargeCardsSectionV3",
+          "component": "DecisionSplitDecisionLargeSectionV3",
           "id": "classic-service-template-home-split-hero-trust-marquee-service-card-grid-4",
           "included": true,
-          "instruction": "Use two large decision cards side by side. Add a section header above it when the block needs a headline.",
+          "instruction": "Use two detailed decision cards on a 14-column grid. Each card should contain a focused header, two concise paragraphs, a short evidence list, and a bottom-aligned next-step link.",
           "mode": "Decision",
-          "name": "Split large cards",
+          "name": "Split decision large",
           "originalComponent": "DecisionSplitLargeCardsSectionV3",
           "originalIndex": -1,
           "reduceBottomPadding": false,
@@ -151,9 +151,9 @@
           "slotId": "slot-5f292a5a59ac",
           "colorRecipe": "dark",
           "backgroundFill": "solid",
-          "cardBorder": "on",
+          "cardBorder": "off",
           "borderTone": "dark",
-          "cardFill": "none"
+          "cardFill": "solid"
         },
         {
           "component": "FeatureStackedCardsSectionV3",
