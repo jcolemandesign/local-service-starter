@@ -80,24 +80,25 @@ export type GateReport = {
 };
 
 /**
- * Sections that establish a card colour context in phase 1, over sections that
- * paint a card surface at all.
+ * Sections whose cards establish their own colour context.
  *
- * The covered set is the union of the Card primitive's users and the sections
- * threading cardFill/cardBorder - they already compute a single card
- * className, so the context class has exactly one place to go. The remainder
- * ladder their card text against the section ground instead, which on the
- * chromatic recipes is a visibly different colour rather than a rounding
- * difference. Phase 3 closes the gap.
+ * Coverage is now by SELECTOR, not by a hand-applied class: any element
+ * painting a card token inside a solid-fill section grounds its own subtree.
+ * That replaced an approach where each section had to opt in, which had
+ * reached 41 of these and would have made every card override half-work on the
+ * sections it missed.
  *
- * These are counts, not a registry: they exist so the report can state its own
- * scope, and `color-card-coverage.test.ts` counts the real usage and fails if
- * this number stops matching it. A stale figure here would be worse than none,
- * because the report would overstate how much of the site the card figures
- * describe.
+ * The remainder paint a card by some other means, so a rule keyed on the card
+ * tokens cannot see them. That is a smaller and more static set than the
+ * opt-in gap was, but it is not zero, which is why the gate still states its
+ * scope rather than claiming the card figures are global.
+ *
+ * These are counts, not a registry: `color-card-coverage.test.ts` derives the
+ * real number and fails if this stops matching it. A stale figure here is
+ * worse than none, because the report would overstate its own reach.
  */
 export const CARD_CONTEXT_COVERAGE = {
-  covered: 41,
+  covered: 130,
   total: 148,
 } as const;
 

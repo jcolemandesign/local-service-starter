@@ -32,12 +32,24 @@ const sources = new Map(
   ]),
 );
 
-/** Sections carrying the class directly, or getting it through the Card
- *  primitive, which applies it for them. */
-const covered = sectionFiles.filter((file) => {
-  const source = sources.get(file) ?? "";
-  return source.includes("recipe-card-context") || source.includes("<Card");
-});
+/**
+ * Sections whose cards the context selector reaches.
+ *
+ * Matches what the CSS actually keys on - an element painting one of the card
+ * tokens - plus the Card primitive, which paints `bg-bg-surface` and so is
+ * covered by the same rule. Sections carrying the class explicitly are counted
+ * too; the class remains a valid opt-in for a card painted some other way.
+ *
+ * `bg-bg-page` is deliberately not in this list, mirroring the CSS: it
+ * resolves to the ground, so an element carrying it is ground-coloured and is
+ * not a card.
+ */
+const cardTokenPattern =
+  /\b(bg-bg-surface|bg-service-surface|bg-surface-raised)\b|recipe-card-context|<Card/;
+
+const covered = sectionFiles.filter((file) =>
+  cardTokenPattern.test(sources.get(file) ?? ""),
+);
 
 describe("card context coverage", () => {
   it("matches the figure the gate reports", () => {

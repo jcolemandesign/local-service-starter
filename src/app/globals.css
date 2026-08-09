@@ -1831,6 +1831,23 @@ body {
   .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not(
       [data-pagebuilder-color-recipe="inherit"]
     ),
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )[data-pagebuilder-card-fill="solid"]
+    :is(
+      .bg-bg-surface:not(section),
+      .bg-service-surface:not(section),
+      .bg-surface-raised:not(section)
+    ),
+  .pagebuilder-section-band[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )
+    [data-pagebuilder-card-fill="solid"]
+    :is(
+      .bg-bg-surface:not(section),
+      .bg-service-surface:not(section),
+      .bg-surface-raised:not(section)
+    ),
   .recipe-card-context {
     /* Ladder - toward the local ground. */
     --text-strong: var(--recipe-text);
@@ -1862,10 +1879,11 @@ body {
    * scales above are re-declared by the shared selector, not inherited, for
    * the substitution reason documented there.
    *
-   * Phase 1 applies this through the cardStyle plumbing - the Card primitive
-   * plus the sections already threading cardFill/cardBorder, 70 of the 148
-   * sections that paint a card surface. The rest ladder against the section
-   * ground until phase 3. */
+   * The class is an explicit opt-in, and most cards no longer need it: the
+   * token-keyed rule further down grounds anything painting a card fill, which
+   * is how nearly every card in the library paints one. Keep the class for a
+   * card built some other way - an inline style, an image backdrop - that the
+   * token rule cannot see. */
   .recipe-card-context {
     --recipe-ground: var(--recipe-card);
     /* A card that flips lightness relative to its section must flip its text
@@ -2148,6 +2166,23 @@ body {
       [data-pagebuilder-color-recipe="inherit"]
     )
     > *,
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )[data-pagebuilder-card-fill="solid"]
+    :is(
+      .bg-bg-surface:not(section),
+      .bg-service-surface:not(section),
+      .bg-surface-raised:not(section)
+    ),
+  .pagebuilder-section-band[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )
+    [data-pagebuilder-card-fill="solid"]
+    :is(
+      .bg-bg-surface:not(section),
+      .bg-service-surface:not(section),
+      .bg-surface-raised:not(section)
+    ),
   .recipe-card-context {
     /* Text hierarchy. */
     --live-service-ink: var(--text-strong);
@@ -2205,68 +2240,54 @@ body {
    * the patch has nothing left to correct. Its removal is why no section-
    * specific colour rule survives in this file. */
 
-  /* Card text, where a card's own ground differs enough from the section's
-   * that body copy cannot follow it in.
+  /* Any element painting the card fill IS a card, and grounds its own subtree.
    *
-   * Dark is the case that forces this: its cards are the surface token - light
-   * - while body copy out on the ground is light too, so an uncorrected card
-   * would be surface text on a surface fill. Ink has the mirror problem in
-   * milder form. The other three recipes give card text and body copy the same
-   * value, so they need nothing here.
+   * This replaces two recipe-specific patches - one for dark, one for ink -
+   * that rewrote a handful of text tokens by hand wherever a card's ground
+   * differed enough from its section's that body copy could not follow it in.
+   * They were the manual version of a card context, written before there was
+   * one, and only for the two recipes that visibly needed it.
    *
-   * Matched on the card *fill* rather than on the shape a card tends to take.
+   * The general rule is safe in a way a blind sweep would not be, because it
+   * keeps every exclusion those patches learned:
    *
-   * The first version of this copied the accent recipe's selector, which leads
-   * with `article` and requires `shadow-service` alongside the fill. Both parts
-   * were wrong here, in opposite directions. `article` matched things that are
-   * not cards at all - the FAQ accordion wraps each question in a bare
-   * `<article>` with no fill - and pulled dark text onto the dark ground. The
-   * shadow requirement then missed real cards that simply do not carry one, so
-   * the ZIP lookup's light panel kept the section's light text and went
-   * invisible against itself.
+   *   - `bg-bg-page` is deliberately absent. It resolves to the ground, so an
+   *     element carrying it is ground-coloured and already correct.
+   *   - `:not(section)` keeps section-level grounds out. A section painting
+   *     the card token is a ground, not a card sitting on one.
+   *   - `card-fill="solid"` is required. With the fill switched off the
+   *     element paints nothing, so it is not a card surface whatever classes
+   *     it carries, and re-grounding it would resolve its text against a
+   *     colour that is not there.
    *
-   * An element painting the card fill *is* a card surface; one that paints
-   * nothing is not, whatever tag it uses. `bg-bg-page` is deliberately absent -
-   * on these recipes it resolves to the ground, so an element carrying it is
-   * ground-coloured and its text should stay as it is.
+   * Selecting by fill rather than by tag or shadow is also learned: keyed on
+   * `article` it caught the FAQ accordion's bare wrappers and pulled dark text
+   * onto a dark ground, and requiring `shadow-service` missed real cards that
+   * carry no shadow.
    *
-   * Two forms of each selector: a member joined into a background band carries
-   * its own `data-pagebuilder-card-fill` but reads `data-pagebuilder-color-
-   * recipe="inherit"` - the band, not the frame, holds the real recipe - so the
-   * compound (same-element) form never matches inside a band. The descendant
-   * form reaches it by keying off the band's recipe instead. */
-  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="dark"][data-pagebuilder-card-fill="solid"]
+   * Two forms, because a member joined into a background band carries its own
+   * card-fill but reads `color-recipe="inherit"` - the band holds the real
+   * recipe - so the compound form never matches inside a band. */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )[data-pagebuilder-card-fill="solid"]
     :is(
       .bg-bg-surface:not(section),
       .bg-service-surface:not(section),
       .bg-surface-raised:not(section)
     ),
-  .pagebuilder-section-band[data-pagebuilder-color-recipe="dark"]
+  .pagebuilder-section-band[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )
     [data-pagebuilder-card-fill="solid"]
     :is(
       .bg-bg-surface:not(section),
       .bg-service-surface:not(section),
       .bg-surface-raised:not(section)
     ) {
-    --live-service-ink: var(--palette-ink);
-    --live-text-main: var(--palette-ink);
-    --live-service-muted: var(--palette-muted);
-    --live-text-muted: var(--palette-muted);
-    --live-service-accent: var(--palette-accent);
-    --live-text-accent: var(--palette-accent);
-  }
-
-  /* Ink's cards are the dark token, so only the body copy moves - the headline
-     is already the raised token out on the ground. `bg-surface-raised` is left
-     out: this recipe does not rewrite that token, so an element carrying it is
-     near-white and wants the dark-card treatment above, not this one. */
-  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="ink"][data-pagebuilder-card-fill="solid"]
-    :is(.bg-bg-surface:not(section), .bg-service-surface:not(section)),
-  .pagebuilder-section-band[data-pagebuilder-color-recipe="ink"]
-    [data-pagebuilder-card-fill="solid"]
-    :is(.bg-bg-surface:not(section), .bg-service-surface:not(section)) {
-    --live-service-muted: var(--palette-raised);
-    --live-text-muted: var(--palette-raised);
+    --recipe-ground: var(--recipe-card);
+    --recipe-text: var(--recipe-card-text);
+    --recipe-faint: var(--recipe-card-text);
   }
 
   /* Bullets and marker icons are drawn in the accent colour, which on the
