@@ -1,0 +1,284 @@
+COLOR SYSTEM OVERHAUL — HANDOFF
+Written 2026-08-09 so this conversation can be cleared.
+Branch: codex/template-first-workflow   Tree: clean   Tests: 656 passing
+
+
+===============================================================================
+READ THIS FIRST
+===============================================================================
+
+Three documents, in the order a fresh session should read them:
+
+  1. THIS FILE - state, decisions, traps, what is next.
+  2. reference code/color-system-phase-1.txt  - the phase 1 plan (v3), with the
+     measured contrast figures for all eight recipes. Sections 2, 3 and 4 are
+     the system's specification.
+  3. reference code/color-system-phase-2-scope.txt - phase 2, re-scoped after
+     measurement.
+
+Everything the code can tell you is in the code, heavily commented. This file
+carries only what the code CANNOT tell you: why numbers are what they are,
+which decisions were contested, what was measured versus guessed, and which
+mistakes were already made so they are not made twice.
+
+
+===============================================================================
+1. WHAT THIS IS
+===============================================================================
+
+The colour system was five "recipes", each a hand-written table of ~17 CSS
+custom properties. Eighteen sections had also carried per-recipe class maps
+that drifted from each other. The overhaul replaces all of it with:
+
+  - a small authored PALETTE (nine swatches)
+  - two SCALES that derive everything else
+  - eight RECIPES, each declaring nine inputs and nothing more
+  - one ROLE TABLE mapping every --live-* token to a source and a scale
+
+A section names a semantic token. The recipe decides what it resolves to.
+Sections own no colour at all.
+
+THE TWO SCALES ARE NOT INTERCHANGEABLE. This is the single most important
+idea in the system and the one an unfamiliar reader gets wrong:
+
+  LADDER  mixes a source toward the LOCAL GROUND.  100 / 86 / 76 / 58 / 20.
+          Produces the text hierarchy and the faint border.
+  TINT    mixes a chromatic swatch toward the RECIPE'S TEXT SOURCE.  50 / 30.
+          Produces the CTA fill and the eyebrow on dark grounds.
+
+The tint exists because the ladder has only one direction. On a dark ground
+every laddered value moves toward the ground, which is right for text (the
+source is already light) and fatal for a chromatic value - a brand-coloured
+button darkens into the field and dies at 1.11-2.03 against a 3:1 bar. Mixing
+toward the text source instead lightens on dark grounds and darkens on light
+ones, with no recipe stating a direction, because --recipe-text is white on
+dark recipes and ink on light ones.
+
+An earlier draft concluded white was the only possible CTA on dark grounds.
+That was wrong, and only because the tint did not exist yet.
+
+ALL MIXING IS `in oklab`, NEVER `in oklch`. OKLCh interpolates hue on a polar
+path, so the highlight red mixed toward a blue-grey ground travels through
+magenta (#c664a1) where OKLab keeps it a desaturated red (#d36561). There is a
+regression test for exactly this. It is correctness, not taste.
+
+
+===============================================================================
+2. WHERE IT STANDS
+===============================================================================
+
+DONE - phase 1 (the system itself), all six steps.
+DONE - phase 3 (every card grounds itself), pulled forward.
+PARTIAL - phase 2 (section-level overrides): mechanism built and proven,
+          UI and render-path wiring not started.
+
+Eleven commits on codex/template-first-workflow, oldest first:
+
+  3d88e0e  the two scales, recipe inputs, contrast gate
+  1358569  dark-surface and CTA-accent swatches, no token renames
+  53ec32d  tie the scales to the CSS; fix dark-surface on near-black
+  bbdfd20  replace five token tables with eight recipes + one role table
+  53063b4  correct the plan's card-context coverage
+  ee163f9  style guide can author the optional swatches; hide unavailable recipes
+  e9523c0  buttons follow the recipe instead of pinning a white fill
+  3a5f5b7  re-scope phase 2 after measurement
+  df3d1a1  ground every card by its fill, not one section at a time
+  0baf3b7  the override mechanism, minus its UI
+  8363102  stop the card context poisoning tokens outside a recipe
+
+Where the code lives:
+
+  src/utils/color-scales.ts        both scales + OKLab maths. The constants.
+  src/utils/color-gate.ts          contrast gate (pure; called from two places)
+  src/content/color-recipe-inputs.ts   the eight recipes as data
+  src/content/color-overrides.ts   override resolution + card polarity
+  src/content/color-palette-adapter.ts  legacy token names -> palette names
+  src/app/globals.css              scales, recipes, role table, override axes
+  src/utils/use-available-recipes.ts    hides recipes whose swatch is unset
+
+
+===============================================================================
+3. DECISIONS THAT WERE CONTESTED OR MEASURED
+===============================================================================
+
+Do not re-open these without re-reading the numbers. Each was argued, measured,
+and settled.
+
+MUTED IS 76%, NOT 70%.
+A reviewer pushed for an evenly-stepped 100/85/70/55/20. Measured: at 70% the
+ladder fails AA at Muted (4.27) and drops Quiet under 3:1 (2.84 on surface) as
+soon as `ink` is authored light - which the system explicitly permits. A ladder
+unsafe for a permitted authoring choice is a design defect, not something a
+warning should paper over. Evenness is measured in OUTPUT (8.88 / 6.37 / 4.96 /
+3.23 is a stepped hierarchy), not in tidy input percentages. The reviewer
+conceded.
+
+CARDS GET THREE INTENSITIES, BORDERS GET FIVE.
+This is the opposite of what the phase 2 scope guessed. A card carries text, so
+its colour must stay far enough from mid-tone that one of the two text
+polarities clears AA. Measured across nine swatches x eight recipes:
+
+    strong  72/72 clear, worst 6.37       muted  68/72, worst 4.05
+    body    72/72 clear, worst 4.87       quiet  49/72, worst 2.35
+    faint   70/72 clear, worst 4.17
+
+Quiet puts a card halfway between ground and swatch where neither white nor ink
+text works. So cards are offered solid / softened / wash. A border carries no
+text, so all five stay available to it.
+
+INK AND DARK ARE INDEPENDENT SWATCHES.
+They may be authored to the same value; nothing derives one from the other. Ink
+is a text source that also grounds its own recipe; dark is a section ground.
+Keeping them separate is what lets a navy band coexist with near-black body
+copy later.
+
+STORED TOKEN NAMES ARE NEVER RENAMED.
+`serviceAccent` is the brand colour; `accent` is the third chromatic the system
+calls `highlight`. The vocabularies disagree and the stored one cannot change -
+saved slots, staged pages, page templates and approval records all carry those
+keys, and the dev server rewrites several of them on its own schedule, so a
+migration can race it. color-palette-adapter.ts is the single place the legacy
+names stop mattering. Same rule for recipe ids: `default -> page` and
+`muted -> surface` are ALIASES, not migrations.
+
+KNOWN AND ACCEPTED CONTRAST MISSES.
+Not bugs. Tests name them explicitly so the set stays singular and a third
+failure forces someone to look:
+  - highlight recipe, Muted eyebrow: 4.41 against 4.5
+  - highlight recipe, card at Faint with a light swatch: 4.33 and 4.17
+All are a saturated red ground, where mixing produces out-of-gamut
+intermediates that engines map differently - the bar is not guaranteeable at
+render time regardless.
+
+PROVISIONAL, AWAITING JOSH'S EYE: the two tint constants (50 / 30) in
+color-scales.ts and globals.css. Tuned to the worst neutral-dark ground, so
+slightly washed on the darkest. Changing them is a two-line edit; nothing else
+depends on their values.
+
+
+===============================================================================
+4. TRAPS ALREADY HIT — DO NOT REPEAT
+===============================================================================
+
+CSS CUSTOM PROPERTY SUBSTITUTION HAPPENS AT THE DECLARING ELEMENT.
+A custom property whose value contains var() is substituted at computed-value
+time ON THE ELEMENT THAT DECLARES IT, and what inherits is the already-resolved
+colour. A descendant re-pointing --recipe-ground does NOT re-resolve a scale
+declared on an ancestor.
+
+The phase 1 plan asserted the opposite for two drafts and called it "the
+property the whole design rests on". No amount of review caught it; running the
+CSS did. Consequence: any scope establishing a new ground must RE-DECLARE the
+whole scales block. That is why one selector list covers every context, and why
+a test asserts each scale is declared exactly once.
+
+AN INVALID CUSTOM PROPERTY POISONS EVERY var() THAT READS IT.
+It does not fall back to the value it shadows. This bit twice:
+  1. Emitting `--live-cta-accent:` empty when unset would have invalidated
+     every declaration reading it. Fixed by OMITTING the declaration.
+  2. `.recipe-card-context` on the Card primitive resolved --live-* from
+     --recipe-card-text, which only exists inside a recipe. The style guide
+     renders swatches inside Cards with no recipe, so every swatch silently
+     painted the project's hardcoded defaults instead of the palette being
+     edited. The control looked broken; the cause was three elements up the
+     tree. Fixed by scoping the class to inside a recipe frame or a band, with
+     a test forbidding a bare `.recipe-card-context` selector.
+
+Both failures are silent, total, and far from where they show. Suspect this
+first when a colour "just isn't applying".
+
+THE DEV SERVER WRITES REPO FILES.
+`src/content/pagebuilder-options.json` and staged-page JSON are rewritten while
+`npm run dev` runs. Re-check `git status` immediately before any migration, and
+NEVER use `git add -A` blindly - it did sweep a builder save into an unrelated
+CSS commit (8363102). See open item 4 below.
+
+TEXT-MANIPULATION SCRIPTS ON BIG FILES ARE FRAGILE.
+PagebuilderShell.tsx is ~7,500 lines. Two script edits on it went wrong: one
+flipped the whole file to CRLF (a 19-line change committed as 15,607), another
+inserted a variable into the wrong recipe block because a stale selector still
+matched. Prefer targeted Edit calls. Also: an Edit once wrote a literal NUL
+byte into a sentinel string, which made git treat the file as binary - no diff,
+no blame.
+
+
+===============================================================================
+5. WHAT IS NEXT
+===============================================================================
+
+BLOCKED ON JOSH — author the real palette in /dev/style-guide.
+This gates everything involving taste, and one live defect:
+  - the Page recipe's card measures 1.10 against its ground in the currently
+    promoted palette, below the 1.15 floor where a card stops reading. The
+    settled value for `raised` fixes it; the promoted palette predates it.
+  - `darkSurface` and `ctaAccent` are unauthored, so the dark recipes run the
+    DERIVED fallback and the Accent recipe stays hidden.
+  - the tint constants need looking at, not measuring.
+The style guide swatches now show real values again (that was 8363102).
+
+NEXT TECHNICAL DECISION — where render-time polarity gets its palette.
+Card text polarity is the one value CSS cannot derive (there is no way to ask
+how light a color-mix() result is; light-dark() keys off colour-scheme and
+contrast-color() is not deployable). It resolves in TypeScript and ships as
+`data-pagebuilder-card-polarity`. The builder can read computed CSS and
+site-export.ts already reads globals.css, but the server render paths have no
+palette source. Three options, discussed in the phase 2 scope; the
+recommendation is to parse the promoted block from globals.css, memoized,
+because it is the only option that keeps a palette change moving every override
+with it. Storing resolved polarity would strand stale values.
+
+THEN — phase 2 remainder: the picker UI, and render-path wiring behind it
+(three render paths plus export). Deliberately not wired yet: nothing can set
+the fields until the picker exists, so emitting attributes now would be dead
+code in four places.
+
+OPEN QUESTIONS FOR JOSH
+  1. A section with several card kinds (a bento with one feature tile and three
+     small ones) gets ONE override for all of them. Confirm that is intended
+     before the picker is built - it shapes the control's copy.
+  2. Should an override be allowed to make a card the same colour as its
+     ground? Occasionally intentional (a borderless panel), usually a mistake.
+  3. Phase 4 (per-card overrides) may have collapsed the way phase 2 did: now
+     that card grounding is token-keyed, a per-card override might just be an
+     inline `--recipe-card` on the card element, picked up for free. UNTESTED -
+     a ten-minute browser probe would settle it before anyone plans around the
+     old estimate.
+  4. UNRESOLVED: commit 8363102 swept `src/content/pagebuilder-options.json`
+     into a CSS fix. It looks like a genuine builder save (a background image
+     config was added, savedAt stamped during the session) - probably Josh's
+     own work - but two sections also moved `dark -> page`. Josh was asked
+     whether to leave it, split it out, or revert that file, and had not
+     answered when the conversation ended.
+
+HOUSEKEEPING
+  - Four entries in `cardStyleComponents` (section-style-options.ts) name
+    components that no longer exist as files: FAQSectionV3,
+    TestimonialsSectionV3, TrustBarFloatingBentoSectionV3,
+    NavCenterLogoSectionV2. Harmless today; a registry that lies will make a
+    later audit lie.
+  - `exports/` was excluded from tsconfig. Exported client sites carry their
+    own copy of the recipe type but this repo's `@/` mapping pointed their
+    imports at live source, so renaming a recipe broke frozen artifacts.
+
+
+===============================================================================
+6. HOW TO VERIFY ANYTHING HERE
+===============================================================================
+
+The TypeScript resolver reproduces Chrome exactly - eight mixes spanning both
+scales and both directions were checked against Chrome 151 and matched to the
+byte. So `color-scales.ts` can be trusted for arithmetic without a browser.
+
+To check a rendered recipe, the reliable method used throughout:
+  1. `npm run dev`
+  2. open a real page (/hvac-service has 15 sections, 11 with cards)
+  3. clone a section into a div with `class="pagebuilder-paint-surface"` and
+     `data-pagebuilder-color-recipe="<id>"` plus
+     `data-pagebuilder-card-fill="solid"`
+  4. read the --live-* values off a descendant with getComputedStyle, and
+     convert through a 1x1 canvas - Chrome returns `oklab(...)`, not sRGB
+
+Always stop the dev server afterwards; it writes repo files while running.
+
+Commands: `npm test` (656), `npx tsc --noEmit`, `npx eslint src/`,
+`npx next build`. All four were green at the last commit.
