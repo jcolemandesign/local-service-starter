@@ -244,6 +244,23 @@ false-positives on SiteExportControls.
 The rule: preview components take the palette as a prop. Only server pages
 call `readPromotedPalette()`; client surfaces call `usePromotedPalette()`.
 
+A SPREAD ABOVE `key` SILENTLY KILLS THE KEY. (Session 2, found by Josh in the
+running builder.)
+Spreading the override attributes onto the section frame put a `{...spread}`
+above the element's existing `key={section.id}`, and React warned "Each child
+in a list should have a unique key" for every section on the canvas. Declared
+after a spread, the JSX transform stops lifting `key` out into the element and
+leaves it an ordinary prop. Moving `key` above the spread is the entire fix.
+
+Both orderings look equally correct in review, and tsc, eslint and vitest were
+all green - only the browser console showed it. Phase 4 will add attributes to
+card elements the same way, so check the ordering there.
+
+Also worth knowing while chasing this: the MCP console reader accumulates
+messages across reloads, so a stale warning reads as a live one. Clear the
+buffer, reload, then read - and confirm the page actually rendered the list
+(the frames were there: 11 plus a band) or a clean console proves nothing.
+
 GIT CHECKOUT TO UNDO A TEMPORARY EDIT WILL TAKE THE REAL WORK WITH IT.
 (Session 2, self-inflicted, cost a re-do.) A deliberate one-line regression was
 introduced to prove the guard test above actually fires, then reverted with

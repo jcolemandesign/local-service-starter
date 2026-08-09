@@ -4438,6 +4438,18 @@ export function PagebuilderShell({
 
       return (
         <div
+          /* `key` MUST stay above the colour-override spread below.
+           *
+           * Declared after a spread, the JSX transform stops lifting it out
+           * into the element and leaves it an ordinary prop - React then sees
+           * a keyless child in a list and every section on the canvas warns.
+           * Moving it above the spread is the whole fix; the two orderings
+           * look equally correct and only one of them works.
+           *
+           * Verified against the running builder rather than reasoned about:
+           * the warning reproduces with the key below the spread and is gone
+           * with it above, on 11 frames and a band. */
+          key={section.id}
           className={cx(
             "pagebuilder-section-frame pagebuilder-paint-surface group/pagebuilder-section cursor-pointer outline outline-0 outline-offset-0 transition-shadow",
             options.isOverlay ? "absolute" : "relative",
@@ -4478,7 +4490,6 @@ export function PagebuilderShell({
               ? "none"
               : "default"
           }
-          key={section.id}
           onClick={(event) => {
             event.preventDefault();
             event.stopPropagation();
