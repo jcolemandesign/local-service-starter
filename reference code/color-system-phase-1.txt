@@ -18,8 +18,10 @@ Date: 2026-08-08
     puts eyebrow on the accent for dark recipes; brand on dark measures 1.48
     as readable text against a 4.5 bar. Eyebrow is a chromatic role and takes
     the tint, same as the fill.
-  - CARD COVERAGE IS 70 SECTIONS, NOT 26. The hook is the existing cardStyle
-    plumbing, not the Card primitive alone. Section 3d.
+  - CARD COVERAGE. The hook is the existing cardStyle plumbing, not the Card
+    primitive alone. Estimated at 70 sections; 41 were reached in phase 1,
+    because the hand-rolled card surfaces use several different shapes and
+    only one was safe to transform mechanically. Section 3d.
   - ACCENT now has a render-time fallback in addition to picker hiding. Hiding
     governs authoring; it does not govern data that already references the
     recipe.
@@ -261,7 +263,7 @@ hand-written rows.
     need a fixed dark and a fixed highlight regardless of context. Audit their
     consumers before locking this in (open question 4).
 
-3d. CARD-SCOPED GROUND — coverage is 70 sections
+3d. CARD-SCOPED GROUND — coverage is 41 sections (was estimated 70)
 
 Section 4c's card figures assume text ladders against the CARD. The general
 case is phase 4, but phase 1 cannot publish card numbers without a minimal
@@ -309,10 +311,11 @@ THE HOOK IS THE cardStyle PLUMBING, NOT THE Card PRIMITIVE.
 
     Card primitive users                    27 sections
     cardFill / cardBorder threaded          49 sections
-    union — phase 1 coverage                70 sections
+    ESTIMATED union                         70 sections
+    ACTUAL phase 1 coverage                 41 sections
     registered in cardStyleComponents       46 components
     card-rendering sections overall        148
-    RESIDUAL, uncovered in phase 1          78 sections
+    RESIDUAL, uncovered in phase 1         107 sections
 
 The 49 already compute a single card className (`cardFill === "none" &&
 "!bg-transparent"`), so there is exactly one hookable element per section and
@@ -324,7 +327,7 @@ paints form inputs, checkbox indicators, `min-h-svh` page wrappers and pills
 alongside real cards. Sweeping it would attach card colour contexts to text
 inputs.
 
-THE RESIDUAL 78 LADDER AGAINST THE SECTION GROUND, NOT THEIR CARD. On light
+THE RESIDUAL 107 LADDER AGAINST THE SECTION GROUND, NOT THEIR CARD. On light
 recipes the drift is small. On BRAND and HIGHLIGHT it is a different colour,
 not a rounding difference — white@86% toward brand is #dee7ed, toward ink it
 is #dcdde0. Step 6 should expect this, not discover it. Those sections paint a
@@ -387,7 +390,7 @@ The mirror is validated against a real engine, not only against itself.
   eight.
   All Quiet clear 3.0.
 
-4c. TEXT ON CARD  (card as its own ground, per 3d — true for 70 of 148)
+4c. TEXT ON CARD  (card as its own ground, per 3d — true for 41 of 148)
 
   recipe        card      vs grnd  Strong  Body   Muted  Quiet
   ------------------------------------------------------------
@@ -486,7 +489,7 @@ src/components/sections/PagebuilderShell.tsx (~5004)
 
 src/components/primitives/Card.tsx + the 49 cardStyle sections
     - apply .recipe-card-context at the single card className each already
-      computes. 70 sections total (3d)
+      computes. 41 sections reached in phase 1; see 3d
 
 src/utils/site-export.ts
     - no logic change expected: export copies globals.css wholesale
