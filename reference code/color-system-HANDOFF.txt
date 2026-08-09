@@ -243,12 +243,16 @@ OPEN QUESTIONS FOR JOSH
      inline `--recipe-card` on the card element, picked up for free. UNTESTED -
      a ten-minute browser probe would settle it before anyone plans around the
      old estimate.
-  4. UNRESOLVED: commit 8363102 swept `src/content/pagebuilder-options.json`
-     into a CSS fix. It looks like a genuine builder save (a background image
-     config was added, savedAt stamped during the session) - probably Josh's
-     own work - but two sections also moved `dark -> page`. Josh was asked
-     whether to leave it, split it out, or revert that file, and had not
-     answered when the conversation ended.
+  4. RESOLVED (cbbceff). Commit 8363102 had swept
+     `src/content/pagebuilder-options.json` into a CSS fix, because the dev
+     server rewrote it mid-session and `git add -A` took it. Josh's call:
+     builder saves are expendable, the app is what matters. The file was
+     restored to its pre-8363102 state, so that commit is now purely the CSS
+     fix. The superseded save stays readable at 8363102 if wanted back.
+
+     STANDING RULE from this: builder state is regenerable and always loses to
+     app correctness. Do not preserve a builder save at the cost of a muddled
+     commit - restore it and move on.
 
 HOUSEKEEPING
   - Four entries in `cardStyleComponents` (section-style-options.ts) name
