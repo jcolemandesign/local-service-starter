@@ -126,7 +126,10 @@ import {
   type SectionBackgroundFill,
   type SectionColorRecipe,
 } from "@/content/section-color-recipes";
+import { sectionColorOverrideAttributes } from "@/content/section-color-override-attributes";
+import { SectionColorOverrideControls } from "@/components/sections/SectionColorOverrideControls";
 import { useAvailableColorRecipes } from "@/utils/use-available-recipes";
+import { usePromotedPalette } from "@/utils/use-promoted-palette";
 import {
   getCanonicalSectionLabel,
   sectionLibraryV3Content,
@@ -151,7 +154,6 @@ import {
   cardLinkGridAlignOptions,
   cardLinkGridAlignValues,
   sectionSupportsCardLinkGridAlign,
-  sectionSupportsBorderTone,
   sectionSupportsCardLinks,
   sectionSupportsCardStyle,
   sectionSupportsBackgroundFill,
@@ -2540,38 +2542,6 @@ function CardFillIcon({ filled }: { filled: boolean }) {
   );
 }
 
-function BorderToneIcon({ tone }: { tone: SectionCardBorderTone }) {
-  return (
-    <svg
-      aria-hidden="true"
-      className="size-6"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <rect
-        height="14"
-        rx="1.5"
-        stroke="currentColor"
-        strokeWidth="2.25"
-        width="18"
-        x="3"
-        y="5"
-      />
-      {tone === "light" ? (
-        <g stroke="currentColor" strokeLinecap="round" strokeWidth="1">
-          <circle cx="12" cy="12" fill="currentColor" r="2.6" stroke="none" />
-          <path d="M12 8.8v-1.2M12 15.2v1.2M8.8 12h-1.2M15.2 12h1.2M9.737 9.737l-.848-.848M14.263 9.737l.848-.848M9.737 14.263l-.848.848M14.263 14.263l.848.848" />
-        </g>
-      ) : (
-        <path
-          d="M12 7.8a4.2 4.2 0 1 0 0 8.4 3.3 3.3 0 0 1 0-8.4Z"
-          fill="currentColor"
-        />
-      )}
-    </svg>
-  );
-}
-
 /**
  * Two touching rects reading as "joined" vs "separate" tested badly - at 24px
  * the seam between two abutting rects and the gap between two close ones look
@@ -2747,6 +2717,14 @@ export function PagebuilderShell({
     () => true,
     () => false,
   );
+  /**
+   * The palette the canvas resolves card polarity against.
+   *
+   * Read here rather than inside the frame renderer so every section on the
+   * canvas measures against one palette - reading per frame would also mean a
+   * `getComputedStyle` call per section on every render.
+   */
+  const promotedPalette = usePromotedPalette();
   const [openAddSectionModeId, setOpenAddSectionModeId] = useState<string | null>(
     null,
   );
@@ -3188,24 +3166,46 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
-  function updateSectionBorderTone(
-    sectionId: string,
-    borderTone: SectionCardBorderTone,
-  ) {
-    updateActiveStack((stack) =>
-      stack.map((section) =>
-        section.id === sectionId ? { ...section, borderTone } : section,
-      ),
-    );
-    setSelectedSectionId(sectionId);
-  }
-
   function updateSectionCardFill(sectionId: string, cardFill: SectionCardFill) {
     updateActiveStack((stack) =>
       stack.map((section) =>
         section.id === sectionId ? { ...section, cardFill } : section,
       ),
     );
+  }
+
+  /**
+   * Set one of the four colour override fields.
+   *
+   * `""` clears it back to "the recipe decides", which is the state almost
+   * every section is in. Cleared fields are written as `undefined` rather than
+   * as an empty string so `pickSectionToggleFields` drops them entirely - a
+   * section that has never been overridden, and one that was overridden and
+   * then reset, have to promote to the same template.
+   *
+   * Clearing a swatch also clears its intensity. An intensity with no swatch
+   * is inert, and leaving one behind means an editor who resets a card and
+   * later picks a new swatch silently inherits an intensity they chose for a
+   * different colour.
+   */
+  function updateSectionColorOverride(
+    sectionId: string,
+    field: "cardSwatch" | "cardIntensity" | "borderSwatch" | "borderIntensity",
+    value: string,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) => {
+        if (section.id !== sectionId) return section;
+
+        const next = { ...section, [field]: value || undefined };
+
+        if (field === "cardSwatch" && !value) next.cardIntensity = undefined;
+        if (field === "borderSwatch" && !value) next.borderIntensity = undefined;
+
+        return next;
+      }),
+    );
+    setSelectedSectionId(sectionId);
   }
 
   function updateSectionBackgroundFill(
@@ -4458,6 +4458,7 @@ export function PagebuilderShell({
           data-pagebuilder-card-style={
             sectionSupportsCardStyle(section.component) ? "true" : "false"
           }
+          {...sectionColorOverrideAttributes(section, promotedPalette)}
           data-pagebuilder-background-treatment={
             options.inBand
               ? "none"
@@ -5459,47 +5460,41 @@ export function PagebuilderShell({
                           </div>
                           ) : null}
 
-                          {sectionSupportsBorderTone(section.component) ? (
-                          <div className="grid grid-cols-2 items-start gap-4">
-                          <fieldset className="grid gap-2">
-                            <legend className="type-caption font-semibold text-current">
-                              Border tone
-                            </legend>
-                            <div className="flex items-center gap-2">
-                              {(["dark", "light"] as const).map((borderTone) => {
-                                const isActive =
-                                  getSectionBorderTone(section) === borderTone;
-                                const label =
-                                  borderTone === "dark"
-                                    ? "Dark border"
-                                    : "Light border";
-
-                                return (
-                                  <button
-                                    aria-pressed={isActive}
-                                    className={cx(
-                                      "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
-                                      isActive && "token-chrome-card-active",
-                                    )}
-                                    key={borderTone}
-                                    onClick={() =>
-                                      updateSectionBorderTone(
-                                        section.id,
-                                        borderTone,
-                                      )
-                                    }
-                                    title={label}
-                                    type="button"
-                                  >
-                                    <BorderToneIcon tone={borderTone} />
-                                    <span className="sr-only">{label}</span>
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </fieldset>
-                          </div>
+                          {sectionSupportsCardFill(section) ? (
+                            <SectionColorOverrideControls
+                              onChange={(field, value) =>
+                                updateSectionColorOverride(
+                                  section.id,
+                                  field,
+                                  value,
+                                )
+                              }
+                              palette={promotedPalette}
+                              recipe={getSectionColorRecipe(section)}
+                              section={section}
+                              surface={{
+                                fill: getSectionCardFill(section),
+                                border: getSectionCardBorder(section),
+                              }}
+                            />
                           ) : null}
+
+                          {/* REMOVED: the border tone control.
+                            *
+                            * It chose between two border formulas - one
+                            * stepping lightness down from the card, correct
+                            * only on light cards, one stepping up, correct
+                            * only on dark ones. `--faint-line` removed the
+                            * question by mixing the recipe's faint source
+                            * toward the local ground, so the direction is
+                            * picked without anyone choosing, and the CSS rule
+                            * this drove was retired with it.
+                            *
+                            * What was left was two buttons that stored a value
+                            * nothing reads. The stored field stays readable in
+                            * saved data - see `borderTone` in `pagebuilder.ts`
+                            * - because the rule here is that stored keys are
+                            * never migrated. Only the control is gone. */}
 
                           <div className="grid grid-cols-2 items-start gap-4">
                           {isCardLinkGridSection(section) ? (

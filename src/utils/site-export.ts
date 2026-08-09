@@ -51,6 +51,8 @@ import {
   type StagedPage,
 } from "@/utils/staged-pages";
 import { groupSectionsIntoBands, withBandRecipe } from "@/utils/section-bands";
+import { sectionColorOverrideAttributes } from "@/content/section-color-override-attributes";
+import { readPromotedPalette } from "@/utils/promoted-palette";
 import { getSectionId } from "@/utils/section-id";
 import {
   getTemplateCopyFieldsForSection,
@@ -71,6 +73,15 @@ type ResolvedSection = {
   borderTone: string;
   cardBorder: string;
   cardFill: string;
+  /**
+   * The card/border colour override attributes, already resolved.
+   *
+   * Resolved here rather than at emit time because one of them - the card text
+   * polarity - is not derivable from CSS and has to be computed against the
+   * palette. The export ships the promoted `globals.css` wholesale, so the
+   * palette read at export time is the one the frozen site will paint from.
+   */
+  colorOverrides: Record<string, string>;
   colorRecipe: string;
   component: string;
   contentKey: string;
@@ -727,6 +738,13 @@ function resolvePageSections(
         borderTone: resolveBorderTone(resolvedSection.borderTone),
         cardBorder: resolvedSection.cardBorder ?? "on",
         cardFill: resolveCardFill(section.component, resolvedSection.cardFill),
+        // `resolvedSection.colorRecipe` is already the band's where the section
+        // is a band member, so the polarity is measured against the ground that
+        // actually paints rather than the one the member names.
+        colorOverrides: sectionColorOverrideAttributes(
+          { ...resolvedSection, component: section.component },
+          readPromotedPalette(),
+        ),
         colorRecipe:
           resolveSectionColorRecipe(resolvedSection.colorRecipe) ?? "page",
         component: section.component,
@@ -975,6 +993,25 @@ function buildContentFile({ sections }: ResolvedPage) {
   return `export const content = ${JSON.stringify(content, null, 2)} as const;\n`;
 }
 
+/**
+ * The override attributes as JSX lines, or nothing at all.
+ *
+ * Emitting nothing is the point rather than a shortcut: an absent attribute
+ * lets the recipe's own `--recipe-card` stand, where an empty one would still
+ * match `[data-pagebuilder-card-swatch]` and repaint the card from an
+ * undefined swatch. Almost every section is in the absent case.
+ *
+ * Sorted so an export is byte-stable across runs - the frozen artifacts are
+ * diffed, and attribute order shuffling would show as a change to every
+ * overridden section.
+ */
+function colorOverrideAttributesJsx(section: ResolvedSection, indent: string) {
+  return Object.entries(section.colorOverrides)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([name, value]) => `${indent}  ${name}=${JSON.stringify(value)}\n`)
+    .join("");
+}
+
 function buildSectionFrameJsx(
   section: ResolvedSection,
   indent: string,
@@ -989,7 +1026,7 @@ ${indent}  data-pagebuilder-background-treatment=${JSON.stringify(
 ${indent}  data-pagebuilder-border-tone=${JSON.stringify(section.borderTone)}
 ${indent}  data-pagebuilder-card-border=${JSON.stringify(section.cardBorder)}
 ${indent}  data-pagebuilder-card-fill=${JSON.stringify(section.cardFill)}
-${indent}  data-pagebuilder-color-recipe=${JSON.stringify(
+${colorOverrideAttributesJsx(section, indent)}${indent}  data-pagebuilder-color-recipe=${JSON.stringify(
     inBand ? "inherit" : section.colorRecipe,
   )}
 ${indent}  data-pagebuilder-padding-bottom=${JSON.stringify(

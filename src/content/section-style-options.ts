@@ -11,12 +11,17 @@
  */
 
 import { isBackgroundImageFocusValue } from "@/content/background-image-config";
+import {
+  borderIntensityOptions,
+  cardIntensityOptions,
+} from "@/content/color-overrides";
 import type { WrapMode } from "@/content/type-palettes";
-import type {
-  SectionBackgroundFill,
-  SectionCardBorder,
-  SectionCardBorderTone,
-  SectionCardFill,
+import {
+  type SectionBackgroundFill,
+  type SectionCardBorder,
+  type SectionCardBorderTone,
+  type SectionCardFill,
+  sectionColorRecipes,
 } from "@/content/section-color-recipes";
 
 /** Text/image split orientation. Shared by the auto-height and fixed-ratio
@@ -524,9 +529,19 @@ export const sectionToggleFieldNames = [
   "backgroundImageFit",
   "backgroundImageFocus",
   "backgroundTreatment",
+  "borderIntensity",
+  "borderSwatch",
   "borderTone",
   "cardBorder",
   "cardFill",
+  /**
+   * The four colour override fields. They travel as a set: a swatch with no
+   * intensity is meaningful (it takes that kind's default) but an intensity
+   * with no swatch is inert, so dropping either half at a hop turns an
+   * override into either the wrong colour or nothing at all.
+   */
+  "cardIntensity",
+  "cardSwatch",
   "cardLinks",
   "colorRecipe",
   "headlineWrap",
@@ -632,6 +647,49 @@ export function resolveBackgroundFill(
  */
 export const styleFieldPrefix = "style";
 
+/**
+ * The nine palette swatches, in the order the style guide authors them:
+ * the three light grounds, the two dark ones, then the three chromatics.
+ *
+ * Shared by the card and border overrides, which offer the same colours - what
+ * differs between them is the intensity range, not the palette.
+ *
+ * The values are the palette's own keys, so they match the `--palette-*`
+ * custom properties and `PaletteKey` without a translation step. `darkSurface`
+ * keeps its camelCase for that reason: it is a stored key, and the one thing
+ * this system does not do is rename stored keys.
+ */
+export const paletteSwatchOptions = [
+  { label: "Page", value: "page" },
+  { label: "Surface", value: "surface" },
+  { label: "Raised", value: "raised" },
+  { label: "Ink", value: "ink" },
+  { label: "Dark", value: "dark" },
+  { label: "Dark Surface", value: "darkSurface" },
+  { label: "Brand", value: "brand" },
+  { label: "Accent", value: "accent" },
+  { label: "Highlight", value: "highlight" },
+] as const satisfies ReadonlyArray<{ label: string; value: string }>;
+
+/**
+ * What the intensities are called in the panel.
+ *
+ * The stored values stay ladder names - `strong`, `body`, `faint`, `quiet` -
+ * so the percentages remain the ladder's and `color-css-agreement.test.ts`
+ * keeps checking them. Only the labels speak the editor's language: a card is
+ * solid, softened, or a wash of its ground; a border is faint or defined.
+ */
+const cardIntensityLabels: Record<string, string> = {
+  strong: "Solid",
+  body: "Softened",
+  faint: "Wash",
+};
+
+const borderIntensityLabels: Record<string, string> = {
+  faint: "Faint",
+  quiet: "Defined",
+};
+
 export const styleFieldOptions = {
   backgroundFill: [
     { label: "Use template default", value: "" },
@@ -712,13 +770,63 @@ export const styleFieldOptions = {
     { label: "Filled", value: "solid" },
     { label: "Transparent", value: "none" },
   ],
+  /**
+   * The card and border swatch overrides.
+   *
+   * `""` means "the recipe decides", which is the case almost every section is
+   * in and the one that has to cost nothing - it emits no attribute at all, so
+   * the recipe's own `--recipe-card` stands untouched.
+   *
+   * The labels are the palette's names rather than descriptions of colour,
+   * because the palette is re-authored per business and "Dark" is a role that
+   * survives that where "Navy" would not.
+   */
+  cardSwatch: [
+    { label: "Use recipe default", value: "" },
+    ...paletteSwatchOptions,
+  ],
+  borderSwatch: [
+    { label: "Use recipe default", value: "" },
+    ...paletteSwatchOptions,
+  ],
+  /**
+   * Three intensities, not the ladder's five. Muted and Quiet put a card
+   * between its ground and its swatch, where neither white nor ink text clears
+   * AA - Quiet fails a third of the time across the nine swatches - so they
+   * are not offered. See `cardIntensityValues` in `color-overrides.ts`.
+   */
+  cardIntensity: [
+    { label: "Use recipe default", value: "" },
+    ...cardIntensityOptions.map((value) => ({
+      label: cardIntensityLabels[value],
+      value,
+    })),
+  ],
+  /** Two, and not for a contrast reason: a border holds no text, but Strong,
+   *  Body and Muted are not tellable apart on a two-pixel line. */
+  borderIntensity: [
+    { label: "Use recipe default", value: "" },
+    ...borderIntensityOptions.map((value) => ({
+      label: borderIntensityLabels[value],
+      value,
+    })),
+  ],
+  /**
+   * Derived from `sectionColorRecipes` rather than written out again.
+   *
+   * This list was a hand copy and it had gone stale in both directions: it
+   * offered five of the eight recipes, so a staged page could not be moved to
+   * Dark Surface, Brand or Highlight at all, and it offered `default`, which
+   * has been an alias for `page` since the recipes were named for their
+   * grounds. Both failures are silent - an absent option is simply not there
+   * to miss, and a retired id resolves through the alias and looks fine.
+   *
+   * The duplication is exactly what the header of this file warns about, so
+   * the fix is to stop duplicating rather than to correct the copy.
+   */
   colorRecipe: [
     { label: "Use template default", value: "" },
-    { label: "Default", value: "default" },
-    { label: "Surface", value: "surface" },
-    { label: "Dark", value: "dark" },
-    { label: "Accent", value: "accent" },
-    { label: "Ink", value: "ink" },
+    ...sectionColorRecipes.map(({ id, label }) => ({ label, value: id })),
   ],
   reduceTopPadding: [
     { label: "Use template default", value: "" },
@@ -939,12 +1047,43 @@ const backgroundImageStyleFields: SectionStyleFieldSpec[] = [
   },
 ];
 
+/**
+ * The card surface controls, in the order an editor reaches for them.
+ *
+ * Fill and border decide whether there is a card at all; the four override
+ * fields decide what colour it is. They sit together because the overrides
+ * extend these two rather than forming a separate axis - and because two of
+ * the system's rules are about the pair. An unfilled card's border is the only
+ * thing separating it from the ground, so its intensity floors at Defined; and
+ * a card close enough to its ground to depend on that border is reported by
+ * the gate when the border is switched off.
+ */
 const cardStyleFields: SectionStyleFieldSpec[] = [
   { label: "Card fill", name: "cardFill", options: styleFieldOptions.cardFill },
   {
     label: "Card border",
     name: "cardBorder",
     options: styleFieldOptions.cardBorder,
+  },
+  {
+    label: "Card colour",
+    name: "cardSwatch",
+    options: styleFieldOptions.cardSwatch,
+  },
+  {
+    label: "Card intensity",
+    name: "cardIntensity",
+    options: styleFieldOptions.cardIntensity,
+  },
+  {
+    label: "Border colour",
+    name: "borderSwatch",
+    options: styleFieldOptions.borderSwatch,
+  },
+  {
+    label: "Border weight",
+    name: "borderIntensity",
+    options: styleFieldOptions.borderIntensity,
   },
 ];
 

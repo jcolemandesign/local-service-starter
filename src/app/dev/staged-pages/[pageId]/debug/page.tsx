@@ -8,6 +8,7 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 import { StagedPageCanvas } from "@/components/sections";
+import { readPromotedPalette } from "@/utils/promoted-palette";
 import { readSiteIdentity } from "@/utils/site-identity";
 import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import { getStagedPreviewHref } from "@/utils/staged-page-links";
@@ -123,6 +124,7 @@ export default async function StagedPageDebug({
             <StagedPageCanvas
               allPages={stagedPages}
               page={page}
+              palette={readPromotedPalette()}
               siteIdentity={await readSiteIdentity(page.snapshot.clientSlug)}
             />
 

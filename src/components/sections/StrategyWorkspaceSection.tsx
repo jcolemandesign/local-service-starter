@@ -16,6 +16,7 @@ import {
   type PageTemplateSummary,
 } from "@/components/sections/TemplateLibrarySection";
 import { StagedPageCanvas } from "@/components/sections/StagedPageCanvas";
+import { usePromotedPalette } from "@/utils/use-promoted-palette";
 import { getCanonicalSectionLabel } from "@/content/section-library-v3";
 import {
   buildStrategyNavigation,
@@ -241,6 +242,12 @@ export function StrategyWorkspaceSection({
   templates,
   sourcePacketText,
 }: StrategyWorkspaceSectionProps) {
+  /**
+   * Read from the DOM rather than passed down from the server page: this
+   * component is `"use client"`, so the filesystem reader cannot be imported
+   * here without pulling `node:fs` into the browser bundle.
+   */
+  const promotedPalette = usePromotedPalette();
   const [fields, setFieldsState] = useState<StrategyWorkspaceFields>(
     initialWorkspace.fields,
   );
@@ -1855,6 +1862,7 @@ export function StrategyWorkspaceSection({
                               allPages={[templatePreview.page]}
                               chrome={false}
                               page={templatePreview.page}
+                              palette={promotedPalette}
                             />
                           </div>
                         </div>

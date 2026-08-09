@@ -2293,15 +2293,24 @@ body {
   /* ---- Intensity axis. The percentages are the ladder's, read from
          `color-scales.ts` and asserted against it, so an override at "faint"
          cannot drift from a border drawn at Faint. ---- */
+  /* The card is offered three of the ladder's five. Muted and Quiet are absent
+     on measurement, not taste: they land a card between its ground and its
+     swatch, where neither white nor ink text clears AA - Quiet fails a third
+     of the time across the nine swatches. Rules for them used to sit here and
+     were dead weight, since `resolveOverrideIntensity` degrades those values
+     to Strong before they can reach the markup. Worse than dead: they read as
+     support for a range the product withdrew. */
   .pagebuilder-paint-surface[data-pagebuilder-card-intensity="strong"] { --card-intensity: 100%; }
   .pagebuilder-paint-surface[data-pagebuilder-card-intensity="body"] { --card-intensity: 86%; }
-  .pagebuilder-paint-surface[data-pagebuilder-card-intensity="muted"] { --card-intensity: 76%; }
-  .pagebuilder-paint-surface[data-pagebuilder-card-intensity="quiet"] { --card-intensity: 58%; }
   .pagebuilder-paint-surface[data-pagebuilder-card-intensity="faint"] { --card-intensity: 20%; }
 
-  .pagebuilder-paint-surface[data-pagebuilder-border-intensity="strong"] { --border-intensity: 100%; }
-  .pagebuilder-paint-surface[data-pagebuilder-border-intensity="body"] { --border-intensity: 86%; }
-  .pagebuilder-paint-surface[data-pagebuilder-border-intensity="muted"] { --border-intensity: 76%; }
+  /* The border is offered two of those five, and not for a contrast reason -
+     it holds no text, so all five are safe. Strong, Body and Muted are simply
+     not tellable apart on a two-pixel line, and a control whose options look
+     identical is worse than one that is not there. Faint is the line the
+     system already draws; Quiet is that line made deliberate. Kept as ladder
+     names so the percentages stay the ladder's and re-admitting a level is a
+     one-line change rather than a migration. */
   .pagebuilder-paint-surface[data-pagebuilder-border-intensity="quiet"] { --border-intensity: 58%; }
   .pagebuilder-paint-surface[data-pagebuilder-border-intensity="faint"] { --border-intensity: 20%; }
 
@@ -2315,10 +2324,17 @@ body {
     );
   }
 
+  /* The fallback is 20%, not 100%, and it has to agree with
+     `resolveOverrideIntensity`'s border default: naming a border swatch with
+     no intensity recolours the faint line the system already draws rather
+     than slamming a full-strength rule around the card. The resolver always
+     emits the attribute alongside the swatch, so this only fires if markup is
+     hand-written - but a safety net that disagrees with the resolver is how
+     the two silently diverge. */
   .pagebuilder-paint-surface[data-pagebuilder-border-swatch] {
     --border-override: color-mix(
       in oklab,
-      var(--border-swatch) var(--border-intensity, 100%),
+      var(--border-swatch) var(--border-intensity, 20%),
       var(--recipe-ground)
     );
   }

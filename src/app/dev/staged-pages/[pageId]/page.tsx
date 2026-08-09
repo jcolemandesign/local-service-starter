@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { StagedPageCanvas } from "@/components/sections";
+import { readPromotedPalette } from "@/utils/promoted-palette";
 import { readSiteIdentity } from "@/utils/site-identity";
 import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import { isAltStagedPage, readStagedPages } from "@/utils/staged-pages";
@@ -75,6 +76,7 @@ export default async function StagedPagePreview({
           allPages={stagedPages}
           chrome={false}
           page={page}
+          palette={readPromotedPalette()}
           siteIdentity={await readSiteIdentity(page.snapshot.clientSlug)}
         />
       </main>

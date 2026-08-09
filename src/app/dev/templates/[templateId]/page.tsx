@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { PageTemplatePreview } from "@/components/sections/PageTemplatePreview";
+import { readPromotedPalette } from "@/utils/promoted-palette";
 import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import type { PageTemplateSummary } from "@/components/sections";
 
@@ -47,6 +48,7 @@ export default async function TemplatePreviewPage({
       <main className="min-h-svh bg-white text-service-ink">
         <PageTemplatePreview
           overlayNavigation={false}
+          palette={readPromotedPalette()}
           sections={template.sections.map((section) => ({
             ...section,
             instruction: section.instruction ?? "",

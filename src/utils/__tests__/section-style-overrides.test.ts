@@ -72,6 +72,13 @@ describe("section style override specs", () => {
       "backgroundImageFocus",
       "cardFill",
       "cardBorder",
+      // The four colour overrides ride with the card controls they extend, and
+      // are conditional on the same membership set: a section that renders no
+      // card has no card colour to override.
+      "cardSwatch",
+      "cardIntensity",
+      "borderSwatch",
+      "borderIntensity",
       "reduceTopPadding",
       "reduceBottomPadding",
     ]);
@@ -109,7 +116,7 @@ describe("section style override specs", () => {
       name: "Card Two Up",
     });
 
-    expect(fields).toHaveLength(9);
+    expect(fields).toHaveLength(13);
     expect(fields.every((field) => field.value === "")).toBe(true);
     expect(fields.every((field) => field.kind === "meta")).toBe(true);
     expect(fields.map((field) => field.name)).toEqual([
@@ -120,6 +127,10 @@ describe("section style override specs", () => {
       `${styleFieldPrefix}.backgroundImageFocus`,
       `${styleFieldPrefix}.cardFill`,
       `${styleFieldPrefix}.cardBorder`,
+      `${styleFieldPrefix}.cardSwatch`,
+      `${styleFieldPrefix}.cardIntensity`,
+      `${styleFieldPrefix}.borderSwatch`,
+      `${styleFieldPrefix}.borderIntensity`,
       `${styleFieldPrefix}.reduceTopPadding`,
       `${styleFieldPrefix}.reduceBottomPadding`,
     ]);

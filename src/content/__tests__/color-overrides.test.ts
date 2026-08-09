@@ -11,7 +11,11 @@ import {
   resolveOverrideSwatch,
   resolveSectionCard,
   cardIntensityOptions,
+  borderIsOnlyBoundary,
+  cardDependsOnBorder,
+  resolveBorderIntensity,
 } from "@/content/color-overrides";
+import { gateSectionOverrides } from "@/utils/color-gate";
 import { contrastBars, contrastRatio, isDarkGround } from "@/utils/color-scales";
 
 const palette = toColorPalette({
@@ -64,9 +68,32 @@ describe("unset costs nothing", () => {
     expect(resolveOverrideSwatch(undefined)).toBeUndefined();
   });
 
-  it("defaults a missing intensity to Strong, per the brief", () => {
+  it("defaults a missing card intensity to Strong, per the brief", () => {
     expect(resolveOverrideIntensity(undefined)).toBe("strong");
     expect(resolveOverrideIntensity("nonsense")).toBe("strong");
+  });
+
+  /**
+   * The two kinds fall back differently and it is deliberate. Naming a swatch
+   * for a card asks for that colour; naming one for a border asks to recolour
+   * a line already being drawn at Faint. If the border ever defaults to Strong
+   * again, the picker's first click puts a full-strength rule around every
+   * card in the section - which is the failure this asymmetry exists to stop.
+   */
+  it("defaults a missing border intensity to Faint, not Strong", () => {
+    expect(resolveOverrideIntensity(undefined, "border")).toBe("faint");
+    expect(resolveOverrideIntensity("nonsense", "border")).toBe("faint");
+  });
+
+  it("degrades a level outside its kind's range to that kind's default", () => {
+    // `quiet` is a legitimate border level and an excluded card level; `body`
+    // is the reverse. Each has to degrade in its own direction rather than to
+    // one shared fallback.
+    expect(resolveOverrideIntensity("quiet")).toBe("strong");
+    expect(resolveOverrideIntensity("body", "border")).toBe("faint");
+
+    expect(resolveOverrideIntensity("quiet", "border")).toBe("quiet");
+    expect(resolveOverrideIntensity("body")).toBe("body");
   });
 });
 
@@ -189,5 +216,71 @@ describe("attributes", () => {
 
     expect(attributes["data-pagebuilder-border-swatch"]).toBe("ink");
     expect(attributes["data-pagebuilder-card-polarity"]).toBeUndefined();
+  });
+});
+
+/**
+ * The two rules phase 1 measured and deferred. Both are about the relationship
+ * between a card's fill and its border, which is why neither could be settled
+ * while the override that changes the border did not exist yet.
+ */
+describe("the border as a boundary", () => {
+  const filled = { fill: "solid", border: "on" } as const;
+  const unfilled = { fill: "none", border: "on" } as const;
+
+  it("floors an unfilled card's border at Defined", () => {
+    // With no fill the line is the only thing separating card from ground, and
+    // Faint resolves to 1.46-1.75 - under WCAG 1.4.11's 3:1. Phase 1 accepted
+    // that only because the fill was also distinguishing the card.
+    expect(resolveBorderIntensity({ borderIntensity: "faint" }, unfilled)).toBe(
+      "quiet",
+    );
+    expect(resolveBorderIntensity({}, unfilled)).toBe("quiet");
+    expect(borderIsOnlyBoundary(unfilled)).toBe(true);
+  });
+
+  it("leaves a filled card's border where the editor put it", () => {
+    expect(resolveBorderIntensity({ borderIntensity: "faint" }, filled)).toBe(
+      "faint",
+    );
+    expect(resolveBorderIntensity({}, filled)).toBe("faint");
+    expect(borderIsOnlyBoundary(filled)).toBe(false);
+  });
+
+  it("carries the floor into the emitted attributes", () => {
+    // The rule is worthless if it stops at the resolver.
+    expect(
+      colorOverrideAttributes(
+        palette,
+        "page",
+        { borderSwatch: "ink", borderIntensity: "faint" },
+        unfilled,
+      )["data-pagebuilder-border-intensity"],
+    ).toBe("quiet");
+  });
+
+  it("reports a card that depends on its border, rather than forcing it on", () => {
+    /**
+     * The page recipe is the case phase 1 named: `raised` sits close enough to
+     * `page` that the Faint border is part of what separates them. The gate
+     * says so; it does not overrule an editor who wanted a borderless panel.
+     */
+    expect(cardDependsOnBorder(palette, "page", {})).toBe(true);
+    expect(cardDependsOnBorder(palette, "dark", {})).toBe(false);
+
+    const findings = gateSectionOverrides(palette, "page", {}, {
+      fill: "solid",
+      border: "off",
+    });
+
+    expect(findings).toHaveLength(1);
+    expect(findings[0].pass).toBe(false);
+    expect(findings[0].role).toBe("card-surface");
+  });
+
+  it("says nothing about a borderless card that stands on its own fill", () => {
+    expect(
+      gateSectionOverrides(palette, "dark", {}, { fill: "solid", border: "off" }),
+    ).toEqual([]);
   });
 });

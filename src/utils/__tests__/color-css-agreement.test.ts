@@ -3,6 +3,10 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
+import {
+  borderIntensityOptions,
+  cardIntensityOptions,
+} from "@/content/color-overrides";
 import { MIX_SPACE, ladderLevels, tintRoles } from "@/utils/color-scales";
 
 /**
@@ -190,28 +194,47 @@ describe("override axes reuse the ladder's numbers", () => {
    * border drawn at Faint would simply stop matching, on some sections only,
    * and look like a design inconsistency rather than a bug.
    */
-  for (const [level, fraction] of Object.entries(ladderLevels)) {
-    const percent = Math.round(fraction * 100);
+  /**
+   * Both axes are checked against what the pickers actually OFFER, not against
+   * the whole ladder. Each range is a subset for its own measured reason - the
+   * card excludes Quiet and Muted because neither text polarity clears AA
+   * there, the border excludes Strong, Body and Muted because they are not
+   * tellable apart on a two-pixel line - and the two subsets are different.
+   *
+   * Checking presence in both directions is what makes this worth having. A
+   * missing rule is a picker option that silently paints nothing. A rule for a
+   * level nobody can choose is the reverse: dead CSS that reads as support for
+   * a range the product deliberately withdrew, and the next person to widen
+   * the picker would find it already "working" at a value measurement
+   * excluded.
+   */
+  const declaredLevels = (axis: "card" | "border") =>
+    [
+      ...globalsCss.matchAll(
+        new RegExp(
+          `${axis}-intensity="(\\w+)"\\]\\s*\\{\\s*--${axis}-intensity:\\s*(\\d+)%`,
+          "g",
+        ),
+      ),
+    ].map(([, level, percent]) => ({ level, percent: Number(percent) }));
 
-    it(`--card-intensity for ${level} is ${percent}%`, () => {
-      // Cards are offered a subset of the ladder, so a level may legitimately
-      // be absent - but if it is present it must carry the ladder's value.
-      const declared = globalsCss.match(
-        new RegExp(`card-intensity="${level}"\\]\\s*\\{\\s*--card-intensity:\\s*(\\d+)%`),
+  for (const [axis, offered] of [
+    ["card", cardIntensityOptions],
+    ["border", borderIntensityOptions],
+  ] as const) {
+    it(`--${axis}-intensity declares exactly the levels the picker offers`, () => {
+      expect(declaredLevels(axis).map((d) => d.level).sort()).toEqual(
+        [...offered].sort(),
       );
-
-      if (declared) expect(Number(declared[1])).toBe(percent);
     });
 
-    it(`--border-intensity for ${level} is ${percent}%`, () => {
-      const declared = globalsCss.match(
-        new RegExp(
-          `border-intensity="${level}"\\]\\s*\\{\\s*--border-intensity:\\s*(\\d+)%`,
-        ),
-      );
-
-      expect(declared, `no border rule for ${level}`).not.toBeNull();
-      expect(Number(declared?.[1])).toBe(percent);
+    it(`--${axis}-intensity carries the ladder's percentages`, () => {
+      for (const { level, percent } of declaredLevels(axis)) {
+        expect(
+          percent,
+          `--${axis}-intensity for ${level}`,
+        ).toBe(Math.round(ladderLevels[level as keyof typeof ladderLevels] * 100));
+      }
     });
   }
 

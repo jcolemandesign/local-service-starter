@@ -1,6 +1,7 @@
 COLOR SYSTEM OVERHAUL — HANDOFF
 Written 2026-08-09 so this conversation can be cleared.
-Branch: codex/template-first-workflow   Tree: clean   Tests: 656 passing
+Updated 2026-08-09 (session 2): phase 2 is complete.
+Branch: codex/template-first-workflow   Tests: 681 passing
 
 
 ===============================================================================
@@ -69,8 +70,9 @@ regression test for exactly this. It is correctness, not taste.
 
 DONE - phase 1 (the system itself), all six steps.
 DONE - phase 3 (every card grounds itself), pulled forward.
-PARTIAL - phase 2 (section-level overrides): mechanism built and proven,
-          UI and render-path wiring not started.
+DONE - phase 2 (section-level overrides). Session 2 finished it: the picker,
+       the data model, all three render paths, export, and the two border
+       rules phase 1 deferred. See section 7.
 
 Eleven commits on codex/template-first-workflow, oldest first:
 
@@ -193,6 +195,30 @@ THE DEV SERVER WRITES REPO FILES.
 NEVER use `git add -A` blindly - it did sweep a builder save into an unrelated
 CSS commit (8363102). See open item 4 below.
 
+A SERVER-ONLY MODULE REACHED FROM A CLIENT COMPONENT FAILS THE BUILD, NOT THE
+TYPECHECK. (Session 2.)
+`promoted-palette.ts` imports `node:fs`. Turbopack fails with "the chunking
+context (unknown) does not support external modules (request: node:fs)" -
+which names neither the import that caused it nor the client module that
+reached it. `tsc`, vitest and eslint were all green.
+
+The chain was three deep and none of it is marked `"use client"` except the
+top: StrategyWorkspaceSection (client) -> StagedPageCanvas ->
+PageTemplatePreview -> promoted-palette. A direct-import check would have
+passed. `promoted-palette.test.ts` now walks the whole local import graph from
+every `"use client"` entry point and names the offending chain, skipping
+`import type` because those are erased before bundling - without that skip it
+false-positives on SiteExportControls.
+
+The rule: preview components take the palette as a prop. Only server pages
+call `readPromotedPalette()`; client surfaces call `usePromotedPalette()`.
+
+GIT CHECKOUT TO UNDO A TEMPORARY EDIT WILL TAKE THE REAL WORK WITH IT.
+(Session 2, self-inflicted, cost a re-do.) A deliberate one-line regression was
+introduced to prove the guard test above actually fires, then reverted with
+`git checkout <file>` - which discarded every uncommitted change in that file,
+not just the probe. Revert the probe the same way it was made, or commit first.
+
 TEXT-MANIPULATION SCRIPTS ON BIG FILES ARE FRAGILE.
 PagebuilderShell.tsx is ~7,500 lines. Two script edits on it went wrong: one
 flipped the whole file to CRLF (a 19-line change committed as 15,607), another
@@ -207,42 +233,74 @@ no blame.
 ===============================================================================
 
 BLOCKED ON JOSH — author the real palette in /dev/style-guide.
-This gates everything involving taste, and one live defect:
-  - the Page recipe's card measures 1.10 against its ground in the currently
-    promoted palette, below the 1.15 floor where a card stops reading. The
-    settled value for `raised` fixes it; the promoted palette predates it.
-  - `darkSurface` and `ctaAccent` are unauthored, so the dark recipes run the
-    DERIVED fallback and the Accent recipe stays hidden.
-  - the tint constants need looking at, not measuring.
-The style guide swatches now show real values again (that was 8363102).
+This gates everything involving taste.
 
-NEXT TECHNICAL DECISION — where render-time polarity gets its palette.
+  - CORRECTED. The 1.15 card-floor defect is gone. `darkSurface` has since
+    been authored (#2d5869) and the Page recipe's card now measures 1.234
+    against its ground. Every recipe clears the floor: the range is 1.23 to
+    3.24. Nothing to fix here.
+  - `ctaAccent` is still unauthored, so the Accent recipe stays hidden and
+    accent CTA fills resolve to brand. `darkSurface` no longer needs the
+    derived fallback.
+  - the tint constants need looking at, not measuring.
+
+WHAT THE GATE SAYS ABOUT THE PROMOTED PALETTE (6 misses, measured session 2).
+Not defects in the system - they are what this particular blue does. Listed so
+they are not rediscovered as bugs:
+
+    page  · eyebrow on ground      3.28 / 4.5   (#007cbd on #dbdbdb)
+    surface · eyebrow on ground    3.63 / 4.5   (#007cbd on #e3e6e8)
+    brand · text-body on ground    3.82 / 4.5
+    brand · text-muted on ground   3.35 / 4.5
+    brand · text-meta on ground    2.59 / 3
+    highlight · text-muted         4.41 / 4.5   (already a known accepted miss)
+
+The three `brand` rows are one finding, not three: #007cbd is a mid-lightness
+ground, and the ladder mixes toward the ground, so laddered text on it has
+nowhere to go. Either the brand recipe wants a darker brand, or that recipe
+should ladder from white rather than from the text source. A design call, not
+a code one - it is the first thing worth Josh's eye alongside the tints.
+
+RESOLVED — where render-time polarity gets its palette.
 Card text polarity is the one value CSS cannot derive (there is no way to ask
 how light a color-mix() result is; light-dark() keys off colour-scheme and
 contrast-color() is not deployable). It resolves in TypeScript and ships as
 `data-pagebuilder-card-polarity`. The builder can read computed CSS and
 site-export.ts already reads globals.css, but the server render paths have no
 palette source. Three options, discussed in the phase 2 scope; the
-recommendation is to parse the promoted block from globals.css, memoized,
+recommendation was to parse the promoted block from globals.css, memoized,
 because it is the only option that keeps a palette change moving every override
 with it. Storing resolved polarity would strand stale values.
 
-THEN — phase 2 remainder: the picker UI, and render-path wiring behind it
-(three render paths plus export). Deliberately not wired yet: nothing can set
-the fields until the picker exists, so emitting attributes now would be dead
-code in four places.
+TAKEN, and it needed a second half nobody predicted. `readPromotedPalette()`
+in `src/utils/promoted-palette.ts` parses the promoted block, memoized against
+the file's mtime - the invalidation is real because promoting rewrites
+globals.css under a running dev server.
+
+But it imports `node:fs`, and the preview components are reachable from
+`"use client"` modules, so wiring it the obvious way pulled node:fs into a
+browser chunk and failed the Turbopack build. See the new trap in section 4.
+The shape that works: `color-palette-source.ts` holds the token map with no
+environment-specific imports, and there are two readers over it - the file
+parser for server paths, and `usePromotedPalette()` reading live custom
+properties for client ones. Preview components take the palette as a PROP,
+defaulting to cold start, exactly as `siteIdentity` already did.
 
 OPEN QUESTIONS FOR JOSH
-  1. A section with several card kinds (a bento with one feature tile and three
-     small ones) gets ONE override for all of them. Confirm that is intended
-     before the picker is built - it shapes the control's copy.
-  2. Should an override be allowed to make a card the same colour as its
-     ground? Occasionally intentional (a borderless panel), usually a mistake.
-  3. Phase 4 (per-card overrides) may have collapsed the way phase 2 did: now
-     that card grounding is token-keyed, a per-card override might just be an
-     inline `--recipe-card` on the card element, picked up for free. UNTESTED -
-     a ten-minute browser probe would settle it before anyone plans around the
-     old estimate.
+  1. ANSWERED (session 2): yes, one override paints every card in a section,
+     including a bento's feature tile and its small ones. The picker's labels
+     say "Cards" so it does not imply a precision it lacks. Per-card
+     differentiation stays phase 4.
+  2. ANSWERED (session 2): the gate warns, the picker allows. A card the same
+     colour as its ground is occasionally a deliberate borderless panel, and
+     filtering the option out is palette-dependent - the option set would
+     shift as colours change, which reads as a broken control. The same call
+     was then applied to the card-depends-on-border rule for consistency.
+  3. STILL OPEN. Phase 4 (per-card overrides) may have collapsed the way phase
+     2 did: now that card grounding is token-keyed, a per-card override might
+     just be an inline `--recipe-card` on the card element, picked up for
+     free. UNTESTED - a ten-minute browser probe would settle it before anyone
+     plans around the old estimate.
   4. RESOLVED (cbbceff). Commit 8363102 had swept
      `src/content/pagebuilder-options.json` into a CSS fix, because the dev
      server rewrote it mid-session and `git add -A` took it. Josh's call:
@@ -255,11 +313,15 @@ OPEN QUESTIONS FOR JOSH
      commit - restore it and move on.
 
 HOUSEKEEPING
-  - Four entries in `cardStyleComponents` (section-style-options.ts) name
-    components that no longer exist as files: FAQSectionV3,
-    TestimonialsSectionV3, TrustBarFloatingBentoSectionV3,
-    NavCenterLogoSectionV2. Harmless today; a registry that lies will make a
-    later audit lie.
+  - WITHDRAWN. The claim that four `cardStyleComponents` entries name
+    components that no longer exist was wrong, and the mistake is worth
+    keeping because it is easy to repeat: FAQSectionV3,
+    TestimonialsSectionV3, TrustBarFloatingBentoSectionV3 and
+    NavCenterLogoSectionV2 are all live named exports inside MULTI-SECTION
+    files - FAQConversionContactFooterSectionsV3.tsx,
+    FeatureProcessTestimonialsSectionsV3.tsx, TrustSectionsV3.tsx and
+    NavPrimarySectionV2.tsx respectively. Checking for `<Component>.tsx` is
+    not how this codebase stores sections. The registry does not lie.
   - `exports/` was excluded from tsconfig. Exported client sites carry their
     own copy of the recipe type but this repo's `@/` mapping pointed their
     imports at live source, so renaming a recipe broke frozen artifacts.
@@ -284,5 +346,73 @@ To check a rendered recipe, the reliable method used throughout:
 
 Always stop the dev server afterwards; it writes repo files while running.
 
-Commands: `npm test` (656), `npx tsc --noEmit`, `npx eslint src/`,
+Commands: `npm test` (681), `npx tsc --noEmit`, `npx eslint src/`,
 `npx next build`. All four were green at the last commit.
+
+RUN THE BUILD, NOT JUST THE OTHER THREE. Session 2 shipped a change that was
+green on typecheck, tests and lint and still broke `next build` - see the
+client-bundle trap in section 4. The build is the only one of the four that
+sees the server/client module split.
+
+
+===============================================================================
+7. WHAT PHASE 2 SHIPPED (session 2)
+===============================================================================
+
+The mechanism existed at 0baf3b7. This is what was added around it.
+
+THE PICKER. `SectionColorOverrideControls.tsx`, its own file rather than more
+of PagebuilderShell - that file is ~7,500 lines and has burned two scripted
+edits already. Four controls: card colour, card intensity, border colour,
+border weight. Each swatch button is painted with the colour it would ACTUALLY
+produce on that section - the swatch mixed toward that recipe's ground at the
+chosen intensity - not the flat palette entry, because the whole point of the
+intensity axis is that an override is contextual. Unauthored swatches are not
+offered; only `accent` is optional and it would otherwise duplicate brand.
+
+BORDER INTENSITY IS TWO LEVELS, NOT FIVE. Faint and Defined, mapping to ladder
+`faint` and `quiet`. The reason is not contrast - a border holds no text and
+all five are safe - it is that Strong, Body and Muted are not tellable apart on
+a two-pixel line, and a control whose options look identical is worse than no
+control. Stored as ladder names so the percentages stay the ladder's and
+re-admitting a level is a one-line change, never a migration.
+
+THE TWO BORDER FALLBACKS DIFFER ON PURPOSE. A card override with no intensity
+means Strong: naming a swatch for a card asks for that colour. A border
+override with no intensity means FAINT: naming a swatch for a border asks to
+recolour a line already being drawn at Faint. Defaulting the border to Strong
+would make the picker's first click slam a full-strength rule around every
+card. There is a test named for this.
+
+THE TWO RULES PHASE 1 DEFERRED, BOTH NOW LIVE.
+  - Fill off + border on floors the border at Defined. With no fill the line
+    is the only boundary, and Faint sits at 1.46-1.75, under 1.4.11's 3:1.
+    Scoped to sections carrying a border override rather than applied
+    globally - a retroactive re-rule would repaint existing pages to satisfy a
+    bar phase 1 knowingly accepted for them.
+  - A card under 1.25 against its ground depends on its border, so switching
+    the border off is REPORTED, not prevented. Consistent with open question 2.
+
+A TEST CAUGHT DEAD CSS IMMEDIATELY. The agreement test now checks both
+intensity axes against what the pickers OFFER, in both directions. Its first
+run found `--card-intensity` rules for `muted` and `quiet` - levels that
+measurement had excluded from the card and that `resolveOverrideIntensity`
+degrades before they can reach markup. Harmless, but they read as support for
+a range the product withdrew.
+
+THE STAGED-PAGE RECIPE LIST WAS STALE IN BOTH DIRECTIONS. `styleFieldOptions
+.colorRecipe` was a hand copy offering five of the eight recipes - no Dark
+Surface, Brand or Highlight on a staged page at all - and offering `default`,
+retired as an alias for `page`. Now derived from `sectionColorRecipes`.
+
+THE BORDER TONE CONTROL IS GONE. `--faint-line` retired the formula it chose
+between, so it was two buttons writing a value nothing reads. The stored field
+stays readable per the standing rule on stored keys; only the control was
+removed, along with its icon and updater.
+
+WHERE THE NEW CODE LIVES
+  src/content/color-palette-source.ts        token map + cold start, no env
+  src/utils/promoted-palette.ts              server reader (node:fs, memoized)
+  src/utils/use-promoted-palette.ts          client reader (computed CSS)
+  src/content/section-color-override-attributes.ts   one helper, all paths
+  src/components/sections/SectionColorOverrideControls.tsx   the picker

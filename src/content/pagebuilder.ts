@@ -48,8 +48,29 @@ export type PagebuilderRecipeSection = {
   cardFill?: import("@/content/section-color-recipes").SectionCardFill;
   cardBorder?: import("@/content/section-color-recipes").SectionCardBorder;
   /** Which border-color formula an outlined card draws with - see
-   *  `SectionCardBorderTone` in `section-color-recipes`. */
+   *  `SectionCardBorderTone` in `section-color-recipes`.
+   *
+   *  INERT. `--faint-line` mixes the recipe's faint source toward the local
+   *  ground, so the direction is picked without anyone choosing and no rule
+   *  reads this any more. Kept readable in saved data rather than migrated
+   *  out, per the standing rule on stored keys. */
   borderTone?: import("@/content/section-color-recipes").SectionCardBorderTone;
+  /**
+   * Section-level card and border colour overrides.
+   *
+   * Stored as semantic intent - a palette swatch name plus an intensity -
+   * never as a resolved colour, so re-authoring the palette moves every
+   * override with it. Absent means "the recipe decides", which is the state
+   * almost every section is in and the one that has to cost nothing.
+   *
+   * Typed as the narrow unions rather than plain strings so a typo cannot
+   * reach the render paths; a value that is valid here but retired from the
+   * palette later still degrades safely at resolve time.
+   */
+  cardSwatch?: import("@/content/color-overrides").ColorOverrideSwatch;
+  cardIntensity?: import("@/content/color-overrides").ColorOverrideIntensity;
+  borderSwatch?: import("@/content/color-overrides").ColorOverrideSwatch;
+  borderIntensity?: import("@/content/color-overrides").ColorOverrideIntensity;
   backgroundFill?: import("@/content/section-color-recipes").SectionBackgroundFill;
 };
 

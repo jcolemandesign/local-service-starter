@@ -1,5 +1,8 @@
 import {
+  CARD_DEPENDS_ON_BORDER_BELOW,
+  type CardSurfaceState,
   type SectionColorOverrides,
+  cardDependsOnBorder,
   resolveCardPolarity,
   resolveOverrideSwatch,
   resolveSectionCard,
@@ -229,7 +232,33 @@ export function gateSectionOverrides(
   palette: ColorPalette,
   recipe: ColorRecipeId,
   overrides: SectionColorOverrides,
+  surface?: CardSurfaceState,
 ): GateFinding[] {
+  /**
+   * Phase 1's other deferred rule, and the one case worth reporting on a
+   * section with no card override at all: a card close enough to its ground
+   * that the Faint border is part of what separates them. Turn the border off
+   * there and the card stops existing - it was never carrying the boundary by
+   * fill alone. The threshold is checked against the live palette because the
+   * figure moves with it: phase 1 measured the page recipe's card at 1.16, the
+   * currently promoted palette puts it at 1.23, and both are under the bar.
+   */
+  if (surface?.border === "off" && cardDependsOnBorder(palette, recipe, overrides)) {
+    const ground = resolveRef(palette, recipeInputs[recipe].ground, palette.page);
+    const card = resolveSectionCard(palette, recipe, overrides);
+
+    return [
+      finding(
+        recipe,
+        "card-surface",
+        "ground",
+        card,
+        ground,
+        CARD_DEPENDS_ON_BORDER_BELOW,
+      ),
+    ];
+  }
+
   if (!resolveOverrideSwatch(overrides.cardSwatch)) return [];
 
   const ground = resolveRef(

@@ -204,6 +204,10 @@ import {
 } from "@/utils/section-bands";
 import type { CSSProperties } from "react";
 import { resolveSectionColorRecipe } from "@/content/section-color-recipes";
+import { sectionColorOverrideAttributes } from "@/content/section-color-override-attributes";
+import { toColorPalette } from "@/content/color-palette-adapter";
+import { coldStartTokens } from "@/content/color-palette-source";
+import type { ColorPalette } from "@/content/color-recipe-inputs";
 import type { StagedPageField } from "@/utils/staged-pages";
 import {
   emptySiteIdentity,
@@ -248,6 +252,9 @@ type PageTemplatePreviewProps = {
   homeHref?: string;
   navigationLinks?: SiteNavigationLink[];
   overlayNavigation?: boolean;
+  /** The palette card polarity is measured against - see the same prop on
+   *  `TemplateSectionFrame` for why it is passed in rather than read here. */
+  palette?: ColorPalette;
   sections: PageTemplatePreviewSection[];
   siteIdentity?: SiteIdentity;
 };
@@ -341,12 +348,17 @@ function isHeroSection(section: PageTemplatePreviewSection | undefined) {
   return section?.mode === "Hero";
 }
 
+/** What a caller that supplies no palette gets. See the `palette` prop on
+ *  `TemplateSectionFrame` for why this is a default rather than a lookup. */
+const coldStartPalette = toColorPalette(coldStartTokens);
+
 export function PageTemplatePreview({
   fieldsBySection = {},
   fixedNavigation = false,
   homeHref,
   navigationLinks = [],
   overlayNavigation = true,
+  palette = coldStartPalette,
   sections,
   siteIdentity = emptySiteIdentity,
 }: PageTemplatePreviewProps) {
@@ -375,6 +387,7 @@ export function PageTemplatePreview({
             : backgroundLayerStyle(section, fieldsBySection[section.id ?? ""])
         }
         key={section.id ?? index}
+        palette={palette}
         section={section}
         {...frameProps}
       >
@@ -569,6 +582,7 @@ function TemplateSectionFrame({
   inBand = false,
   isFixed = false,
   isOverlay = false,
+  palette = coldStartPalette,
   section,
 }: {
   /** Inline custom property carrying the ground image, if this frame has one. */
@@ -587,6 +601,23 @@ function TemplateSectionFrame({
   inBand?: boolean;
   isFixed?: boolean;
   isOverlay?: boolean;
+  /**
+   * The palette card polarity is measured against.
+   *
+   * Passed in rather than read here, and the reason is a build constraint
+   * worth stating: this module is reachable from `"use client"` components, so
+   * anything it imports is bundled for the browser. Reading the promoted block
+   * off disk would pull `node:fs` into a client chunk and fail the Turbopack
+   * build outright - which is exactly what happened when this was wired the
+   * obvious way. `promoted-palette.test.ts` now walks the import graph to stop
+   * it happening again.
+   *
+   * So each caller supplies the palette by whichever route its environment
+   * allows: the server pages read `globals.css`, client surfaces read the live
+   * custom properties out of the DOM. The default is cold start, which renders
+   * a correct page with possibly one wrong text polarity rather than no page.
+   */
+  palette?: ColorPalette;
   section: PageTemplatePreviewSection;
 }) {
   return (
@@ -614,6 +645,7 @@ function TemplateSectionFrame({
       data-pagebuilder-card-style={
         sectionSupportsCardStyle(section.component) ? "true" : "false"
       }
+      {...sectionColorOverrideAttributes(section, palette)}
       data-pagebuilder-background-treatment={
         // The band owns the texture for its run, so a member never draws its
         // own - two stacked layers would double the wash.

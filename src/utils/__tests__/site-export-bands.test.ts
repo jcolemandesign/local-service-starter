@@ -22,6 +22,9 @@ function section(overrides: Partial<ExportSection> = {}): ExportSection {
     borderTone: "dark",
     cardBorder: "on",
     cardFill: "solid",
+    // The common case: no override, so the frame carries no swatch attributes
+    // and the recipe's own card stands.
+    colorOverrides: {},
     colorRecipe: "default",
     component: "ContentMainIdeaGridSectionV3",
     contentKey: "section01",
@@ -46,6 +49,61 @@ function isBalanced(markup: string) {
     countOccurrences(markup, "<div") === countOccurrences(markup, "</div>")
   );
 }
+
+/**
+ * The colour overrides have to reach the frozen markup, and this is the only
+ * place that can say so. The attributes are assembled as a string here, so
+ * nothing else in the suite would notice them being dropped - the export would
+ * type-check, build, and quietly ship every overridden section painted with
+ * its recipe's default card.
+ */
+describe("exported colour overrides", () => {
+  it("carries a card override onto the frame", () => {
+    const jsx = buildSectionJsx([
+      section({
+        colorOverrides: {
+          "data-pagebuilder-card-swatch": "dark",
+          "data-pagebuilder-card-intensity": "strong",
+          "data-pagebuilder-card-polarity": "dark",
+        },
+      }),
+    ]);
+
+    expect(jsx).toContain('data-pagebuilder-card-swatch="dark"');
+    expect(jsx).toContain('data-pagebuilder-card-intensity="strong"');
+    expect(jsx).toContain('data-pagebuilder-card-polarity="dark"');
+    expect(isBalanced(jsx)).toBe(true);
+  });
+
+  it("emits no override attributes for a section that overrides nothing", () => {
+    // An absent attribute lets the recipe's own card stand. An empty one would
+    // still match `[data-pagebuilder-card-swatch]` and repaint from nothing.
+    const jsx = buildSectionJsx([section()]);
+
+    expect(jsx).not.toContain("data-pagebuilder-card-swatch");
+    expect(jsx).not.toContain("data-pagebuilder-card-polarity");
+  });
+
+  it("emits the attributes in a stable order", () => {
+    // Exports are frozen artifacts that get diffed. Attribute order shuffling
+    // between runs would read as a change to every overridden section.
+    const overrides = {
+      "data-pagebuilder-card-polarity": "dark",
+      "data-pagebuilder-card-swatch": "dark",
+      "data-pagebuilder-card-intensity": "strong",
+    };
+
+    expect(buildSectionJsx([section({ colorOverrides: overrides })])).toBe(
+      buildSectionJsx([
+        section({
+          colorOverrides: Object.fromEntries(
+            Object.entries(overrides).reverse(),
+          ),
+        }),
+      ]),
+    );
+  });
+});
 
 describe("exported section markup", () => {
   it("emits no band wrapper when nothing joins", () => {

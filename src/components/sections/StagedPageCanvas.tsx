@@ -3,6 +3,7 @@ import {
   type PageTemplatePreviewSection,
   type SiteNavigationLink,
 } from "@/components/sections/PageTemplatePreview";
+import type { ColorPalette } from "@/content/color-recipe-inputs";
 import { pickSectionToggleFields } from "@/content/section-style-options";
 import {
   emptySiteIdentity,
@@ -28,6 +29,14 @@ type StagedPageCanvasProps = {
    * back to the section-library default exactly as before.
    */
   siteIdentity?: SiteIdentity;
+  /**
+   * The palette card polarity is measured against. Read on the server and
+   * passed in for exactly the same reason as `siteIdentity` above: this
+   * component is reachable from a client component - `StrategyWorkspaceSection`
+   * - and the reader touches the filesystem. Omitted, polarity falls back to
+   * the cold-start palette.
+   */
+  palette?: ColorPalette;
 };
 
 export type StagedPageRenderData = {
@@ -41,6 +50,7 @@ export function StagedPageCanvas({
   allPages,
   chrome = true,
   page,
+  palette,
   siteIdentity = emptySiteIdentity,
 }: StagedPageCanvasProps) {
   const renderData = getStagedPageRenderData(page, allPages ?? [page]);
@@ -50,6 +60,7 @@ export function StagedPageCanvas({
       <PageTemplatePreview
         {...renderData}
         overlayNavigation={false}
+        palette={palette}
         siteIdentity={siteIdentity}
       />
     );
@@ -63,7 +74,11 @@ export function StagedPageCanvas({
           {page.template?.name ?? page.sourceStage} / {page.pageLabel}
         </p>
       </div>
-      <PageTemplatePreview {...renderData} siteIdentity={siteIdentity} />
+      <PageTemplatePreview
+        {...renderData}
+        palette={palette}
+        siteIdentity={siteIdentity}
+      />
     </div>
   );
 }

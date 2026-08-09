@@ -8,6 +8,7 @@ import {
 } from "@/content/color-recipe-inputs";
 import {
   type LadderLevel,
+  contrastRatio,
   isDarkGround,
   ladderLevels,
   mixOklab,
@@ -77,7 +78,29 @@ const swatchValues = new Set<string>([
  * stay available. That is the opposite of what the phase 2 scope guessed.
  */
 const cardIntensityValues = new Set<string>(["strong", "body", "faint"]);
-const borderIntensityValues = new Set<string>(Object.keys(ladderLevels));
+
+/**
+ * The border gets two levels, not the five it could safely carry.
+ *
+ * Contrast is not what constrains it - a border holds no text, so all five
+ * ladder levels are available on paper. What constrains it is that four of
+ * them are not distinguishable on a one- or two-pixel line. Between Strong,
+ * Body and Muted the eye sees "a line", and the choice between them is a
+ * control that appears to do nothing, which is worse than a control that is
+ * not there.
+ *
+ * The real want is the one the brief describes: the border is already
+ * ground-relative at Faint, and sometimes it needs to be more definite. That
+ * is one step, not four. So `faint` is the line the system already draws and
+ * `quiet` is the same line made deliberate.
+ *
+ * These stay ladder level names in storage and in CSS rather than becoming a
+ * private faint/defined vocabulary. The percentages then remain the ladder's,
+ * `color-css-agreement.test.ts` keeps checking them against `ladderLevels`,
+ * and re-admitting a level later is a one-line change here rather than a
+ * migration. Only the picker's labels say "Faint" and "Defined".
+ */
+const borderIntensityValues = new Set<string>(["faint", "quiet"]);
 
 export const cardIntensityOptions = [
   ...cardIntensityValues,
@@ -101,22 +124,110 @@ export function resolveOverrideSwatch(
 }
 
 /**
- * No intensity means Strong, per the brief.
+ * The two kinds fall back differently, and the asymmetry is the point.
  *
- * `kind` decides which range applies. A card intensity outside its range
- * degrades to Strong rather than being honoured, so a value saved before the
- * range narrowed cannot render an unreadable card.
+ * A card override with no intensity means Strong, per the brief: naming a
+ * swatch for a card is asking for that colour, so the unqualified request
+ * gives you the colour.
+ *
+ * A border override with no intensity means Faint. Naming a swatch for a
+ * border is asking to recolour a line the system is already drawing, and that
+ * line is drawn at Faint - so the unqualified request changes its hue and
+ * leaves its weight alone. Falling back to Strong instead would make picking
+ * any swatch slam a full-strength rule around the card, which is never what
+ * the picker's first click should do.
+ *
+ * A value outside its kind's range degrades to that kind's default rather than
+ * being honoured, so a page saved while the range was wider cannot render an
+ * unreadable card or a border nobody can now choose.
  */
 export function resolveOverrideIntensity(
   value: string | undefined,
   kind: "card" | "border" = "card",
 ): ColorOverrideIntensity {
-  const allowed =
-    kind === "card" ? cardIntensityValues : borderIntensityValues;
+  const allowed = kind === "card" ? cardIntensityValues : borderIntensityValues;
+  const fallback: ColorOverrideIntensity = kind === "card" ? "strong" : "faint";
 
   return value && allowed.has(value)
     ? (value as ColorOverrideIntensity)
-    : "strong";
+    : fallback;
+}
+
+/**
+ * What the section already decided about its card surface, via the existing
+ * `cardFill` / `cardBorder` controls. The two border rules below need it,
+ * because both are about the relationship between the fill and the line rather
+ * than about either one alone.
+ */
+export type CardSurfaceState = {
+  fill: "none" | "solid";
+  border: "on" | "off";
+};
+
+/**
+ * A card with no fill is distinguished by its border and nothing else.
+ *
+ * Faint borders resolve to 1.46-1.75 against their ground. Phase 1 accepted
+ * that, explicitly and only because the fill was also doing the work of
+ * separating the card - two weak signals reading as one clear one. Take the
+ * fill away and the line is carrying the boundary by itself, below WCAG
+ * 1.4.11's 3:1 for a meaningful non-text boundary, and the acceptance no
+ * longer holds.
+ *
+ * So the intensity floors at Quiet whenever the fill is off and the border is
+ * on. Quiet is the step the two-value control already offers, which is why
+ * narrowing that control to faint/defined and enforcing this rule are the same
+ * shape of change rather than two competing ones.
+ */
+export function borderIsOnlyBoundary(surface: CardSurfaceState): boolean {
+  return surface.fill === "none" && surface.border === "on";
+}
+
+/**
+ * The border's intensity once the fill is taken into account.
+ *
+ * Deliberately scoped to sections carrying a border override. The floor is a
+ * correction to a choice an editor just made, not a retroactive re-rule of
+ * every fill-off section already in the repo - applying it globally would
+ * repaint existing pages to satisfy a bar phase 1 knowingly accepted for them.
+ */
+export function resolveBorderIntensity(
+  overrides: SectionColorOverrides,
+  surface: CardSurfaceState,
+): ColorOverrideIntensity {
+  const chosen = resolveOverrideIntensity(overrides.borderIntensity, "border");
+
+  return borderIsOnlyBoundary(surface) ? "quiet" : chosen;
+}
+
+/**
+ * Below this the card is not separated from its ground by its fill alone, so
+ * turning the border off makes it disappear.
+ *
+ * Phase 1 measured the page recipe's `raised` card at 1.16 against `page` and
+ * flagged that it clears partly because the Faint border is drawn. The figure
+ * moves with the palette - the currently promoted one puts it at 1.23 - which
+ * is exactly why this is a threshold checked at gate time against the live
+ * palette rather than a list of recipes known to be fragile.
+ *
+ * This REPORTS. It does not force the border back on. A forced border would
+ * silently overrule an editor who wanted a borderless panel, and the same call
+ * was already made for the neighbouring question of an override painting a
+ * card its own ground colour: the gate warns, the picker allows.
+ */
+export const CARD_DEPENDS_ON_BORDER_BELOW = 1.25;
+
+export function cardDependsOnBorder(
+  palette: ColorPalette,
+  recipe: ColorRecipeId,
+  overrides: SectionColorOverrides,
+): boolean {
+  const ground = resolveRef(palette, recipeInputs[recipe].ground, palette.page);
+
+  return (
+    contrastRatio(resolveSectionCard(palette, recipe, overrides), ground) <
+    CARD_DEPENDS_ON_BORDER_BELOW
+  );
 }
 
 /** The colour an override actually paints, mixed toward the recipe's ground. */
@@ -189,11 +300,18 @@ export function resolveCardPolarity(
  * Omitted entirely when unset - an absent attribute lets the recipe's own rule
  * win, where an empty one would still match `[data-pagebuilder-card-swatch]`
  * and repaint the card with an undefined swatch.
+ *
+ * `surface` is what the section's existing `cardFill` / `cardBorder` controls
+ * already resolved to. It is optional and defaults to a filled, bordered card,
+ * which is the shape most sections have: a caller that does not know its fill
+ * state gets the editor's chosen intensity untouched rather than a floor
+ * applied on a guess.
  */
 export function colorOverrideAttributes(
   palette: ColorPalette,
   recipe: ColorRecipeId,
   overrides: SectionColorOverrides,
+  surface: CardSurfaceState = { fill: "solid", border: "on" },
 ): Record<string, string> {
   const attributes: Record<string, string> = {};
 
@@ -208,9 +326,9 @@ export function colorOverrideAttributes(
   const borderSwatch = resolveOverrideSwatch(overrides.borderSwatch);
   if (borderSwatch) {
     attributes["data-pagebuilder-border-swatch"] = borderSwatch;
-    attributes["data-pagebuilder-border-intensity"] = resolveOverrideIntensity(
-      overrides.borderIntensity,
-      "border",
+    attributes["data-pagebuilder-border-intensity"] = resolveBorderIntensity(
+      overrides,
+      surface,
     );
   }
 

@@ -64,6 +64,16 @@ type SavedPagebuilderSection = {
   cardBorder?: string;
   borderTone?: string;
   cardFill?: string;
+  /**
+   * The card and border colour overrides. Plain strings for the same reason
+   * as the fields above - this is a transport boundary, and `color-overrides`
+   * resolves them at render time, where a retired swatch degrades to the
+   * recipe's own card rather than being rejected here and lost.
+   */
+  cardSwatch?: string;
+  cardIntensity?: string;
+  borderSwatch?: string;
+  borderIntensity?: string;
 };
 
 type SavedPagebuilderOptionRequest = {
@@ -264,6 +274,18 @@ function normalizeSection(
     borderTone:
       typeof section.borderTone === "string" ? section.borderTone : undefined,
     cardFill: typeof section.cardFill === "string" ? section.cardFill : undefined,
+    cardSwatch:
+      typeof section.cardSwatch === "string" ? section.cardSwatch : undefined,
+    cardIntensity:
+      typeof section.cardIntensity === "string"
+        ? section.cardIntensity
+        : undefined,
+    borderSwatch:
+      typeof section.borderSwatch === "string" ? section.borderSwatch : undefined,
+    borderIntensity:
+      typeof section.borderIntensity === "string"
+        ? section.borderIntensity
+        : undefined,
     align: typeof section.align === "string" ? section.align : undefined,
     backgroundTreatment:
       typeof section.backgroundTreatment === "string"
