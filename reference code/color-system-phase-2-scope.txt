@@ -1,0 +1,236 @@
+COLOR SYSTEM — PHASE 2 SCOPE (re-estimated)
+Section-level card and border overrides
+Date: 2026-08-09
+
+
+===============================================================================
+0. WHY THIS WAS RE-SCOPED
+===============================================================================
+
+Phase 1 discovered that a custom property containing var() is substituted at
+computed-value time on the element that declares it, so a scope establishing a
+new colour ground must RE-DECLARE the entire scales block rather than just
+re-pointing the ground. That made "add a colour context" look expensive, and
+phase 2 was flagged for re-estimation on the assumption it would need one
+context per override.
+
+IT DOES NOT. Two properties were measured in Chrome before writing this:
+
+  1. `color-mix()` accepts its percentage from a custom property.
+     `color-mix(in oklab, var(--sw) var(--pct), var(--g))` with `--pct: 50%`
+     resolves to #8dabc0 - byte-identical to the hardcoded 50% form.
+
+     So swatch and intensity are two INDEPENDENT axes. Nine swatch rules plus
+     five intensity rules cover all forty-five combinations, rather than a rule
+     per combination.
+
+  2. Overriding `--recipe-card` on the SECTION FRAME is sufficient. The
+     existing `.recipe-card-context` re-resolves from it with no new context
+     and no copied block. Measured on the page recipe, overriding the card to
+     the dark swatch:
+
+         card background   #e0e6eb -> #0d4356
+         card headline     #232834 -> #ffffff
+         card muted        #4b505c -> #c3cfd4
+         card border       #b6bcc3 -> #406676
+
+     Every one of those re-derived on its own. That is the whole of section 6
+     of the original brief - "a card override must establish a local colour
+     context" - already working, because the context reads a variable rather
+     than a value.
+
+The copy-per-context problem is real but belongs to PHASE 4, where cards nest
+arbitrarily and each genuinely establishes a new scope. Phase 2 is
+section-level by explicit decision in the brief, and section-level overrides
+are variable assignments on a frame that already exists.
+
+REVISED ESTIMATE: phase 2 is roughly the size of phase 1 step 5, not step 4.
+The CSS is about thirty rules. The work is concentrated in the data model, the
+builder UI, and export - not in the colour system.
+
+
+===============================================================================
+1. WHAT PHASE 2 DELIVERS
+===============================================================================
+
+Per section, two new overrides, each a swatch plus an optional intensity:
+
+    cardSwatch    + cardIntensity      the card surface
+    borderSwatch  + borderIntensity    the card border
+
+Stored as semantic intent - `{ swatch: "dark", intensity: "faint" }` - never as
+a resolved colour, matching how `colorRecipe` is stored today. No intensity
+means Strong.
+
+NOT in phase 2, unchanged from the brief:
+  - per-card overrides. Overrides remain section-level.
+  - overriding the section ground itself. That is what the recipe is for.
+  - arbitrary nested contexts. Phase 4.
+
+
+===============================================================================
+2. THE CSS — ABOUT THIRTY RULES
+===============================================================================
+
+Two axes, declared once each, then composed:
+
+    /* swatch axis - 9 rules per override */
+    [data-card-swatch="page"]        { --card-swatch: var(--palette-page) }
+    [data-card-swatch="surface"]     { --card-swatch: var(--palette-surface) }
+    ... raised, ink, dark, dark-surface, brand, cta-accent, highlight
+
+    /* intensity axis - 5 rules, SHARED between card and border */
+    [data-card-intensity="strong"]   { --card-intensity: 100% }
+    [data-card-intensity="body"]     { --card-intensity: 86% }
+    [data-card-intensity="muted"]    { --card-intensity: 76% }
+    [data-card-intensity="quiet"]    { --card-intensity: 58% }
+    [data-card-intensity="faint"]    { --card-intensity: 20% }
+
+    /* composition - 1 rule */
+    .pagebuilder-paint-surface[data-card-swatch] {
+      --recipe-card: color-mix(in oklab,
+        var(--card-swatch) var(--card-intensity, 100%), var(--recipe-ground));
+    }
+
+The intensity mixes toward `--recipe-ground`, which is what makes an override
+contextual rather than absolute - `dark · faint` is a wash of the section's own
+ground, not a fixed grey. That is the brief's requirement and it falls out of
+the existing scale definition rather than needing new machinery.
+
+Border is the same shape against `--recipe-faint` / `--live-service-border`.
+
+REUSE THE LADDER CONSTANTS. The five intensity percentages are already in
+`color-scales.ts` and asserted against globals.css by
+`color-css-agreement.test.ts`. The override rules must read the same numbers,
+and that test should be extended to cover them - otherwise an override at
+"faint" and a border at Faint could silently diverge.
+
+
+===============================================================================
+3. THE ONE THING CSS CANNOT DO
+===============================================================================
+
+`--recipe-card-text`. A card's text source has to flip with the card's
+lightness, and CSS cannot ask how light an arbitrary `color-mix()` result is.
+`light-dark()` keys off colour-scheme, not off a computed colour, and
+`contrast-color()` is not deployable yet.
+
+So the polarity is resolved in TypeScript and emitted as an attribute:
+
+    data-card-polarity="light" | "dark"
+
+    [data-card-polarity="dark"]  .recipe-card-context { --recipe-card-text: #ffffff }
+    [data-card-polarity="light"] .recipe-card-context { --recipe-card-text: var(--palette-ink) }
+
+The resolver already exists and is browser-verified: `resolveLadder`,
+`mixOklab` and `isDarkGround` in `color-scales.ts` reproduce Chrome's output
+exactly, so computing `isDarkGround(resolvedCard)` at render time is reliable.
+
+This is the only place phase 2 needs new logic rather than new configuration,
+and it is also the place a mistake is invisible in code review - a wrong
+polarity renders as unreadable card text on one override only. It wants a test
+that walks every swatch x intensity x recipe combination and asserts the
+polarity matches the resolved card's lightness.
+
+
+===============================================================================
+4. WHERE THE WORK ACTUALLY IS
+===============================================================================
+
+Ordered by effort, largest first.
+
+4a. DATA MODEL AND PERSISTENCE
+    - four new optional fields on a section
+    - `section-style-options.ts`: option lists, defaults, and the resolve
+      helpers that mirror `resolveCardFill` / `resolveCardBorder`
+    - `section-toggle-props.ts`: thread them like cardFill/cardBorder
+    - unset must mean "recipe decides", not "strong page" - the absent case is
+      the common one and has to cost nothing
+    - follow the inert rule: never migrate, alias if renamed
+
+4b. BUILDER UI
+    - two swatch pickers and two intensity pickers in the section panel
+    - they belong with cardFill/cardBorder, which are the controls they
+      extend
+    - hide swatches whose palette entry is unauthored, reusing the
+      availability mechanism from step 5 rather than a second one
+    - the panel is narrow; a 9-swatch picker needs a grid, not a row
+
+4c. EXPORT
+    - the attributes must reach the exported markup. `site-export.ts` already
+      writes `data-pagebuilder-card-fill`; these follow the same path
+    - export copies globals.css wholesale, so the CSS side needs nothing
+
+4d. THE GATE
+    - extend `gateColorSystem` to take per-section overrides and report on the
+      resolved card, not just the recipe's default card
+    - this is where the 1.15 card floor earns its keep: an override to
+      `surface · faint` on the surface recipe is a card that does not exist
+    - the gate currently walks recipes; it will need to walk overrides too,
+      which changes its shape from "eight recipes" to "eight recipes plus
+      whatever sections declare"
+
+4e. CSS
+    - about thirty rules, per section 2. The smallest part.
+
+
+===============================================================================
+5. CONSTRAINTS CARRIED FROM PHASE 1
+===============================================================================
+
+  - PAGE cards depend on their border. `raised` is 1.16 against `page`, just
+    over the floor, and clears partly because the Faint border is drawn. An
+    override that turns the border off on the page recipe makes the card
+    disappear. Phase 1 flagged this; phase 2 is where it has to be enforced -
+    either the border cannot be disabled where the card is under ~1.25, or the
+    card lifts when the border goes.
+
+  - Faint borders sit at 1.46-1.75, under WCAG 1.4.11's 3:1 for a meaningful
+    non-text boundary. Accepted while the fill also distinguishes the card. If
+    an override produces fill-off AND border-on, the border becomes the only
+    boundary and must step up to Quiet. That rule was deferred to phase 2 and
+    is now due.
+
+  - `cardBorderTone` is inert. Phase 2 should not resurrect a tone choice; the
+    ground-relative faint line already picks the direction.
+
+  - Card context reaches 41 of 148 card-rendering sections. An override on one
+    of the other 107 will repaint the card but leave its text laddered against
+    the section ground. Either phase 2 is scoped to the covered set and says
+    so in the UI, or phase 3 lands first. THIS IS THE REAL SEQUENCING
+    QUESTION - shipping an override that silently half-works on two thirds of
+    sections is worse than not shipping it.
+
+
+===============================================================================
+6. RECOMMENDED SEQUENCE
+===============================================================================
+
+  1. Extend the card context to the remaining sections (was phase 3). It is a
+     prerequisite for overrides being trustworthy, and it is mechanical.
+  2. CSS axes + polarity attribute + the agreement test extension.
+  3. Data model and persistence, with unset costing nothing.
+  4. Gate extension, before the UI, so the UI can surface warnings from day
+     one rather than being retrofitted.
+  5. Builder UI.
+  6. Export.
+
+Steps 2 and 3 are independent and can land in either order. Step 1 is the one
+that decides whether the feature is honest.
+
+
+===============================================================================
+7. OPEN QUESTIONS
+===============================================================================
+
+  - Should border overrides offer intensity at all? The border is already
+    ground-relative at Faint, and the brief's example of wanting a stronger
+    border is served by one step - Quiet - rather than five. A two-value
+    control (faint / defined) may be the better product and is less to build.
+  - Should an override be allowed to make a card the same colour as its
+    ground? It is occasionally intentional (a borderless panel) and usually a
+    mistake. The gate can warn; the picker could also just not offer it.
+  - Per the brief, overrides are section-level. Several sections render more
+    than one card kind - a bento with a feature tile and three small ones. One
+    override paints them all. Worth confirming that is the intent before
+    building it.
