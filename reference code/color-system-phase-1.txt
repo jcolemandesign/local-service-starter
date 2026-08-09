@@ -1,0 +1,556 @@
+COLOR SYSTEM OVERHAUL — PHASE 1 IMPLEMENTATION PLAN  (v3)
+Authored palette, two scales, the role table
+Date: 2026-08-08
+
+
+===============================================================================
+0. WHAT CHANGED FROM v2
+===============================================================================
+
+  - CHROMATIC BUTTONS. v2 concluded white was the only viable CTA fill on dark
+    grounds. That was true only because the ladder had one direction — every
+    level mixes source toward ground, so on a dark ground every chromatic
+    value darkens and dies. Adding a tint operation dissolves it. Recipes on
+    neutral dark grounds now get a recognisably blue button, not a white one.
+  - THE TINT IS ITS OWN SCALE, NOT THE LADDER WITH A DIFFERENT ENDPOINT. The
+    two scales do not overlap and are not the same operation. Section 2b.
+  - EYEBROW WAS BROKEN AND NEITHER REVIEW PASS CAUGHT IT UNTIL NOW. The brief
+    puts eyebrow on the accent for dark recipes; brand on dark measures 1.48
+    as readable text against a 4.5 bar. Eyebrow is a chromatic role and takes
+    the tint, same as the fill.
+  - CARD COVERAGE IS 70 SECTIONS, NOT 26. The hook is the existing cardStyle
+    plumbing, not the Card primitive alone. Section 3d.
+  - ACCENT now has a render-time fallback in addition to picker hiding. Hiding
+    governs authoring; it does not govern data that already references the
+    recipe.
+  - The gate reports its covered set explicitly, and the residual is a number.
+
+REJECTED IN v2, STILL REJECTED, NOT RELITIGATED
+  - Muted at 70% on an evenly-stepped ladder. Conceded by the reviewer.
+
+
+===============================================================================
+1. AUTHORED PALETTE
+===============================================================================
+
+    page           light page ground
+    surface        light section ground
+    raised         lifted card on a light ground
+    ink            deep text source + its own recipe ground
+    dark           dark section ground
+    darkSurface    the card that sits on a dark ground
+    brand          the true brand colour
+    accent         CTA-appropriate derivative of brand — OPTIONAL
+    highlight      third chromatic, ground use only
+
+INK AND DARK ARE INDEPENDENT. They may be authored to the same value; nothing
+derives one from the other. ink is a text source that also grounds its own
+recipe, dark is a section ground. This is what lets a navy band coexist with
+near-black body copy later without re-plumbing.
+
+SETTLED VALUES for slot 1:
+
+    page         #e5eaef     unchanged
+    surface      #d0dde2     unchanged
+    raised       #f6fbff     CHANGED from #e0e6eb
+    ink          #232834     was serviceInk
+    dark         #0d4356     was bgDark
+    darkSurface  #24566a     NEW — dark +0.07L, 1.34 against dark
+    brand        #175c82     was serviceAccent
+    accent       UNSET       intentionally
+    highlight    #bf0d22     was accent
+
+raised WAS RECESSED AND UNCONSUMED. At #e0e6eb it was darker than page — a
+recessed card named "raised" — and no recipe referenced it. Re-authored to
+#f6fbff and given to PAGE as its card.
+
+    DEPENDENCY: raised is 1.16 against page, just over the 1.15 floor where a
+    card stops reading as a card. It clears because the Faint border at 1.55
+    is doing part of the work. The border is therefore NON-NEGOTIABLE on PAGE
+    cards — if a phase-2 override turns it off, the card disappears. Wire that
+    constraint when cardFill/cardBorder become overridable.
+
+ACCENT IS UNSET FOR SLOT 1, DELIBERATELY. brand carries a white-label CTA at
+7.27, so no CTA derivative is needed. That is the success state in the brief.
+Three consequences, all of which must be implemented:
+
+  1. CTA fill calling for accent      -> resolves to brand
+  2. SURFACE's card and faint source  -> resolve to brand
+  3. The ACCENT recipe                -> HIDDEN from both pickers
+     AND -> resolves ground to brand at RENDER
+
+(3) is two mechanisms, not one. Hiding governs the picker; it does not govern
+data. A page already assigned the ACCENT recipe — or assigned it before the
+palette changed — still has to render. Without the render fallback we would
+have swapped an undefined-ground bug for a broken-page bug with a narrower
+trigger. `renamedSectionColorRecipes` handles renames, not conditional
+availability, so this needs its own path.
+
+RETIRED TO INERT (do not migrate, do not delete):
+    muted / serviceMuted        accentInk
+    accentMutedText             serviceBorder (explicit + the oklch derivation)
+
+
+===============================================================================
+2. TWO SCALES
+===============================================================================
+
+There are two distinct operations. Conflating them is the mistake v2 made by
+omission and the reason it concluded white buttons were inevitable.
+
+2a. THE LADDER — source mixed toward the LOCAL GROUND
+
+    Strong    100%     headline, primary text
+    Body       86%     body copy
+    Muted      76%     eyebrow, secondary copy
+    Quiet      58%     metadata, passive UI — LARGE OR NON-ESSENTIAL ONLY
+    Faint      20%     borders, dividers, tinted card fills
+
+    No modifier => Strong.
+
+    Bars:  Strong/Body/Muted >= 4.5   |   Quiet >= 3.0   |   Faint see 2c
+
+    WHY MUTED IS 76%, SETTLED: at 70% the ladder fails AA at Muted (4.27) and
+    drops Quiet under 3:1 (2.84 on surface) as soon as ink is authored light,
+    which this plan permits. A ladder that is unsafe for a permitted authoring
+    choice is a design defect, not something a warning should paper over.
+    Evenness is measured in output — 8.88 / 6.37 / 4.96 / 3.23 is a stepped
+    hierarchy — not in arithmetic tidiness of the input percentages.
+
+2b. THE TINT — a chromatic swatch mixed toward the RECIPE'S TEXT SOURCE
+
+    Chromatic fill      50% chromatic / 50% text source
+    Chromatic text      30% chromatic / 70% text source
+
+    Applied only where the ground is a NEUTRAL DARK (ink, dark, darkSurface).
+    On light grounds the tint is 0% — brand at full strength already clears
+    both bars (6.00 on page, 5.23 on surface). On chromatic grounds the role
+    falls to the text source instead; see 4d.
+
+    THE TWO SCALES DO NOT OVERLAP AND ARE NOT INTERCHANGEABLE:
+      - different direction: ladder mixes toward the ground, tint mixes toward
+        the text source
+      - different range: the ladder's useful span is 100-20; the tint's is
+        50-30
+      - Faint at 20% source would be nearly the text source; Quiet at 58% is
+        still too saturated for an eyebrow on darkSurface (measures 3.34
+        against a 4.5 bar)
+
+    Implementing the tint as "the same five rungs with a different endpoint"
+    produces failing eyebrows or washed-out buttons depending which rung is
+    picked. It needs its own two values.
+
+    TWO VALUES PER ROLE, NOT PER RECIPE. Measured across every neutral dark
+    ground, mixing brand toward white:
+
+        % text src   colour     ink      dark     darkSurface
+        ------------------------------------------------------
+        0%           #175c82    2.03     1.48     1.11
+        40%          #779bb4    5.01     3.65     2.73
+        50%          #8dabc0    6.12     4.46     3.34    <- fill
+        60%          #a3bccd    7.46     5.44     4.07
+        70%          #baccd9    8.93     6.51     4.87    <- text
+        80%          #d0dde6   10.65     7.76     5.80
+
+    50% is the lowest value clearing 3.0 on all three (button edge, 1.4.11).
+    70% is the lowest clearing 4.5 on all three (readable eyebrow). Two
+    constants cover eight recipes; no recipe carries a hand-tuned percentage,
+    which is the hand-maintained table this overhaul exists to retire.
+
+    HONEST LIMIT: the reviewer asked for the tint to resolve against the local
+    ground the way the ladder does. It cannot, in pure CSS — there is no
+    contrast solver, so a value cannot be derived from a target ratio. The
+    constants are therefore tuned to the WORST ground (darkSurface) and are
+    consequently a little washed on ink, where 70% measures 8.93. The gate
+    verifies all grounds, which is what makes fixed constants safe.
+
+2c. SHARED RULES
+
+    MIX IN OKLAB, NOT OKLCH — both scales. OKLCh interpolates hue on a polar
+    path; mixing a chromatic swatch toward a near-neutral swings hue through
+    unrelated territory:
+        highlight -> page @70%:   oklab #d36561   oklch #c664a1  (magenta)
+    Correctness, not preference.
+
+    FAINT AND WCAG 1.4.11 — A DECISION, NOT AN OVERSIGHT. Faint draws card
+    borders at 1.46-1.75 where 1.4.11 asks 3:1 for meaningful non-text
+    boundaries. Accepted: the card is also distinguished by fill, padding and
+    content grouping, so the border reinforces rather than carries. If a card
+    ever renders fill-off AND border-on, the border becomes the only boundary
+    and must step up to Quiet. Rule for phase 2.
+
+    AGAINST TODAY'S BORDER. Today's serviceBorder is 1.054; Faint is ~1.55.
+    Stated correctly: contrast ratios are not linear, and for near-identical
+    colours what scales is the delta above 1 — 0.054 to 0.55, roughly a 10x
+    increase in luminance difference. Borders go from effectively invisible to
+    firmly drawn. Intended, but loud. Step 6 will show it.
+
+
+===============================================================================
+3. THE ROLE TABLE — this is the system
+===============================================================================
+
+3a. EACH RECIPE DECLARES SEVEN INPUTS, NOTHING MORE
+
+    --recipe-ground        the section's paint
+    --recipe-card          the card surface on that ground
+    --recipe-text          source the ladder runs from; also the tint endpoint
+    --recipe-faint         source the faint level runs from
+    --recipe-chromatic     the swatch the tint runs from (brand, or highlight)
+    --recipe-cta-label     button label (flat)
+    --recipe-tint-mode     `none` on light grounds, `on` on neutral dark,
+                           `text-source` on chromatic grounds
+
+--recipe-text doing double duty as the tint endpoint is what makes the tint
+direction automatic: it is ink on light recipes and white on dark ones, so
+"mix the chromatic toward the text source" lightens on dark grounds and
+darkens on light ones without any recipe stating a direction.
+
+3b. THE RESOLVED SCALES, DECLARED ONCE
+
+    /* ladder — toward the ground */
+    --text-strong: var(--recipe-text);
+    --text-body:   color-mix(in oklab, var(--recipe-text) 86%, var(--recipe-ground));
+    --text-muted:  color-mix(in oklab, var(--recipe-text) 76%, var(--recipe-ground));
+    --text-quiet:  color-mix(in oklab, var(--recipe-text) 58%, var(--recipe-ground));
+    --faint-line:  color-mix(in oklab, var(--recipe-faint) 20%, var(--recipe-ground));
+
+    /* tint — toward the text source */
+    --chroma-fill: color-mix(in oklab, var(--recipe-chromatic) 50%, var(--recipe-text));
+    --chroma-text: color-mix(in oklab, var(--recipe-chromatic) 30%, var(--recipe-text));
+
+Custom properties cannot take arguments, so this is one declaration per source
+role rather than one parameterised resolver. Seven declarations replace ~136
+hand-written rows.
+
+3c. ROLE TABLE — every --live-* row, its source, its scale
+
+    --live-* row                    source              scale/level
+    --------------------------------------------------------------------
+    --live-service-ink              recipe-text         ladder Strong
+    --live-text-main                recipe-text         ladder Strong
+    --live-text-body      (NEW)     recipe-text         ladder Body
+    --live-service-muted            recipe-text         ladder Muted
+    --live-text-muted               recipe-text         ladder Muted
+    --live-text-meta      (NEW)     recipe-text         ladder Quiet
+    --live-service-accent           chroma-text         tint
+    --live-text-accent              chroma-text         tint
+    --live-bg-page                  recipe-ground       flat
+    --live-service-surface          recipe-card         flat
+    --live-bg-surface               recipe-card         flat
+    --live-surface-raised           recipe-card         flat  (legacy alias)
+    --live-service-border           recipe-faint        ladder Faint
+    --live-border-default           recipe-faint        ladder Faint
+    --live-cta-primary              chroma-fill         tint
+    --live-cta-primary-ink          recipe-cta-label    flat
+    --live-cta-secondary-ink        chroma-fill         tint
+    --live-cta-secondary-border     chroma-fill         tint
+    --live-bg-dark                  palette dark        flat, UNSCOPED
+    --live-accent                   palette highlight   flat, UNSCOPED
+
+    Body and Quiet had no --live-* consumer; without these rows the ladder has
+    rungs nothing can reach.
+
+    QUIET'S ROW IS NAMED FOR ITS CONSTRAINT, NOT ITS INTENSITY. It is
+    --live-text-meta, not --live-text-quiet. Quiet is 3.23 on page and fails
+    AA for body copy; an applicable utility named for its intensity will end
+    up on body copy. The gate cannot police where a token is used, so the name
+    has to.
+
+    The last two rows are deliberately unscoped — a few builder-only surfaces
+    need a fixed dark and a fixed highlight regardless of context. Audit their
+    consumers before locking this in (open question 4).
+
+3d. CARD-SCOPED GROUND — coverage is 70 sections
+
+Section 4c's card figures assume text ladders against the CARD. The general
+case is phase 4, but phase 1 cannot publish card numbers without a minimal
+version. One class:
+
+    .recipe-card-context {
+      --recipe-ground: var(--recipe-card);
+      --recipe-text:   <light or dark source for this card>;
+      /* AND a verbatim copy of the whole scales block — see below */
+    }
+
+CORRECTED DURING IMPLEMENTATION. An earlier draft of this section claimed the
+scales "re-resolve automatically from the new ground," so that re-setting one
+variable in a subtree would re-derive all five ladder levels and both tint
+values for free. That is not how CSS custom properties work. A custom property
+whose value contains var() is substituted at computed-value time ON THE
+ELEMENT THAT DECLARES IT, and what inherits from there is the already-resolved
+colour. A descendant changing --recipe-ground does not reach back into a scale
+declared on an ancestor.
+
+So any scope establishing a new ground must RE-DECLARE the entire scales
+block, not just the ground. CSS has no mixin, so the duplication is mandatory.
+In globals.css this is expressed as one selector list covering both the recipe
+scope and .recipe-card-context, which keeps the two copies literally identical
+rather than merely intended to be. Phase 4 generalises the same pattern and
+inherits the same constraint — every new context is another copy of the block.
+
+This is worth knowing before phase 4 scopes its work: "add a context" is not a
+one-line change.
+
+THE HOOK IS THE cardStyle PLUMBING, NOT THE Card PRIMITIVE.
+
+    Card primitive users                    27 sections
+    cardFill / cardBorder threaded          49 sections
+    union — phase 1 coverage                70 sections
+    registered in cardStyleComponents       46 components
+    card-rendering sections overall        148
+    RESIDUAL, uncovered in phase 1          78 sections
+
+The 49 already compute a single card className (`cardFill === "none" &&
+"!bg-transparent"`), so there is exactly one hookable element per section and
+adding the class is mechanical.
+
+A blind data-attribute sweep over the sections using `bg-bg-surface` was
+considered and rejected: that class is not a card marker in this codebase. It
+paints form inputs, checkbox indicators, `min-h-svh` page wrappers and pills
+alongside real cards. Sweeping it would attach card colour contexts to text
+inputs.
+
+THE RESIDUAL 78 LADDER AGAINST THE SECTION GROUND, NOT THEIR CARD. On light
+recipes the drift is small. On BRAND and HIGHLIGHT it is a different colour,
+not a rounding difference — white@86% toward brand is #dee7ed, toward ink it
+is #dcdde0. Step 6 should expect this, not discover it. Those sections paint a
+card surface without being registered in `cardStyleComponents`, which is a
+registration gap worth auditing on its own terms; phase 3 closes it.
+
+
+===============================================================================
+4. THE EIGHT RECIPES — recomputed
+===============================================================================
+
+ACCENT is hidden for slot 1 (defining swatch unset), so seven are measured.
+tint values: chroma-fill #8dabc0, chroma-text #baccd9.
+
+4a. INPUTS
+
+  recipe       ground       card         text   faint  chromatic  tint mode
+  --------------------------------------------------------------------------
+  PAGE         page         raised       ink    ink    brand      none
+  SURFACE      surface      brand@Faint  ink    brand  brand      none
+  INK          ink          dark         white  white  brand      on
+  DARK         dark         darkSurface  white  white  brand      on
+  DARKSURFACE  darkSurface  dark         white  white  brand      on
+  BRAND        brand        ink          white  white  —          text-source
+  ACCENT       accent       dark         white  white  —          text-source
+  HIGHLIGHT    highlight    dark         white  white  —          text-source
+
+4b. TEXT ON SECTION GROUND
+
+  recipe        ground    Strong  Body   Muted  Quiet  Faint
+  ---------------------------------------------------------
+  PAGE          #e5eaef   12.18   8.61   6.57   3.94   1.53
+  SURFACE       #d0dde2   10.62   7.73   5.95   3.72   1.51
+  INK           #232834   14.74  10.85   8.62   5.43   1.74
+  DARK          #0d4356   10.75   8.28   6.75   4.55   1.73
+  DARKSURFACE   #24566a    8.03   6.36   5.31   3.77   1.64
+  BRAND         #175c82    7.27   5.80   4.89   3.52   1.59
+  HIGHLIGHT     #bf0d22    6.37   5.17   4.41   3.24   1.55
+
+  All Strong/Body/Muted clear 4.5 except HIGHLIGHT's Muted at 4.41.
+  KNOWINGLY ACCEPTED, NOT RE-TUNED. Moving Muted to 78% would invalidate every
+  figure above to chase 2% on one recipe, and it is false precision: mixing
+  toward a saturated red produces out-of-gamut intermediates and engines
+  disagree on gamut mapping, so 4.5 is not guaranteeable at render time
+  regardless. This is the case the gate was built for — chromatic ground,
+  known 2% miss, visible warning. If it proves annoying in practice, a
+  per-recipe Muted override on HIGHLIGHT is the phase-2 mechanism arriving
+  early for a legitimate reason, costing one recipe's numbers instead of all
+  eight.
+  All Quiet clear 3.0.
+
+4c. TEXT ON CARD  (card as its own ground, per 3d — true for 70 of 148)
+
+  recipe        card      vs grnd  Strong  Body   Muted  Quiet
+  ------------------------------------------------------------
+  PAGE          #f6fbff   1.16     14.15   9.81   7.20   4.20
+  SURFACE       #acc2cf   1.33      7.98   6.11   4.93   3.27
+  INK           #0d4356   1.37     10.75   8.28   6.75   4.55
+  DARK          #24566a   1.34      8.03   6.36   5.31   3.77
+  DARKSURFACE   #0d4356   1.34     10.75   8.28   6.75   4.55
+  BRAND         #232834   2.03     14.74  10.85   8.62   5.43
+  HIGHLIGHT     #0d4356   1.69     10.75   8.28   6.75   4.55
+
+  All pass both bars. Card-vs-ground spans 1.16-2.03.
+
+4d. CTA AND EYEBROW — CHROMATIC BUTTONS
+
+  recipe       cta fill  vs grnd  label    on fill  eyebrow  vs grnd
+  -------------------------------------------------------------------
+  PAGE         #175c82   6.00     #ffffff  7.27     #175c82  6.00
+  SURFACE      #175c82   5.23     #ffffff  7.27     #175c82  5.23
+  INK          #8dabc0   6.12     #232834  6.12     #baccd9  8.93
+  DARK         #8dabc0   4.46     #232834  6.12     #baccd9  6.51
+  DARKSURFACE  #8dabc0   3.34     #232834  6.12     #baccd9  4.87
+  BRAND        #ffffff   7.27     #175c82  7.27     #ffffff  7.27
+  HIGHLIGHT    #ffffff   6.37     #bf0d22  6.37     #ffffff  6.37
+
+  Three regimes, all a function of ground rather than a per-recipe choice:
+
+    light ground        chromatic at full strength, white label
+    neutral dark        chromatic tinted, ink label       <- the new part
+    chromatic ground    text source (white), ground-coloured label
+
+  WHY CHROMATIC GROUNDS KEEP WHITE. The tint is measured against them and does
+  not clear: chroma-fill on brand is 3.02 and on highlight 2.65, versus white
+  at 7.27 and 6.37. A tinted brand button on a brand ground is also the
+  accent-on-accent problem the brief rules out. This matches the original
+  spec's instruction to derive chromatic-ground eyebrows from the light
+  foreground hierarchy.
+
+  HIGHLIGHT keeps the white stroke on primary AND secondary, as specified, so
+  the secondary button reads on both the highlight ground and the dark card.
+
+  HIGHLIGHT'S CTA ROLE IS RETIRED. The comment in section-color-recipes.ts
+  calls it "the only saturated colour that survives on a field this dark";
+  measured, it is 1.69 against dark and 2.31 against ink. It remains a ground
+  swatch and stays available for phase-2 overrides. Update that comment.
+
+
+===============================================================================
+5. FILES TO TOUCH
+===============================================================================
+
+src/content/section-color-recipes.ts
+    - sectionColorRecipes: 5 ids -> 8. keep surface/dark/ink/accent;
+      add page/darkSurface/brand/highlight
+    - renamedSectionColorRecipes: add default -> page (no data migration)
+    - add `requiresSwatch` so a recipe with an unset defining swatch can be
+      hidden from pickers, AND a render-time resolution for assigned-but-
+      unavailable (section 1)
+    - SectionCardBorderTone becomes dead — a ground-relative Faint picks the
+      direction automatically. Retire to inert, keep the stored field readable
+    - update the highlight and ink comments; both describe removed behaviour
+
+src/app/globals.css
+    - lines ~1787-2060. Five `[recipe] > *` blocks hand-assigning ~17 rows
+      each become: eight input blocks (3a), one scales block (3b), one role
+      block (3c), one .recipe-card-context class (3d)
+    - --palette-* republishing (~1790-1797): add darkSurface, brand; retire
+      --palette-muted
+    - --color-recipe-ink-card / --color-recipe-ink-ground (~129-142) exist
+      because a section cannot name its own card colour on the ink recipe.
+      3d removes the need; leave for phase 1, delete in phase 4
+    - BAND MEMBERS carry data-pagebuilder-color-recipe="inherit" to go inert
+      (comment ~1459-1482). Verify --recipe-ground cascades correctly. Both
+      scales now DEPEND on that value, so a member reading the wrong ground is
+      a NEW failure mode flat token references could not produce. Highest risk
+      in the phase
+
+src/app/api/style-guide-tokens/route.ts
+    - token type + normalizeColor: add darkSurface, brand; make accent
+      optional; retire the four inert fields
+    - emitted --live-*/--color-* block (~524-560) gains the new swatches
+    - call the shared gate, return its warnings
+
+src/components/sections/StyleGuideColorRecipeControls.tsx
+    - line 13: grid-cols-5 -> grid-cols-2 (4 rows of 2), keep the max-lg /
+      max-md variants
+    - descriptions at 18-22 need all eight
+    - filter recipes whose defining swatch is unset
+
+src/components/sections/StyleGuideLiveSurface.tsx
+    - call the same shared gate on live edit so warnings appear while dragging
+      the picker, not only after save
+
+src/components/sections/PagebuilderShell.tsx (~5004)
+    - confirm 8 recipes render in the narrower side panel; same unset filter
+
+src/components/primitives/Card.tsx + the 49 cardStyle sections
+    - apply .recipe-card-context at the single card className each already
+      computes. 70 sections total (3d)
+
+src/utils/site-export.ts
+    - no logic change expected: export copies globals.css wholesale
+      (~889-897). Confirm no resolved colour leaked into another export path
+
+
+===============================================================================
+6. CONTRAST GATE
+===============================================================================
+
+A PURE FUNCTION in a shared module, called from both the token-save route and
+StyleGuideLiveSurface, so it fires while someone is experimenting.
+
+    gateColorSystem(palette) -> { recipe, role, scale, ratio, bar, pass }[]
+
+Per visible recipe, resolved against both ground and card:
+
+    ladder Strong/Body/Muted    >= 4.5
+    ladder Quiet                >= 3.0
+    tint chroma-text            >= 4.5      (eyebrow)
+    tint chroma-fill vs ground  >= 3.0      (button edge, 1.4.11)
+    card vs ground              >= 1.15     (below this a card stops reading)
+
+Warnings, not a hard block — the palette is user-authored and a miss may be
+deliberate (HIGHLIGHT's 4.41 is one).
+
+THE REPORT MUST STATE ITS COVERED SET. Card-context figures are true for the
+70 hooked sections; the other 78 ladder against the section ground. A gate
+that silently validates a model most of the codebase does not implement is
+worse than no gate, because it manufactures confidence in exactly the numbers
+someone would otherwise go and check. The report says which set it covers.
+
+
+===============================================================================
+7. TESTS
+===============================================================================
+
+Existing, must keep passing:
+    section-color-recipe-alias.test.ts    extend for default -> page
+    section-colour-ownership.test.ts      sections still own no colour
+    section-band-render.test.tsx          band inheritance
+    site-export-bands.test.ts
+
+New:
+    - scale resolver unit tests, BOTH scales: source + level + ground -> hex,
+      including the oklab/oklch magenta case as a regression guard
+    - gate unit test over slot 1, asserting section 4's figures do not drift
+    - a recipe with an unset defining swatch is absent from both pickers AND
+      still renders when already assigned in saved data
+    - .recipe-card-context is present on all 70 hooked sections — this is the
+      test that keeps §4c honest as sections are added
+
+
+===============================================================================
+8. ORDER OF WORK
+===============================================================================
+
+  1. Author darkSurface #24566a and raised #f6fbff; confirm accent stays
+     unset. Nothing is measurable until the palette is settled.
+  2. Both scales in globals.css (3b). No recipes yet.
+  3. Shared gate + unit tests. Land BEFORE the recipes so every later step is
+     measured rather than eyeballed.
+  4. Role table + eight input blocks + .recipe-card-context across the 70.
+     Land together — a partial set means two resolution models coexist.
+  5. Recipe ids, default -> page alias, unset-swatch hiding + render
+     fallback, the three UI surfaces.
+  6. Full visual pass across /sections and a staged page on every recipe.
+     Expect two loud differences: borders (~10x luminance delta) and the 78
+     residual sections on BRAND/HIGHLIGHT.
+
+Steps 1-3 are safe and independently landable. Step 4 is irreversible and
+should be its own commit.
+
+
+===============================================================================
+9. OPEN QUESTIONS
+===============================================================================
+
+  - Is raised at #f6fbff too close to white for a business whose page ground
+    is already near-white? The lifted-card pattern needs a tinted page. The
+    gate's 1.15 card floor catches it, but the failure mode is a palette that
+    cannot use the PAGE recipe at all.
+  - The tint constants (50/30) are tuned to darkSurface, the worst neutral
+    dark ground. If a business authors a much darker darkSurface the constants
+    are over-light on it. Worth a gate check that reports the tint's margin,
+    not just pass/fail.
+  - The 78 residual sections: audit whether they should be registered in
+    cardStyleComponents rather than left to phase 3. Several may be
+    registration oversights rather than deliberate omissions.
+  - The unscoped --live-bg-dark / --live-accent rows need a consumer audit
+    before being locked in as permanently unscoped.

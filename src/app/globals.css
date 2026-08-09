@@ -1769,6 +1769,87 @@ body {
   }
 
   /* ==================================================================
+   * The two colour scales.
+   *
+   * Phase 1 of the colour system overhaul. See
+   * `reference code/color-system-phase-1.txt` for the measured figures, and
+   * `src/utils/color-scales.ts` for the TypeScript mirror the contrast gate
+   * predicts these with. The constants must agree in both places.
+   *
+   * There are two operations, and they are not interchangeable:
+   *
+   *   LADDER  a source mixed toward the LOCAL GROUND. Produces the text
+   *           hierarchy and the faint border. Runs 100 -> 20.
+   *   TINT    a chromatic swatch mixed toward the RECIPE'S TEXT SOURCE.
+   *           Runs 50 -> 30.
+   *
+   * The tint exists because the ladder only has one direction. On a dark
+   * ground every laddered value moves toward the ground, which is right for
+   * text (the source is already light) and fatal for a chromatic value - a
+   * brand-coloured button darkens into the field and dies at 1.11-2.03
+   * against a 3:1 bar. Mixing toward the text source instead lightens it on
+   * dark grounds and darkens it on light ones, with no recipe stating a
+   * direction, because `--recipe-text` is white on dark recipes and ink on
+   * light ones.
+   *
+   * Mixing is `in oklab`, never `in oklch`. OKLCh interpolates hue on a polar
+   * path, so the highlight red mixed toward a blue-grey ground travels
+   * through magenta (#c664a1) where OKLab keeps it a desaturated red
+   * (#d36561). This is correctness, not taste.
+   *
+   * WHY THESE DECLARATIONS ARE REPEATED RATHER THAN INHERITED.
+   * A custom property whose value contains `var()` is substituted at
+   * computed-value time on the element that declares it, and what inherits
+   * from there is the already-resolved colour. So a descendant that changes
+   * `--recipe-ground` does NOT re-resolve a scale declared on an ancestor.
+   * Any scope that establishes a new ground - the card context below, and
+   * phase 4's general case - has to re-declare the whole block. CSS has no
+   * mixin, so the duplication is mandatory rather than careless; keep the two
+   * copies identical.
+   * ================================================================== */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    ),
+  .recipe-card-context {
+    /* Ladder - toward the local ground. */
+    --text-strong: var(--recipe-text);
+    --text-body: color-mix(in oklab, var(--recipe-text) 86%, var(--recipe-ground));
+    /* 76%, not a tidier 70%. `ink` is authored independently of `dark` and may
+       legitimately be light; at 70% that authoring drops this rung to 4.27 and
+       the meta rung to 2.84, failing both bars. A ladder that is unsafe for a
+       permitted authoring choice is a defect, not a gate warning. */
+    --text-muted: color-mix(in oklab, var(--recipe-text) 76%, var(--recipe-ground));
+    /* Named for its constraint, not its intensity - it is 3.23 on page and
+       fails AA for body copy. See --live-text-meta in the role table. */
+    --text-meta: color-mix(in oklab, var(--recipe-text) 58%, var(--recipe-ground));
+    --faint-line: color-mix(in oklab, var(--recipe-faint) 20%, var(--recipe-ground));
+
+    /* Tint - toward the recipe's text source.
+       PROVISIONAL: these two constants are the numbers most likely to move
+       once the system can be looked at rather than measured. They are tuned to
+       the worst neutral-dark ground, so they run slightly washed on the
+       darkest one. Retuning means changing them here and in color-scales.ts,
+       and nothing else depends on their values. */
+    --chroma-fill: color-mix(in oklab, var(--recipe-chromatic) 50%, var(--recipe-text));
+    --chroma-text: color-mix(in oklab, var(--recipe-chromatic) 30%, var(--recipe-text));
+  }
+
+  /* A card that establishes its own colour context.
+   *
+   * Re-pointing the ground is what makes a card on an overridden surface
+   * resolve a readable foreground instead of inheriting the section's. The
+   * scales above are re-declared by the shared selector, not inherited, for
+   * the substitution reason documented there.
+   *
+   * Phase 1 applies this through the cardStyle plumbing - the Card primitive
+   * plus the sections already threading cardFill/cardBorder, 70 of the 148
+   * sections that paint a card surface. The rest ladder against the section
+   * ground until phase 3. */
+  .recipe-card-context {
+    --recipe-ground: var(--recipe-card);
+  }
+
+  /* ==================================================================
    * Colour recipes.
    *
    * Each recipe is one element/token table, written once. A section names
