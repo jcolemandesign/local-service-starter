@@ -16,10 +16,13 @@ import {
   recipeInputs,
   resolveRef,
 } from "@/content/color-recipe-inputs";
+import { recipeRungs } from "@/content/color-rungs";
 import {
+  type RungPercentages,
   contrastBars,
   contrastRatio,
   ladderLevels,
+  mixOklab,
   resolveLadder,
   resolveTint,
 } from "@/utils/color-scales";
@@ -118,6 +121,22 @@ const ladderRoles: { role: GateRole; level: keyof typeof ladderLevels; bar: numb
   { role: "text-meta", level: "quiet", bar: contrastBars.large },
 ];
 
+/** The ladder's level names and the rung set use different words for the
+ *  bottom three - `quiet` is what the scale calls it, `meta` is what the role
+ *  is. One translation, here, rather than a rename that would ripple. */
+function rungPercent(rungs: RungPercentages, level: keyof typeof ladderLevels) {
+  switch (level) {
+    case "body":
+      return rungs.body;
+    case "muted":
+      return rungs.muted;
+    case "quiet":
+      return rungs.meta;
+    default:
+      return ladderLevels[level];
+  }
+}
+
 function finding(
   recipe: ColorRecipeId,
   role: GateRole,
@@ -161,15 +180,33 @@ export function gateColorSystem(palette: ColorPalette): GateReport {
     const ctaLabel = resolveRef(palette, inputs.ctaLabel, ground);
     const chromatic = resolveRef(palette, inputs.chromatic, ground);
 
-    // Text hierarchy on the section ground.
+    /**
+     * Text hierarchy on the section ground.
+     *
+     * Measured at the rungs this ground ACTUALLY renders, not at the standard
+     * ones. A tight ground narrows its spread so the three levels stay
+     * distinguishable without the faintest falling away, and a gate that kept
+     * reporting the standard percentages would be describing a page nobody
+     * ships - the exact way a mirror stops being worth having.
+     */
+    const rungs = recipeRungs(palette, id);
     for (const { role, level, bar } of ladderRoles) {
       findings.push(
-        finding(id, role, "ground", resolveLadder(textSource, ground, level), ground, bar),
+        finding(
+          id,
+          role,
+          "ground",
+          mixOklab(textSource, ground, rungPercent(rungs, level)),
+          ground,
+          bar,
+        ),
       );
     }
 
     // The same hierarchy on the card, which is its own ground for the
-    // sections that carry a card context.
+    // sections that carry a card context. Cards keep the standard spread -
+    // the stylesheet resets the rungs inside a card context, because a card is
+    // a different ground from the section it sits on.
     const cardText = cardTextSource(palette, card);
     for (const { role, level, bar } of ladderRoles) {
       findings.push(

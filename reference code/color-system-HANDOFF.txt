@@ -150,13 +150,26 @@ names stop mattering. Same rule for recipe ids: `default -> page` and
 `muted -> surface` are ALIASES, not migrations.
 
 KNOWN AND ACCEPTED CONTRAST MISSES.
-Not bugs. Tests name them explicitly so the set stays singular and a third
-failure forces someone to look:
   - highlight recipe, Muted eyebrow: 4.41 against 4.5
   - highlight recipe, card at Faint with a light swatch: 4.33 and 4.17
-All are a saturated red ground, where mixing produces out-of-gamut
-intermediates that engines map differently - the bar is not guaranteeable at
-render time regardless.
+
+THE RECORDED EXPLANATION FOR THESE WAS WRONG (corrected session 2). It said
+they were a saturated-red gamut-mapping quirk. They are not. The first is
+simply where the ladder lands on a ground that starts at 6.37 - arithmetic,
+fully predictable, and it would have sent the next reader to look at colour-
+space conversion instead of at the ladder.
+
+AND THE FRAMING WAS WRONG TOO, which mattered more. These were being treated
+as compliance failures to be justified. The three rungs below Strong are an
+EMPHASIS device - headline, then body, then muted - not four independent
+accessibility contracts. Strong is the rung that carries running text. A muted
+line at 4.41 on a saturated band is a de-emphasised line that reads perfectly
+well, which is what it is for.
+
+What actually needed fixing was the case where de-emphasis cost legibility:
+the brand ground starts at 4.55, so the standard 58% rung landed at 2.59. See
+section 9 - the spread now narrows on grounds that cannot afford it, and no
+recipe carries a "miss" that has to be argued about.
 
 PROVISIONAL, AWAITING JOSH'S EYE: the two tint constants (50 / 30) in
 color-scales.ts and globals.css. Tuned to the worst neutral-dark ground, so
@@ -250,22 +263,21 @@ This gates everything involving taste.
     derived fallback.
   - the tint constants need looking at, not measuring.
 
-WHAT THE GATE SAYS ABOUT THE PROMOTED PALETTE (6 misses, measured session 2).
-Not defects in the system - they are what this particular blue does. Listed so
-they are not rediscovered as bugs:
+THE BRAND LADDER IS FIXED (session 2) - see section 9. The three `brand` rows
+the gate used to report were one finding, and the spread now narrows on
+grounds that cannot afford the standard one.
+
+WHAT REMAINS ON THE PROMOTED PALETTE, and it is genuinely Josh's eye rather
+than a code question:
 
     page  · eyebrow on ground      3.28 / 4.5   (#007cbd on #dbdbdb)
     surface · eyebrow on ground    3.63 / 4.5   (#007cbd on #e3e6e8)
-    brand · text-body on ground    3.82 / 4.5
-    brand · text-muted on ground   3.35 / 4.5
-    brand · text-meta on ground    2.59 / 3
-    highlight · text-muted         4.41 / 4.5   (already a known accepted miss)
 
-The three `brand` rows are one finding, not three: #007cbd is a mid-lightness
-ground, and the ladder mixes toward the ground, so laddered text on it has
-nowhere to go. Either the brand recipe wants a darker brand, or that recipe
-should ladder from white rather than from the text source. A design call, not
-a code one - it is the first thing worth Josh's eye alongside the tints.
+The eyebrow is the brand colour used as small text on a light ground. Unlike
+the ladder this is not derived from anything the system can narrow - it is the
+authored brand colour, at full strength, on the authored page colour. Either
+the brand is darkened, or the eyebrow stops being the raw brand on light
+grounds. Worth a look alongside the tint constants.
 
 RESOLVED — where render-time polarity gets its palette.
 Card text polarity is the one value CSS cannot derive (there is no way to ask
@@ -485,3 +497,64 @@ override built so far lands on the section frame. So the real work is:
 
 THE OLD ESTIMATE IS OBSOLETE. It was sized around building a colour context per
 card. That part is done and costs nothing. Re-scope before planning.
+
+
+===============================================================================
+9. THE TEXT HIERARCHY IS AN EMPHASIS DEVICE (session 2)
+===============================================================================
+
+READ THIS BEFORE TREATING A RUNG AS A COMPLIANCE FAILURE. The three rungs
+below Strong exist to take a little weight off - headline, then body, then
+muted - so the eye lands where it should. Strong is the rung that carries
+running text. Reading each rung as an independent AA contract produces a
+system that flattens its own hierarchy to satisfy a bar that was never the
+point, and the first draft of this work did exactly that before being pulled
+back.
+
+The one real constraint: de-emphasis may cost weight, never legibility.
+
+THE LADDER HAD NO ROOM ON TIGHT GROUNDS. Every rung mixes the text source
+toward the ground, so each step spends contrast. How much there is to spend
+depends on how far apart the ground and its text start:
+
+    ink          14.74      dark        10.75
+    surface      11.76      darkSurface  7.74
+    page         10.65      highlight    6.37
+                            brand        4.55
+
+At 14.74 the standard 86/76/58 spread is nothing. At 4.55 the faintest rung
+landed at 2.59, which is not de-emphasis, it is a line you cannot read.
+
+THE FIX: THE SPREAD NARROWS WHERE THE GROUND CANNOT AFFORD IT.
+`resolveRungPercentages` bisects for the furthest the faintest rung can step
+and still read, then places the other two proportionally inside what is left -
+so the SHAPE of the hierarchy survives and only its span shrinks. Continuous,
+not a switch, so nothing jumps as a palette is tuned. Brand goes from
+86/76/58 to 89.5/81.9/68.4 and renders 4.55 / 3.98 / 3.60 / 3.01: three
+distinguishable levels, none of them lost.
+
+Every roomy ground is untouched and must stay that way - page, surface, ink,
+dark, darkSurface and highlight all still emit nothing at all.
+
+HOW IT IS PLUMBED. The three step-downs read their percentage from
+`var(--rung-body, 86%)` and friends, which works because `color-mix()` takes
+its percentage from a custom property - the same fact phase 2's override axes
+rest on. The promoted block emits `--rung-*` only for recipes that need it,
+recomputed from the palette on every promote, so it cannot go stale. Card
+contexts RESET the rungs to the standard: a card is a different ground from
+the section it sits on, and a brand band's ink card has all the room in the
+world.
+
+TWO THINGS CHROME CAUGHT THAT NOTHING ELSE WOULD HAVE.
+  1. Rounding the emitted percentage to one decimal rounded it DOWN, below the
+     value the bisection had just guaranteed - the brand's faintest rung
+     rendered 2.99 against a 3.00 floor. Percentages are now rounded UP, since
+     a higher percentage keeps more of the text source. A test asserts the
+     floor on the EMITTED string rather than on the resolver's float, because
+     the float was already right.
+  2. That `var(--rung-body, 86%)` inside `color-mix()` resolves at all, with
+     and without the override present. Worth checking rather than assuming,
+     given this system's history with CSS that type-checks and does nothing.
+
+Verified in Chrome per recipe: brand ground compressed, page and highlight on
+the fallbacks, and every card back on 86%.

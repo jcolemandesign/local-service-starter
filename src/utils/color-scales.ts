@@ -79,6 +79,93 @@ export const contrastBars = {
   card: 1.15,
 } as const;
 
+/**
+ * The three rungs below Strong, and how far each one steps down.
+ *
+ * The hierarchy is an emphasis device: headline, then body, then muted. It is
+ * not four independent accessibility contracts - Strong is the rung that has
+ * to carry running text, and the ones below it exist to take a little weight
+ * off so the headline reads first.
+ *
+ * These are the percentages the ladder uses when the ground has room for them.
+ */
+const standardRungs = {
+  body: ladderLevels.body,
+  muted: ladderLevels.muted,
+  meta: ladderLevels.quiet,
+} as const;
+
+export type RungPercentages = { body: number; muted: number; meta: number };
+
+/**
+ * The floor the faintest rung is kept above.
+ *
+ * Metadata and passive UI, so the large-text bar rather than the body-copy
+ * one. It is not there to make the ladder "compliant" - it is there so that a
+ * de-emphasised line is still a line you can read, which is the only thing
+ * de-emphasis is allowed to cost.
+ */
+const META_FLOOR = contrastBars.large;
+
+/**
+ * How far the ladder can step down on this particular ground.
+ *
+ * Every rung mixes the text source TOWARD the ground, so each step spends
+ * contrast. A ground with lots of room (ink at 14.7, page at 10.6) can afford
+ * the full spread and gets it - nothing changes there. A ground that starts
+ * close to its text has less to spend: the brand blue starts at 4.55, and
+ * stepping down 42% of the way to it drops the faintest rung to 2.59, which
+ * stops being de-emphasis and starts being illegible.
+ *
+ * So on those grounds the steps compress. The SHAPE of the hierarchy is
+ * preserved - the three rungs stay proportionally spaced - it simply spans
+ * less distance, which is exactly what a subtle hierarchy on a saturated band
+ * should look like. Headline, body and muted stay distinguishable; none of
+ * them falls off a cliff.
+ *
+ * Continuous, not a switch: a ground with almost enough room compresses almost
+ * not at all, so nothing jumps as a business tunes its palette.
+ */
+export function resolveRungPercentages(
+  ground: string,
+  text: string,
+): RungPercentages {
+  // Room to spare - the common case, and it must cost nothing.
+  if (contrastRatio(resolveLadder(text, ground, "quiet"), ground) >= META_FLOOR) {
+    return { ...standardRungs };
+  }
+
+  // The furthest the faintest rung can step and still be readable. Bisected
+  // rather than solved: `mixOklab` is the browser-verified authority on what a
+  // percentage actually produces, so asking it is exact where inverting the
+  // OKLab maths by hand would only be close.
+  let lo = standardRungs.meta;
+  let hi = 1;
+
+  for (let i = 0; i < 30; i += 1) {
+    const mid = (lo + hi) / 2;
+
+    if (contrastRatio(mixOklab(text, ground, mid), ground) >= META_FLOOR) {
+      hi = mid;
+    } else {
+      lo = mid;
+    }
+  }
+
+  // Place the other two proportionally inside the room that is left, so the
+  // spacing between headline, body and muted stays recognisable rather than
+  // the two upper rungs collapsing onto Strong.
+  const available = 1 - hi;
+  const standardSpan = 1 - standardRungs.meta;
+  const scale = available / standardSpan;
+
+  return {
+    body: 1 - (1 - standardRungs.body) * scale,
+    muted: 1 - (1 - standardRungs.muted) * scale,
+    meta: hi,
+  };
+}
+
 type Rgb = [number, number, number];
 type Lab = [number, number, number];
 

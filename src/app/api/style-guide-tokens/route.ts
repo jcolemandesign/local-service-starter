@@ -1,6 +1,10 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { deriveDarkSurface } from "@/content/color-palette-adapter";
+import {
+  deriveDarkSurface,
+  toColorPalette,
+} from "@/content/color-palette-adapter";
+import { rungOverrideCss } from "@/content/color-rungs";
 import { derivedColorValues } from "@/content/color-derivations";
 import { requireBuilderApiAccess } from "@/utils/builder-access";
 import {
@@ -635,6 +639,19 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --shadow-service: ${serviceShadow};
 ${typeVariables}
 }
+${rungOverrideCss(
+  toColorPalette({
+    bgPage: tokens.bgPage,
+    serviceSurface: tokens.serviceSurface,
+    surfaceRaised: tokens.surfaceRaised,
+    serviceInk: tokens.serviceInk,
+    bgDark: tokens.bgDark,
+    serviceAccent: tokens.serviceAccent,
+    accent: tokens.accent,
+    bgDarkSurface: tokens.bgDarkSurface,
+    ctaAccent: tokens.ctaAccent,
+  }),
+)}
 ${endMarker}`;
 }
 

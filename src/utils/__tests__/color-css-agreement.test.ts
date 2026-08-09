@@ -43,10 +43,20 @@ const globalsCss = readFileSync(
   "utf8",
 );
 
-/** Pull `color-mix(in <space>, var(--x) <pct>%, var(--y))` for one property. */
+/**
+ * Pull `color-mix(in <space>, var(--x) <pct>, var(--y))` for one property.
+ *
+ * The percentage comes in two forms. Most scales state it literally. The three
+ * text rungs state it as `var(--rung-body, 86%)`, because a ground that cannot
+ * afford the standard spread narrows it - the promoted block emits `--rung-*`
+ * for those recipes and every other recipe takes the fallback. Either way the
+ * literal in the CSS is the STANDARD value, which is what this file exists to
+ * check against `color-scales.ts`.
+ */
 function readMixDeclaration(property: string) {
+  const percentage = "(?:([\\d.]+)%|var\\(--[a-z-]+,\\s*([\\d.]+)%\\))";
   const pattern = new RegExp(
-    `--${property}:\\s*color-mix\\(\\s*in\\s+([a-z]+)\\s*,\\s*var\\(--([a-z-]+)\\)\\s+([\\d.]+)%\\s*,\\s*var\\(--([a-z-]+)\\)\\s*\\)`,
+    `--${property}:\\s*color-mix\\(\\s*in\\s+([a-z]+)\\s*,\\s*var\\(--([a-z-]+)\\)\\s+${percentage}\\s*,\\s*var\\(--([a-z-]+)\\)\\s*\\)`,
   );
   const match = globalsCss.match(pattern);
 
@@ -57,8 +67,8 @@ function readMixDeclaration(property: string) {
   return {
     space: match[1],
     source: match[2],
-    percent: Number(match[3]),
-    target: match[4],
+    percent: Number(match[3] ?? match[4]),
+    target: match[5],
   };
 }
 

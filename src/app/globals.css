@@ -1861,17 +1861,27 @@ body {
       [data-pagebuilder-color-recipe="inherit"]
     )
     .recipe-card-context {
-    /* Ladder - toward the local ground. */
+    /* Ladder - toward the local ground.
+     *
+     * The three step-downs read their percentage from a custom property with
+     * the standard value as its fallback, so a ground that cannot afford the
+     * full spread can narrow it without any other rule changing. The promoted
+     * block emits `--rung-*` for those grounds; every other recipe never
+     * declares them and takes the fallbacks below, unchanged.
+     *
+     * This works because `color-mix()` accepts its percentage from a custom
+     * property - the same property phase 2's override axes are built on, so it
+     * is measured rather than assumed. */
     --text-strong: var(--recipe-text);
-    --text-body: color-mix(in oklab, var(--recipe-text) 86%, var(--recipe-ground));
+    --text-body: color-mix(in oklab, var(--recipe-text) var(--rung-body, 86%), var(--recipe-ground));
     /* 76%, not a tidier 70%. `ink` is authored independently of `dark` and may
        legitimately be light; at 70% that authoring drops this rung to 4.27 and
-       the meta rung to 2.84, failing both bars. A ladder that is unsafe for a
-       permitted authoring choice is a defect, not a gate warning. */
-    --text-muted: color-mix(in oklab, var(--recipe-text) 76%, var(--recipe-ground));
-    /* Named for its constraint, not its intensity - it is 3.23 on page and
-       fails AA for body copy. See --live-text-meta in the role table. */
-    --text-meta: color-mix(in oklab, var(--recipe-text) 58%, var(--recipe-ground));
+       the meta rung to 2.84. */
+    --text-muted: color-mix(in oklab, var(--recipe-text) var(--rung-muted, 76%), var(--recipe-ground));
+    /* Named for its constraint, not its intensity - it is the faintest rung
+       and is for metadata and passive UI. See --live-text-meta in the role
+       table. */
+    --text-meta: color-mix(in oklab, var(--recipe-text) var(--rung-meta, 58%), var(--recipe-ground));
     --faint-line: color-mix(in oklab, var(--recipe-faint) 20%, var(--recipe-ground));
 
     /* Tint - toward the recipe's text source.
@@ -1913,6 +1923,18 @@ body {
        read --recipe-text. */
     --recipe-text: var(--recipe-card-text);
     --recipe-faint: var(--recipe-card-text);
+    /* And the rungs go back to the standard spread.
+     *
+     * A card is a different ground from the section it sits on, so a
+     * compression emitted for the section's ground does not describe it - a
+     * brand band narrows its steps, but the ink card sitting on that band has
+     * all the room in the world and should read with the full hierarchy.
+     * Resetting is the right default because a card is chosen to clear the
+     * card floor and then flips its text polarity to suit, which is the
+     * definition of having room. */
+    --rung-body: 86%;
+    --rung-muted: 76%;
+    --rung-meta: 58%;
   }
 
   /* ==================================================================
@@ -2424,6 +2446,11 @@ body {
     --recipe-ground: var(--recipe-card);
     --recipe-text: var(--recipe-card-text);
     --recipe-faint: var(--recipe-card-text);
+    /* Standard spread, for the reason given on the class-based rule above: the
+       card is not the ground the section's compression was measured against. */
+    --rung-body: 86%;
+    --rung-muted: 76%;
+    --rung-meta: 58%;
   }
 
   /* Bullets and marker icons are drawn in the accent colour, which on the
@@ -3317,6 +3344,22 @@ body {
   --type-label-tracking: 0.1em;
   --type-label-wrap: wrap;
   --type-label-transform: uppercase;
+}
+
+/* Text hierarchy spread, for grounds that cannot afford the standard one.
+   The ladder steps toward the ground, so a ground close to its text source has
+   less room to step - these recipes keep all three levels distinguishable by
+   sitting them closer together rather than by letting the faintest one fall
+   away. Recomputed from the palette on every promote; see color-rungs.ts. */
+.pagebuilder-paint-surface[data-pagebuilder-color-recipe="brand"] {
+  --rung-body: 89.5%;
+  --rung-muted: 81.9%;
+  --rung-meta: 68.4%;
+}
+.pagebuilder-paint-surface[data-pagebuilder-color-recipe="accent"] {
+  --rung-body: 89.5%;
+  --rung-muted: 81.9%;
+  --rung-meta: 68.4%;
 }
 /* END PAGEWORKS STYLEGUIDE TOKEN OVERRIDES */
 .strategy-workspace :is(
