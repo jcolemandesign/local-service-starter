@@ -228,35 +228,68 @@ describe("the border as a boundary", () => {
   const filled = { fill: "solid", border: "on" } as const;
   const unfilled = { fill: "none", border: "on" } as const;
 
-  it("floors an unfilled card's border at Defined", () => {
-    // With no fill the line is the only thing separating card from ground, and
-    // Faint resolves to 1.46-1.75 - under WCAG 1.4.11's 3:1. Phase 1 accepted
-    // that only because the fill was also distinguishing the card.
-    expect(resolveBorderIntensity({ borderIntensity: "faint" }, unfilled)).toBe(
-      "quiet",
-    );
-    expect(resolveBorderIntensity({}, unfilled)).toBe("quiet");
-    expect(borderIsOnlyBoundary(unfilled)).toBe(true);
+  it("leaves the border where the editor put it, filled or not", () => {
+    /**
+     * Faint used to be floored to Quiet on an unfilled card - the line is the
+     * only thing separating card from ground there, and Faint runs 1.24-1.52
+     * against WCAG 1.4.11's 3:1.
+     *
+     * The floor was withdrawn because it did not deliver that bar. Quiet
+     * clears 3:1 for two of the eight selectable swatches on this palette's
+     * page recipe (Ink 3.74, Dark 3.02) and misses for the other six, so it
+     * removed the choice in every case and fixed it in two. It is a finding
+     * now - see the gate test below - which is the same call `cardDependsOnBorder`
+     * already makes for the neighbouring failure.
+     */
+    for (const surface of [filled, unfilled]) {
+      expect(borderIsOnlyBoundary(surface)).toBe(surface === unfilled);
+      expect(resolveBorderIntensity({ borderIntensity: "faint" })).toBe("faint");
+      expect(resolveBorderIntensity({ borderIntensity: "quiet" })).toBe("quiet");
+      expect(resolveBorderIntensity({})).toBe("faint");
+    }
   });
 
-  it("leaves a filled card's border where the editor put it", () => {
-    expect(resolveBorderIntensity({ borderIntensity: "faint" }, filled)).toBe(
-      "faint",
-    );
-    expect(resolveBorderIntensity({}, filled)).toBe("faint");
-    expect(borderIsOnlyBoundary(filled)).toBe(false);
-  });
-
-  it("carries the floor into the emitted attributes", () => {
-    // The rule is worthless if it stops at the resolver.
+  it("carries the editor's choice into the emitted attributes", () => {
+    // The resolver is worthless if the markup disagrees with it.
     expect(
-      colorOverrideAttributes(
+      colorOverrideAttributes(palette, "page", {
+        borderSwatch: "ink",
+        borderIntensity: "faint",
+      })["data-pagebuilder-border-intensity"],
+    ).toBe("faint");
+  });
+
+  it("reports an unfilled card's border against the non-text bar", () => {
+    /**
+     * What replaced the floor. The finding exists precisely when the fill is
+     * off, so it has to survive the early return that drops the card findings
+     * in that state.
+     */
+    const overrides = { borderSwatch: "raised", borderIntensity: "faint" };
+
+    const findings = gateSectionOverrides(palette, "page", overrides, unfilled);
+
+    expect(findings).toHaveLength(1);
+    expect(findings[0].role).toBe("card-border");
+    expect(findings[0].bar).toBe(3);
+    expect(findings[0].pass).toBe(false);
+
+    // Filled, the line is not carrying the boundary alone and is not reported.
+    expect(
+      gateSectionOverrides(palette, "page", overrides, filled).some(
+        (f) => f.role === "card-border",
+      ),
+    ).toBe(false);
+
+    // A dark swatch on a light ground clears the bar and passes.
+    expect(
+      gateSectionOverrides(
         palette,
         "page",
-        { borderSwatch: "ink", borderIntensity: "faint" },
+        { borderSwatch: "ink", borderIntensity: "quiet" },
         unfilled,
-      )["data-pagebuilder-border-intensity"],
-    ).toBe("quiet");
+      )[0].pass,
+    ).toBe(true);
   });
 
   it("reports a card that depends on its border, rather than forcing it on", () => {

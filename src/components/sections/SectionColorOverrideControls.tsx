@@ -5,7 +5,6 @@ import {
   type ColorOverrideIntensity,
   type ColorOverrideSwatch,
   borderIntensityOptions,
-  borderIsOnlyBoundary,
   cardIntensityOptions,
   resolveBorderIntensity,
   resolveOverrideColor,
@@ -169,15 +168,11 @@ function SwatchGrid({
 }
 
 function IntensityRow({
-  disabledReason,
   labels,
   onSelect,
   options,
   selected,
 }: {
-  /** Why every option other than the selected one is unavailable, as a
-   *  tooltip. Set when a floor has already decided the value. */
-  disabledReason?: string;
   labels: Record<string, string>;
   onSelect: (value: string) => void;
   options: readonly ColorOverrideIntensity[];
@@ -185,25 +180,19 @@ function IntensityRow({
 }) {
   return (
     <div className="flex items-center gap-2">
-      {options.map((option) => {
-        const isDisabled = Boolean(disabledReason) && option !== selected;
-
-        return (
-          <button
-            aria-pressed={selected === option}
-            className={`type-caption rounded-[var(--chrome-radius-control)] border px-3 py-1.5 transition-colors token-chrome-control ${
-              selected === option ? "token-chrome-card-active" : ""
-            } ${isDisabled ? "opacity-40" : ""}`}
-            disabled={isDisabled}
-            key={option}
-            onClick={() => onSelect(option)}
-            title={isDisabled ? disabledReason : undefined}
-            type="button"
-          >
-            {labels[option]}
-          </button>
-        );
-      })}
+      {options.map((option) => (
+        <button
+          aria-pressed={selected === option}
+          className={`type-caption rounded-[var(--chrome-radius-control)] border px-3 py-1.5 transition-colors token-chrome-control ${
+            selected === option ? "token-chrome-card-active" : ""
+          }`}
+          key={option}
+          onClick={() => onSelect(option)}
+          type="button"
+        >
+          {labels[option]}
+        </button>
+      ))}
     </div>
   );
 }
@@ -218,32 +207,20 @@ export function SectionColorOverrideControls({
   const cardSwatch = resolveOverrideSwatch(section.cardSwatch);
   const borderSwatch = resolveOverrideSwatch(section.borderSwatch);
   const cardIntensity = resolveOverrideIntensity(section.cardIntensity);
-  const borderIntensity = resolveBorderIntensity(section, surface);
-
-  /**
-   * The floor from phase 1: with no fill, the border is the only thing
-   * separating the card from its ground, and a Faint line does that at
-   * 1.46-1.75 - under WCAG 1.4.11's 3:1.
-   *
-   * The rule is enforced in `resolveBorderIntensity`, so Faint is not the
-   * editor's to pick while the fill is off. The row still renders, with Defined
-   * selected and Faint disabled behind a tooltip.
-   *
-   * It has now been all three things, and the middle one was the mistake. It
-   * used to replace the buttons with a paragraph explaining the floor, which
-   * put a wall of prose in the panel on every unfilled section. Hiding the
-   * fieldset instead removed the prose and the only evidence the control
-   * exists - and since an unfilled card is the common case here, that read as
-   * the setting not existing at all. A greyed button still shows the axis, the
-   * value it is sitting at, and where the option went.
-   */
-  const borderIsForced = borderIsOnlyBoundary(surface);
+  const borderIntensity = resolveBorderIntensity(section);
 
   /**
    * Warnings, not blocks. The palette is authored per business and a brand
    * colour is whatever it is - and an override making a card the same colour
    * as its ground is occasionally a deliberate borderless panel. The gate says
    * so; the picker still offers it.
+   *
+   * Border weight is on the same footing now. It used to be the exception -
+   * Faint was locked out whenever the fill was off - and since most sections
+   * here are unfilled, that read as Faint simply not existing. The bar it was
+   * defending is real but the lock did not deliver it: forcing Quiet clears
+   * 3:1 for two of the eight swatches and misses for the rest. So it reports
+   * like everything else, as a `card-border` finding.
    */
   const failures = gateSectionOverrides(
     palette,
@@ -300,11 +277,6 @@ export function SectionColorOverrideControls({
             Border weight
           </legend>
           <IntensityRow
-            disabledReason={
-              borderIsForced
-                ? "Held at Defined while the card fill is off — the line is the only thing separating the card from its background."
-                : undefined
-            }
             labels={borderIntensityLabels}
             onSelect={(value) => onChange("borderIntensity", value)}
             options={borderIntensityOptions}

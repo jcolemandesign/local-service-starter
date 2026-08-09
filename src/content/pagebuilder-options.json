@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-08-09T21:22:56.965Z",
+      "savedAt": "2026-08-09T22:47:29.215Z",
       "sectionCount": 11,
       "sections": [
         {
@@ -24,7 +24,7 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "slotId": "slot-60617e1dbb11",
-          "colorRecipe": "page",
+          "colorRecipe": "surface",
           "backgroundFill": "solid",
           "cardBorder": "off",
           "borderTone": "dark",
@@ -130,12 +130,12 @@
           "reduceTopPadding": false,
           "slotId": "slot-e1fa6e1734bc",
           "variant": "default",
-          "colorRecipe": "brand",
+          "colorRecipe": "page",
           "backgroundFill": "solid",
           "cardBorder": "on",
           "borderTone": "dark",
           "cardFill": "solid",
-          "joinAbove": "separate"
+          "joinAbove": "join"
         },
         {
           "component": "DecisionSplitDecisionLargeSectionV3",
@@ -153,8 +153,9 @@
           "backgroundFill": "solid",
           "cardBorder": "on",
           "borderTone": "dark",
-          "cardFill": "none",
-          "backgroundTreatment": "none"
+          "cardFill": "solid",
+          "backgroundTreatment": "none",
+          "joinAbove": "join"
         },
         {
           "component": "FeatureStackedCardsSectionV3",

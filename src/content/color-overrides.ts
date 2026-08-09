@@ -184,31 +184,42 @@ export function borderIsOnlyBoundary(surface: CardSurfaceState): boolean {
 }
 
 /**
- * The border's intensity once the fill is taken into account.
+ * The border's intensity. The editor's choice, unconditionally.
  *
- * Deliberately scoped to sections carrying a border override. The floor is a
- * correction to a choice an editor just made, not a retroactive re-rule of
- * every fill-off section already in the repo - applying it globally would
- * repaint existing pages to satisfy a bar phase 1 knowingly accepted for them.
+ * THIS USED TO FLOOR AT QUIET WHENEVER THE FILL WAS OFF, AND THE FLOOR WAS
+ * WITHDRAWN ON MEASUREMENT. The intent was sound - with no fill the line is
+ * the only thing separating card from ground, and Faint runs 1.24-1.52 against
+ * a 3:1 bar - but forcing Quiet does not fix that. Walking the eight
+ * selectable swatches on the promoted palette's page recipe, Quiet clears 3:1
+ * for exactly two of them (Ink 3.74, Dark 3.02) and misses for the other six,
+ * bottoming out at 1.00 where the swatch is the ground's own colour. So the
+ * floor removed a choice in all eight cases and delivered the bar in two.
+ *
+ * It was also the only blocking rule in a file that otherwise reports:
+ * `cardDependsOnBorder` above measures the neighbouring failure and says
+ * explicitly that it does not force the border back on, because that would
+ * overrule an editor who wanted a borderless panel. An unfilled card with a
+ * faint line is the same kind of decision. `gateSectionOverrides` now raises
+ * it as a finding, so the number is in front of the editor and the choice
+ * stays theirs.
  */
 export function resolveBorderIntensity(
   overrides: SectionColorOverrides,
-  surface: CardSurfaceState,
 ): ColorOverrideIntensity {
-  const chosen = resolveOverrideIntensity(overrides.borderIntensity, "border");
-
-  return borderIsOnlyBoundary(surface) ? "quiet" : chosen;
+  return resolveOverrideIntensity(overrides.borderIntensity, "border");
 }
 
 /**
  * Below this the card is not separated from its ground by its fill alone, so
  * turning the border off makes it disappear.
  *
- * Phase 1 measured the page recipe's `raised` card at 1.16 against `page` and
- * flagged that it clears partly because the Faint border is drawn. The figure
- * moves with the palette - the currently promoted one puts it at 1.23 - which
- * is exactly why this is a threshold checked at gate time against the live
- * palette rather than a list of recipes known to be fragile.
+ * Phase 1 measured the page recipe's card at 1.16 against `page` and flagged
+ * that it clears partly because the Faint border is drawn. The card has since
+ * become `surface` rather than `raised`, which puts the same pairing at 1.15
+ * on the reference palette and 1.20 on the promoted one - still the closest
+ * pairing in the set, and still the case this threshold was written for. The
+ * figure moving twice over is exactly why it is checked at gate time against
+ * the live palette rather than kept as a list of recipes known to be fragile.
  *
  * This REPORTS. It does not force the border back on. A forced border would
  * silently overrule an editor who wanted a borderless panel, and the same call
@@ -301,17 +312,15 @@ export function resolveCardPolarity(
  * win, where an empty one would still match `[data-pagebuilder-card-swatch]`
  * and repaint the card with an undefined swatch.
  *
- * `surface` is what the section's existing `cardFill` / `cardBorder` controls
- * already resolved to. It is optional and defaults to a filled, bordered card,
- * which is the shape most sections have: a caller that does not know its fill
- * state gets the editor's chosen intensity untouched rather than a floor
- * applied on a guess.
+ * It took a `surface` argument while the border intensity had a fill-dependent
+ * floor. With the floor withdrawn nothing here reads the fill state, and an
+ * argument that is accepted and ignored is worse than one that is absent - the
+ * next caller threads a surface through and expects it to change something.
  */
 export function colorOverrideAttributes(
   palette: ColorPalette,
   recipe: ColorRecipeId,
   overrides: SectionColorOverrides,
-  surface: CardSurfaceState = { fill: "solid", border: "on" },
 ): Record<string, string> {
   const attributes: Record<string, string> = {};
 
@@ -326,10 +335,8 @@ export function colorOverrideAttributes(
   const borderSwatch = resolveOverrideSwatch(overrides.borderSwatch);
   if (borderSwatch) {
     attributes["data-pagebuilder-border-swatch"] = borderSwatch;
-    attributes["data-pagebuilder-border-intensity"] = resolveBorderIntensity(
-      overrides,
-      surface,
-    );
+    attributes["data-pagebuilder-border-intensity"] =
+      resolveBorderIntensity(overrides);
   }
 
   /**

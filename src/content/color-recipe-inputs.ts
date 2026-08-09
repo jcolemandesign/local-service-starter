@@ -92,7 +92,13 @@ const white: ColorRef = { kind: "white" };
 export const recipeInputs = {
   page: {
     ground: swatch("page"),
-    card: swatch("raised"),
+    /**
+     * Surface, not raised. With `surface` also taking `raised` as its card,
+     * the two light recipes now step one rung each - page ground to surface
+     * card, surface ground to raised card - rather than both reaching for the
+     * lightest neutral in the palette.
+     */
+    card: swatch("surface"),
     text: swatch("ink"),
     faint: swatch("ink"),
     chromatic: swatch("brand"),

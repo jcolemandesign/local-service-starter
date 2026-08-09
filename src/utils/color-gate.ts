@@ -2,8 +2,11 @@ import {
   CARD_DEPENDS_ON_BORDER_BELOW,
   type CardSurfaceState,
   type SectionColorOverrides,
+  borderIsOnlyBoundary,
   cardDependsOnBorder,
+  resolveBorderIntensity,
   resolveCardPolarity,
+  resolveOverrideColor,
   resolveOverrideSwatch,
   resolveSectionCard,
 } from "@/content/color-overrides";
@@ -56,7 +59,9 @@ export type GateRole =
   | "eyebrow"
   | "cta-fill"
   | "cta-label"
-  | "card-surface";
+  | "card-surface"
+  /** An unfilled card's border, which is carrying the whole boundary alone. */
+  | "card-border";
 
 export type GateSurface = "ground" | "card";
 
@@ -272,9 +277,43 @@ export function gateSectionOverrides(
   surface?: CardSurfaceState,
 ): GateFinding[] {
   /**
-   * No fill, nothing to gate.
+   * The line carrying the boundary on its own.
    *
-   * Every finding below measures the card's paint - the fill against the
+   * This replaces the floor that used to force an unfilled card's border to
+   * Quiet. The bar is the same one that motivated the floor - WCAG 1.4.11's
+   * 3:1 for a meaningful non-text boundary - but measuring beats forcing here:
+   * Quiet clears it for two of the eight selectable swatches on the promoted
+   * palette and misses for the rest, so the floor was removing a choice far
+   * more often than it was delivering the bar. See `resolveBorderIntensity`.
+   *
+   * Reported before the fill check below, and deliberately: it is the one
+   * finding that is *about* the fill being off.
+   */
+  const borderSwatch = resolveOverrideSwatch(overrides.borderSwatch);
+
+  const boundaryFindings: GateFinding[] =
+    surface && borderIsOnlyBoundary(surface) && borderSwatch
+      ? [
+          finding(
+            recipe,
+            "card-border",
+            "ground",
+            resolveOverrideColor(
+              palette,
+              recipe,
+              borderSwatch,
+              resolveBorderIntensity(overrides),
+            ),
+            resolveRef(palette, recipeInputs[recipe].ground, palette.page),
+            contrastBars.large,
+          ),
+        ]
+      : [];
+
+  /**
+   * No fill, no card surface to gate.
+   *
+   * Everything after this measures the card's paint - the fill against the
    * ground, and the text ladder against the fill. With the fill off none of it
    * is painted: the override still resolves a colour, but
    * `[data-pagebuilder-card-fill="none"] article` forces the surface
@@ -287,7 +326,7 @@ export function gateSectionOverrides(
    * which is true of the stored value and irrelevant to the pixels, and an
    * editor could only clear it by changing something invisible.
    */
-  if (surface?.fill === "none") return [];
+  if (surface?.fill === "none") return boundaryFindings;
 
   /**
    * Phase 1's other deferred rule, and the one case worth reporting on a

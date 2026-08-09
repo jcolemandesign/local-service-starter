@@ -67,25 +67,33 @@ describe("section colour override attributes", () => {
     });
   });
 
-  it("floors an unfilled card's border at Defined", () => {
+  it("emits the border weight the editor chose, whatever the fill", () => {
     /**
-     * The rule has to survive the trip through this helper, not just live in
-     * the resolver: the fill state is only knowable here, where the component
-     * and its opt-in default are both in hand.
+     * This used to assert the opposite: an unfilled card's border was floored
+     * to Quiet, and the floor had to survive the trip through this helper
+     * because the fill state is only knowable here.
+     *
+     * The floor is gone - it cleared WCAG 1.4.11's 3:1 for two of the eight
+     * selectable swatches and removed the choice for all eight, so it is a
+     * gate finding now rather than a correction (see `resolveBorderIntensity`).
+     * What this pins is that the fill no longer moves the emitted weight in
+     * either direction, on the path all three renderers share.
      */
-    const attributes = sectionColorOverrideAttributes(
-      {
-        component: cardComponent,
-        colorRecipe: "page",
-        cardFill: "none",
-        cardBorder: "on",
-        borderSwatch: "ink",
-        borderIntensity: "faint",
-      },
-      palette,
-    );
+    for (const cardFill of ["none", "solid"]) {
+      const attributes = sectionColorOverrideAttributes(
+        {
+          component: cardComponent,
+          colorRecipe: "page",
+          cardFill,
+          cardBorder: "on",
+          borderSwatch: "ink",
+          borderIntensity: "faint",
+        },
+        palette,
+      );
 
-    expect(attributes["data-pagebuilder-border-intensity"]).toBe("quiet");
+      expect(attributes["data-pagebuilder-border-intensity"]).toBe("faint");
+    }
   });
 
   it("leaves a filled card's border where the editor put it", () => {

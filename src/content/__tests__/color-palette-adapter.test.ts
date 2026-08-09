@@ -105,14 +105,23 @@ describe("derived dark surface", () => {
 });
 
 describe("a legacy slot survives the gate", () => {
-  it("hides the accent recipe and keeps failures to the one known miss", () => {
+  it("hides the accent recipe and keeps failures to the known misses", () => {
     const report = gateColorSystem(toColorPalette(legacySlot));
 
     expect(report.hidden).toEqual(["accent"]);
-    // The derived dark surface differs slightly from the authored #24566a, so
-    // this asserts the miss stays singular rather than asserting exact ratios.
-    expect(report.failures.map((f) => `${f.recipe}/${f.role}`)).toEqual([
+    /**
+     * The derived dark surface differs slightly from the authored #24566a, so
+     * this enumerates the misses rather than asserting exact ratios.
+     *
+     * `page/card-surface` joined the list when the page recipe's card changed
+     * from `raised` to `surface`: this slot's two lightest neutrals sit close
+     * enough that the pairing lands just under the 1.15 card floor. It is a
+     * property of the palette, not of the recipe - see the same note in
+     * `color-gate.test.ts`.
+     */
+    expect(report.failures.map((f) => `${f.recipe}/${f.role}`).sort()).toEqual([
       "highlight/text-muted",
+      "page/card-surface",
     ]);
   });
 });

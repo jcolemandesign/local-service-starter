@@ -529,13 +529,6 @@ body {
     background-image: var(--chrome-field-sheen);
   }
 
-  .token-chrome-card-active {
-    border: 1px solid var(--chrome-accent);
-    background-color: var(--chrome-panel-strong);
-    background-image: var(--chrome-field-sheen);
-    color: var(--chrome-text);
-  }
-
   .token-chrome-control {
     border-color: var(--chrome-border-soft);
     background-color: var(--chrome-panel-muted);
@@ -547,6 +540,53 @@ body {
     border-color: var(--chrome-border-strong);
     background-color: var(--chrome-hover);
     background-image: var(--chrome-field-sheen);
+    color: var(--chrome-text);
+  }
+
+  /* The selected option in any chrome toggle group - section spacing, card
+   * fill, card border, background fill, icons, the swatch grids.
+   *
+   * IT HAS TO OUTRANK `.token-chrome-control` AND ITS HOVER, AND FOR A WHILE
+   * IT DID NEITHER. This rule used to sit ABOVE those two with a single class
+   * of its own, so at equal specificity source order handed every property
+   * they share to the idle style: an active toggle resolved to
+   * `--chrome-border-soft` on `--chrome-panel-muted`, pixel-identical to an
+   * inactive one. Every group in the builder applied the class correctly and
+   * none of them looked selected. Hence the compound selector and the position
+   * after the hover rule rather than before the base one - order alone would
+   * fix it today and break again the next time a rule is appended.
+   *
+   * A BUTTON AND A PANEL WANT DIFFERENT THINGS, AND THE SPLIT IS BY ELEMENT
+   * RATHER THAN BY CLASS BECAUSE CLASS CANNOT TELL THEM APART. Two families of
+   * button carry this: the icon squares add it on top of
+   * `token-chrome-control`, and the text buttons swap `token-chrome-card` OUT
+   * for it. An active button of the second kind therefore has exactly one
+   * class - the same one the selected section panel has - so `button` is what
+   * separates them. That swap is also why the two families used to indicate in
+   * opposite directions, one going light and one going dark; declaring the
+   * background here settles it for both without touching forty-odd call sites.
+   *
+   * Selected reads on three channels at once, none of them loud on its own:
+   * a wash across the face, an edge one step firmer, and a full-strength
+   * label. Redundancy is what makes it obvious - single-channel versions of
+   * this were tried and each had to be turned up until it was distracting
+   * before it was legible across a row of identical squares.
+   *
+   * The wash is an overlay stacked ahead of the sheen rather than a
+   * replacement colour, so the button keeps its own surface underneath and the
+   * hover rule still shows through on hover instead of freezing. */
+  .token-chrome-card-active {
+    border-color: var(--chrome-border);
+    color: var(--chrome-text);
+  }
+
+  button.token-chrome-card-active,
+  button.token-chrome-card-active:hover {
+    border-color: var(--chrome-border-strong);
+    background-color: var(--chrome-panel-muted);
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.12)),
+      var(--chrome-field-sheen);
     color: var(--chrome-text);
   }
 
@@ -2034,7 +2074,11 @@ body {
   /* ---- Page: the light default ---- */
   .pagebuilder-paint-surface[data-pagebuilder-color-recipe="page"] {
     --recipe-ground: var(--palette-page);
-    --recipe-card: var(--palette-raised);
+    /* Surface, not raised. With `surface` taking `raised` as its card, the two
+       light recipes step one rung each - page ground to surface card, surface
+       ground to raised card - instead of both reaching for the lightest
+       neutral. */
+    --recipe-card: var(--palette-surface);
     /* Text source for this recipe's card, read by .recipe-card-context.
        CSS cannot ask how light the card is, so the recipe states it. */
     --recipe-card-text: var(--palette-ink);
@@ -2575,6 +2619,72 @@ body {
     .pagebuilder-section-frame[data-pagebuilder-padding-bottom="none"]
     > [class*="py-"] {
     padding-bottom: 0 !important;
+  }
+
+  /* ------------------------------------------------------------------
+   * Anything a card paints outside its own box, at a boundary with no
+   * padding to hold it.
+   *
+   * Take the bottom padding away and a card can sit flush with the end of its
+   * section, which leaves its shadow - and its hover transform - falling into
+   * the next section's box. Nothing clips them: the frame is `overflow:
+   * visible`. They are COVERED. Every frame is `position: relative` with
+   * `z-index: auto`, so consecutive frames share one paint layer and the later
+   * one in tree order paints its opaque ground straight over whatever the
+   * previous one spilled. Measured on the builder canvas, two pixels under a
+   * flush card's edge the topmost element is already the following section.
+   *
+   * LIFTING THE CARD, NOT THE FRAME. Raising the frame looks like the smaller
+   * change and fails on the case this is most likely to appear in: a run of
+   * sections that all have their bottom padding off. They would all take the
+   * same z-index and tree order would decide again, exactly as before. A
+   * positive z-index on the card escapes to the root stacking context - the
+   * frames are positioned but not stacking contexts - so the card's paint
+   * clears every frame's ground regardless of how many follow it. A later
+   * section's own cards still land above, which is the correct reading of an
+   * overlap.
+   *
+   * Only the bottom edge has this problem. A shadow spilling upward comes from
+   * the later section, which already paints over the earlier one.
+   *
+   * Scoped to frames that actually removed their bottom padding, so no page
+   * with normal spacing acquires a new stacking rule. A frame carrying an
+   * animated background treatment is a separate case and not fixed here: it
+   * sets `overflow: clip` deliberately, to stop a transformed wash bleeding
+   * into its neighbours, and that genuinely does clip.
+   *
+   * The card-token classes rather than `.recipe-card-context`, even though the
+   * grounding rules pair the two everywhere else. Every card carrying the
+   * class also paints one of these tokens, so the list already reaches them,
+   * and naming the class inside an `:is()` trips the guard in
+   * `color-css-agreement.test.ts` that forbids reaching it from a selector
+   * that starts with it. That guard is about colour rows and this rule sets
+   * none, but it reads the stylesheet as text and cannot tell - and it is a
+   * better guard than this rule is a reason to weaken it.
+   *
+   * ALREADY-POSITIONED ELEMENTS ARE EXCLUDED, AND THE FIRST VERSION OF THIS
+   * RULE BROKE BECAUSE THEY WERE NOT. `position: relative` is here to give
+   * `z-index` something to apply to on a static card - but the selector also
+   * matches things that are decoration ON a card rather than the card itself,
+   * and those are usually pinned. The bento card's arrow badge is
+   * `absolute right-3 top-3` and carries both `bg-surface-raised` and
+   * `shadow-service`, so it matched, had its `absolute` overwritten with
+   * `relative`, and fell out of the corner into normal flow.
+   *
+   * Excluding them costs nothing: anything pinned inside a card is already
+   * painted as part of that card's subtree, so it rides the lift without
+   * needing one of its own. The `:not()`s read Tailwind's position utilities
+   * because that is how position is set throughout this library - the same
+   * class-marker approach as the `[class*="py-"]` padding rules above. */
+  .pagebuilder-section-frame[data-pagebuilder-padding-bottom="none"]
+    :is(
+      .shadow-service,
+      .bg-bg-surface:not(section),
+      .bg-service-surface:not(section),
+      .bg-surface-raised:not(section)
+    ):not(.absolute):not(.fixed):not(.sticky) {
+    position: relative;
+    z-index: 1;
   }
 
   .pagebuilder-density-normal
@@ -3220,12 +3330,12 @@ body {
   --live-service-ink: #133049;
   --live-service-muted: #3898c2;
   --live-service-accent: #175c82;
-  --live-service-surface: #e3e6e8;
+  --live-service-surface: #d9d9d9;
   --live-surface-raised: #ffffff;
   --live-service-border: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
   --live-service-border-light: oklch(from var(--live-service-surface) calc(l + 0.30) c h);
-  --live-bg-page: #dbdbdb;
-  --live-bg-surface: #e3e6e8;
+  --live-bg-page: #c7c7c7;
+  --live-bg-surface: #d9d9d9;
   --live-bg-muted: oklch(from var(--live-service-surface) calc(l - 0.03) c h);
   --live-bg-dark: #153856;
   --live-text-main: #133049;
@@ -3241,12 +3351,12 @@ body {
   --color-service-ink: #133049;
   --color-service-muted: #3898c2;
   --color-service-accent: #175c82;
-  --color-service-surface: #e3e6e8;
+  --color-service-surface: #d9d9d9;
   --color-surface-raised: #ffffff;
   --color-service-border: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
   --color-service-border-light: oklch(from var(--live-service-surface) calc(l + 0.30) c h);
-  --color-bg-page: #dbdbdb;
-  --color-bg-surface: #e3e6e8;
+  --color-bg-page: #c7c7c7;
+  --color-bg-surface: #d9d9d9;
   --color-bg-muted: oklch(from var(--live-service-surface) calc(l - 0.03) c h);
   --color-bg-dark: #153856;
   --color-text-main: #133049;

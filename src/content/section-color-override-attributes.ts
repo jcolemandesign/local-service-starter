@@ -1,25 +1,23 @@
-import {
-  type CardSurfaceState,
-  colorOverrideAttributes,
-} from "@/content/color-overrides";
+import { colorOverrideAttributes } from "@/content/color-overrides";
 import type { ColorPalette } from "@/content/color-recipe-inputs";
 import { resolveSectionColorRecipe } from "@/content/section-color-recipes";
-import {
-  cardStyleComponents,
-  resolveCardBorder,
-  resolveCardFill,
-} from "@/content/section-style-options";
+import { cardStyleComponents } from "@/content/section-style-options";
 
 /**
  * The colour-override attributes a section frame carries, from a section
  * record.
  *
- * Every render path needs the same four decisions made the same way - which
- * recipe is in force, whether the section renders a card at all, what its fill
- * and border resolved to, and only then what the override paints. Three of
- * those already have shared resolvers; this is the fourth, and it exists so
- * the builder canvas, the staged preview and the export cannot each answer
- * them slightly differently.
+ * Every render path needs the same decisions made the same way - which recipe
+ * is in force, whether the section renders a card at all, and what the
+ * override paints. The first two already have shared resolvers; this is the
+ * third, and it exists so the builder canvas, the staged preview and the
+ * export cannot each answer them slightly differently.
+ *
+ * It also resolved the section's fill and border state and passed it down,
+ * while the border intensity had a floor that depended on it. The floor was
+ * withdrawn on measurement - see `resolveBorderIntensity` - so the attributes
+ * no longer vary with the fill, and threading a surface here would be
+ * threading an argument nothing reads.
  *
  * BAND MEMBERS NEED NO SPECIAL CASE. `withBandRecipe` has already substituted
  * the band's recipe onto every member by the time a section reaches a frame,
@@ -52,15 +50,9 @@ export function sectionColorOverrideAttributes(
    */
   if (!cardStyleComponents.has(section.component)) return {};
 
-  const surface: CardSurfaceState = {
-    fill: resolveCardFill(section.component, section.cardFill),
-    border: resolveCardBorder(section.component, section.cardBorder),
-  };
-
   return colorOverrideAttributes(
     palette,
     resolveSectionColorRecipe(section.colorRecipe) ?? "page",
     section,
-    surface,
   );
 }
