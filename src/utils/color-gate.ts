@@ -1,4 +1,10 @@
 import {
+  type SectionColorOverrides,
+  resolveCardPolarity,
+  resolveOverrideSwatch,
+  resolveSectionCard,
+} from "@/content/color-overrides";
+import {
   type ColorPalette,
   type ColorRecipeId,
   cardTextSource,
@@ -203,6 +209,51 @@ export function gateColorSystem(palette: ColorPalette): GateReport {
     coveredCardSections: CARD_CONTEXT_COVERAGE.covered,
     totalCardSections: CARD_CONTEXT_COVERAGE.total,
   };
+}
+
+/**
+ * The same checks, run against one section's overrides rather than a recipe's
+ * own card.
+ *
+ * Kept separate from `gateColorSystem` because they answer different
+ * questions. The palette gate asks "is this palette sound", once, at authoring
+ * time. This asks "is this section sound", per section, and a page may have
+ * ninety of them - so the builder can call it as an editor picks without
+ * re-walking eight recipes each time.
+ *
+ * The card floor matters more here than anywhere else. An override to the
+ * ground's own swatch at Faint produces a card that is a wash of its own
+ * ground - technically a colour, visually not a card.
+ */
+export function gateSectionOverrides(
+  palette: ColorPalette,
+  recipe: ColorRecipeId,
+  overrides: SectionColorOverrides,
+): GateFinding[] {
+  if (!resolveOverrideSwatch(overrides.cardSwatch)) return [];
+
+  const ground = resolveRef(
+    palette,
+    recipeInputs[recipe].ground,
+    palette.page,
+  );
+  const card = resolveSectionCard(palette, recipe, overrides);
+  const text =
+    resolveCardPolarity(palette, recipe, overrides) === "dark"
+      ? "#ffffff"
+      : palette.ink;
+
+  const findings: GateFinding[] = [
+    finding(recipe, "card-surface", "ground", card, ground, contrastBars.card),
+  ];
+
+  for (const { role, level, bar } of ladderRoles) {
+    findings.push(
+      finding(recipe, role, "card", resolveLadder(text, card, level), card, bar),
+    );
+  }
+
+  return findings;
 }
 
 /** One-line summaries for the style guide UI. */

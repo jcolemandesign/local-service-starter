@@ -137,6 +137,52 @@ describe("mixing space", () => {
   });
 });
 
+describe("override axes reuse the ladder's numbers", () => {
+  /**
+   * The override intensities are the ladder's percentages, written out again
+   * as literal values because they sit in attribute rules rather than in a
+   * mix. Nothing else would notice them drifting: an override at "faint" and a
+   * border drawn at Faint would simply stop matching, on some sections only,
+   * and look like a design inconsistency rather than a bug.
+   */
+  for (const [level, fraction] of Object.entries(ladderLevels)) {
+    const percent = Math.round(fraction * 100);
+
+    it(`--card-intensity for ${level} is ${percent}%`, () => {
+      // Cards are offered a subset of the ladder, so a level may legitimately
+      // be absent - but if it is present it must carry the ladder's value.
+      const declared = globalsCss.match(
+        new RegExp(`card-intensity="${level}"\\]\\s*\\{\\s*--card-intensity:\\s*(\\d+)%`),
+      );
+
+      if (declared) expect(Number(declared[1])).toBe(percent);
+    });
+
+    it(`--border-intensity for ${level} is ${percent}%`, () => {
+      const declared = globalsCss.match(
+        new RegExp(
+          `border-intensity="${level}"\\]\\s*\\{\\s*--border-intensity:\\s*(\\d+)%`,
+        ),
+      );
+
+      expect(declared, `no border rule for ${level}`).not.toBeNull();
+      expect(Number(declared?.[1])).toBe(percent);
+    });
+  }
+
+  it("mixes overrides toward the local ground, not a fixed colour", () => {
+    // What makes an override contextual. Mixing toward anything else turns
+    // `dark · faint` into a fixed grey rather than a wash of the section.
+    for (const axis of ["--recipe-card", "--border-override"]) {
+      const rule = globalsCss.match(
+        new RegExp(`${axis}: color-mix\\([^;]*?var\\(--recipe-ground\\)`, "s"),
+      );
+
+      expect(rule, `${axis} does not mix toward --recipe-ground`).not.toBeNull();
+    }
+  });
+});
+
 describe("optional swatches survive being absent", () => {
   /**
    * The failure this guards is silent and total rather than local.

@@ -2205,9 +2205,14 @@ body {
     --live-bg-surface: var(--recipe-card);
     --live-surface-raised: var(--recipe-card);
 
-    /* Borders and dividers. */
-    --live-service-border: var(--faint-line);
-    --live-border-default: var(--faint-line);
+    /* Borders and dividers.
+       `--border-override` is set only when a section names a border swatch, so
+       the fallback is the ordinary ground-relative faint line. Written as a
+       var() fallback rather than a second rule because the override lives on
+       the section frame while this resolves on its children - a rule could not
+       reach across that without repeating the whole role table. */
+    --live-service-border: var(--border-override, var(--faint-line));
+    --live-border-default: var(--border-override, var(--faint-line));
 
     /* Buttons. Fills are never laddered or tinted here - a mixed fill on its
        own ground is the failure the tint exists to avoid, and the recipe has
@@ -2216,6 +2221,95 @@ body {
     --live-cta-primary-ink: var(--recipe-cta-label);
     --live-cta-secondary-ink: var(--recipe-cta-fill);
     --live-cta-secondary-border: var(--recipe-cta-fill);
+  }
+
+  /* ==================================================================
+   * Section-level card and border overrides.
+   *
+   * Two independent axes rather than a rule per combination. `color-mix()`
+   * accepts its percentage from a custom property, so nine swatch rules and
+   * five intensity rules cover all forty-five pairings - the alternative was
+   * forty-five rules per override, times two overrides, times any future
+   * swatch.
+   *
+   * The intensity mixes toward `--recipe-ground`, which is what makes an
+   * override contextual rather than absolute: `dark · faint` is a wash of
+   * whatever the section is sitting on, not a fixed grey. That falls out of
+   * reusing the ladder rather than being new machinery.
+   *
+   * Placed after the recipe blocks deliberately. These selectors have the same
+   * specificity as the recipe rules they override, so source order is what
+   * decides - the same cascade fact the retired border-tone rule relied on.
+   * ================================================================== */
+
+  /* ---- Swatch axis. Shared by both overrides; which one reads it is decided
+         by the composition rules below. ---- */
+  .pagebuilder-paint-surface[data-pagebuilder-card-swatch="page"] { --card-swatch: var(--palette-page); }
+  .pagebuilder-paint-surface[data-pagebuilder-card-swatch="surface"] { --card-swatch: var(--palette-surface); }
+  .pagebuilder-paint-surface[data-pagebuilder-card-swatch="raised"] { --card-swatch: var(--palette-raised); }
+  .pagebuilder-paint-surface[data-pagebuilder-card-swatch="ink"] { --card-swatch: var(--palette-ink); }
+  .pagebuilder-paint-surface[data-pagebuilder-card-swatch="dark"] { --card-swatch: var(--palette-dark); }
+  .pagebuilder-paint-surface[data-pagebuilder-card-swatch="darkSurface"] { --card-swatch: var(--palette-dark-surface); }
+  .pagebuilder-paint-surface[data-pagebuilder-card-swatch="brand"] { --card-swatch: var(--palette-brand); }
+  .pagebuilder-paint-surface[data-pagebuilder-card-swatch="accent"] { --card-swatch: var(--palette-cta-accent); }
+  .pagebuilder-paint-surface[data-pagebuilder-card-swatch="highlight"] { --card-swatch: var(--palette-highlight); }
+
+  .pagebuilder-paint-surface[data-pagebuilder-border-swatch="page"] { --border-swatch: var(--palette-page); }
+  .pagebuilder-paint-surface[data-pagebuilder-border-swatch="surface"] { --border-swatch: var(--palette-surface); }
+  .pagebuilder-paint-surface[data-pagebuilder-border-swatch="raised"] { --border-swatch: var(--palette-raised); }
+  .pagebuilder-paint-surface[data-pagebuilder-border-swatch="ink"] { --border-swatch: var(--palette-ink); }
+  .pagebuilder-paint-surface[data-pagebuilder-border-swatch="dark"] { --border-swatch: var(--palette-dark); }
+  .pagebuilder-paint-surface[data-pagebuilder-border-swatch="darkSurface"] { --border-swatch: var(--palette-dark-surface); }
+  .pagebuilder-paint-surface[data-pagebuilder-border-swatch="brand"] { --border-swatch: var(--palette-brand); }
+  .pagebuilder-paint-surface[data-pagebuilder-border-swatch="accent"] { --border-swatch: var(--palette-cta-accent); }
+  .pagebuilder-paint-surface[data-pagebuilder-border-swatch="highlight"] { --border-swatch: var(--palette-highlight); }
+
+  /* ---- Intensity axis. The percentages are the ladder's, read from
+         `color-scales.ts` and asserted against it, so an override at "faint"
+         cannot drift from a border drawn at Faint. ---- */
+  .pagebuilder-paint-surface[data-pagebuilder-card-intensity="strong"] { --card-intensity: 100%; }
+  .pagebuilder-paint-surface[data-pagebuilder-card-intensity="body"] { --card-intensity: 86%; }
+  .pagebuilder-paint-surface[data-pagebuilder-card-intensity="muted"] { --card-intensity: 76%; }
+  .pagebuilder-paint-surface[data-pagebuilder-card-intensity="quiet"] { --card-intensity: 58%; }
+  .pagebuilder-paint-surface[data-pagebuilder-card-intensity="faint"] { --card-intensity: 20%; }
+
+  .pagebuilder-paint-surface[data-pagebuilder-border-intensity="strong"] { --border-intensity: 100%; }
+  .pagebuilder-paint-surface[data-pagebuilder-border-intensity="body"] { --border-intensity: 86%; }
+  .pagebuilder-paint-surface[data-pagebuilder-border-intensity="muted"] { --border-intensity: 76%; }
+  .pagebuilder-paint-surface[data-pagebuilder-border-intensity="quiet"] { --border-intensity: 58%; }
+  .pagebuilder-paint-surface[data-pagebuilder-border-intensity="faint"] { --border-intensity: 20%; }
+
+  /* ---- Composition. Only fires when a swatch is named, so an unset override
+         costs nothing and the recipe's own card stands. ---- */
+  .pagebuilder-paint-surface[data-pagebuilder-card-swatch] {
+    --recipe-card: color-mix(
+      in oklab,
+      var(--card-swatch) var(--card-intensity, 100%),
+      var(--recipe-ground)
+    );
+  }
+
+  .pagebuilder-paint-surface[data-pagebuilder-border-swatch] {
+    --border-override: color-mix(
+      in oklab,
+      var(--border-swatch) var(--border-intensity, 100%),
+      var(--recipe-ground)
+    );
+  }
+
+  /* ---- Card text polarity.
+   *
+   * The one value CSS cannot derive. A card's text has to flip with the card's
+   * lightness, and there is no way to ask how light a `color-mix()` result is:
+   * `light-dark()` keys off colour-scheme, not off a computed colour, and
+   * `contrast-color()` is not deployable. So `resolveCardPolarity` decides in
+   * TypeScript and the answer arrives as an attribute. ---- */
+  .pagebuilder-paint-surface[data-pagebuilder-card-polarity="dark"] {
+    --recipe-card-text: #ffffff;
+  }
+
+  .pagebuilder-paint-surface[data-pagebuilder-card-polarity="light"] {
+    --recipe-card-text: var(--palette-ink);
   }
 
   /* RETIRED: card border tone.
