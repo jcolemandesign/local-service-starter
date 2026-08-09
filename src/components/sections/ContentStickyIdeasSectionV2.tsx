@@ -150,7 +150,7 @@ function ImportantIdeasBoxV2({
 export function ContentStickyIdeasSectionV2({
   cardBorder = "on",
   cardFill = "solid",
-  colorRecipe = "default",
+  colorRecipe = "page",
   eyebrow,
   ideasLabel = "What matters",
   title,

@@ -125,6 +125,7 @@ export function ContactStripBentoSectionV3({
     "h-full min-w-0 rounded-[var(--radius-surface-token)] border shadow-service",
     colors.card,
     colors.cardBorder,
+    "recipe-card-context",
     cardFill === "none" && "!bg-transparent !shadow-none",
     cardBorder === "off" && "!border-transparent",
   );

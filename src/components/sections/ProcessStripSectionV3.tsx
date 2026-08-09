@@ -100,6 +100,7 @@ export function ProcessStripSectionV3({
                     "radius-medium grid h-full grid-cols-[auto_minmax(0,1fr)] items-center gap-5 border p-6 shadow-service",
                     colors.card,
                     colors.cardBorder,
+                    "recipe-card-context",
                     cardFill === "none" && "!bg-transparent !shadow-none",
                     cardBorder === "off" && "!border-transparent",
                   )}

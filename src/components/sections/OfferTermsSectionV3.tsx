@@ -89,6 +89,7 @@ export function OfferTermsSectionV3({
           <article
             className={cx(
               "grid grid-cols-14 overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service max-md:grid-cols-6 max-sm:grid-cols-2",
+              "recipe-card-context",
               cardFill === "none" && "!bg-transparent !shadow-none",
               cardBorder === "off" && "!border-transparent",
             )}

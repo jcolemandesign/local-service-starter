@@ -1,18 +1,31 @@
+/**
+ * The recipes offered in the builder.
+ *
+ * The ids must match `colorRecipeIds` in `color-recipe-inputs.ts`, which is
+ * where each recipe's actual colour inputs live; this list only adds the
+ * labels and the ordering the pickers use. A test asserts the two agree.
+ *
+ * Three of these grounds are chromatic and three are dark, which is why the
+ * CTA treatment is a function of the ground rather than a per-recipe choice -
+ * see section 4d of `reference code/color-system-phase-1.txt`.
+ */
 export const sectionColorRecipes = [
-  { id: "default", label: "Default" },
+  { id: "page", label: "Page" },
   { id: "surface", label: "Surface" },
-  { id: "dark", label: "Dark" },
-  { id: "accent", label: "Accent" },
-  /**
-   * Ink inverts the palette's roles rather than introducing colours of its own:
-   * the ink token becomes the ground, the muted token becomes the card, and the
-   * raised token becomes the text. Every other value in the recipe is derived
-   * from those three so the elevation reads the same way it does on a light
-   * ground - each step up is a step toward the text token, each step down a step
-   * toward the ground - and the CTA falls to the highlight, which is the only
-   * saturated colour that survives on a field this dark.
-   */
   { id: "ink", label: "Ink" },
+  { id: "dark", label: "Dark" },
+  { id: "darkSurface", label: "Dark Surface" },
+  { id: "brand", label: "Brand" },
+  /**
+   * Optional. `accent` is the CTA-appropriate derivative of the brand colour,
+   * needed only when the brand colour itself lacks contrast as a button, so a
+   * palette may leave it unauthored. When it is unset this recipe is hidden
+   * from the pickers - but it still renders for pages that already reference
+   * it, with its ground falling back to brand. Hiding governs authoring, not
+   * data.
+   */
+  { id: "accent", label: "Accent" },
+  { id: "highlight", label: "Highlight" },
 ] as const;
 
 export type SectionColorRecipe = (typeof sectionColorRecipes)[number]["id"];
@@ -50,6 +63,16 @@ export type SectionBackgroundFill = "solid" | "none";
  */
 const renamedSectionColorRecipes: Record<string, SectionColorRecipe> = {
   muted: "surface",
+  /**
+   * `default` became `page` when the recipe set grew to eight and every recipe
+   * was named for its ground. "Default" described a position in a list rather
+   * than a colour, and with eight recipes the list no longer has a default.
+   *
+   * Same reasoning as `muted` above: aliased rather than migrated, because the
+   * id is written into page templates, staged pages and the builder's saved
+   * options, and the dev server rewrites several of those on its own schedule.
+   */
+  default: "page",
 };
 
 export function isSectionColorRecipe(value: string | undefined): value is SectionColorRecipe {

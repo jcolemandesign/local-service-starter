@@ -146,7 +146,7 @@ describe("section style override specs", () => {
 describe("resolveSectionStyleOverrides", () => {
   const section = {
     cardFill: "solid" as const,
-    colorRecipe: "default" as const,
+    colorRecipe: "page" as const,
     component: cardComponent,
     id: "card-1",
     instruction: "",
@@ -188,7 +188,7 @@ describe("resolveSectionStyleOverrides", () => {
       styleField("card-1", "colorRecipe", ""),
     ]);
 
-    expect(resolved.colorRecipe).toBe("default");
+    expect(resolved.colorRecipe).toBe("page");
     expect(resolved).toBe(section);
   });
 
@@ -197,7 +197,7 @@ describe("resolveSectionStyleOverrides", () => {
       styleField("card-1", "colorRecipe", "neon"),
     ]);
 
-    expect(resolved.colorRecipe).toBe("default");
+    expect(resolved.colorRecipe).toBe("page");
   });
 
   it("ignores card overrides on sections that do not render cards", () => {

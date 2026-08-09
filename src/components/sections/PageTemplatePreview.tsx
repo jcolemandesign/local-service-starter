@@ -411,7 +411,7 @@ export function PageTemplatePreview({
           first.backgroundTreatment,
         )}
         data-pagebuilder-color-recipe={
-          resolveSectionColorRecipe(first.colorRecipe) ?? "default"
+          resolveSectionColorRecipe(first.colorRecipe) ?? "page"
         }
         key={`band-${first.id ?? band.startIndex}`}
         // The run's first section supplies the image and the tuned gradient,
@@ -622,7 +622,7 @@ function TemplateSectionFrame({
       data-pagebuilder-color-recipe={
         inBand
           ? "inherit"
-          : (resolveSectionColorRecipe(section.colorRecipe) ?? "default")
+          : (resolveSectionColorRecipe(section.colorRecipe) ?? "page")
       }
       data-pagebuilder-section-component={section.component}
       data-pagebuilder-section-mode={section.mode}

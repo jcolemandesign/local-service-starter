@@ -60,6 +60,7 @@ export function DecisionSplitDecisionLargeSectionV3({
             <article
               className={cx(
                 "fluid-type-frame flex h-full min-h-96 flex-col rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-8 text-service-ink shadow-service max-md:min-h-0 max-md:p-6",
+                "recipe-card-context",
                 cardFill === "none" && "!bg-transparent !shadow-none",
                 cardBorder === "off" && "!border-transparent",
               )}

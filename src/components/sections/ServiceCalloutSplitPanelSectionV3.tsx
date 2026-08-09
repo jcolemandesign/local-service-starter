@@ -73,6 +73,7 @@ export function ServiceCalloutSplitPanelSectionV3({
           // hold - the two-up card would look overscaled at these values.
           isStacked ? "p-8 max-md:p-6" : "p-6 max-md:p-5",
           isActive ? "border-service-accent" : "border-service-border",
+          "recipe-card-context",
           cardFill === "none" && "!bg-transparent !shadow-none",
           cardBorder === "off" && "!border-transparent",
         )}
@@ -160,6 +161,7 @@ export function ServiceCalloutSplitPanelSectionV3({
               isStacked
                 ? "card-min-tall sticky top-[var(--site-grid-inset-block)] h-fit max-lg:static"
                 : "h-full",
+              "recipe-card-context",
               cardFill === "none" && "!bg-transparent !shadow-none",
               cardBorder === "off" && "!border-transparent",
             )}

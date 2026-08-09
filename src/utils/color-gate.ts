@@ -91,10 +91,13 @@ export type GateReport = {
  * difference. Phase 3 closes the gap.
  *
  * These are counts, not a registry: they exist so the report can state its own
- * scope. `section-card-context.test.ts` is what keeps them honest.
+ * scope, and `color-card-coverage.test.ts` counts the real usage and fails if
+ * this number stops matching it. A stale figure here would be worse than none,
+ * because the report would overstate how much of the site the card figures
+ * describe.
  */
 export const CARD_CONTEXT_COVERAGE = {
-  covered: 70,
+  covered: 41,
   total: 148,
 } as const;
 

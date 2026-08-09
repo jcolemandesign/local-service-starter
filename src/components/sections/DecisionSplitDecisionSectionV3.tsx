@@ -72,6 +72,7 @@ export function DecisionSplitDecisionSectionV3({
               <article
                 className={cx(
                   "pulse-on-scroll fluid-type-frame radius-medium min-h-56 border border-service-border bg-service-surface p-5 text-service-ink shadow-none max-md:min-h-0",
+                  "recipe-card-context",
                   cardFill === "none" && "!bg-transparent !shadow-none",
                   cardBorder === "off" && "!border-transparent",
                 )}

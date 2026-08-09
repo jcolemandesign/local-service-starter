@@ -728,7 +728,7 @@ function resolvePageSections(
         cardBorder: resolvedSection.cardBorder ?? "on",
         cardFill: resolveCardFill(section.component, resolvedSection.cardFill),
         colorRecipe:
-          resolveSectionColorRecipe(resolvedSection.colorRecipe) ?? "default",
+          resolveSectionColorRecipe(resolvedSection.colorRecipe) ?? "page",
         component: section.component,
         contentKey: `section${String(index + 1).padStart(2, "0")}`,
         joinAbove: resolvedSection.joinAbove ?? "",

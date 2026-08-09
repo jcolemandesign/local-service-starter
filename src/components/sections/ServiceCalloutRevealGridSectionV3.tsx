@@ -112,6 +112,7 @@ export function ServiceCalloutRevealGridSectionV3({
           isThreeAcross
             ? "card-min-medium p-6 max-md:p-5"
             : "card-min-short p-8 max-md:p-6",
+          "recipe-card-context",
           cardFill === "none" && "!bg-transparent !shadow-none",
           cardBorder === "off" && "!border-transparent",
         )}

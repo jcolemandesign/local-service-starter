@@ -163,6 +163,7 @@ export function CTAServiceTriageSectionV3({
     "fluid-type-frame flex h-full min-w-0 flex-col rounded-[var(--radius-surface-token)] border p-8 shadow-service max-md:p-6",
     colors.card,
     colors.cardBorder,
+    "recipe-card-context",
     cardFill === "none" && "!bg-transparent !shadow-none",
     cardBorder === "off" && "!border-transparent",
   );

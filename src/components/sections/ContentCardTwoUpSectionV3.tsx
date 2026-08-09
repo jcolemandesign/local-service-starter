@@ -71,6 +71,7 @@ export function ContentCardTwoUpSectionV3({
               <article
                 className={cx(
                   "fluid-type-frame h-full min-w-0 rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-10 text-service-ink shadow-service max-md:p-8",
+                  "recipe-card-context",
                   cardFill === "none" && "!bg-transparent !shadow-none",
                   cardBorder === "off" && "!border-transparent",
                 )}

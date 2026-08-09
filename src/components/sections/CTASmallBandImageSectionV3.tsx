@@ -51,6 +51,7 @@ export function CTASmallBandImageSectionV3({
               "radius-medium grid grid-cols-14 overflow-hidden border max-lg:grid-cols-10 max-md:grid-cols-6 max-sm:grid-cols-2",
               colors.band,
               colors.border,
+              "recipe-card-context",
               cardFill === "none" && "!bg-transparent !shadow-none",
               cardBorder === "off" && "!border-transparent",
             )}

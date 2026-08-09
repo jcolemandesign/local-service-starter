@@ -61,6 +61,7 @@ export function FourCardLinkGridSectionV3({
                 // A static card keeps the surface and drops the affordance.
                 cardLinks === "on" &&
                   "transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
+                "recipe-card-context",
                 cardFill === "none" && "!bg-transparent !shadow-none",
                 cardBorder === "off" && "!border-transparent",
               )}

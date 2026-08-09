@@ -700,7 +700,7 @@ function isDecisionSplitDecisionLargeSection(
 }
 
 function getSectionColorRecipe(section: WorkingSection): SectionColorRecipe {
-  return resolveSectionColorRecipe(section.colorRecipe) ?? "default";
+  return resolveSectionColorRecipe(section.colorRecipe) ?? "page";
 }
 
 function getSectionCardFill(section: WorkingSection): SectionCardFill {
@@ -1006,7 +1006,7 @@ function createInitialWorkingStack(
     originalIndex: index,
     reduceTopPadding: false,
     reduceBottomPadding: false,
-    colorRecipe: section.colorRecipe ?? "default",
+    colorRecipe: section.colorRecipe ?? "page",
     backgroundFill: section.backgroundFill ?? "solid",
     cardFill: resolveCardFill(section.component, section.cardFill),
     ratio:

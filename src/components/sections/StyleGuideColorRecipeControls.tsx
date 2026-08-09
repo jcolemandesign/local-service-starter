@@ -1,7 +1,29 @@
 "use client";
 
-import { sectionColorRecipes } from "@/content/section-color-recipes";
+import {
+  type SectionColorRecipe,
+  sectionColorRecipes,
+} from "@/content/section-color-recipes";
 import { useStyleGuideTokens } from "@/components/sections/StyleGuideLiveSurface";
+
+/**
+ * Keyed by recipe id so adding a recipe without describing it is a type error
+ * rather than a silently blank card.
+ *
+ * Each line names the ground, the card and the CTA treatment, because those
+ * three are what actually differ - the text hierarchy derives from the ground
+ * in every recipe and so is not worth repeating eight times.
+ */
+const recipeDescriptions: Record<SectionColorRecipe, string> = {
+  page: "Page ground, lifted cards, brand CTA.",
+  surface: "Surface ground, brand-washed cards, brand CTA.",
+  ink: "Ink ground, dark cards, tinted brand CTA.",
+  dark: "Dark ground, dark-surface cards, tinted brand CTA.",
+  darkSurface: "Dark-surface ground, dark cards, tinted brand CTA.",
+  brand: "Brand ground, ink cards, white CTA.",
+  accent: "Accent ground, dark cards, white CTA. Hidden unless accent is set.",
+  highlight: "Highlight ground, dark cards, white CTA and stroke.",
+};
 
 export function StyleGuideColorRecipeControls() {
   const { draft, updateDrafts } = useStyleGuideTokens();
@@ -10,16 +32,12 @@ export function StyleGuideColorRecipeControls() {
     <div className="grid gap-6">
       <div>
         <p className="type-label text-service-accent">Section recipes</p>
-        <div className="mt-3 grid grid-cols-5 gap-3 max-lg:grid-cols-2 max-md:grid-cols-1">
+        <div className="mt-3 grid grid-cols-2 gap-3 max-md:grid-cols-1">
           {sectionColorRecipes.map((recipe) => (
             <div className="rounded border border-service-border bg-bg-page p-3" key={recipe.id}>
               <p className="text-sm font-semibold text-service-ink">{recipe.label}</p>
               <p className="type-caption mt-2 text-service-muted">
-                {recipe.id === "default" && "Page ground, surface cards, accent CTA."}
-                {recipe.id === "surface" && "Surface ground, raised cards, accent CTA."}
-                {recipe.id === "dark" && "Dark ground, light surface cards, accent CTA."}
-                {recipe.id === "accent" && "Accent ground, dark cards, raised-token CTA."}
-                {recipe.id === "ink" && "Ink ground, dark cards, highlight CTA."}
+                {recipeDescriptions[recipe.id]}
               </p>
             </div>
           ))}

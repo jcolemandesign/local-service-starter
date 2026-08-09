@@ -167,19 +167,26 @@
 /*
  * Dark ground repoints the primary CTA at the highlight token.
  *
- * Keyed on the classes that actually paint a dark field rather than on the
- * builder's recipe frame, so it also reaches a dark card sitting inside a light
- * section, and holds on hand-written pages and in export, where no frame wraps
- * the section. Inheritance does the scoping: the vars land on the dark element
- * and every CTA beneath it reads them.
+ * FRAMELESS PAGES ONLY. Inside a colour recipe the role table governs the CTA,
+ * and it resolves the fill through the tint - a chromatic swatch mixed toward
+ * the recipe's text source - which is both ground-relative and measurably
+ * better than this rule was. Highlight on a dark ground is 1.69, and 2.31 on
+ * ink, against a 3:1 bar for a button's own edge; the tint clears it on every
+ * dark ground. The ink recipe used to be listed here and no longer is, because
+ * it would override the tint with a value that does not work.
+ *
+ * What remains is the class-keyed form, which still earns its place: hand-
+ * written pages and exported sites paint a dark field with `bg-bg-dark` or
+ * `bg-service-ink` and no recipe frame wraps them, so there is no
+ * --recipe-cta-fill to read. Inheritance does the scoping - the vars land on
+ * the dark element and every CTA beneath it reads them.
  *
  * The hover pairs with it - the light-ground hover darkens toward bg-dark,
  * which on a dark field would sink the button into its own ground, so dark
  * ground lightens instead.
  */
 .bg-bg-dark,
-.bg-service-ink,
-.pagebuilder-paint-surface[data-pagebuilder-color-recipe="ink"] {
+.bg-service-ink {
   --live-cta-primary: var(--live-accent, #c45a2c);
   --live-cta-primary-hover: color-mix(
     in srgb,
@@ -1861,6 +1868,14 @@ body {
    * ground until phase 3. */
   .recipe-card-context {
     --recipe-ground: var(--recipe-card);
+    /* A card that flips lightness relative to its section must flip its text
+       with it, or the section's foreground lands on an incompatible surface.
+       CSS cannot ask how light the card is, so the recipe states it - see
+       --recipe-card-text in each input block. The faint source follows the
+       text source, and the tint re-resolves on its own because both scales
+       read --recipe-text. */
+    --recipe-text: var(--recipe-card-text);
+    --recipe-faint: var(--recipe-card-text);
   }
 
   /* ==================================================================
@@ -1905,27 +1920,158 @@ body {
     background-color: var(--recipe-ground);
   }
 
-  /* Section ground, one row of each table. Held in a variable rather than
-     applied directly so the rule that stops sections painting over it can read
-     the same value without knowing which recipe is active. */
-  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="default"] {
+  /* ------------------------------------------------------------------
+   * Recipe inputs.
+   *
+   * Each recipe declares seven values and nothing else. Everything a section
+   * actually reads is derived from these by the scales above and the role
+   * table below, which is why eight recipes fit in the space the previous five
+   * needed for their hand-written token tables.
+   *
+   * The ground is held in a variable rather than applied directly so the rule
+   * that stops sections painting over it can read the same value without
+   * knowing which recipe is active.
+   *
+   * CTA and eyebrow treatment is a function of the ground, not a per-recipe
+   * preference, and falls into three regimes:
+   *
+   *   light ground     the chromatic swatch at full strength - it already
+   *                    clears both bars (6.00 on page, 5.23 on surface)
+   *   neutral dark     the tint. Full-strength chromatic darkens into the
+   *                    ground and dies at 1.11-2.03 against a 3:1 bar
+   *   chromatic ground the text source. The tint does not clear against a
+   *                    chromatic ground either (3.02 on brand, 2.65 on
+   *                    highlight), and chromatic-on-chromatic is the case the
+   *                    brief rules out
+   * ------------------------------------------------------------------ */
+
+  /* ---- Page: the light default ---- */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="page"] {
     --recipe-ground: var(--palette-page);
+    --recipe-card: var(--palette-raised);
+    /* Text source for this recipe's card, read by .recipe-card-context.
+       CSS cannot ask how light the card is, so the recipe states it. */
+    --recipe-card-text: var(--palette-ink);
+    --recipe-text: var(--palette-ink);
+    --recipe-faint: var(--palette-ink);
+    --recipe-chromatic: var(--palette-brand);
+    --recipe-cta-fill: var(--palette-brand);
+    --recipe-cta-label: #ffffff;
+    --recipe-eyebrow: var(--palette-brand);
   }
 
+  /* ---- Surface ---- */
   .pagebuilder-paint-surface[data-pagebuilder-color-recipe="surface"] {
     --recipe-ground: var(--palette-surface);
+    /* A wash rather than a swatch. The surface token is the ground here, so a
+       surface card would be the same flat field as the section; tinting the
+       ground with the brand at the Faint level lifts it just enough to read
+       (1.33) without introducing a fourth light neutral. */
+    --recipe-card: color-mix(in oklab, var(--palette-brand) 20%, var(--palette-surface));
+    /* Text source for this recipe's card, read by .recipe-card-context.
+       CSS cannot ask how light the card is, so the recipe states it. */
+    --recipe-card-text: var(--palette-ink);
+    --recipe-text: var(--palette-ink);
+    --recipe-faint: var(--palette-brand);
+    --recipe-chromatic: var(--palette-brand);
+    --recipe-cta-fill: var(--palette-brand);
+    --recipe-cta-label: #ffffff;
+    --recipe-eyebrow: var(--palette-brand);
   }
 
-  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="dark"] {
-    --recipe-ground: var(--palette-dark);
-  }
-
-  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="accent"] {
-    --recipe-ground: var(--palette-accent);
-  }
-
+  /* ---- Ink ---- */
   .pagebuilder-paint-surface[data-pagebuilder-color-recipe="ink"] {
     --recipe-ground: var(--palette-ink);
+    --recipe-card: var(--palette-dark);
+    /* Text source for this recipe's card, read by .recipe-card-context.
+       CSS cannot ask how light the card is, so the recipe states it. */
+    --recipe-card-text: #ffffff;
+    --recipe-text: #ffffff;
+    --recipe-faint: #ffffff;
+    --recipe-chromatic: var(--palette-brand);
+    --recipe-cta-fill: var(--chroma-fill);
+    --recipe-cta-label: var(--palette-ink);
+    --recipe-eyebrow: var(--chroma-text);
+  }
+
+  /* ---- Dark ---- */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="dark"] {
+    --recipe-ground: var(--palette-dark);
+    --recipe-card: var(--palette-dark-surface);
+    /* Text source for this recipe's card, read by .recipe-card-context.
+       CSS cannot ask how light the card is, so the recipe states it. */
+    --recipe-card-text: #ffffff;
+    --recipe-text: #ffffff;
+    --recipe-faint: #ffffff;
+    --recipe-chromatic: var(--palette-brand);
+    --recipe-cta-fill: var(--chroma-fill);
+    --recipe-cta-label: var(--palette-ink);
+    --recipe-eyebrow: var(--chroma-text);
+  }
+
+  /* ---- Dark Surface: the dark card promoted to a ground ---- */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="darkSurface"] {
+    --recipe-ground: var(--palette-dark-surface);
+    --recipe-card: var(--palette-dark);
+    /* Text source for this recipe's card, read by .recipe-card-context.
+       CSS cannot ask how light the card is, so the recipe states it. */
+    --recipe-card-text: #ffffff;
+    --recipe-text: #ffffff;
+    --recipe-faint: #ffffff;
+    --recipe-chromatic: var(--palette-brand);
+    --recipe-cta-fill: var(--chroma-fill);
+    --recipe-cta-label: var(--palette-ink);
+    --recipe-eyebrow: var(--chroma-text);
+  }
+
+  /* ---- Brand ---- */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="brand"] {
+    --recipe-ground: var(--palette-brand);
+    --recipe-card: var(--palette-ink);
+    /* Text source for this recipe's card, read by .recipe-card-context.
+       CSS cannot ask how light the card is, so the recipe states it. */
+    --recipe-card-text: #ffffff;
+    --recipe-text: #ffffff;
+    --recipe-faint: #ffffff;
+    --recipe-chromatic: var(--palette-brand);
+    /* White, not the tint: chroma-fill measures 3.02 against this ground and a
+       brand button on a brand field is the case the brief rules out. */
+    --recipe-cta-fill: #ffffff;
+    --recipe-cta-label: var(--palette-brand);
+    --recipe-eyebrow: #ffffff;
+  }
+
+  /* ---- Accent: the optional CTA derivative promoted to a ground.
+         Hidden from the pickers when unauthored, but still rendered here,
+         because saved pages may already name it. --palette-cta-accent carries
+         the fallback to brand. ---- */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="accent"] {
+    --recipe-ground: var(--palette-cta-accent);
+    --recipe-card: var(--palette-dark);
+    /* Text source for this recipe's card, read by .recipe-card-context.
+       CSS cannot ask how light the card is, so the recipe states it. */
+    --recipe-card-text: #ffffff;
+    --recipe-text: #ffffff;
+    --recipe-faint: #ffffff;
+    --recipe-chromatic: var(--palette-cta-accent);
+    --recipe-cta-fill: #ffffff;
+    --recipe-cta-label: var(--palette-cta-accent);
+    --recipe-eyebrow: #ffffff;
+  }
+
+  /* ---- Highlight ---- */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="highlight"] {
+    --recipe-ground: var(--palette-highlight);
+    --recipe-card: var(--palette-dark);
+    /* Text source for this recipe's card, read by .recipe-card-context.
+       CSS cannot ask how light the card is, so the recipe states it. */
+    --recipe-card-text: #ffffff;
+    --recipe-text: #ffffff;
+    --recipe-faint: #ffffff;
+    --recipe-chromatic: var(--palette-highlight);
+    --recipe-cta-fill: #ffffff;
+    --recipe-cta-label: var(--palette-highlight);
+    --recipe-eyebrow: #ffffff;
   }
 
   /* A section that paints its own root would lay that colour over the ground
@@ -1986,154 +2132,78 @@ body {
     background-color: transparent !important;
   }
 
-  /* ---- Default: page ground ---- */
-  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="default"] > * {
-    --live-service-accent: var(--palette-accent);
-    --live-text-accent: var(--palette-accent);
-    --live-service-ink: var(--palette-ink);
-    --live-text-main: var(--palette-ink);
-    --live-service-muted: var(--palette-muted);
-    --live-text-muted: var(--palette-muted);
-    --live-bg-page: var(--palette-page);
-    --live-service-surface: var(--palette-surface);
-    --live-bg-surface: var(--palette-surface);
-    --live-service-border: var(--palette-muted);
-    --live-border-default: var(--palette-muted);
-    --live-cta-primary: var(--palette-accent);
-    --live-cta-primary-ink: var(--palette-page);
-    --live-cta-secondary-ink: var(--palette-accent);
-    --live-cta-secondary-border: var(--palette-accent);
-    --recipe-special-card-fill: var(--palette-muted);
-    --recipe-special-card-ink: var(--palette-raised);
-  }
-
-  /* ---- Surface: the service surface as ground ---- */
-  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="surface"] > * {
-    --live-service-accent: var(--palette-accent);
-    --live-text-accent: var(--palette-accent);
-    --live-service-ink: var(--palette-ink);
-    --live-text-main: var(--palette-ink);
-    --live-service-muted: var(--palette-muted);
-    --live-text-muted: var(--palette-muted);
-    /* Ground, so a section or control built from the page token sits flat in
-       the field rather than cutting a paper rectangle out of it. */
-    --live-bg-page: var(--palette-surface);
-    /* Cards lift to the raised token - the surface itself is now the ground,
-       so a surface card would be the same flat field as the section. */
-    --live-service-surface: var(--palette-raised);
-    --live-bg-surface: var(--palette-raised);
-    --live-service-border: var(--palette-muted);
-    --live-border-default: var(--palette-muted);
-    --live-cta-primary: var(--palette-accent);
-    --live-cta-primary-ink: var(--palette-page);
-    --live-cta-secondary-ink: var(--palette-accent);
-    --live-cta-secondary-border: var(--palette-accent);
-    --recipe-special-card-fill: var(--palette-accent);
-    --recipe-special-card-ink: var(--palette-raised);
-  }
-
-  /* ---- Dark ---- */
-  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="dark"] > * {
-    --live-service-accent: var(--palette-surface);
-    --live-text-accent: var(--palette-surface);
-    --live-service-ink: var(--palette-raised);
-    --live-text-main: var(--palette-raised);
-    --live-service-muted: var(--palette-surface);
-    --live-text-muted: var(--palette-surface);
-    --live-bg-page: var(--palette-dark);
-    /* A light card on a dark ground. Its own text is corrected below, since
-       body copy out here is light and would vanish on it. */
-    --live-service-surface: var(--palette-surface);
-    --live-bg-surface: var(--palette-surface);
-    --live-service-border: var(--palette-muted);
-    --live-border-default: var(--palette-muted);
-    --live-cta-primary: var(--palette-accent);
-    --live-cta-primary-ink: var(--palette-page);
-    --live-cta-secondary-ink: var(--palette-page);
-    --live-cta-secondary-border: var(--palette-page);
-    --recipe-special-card-fill: var(--palette-accent);
-    --recipe-special-card-ink: var(--palette-raised);
-  }
-
-  /* ---- Accent ---- */
-  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="accent"] > * {
-    --live-service-accent: var(--palette-raised);
-    --live-text-accent: var(--palette-raised);
-    --live-service-ink: var(--palette-page);
-    --live-text-main: var(--palette-page);
-    --live-service-muted: var(--palette-raised);
-    --live-text-muted: var(--palette-raised);
-    --live-bg-page: var(--palette-accent);
-    --live-service-surface: var(--palette-dark);
-    --live-bg-surface: var(--palette-dark);
-    --live-service-border: var(--palette-surface);
-    --live-border-default: var(--palette-surface);
-    --live-cta-primary: var(--palette-raised);
-    --live-cta-primary-ink: var(--palette-ink);
-    --live-cta-secondary-ink: var(--palette-raised);
-    --live-cta-secondary-border: var(--palette-raised);
-    --recipe-special-card-fill: var(--palette-raised);
-    --recipe-special-card-ink: var(--palette-dark);
-  }
-
-  /* ---- Ink ---- */
-  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="ink"] > * {
-    /* The table asks for the dark token here. On every palette tried it is
-       darker than the ink ground it sits on, so the eyebrow lands near 1.2:1
-       and is effectively invisible. Kept faithful rather than silently
-       corrected - it is one value in the style guide away from working. */
-    --live-service-accent: var(--palette-dark);
-    --live-text-accent: var(--palette-dark);
-    --live-service-ink: var(--palette-raised);
-    --live-text-main: var(--palette-raised);
-    --live-service-muted: var(--palette-surface);
-    --live-text-muted: var(--palette-surface);
-    --live-bg-page: var(--palette-ink);
-    --live-service-surface: var(--palette-dark);
-    --live-bg-surface: var(--palette-dark);
-    --live-service-border: var(--palette-surface);
-    --live-border-default: var(--palette-surface);
-    --live-cta-primary: var(--palette-highlight);
-    --live-cta-primary-ink: var(--palette-page);
-    --live-cta-secondary-ink: var(--palette-page);
-    --live-cta-secondary-border: var(--palette-highlight);
-    --recipe-special-card-fill: var(--palette-accent);
-    --recipe-special-card-ink: var(--palette-raised);
-  }
-
-  /* Card border tone, chosen per section rather than baked into a recipe row.
+  /* ------------------------------------------------------------------
+   * The role table.
    *
-   * `serviceBorder` (the darken-from-surface formula every recipe above
-   * defaults to) only reaches 3:1 on light card surfaces; below roughly L 0.45
-   * no downward step gets there. `serviceBorderLight` is its mirror - the same
-   * offset stepped up instead of down - correct only on dark card surfaces.
-   * Neither is safe to bake into a recipe row site-wide, because a business's
-   * accent color (and therefore its card surface under some recipes) can land
-   * on either side of that line. So this is a builder toggle: the editor picks
-   * whichever tone reads against the card they are looking at, and both values
-   * still come from the Style Guide's surface color, not a hand-picked hex.
+   * Every --live-* row a section can reach, resolved from the recipe inputs
+   * through the two scales. This one block replaces the five hand-written
+   * token tables that stood here - about ninety rows, each of which was a
+   * place for one recipe to drift from its neighbours.
    *
-   * Placed after all five recipe blocks so it wins the cascade regardless of
-   * which recipe is active - equal-specificity attribute selectors resolve by
-   * source order, not by which one names the color recipe. */
-  .pagebuilder-paint-surface[data-pagebuilder-border-tone="light"] > * {
-    --live-service-border: var(--live-service-border-light);
+   * Declared on the children rather than the painting surface for the reason
+   * the palette capture above gives: these rows redefine the very tokens the
+   * capture reads, and on a single element that is a cycle.
+   * ------------------------------------------------------------------ */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )
+    > *,
+  .recipe-card-context {
+    /* Text hierarchy. */
+    --live-service-ink: var(--text-strong);
+    --live-text-main: var(--text-strong);
+    --live-text-body: var(--text-body);
+    --live-service-muted: var(--text-muted);
+    --live-text-muted: var(--text-muted);
+    /* Named for its constraint, not its intensity: this rung is 3.23 on page
+       and fails AA for body copy, so it is metadata and passive UI only. */
+    --live-text-meta: var(--text-meta);
+
+    /* Eyebrow / accent text. Flat - the recipe already decided whether this is
+       the chromatic swatch, its tint, or the text source. */
+    --live-service-accent: var(--recipe-eyebrow);
+    --live-text-accent: var(--recipe-eyebrow);
+
+    /* Grounds and surfaces. */
+    --live-bg-page: var(--recipe-ground);
+    --live-service-surface: var(--recipe-card);
+    --live-bg-surface: var(--recipe-card);
+    --live-surface-raised: var(--recipe-card);
+
+    /* Borders and dividers. */
+    --live-service-border: var(--faint-line);
+    --live-border-default: var(--faint-line);
+
+    /* Buttons. Fills are never laddered or tinted here - a mixed fill on its
+       own ground is the failure the tint exists to avoid, and the recipe has
+       already resolved which of the three treatments applies. */
+    --live-cta-primary: var(--recipe-cta-fill);
+    --live-cta-primary-ink: var(--recipe-cta-label);
+    --live-cta-secondary-ink: var(--recipe-cta-fill);
+    --live-cta-secondary-border: var(--recipe-cta-fill);
   }
 
-  /* Ink's generic accent role is intentionally dark, which makes it suitable
-     for controls on raised surfaces but invisible for this eyebrow on the ink
-     ground. Keep the section label on the raised token instead.
-     Same band exception as the card-text fix below: a banded member reads
-     `data-pagebuilder-color-recipe="inherit"` on its own frame, so the
-     compound (same-element) form never matches inside a band - reached
-     instead by keying off the band's recipe. */
-  .pagebuilder-paint-surface[data-pagebuilder-color-recipe="ink"][data-pagebuilder-section-component="ContentAboutCompanySectionV2"]
-    .content-about-company-eyebrow,
-  .pagebuilder-section-band[data-pagebuilder-color-recipe="ink"]
-    [data-pagebuilder-section-component="ContentAboutCompanySectionV2"]
-    .content-about-company-eyebrow {
-    color: var(--palette-raised) !important;
-  }
+  /* RETIRED: card border tone.
+   *
+   * This was a per-section toggle between two border formulas - one stepping
+   * lightness down from the card surface, correct only on light cards, and one
+   * stepping up, correct only on dark ones. Which was right depended on the
+   * recipe AND on the business's own accent colour, so it could not be baked
+   * into a recipe row and had to be a decision the editor made per section.
+   *
+   * `--faint-line` removes the question. It mixes the recipe's faint source
+   * toward the local ground, so on a light ground it darkens and on a dark one
+   * it lightens, without anyone choosing. The stored `borderTone` field stays
+   * readable in saved data and is simply no longer consumed.
+   *
+   * RETIRED: the ink eyebrow patch.
+   *
+   * ContentAboutCompanySectionV2's eyebrow had to be forced to the raised
+   * token because the ink recipe pointed its accent role at the dark swatch,
+   * which sat at roughly 1.2:1 on the ink ground - effectively invisible. The
+   * eyebrow is now the chromatic tint, which measures 8.93 on that ground, so
+   * the patch has nothing left to correct. Its removal is why no section-
+   * specific colour rule survives in this file. */
 
   /* Card text, where a card's own ground differs enough from the section's
    * that body copy cannot follow it in.

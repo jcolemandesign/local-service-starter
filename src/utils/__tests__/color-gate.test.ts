@@ -180,7 +180,9 @@ describe("gate scope", () => {
   it("states the card-context coverage rather than implying it is global", () => {
     const report = gateColorSystem(slotOne);
 
-    expect(report.coveredCardSections).toBe(70);
+    // The exact figure is asserted against real usage in
+    // color-card-coverage.test.ts; here it only has to be present and partial.
+    expect(report.coveredCardSections).toBeGreaterThan(0);
     expect(report.totalCardSections).toBe(148);
     expect(report.coveredCardSections).toBeLessThan(report.totalCardSections);
   });

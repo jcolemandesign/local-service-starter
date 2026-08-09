@@ -152,6 +152,7 @@ function SplitLargeCard({
       className={cx(
         "fluid-type-frame radius-medium flex h-full flex-col border border-service-border bg-service-surface text-service-ink shadow-none",
         cardFill === "solid" ? "p-12 max-md:p-8" : "p-6",
+        "recipe-card-context",
         cardFill === "none" && "!bg-transparent !shadow-none",
         cardBorder === "off" && "!border-transparent",
       )}
