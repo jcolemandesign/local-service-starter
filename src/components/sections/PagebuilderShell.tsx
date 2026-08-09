@@ -120,14 +120,13 @@ import { resolveBackgroundImageFitId } from "@/content/background-image-config";
 import { DownArrowIcon } from "@/components/primitives";
 import type { PagebuilderRecipe, SectionMode } from "@/content/pagebuilder";
 import {
-  resolveSectionColorRecipe,
-  sectionColorRecipes,
-  type SectionCardBorder,
+  resolveSectionColorRecipe,  type SectionCardBorder,
   type SectionCardBorderTone,
   type SectionCardFill,
   type SectionBackgroundFill,
   type SectionColorRecipe,
 } from "@/content/section-color-recipes";
+import { useAvailableColorRecipes } from "@/utils/use-available-recipes";
 import {
   getCanonicalSectionLabel,
   sectionLibraryV3Content,
@@ -2720,6 +2719,16 @@ export function PagebuilderShell({
   renderLibrarySection,
   sectionModes,
 }: PagebuilderShellProps) {
+  /**
+   * Colour recipes, not the page `recipes` prop above - the two words collide
+   * here and mean different things.
+   *
+   * Filtered so a recipe whose defining swatch is unauthored is not offered;
+   * picking one would produce a section that renders as a duplicate of
+   * another. Pages that already name such a recipe still render, which is
+   * handled in CSS rather than here.
+   */
+  const availableColorRecipes = useAvailableColorRecipes();
   const [activeRecipeId, setActiveRecipeId] = useState(recipes[0]?.id ?? "");
   const [layoutSlots, setLayoutSlots] = useState<PageLayoutSlot[][]>(() =>
     recipes.map((recipe) => createInitialLayoutSlots(recipe)),
@@ -5000,8 +5009,8 @@ export function PagebuilderShell({
                             <legend className="type-caption font-semibold text-current">
                               Color recipe
                             </legend>
-                            <div className="grid grid-cols-5 gap-2 max-md:grid-cols-2">
-                              {sectionColorRecipes.map((recipe) => {
+                            <div className="grid grid-cols-2 gap-2">
+                              {availableColorRecipes.map((recipe) => {
                                 const isActive =
                                   getSectionColorRecipe(section) === recipe.id;
 

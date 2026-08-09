@@ -256,6 +256,19 @@ const colors = [
     usage: "Neutral dark background for non-brand dark sections",
   },
   {
+    name: "bg-dark-surface",
+    label: "Dark Surface",
+    controlKey: "bgDarkSurface",
+    value: "#24566a",
+    surface: "bg-bg-dark-surface",
+    text: "text-text-inverse",
+    muted: "text-white/68",
+    border: "border-white/18",
+    accent: "bg-surface-raised text-bg-dark",
+    usage:
+      "Card surface on a dark ground, and its own recipe. Derived from Dark when left unset",
+  },
+  {
     name: "accent",
     label: "Highlight",
     controlKey: "accent",
@@ -266,6 +279,19 @@ const colors = [
     border: "border-white/24",
     accent: "bg-surface-raised text-accent",
     usage: "Warm highlight accent for contrast moments",
+  },
+  {
+    name: "cta-accent",
+    label: "CTA Accent",
+    controlKey: "ctaAccent",
+    value: "",
+    surface: "bg-service-accent",
+    text: "text-white",
+    muted: "text-white/78",
+    border: "border-white/24",
+    accent: "bg-surface-raised text-service-accent",
+    usage:
+      "Optional. Only needed when the brand colour lacks contrast as a button. Leave unset and the Accent recipe stays hidden",
   },
 ] as const;
 

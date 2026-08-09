@@ -1,9 +1,7 @@
 "use client";
 
-import {
-  type SectionColorRecipe,
-  sectionColorRecipes,
-} from "@/content/section-color-recipes";
+import type { SectionColorRecipe } from "@/content/section-color-recipes";
+import { useAvailableColorRecipes } from "@/utils/use-available-recipes";
 import { useStyleGuideTokens } from "@/components/sections/StyleGuideLiveSurface";
 
 /**
@@ -27,13 +25,18 @@ const recipeDescriptions: Record<SectionColorRecipe, string> = {
 
 export function StyleGuideColorRecipeControls() {
   const { draft, updateDrafts } = useStyleGuideTokens();
+  // Pass the unsaved draft so the list responds while the editor is still
+  // picking, not only after a save.
+  const availableRecipes = useAvailableColorRecipes({
+    accent: draft.ctaAccent,
+  });
 
   return (
     <div className="grid gap-6">
       <div>
         <p className="type-label text-service-accent">Section recipes</p>
         <div className="mt-3 grid grid-cols-2 gap-3 max-md:grid-cols-1">
-          {sectionColorRecipes.map((recipe) => (
+          {availableRecipes.map((recipe) => (
             <div className="rounded border border-service-border bg-bg-page p-3" key={recipe.id}>
               <p className="text-sm font-semibold text-service-ink">{recipe.label}</p>
               <p className="type-caption mt-2 text-service-muted">

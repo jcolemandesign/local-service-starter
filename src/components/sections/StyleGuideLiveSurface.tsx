@@ -2,6 +2,7 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { deriveDarkSurface } from "@/content/color-palette-adapter";
 import { derivedColorValues } from "@/content/color-derivations";
 import { resolveBorderWidthOption } from "@/content/section-style-options";
 import { type TypeRole, typePalettes } from "@/content/type-palettes";
@@ -11,6 +12,20 @@ export type StyleGuideColorTokens = {
   accentInk: string;
   accentMutedText: string;
   bgDark: string;
+  /**
+   * The card that sits on a dark ground, and the CTA-appropriate derivative of
+   * the brand colour. Both optional, both added by the colour system overhaul.
+   *
+   * Optional because every slot saved before the overhaul lacks them, and an
+   * approved page records the tokens it was approved under - a required field
+   * would invalidate historic approvals. `bgDarkSurface` derives from the dark
+   * ground when unset. `ctaAccent` stays unset, which is the normal case: it
+   * is only needed when the brand colour itself lacks contrast as a button,
+   * and leaving it unset hides the Accent recipe rather than shipping a
+   * duplicate of Brand.
+   */
+  bgDarkSurface?: string;
+  ctaAccent?: string;
   bgPage: string;
   serviceAccent: string;
   serviceBorder: string;
@@ -328,6 +343,18 @@ export function buildStyleVariables(
     "--live-accent-ink": draft.accentInk,
     "--live-accent-muted-text": draft.accentMutedText,
     "--live-bg-dark": draft.bgDark,
+    "--live-bg-dark-surface":
+      draft.bgDarkSurface || deriveDarkSurface(draft.bgDark),
+    /**
+     * Omitted, not emitted empty, when unset.
+     *
+     * An empty custom property is valid CSS but poisons every `var()` that
+     * reads it - the referencing declaration goes invalid at computed-value
+     * time and takes neither the value nor its own fallback. So an unset CTA
+     * accent has to be an absent key, which lets `--palette-cta-accent` fall
+     * back to brand as designed.
+     */
+    ...(draft.ctaAccent ? { "--live-cta-accent": draft.ctaAccent } : {}),
     // Derived from the surface, not from a shared border field. See
     // `derivedColorValues` for why these are CSS text rather than a resolved
     // value.

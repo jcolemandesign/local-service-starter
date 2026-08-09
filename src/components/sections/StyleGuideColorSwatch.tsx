@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Card } from "@/components/primitives";
+import { deriveDarkSurface } from "@/content/color-palette-adapter";
 import {
   type StyleGuideTokenDraft,
   useStyleGuideTokens,
@@ -15,7 +16,9 @@ type StyleGuideColorSwatchProps = {
       StyleGuideTokenDraft,
       | "accent"
       | "bgDark"
+      | "bgDarkSurface"
       | "bgPage"
+      | "ctaAccent"
       | "serviceAccent"
       | "serviceBorder"
       | "serviceInk"
@@ -96,10 +99,39 @@ function ColorWheelIcon() {
   );
 }
 
+const optionalControlKeys = new Set(["bgDarkSurface", "ctaAccent"]);
+
+function isOptional(
+  controlKey: StyleGuideColorSwatchProps["color"]["controlKey"],
+) {
+  return Boolean(controlKey && optionalControlKeys.has(controlKey));
+}
+
+/** What an optional swatch resolves to while nobody has authored it. Mirrors
+ *  the fallbacks in `color-palette-adapter.ts` and `buildStyleVariables`. */
+function fallbackFor(
+  controlKey: StyleGuideColorSwatchProps["color"]["controlKey"],
+  draft: StyleGuideTokenDraft,
+) {
+  if (controlKey === "bgDarkSurface") return deriveDarkSurface(draft.bgDark);
+  if (controlKey === "ctaAccent") return draft.serviceAccent;
+
+  return undefined;
+}
+
 export function StyleGuideColorSwatch({ color }: StyleGuideColorSwatchProps) {
   const { draft, updateDraft } = useStyleGuideTokens();
   const [format, setFormat] = useState<ColorFormat>("hex");
-  const value = color.controlKey ? draft[color.controlKey] : color.value;
+  const stored = color.controlKey ? draft[color.controlKey] : color.value;
+  /**
+   * Two swatches are optional, so "unset" is a real state rather than a bug,
+   * and it is not the same as "empty". Each falls back to something concrete -
+   * the dark surface derives from Dark, the CTA accent resolves to the brand
+   * colour - and the picker has to show the colour that will actually render,
+   * or an editor cannot tell what leaving it unset does.
+   */
+  const isUnset = !stored;
+  const value = stored || fallbackFor(color.controlKey, draft) || color.value;
   const formattedValue = colorValueForFormat(value, format);
 
   return (
@@ -115,6 +147,7 @@ export function StyleGuideColorSwatch({ color }: StyleGuideColorSwatchProps) {
           <p className="type-label opacity-75">{color.label}</p>
           <p className="type-caption mt-3 opacity-80">
             {color.derivedFrom ?? value}
+            {isUnset && isOptional(color.controlKey) ? " · unset" : ""}
           </p>
         </div>
         <div className="grid content-between gap-4 p-4">
@@ -167,6 +200,19 @@ export function StyleGuideColorSwatch({ color }: StyleGuideColorSwatchProps) {
                 <code className="type-caption min-w-0 truncate font-semibold text-service-muted">
                   {formattedValue}
                 </code>
+                {/* Optional swatches need a way back to unset. A colour input
+                    cannot express "no value", so without this an editor who
+                    tries the CTA accent once can never un-author it, and the
+                    Accent recipe stays visible for good. */}
+                {isOptional(color.controlKey) && !isUnset ? (
+                  <button
+                    className="type-caption min-h-7 shrink-0 rounded-sm border border-service-border bg-surface-raised px-2 font-semibold text-service-muted transition-colors hover:text-service-ink"
+                    onClick={() => updateDraft(color.controlKey!, "")}
+                    type="button"
+                  >
+                    Clear
+                  </button>
+                ) : null}
               </div>
             </div>
           ) : (
