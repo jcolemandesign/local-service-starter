@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-08-09T05:36:29.951Z",
+      "savedAt": "2026-08-07T19:09:58.626Z",
       "sectionCount": 11,
       "sections": [
         {
@@ -24,7 +24,7 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "slotId": "slot-60617e1dbb11",
-          "colorRecipe": "page",
+          "colorRecipe": "default",
           "backgroundFill": "solid",
           "cardBorder": "off",
           "borderTone": "dark",
@@ -43,12 +43,12 @@
           "reduceTopPadding": false,
           "slotId": "slot-81cda615566f",
           "variant": "text-3-image-4-right",
-          "colorRecipe": "page",
+          "colorRecipe": "dark",
           "backgroundFill": "solid",
           "cardBorder": "on",
           "borderTone": "dark",
           "cardFill": "solid",
-          "backgroundTreatment": "none",
+          "backgroundTreatment": "drift",
           "backgroundConfig": {
             "nodes": [
               {
@@ -130,39 +130,12 @@
           "reduceTopPadding": false,
           "slotId": "slot-e1fa6e1734bc",
           "variant": "offset-header",
-          "colorRecipe": "page",
+          "colorRecipe": "dark",
           "backgroundFill": "solid",
-          "cardBorder": "off",
+          "cardBorder": "on",
           "borderTone": "dark",
           "cardFill": "solid",
-          "backgroundTreatment": "image",
-          "joinAbove": "separate",
-          "backgroundConfig": {
-            "nodes": [
-              {
-                "color": "highlight",
-                "x": 43,
-                "y": 42,
-                "size": 110,
-                "fade": 62,
-                "opacity": 100
-              },
-              {
-                "color": "accent",
-                "x": 88,
-                "y": 100,
-                "size": 95,
-                "fade": 45,
-                "opacity": 100
-              }
-            ],
-            "strength": 18,
-            "animate": false,
-            "speed": 100,
-            "blend": "normal"
-          },
-          "backgroundImageFit": "fill",
-          "backgroundImageFocus": "29 26"
+          "joinAbove": "separate"
         },
         {
           "component": "DecisionSplitDecisionLargeSectionV3",
@@ -284,7 +257,7 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "slotId": "slot-616fe0e056da",
-          "colorRecipe": "page",
+          "colorRecipe": "default",
           "backgroundFill": "solid",
           "cardBorder": "on",
           "borderTone": "dark",
