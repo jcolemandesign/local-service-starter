@@ -53,7 +53,7 @@ export function CTAFullscreenSection({
 
         <div className="flex items-end justify-center pt-12">
           <RequestServiceButton
-            className="border-white bg-white text-service-ink hover:bg-service-surface"
+            className="border-white bg-white text-bg-dark hover:bg-service-surface"
             variant="secondary"
           >
             {action}

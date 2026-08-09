@@ -238,7 +238,11 @@ function NavPrimaryLayoutSection({
           className={`hidden min-h-12 cursor-pointer items-center gap-3 rounded-md border px-5 text-sm font-semibold transition-colors max-lg:flex ${
             isMenuOpen
               ? "border-white/20 bg-white/5 text-white hover:border-white/45"
-              : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent"
+              : /* The fill follows the recipe rather than being a literal
+                   white. Paired with `text-service-ink` - the recipe's text
+                   source - a hardcoded white fill inverted on every dark
+                   recipe and rendered the label into its own background. */
+                "border-service-border bg-bg-surface text-service-ink hover:border-service-accent hover:text-service-accent"
           }`}
           type="button"
           onClick={() => {

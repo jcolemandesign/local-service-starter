@@ -17,7 +17,14 @@ export function CTASection({ title, body, action }: CTASectionProps) {
             <p className="mt-5 text-lg leading-8 text-white/75">{body}</p>
           </div>
           <RequestServiceButton
-            className="shrink-0 border-white bg-white text-service-ink hover:bg-service-surface"
+            /* The fill is a literal white on purpose - this button sits on a
+               dark band and has to clear it. The label therefore cannot follow
+               the recipe: `text-service-ink` is the recipe's text source, which
+               is white on every dark recipe, so the label vanished into its own
+               fill. `bg-dark` is unscoped by the role table and stays the
+               palette's dark under every recipe, which is what a fixed white
+               fill needs. */
+            className="shrink-0 border-white bg-white text-bg-dark hover:bg-service-surface"
             variant="secondary"
           >
             {action}

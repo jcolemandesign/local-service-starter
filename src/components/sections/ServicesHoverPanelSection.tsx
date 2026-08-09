@@ -69,7 +69,7 @@ export function ServicesHoverPanelSection({
                       className={`group/service-link flex min-h-14 w-full cursor-pointer items-center justify-between overflow-hidden rounded-lg border text-left text-base font-semibold transition-colors ${
                         isActive
                           ? "border-service-accent bg-white text-service-accent"
-                          : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent"
+                          : "border-service-border bg-bg-surface text-service-ink hover:border-service-accent hover:text-service-accent"
                       }`}
                       onFocus={() => setActiveIndex(index)}
                       onMouseEnter={() => setActiveIndex(index)}

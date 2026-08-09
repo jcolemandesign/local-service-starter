@@ -76,7 +76,7 @@ export function CTAFullscreenSectionV2({
           <RequestServiceButton
             className={cx(
               "radius-4",
-              "border-white bg-white text-service-ink hover:bg-service-surface",
+              "border-white bg-white text-bg-dark hover:bg-service-surface",
             )}
             variant="secondary"
           >

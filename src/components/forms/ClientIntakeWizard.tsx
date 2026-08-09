@@ -523,7 +523,7 @@ function TextField({
         {help}
       </span>
       <input
-        className="type-text-sm radius-button min-h-12 border border-service-border bg-white px-4 text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent"
+        className="type-text-sm radius-button min-h-12 border border-service-border bg-bg-surface px-4 text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent"
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         type={type}
@@ -552,7 +552,7 @@ function TextAreaField({
         {label}
       </span>
       <textarea
-        className="type-text-sm radius-medium min-h-28 resize-y border border-service-border bg-white px-4 py-3 text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent"
+        className="type-text-sm radius-medium min-h-28 resize-y border border-service-border bg-bg-surface px-4 py-3 text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent"
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         rows={rows}
@@ -577,7 +577,7 @@ function CheckboxCard({
         "type-text-sm radius-button flex min-h-12 cursor-pointer items-center gap-3 border px-3 py-2 font-semibold transition-colors",
         checked
           ? "border-service-accent bg-service-accent text-white"
-          : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent",
+          : "border-service-border bg-bg-surface text-service-ink hover:border-service-accent hover:text-service-accent",
       )}
     >
       <input
@@ -608,7 +608,7 @@ function RadioCard({
         "type-text-sm radius-button flex min-h-12 cursor-pointer items-center gap-3 border px-3 py-2 font-semibold transition-colors",
         checked
           ? "border-service-accent bg-service-accent text-white"
-          : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent",
+          : "border-service-border bg-bg-surface text-service-ink hover:border-service-accent hover:text-service-accent",
       )}
     >
       <input
@@ -980,7 +980,7 @@ export function ClientIntakeWizard({
       <footer className="fixed inset-x-0 bottom-0 z-30 border-t border-service-border bg-bg-page/95 backdrop-blur">
         <div className="container-site flex items-center justify-between gap-3 py-4 max-sm:flex-col max-sm:items-stretch">
           <button
-            className="type-text-sm radius-button min-h-12 border border-service-border bg-white px-5 font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-45"
+            className="type-text-sm radius-button min-h-12 border border-service-border bg-bg-surface px-5 font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent disabled:cursor-not-allowed disabled:opacity-45"
             disabled={currentStep === 1 || submitState === "submitting"}
             onClick={() => goToStep(currentStep - 1)}
             type="button"
@@ -1960,7 +1960,7 @@ function ReviewCard({
       <div className="flex items-start justify-between gap-4">
         <h3 className="type-heading-sm text-service-ink">{title}</h3>
         <button
-          className="type-caption radius-button min-h-9 shrink-0 border border-service-border bg-white px-3 font-semibold text-service-muted transition-colors hover:border-service-accent hover:text-service-accent"
+          className="type-caption radius-button min-h-9 shrink-0 border border-service-border bg-bg-surface px-3 font-semibold text-service-muted transition-colors hover:border-service-accent hover:text-service-accent"
           onClick={onEdit}
           type="button"
         >

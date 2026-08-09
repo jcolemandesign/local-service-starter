@@ -115,7 +115,7 @@ const appointmentWindowOptions = [
 ];
 
 const modalFieldClass =
-  "radius-small min-h-12 border border-service-border bg-white px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent";
+  "radius-small min-h-12 border border-service-border bg-bg-surface px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent";
 
 const modalLabelClass =
   "grid content-start gap-2 type-caption font-semibold text-service-ink";
@@ -282,7 +282,7 @@ function OptionButton({
       className={`radius-button min-h-12 cursor-pointer border px-4 py-3 text-left type-caption font-semibold transition-colors ${
         isSelected
           ? "border-service-accent bg-service-accent text-white"
-          : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent"
+          : "border-service-border bg-bg-surface text-service-ink hover:border-service-accent hover:text-service-accent"
       }`}
       type="button"
       onClick={onClick}
@@ -362,7 +362,7 @@ export function RequestServiceButton({
   const styles =
     variant === "primary"
       ? "bg-cta-primary text-cta-primary-ink hover:bg-cta-primary-hover"
-      : "border border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent";
+      : "border border-service-border bg-bg-surface text-service-ink hover:border-service-accent hover:text-service-accent";
 
   return (
     <button
@@ -709,7 +709,7 @@ function RequestServiceModal({
           </div>
           <button
             aria-label="Close request service modal"
-            className="radius-button flex size-10 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-white type-caption text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+            className="radius-button flex size-10 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-bg-surface type-caption text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
             type="button"
             onClick={onClose}
           >
@@ -894,7 +894,7 @@ function RequestServiceModal({
                         className={`radius-button inline-flex min-h-9 cursor-pointer items-center gap-2 border px-3 type-caption font-semibold transition-colors ${
                           preferredContactMethod === option.value
                             ? "border-service-accent bg-service-accent text-white"
-                            : "border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent"
+                            : "border-service-border bg-bg-surface text-service-ink hover:border-service-accent hover:text-service-accent"
                         }`}
                         key={option.value}
                       >
@@ -914,7 +914,7 @@ function RequestServiceModal({
                   </div>
                 </div>
 
-                <label className="radius-button inline-flex min-h-9 cursor-pointer items-center gap-2 border border-service-border bg-white px-3 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent">
+                <label className="radius-button inline-flex min-h-9 cursor-pointer items-center gap-2 border border-service-border bg-bg-surface px-3 type-caption font-semibold text-service-ink transition-colors hover:border-service-accent hover:text-service-accent">
                   <input
                     checked={contactConsent}
                     className="size-3.5 shrink-0 accent-service-accent"
@@ -940,7 +940,7 @@ function RequestServiceModal({
 
               <div className="flex shrink-0 items-center justify-between inline-gap-med border-t border-service-border px-[var(--container-gutter)] py-4 max-md:px-5 max-md:py-3">
           <button
-            className={`${modalButtonClass} border border-service-border bg-white text-service-ink hover:border-service-accent hover:text-service-accent disabled:opacity-45`}
+            className={`${modalButtonClass} border border-service-border bg-bg-surface text-service-ink hover:border-service-accent hover:text-service-accent disabled:opacity-45`}
             disabled={step === 1 || isSubmitting}
             type="button"
             onClick={() => setStep((currentStep) => Math.max(1, currentStep - 1))}

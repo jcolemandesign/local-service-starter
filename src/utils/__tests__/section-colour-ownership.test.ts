@@ -24,15 +24,109 @@ const sectionFiles = readdirSync(sectionsDirectory)
   // picker, and paints the canvas frame that carries the recipe attribute.
   .filter((file) => !file.startsWith("Pagebuilder"))
   .filter((file) => !file.startsWith("StyleGuide"))
-  .filter((file) => file !== "PageTemplatePreview.tsx");
+  .filter((file) => file !== "PageTemplatePreview.tsx")
+  // Builder and dev chrome that happens to live in the sections folder. These
+  // render the tooling around a page rather than any part of a page, so no
+  // colour recipe ever wraps them and a fixed fill is simply a fixed fill.
+  .filter((file) => !file.startsWith("StagedPage"))
+  .filter(
+    (file) =>
+      ![
+        "HomeIndexMenu.tsx",
+        "PromptLibrarySection.tsx",
+        "SiteExportControls.tsx",
+        "TemplateLibrarySection.tsx",
+      ].includes(file),
+  );
 
 function read(file: string) {
   return readFileSync(path.join(sectionsDirectory, file), "utf8");
 }
 
+/**
+ * Every component a colour recipe can wrap.
+ *
+ * Broader than the sections folder because a recipe paints a subtree, not a
+ * file location: a modal trigger in `request-service/` or a field in `forms/`
+ * renders inside a section and inherits its recipe just the same.
+ *
+ * `legal/` is excluded because it paints its own page ground rather than
+ * sitting in one, and the builder chrome below renders the tooling around a
+ * page rather than any part of a page.
+ */
+const componentsDirectory = path.join(process.cwd(), "src", "components");
+
+const chromePattern =
+  /Pagebuilder|StyleGuide|PageTemplatePreview|StagedPage|HomeIndexMenu|PromptLibrary|SiteExportControls|TemplateLibrary|[/\\]legal[/\\]/;
+
+function walkTsx(directory: string, found: string[] = []) {
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const full = path.join(directory, entry.name);
+
+    if (entry.isDirectory()) walkTsx(full, found);
+    else if (entry.name.endsWith(".tsx") && !chromePattern.test(full)) {
+      found.push(full);
+    }
+  }
+
+  return found;
+}
+
+const recipeReachableFiles = walkTsx(componentsDirectory);
+
 describe("sections do not own colour", () => {
   it("finds the section files it is meant to be checking", () => {
     expect(sectionFiles.length).toBeGreaterThan(40);
+  });
+
+  /**
+   * A hardcoded fill on the same element as a recipe-relative text token.
+   *
+   * This is narrower than "never write a literal white", which the note below
+   * explains is the wrong rule. The failure is the *pairing*: the fill stays
+   * put while the text moves with the recipe, so on every dark recipe the two
+   * converge and the element renders its own content invisible.
+   *
+   * Found by rendering a real page under all eight recipes - a form button
+   * read `bg-white text-service-ink` and came out white on white on the ink
+   * recipe. It had been broken before the overhaul too, at roughly 1.15:1;
+   * making the text source a true white only took it from nearly invisible to
+   * exactly invisible.
+   *
+   * Either half alone is fine. A white fill with a fixed label (`text-bg-dark`
+   * is unscoped and stays put) is correct for a button over a photograph, and
+   * a recipe-relative fill with a recipe-relative label moves as a pair.
+   */
+  it("never pairs a hardcoded fill with a recipe-relative text token", () => {
+    const offenders: string[] = [];
+
+    /*
+     * Scanned across `src/components`, not just the sections folder.
+     *
+     * The instance that prompted this test was in `request-service/`, reached
+     * from a section but not living in one - so a sections-only sweep found
+     * every offender except the one actually rendering on the page.
+     */
+    for (const file of recipeReachableFiles) {
+      const source = readFileSync(file, "utf8");
+
+      for (const [classString] of source.matchAll(/["'`][^"'`]{0,400}["'`]/g)) {
+        // Solid fills only. `bg-white/25` and friends are translucent chips
+        // laid over photography - the image supplies the contrast, the fill
+        // does not, and they do not converge with the text the way an opaque
+        // fill does.
+        const hasFixedFill = /\bbg-white(?![/\w-])/.test(classString);
+        const hasRecipeText = /\btext-(service-ink|service-muted|main|muted)\b/.test(
+          classString,
+        );
+
+        if (hasFixedFill && hasRecipeText) {
+          offenders.push(`${path.relative(process.cwd(), file)}: ${classString.slice(0, 70)}`);
+        }
+      }
+    }
+
+    expect(offenders).toEqual([]);
   });
 
   it("has no section branching on the colour recipe", () => {
