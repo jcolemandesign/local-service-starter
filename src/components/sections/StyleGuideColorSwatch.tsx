@@ -141,11 +141,11 @@ export function StyleGuideColorSwatch({ color }: StyleGuideColorSwatchProps) {
           className={cx(
             color.surface,
             color.text,
-            "style-guide-live-swatch grid content-between p-4",
+            "style-guide-live-swatch grid content-start inline-gap-med p-4",
           )}
         >
           <p className="type-label opacity-75">{color.label}</p>
-          <p className="type-caption mt-3 opacity-80">
+          <p className="type-caption opacity-80">
             {color.derivedFrom ?? value}
             {isUnset && isOptional(color.controlKey) ? " · unset" : ""}
           </p>

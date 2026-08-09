@@ -283,4 +283,31 @@ describe("the border as a boundary", () => {
       gateSectionOverrides(palette, "dark", {}, { fill: "solid", border: "off" }),
     ).toEqual([]);
   });
+
+  it("says nothing at all about a card with no fill", () => {
+    /**
+     * Every finding measures paint the page does not put down: the fill is
+     * forced transparent, so a swatch matching the ground is a fact about the
+     * stored value and not about the pixels. The case that surfaced it was the
+     * page recipe with a `page` card override - a true and useless "1.00
+     * against a 1.15 bar", clearable only by changing something invisible.
+     */
+    const sameAsGround = { cardSwatch: "page", cardIntensity: "strong" };
+
+    expect(
+      gateSectionOverrides(palette, "page", sameAsGround, {
+        fill: "solid",
+        border: "on",
+      }).some((f) => !f.pass),
+    ).toBe(true);
+
+    for (const border of ["on", "off"] as const) {
+      expect(
+        gateSectionOverrides(palette, "page", sameAsGround, {
+          fill: "none",
+          border,
+        }),
+      ).toEqual([]);
+    }
+  });
 });

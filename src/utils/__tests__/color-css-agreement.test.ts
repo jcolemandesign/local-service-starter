@@ -184,6 +184,41 @@ describe("the card context cannot leak outside a recipe", () => {
     ).toBeNull();
   });
 
+  it("grounds the class only where a fill is actually painted", () => {
+    /**
+     * A ground is a claim about what is underneath. With `card-fill="none"`
+     * the card paints nothing, the content sits on the section's ground, and
+     * re-pointing `--recipe-ground` at the card describes a surface that is
+     * not there.
+     *
+     * The token-keyed branches have always carried this guard; the explicit
+     * class did not, so the eighteen sections using it disagreed with the
+     * cards beside them whenever a fill was switched off. It showed up in the
+     * faint line, which mixes toward the ground: on the page recipe an
+     * unfilled card drew its border at 1.24 against the ground where its
+     * neighbour drew 1.50, with neither section carrying an override.
+     */
+    const start = globalsCss.indexOf("--recipe-ground: var(--recipe-card);");
+    expect(start, "the card-grounding block is gone").toBeGreaterThan(-1);
+
+    const selector = globalsCss.slice(
+      globalsCss.lastIndexOf("}", start) + 1,
+      start,
+    );
+
+    for (const frame of [
+      "pagebuilder-paint-surface",
+      "pagebuilder-section-band",
+    ]) {
+      const branch = selector.slice(selector.indexOf(frame));
+
+      expect(
+        branch.slice(0, branch.indexOf(".recipe-card-context")),
+        `the ${frame} branch grounds an unfilled card`,
+      ).toContain('[data-pagebuilder-card-fill="solid"]');
+    }
+  });
+
   it("keeps the class reachable through both a section frame and a band", () => {
     // Band members carry recipe="inherit" on their own frame - the band holds
     // the real recipe - so the section form alone would miss every banded card.

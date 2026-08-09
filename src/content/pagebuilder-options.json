@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-08-07T19:09:58.626Z",
+      "savedAt": "2026-08-09T21:22:56.965Z",
       "sectionCount": 11,
       "sections": [
         {
@@ -24,7 +24,7 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "slotId": "slot-60617e1dbb11",
-          "colorRecipe": "default",
+          "colorRecipe": "page",
           "backgroundFill": "solid",
           "cardBorder": "off",
           "borderTone": "dark",
@@ -43,12 +43,12 @@
           "reduceTopPadding": false,
           "slotId": "slot-81cda615566f",
           "variant": "text-3-image-4-right",
-          "colorRecipe": "dark",
+          "colorRecipe": "page",
           "backgroundFill": "solid",
           "cardBorder": "on",
           "borderTone": "dark",
           "cardFill": "solid",
-          "backgroundTreatment": "drift",
+          "backgroundTreatment": "none",
           "backgroundConfig": {
             "nodes": [
               {
@@ -126,11 +126,11 @@
           "name": "Services bento cards",
           "originalComponent": "ServicesBentoCardsSectionV2",
           "originalIndex": -1,
-          "reduceBottomPadding": false,
+          "reduceBottomPadding": true,
           "reduceTopPadding": false,
           "slotId": "slot-e1fa6e1734bc",
-          "variant": "offset-header",
-          "colorRecipe": "dark",
+          "variant": "default",
+          "colorRecipe": "brand",
           "backgroundFill": "solid",
           "cardBorder": "on",
           "borderTone": "dark",
@@ -149,11 +149,12 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "slotId": "slot-5f292a5a59ac",
-          "colorRecipe": "dark",
+          "colorRecipe": "page",
           "backgroundFill": "solid",
-          "cardBorder": "off",
+          "cardBorder": "on",
           "borderTone": "dark",
-          "cardFill": "solid"
+          "cardFill": "none",
+          "backgroundTreatment": "none"
         },
         {
           "component": "FeatureStackedCardsSectionV3",
@@ -257,7 +258,7 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "slotId": "slot-616fe0e056da",
-          "colorRecipe": "default",
+          "colorRecipe": "page",
           "backgroundFill": "solid",
           "cardBorder": "on",
           "borderTone": "dark",

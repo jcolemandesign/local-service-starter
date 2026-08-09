@@ -15,7 +15,15 @@ export const sectionColorRecipes = [
   { id: "ink", label: "Ink" },
   { id: "dark", label: "Dark" },
   { id: "darkSurface", label: "Dark Surface" },
-  { id: "brand", label: "Brand" },
+  /**
+   * Labelled "Accent" because that is what the style guide calls the swatch
+   * this ground is - stored `serviceAccent`, palette `brand`. The id stays
+   * `brand`: it is written into templates, staged pages and saved builder
+   * options, and renaming a stored key races the files the dev server
+   * rewrites. Same split the intensities use, where only the labels speak the
+   * editor's language.
+   */
+  { id: "brand", label: "Accent" },
   /**
    * Optional. `accent` is the CTA-appropriate derivative of the brand colour,
    * needed only when the brand colour itself lacks contrast as a button, so a
@@ -23,8 +31,13 @@ export const sectionColorRecipes = [
    * from the pickers - but it still renders for pages that already reference
    * it, with its ground falling back to brand. Hiding governs authoring, not
    * data.
+   *
+   * Labelled "CTA Accent" for the same reason as `brand` above: bare "Accent"
+   * is the style guide's name for the brand swatch, so this picker used to
+   * offer an "Accent" ground that painted a different colour from the one the
+   * editor had just authored under that name.
    */
-  { id: "accent", label: "Accent" },
+  { id: "accent", label: "CTA Accent" },
   { id: "highlight", label: "Highlight" },
 ] as const;
 

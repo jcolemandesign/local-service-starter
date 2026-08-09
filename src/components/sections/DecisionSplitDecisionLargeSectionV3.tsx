@@ -62,6 +62,10 @@ export function DecisionSplitDecisionLargeSectionV3({
                 "fluid-type-frame flex h-full min-h-96 flex-col rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-8 text-service-ink shadow-service max-md:min-h-0 max-md:p-6",
                 "recipe-card-context",
                 cardFill === "none" && "!bg-transparent !shadow-none",
+                // Transparent, not `border-0`: the card keeps the `border`
+                // class and the global `.border` width rule is `!important`,
+                // so a width of 0 never lands. Nothing here is clipped to the
+                // padding box, so the held ring costs nothing.
                 cardBorder === "off" && "!border-transparent",
               )}
             >
@@ -81,7 +85,14 @@ export function DecisionSplitDecisionLargeSectionV3({
                 ))}
               </div>
 
-              <ul className="mt-8 grid gap-3 border-t border-service-border pt-6">
+              <ul
+                className={cx(
+                  "mt-8 grid gap-3 border-t pt-6",
+                  cardBorder === "off"
+                    ? "!border-transparent"
+                    : "border-service-border",
+                )}
+              >
                 {card.points.map((point) => (
                   <li
                     className="type-text-sm flex gap-3 text-service-ink"
@@ -98,7 +109,12 @@ export function DecisionSplitDecisionLargeSectionV3({
 
               {cardLinks === "on" ? (
                 <a
-                  className="type-label mt-auto inline-flex min-h-12 w-fit items-center border-b border-service-ink pt-8 text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                  className={cx(
+                    "type-label mt-auto inline-flex min-h-12 w-fit items-center border-b pt-8 text-service-ink transition-colors hover:text-service-accent",
+                    cardBorder === "off"
+                      ? "!border-transparent hover:!border-transparent"
+                      : "border-service-ink hover:border-service-accent",
+                  )}
                   href="#contact"
                 >
                   {card.actionLabel}

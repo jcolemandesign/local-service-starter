@@ -262,7 +262,7 @@ export function ServicesBentoCardsSectionV2({
                   // still hold it inside a ring of card fill. Drop the border
                   // box entirely instead. `border-0` alone cannot do this --
                   // the global `.border` width rule is `!important`.
-                  cardBorder === "off" ? "border-0" : "border border-service-border",
+                  cardBorder === "off" ? "!border-0" : "border border-service-border",
                   isSplitHeader ? "h-full" : undefined,
                   cardSpanPattern[index % cardSpanPattern.length],
                 )}

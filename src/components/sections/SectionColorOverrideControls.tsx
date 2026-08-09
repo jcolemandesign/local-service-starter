@@ -169,11 +169,15 @@ function SwatchGrid({
 }
 
 function IntensityRow({
+  disabledReason,
   labels,
   onSelect,
   options,
   selected,
 }: {
+  /** Why every option other than the selected one is unavailable, as a
+   *  tooltip. Set when a floor has already decided the value. */
+  disabledReason?: string;
   labels: Record<string, string>;
   onSelect: (value: string) => void;
   options: readonly ColorOverrideIntensity[];
@@ -181,19 +185,25 @@ function IntensityRow({
 }) {
   return (
     <div className="flex items-center gap-2">
-      {options.map((option) => (
-        <button
-          aria-pressed={selected === option}
-          className={`type-caption rounded-[var(--chrome-radius-control)] border px-3 py-1.5 transition-colors token-chrome-control ${
-            selected === option ? "token-chrome-card-active" : ""
-          }`}
-          key={option}
-          onClick={() => onSelect(option)}
-          type="button"
-        >
-          {labels[option]}
-        </button>
-      ))}
+      {options.map((option) => {
+        const isDisabled = Boolean(disabledReason) && option !== selected;
+
+        return (
+          <button
+            aria-pressed={selected === option}
+            className={`type-caption rounded-[var(--chrome-radius-control)] border px-3 py-1.5 transition-colors token-chrome-control ${
+              selected === option ? "token-chrome-card-active" : ""
+            } ${isDisabled ? "opacity-40" : ""}`}
+            disabled={isDisabled}
+            key={option}
+            onClick={() => onSelect(option)}
+            title={isDisabled ? disabledReason : undefined}
+            type="button"
+          >
+            {labels[option]}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -213,8 +223,19 @@ export function SectionColorOverrideControls({
   /**
    * The floor from phase 1: with no fill, the border is the only thing
    * separating the card from its ground, and a Faint line does that at
-   * 1.46-1.75 - under WCAG 1.4.11's 3:1. It is applied in the resolver, so the
-   * control has to explain itself rather than appear stuck.
+   * 1.46-1.75 - under WCAG 1.4.11's 3:1.
+   *
+   * The rule is enforced in `resolveBorderIntensity`, so Faint is not the
+   * editor's to pick while the fill is off. The row still renders, with Defined
+   * selected and Faint disabled behind a tooltip.
+   *
+   * It has now been all three things, and the middle one was the mistake. It
+   * used to replace the buttons with a paragraph explaining the floor, which
+   * put a wall of prose in the panel on every unfilled section. Hiding the
+   * fieldset instead removed the prose and the only evidence the control
+   * exists - and since an unfilled card is the common case here, that read as
+   * the setting not existing at all. A greyed button still shows the axis, the
+   * value it is sitting at, and where the option went.
    */
   const borderIsForced = borderIsOnlyBoundary(surface);
 
@@ -278,19 +299,17 @@ export function SectionColorOverrideControls({
           <legend className="type-caption font-semibold text-current">
             Border weight
           </legend>
-          {borderIsForced ? (
-            <p className="type-caption text-service-muted">
-              Held at Defined — with the card fill off, this line is the only
-              thing separating the card from its background.
-            </p>
-          ) : (
-            <IntensityRow
-              labels={borderIntensityLabels}
-              onSelect={(value) => onChange("borderIntensity", value)}
-              options={borderIntensityOptions}
-              selected={borderIntensity}
-            />
-          )}
+          <IntensityRow
+            disabledReason={
+              borderIsForced
+                ? "Held at Defined while the card fill is off — the line is the only thing separating the card from its background."
+                : undefined
+            }
+            labels={borderIntensityLabels}
+            onSelect={(value) => onChange("borderIntensity", value)}
+            options={borderIntensityOptions}
+            selected={borderIntensity}
+          />
         </fieldset>
       ) : null}
 

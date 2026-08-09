@@ -658,6 +658,16 @@ export const styleFieldPrefix = "style";
  * custom properties and `PaletteKey` without a translation step. `darkSurface`
  * keeps its camelCase for that reason: it is a stored key, and the one thing
  * this system does not do is rename stored keys.
+ *
+ * THE LABELS ARE THE STYLE GUIDE'S NAMES, NOT THE PALETTE'S. Three vocabularies
+ * are live at once - see the table in `color-palette-adapter.ts` - and the two
+ * chromatics are where they collide: palette `brand` is the swatch the style
+ * guide authors as "Accent", and palette `accent` is the one it authors as
+ * "CTA Accent". Labelling them by their palette keys meant picking "Accent"
+ * here painted a different colour from the "Accent" swatch the editor had just
+ * set, and only when a CTA accent was authored - so the two agreed right up
+ * until they mattered. The editor sees one name per colour; storage keeps its
+ * keys.
  */
 export const paletteSwatchOptions = [
   { label: "Page", value: "page" },
@@ -666,8 +676,8 @@ export const paletteSwatchOptions = [
   { label: "Ink", value: "ink" },
   { label: "Dark", value: "dark" },
   { label: "Dark Surface", value: "darkSurface" },
-  { label: "Brand", value: "brand" },
-  { label: "Accent", value: "accent" },
+  { label: "Accent", value: "brand" },
+  { label: "CTA Accent", value: "accent" },
   { label: "Highlight", value: "highlight" },
 ] as const satisfies ReadonlyArray<{ label: string; value: string }>;
 

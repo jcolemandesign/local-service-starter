@@ -123,6 +123,15 @@ describe("published figures — CTA and eyebrow", () => {
 describe("published figures — cards", () => {
   const report = gateColorSystem(slotOne);
 
+  /**
+   * `surface` is 1.33 for a different reason than when this table was
+   * published, and the number not moving hides that. It used to be a brand
+   * wash of the ground; it is the raised swatch now, and on this palette the
+   * two land on the same figure to three significant digits. So this row is no
+   * longer a statement about the wash - it moves when `raised` moves, and a
+   * palette that authors raised close to surface drops it under the 1.15 floor
+   * rather than being held up by the tint.
+   */
   const expected: Record<string, number> = {
     page: 1.16,
     surface: 1.33,

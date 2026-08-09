@@ -272,6 +272,24 @@ export function gateSectionOverrides(
   surface?: CardSurfaceState,
 ): GateFinding[] {
   /**
+   * No fill, nothing to gate.
+   *
+   * Every finding below measures the card's paint - the fill against the
+   * ground, and the text ladder against the fill. With the fill off none of it
+   * is painted: the override still resolves a colour, but
+   * `[data-pagebuilder-card-fill="none"] article` forces the surface
+   * transparent, and the text ends up on the section's own ground, which the
+   * palette gate already covers.
+   *
+   * Reporting it anyway produced the worst shape of warning - one about a
+   * colour the page does not render. A transparent card whose swatch happens to
+   * match its ground read as `1.00 against a 1.15 bar (#dbdbdb on #dbdbdb)`,
+   * which is true of the stored value and irrelevant to the pixels, and an
+   * editor could only clear it by changing something invisible.
+   */
+  if (surface?.fill === "none") return [];
+
+  /**
    * Phase 1's other deferred rule, and the one case worth reporting on a
    * section with no card override at all: a card close enough to its ground
    * that the Faint border is part of what separates them. Turn the border off

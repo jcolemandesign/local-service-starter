@@ -101,9 +101,24 @@ export const recipeInputs = {
   },
   surface: {
     ground: swatch("surface"),
-    /** A wash rather than a swatch: the surface token is already the ground,
-     *  so a surface card would be the same flat field as the section. */
-    card: { kind: "ladder", swatch: "brand", level: "faint" },
+    /**
+     * Raised, the same card the page recipe takes.
+     *
+     * It was a brand wash - the surface token is the ground here, so a
+     * *surface* card would be the same flat field as the section, and tinting
+     * the ground avoided a card the palette had to author. Raised is the more
+     * flexible answer because it is authored: a business can move it away from
+     * surface, where the wash could only ever be 20% of whatever brand
+     * happened to be.
+     *
+     * THE COST IS THAT THE CARD NOW DEPENDS ON THE GAP BETWEEN TWO AUTHORED
+     * NEUTRALS. A palette whose raised sits close to its surface drops under
+     * `contrastBars.card` (1.15) and the card stops reading as one - 1.05 on
+     * the reference palette, against the wash's 1.31. The gate reports it per
+     * palette, which is the right place for a judgement that depends on
+     * authoring rather than on the recipe.
+     */
+    card: swatch("raised"),
     text: swatch("ink"),
     faint: swatch("brand"),
     chromatic: swatch("brand"),

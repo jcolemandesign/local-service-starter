@@ -185,11 +185,33 @@ describe("sections do not own colour", () => {
 
     expect(selectors.length).toBeGreaterThan(0);
 
+    expect(
+      selectors.filter((selector) => selector.includes("bg-service-surface"))
+        .length,
+      "no rule identifies a card by the fill it paints any more",
+    ).toBeGreaterThan(0);
+
     for (const selector of selectors) {
       expect(selector).not.toMatch(/\barticle\b/);
       expect(selector).not.toContain("shadow-service");
       // The ground token would drag ground-coloured elements in with the cards.
       expect(selector).not.toContain("bg-bg-page");
+
+      /**
+       * There are two legitimate ways to be a card, and only one of them is a
+       * guess about markup.
+       *
+       * The token-keyed rules infer it - "this element paints the card fill,
+       * so it is a card" - and that inference is what the assertions above
+       * keep honest. `.recipe-card-context` is the other way: an explicit
+       * opt-in, carried by a card the token rule cannot see (an inline style,
+       * an image backdrop). A rule reaching cards through that class is not
+       * assuming a shape, it is reading a marker, so requiring it to also name
+       * the fill token would be requiring it to do the inference it exists to
+       * avoid.
+       */
+      if (selector.includes(".recipe-card-context")) continue;
+
       expect(selector).toContain("bg-service-surface");
     }
   });

@@ -206,20 +206,6 @@ const colors = [
     usage: "Focused forms, inputs, and nested reading surfaces",
   },
   {
-    name: "service-border",
-    label: "Border",
-    // No controlKey: this is derived from Surface, not picked. See
-    // `derivedColorValues` in src/content/color-derivations.ts.
-    derivedFrom: "Surface, lightness −0.30 (≈3:1)",
-    value: "#dfe7e1",
-    surface: "bg-service-border",
-    text: "text-service-ink",
-    muted: "text-service-muted",
-    border: "border-service-muted/25",
-    accent: "bg-service-ink text-white",
-    usage: "Dividers, card borders, placeholder fields",
-  },
-  {
     name: "bg-page",
     label: "Page",
     controlKey: "bgPage",
@@ -1929,10 +1915,16 @@ export default function StyleGuidePage() {
         eyebrow="Color"
         id="color-system"
         title="Color System"
-        body="Palette tokens, semantic color roles, and live surface/type relationships in one place. The color inputs on these swatches update the cards directly."
+        body="Author the palette inputs, then inspect the actual recipe relationships: section ground, card surface, border, text hierarchy, and CTA."
       >
-        <div className="style-guide-control-band grid gap-6 border-y px-[var(--site-grid-inset-inline)] py-4">
-          <div className="flex flex-wrap items-center justify-end inline-gap-sml">
+        <div className="style-guide-control-band grid gap-5 border-y px-[var(--site-grid-inset-inline)] py-5">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="type-label text-service-accent">Palette inputs</p>
+              <p className="type-caption mt-1 text-service-muted">
+                Derived values stay read-only; optional overrides can be cleared.
+              </p>
+            </div>
             <StyleGuideColorResetButton />
           </div>
 
@@ -1942,11 +1934,13 @@ export default function StyleGuidePage() {
             ))}
           </div>
 
-          <div className="rounded border border-service-border bg-service-surface p-6">
+          <div className="radius-surface border border-service-border bg-service-surface p-5 max-md:p-4">
             <StyleGuideColorRecipeControls />
           </div>
         </div>
 
+        {false && (
+        <>
         <SevenColumnGrid className="mt-6" minHeight="none" padding="none">
           {colorRoleCombinations.map((combo) => (
             <SevenColumnGridItem
@@ -2127,6 +2121,8 @@ export default function StyleGuidePage() {
             </div>
           </SevenColumnGridItem>
         </SevenColumnGrid>
+        </>
+        )}
       </GuideSection>
 
       <GuideSection

@@ -900,7 +900,7 @@ body {
 
 .style-guide-control-band .style-guide-demo-surface {
   background-color: var(--live-service-surface, #f4f7f3) !important;
-  background-image: none;
+  background-image: none !important;
   color: var(--live-service-ink, #17211d) !important;
 }
 
@@ -922,7 +922,22 @@ body {
 
 .style-guide-control-band .style-guide-demo-surface .bg-service-surface {
   background-color: var(--live-service-surface, #f4f7f3) !important;
-  background-image: none;
+  background-image: none !important;
+}
+
+.style-guide-control-band .style-guide-demo-surface .bg-surface-raised {
+  background-color: var(--live-surface-raised, #fafcf9) !important;
+  background-image: none !important;
+}
+
+.style-guide-control-band .style-guide-demo-surface .bg-bg-page {
+  background-color: var(--live-bg-page, #fbfaf6) !important;
+  background-image: none !important;
+}
+
+.style-guide-control-band .style-guide-demo-surface .bg-bg-surface {
+  background-color: var(--live-bg-surface, #f4f7f3) !important;
+  background-image: none !important;
 }
 
 .style-guide-control-band .style-guide-live-swatch.bg-bg-page {
@@ -1905,14 +1920,26 @@ body {
    * token-keyed rule further down grounds anything painting a card fill, which
    * is how nearly every card in the library paints one. Keep the class for a
    * card built some other way - an inline style, an image backdrop - that the
-   * token rule cannot see. */
+   * token rule cannot see.
+   *
+   * IT CARRIES THE SAME `card-fill="solid"` GUARD AS THE TOKEN-KEYED BRANCHES,
+   * AND HAS TO. A ground is a claim about what is painted underneath, so with
+   * the fill off there is no card to be the ground of - the content is sitting
+   * on the section's own ground and should resolve against it. Unguarded, the
+   * eighteen sections carrying this class kept card grounding while the
+   * token-keyed cards next to them lost it, and the two disagreed most visibly
+   * where nobody had chosen anything: the faint line mixes toward the ground,
+   * so on the page recipe an unfilled `recipe-card-context` card drew its
+   * border at #bac7d2 (1.24 on the page ground) while an unfilled card beside
+   * it drew #b2b4b7 (1.50). Two different borders, both on the default. */
   .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not(
       [data-pagebuilder-color-recipe="inherit"]
-    )
+    )[data-pagebuilder-card-fill="solid"]
     .recipe-card-context,
   .pagebuilder-section-band[data-pagebuilder-color-recipe]:not(
       [data-pagebuilder-color-recipe="inherit"]
     )
+    [data-pagebuilder-card-fill="solid"]
     .recipe-card-context {
     --recipe-ground: var(--recipe-card);
     /* A card that flips lightness relative to its section must flip its text
@@ -2022,11 +2049,15 @@ body {
   /* ---- Surface ---- */
   .pagebuilder-paint-surface[data-pagebuilder-color-recipe="surface"] {
     --recipe-ground: var(--palette-surface);
-    /* A wash rather than a swatch. The surface token is the ground here, so a
-       surface card would be the same flat field as the section; tinting the
-       ground with the brand at the Faint level lifts it just enough to read
-       (1.33) without introducing a fourth light neutral. */
-    --recipe-card: color-mix(in oklab, var(--palette-brand) 20%, var(--palette-surface));
+    /* Raised, the same card the page recipe takes. It was a brand wash - the
+       surface token is the ground here, so a *surface* card would be the same
+       flat field as the section. Raised is the more flexible answer because it
+       is authored and can be moved; the wash could only ever be 20% of
+       whatever brand happened to be. The cost is that the card now depends on
+       the gap between two authored neutrals, and a palette that leaves them
+       close drops under the 1.15 card floor - see the note in
+       `color-recipe-inputs.ts`, and the gate reports it per palette. */
+    --recipe-card: var(--palette-raised);
     /* Text source for this recipe's card, read by .recipe-card-context.
        CSS cannot ask how light the card is, so the recipe states it. */
     --recipe-card-text: var(--palette-ink);
@@ -2485,16 +2516,33 @@ body {
     background-color: transparent !important;
   }
 
-  .pagebuilder-section-frame[data-pagebuilder-card-fill="none"][data-pagebuilder-section-mode="Scan"]
-    article,
-  .pagebuilder-section-frame[data-pagebuilder-card-fill="none"][data-pagebuilder-section-mode="Proof"]
-    article,
-  .pagebuilder-section-frame[data-pagebuilder-card-fill="none"][data-pagebuilder-section-mode="Decision"]
-    article,
-  .pagebuilder-section-frame[data-pagebuilder-card-fill="none"][data-pagebuilder-section-mode="Narrative"]
+  /* The card fill and card border toggles are explicit authoring choices, so
+   * they have to beat every chrome remap that repaints a preview - the style
+   * guide's `.style-guide-demo-surface`, the strategy workspace's template
+   * preview, and the builder shells.
+   *
+   * THEY BELONG INSIDE `@layer utilities` FOR A CASCADE-LAYER REASON, NOT A
+   * TIDINESS ONE. For `!important` declarations the layer order is reversed:
+   * an important declaration in a layer beats an important unlayered one
+   * whatever its specificity or source order. The border rule used to sit
+   * unlayered at the end of the file on the assumption that coming last was
+   * enough - it is not. The chrome remap of `.border-service-border` (line
+   * ~919, in this layer) silently won, so any card keeping that utility class
+   * could not switch its border off inside the style guide.
+   *
+   * Specificity is (0,3,1), which also clears the (0,3,0) chrome selectors
+   * sharing this layer. Connector strokes live outside the article elements
+   * and therefore remain visible. */
+  .pagebuilder-section-frame[data-pagebuilder-card-fill="none"][data-pagebuilder-section-mode]
     article {
     background-color: transparent !important;
+    background-image: none !important;
     box-shadow: none !important;
+  }
+
+  .pagebuilder-section-frame[data-pagebuilder-card-border="off"][data-pagebuilder-section-mode]
+    article {
+    border-color: transparent !important;
   }
 
   .pagebuilder-section-frame[data-pagebuilder-card-fill="none"][data-pagebuilder-section-component="FourCardLinkGridSectionV3"]
@@ -3169,47 +3217,44 @@ body {
 
 /* BEGIN PAGEWORKS STYLEGUIDE TOKEN OVERRIDES */
 :root {
-  --live-service-ink: #232834;
-  --live-service-muted: #274a59;
-  --live-service-accent: #007cbd;
+  --live-service-ink: #133049;
+  --live-service-muted: #3898c2;
+  --live-service-accent: #175c82;
   --live-service-surface: #e3e6e8;
-  --live-surface-raised: #e5f4ff;
+  --live-surface-raised: #ffffff;
   --live-service-border: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
   --live-service-border-light: oklch(from var(--live-service-surface) calc(l + 0.30) c h);
   --live-bg-page: #dbdbdb;
   --live-bg-surface: #e3e6e8;
   --live-bg-muted: oklch(from var(--live-service-surface) calc(l - 0.03) c h);
-  --live-bg-dark: #0d4356;
-  --live-text-main: #232834;
-  --live-text-muted: #274a59;
-  --live-text-accent: #007cbd;
+  --live-bg-dark: #153856;
+  --live-text-main: #133049;
+  --live-text-muted: #3898c2;
+  --live-text-accent: #175c82;
   --live-border-default: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
-  --live-accent: #bf0d22;
+  --live-accent: #ce0019;
   --live-accent-ink: #ffffff;
   --live-accent-muted-text: #dcefe7;
-  --live-bg-dark-surface: #2d5869;
-  /* cta accent unset - consumers fall back to brand via var() and the
-     Accent recipe stays hidden. The declaration is omitted rather than
-     emitted empty, because an empty custom property makes every var() that
-     reads it invalid at computed-value time instead of taking its fallback. */
+  --live-bg-dark-surface: #1e4766;
+  --live-cta-accent: #007cbd;
   --live-shadow-service: 8px 10px 22px rgb(27 45 65 / 0.1369);
-  --color-service-ink: #232834;
-  --color-service-muted: #274a59;
-  --color-service-accent: #007cbd;
+  --color-service-ink: #133049;
+  --color-service-muted: #3898c2;
+  --color-service-accent: #175c82;
   --color-service-surface: #e3e6e8;
-  --color-surface-raised: #e5f4ff;
+  --color-surface-raised: #ffffff;
   --color-service-border: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
   --color-service-border-light: oklch(from var(--live-service-surface) calc(l + 0.30) c h);
   --color-bg-page: #dbdbdb;
   --color-bg-surface: #e3e6e8;
   --color-bg-muted: oklch(from var(--live-service-surface) calc(l - 0.03) c h);
-  --color-bg-dark: #0d4356;
-  --color-text-main: #232834;
-  --color-text-muted: #274a59;
+  --color-bg-dark: #153856;
+  --color-text-main: #133049;
+  --color-text-muted: #3898c2;
   --color-text-inverse: #ffffff;
-  --color-text-accent: #007cbd;
+  --color-text-accent: #175c82;
   --color-border-default: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
-  --color-accent: #bf0d22;
+  --color-accent: #ce0019;
   --card-grid-gap-active: 2.25rem;
   --inline-gap-active: 2.25rem;
   --layout-gap-active: 2.25rem;
@@ -3351,11 +3396,6 @@ body {
    less room to step - these recipes keep all three levels distinguishable by
    sitting them closer together rather than by letting the faintest one fall
    away. Recomputed from the palette on every promote; see color-rungs.ts. */
-.pagebuilder-paint-surface[data-pagebuilder-color-recipe="brand"] {
-  --rung-body: 89.5%;
-  --rung-muted: 81.9%;
-  --rung-meta: 68.4%;
-}
 .pagebuilder-paint-surface[data-pagebuilder-color-recipe="accent"] {
   --rung-body: 89.5%;
   --rung-muted: 81.9%;
@@ -3458,22 +3498,6 @@ body {
 .strategy-chrome .strategy-template-preview .bg-service-surface {
   background-color: var(--live-service-surface, #f4f7f3) !important;
   background-image: none !important;
-}
-
-/* Builder card controls are explicit authoring choices. Keep them after the
- * chrome token remaps so the preview shell cannot repaint transparent cards or
- * restore a border that the section has switched off. Connector strokes live
- * outside the article elements and therefore remain visible. */
-.pagebuilder-section-frame[data-pagebuilder-card-fill="none"][data-pagebuilder-section-mode]
-  article {
-  background-color: transparent !important;
-  background-image: none !important;
-  box-shadow: none !important;
-}
-
-.pagebuilder-section-frame[data-pagebuilder-card-border="off"][data-pagebuilder-section-mode]
-  article {
-  border-color: transparent !important;
 }
 
 .pagebuilder-paint-surface[data-pagebuilder-color-recipe="surface"][data-pagebuilder-card-fill="solid"][data-pagebuilder-section-component="ProcessStepsBranchingSectionV3"]
