@@ -267,30 +267,43 @@ Section 4c's card figures assume text ladders against the CARD. The general
 case is phase 4, but phase 1 cannot publish card numbers without a minimal
 version. One class:
 
+A scope that establishes a new ground must RE-DECLARE THE ENTIRE SCALES BLOCK,
+not just the ground:
+
+    .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not([inherit]),
+    .recipe-card-context {
+      /* the seven scale declarations from 3b, once, for both scopes */
+    }
+
     .recipe-card-context {
       --recipe-ground: var(--recipe-card);
       --recipe-text:   <light or dark source for this card>;
-      /* AND a verbatim copy of the whole scales block — see below */
     }
 
-CORRECTED DURING IMPLEMENTATION. An earlier draft of this section claimed the
-scales "re-resolve automatically from the new ground," so that re-setting one
-variable in a subtree would re-derive all five ladder levels and both tint
-values for free. That is not how CSS custom properties work. A custom property
-whose value contains var() is substituted at computed-value time ON THE
-ELEMENT THAT DECLARES IT, and what inherits from there is the already-resolved
-colour. A descendant changing --recipe-ground does not reach back into a scale
-declared on an ancestor.
+WHY RE-DECLARING IS MANDATORY. A custom property whose value contains var() is
+substituted at computed-value time ON THE ELEMENT THAT DECLARES IT, and what
+inherits from there is the already-resolved colour. A descendant that changes
+--recipe-ground does not reach back into a scale declared on an ancestor. So
+`.recipe-card-context { --recipe-ground: ... }` on its own would change
+nothing at all.
 
-So any scope establishing a new ground must RE-DECLARE the entire scales
-block, not just the ground. CSS has no mixin, so the duplication is mandatory.
-In globals.css this is expressed as one selector list covering both the recipe
-scope and .recipe-card-context, which keeps the two copies literally identical
-rather than merely intended to be. Phase 4 generalises the same pattern and
-inherits the same constraint — every new context is another copy of the block.
+(v2 and v3 of this document asserted the opposite — that re-setting one
+variable would re-derive everything "for free" — and called it the property
+the whole design rests on. It was wrong, and no amount of review caught it;
+running the CSS did.)
 
-This is worth knowing before phase 4 scopes its work: "add a context" is not a
-one-line change.
+CSS has no mixin, so the duplication is real. It is contained by declaring the
+block once against a selector list covering every context, which makes the
+copies identical rather than merely intended to be, and by a test asserting
+each scale is declared exactly once in the file.
+
+CONSEQUENCE FOR PHASE 4 — RE-SCOPE BEFORE STARTING. Phase 4 is nothing but
+adding contexts: arbitrary overridden cards, each establishing its own ground.
+If every context is another copy of a seven-declaration block, phase 4 is not
+"generalise the pattern," it is "generate N copies of the pattern." That wants
+a build step or a Tailwind plugin, not hand-written CSS, and the estimate
+should be redone on that basis. The same applies to phase 2's section-level
+overrides the moment they introduce a third context.
 
 THE HOOK IS THE cardStyle PLUMBING, NOT THE Card PRIMITIVE.
 
@@ -325,6 +338,17 @@ registration gap worth auditing on its own terms; phase 3 closes it.
 
 ACCENT is hidden for slot 1 (defining swatch unset), so seven are measured.
 tint values: chroma-fill #8dabc0, chroma-text #baccd9.
+
+THESE FIGURES ASSUME AN AUTHORED darkSurface (#24566a, 1.34 against dark).
+A palette that leaves it unset gets the derivation instead, which lands nearby
+but not identically — 12% toward white puts the reference palette at 1.39, and
+near-black grounds are lifted further to clear the card floor. So section 4
+describes one of two possible palettes, and the regression test in section 7
+locks the authored one. The gate covers the derived path; the tables do not.
+
+Verified against Chrome 151 on 2026-08-08: eight mixes spanning both scales
+and both directions resolve to exactly the hex values the TypeScript predicts.
+The mirror is validated against a real engine, not only against itself.
 
 4a. INPUTS
 

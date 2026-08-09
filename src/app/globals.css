@@ -109,7 +109,12 @@
      derived otherwise: 12% toward white, which is the only lift that works
      without a second authored colour - stepping down collides with ink, and
      reusing ink puts the card in a different hue family from its ground.
-     Kept in step with `deriveDarkSurface` in color-palette-adapter.ts. */
+     COLD START ONLY. The token route always emits --live-bg-dark-surface, so
+     this fallback is what renders before anything has been saved. It cannot
+     match `deriveDarkSurface` exactly, because that raises the lift on
+     near-black grounds where a fixed 12% drops under the 1.15 card floor and
+     CSS cannot express a conditional. The authoritative derivation is the
+     TypeScript one; this is its approximation for the un-saved case. */
   --color-bg-dark-surface: var(
     --live-bg-dark-surface,
     color-mix(in oklab, #ffffff 12%, var(--live-bg-dark, #10141b))
