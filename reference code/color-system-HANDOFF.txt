@@ -126,7 +126,13 @@ polarities clears AA. Measured across nine swatches x eight recipes:
 
 Quiet puts a card halfway between ground and swatch where neither white nor ink
 text works. So cards are offered solid / softened / wash. A border carries no
-text, so all five stay available to it.
+text, so all five were SAFE for it.
+
+SUPERSEDED IN PART (session 2): the border ships TWO, not five. Contrast never
+was its constraint - legibility of the control was. Strong, Body and Muted are
+not tellable apart on a two-pixel line, so three of the five were a choice that
+appeared to do nothing. Faint and Quiet ship, labelled Faint and Defined. The
+measurement above still stands; it is the reason the CARD range is three.
 
 INK AND DARK ARE INDEPENDENT SWATCHES.
 They may be authored to the same value; nothing derives one from the other. Ink
@@ -296,11 +302,8 @@ OPEN QUESTIONS FOR JOSH
      filtering the option out is palette-dependent - the option set would
      shift as colours change, which reads as a broken control. The same call
      was then applied to the card-depends-on-border rule for consistency.
-  3. STILL OPEN. Phase 4 (per-card overrides) may have collapsed the way phase
-     2 did: now that card grounding is token-keyed, a per-card override might
-     just be an inline `--recipe-card` on the card element, picked up for
-     free. UNTESTED - a ten-minute browser probe would settle it before anyone
-     plans around the old estimate.
+  3. PROBED (session 2, Chrome, /hvac-service). The colour half of phase 4 HAS
+     collapsed. The addressing half is the whole remaining job. See section 8.
   4. RESOLVED (cbbceff). Commit 8363102 had swept
      `src/content/pagebuilder-options.json` into a CSS fix, because the dev
      server rewrote it mid-session and `git add -A` took it. Josh's call:
@@ -416,3 +419,69 @@ WHERE THE NEW CODE LIVES
   src/utils/use-promoted-palette.ts          client reader (computed CSS)
   src/content/section-color-override-attributes.ts   one helper, all paths
   src/components/sections/SectionColorOverrideControls.tsx   the picker
+
+
+===============================================================================
+8. PHASE 4 PROBE — the colour half collapsed, the addressing half did not
+===============================================================================
+
+Measured in Chrome on /hvac-service (15 sections, 11 with cards), by staging a
+real card inside a `pagebuilder-paint-surface` frame on the `dark` recipe and
+driving inline custom properties on the card element.
+
+THE CSS COST OF PER-CARD OVERRIDES IS ZERO. An inline `--recipe-card` on a card
+element is picked up by the rules that already exist. No new context, no copied
+scales block, no new selector. Flipping a dark card to the light `raised`
+swatch:
+
+    background                #2d5869 -> #e5f4ff
+    --recipe-ground           #2d5869 -> #e5f4ff     (re-points to the card)
+    --live-service-muted      #cad5d9 -> #f9fcff     (ladder re-mixes)
+
+This works because the scales, the role table and the re-grounding rule are all
+declared ON the card element by descendant selectors, so `var(--recipe-card)`
+resolves against that element's own computed value - and an inline declaration
+is one of its own. The phase 1 substitution trap does not bite here: the scope
+that re-points the ground is the same element that re-declares the scales.
+
+IT IS NOT FREE, BECAUSE POLARITY DOES NOT COME WITH IT. `--recipe-text` stayed
+white through that flip, which is white text on a near-white card:
+
+    without --recipe-card-text    ink 1.12   muted 1.09    (invisible)
+    with    --recipe-card-text    ink 13.14  muted 6.90
+
+So a per-card override is TWO inline properties, and the second cannot be
+derived in CSS - the same wall phase 2 hit. `resolveCardPolarity` already
+computes it and is browser-verified, so this is plumbing, not new logic.
+
+NESTING WORKS, WHICH IS THE PART THE PHASE 2 SCOPE EXPECTED TO BE EXPENSIVE.
+It reasoned that phase 4 was where "cards nest arbitrarily and each genuinely
+establishes a new scope", implying a copied context per level. They do not need
+one. A card inside an overridden card re-matches the same descendant selectors
+and re-declares everything, grounding itself correctly at depth 2:
+
+    nested card on #bf0d22     ink 6.37   muted 4.41
+    outer card unchanged       #e5f4ff / #232834      (nothing compounded)
+
+(That 4.41 is the highlight recipe's known accepted miss, so the number is
+consistent with the rest of the system rather than new.)
+
+Also confirmed: the explicit `.recipe-card-context` class form behaves
+identically to the token-keyed form, and a nested card with NO override of its
+own grounds to its PARENT card's colour rather than the section's - so the
+"copy-per-context" worry in the phase 2 scope is already handled.
+
+WHAT PHASE 4 ACTUALLY COSTS: ADDRESSING, NOT COLOUR.
+Sections render cards from content arrays - `items.slice(0, 3).map(...)` keyed
+by `item.title` - and nothing in the system gives an individual card a stable
+styling identity. `cardStyleComponents` membership is per-section; every
+override built so far lands on the section frame. So the real work is:
+
+  - a way to name one card in a section that survives reordering and content
+    edits (index is the obvious handle and the fragile one)
+  - per-card polarity resolved and transported alongside the swatch
+  - a builder control that can target a card, which is a canvas-interaction
+    problem rather than a colour one
+
+THE OLD ESTIMATE IS OBSOLETE. It was sized around building a colour context per
+card. That part is done and costs nothing. Re-scope before planning.
