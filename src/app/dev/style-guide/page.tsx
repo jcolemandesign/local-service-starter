@@ -285,7 +285,11 @@ const colors = [
     label: "CTA Accent",
     controlKey: "ctaAccent",
     value: "",
-    surface: "bg-service-accent",
+    /* Its own token, not the brand token. `--color-cta-accent` carries the
+       fallback to brand, so this previews brand while unset and the authored
+       colour once set - where `bg-service-accent` would have shown brand
+       either way and made the control look broken. */
+    surface: "bg-cta-accent",
     text: "text-white",
     muted: "text-white/78",
     border: "border-white/24",

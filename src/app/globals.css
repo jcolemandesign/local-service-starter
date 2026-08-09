@@ -115,6 +115,11 @@
      near-black grounds where a fixed 12% drops under the 1.15 card floor and
      CSS cannot express a conditional. The authoritative derivation is the
      TypeScript one; this is its approximation for the un-saved case. */
+  /* The optional CTA derivative, with its fallback to brand baked in so a
+     consumer never has to know whether it was authored. Needed as a real token
+     because the style guide has to preview the swatch itself - pointing that
+     preview at the brand token would show brand no matter what was set. */
+  --color-cta-accent: var(--live-cta-accent, var(--live-service-accent, #1f7a5a));
   --color-bg-dark-surface: var(
     --live-bg-dark-surface,
     color-mix(in oklab, #ffffff 12%, var(--live-bg-dark, #10141b))
@@ -1848,7 +1853,14 @@ body {
       .bg-service-surface:not(section),
       .bg-surface-raised:not(section)
     ),
-  .recipe-card-context {
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )
+    .recipe-card-context,
+  .pagebuilder-section-band[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )
+    .recipe-card-context {
     /* Ladder - toward the local ground. */
     --text-strong: var(--recipe-text);
     --text-body: color-mix(in oklab, var(--recipe-text) 86%, var(--recipe-ground));
@@ -1884,7 +1896,14 @@ body {
    * is how nearly every card in the library paints one. Keep the class for a
    * card built some other way - an inline style, an image backdrop - that the
    * token rule cannot see. */
-  .recipe-card-context {
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )
+    .recipe-card-context,
+  .pagebuilder-section-band[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )
+    .recipe-card-context {
     --recipe-ground: var(--recipe-card);
     /* A card that flips lightness relative to its section must flip its text
        with it, or the section's foreground lands on an incompatible surface.
@@ -2183,7 +2202,14 @@ body {
       .bg-service-surface:not(section),
       .bg-surface-raised:not(section)
     ),
-  .recipe-card-context {
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )
+    .recipe-card-context,
+  .pagebuilder-section-band[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )
+    .recipe-card-context {
     /* Text hierarchy. */
     --live-service-ink: var(--text-strong);
     --live-text-main: var(--text-strong);
@@ -3101,10 +3127,10 @@ body {
 /* BEGIN PAGEWORKS STYLEGUIDE TOKEN OVERRIDES */
 :root {
   --live-service-ink: #232834;
-  --live-service-muted: #1f4e51;
-  --live-service-accent: #175c82;
+  --live-service-muted: #274a59;
+  --live-service-accent: #007cbd;
   --live-service-surface: #e3e6e8;
-  --live-surface-raised: #e0e6eb;
+  --live-surface-raised: #e5f4ff;
   --live-service-border: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
   --live-service-border-light: oklch(from var(--live-service-surface) calc(l + 0.30) c h);
   --live-bg-page: #dbdbdb;
@@ -3112,18 +3138,23 @@ body {
   --live-bg-muted: oklch(from var(--live-service-surface) calc(l - 0.03) c h);
   --live-bg-dark: #0d4356;
   --live-text-main: #232834;
-  --live-text-muted: #1f4e51;
-  --live-text-accent: #175c82;
+  --live-text-muted: #274a59;
+  --live-text-accent: #007cbd;
   --live-border-default: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
   --live-accent: #bf0d22;
   --live-accent-ink: #ffffff;
   --live-accent-muted-text: #dcefe7;
+  --live-bg-dark-surface: #2d5869;
+  /* cta accent unset - consumers fall back to brand via var() and the
+     Accent recipe stays hidden. The declaration is omitted rather than
+     emitted empty, because an empty custom property makes every var() that
+     reads it invalid at computed-value time instead of taking its fallback. */
   --live-shadow-service: 8px 10px 22px rgb(27 45 65 / 0.1369);
   --color-service-ink: #232834;
-  --color-service-muted: #1f4e51;
-  --color-service-accent: #175c82;
+  --color-service-muted: #274a59;
+  --color-service-accent: #007cbd;
   --color-service-surface: #e3e6e8;
-  --color-surface-raised: #e0e6eb;
+  --color-surface-raised: #e5f4ff;
   --color-service-border: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
   --color-service-border-light: oklch(from var(--live-service-surface) calc(l + 0.30) c h);
   --color-bg-page: #dbdbdb;
@@ -3131,9 +3162,9 @@ body {
   --color-bg-muted: oklch(from var(--live-service-surface) calc(l - 0.03) c h);
   --color-bg-dark: #0d4356;
   --color-text-main: #232834;
-  --color-text-muted: #1f4e51;
+  --color-text-muted: #274a59;
   --color-text-inverse: #ffffff;
-  --color-text-accent: #175c82;
+  --color-text-accent: #007cbd;
   --color-border-default: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
   --color-accent: #bf0d22;
   --card-grid-gap-active: 2.25rem;

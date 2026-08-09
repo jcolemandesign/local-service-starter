@@ -137,6 +137,51 @@ describe("mixing space", () => {
   });
 });
 
+describe("the card context cannot leak outside a recipe", () => {
+  /**
+   * The card context resolves `--live-*` from `--recipe-card-text`, which only
+   * exists inside a colour recipe. Applied anywhere else it sets every text
+   * token to an invalid value, and an invalid custom property does not fall
+   * back - it poisons every `var()` that reads it.
+   *
+   * That is not hypothetical. The Card primitive carries this class, the style
+   * guide renders swatches inside Cards with no recipe anywhere on the page,
+   * and every swatch silently painted the project's hardcoded defaults instead
+   * of the palette being edited. The control looked broken and the cause was
+   * three elements up the tree.
+   *
+   * So every rule that declares a scale or a `--live-*` row must reach the
+   * class through a recipe frame, never as a bare selector.
+   */
+  it("never declares colour rows against a bare .recipe-card-context", () => {
+    /*
+     * "Bare" means the class STARTS a selector - the previous non-whitespace
+     * character is a comma or a closing brace. Scoped occurrences are preceded
+     * by `)`, closing the `:not()` of the frame they descend from.
+     *
+     * Deliberately not anchored to line starts: the scoped form puts the class
+     * on its own indented line, which a line anchor reads as bare.
+     */
+    const bare = globalsCss.match(/[,}]\s*\.recipe-card-context\s*[,{]/g);
+
+    expect(
+      bare,
+      "a bare .recipe-card-context selector applies outside every recipe, where its variables resolve to nothing",
+    ).toBeNull();
+  });
+
+  it("keeps the class reachable through both a section frame and a band", () => {
+    // Band members carry recipe="inherit" on their own frame - the band holds
+    // the real recipe - so the section form alone would miss every banded card.
+    expect(globalsCss).toMatch(
+      /pagebuilder-paint-surface\[data-pagebuilder-color-recipe\][\s\S]{0,200}\.recipe-card-context/,
+    );
+    expect(globalsCss).toMatch(
+      /pagebuilder-section-band\[data-pagebuilder-color-recipe\][\s\S]{0,200}\.recipe-card-context/,
+    );
+  });
+});
+
 describe("override axes reuse the ladder's numbers", () => {
   /**
    * The override intensities are the ladder's percentages, written out again
