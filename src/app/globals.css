@@ -105,6 +105,15 @@
   --color-bg-surface: var(--live-bg-surface, #f4f7f3);
   --color-bg-muted: var(--live-bg-muted, oklch(from var(--live-service-surface, #f4f7f3) calc(l - 0.03) c h));
   --color-bg-dark: var(--live-bg-dark, #10141b);
+  /* The card that sits on a dark ground. Authored when a business wants it,
+     derived otherwise: 12% toward white, which is the only lift that works
+     without a second authored colour - stepping down collides with ink, and
+     reusing ink puts the card in a different hue family from its ground.
+     Kept in step with `deriveDarkSurface` in color-palette-adapter.ts. */
+  --color-bg-dark-surface: var(
+    --live-bg-dark-surface,
+    color-mix(in oklab, #ffffff 12%, var(--live-bg-dark, #10141b))
+  );
   --color-text-main: var(--live-text-main, #17211d);
   --color-text-muted: var(--live-text-muted, #5f6f68);
   --color-text-inverse: #ffffff;
@@ -1876,6 +1885,17 @@ body {
     --palette-dark: var(--live-bg-dark);
     --palette-accent: var(--live-service-accent);
     --palette-highlight: var(--live-accent);
+    /* Added by the colour system overhaul.
+     *
+     * `--palette-brand` is the same token as `--palette-accent` on purpose:
+     * the stored name is `serviceAccent` and cannot be renamed without racing
+     * the files the dev server rewrites, so both names point at the business's
+     * actual colour and `color-palette-adapter.ts` is where that stops being
+     * confusing. `--palette-cta-accent` is the optional CTA derivative, which
+     * falls back to brand when nobody authored one. */
+    --palette-dark-surface: var(--color-bg-dark-surface);
+    --palette-brand: var(--live-service-accent);
+    --palette-cta-accent: var(--live-cta-accent, var(--live-service-accent));
 
     background-color: var(--recipe-ground);
   }

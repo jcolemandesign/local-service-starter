@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { deriveDarkSurface } from "@/content/color-palette-adapter";
 import { derivedColorValues } from "@/content/color-derivations";
 import { requireBuilderApiAccess } from "@/utils/builder-access";
 import {
@@ -24,6 +25,20 @@ type StyleGuideTokenDraft = {
   accent: string;
   accentInk: string;
   accentMutedText: string;
+  /**
+   * Added by the colour system overhaul, and optional on purpose.
+   *
+   * Every slot saved before the overhaul lacks them, and those slots must keep
+   * loading - an approved page records the tokens it was approved under, so a
+   * required field would invalidate historic approvals. Both fall back to a
+   * derivation in `color-palette-adapter.ts`.
+   *
+   * `ctaAccent` is the CTA-appropriate derivative of the brand colour. Leaving
+   * it unset is the normal case: it is only needed when the brand colour
+   * itself lacks contrast as a button.
+   */
+  bgDarkSurface?: string;
+  ctaAccent?: string;
   activeCardGapValue: string;
   activeInlineGapValue: string;
   activeLayoutGapValue: string;
@@ -126,6 +141,12 @@ function normalizeTokens(tokens: Partial<StyleGuideTokenDraft> | undefined) {
     accent: normalizeColor(tokens.accent, "warm accent"),
     accentInk: normalizeColor(tokens.accentInk, "accent ink"),
     accentMutedText: normalizeColor(tokens.accentMutedText, "accent muted text"),
+    // Optional: absent on every slot saved before the colour system overhaul.
+    // `bgDarkSurface` derives from the dark ground when unset; `ctaAccent`
+    // stays undefined, which hides the Accent recipe rather than substituting
+    // a colour nobody chose.
+    bgDarkSurface: optionalColor(tokens.bgDarkSurface, "dark surface"),
+    ctaAccent: optionalColor(tokens.ctaAccent, "cta accent"),
     activeCardGapValue: normalizeSpacingValue(tokens.activeCardGapValue, "card gap"),
     activeInlineGapValue: normalizeSpacingValue(
       tokens.activeInlineGapValue,
@@ -241,6 +262,22 @@ function normalizeColor(value: unknown, label: string) {
   }
 
   return value.toLowerCase();
+}
+
+/**
+ * A colour that may legitimately be absent.
+ *
+ * Distinct from `normalizeColor` because "not authored" and "authored badly"
+ * are different states here: an unset swatch is a supported configuration that
+ * changes which recipes are offered, while a malformed one is still an error
+ * worth surfacing.
+ */
+function optionalColor(value: unknown, label: string) {
+  if (value === undefined || value === null || value === "") {
+    return undefined;
+  }
+
+  return normalizeColor(value, label);
 }
 
 function normalizeNumber(
@@ -539,6 +576,15 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --live-accent: ${tokens.accent};
   --live-accent-ink: ${tokens.accentInk};
   --live-accent-muted-text: ${tokens.accentMutedText};
+  --live-bg-dark-surface: ${tokens.bgDarkSurface ?? deriveDarkSurface(tokens.bgDark)};
+  ${
+    tokens.ctaAccent
+      ? `--live-cta-accent: ${tokens.ctaAccent};`
+      : `/* cta accent unset - consumers fall back to brand via var() and the
+     Accent recipe stays hidden. The declaration is omitted rather than
+     emitted empty, because an empty custom property makes every var() that
+     reads it invalid at computed-value time instead of taking its fallback. */`
+  }
   --live-shadow-service: ${serviceShadow};
   --color-service-ink: ${tokens.serviceInk};
   --color-service-muted: ${tokens.serviceMuted};
