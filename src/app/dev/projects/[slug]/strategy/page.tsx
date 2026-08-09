@@ -16,6 +16,7 @@ import {
   sanitizeClientSlug,
 } from "@/utils/strategy-workspace";
 import { StyleGuideCloseAllButton } from "@/components/sections/StyleGuideCloseAllButton";
+import { readSiteIdentity } from "@/utils/site-identity";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -64,6 +65,7 @@ export default async function StrategyWorkspacePage({
     strategyDigestText,
     stagedPages,
     templates,
+    siteIdentity,
   ] =
     await Promise.all([
       readStrategyWorkspace(clientSlug),
@@ -72,6 +74,7 @@ export default async function StrategyWorkspacePage({
       readStrategyDigestText(clientSlug),
       readStagedPages(),
       readPageTemplates(),
+      readSiteIdentity(clientSlug),
     ]);
   // Active pages only. An alt shares its base page's type, so leaving alts in
   // would list them as extra staged child pages under repeatable page types.
@@ -112,6 +115,7 @@ export default async function StrategyWorkspacePage({
           strategyDigestText={strategyDigestText}
           templates={templates}
           sourcePacketText={sourcePacketText}
+          siteIdentity={siteIdentity}
         />
         <StyleGuideCloseAllButton />
 

@@ -170,18 +170,6 @@ const colors = [
     usage: "Primary dark for headings, inverse sections, and strong structure",
   },
   {
-    name: "service-muted",
-    label: "Muted",
-    controlKey: "serviceMuted",
-    value: "#5f6f68",
-    surface: "bg-service-muted",
-    text: "text-white",
-    muted: "text-white/76",
-    border: "border-white/22",
-    accent: "bg-surface-raised text-service-muted",
-    usage: "Secondary text color and subdued support surfaces",
-  },
-  {
     name: "service-accent",
     label: "Accent",
     controlKey: "serviceAccent",

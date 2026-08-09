@@ -16,7 +16,9 @@ import {
   type PageTemplateSummary,
 } from "@/components/sections/TemplateLibrarySection";
 import { StagedPageCanvas } from "@/components/sections/StagedPageCanvas";
+import { SiteIdentityEditor } from "@/components/sections/SiteIdentityEditor";
 import { usePromotedPalette } from "@/utils/use-promoted-palette";
+import type { SiteIdentity } from "@/content/site-identity";
 import { getCanonicalSectionLabel } from "@/content/section-library-v3";
 import {
   buildStrategyNavigation,
@@ -69,6 +71,7 @@ type StrategyWorkspaceSectionProps = {
   strategyDigestText: string;
   templates: PageTemplateSummary[];
   sourcePacketText: string;
+  siteIdentity: SiteIdentity;
 };
 
 type StagedStrategyPageSummary = {
@@ -241,6 +244,7 @@ export function StrategyWorkspaceSection({
   strategyDigestText,
   templates,
   sourcePacketText,
+  siteIdentity,
 }: StrategyWorkspaceSectionProps) {
   /**
    * Read from the DOM rather than passed down from the server page: this
@@ -452,10 +456,10 @@ export function StrategyWorkspaceSection({
     { icon: "prompts", id: "prompts", label: "Prompt Library", href: `/dev/prompt-library?project=${clientSlug}`, openInNewTab: true, tone: "orange" },
     { icon: "plan", id: "plan", label: "Content Summary", onClick: openContentPlanReference, tone: "purple" },
     { icon: "sections", id: "sections", label: "Section Library", href: "/sections", openInNewTab: true, tone: "green" },
-    { icon: "pagebuilder", id: "pagebuilder", label: "Page Builder", href: "/dev/pagebuilder", openInNewTab: true, tone: "pink" },
+    { icon: "pagebuilder", id: "pagebuilder", label: "Page Builder", href: `/dev/pagebuilder?client=${encodeURIComponent(clientSlug)}`, openInNewTab: true, tone: "pink" },
     { icon: "templates", id: "templates", label: "Template Library", href: "/dev/templates", openInNewTab: true, tone: "yellow" },
     { icon: "stagedPages", id: "staged-pages", label: "Staged Pages", href: "/dev/staged-pages", openInNewTab: true, tone: "teal" },
-    { icon: "style", id: "style", label: "Style Guide", href: "/dev/style-guide", openInNewTab: true, tone: "indigo" },
+    { icon: "style", id: "style", label: "Style Guide", href: `/dev/style-guide?client=${encodeURIComponent(clientSlug)}`, openInNewTab: true, tone: "indigo" },
     { icon: "contentEditor", id: "content-editor", label: "Content Editor", href: `/dev/content-editor?client=${encodeURIComponent(clientSlug)}`, openInNewTab: true, tone: "slate" },
   ];
 
@@ -906,7 +910,11 @@ export function StrategyWorkspaceSection({
         pageTitle="Strategy"
       />
       <div className="strategy-toolbar-content w-full px-[var(--container-gutter)]">
-        <div className="grid layout-gap-lrg">
+          <div className="grid layout-gap-lrg">
+            <SiteIdentityEditor
+              clientSlug={clientSlug}
+              initialIdentity={siteIdentity}
+            />
           {/* The page's heading, at the same step as the Prompt Library's.
               Outside the assembly-overview conditional below so it is there
               whether or not a snapshot has been detected yet.
@@ -1889,7 +1897,7 @@ export function StrategyWorkspaceSection({
                   </p>
                   <Link
                     className={`${secondaryButtonClass} mt-4`}
-                    href="/dev/pagebuilder"
+                    href={`/dev/pagebuilder?client=${encodeURIComponent(clientSlug)}`}
                   >
                     Open Pagebuilder
                   </Link>

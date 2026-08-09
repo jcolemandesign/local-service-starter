@@ -174,6 +174,10 @@ import {
   type TableCompareAlign,
 } from "@/content/section-style-options";
 import type { PagebuilderRecipeSection } from "@/content/pagebuilder";
+import {
+  emptySiteIdentity,
+  type SiteIdentity,
+} from "@/content/site-identity";
 
 const heroSplitFullHeightVariants = new Set<string>(
   sectionLibraryV3Content.heroSplitFullHeight.variants.map(
@@ -391,23 +395,25 @@ function UnknownSection({ section }: { section: PagebuilderRecipeSection }) {
 export function renderPreviewSection(
   section: PagebuilderRecipeSection,
   index: number,
+  siteIdentity: SiteIdentity = emptySiteIdentity,
 ) {
-  return withSectionToggles(renderSectionElement(section, index), section);
+  return withSectionToggles(renderSectionElement(section, index, siteIdentity), section);
 }
 
 function renderSectionElement(
   section: PagebuilderRecipeSection,
   index: number,
+  siteIdentity: SiteIdentity,
 ) {
   const headingLevel = index === 1 ? 1 : 2;
 
   switch (section.component) {
     case "NavPrimarySectionV2":
-      return <NavPrimarySectionV2 {...sectionLibraryV3Content.navPrimary} />;
+      return <NavPrimarySectionV2 {...sectionLibraryV3Content.navPrimary} logoLabel={siteIdentity.businessName || sectionLibraryV3Content.navPrimary.logoLabel} logoSrc={siteIdentity.logoSrc} />;
     case "NavCenterLogoSectionV2":
-      return <NavCenterLogoSectionV2 {...sectionLibraryV3Content.navPrimary} />;
+      return <NavCenterLogoSectionV2 {...sectionLibraryV3Content.navPrimary} logoLabel={siteIdentity.businessName || sectionLibraryV3Content.navPrimary.logoLabel} logoSrc={siteIdentity.logoSrc} />;
     case "NavFloatingBentoSectionV2":
-      return <NavFloatingBentoSectionV2 {...sectionLibraryV3Content.navPrimary} />;
+      return <NavFloatingBentoSectionV2 {...sectionLibraryV3Content.navPrimary} logoLabel={siteIdentity.businessName || sectionLibraryV3Content.navPrimary.logoLabel} logoSrc={siteIdentity.logoSrc} />;
     case "HeroSplitFullHeightSectionV3":
       return (
         <HeroSplitFullHeightSectionV3
@@ -1064,12 +1070,18 @@ function renderSectionElement(
   }
 }
 
-export function PagebuilderSection() {
+export function PagebuilderSection({
+  siteIdentity = emptySiteIdentity,
+}: {
+  siteIdentity?: SiteIdentity;
+}) {
 
   return (
     <PagebuilderShell
       recipes={pagebuilderRecipes}
-      renderLibrarySection={renderPreviewSection}
+      renderLibrarySection={(section, index) =>
+        renderPreviewSection(section, index, siteIdentity)
+      }
       sectionModes={sectionModes}
     />
   );

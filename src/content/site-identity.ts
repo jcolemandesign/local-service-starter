@@ -51,7 +51,15 @@ function sanitizeLogoSrc(value: unknown) {
 
   const trimmed = value.trim();
 
-  return trimmed.startsWith("/") && !trimmed.startsWith("//") ? trimmed : "";
+  if (!trimmed.startsWith("/") || trimmed.startsWith("//")) {
+    return "";
+  }
+
+  const segments = trimmed.slice(1).split("/");
+
+  return segments.every((segment) => segment && segment !== "." && segment !== "..")
+    ? trimmed
+    : "";
 }
 
 export function sanitizeSiteIdentity(value: unknown): SiteIdentity {
