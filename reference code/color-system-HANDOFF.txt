@@ -1,7 +1,9 @@
 COLOR SYSTEM OVERHAUL — HANDOFF
 Written 2026-08-09 so this conversation can be cleared.
-Updated 2026-08-09 (session 2): phase 2 is complete.
-Branch: codex/template-first-workflow   Tests: 681 passing
+Updated 2026-08-09 (session 2): phase 2 complete, phase 4 probed, the text
+hierarchy fixed on tight grounds.
+Branch: codex/template-first-workflow   Tests: 692 passing
+Tree clean; tsc, eslint, vitest and next build all green at the last commit.
 
 
 ===============================================================================
@@ -74,7 +76,8 @@ DONE - phase 2 (section-level overrides). Session 2 finished it: the picker,
        the data model, all three render paths, export, and the two border
        rules phase 1 deferred. See section 7.
 
-Eleven commits on codex/template-first-workflow, oldest first:
+Fourteen commits on codex/template-first-workflow, oldest first. The last three
+are session 2:
 
   3d88e0e  the two scales, recipe inputs, contrast gate
   1358569  dark-surface and CTA-accent swatches, no token renames
@@ -87,6 +90,9 @@ Eleven commits on codex/template-first-workflow, oldest first:
   df3d1a1  ground every card by its fill, not one section at a time
   0baf3b7  the override mechanism, minus its UI
   8363102  stop the card context poisoning tokens outside a recipe
+  4749dea  finish phase 2: the picker, data model, render paths, export
+  dd8dc27  record the phase 4 probe
+  bc946b4  narrow the hierarchy on grounds that cannot afford the full spread
 
 Where the code lives:
 
@@ -94,7 +100,13 @@ Where the code lives:
   src/utils/color-gate.ts          contrast gate (pure; called from two places)
   src/content/color-recipe-inputs.ts   the eight recipes as data
   src/content/color-overrides.ts   override resolution + card polarity
+  src/content/color-rungs.ts       per-ground hierarchy spread
   src/content/color-palette-adapter.ts  legacy token names -> palette names
+  src/content/color-palette-source.ts   token map, shared by both readers
+  src/utils/promoted-palette.ts    server palette reader (node:fs, memoized)
+  src/utils/use-promoted-palette.ts     client palette reader (computed CSS)
+  src/content/section-color-override-attributes.ts  one helper, all render paths
+  src/components/sections/SectionColorOverrideControls.tsx   the picker
   src/app/globals.css              scales, recipes, role table, override axes
   src/utils/use-available-recipes.ts    hides recipes whose swatch is unset
 
@@ -277,7 +289,23 @@ The eyebrow is the brand colour used as small text on a light ground. Unlike
 the ladder this is not derived from anything the system can narrow - it is the
 authored brand colour, at full strength, on the authored page colour. Either
 the brand is darkened, or the eyebrow stops being the raw brand on light
-grounds. Worth a look alongside the tint constants.
+grounds.
+
+PARKED BY JOSH at the end of session 2, deliberately: he will investigate the
+remaining contrast questions himself, later. Do not pre-empt it. The three
+open palette items are all one job and all his:
+
+  1. the two eyebrow rows above
+  2. the tint constants (50 / 30), still provisional
+  3. `ctaAccent`, still unauthored
+
+None of them blocks anything else. The system is build-ready as it stands -
+every one of these is a palette-authoring choice, not a defect, and the code
+handles the current values correctly.
+
+NOTHING ELSE IS IN FLIGHT. Sessions 1 and 2 left no half-finished work: phases
+1, 2 and 3 are complete, phase 4 is probed and re-scoped but deliberately not
+started, and the four gates were green at the last commit.
 
 RESOLVED — where render-time polarity gets its palette.
 Card text polarity is the one value CSS cannot derive (there is no way to ask
