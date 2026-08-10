@@ -156,6 +156,7 @@ import { pagebuilderRecipes, sectionModes } from "@/content/pagebuilder";
 import {
   getCanonicalSectionLabel,
   sectionLibraryV3Content,
+  heroSplitFullImageFpoSrc,
   servicesBentoPreviewItemCount,
 } from "@/content/section-library-v3";
 // The variant sets below this import predate the shared vocabulary and still
@@ -419,6 +420,7 @@ function renderSectionElement(
         <HeroSplitFullHeightSectionV3
           {...sectionLibraryV3Content.heroSplitFullHeight}
           headingLevel={headingLevel}
+          imageSrc={heroSplitFullImageFpoSrc}
           variant={getHeroSplitFullHeightVariant(section)}
         />
       );
@@ -658,6 +660,7 @@ function renderSectionElement(
       return (
         <ContentPhotoGalleryLargeCarouselSectionV3
           {...sectionLibraryV3Content.contentPhotoGalleryCarousel}
+          title={sectionLibraryV3Content.contentPhotoGalleryLargeCarousel.title}
         />
       );
     case "ContentPhotoGalleryBandCarouselSectionV3":

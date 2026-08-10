@@ -1097,6 +1097,49 @@ body {
     container-type: inline-size;
   }
 
+  /* Eased alpha ramp for the 9 / 9 full-image split overlap. Multiple stops
+     keep the section ground visually stable through the copy area, then let
+     the image emerge without the perceptible midpoint of a two-stop fade.
+
+     THE RAMP IS A MASK, NOT A GRADIENT OF TRANSLUCENT COLOURS, and that is
+     load-bearing. Written the obvious way - `linear-gradient` with
+     `color-mix(in oklab, var(--color-bg-page) 74%, transparent)` stops - the
+     whole declaration is dropped by the CSS compiler: the served sheet carries
+     73 linear-gradients and not one survives with a color-mix stop. Dropping
+     the only declaration empties the rule, the empty rule is pruned, and the
+     class the section asks for simply does not exist - the fade vanishes with
+     nothing failing anywhere. A mask needs only black and transparent, so the
+     ground stays one token and the easing lives in plain alpha stops. */
+  .full-image-split-fade-right {
+    background-color: var(--color-bg-page);
+    mask-image: linear-gradient(
+      to right,
+      rgb(0 0 0 / 1) 0%,
+      rgb(0 0 0 / 0.98) 15%,
+      rgb(0 0 0 / 0.9) 30%,
+      rgb(0 0 0 / 0.74) 46%,
+      rgb(0 0 0 / 0.52) 62%,
+      rgb(0 0 0 / 0.29) 77%,
+      rgb(0 0 0 / 0.11) 90%,
+      rgb(0 0 0 / 0) 100%
+    );
+  }
+
+  .full-image-split-fade-left {
+    background-color: var(--color-bg-page);
+    mask-image: linear-gradient(
+      to left,
+      rgb(0 0 0 / 1) 0%,
+      rgb(0 0 0 / 0.98) 15%,
+      rgb(0 0 0 / 0.9) 30%,
+      rgb(0 0 0 / 0.74) 46%,
+      rgb(0 0 0 / 0.52) 62%,
+      rgb(0 0 0 / 0.29) 77%,
+      rgb(0 0 0 / 0.11) 90%,
+      rgb(0 0 0 / 0) 100%
+    );
+  }
+
   .container-site,
   .container-content,
   .container-narrow {

@@ -76,7 +76,7 @@ const variantConfig: Record<
     imagePanelClassName:
       "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
     fadeClassName: "col-span-4 col-start-6",
-    fadeGradientClassName: "bg-gradient-to-r from-bg-page to-transparent",
+    fadeGradientClassName: "full-image-split-fade-right",
   },
   "image-9-overlap-left-text-7": {
     textClassName: "relative z-10 col-span-9 col-start-6",
@@ -84,7 +84,7 @@ const variantConfig: Record<
     imagePanelClassName:
       "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
     fadeClassName: "col-span-4 col-start-6",
-    fadeGradientClassName: "bg-gradient-to-r from-transparent to-bg-page",
+    fadeGradientClassName: "full-image-split-fade-left",
   },
 };
 

@@ -104,6 +104,7 @@ import { DecisionQuestionTableFourSectionLibraryDemo } from "@/components/sectio
 import {
   sectionLibraryV3Collections,
   sectionLibraryV3Content,
+  heroSplitFullImageFpoSrc,
   servicesBentoPreviewItemCount,
 } from "@/content/section-library-v3";
 import { StyleGuideCloseAllButton } from "@/components/sections/StyleGuideCloseAllButton";
@@ -147,6 +148,7 @@ const sectionElements = {
     <HeroSplitFullImageSectionLibraryDemo
       {...sectionLibraryV3Content.heroSplitFullHeight}
       headingLevel={2}
+      imageSrc={heroSplitFullImageFpoSrc}
     />
   ),
   "hero-service-area-zip-lookup-v3": (
@@ -275,6 +277,7 @@ const sectionElements = {
   "content-photo-gallery-large-carousel-v3": (
     <ContentPhotoGalleryLargeCarouselSectionV3
       {...sectionLibraryV3Content.contentPhotoGalleryCarousel}
+      title={sectionLibraryV3Content.contentPhotoGalleryLargeCarousel.title}
     />
   ),
   "content-photo-gallery-band-carousel-v3": (

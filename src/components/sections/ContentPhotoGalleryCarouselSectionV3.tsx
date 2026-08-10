@@ -424,7 +424,7 @@ export function ContentPhotoGalleryCarouselSectionV3({
                   <h2
                     className={cx(
                       "text-service-ink",
-                      scale === "large" ? "type-display-lg" : "type-heading-md",
+                      scale === "large" ? "type-heading-xl" : "type-heading-md",
                     )}
                   >
                     {title}
@@ -443,7 +443,13 @@ export function ContentPhotoGalleryCarouselSectionV3({
               </div>
             ) : null}
 
-            <div className="flex shrink-0 items-center self-end justify-self-end inline-gap-sml">
+            {/* `ml-auto` rather than leaning on `justify-between`: with no
+                headline supplied the arrows are the row's only child, and
+                `justify-between` puts a lone child at the start - the controls
+                ended up on the left of the section. Pushed right explicitly,
+                they sit correctly whether or not there is a headline beside
+                them. */}
+            <div className="ml-auto flex shrink-0 items-center self-end justify-self-end inline-gap-sml">
               <ArrowButton
                 direction="previous"
                 disabled={!canScrollPrevious}

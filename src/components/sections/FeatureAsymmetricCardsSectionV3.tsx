@@ -51,6 +51,19 @@ export function FeatureAsymmetricCardsSectionV3({
 }: FeatureAsymmetricCardsSectionV3Props) {
   const cardsFirst = align === "right";
   const displayCards = cards.slice(0, 4);
+  /**
+   * Parity picks the arrangement.
+   *
+   * The two-up grid only resolves on an even count - an odd one leaves a single
+   * card alone in the last row beside a gap, which reads as a layout that broke
+   * rather than a set that happens to be three. So an odd count changes
+   * arrangement instead: one card per row, icon beside the copy rather than
+   * above it, which has no parity to satisfy at any length.
+   *
+   * Measured on what is rendered, not on what was supplied, because the cap
+   * above decides the last row: five cards draw four and stay a grid.
+   */
+  const isStacked = displayCards.length % 2 === 1;
 
   return (
     // The neutral page token, not the surface token. The colour recipe paints
@@ -59,9 +72,17 @@ export function FeatureAsymmetricCardsSectionV3({
     // surface token has no default state and reads as muted at every recipe.
     <section className="bg-bg-page">
       <SevenColumnGrid className="section-min-none items-start" padding="med">
+        {/* Each column names exactly one `col-start`, chosen by the ternary,
+            rather than a base start with an override appended after it.
+            Appending emitted both on the cards column, and two utilities of
+            equal specificity are settled by their order in the generated
+            stylesheet, not by their order in the class attribute - Tailwind
+            emits `col-start-1` before `col-start-4`, so the base won and the
+            cards never moved. The text moved, the cards did not, and the two
+            overlapped in columns 5-7. */}
         <SevenColumnGridItem
-          className={`col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1 ${
-            cardsFirst ? "col-start-5 max-lg:col-start-1" : ""
+          className={`col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1 max-lg:col-start-1 ${
+            cardsFirst ? "col-start-5" : "col-start-1"
           }`}
           measure="copyWide"
         >
@@ -85,10 +106,35 @@ export function FeatureAsymmetricCardsSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem
-          className={`col-span-4 col-start-4 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1 ${
-            cardsFirst ? "col-start-1" : ""
+          className={`col-span-4 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1 ${
+            cardsFirst ? "col-start-1" : "col-start-4"
           }`}
         >
+          {isStacked ? (
+            <div className="grid gap-y-[var(--site-grid-gap)]">
+              {displayCards.map((card, cardIndex) => (
+                <article
+                  className="reveal-on-scroll fluid-type-frame grid grid-cols-[auto_minmax(0,1fr)] items-start gap-[var(--site-grid-gap)] text-service-ink max-sm:grid-cols-1"
+                  key={card.title}
+                  style={{ "--reveal-index": cardIndex } as CSSProperties}
+                >
+                  <FeatureIconPlaceholder
+                    label={
+                      card.iconLabel ?? String(cardIndex + 1).padStart(2, "0")
+                    }
+                  />
+                  <div>
+                    <h3 className="type-heading-sm text-service-ink">
+                      {card.title}
+                    </h3>
+                    <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
+                      {card.body}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
           <div className="grid gap-x-[var(--site-grid-gap)] gap-y-3">
             {[
               displayCards.slice(0, 2),
@@ -124,6 +170,7 @@ export function FeatureAsymmetricCardsSectionV3({
               </div>
             ))}
           </div>
+          )}
         </SevenColumnGridItem>
       </SevenColumnGrid>
     </section>

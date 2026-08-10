@@ -36,11 +36,16 @@ function ArrowMark({ className = "" }: { className?: string }) {
   );
 }
 
-function ServiceImage() {
+function ServiceImage({ isRounded = false }: { isRounded?: boolean }) {
   return (
     <div
       aria-hidden="true"
-      className="relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-service-border"
+      className={cx(
+        "relative aspect-[4/5] w-full shrink-0 overflow-hidden bg-service-border",
+        // No card around it means no overflow box rounding two of its corners,
+        // so it rounds its own - all four, as a standalone element.
+        isRounded ? "radius-medium" : undefined,
+      )}
     >
       <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.24),rgb(23_33_29_/_0.05)),linear-gradient(45deg,rgb(255_255_255_/_0.22)_0_1px,transparent_1px_18px)]" />
       <div className="absolute inset-0 bg-service-accent/10" />
@@ -67,7 +72,17 @@ function ServiceScrollCard({
         cardBorder === "off" ? "!border-transparent" : undefined,
       )}
     >
-      <div className="flex min-h-28 items-center justify-between gap-8 px-7 py-6">
+      {/* See `cardTextPadding` in ServicesBentoCardsSectionV2: fill or border
+          makes the card a container the copy sits inside, so it earns more room
+          off the edge. With neither, the copy is on the section ground above a
+          full-bleed image and horizontal padding only breaks its alignment with
+          that image. */}
+      <div
+        className={cx(
+          "flex min-h-28 items-center justify-between gap-8 py-6",
+          cardFill === "solid" || cardBorder === "on" ? "px-9" : "px-0",
+        )}
+      >
         <h3
           className={cx(
             "type-heading-md",
@@ -78,7 +93,7 @@ function ServiceScrollCard({
         </h3>
         <ArrowMark className="size-12 shrink-0 text-xl" />
       </div>
-      <ServiceImage />
+      <ServiceImage isRounded={cardFill !== "solid" && cardBorder !== "on"} />
     </article>
   );
 }

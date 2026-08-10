@@ -26,6 +26,34 @@ type SectionLibraryV3AccordionsProps = {
   collections: readonly SectionLibraryV3Collection[];
 };
 
+/**
+ * One recipe for the whole library.
+ *
+ * Every section carries its own ground - ink CTAs, surface testimonials, page
+ * content blocks - so the library read as a colour sampler rather than a set of
+ * layouts. The library is for comparing composition, and a shelf of unrelated
+ * grounds is noise against that.
+ *
+ * `pagebuilder-paint-surface` plus a recipe is the same mechanism the builder
+ * frame and a background band use, so this is not a library-only override: the
+ * recipe paints the ground and its `> section` rule replaces each section's own
+ * root colour with it. `page` because that is the recipe a section is drawn
+ * against by default.
+ *
+ * Deliberately no `data-pagebuilder-card-fill`: that attribute converts any
+ * surface-coloured box into a recipe card, and whether a given section's card
+ * is filled is a per-component answer this wrapper does not have. Cards that
+ * opt into the card-context class follow the recipe on their own; the rest keep
+ * the colours they were built with.
+ *
+ * (That class is named in full nowhere here on purpose - `color-card-coverage`
+ * counts files by substring, so writing it out would add this one to a tally of
+ * sections that establish a card context, which builder chrome is not.)
+ */
+const libraryRecipe = {
+  "data-pagebuilder-color-recipe": "page",
+} as const;
+
 function SectionLibraryPreviewFrame({
   children,
   fitLandscapeCanvas = false,
@@ -34,13 +62,20 @@ function SectionLibraryPreviewFrame({
   fitLandscapeCanvas?: boolean;
 }) {
   if (!fitLandscapeCanvas) {
-    return <div className="bg-bg-page">{children}</div>;
+    return (
+      <div className="pagebuilder-paint-surface bg-bg-page" {...libraryRecipe}>
+        {children}
+      </div>
+    );
   }
 
   return (
-    <div className="aspect-video min-h-0 overflow-x-hidden overflow-y-auto bg-bg-page max-md:aspect-auto max-md:overflow-visible">
+    <div
+      className="pagebuilder-paint-surface aspect-video min-h-0 overflow-x-hidden overflow-y-auto bg-bg-page max-md:aspect-auto max-md:overflow-visible"
+      {...libraryRecipe}
+    >
       <div
-        className="h-full min-h-full w-full bg-bg-page [&>section]:h-full [&_.section-min-screen]:!h-full [&_.section-min-screen]:!min-h-full"
+        className="h-full min-h-full w-full [&>section]:h-full [&_.section-min-screen]:!h-full [&_.section-min-screen]:!min-h-full"
         style={{ "--section-min-screen": "100%" } as CSSProperties}
       >
         {children}

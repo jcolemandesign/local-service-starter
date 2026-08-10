@@ -37,6 +37,15 @@ export function FourCardLinkGridSectionV3({
   linkLabel = "Learn more",
   showImages = true,
 }: FourCardLinkGridSectionV3Props) {
+  // See `cardTextPadding` in ServicesBentoCardsSectionV2: fill or border makes
+  // the card a container the copy sits inside, so it earns more room off the
+  // edge. With neither, the copy is on the section ground beside a full-bleed
+  // image and horizontal padding only breaks its alignment with that image.
+  const hasCardSurface = cardFill === "solid" || cardBorder === "on";
+  const cardTextPadding = hasCardSurface
+    ? "p-[clamp(1.5rem,1.9vw,2.125rem)]"
+    : "px-0 py-[clamp(1.25rem,1.6vw,1.75rem)]";
+
   return (
     <section className="bg-bg-page">
       <LayoutGrid
@@ -68,7 +77,18 @@ export function FourCardLinkGridSectionV3({
               href={cardLinks === "on" ? item.href : undefined}
             >
               {showImages ? (
-                <div className="relative aspect-[4/3] overflow-hidden border-b border-service-border bg-bg-muted">
+                <div
+                  className={cx(
+                    "relative aspect-[4/3] overflow-hidden bg-bg-muted",
+                    // With no card around it the image is a standalone element:
+                    // round all four corners rather than the two the card's
+                    // overflow clips, and drop the divider, which would
+                    // otherwise draw a straight line across a rounded edge.
+                    hasCardSurface
+                      ? "border-b border-service-border"
+                      : "rounded-[var(--radius-surface-token)]",
+                  )}
+                >
                   {item.imageSrc ? (
                     <Image
                       alt={item.imageAlt ?? item.title}
@@ -85,7 +105,12 @@ export function FourCardLinkGridSectionV3({
                 </div>
               ) : null}
 
-              <div className="fluid-type-frame flex flex-1 flex-col p-[clamp(1.25rem,1.6vw,1.75rem)]">
+              <div
+                className={cx(
+                  "fluid-type-frame flex flex-1 flex-col",
+                  cardTextPadding,
+                )}
+              >
                 <h3 className="type-heading-sm text-service-ink">{item.title}</h3>
                 <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
                   {item.body}

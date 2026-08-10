@@ -132,6 +132,7 @@ import { useAvailableColorRecipes } from "@/utils/use-available-recipes";
 import { usePromotedPalette } from "@/utils/use-promoted-palette";
 import {
   getCanonicalSectionLabel,
+  heroSplitFullImageFpoSrc,
   sectionLibraryV3Content,
   servicesBentoPreviewItemCount,
 } from "@/content/section-library-v3";
@@ -4156,6 +4157,7 @@ export function PagebuilderShell({
         ) : isSplitContentImageSection(section) ? (
           <HeroSplitFullHeightSectionV3
             {...sectionLibraryV3Content.heroSplitFullHeight}
+            imageSrc={heroSplitFullImageFpoSrc}
             colorRecipe={getSectionColorRecipe(section)}
             headingLevel={headingLevel}
             variant={

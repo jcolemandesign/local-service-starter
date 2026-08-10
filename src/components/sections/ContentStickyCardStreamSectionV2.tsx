@@ -57,11 +57,17 @@ export function ContentStickyCardStreamSectionV2({
   return (
     <section className={colors.section}>
       <SevenColumnGrid className="section-min-active items-start">
+        {/* `stretch`, not the default `top`: the grid's `items-start` leaves
+            every item at content height, and a sticky element inside a box its
+            own height has nowhere to travel - it is sticky and never moves.
+            Stretching this column to the card stream's height supplies the
+            distance, and `h-fit` keeps the child from stretching with it and
+            giving that distance straight back. */}
         <SevenColumnGridItem
           className="col-span-3 max-lg:col-span-7"
-          alignY="top"
+          alignY="stretch"
         >
-          <div className="sticky top-[var(--site-grid-inset-block)] max-lg:static">
+          <div className="sticky top-[var(--site-grid-inset-block)] h-fit max-lg:static">
             <div className="fluid-type-frame">
               <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
               <h2 className="type-display-lg mt-eyebrow-display text-service-ink">

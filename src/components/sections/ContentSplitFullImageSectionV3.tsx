@@ -93,14 +93,14 @@ const variantConfig: Record<
     imageClassName: `z-0 col-span-9 col-start-6 max-lg:col-span-6 max-lg:col-start-5 ${stackedColumns}`,
     imageBleedClassName: bleedRight,
     fadeClassName: "col-span-4 col-start-6 max-lg:col-span-2 max-lg:col-start-5",
-    fadeGradientClassName: "bg-gradient-to-r from-bg-page to-transparent",
+    fadeGradientClassName: "full-image-split-fade-right",
   },
   "image-9-overlap-left-text-7": {
     textClassName: `relative z-10 col-span-9 col-start-6 max-lg:col-span-6 max-lg:col-start-5 ${stackedColumns}`,
     imageClassName: `z-0 col-span-9 col-start-1 max-lg:col-span-6 max-lg:col-start-1 ${stackedColumns}`,
     imageBleedClassName: bleedLeft,
     fadeClassName: "col-span-4 col-start-6 max-lg:col-span-2 max-lg:col-start-5",
-    fadeGradientClassName: "bg-gradient-to-r from-transparent to-bg-page",
+    fadeGradientClassName: "full-image-split-fade-left",
   },
 };
 

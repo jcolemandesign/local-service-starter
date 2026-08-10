@@ -16,6 +16,23 @@ import { thankYouPageContent } from "@/content/thank-you";
  */
 export const servicesBentoPreviewItemCount = 6;
 
+/**
+ * Stand-in image for the full image split hero's previews.
+ *
+ * Cut to that hero's box rather than to a generic frame: it is a
+ * viewport-height column, so the box runs portrait everywhere - roughly 1:1.04
+ * on a laptop to 1:1.60 on a wide display - and this is 2550x2750, near the
+ * middle of that range. The generic `fpo-image.svg` is square-ish line art and
+ * gave no sense of how a real photograph would crop.
+ *
+ * Deliberately not set on `heroSplitFullHeight` below, whose content object is
+ * shared with the fixed-ratio and bento heroes. Those crop to their own frames,
+ * and a source cut for a tall column would misrepresent both. Each wants its
+ * own template - `image templates/` holds the source PSD for this one.
+ */
+export const heroSplitFullImageFpoSrc =
+  "/images/full-image-splite-template-temp.jpg";
+
 export const sectionLibraryV3Content = {
   hero: {
     eyebrow: "Local service starter",
@@ -267,6 +284,21 @@ export const sectionLibraryV3Content = {
         size: "medium" as const,
       },
     ],
+  },
+  /**
+   * Headline for the large carousel's previews.
+   *
+   * Kept out of `contentPhotoGalleryCarousel` below, whose empty title is
+   * shared by the compact and band variants too - those lead with the images
+   * and adding one there would put a headline on two sections that never asked
+   * for it. The large variant is the one that leads with a headline beside its
+   * controls, so it carries its own.
+   *
+   * Demo only. A staged page authors this through the `heading` field the copy
+   * spec already requests for the whole Images family.
+   */
+  contentPhotoGalleryLargeCarousel: {
+    title: "Recent work from across the service area",
   },
   contentPhotoGalleryCarousel: {
     eyebrow: "Field Notes",
@@ -2174,7 +2206,7 @@ export const sectionLibraryV3Collections = [
         component: "feature-overlap-rows-v3",
       },
       {
-        label: "Feature cards 4-up split",
+        label: "Feature cards icons",
         component: "feature-asymmetric-cards-v3",
       },
       {

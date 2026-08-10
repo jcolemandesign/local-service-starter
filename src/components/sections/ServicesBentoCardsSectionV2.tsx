@@ -65,10 +65,15 @@ const colorRecipeClasses = {
 } as const;
 
 function ServiceImage({
+  isRounded = false,
   isWide = false,
   label,
   src,
 }: {
+  /** Rounds all four corners rather than the two the card's overflow clips.
+   *  With no card surface the image is a standalone element, so square bottom
+   *  corners read as a card that failed to render rather than as a choice. */
+  isRounded?: boolean;
   isWide?: boolean;
   label: string;
   src?: string;
@@ -76,6 +81,7 @@ function ServiceImage({
   const frameClassName = cx(
     "relative overflow-hidden bg-service-border",
     isWide ? "aspect-[3/2] max-lg:aspect-[5/4]" : "aspect-[5/4]",
+    isRounded ? "radius-medium" : undefined,
   );
 
   if (src) {
@@ -147,6 +153,18 @@ export function ServicesBentoCardsSectionV2({
     .join(" ");
   const colors = colorRecipeClasses;
   const transparentCards = cardFill === "none";
+  /**
+   * Whether the card is drawing anything the text has to sit inside.
+   *
+   * Fill or border - either one makes the card a container, and the text needs
+   * room off its edge. With neither, there is no edge to inset from: the copy
+   * is sitting directly on the section ground beside a full-bleed image, so
+   * horizontal padding only pushes it out of alignment with that image.
+   */
+  const hasCardSurface = cardFill === "solid" || cardBorder === "on";
+  const cardTextPadding = hasCardSurface
+    ? "px-9 pb-9 pt-9 max-lg:px-7 max-lg:pb-7 max-lg:pt-7"
+    : "px-0 pb-7 pt-7 max-lg:pb-5 max-lg:pt-5";
   // A transparent card puts its text straight onto the section ground, so it
   // takes the section's text tokens rather than the card's.
   const transparentCardText = "text-service-ink";
@@ -246,6 +264,7 @@ export function ServicesBentoCardsSectionV2({
                 key={item.title}
               >
                 <ServiceImage
+                  isRounded={!hasCardSurface}
                   isWide={
                     !isSplitHeader &&
                     cardSpanPattern[index % cardSpanPattern.length].startsWith(
@@ -263,7 +282,12 @@ export function ServicesBentoCardsSectionV2({
                 >
                   <span aria-hidden="true">-&gt;</span>
                 </div>
-                <div className="flex flex-1 flex-col justify-between px-7 pb-7 pt-7 max-lg:px-5 max-lg:pb-5 max-lg:pt-5">
+                <div
+                  className={cx(
+                    "flex flex-1 flex-col justify-between",
+                    cardTextPadding,
+                  )}
+                >
                   <div>
                     <h3
                       className={cx(

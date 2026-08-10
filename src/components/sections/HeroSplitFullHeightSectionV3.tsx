@@ -75,7 +75,7 @@ const variantConfig: Record<HeroSplitFullHeightVariant, HeroVariantConfig> = {
       "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
     imageSlotLabel: "Image area: columns 6-14; overlaps columns 6-9",
     fadeClassName: "col-span-4 col-start-6",
-    fadeGradientClassName: "bg-gradient-to-r from-bg-page to-transparent",
+    fadeGradientClassName: "full-image-split-fade-right",
   },
   "image-9-overlap-left-text-7": {
     textClassName: "relative z-10 col-span-9 col-start-6",
@@ -84,7 +84,7 @@ const variantConfig: Record<HeroSplitFullHeightVariant, HeroVariantConfig> = {
       "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
     imageSlotLabel: "Image area: columns 1-9; overlaps columns 6-9",
     fadeClassName: "col-span-4 col-start-6",
-    fadeGradientClassName: "bg-gradient-to-r from-transparent to-bg-page",
+    fadeGradientClassName: "full-image-split-fade-left",
   },
 };
 
@@ -182,14 +182,17 @@ export function HeroSplitFullHeightSectionV3({
               className={cx(
                 "mt-eyebrow-display",
                 colors.ink,
-                isTextFourImageThree ? "type-display-xl" : "type-display-lg",
+                // One step down the scale from display-xl/display-lg. The wider
+                // text column still takes the larger of the two, so the
+                // relationship between the variants is unchanged.
+                isTextFourImageThree ? "type-display-lg" : "type-heading-xl",
               )}
             >
               {title}
             </HeadingTag>
             <p
               className={cx(
-                "type-text-xl measure-lead wrap-pretty mt-body-actions-md",
+                "type-text-lg measure-lead wrap-pretty mt-body-actions-md",
                 colors.body,
               )}
             >
