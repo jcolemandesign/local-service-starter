@@ -10,6 +10,8 @@ import { RequestServiceButton } from "@/components/request-service";
 
 type CTAScrollRevealOfferSectionV3Props = {
   action: string;
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   closeBody: string;
   closeEyebrow: string;
   closeTitle: string;
@@ -38,6 +40,8 @@ function OfferBackground() {
 
 export function CTAScrollRevealOfferSectionV3({
   action,
+  cardBorder = "on",
+  cardFill = "solid",
   closeBody,
   closeEyebrow,
   closeTitle,
@@ -140,7 +144,15 @@ export function CTAScrollRevealOfferSectionV3({
               alignY="middle"
               className="col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1"
             >
-              <div className="content-padding radius-large border border-service-border bg-service-surface shadow-service">
+              <div
+                className={[
+                  "content-padding radius-large border border-service-border bg-service-surface shadow-service",
+                  cardFill === "none" && "!bg-transparent !shadow-none",
+                  cardBorder === "off" && "!border-transparent",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
                 <p className="type-text-xl wrap-pretty text-service-muted">
                   {closeBody}
                 </p>

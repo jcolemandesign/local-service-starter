@@ -32,10 +32,10 @@ import {
  *  persisted in project page data and are opaque ids, not column counts.
  *  Renaming them would require migrating every saved page. */
 export const splitImageVariantOptions = [
-  { label: "Text 6 / Image 7", value: "text-3-image-4-right" },
-  { label: "Text 7 / Image 6", value: "text-4-image-3-right" },
-  { label: "Image 6 / Text 7", value: "image-3-left-text-4" },
-  { label: "Image 7 / Text 6", value: "image-4-left-text-3" },
+  { label: "Text 6 / Img 7", value: "text-3-image-4-right" },
+  { label: "Text 7 / Img 6", value: "text-4-image-3-right" },
+  { label: "Img 6 / Text 7", value: "image-3-left-text-4" },
+  { label: "Img 7 / Text 6", value: "image-4-left-text-3" },
 ] as const;
 
 export type SplitImageVariant =
@@ -43,6 +43,28 @@ export type SplitImageVariant =
 
 export const splitImageVariantValues = new Set<string>(
   splitImageVariantOptions.map((option) => option.value),
+);
+
+/** Full-image splits can also let the two panels share two grid columns.
+ * Kept out of the base split list because framed fixed-image layouts do not
+ * implement the overlap treatment. */
+export const fullImageSplitVariantOptions = [
+  ...splitImageVariantOptions,
+  {
+    label: "Text 9 / Img 9",
+    value: "text-7-image-9-overlap-right",
+  },
+  {
+    label: "Img 9 / Text 9",
+    value: "image-9-overlap-left-text-7",
+  },
+] as const;
+
+export type FullImageSplitVariant =
+  (typeof fullImageSplitVariantOptions)[number]["value"];
+
+export const fullImageSplitVariantValues = new Set<string>(
+  fullImageSplitVariantOptions.map((option) => option.value),
 );
 
 /** Image frame for the fixed-ratio split families. */
@@ -232,8 +254,7 @@ export function sectionSupportsTableCompareAlign(component: string) {
 
 export const servicesBentoVariantOptions = [
   { label: "Centered", value: "default" },
-  { label: "Split Header", value: "split-header" },
-  { label: "Offset Header", value: "offset-header" },
+  { label: "Split", value: "split-header" },
 ] as const;
 
 export type ServicesBentoVariant =
@@ -251,13 +272,21 @@ export const servicesBentoVariantValues = new Set<string>(
  */
 export const cardStyleComponents = new Set<string>([
   "AdditionalOffersSectionV3",
+  "CTAMutedSectionV3",
+  "CTAScrollRevealOfferSectionV3",
+  "CTASectionV3",
   "CTASmallBandImageSectionV3",
   "CTAServiceTriageSectionV3",
+  "ContactSectionModalBegin",
+  "ContactSectionV3",
   "ContactStripBentoSectionV3",
   "ContactStripSmallSectionV3",
+  "ContentAboutCompanySectionV2",
   "ContentCardTwoUpSectionV3",
+  "ContentFixedCoverFadeSectionV2",
   "ContentHorizontalCardCarouselSectionV2",
   "ContentMainIdeaGridSectionV3",
+  "ContentNarrativeFeatureRailSectionV3",
   "ContentPhotoGalleryBandCarouselSectionV3",
   "ContentSplitFixedImageSectionV3",
   "ContentStickyCardStreamSectionV2",
@@ -271,31 +300,44 @@ export const cardStyleComponents = new Set<string>([
   "DecisionSplitLargeCardsSectionV3",
   "FAQSectionV3",
   "FAQAccordionSidebarSectionV3",
+  "FeatureOverlapRowsSectionV3",
   "FeaturedOfferSectionV3",
   "FinancingCalculatorSectionV3",
   "FourCardLinkGridSectionV3",
   "HeroCompactServiceSectionV3",
+  "HeroServiceAreaZipLookupSectionV3",
+  "HeroServicesSectionV3",
   "HeroSplitBentoSectionV3",
   "HorizontalCardLinkGridSectionV3",
   "HorizontalCardLinkGridTwoUpSectionV3",
   "InfoStripSectionV3",
   "NavCenterLogoSectionV2",
+  "NavFloatingBentoSectionV2",
   "NavPrimarySectionV2",
   "OfferTermsSectionV3",
+  "ProcessImageChecklistSectionV3",
   "ProcessStepsBranchingSectionV3",
   "ProcessStripSectionV3",
   "ProcessStepsStaggeredSectionV3",
   "ProjectCaseStudyGallerySectionV3",
+  "QuickPageLinksSectionV2",
   "ServiceCalloutRevealGridSectionV3",
   "ServiceCalloutSplitPanelSectionV3",
   "ServiceNeedsPriorityGridSectionV3",
+  "ServiceAreaZipLookupSectionV3",
   "ServicesBentoCardsSectionV2",
+  "ServicesHoverPanelSectionV2",
   "ServicesScrollCardsSectionV2",
   "ServicesThreeCardsRightSectionV3",
+  "ThankYouConfirmationSectionV3",
   "ThreeCardLinkGridSectionV3",
   "TestimonialsCarouselCondensedSectionV3",
+  "TestimonialsCarouselSectionV3",
+  "TestimonialsMasonrySectionV3",
   "TestimonialsSectionV3",
   "TrustBarFloatingBentoSectionV3",
+  "TrustLogoGridSectionV3",
+  "TrustLogoMarqueeSectionV3",
 ]);
 
 /**
@@ -326,6 +368,7 @@ export const cardLinkComponents = new Set<string>([
   "FourCardLinkGridSectionV3",
   "HorizontalCardLinkGridSectionV3",
   "HorizontalCardLinkGridTwoUpSectionV3",
+  "SectionHeaderSplitLinkSectionV3",
   "ServiceNeedsPriorityGridSectionV3",
   "ThreeCardLinkGridSectionV3",
 ]);
@@ -440,6 +483,7 @@ export const cardFillOptInComponents = new Set<string>([
 
 /** Sections whose grouped surfaces are borderless until explicitly outlined. */
 export const cardBorderOptInComponents = new Set<string>([
+  "ContentAboutCompanySectionV2",
   "NavCenterLogoSectionV2",
   "NavPrimarySectionV2",
 ]);

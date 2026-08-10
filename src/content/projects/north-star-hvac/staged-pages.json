@@ -2443,6 +2443,48 @@
           "value": ""
         },
         {
+          "id": "thank-you.01-primary-navigation.style.backgroundFill",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.backgroundFill",
+          "value": ""
+        },
+        {
+          "id": "thank-you.01-primary-navigation.style.cardFill",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.cardFill",
+          "value": ""
+        },
+        {
+          "id": "thank-you.01-primary-navigation.style.cardBorder",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.cardBorder",
+          "value": ""
+        },
+        {
+          "id": "thank-you.01-primary-navigation.style.cardSwatch",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.cardSwatch",
+          "value": ""
+        },
+        {
+          "id": "thank-you.01-primary-navigation.style.cardIntensity",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.cardIntensity",
+          "value": ""
+        },
+        {
+          "id": "thank-you.01-primary-navigation.style.borderSwatch",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.borderSwatch",
+          "value": ""
+        },
+        {
+          "id": "thank-you.01-primary-navigation.style.borderIntensity",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.borderIntensity",
+          "value": ""
+        },
+        {
           "id": "thank-you.02-thank-you-confirmation.contentDirection",
           "kind": "meta",
           "path": "02-thank-you-confirmation.contentDirection",
@@ -2512,6 +2554,30 @@
           "id": "thank-you.02-thank-you-confirmation.style.reduceBottomPadding",
           "kind": "meta",
           "path": "02-thank-you-confirmation.style.reduceBottomPadding",
+          "value": ""
+        },
+        {
+          "id": "thank-you.02-thank-you-confirmation.style.joinAbove",
+          "kind": "meta",
+          "path": "02-thank-you-confirmation.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "thank-you.02-thank-you-confirmation.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "02-thank-you-confirmation.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "thank-you.02-thank-you-confirmation.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "02-thank-you-confirmation.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "thank-you.02-thank-you-confirmation.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "02-thank-you-confirmation.style.backgroundImageFocus",
           "value": ""
         },
         {
@@ -2585,13 +2651,37 @@
           "kind": "meta",
           "path": "03-footer.style.reduceBottomPadding",
           "value": ""
+        },
+        {
+          "id": "thank-you.03-footer.style.joinAbove",
+          "kind": "meta",
+          "path": "03-footer.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "thank-you.03-footer.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "03-footer.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "thank-you.03-footer.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "03-footer.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "thank-you.03-footer.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "03-footer.style.backgroundImageFocus",
+          "value": ""
         }
       ],
       "fieldCounts": {
         "copy": 21,
         "image": 0,
         "link": 0,
-        "meta": 14
+        "meta": 29
       },
       "navigation": [
         {
@@ -2677,9 +2767,9 @@
       "promotedAt": "2026-08-02T21:29:44.982Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-04T04:22:08.330Z",
-        "id": "north-star-hvac-v35",
-        "version": 35
+        "createdAt": "2026-08-10T16:25:31.849Z",
+        "id": "north-star-hvac-v37",
+        "version": 37
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -4742,6 +4832,48 @@
           "value": ""
         },
         {
+          "id": "service-area.01-primary-navigation.style.backgroundFill",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.backgroundFill",
+          "value": ""
+        },
+        {
+          "id": "service-area.01-primary-navigation.style.cardFill",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.cardFill",
+          "value": ""
+        },
+        {
+          "id": "service-area.01-primary-navigation.style.cardBorder",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.cardBorder",
+          "value": ""
+        },
+        {
+          "id": "service-area.01-primary-navigation.style.cardSwatch",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.cardSwatch",
+          "value": ""
+        },
+        {
+          "id": "service-area.01-primary-navigation.style.cardIntensity",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.cardIntensity",
+          "value": ""
+        },
+        {
+          "id": "service-area.01-primary-navigation.style.borderSwatch",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.borderSwatch",
+          "value": ""
+        },
+        {
+          "id": "service-area.01-primary-navigation.style.borderIntensity",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.borderIntensity",
+          "value": ""
+        },
+        {
           "id": "service-area.02-service-area-zip-lookup.contentDirection",
           "kind": "meta",
           "path": "02-service-area-zip-lookup.contentDirection",
@@ -4823,6 +4955,30 @@
           "id": "service-area.02-service-area-zip-lookup.style.colorRecipe",
           "kind": "meta",
           "path": "02-service-area-zip-lookup.style.colorRecipe",
+          "value": ""
+        },
+        {
+          "id": "service-area.02-service-area-zip-lookup.style.joinAbove",
+          "kind": "meta",
+          "path": "02-service-area-zip-lookup.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "service-area.02-service-area-zip-lookup.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "02-service-area-zip-lookup.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "service-area.02-service-area-zip-lookup.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "02-service-area-zip-lookup.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "service-area.02-service-area-zip-lookup.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "02-service-area-zip-lookup.style.backgroundImageFocus",
           "value": ""
         },
         {
@@ -4922,6 +5078,54 @@
           "value": ""
         },
         {
+          "id": "service-area.03-split-content-with-fixed-image.style.joinAbove",
+          "kind": "meta",
+          "path": "03-split-content-with-fixed-image.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "service-area.03-split-content-with-fixed-image.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "03-split-content-with-fixed-image.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "service-area.03-split-content-with-fixed-image.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "03-split-content-with-fixed-image.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "service-area.03-split-content-with-fixed-image.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "03-split-content-with-fixed-image.style.backgroundImageFocus",
+          "value": ""
+        },
+        {
+          "id": "service-area.03-split-content-with-fixed-image.style.cardSwatch",
+          "kind": "meta",
+          "path": "03-split-content-with-fixed-image.style.cardSwatch",
+          "value": ""
+        },
+        {
+          "id": "service-area.03-split-content-with-fixed-image.style.cardIntensity",
+          "kind": "meta",
+          "path": "03-split-content-with-fixed-image.style.cardIntensity",
+          "value": ""
+        },
+        {
+          "id": "service-area.03-split-content-with-fixed-image.style.borderSwatch",
+          "kind": "meta",
+          "path": "03-split-content-with-fixed-image.style.borderSwatch",
+          "value": ""
+        },
+        {
+          "id": "service-area.03-split-content-with-fixed-image.style.borderIntensity",
+          "kind": "meta",
+          "path": "03-split-content-with-fixed-image.style.borderIntensity",
+          "value": ""
+        },
+        {
           "id": "service-area.04-compact-section-header.contentDirection",
           "kind": "meta",
           "path": "04-compact-section-header.contentDirection",
@@ -4967,6 +5171,30 @@
           "id": "service-area.04-compact-section-header.style.reduceBottomPadding",
           "kind": "meta",
           "path": "04-compact-section-header.style.reduceBottomPadding",
+          "value": ""
+        },
+        {
+          "id": "service-area.04-compact-section-header.style.joinAbove",
+          "kind": "meta",
+          "path": "04-compact-section-header.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "service-area.04-compact-section-header.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "04-compact-section-header.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "service-area.04-compact-section-header.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "04-compact-section-header.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "service-area.04-compact-section-header.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "04-compact-section-header.style.backgroundImageFocus",
           "value": ""
         },
         {
@@ -5066,6 +5294,54 @@
           "value": ""
         },
         {
+          "id": "service-area.05-card-links-4-up.style.joinAbove",
+          "kind": "meta",
+          "path": "05-card-links-4-up.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "service-area.05-card-links-4-up.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "05-card-links-4-up.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "service-area.05-card-links-4-up.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "05-card-links-4-up.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "service-area.05-card-links-4-up.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "05-card-links-4-up.style.backgroundImageFocus",
+          "value": ""
+        },
+        {
+          "id": "service-area.05-card-links-4-up.style.cardSwatch",
+          "kind": "meta",
+          "path": "05-card-links-4-up.style.cardSwatch",
+          "value": ""
+        },
+        {
+          "id": "service-area.05-card-links-4-up.style.cardIntensity",
+          "kind": "meta",
+          "path": "05-card-links-4-up.style.cardIntensity",
+          "value": ""
+        },
+        {
+          "id": "service-area.05-card-links-4-up.style.borderSwatch",
+          "kind": "meta",
+          "path": "05-card-links-4-up.style.borderSwatch",
+          "value": ""
+        },
+        {
+          "id": "service-area.05-card-links-4-up.style.borderIntensity",
+          "kind": "meta",
+          "path": "05-card-links-4-up.style.borderIntensity",
+          "value": ""
+        },
+        {
           "id": "service-area.06-faq-accordion-sidebar.contentDirection",
           "kind": "meta",
           "path": "06-faq-accordion-sidebar.contentDirection",
@@ -5123,6 +5399,54 @@
           "id": "service-area.06-faq-accordion-sidebar.style.reduceBottomPadding",
           "kind": "meta",
           "path": "06-faq-accordion-sidebar.style.reduceBottomPadding",
+          "value": ""
+        },
+        {
+          "id": "service-area.06-faq-accordion-sidebar.style.joinAbove",
+          "kind": "meta",
+          "path": "06-faq-accordion-sidebar.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "service-area.06-faq-accordion-sidebar.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "06-faq-accordion-sidebar.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "service-area.06-faq-accordion-sidebar.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "06-faq-accordion-sidebar.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "service-area.06-faq-accordion-sidebar.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "06-faq-accordion-sidebar.style.backgroundImageFocus",
+          "value": ""
+        },
+        {
+          "id": "service-area.06-faq-accordion-sidebar.style.cardSwatch",
+          "kind": "meta",
+          "path": "06-faq-accordion-sidebar.style.cardSwatch",
+          "value": ""
+        },
+        {
+          "id": "service-area.06-faq-accordion-sidebar.style.cardIntensity",
+          "kind": "meta",
+          "path": "06-faq-accordion-sidebar.style.cardIntensity",
+          "value": ""
+        },
+        {
+          "id": "service-area.06-faq-accordion-sidebar.style.borderSwatch",
+          "kind": "meta",
+          "path": "06-faq-accordion-sidebar.style.borderSwatch",
+          "value": ""
+        },
+        {
+          "id": "service-area.06-faq-accordion-sidebar.style.borderIntensity",
+          "kind": "meta",
+          "path": "06-faq-accordion-sidebar.style.borderIntensity",
           "value": ""
         },
         {
@@ -5196,13 +5520,37 @@
           "kind": "meta",
           "path": "07-footer.style.reduceBottomPadding",
           "value": ""
+        },
+        {
+          "id": "service-area.07-footer.style.joinAbove",
+          "kind": "meta",
+          "path": "07-footer.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "service-area.07-footer.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "07-footer.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "service-area.07-footer.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "07-footer.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "service-area.07-footer.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "07-footer.style.backgroundImageFocus",
+          "value": ""
         }
       ],
       "fieldCounts": {
         "copy": 40,
         "image": 6,
         "link": 0,
-        "meta": 41
+        "meta": 84
       },
       "navigation": [
         {
@@ -5288,9 +5636,9 @@
       "promotedAt": "2026-08-02T18:05:37.312Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-04T04:22:08.330Z",
-        "id": "north-star-hvac-v35",
-        "version": 35
+        "createdAt": "2026-08-10T16:25:31.849Z",
+        "id": "north-star-hvac-v37",
+        "version": 37
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -8492,7 +8840,7 @@
             "reduceTopPadding": false,
             "colorRecipe": "muted",
             "cardFill": "none",
-            "variant": "offset-header",
+            "variant": "split-header",
             "slotId": "slot-e1fa6e1734bc"
           },
           {
@@ -10152,6 +10500,48 @@
           "value": ""
         },
         {
+          "id": "ac-repair.01-primary-navigation.style.backgroundFill",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.backgroundFill",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.01-primary-navigation.style.cardFill",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.cardFill",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.01-primary-navigation.style.cardBorder",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.cardBorder",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.01-primary-navigation.style.cardSwatch",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.cardSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.01-primary-navigation.style.cardIntensity",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.cardIntensity",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.01-primary-navigation.style.borderSwatch",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.borderSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.01-primary-navigation.style.borderIntensity",
+          "kind": "meta",
+          "path": "01-primary-navigation.style.borderIntensity",
+          "value": ""
+        },
+        {
           "id": "ac-repair.02-compact-service-hero.contentDirection",
           "kind": "meta",
           "path": "02-compact-service-hero.contentDirection",
@@ -10242,6 +10632,54 @@
           "value": ""
         },
         {
+          "id": "ac-repair.02-compact-service-hero.style.joinAbove",
+          "kind": "meta",
+          "path": "02-compact-service-hero.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.02-compact-service-hero.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "02-compact-service-hero.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.02-compact-service-hero.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "02-compact-service-hero.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.02-compact-service-hero.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "02-compact-service-hero.style.backgroundImageFocus",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.02-compact-service-hero.style.cardSwatch",
+          "kind": "meta",
+          "path": "02-compact-service-hero.style.cardSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.02-compact-service-hero.style.cardIntensity",
+          "kind": "meta",
+          "path": "02-compact-service-hero.style.cardIntensity",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.02-compact-service-hero.style.borderSwatch",
+          "kind": "meta",
+          "path": "02-compact-service-hero.style.borderSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.02-compact-service-hero.style.borderIntensity",
+          "kind": "meta",
+          "path": "02-compact-service-hero.style.borderIntensity",
+          "value": ""
+        },
+        {
           "id": "ac-repair.03-large-section-header.contentDirection",
           "kind": "meta",
           "path": "03-large-section-header.contentDirection",
@@ -10287,6 +10725,30 @@
           "id": "ac-repair.03-large-section-header.style.reduceBottomPadding",
           "kind": "meta",
           "path": "03-large-section-header.style.reduceBottomPadding",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.03-large-section-header.style.joinAbove",
+          "kind": "meta",
+          "path": "03-large-section-header.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.03-large-section-header.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "03-large-section-header.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.03-large-section-header.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "03-large-section-header.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.03-large-section-header.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "03-large-section-header.style.backgroundImageFocus",
           "value": ""
         },
         {
@@ -10362,6 +10824,54 @@
           "value": ""
         },
         {
+          "id": "ac-repair.04-callout-cards-with-side-panel.style.joinAbove",
+          "kind": "meta",
+          "path": "04-callout-cards-with-side-panel.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.04-callout-cards-with-side-panel.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "04-callout-cards-with-side-panel.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.04-callout-cards-with-side-panel.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "04-callout-cards-with-side-panel.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.04-callout-cards-with-side-panel.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "04-callout-cards-with-side-panel.style.backgroundImageFocus",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.04-callout-cards-with-side-panel.style.cardSwatch",
+          "kind": "meta",
+          "path": "04-callout-cards-with-side-panel.style.cardSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.04-callout-cards-with-side-panel.style.cardIntensity",
+          "kind": "meta",
+          "path": "04-callout-cards-with-side-panel.style.cardIntensity",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.04-callout-cards-with-side-panel.style.borderSwatch",
+          "kind": "meta",
+          "path": "04-callout-cards-with-side-panel.style.borderSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.04-callout-cards-with-side-panel.style.borderIntensity",
+          "kind": "meta",
+          "path": "04-callout-cards-with-side-panel.style.borderIntensity",
+          "value": ""
+        },
+        {
           "id": "ac-repair.05-table-compare-3-col.contentDirection",
           "kind": "meta",
           "path": "05-table-compare-3-col.contentDirection",
@@ -10419,6 +10929,54 @@
           "id": "ac-repair.05-table-compare-3-col.style.reduceBottomPadding",
           "kind": "meta",
           "path": "05-table-compare-3-col.style.reduceBottomPadding",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-table-compare-3-col.style.joinAbove",
+          "kind": "meta",
+          "path": "05-table-compare-3-col.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-table-compare-3-col.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "05-table-compare-3-col.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-table-compare-3-col.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "05-table-compare-3-col.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-table-compare-3-col.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "05-table-compare-3-col.style.backgroundImageFocus",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-table-compare-3-col.style.cardSwatch",
+          "kind": "meta",
+          "path": "05-table-compare-3-col.style.cardSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-table-compare-3-col.style.cardIntensity",
+          "kind": "meta",
+          "path": "05-table-compare-3-col.style.cardIntensity",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-table-compare-3-col.style.borderSwatch",
+          "kind": "meta",
+          "path": "05-table-compare-3-col.style.borderSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-table-compare-3-col.style.borderIntensity",
+          "kind": "meta",
+          "path": "05-table-compare-3-col.style.borderIntensity",
           "value": ""
         },
         {
@@ -10482,6 +11040,54 @@
           "value": ""
         },
         {
+          "id": "ac-repair.06-process-steps-staggered.style.joinAbove",
+          "kind": "meta",
+          "path": "06-process-steps-staggered.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.06-process-steps-staggered.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "06-process-steps-staggered.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.06-process-steps-staggered.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "06-process-steps-staggered.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.06-process-steps-staggered.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "06-process-steps-staggered.style.backgroundImageFocus",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.06-process-steps-staggered.style.cardSwatch",
+          "kind": "meta",
+          "path": "06-process-steps-staggered.style.cardSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.06-process-steps-staggered.style.cardIntensity",
+          "kind": "meta",
+          "path": "06-process-steps-staggered.style.cardIntensity",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.06-process-steps-staggered.style.borderSwatch",
+          "kind": "meta",
+          "path": "06-process-steps-staggered.style.borderSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.06-process-steps-staggered.style.borderIntensity",
+          "kind": "meta",
+          "path": "06-process-steps-staggered.style.borderIntensity",
+          "value": ""
+        },
+        {
           "id": "ac-repair.07-large-section-header.contentDirection",
           "kind": "meta",
           "path": "07-large-section-header.contentDirection",
@@ -10527,6 +11133,30 @@
           "id": "ac-repair.07-large-section-header.style.reduceBottomPadding",
           "kind": "meta",
           "path": "07-large-section-header.style.reduceBottomPadding",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.07-large-section-header.style.joinAbove",
+          "kind": "meta",
+          "path": "07-large-section-header.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.07-large-section-header.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "07-large-section-header.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.07-large-section-header.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "07-large-section-header.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.07-large-section-header.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "07-large-section-header.style.backgroundImageFocus",
           "value": ""
         },
         {
@@ -10662,6 +11292,54 @@
           "value": ""
         },
         {
+          "id": "ac-repair.08-split-decision-large.style.joinAbove",
+          "kind": "meta",
+          "path": "08-split-decision-large.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.08-split-decision-large.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "08-split-decision-large.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.08-split-decision-large.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "08-split-decision-large.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.08-split-decision-large.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "08-split-decision-large.style.backgroundImageFocus",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.08-split-decision-large.style.cardSwatch",
+          "kind": "meta",
+          "path": "08-split-decision-large.style.cardSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.08-split-decision-large.style.cardIntensity",
+          "kind": "meta",
+          "path": "08-split-decision-large.style.cardIntensity",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.08-split-decision-large.style.borderSwatch",
+          "kind": "meta",
+          "path": "08-split-decision-large.style.borderSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.08-split-decision-large.style.borderIntensity",
+          "kind": "meta",
+          "path": "08-split-decision-large.style.borderIntensity",
+          "value": ""
+        },
+        {
           "id": "ac-repair.09-cta-with-image.contentDirection",
           "kind": "meta",
           "path": "09-cta-with-image.contentDirection",
@@ -10725,6 +11403,30 @@
           "id": "ac-repair.09-cta-with-image.style.reduceBottomPadding",
           "kind": "meta",
           "path": "09-cta-with-image.style.reduceBottomPadding",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.09-cta-with-image.style.joinAbove",
+          "kind": "meta",
+          "path": "09-cta-with-image.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.09-cta-with-image.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "09-cta-with-image.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.09-cta-with-image.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "09-cta-with-image.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.09-cta-with-image.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "09-cta-with-image.style.backgroundImageFocus",
           "value": ""
         },
         {
@@ -10920,6 +11622,54 @@
           "value": ""
         },
         {
+          "id": "ac-repair.10-project-case-study-gallery.style.joinAbove",
+          "kind": "meta",
+          "path": "10-project-case-study-gallery.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.10-project-case-study-gallery.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "10-project-case-study-gallery.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.10-project-case-study-gallery.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "10-project-case-study-gallery.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.10-project-case-study-gallery.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "10-project-case-study-gallery.style.backgroundImageFocus",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.10-project-case-study-gallery.style.cardSwatch",
+          "kind": "meta",
+          "path": "10-project-case-study-gallery.style.cardSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.10-project-case-study-gallery.style.cardIntensity",
+          "kind": "meta",
+          "path": "10-project-case-study-gallery.style.cardIntensity",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.10-project-case-study-gallery.style.borderSwatch",
+          "kind": "meta",
+          "path": "10-project-case-study-gallery.style.borderSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.10-project-case-study-gallery.style.borderIntensity",
+          "kind": "meta",
+          "path": "10-project-case-study-gallery.style.borderIntensity",
+          "value": ""
+        },
+        {
           "id": "ac-repair.11-card-links-3-up.contentDirection",
           "kind": "meta",
           "path": "11-card-links-3-up.contentDirection",
@@ -11004,6 +11754,54 @@
           "value": ""
         },
         {
+          "id": "ac-repair.11-card-links-3-up.style.joinAbove",
+          "kind": "meta",
+          "path": "11-card-links-3-up.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.11-card-links-3-up.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "11-card-links-3-up.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.11-card-links-3-up.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "11-card-links-3-up.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.11-card-links-3-up.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "11-card-links-3-up.style.backgroundImageFocus",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.11-card-links-3-up.style.cardSwatch",
+          "kind": "meta",
+          "path": "11-card-links-3-up.style.cardSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.11-card-links-3-up.style.cardIntensity",
+          "kind": "meta",
+          "path": "11-card-links-3-up.style.cardIntensity",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.11-card-links-3-up.style.borderSwatch",
+          "kind": "meta",
+          "path": "11-card-links-3-up.style.borderSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.11-card-links-3-up.style.borderIntensity",
+          "kind": "meta",
+          "path": "11-card-links-3-up.style.borderIntensity",
+          "value": ""
+        },
+        {
           "id": "ac-repair.12-faq-accordion-sidebar.contentDirection",
           "kind": "meta",
           "path": "12-faq-accordion-sidebar.contentDirection",
@@ -11061,6 +11859,54 @@
           "id": "ac-repair.12-faq-accordion-sidebar.style.cardBorder",
           "kind": "meta",
           "path": "12-faq-accordion-sidebar.style.cardBorder",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.12-faq-accordion-sidebar.style.joinAbove",
+          "kind": "meta",
+          "path": "12-faq-accordion-sidebar.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.12-faq-accordion-sidebar.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "12-faq-accordion-sidebar.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.12-faq-accordion-sidebar.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "12-faq-accordion-sidebar.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.12-faq-accordion-sidebar.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "12-faq-accordion-sidebar.style.backgroundImageFocus",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.12-faq-accordion-sidebar.style.cardSwatch",
+          "kind": "meta",
+          "path": "12-faq-accordion-sidebar.style.cardSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.12-faq-accordion-sidebar.style.cardIntensity",
+          "kind": "meta",
+          "path": "12-faq-accordion-sidebar.style.cardIntensity",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.12-faq-accordion-sidebar.style.borderSwatch",
+          "kind": "meta",
+          "path": "12-faq-accordion-sidebar.style.borderSwatch",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.12-faq-accordion-sidebar.style.borderIntensity",
+          "kind": "meta",
+          "path": "12-faq-accordion-sidebar.style.borderIntensity",
           "value": ""
         },
         {
@@ -11127,6 +11973,30 @@
           "id": "ac-repair.13-contact-section-modal-begin.style.reduceBottomPadding",
           "kind": "meta",
           "path": "13-contact-section-modal-begin.style.reduceBottomPadding",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.13-contact-section-modal-begin.style.joinAbove",
+          "kind": "meta",
+          "path": "13-contact-section-modal-begin.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.13-contact-section-modal-begin.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "13-contact-section-modal-begin.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.13-contact-section-modal-begin.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "13-contact-section-modal-begin.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.13-contact-section-modal-begin.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "13-contact-section-modal-begin.style.backgroundImageFocus",
           "value": ""
         },
         {
@@ -11200,13 +12070,37 @@
           "kind": "meta",
           "path": "14-footer.style.reduceBottomPadding",
           "value": ""
+        },
+        {
+          "id": "ac-repair.14-footer.style.joinAbove",
+          "kind": "meta",
+          "path": "14-footer.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.14-footer.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "14-footer.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.14-footer.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "14-footer.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.14-footer.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "14-footer.style.backgroundImageFocus",
+          "value": ""
         }
       ],
       "fieldCounts": {
         "copy": 98,
         "image": 7,
         "link": 0,
-        "meta": 81
+        "meta": 172
       },
       "navigation": [
         {
@@ -11292,9 +12186,9 @@
       "promotedAt": "2026-07-29T17:32:22.773Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-04T04:22:08.330Z",
-        "id": "north-star-hvac-v35",
-        "version": 35
+        "createdAt": "2026-08-10T16:25:31.849Z",
+        "id": "north-star-hvac-v37",
+        "version": 37
       },
       "sourceStage": "strategy-template",
       "template": {

@@ -11,12 +11,20 @@ type QuickPageLink = {
 };
 
 type QuickPageLinksSectionV2Props = {
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   eyebrow: string;
   pageLinks: QuickPageLink[];
   title: string;
 };
 
+function cx(...classes: Array<string | false | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
+
 export function QuickPageLinksSectionV2({
+  cardBorder = "on",
+  cardFill = "solid",
   eyebrow,
   pageLinks,
   title,
@@ -39,7 +47,11 @@ export function QuickPageLinksSectionV2({
           >
             {pageLinks.map((link) => (
               <a
-                className="radius-medium group/page-link grid min-h-28 content-between border border-service-border bg-service-surface/70 p-4 transition-colors hover:border-service-accent hover:bg-bg-page"
+                className={cx(
+                  "radius-medium group/page-link grid min-h-28 content-between border border-service-border bg-service-surface/70 p-4 transition-colors hover:border-service-accent hover:bg-bg-page",
+                  cardFill === "none" && "!bg-transparent",
+                  cardBorder === "off" && "!border-transparent",
+                )}
                 href={link.href}
                 key={link.label}
               >

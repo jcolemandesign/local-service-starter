@@ -18,6 +18,13 @@ type HoverServiceItem = {
 };
 
 type ServicesHoverPanelSectionV2Props = {
+  /**
+   * The fill applies to the service-link list, which is the only surface here
+   * with a fill to drop. The media panels are photographs - their "fill" is the
+   * image - so the border toggle reaches them and the fill toggle does not.
+   */
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   eyebrow: string;
   title: string;
   body: string;
@@ -53,6 +60,8 @@ function getServiceHref(item: HoverServiceItem) {
 }
 
 export function ServicesHoverPanelSectionV2({
+  cardBorder = "on",
+  cardFill = "solid",
   eyebrow,
   title,
   body,
@@ -143,6 +152,8 @@ export function ServicesHoverPanelSectionV2({
                       isActive
                         ? "border-service-accent bg-bg-page text-service-accent"
                         : "border-service-border bg-service-surface text-service-ink hover:border-service-accent hover:bg-bg-page hover:text-service-accent",
+                      cardFill === "none" ? "!bg-transparent" : undefined,
+                      cardBorder === "off" ? "!border-transparent" : undefined,
                     )}
                     onFocus={() => setActiveIndex(index)}
                     onMouseEnter={() => setActiveIndex(index)}
@@ -177,6 +188,7 @@ export function ServicesHoverPanelSectionV2({
             className={cx(
               "radius-medium",
               "media-min-tall relative grid h-full overflow-hidden border border-service-border shadow-service max-lg:media-min-medium",
+              cardBorder === "off" ? "!border-transparent" : undefined,
             )}
           >
             <article className="content-padding relative col-start-1 row-start-1 flex h-full items-end overflow-hidden bg-service-ink text-white">
@@ -273,7 +285,10 @@ export function ServicesHoverPanelSectionV2({
           >
             {items.map((item) => (
               <article
-                className="radius-medium media-min-medium relative flex w-full shrink-0 snap-start snap-always items-end overflow-hidden border border-service-border bg-service-ink text-white shadow-service"
+                className={cx(
+                  "radius-medium media-min-medium relative flex w-full shrink-0 snap-start snap-always items-end overflow-hidden border border-service-border bg-service-ink text-white shadow-service",
+                  cardBorder === "off" ? "!border-transparent" : undefined,
+                )}
                 key={item.title}
               >
                 <PlaceholderBackground />

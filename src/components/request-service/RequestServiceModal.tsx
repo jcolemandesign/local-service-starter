@@ -951,10 +951,10 @@ function RequestServiceModal({
           {step < 3 ? (
             <button
               aria-disabled={!canContinue}
-              className={`${modalButtonClass} border border-service-accent text-white hover:bg-service-ink ${
+              className={`${modalButtonClass} border ${
                 canContinue
-                  ? "bg-service-accent"
-                  : "bg-service-muted hover:bg-service-muted"
+                  ? "border-cta-primary bg-cta-primary text-cta-primary-ink hover:border-cta-primary-hover hover:bg-cta-primary-hover"
+                  : "border-service-muted bg-service-muted text-white hover:bg-service-muted"
               }`}
               type="button"
               onClick={() => {
@@ -967,7 +967,7 @@ function RequestServiceModal({
             </button>
           ) : (
             <button
-              className={`${modalButtonClass} border border-service-accent bg-service-accent text-white hover:bg-service-ink disabled:cursor-wait disabled:bg-service-muted`}
+              className={`${modalButtonClass} border border-cta-primary bg-cta-primary text-cta-primary-ink hover:border-cta-primary-hover hover:bg-cta-primary-hover disabled:cursor-wait disabled:border-service-muted disabled:bg-service-muted disabled:text-white`}
               disabled={!canContinue || isSubmitting}
               type="button"
               onClick={handleSubmit}

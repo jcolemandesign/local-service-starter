@@ -17,6 +17,10 @@ type AboutImage = {
 const defaultImageLabels = ["Team", "Service"];
 
 type ContentAboutCompanySectionV2Props = {
+  /** This card ships unoutlined, so the border is opt-in here - see
+   *  `cardBorderOptInComponents`. */
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   eyebrow: string;
   statement: string;
   summary: string;
@@ -45,6 +49,8 @@ function BentoImage({ label }: AboutImage) {
 }
 
 export function ContentAboutCompanySectionV2({
+  cardBorder = "off",
+  cardFill = "solid",
   eyebrow,
   statement,
   summary,
@@ -109,6 +115,10 @@ export function ContentAboutCompanySectionV2({
               "fluid-type-frame",
               "radius-medium",
               "flex h-full min-w-0 flex-col justify-between bg-service-surface p-7 max-md:p-6",
+              cardFill === "none" ? "!bg-transparent" : undefined,
+              // Added rather than removed: this card has no border of its own,
+              // so "on" is what draws one.
+              cardBorder === "on" ? "border border-service-border" : undefined,
             )}
           >
             <p

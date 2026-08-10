@@ -23,6 +23,17 @@ type NavLink = {
 };
 
 type NavFloatingBentoSectionV2Props = {
+  /**
+   * The floating bars, unlike the primary nav's grouped surface, ship filled
+   * and outlined: they sit over the hero image and the panel is what keeps
+   * them legible. So these default to the rendered state and the toggles
+   * strip it, rather than being opt-in as they are on the other two navs.
+   *
+   * The dropdown popover keeps its own surface either way - it opens over
+   * whatever is behind the nav, and a transparent menu is unreadable.
+   */
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   logoHref?: string;
   logoLabel: string;
   /** Public path to a logo image. Empty renders the lettered placeholder. */
@@ -32,6 +43,18 @@ type NavFloatingBentoSectionV2Props = {
   links: readonly NavLink[];
   fixed?: boolean;
 };
+
+/** The floating panel treatment shared by the logo tile, the link bar and the
+ *  mobile bar, so one toggle strips all three together. */
+function floatingSurface(
+  cardFill: "solid" | "none" = "solid",
+  cardBorder: "on" | "off" = "on",
+) {
+  return cx(
+    cardFill === "none" ? "!bg-transparent !shadow-none !backdrop-blur-none" : undefined,
+    cardBorder === "off" ? "!border-transparent" : undefined,
+  );
+}
 
 function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -52,10 +75,14 @@ function PhoneIcon() {
 }
 
 function FloatingLogo({
+  cardBorder,
+  cardFill,
   href = "#",
   label,
   src,
 }: {
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   href?: string;
   label: string;
   src?: string;
@@ -69,6 +96,7 @@ function FloatingLogo({
         className={cx(
           "radius-surface",
           "relative block h-12 w-36 shrink-0 cursor-pointer border border-service-border bg-bg-page/90 p-2 shadow-service backdrop-blur-md",
+          floatingSurface(cardFill, cardBorder),
         )}
         href={href}
       >
@@ -90,6 +118,7 @@ function FloatingLogo({
         "type-label",
         "radius-surface",
         "flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-bg-page/90 p-1 text-service-muted shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:text-service-accent",
+        floatingSurface(cardFill, cardBorder),
       )}
       href={href}
     >
@@ -198,6 +227,8 @@ function ModalMenu({
 }
 
 export function NavFloatingBentoSectionV2({
+  cardBorder = "on",
+  cardFill = "solid",
   logoHref,
   logoLabel,
   logoSrc,
@@ -235,7 +266,7 @@ export function NavFloatingBentoSectionV2({
       <nav aria-label="Floating bento v2 preview navigation">
         <div className="pointer-events-none relative z-30 grid grid-cols-[1fr_auto_1fr] items-center px-[var(--site-grid-inset-inline)] py-[var(--inline-gap-active)] max-lg:hidden">
           <div className="pointer-events-auto col-start-1 flex justify-self-start">
-            <FloatingLogo href={logoHref} label={logoLabel} src={logoSrc} />
+            <FloatingLogo cardBorder={cardBorder} cardFill={cardFill} href={logoHref} label={logoLabel} src={logoSrc} />
           </div>
 
           <ul
@@ -243,6 +274,7 @@ export function NavFloatingBentoSectionV2({
               "type-text-sm",
               "radius-surface",
               "pointer-events-auto col-start-2 flex min-h-12 items-center gap-1 border border-service-border bg-bg-page/90 p-1 font-semibold text-service-ink shadow-service backdrop-blur-md",
+              floatingSurface(cardFill, cardBorder),
             )}
           >
             {visibleLinks.map((link) => {
@@ -360,7 +392,7 @@ export function NavFloatingBentoSectionV2({
         </div>
 
         <div className="relative z-50 hidden items-center justify-between inline-gap-med px-[var(--site-grid-inset-inline)] py-[var(--inline-gap-active)] max-lg:flex">
-          <FloatingLogo href={logoHref} label={logoLabel} src={logoSrc} />
+          <FloatingLogo cardBorder={cardBorder} cardFill={cardFill} href={logoHref} label={logoLabel} src={logoSrc} />
 
           <button
             aria-controls="floating-bento-v2-nav-menu"
@@ -368,6 +400,7 @@ export function NavFloatingBentoSectionV2({
             className={cx(
               "radius-button",
               "flex min-h-12 cursor-pointer items-center gap-3 border border-service-border bg-bg-page/90 px-5 text-sm font-semibold text-service-ink shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:text-service-accent",
+              floatingSurface(cardFill, cardBorder),
             )}
             type="button"
             onClick={() => {

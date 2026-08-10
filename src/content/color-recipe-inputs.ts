@@ -51,14 +51,16 @@ export type ColorRef =
   | { kind: "ladder"; swatch: PaletteKey; level: LadderLevel };
 
 /**
- * How a recipe treats its chromatic roles - the CTA fill and the eyebrow.
+ * How a recipe treats its chromatic roles. Eyebrows start from `chromatic`;
+ * CTA fills start from the palette's optional Accent CTA swatch, which falls
+ * back to brand when unset.
  *
  * This is a function of the ground, not a per-recipe preference:
  *
  *   none         light ground. The chromatic swatch already clears both bars
  *                at full strength (6.00 on page, 5.23 on surface).
  *   tinted       neutral dark ground. Full-strength chromatic darkens into
- *                the ground and dies (1.11-2.03), so both roles take the tint.
+ *                the ground and dies (1.11-2.03), so both roles take a tint.
  *   textSource   chromatic ground. The tint measured against it does not clear
  *                either (3.02 on brand, 2.65 on highlight), and a tinted brand
  *                on a brand ground is the accent-on-accent case the brief

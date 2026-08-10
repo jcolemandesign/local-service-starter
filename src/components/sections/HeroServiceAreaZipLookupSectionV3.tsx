@@ -7,12 +7,16 @@ import Image from "next/image";
 import { Button } from "@/components/primitives/Button";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives/LayoutGrid";
 import type { SectionColorRecipe } from "@/content/section-color-recipes";
-import type { SplitImageVariant } from "@/content/section-style-options";
+import type { FullImageSplitVariant } from "@/content/section-style-options";
 
-export type HeroServiceAreaZipLookupVariant = SplitImageVariant;
+export type HeroServiceAreaZipLookupVariant = FullImageSplitVariant;
 
 type HeroServiceAreaZipLookupSectionV3Props = {
   body: string;
+  /** Matches `ServiceAreaZipLookupSectionV3`, which offers the same two on the
+   *  same result panel - the hero variant simply never wired them up. */
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   colorRecipe?: SectionColorRecipe;
   eyebrow: string;
   headingLevel?: 1 | 2;
@@ -31,6 +35,8 @@ type HeroServiceAreaZipLookupSectionV3Props = {
 };
 
 type HeroVariantConfig = {
+  fadeClassName?: string;
+  fadeGradientClassName?: string;
   imageClassName: string;
   imagePanelClassName: string;
   textClassName: string;
@@ -64,6 +70,22 @@ const variantConfig: Record<
     imagePanelClassName:
       "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
   },
+  "text-7-image-9-overlap-right": {
+    textClassName: "relative z-10 col-span-9 col-start-1",
+    imageClassName: "z-0 col-span-9 col-start-6",
+    imagePanelClassName:
+      "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
+    fadeClassName: "col-span-4 col-start-6",
+    fadeGradientClassName: "bg-gradient-to-r from-bg-page to-transparent",
+  },
+  "image-9-overlap-left-text-7": {
+    textClassName: "relative z-10 col-span-9 col-start-6",
+    imageClassName: "z-0 col-span-9 col-start-1",
+    imagePanelClassName:
+      "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
+    fadeClassName: "col-span-4 col-start-6",
+    fadeGradientClassName: "bg-gradient-to-r from-transparent to-bg-page",
+  },
 };
 
 const fullBleedImagePanelStyle: CSSProperties = {
@@ -78,7 +100,7 @@ const colorRecipeClassName = {
   section: "bg-bg-page",
   serviceArea: "text-service-muted",
   submit:
-    "border-service-accent bg-service-accent text-white hover:border-service-ink hover:bg-service-ink",
+    "border-cta-primary bg-cta-primary text-cta-primary-ink hover:border-cta-primary-hover hover:bg-cta-primary-hover",
   success: "border-service-accent/35 bg-service-accent/10",
   successAction: "",
 };
@@ -89,6 +111,8 @@ function cx(...classes: Array<string | false | undefined>) {
 
 export function HeroServiceAreaZipLookupSectionV3({
   body,
+  cardBorder = "on",
+  cardFill = "solid",
   eyebrow,
   headingLevel = 1,
   imageAlt,
@@ -110,7 +134,10 @@ export function HeroServiceAreaZipLookupSectionV3({
   const colors = colorRecipeClassName;
   const HeadingTag = `h${headingLevel}` as const;
   const hasWideTextColumn =
-    variant === "text-4-image-3-right" || variant === "image-3-left-text-4";
+    variant === "text-4-image-3-right" ||
+    variant === "image-3-left-text-4" ||
+    variant === "text-7-image-9-overlap-right" ||
+    variant === "image-9-overlap-left-text-7";
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -180,6 +207,8 @@ export function HeroServiceAreaZipLookupSectionV3({
                 className={cx(
                   "radius-medium mt-body-actions-sm border p-4",
                   colors.success,
+                  cardFill === "none" && "!bg-transparent !shadow-none",
+                  cardBorder === "off" && "!border-transparent",
                 )}
                 role="status"
               >
@@ -242,6 +271,24 @@ export function HeroServiceAreaZipLookupSectionV3({
             />
           </div>
         </LayoutGridItem>
+
+        {config.fadeClassName ? (
+          <LayoutGridItem
+            alignY="stretch"
+            className={cx(
+              "pointer-events-none relative z-[1] row-start-1 max-lg:hidden",
+              config.fadeClassName,
+            )}
+          >
+            <span
+              aria-hidden="true"
+              className={cx(
+                "absolute inset-x-0 bottom-[calc(0px_-_var(--site-grid-inset-block))] top-[calc(0px_-_var(--site-grid-inset-block))]",
+                config.fadeGradientClassName,
+              )}
+            />
+          </LayoutGridItem>
+        ) : null}
       </LayoutGrid>
     </section>
   );

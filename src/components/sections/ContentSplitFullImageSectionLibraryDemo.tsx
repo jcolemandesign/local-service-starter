@@ -2,7 +2,7 @@
 
 import { useState, type ComponentProps } from "react";
 import { Container } from "@/components/primitives";
-import { splitImageVariantOptions } from "@/content/section-style-options";
+import { fullImageSplitVariantOptions } from "@/content/section-style-options";
 import {
   ContentSplitFullImageSectionV3,
   type ContentSplitFullImageVariant,
@@ -13,7 +13,7 @@ type ContentSplitFullImageSectionLibraryDemoProps = Omit<
   "variant"
 >;
 
-const layoutOptions = splitImageVariantOptions satisfies readonly {
+const layoutOptions = fullImageSplitVariantOptions satisfies readonly {
   label: string;
   value: ContentSplitFullImageVariant;
 }[];

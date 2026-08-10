@@ -125,12 +125,12 @@ export function WrappingArrowButton({
     >
       <span
         aria-hidden="true"
-        className="radius-button absolute right-1.5 top-1/2 -z-10 h-9 w-9 -translate-y-1/2 bg-accent transition-all duration-300 ease-out group-hover/button:right-0 group-hover/button:h-full group-hover/button:w-full"
+        className="radius-button absolute right-1.5 top-1/2 -z-10 h-9 w-9 -translate-y-1/2 bg-cta-primary transition-all duration-300 ease-out group-hover/button:right-0 group-hover/button:h-full group-hover/button:w-full"
       />
       <span>{children}</span>
       <span
         aria-hidden="true"
-        className="radius-button absolute right-1.5 top-1/2 grid h-9 w-9 -translate-y-1/2 overflow-hidden bg-accent text-white transition-transform duration-300 ease-out group-hover/button:-translate-x-1"
+        className="radius-button absolute right-1.5 top-1/2 grid h-9 w-9 -translate-y-1/2 overflow-hidden bg-cta-primary text-cta-primary-ink transition-transform duration-300 ease-out group-hover/button:-translate-x-1"
       >
         <span className="absolute inset-0 grid place-items-center transition-transform duration-300 ease-out group-hover/button:translate-x-full">
           -&gt;

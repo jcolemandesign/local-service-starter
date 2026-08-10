@@ -7,6 +7,8 @@ import {
 type ProcessImageChecklistSectionV3Props = {
   action: string;
   body: string;
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   eyebrow: string;
   /** Label on the FPO image placeholder. Not client copy. */
   imageLabel?: string;
@@ -51,6 +53,8 @@ function ProcessImage({ label }: { label: string }) {
 export function ProcessImageChecklistSectionV3({
   action,
   body,
+  cardBorder = "on",
+  cardFill = "solid",
   eyebrow,
   imageLabel = "Process",
   items,
@@ -83,7 +87,13 @@ export function ProcessImageChecklistSectionV3({
             <ul className="mt-body-actions-md grid card-grid-gap-med">
               {items.map((item, index) => (
                 <li
-                  className="reveal-on-scroll content-padding radius-medium grid grid-cols-[2rem_minmax(0,1fr)] items-start inline-gap-med border border-service-border bg-service-surface"
+                  className={[
+                    "reveal-on-scroll content-padding radius-medium grid grid-cols-[2rem_minmax(0,1fr)] items-start inline-gap-med border border-service-border bg-service-surface",
+                    cardFill === "none" && "!bg-transparent",
+                    cardBorder === "off" && "!border-transparent",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                   key={index}
                   style={{ "--reveal-index": index } as CSSProperties}
                 >

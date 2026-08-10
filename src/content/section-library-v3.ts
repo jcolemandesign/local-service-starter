@@ -2056,7 +2056,7 @@ export const sectionLibraryV3Collections = [
         component: "section-header-large-v3",
       },
       {
-        label: "Split link header",
+        label: "Split header",
         component: "section-header-split-link-v3",
       },
     ],

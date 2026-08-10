@@ -18,6 +18,7 @@ import {
   isRecipeAvailable,
   recipeInputs,
   resolveRef,
+  resolveSwatch,
 } from "@/content/color-recipe-inputs";
 import { recipeRungs } from "@/content/color-rungs";
 import {
@@ -115,7 +116,7 @@ export type GateReport = {
  * worse than none, because the report would overstate its own reach.
  */
 export const CARD_CONTEXT_COVERAGE = {
-  covered: 130,
+  covered: 132,
   total: 148,
 } as const;
 
@@ -184,6 +185,7 @@ export function gateColorSystem(palette: ColorPalette): GateReport {
     const textSource = resolveRef(palette, inputs.text, ground);
     const ctaLabel = resolveRef(palette, inputs.ctaLabel, ground);
     const chromatic = resolveRef(palette, inputs.chromatic, ground);
+    const ctaChromatic = resolveSwatch(palette, "accent");
 
     /**
      * Text hierarchy on the section ground.
@@ -226,10 +228,10 @@ export function gateColorSystem(palette: ColorPalette): GateReport {
     // ground, not a per-recipe preference.
     const ctaFill =
       inputs.tintMode === "tinted"
-        ? resolveTint(chromatic, textSource, "fill")
+        ? resolveTint(ctaChromatic, textSource, "fill")
         : inputs.tintMode === "textSource"
           ? textSource
-          : chromatic;
+          : ctaChromatic;
 
     const eyebrow =
       inputs.tintMode === "tinted"

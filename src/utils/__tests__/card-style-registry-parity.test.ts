@@ -30,7 +30,7 @@ const sectionsDir = path.join(process.cwd(), "src", "components", "sections");
  * exports eight), so attribute the props to the component whose own parameter
  * destructuring reads them rather than to every export in the file.
  */
-function componentsReadingCardStyleProps() {
+function componentsReadingProp(prop: RegExp) {
   const reading = new Set<string>();
 
   for (const file of readdirSync(sectionsDir).filter((f) => f.endsWith(".tsx"))) {
@@ -39,13 +39,30 @@ function componentsReadingCardStyleProps() {
     for (const match of source.matchAll(/export function (\w+)\(\{([\s\S]*?)\}:/g)) {
       const [, name, params] = match;
 
-      if (/^\s*card(Fill|Border)\b/m.test(params)) {
+      if (prop.test(params)) {
         reading.add(name);
       }
     }
   }
 
   return reading;
+}
+
+function componentsReadingCardStyleProps() {
+  return componentsReadingProp(/^\s*card(Fill|Border)\b/m);
+}
+
+/**
+ * Card links is its own axis and has to be detected as one.
+ *
+ * This used to reuse the card-style scan, which passed only because every
+ * card-links section happened to be a card-style section too. The first one
+ * that is not - a section header, which has links but no card - then read as
+ * "offers the toggle but never reads it" while reading `cardLinks` perfectly
+ * well. Checking the prop the assertion is about is the whole fix.
+ */
+function componentsReadingCardLinksProp() {
+  return componentsReadingProp(/^\s*cardLinks\b/m);
 }
 
 describe("card style control registry", () => {
@@ -115,7 +132,7 @@ describe("card style control registry", () => {
  * ambiguity the toggle exists to remove.
  */
 describe("card links toggle", () => {
-  const reading = componentsReadingCardStyleProps();
+  const reading = componentsReadingCardLinksProp();
 
   /**
    * `getTemplateCopyFieldsForSection` resolves on component *and* mode *and*

@@ -42,9 +42,32 @@ type FAQSectionV3Props = {
 type CTASectionV3Props = {
   action: string;
   body: string;
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   colorRecipe?: SectionColorRecipe;
   title: string;
 };
+
+/**
+ * A card's base classes with the two surface toggles applied.
+ *
+ * Shared by the CTA and contact panels in this file rather than repeated at
+ * each one: they all draw the same single panel, and the whole point of the
+ * pair is that a filled card can always be made transparent.
+ */
+function cardSurfaceClass(
+  base: string,
+  cardFill: "solid" | "none",
+  cardBorder: "on" | "off",
+) {
+  return [
+    base,
+    cardFill === "none" && "!bg-transparent !shadow-none",
+    cardBorder === "off" && "!border-transparent",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
 
 /**
  * The secondary action is optional on purpose: it renders only when the copy
@@ -67,6 +90,8 @@ type CTAFullscreenSectionV3Props = {
 
 type ContactSectionV3Props = {
   body: string;
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   details: readonly string[];
   eyebrow: string;
   title: string;
@@ -318,6 +343,8 @@ const ctaRecipeClasses = {
 export function CTASectionV3({
   action,
   body,
+  cardBorder = "on",
+  cardFill = "solid",
   title,
 }: CTASectionV3Props) {
   const colors = ctaRecipeClasses;
@@ -345,7 +372,13 @@ export function CTASectionV3({
           alignY="middle"
           className="col-span-7 col-start-8 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2"
         >
-          <article className={`content-padding fluid-type-frame radius-medium border ${colors.card}`}>
+          <article
+            className={cardSurfaceClass(
+              `content-padding fluid-type-frame radius-medium border ${colors.card}`,
+              cardFill,
+              cardBorder,
+            )}
+          >
             <h3 className={`type-heading-sm ${colors.heading}`}>Book the next visit</h3>
             <p className={`type-text-sm wrap-pretty mt-heading-body-sm ${colors.body}`}>
               Keep form, phone, and trust cues close enough to scan as one
@@ -369,6 +402,8 @@ export function CTASectionV3({
 export function CTAMutedSectionV3({
   action,
   body,
+  cardBorder = "on",
+  cardFill = "solid",
   secondaryAction,
   secondaryActionHref,
   title,
@@ -379,7 +414,13 @@ export function CTAMutedSectionV3({
     <section className={colors.section}>
       <SevenColumnGrid className="section-min-none py-2" padding="none">
         <SevenColumnGridItem className="col-span-7">
-          <article className={`content-padding radius-medium border ${colors.card}`}>
+          <article
+            className={cardSurfaceClass(
+              `content-padding radius-medium border ${colors.card}`,
+              cardFill,
+              cardBorder,
+            )}
+          >
             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-8 gap-y-5 max-md:grid-cols-1">
               <div className="fluid-type-frame">
                 <h2 className={`type-heading-md ${colors.heading}`}>{title}</h2>
@@ -464,6 +505,8 @@ export function CTAFullscreenSectionV3({
 
 export function ContactSectionV3({
   body,
+  cardBorder = "on",
+  cardFill = "solid",
   details,
   eyebrow,
   title,
@@ -493,7 +536,13 @@ export function ContactSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-3 col-start-4 max-lg:col-span-7 max-lg:col-start-1">
-          <div className="content-padding fluid-type-frame radius-medium border border-service-border bg-service-surface shadow-service">
+          <div
+            className={cardSurfaceClass(
+              "content-padding fluid-type-frame radius-medium border border-service-border bg-service-surface shadow-service",
+              cardFill,
+              cardBorder,
+            )}
+          >
             <form className="grid card-grid-gap-med">
               <label className="type-text-sm grid card-grid-gap-sml font-semibold text-service-ink">
                 Name

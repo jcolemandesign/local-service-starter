@@ -2729,7 +2729,7 @@
           "reduceTopPadding": false,
           "colorRecipe": "muted",
           "cardFill": "none",
-          "variant": "offset-header",
+          "variant": "split-header",
           "slotId": "slot-e1fa6e1734bc"
         },
         {

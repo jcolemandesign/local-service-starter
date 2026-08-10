@@ -211,7 +211,6 @@ const heroCompactAlignments = new Set<string>(["left", "center", "right"]);
 const servicesBentoVariants = new Set<string>([
   "default",
   "split-header",
-  "offset-header",
 ]);
 
 function getHeroSplitFixedImageVariant(section: PagebuilderRecipeSection) {
@@ -839,6 +838,7 @@ function renderSectionElement(
       return (
         <SectionHeaderSplitLinkSectionV3
           {...sectionLibraryV3Content.sectionHeaderSplitLink}
+          cardLinks={section.cardLinks === "off" ? "off" : "on"}
           headingLevel={headingLevel}
         />
       );

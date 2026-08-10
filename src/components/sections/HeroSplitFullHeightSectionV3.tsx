@@ -7,12 +7,9 @@ import {
 } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 import type { SectionColorRecipe } from "@/content/section-color-recipes";
+import type { FullImageSplitVariant } from "@/content/section-style-options";
 
-export type HeroSplitFullHeightVariant =
-  | "text-3-image-4-right"
-  | "text-4-image-3-right"
-  | "image-3-left-text-4"
-  | "image-4-left-text-3";
+export type HeroSplitFullHeightVariant = FullImageSplitVariant;
 
 type HeroSplitFullHeightSectionV3Props = {
   body: string;
@@ -30,6 +27,8 @@ type HeroSplitFullHeightSectionV3Props = {
 };
 
 type HeroVariantConfig = {
+  fadeClassName?: string;
+  fadeGradientClassName?: string;
   imageClassName: string;
   imagePanelClassName: string;
   imageSlotLabel: string;
@@ -68,6 +67,24 @@ const variantConfig: Record<HeroSplitFullHeightVariant, HeroVariantConfig> = {
     imagePanelClassName:
       "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
     imageSlotLabel: "Image area: columns 1-7",
+  },
+  "text-7-image-9-overlap-right": {
+    textClassName: "relative z-10 col-span-9 col-start-1",
+    imageClassName: "z-0 col-span-9 col-start-6",
+    imagePanelClassName:
+      "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
+    imageSlotLabel: "Image area: columns 6-14; overlaps columns 6-9",
+    fadeClassName: "col-span-4 col-start-6",
+    fadeGradientClassName: "bg-gradient-to-r from-bg-page to-transparent",
+  },
+  "image-9-overlap-left-text-7": {
+    textClassName: "relative z-10 col-span-9 col-start-6",
+    imageClassName: "z-0 col-span-9 col-start-1",
+    imagePanelClassName:
+      "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
+    imageSlotLabel: "Image area: columns 1-9; overlaps columns 6-9",
+    fadeClassName: "col-span-4 col-start-6",
+    fadeGradientClassName: "bg-gradient-to-r from-transparent to-bg-page",
   },
 };
 
@@ -130,7 +147,10 @@ export function HeroSplitFullHeightSectionV3({
 }: HeroSplitFullHeightSectionV3Props) {
   const config = variantConfig[variant] ?? variantConfig["text-3-image-4-right"];
   const HeadingTag = `h${headingLevel}` as const;
-  const isTextFourImageThree = variant === "text-4-image-3-right";
+  const isTextFourImageThree =
+    variant === "text-4-image-3-right" ||
+    variant === "text-7-image-9-overlap-right" ||
+    variant === "image-9-overlap-left-text-7";
   const colors = {
     action: "",
     body: "text-service-muted",
@@ -169,7 +189,7 @@ export function HeroSplitFullHeightSectionV3({
             </HeadingTag>
             <p
               className={cx(
-                "type-text-xl wrap-pretty mt-display-body",
+                "type-text-xl measure-lead wrap-pretty mt-body-actions-md",
                 colors.body,
               )}
             >
@@ -192,7 +212,7 @@ export function HeroSplitFullHeightSectionV3({
             {stats.length > 0 ? (
               <ul
                 className={cx(
-                  "mt-body-actions-lg grid grid-cols-3 card-grid-gap-med max-md:mt-body-actions-md max-md:grid-cols-1",
+                  "mt-body-actions-lg flex flex-wrap items-start justify-start inline-gap-lrg max-md:mt-body-actions-md",
                 )}
               >
                 {stats.map((stat) => (
@@ -201,7 +221,7 @@ export function HeroSplitFullHeightSectionV3({
                       "type-text-sm font-semibold",
                       colors.ink,
                       isTextFourImageThree
-                        ? "relative overflow-hidden rounded-full border border-white/70 bg-white/78 px-5 py-3 shadow-service backdrop-blur-sm before:absolute before:inset-x-5 before:top-0 before:h-px before:bg-white/90"
+                        ? "border-l-2 border-service-accent/40 py-2 pl-5 max-md:border-l-0 max-md:border-t max-md:pt-3 max-md:pl-0"
                         : cx("border-l pl-4 max-md:border-l-0 max-md:border-t max-md:pl-0 max-md:pt-3", colors.stat),
                     )}
                     key={stat}
@@ -229,6 +249,24 @@ export function HeroSplitFullHeightSectionV3({
             slotLabel={config.imageSlotLabel}
           />
         </LayoutGridItem>
+
+        {config.fadeClassName ? (
+          <LayoutGridItem
+            alignY="stretch"
+            className={cx(
+              "pointer-events-none relative z-[1] row-start-1 max-lg:hidden",
+              config.fadeClassName,
+            )}
+          >
+            <span
+              aria-hidden="true"
+              className={cx(
+                "absolute inset-x-0 bottom-[calc(0px_-_var(--site-grid-inset-block))] top-[calc(0px_-_var(--site-grid-inset-block))]",
+                config.fadeGradientClassName,
+              )}
+            />
+          </LayoutGridItem>
+        ) : null}
       </LayoutGrid>
     </section>
   );

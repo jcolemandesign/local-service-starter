@@ -14,6 +14,8 @@ export type ContentNarrativeFeatureRailAlign = "left" | "right";
 export type ContentNarrativeFeatureRailSectionV3Props = {
   align?: ContentNarrativeFeatureRailAlign;
   bullets: readonly string[];
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   cards: readonly NarrativeFeatureRailCard[];
   eyebrow: string;
   imageAlt: string;
@@ -29,6 +31,8 @@ export type ContentNarrativeFeatureRailSectionV3Props = {
 export function ContentNarrativeFeatureRailSectionV3({
   align = "right",
   bullets,
+  cardBorder = "on",
+  cardFill = "solid",
   cards,
   eyebrow,
   imageAlt,
@@ -123,7 +127,13 @@ export function ContentNarrativeFeatureRailSectionV3({
 
             {cards.slice(0, 3).map((card) => (
               <article
-                className="fluid-type-frame radius-medium border border-service-border bg-service-surface p-6 shadow-service"
+                className={[
+                  "fluid-type-frame radius-medium border border-service-border bg-service-surface p-6 shadow-service",
+                  cardFill === "none" && "!bg-transparent !shadow-none",
+                  cardBorder === "off" && "!border-transparent",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
                 key={`${card.eyebrow}-${card.title}`}
               >
                 <p className="type-label text-service-accent">{card.eyebrow}</p>

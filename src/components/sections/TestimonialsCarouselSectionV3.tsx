@@ -17,8 +17,14 @@ type CarouselTestimonial = {
 };
 
 type TestimonialsCarouselSectionV3Props = {
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   items: readonly CarouselTestimonial[];
 };
+
+function cx(...classes: Array<string | false | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
 
 function SliderButton({
   direction,
@@ -58,8 +64,18 @@ function TestimonialCardContent({ item }: { item: CarouselTestimonial }) {
 }
 
 export function TestimonialsCarouselSectionV3({
+  cardBorder = "on",
+  cardFill = "solid",
   items,
 }: TestimonialsCarouselSectionV3Props) {
+  // The visible card and the invisible sizer behind it must carry identical
+  // box classes - the sizer is what reserves the row's height, so a fill or
+  // border applied to only one of them would resize the carousel.
+  const cardClass = cx(
+    "content-padding radius-medium border border-service-border bg-bg-page text-center shadow-service",
+    cardFill === "none" && "!bg-transparent !shadow-none",
+    cardBorder === "off" && "!border-transparent",
+  );
   const [activeIndex, setActiveIndex] = useState(0);
   const activeItem = items[activeIndex];
   const shouldReduceMotion = useReducedMotion();
@@ -95,7 +111,7 @@ export function TestimonialsCarouselSectionV3({
                 {items.map((item, index) => (
                   <figure
                     aria-hidden="true"
-                    className="content-padding radius-medium invisible col-start-1 row-start-1 border border-service-border bg-bg-page text-center shadow-service"
+                    className={cx("invisible col-start-1 row-start-1", cardClass)}
                     key={`${index}-size`}
                   >
                     <TestimonialCardContent item={item} />
@@ -105,7 +121,7 @@ export function TestimonialsCarouselSectionV3({
                 <AnimatePresence initial={false} mode="wait">
                   <motion.figure
                     aria-live="polite"
-                    className="content-padding radius-medium col-start-1 row-start-1 border border-service-border bg-bg-page text-center shadow-service"
+                    className={cx("col-start-1 row-start-1", cardClass)}
                     key={activeIndex}
                     initial={{
                       opacity: 0,

@@ -130,10 +130,12 @@
   --color-text-accent: var(--live-text-accent, #1f7a5a);
   --color-border-default: var(--live-border-default, oklch(from var(--live-service-surface, #f4f7f3) calc(l - 0.30) c h));
   --color-accent: var(--live-accent, #c45a2c);
-  /* Primary CTA field. Follows the ground the button sits on rather than being
-   * pinned to the brand accent: on a dark field the accent loses its lift, so
-   * the dark-ground rule below repoints these at the highlight token. */
-  --color-cta-primary: var(--live-cta-primary, var(--live-service-accent, #1f7a5a));
+  /* Primary CTA field. Accent CTA falls back to the brand accent when unset;
+   * recipe-scoped dark fields replace the flat value with its contrast tint. */
+  --color-cta-primary: var(
+    --live-cta-primary,
+    var(--live-cta-accent, var(--live-service-accent, #1f7a5a))
+  );
   --color-cta-primary-hover: var(--live-cta-primary-hover, var(--live-bg-dark, #10141b));
   /* The primary CTA's label, and the secondary CTA's label and edge.
    *
@@ -170,15 +172,14 @@
 }
 
 /*
- * Dark ground repoints the primary CTA at the highlight token.
+ * Dark ground keeps the primary CTA on Accent CTA and gives it a lightening
+ * hover treatment.
  *
  * FRAMELESS PAGES ONLY. Inside a colour recipe the role table governs the CTA,
  * and it resolves the fill through the tint - a chromatic swatch mixed toward
  * the recipe's text source - which is both ground-relative and measurably
- * better than this rule was. Highlight on a dark ground is 1.69, and 2.31 on
- * ink, against a 3:1 bar for a button's own edge; the tint clears it on every
- * dark ground. The ink recipe used to be listed here and no longer is, because
- * it would override the tint with a value that does not work.
+ * better than a flat fill. Recipe-scoped sections therefore use the tint;
+ * this fallback is only for frameless dark fields.
  *
  * What remains is the class-keyed form, which still earns its place: hand-
  * written pages and exported sites paint a dark field with `bg-bg-dark` or
@@ -192,10 +193,13 @@
  */
 .bg-bg-dark,
 .bg-service-ink {
-  --live-cta-primary: var(--live-accent, #c45a2c);
+  --live-cta-primary: var(
+    --live-cta-accent,
+    var(--live-service-accent, #1f7a5a)
+  );
   --live-cta-primary-hover: color-mix(
     in srgb,
-    var(--live-accent, #c45a2c) 82%,
+    var(--live-cta-accent, var(--live-service-accent, #1f7a5a)) 82%,
     white
   );
 }
@@ -1945,7 +1949,7 @@ body {
        the worst neutral-dark ground, so they run slightly washed on the
        darkest one. Retuning means changing them here and in color-scales.ts,
        and nothing else depends on their values. */
-    --chroma-fill: color-mix(in oklab, var(--recipe-chromatic) 50%, var(--recipe-text));
+    --chroma-fill: color-mix(in oklab, var(--palette-cta-accent) 50%, var(--recipe-text));
     --chroma-text: color-mix(in oklab, var(--recipe-chromatic) 30%, var(--recipe-text));
   }
 
@@ -2085,7 +2089,7 @@ body {
     --recipe-text: var(--palette-ink);
     --recipe-faint: var(--palette-ink);
     --recipe-chromatic: var(--palette-brand);
-    --recipe-cta-fill: var(--palette-brand);
+    --recipe-cta-fill: var(--palette-cta-accent);
     --recipe-cta-label: #ffffff;
     --recipe-eyebrow: var(--palette-brand);
   }
@@ -2108,7 +2112,7 @@ body {
     --recipe-text: var(--palette-ink);
     --recipe-faint: var(--palette-brand);
     --recipe-chromatic: var(--palette-brand);
-    --recipe-cta-fill: var(--palette-brand);
+    --recipe-cta-fill: var(--palette-cta-accent);
     --recipe-cta-label: #ffffff;
     --recipe-eyebrow: var(--palette-brand);
   }
@@ -3330,12 +3334,12 @@ body {
   --live-service-ink: #133049;
   --live-service-muted: #3898c2;
   --live-service-accent: #175c82;
-  --live-service-surface: #d9d9d9;
+  --live-service-surface: #e8e8e8;
   --live-surface-raised: #ffffff;
   --live-service-border: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
   --live-service-border-light: oklch(from var(--live-service-surface) calc(l + 0.30) c h);
-  --live-bg-page: #c7c7c7;
-  --live-bg-surface: #d9d9d9;
+  --live-bg-page: #d9d9d9;
+  --live-bg-surface: #e8e8e8;
   --live-bg-muted: oklch(from var(--live-service-surface) calc(l - 0.03) c h);
   --live-bg-dark: #153856;
   --live-text-main: #133049;
@@ -3346,17 +3350,17 @@ body {
   --live-accent-ink: #ffffff;
   --live-accent-muted-text: #dcefe7;
   --live-bg-dark-surface: #1e4766;
-  --live-cta-accent: #007cbd;
+  --live-cta-accent: #126fa1;
   --live-shadow-service: 8px 10px 22px rgb(27 45 65 / 0.1369);
   --color-service-ink: #133049;
   --color-service-muted: #3898c2;
   --color-service-accent: #175c82;
-  --color-service-surface: #d9d9d9;
+  --color-service-surface: #e8e8e8;
   --color-surface-raised: #ffffff;
   --color-service-border: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
   --color-service-border-light: oklch(from var(--live-service-surface) calc(l + 0.30) c h);
-  --color-bg-page: #c7c7c7;
-  --color-bg-surface: #d9d9d9;
+  --color-bg-page: #d9d9d9;
+  --color-bg-surface: #e8e8e8;
   --color-bg-muted: oklch(from var(--live-service-surface) calc(l - 0.03) c h);
   --color-bg-dark: #153856;
   --color-text-main: #133049;
@@ -3507,9 +3511,9 @@ body {
    sitting them closer together rather than by letting the faintest one fall
    away. Recomputed from the palette on every promote; see color-rungs.ts. */
 .pagebuilder-paint-surface[data-pagebuilder-color-recipe="accent"] {
-  --rung-body: 89.5%;
-  --rung-muted: 81.9%;
-  --rung-meta: 68.4%;
+  --rung-body: 86.5%;
+  --rung-muted: 76.8%;
+  --rung-meta: 59.4%;
 }
 /* END PAGEWORKS STYLEGUIDE TOKEN OVERRIDES */
 .strategy-workspace :is(

@@ -12,6 +12,8 @@ import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 
 type ContactSectionModalBeginProps = {
   body: string;
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   continueLabel: string;
   eyebrow: string;
   helperText: string;
@@ -47,6 +49,8 @@ function SelectionButton({
 
 export function ContactSectionModalBegin({
   body,
+  cardBorder = "on",
+  cardFill = "solid",
   continueLabel,
   eyebrow,
   helperText,
@@ -80,7 +84,13 @@ export function ContactSectionModalBegin({
 
         <LayoutGridItem className="col-span-6 col-start-8 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2">
           <form
-            className="content-padding fluid-type-frame radius-medium grid card-grid-gap-med border border-service-border bg-service-surface shadow-service"
+            className={[
+              "content-padding fluid-type-frame radius-medium grid card-grid-gap-med border border-service-border bg-service-surface shadow-service",
+              cardFill === "none" && "!bg-transparent !shadow-none",
+              cardBorder === "off" && "!border-transparent",
+            ]
+              .filter(Boolean)
+              .join(" ")}
             onSubmit={(event) => {
               event.preventDefault();
 

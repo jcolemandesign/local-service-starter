@@ -17,13 +17,21 @@ type MasonryTestimonial = {
 };
 
 type TestimonialsMasonrySectionV3Props = {
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   body: string;
   eyebrow: string;
   items: readonly MasonryTestimonial[];
   title: string;
 };
 
+function cx(...classes: Array<string | false | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
+
 export function TestimonialsMasonrySectionV3({
+  cardBorder = "on",
+  cardFill = "solid",
   body,
   eyebrow,
   items,
@@ -64,7 +72,11 @@ export function TestimonialsMasonrySectionV3({
               <div className="columns-3 gap-6 max-lg:columns-2 max-md:columns-1">
                 {items.map((item, index) => (
                   <article
-                    className="fluid-type-frame radius-medium mb-6 break-inside-avoid border border-service-border bg-bg-page p-7 shadow-service"
+                    className={cx(
+                      "fluid-type-frame radius-medium mb-6 break-inside-avoid border border-service-border bg-bg-page p-7 shadow-service",
+                      cardFill === "none" && "!bg-transparent !shadow-none",
+                      cardBorder === "off" && "!border-transparent",
+                    )}
                     key={index}
                   >
                     <blockquote className="type-text-lg wrap-pretty font-medium text-service-ink">

@@ -713,7 +713,13 @@ export function renderPageTemplateSection(
         />
       );
     case "NavFloatingBentoSectionV2":
-      return <NavFloatingBentoSectionV2 {...navProps(fieldSection, navigationLinks, homeHref, siteIdentity)} />;
+      return (
+        <NavFloatingBentoSectionV2
+          {...navProps(fieldSection, navigationLinks, homeHref, siteIdentity)}
+          cardBorder={resolveCardBorder(section.component, section.cardBorder)}
+          cardFill={resolveCardFill(section.component, section.cardFill)}
+        />
+      );
     case "HeroSplitFullHeightSectionV3":
       return (
         <HeroSplitFullHeightSectionV3
@@ -728,6 +734,8 @@ export function renderPageTemplateSection(
       return (
         <HeroServiceAreaZipLookupSectionV3
           {...heroServiceAreaZipLookupProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           colorRecipe={section.colorRecipe}
           headingLevel={headingLevel}
           variant={getHeroSplitFullHeightVariant(section)}
@@ -791,6 +799,8 @@ export function renderPageTemplateSection(
       return (
         <HeroServicesSectionV3
           {...heroServicesProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           headingLevel={headingLevel}
         />
       );
@@ -838,13 +848,25 @@ export function renderPageTemplateSection(
     case "TrustMarqueeSectionV3":
       return <TrustMarqueeSectionV3 {...trustMarqueeProps(fieldSection)} />;
     case "TrustLogoMarqueeSectionV3":
-      return <TrustLogoMarqueeSectionV3 {...trustLogoProps(fieldSection)} />;
+      return (
+        <TrustLogoMarqueeSectionV3
+          {...trustLogoProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "TrustLogoGridSectionV3":
-      return <TrustLogoGridSectionV3 {...trustLogoProps(fieldSection)} />;
+      return (
+        <TrustLogoGridSectionV3
+          {...trustLogoProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "ServicesBentoCardsSectionV2":
       return (
         <ServicesBentoCardsSectionV2
-          {...servicesBentoProps(fieldSection)}
+          {...servicesBentoProps(fieldSection, getServicesBentoVariant(section))}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           colorRecipe={section.colorRecipe}
@@ -908,7 +930,13 @@ export function renderPageTemplateSection(
         />
       );
     case "ServicesHoverPanelSectionV2":
-      return <ServicesHoverPanelSectionV2 {...servicesHoverProps(fieldSection)} />;
+      return (
+        <ServicesHoverPanelSectionV2
+          {...servicesHoverProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "ServicesThreeCardsRightSectionV3":
       return (
         <ServicesThreeCardsRightSectionV3
@@ -966,7 +994,13 @@ export function renderPageTemplateSection(
     case "ImageStripSectionV3":
       return <ImageStripSectionV3 {...imageStripProps(fieldSection)} />;
     case "QuickPageLinksSectionV2":
-      return <QuickPageLinksSectionV2 {...quickPageLinksProps(fieldSection)} />;
+      return (
+        <QuickPageLinksSectionV2
+          {...quickPageLinksProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "ContentRevealParagraphSectionV2":
       return <ContentRevealParagraphSectionV2 {...revealParagraphProps(fieldSection)} />;
     case "ContentScrollWrittenRevealSectionV2":
@@ -1029,7 +1063,13 @@ export function renderPageTemplateSection(
         />
       );
     case "ContentAboutCompanySectionV2":
-      return <ContentAboutCompanySectionV2 {...aboutCompanyProps(fieldSection)} />;
+      return (
+        <ContentAboutCompanySectionV2
+          {...aboutCompanyProps(fieldSection)}
+          cardBorder={resolveCardBorder(section.component, section.cardBorder)}
+          cardFill={section.cardFill}
+        />
+      );
     case "ContentAboutStorySectionV3":
       return <ContentAboutStorySectionV3 {...aboutStoryProps(fieldSection)} />;
     case "ContentNarrativeFeatureRailSectionV3":
@@ -1037,6 +1077,8 @@ export function renderPageTemplateSection(
         <ContentNarrativeFeatureRailSectionV3
           {...contentNarrativeFeatureRailProps(fieldSection)}
           align={section.variant?.startsWith("left") ? "left" : "right"}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           showImage={!section.variant?.includes("text-only")}
         />
       );
@@ -1072,7 +1114,13 @@ export function renderPageTemplateSection(
         />
       );
     case "FeatureOverlapRowsSectionV3":
-      return <FeatureOverlapRowsSectionV3 {...featureOverlapRowsProps(fieldSection)} />;
+      return (
+        <FeatureOverlapRowsSectionV3
+          {...featureOverlapRowsProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "FeatureAsymmetricCardsSectionV3":
       return (
         <FeatureAsymmetricCardsSectionV3
@@ -1132,6 +1180,7 @@ export function renderPageTemplateSection(
       return (
         <SectionHeaderSplitLinkSectionV3
           {...sectionHeaderSplitLinkProps(fieldSection)}
+          cardLinks={resolveCardLinks(section)}
           headingLevel={headingLevel}
         />
       );
@@ -1184,6 +1233,8 @@ export function renderPageTemplateSection(
       return (
         <TestimonialsCarouselSectionV3
           {...testimonialsCarouselSlidesProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "TestimonialsCarouselCondensedSectionV3":
@@ -1197,11 +1248,23 @@ export function renderPageTemplateSection(
     case "TestimonialsMasonrySectionV2":
       return <TestimonialsMasonrySectionV2 {...testimonialsMasonryProps(fieldSection)} />;
     case "TestimonialsMasonrySectionV3":
-      return <TestimonialsMasonrySectionV3 {...testimonialsMasonryProps(fieldSection)} />;
+      return (
+        <TestimonialsMasonrySectionV3
+          {...testimonialsMasonryProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "ProcessImageChecklistSectionV2":
       return <ProcessImageChecklistSectionV2 {...processImageChecklistProps(fieldSection)} />;
     case "ProcessImageChecklistSectionV3":
-      return <ProcessImageChecklistSectionV3 {...processImageChecklistProps(fieldSection)} />;
+      return (
+        <ProcessImageChecklistSectionV3
+          {...processImageChecklistProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "ProcessStepsSectionV3":
       return (
         <ProcessStepsSectionV3
@@ -1256,7 +1319,13 @@ export function renderPageTemplateSection(
         />
       );
     case "CTASectionV3":
-      return <CTASectionV3 {...ctaProps(fieldSection)} />;
+      return (
+        <CTASectionV3
+          {...ctaProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "CTAImageSectionV3":
       return (
         <CTAImageSectionV3
@@ -1346,7 +1415,13 @@ export function renderPageTemplateSection(
         />
       );
     case "CTAMutedSectionV3":
-      return <CTAMutedSectionV3 {...ctaMutedProps(fieldSection)} />;
+      return (
+        <CTAMutedSectionV3
+          {...ctaMutedProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "CTAFullscreenSectionV2":
       return <CTAFullscreenSectionV2 {...ctaFullscreenProps(fieldSection)} />;
     case "CTAFullscreenSectionV3":
@@ -1354,24 +1429,46 @@ export function renderPageTemplateSection(
     case "CTAScrollRevealOfferSectionV2":
       return <CTAScrollRevealOfferSectionV2 {...scrollRevealOfferProps(fieldSection)} />;
     case "CTAScrollRevealOfferSectionV3":
-      return <CTAScrollRevealOfferSectionV3 {...scrollRevealOfferProps(fieldSection)} />;
+      return (
+        <CTAScrollRevealOfferSectionV3
+          {...scrollRevealOfferProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "ContentFixedCoverFadeSectionV2":
       return (
         <ContentFixedCoverFadeSectionV2
           {...fixedCoverFadeProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           formMode={section.variant === "modal-prefill" ? "modal-prefill" : "regular"}
         />
       );
     case "ContactSectionV2":
       return <ContactSectionV2 {...contactProps(fieldSection)} />;
     case "ServiceAreaZipLookupSectionV3":
-      return <ServiceAreaZipLookupSectionV3 {...serviceAreaProps(fieldSection)} />;
+      return (
+        <ServiceAreaZipLookupSectionV3
+          {...serviceAreaProps(fieldSection)}
+          cardBorder={resolveCardBorder(section.component, section.cardBorder)}
+          cardFill={resolveCardFill(section.component, section.cardFill)}
+        />
+      );
     case "ContactSectionV3":
-      return <ContactSectionV3 {...contactProps(fieldSection)} />;
+      return (
+        <ContactSectionV3
+          {...contactProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+        />
+      );
     case "ThankYouConfirmationSectionV3":
       return (
         <ThankYouConfirmationSectionV3
           {...thankYouConfirmationProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           headingLevel={headingLevel}
         />
       );
@@ -1379,6 +1476,8 @@ export function renderPageTemplateSection(
       return (
         <ContactSectionModalBegin
           {...contactModalBeginProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
         />
       );
     case "FooterSectionV2":
@@ -1807,7 +1906,12 @@ function getLargeSectionHeaderSize(
 }
 
 
-function servicesBentoProps(section: FieldSection) {
+function servicesBentoProps(
+  section: FieldSection,
+  // Undefined is the unset variant, which resolves to the default layout - the
+  // one with no header - so it takes the same branch as "default".
+  variant: ServicesBentoCardsVariant | undefined,
+) {
   const serviceItemFieldNames = ["serviceItems", "items", "cards"];
   const serviceItems = cardItemsWithFallback(
     section,
@@ -1817,14 +1921,33 @@ function servicesBentoProps(section: FieldSection) {
   const hasCustomItems = hasCardItems(section, serviceItemFieldNames);
   const imageItems = getRepeatedAssetRecords(section, ["items"]);
 
+  /**
+   * The header rides the variant, because the copy spec does.
+   *
+   * Only split-header asks for an eyebrow, heading and intro, and only
+   * split-header draws them. Spreading the library demo's header regardless
+   * would hand the default variant three strings no spec requested and no
+   * layout renders - dead demo copy travelling all the way into an exported
+   * site, which is what the demo-content leak guard exists to catch.
+   */
+  const {
+    body: demoBody,
+    eyebrow: demoEyebrow,
+    title: demoTitle,
+    ...demoRest
+  } = sectionLibraryV3Content.servicesBento;
+  const header =
+    variant === "split-header"
+      ? {
+          body: getBody(section, demoBody),
+          eyebrow: getValue(section, "eyebrow", demoEyebrow),
+          title: getTitle(section, demoTitle),
+        }
+      : {};
+
   return {
-    ...sectionLibraryV3Content.servicesBento,
-    body: getBody(section, sectionLibraryV3Content.servicesBento.body),
-    eyebrow: getValue(
-      section,
-      "eyebrow",
-      sectionLibraryV3Content.servicesBento.eyebrow,
-    ),
+    ...demoRest,
+    ...header,
     items: serviceItems.map(
       (item, index) => ({
         ...sectionLibraryV3Content.servicesBento.items[
@@ -1839,7 +1962,6 @@ function servicesBentoProps(section: FieldSection) {
           ].imageSrc,
       }),
     ),
-    title: getTitle(section, sectionLibraryV3Content.servicesBento.title),
   };
 }
 

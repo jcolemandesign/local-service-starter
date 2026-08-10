@@ -7,6 +7,10 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives/SevenColumnGrid";
+import type {
+  SectionCardBorder,
+  SectionCardFill,
+} from "@/content/section-color-recipes";
 
 /**
  * The form furniture - field label, placeholder, submit, map caption - defaults
@@ -31,15 +35,31 @@ type ServiceAreaZipLookupSectionV3Props = {
   successActionHref: string;
   mapLabel?: string;
   columns: readonly (readonly string[])[];
+  cardBorder?: SectionCardBorder;
+  cardFill?: SectionCardFill;
 };
 
+function cx(...classes: Array<string | false | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
+
 function ServiceAreaMapPlaceholder({
+  cardBorder,
+  cardFill,
   label,
 }: {
+  cardBorder: SectionCardBorder;
+  cardFill: SectionCardFill;
   label: string;
 }) {
   return (
-    <div className="content-padding radius-medium relative isolate grid h-full min-h-[31rem] overflow-hidden border border-service-border bg-service-surface shadow-service max-lg:min-h-[24rem] max-md:min-h-[20rem]">
+    <div
+      className={cx(
+        "content-padding radius-medium relative isolate grid h-full min-h-[31rem] overflow-hidden max-lg:min-h-[24rem] max-md:min-h-[20rem]",
+        cardFill === "none" ? "bg-transparent shadow-none" : "bg-service-surface shadow-service",
+        cardBorder === "off" ? "!border-0" : "border border-service-border",
+      )}
+    >
       <div
         aria-hidden="true"
         className="absolute inset-x-0 top-1/2 -z-10 h-px bg-service-border"
@@ -76,6 +96,8 @@ export function ServiceAreaZipLookupSectionV3({
   successActionHref,
   mapLabel = "Local coverage map",
   columns,
+  cardBorder = "on",
+  cardFill = "solid",
 }: ServiceAreaZipLookupSectionV3Props) {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const inputId = useId();
@@ -98,7 +120,13 @@ export function ServiceAreaZipLookupSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-          <div className="content-padding radius-medium grid h-full content-between border border-service-border bg-service-surface shadow-service">
+          <div
+            className={cx(
+              "content-padding radius-medium grid h-full content-between",
+              cardFill === "none" ? "bg-transparent shadow-none" : "bg-service-surface shadow-service",
+              cardBorder === "off" ? "!border-0" : "border border-service-border",
+            )}
+          >
             <div>
               <p className="type-label text-service-accent">Service area</p>
               <div className="mt-heading-body-md grid grid-cols-2 items-start gap-x-6 gap-y-3 max-sm:grid-cols-1">
@@ -172,7 +200,11 @@ export function ServiceAreaZipLookupSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-          <ServiceAreaMapPlaceholder label={mapLabel} />
+          <ServiceAreaMapPlaceholder
+            cardBorder={cardBorder}
+            cardFill={cardFill}
+            label={mapLabel}
+          />
         </SevenColumnGridItem>
       </SevenColumnGrid>
     </section>

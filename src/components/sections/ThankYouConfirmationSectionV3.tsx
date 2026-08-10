@@ -7,6 +7,8 @@ export type ThankYouConfirmationStep = {
 
 export type ThankYouConfirmationSectionV3Props = {
   body: string;
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   eyebrow: string;
   headingLevel?: 1 | 2;
   nextSteps: readonly ThankYouConfirmationStep[];
@@ -21,6 +23,8 @@ export type ThankYouConfirmationSectionV3Props = {
 
 export function ThankYouConfirmationSectionV3({
   body,
+  cardBorder = "on",
+  cardFill = "solid",
   eyebrow,
   headingLevel = 1,
   nextSteps,
@@ -81,7 +85,15 @@ export function ThankYouConfirmationSectionV3({
           alignY="middle"
           className="col-span-6 col-start-8 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2"
         >
-          <aside className="content-padding radius-medium border border-service-border bg-service-surface shadow-service">
+          <aside
+          className={[
+            "content-padding radius-medium border border-service-border bg-service-surface shadow-service",
+            cardFill === "none" && "!bg-transparent !shadow-none",
+            cardBorder === "off" && "!border-transparent",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
             <p className="type-label text-service-accent">{nextStepsTitle}</p>
             <ol className="mt-body-actions-md grid card-grid-gap-sml">
               {nextSteps.map((step, index) => (

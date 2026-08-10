@@ -7,6 +7,7 @@ type SectionHeaderSplitLinkSectionV3Props = {
   actionHref?: string;
   actionLabel: string;
   body: string;
+  cardLinks?: "on" | "off";
   headingLevel?: 1 | 2;
   title: string;
 };
@@ -21,7 +22,7 @@ const asideClassName =
   "col-span-3 col-start-5 max-md:col-span-3 max-md:col-start-1 max-sm:col-span-1";
 
 /**
- * Heading on one side, a short description over a single text link on the
+ * Heading on one side, with a short description and optional text link on the
  * other. Lifted out of the split-large-cards section, which used to carry this
  * header inline - as its own section it can introduce any block, and the cards
  * section is free to be only cards.
@@ -30,13 +31,32 @@ export function SectionHeaderSplitLinkSectionV3({
   actionHref = "#contact",
   actionLabel,
   body,
+  cardLinks = "on",
   headingLevel = 2,
   title,
 }: SectionHeaderSplitLinkSectionV3Props) {
   const Heading = headingLevel === 1 ? "h1" : "h2";
+  const hasLink = cardLinks !== "off";
 
   return (
-    <section className="bg-bg-page">
+    /**
+     * The block padding here is a floor, not the section's spacing.
+     *
+     * Section spacing set to Reduced zeroes the grid's padding with
+     * `!important` (see the `data-pagebuilder-padding-*` rules in
+     * `globals.css`), which left this header sitting flush against whatever it
+     * introduces. This sits on the section element instead, where neither the
+     * `.site-grid-frame` nor the `> [class*="py-"]` rule reaches it, so a
+     * little breathing room survives with spacing off - and adds to the grid's
+     * padding rather than replacing it when spacing is on.
+     *
+     * A quarter of the smallest section step rather than a new value, so it
+     * tracks the scale if that step is ever retuned.
+     */
+    <section
+      className="bg-bg-page"
+      style={{ paddingBlock: "calc(var(--section-space-vsml) / 4)" }}
+    >
       <SevenColumnGrid
         className="items-end"
         minHeight="none"
@@ -58,15 +78,23 @@ export function SectionHeaderSplitLinkSectionV3({
           measure="none"
         >
           <div className="fluid-type-frame">
-            <p className="type-text-md wrap-pretty text-service-muted">
+            <p
+              className={
+                hasLink
+                  ? "type-text-md wrap-pretty text-service-muted"
+                  : "type-text-xl wrap-pretty text-service-muted"
+              }
+            >
               {body}
             </p>
-            <a
-              className="type-label mt-body-actions-md inline-flex w-fit items-center border-b border-service-ink pb-1 text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-              href={actionHref}
-            >
-              {actionLabel}
-            </a>
+            {hasLink ? (
+              <a
+                className="type-label mt-body-actions-md inline-flex w-fit items-center border-b border-service-ink pb-1 text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
+                href={actionHref}
+              >
+                {actionLabel}
+              </a>
+            ) : null}
           </div>
         </SevenColumnGridItem>
       </SevenColumnGrid>

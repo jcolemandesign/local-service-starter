@@ -20,13 +20,18 @@ type ServiceBentoItem = {
 
 export type ServicesBentoCardsVariant =
   | "default"
-  | "split-header"
-  | "offset-header";
+  | "split-header";
 
 type ServicesBentoCardsSectionV2Props = {
-  eyebrow: string;
-  title: string;
-  body: string;
+  /**
+   * Header copy, read by the split-header variant alone. Optional because the
+   * default variant is cards only - its copy spec asks for none of these, so
+   * the render path passes none, and a required prop would only be satisfied
+   * with demo content nothing requested and nothing draws.
+   */
+  eyebrow?: string;
+  title?: string;
+  body?: string;
   items: ServiceBentoItem[];
   variant?: ServicesBentoCardsVariant;
   colorRecipe?: SectionColorRecipe;
@@ -47,10 +52,6 @@ function getShortTitle(title: string, maxWords = 5) {
   }
 
   return words.slice(0, maxWords).join(" ");
-}
-
-function getSectionHeaderText(title: string) {
-  return title.trim().replace(/\.$/, "");
 }
 
 const colorRecipeClasses = {
@@ -121,16 +122,15 @@ const splitHeaderCardSpanPattern = [
 ];
 
 export function ServicesBentoCardsSectionV2({
-  eyebrow,
-  title,
-  body,
+  eyebrow = "",
+  title = "",
+  body = "",
   items,
   variant = "default",
   cardBorder = "on",
   cardFill = "solid",
 }: ServicesBentoCardsSectionV2Props) {
   const isSplitHeader = variant === "split-header";
-  const isOffsetHeader = variant === "offset-header";
   const cardSpanPattern = isSplitHeader
     ? splitHeaderCardSpanPattern
     : bentoCardSpanPattern;
@@ -155,85 +155,53 @@ export function ServicesBentoCardsSectionV2({
   return (
     <section id="services-bento" className={colors.section}>
       <SevenColumnGrid className="items-start" minHeight="none" padding="med">
-        {isOffsetHeader ? (
-          <>
-            <SevenColumnGridItem className="col-span-4 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
-              <h2 className={cx("type-heading-xl max-w-4xl text-left", colors.heading)}>
-                {getSectionHeaderText(title)}
-              </h2>
-            </SevenColumnGridItem>
-            <SevenColumnGridItem
-              alignY="bottom"
-              className="col-span-3 col-start-5 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1"
-            >
-              <p className={cx("type-text-lg measure-copy wrap-pretty", colors.body)}>
-                {body}
-              </p>
-            </SevenColumnGridItem>
-          </>
-        ) : (
+        {isSplitHeader ? (
           <SevenColumnGridItem
-            alignX={isSplitHeader ? "left" : "center"}
-            className={cx(
-              isSplitHeader
-                ? "col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
-                : "col-span-5 col-start-2 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1",
-            )}
-            measure={isSplitHeader ? "copyWide" : undefined}
+            alignX="left"
+            className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
+            measure="copyWide"
           >
-            <div
-              className={cx(
-                isSplitHeader ? "text-left" : "text-center",
-                "fluid-type-frame",
-                isSplitHeader
-                  ? "sticky top-[var(--site-grid-inset-block)] max-lg:static"
-                  : undefined,
-              )}
-            >
+            <div className="fluid-type-frame sticky top-[var(--site-grid-inset-block)] text-left max-lg:static">
               <p className={cx("type-label", colors.eyebrow)}>
                 {eyebrow}
               </p>
               <h2
                 className={cx(
-                  isSplitHeader ? "type-display-lg" : "type-heading-xl",
-                  isSplitHeader ? "mt-eyebrow-heading-lg" : "mx-auto mt-5",
+                  "type-display-lg",
+                  "mt-eyebrow-heading-lg",
                   colors.heading,
                 )}
               >
-                {isSplitHeader ? getShortTitle(title) : getSectionHeaderText(title)}
+                {getShortTitle(title)}
               </h2>
               <p
                 className={cx(
                   "type-text-lg",
                   "measure-copy",
                   "wrap-pretty",
-                  isSplitHeader
-                    ? "mt-heading-body-md"
-                    : "mx-auto mt-6",
+                  "mt-heading-body-md",
                   colors.body,
                 )}
               >
-                {isSplitHeader ? splitHeaderBody : body}
+                {splitHeaderBody}
               </p>
-              {isSplitHeader ? (
-                <ul className="mt-body-actions-lg grid gap-2">
-                  {splitHeaderSupportItems.map((item) => (
-                    <li
-                      className={cx("type-text-sm flex items-center gap-2 font-semibold", colors.heading)}
-                      key={item}
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="size-2 shrink-0 rounded-full bg-service-accent"
-                      />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
+              <ul className="mt-body-actions-lg grid gap-2">
+                {splitHeaderSupportItems.map((item) => (
+                  <li
+                    className={cx("type-text-sm flex items-center gap-2 font-semibold", colors.heading)}
+                    key={item}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="size-2 shrink-0 rounded-full bg-service-accent"
+                    />
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
           </SevenColumnGridItem>
-        )}
+        ) : null}
 
         <SevenColumnGridItem
           className={cx(
@@ -247,7 +215,7 @@ export function ServicesBentoCardsSectionV2({
               "grid card-grid-gap-med max-md:grid-cols-3 max-sm:grid-cols-1",
               isSplitHeader
                 ? "grid-cols-4 items-stretch"
-                : "mt-16 grid-cols-7 items-center max-lg:grid-cols-5 max-md:mt-12",
+                : "grid-cols-7 items-center max-lg:grid-cols-5",
             )}
           >
             {displayItems.map((item, index) => (

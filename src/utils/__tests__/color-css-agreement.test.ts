@@ -115,12 +115,15 @@ describe("tint constants", () => {
     });
 
     it(`--${property} mixes toward the recipe's text source, not the ground`, () => {
-      // This is what gives the tint its direction for free: the text source is
-      // white on dark recipes and ink on light ones, so a chromatic value
-      // lightens where it must and darkens where it may.
+      // The text source gives the tint its direction. CTA fill starts from
+      // Accent CTA; eyebrow text starts from the recipe chromatic swatch.
       const declaration = readMixDeclaration(property);
       expect(declaration.target).toBe("recipe-text");
-      expect(declaration.source).toBe("recipe-chromatic");
+      expect(declaration.source).toBe(
+        property === "chroma-fill"
+          ? "palette-cta-accent"
+          : "recipe-chromatic",
+      );
     });
   }
 });

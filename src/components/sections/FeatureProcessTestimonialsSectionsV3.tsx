@@ -28,6 +28,8 @@ type Testimonial = {
 };
 
 type FeatureOverlapRowsSectionV3Props = {
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   items: readonly FeatureOverlapItem[];
 };
 
@@ -73,9 +75,13 @@ function FeatureImage({ label }: { label: string }) {
 }
 
 function FeatureOverlapCard({
+  cardBorder = "on",
+  cardFill = "solid",
   item,
   mirrored,
 }: {
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   item: FeatureOverlapItem;
   mirrored: boolean;
 }) {
@@ -85,6 +91,8 @@ function FeatureOverlapCard({
         "fluid-type-frame radius-medium relative z-10 border border-service-border bg-bg-page p-10 shadow-service max-md:p-6",
         positionClass[item.position],
         mirrored ? "max-lg:translate-x-0 lg:-translate-x-10" : "max-lg:translate-x-0 lg:translate-x-10",
+        cardFill === "none" ? "!bg-transparent !shadow-none" : undefined,
+        cardBorder === "off" ? "!border-transparent" : undefined,
       )}
     >
       <p className="type-label text-service-accent">{item.eyebrow}</p>
@@ -97,9 +105,13 @@ function FeatureOverlapCard({
 }
 
 function FeatureOverlapRow({
+  cardBorder,
+  cardFill,
   item,
   mirrored = false,
 }: {
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   item: FeatureOverlapItem;
   mirrored?: boolean;
 }) {
@@ -120,7 +132,12 @@ function FeatureOverlapRow({
             alignY="middle"
             className="col-span-3 col-start-5 row-start-1 max-lg:col-span-7 max-lg:col-start-1 max-lg:row-auto"
           >
-            <FeatureOverlapCard item={item} mirrored />
+            <FeatureOverlapCard
+              cardBorder={cardBorder}
+              cardFill={cardFill}
+              item={item}
+              mirrored
+            />
           </SevenColumnGridItem>
         </>
       ) : (
@@ -129,7 +146,12 @@ function FeatureOverlapRow({
             alignY="middle"
             className="col-span-3 col-start-1 row-start-1 max-lg:col-span-7"
           >
-            <FeatureOverlapCard item={item} mirrored={false} />
+            <FeatureOverlapCard
+              cardBorder={cardBorder}
+              cardFill={cardFill}
+              item={item}
+              mirrored={false}
+            />
           </SevenColumnGridItem>
           <SevenColumnGridItem
             alignY="stretch"
@@ -144,12 +166,16 @@ function FeatureOverlapRow({
 }
 
 export function FeatureOverlapRowsSectionV3({
+  cardBorder,
+  cardFill,
   items,
 }: FeatureOverlapRowsSectionV3Props) {
   return (
     <section className="bg-bg-page">
       {items.map((item, index) => (
         <FeatureOverlapRow
+          cardBorder={cardBorder}
+          cardFill={cardFill}
           item={item}
           key={item.title}
           mirrored={index % 2 === 1}

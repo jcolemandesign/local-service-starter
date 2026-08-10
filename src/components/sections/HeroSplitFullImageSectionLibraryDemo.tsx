@@ -6,14 +6,14 @@ import {
   HeroSplitFullHeightSectionV3,
   type HeroSplitFullHeightVariant,
 } from "@/components/sections/HeroSplitFullHeightSectionV3";
-import { splitImageVariantOptions } from "@/content/section-style-options";
+import { fullImageSplitVariantOptions } from "@/content/section-style-options";
 
 type HeroSplitFullImageSectionLibraryDemoProps = Omit<
   ComponentProps<typeof HeroSplitFullHeightSectionV3>,
   "variant"
 >;
 
-const layoutOptions = splitImageVariantOptions satisfies readonly {
+const layoutOptions = fullImageSplitVariantOptions satisfies readonly {
   label: string;
   value: HeroSplitFullHeightVariant;
 }[];

@@ -13,6 +13,10 @@ type ServicesHeroCard = {
 
 type HeroServicesSectionV3Props = {
   body: string;
+  /** The service cards float over the hero photograph, so their panel is what
+   *  keeps them readable - they ship filled and outlined, and these strip it. */
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   cards: readonly ServicesHeroCard[];
   eyebrow: string;
   headingLevel?: 1 | 2;
@@ -79,6 +83,8 @@ function ServiceHeroIcon({ index }: { index: number }) {
 
 export function HeroServicesSectionV3({
   body,
+  cardBorder = "on",
+  cardFill = "solid",
   cards,
   eyebrow,
   headingLevel = 1,
@@ -128,7 +134,14 @@ export function HeroServicesSectionV3({
             <div className="absolute inset-x-5 bottom-5 grid grid-cols-2 gap-2 max-sm:grid-cols-1">
               {visibleCards.map((card, index) => (
                 <a
-                  className="radius-medium flex min-h-14 items-center gap-3 border border-white/65 bg-bg-surface/92 px-4 py-3 text-service-ink shadow-service backdrop-blur-sm transition duration-200 hover:-translate-y-0.5 hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  className={[
+                    "radius-medium flex min-h-14 items-center gap-3 border border-white/65 bg-bg-surface/92 px-4 py-3 text-service-ink shadow-service backdrop-blur-sm transition duration-200 hover:-translate-y-0.5 hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
+                    cardFill === "none" &&
+                      "!bg-transparent !shadow-none !backdrop-blur-none",
+                    cardBorder === "off" && "!border-transparent",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                   href={serviceHref(card)}
                   key={`${card.title}-${index}`}
                 >

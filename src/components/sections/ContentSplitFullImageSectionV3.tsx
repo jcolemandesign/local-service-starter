@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 import type { SectionColorRecipe } from "@/content/section-color-recipes";
-import type { SplitImageVariant } from "@/content/section-style-options";
+import type { FullImageSplitVariant } from "@/content/section-style-options";
 
 /**
  * The narrative twin of `HeroSplitFullHeightSectionV3`: same full-bleed cropped
@@ -26,7 +26,7 @@ import type { SplitImageVariant } from "@/content/section-style-options";
  * the viewport edge.
  */
 
-export type ContentSplitFullImageVariant = SplitImageVariant;
+export type ContentSplitFullImageVariant = FullImageSplitVariant;
 
 export type ContentSplitFullImageHeadingSizeStep = -1 | 0 | 1;
 
@@ -48,6 +48,8 @@ type ContentSplitFullImageSectionV3Props = {
 };
 
 type FullImageVariantConfig = {
+  fadeClassName?: string;
+  fadeGradientClassName?: string;
   imageBleedClassName: string;
   imageClassName: string;
   textClassName: string;
@@ -86,6 +88,20 @@ const variantConfig: Record<
     imageClassName: `col-span-7 col-start-1 max-lg:col-span-5 max-lg:col-start-1 ${stackedColumns}`,
     imageBleedClassName: bleedLeft,
   },
+  "text-7-image-9-overlap-right": {
+    textClassName: `relative z-10 col-span-9 col-start-1 max-lg:col-span-6 max-lg:col-start-1 ${stackedColumns}`,
+    imageClassName: `z-0 col-span-9 col-start-6 max-lg:col-span-6 max-lg:col-start-5 ${stackedColumns}`,
+    imageBleedClassName: bleedRight,
+    fadeClassName: "col-span-4 col-start-6 max-lg:col-span-2 max-lg:col-start-5",
+    fadeGradientClassName: "bg-gradient-to-r from-bg-page to-transparent",
+  },
+  "image-9-overlap-left-text-7": {
+    textClassName: `relative z-10 col-span-9 col-start-6 max-lg:col-span-6 max-lg:col-start-5 ${stackedColumns}`,
+    imageClassName: `z-0 col-span-9 col-start-1 max-lg:col-span-6 max-lg:col-start-1 ${stackedColumns}`,
+    imageBleedClassName: bleedLeft,
+    fadeClassName: "col-span-4 col-start-6 max-lg:col-span-2 max-lg:col-start-5",
+    fadeGradientClassName: "bg-gradient-to-r from-transparent to-bg-page",
+  },
 };
 
 // Ordered small -> large. The default is picked from how wide the text column
@@ -102,7 +118,10 @@ const headingSizeScale = [
 
 function getDefaultHeadingSizeIndex(variant: ContentSplitFullImageVariant) {
   const hasWideTextColumn =
-    variant === "text-4-image-3-right" || variant === "image-4-left-text-3";
+    variant === "text-4-image-3-right" ||
+    variant === "image-4-left-text-3" ||
+    variant === "text-7-image-9-overlap-right" ||
+    variant === "image-9-overlap-left-text-7";
 
   return hasWideTextColumn ? 3 : 2;
 }
@@ -315,6 +334,21 @@ export function ContentSplitFullImageSectionV3({
             imageSrc={imageSrc}
           />
         </LayoutGridItem>
+
+        {config.fadeClassName ? (
+          <LayoutGridItem
+            alignY="stretch"
+            className={cx(
+              "pointer-events-none relative z-[1] row-start-1 max-md:hidden",
+              config.fadeClassName,
+            )}
+          >
+            <span
+              aria-hidden="true"
+              className={cx("absolute inset-0", config.fadeGradientClassName)}
+            />
+          </LayoutGridItem>
+        ) : null}
       </LayoutGrid>
     </section>
   );

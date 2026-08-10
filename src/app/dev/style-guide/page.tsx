@@ -256,7 +256,7 @@ const colors = [
   },
   {
     name: "cta-accent",
-    label: "CTA Accent",
+    label: "Accent CTA",
     controlKey: "ctaAccent",
     value: "",
     /* Its own token, not the brand token. `--color-cta-accent` carries the
@@ -1170,6 +1170,7 @@ function GuideSection({
   titleAs = "h2",
   body,
   children,
+  defaultOpen = false,
 }: {
   id: string;
   eyebrow: string;
@@ -1177,9 +1178,9 @@ function GuideSection({
   titleAs?: "h1" | "h2" | "h3";
   body?: string;
   children: React.ReactNode;
+  defaultOpen?: boolean;
 }) {
   const Title = titleAs;
-  const defaultOpen = titleAs === "h1";
 
   return (
     <section

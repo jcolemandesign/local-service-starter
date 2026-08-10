@@ -16,6 +16,8 @@ import {
 export type ContentFixedCoverFadeFormMode = "modal-prefill" | "regular";
 
 type ContentFixedCoverFadeSectionV2Props = {
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
   backgroundEyebrow: string;
   backgroundTitle: string;
   backgroundBody: string;
@@ -26,6 +28,21 @@ type ContentFixedCoverFadeSectionV2Props = {
   formMode?: ContentFixedCoverFadeFormMode;
   items: string[];
 };
+
+/** Both form panels in this section - the regular one and the modal-prefill
+ *  one - are the same card, so they take the surface toggles from one place. */
+function formCardClass(
+  cardFill: "solid" | "none" = "solid",
+  cardBorder: "on" | "off" = "on",
+) {
+  return [
+    "fluid-type-frame radius-medium ml-auto grid w-full max-w-4xl card-grid-gap-med border border-service-border bg-service-surface p-8 shadow-service max-lg:ml-0 max-md:p-6",
+    cardFill === "none" ? "!bg-transparent !shadow-none" : undefined,
+    cardBorder === "off" ? "!border-transparent" : undefined,
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
 
 function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -76,7 +93,13 @@ function SelectionButton({
   );
 }
 
-function ModalPrefillForm() {
+function ModalPrefillForm({
+  cardBorder,
+  cardFill,
+}: {
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
+}) {
   const { openRequestService } = useRequestService();
   const [systemType, setSystemType] = useState<RequestServiceSystemType | "">("");
   const [requestType, setRequestType] = useState<RequestServiceRequestType | "">("");
@@ -84,7 +107,7 @@ function ModalPrefillForm() {
 
   return (
     <form
-      className="fluid-type-frame radius-medium ml-auto grid w-full max-w-4xl card-grid-gap-med border border-service-border bg-service-surface p-8 shadow-service max-lg:ml-0 max-md:p-6"
+      className={formCardClass(cardFill, cardBorder)}
       onSubmit={(event) => {
         event.preventDefault();
 
@@ -138,6 +161,8 @@ function ModalPrefillForm() {
 }
 
 export function ContentFixedCoverFadeSectionV2({
+  cardBorder,
+  cardFill,
   backgroundTitle,
   backgroundBody,
   backgroundLabel,
@@ -203,7 +228,7 @@ export function ContentFixedCoverFadeSectionV2({
             alignY="middle"
             className="col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1"
           >
-            {formMode === "modal-prefill" ? <ModalPrefillForm /> : <form className="fluid-type-frame radius-medium ml-auto grid w-full max-w-4xl card-grid-gap-med border border-service-border bg-service-surface p-8 shadow-service max-lg:ml-0 max-md:p-6">
+            {formMode === "modal-prefill" ? <ModalPrefillForm cardBorder={cardBorder} cardFill={cardFill} /> : <form className={formCardClass(cardFill, cardBorder)}>
               <label
                 className={cx(
                   "type-text-sm",

@@ -2191,25 +2191,29 @@ export function getTemplateCopyFieldsForSection(
 
   if (component.includes("servicesbentocards")) {
     return [
-      {
-        example: "HVAC services",
-        name: "eyebrow",
-        purpose: "Short category label.",
-        target: "12-32 characters.",
-      },
-      {
-        example: "Service options for every season",
-        name: "heading",
-        purpose: "Services section headline.",
-        target: "32-68 characters.",
-      },
-      {
-        example:
-          "Choose the path that matches the problem, from urgent repairs to planned system upgrades and seasonal maintenance.",
-        name: "intro",
-        purpose: "Brief explanation of the larger service set.",
-        target: "100-190 characters.",
-      },
+      ...(section.variant === "split-header"
+        ? [
+            {
+              example: "HVAC services",
+              name: "eyebrow",
+              purpose: "Short category label.",
+              target: "12-32 characters.",
+            },
+            {
+              example: "Service options for every season",
+              name: "heading",
+              purpose: "Services section headline.",
+              target: "32-68 characters.",
+            },
+            {
+              example:
+                "Choose the path that matches the problem, from urgent repairs to planned system upgrades and seasonal maintenance.",
+              name: "intro",
+              purpose: "Brief explanation of the larger service set.",
+              target: "100-190 characters.",
+            },
+          ]
+        : []),
       {
         example: [
           "System Replacement - Compare repair and replacement paths when an older system is no longer dependable.",
@@ -3465,7 +3469,7 @@ export function getTemplateCopyFieldsForSection(
   }
 
   if (component.includes("sectionheadersplitlink")) {
-    return [
+    return withCardLinkFields(section, [
       {
         example: "Choose the service path that fits your system",
         name: "heading",
@@ -3477,7 +3481,7 @@ export function getTemplateCopyFieldsForSection(
           "Compare what each path involves before deciding, so the choice rests on the system's condition rather than on pressure.",
         name: "body",
         purpose:
-          "Short description above the link, on the opposite side to the heading. One or two sentences; it introduces the block below rather than repeating the headline.",
+          "Short description on the opposite side to the heading. One or two sentences; it introduces the block below rather than repeating the headline.",
         target: "90-180 characters.",
       },
       {
@@ -3486,7 +3490,7 @@ export function getTemplateCopyFieldsForSection(
         purpose: "Label for the single text link under the description.",
         target: "12-28 characters.",
       },
-    ];
+    ], (name) => name === "sectionAction");
   }
 
   if (component.includes("faqaccordionsidebar")) {

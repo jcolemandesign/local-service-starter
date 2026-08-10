@@ -7,14 +7,14 @@ import {
   HeroServiceAreaZipLookupSectionV3,
   type HeroServiceAreaZipLookupVariant,
 } from "@/components/sections/HeroServiceAreaZipLookupSectionV3";
-import { splitImageVariantOptions } from "@/content/section-style-options";
+import { fullImageSplitVariantOptions } from "@/content/section-style-options";
 
 type HeroServiceAreaZipLookupSectionLibraryDemoProps = Omit<
   ComponentProps<typeof HeroServiceAreaZipLookupSectionV3>,
   "variant"
 >;
 
-const layoutOptions = splitImageVariantOptions satisfies readonly {
+const layoutOptions = fullImageSplitVariantOptions satisfies readonly {
   label: string;
   value: HeroServiceAreaZipLookupVariant;
 }[];

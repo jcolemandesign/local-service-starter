@@ -15,7 +15,15 @@ type TrustBarSectionV3Props = TrustItemsProps & {
   className?: string;
 };
 
-type TrustLogosProps = {
+/** The two card-surface toggles, shared by every section in this file that
+ *  draws one. Same names and same defaults as everywhere else in the library -
+ *  see `cardStyleComponents`. */
+type CardStyleProps = {
+  cardBorder?: "on" | "off";
+  cardFill?: "solid" | "none";
+};
+
+type TrustLogosProps = CardStyleProps & {
   label: string;
   logos: readonly string[];
 };
@@ -25,9 +33,11 @@ function cx(...classes: Array<string | undefined>) {
 }
 
 function LogoPlaceholder({
+  cardBorder = "on",
+  cardFill = "solid",
   compact = false,
   name,
-}: {
+}: CardStyleProps & {
   compact?: boolean;
   name: string;
 }) {
@@ -36,12 +46,16 @@ function LogoPlaceholder({
       className={cx(
         "content-padding-x radius-medium flex items-center justify-center border border-service-border bg-bg-page shadow-service",
         compact ? "h-18" : "h-24",
+        cardFill === "none" ? "!bg-transparent !shadow-none" : undefined,
+        cardBorder === "off" ? "!border-transparent" : undefined,
       )}
     >
       <div
         className={cx(
           "type-label radius-4 flex w-full items-center justify-center border border-service-border bg-service-surface text-service-muted",
           compact ? "h-10" : "h-12",
+          cardFill === "none" ? "!bg-transparent" : undefined,
+          cardBorder === "off" ? "!border-transparent" : undefined,
         )}
       >
         {name}
@@ -77,8 +91,10 @@ function TextMarqueeItems({
 
 function LogoTrack({
   hidden = false,
+  cardBorder,
+  cardFill,
   logos,
-}: {
+}: CardStyleProps & {
   hidden?: boolean;
   logos: readonly string[];
 }) {
@@ -89,7 +105,7 @@ function LogoTrack({
     >
       {logos.map((logo) => (
         <li className="w-60 shrink-0 max-lg:w-52 max-md:w-44" key={logo}>
-          <LogoPlaceholder name={logo} />
+          <LogoPlaceholder cardBorder={cardBorder} cardFill={cardFill} name={logo} />
         </li>
       ))}
     </ul>
@@ -218,18 +234,25 @@ export function TrustMarqueeSectionV3({ items }: TrustItemsProps) {
 }
 
 export function TrustLogoMarqueeSectionV3({
+  cardBorder,
+  cardFill,
   logos,
 }: TrustLogosProps) {
   return (
     <section className="section-min-none section-space-vsml overflow-hidden bg-bg-page">
       <MeasuredMarquee className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
-        <LogoTrack logos={logos} />
+        <LogoTrack cardBorder={cardBorder} cardFill={cardFill} logos={logos} />
       </MeasuredMarquee>
     </section>
   );
 }
 
-export function TrustLogoGridSectionV3({ label, logos }: TrustLogosProps) {
+export function TrustLogoGridSectionV3({
+  cardBorder = "on",
+  cardFill = "solid",
+  label,
+  logos,
+}: TrustLogosProps) {
   const visibleLogos = logos.slice(0, 5);
 
   return (
@@ -240,7 +263,13 @@ export function TrustLogoGridSectionV3({ label, logos }: TrustLogosProps) {
           className="col-span-2 max-lg:col-span-7"
           measure="caption"
         >
-          <div className="radius-medium flex h-full items-center justify-center border border-service-border bg-service-surface px-5 py-4 text-center">
+          <div
+            className={cx(
+              "radius-medium flex h-full items-center justify-center border border-service-border bg-service-surface px-5 py-4 text-center",
+              cardFill === "none" ? "!bg-transparent" : undefined,
+              cardBorder === "off" ? "!border-transparent" : undefined,
+            )}
+          >
             <p className="type-text-xl wrap-balance font-semibold text-service-ink">
               {label}
             </p>
@@ -254,7 +283,12 @@ export function TrustLogoGridSectionV3({ label, logos }: TrustLogosProps) {
           <ul className="grid grid-cols-5 justify-items-center site-grid-gap max-lg:grid-cols-3 max-sm:grid-cols-2">
             {visibleLogos.map((logo) => (
               <li className="w-full" key={logo}>
-                <LogoPlaceholder compact name={logo} />
+                <LogoPlaceholder
+                  cardBorder={cardBorder}
+                  cardFill={cardFill}
+                  compact
+                  name={logo}
+                />
               </li>
             ))}
           </ul>
