@@ -52,7 +52,7 @@ export function SectionHeaderLargeSectionV3({
   align = "center",
   headingLevel = 2,
   headlineWrap = "balance",
-  size = "display-xl",
+  size = "heading-xl",
   title,
 }: SectionHeaderLargeSectionV3Props) {
   const Heading = headingLevel === 1 ? "h1" : "h2";

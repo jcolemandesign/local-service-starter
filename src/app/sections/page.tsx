@@ -104,6 +104,7 @@ import { DecisionQuestionTableFourSectionLibraryDemo } from "@/components/sectio
 import {
   sectionLibraryV3Collections,
   sectionLibraryV3Content,
+  servicesBentoPreviewItemCount,
 } from "@/content/section-library-v3";
 import { StyleGuideCloseAllButton } from "@/components/sections/StyleGuideCloseAllButton";
 import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
@@ -358,7 +359,13 @@ const sectionElements = {
     />
   ),
   "services-bento-cards-v2": (
-    <ServicesBentoCardsSectionV2 {...sectionLibraryV3Content.servicesBento} />
+    <ServicesBentoCardsSectionV2
+      {...sectionLibraryV3Content.servicesBento}
+      items={sectionLibraryV3Content.servicesBento.items.slice(
+        0,
+        servicesBentoPreviewItemCount,
+      )}
+    />
   ),
   "four-card-link-grid-v3": (
     <FourCardLinkGridSectionV3

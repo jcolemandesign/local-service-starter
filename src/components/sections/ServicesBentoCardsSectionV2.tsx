@@ -156,12 +156,21 @@ export function ServicesBentoCardsSectionV2({
     <section id="services-bento" className={colors.section}>
       <SevenColumnGrid className="items-start" minHeight="none" padding="med">
         {isSplitHeader ? (
+          /* `stretch` is what makes the sticky header below actually stick.
+             The grid's `items-start` leaves every item at content height, and a
+             sticky element inside a box its own height has nothing to travel
+             through - it renders as sticky and never moves. Stretching this one
+             column to the cards' row height gives it the distance; `h-fit` on
+             the child stops it stretching along with the column and losing the
+             travel again. Same pairing as the sticky media in
+             `ProcessImageChecklistSectionV3`. */
           <SevenColumnGridItem
             alignX="left"
+            alignY="stretch"
             className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
             measure="copyWide"
           >
-            <div className="fluid-type-frame sticky top-[var(--site-grid-inset-block)] text-left max-lg:static">
+            <div className="fluid-type-frame sticky top-[var(--site-grid-inset-block)] h-fit text-left max-lg:static">
               <p className={cx("type-label", colors.eyebrow)}>
                 {eyebrow}
               </p>

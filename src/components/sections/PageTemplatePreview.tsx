@@ -1901,7 +1901,7 @@ function getLargeSectionHeaderSize(
 ): LargeSectionHeaderSize {
   return (
     largeSectionHeaderSizes.find((size) => section.variant?.endsWith(size)) ??
-    "display-xl"
+    sectionLibraryV3Content.sectionHeaderLarge.size
   );
 }
 

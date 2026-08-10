@@ -1,6 +1,21 @@
 import { northStarFinancingProgram } from "@/content/financing";
 import { thankYouPageContent } from "@/content/thank-you";
 
+/**
+ * How many bento cards the builder previews draw.
+ *
+ * The demo set carries nine so the pattern's full nine-slot run exists for a
+ * real page to use, but at preview scale that reads as clutter. Six fills
+ * exactly two rows of the seven-column grid on the default pattern (3+2+2+2+2+3)
+ * and matches the split-header pattern's six slots exactly.
+ *
+ * Previews only. A staged page renders whatever its own copy supplies - North
+ * Star's supplies nine - so this caps the demo, never a client's content. Both
+ * preview call sites read it from here rather than each slicing to a six of
+ * their own.
+ */
+export const servicesBentoPreviewItemCount = 6;
+
 export const sectionLibraryV3Content = {
   hero: {
     eyebrow: "Local service starter",
@@ -80,7 +95,10 @@ export const sectionLibraryV3Content = {
   },
   sectionHeaderLarge: {
     align: "center" as const,
-    size: "display-xl" as const,
+    /** The default size every unset instance resolves to. Three renderers read
+     *  it from here rather than restating it, so moving the default is this
+     *  line. */
+    size: "heading-xl" as const,
     title: "A large section header that gives the next module room to land.",
   },
   heroLogoStatement: {

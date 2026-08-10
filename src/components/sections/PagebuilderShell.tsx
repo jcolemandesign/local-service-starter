@@ -133,6 +133,7 @@ import { usePromotedPalette } from "@/utils/use-promoted-palette";
 import {
   getCanonicalSectionLabel,
   sectionLibraryV3Content,
+  servicesBentoPreviewItemCount,
 } from "@/content/section-library-v3";
 import {
   calloutRevealGridVariantOptions,
@@ -356,6 +357,11 @@ type FeatureAsymmetricCardsAlign =
 const heroCompactAlignments = new Set<string>(
   heroCompactAlignOptions.map((option) => option.value),
 );
+
+/** The variant string a new large section header is seeded with. Built from the
+ *  library's own align and size so the seed cannot drift from the default the
+ *  three renderers resolve to. */
+const largeSectionHeaderDefaultVariant = `${sectionLibraryV3Content.sectionHeaderLarge.align}-${sectionLibraryV3Content.sectionHeaderLarge.size}`;
 
 const largeSectionHeaderSizeOptions = [
   { label: "display-xl", value: "display-xl" },
@@ -1045,7 +1051,7 @@ function createInitialWorkingStack(
                 ? section.variant ??
                   sectionLibraryV3Content.contentThreeColumnMixed.align
               : isLargeSectionHeaderSection(section)
-                ? section.variant ?? "center-display-xl"
+                ? section.variant ?? largeSectionHeaderDefaultVariant
               : isServicesBentoSection(section)
                 ? section.variant ?? servicesBentoVariantOptions[0].value
               : isServiceCalloutSplitPanelSection(section)
@@ -1210,7 +1216,7 @@ function updateSectionFromSwapOption(
                 nextOption.component === sectionHeaderCompactComponent
               ? sectionLibraryV3Content.heroCompact.align
               : nextOption.component === sectionHeaderLargeComponent
-                ? "center-display-xl"
+                ? largeSectionHeaderDefaultVariant
               : nextOption.component === servicesBentoComponent
                 ? servicesBentoVariantOptions[0].value
               : nextOption.component === serviceCalloutSplitPanelComponent
@@ -3890,7 +3896,7 @@ export function PagebuilderShell({
                   nextOption.component === sectionHeaderCompactComponent
                 ? sectionLibraryV3Content.heroCompact.align
                 : nextOption.component === sectionHeaderLargeComponent
-                  ? "center-display-xl"
+                  ? largeSectionHeaderDefaultVariant
                 : nextOption.component === servicesBentoComponent
                   ? servicesBentoVariantOptions[0].value
                 : nextOption.component === serviceCalloutSplitPanelComponent
@@ -4425,6 +4431,10 @@ export function PagebuilderShell({
         ) : isServicesBentoSection(section) ? (
           <ServicesBentoCardsSectionV2
             {...sectionLibraryV3Content.servicesBento}
+            items={sectionLibraryV3Content.servicesBento.items.slice(
+              0,
+              servicesBentoPreviewItemCount,
+            )}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
             colorRecipe={getSectionColorRecipe(section)}

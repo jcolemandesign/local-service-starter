@@ -156,6 +156,7 @@ import { pagebuilderRecipes, sectionModes } from "@/content/pagebuilder";
 import {
   getCanonicalSectionLabel,
   sectionLibraryV3Content,
+  servicesBentoPreviewItemCount,
 } from "@/content/section-library-v3";
 // The variant sets below this import predate the shared vocabulary and still
 // declare their values locally. New axes come from the shared list instead -
@@ -325,7 +326,7 @@ function getLargeSectionHeaderSize(
 ): LargeSectionHeaderSize {
   return (
     largeSectionHeaderSizes.find((size) => section.variant?.endsWith(size)) ??
-    "display-xl"
+    sectionLibraryV3Content.sectionHeaderLarge.size
   );
 }
 
@@ -543,6 +544,10 @@ function renderSectionElement(
       return (
         <ServicesBentoCardsSectionV2
           {...sectionLibraryV3Content.servicesBento}
+          items={sectionLibraryV3Content.servicesBento.items.slice(
+            0,
+            servicesBentoPreviewItemCount,
+          )}
           variant={getServicesBentoVariant(section)}
         />
       );
