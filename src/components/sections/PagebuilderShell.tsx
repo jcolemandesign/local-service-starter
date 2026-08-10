@@ -5062,20 +5062,31 @@ export function PagebuilderShell({
                             </span>
                           </label>
 
-                          {/* Hidden on a joined section. The band paints the
-                              ground for its whole run, so a recipe chosen here
-                              could never take effect - and an offered control
-                              that does nothing is worse than an absent one. */}
-                          <fieldset
-                            className={cx(
-                              "grid gap-2",
-                              section.joinAbove === "join" && "hidden",
-                            )}
-                          >
+                          {/* A joined section gets the heading and an
+                              explanation instead of the buttons. The band
+                              paints the ground for its whole run, so a recipe
+                              chosen here could never take effect - but removing
+                              the control outright read as the section not
+                              supporting recipes at all, rather than as its
+                              recipe living one section up. */}
+                          <fieldset className="grid gap-2">
                             <legend className="type-caption font-semibold text-current">
                               Color recipe
                             </legend>
-                            <div className="grid grid-cols-2 gap-2">
+                            {section.joinAbove === "join" ? (
+                              <p className="type-caption text-current/60">
+                                Set by the section this one is joined to - the
+                                band paints one ground for the whole run. Switch
+                                it to its own background to choose a recipe
+                                here.
+                              </p>
+                            ) : null}
+                            <div
+                              className={cx(
+                                "grid grid-cols-2 gap-2",
+                                section.joinAbove === "join" && "hidden",
+                              )}
+                            >
                               {availableColorRecipes.map((recipe) => {
                                 const isActive =
                                   getSectionColorRecipe(section) === recipe.id;

@@ -50,12 +50,12 @@ export function SectionHeaderSplitLinkSectionV3({
      * little breathing room survives with spacing off - and adds to the grid's
      * padding rather than replacing it when spacing is on.
      *
-     * A quarter of the smallest section step rather than a new value, so it
-     * tracks the scale if that step is ever retuned.
+     * Half the smallest section step rather than a new value, so it tracks the
+     * scale if that step is ever retuned.
      */
     <section
       className="bg-bg-page"
-      style={{ paddingBlock: "calc(var(--section-space-vsml) / 4)" }}
+      style={{ paddingBlock: "calc(var(--section-space-vsml) / 2)" }}
     >
       <SevenColumnGrid
         className="items-end"
