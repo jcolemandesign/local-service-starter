@@ -31,10 +31,16 @@ export function SiteIdentityEditor({
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  /** The path whose preview image failed to load, so a stored path that no
+   *  longer resolves is visible here rather than only as a missing mark in the
+   *  builder. Holding the path rather than a boolean resets itself: a different
+   *  path no longer matches, so the preview is retried. */
+  const [failedLogoSrc, setFailedLogoSrc] = useState("");
 
   const isDirty =
     identity.businessName !== savedIdentity.businessName ||
     identity.logoSrc !== savedIdentity.logoSrc;
+  const hasBrokenLogo = Boolean(identity.logoSrc) && failedLogoSrc === identity.logoSrc;
 
   function updateIdentity(patch: Partial<SiteIdentity>) {
     setIdentity((current) => ({ ...current, ...patch }));
@@ -59,7 +65,11 @@ export function SiteIdentityEditor({
 
       setIdentity(result.identity);
       setSavedIdentity(result.identity);
-      setStatus("Site identity saved.");
+      setStatus(
+        isDirty
+          ? "Site identity saved."
+          : "Re-checked. The saved path still resolves to a file.",
+      );
     } catch {
       setStatus("Could not save site identity.");
     } finally {
@@ -136,17 +146,20 @@ export function SiteIdentityEditor({
           JPEG, or WebP up to 2 MB.
         </p>
         <div className="radius-surface relative flex min-h-28 items-center justify-center border border-service-border bg-service-surface p-4">
-          {identity.logoSrc ? (
+          {identity.logoSrc && !hasBrokenLogo ? (
             <Image
               alt={identity.businessName || "Client logo"}
               className="object-contain"
               fill
+              onError={() => setFailedLogoSrc(identity.logoSrc)}
               sizes="176px"
               src={identity.logoSrc}
             />
           ) : (
             <span className="type-caption text-center text-service-muted">
-              {identity.businessName || "Logo preview"}
+              {hasBrokenLogo
+                ? "That path did not load"
+                : identity.businessName || "Logo preview"}
             </span>
           )}
         </div>
@@ -169,7 +182,18 @@ export function SiteIdentityEditor({
               accept="image/svg+xml,image/png,image/jpeg,image/webp"
               className="type-text-sm text-service-muted"
               disabled={isUploading}
-              onChange={(event) => void uploadLogo(event.target.files?.[0])}
+              // Clearing the input afterwards is what makes a second attempt at
+              // the SAME file work. A file input fires `change` only when the
+              // selection differs from what it already holds, so re-picking the
+              // file you just picked is silently a no-op - which reads as the
+              // upload button being dead.
+              onChange={(event) => {
+                const input = event.currentTarget;
+
+                void uploadLogo(input.files?.[0]).finally(() => {
+                  input.value = "";
+                });
+              }}
               type="file"
             />
           </label>
@@ -185,17 +209,24 @@ export function SiteIdentityEditor({
             />
           </label>
           <p className="type-caption text-service-muted">
-            Leave the path empty to use the business name as text.
+            Uploading saves on its own. This button is for the business name, a
+            hand-typed path, or clearing one - leave the path empty to use the
+            business name as text.
           </p>
 
           <div className="flex flex-wrap items-center gap-3">
+            {/* Not disabled when nothing has changed. Saving an unchanged
+                record re-runs the server's file check and reports whether the
+                stored path still resolves, which is the answer someone is
+                looking for when the mark has stopped appearing - and a dead
+                button reads as the save being broken. */}
             <button
               className="radius-4 min-h-10 border border-service-ink bg-service-ink px-4 type-label text-white transition-colors hover:bg-service-accent disabled:cursor-not-allowed disabled:opacity-50"
-              disabled={!isDirty || isSaving || isUploading}
+              disabled={isSaving || isUploading}
               onClick={() => void saveIdentity()}
               type="button"
             >
-              {isSaving ? "Saving…" : "Save site identity"}
+              {isSaving ? "Saving…" : "Save logo"}
             </button>
             {isUploading ? <span className="type-caption text-service-muted">Uploading…</span> : null}
             {status ? <span aria-live="polite" className="type-caption text-service-muted">{status}</span> : null}

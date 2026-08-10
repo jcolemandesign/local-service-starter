@@ -84,19 +84,34 @@ export const strategyWorkspaceFieldDefaults: StrategyWorkspaceFields = {
 
 const projectsPath = path.join(process.cwd(), "src", "content", "projects");
 
-export function createClientSlug(value: string) {
-  const slug = value
+function toClientSlug(value: string) {
+  return value
     .toLowerCase()
     .replace(/&/g, " and ")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 80);
-
-  return slug || "client-intake";
 }
 
+/** Name a project, falling back to a placeholder when there is nothing to
+ *  slugify. For creating a workspace, where some name has to be chosen. */
+export function createClientSlug(value: string) {
+  return toClientSlug(value) || "client-intake";
+}
+
+/**
+ * Read a client slug out of untrusted input. Empty in, empty out.
+ *
+ * This deliberately does NOT fall back to `createClientSlug`'s placeholder.
+ * Every caller here guards with `if (!clientSlug)` - "missing slug" is a 400,
+ * or the cue to pick a default project - and a placeholder returned for empty
+ * input walks straight past that guard as if a real project had been named.
+ * That is what sent `/dev/pagebuilder` with no `?client=` to a "client-intake"
+ * project that does not exist: the read failed to an empty identity, so every
+ * nav in the builder rendered the demo wordmark instead of the client's logo.
+ */
 export function sanitizeClientSlug(value: unknown) {
-  return typeof value === "string" ? createClientSlug(value) : "";
+  return typeof value === "string" ? toClientSlug(value) : "";
 }
 
 export function getStrategyWorkspaceOutputPath(clientSlug: string) {
