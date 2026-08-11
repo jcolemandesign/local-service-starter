@@ -135,7 +135,13 @@ export function HeroServicesSectionV3({
               {visibleCards.map((card, index) => (
                 <a
                   className={[
-                    "radius-medium flex min-h-14 items-center gap-3 border border-white/65 bg-bg-surface/92 px-4 py-3 text-service-ink shadow-service backdrop-blur-sm transition duration-200 hover:-translate-y-0.5 hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
+                    // `recipe-card-context` is explicit here because the fill
+                    // cannot be an unmodified card token: these sit on the
+                    // photograph and the 92% is what lets it read through. An
+                    // opacity-modified class is a different class, so the
+                    // token-keyed rule cannot see it - this is the escape hatch
+                    // the context class exists for.
+                    "recipe-card-context radius-medium flex min-h-14 items-center gap-3 border border-white/65 bg-bg-surface/92 px-4 py-3 text-service-ink shadow-service backdrop-blur-sm transition duration-200 hover:-translate-y-0.5 hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
                     cardFill === "none" &&
                       "!bg-transparent !shadow-none !backdrop-blur-none",
                     cardBorder === "off" && "!border-transparent",

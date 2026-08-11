@@ -101,8 +101,13 @@ function HorizontalCarouselCard({
           "fluid-type-frame radius-medium flex h-full flex-col justify-between border p-7 shadow-service max-md:w-[calc(100vw-3rem)] max-md:min-h-[24rem] max-md:p-6",
           cardSizeClasses[size],
           isFeatured
-            ? "border-service-ink bg-service-ink text-white"
-            : "border-service-border bg-bg-page text-service-ink",
+            // `bg-bg-dark`, not `bg-service-ink`. Ink is a TEXT token: inside a
+            // recipe `--live-service-ink` is `--text-strong`, so an ink fill
+            // became the headline colour - white on every dark recipe, which
+            // put this card's white copy on a white field. Dark is an actual
+            // dark surface and no recipe remaps it, so the inversion holds.
+            ? "border-bg-dark bg-bg-dark text-white"
+            : "border-service-border bg-surface-raised text-service-ink",
           // The featured card is an inverted dark panel with white text, so
           // clearing its fill would leave unreadable copy - only the standard
           // cards follow the fill toggle.

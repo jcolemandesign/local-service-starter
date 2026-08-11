@@ -163,7 +163,7 @@ function ModalMenu({
     <AnimatePresence initial={false} onExitComplete={onExitComplete}>
       {isOpen ? (
         <motion.div
-          className="fixed inset-0 z-40 hidden h-dvh overflow-hidden bg-service-ink text-white max-lg:flex"
+          className="fixed inset-0 z-40 hidden h-dvh overflow-hidden bg-bg-dark text-white max-lg:flex"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

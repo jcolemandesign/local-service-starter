@@ -44,7 +44,7 @@ function LogoPlaceholder({
   return (
     <div
       className={cx(
-        "content-padding-x radius-medium flex items-center justify-center border border-service-border bg-bg-page shadow-service",
+        "content-padding-x radius-medium flex items-center justify-center border border-service-border bg-surface-raised shadow-service",
         compact ? "h-18" : "h-24",
         cardFill === "none" ? "!bg-transparent !shadow-none" : undefined,
         cardBorder === "off" ? "!border-transparent" : undefined,

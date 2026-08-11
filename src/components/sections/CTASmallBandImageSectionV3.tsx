@@ -16,7 +16,7 @@ export type CTASmallBandImageSectionV3Props = {
 
 const recipeClasses = {
   action:
-    "!border-service-accent !bg-service-accent !text-white hover:!border-service-ink hover:!bg-service-ink",
+    "!border-service-accent !bg-service-accent !text-white hover:!border-bg-dark hover:!bg-bg-dark",
   band: "bg-service-surface shadow-service",
   body: "text-service-muted",
   border: "border-service-border",

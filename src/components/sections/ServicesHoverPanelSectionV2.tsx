@@ -191,7 +191,11 @@ export function ServicesHoverPanelSectionV2({
               cardBorder === "off" ? "!border-transparent" : undefined,
             )}
           >
-            <article className="content-padding relative col-start-1 row-start-1 flex h-full items-end overflow-hidden bg-service-ink text-white">
+            {/* The well and the scrim over the photograph are both `bg-dark`,
+                an absolute dark. As `service-ink` they resolved to the recipe's
+                headline colour, so on a dark recipe the scrim LIGHTENED the
+                photo and took this panel's white copy with it. */}
+            <article className="content-padding relative col-start-1 row-start-1 flex h-full items-end overflow-hidden bg-bg-dark text-white">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                   key={`${activeItem.title}-background`}
@@ -208,9 +212,9 @@ export function ServicesHoverPanelSectionV2({
                   transition={panelTransition}
                 >
                   <PlaceholderBackground />
-                  <div className="absolute inset-0 bg-service-ink/45" aria-hidden="true" />
+                  <div className="absolute inset-0 bg-bg-dark/45" aria-hidden="true" />
                   <div
-                    className="absolute inset-0 bg-linear-to-t from-service-ink via-service-ink/45 to-transparent"
+                    className="absolute inset-0 bg-linear-to-t from-bg-dark via-bg-dark/45 to-transparent"
                     aria-hidden="true"
                   />
                 </motion.div>
@@ -286,15 +290,15 @@ export function ServicesHoverPanelSectionV2({
             {items.map((item) => (
               <article
                 className={cx(
-                  "radius-medium media-min-medium relative flex w-full shrink-0 snap-start snap-always items-end overflow-hidden border border-service-border bg-service-ink text-white shadow-service",
+                  "radius-medium media-min-medium relative flex w-full shrink-0 snap-start snap-always items-end overflow-hidden border border-service-border bg-bg-dark text-white shadow-service",
                   cardBorder === "off" ? "!border-transparent" : undefined,
                 )}
                 key={item.title}
               >
                 <PlaceholderBackground />
-                <div className="absolute inset-0 bg-service-ink/45" aria-hidden="true" />
+                <div className="absolute inset-0 bg-bg-dark/45" aria-hidden="true" />
                 <div
-                  className="absolute inset-0 bg-linear-to-t from-service-ink via-service-ink/55 to-service-ink/10"
+                  className="absolute inset-0 bg-linear-to-t from-bg-dark via-bg-dark/55 to-bg-dark/10"
                   aria-hidden="true"
                 />
 

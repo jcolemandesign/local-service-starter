@@ -122,6 +122,19 @@ export const CARD_CONTEXT_COVERAGE = {
    * sections folder the count scans but are controls in the tool rather than
    * sections on a page, so they were inflating this figure rather than
    * contributing to it.
+   *
+   * Then 130 -> 129, and this one was a miscount rather than a change. The
+   * counter matched a card token with a word boundary, which an opacity
+   * modifier satisfies - so `bg-service-surface/70` read as covered even though
+   * Tailwind emits it as `.bg-service-surface\/70` and the token-keyed selector
+   * cannot match it. The single section it flattered was the link-panel
+   * footer's `aria-hidden` half-panel, which holds no content and should never
+   * have been in the figure. Softened fills are now excluded, and a card that
+   * genuinely needs one carries `.recipe-card-context` instead.
+   *
+   * Back to 130 in the same pass: the sticky image panel's card was painted
+   * `bg-bg-page` - the ground token - and now takes the raised card token like
+   * the rest, so it counts for real rather than not at all.
    */
   covered: 130,
   total: 148,

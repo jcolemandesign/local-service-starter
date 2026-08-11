@@ -73,7 +73,7 @@ export function TestimonialsMasonrySectionV3({
                 {items.map((item, index) => (
                   <article
                     className={cx(
-                      "fluid-type-frame radius-medium mb-6 break-inside-avoid border border-service-border bg-bg-page p-7 shadow-service",
+                      "fluid-type-frame radius-medium mb-6 break-inside-avoid border border-service-border bg-surface-raised p-7 shadow-service",
                       cardFill === "none" && "!bg-transparent !shadow-none",
                       cardBorder === "off" && "!border-transparent",
                     )}

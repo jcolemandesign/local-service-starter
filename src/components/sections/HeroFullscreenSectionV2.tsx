@@ -33,9 +33,9 @@ function cx(...classes: Array<string | undefined>) {
 
 function FullBleedImage() {
   return (
-    <div className="absolute inset-0 overflow-hidden bg-service-ink" aria-hidden="true">
+    <div className="absolute inset-0 overflow-hidden bg-bg-dark" aria-hidden="true">
       <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.44),rgb(23_33_29_/_0.12)),linear-gradient(45deg,rgb(255_255_255_/_0.16)_0_1px,transparent_1px_20px)]" />
-      <div className="absolute inset-0 bg-service-ink/20" />
+      <div className="absolute inset-0 bg-bg-dark/20" />
     </div>
   );
 }
@@ -53,11 +53,11 @@ export function HeroFullscreenSectionV2({
   const HeadingTag = `h${headingLevel}` as const;
 
   return (
-    <section className="relative overflow-hidden bg-service-ink text-white">
+    <section className="relative overflow-hidden bg-bg-dark text-white">
       <FullBleedImage />
-      <div className="absolute inset-0 bg-service-ink/35" aria-hidden="true" />
+      <div className="absolute inset-0 bg-bg-dark/35" aria-hidden="true" />
       <div
-        className="absolute inset-0 bg-linear-to-t from-service-ink via-service-ink/52 to-transparent"
+        className="absolute inset-0 bg-linear-to-t from-bg-dark via-bg-dark/52 to-transparent"
         aria-hidden="true"
       />
 

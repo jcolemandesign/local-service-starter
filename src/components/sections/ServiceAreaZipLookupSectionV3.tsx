@@ -170,7 +170,7 @@ export function ServiceAreaZipLookupSectionV3({
                   <button
                     type="submit"
                     onClick={() => setHasSubmitted(true)}
-                    className="radius-button min-h-12 cursor-pointer border border-service-accent bg-service-accent px-5 type-caption font-semibold text-white transition-colors hover:border-service-ink hover:bg-service-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
+                    className="radius-button min-h-12 cursor-pointer border border-service-accent bg-service-accent px-5 type-caption font-semibold text-white transition-colors hover:border-bg-dark hover:bg-bg-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent"
                   >
                     {submitLabel}
                   </button>

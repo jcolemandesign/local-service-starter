@@ -131,7 +131,7 @@ function TestimonialCard({
         "radius-medium flex min-h-full flex-col justify-between border p-8 max-md:p-6",
         cardFill === "none"
           ? "bg-transparent shadow-none"
-          : "bg-bg-page shadow-service",
+          : "bg-surface-raised shadow-service",
         cardBorder === "off" ? "border-transparent" : "border-service-border",
         className,
       )}

@@ -97,7 +97,7 @@ export function ProcessImageChecklistSectionV3({
                   key={index}
                   style={{ "--reveal-index": index } as CSSProperties}
                 >
-                  <span className="radius-4 flex size-8 shrink-0 items-center justify-center bg-service-ink text-xs font-semibold text-white">
+                  <span className="radius-4 flex size-8 shrink-0 items-center justify-center bg-bg-dark text-xs font-semibold text-white">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <span className="type-text-md wrap-pretty min-w-0 pt-0.5 font-medium text-service-ink">

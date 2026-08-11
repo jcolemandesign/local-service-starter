@@ -88,7 +88,7 @@ function FeatureOverlapCard({
   return (
     <article
       className={cx(
-        "fluid-type-frame radius-medium relative z-10 border border-service-border bg-bg-page p-10 shadow-service max-md:p-6",
+        "fluid-type-frame radius-medium relative z-10 border border-service-border bg-surface-raised p-10 shadow-service max-md:p-6",
         positionClass[item.position],
         mirrored ? "max-lg:translate-x-0 lg:-translate-x-10" : "max-lg:translate-x-0 lg:translate-x-10",
         cardFill === "none" ? "!bg-transparent !shadow-none" : undefined,

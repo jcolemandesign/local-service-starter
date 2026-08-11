@@ -72,7 +72,7 @@ export function TestimonialsCarouselSectionV3({
   // box classes - the sizer is what reserves the row's height, so a fill or
   // border applied to only one of them would resize the carousel.
   const cardClass = cx(
-    "content-padding radius-medium border border-service-border bg-bg-page text-center shadow-service",
+    "content-padding radius-medium border border-service-border bg-surface-raised text-center shadow-service",
     cardFill === "none" && "!bg-transparent !shadow-none",
     cardBorder === "off" && "!border-transparent",
   );

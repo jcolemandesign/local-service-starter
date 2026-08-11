@@ -48,7 +48,13 @@ export function QuickPageLinksSectionV2({
             {pageLinks.map((link) => (
               <a
                 className={cx(
-                  "radius-medium group/page-link grid min-h-28 content-between border border-service-border bg-service-surface/70 p-4 transition-colors hover:border-service-accent hover:bg-bg-page",
+                  // The fill is an unmodified card token on purpose: the recipe
+                  // card context keys on the class itself, so `/70` softening
+                  // would leave the card ungrounded. Hover is carried by the
+                  // accent border alone, as on the three sibling link grids -
+                  // a hover fill change is a no-op under a recipe, where every
+                  // card token resolves to the same `--recipe-card`.
+                  "radius-medium group/page-link grid min-h-28 content-between border border-service-border bg-service-surface p-4 transition-colors hover:border-service-accent",
                   cardFill === "none" && "!bg-transparent",
                   cardBorder === "off" && "!border-transparent",
                 )}

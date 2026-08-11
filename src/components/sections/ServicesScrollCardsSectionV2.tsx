@@ -104,7 +104,10 @@ function ViewAllCard({ label }: { label: string }) {
       className={cx(
         "fluid-type-frame",
         "radius-medium",
-        "group/service-card flex h-[68svh] w-[min(39vw,495px)] shrink-0 cursor-pointer flex-col border border-service-border bg-service-ink p-8 text-white shadow-service transition-transform duration-300 ease-out hover:-translate-y-2 max-lg:h-auto max-lg:min-h-[360px] max-lg:w-full",
+        // `bg-bg-dark`: ink is a text token and resolved to the recipe's
+        // headline colour, which is white on every dark recipe - this card's
+        // white copy on a white field.
+        "group/service-card flex h-[68svh] w-[min(39vw,495px)] shrink-0 cursor-pointer flex-col border border-service-border bg-bg-dark p-8 text-white shadow-service transition-transform duration-300 ease-out hover:-translate-y-2 max-lg:h-auto max-lg:min-h-[360px] max-lg:w-full",
       )}
       href="#services"
     >
@@ -122,7 +125,12 @@ function ViewAllCard({ label }: { label: string }) {
       <div className="flex flex-1 items-center justify-center">
         <span
           aria-hidden="true"
-          className="flex size-40 items-center justify-center rounded-full bg-bg-page text-7xl leading-none text-service-ink transition-transform duration-300 ease-out group-hover/service-card:scale-105 max-md:size-32 max-md:text-6xl"
+          // Absolute light on an absolute dark card, the same way every other
+          // dark band in the library paints its inset elements. The old
+          // `bg-bg-page`/`text-service-ink` pair only read because the card was
+          // ink: both resolve contextually, so on a dark recipe the disc sank
+          // into the card it is supposed to sit on.
+          className="flex size-40 items-center justify-center rounded-full bg-white text-7xl leading-none text-bg-dark transition-transform duration-300 ease-out group-hover/service-card:scale-105 max-md:size-32 max-md:text-6xl"
         >
           -&gt;
         </span>

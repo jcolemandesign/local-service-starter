@@ -176,7 +176,7 @@ export function FooterLinkPanelSectionV3({
                   <li key={link.label}>
                     <a
                       aria-label={link.label}
-                      className="flex size-10 items-center justify-center rounded-sm bg-service-accent text-sm font-black uppercase tracking-normal text-white transition-colors hover:bg-service-ink"
+                      className="flex size-10 items-center justify-center rounded-sm bg-service-accent text-sm font-black uppercase tracking-normal text-white transition-colors hover:bg-bg-dark"
                       href={link.href}
                     >
                       <SocialMark label={link.label} />
@@ -187,7 +187,7 @@ export function FooterLinkPanelSectionV3({
             </div>
 
             <a
-              className="radius-button mt-body-actions-md inline-flex min-h-16 w-fit min-w-72 items-center justify-center gap-4 bg-service-accent px-8 type-heading-sm text-white transition-colors hover:bg-service-ink max-sm:min-w-0 max-sm:w-full"
+              className="radius-button mt-body-actions-md inline-flex min-h-16 w-fit min-w-72 items-center justify-center gap-4 bg-service-accent px-8 type-heading-sm text-white transition-colors hover:bg-bg-dark max-sm:min-w-0 max-sm:w-full"
               href="#"
             >
               Back To Top
