@@ -4,6 +4,11 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { PageTemplatePreview } from "@/components/sections/PageTemplatePreview";
 import { readPromotedPalette } from "@/utils/promoted-palette";
+import { readSiteIdentity } from "@/utils/site-identity";
+import {
+  listProjectWorkspaces,
+  sanitizeClientSlug,
+} from "@/utils/strategy-workspace";
 import { StyleGuidePreviewSurface } from "@/components/sections/StyleGuideLiveSurface";
 import type { PageTemplateSummary } from "@/components/sections";
 
@@ -19,6 +24,7 @@ type TemplatePreviewPageProps = {
   params: Promise<{
     templateId: string;
   }>;
+  searchParams: Promise<{ client?: string | string[] }>;
 };
 
 type PageTemplatesFile = {
@@ -34,6 +40,7 @@ const pageTemplatesPath = path.join(
 
 export default async function TemplatePreviewPage({
   params,
+  searchParams,
 }: TemplatePreviewPageProps) {
   const { templateId } = await params;
   const templates = await readPageTemplates();
@@ -42,6 +49,20 @@ export default async function TemplatePreviewPage({
   if (!template) {
     notFound();
   }
+
+  // Without an identity the nav falls back to its demo wordmark, so this route
+  // showed the placeholder LOGO while pagebuilder showed the real one. Resolved
+  // exactly as `/dev/pagebuilder` resolves it, and for the same reason recorded
+  // there: a template is reached from the builder navigation with no project
+  // query string, and an empty slug silently produces an empty identity. A
+  // template is not client-scoped, so the most recently edited workspace is the
+  // same default the project index presents first.
+  const client = (await searchParams).client;
+  const requestedClientSlug = sanitizeClientSlug(
+    Array.isArray(client) ? client[0] : client ?? "",
+  );
+  const clientSlug =
+    requestedClientSlug || (await listProjectWorkspaces())[0]?.clientSlug || "";
 
   return (
     <StyleGuidePreviewSurface>
@@ -53,6 +74,7 @@ export default async function TemplatePreviewPage({
             ...section,
             instruction: section.instruction ?? "",
           }))}
+          siteIdentity={await readSiteIdentity(clientSlug)}
         />
       </main>
     </StyleGuidePreviewSurface>
