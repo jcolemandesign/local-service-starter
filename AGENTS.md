@@ -69,6 +69,8 @@ Sections whose height is viewport-derived (a `section-min-*` min-height) must be
 
 New toggle axes follow the copy-affecting vs copy-neutral rule in `docs/builder-workflow.md` §3: axes that change which copy fields a section asks for ride `variant` / `ratio` / the field specs; purely visual axes get their own field and must never be folded into `variant`.
 
+Sections own no motion, the same way they own no colour. A section marks which of its elements are revealable units and which index each one is; whether any of it moves is the section frame's animation attribute. Read `docs/animation-axis-handoff.md` before adding a marker class, marking a new section, or tuning any animation token.
+
 Tokens should be design-facing and easy to reference while building.
 
 These are the tokens the system actually uses. Use them — do not invent parallel names.

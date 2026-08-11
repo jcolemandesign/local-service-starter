@@ -10,6 +10,9 @@ jobs:
 - `architecture-review-2026-07.md` — decisions log. Why things are shaped the
   way they are, which findings were disproved, what is left in Phase 4. Read it
   before structural work.
+- `animation-axis-handoff.md` — the per-section entrance animation axis: how it
+  works, which sections are marked or deliberately excluded, and the open
+  problems. Read it before touching animation or adding a marker class.
 - `pageworks-pipeline.md`, `staged-copy-workflow-handoff.md` — historical, both
   flagged as such at the top. Good for vocabulary and for the original
   mechanism write-ups; wrong in specifics.
