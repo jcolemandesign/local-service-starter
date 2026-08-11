@@ -1148,6 +1148,53 @@ body {
     );
   }
 
+  /* The same ramp, applied to the photograph instead of over it.
+   *
+   * The fade above paints a slab of the section's ground on top of the image,
+   * which is invisible only while that ground is a flat colour. Give the
+   * section a background texture - a gradient, grain, a ground image - and the
+   * slab no longer matches what sits beside it, so its edge reappears as a
+   * hard boundary down the photo. The panel was faking the ground, and a fake
+   * only holds while the real one is featureless.
+   *
+   * Masking the image removes the fake: nothing is painted over the photo, the
+   * photo simply dissolves, and whatever the section actually has behind it -
+   * texture, gradient, image, plain colour - is what shows through. There is
+   * no colour to keep in step, so there is nothing left to fall out of step.
+   *
+   * The 41% stop is where the overlap ends as a fraction of the image panel:
+   * the panel is nine columns plus one inset bleed, the overlap is the first
+   * four of them, and that ratio holds between 39% and 41% from a 1366 laptop
+   * to a 2560 display because the column, gap and inset clamps move together.
+   * Alpha stops are the inverse of the slab's, so the curve is unchanged. */
+  .full-image-split-image-mask-right {
+    mask-image: linear-gradient(
+      to right,
+      rgb(0 0 0 / 0) 0%,
+      rgb(0 0 0 / 0.02) 6%,
+      rgb(0 0 0 / 0.1) 12%,
+      rgb(0 0 0 / 0.26) 19%,
+      rgb(0 0 0 / 0.48) 25%,
+      rgb(0 0 0 / 0.71) 32%,
+      rgb(0 0 0 / 0.89) 37%,
+      rgb(0 0 0 / 1) 41%
+    );
+  }
+
+  .full-image-split-image-mask-left {
+    mask-image: linear-gradient(
+      to left,
+      rgb(0 0 0 / 0) 0%,
+      rgb(0 0 0 / 0.02) 6%,
+      rgb(0 0 0 / 0.1) 12%,
+      rgb(0 0 0 / 0.26) 19%,
+      rgb(0 0 0 / 0.48) 25%,
+      rgb(0 0 0 / 0.71) 32%,
+      rgb(0 0 0 / 0.89) 37%,
+      rgb(0 0 0 / 1) 41%
+    );
+  }
+
   .container-site,
   .container-content,
   .container-narrow {

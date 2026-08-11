@@ -27,8 +27,16 @@ type HeroSplitFullHeightSectionV3Props = {
 };
 
 type HeroVariantConfig = {
-  fadeClassName?: string;
-  fadeGradientClassName?: string;
+  /**
+   * Ramp that dissolves the photo into the section behind it, on the overlap
+   * variants where the copy sits over the image.
+   *
+   * Carried by the image rather than by a ground-coloured panel laid on top of
+   * it. A panel has to match the section's ground exactly, which it can only do
+   * while that ground is one flat colour - a background texture puts a seam
+   * back down the photo. See the mask classes in `globals.css`.
+   */
+  imageMaskClassName?: string;
   imageClassName: string;
   imagePanelClassName: string;
   imageSlotLabel: string;
@@ -74,8 +82,7 @@ const variantConfig: Record<HeroSplitFullHeightVariant, HeroVariantConfig> = {
     imagePanelClassName:
       "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
     imageSlotLabel: "Image area: columns 6-14; overlaps columns 6-9",
-    fadeClassName: "col-span-4 col-start-6",
-    fadeGradientClassName: "full-image-split-fade-right",
+    imageMaskClassName: "full-image-split-image-mask-right",
   },
   "image-9-overlap-left-text-7": {
     textClassName: "relative z-10 col-span-9 col-start-6",
@@ -83,8 +90,7 @@ const variantConfig: Record<HeroSplitFullHeightVariant, HeroVariantConfig> = {
     imagePanelClassName:
       "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
     imageSlotLabel: "Image area: columns 1-9; overlaps columns 6-9",
-    fadeClassName: "col-span-4 col-start-6",
-    fadeGradientClassName: "full-image-split-fade-left",
+    imageMaskClassName: "full-image-split-image-mask-left",
   },
 };
 
@@ -246,30 +252,17 @@ export function HeroSplitFullHeightSectionV3({
           )}
         >
           <SampleImagePanel
-            className={config.imagePanelClassName}
+            className={cx(config.imagePanelClassName, config.imageMaskClassName)}
             imageAlt={imageAlt}
             imageSrc={imageSrc}
             slotLabel={config.imageSlotLabel}
           />
         </LayoutGridItem>
 
-        {config.fadeClassName ? (
-          <LayoutGridItem
-            alignY="stretch"
-            className={cx(
-              "pointer-events-none relative z-[1] row-start-1 max-lg:hidden",
-              config.fadeClassName,
-            )}
-          >
-            <span
-              aria-hidden="true"
-              className={cx(
-                "absolute inset-x-0 bottom-[calc(0px_-_var(--site-grid-inset-block))] top-[calc(0px_-_var(--site-grid-inset-block))]",
-                config.fadeGradientClassName,
-              )}
-            />
-          </LayoutGridItem>
-        ) : null}
+        {/* No fade panel. The ramp rides the image itself now - see
+            `imageMaskClassName` - so the section's own ground shows through
+            underneath, texture and all, instead of being impersonated by a
+            slab of flat colour that only matched while the ground was plain. */}
       </LayoutGrid>
     </section>
   );
