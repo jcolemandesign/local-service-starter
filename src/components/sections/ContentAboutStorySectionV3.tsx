@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
@@ -58,7 +59,14 @@ export function ContentAboutStorySectionV3({
           className="col-span-3 col-start-3 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3"
           alignY="top"
         >
-          <article className="fluid-type-frame">
+          {/* Two units: the prose column, then the aside beside it. The
+              paragraphs inside are deliberately not staggered - a stack of body
+              copy arriving line by line reads as a loading state rather than as
+              a composition. */}
+          <article
+            className="reveal-on-scroll fluid-type-frame"
+            style={{ "--reveal-index": 0 } as CSSProperties}
+          >
             <h2 className="type-heading-xl text-service-ink">{title}</h2>
             <p className="type-text-xl measure-lead wrap-pretty mt-display-body text-service-muted">
               {intro}
@@ -84,7 +92,10 @@ export function ContentAboutStorySectionV3({
           className="col-span-2 col-start-6 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3"
           alignY="top"
         >
-          <aside className="grid card-grid-gap-lrg">
+          <aside
+            className="reveal-on-scroll grid card-grid-gap-lrg"
+            style={{ "--reveal-index": 1 } as CSSProperties}
+          >
             <blockquote className="fluid-type-frame border-y border-service-border py-7">
               <p className="type-heading-md wrap-pretty text-service-ink">
                 {pullquote}

@@ -79,14 +79,12 @@ describe("section style override specs", () => {
       "cardIntensity",
       "borderSwatch",
       "borderIntensity",
+      "animation",
       "reduceTopPadding",
       "reduceBottomPadding",
     ]);
     // Spacing is copy-neutral on every section, so a non-card section still
-    // gets it - only the card controls are conditional. This sample also
-    // carries `animation`, and the card sample above does not, so the pair
-    // covers both directions of that axis's gating too: the header marks a
-    // revealable unit, the card two-up does not yet.
+    // gets it - only the card controls are conditional.
     expect(plainNames).toEqual([
       "colorRecipe",
       "joinAbove",
@@ -120,7 +118,7 @@ describe("section style override specs", () => {
       name: "Card Two Up",
     });
 
-    expect(fields).toHaveLength(13);
+    expect(fields).toHaveLength(14);
     expect(fields.every((field) => field.value === "")).toBe(true);
     expect(fields.every((field) => field.kind === "meta")).toBe(true);
     expect(fields.map((field) => field.name)).toEqual([
@@ -135,6 +133,7 @@ describe("section style override specs", () => {
       `${styleFieldPrefix}.cardIntensity`,
       `${styleFieldPrefix}.borderSwatch`,
       `${styleFieldPrefix}.borderIntensity`,
+      `${styleFieldPrefix}.animation`,
       `${styleFieldPrefix}.reduceTopPadding`,
       `${styleFieldPrefix}.reduceBottomPadding`,
     ]);

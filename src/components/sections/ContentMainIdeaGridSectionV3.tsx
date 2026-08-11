@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import type { SectionColorRecipe } from "@/content/section-color-recipes";
 
@@ -96,12 +97,18 @@ export function ContentMainIdeaGridSectionV3({
               when the points win, the leftover has to go somewhere. Centering
               splits it above and below as even padding instead of pooling it
               all under the body. */}
+          {/* The lead card reveals first and the four points follow it. It is
+              the same card family as they are, so leaving it static while its
+              neighbours arrived would read as one card failing to animate
+              rather than as a deliberate anchor. */}
           <article
             className={cx(
+              "reveal-on-scroll",
               "fluid-type-frame flex h-full flex-col justify-center rounded-[var(--radius-surface-token)] border p-8 max-md:p-6",
               colors.card,
               cardOverride,
             )}
+            style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <div>
               <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
@@ -138,10 +145,13 @@ export function ContentMainIdeaGridSectionV3({
           >
             <article
               className={cx(
+                "reveal-on-scroll",
                 "fluid-type-frame flex h-full min-h-44 flex-col justify-between rounded-[var(--radius-surface-token)] border p-5 max-md:min-h-0",
                 colors.card,
                 cardOverride,
               )}
+              // Offset by one: the lead card above holds index 0.
+              style={{ "--reveal-index": index + 1 } as CSSProperties}
             >
               <p className={cx("type-label", colors.index)}>
                 {String(index + 1).padStart(2, "0")}

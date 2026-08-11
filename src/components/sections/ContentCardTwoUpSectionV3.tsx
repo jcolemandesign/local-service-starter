@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 
 export type ContentCardTwoUpItem = {
@@ -70,11 +71,13 @@ export function ContentCardTwoUpSectionV3({
             >
               <article
                 className={cx(
+                  "reveal-on-scroll",
                   "fluid-type-frame h-full min-w-0 rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-10 text-service-ink shadow-service max-md:p-8",
                   "recipe-card-context",
                   cardFill === "none" && "!bg-transparent !shadow-none",
                   cardBorder === "off" && "!border-transparent",
                 )}
+                style={{ "--reveal-index": index } as CSSProperties}
               >
                 <h3 className="type-heading-lg wrap-pretty text-service-ink">
                   {item.title}

@@ -721,6 +721,26 @@ export const animationComponents = new Set<string>([
   "SectionHeaderCompactSectionV3",
   "SectionHeaderLargeSectionV3",
   "SectionHeaderSplitLinkSectionV3",
+  /**
+   * Narrative, first pass: the ones whose units are unambiguous.
+   *
+   * Two shapes appear here and both matter. The two grids stagger their cards,
+   * the lead card of the main-idea grid included, because it is the same card
+   * family as the four beside it. The two splits reveal as two units in reading
+   * order - prose then aside, portrait then paragraph - and deliberately do NOT
+   * stagger the paragraphs inside, because a stack of body copy arriving line by
+   * line reads as a loading state rather than as a composition.
+   *
+   * The rest of the family is still to do: the bento about-company, the
+   * three-column mixed, the narrative feature rail, and the two large image
+   * splits. Each is a multi-part composition where which elements count as units
+   * is a design call, not a mechanical one, so they are better done with the
+   * section on screen than in a sweep.
+   */
+  "ContentAboutStorySectionV3",
+  "ContentCardTwoUpSectionV3",
+  "ContentMainIdeaGridSectionV3",
+  "FeaturePortraitParagraphSectionV3",
 ]);
 
 /**
@@ -824,6 +844,28 @@ export const animationExcludedComponents = new Map<string, string>([
     ] as const
   ).map(
     (component) => [component, "owns its own motion through motion/react"] as const,
+  ),
+  /**
+   * The same reason, reached without Motion.
+   *
+   * MEMBERSHIP HERE IS BY BEHAVIOUR, NOT BY IMPORT, and these two are why that
+   * distinction is worth writing down: the first pass at this set was built by
+   * grepping for `motion/react`, which finds neither of them. The ideas panel
+   * drives its own `translate3d` from a scroll listener, so a reveal would
+   * animate `translate` while the panel animated `transform` - both apply, both
+   * move it, and they would fight. The card carousel is a drag rail on
+   * `requestAnimationFrame`, the same shape as the photo carousels above.
+   *
+   * If a section animates itself on scroll by any means, it belongs here.
+   */
+  ...(
+    [
+      "ContentHorizontalCardCarouselSectionV2",
+      "ContentStickyIdeasSectionV2",
+    ] as const
+  ).map(
+    (component) =>
+      [component, "hand-rolls its own scroll motion without Motion"] as const,
   ),
 ]);
 
