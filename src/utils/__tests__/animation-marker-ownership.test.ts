@@ -166,6 +166,51 @@ describe("animation marker ownership", () => {
     }
   });
 
+  /**
+   * A marked unit in a list has to carry its index, or the whole list animates
+   * as one block.
+   *
+   * `--reveal-index` shifts each child's slice of its own entry range, because a
+   * scroll-driven timeline has no clock and `animation-delay` does nothing on
+   * one. Miss it and the reveal still works - it just fires for every card
+   * simultaneously, which reads as a slightly janky single fade rather than as a
+   * bug, so nothing would ever report it.
+   *
+   * Counted per file rather than per element: extracting the enclosing JSX tag
+   * from source text is the kind of parsing that generates false positives, and
+   * the count catches the case that matters - a marker added without an index
+   * beside it. A section whose reveal is genuinely a single unit rather than a
+   * list would fail this and belongs in `singleUnitReveals` with its reason.
+   */
+  it("pairs every marker with a stagger index", () => {
+    const unstaggered: string[] = [];
+
+    for (const [file, source] of sources) {
+      if (frameOwners.has(file)) {
+        continue;
+      }
+
+      const markers = (
+        source.match(/\b(?:reveal|pulse)-on-scroll\b/g) ?? []
+      ).length;
+
+      if (markers === 0) {
+        continue;
+      }
+
+      const indices = (source.match(/"--reveal-index"/g) ?? []).length;
+
+      if (indices < markers) {
+        unstaggered.push(`${file} — ${markers} marker(s), ${indices} index/indices`);
+      }
+    }
+
+    expect(
+      unstaggered.sort(),
+      "these mark more revealable units than they set --reveal-index on, so a list animates as one block - set the index on the same element as the marker, or record a genuinely single-unit reveal in singleUnitReveals",
+    ).toEqual([]);
+  });
+
   it("keeps the dormant-marker list honest", () => {
     const stale: string[] = [];
 
