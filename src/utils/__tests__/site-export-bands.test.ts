@@ -14,6 +14,8 @@ type ExportSection = Parameters<typeof buildSectionJsx>[0][number];
 
 function section(overrides: Partial<ExportSection> = {}): ExportSection {
   return {
+    // Off, which is what an unset section resolves to - motion is opt-in.
+    animation: "none",
     backgroundConfig: null,
     backgroundImage: "",
     backgroundImageFit: "",

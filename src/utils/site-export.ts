@@ -33,6 +33,7 @@ import {
   resolveBackgroundTreatment,
   resolveBorderTone,
   resolveCardFill,
+  resolveSectionAnimation,
   treatmentRendersOverlay,
   treatmentUsesGroundImage,
 } from "@/content/section-style-options";
@@ -90,6 +91,18 @@ type ResolvedSection = {
   joinAbove: string;
   /** Ground texture - see `backgroundTreatment` in `section-style-options`. */
   backgroundTreatment: string;
+  /**
+   * Entrance animation - see `animation` in `section-style-options`.
+   *
+   * Costs nothing beyond this field and one emitted attribute, because the axis
+   * ships no component. A treatment that renders markup has to be added as an
+   * explicit dependency-closure root and given a conditional import, since the
+   * import walk never sees generated JSX - see the `AmbientDrift` root in
+   * `collectDependencyClosure`. Pure CSS needs neither, and
+   * `neutralizeBuilderVocabulary` renames the attribute in the emitted source
+   * and the copied stylesheet in one pass, so the selector keeps matching.
+   */
+  animation: string;
   /** Sanitised ground image path, empty unless the treatment is `image`. */
   backgroundImage: string;
   /** Sanitised gradient tuning, null when the section keeps the CSS default. */
@@ -753,6 +766,11 @@ function resolvePageSections(
         backgroundTreatment: resolveBackgroundTreatment(
           resolvedSection.backgroundTreatment,
         ),
+        // Off the resolved section, so a staged page's per-page override is
+        // already folded on, and resolved here so an unrecognised saved value
+        // becomes `none` in the frozen source rather than an attribute the
+        // exported stylesheet has no rule for.
+        animation: resolveSectionAnimation(resolvedSection.animation),
         // Read off the same staged fields the component props were built from,
         // so a ground image set on a staged page reaches the export the way any
         // other asset does.
@@ -1020,6 +1038,7 @@ function buildSectionFrameJsx(
   return `${indent}<div
 ${indent}  className="pagebuilder-section-frame pagebuilder-paint-surface relative"
 ${indent}  data-pagebuilder-background-fill=${JSON.stringify(inBand ? "none" : "solid")}
+${indent}  data-pagebuilder-animation=${JSON.stringify(section.animation)}
 ${indent}  data-pagebuilder-background-treatment=${JSON.stringify(
     inBand ? "none" : resolveBackgroundTreatment(section.backgroundTreatment),
   )}

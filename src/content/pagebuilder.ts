@@ -30,6 +30,14 @@ export type PagebuilderRecipeSection = {
   /** Ground texture - see `backgroundTreatment` in `section-style-options`. */
   backgroundTreatment?: string;
   /**
+   * Entrance animation - see `animation` in `section-style-options`.
+   *
+   * Absent means none. Unlike every other axis here, an unset value is not
+   * "inherit a sensible visual" but "do not move": motion is opt-in, so every
+   * stack saved before this existed renders exactly as it did.
+   */
+  animation?: string;
+  /**
    * Per-section tuning for the gradient treatments - node colours, positions,
    * radii, strength and motion. Absent means the stylesheet's own two washes,
    * so a section that has never been tuned is unaffected by this existing.

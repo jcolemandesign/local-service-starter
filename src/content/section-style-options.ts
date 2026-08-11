@@ -17,6 +17,7 @@ import {
 } from "@/content/color-overrides";
 import type { WrapMode } from "@/content/type-palettes";
 import {
+  type SectionAnimation,
   type SectionBackgroundFill,
   type SectionCardBorder,
   type SectionCardBorderTone,
@@ -568,6 +569,7 @@ export function resolveBorderTone(
  */
 export const sectionToggleFieldNames = [
   "align",
+  "animation",
   "backgroundConfig",
   "backgroundFill",
   "backgroundImageFit",
@@ -669,6 +671,56 @@ export function sectionSupportsBackgroundFill(component: string) {
   return backgroundFillComponents.has(component);
 }
 
+/**
+ * Sections that mark up revealable units, and can therefore be animated.
+ *
+ * Membership means the section has at least one element carrying a marker class
+ * (`reveal-on-scroll`), so switching the axis on actually does something. This
+ * is the same rule every other membership set in this file follows: a control
+ * that renders and silently does nothing is worse than no control, which is the
+ * failure 51 of 93 sections shipped with before `getSectionToggleProps` read
+ * these sets.
+ *
+ * These five are the sections that already carried the marker class
+ * unconditionally, from before the axis existed. Everything else in the library
+ * is added as it is marked up, family by family.
+ *
+ * `animation-marker-ownership.test.ts` pins this against the markup in both
+ * directions, so a section cannot carry a marker class without being offered
+ * the control, and cannot be listed here without carrying one.
+ */
+export const animationComponents = new Set<string>([
+  "ContentStickyCardStreamSectionV2",
+  "FeatureAsymmetricCardsSectionV3",
+  "FeatureStackedCardsSectionV3",
+  "ProcessImageChecklistSectionV3",
+]);
+
+export function sectionSupportsAnimation(component: string) {
+  return animationComponents.has(component);
+}
+
+/** Declared after `styleFieldOptions` would put this inside its own TDZ, so the
+ *  accepted set is written out rather than derived. `animation-css-agreement`
+ *  pins it against the option list and against `globals.css`. */
+const animationValues = new Set<SectionAnimation>(["none", "reveal"]);
+
+/**
+ * The animation a section actually plays when nothing is set.
+ *
+ * `none`, unlike every other resolver here. See `styleFieldOptions.animation`.
+ * Anything unrecognised also lands on `none`, so a template saved with a value
+ * that has since been removed renders a still section rather than an attribute
+ * no stylesheet matches.
+ */
+export function resolveSectionAnimation(
+  animation: string | undefined,
+): SectionAnimation {
+  return animation && animationValues.has(animation as SectionAnimation)
+    ? (animation as SectionAnimation)
+    : "none";
+}
+
 export function resolveBackgroundFill(
   backgroundFill: string | undefined,
 ): SectionBackgroundFill {
@@ -745,6 +797,32 @@ const borderIntensityLabels: Record<string, string> = {
 };
 
 export const styleFieldOptions = {
+  /**
+   * The section's entrance animation.
+   *
+   * OFF BY DEFAULT, WHICH IS WHY THIS AXIS NEEDS `resolveSectionAnimation`.
+   * Every other axis here treats an unset value as "inherit a sensible
+   * visual"; motion is not sensible-by-default, so unset resolves to `none`.
+   * The precedent is `cardFillOptInComponents` / `resolveCardFill` above, which
+   * exists for the same reason - a saved section must not gain a visual it was
+   * never given.
+   *
+   * Deliberately short. Per-section expressiveness comes from WHICH elements a
+   * section marks as revealable, not from a longer enum here: a section marks
+   * its cards and its heading, and the one value decides whether any of it
+   * moves. A longer list is what the future style-guide animation suites are
+   * for, and those re-point the tokens rather than adding values.
+   *
+   * Copy-neutral. The contract fingerprint hashes component, the derived field
+   * specs, instruction, mode, name, ratio and variant - none of which this is -
+   * so switching it moves no fingerprint and flips no approved page to `stale`.
+   * That is also why it must never be folded into `variant`.
+   */
+  animation: [
+    { label: "Use template default", value: "" },
+    { label: "None", value: "none" },
+    { label: "Reveal", value: "reveal" },
+  ],
   backgroundFill: [
     { label: "Use template default", value: "" },
     { label: "Background on", value: "solid" },
@@ -1080,6 +1158,12 @@ const backgroundTreatmentStyleField: SectionStyleFieldSpec = {
   options: styleFieldOptions.backgroundTreatment,
 };
 
+const animationStyleField: SectionStyleFieldSpec = {
+  label: "Entrance animation",
+  name: "animation",
+  options: styleFieldOptions.animation,
+};
+
 /**
  * The two ground-image axes, offered together with the treatment above.
  *
@@ -1213,6 +1297,7 @@ export function getSectionStyleFieldSpecs(
       ? [backgroundFillStyleField]
       : []),
     ...(sectionSupportsCardStyle(component) ? cardStyleFields : []),
+    ...(sectionSupportsAnimation(component) ? [animationStyleField] : []),
     ...(sectionSupportsSectionSpacing(component) ? spacingStyleFields : []),
   ];
 }

@@ -41,6 +41,7 @@ describe("section toggle transport", () => {
     // the builder belongs here too, and this failing is the reminder.
     const expected = [
       "align",
+      "animation",
       "backgroundConfig",
       "backgroundFill",
       "backgroundImageFit",

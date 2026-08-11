@@ -62,6 +62,20 @@ export type SectionCardBorderTone = "dark" | "light";
 /** Section-level background paint. Kept separate from card fill so navigation
  *  can expose transparent chrome without also removing grouped nav surfaces. */
 export type SectionBackgroundFill = "solid" | "none";
+/**
+ * The section's entrance animation.
+ *
+ * `none` is the resolved default, which is the one place this axis differs from
+ * every other: elsewhere an unset value inherits a sensible visual, and here it
+ * has to mean off. Animation is opt-in per section.
+ *
+ * Only `reveal` is offered for now. `.pulse-on-scroll` exists in `globals.css`
+ * and is gated by the same attribute, but is deliberately not an option value
+ * yet - it had a single user, and an enum whose values are persisted ids should
+ * not gain one speculatively. Promoting it later is one entry in
+ * `styleFieldOptions.animation` and nothing else.
+ */
+export type SectionAnimation = "none" | "reveal";
 
 /**
  * Recipe ids that were renamed, mapped to what they are called now.

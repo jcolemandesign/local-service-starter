@@ -205,25 +205,62 @@
 }
 
 /*
- * Scroll entrance reveal.
+ * ==================================================================
+ * Scroll entrance animation.
  *
  * Replaces Motion's `whileInView` in sections that used it for nothing but a
  * decorative entrance. That single effect forced each of those sections to be
  * a client component and pulled the Motion runtime onto pages that otherwise
- * ship no JavaScript at all.
+ * ship no JavaScript at all. This is CSS scroll-driven animation, so it costs
+ * no bundle, no hydration and no client boundary.
+ *
+ * THE SECTION DOES NOT DECIDE WHETHER IT ANIMATES. A section marks which of its
+ * elements are revealable units (`.reveal-on-scroll`) and, in a list, which
+ * index each one is (`--reveal-index`). Whether any of it moves is the frame's
+ * `data-pagebuilder-animation` attribute, set per section in the builder and
+ * overridable per staged page. That split is the same one the colour recipes
+ * use, and for the same reason: a value the system owns cannot drift section by
+ * section, and a marker class is inert until the system switches it on.
+ *
+ * It is also what makes the future animation suites cheap. Every number below
+ * is a custom property with a default, so a suite is a block that re-points
+ * these seven properties - not an edit to any section.
  *
  * Content is visible by default. It is only hidden inside the @supports block,
  * so a browser without scroll-driven animations shows the content immediately
  * rather than a blank section - the failure mode this ordering exists to
- * prevent. Firefox currently lands there and simply gets no entrance.
+ * prevent. Firefox currently lands there and simply gets no entrance. The same
+ * safe direction covers a subtler case: a tab that is not painting has an
+ * inactive view timeline, applies no effect at all, and shows content.
  *
- * Set --reveal-index on staggered children to offset each one's range, which
- * is how a scroll-driven timeline staggers; animation-delay does not apply.
- */
+ * MEASURED, on the reference palette in Chrome, before this was wired up:
+ * an element already in view at load sits past its entry range and `both` fill
+ * holds it at the end state - opacity 1, no flash - even with a stagger index
+ * of 4. So above-the-fold sections need no exclusion. A staggered row sampled
+ * mid-entry read 0.94 / 0.53 / 0.13 for indices 0 / 3 / 6, which is the 7%
+ * offset below doing its job.
+ * ================================================================== */
+:root {
+  /* How far a revealing element travels, and over what part of its entry. */
+  --anim-reveal-distance: 18px;
+  --anim-reveal-entry-start: 0%;
+  --anim-reveal-entry-end: 52%;
+  /* Per-index range offset. This is the stagger: a scroll-driven timeline has
+     no clock, so `animation-delay` does nothing and each child instead animates
+     over a slightly later slice of its own entry. */
+  --anim-reveal-stagger: 7%;
+  --anim-reveal-easing: linear;
+  /* Pulse is gated by the same attribute but is not an offered value yet - see
+     `SectionAnimation`. Its tokens live here so promoting it stays a one-line
+     change. */
+  --anim-pulse-scale: 1.025;
+  --anim-pulse-stagger: 10%;
+}
+
 @keyframes section-reveal {
   from {
     opacity: 0;
-    translate: 0 18px;
+    translate: 0 var(--anim-reveal-distance);
   }
 
   to {
@@ -234,11 +271,23 @@
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .reveal-on-scroll {
-      animation: section-reveal linear both;
+    /* Gated on the frame attribute, which is what makes the axis an axis. An
+       unset or `none` section matches nothing here and its marker classes are
+       inert - that is how "off by default" is implemented, rather than by
+       stripping classes out of section markup. */
+    [data-pagebuilder-animation="reveal"] .reveal-on-scroll {
+      animation: section-reveal var(--anim-reveal-easing) both;
       animation-timeline: view();
-      animation-range: entry calc(var(--reveal-index, 0) * 7%) entry
-        calc(52% + var(--reveal-index, 0) * 7%);
+      animation-range: entry
+        calc(
+          var(--anim-reveal-entry-start) + var(--reveal-index, 0) *
+            var(--anim-reveal-stagger)
+        )
+        entry
+        calc(
+          var(--anim-reveal-entry-end) + var(--reveal-index, 0) *
+            var(--anim-reveal-stagger)
+        );
     }
   }
 }
@@ -346,17 +395,24 @@
   }
 
   50% {
-    scale: 1.025;
+    scale: var(--anim-pulse-scale);
   }
 }
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .pulse-on-scroll {
+    /* Gated like the reveal above, but `pulse` is not an offered value yet, so
+       nothing can currently select it. Deliberate: the rule stays correctly
+       scoped rather than being deleted and rebuilt, and promoting it is one
+       entry in `styleFieldOptions.animation`. Leaving it ungated was the option
+       to avoid - it would keep one section animating unconditionally while
+       every other section obeyed the toggle. */
+    [data-pagebuilder-animation="pulse"] .pulse-on-scroll {
       animation: section-card-pulse ease-in-out both;
       animation-timeline: view();
-      animation-range: entry calc(20% + var(--reveal-index, 0) * 10%) entry
-        calc(85% + var(--reveal-index, 0) * 10%);
+      animation-range: entry
+        calc(20% + var(--reveal-index, 0) * var(--anim-pulse-stagger)) entry
+        calc(85% + var(--reveal-index, 0) * var(--anim-pulse-stagger));
     }
   }
 }

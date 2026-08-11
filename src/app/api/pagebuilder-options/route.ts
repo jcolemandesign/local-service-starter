@@ -42,6 +42,9 @@ type SavedPagebuilderSection = {
    * `pagebuilder-options-round-trip.test.ts` is the mechanical guard.
    */
   backgroundTreatment?: string;
+  /** Entrance animation - the next paint axis added, landing beside the others
+   *  exactly as the note above asks. Absent means none. */
+  animation?: string;
   joinAbove?: string;
   /**
    * The tuned gradient, stored as the editor's own shape. Held as `unknown`
@@ -287,6 +290,8 @@ function normalizeSection(
         ? section.borderIntensity
         : undefined,
     align: typeof section.align === "string" ? section.align : undefined,
+    animation:
+      typeof section.animation === "string" ? section.animation : undefined,
     backgroundTreatment:
       typeof section.backgroundTreatment === "string"
         ? section.backgroundTreatment

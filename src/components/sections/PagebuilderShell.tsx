@@ -150,7 +150,9 @@ import {
   headlineWrapOptions,
   iconsOptions,
   resolveHeadlineWrap,
+  resolveSectionAnimation,
   resolveSectionIcons,
+  sectionSupportsAnimation,
   sectionSupportsHeadlineWrap,
   sectionSupportsIcons,
   cardLinkGridAlignOptions,
@@ -3202,6 +3204,14 @@ export function PagebuilderShell({
     );
   }
 
+  function updateSectionAnimation(sectionId: string, animation: string) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId ? { ...section, animation } : section,
+      ),
+    );
+  }
+
   function updateSectionCardBorder(
     sectionId: string,
     cardBorder: SectionCardBorder,
@@ -4545,6 +4555,10 @@ export function PagebuilderShell({
           data-pagebuilder-color-recipe={
             options.inBand ? "inherit" : getSectionColorRecipe(section)
           }
+          // No `inBand` branch, unlike the treatment above: a texture is paint
+          // and one band paints once, but an entrance belongs to the content and
+          // band members keep their own. See the frame in `PageTemplatePreview`.
+          data-pagebuilder-animation={resolveSectionAnimation(section.animation)}
           data-pagebuilder-padding-top={
             section.reduceTopPadding && sectionSupportsSectionSpacing(section.component)
               ? "none"
@@ -5308,6 +5322,51 @@ export function PagebuilderShell({
                                     );
                                   },
                                 )}
+                              </div>
+                            </fieldset>
+                          ) : null}
+
+                          {/* Offered only where the section marks revealable
+                              units, so the control can never render and do
+                              nothing. Unlike the texture above there is no
+                              joined-section branch: band members keep their own
+                              contents and animate them independently. */}
+                          {sectionSupportsAnimation(section.component) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Entrance animation
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {styleFieldOptions.animation
+                                  .filter((option) => option.value !== "")
+                                  .map((option) => {
+                                    const optionIsActive =
+                                      resolveSectionAnimation(
+                                        section.animation,
+                                      ) === option.value;
+
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-2 text-center text-xs font-semibold transition-colors",
+                                          optionIsActive
+                                            ? "token-chrome-card-active"
+                                            : "token-chrome-card",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateSectionAnimation(
+                                            section.id,
+                                            option.value,
+                                          )
+                                        }
+                                        type="button"
+                                      >
+                                        {option.label}
+                                      </button>
+                                    );
+                                  })}
                               </div>
                             </fieldset>
                           ) : null}

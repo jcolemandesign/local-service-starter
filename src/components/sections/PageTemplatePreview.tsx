@@ -183,6 +183,7 @@ import {
   resolveCardBorder,
   resolveCardFill,
   resolveHeadlineWrap,
+  resolveSectionAnimation,
   resolveSectionIcons,
   sectionSupportsCardStyle,
   sectionSupportsSectionSpacing,
@@ -234,6 +235,9 @@ export type PageTemplatePreviewSection = {
   joinAbove?: string;
   /** Ground texture - see `backgroundTreatment` in `section-style-options`. */
   backgroundTreatment?: string;
+  /** Entrance animation - see `animation` in `section-style-options`. Absent
+   *  means none; motion is opt-in per section. */
+  animation?: string;
   /** Tuned gradient - see `background-config`. Absent keeps the CSS default. */
   backgroundConfig?: import("@/content/background-config").BackgroundConfig;
   /** Ground image sizing - see `background-image-config`. Absent means `fill`. */
@@ -651,6 +655,12 @@ function TemplateSectionFrame({
         // own - two stacked layers would double the wash.
         inBand ? "none" : resolveBackgroundTreatment(section.backgroundTreatment)
       }
+      // Deliberately NOT taking the `inBand` decision the treatment above
+      // takes. A texture is paint, and one band paints once; an entrance is a
+      // property of the content, and band members keep their own contents. The
+      // band element has none of its own, so deferring to it would mean a
+      // joined section could never animate.
+      data-pagebuilder-animation={resolveSectionAnimation(section.animation)}
       data-pagebuilder-color-recipe={
         inBand
           ? "inherit"
