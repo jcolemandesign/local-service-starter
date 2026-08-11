@@ -31,7 +31,7 @@ export const servicesBentoPreviewItemCount = 6;
  * own template - `image templates/` holds the source PSD for this one.
  */
 export const heroSplitFullImageFpoSrc =
-  "/images/full-image-splite-template-temp.jpg";
+  "/images/full-image-splite-template-temp2.jpg";
 
 export const sectionLibraryV3Content = {
   hero: {
