@@ -712,6 +712,119 @@ export const animationComponents = new Set<string>([
   "HorizontalCardLinkGridTwoUpSectionV3",
   "ServiceNeedsPriorityGridSectionV3",
   "ThreeCardLinkGridSectionV3",
+  /**
+   * The section headers, which fade rather than rise as a list. Two of the three
+   * are one block of copy and reveal as a single unit; the split header has a
+   * headline beside an aside, so it takes a real two-step stagger. Highest
+   * value per edit in the library - these appear on nearly every page.
+   */
+  "SectionHeaderCompactSectionV3",
+  "SectionHeaderLargeSectionV3",
+  "SectionHeaderSplitLinkSectionV3",
+]);
+
+/**
+ * Sections that will never be offered the entrance animation, and why.
+ *
+ * Membership in `animationComponents` is opt-in, so an excluded section needs no
+ * code to stay unanimated - this set exists to say WHICH. Without it, an
+ * unmarked section is ambiguous between "nobody has got to it yet" and "this
+ * must not animate", and the rollout is a marker sweep across ~60 sections. At
+ * nine marked that ambiguity is harmless; at sixty nobody can tell the two
+ * apart, including the person doing the sweep.
+ *
+ * `animation-marker-ownership.test.ts` asserts the two sets never overlap and
+ * that nothing in here carries a marker class, so an exclusion cannot be
+ * quietly contradicted later.
+ *
+ * Four reasons, and they are different reasons:
+ */
+export const animationExcludedComponents = new Map<string, string>([
+  /**
+   * A hero is the first section on essentially every page, so it has already
+   * passed its entry range by the time anything is painted. MEASURED: an
+   * element in view at load holds at the end state - opacity 1, no movement -
+   * even with a stagger index. The control would render and do nothing, which
+   * is exactly what `viewportHeightComponents` exists to prevent for section
+   * spacing.
+   */
+  ...(
+    [
+      "HeroCenteredFloatersSectionV2",
+      "HeroCompactSectionV3",
+      "HeroCompactServiceSectionV3",
+      "HeroContentTopImageBottomSectionV2",
+      "HeroFullscreenSectionV2",
+      "HeroServiceAreaZipLookupSectionV3",
+      "HeroServicesSectionV3",
+      "HeroSplitBentoSectionV3",
+      "HeroSplitFixedImageSectionV3",
+      "HeroSplitFullHeightSectionV3",
+    ] as const
+  ).map(
+    (component) =>
+      [component, "above the fold at load, so a scroll entrance is inert"] as const,
+  ),
+  /**
+   * Navigation spends most of its life `fixed` or `absolute`, out of flow. A
+   * view timeline on an out-of-flow element does not describe the reader's
+   * progress past it, and nav is chrome rather than content arriving. Excluded
+   * for the same reason it cannot join a background band.
+   */
+  ...(
+    [
+      "NavCenterLogoSectionV2",
+      "NavFloatingBentoSectionV2",
+      "NavPrimarySectionV2",
+    ] as const
+  ).map(
+    (component) => [component, "out-of-flow site chrome, not arriving content"] as const,
+  ),
+  /**
+   * A marquee is already in continuous motion and that motion is the section.
+   * It must keep running whatever the entrance axis says, so it is never gated
+   * - see `trust-marquee` in `globals.css`, which is independent of the reveal.
+   */
+  ...(
+    [
+      "TrustLogoMarqueeSectionV3",
+      "TrustMarqueeSection",
+      "TrustMarqueeSectionV3",
+    ] as const
+  ).map(
+    (component) => [component, "continuously moving; its motion always runs"] as const,
+  ),
+  /**
+   * These own their own motion through `motion/react` - carousels, accordions,
+   * scroll-written reveals, hover panels. Layering a second entrance on top
+   * would have two systems animating one element, and the internal one is the
+   * section's actual behaviour rather than decoration. An accordion must open
+   * and a carousel must move regardless of this axis, so neither is gated by it.
+   */
+  ...(
+    [
+      "AdditionalOffersSectionV3",
+      "CTAScrollRevealOfferSectionV3",
+      "ContentRevealParagraphSectionV2",
+      "ContentRuleHeaderSectionV2",
+      "ContentScrollWrittenRevealSectionV2",
+      "FAQAccordionSectionV3",
+      "FAQAccordionSidebarSectionV3",
+      "FeatureOverlapRowsSectionV3",
+      "ProcessStepsSectionV3",
+      "ProjectCaseStudyGallerySectionV3",
+      "ServiceCalloutRevealGridSectionV3",
+      "ServiceCalloutSplitPanelSectionV3",
+      "ServicesHoverPanelSectionV2",
+      "ServicesScrollCardsSectionV2",
+      "TestimonialsCarouselCondensedSectionV3",
+      "TestimonialsCarouselSectionV3",
+      "TestimonialsMasonrySectionV3",
+      "TestimonialsSectionV3",
+    ] as const
+  ).map(
+    (component) => [component, "owns its own motion through motion/react"] as const,
+  ),
 ]);
 
 export function sectionSupportsAnimation(component: string) {

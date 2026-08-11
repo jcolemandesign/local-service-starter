@@ -83,13 +83,17 @@ describe("section style override specs", () => {
       "reduceBottomPadding",
     ]);
     // Spacing is copy-neutral on every section, so a non-card section still
-    // gets it - only the card controls are conditional.
+    // gets it - only the card controls are conditional. This sample also
+    // carries `animation`, and the card sample above does not, so the pair
+    // covers both directions of that axis's gating too: the header marks a
+    // revealable unit, the card two-up does not yet.
     expect(plainNames).toEqual([
       "colorRecipe",
       "joinAbove",
       "backgroundTreatment",
       "backgroundImageFit",
       "backgroundImageFocus",
+      "animation",
       "reduceTopPadding",
       "reduceBottomPadding",
     ]);

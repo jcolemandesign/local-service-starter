@@ -80,8 +80,13 @@ export function SectionHeaderCompactSectionV3({
             "max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1",
           )}
         >
+          {/* One revealable unit, not three. A header's eyebrow, headline and
+              body are a single block of copy, and staggering the three lines of
+              it reads as fussy rather than as arrival - so no `--reveal-index`
+              here. Recorded in `singleUnitReveals`. */}
           <div
             className={cx(
+              "reveal-on-scroll",
               "fluid-type-frame",
               alignment.measure,
               alignment.text,

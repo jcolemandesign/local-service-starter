@@ -75,7 +75,11 @@ export function SectionHeaderLargeSectionV3({
           alignX={align}
           className="col-span-7 col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
         >
-          <div className={cx("fluid-type-frame", textAlignment)}>
+          {/* A single revealable unit - this section is one headline. See
+              `singleUnitReveals`. */}
+          <div
+            className={cx("reveal-on-scroll", "fluid-type-frame", textAlignment)}
+          >
             {/* Set inline rather than with the `wrap-*` utility: every
                 `type-*` utility declares `text-wrap` itself and is emitted
                 after the wrap utilities in the same layer, so the class would

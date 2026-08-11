@@ -3,7 +3,10 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { animationComponents } from "@/content/section-style-options";
+import {
+  animationComponents,
+  animationExcludedComponents,
+} from "@/content/section-style-options";
 
 /**
  * A section does not decide whether it animates.
@@ -80,6 +83,23 @@ const frameOwners = new Set(["PagebuilderShell.tsx", "PageTemplatePreview.tsx"])
  * still verifies a marker exists there. So this records where to look rather
  * than waving the section through.
  */
+/**
+ * Sections whose reveal is one unit rather than a list, so it carries no index.
+ *
+ * The stagger check below counts markers against `--reveal-index`, on the
+ * assumption that a marked element is one of several. A section header is not:
+ * its eyebrow, headline and body are a single block of copy, and staggering the
+ * three lines reads as fussy rather than as arrival. Named here so "no index"
+ * is a decision rather than an omission.
+ */
+const singleUnitReveals = new Map<string, string>([
+  [
+    "SectionHeaderCompactSectionV3.tsx",
+    "eyebrow, headline and body are one block of copy",
+  ],
+  ["SectionHeaderLargeSectionV3.tsx", "the section is a single headline"],
+]);
+
 const sharedMarkerSources = new Map<string, string>([
   [
     "HorizontalCardLinkGridTwoUpSectionV3",
@@ -220,7 +240,7 @@ describe("animation marker ownership", () => {
     const unstaggered: string[] = [];
 
     for (const [file, source] of sources) {
-      if (frameOwners.has(file)) {
+      if (frameOwners.has(file) || singleUnitReveals.has(file)) {
         continue;
       }
 
@@ -242,6 +262,86 @@ describe("animation marker ownership", () => {
     expect(
       unstaggered.sort(),
       "these mark more revealable units than they set --reveal-index on, so a list animates as one block - set the index on the same element as the marker, or record a genuinely single-unit reveal in singleUnitReveals",
+    ).toEqual([]);
+  });
+
+  it("never both offers and excludes the same section", () => {
+    const both = [...animationExcludedComponents.keys()]
+      .filter((component) => animationComponents.has(component))
+      .sort();
+
+    expect(
+      both,
+      "these are recorded as never animating and also offered the control - one of the two is wrong",
+    ).toEqual([]);
+  });
+
+  it("keeps no marker class in an excluded section", () => {
+    // The exclusions are the reason a section is unmarked, so a marker appearing
+    // in one means someone swept it without reading why it was left out. The
+    // marker would be inert - the control is not offered - which is precisely
+    // what makes it worth catching here rather than in review.
+    const marked: string[] = [];
+
+    for (const [component, reason] of animationExcludedComponents) {
+      const file = fileFor(component);
+
+      expect(
+        file,
+        `animationExcludedComponents names ${component}, which has no export`,
+      ).toBeDefined();
+
+      if (!file) {
+        continue;
+      }
+
+      const source = sources.get(file) ?? "";
+
+      // A multi-section file may legitimately hold a marked section beside an
+      // excluded one, so this only fires when nothing in the file is offered
+      // the control - which is the case where the marker can only be the
+      // excluded section's.
+      const exports = [...source.matchAll(/export function (\w+)/g)].map(
+        (match) => match[1],
+      );
+
+      if (
+        revealMarker.test(source) &&
+        !exports.some((name) => animationComponents.has(name))
+      ) {
+        marked.push(`${component} (${file}) — excluded because ${reason}`);
+      }
+    }
+
+    expect(
+      marked.sort(),
+      "these are excluded from the animation axis but carry a marker class, which can only be inert",
+    ).toEqual([]);
+  });
+
+  it("keeps the single-unit list honest", () => {
+    // Two ways an entry rots: the file stops marking anything, or it grows a
+    // stagger index and is no longer a single unit.
+    const stale: string[] = [];
+
+    for (const [file, reason] of singleUnitReveals) {
+      const source = sources.get(file);
+
+      expect(source, `singleUnitReveals names ${file}, which does not exist`)
+        .toBeDefined();
+
+      if (!source) {
+        continue;
+      }
+
+      if (!revealMarker.test(source) || source.includes('"--reveal-index"')) {
+        stale.push(`${file} — listed as: ${reason}`);
+      }
+    }
+
+    expect(
+      stale.sort(),
+      "these are recorded as single-unit reveals but no longer look like one - either the marker went away or it gained a stagger index",
     ).toEqual([]);
   });
 

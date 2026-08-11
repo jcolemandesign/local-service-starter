@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
@@ -67,7 +68,13 @@ export function SectionHeaderSplitLinkSectionV3({
           className={headingClassName}
           measure="none"
         >
-          <Heading className="type-heading-xl max-w-3xl text-service-ink">
+          {/* Two units here, unlike the other two headers: the headline and the
+              aside sit side by side, so they earn a real two-step stagger
+              rather than one block fade. */}
+          <Heading
+            className="reveal-on-scroll type-heading-xl max-w-3xl text-service-ink"
+            style={{ "--reveal-index": 0 } as CSSProperties}
+          >
             {title}
           </Heading>
         </SevenColumnGridItem>
@@ -77,7 +84,10 @@ export function SectionHeaderSplitLinkSectionV3({
           className={asideClassName}
           measure="none"
         >
-          <div className="fluid-type-frame">
+          <div
+            className="reveal-on-scroll fluid-type-frame"
+            style={{ "--reveal-index": 1 } as CSSProperties}
+          >
             <p
               className={
                 hasLink
