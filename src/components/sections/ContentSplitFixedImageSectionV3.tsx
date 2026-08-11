@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 import type { SectionColorRecipe } from "@/content/section-color-recipes";
@@ -115,19 +116,28 @@ function cx(...classes: Array<string | false | undefined>) {
 
 function FixedRatioImage({
   alt,
+  className,
   ratio,
   src,
+  style,
 }: {
   alt: string;
+  /** The reveal marker and its stagger index, which have to land on the same
+   *  element. This is the image's own box, and the grid item around it forwards
+   *  no `style`. */
+  className?: string;
   ratio: ContentSplitFixedImageRatio;
   src: string;
+  style?: CSSProperties;
 }) {
   return (
     <div
       className={cx(
         "radius-medium relative w-full overflow-hidden bg-service-surface shadow-service",
         ratioClassNames[ratio],
+        className,
       )}
+      style={style}
     >
       <Image
         alt={alt}
@@ -172,6 +182,18 @@ export function ContentSplitFixedImageSectionV3({
   // Stretching the item makes the filled card fill the row, which is as tall
   // as the copy or the image - whichever wins.
   const isFilled = cardFill === "solid";
+  /**
+   * Two revealable units, staggered in reading order rather than source order.
+   *
+   * Half of this section's variants put the image first, and the JSX always
+   * writes the copy first, so a source-order stagger would reveal the right
+   * column before the left one on exactly those two. The paragraphs inside the
+   * copy are deliberately one unit with it: a stack of body copy arriving line
+   * by line reads as a loading state rather than as a composition.
+   */
+  const imageLeadsReadingOrder = variant.startsWith("image-");
+  const textRevealIndex = imageLeadsReadingOrder ? 1 : 0;
+  const imageRevealIndex = imageLeadsReadingOrder ? 0 : 1;
 
   return (
     <section className="bg-bg-page">
@@ -187,11 +209,16 @@ export function ContentSplitFixedImageSectionV3({
         >
           <div
             className={cx(
+              // Marks the copy column as one revealable unit. Inert unless the
+              // section's animation toggle is on - see `section-reveal` in
+              // globals.css.
+              "reveal-on-scroll",
               "fluid-type-frame w-full",
               isFilled &&
                 "radius-medium flex h-full flex-col justify-center bg-service-surface p-14 shadow-service max-md:p-10",
               isFilled && cardBorder === "on" && "border border-service-border",
             )}
+            style={{ "--reveal-index": textRevealIndex } as CSSProperties}
           >
             <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
             <HeadingTag
@@ -273,7 +300,13 @@ export function ContentSplitFixedImageSectionV3({
           alignY="middle"
           className={config.imageClassName}
         >
-          <FixedRatioImage alt={imageAlt} ratio={ratio} src={imageSrc} />
+          <FixedRatioImage
+            alt={imageAlt}
+            className="reveal-on-scroll"
+            ratio={ratio}
+            src={imageSrc}
+            style={{ "--reveal-index": imageRevealIndex } as CSSProperties}
+          />
         </LayoutGridItem>
       </LayoutGrid>
     </section>

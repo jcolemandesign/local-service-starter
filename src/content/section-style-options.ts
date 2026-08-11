@@ -702,16 +702,29 @@ export const animationComponents = new Set<string>([
    * render `HorizontalCardLink`, so marking it covers the 3-up and the 2-up at
    * once.
    *
-   * The rest of the Scan collection is deliberately not here yet. The carousels
-   * and the hover/scroll panels animate internally with Motion already, and an
-   * outer entrance on top of that needs a decision per section rather than a
-   * blanket sweep.
+   * The rest of the Scan collection is the carousels and the hover/scroll
+   * panels, which animate internally with Motion already and are recorded
+   * below.
    */
   "FourCardLinkGridSectionV3",
   "HorizontalCardLinkGridSectionV3",
   "HorizontalCardLinkGridTwoUpSectionV3",
   "ServiceNeedsPriorityGridSectionV3",
   "ThreeCardLinkGridSectionV3",
+  /**
+   * The rest of Scan. Three more card grids, and the two shapes they add are
+   * both about what does NOT move.
+   *
+   * The quick-links and bento sections each set a caption or header column
+   * beside their cards; the caption joins the stagger as its first unit, and
+   * the bento's does not, because that one is `sticky`. A sticky box travels
+   * WITH the scroller rather than through it, so its view timeline never
+   * describes an arrival - the same reason the narrative rail's prose column is
+   * unmarked and navigation is excluded outright.
+   */
+  "QuickPageLinksSectionV2",
+  "ServicesBentoCardsSectionV2",
+  "ServicesThreeCardsRightSectionV3",
   /**
    * The section headers, which fade rather than rise as a list. Two of the three
    * are one block of copy and reveal as a single unit; the split header has a
@@ -731,33 +744,140 @@ export const animationComponents = new Set<string>([
    * stagger the paragraphs inside, because a stack of body copy arriving line by
    * line reads as a loading state rather than as a composition.
    *
-   * The rest of the family is still to do: the bento about-company, the
-   * three-column mixed, the narrative feature rail, and the two large image
-   * splits. Each is a multi-part composition where which elements count as units
-   * is a design call, not a mechanical one, so they are better done with the
-   * section on screen than in a sweep.
+   * The rest of the family is below.
    */
   "ContentAboutStorySectionV3",
   "ContentCardTwoUpSectionV3",
   "ContentMainIdeaGridSectionV3",
   "FeaturePortraitParagraphSectionV3",
+  /**
+   * Narrative, second pass: the multi-part compositions.
+   *
+   * Each of these arranges its parts by a prop, and the JSX order is fixed, so
+   * every one of them staggers by READING order computed from that prop rather
+   * than by the order the elements are written in. Three of the six full-image
+   * split arrangements lead with the image; the three-column mixed section
+   * swaps all three of its rails; getting this wrong sweeps right-to-left on
+   * exactly the arrangements that flip, which is the kind of thing that looks
+   * like a rendering bug rather than a stagger.
+   *
+   * The full-image split is also where per-element token overrides earn their
+   * place. Its image is bled off the grid to sit flush with the section edges,
+   * so the library's 18px rise would open a band of bare ground along that
+   * bleed; the panel re-points `--anim-reveal-distance` to zero on itself and
+   * fades without moving. No rule, no variant, no exception list - the token is
+   * read from the animating element, so any element can answer it differently.
+   */
+  "ContentAboutCompanySectionV2",
+  "ContentNarrativeFeatureRailSectionV3",
+  "ContentSplitFixedImageSectionV3",
+  "ContentSplitFullImageSectionV3",
+  "ContentThreeColumnMixedSectionV3",
+  /**
+   * Images and Proof. Everything left in these two families that is not a
+   * carousel or a marquee, which is three trust strips and the image strip.
+   *
+   * All four are label-then-items, so all four open on the label and stagger
+   * the row after it. Three of them share a file with the two marquees, which
+   * is why the marker is on their own list items and not inside the shared
+   * `LogoPlaceholder` those marquees also render.
+   */
+  "ImageStripSectionV3",
+  "TrustBarFloatingBentoSectionV3",
+  "TrustBarSectionV3",
+  "TrustLogoGridSectionV3",
+  /**
+   * Decision. The family that establishes the third convention, after "body
+   * copy is not staggered" and "stagger by reading order":
+   *
+   * A COMPOSITE CARD IS ONE UNIT. The comparison tables, the matrix and the
+   * offer terms card each draw several panels inside a single border box,
+   * joined by shared rules and lined up by a subgrid. Staggering those panels
+   * moves them out from under the frame that contains them, so the card
+   * visibly comes apart and re-assembles - it reads as a rendering fault, not
+   * as an entrance. The same applies to the two connected process diagrams,
+   * whose elbows are border spans drawn to meet each card's edge.
+   *
+   * Which leaves the honest split: the sections whose cards are independent
+   * stagger their cards; the sections whose cards are joined reveal as one.
+   *
+   * `DecisionSplitDecisionSectionV3` also joins here from a different
+   * direction. It was already marked - with `pulse-on-scroll`, which is gated
+   * but has never been an offered value, so it was the only marked-up section
+   * in the library that no editor could animate. It now marks the entrance
+   * everything else does; the pulse rule and its tokens stay in `globals.css`
+   * for a future suite to promote.
+   */
+  "DecisionMatrixCardSectionV3",
+  "DecisionQuestionTableFourSectionV3",
+  "DecisionQuestionTableSectionV3",
+  "DecisionSplitDecisionLargeSectionV3",
+  "DecisionSplitDecisionSectionV3",
+  "DecisionSplitLargeCardsSectionV3",
+  "OfferTermsSectionV3",
+  "ProcessStepsBranchingSectionV3",
+  "ProcessStepsStaggeredSectionV3",
+  "ProcessStripSectionV3",
+  /**
+   * Utility and Action, which finish the library.
+   *
+   * Two things settled here. A FOOTER IS ONE UNIT, marked on its own root
+   * element rather than per column: its columns are chrome a reader scans, not
+   * a sequence they follow, so walking the eye down the navigation is the
+   * opposite of what a footer wants, and marking the root keeps the legal bar
+   * aligned with the columns throughout.
+   *
+   * And a bled image panel FADES WITHOUT MOVING. The CTA-with-image panel is
+   * positioned to the section's own edges, so it re-points
+   * `--anim-reveal-distance` to zero on itself exactly as the full-image
+   * narrative split does. Two sections reaching the same answer independently
+   * is the token layer working: neither needed a rule, a variant or an
+   * exception list to say it.
+   *
+   * The interactive sections here - the financing calculator, the ZIP lookup,
+   * the two request forms - are marked like anything else. An entrance moves a
+   * panel once as it arrives and never touches the state inside it.
+   */
+  "CTAFullscreenSectionV3",
+  "CTAImageSectionV3",
+  "CTAMutedSectionV3",
+  "CTASectionV3",
+  "CTAServiceTriageSectionV3",
+  "CTASmallBandImageSectionV3",
+  "ContactSectionModalBegin",
+  "ContactSectionV3",
+  "ContactStripBentoSectionV3",
+  "ContactStripSmallSectionV3",
+  "FAQSectionV3",
+  "FeaturedOfferSectionV3",
+  "FinancingCalculatorSectionV3",
+  "FooterCompactSectionV3",
+  "FooterHorizontalSectionV3",
+  "FooterLinkPanelSectionV3",
+  "FooterSectionV3",
+  "InfoStripSectionV3",
+  "ServiceAreaZipLookupSectionV3",
 ]);
 
 /**
  * Sections that will never be offered the entrance animation, and why.
  *
  * Membership in `animationComponents` is opt-in, so an excluded section needs no
- * code to stay unanimated - this set exists to say WHICH. Without it, an
- * unmarked section is ambiguous between "nobody has got to it yet" and "this
- * must not animate", and the rollout is a marker sweep across ~60 sections. At
- * nine marked that ambiguity is harmless; at sixty nobody can tell the two
- * apart, including the person doing the sweep.
+ * code to stay unanimated - this set exists to say WHICH.
  *
- * `animation-marker-ownership.test.ts` asserts the two sets never overlap and
- * that nothing in here carries a marker class, so an exclusion cannot be
- * quietly contradicted later.
+ * It was written mid-rollout, when an unmarked section was ambiguous between
+ * "nobody has got to it yet" and "this must not animate". THE ROLLOUT IS
+ * FINISHED, so the first meaning is gone: every section in the library is now
+ * either offered the entrance or listed here, and
+ * `animation-marker-ownership.test.ts` fails on any that is neither. A new
+ * section has to answer the question rather than join a silent third category.
  *
- * Four reasons, and they are different reasons:
+ * The same test asserts the two sets never overlap, that nothing in here
+ * carries a marker class, and that neither set names a section the library does
+ * not have - so an exclusion cannot be quietly contradicted, or quietly
+ * outlive the component it was written for.
+ *
+ * Five reasons, and they are different reasons:
  */
 export const animationExcludedComponents = new Map<string, string>([
   /**
@@ -862,11 +982,37 @@ export const animationExcludedComponents = new Map<string, string>([
     [
       "ContentHorizontalCardCarouselSectionV2",
       "ContentStickyIdeasSectionV2",
+      /**
+       * The three photo galleries, all on `useLoopedRail` - a looping drag rail
+       * that owns its scroll position through `requestAnimationFrame`. Same
+       * shape as the card carousel above it, and found the same way: by what
+       * they do rather than by what they import.
+       */
+      "ContentPhotoGalleryBandCarouselSectionV3",
+      "ContentPhotoGalleryCarouselSectionV3",
+      "ContentPhotoGalleryLargeCarouselSectionV3",
+      /**
+       * The fixed cover fade, whose whole composition IS a scroll effect: a
+       * sticky cover panel held under a foreground panel that scrolls up over
+       * it, across two viewports of section. An entrance would animate the
+       * panels the effect is made of while the effect was running them.
+       */
+      "ContentFixedCoverFadeSectionV2",
     ] as const
   ).map(
     (component) =>
       [component, "hand-rolls its own scroll motion without Motion"] as const,
   ),
+  /**
+   * The confirmation page's only section.
+   *
+   * Same reason as the heroes, reached from the other end: this is not a
+   * section that happens to sit first, it is the entire content of
+   * `/thank-you`, so it is above the fold at load every time it renders. An
+   * element already in view holds at the end state, so the control would render
+   * and do nothing.
+   */
+  ["ThankYouConfirmationSectionV3", "above the fold at load, so a scroll entrance is inert"],
 ]);
 
 export function sectionSupportsAnimation(component: string) {

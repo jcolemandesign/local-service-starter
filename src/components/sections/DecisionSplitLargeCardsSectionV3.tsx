@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import type {
   SectionIcons,
@@ -123,6 +124,7 @@ export function DecisionSplitLargeCardsSectionV3({
                 cardFill={cardFill}
                 cardLinks={cardLinks}
                 icons={icons}
+                revealIndex={slot}
               />
             </LayoutGridItem>
           ) : null;
@@ -138,24 +140,32 @@ function SplitLargeCard({
   cardFill,
   cardLinks,
   icons,
+  revealIndex,
 }: {
   card: SplitLargeCard;
   cardBorder: "on" | "off";
   cardFill: "solid" | "none";
   cardLinks: "on" | "off";
   icons: SectionIcons;
+  revealIndex: number;
 }) {
   const paragraphs = card.paragraphs.filter((paragraph) => paragraph.trim());
 
   return (
     <article
       className={cx(
+        // Marks this card as a revealable unit. Inert unless the section's
+        // animation toggle is on - see `section-reveal` in globals.css. The
+        // paragraph chunks inside stay part of the card: they are one argument
+        // divided by rules, not a list arriving.
+        "reveal-on-scroll",
         "fluid-type-frame radius-medium flex h-full flex-col border border-service-border bg-service-surface text-service-ink shadow-none",
         cardFill === "solid" ? "p-12 max-md:p-8" : "p-6",
         "recipe-card-context",
         cardFill === "none" && "!bg-transparent !shadow-none",
         cardBorder === "off" && "!border-transparent",
       )}
+      style={{ "--reveal-index": revealIndex } as CSSProperties}
     >
       <p className="type-label text-service-accent">{card.eyebrow}</p>
       <h3 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">

@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useState } from "react";
 import {
   requestServiceRequestOptions,
@@ -71,7 +72,10 @@ export function ContactSectionModalBegin({
     <section className="bg-bg-page" id="contact">
       <LayoutGrid className="section-min-none" columns={14} padding="med">
         <LayoutGridItem className="col-span-6 col-start-1 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2">
-          <div className="fluid-type-frame">
+          <div
+            className="reveal-on-scroll fluid-type-frame"
+            style={{ "--reveal-index": 0 } as CSSProperties}
+          >
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
               {title}
@@ -85,12 +89,16 @@ export function ContactSectionModalBegin({
         <LayoutGridItem className="col-span-6 col-start-8 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2">
           <form
             className={[
+              // The form panel is one unit. An entrance moves the panel as it
+              // arrives and never touches the selection state inside it.
+              "reveal-on-scroll",
               "content-padding fluid-type-frame radius-medium grid card-grid-gap-med border border-service-border bg-service-surface shadow-service",
               cardFill === "none" && "!bg-transparent !shadow-none",
               cardBorder === "off" && "!border-transparent",
             ]
               .filter(Boolean)
               .join(" ")}
+            style={{ "--reveal-index": 1 } as CSSProperties}
             onSubmit={(event) => {
               event.preventDefault();
 

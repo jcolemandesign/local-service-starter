@@ -22,6 +22,38 @@ const css = readFileSync(
   "utf8",
 );
 
+/**
+ * The block a marker opens, matched by braces rather than by a line pattern.
+ *
+ * These rules nest three deep - `@supports` inside `@media` inside nothing -
+ * and every line-based way of slicing them either stops at the first inner `}`
+ * or runs to the end of the file. Returns "" when the marker is absent so the
+ * assertion that wanted the block is what fails, with its own message.
+ */
+function blockAt(source: string, marker: string) {
+  const start = source.indexOf(marker);
+
+  if (start < 0) {
+    return "";
+  }
+
+  let depth = 0;
+
+  for (let index = start; index < source.length; index += 1) {
+    if (source[index] === "{") {
+      depth += 1;
+    } else if (source[index] === "}") {
+      depth -= 1;
+
+      if (depth === 0) {
+        return source.slice(start, index + 1);
+      }
+    }
+  }
+
+  return "";
+}
+
 /** Values the builder can actually store, `""` (inherit) excluded. */
 const offered = styleFieldOptions.animation
   .map((option) => option.value)
@@ -113,15 +145,14 @@ describe("animation css agreement", () => {
   /**
    * The token layer is what makes the future style-guide animation suites a
    * token swap rather than an edit to every animated section. If a literal
-   * creeps back into the keyframes or the range, a suite silently cannot move
-   * it.
+   * creeps back into the keyframes, the duration or the stagger, a suite
+   * silently cannot move it.
    */
   it("drives the reveal from custom properties, not literals", () => {
     for (const token of [
       "--anim-reveal-distance",
-      "--anim-reveal-entry-start",
-      "--anim-reveal-entry-end",
-      "--anim-reveal-stagger",
+      "--anim-reveal-duration",
+      "--anim-reveal-delay-step",
       "--anim-reveal-easing",
     ]) {
       expect(css, `${token} is not declared`).toContain(`${token}:`);
@@ -131,5 +162,128 @@ describe("animation css agreement", () => {
       ).toBeGreaterThan(1);
       expect(css, `${token} is never referenced`).toContain(`var(${token}`);
     }
+  });
+
+  /**
+   * The entrance is timed, not scrubbed, and that is the whole point of the
+   * second design.
+   *
+   * A scroll-driven animation's progress IS the scroll position, so it lasts
+   * exactly as long as the reader takes to scroll past - a flick put the whole
+   * range behind them in ~150ms and the motion never registered. Stretching the
+   * range to fix that means starting it earlier, and the earliest point is the
+   * instant the section's first pixel appears. The two cannot both be had.
+   */
+  it("plays the entrance on a clock, not on the scroller", () => {
+    const arriving = blockAt(
+      css,
+      '[data-pagebuilder-animation="reveal"][data-pagebuilder-animation-state="in"]',
+    );
+
+    expect(
+      arriving,
+      "no rule answers the arriving state, so the observer would set an attribute nothing reads",
+    ).not.toBe("");
+    expect(
+      arriving,
+      "the entrance has no duration, so it is being scrubbed rather than timed",
+    ).toContain("var(--anim-reveal-duration)");
+    expect(
+      arriving,
+      "the entrance does not stagger by delay - with a clock available, a range offset would be the scrubbed idea in the wrong place",
+    ).toContain("animation-delay");
+    expect(
+      arriving,
+      "the entrance is still attached to a scroll timeline",
+    ).not.toContain("animation-timeline");
+  });
+
+  /**
+   * Content is visible unless something is running that can reveal it again.
+   *
+   * The hiding rule is the one piece of this that can leave a page permanently
+   * blank, so it is scoped to a flag the observer sets at runtime. No script,
+   * no hiding - which covers a failed bundle, a crawler, and reduced motion.
+   */
+  it("hides a waiting unit only once the observer is running", () => {
+    const waiting = blockAt(
+      css,
+      "[data-pagebuilder-animation-ready]\n    [data-pagebuilder-animation=\"reveal\"]",
+    );
+
+    expect(
+      waiting,
+      "the waiting rule is not scoped to the observer's ready flag, so a page whose JavaScript never arrives renders its sections permanently invisible",
+    ).not.toBe("");
+    expect(waiting).toContain("opacity: 0");
+    // The three states are one selector each, distinguished by presence: no
+    // state means waiting, `in` means arriving, `settled` means it was already
+    // on screen. `:not()` is what keeps the other two out without a
+    // counter-rule fighting on specificity.
+    expect(
+      waiting,
+      "the waiting rule does not exclude frames that already have a state, so an arriving or settled section stays hidden and fights its own animation",
+    ).toContain(":not([data-pagebuilder-animation-state])");
+  });
+
+  /**
+   * Scrubbing is still wanted for a few sections, so it is kept whole rather
+   * than deleted and rebuilt later - gated on a value the builder does not
+   * offer, the same arrangement `pulse` is in.
+   */
+  it("keeps the scrubbed variant intact but unoffered", () => {
+    expect(gated).toContain("scrub");
+    expect(offered).not.toContain("scrub");
+
+    const scrubbed = blockAt(css, '[data-pagebuilder-animation="scrub"] .reveal-on-scroll');
+
+    expect(
+      scrubbed,
+      "the scrubbed rule is no longer driven by the section's own timeline",
+    ).toContain("animation-timeline: --section-entrance");
+
+    const frameRule = blockAt(css, '[data-pagebuilder-animation="scrub"] {');
+
+    expect(
+      frameRule,
+      "no frame declares --section-entrance, so the name the scrubbed rule references resolves to nothing",
+    ).toContain("view-timeline-name: --section-entrance");
+
+    // Its range is capped in a length, because a percentage of `entry` is a
+    // percentage of the section - the same token is ~150px of travel on a trust
+    // strip and a full scrollport on a nine-card bento.
+    const cap = blockAt(css, "@supports (animation-range-end:");
+
+    expect(cap, "the scrubbed range has lost its height cap").not.toBe("");
+
+    for (const token of [
+      "--anim-scrub-entry-start",
+      "--anim-scrub-entry-end",
+      "--anim-scrub-stagger",
+    ]) {
+      expect(
+        cap,
+        `${token} is not re-pointed under the cap, so it still scales with the section's height`,
+      ).toContain(`${token}: min(`);
+
+      // A dropped `animation-range` falls back to `normal` - the whole `cover`
+      // range - so the percentages have to stand outside the guard.
+      const declarations = css
+        .split(`${token}:`)
+        .slice(1)
+        .map((rest) => rest.slice(0, rest.indexOf(";")));
+      const unguarded = declarations.filter(
+        (value) => !cap.includes(`${token}:${value};`),
+      );
+
+      expect(
+        unguarded,
+        `${token} is only declared inside the @supports guard, so a browser that cannot parse the cap gets no range at all`,
+      ).not.toEqual([]);
+    }
+
+    // Clamped, so a section flush with the end of a document is not stranded
+    // part-faded with no scroll left to finish it.
+    expect(scrubbed.replace(/\s+/g, "")).toContain("100%)");
   });
 });

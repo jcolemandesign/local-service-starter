@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { FormEvent, useId, useState } from "react";
 
 import { Button } from "@/components/primitives/Button";
@@ -47,18 +48,25 @@ function ServiceAreaMapPlaceholder({
   cardBorder,
   cardFill,
   label,
+  revealIndex,
 }: {
   cardBorder: SectionCardBorder;
   cardFill: SectionCardFill;
   label: string;
+  revealIndex: number;
 }) {
   return (
     <div
       className={cx(
+        // The whole panel is the unit. Its rules and its FPO badge are
+        // absolutely positioned against this box, so anything smaller would
+        // animate the map out from under its own furniture.
+        "reveal-on-scroll",
         "content-padding radius-medium relative isolate grid h-full min-h-[31rem] overflow-hidden max-lg:min-h-[24rem] max-md:min-h-[20rem]",
         cardFill === "none" ? "bg-transparent shadow-none" : "bg-service-surface shadow-service",
         cardBorder === "off" ? "!border-0" : "border border-service-border",
       )}
+      style={{ "--reveal-index": revealIndex } as CSSProperties}
     >
       <div
         aria-hidden="true"
@@ -114,7 +122,10 @@ export function ServiceAreaZipLookupSectionV3({
           className="col-span-7 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
           alignX="center"
         >
-          <div className="fluid-type-frame mx-auto max-w-[var(--measure-copy-wide)] text-center">
+          <div
+            className="reveal-on-scroll fluid-type-frame mx-auto max-w-[var(--measure-copy-wide)] text-center"
+            style={{ "--reveal-index": 0 } as CSSProperties}
+          >
             <h2 className="type-heading-xl [text-wrap:pretty]">{title}</h2>
           </div>
         </SevenColumnGridItem>
@@ -122,10 +133,12 @@ export function ServiceAreaZipLookupSectionV3({
         <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <div
             className={cx(
+              "reveal-on-scroll",
               "content-padding radius-medium grid h-full content-between",
               cardFill === "none" ? "bg-transparent shadow-none" : "bg-service-surface shadow-service",
               cardBorder === "off" ? "!border-0" : "border border-service-border",
             )}
+            style={{ "--reveal-index": 1 } as CSSProperties}
           >
             <div>
               <p className="type-label text-service-accent">Service area</p>
@@ -204,6 +217,7 @@ export function ServiceAreaZipLookupSectionV3({
             cardBorder={cardBorder}
             cardFill={cardFill}
             label={mapLabel}
+            revealIndex={2}
           />
         </SevenColumnGridItem>
       </SevenColumnGrid>

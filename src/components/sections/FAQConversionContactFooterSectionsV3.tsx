@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import {
   LayoutGrid,
   LayoutGridItem,
@@ -302,13 +302,18 @@ export function FAQSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1">
+          {/* The heading column beside these is `sticky` and deliberately
+              unmarked: a sticky box travels with the scroller rather than
+              through it, so a view timeline on it never describes an arrival.
+              Same call as the services bento's split header. */}
           <div className="grid card-grid-gap-med">
-            {items.map((item) => (
+            {items.map((item, index) => (
               <article
-                className={`content-padding fluid-type-frame radius-medium border ${colors.card} ${
+                className={`reveal-on-scroll content-padding fluid-type-frame radius-medium border ${colors.card} ${
                   cardFill === "none" ? "!bg-transparent !shadow-none" : ""
                 } ${cardBorder === "off" ? "!border-transparent" : ""}`}
                 key={item.question}
+                style={{ "--reveal-index": index } as CSSProperties}
               >
                 <h3 className={`type-heading-sm ${colors.heading}`}>
                   {item.question}
@@ -357,7 +362,10 @@ export function CTASectionV3({
         padding="med"
       >
         <LayoutGridItem className="col-span-6 max-lg:col-span-10 max-md:col-span-6 max-sm:col-span-2">
-          <div className="fluid-type-frame">
+          <div
+            className="reveal-on-scroll fluid-type-frame"
+            style={{ "--reveal-index": 0 } as CSSProperties}
+          >
             <p className={`type-label ${colors.eyebrow}`}>Conversion</p>
             <h2 className={`type-heading-xl mt-eyebrow-heading-lg ${colors.heading}`}>
               {title}
@@ -374,10 +382,11 @@ export function CTASectionV3({
         >
           <article
             className={cardSurfaceClass(
-              `content-padding fluid-type-frame radius-medium border ${colors.card}`,
+              `reveal-on-scroll content-padding fluid-type-frame radius-medium border ${colors.card}`,
               cardFill,
               cardBorder,
             )}
+            style={{ "--reveal-index": 1 } as CSSProperties}
           >
             <h3 className={`type-heading-sm ${colors.heading}`}>Book the next visit</h3>
             <p className={`type-text-sm wrap-pretty mt-heading-body-sm ${colors.body}`}>
@@ -416,10 +425,11 @@ export function CTAMutedSectionV3({
         <SevenColumnGridItem className="col-span-7">
           <article
             className={cardSurfaceClass(
-              `content-padding radius-medium border ${colors.card}`,
+              `reveal-on-scroll content-padding radius-medium border ${colors.card}`,
               cardFill,
               cardBorder,
             )}
+            style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-8 gap-y-5 max-md:grid-cols-1">
               <div className="fluid-type-frame">
@@ -476,7 +486,10 @@ export function CTAFullscreenSectionV3({
           alignX="center"
           className="col-span-5 col-start-2 row-start-2 max-lg:col-span-7 max-lg:col-start-1"
         >
-          <div className="fluid-type-frame mx-auto w-full text-center">
+          <div
+            className="reveal-on-scroll fluid-type-frame mx-auto w-full text-center"
+            style={{ "--reveal-index": 0 } as CSSProperties}
+          >
             <p className="type-label text-white/75">{eyebrow}</p>
             <h2 className="type-display-lg mx-auto max-w-5xl">{title}</h2>
             <p className="type-text-xl wrap-pretty mx-auto mt-display-body text-white/80">
@@ -489,7 +502,10 @@ export function CTAFullscreenSectionV3({
           alignY="bottom"
           className="col-span-7 row-start-3 mt-body-actions-md max-md:mt-body-actions-sm"
         >
-          <div className="flex w-full justify-center">
+          <div
+            className="reveal-on-scroll flex w-full justify-center"
+            style={{ "--reveal-index": 1 } as CSSProperties}
+          >
             <RequestServiceButton
               className="w-auto max-w-max shrink-0 border-bg-page bg-bg-page text-service-ink hover:bg-service-surface"
               variant="secondary"
@@ -515,7 +531,10 @@ export function ContactSectionV3({
     <section className="bg-bg-page" id="contact">
       <SevenColumnGrid className="section-min-none" padding="med">
         <SevenColumnGridItem className="col-span-2 col-start-2 max-lg:col-span-7 max-lg:col-start-1">
-          <div className="fluid-type-frame">
+          <div
+            className="reveal-on-scroll fluid-type-frame"
+            style={{ "--reveal-index": 0 } as CSSProperties}
+          >
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">{title}</h2>
             <p className="type-text-lg wrap-pretty mt-heading-body-lg text-service-muted">
@@ -538,10 +557,11 @@ export function ContactSectionV3({
         <SevenColumnGridItem className="col-span-3 col-start-4 max-lg:col-span-7 max-lg:col-start-1">
           <div
             className={cardSurfaceClass(
-              "content-padding fluid-type-frame radius-medium border border-service-border bg-service-surface shadow-service",
+              "reveal-on-scroll content-padding fluid-type-frame radius-medium border border-service-border bg-service-surface shadow-service",
               cardFill,
               cardBorder,
             )}
+            style={{ "--reveal-index": 1 } as CSSProperties}
           >
             <form className="grid card-grid-gap-med">
               <label className="type-text-sm grid card-grid-gap-sml font-semibold text-service-ink">
@@ -595,7 +615,10 @@ export function FooterSectionV3({
   termsLink,
 }: FooterSectionV3Props) {
   return (
-    <footer className="token-footer-inverse bg-bg-dark text-text-inverse">
+    <footer
+      className="reveal-on-scroll token-footer-inverse bg-bg-dark text-text-inverse"
+      style={{ "--reveal-index": 0 } as CSSProperties}
+    >
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
           <div className="fluid-type-frame">
@@ -721,7 +744,10 @@ export function FooterHorizontalSectionV3({
   termsLink,
 }: FooterSectionV3Props) {
   return (
-    <footer className="token-footer-inverse bg-bg-dark text-text-inverse">
+    <footer
+      className="reveal-on-scroll token-footer-inverse bg-bg-dark text-text-inverse"
+      style={{ "--reveal-index": 0 } as CSSProperties}
+    >
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
           <div className="fluid-type-frame">
@@ -837,7 +863,10 @@ export function FooterCompactSectionV3({
   termsLink,
 }: FooterSectionV3Props) {
   return (
-    <footer className="token-footer-inverse bg-bg-dark text-text-inverse">
+    <footer
+      className="reveal-on-scroll token-footer-inverse bg-bg-dark text-text-inverse"
+      style={{ "--reveal-index": 0 } as CSSProperties}
+    >
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
           <div className="fluid-type-frame">

@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 
 export type ProcessStepsStaggeredItem = {
@@ -33,7 +34,10 @@ export function ProcessStepsStaggeredSectionV3({
           className="col-span-4 max-lg:col-span-3 max-md:col-span-6 max-sm:col-span-2"
           measure="copy"
         >
-          <div className="fluid-type-frame">
+          <div
+            className="reveal-on-scroll fluid-type-frame"
+            style={{ "--reveal-index": 0 } as CSSProperties}
+          >
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2 className="type-heading-xl wrap-pretty mt-eyebrow-heading-lg text-service-ink">
               {title}
@@ -45,7 +49,15 @@ export function ProcessStepsStaggeredSectionV3({
         </LayoutGridItem>
 
         <LayoutGridItem className="col-span-10 col-start-5 max-lg:col-span-7 max-lg:col-start-4 max-md:col-span-6 max-md:col-start-1 max-md:mt-12 max-sm:col-span-2">
-        <ol className="relative mx-auto grid max-w-6xl">
+        {/* The whole rail is one unit, and this is the case where a per-card
+            stagger is actively wrong. The elbows between the cards are drawn
+            as border spans that meet each card's edge exactly; move one card
+            18px and the rail it is joined to stays put, so the path visibly
+            comes apart and re-joins for the length of the entrance. */}
+        <ol
+          className="reveal-on-scroll relative mx-auto grid max-w-6xl"
+          style={{ "--reveal-index": 1 } as CSSProperties}
+        >
           {steps.map((step, index) => {
             const isLeft = index % 2 === 0;
             const isLast = index === steps.length - 1;

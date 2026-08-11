@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import type { SectionColorRecipe } from "@/content/section-color-recipes";
 import type { SectionIcons } from "@/content/section-style-options";
@@ -122,6 +122,11 @@ export function ContactStripBentoSectionV3({
   const iconShellClassName = colors.iconShell;
   const dividerClassName = colors.divider;
   const cardClassName = cx(
+    // Every card in this bento is a revealable unit, and they all take their
+    // classes from here - so the marker rides along and each card only has to
+    // declare which index it is. Inert unless the section's animation toggle
+    // is on; see `section-reveal` in globals.css.
+    "reveal-on-scroll",
     "h-full min-w-0 rounded-[var(--radius-surface-token)] border shadow-service",
     colors.card,
     colors.cardBorder,
@@ -134,7 +139,10 @@ export function ContactStripBentoSectionV3({
     <section className={colors.section}>
       <LayoutGrid className="section-min-none" columns={14} padding="med">
         <LayoutGridItem alignY="stretch" className="col-span-5 col-start-1 max-lg:col-span-5 max-md:col-span-6 max-md:col-start-1 max-sm:col-span-2">
-          <article className={cx(cardClassName, "grid grid-rows-2 overflow-hidden")}>
+          <article
+            className={cx(cardClassName, "grid grid-rows-2 overflow-hidden")}
+            style={{ "--reveal-index": 0 } as CSSProperties}
+          >
             <div className="flex min-w-0 flex-col items-center justify-center px-8 py-12 text-center max-sm:px-5 max-sm:py-9">
               {icons === "on" ? (
                 <IconShell className={cx(iconShellClassName, iconClassName)}>
@@ -162,7 +170,10 @@ export function ContactStripBentoSectionV3({
 
         <LayoutGridItem alignY="stretch" className="col-span-5 col-start-6 max-lg:col-span-5 max-lg:col-start-6 max-md:col-span-6 max-md:col-start-1 max-sm:col-span-2">
           <div className="grid h-full min-w-0 grid-rows-[auto_1fr] gap-6">
-            <article className={cx(cardClassName, "flex min-w-0 flex-col items-center justify-center px-8 py-8 text-center max-sm:px-5")}>
+            <article
+              className={cx(cardClassName, "flex min-w-0 flex-col items-center justify-center px-8 py-8 text-center max-sm:px-5")}
+              style={{ "--reveal-index": 1 } as CSSProperties}
+            >
               {icons === "on" ? (
                 <IconShell className={cx(iconShellClassName, iconClassName)}>
                   <ClockIcon />
@@ -172,7 +183,10 @@ export function ContactStripBentoSectionV3({
               <p className={cx("type-text-md mt-2 whitespace-pre-line", mutedClassName)}>{hours}</p>
             </article>
 
-            <article className={cx(cardClassName, "flex min-w-0 flex-col items-center justify-center px-10 py-12 text-center max-sm:px-5 max-sm:py-9")}>
+            <article
+              className={cx(cardClassName, "flex min-w-0 flex-col items-center justify-center px-10 py-12 text-center max-sm:px-5 max-sm:py-9")}
+              style={{ "--reveal-index": 2 } as CSSProperties}
+            >
               {icons === "on" ? (
                 <IconShell className={cx(iconShellClassName, iconClassName)}>
                   <MoonIcon />
@@ -185,7 +199,10 @@ export function ContactStripBentoSectionV3({
         </LayoutGridItem>
 
         <LayoutGridItem alignY="stretch" className="col-span-4 col-start-11 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2">
-          <article className={cx(cardClassName, "flex min-w-0 flex-col items-center justify-center px-8 py-12 text-center max-sm:px-5 max-sm:py-9")}>
+          <article
+            className={cx(cardClassName, "flex min-w-0 flex-col items-center justify-center px-8 py-12 text-center max-sm:px-5 max-sm:py-9")}
+            style={{ "--reveal-index": 3 } as CSSProperties}
+          >
             {icons === "on" ? (
               <IconShell className={cx(iconShellClassName, iconClassName)}>
                 <LocationIcon />

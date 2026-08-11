@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SectionEntrance } from "@/components/primitives/SectionEntrance";
 import { RequestServiceProvider } from "@/components/request-service";
 import { rootFontVariables } from "./fonts";
 import "./globals.css";
@@ -19,6 +20,10 @@ export default function RootLayout({
       className={`${rootFontVariables} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        {/* Renders nothing. One observer for every section frame on the page -
+            see `SectionEntrance`, and `buildRootLayout` in site-export.ts,
+            which mounts the same component into an exported site. */}
+        <SectionEntrance />
         <RequestServiceProvider>{children}</RequestServiceProvider>
       </body>
     </html>

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
 
 export type ContentThreeColumnMixedAlign = "left" | "center" | "right";
@@ -64,6 +65,27 @@ const alignColumnClassName: Record<
   },
 };
 
+/**
+ * One revealable unit per rail, staggered across the page rather than down it.
+ *
+ * `align` only moves the start columns, so the three rails swap places without
+ * the JSX order changing - a source-order stagger would sweep right-to-left on
+ * the arrangement that puts the links first. These follow the eye instead.
+ *
+ * A rail is one unit and not one per item on purpose. Marking each image, each
+ * card and each link would be a ten-step cascade on a section whose whole point
+ * is three parallel columns; three beats reads as the composition assembling,
+ * which is what it is.
+ */
+const alignRevealIndex: Record<
+  ContentThreeColumnMixedAlign,
+  { cta: number; images: number; links: number }
+> = {
+  left: { cta: 1, images: 0, links: 2 },
+  center: { cta: 0, images: 1, links: 2 },
+  right: { cta: 1, images: 2, links: 0 },
+};
+
 // The rails carry explicit column starts but auto rows, so without an explicit
 // row the placement cursor would push a rail that starts left of the previous
 // one onto a second row. `max-lg:row-auto` restores stacking once columns
@@ -98,6 +120,7 @@ export function ContentThreeColumnMixedSectionV3({
   secondaryActionHref = "/services",
 }: ContentThreeColumnMixedSectionV3Props) {
   const columns = alignColumnClassName[align];
+  const revealIndexes = alignRevealIndex[align];
   const surfaceClassName =
     cx(
       cardBorder === "off" ? "border-transparent" : "border-service-border",
@@ -115,7 +138,10 @@ export function ContentThreeColumnMixedSectionV3({
         >
           {/* Top-aligned with auto rows so each frame keeps its 4:3 ratio
               instead of being stretched to the height of the middle rail. */}
-          <div className="grid gap-6 max-lg:grid-cols-2 max-sm:grid-cols-1">
+          <div
+            className="reveal-on-scroll grid gap-6 max-lg:grid-cols-2 max-sm:grid-cols-1"
+            style={{ "--reveal-index": revealIndexes.images } as CSSProperties}
+          >
             {images.map((image) => (
               <div
                 className="relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-bg-muted"
@@ -137,7 +163,10 @@ export function ContentThreeColumnMixedSectionV3({
           alignY="stretch"
           className={cx(columns.cta, railClassName)}
         >
-          <div className="flex flex-col gap-6">
+          <div
+            className="reveal-on-scroll flex flex-col gap-6"
+            style={{ "--reveal-index": revealIndexes.cta } as CSSProperties}
+          >
             {/* No border or fill - the shared card padding alone insets this
                 block so it reads as an untinted companion to the CTA card. */}
             <div className="fluid-type-frame p-8 max-md:p-6">
@@ -204,7 +233,10 @@ export function ContentThreeColumnMixedSectionV3({
         >
           {/* Rows are auto-sized and the cards are not height-locked, so each
               one is only as tall as its own content. */}
-          <ul className="grid gap-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1">
+          <ul
+            className="reveal-on-scroll grid gap-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1"
+            style={{ "--reveal-index": revealIndexes.links } as CSSProperties}
+          >
             {links.map((link) => (
               <li key={link.title}>
                 <a

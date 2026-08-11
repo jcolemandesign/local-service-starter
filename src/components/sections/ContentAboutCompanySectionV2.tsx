@@ -1,4 +1,6 @@
 
+import type { CSSProperties } from "react";
+
 import {
   Button,
   SevenColumnGrid,
@@ -33,14 +35,21 @@ function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-function BentoImage({ label }: AboutImage) {
+function BentoImage({
+  label,
+  revealIndex,
+}: AboutImage & { revealIndex: number }) {
   return (
     <div
       aria-label={`${label} image placeholder`}
       className={cx(
+        // Marks this tile as a revealable unit. Inert unless the section's
+        // animation toggle is on - see `section-reveal` in globals.css.
+        "reveal-on-scroll",
         "radius-medium",
         "relative aspect-[5/4] min-w-0 overflow-hidden bg-service-border",
       )}
+      style={{ "--reveal-index": revealIndex } as CSSProperties}
     >
       <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.24),rgb(23_33_29_/_0.05)),linear-gradient(45deg,rgb(255_255_255_/_0.22)_0_1px,transparent_1px_18px)]" />
       <div className="absolute inset-0 bg-service-accent/10" />
@@ -69,19 +78,28 @@ export function ContentAboutCompanySectionV2({
     <section id="about" className="bg-bg-page">
       <SevenColumnGrid className={cx("section-min-none", sectionSpaceClass)}>
         <SevenColumnGridItem className="col-span-2 max-lg:col-span-5 max-md:col-span-3">
+          {/* Eyebrow and statement share index 0. They are one header split
+              across two grid cells, so they have to arrive together - a
+              stagger between them would read as the label being a separate
+              thought from the sentence it introduces. */}
           <p
             className={cx(
+              "reveal-on-scroll",
               "content-about-company-eyebrow",
               "type-label",
               "text-service-accent",
             )}
+            style={{ "--reveal-index": 0 } as CSSProperties}
           >
             {eyebrow}
           </p>
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-5 col-start-3 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3">
-          <div className="fluid-type-frame">
+          <div
+            className="reveal-on-scroll fluid-type-frame"
+            style={{ "--reveal-index": 0 } as CSSProperties}
+          >
             <h2
               className={cx(
                 "type-heading-xl",
@@ -102,7 +120,10 @@ export function ContentAboutCompanySectionV2({
             )}
             key={image.label ?? index}
           >
-            <BentoImage label={image.label ?? defaultImageLabels[index]} />
+            <BentoImage
+              label={image.label ?? defaultImageLabels[index]}
+              revealIndex={index + 1}
+            />
           </SevenColumnGridItem>
         ))}
 
@@ -112,6 +133,7 @@ export function ContentAboutCompanySectionV2({
         >
           <div
             className={cx(
+              "reveal-on-scroll",
               "fluid-type-frame",
               "radius-medium",
               "flex h-full min-w-0 flex-col justify-between bg-service-surface p-7 max-md:p-6",
@@ -120,6 +142,7 @@ export function ContentAboutCompanySectionV2({
               // so "on" is what draws one.
               cardBorder === "on" ? "border border-service-border" : undefined,
             )}
+            style={{ "--reveal-index": 3 } as CSSProperties}
           >
             <p
               className={cx(

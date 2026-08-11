@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 
 export type DecisionQuestionTableColumn = {
@@ -50,7 +51,10 @@ export function DecisionQuestionTableSectionV3({
           className="col-span-4 col-start-1 max-lg:col-span-10 max-md:col-span-6 max-sm:col-span-2"
           measure="copy"
         >
-          <div className="fluid-type-frame">
+          <div
+            className="reveal-on-scroll fluid-type-frame"
+            style={{ "--reveal-index": 0 } as CSSProperties}
+          >
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2 className="type-heading-xl wrap-pretty mt-eyebrow-heading-lg text-service-ink">
               {title}
@@ -62,14 +66,21 @@ export function DecisionQuestionTableSectionV3({
         </LayoutGridItem>
 
         <LayoutGridItem className="col-span-9 col-start-6 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2">
+          {/* The table is ONE revealable unit, not one per column.
+              Its columns share a border box, a continuous rule under the
+              headings and a subgrid that lines their rows up; moving them
+              independently would pull all three apart from the frame around
+              them for the length of the entrance. */}
           <ul
             className={cx(
+              "reveal-on-scroll",
               "radius-medium grid grid-cols-3 grid-rows-[auto_1fr] overflow-hidden border border-service-border bg-service-surface max-sm:grid-cols-1",
               cardFill === "none"
                 ? "!bg-transparent !shadow-none"
                 : undefined,
               cardBorder === "off" ? "!border-transparent" : undefined,
             )}
+            style={{ "--reveal-index": 1 } as CSSProperties}
           >
             {columns.slice(0, 3).map((column, index) => (
               <li

@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 import type {
@@ -88,11 +89,16 @@ export function OfferTermsSectionV3({
         >
           <article
             className={cx(
+              // The section is one card, so it is one revealable unit. Its
+              // three panels are divided by shared rules inside a single border
+              // box; staggering them would pull the card apart as it arrives.
+              "reveal-on-scroll",
               "grid grid-cols-14 overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service max-md:grid-cols-6 max-sm:grid-cols-2",
               "recipe-card-context",
               cardFill === "none" && "!bg-transparent !shadow-none",
               cardBorder === "off" && "!border-transparent",
             )}
+            style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <div className="col-span-6 p-[clamp(1.5rem,2.4vw,2.5rem)] max-md:col-span-6 max-sm:col-span-2">
               <h3 className="type-heading-sm text-service-ink">{detailsHeading}</h3>

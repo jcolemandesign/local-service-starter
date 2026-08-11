@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
 
 export type NarrativeFeatureRailCard = {
@@ -48,6 +49,19 @@ export function ContentNarrativeFeatureRailSectionV3({
     align === "right" ? "col-start-1" : "col-start-7 max-lg:col-start-5";
   const railPosition =
     align === "right" ? "col-start-9 max-lg:col-start-7" : "col-start-1";
+  /**
+   * Only the rail is revealable, and it staggers down its own column.
+   *
+   * The prose beside it is `sticky`: its box travels with the scroller instead
+   * of through it, so a view timeline on it does not describe an arrival at
+   * all - the same reason the split-header column in the services bento is left
+   * unmarked. It is also the thing a reader is reading while the rail scrolls
+   * past, which is exactly what should not be moving.
+   *
+   * The offset keeps the top card at index 0 when the image is turned off,
+   * rather than opening the sequence on a gap.
+   */
+  const railRevealOffset = showImage ? 1 : 0;
 
   return (
     <section className="bg-bg-page">
@@ -114,7 +128,10 @@ export function ContentNarrativeFeatureRailSectionV3({
         >
           <aside className="grid card-grid-gap-med">
             {showImage ? (
-              <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-surface-token)] bg-service-border">
+              <div
+                className="reveal-on-scroll relative aspect-[4/3] overflow-hidden rounded-[var(--radius-surface-token)] bg-service-border"
+                style={{ "--reveal-index": 0 } as CSSProperties}
+              >
                 <Image
                   alt={imageAlt}
                   className="object-cover"
@@ -125,9 +142,13 @@ export function ContentNarrativeFeatureRailSectionV3({
               </div>
             ) : null}
 
-            {cards.slice(0, 3).map((card) => (
+            {cards.slice(0, 3).map((card, index) => (
               <article
                 className={[
+                  // Marks this card as a revealable unit. Inert unless the
+                  // section's animation toggle is on - see `section-reveal` in
+                  // globals.css.
+                  "reveal-on-scroll",
                   "fluid-type-frame radius-medium border border-service-border bg-service-surface p-6 shadow-service",
                   cardFill === "none" && "!bg-transparent !shadow-none",
                   cardBorder === "off" && "!border-transparent",
@@ -135,6 +156,11 @@ export function ContentNarrativeFeatureRailSectionV3({
                   .filter(Boolean)
                   .join(" ")}
                 key={`${card.eyebrow}-${card.title}`}
+                style={
+                  {
+                    "--reveal-index": index + railRevealOffset,
+                  } as CSSProperties
+                }
               >
                 <p className="type-label text-service-accent">{card.eyebrow}</p>
                 <h3 className="type-heading-md wrap-pretty mt-eyebrow-heading-md text-service-ink">

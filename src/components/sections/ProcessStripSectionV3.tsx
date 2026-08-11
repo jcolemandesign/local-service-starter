@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import type { SectionColorRecipe } from "@/content/section-color-recipes";
 import type { SectionIcons } from "@/content/section-style-options";
@@ -94,7 +95,15 @@ export function ProcessStripSectionV3({
             )}
           >
             {visibleSteps.map((step, index) => (
-              <li className="relative min-w-0" key={`${step.title}-${index}`}>
+              // The marker goes on the list item, not on the card inside it.
+              // The step number and the connector arrow are both absolutely
+              // positioned against this box, so animating the card alone would
+              // leave its own number badge behind.
+              <li
+                className="reveal-on-scroll relative min-w-0"
+                key={`${step.title}-${index}`}
+                style={{ "--reveal-index": index } as CSSProperties}
+              >
                 <article
                   className={cx(
                     "radius-medium grid h-full grid-cols-[auto_minmax(0,1fr)] items-center gap-5 border p-6 shadow-service",

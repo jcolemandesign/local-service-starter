@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import type { SectionColorRecipe } from "@/content/section-color-recipes";
 import type { SectionIcons } from "@/content/section-style-options";
@@ -94,6 +95,7 @@ export function InfoStripSectionV3({
         >
           <div
             className={cx(
+              "reveal-on-scroll",
               "fluid-type-frame flex min-w-0 items-start gap-4 rounded-[var(--radius-surface-token)] border p-8 shadow-service max-md:p-6",
               colors.card,
               colors.cardBorder,
@@ -101,6 +103,7 @@ export function InfoStripSectionV3({
               cardFill === "none" && "!bg-transparent !shadow-none",
               cardBorder === "off" && "!border-transparent",
             )}
+            style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <p className={cx("type-eyebrow wrap-pretty min-w-0 flex-1", colors.label)}>
               {cardLabel}
@@ -115,7 +118,12 @@ export function InfoStripSectionV3({
           className="col-span-9 col-start-6 max-lg:col-span-6 max-lg:col-start-5 max-md:col-span-6 max-md:col-start-1 max-sm:col-span-2 max-sm:col-start-1"
           measure="copyWide"
         >
-          <p className={cx("type-text-lg wrap-pretty", colors.body)}>{body}</p>
+          <p
+            className={cx("reveal-on-scroll type-text-lg wrap-pretty", colors.body)}
+            style={{ "--reveal-index": 1 } as CSSProperties}
+          >
+            {body}
+          </p>
         </LayoutGridItem>
       </LayoutGrid>
     </section>

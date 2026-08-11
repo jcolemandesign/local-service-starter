@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
@@ -98,8 +99,20 @@ export function FooterLinkPanelSectionV3({
   socialLinks,
   termsLink,
 }: FooterLinkPanelSectionV3Props) {
+  /*
+   * A footer is one revealable unit, not one per column.
+   *
+   * Its columns are site chrome a reader scans rather than a sequence they
+   * follow, so staggering them walks the eye down the navigation instead of
+   * letting the block settle. Marking the root also keeps the legal bar and the
+   * columns aligned throughout, which a per-column stagger would not. The three
+   * footers in `FAQConversionContactFooterSectionsV3` are marked the same way.
+   */
   return (
-    <footer className="relative overflow-hidden bg-bg-page text-service-ink">
+    <footer
+      className="reveal-on-scroll relative overflow-hidden bg-bg-page text-service-ink"
+      style={{ "--reveal-index": 0 } as CSSProperties}
+    >
       <div
         aria-hidden="true"
         className="absolute inset-y-0 right-0 hidden w-[48%] border-l border-service-border bg-service-surface/70 max-lg:hidden"

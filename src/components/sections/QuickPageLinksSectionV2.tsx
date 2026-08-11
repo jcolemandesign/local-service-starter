@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
@@ -33,7 +34,12 @@ export function QuickPageLinksSectionV2({
     <section className="bg-bg-page text-service-ink">
       <SevenColumnGrid minHeight="none" padding="sml">
         <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
-          <div className="fluid-type-frame">
+          {/* The label column leads, then the links. One unit rather than two
+              lines: an eyebrow and its sentence are a single caption. */}
+          <div
+            className="reveal-on-scroll fluid-type-frame"
+            style={{ "--reveal-index": 0 } as CSSProperties}
+          >
             <p className="type-label text-service-accent">{eyebrow}</p>
             <p className="type-text-md mt-heading-body-sm text-service-muted">
               {title}
@@ -45,9 +51,13 @@ export function QuickPageLinksSectionV2({
             aria-label="Helpful pages"
             className="grid grid-cols-3 gap-3 max-md:grid-cols-1"
           >
-            {pageLinks.map((link) => (
+            {pageLinks.map((link, index) => (
               <a
                 className={cx(
+                  // Marks this card as a revealable unit. Inert unless the
+                  // section's animation toggle is on - see `section-reveal` in
+                  // globals.css.
+                  "reveal-on-scroll",
                   // The fill is an unmodified card token on purpose: the recipe
                   // card context keys on the class itself, so `/70` softening
                   // would leave the card ungrounded. Hover is carried by the
@@ -60,6 +70,7 @@ export function QuickPageLinksSectionV2({
                 )}
                 href={link.href}
                 key={link.label}
+                style={{ "--reveal-index": index + 1 } as CSSProperties}
               >
                 <span>
                   <span className="type-label text-service-accent">

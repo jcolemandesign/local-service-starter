@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import type { SectionColorRecipe } from "@/content/section-color-recipes";
 import type { SectionIcons } from "@/content/section-style-options";
@@ -144,6 +144,7 @@ function Tile({
   iconShellClassName,
   label,
   mutedClassName,
+  revealIndex,
   showIcon,
 }: {
   children: ReactNode;
@@ -152,14 +153,20 @@ function Tile({
   iconShellClassName: string;
   label: string;
   mutedClassName: string;
+  /** Position in the band, so the five tiles arrive left to right. */
+  revealIndex: number;
   showIcon: boolean;
 }) {
   return (
     <article
       className={cx(
+        // Marks this tile as a revealable unit. Inert unless the section's
+        // animation toggle is on - see `section-reveal` in globals.css.
+        "reveal-on-scroll",
         "flex h-full min-w-0 flex-col items-start p-6 text-left max-sm:p-5",
         className,
       )}
+      style={{ "--reveal-index": revealIndex } as CSSProperties}
     >
       {showIcon ? (
         <span
@@ -249,6 +256,7 @@ export function ContactStripSmallSectionV3({
           <div className="grid grid-cols-5 items-stretch gap-6 max-xl:grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1">
             <Tile
               className={cardClassName}
+              revealIndex={0}
               icon={<PhoneIcon />}
               iconShellClassName={iconShellClassName}
               label={phoneLabel}
@@ -265,6 +273,7 @@ export function ContactStripSmallSectionV3({
 
             <Tile
               className={cardClassName}
+              revealIndex={1}
               icon={<MailIcon />}
               iconShellClassName={iconShellClassName}
               label={emailLabel}
@@ -281,6 +290,7 @@ export function ContactStripSmallSectionV3({
 
             <Tile
               className={cardClassName}
+              revealIndex={2}
               icon={<ClockIcon />}
               iconShellClassName={iconShellClassName}
               label={hoursLabel}
@@ -294,6 +304,7 @@ export function ContactStripSmallSectionV3({
 
             <Tile
               className={cardClassName}
+              revealIndex={3}
               icon={<MoonIcon />}
               iconShellClassName={iconShellClassName}
               label={afterHoursLabel}
@@ -309,6 +320,7 @@ export function ContactStripSmallSectionV3({
 
             <Tile
               className={cardClassName}
+              revealIndex={4}
               icon={<LocationIcon />}
               iconShellClassName={iconShellClassName}
               label={locationLabel}

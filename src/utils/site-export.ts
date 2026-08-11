@@ -347,6 +347,12 @@ async function resolveSiteExport(requestedClientSlug: string) {
     // sees. Left to be discovered it would simply never be copied, and the
     // export would build against a missing module.
     path.join(sourceRoot, "components", "primitives", "AmbientDrift.tsx"),
+    // The same reason, one level up: `buildRootLayout` imports this and that
+    // layout is generated source text, not a file this walk reads. Without it
+    // an exported site builds against a missing module - and if it were made
+    // optional instead, every section would render permanently hidden, because
+    // nothing would ever set the ready flag the stylesheet keys off.
+    path.join(sourceRoot, "components", "primitives", "SectionEntrance.tsx"),
   ]);
 
   for (const file of dependencyFiles) {
@@ -1229,6 +1235,7 @@ function buildRootLayout(clientSlug: string) {
   const title = humanize(clientSlug);
 
   return `import type { Metadata } from "next";
+import { SectionEntrance } from "@/components/primitives/SectionEntrance";
 import { RequestServiceProvider } from "@/components/request-service";
 import { rootFontVariables } from "./fonts";
 import "./globals.css";
@@ -1242,6 +1249,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html className={\`${"${rootFontVariables}"} h-full antialiased\`} lang="en">
       <body className="min-h-full flex flex-col">
+        <SectionEntrance />
         <RequestServiceProvider>{children}</RequestServiceProvider>
       </body>
     </html>

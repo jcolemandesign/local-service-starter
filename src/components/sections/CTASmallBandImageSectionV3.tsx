@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import type { SectionColorRecipe } from "@/content/section-color-recipes";
 
@@ -48,6 +49,10 @@ export function CTASmallBandImageSectionV3({
         <LayoutGridItem className="col-span-14 max-lg:col-span-10 max-md:col-span-6 max-sm:col-span-2">
           <article
             className={cx(
+              // One unit. The band is a single bordered box holding copy, an
+              // action and a cropped photo flush to its own edge; staggering
+              // those three would take the band apart as it arrives.
+              "reveal-on-scroll",
               "radius-medium grid grid-cols-14 overflow-hidden border max-lg:grid-cols-10 max-md:grid-cols-6 max-sm:grid-cols-2",
               colors.band,
               colors.border,
@@ -55,6 +60,7 @@ export function CTASmallBandImageSectionV3({
               cardFill === "none" && "!bg-transparent !shadow-none",
               cardBorder === "off" && "!border-transparent",
             )}
+            style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <div className="col-span-6 flex min-w-0 flex-col justify-center px-8 py-6 max-lg:col-span-5 max-lg:px-6 max-md:col-span-6 max-md:px-5 max-md:py-5 max-sm:col-span-2">
               <h2

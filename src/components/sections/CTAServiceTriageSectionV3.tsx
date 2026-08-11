@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import {
   RequestServiceButton,
@@ -160,6 +160,10 @@ export function CTAServiceTriageSectionV3({
     "!border-transparent !bg-cta-primary !text-cta-primary-ink hover:!bg-cta-primary-hover";
   const cardActionText = "!text-service-ink";
   const cardClassName = cx(
+    // Each triage card is a revealable unit and they all take their classes
+    // from here, so the marker rides along and each card only declares which
+    // index it is. Inert unless the section animation toggle is on.
+    "reveal-on-scroll",
     "fluid-type-frame flex h-full min-w-0 flex-col rounded-[var(--radius-surface-token)] border p-8 shadow-service max-md:p-6",
     colors.card,
     colors.cardBorder,
@@ -172,7 +176,10 @@ export function CTAServiceTriageSectionV3({
     <section className={colors.section}>
       <LayoutGrid className="section-min-none" columns={14} padding="med">
         <LayoutGridItem className="col-span-6 max-lg:col-span-7 max-md:col-span-6 max-sm:col-span-2">
-          <article className={cardClassName}>
+          <article
+            className={cardClassName}
+            style={{ "--reveal-index": 0 } as CSSProperties}
+          >
             <div className="flex items-start gap-5">
               {icons === "on" ? (
                 <CardIcon className={cx(cardIconShell, cardIcon)}>
@@ -215,7 +222,10 @@ export function CTAServiceTriageSectionV3({
         </LayoutGridItem>
 
         <LayoutGridItem className="col-span-4 max-lg:col-span-7 max-md:col-span-3 max-sm:col-span-2">
-          <article className={cardClassName}>
+          <article
+            className={cardClassName}
+            style={{ "--reveal-index": 1 } as CSSProperties}
+          >
             <div className="flex items-start gap-5">
               {icons === "on" ? (
                 <CardIcon className={cx(cardIconShell, cardIcon)}>
@@ -251,7 +261,10 @@ export function CTAServiceTriageSectionV3({
         </LayoutGridItem>
 
         <LayoutGridItem className="col-span-4 max-lg:col-span-7 max-md:col-span-3 max-sm:col-span-2">
-          <article className={cardClassName}>
+          <article
+            className={cardClassName}
+            style={{ "--reveal-index": 2 } as CSSProperties}
+          >
             <div className="flex items-start gap-5">
               {icons === "on" ? (
                 <CardIcon className={cx(cardIconShell, cardIcon)}>

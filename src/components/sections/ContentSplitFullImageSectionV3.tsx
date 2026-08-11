@@ -173,21 +173,40 @@ function CroppedImagePanel({
   imageAlt,
   imageSrc,
   maskClassName,
+  revealIndex,
 }: {
   bleedClassName: string;
   imageAlt: string;
   imageSrc: string;
   maskClassName?: string;
+  revealIndex: number;
 }) {
   return (
     <div className="relative h-full min-h-[var(--media-min-medium)] w-full">
       <div
         className={cx(
+          // Marks the image panel as a revealable unit, and overrides the
+          // travel distance to zero so it fades without moving.
+          //
+          // The panel is absolutely positioned and bled off the grid to sit
+          // flush with the section's edges. The library's 18px rise would open
+          // an 18px band of bare ground along the top of that bleed for the
+          // length of the entrance - the crop visibly detaching from the
+          // section it is cut into. A pure fade keeps the composition intact.
+          //
+          // Which is the token layer doing its job rather than a special case:
+          // `--anim-reveal-distance` is read from the animating element, so any
+          // element can re-point it without a rule of its own.
+          "reveal-on-scroll",
           "absolute inset-y-0 overflow-hidden bg-service-surface max-md:relative max-md:inset-auto max-md:h-full max-md:min-h-[var(--media-min-medium)] max-md:!w-full",
           bleedClassName,
           maskClassName,
         )}
-        style={bleedPanelStyle}
+        style={{
+          ...bleedPanelStyle,
+          "--anim-reveal-distance": "0px",
+          "--reveal-index": revealIndex,
+        } as CSSProperties}
       >
         <Image
           alt={imageAlt}
@@ -227,6 +246,12 @@ export function ContentSplitFullImageSectionV3({
   const headingSizeClassName = headingSizeScale[headingSizeIndex];
   const hasBullets = Boolean(bullets && bullets.length > 0);
   const hasCta = Boolean(primaryAction || secondaryAction);
+  // Reading order, not source order: three of the six arrangements put the
+  // image first while the JSX always writes the copy first. Same treatment as
+  // the fixed-ratio twin.
+  const imageLeadsReadingOrder = variant.startsWith("image-");
+  const textRevealIndex = imageLeadsReadingOrder ? 1 : 0;
+  const imageRevealIndex = imageLeadsReadingOrder ? 0 : 1;
 
   return (
     <section className={cx("relative", colors.section)}>
@@ -244,7 +269,16 @@ export function ContentSplitFullImageSectionV3({
           alignY="middle"
           className={cx("row-start-1", colors.ink, config.textClassName)}
         >
-          <div className={cx("fluid-type-frame w-full", copyBlockPadding)}>
+          {/* One unit, paragraphs included - body copy arriving line by line
+              reads as a loading state rather than as a composition. */}
+          <div
+            className={cx(
+              "reveal-on-scroll",
+              "fluid-type-frame w-full",
+              copyBlockPadding,
+            )}
+            style={{ "--reveal-index": textRevealIndex } as CSSProperties}
+          >
             <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
             <HeadingTag
               className={cx(
@@ -342,6 +376,7 @@ export function ContentSplitFullImageSectionV3({
             imageAlt={imageAlt}
             imageSrc={imageSrc}
             maskClassName={config.imageMaskClassName}
+            revealIndex={imageRevealIndex}
           />
         </LayoutGridItem>
 

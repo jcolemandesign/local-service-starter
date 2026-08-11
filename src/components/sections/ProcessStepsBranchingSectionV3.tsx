@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 
 export type ProcessStepsBranchingItem = {
@@ -49,7 +50,10 @@ export function ProcessStepsBranchingSectionV3({
             className="col-span-4 max-lg:col-span-3 max-md:col-span-6 max-md:col-start-1 max-sm:col-span-2"
             measure="copy"
           >
-            <h2 className="type-heading-lg wrap-pretty text-service-ink">
+            <h2
+              className="reveal-on-scroll type-heading-lg wrap-pretty text-service-ink"
+              style={{ "--reveal-index": 0 } as CSSProperties}
+            >
               {title}
             </h2>
           </LayoutGridItem>
@@ -69,7 +73,18 @@ export function ProcessStepsBranchingSectionV3({
             "max-sm:col-span-2",
           ].join(" ")}
         >
-          <div className="mx-auto max-w-4xl">
+          {/* The diagram is one unit - steps, the branch, and the outcome pair
+              together. Its connectors are border spans drawn to meet each card
+              edge, so anything staggered inside it comes apart from the path
+              joining it for the length of the entrance. Same call as the
+              staggered process rail.
+
+              Index 1 only when there is a heading above to follow; the centred
+              arrangement renders none, so the diagram leads. */}
+          <div
+            className="reveal-on-scroll mx-auto max-w-4xl"
+            style={{ "--reveal-index": centered ? 0 : 1 } as CSSProperties}
+          >
             <ol>
               {steps.map((step, index) => (
                 <li key={`${step.title}-${index}`}>

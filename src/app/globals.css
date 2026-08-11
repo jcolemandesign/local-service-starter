@@ -206,13 +206,14 @@
 
 /*
  * ==================================================================
- * Scroll entrance animation.
+ * Section entrance animation.
  *
  * Replaces Motion's `whileInView` in sections that used it for nothing but a
  * decorative entrance. That single effect forced each of those sections to be
  * a client component and pulled the Motion runtime onto pages that otherwise
- * ship no JavaScript at all. This is CSS scroll-driven animation, so it costs
- * no bundle, no hydration and no client boundary.
+ * ship no JavaScript at all. What replaced it is one document-wide observer
+ * that renders nothing - see `SectionEntrance` - so sections stay server
+ * components and no page carries a runtime for this.
  *
  * THE SECTION DOES NOT DECIDE WHETHER IT ANIMATES. A section marks which of its
  * elements are revealable units (`.reveal-on-scroll`) and, in a list, which
@@ -222,39 +223,89 @@
  * use, and for the same reason: a value the system owns cannot drift section by
  * section, and a marker class is inert until the system switches it on.
  *
- * It is also what makes the future animation suites cheap. Every number below
- * is a custom property with a default, so a suite is a block that re-points
- * these seven properties - not an edit to any section.
+ * THE SECTION IS THE TRIGGER, AND THE CLOCK IS THE MOTION. Scroll position
+ * decides WHEN a section's entrance starts and nothing else; the animation then
+ * plays at a fixed duration. This is the axis's second design, and the first
+ * one is worth recording because it was not broken, it was SCRUBBED:
  *
- * Content is visible by default. It is only hidden inside the @supports block,
- * so a browser without scroll-driven animations shows the content immediately
- * rather than a blank section - the failure mode this ordering exists to
- * prevent. Firefox currently lands there and simply gets no entrance. The same
- * safe direction covers a subtler case: a tab that is not painting has an
- * inactive view timeline, applies no effect at all, and shows content.
+ *   - A CSS scroll-driven animation's progress IS the scroll position, so the
+ *     entrance lasted exactly as long as the reader took to scroll past it. A
+ *     trackpad flick put the whole range behind them in about 150ms and the
+ *     motion never registered.
+ *   - Stretching the range so it lasts longer means starting it earlier, and
+ *     the earliest point is the instant the section's first pixel crosses the
+ *     bottom edge - which is too early to look at. "Starts late" and "lasts
+ *     long" cannot both fit inside one screen of travel.
  *
- * MEASURED, on the reference palette in Chrome, before this was wired up:
- * an element already in view at load sits past its entry range and `both` fill
- * holds it at the end state - opacity 1, no flash - even with a stagger index
- * of 4. So above-the-fold sections need no exclusion. A staggered row sampled
- * mid-entry read 0.94 / 0.53 / 0.13 for indices 0 / 3 / 6, which is the 7%
- * offset below doing its job.
+ * So the timed rules below are the default. SCRUBBING IS STILL WANTED for a
+ * few sections, and is kept intact further down, gated on
+ * `[data-pagebuilder-animation="scrub"]` - dormant until the builder offers
+ * that value, in the same way `pulse` is.
+ *
+ * The token layer is what makes the future animation suites cheap. Every number
+ * below is a custom property with a default, so a suite is a block that
+ * re-points them - not an edit to any section.
+ *
+ * CONTENT IS VISIBLE BY DEFAULT, and the ordering that keeps it that way is
+ * load-bearing. Units are hidden only under `[data-pagebuilder-animation-ready]`,
+ * which the observer sets on the root once it is running - so a page whose
+ * JavaScript never arrives, or a reader who asked for reduced motion, gets
+ * content rather than a blank section. The observer also settles everything
+ * already on screen BEFORE it sets that flag, so nothing a reader can already
+ * see is hidden and re-shown.
  * ================================================================== */
 :root {
-  /* How far a revealing element travels, and over what part of its entry. */
-  --anim-reveal-distance: 18px;
-  --anim-reveal-entry-start: 0%;
-  --anim-reveal-entry-end: 52%;
-  /* Per-index range offset. This is the stagger: a scroll-driven timeline has
-     no clock, so `animation-delay` does nothing and each child instead animates
-     over a slightly later slice of its own entry. */
-  --anim-reveal-stagger: 7%;
-  --anim-reveal-easing: linear;
+  /* How far a revealing unit travels, and how long it takes.
+     28px rather than the 18px this started at: the entrance was reported as
+     hard to see even once it was timed correctly, and distance is what makes a
+     short movement register. */
+  --anim-reveal-distance: 28px;
+  --anim-reveal-duration: 620ms;
+  /* Per-index delay. A real stagger, because there is a real clock now - the
+     scrubbed version below has to express the same idea as a range offset,
+     since a scroll timeline has no clock for `animation-delay` to work
+     against. */
+  --anim-reveal-delay-step: 90ms;
+  /* Decisive out-easing: most of the travel happens in the first third, so the
+     unit reads as arriving and settling rather than as drifting. */
+  --anim-reveal-easing: cubic-bezier(0.22, 1, 0.36, 1);
   /* Pulse is gated by the same attribute but is not an offered value yet - see
      `SectionAnimation`. Its tokens live here so promoting it stays a one-line
      change. */
   --anim-pulse-scale: 1.025;
   --anim-pulse-stagger: 10%;
+  /* The scrubbed variant's own range, kept apart from the timed tokens above
+     so the two can be tuned without colliding - one is measured in time, the
+     other in scroll distance. See the `scrub` block further down. */
+  --anim-scrub-entry-start: 24%;
+  --anim-scrub-entry-end: 62%;
+  --anim-scrub-stagger: 7%;
+}
+
+/*
+ * The scrubbed variant's height cap. A percentage of `entry` is a percentage of
+ * the SECTION, and that is the defect it fixes.
+ *
+ * `entry` runs for `min(subject height, scrollport height)` of scrolling, so
+ * the same percentage is ~150px of travel on a trust strip and a full
+ * scrollport on a nine-card bento. Uncapped, one token reads as a quick fade on
+ * one section and a half-screen crawl on the next. A length is the same
+ * wherever it lands; `min()` keeps the shorter, so a small section is never
+ * handed a length that is most of its whole arrival.
+ *
+ * Guarded rather than assumed. If a browser will not parse a math function in
+ * `animation-range`, the declaration would be dropped and the range would fall
+ * back to `normal` - the whole `cover` range, which fades an element in over
+ * its entire pass across the screen and reads as obviously broken. `@supports`
+ * makes that unreachable: the cap applies where it parses, and everywhere else
+ * the percentages above stand. Chrome 151 parses it.
+ */
+@supports (animation-range-end: entry min(62%, 460px)) {
+  :root {
+    --anim-scrub-entry-start: min(24%, 200px);
+    --anim-scrub-entry-end: min(62%, 460px);
+    --anim-scrub-stagger: min(7%, 56px);
+  }
 }
 
 @keyframes section-reveal {
@@ -269,24 +320,94 @@
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  /*
+   * Waiting to arrive.
+   *
+   * `:not([data-pagebuilder-animation-state])` is the whole state machine: no
+   * state means the observer has seen this frame and is waiting, `in` means it
+   * has crossed the trigger line, and `settled` means it was already on screen
+   * and has no arrival to play. The other two values simply do not match this
+   * rule, so neither needs a counter-rule fighting it on specificity.
+   *
+   * Scoped to `[data-pagebuilder-animation-ready]` on the root, which the
+   * observer sets once it is running. Nothing is ever hidden that cannot be
+   * shown again: no script, no hiding.
+   */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="reveal"]:not([data-pagebuilder-animation-state])
+    .reveal-on-scroll {
+    opacity: 0;
+    translate: 0 var(--anim-reveal-distance);
+  }
+
+  /*
+   * Arriving. A plain timed animation - the same length whether the reader
+   * creeps or flicks past, which is the entire reason this is not scrubbed.
+   *
+   * The stagger is an `animation-delay` here. Read the scrubbed variant below
+   * for the same idea expressed as a range offset, which is what it has to be
+   * when the driver is a scroll position with no clock in it.
+   */
+  [data-pagebuilder-animation="reveal"][data-pagebuilder-animation-state="in"]
+    .reveal-on-scroll {
+    animation: section-reveal var(--anim-reveal-duration)
+      var(--anim-reveal-easing) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-reveal-delay-step)
+    );
+  }
+}
+
+/*
+ * The scrubbed variant, kept whole and deliberately unreachable.
+ *
+ * Progress is the scroll position rather than a clock, so the motion tracks the
+ * reader's hand exactly - which is wrong for an entrance, and right for the
+ * handful of sections that want to be driven rather than triggered. It is
+ * gated on a value `styleFieldOptions.animation` does not offer yet, the same
+ * arrangement `pulse` is in, so promoting it is one entry in that list plus a
+ * membership set saying which sections may use it.
+ *
+ * Everything specific to it lives here: its own range tokens, its own height
+ * cap, and the named timeline on the frame. The timed rules above share only
+ * the keyframes and the distance token, so tuning one cannot disturb the other.
+ */
 @supports (animation-timeline: view()) {
+  /* The section publishes its own arrival as a named timeline, so every marked
+     unit animates against the SECTION rather than against its own box - one
+     clock for the whole composition. Verified in Chrome: a descendant resolves
+     the name from its nearest declaring ancestor, so sibling frames declaring
+     the same name do not collide. */
+  [data-pagebuilder-animation="scrub"] {
+    view-timeline-name: --section-entrance;
+    view-timeline-axis: block;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
-    /* Gated on the frame attribute, which is what makes the axis an axis. An
-       unset or `none` section matches nothing here and its marker classes are
-       inert - that is how "off by default" is implemented, rather than by
-       stripping classes out of section markup. */
-    [data-pagebuilder-animation="reveal"] .reveal-on-scroll {
-      animation: section-reveal var(--anim-reveal-easing) both;
-      animation-timeline: view();
+    [data-pagebuilder-animation="scrub"] .reveal-on-scroll {
+      animation: section-reveal linear both;
+      animation-timeline: --section-entrance;
       animation-range: entry
         calc(
-          var(--anim-reveal-entry-start) + var(--reveal-index, 0) *
-            var(--anim-reveal-stagger)
+          var(--anim-scrub-entry-start) + var(--reveal-index, 0) *
+            var(--anim-scrub-stagger)
         )
         entry
-        calc(
-          var(--anim-reveal-entry-end) + var(--reveal-index, 0) *
-            var(--anim-reveal-stagger)
+        /*
+         * Clamped, which keeps a section at the very end of a document from
+         * being stranded part-faded: it can only travel its own height before
+         * scrolling stops, so a range asking for more than `entry 100%` has no
+         * scroll left to finish it. A deep stagger index degrades into several
+         * units landing together instead of a section that never finishes
+         * appearing.
+         */
+        min(
+          calc(
+            var(--anim-scrub-entry-end) + var(--reveal-index, 0) *
+              var(--anim-scrub-stagger)
+          ),
+          100%
         );
     }
   }

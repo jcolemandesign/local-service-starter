@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import type { TableCompareAlign } from "@/content/section-style-options";
 import type { DecisionQuestionTableColumn } from "./DecisionQuestionTableSectionV3";
@@ -57,14 +58,20 @@ export function DecisionQuestionTableFourSectionV3({
         <LayoutGridItem
           className={cx("col-span-12", columnStart, responsiveColumns)}
         >
+          {/* One unit, for the reason the three-column twin records: the
+              columns share a border box, a continuous rule and a subgrid. This
+              section has no copy column beside it, so the table is the whole
+              of what arrives and carries no stagger index. */}
           <ul
             className={cx(
+              "reveal-on-scroll",
               "radius-medium grid grid-cols-4 grid-rows-[auto_1fr] overflow-hidden border border-service-border bg-service-surface max-sm:grid-cols-1",
               cardFill === "none"
                 ? "!bg-transparent !shadow-none"
                 : undefined,
               cardBorder === "off" ? "!border-transparent" : undefined,
             )}
+            style={{ "--reveal-index": 0 } as CSSProperties}
           >
             {columns.slice(0, 4).map((column, index) => (
               <li

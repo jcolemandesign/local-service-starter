@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 
 import {
   SevenColumnGrid,
@@ -248,6 +249,13 @@ export function ServicesBentoCardsSectionV2({
             {displayItems.map((item, index) => (
               <article
                 className={cx(
+                  // Marks this card as a revealable unit. Inert unless the
+                  // section's animation toggle is on - see `section-reveal` in
+                  // globals.css. The split-header column beside these is
+                  // deliberately not marked: it is `sticky`, so its own box
+                  // travels with the scroller rather than through it, and a
+                  // view timeline on it does not describe an arrival.
+                  "reveal-on-scroll",
                   "fluid-type-frame",
                   "radius-medium",
                   "group/service-card relative flex cursor-pointer flex-col overflow-hidden transition-transform duration-300 ease-out hover:scale-[1.015]",
@@ -262,6 +270,7 @@ export function ServicesBentoCardsSectionV2({
                   cardSpanPattern[index % cardSpanPattern.length],
                 )}
                 key={item.title}
+                style={{ "--reveal-index": index } as CSSProperties}
               >
                 <ServiceImage
                   isRounded={!hasCardSurface}

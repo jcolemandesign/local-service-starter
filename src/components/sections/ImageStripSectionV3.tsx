@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
@@ -44,9 +45,16 @@ export function ImageStripSectionV3({ images }: ImageStripSectionV3Props) {
           >
             <figure
               className={cx(
+                // Marks this frame as a revealable unit. Inert unless the
+                // section's animation toggle is on - see `section-reveal` in
+                // globals.css. The lead frame animates with the other two
+                // rather than anchoring them: a static first image reads as one
+                // photograph failing to load.
+                "reveal-on-scroll",
                 "grid h-full grid-rows-[minmax(0,1fr)_auto] overflow-hidden bg-bg-page",
                 index === 0 && "aspect-[4/3]",
               )}
+              style={{ "--reveal-index": index } as CSSProperties}
             >
               <div className="relative h-full bg-bg-page">
                 <Image

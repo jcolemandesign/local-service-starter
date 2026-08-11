@@ -45,7 +45,10 @@ export function DecisionSplitDecisionSectionV3({
           className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
           measure="copyWide"
         >
-          <div className="fluid-type-frame">
+          <div
+            className="reveal-on-scroll fluid-type-frame"
+            style={{ "--reveal-index": 0 } as CSSProperties}
+          >
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
               {title}
@@ -71,13 +74,21 @@ export function DecisionSplitDecisionSectionV3({
             {cards.slice(0, 2).map((card, index) => (
               <article
                 className={cx(
-                  "pulse-on-scroll fluid-type-frame radius-medium min-h-56 border border-service-border bg-service-surface p-5 text-service-ink shadow-none max-md:min-h-0",
+                  // Was `pulse-on-scroll`, which is a gated rule with no
+                  // offered value behind it - so this section was the one
+                  // marked-up member of its family that could not be animated
+                  // at all. The pulse rule and its tokens stay in globals.css
+                  // as the dormant path a future animation suite can promote;
+                  // what this card marks is the entrance the builder can
+                  // actually switch on.
+                  "reveal-on-scroll",
+                  "fluid-type-frame radius-medium min-h-56 border border-service-border bg-service-surface p-5 text-service-ink shadow-none max-md:min-h-0",
                   "recipe-card-context",
                   cardFill === "none" && "!bg-transparent !shadow-none",
                   cardBorder === "off" && "!border-transparent",
                 )}
                 key={card.title}
-                style={{ "--reveal-index": index } as CSSProperties}
+                style={{ "--reveal-index": index + 1 } as CSSProperties}
               >
                 <p className="type-text-sm font-semibold text-service-accent">
                   {card.eyebrow}

@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useId, useState } from "react";
 
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
@@ -131,6 +132,10 @@ export function FinancingCalculatorSectionV3({
   const disclosureId = useId();
   const colors = colorRecipeClassName;
   const cardClassName = cx(
+    // Both panels are revealable units, and both take their classes from here.
+    // An entrance and the calculator's own state do not interact: this moves
+    // the panel once as it arrives and never touches what is inside it.
+    "reveal-on-scroll",
     "content-padding radius-medium h-full border shadow-service",
     colors.card,
     colors.cardBorder,
@@ -150,7 +155,10 @@ export function FinancingCalculatorSectionV3({
       <section className={colors.section}>
         <LayoutGrid className="section-min-none" columns={14} padding="med">
           <LayoutGridItem className="col-span-14 max-lg:col-span-10 max-md:col-span-6 max-sm:col-span-2">
-            <div className={cardClassName}>
+            <div
+              className={cardClassName}
+              style={{ "--reveal-index": 0 } as CSSProperties}
+            >
               <p className={cx("type-text-lg wrap-pretty", colors.text)}>
                 {fallbackMessage}
               </p>
@@ -190,7 +198,12 @@ export function FinancingCalculatorSectionV3({
         >
           <div
             className={cardClassName}
-            style={{ paddingBottom: "var(--section-space-vsml)" }}
+            style={
+              {
+                "--reveal-index": 0,
+                paddingBottom: "var(--section-space-vsml)",
+              } as CSSProperties
+            }
           >
             <div className="fluid-type-frame">
               <h2 className={cx("type-heading-lg wrap-pretty", colors.text)}>
@@ -376,7 +389,10 @@ export function FinancingCalculatorSectionV3({
           alignY="stretch"
           className="col-span-6 col-start-9 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2"
         >
-          <div className={cx(cardClassName, "grid content-between")}>
+          <div
+            className={cx(cardClassName, "grid content-between")}
+            style={{ "--reveal-index": 1 } as CSSProperties}
+          >
             <div aria-atomic="true" aria-live="polite">
               <p className={cx("type-label", colors.text)}>
                 {estimatedPaymentLabel}

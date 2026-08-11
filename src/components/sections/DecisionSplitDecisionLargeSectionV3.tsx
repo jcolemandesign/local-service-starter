@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 
 export type DecisionSplitDecisionLargeAlign = "left" | "center" | "right";
@@ -59,6 +60,12 @@ export function DecisionSplitDecisionLargeSectionV3({
           >
             <article
               className={cx(
+                // Marks this card as a revealable unit. Inert unless the
+                // section's animation toggle is on - see `section-reveal` in
+                // globals.css. `align` only shifts both cards along the grid
+                // together, so source order and reading order never disagree
+                // here the way they do on the splits.
+                "reveal-on-scroll",
                 "fluid-type-frame flex h-full min-h-96 flex-col rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-8 text-service-ink shadow-service max-md:min-h-0 max-md:p-6",
                 "recipe-card-context",
                 cardFill === "none" && "!bg-transparent !shadow-none",
@@ -68,6 +75,7 @@ export function DecisionSplitDecisionLargeSectionV3({
                 // padding box, so the held ring costs nothing.
                 cardBorder === "off" && "!border-transparent",
               )}
+              style={{ "--reveal-index": index } as CSSProperties}
             >
               <p className="type-label text-service-accent">{card.eyebrow}</p>
               <h2 className="type-heading-xl wrap-pretty mt-eyebrow-heading-lg text-service-ink">

@@ -3,6 +3,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
+import { sectionLibraryV3Registry } from "@/content/section-library-v3";
 import {
   animationComponents,
   animationExcludedComponents,
@@ -31,12 +32,30 @@ import {
 
 const sectionsDir = path.join(process.cwd(), "src", "components", "sections");
 
+/**
+ * Source with its comments removed, because these scans read markup as text.
+ *
+ * Every marker in this library carries a comment saying what it is, and those
+ * comments name the class - so a section explaining why it marks one unit and
+ * not two counted as marking two. The same trap `color-css-agreement` avoids by
+ * stripping comments before reading rules.
+ *
+ * Block comments cover JSX's `{/* … *\/}` as well. Line comments are only
+ * stripped where `//` opens the line, so a `https://` inside a string is left
+ * alone - truncating one would silently change what these scans see.
+ */
+function withoutComments(source: string) {
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/^[^\S\n]*\/\/.*$/gm, "");
+}
+
 const sources = new Map(
   readdirSync(sectionsDir)
     .filter((file) => file.endsWith(".tsx"))
     .map((file) => [
       file,
-      readFileSync(path.join(sectionsDir, file), "utf8"),
+      withoutComments(readFileSync(path.join(sectionsDir, file), "utf8")),
     ]),
 );
 
@@ -51,17 +70,18 @@ const revealMarker = /\breveal-on-scroll\b/;
 /**
  * Sections marked up for a value the builder does not offer yet.
  *
- * Listed rather than silently skipped, with the reason, so the arrangement is
- * stated: the rule is scoped and dormant, not broken. When `pulse` becomes an
- * option value this section joins `animationComponents` and drops out of here,
- * and the staleness check below is what forces that.
+ * Empty, and worth keeping that way. It held one entry - the split-decision
+ * section marked `pulse-on-scroll`, a rule that is gated but has never been an
+ * offered value, so that section was the one piece of marked-up animation in
+ * the library that no editor could reach. It marks the ordinary entrance now
+ * and is registered like everything else.
+ *
+ * The list stays because the arrangement it records can recur: `pulse` is
+ * still a scoped, dormant rule in `globals.css` waiting on a style-guide
+ * suite, and anything marked for it before it is offered belongs here with its
+ * reason rather than silently failing the coverage check above.
  */
-const dormantMarkers = new Map<string, string>([
-  [
-    "DecisionSplitDecisionSectionV3.tsx",
-    "marks a pulse unit, and pulse is gated but not an offered value yet",
-  ],
-]);
+const dormantMarkers = new Map<string, string>();
 
 /**
  * The two files that own a section frame rather than being sections.
@@ -221,6 +241,58 @@ describe("animation marker ownership", () => {
   });
 
   /**
+   * The builder replays an entrance by restarting it where it stands.
+   *
+   * An entrance plays when a section arrives, so clicking the toggle can never
+   * show its effect on a section already on screen. The builder answers that by
+   * putting the frame back into the waiting state and straight into the
+   * arriving one, which restarts the same timed animation a visitor gets.
+   *
+   * Two earlier attempts are pinned out of existence here. A parallel
+   * clock-based rule behind `data-pagebuilder-animation-replay` could not
+   * restart, because a CSS animation only restarts when `animation-name`
+   * changes and swapping the timeline kept the name. Scrolling the canvas back
+   * through the section did restart it, but read as a harsh jump.
+   */
+  it("replays an entrance by resetting the frame's state", () => {
+    const builder = sources.get("PagebuilderShell.tsx") ?? "";
+
+    expect(
+      builder.includes("animationStateAttribute"),
+      "the builder no longer resets the frame's animation state, so the Play button cannot restart anything",
+    ).toBe(true);
+
+    for (const [file, source] of sources) {
+      expect(
+        source.includes("data-pagebuilder-animation-replay"),
+        `${file} still carries the clock-based replay attribute - that rule is gone from globals.css, so the attribute now selects nothing`,
+      ).toBe(false);
+    }
+  });
+
+  /**
+   * The observer is the only thing that sets the arriving state, and a section
+   * must never set it for itself.
+   *
+   * Same rule as the animation attribute, for the same reason: a section that
+   * could put itself into the arriving state would animate regardless of its
+   * toggle, and "off by default" would be false for whichever sections had
+   * opted themselves in.
+   */
+  it("never lets a section set its own animation state", () => {
+    for (const [file, source] of sources) {
+      if (frameOwners.has(file)) {
+        continue;
+      }
+
+      expect(
+        source.includes("data-pagebuilder-animation-state"),
+        `${file} sets the animation state itself - that belongs to SectionEntrance, not to a section`,
+      ).toBe(false);
+    }
+  });
+
+  /**
    * A marked unit in a list has to carry its index, or the whole list animates
    * as one block.
    *
@@ -262,6 +334,59 @@ describe("animation marker ownership", () => {
     expect(
       unstaggered.sort(),
       "these mark more revealable units than they set --reveal-index on, so a list animates as one block - set the index on the same element as the marker, or record a genuinely single-unit reveal in singleUnitReveals",
+    ).toEqual([]);
+  });
+
+  /**
+   * Every section in the library has an answer, and "unmarked" is no longer one.
+   *
+   * The exclusion set was written while the rollout was partial, when it had to
+   * carry the distinction between "must not animate" and "nobody has got to it
+   * yet". The rollout is finished, so the second meaning is gone - and this is
+   * what stops it coming back. A new section now has to say which it is, in the
+   * same breath as being registered, rather than joining a silent middle
+   * category that nobody can tell apart from an oversight.
+   *
+   * Registry-driven on purpose: `sectionLibraryV3Registry` is what pagebuilder
+   * offers, so a section can only reach an editor through it.
+   */
+  it("gives every registered section an answer, offered or excluded", () => {
+    const unaccounted = sectionLibraryV3Registry
+      .map((entry) => entry.component)
+      .filter(
+        (component) =>
+          !animationComponents.has(component) &&
+          !animationExcludedComponents.has(component),
+      )
+      .sort();
+
+    expect(
+      unaccounted,
+      "these are neither offered the entrance nor recorded as never animating, so nobody can tell whether that is a decision or an omission - mark the section and add it to animationComponents, or record why it must stay still in animationExcludedComponents",
+    ).toEqual([]);
+  });
+
+  /**
+   * The other direction: both sets name sections that exist.
+   *
+   * A renamed or deleted component leaves a stale entry that reads as coverage
+   * and provides none, and the scans above are per file - they cannot see a
+   * registry entry pointing at nothing.
+   */
+  it("names only registered sections in either set", () => {
+    const registered = new Set<string>(
+      sectionLibraryV3Registry.map((entry) => entry.component),
+    );
+    const unknown = [
+      ...animationComponents,
+      ...animationExcludedComponents.keys(),
+    ]
+      .filter((component) => !registered.has(component))
+      .sort();
+
+    expect(
+      unknown,
+      "these are named by the animation sets but are not in the section library, so the entry is stale - a rename or a deletion left it behind",
     ).toEqual([]);
   });
 

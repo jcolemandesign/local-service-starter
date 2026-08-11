@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import {
   LayoutGrid,
   LayoutGridItem,
@@ -5,6 +7,16 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 import { MeasuredMarquee } from "@/components/sections/MeasuredMarquee";
+
+/**
+ * Five sections share this file, and only three of them may be marked.
+ *
+ * The two marquees are excluded from the entrance axis outright - their motion
+ * is the section and it always runs - so the reveal marker deliberately does
+ * NOT live in `LogoPlaceholder`, which the logo marquee's track renders too.
+ * It sits on the list items of the sections that own it instead. See
+ * `animationExcludedComponents`.
+ */
 
 type TrustItemsProps = {
   items: readonly string[];
@@ -124,7 +136,10 @@ export function TrustBarSectionV3({
           className="content-padding-y col-span-3 max-lg:col-span-7"
           measure="copy"
         >
-          <p className="type-text-md wrap-pretty font-semibold text-service-ink">
+          <p
+            className="reveal-on-scroll type-text-md wrap-pretty font-semibold text-service-ink"
+            style={{ "--reveal-index": 0 } as CSSProperties}
+          >
             {label}
           </p>
         </SevenColumnGridItem>
@@ -137,6 +152,7 @@ export function TrustBarSectionV3({
             {items.map((item, index) => (
               <li
                 className={cx(
+                  "reveal-on-scroll",
                   "type-text-sm wrap-pretty font-medium text-service-muted",
                   index > 0
                     ? "relative pl-4 before:absolute before:inset-y-0 before:left-0 before:border-l before:border-service-border before:[border-left-width:var(--border-surface-width-token)] max-sm:before:hidden max-sm:pl-0"
@@ -146,6 +162,7 @@ export function TrustBarSectionV3({
                     : undefined,
                 )}
                 key={item}
+                style={{ "--reveal-index": index + 1 } as CSSProperties}
               >
                 {item}
               </li>
@@ -187,10 +204,12 @@ export function TrustBarFloatingBentoSectionV3({
         >
           <div
             className={cx(
+              "reveal-on-scroll",
               "radius-medium flex min-h-44 items-end p-7 border border-service-border bg-service-surface text-service-ink max-md:min-h-0 max-md:p-6",
               cardFill === "none" ? "!bg-transparent" : undefined,
               cardBorder === "off" ? "!border-transparent" : undefined,
             )}
+            style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <p className="type-text-lg">{label}</p>
           </div>
@@ -204,10 +223,12 @@ export function TrustBarFloatingBentoSectionV3({
           >
             <div
               className={cx(
+                "reveal-on-scroll",
                 "p-6 radius-medium flex h-full min-h-32 flex-col justify-between border border-service-border bg-service-surface shadow-service max-md:p-5 max-md:min-h-0",
                 cardFill === "none" ? "!bg-transparent !shadow-none" : undefined,
                 cardBorder === "off" ? "!border-transparent" : undefined,
               )}
+              style={{ "--reveal-index": index + 1 } as CSSProperties}
             >
               <span className="type-caption text-service-muted">
                 {String(index + 1).padStart(2, "0")}
@@ -265,10 +286,12 @@ export function TrustLogoGridSectionV3({
         >
           <div
             className={cx(
+              "reveal-on-scroll",
               "radius-medium flex h-full items-center justify-center border border-service-border bg-service-surface px-5 py-4 text-center",
               cardFill === "none" ? "!bg-transparent" : undefined,
               cardBorder === "off" ? "!border-transparent" : undefined,
             )}
+            style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <p className="type-text-xl wrap-balance font-semibold text-service-ink">
               {label}
@@ -281,8 +304,12 @@ export function TrustLogoGridSectionV3({
           className="col-span-5 col-start-3 max-lg:col-span-7 max-lg:col-start-1"
         >
           <ul className="grid grid-cols-5 justify-items-center site-grid-gap max-lg:grid-cols-3 max-sm:grid-cols-2">
-            {visibleLogos.map((logo) => (
-              <li className="w-full" key={logo}>
+            {visibleLogos.map((logo, index) => (
+              <li
+                className="reveal-on-scroll w-full"
+                key={logo}
+                style={{ "--reveal-index": index + 1 } as CSSProperties}
+              >
                 <LogoPlaceholder
                   cardBorder={cardBorder}
                   cardFill={cardFill}

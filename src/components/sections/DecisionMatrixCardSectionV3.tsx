@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import type { TableCompareAlign } from "@/content/section-style-options";
 
@@ -54,6 +55,16 @@ export function DecisionMatrixCardSectionV3({
   const dividerBorderClass =
     cardBorder === "off" ? "border-bg-page" : "border-service-border";
   const visibleQuadrants = quadrants.slice(0, 4);
+  /**
+   * Two units, staggered in reading order.
+   *
+   * `right` puts the header in the last five columns and the matrix in the
+   * first eight of the SAME row, so the matrix is read first there while the
+   * JSX still writes the header first. `center` stacks them, header above.
+   */
+  const matrixLeadsReadingOrder = align === "right";
+  const headerRevealIndex = matrixLeadsReadingOrder ? 1 : 0;
+  const matrixRevealIndex = matrixLeadsReadingOrder ? 0 : 1;
 
   return (
     <section className="bg-bg-page">
@@ -62,7 +73,10 @@ export function DecisionMatrixCardSectionV3({
           className={cx(layout.header, responsiveGridPlacement)}
           measure="copy"
         >
-          <div className="fluid-type-frame">
+          <div
+            className="reveal-on-scroll fluid-type-frame"
+            style={{ "--reveal-index": headerRevealIndex } as CSSProperties}
+          >
             <p className="type-label text-service-accent">{eyebrow}</p>
             <h2 className="type-heading-xl wrap-pretty mt-eyebrow-heading-lg text-service-ink">
               {title}
@@ -74,14 +88,19 @@ export function DecisionMatrixCardSectionV3({
         </LayoutGridItem>
 
         <LayoutGridItem className={cx(layout.matrix, responsiveGridPlacement)}>
+          {/* One unit: the four quadrants are cells of a single bordered
+              matrix, divided by shared rules. Moving them independently would
+              take the grid apart while it arrives. */}
           <ul
             className={cx(
+              "reveal-on-scroll",
               "radius-medium grid grid-cols-2 overflow-hidden border border-service-border bg-service-surface max-sm:grid-cols-1",
               cardFill === "none"
                 ? "!bg-transparent !shadow-none"
                 : undefined,
               cardBorder === "off" ? "!border-transparent" : undefined,
             )}
+            style={{ "--reveal-index": matrixRevealIndex } as CSSProperties}
           >
             {visibleQuadrants.map((quadrant, index) => (
               <li

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 import type { SectionColorRecipe } from "@/content/section-color-recipes";
@@ -54,6 +55,9 @@ export function CTAImageSectionV3({
   title,
 }: CTAImageSectionV3Props) {
   const columns = columnClasses[align];
+  // `align` names the side the COPY sits on, so the image leads the reading
+  // order whenever the copy is on the right.
+  const imageLeadsReadingOrder = align === "right";
 
   return (
     <section className="relative overflow-hidden bg-bg-page">
@@ -66,7 +70,14 @@ export function CTAImageSectionV3({
           alignY="stretch"
           className={cx(columns.content, stackedClasses)}
         >
-          <div className="flex h-full flex-col">
+          <div
+            className="reveal-on-scroll flex h-full flex-col"
+            style={
+              {
+                "--reveal-index": imageLeadsReadingOrder ? 1 : 0,
+              } as CSSProperties
+            }
+          >
             <div className="fluid-type-frame">
               <p className="type-label text-service-accent">{eyebrow}</p>
               <h2 className="type-heading-xl wrap-pretty mt-eyebrow-heading-lg text-service-ink">
@@ -98,9 +109,20 @@ export function CTAImageSectionV3({
         >
           <div
             className={cx(
+              // Fades without moving. The panel is absolutely positioned to
+              // the section's own edges, so the library's 18px rise would open
+              // a band of bare ground along the top of the bleed - the same
+              // reason the full-image narrative split re-points this token.
+              "reveal-on-scroll",
               "media-min-medium absolute inset-y-0 !w-auto overflow-hidden bg-bg-muted max-lg:relative max-lg:inset-auto max-lg:-mx-[var(--site-grid-inset-inline)] max-lg:!w-[calc(100%+var(--site-grid-inset-inline)+var(--site-grid-inset-inline))]",
               columns.media,
             )}
+            style={
+              {
+                "--anim-reveal-distance": "0px",
+                "--reveal-index": imageLeadsReadingOrder ? 0 : 1,
+              } as CSSProperties
+            }
           >
             {imageSrc ? (
               <Image

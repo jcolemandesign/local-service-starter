@@ -241,6 +241,15 @@ function cx(...classes: Array<string | false | undefined>) {
 type PreviewVariableStyle = CSSProperties & Record<`--${string}`, string>;
 
 const normalSpacingClassName = "pagebuilder-density-normal";
+
+/**
+ * The frame attribute `SectionEntrance` drives, and the builder's replay resets.
+ *
+ * Owned by the observer rather than by React, which is what makes an imperative
+ * reset safe here: React never renders this attribute, so it cannot clobber it
+ * on the next commit, and the observer only ever sets it once per frame.
+ */
+const animationStateAttribute = "data-pagebuilder-animation-state";
 const splitContentImageComponent = "HeroSplitFullHeightSectionV3";
 const fixedRatioSplitComponent = "HeroSplitFixedImageSectionV3";
 const splitBentoComponent = "HeroSplitBentoSectionV3";
@@ -3210,6 +3219,48 @@ export function PagebuilderShell({
         section.id === sectionId ? { ...section, animation } : section,
       ),
     );
+
+    // Show the thing that was just switched on. Choosing an entrance and then
+    // seeing nothing move is the whole reported defect; choosing it and
+    // watching it play is the control explaining itself.
+    if (resolveSectionAnimation(animation) !== "none") {
+      replaySectionAnimation(sectionId);
+    }
+  }
+
+  /**
+   * Play one section's entrance by scrolling it back through its own arrival.
+   *
+   * Not an imitation of the animation - the animation itself. The section is
+   * parked below the fold and scrolled in, so what plays is the scroll-driven
+   * rule at a real scrolling speed, against the same scroller the view timeline
+   * resolves. There is nothing here that can drift from what a visitor sees,
+   * and nothing to keep in sync.
+   *
+   * This replaced a clock-based playback that was wrong twice over: it could
+   * not restart (a CSS animation only restarts when `animation-name` changes,
+   * and swapping only the timeline kept the name, so a second press updated an
+   * animation already at its end state and did nothing), and a duration tuned
+   * to look right in isolation says nothing about how the entrance actually
+   * reads while someone scrolls.
+   */
+  function replaySectionAnimation(sectionId: string) {
+    const frame = document.querySelector<HTMLElement>(
+      `[data-pagebuilder-section-id="${CSS.escape(sectionId)}"]`,
+    );
+
+    if (!frame) {
+      return;
+    }
+
+    // Back to the waiting state, then straight into the arriving one. Removing
+    // the attribute is what makes this restart: the units match the hidden rule
+    // again, and re-adding it starts the animation from the top. Reading
+    // `offsetWidth` between the two forces the style flush that makes them two
+    // changes rather than one no-op.
+    frame.removeAttribute(animationStateAttribute);
+    void frame.offsetWidth;
+    frame.setAttribute(animationStateAttribute, "in");
   }
 
   function updateSectionCardBorder(
@@ -5368,6 +5419,27 @@ export function PagebuilderShell({
                                     );
                                   })}
                               </div>
+                              {/* The affordance the axis could not work
+                                  without. An entrance plays as a section
+                                  travels into view, so by the time anyone has
+                                  scrolled to a section and clicked its toggle
+                                  there is no entry left to play - the control
+                                  reads as broken while working perfectly. This
+                                  scrolls the section back out and in, so the
+                                  real entrance runs. Hidden on `None`, where
+                                  there would be nothing to play. */}
+                              {resolveSectionAnimation(section.animation) !==
+                              "none" ? (
+                                <button
+                                  className="token-chrome-card min-h-10 rounded-[var(--chrome-radius-control)] border px-2 text-center text-xs font-semibold transition-colors"
+                                  onClick={() =>
+                                    replaySectionAnimation(section.id)
+                                  }
+                                  type="button"
+                                >
+                                  Play entrance
+                                </button>
+                              ) : null}
                             </fieldset>
                           ) : null}
 
