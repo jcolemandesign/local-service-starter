@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-08-11T02:54:58.052Z",
+      "savedAt": "2026-08-11T03:00:27.656Z",
       "sectionCount": 12,
       "sections": [
         {
@@ -24,7 +24,7 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "slotId": "slot-60617e1dbb11",
-          "colorRecipe": "brand",
+          "colorRecipe": "dark",
           "backgroundFill": "solid",
           "cardBorder": "off",
           "borderTone": "dark",

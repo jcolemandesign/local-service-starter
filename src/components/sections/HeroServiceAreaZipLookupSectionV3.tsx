@@ -35,8 +35,14 @@ type HeroServiceAreaZipLookupSectionV3Props = {
 };
 
 type HeroVariantConfig = {
-  fadeClassName?: string;
-  fadeGradientClassName?: string;
+  /**
+   * Ramp that dissolves the photo into the section behind it, on the overlap
+   * variants where the copy sits over the image. Carried by the image rather
+   * than by a ground-coloured panel over it - a panel only disappears while the
+   * section's ground is one flat colour, and a background texture puts a seam
+   * straight back down the photo. See the mask classes in `globals.css`.
+   */
+  imageMaskClassName?: string;
   imageClassName: string;
   imagePanelClassName: string;
   textClassName: string;
@@ -75,16 +81,14 @@ const variantConfig: Record<
     imageClassName: "z-0 col-span-9 col-start-6",
     imagePanelClassName:
       "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
-    fadeClassName: "col-span-4 col-start-6",
-    fadeGradientClassName: "full-image-split-fade-right",
+    imageMaskClassName: "full-image-split-image-mask-right",
   },
   "image-9-overlap-left-text-7": {
     textClassName: "relative z-10 col-span-9 col-start-6",
     imageClassName: "z-0 col-span-9 col-start-1",
     imagePanelClassName:
       "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
-    fadeClassName: "col-span-4 col-start-6",
-    fadeGradientClassName: "full-image-split-fade-left",
+    imageMaskClassName: "full-image-split-image-mask-left",
   },
 };
 
@@ -258,6 +262,7 @@ export function HeroServiceAreaZipLookupSectionV3({
             className={cx(
               "absolute bottom-[calc(0px_-_var(--site-grid-inset-block))] top-[calc(0px_-_var(--site-grid-inset-block))] overflow-hidden bg-service-surface max-md:relative max-md:inset-auto max-md:h-full max-md:min-h-[var(--media-min-medium)] max-md:!w-full",
               config.imagePanelClassName,
+              config.imageMaskClassName,
             )}
             style={fullBleedImagePanelStyle}
           >
@@ -272,23 +277,8 @@ export function HeroServiceAreaZipLookupSectionV3({
           </div>
         </LayoutGridItem>
 
-        {config.fadeClassName ? (
-          <LayoutGridItem
-            alignY="stretch"
-            className={cx(
-              "pointer-events-none relative z-[1] row-start-1 max-lg:hidden",
-              config.fadeClassName,
-            )}
-          >
-            <span
-              aria-hidden="true"
-              className={cx(
-                "absolute inset-x-0 bottom-[calc(0px_-_var(--site-grid-inset-block))] top-[calc(0px_-_var(--site-grid-inset-block))]",
-                config.fadeGradientClassName,
-              )}
-            />
-          </LayoutGridItem>
-        ) : null}
+        {/* No fade panel - the ramp rides the image itself now, so the
+            section's own ground shows through underneath, texture and all. */}
       </LayoutGrid>
     </section>
   );

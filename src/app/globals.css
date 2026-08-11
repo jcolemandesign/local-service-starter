@@ -1097,87 +1097,56 @@ body {
     container-type: inline-size;
   }
 
-  /* Eased alpha ramp for the 9 / 9 full-image split overlap. Multiple stops
-     keep the section ground visually stable through the copy area, then let
-     the image emerge without the perceptible midpoint of a two-stop fade.
 
-     THE RAMP IS A MASK, NOT A GRADIENT OF TRANSLUCENT COLOURS, and that is
-     load-bearing. Written the obvious way - `linear-gradient` with
-     `color-mix(in oklab, var(--color-bg-page) 74%, transparent)` stops - the
-     whole declaration is dropped by the CSS compiler: the served sheet carries
-     73 linear-gradients and not one survives with a color-mix stop. Dropping
-     the only declaration empties the rule, the empty rule is pruned, and the
-     class the section asks for simply does not exist - the fade vanishes with
-     nothing failing anywhere. A mask needs only black and transparent, so the
-     ground stays one token and the easing lives in plain alpha stops.
-
-     THE GROUND IS THE RECIPE'S, NOT THE PAGE'S. Fading to `--color-bg-page`
-     paints a near-white wash whatever the section is set to, so on any dark
-     recipe the ramp arrived as a pale bar across the image - and the copy,
-     light because the ground is dark, crossed it and lost all its contrast.
-     `--recipe-ground` is declared on the paint surface for every recipe and
-     inherits down to here; the page token remains the fallback for a section
-     rendered outside a paint surface at all. */
-  .full-image-split-fade-right {
-    background-color: var(--recipe-ground, var(--color-bg-page));
-    mask-image: linear-gradient(
-      to right,
-      rgb(0 0 0 / 1) 0%,
-      rgb(0 0 0 / 0.98) 15%,
-      rgb(0 0 0 / 0.9) 30%,
-      rgb(0 0 0 / 0.74) 46%,
-      rgb(0 0 0 / 0.52) 62%,
-      rgb(0 0 0 / 0.29) 77%,
-      rgb(0 0 0 / 0.11) 90%,
-      rgb(0 0 0 / 0) 100%
-    );
+  /* Dissolves the photo into the section on the full image split overlap
+   * variants, where the copy sits over the image.
+   *
+   * THE RAMP IS ON THE PHOTO, NOT OVER IT. This began as a panel of the
+   * section's ground laid on top of the image, and that only disappears while
+   * the ground is a single flat colour. It failed twice for the same underlying
+   * reason - the panel was impersonating the ground. First it hardcoded the
+   * page token, so every dark recipe got a pale bar across the image and the
+   * copy crossing it lost all contrast. Fixing the colour then held only until
+   * a section was given a background texture, at which point a flat panel
+   * stopped matching a textured ground and the photo's boundary came back.
+   * Masking the image ends the impersonation: nothing is painted over the
+   * photo, the photo dissolves, and whatever the section actually has behind it
+   * shows through. No colour to keep in step, so nothing left to fall out.
+   *
+   * IT IS A MASK, NOT A GRADIENT OF TRANSLUCENT COLOURS, and that is also load
+   * bearing. Written the obvious way - `linear-gradient` through
+   * `color-mix(in oklab, var(--recipe-ground) 74%, transparent)` stops - the
+   * declaration is dropped by the CSS compiler, which empties the rule, and an
+   * empty rule is pruned, so the class stops existing and the fade vanishes
+   * with nothing failing anywhere. `css-gradient-color-mix` guards that now. A
+   * mask needs only black and transparent, so the easing lives in plain alpha
+   * stops.
+   *
+   * `--split-mask-end` is where the overlap ends as a fraction of the image
+   * panel, and it is a variable because that fraction is per layout rather than
+   * universal. The default 41% is nine columns plus one inset bleed with the
+   * overlap covering the first four - it holds between 39% and 41% from a 1366
+   * laptop to a 2560 display, because the column, gap and inset clamps all move
+   * together. A layout whose overlap is a different share of its image sets its
+   * own end and inherits the curve; the intermediate stops are fixed fractions
+   * of it, so the easing is identical at any width. Alpha stops are the inverse
+   * of the slab's, so the curve is the one that was tuned. */
+  .full-image-split-image-mask-right,
+  .full-image-split-image-mask-left {
+    --split-mask-end: 41%;
   }
 
-  .full-image-split-fade-left {
-    background-color: var(--recipe-ground, var(--color-bg-page));
-    mask-image: linear-gradient(
-      to left,
-      rgb(0 0 0 / 1) 0%,
-      rgb(0 0 0 / 0.98) 15%,
-      rgb(0 0 0 / 0.9) 30%,
-      rgb(0 0 0 / 0.74) 46%,
-      rgb(0 0 0 / 0.52) 62%,
-      rgb(0 0 0 / 0.29) 77%,
-      rgb(0 0 0 / 0.11) 90%,
-      rgb(0 0 0 / 0) 100%
-    );
-  }
-
-  /* The same ramp, applied to the photograph instead of over it.
-   *
-   * The fade above paints a slab of the section's ground on top of the image,
-   * which is invisible only while that ground is a flat colour. Give the
-   * section a background texture - a gradient, grain, a ground image - and the
-   * slab no longer matches what sits beside it, so its edge reappears as a
-   * hard boundary down the photo. The panel was faking the ground, and a fake
-   * only holds while the real one is featureless.
-   *
-   * Masking the image removes the fake: nothing is painted over the photo, the
-   * photo simply dissolves, and whatever the section actually has behind it -
-   * texture, gradient, image, plain colour - is what shows through. There is
-   * no colour to keep in step, so there is nothing left to fall out of step.
-   *
-   * The 41% stop is where the overlap ends as a fraction of the image panel:
-   * the panel is nine columns plus one inset bleed, the overlap is the first
-   * four of them, and that ratio holds between 39% and 41% from a 1366 laptop
-   * to a 2560 display because the column, gap and inset clamps move together.
-   * Alpha stops are the inverse of the slab's, so the curve is unchanged. */
   .full-image-split-image-mask-right {
     mask-image: linear-gradient(
       to right,
       rgb(0 0 0 / 0) 0%,
-      rgb(0 0 0 / 0.02) 6%,
-      rgb(0 0 0 / 0.1) 12%,
-      rgb(0 0 0 / 0.26) 19%,
-      rgb(0 0 0 / 0.48) 25%,
-      rgb(0 0 0 / 0.71) 32%,
-      rgb(0 0 0 / 0.89) 37%,
-      rgb(0 0 0 / 1) 41%
+      rgb(0 0 0 / 0.02) calc(var(--split-mask-end) * 0.146),
+      rgb(0 0 0 / 0.1) calc(var(--split-mask-end) * 0.293),
+      rgb(0 0 0 / 0.26) calc(var(--split-mask-end) * 0.463),
+      rgb(0 0 0 / 0.48) calc(var(--split-mask-end) * 0.61),
+      rgb(0 0 0 / 0.71) calc(var(--split-mask-end) * 0.78),
+      rgb(0 0 0 / 0.89) calc(var(--split-mask-end) * 0.902),
+      rgb(0 0 0 / 1) var(--split-mask-end)
     );
   }
 
@@ -1185,14 +1154,50 @@ body {
     mask-image: linear-gradient(
       to left,
       rgb(0 0 0 / 0) 0%,
-      rgb(0 0 0 / 0.02) 6%,
-      rgb(0 0 0 / 0.1) 12%,
-      rgb(0 0 0 / 0.26) 19%,
-      rgb(0 0 0 / 0.48) 25%,
-      rgb(0 0 0 / 0.71) 32%,
-      rgb(0 0 0 / 0.89) 37%,
-      rgb(0 0 0 / 1) 41%
+      rgb(0 0 0 / 0.02) calc(var(--split-mask-end) * 0.146),
+      rgb(0 0 0 / 0.1) calc(var(--split-mask-end) * 0.293),
+      rgb(0 0 0 / 0.26) calc(var(--split-mask-end) * 0.463),
+      rgb(0 0 0 / 0.48) calc(var(--split-mask-end) * 0.61),
+      rgb(0 0 0 / 0.71) calc(var(--split-mask-end) * 0.78),
+      rgb(0 0 0 / 0.89) calc(var(--split-mask-end) * 0.902),
+      rgb(0 0 0 / 1) var(--split-mask-end)
     );
+  }
+
+  /* The narrative split's overlap narrows below `lg` - two of its image's six
+     columns rather than four of nine - so the ramp has to narrow with it or it
+     would dissolve most of the picture. Roughly 28% across that range, measured
+     the same way. It stacks at `md`, where there is no overlap left and the
+     mask is dropped by the section rather than tuned here. */
+  /* Below `lg` the default is no ramp at all.
+
+     Both heroes stack there - the image goes full width above the copy with
+     nothing overlapping it, which is why their fade panels used to be hidden at
+     that breakpoint - and a ramp with nothing in front of it just eats the
+     leading edge of the picture. An end of 0% collapses every stop, leaving the
+     mask fully opaque, which is `none` without needing a second declaration.
+
+     The narrative split is the exception: its overlap survives down to `md`, at
+     two of its image's six columns rather than four of nine, so it re-declares
+     a narrower end. It sits after the reset in source order and both are
+     single-class selectors, so it wins on the cascade for that range and gives
+     the ramp back. */
+  @media (max-width: 1023px) {
+    .full-image-split-image-mask-right,
+    .full-image-split-image-mask-left {
+      --split-mask-end: 0%;
+    }
+
+    .full-image-split-narrow-overlap {
+      --split-mask-end: 28%;
+    }
+  }
+
+  /* The narrative split stacks here too, so it rejoins the reset. */
+  @media (max-width: 767px) {
+    .full-image-split-narrow-overlap {
+      --split-mask-end: 0%;
+    }
   }
 
   .container-site,

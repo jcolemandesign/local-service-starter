@@ -48,8 +48,14 @@ type ContentSplitFullImageSectionV3Props = {
 };
 
 type FullImageVariantConfig = {
-  fadeClassName?: string;
-  fadeGradientClassName?: string;
+  /**
+   * Ramp that dissolves the photo into the section behind it, on the overlap
+   * variants where the copy sits over the image. Carried by the image rather
+   * than by a ground-coloured panel over it - a panel only disappears while the
+   * section's ground is one flat colour, and a background texture puts a seam
+   * straight back down the photo. See the mask classes in `globals.css`.
+   */
+  imageMaskClassName?: string;
   imageBleedClassName: string;
   imageClassName: string;
   textClassName: string;
@@ -92,15 +98,15 @@ const variantConfig: Record<
     textClassName: `relative z-10 col-span-9 col-start-1 max-lg:col-span-6 max-lg:col-start-1 ${stackedColumns}`,
     imageClassName: `z-0 col-span-9 col-start-6 max-lg:col-span-6 max-lg:col-start-5 ${stackedColumns}`,
     imageBleedClassName: bleedRight,
-    fadeClassName: "col-span-4 col-start-6 max-lg:col-span-2 max-lg:col-start-5",
-    fadeGradientClassName: "full-image-split-fade-right",
+    imageMaskClassName:
+      "full-image-split-image-mask-right full-image-split-narrow-overlap",
   },
   "image-9-overlap-left-text-7": {
     textClassName: `relative z-10 col-span-9 col-start-6 max-lg:col-span-6 max-lg:col-start-5 ${stackedColumns}`,
     imageClassName: `z-0 col-span-9 col-start-1 max-lg:col-span-6 max-lg:col-start-1 ${stackedColumns}`,
     imageBleedClassName: bleedLeft,
-    fadeClassName: "col-span-4 col-start-6 max-lg:col-span-2 max-lg:col-start-5",
-    fadeGradientClassName: "full-image-split-fade-left",
+    imageMaskClassName:
+      "full-image-split-image-mask-left full-image-split-narrow-overlap",
   },
 };
 
@@ -166,10 +172,12 @@ function CroppedImagePanel({
   bleedClassName,
   imageAlt,
   imageSrc,
+  maskClassName,
 }: {
   bleedClassName: string;
   imageAlt: string;
   imageSrc: string;
+  maskClassName?: string;
 }) {
   return (
     <div className="relative h-full min-h-[var(--media-min-medium)] w-full">
@@ -177,6 +185,7 @@ function CroppedImagePanel({
         className={cx(
           "absolute inset-y-0 overflow-hidden bg-service-surface max-md:relative max-md:inset-auto max-md:h-full max-md:min-h-[var(--media-min-medium)] max-md:!w-full",
           bleedClassName,
+          maskClassName,
         )}
         style={bleedPanelStyle}
       >
@@ -332,23 +341,12 @@ export function ContentSplitFullImageSectionV3({
             bleedClassName={config.imageBleedClassName}
             imageAlt={imageAlt}
             imageSrc={imageSrc}
+            maskClassName={config.imageMaskClassName}
           />
         </LayoutGridItem>
 
-        {config.fadeClassName ? (
-          <LayoutGridItem
-            alignY="stretch"
-            className={cx(
-              "pointer-events-none relative z-[1] row-start-1 max-md:hidden",
-              config.fadeClassName,
-            )}
-          >
-            <span
-              aria-hidden="true"
-              className={cx("absolute inset-0", config.fadeGradientClassName)}
-            />
-          </LayoutGridItem>
-        ) : null}
+        {/* No fade panel - the ramp rides the image itself now, so the
+            section's own ground shows through underneath, texture and all. */}
       </LayoutGrid>
     </section>
   );

@@ -27,7 +27,7 @@ import { describe, expect, it } from "vitest";
  *
  * Use a mask for an eased ramp instead: paint the ground as a flat colour and
  * put the easing in `mask-image` alpha stops, which need only black and
- * transparent. See `.full-image-split-fade-right` in `globals.css`.
+ * transparent. See `.full-image-split-image-mask-right` in `globals.css`.
  */
 
 const stylesheets = [path.join(process.cwd(), "src", "app", "globals.css")];
