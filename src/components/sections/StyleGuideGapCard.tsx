@@ -39,9 +39,11 @@ export function StyleGuideGapCard({ kind, name, value }: StyleGuideGapCardProps)
       aria-pressed={isActive}
       className={cx(
         "radius-4 flex min-h-12 w-full items-center justify-between gap-3 border px-3 py-2 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
-        isActive
-          ? "border-service-accent bg-service-accent text-white"
-          : "border-service-border bg-surface-raised text-service-ink hover:border-service-accent",
+        // Chrome tokens rather than the client palette. This is a control in
+        // the tool, and the tool has to stay legible against whatever palette
+        // is being authored with it - which is exactly what it cannot do when
+        // it paints itself in that palette.
+        isActive ? "token-chrome-card-active" : "token-chrome-control",
       )}
       onClick={() => {
         updateDraft(keys.name, name);
@@ -50,7 +52,7 @@ export function StyleGuideGapCard({ kind, name, value }: StyleGuideGapCardProps)
       type="button"
     >
       <span className="type-caption font-semibold">{name}</span>
-      <span className={cx("type-caption", isActive ? "text-white/76" : "text-service-muted")}>
+      <span className={cx("type-caption", isActive ? undefined : "token-chrome-muted")}>
         {value}
       </span>
     </button>

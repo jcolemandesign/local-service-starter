@@ -29,9 +29,8 @@ export function StyleGuideRadiusCard({
       aria-pressed={isActive}
       className={cx(
         "radius-4 grid min-h-10 w-full grid-cols-[minmax(0,1fr)_4rem_2rem] items-center gap-3 border px-3 py-2 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
-        isActive
-          ? "border-service-accent bg-service-accent text-white"
-          : "border-service-border bg-surface-raised text-service-ink hover:border-service-accent",
+        // Chrome tokens rather than the client palette - see StyleGuideGapCard.
+        isActive ? "token-chrome-card-active" : "token-chrome-control",
       )}
       onClick={() => {
         if (target === "button") {
@@ -50,7 +49,7 @@ export function StyleGuideRadiusCard({
       <span
         className={cx(
           "type-caption text-right tabular-nums",
-          isActive ? "text-white/76" : "text-service-muted",
+          isActive ? undefined : "token-chrome-muted",
         )}
       >
         {value}
@@ -59,8 +58,8 @@ export function StyleGuideRadiusCard({
         className={cx(
           "size-6 shrink-0 border",
           isActive
-            ? "border-white/70 bg-surface-raised/15"
-            : "border-service-border bg-service-surface",
+            ? "border-[var(--chrome-border-strong)] bg-[var(--chrome-accent)]/25"
+            : "border-[var(--chrome-border)] bg-[var(--chrome-soft)]",
         )}
         style={radiusStyle}
       />

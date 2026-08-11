@@ -982,6 +982,20 @@ function LayoutSystemControlLab() {
   );
 }
 
+/**
+ * The spacing, gap and radius aids are instruments, not previews.
+ *
+ * They are painted in the fixed chrome palette rather than in the client
+ * tokens they used to use. Their whole job is to show one box inset inside
+ * another, which needs the two to differ - and the palette being authored is
+ * free not to differ. North Star's promoted set resolves `bg-surface` and
+ * `service-surface` to the same grey, so every one of these diagrams flattened
+ * into a single field and stopped showing the thing it exists to show. A tool
+ * cannot be rendered unreadable by the thing it is editing.
+ *
+ * The colour swatches, recipe previews and live surface keep the client tokens:
+ * displaying that palette is their purpose.
+ */
 function FrameVisualAid({
   block,
   inline,
@@ -996,19 +1010,19 @@ function FrameVisualAid({
   previewInline: string;
 }) {
   return (
-    <div className="radius-medium border border-service-border bg-surface-raised p-4">
-      <p className="type-caption font-semibold text-service-ink">{label}</p>
-      <p className="type-caption mt-1 text-service-muted">
+    <div className="radius-medium token-chrome-card border p-4">
+      <p className="type-caption font-semibold">{label}</p>
+      <p className="type-caption token-chrome-muted mt-1">
         inline {inline} / block {block}
       </p>
       <div
-        className="radius-medium mt-4 border border-service-border bg-service-surface"
+        className="radius-medium token-chrome-frame mt-4 border"
         style={{ padding: `${previewBlock} ${previewInline}` }}
       >
         <div className="grid grid-cols-5 gap-1.5">
           {Array.from({ length: 5 }, (_, index) => (
             <span
-              className="radius-4 h-10 bg-surface-raised shadow-service"
+              className="radius-4 h-10 bg-[var(--chrome-accent)]"
               key={`${label}-frame-aid-${index}`}
             />
           ))}
@@ -1026,24 +1040,24 @@ function ContentFrameVisualAid({
   value: string;
 }) {
   return (
-    <div className="radius-medium border border-service-border bg-surface-raised p-4">
-      <p className="type-caption font-semibold text-service-ink">{label}</p>
-      <p className="type-caption mt-1 text-service-muted">
+    <div className="radius-medium token-chrome-card border p-4">
+      <p className="type-caption font-semibold">{label}</p>
+      <p className="type-caption token-chrome-muted mt-1">
         container gutter {value}
       </p>
       <div
-        className="radius-medium mt-4 min-h-60 border border-service-border bg-service-surface"
+        className="radius-medium token-chrome-frame mt-4 min-h-60 border"
         style={{ padding: value }}
       >
-        <div className="radius-4 grid h-full min-h-20 content-between gap-3 border border-service-border bg-surface-raised p-3 shadow-service">
+        <div className="radius-4 token-chrome-card grid h-full min-h-20 content-between gap-3 border p-3">
           <div className="grid grid-cols-3 gap-2">
-            <span className="radius-4 h-8 bg-service-surface" />
-            <span className="radius-4 h-8 bg-service-surface" />
-            <span className="radius-4 h-8 bg-service-surface" />
+            <span className="radius-4 h-8 bg-[var(--chrome-accent)]" />
+            <span className="radius-4 h-8 bg-[var(--chrome-accent)]" />
+            <span className="radius-4 h-8 bg-[var(--chrome-accent)]" />
           </div>
           <div className="grid gap-2">
-            <span className="radius-4 h-2 bg-service-border" />
-            <span className="radius-4 h-2 w-2/3 bg-service-border" />
+            <span className="radius-4 h-2 bg-[var(--chrome-border-strong)]" />
+            <span className="radius-4 h-2 w-2/3 bg-[var(--chrome-border-strong)]" />
           </div>
         </div>
       </div>
@@ -1061,21 +1075,21 @@ function GapVisualAid({
   value: string;
 }) {
   return (
-    <div className="radius-medium border border-service-border bg-surface-raised p-4">
-      <p className="type-caption font-semibold text-service-ink">{label}</p>
-      <p className="type-caption mt-1 text-service-muted">{value}</p>
-      <div className="radius-medium mt-4 border border-service-border bg-service-surface p-4">
+    <div className="radius-medium token-chrome-card border p-4">
+      <p className="type-caption font-semibold">{label}</p>
+      <p className="type-caption token-chrome-muted mt-1">{value}</p>
+      <div className="radius-medium token-chrome-frame mt-4 border p-4">
         <div className="grid grid-cols-5" style={{ gap: previewValue }}>
           {Array.from({ length: 5 }, (_, index) => (
             <span
-              className="radius-4 h-16 bg-surface-raised shadow-service"
+              className="radius-4 h-16 bg-[var(--chrome-accent)]"
               key={`${label}-gap-aid-${index}`}
             />
           ))}
         </div>
-        <div className="mt-4 h-1 rounded-full bg-service-border">
+        <div className="mt-4 h-1 rounded-full bg-[var(--chrome-border)]">
           <div
-            className="h-full rounded-full bg-service-accent"
+            className="h-full rounded-full bg-[var(--chrome-accent)]"
             style={{ width: previewValue }}
           />
         </div>
@@ -1088,24 +1102,24 @@ function RadiusVisualAid({ name, value }: { name: string; value: string }) {
   const radiusStyle = { borderRadius: value };
 
   return (
-    <div className="radius-medium border border-service-border bg-surface-raised p-4">
+    <div className="radius-medium token-chrome-card border p-4">
       <div
-        className="border border-service-border bg-service-surface p-3 shadow-service"
+        className="token-chrome-frame border p-3"
         style={radiusStyle}
       >
         <div
-          className="relative aspect-[5/3] overflow-hidden border border-service-accent/25 bg-surface-raised"
+          className="relative aspect-[5/3] overflow-hidden border border-[var(--chrome-border-strong)] bg-[var(--chrome-soft)]"
           style={radiusStyle}
         >
-          <div className="absolute inset-4 border border-dashed border-service-accent/35" />
+          <div className="absolute inset-4 border border-dashed border-[var(--chrome-accent)]/45" />
           <div
-            className="absolute bottom-4 right-4 size-16 border border-service-border bg-service-surface"
+            className="absolute bottom-4 right-4 size-16 border border-[var(--chrome-border)] bg-[var(--chrome-accent)]"
             style={radiusStyle}
           />
         </div>
       </div>
-      <p className="type-caption mt-4 font-semibold text-service-ink">{name}</p>
-      <p className="type-caption mt-1 text-service-muted">{value}</p>
+      <p className="type-caption mt-4 font-semibold">{name}</p>
+      <p className="type-caption token-chrome-muted mt-1">{value}</p>
     </div>
   );
 }
@@ -1120,19 +1134,19 @@ function NestedGapVisualAid({
   value: string;
 }) {
   return (
-    <div className="radius-medium border border-service-border bg-surface-raised p-4">
-      <p className="type-caption font-semibold text-service-ink">{name}</p>
-      <p className="type-caption mt-1 text-service-muted">{value}</p>
+    <div className="radius-medium token-chrome-card border p-4">
+      <p className="type-caption font-semibold">{name}</p>
+      <p className="type-caption token-chrome-muted mt-1">{value}</p>
 
       {kind === "inline" ? (
         <div className="mt-4 flex flex-wrap" style={{ gap: value }}>
-          <span className="radius-4 bg-service-accent px-3 py-2 text-sm font-semibold text-white">
+          <span className="radius-4 bg-[var(--chrome-accent)] px-3 py-2 text-sm font-semibold text-[var(--chrome-accent-text)]">
             Primary
           </span>
-          <span className="radius-4 border border-service-border px-3 py-2 text-sm font-semibold text-service-ink">
+          <span className="radius-4 border border-[var(--chrome-border-strong)] px-3 py-2 text-sm font-semibold">
             Secondary
           </span>
-          <span className="radius-4 border border-service-border px-3 py-2 text-sm font-semibold text-service-muted">
+          <span className="radius-4 token-chrome-muted border border-[var(--chrome-border)] px-3 py-2 text-sm font-semibold">
             Tertiary
           </span>
         </div>
@@ -1140,9 +1154,9 @@ function NestedGapVisualAid({
 
       {kind === "card" ? (
         <div className="mt-4 grid grid-cols-3" style={{ gap: value }}>
-          <div className="radius-4 h-16 bg-service-surface" />
-          <div className="radius-4 h-16 bg-service-border" />
-          <div className="radius-4 h-16 bg-service-accent/20" />
+          <div className="radius-4 h-16 bg-[var(--chrome-accent)]" />
+          <div className="radius-4 h-16 bg-[var(--chrome-border-strong)]" />
+          <div className="radius-4 h-16 bg-[var(--chrome-soft)]" />
         </div>
       ) : null}
 
@@ -1151,11 +1165,11 @@ function NestedGapVisualAid({
           className="mt-4 grid grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]"
           style={{ gap: value }}
         >
-          <div className="radius-4 min-h-20 bg-service-surface p-4">
-            <p className="type-caption text-service-muted">Content column</p>
+          <div className="radius-4 min-h-20 bg-[var(--chrome-soft)] p-4">
+            <p className="type-caption token-chrome-muted">Content column</p>
           </div>
-          <div className="radius-4 min-h-20 bg-service-border p-4">
-            <p className="type-caption text-service-muted">Media column</p>
+          <div className="radius-4 min-h-20 bg-[var(--chrome-border-strong)] p-4">
+            <p className="type-caption token-chrome-muted">Media column</p>
           </div>
         </div>
       ) : null}
@@ -1351,7 +1365,13 @@ function StyleGuideListControlSamples() {
 export default function StyleGuidePage() {
   return (
     <StyleGuideLiveSurface>
-      <main className="style-guide-page min-h-svh text-service-ink">
+      {/* `token-chrome` carries the chrome custom properties, which the
+          instrument aids below and `.style-guide-page`'s own field sheen both
+          read. It was missing here, so every `--chrome-*` reference on this
+          page resolved to nothing. The page keeps its own background: that rule
+          is declared later than `.token-chrome`'s and both are single-class,
+          so it still wins. */}
+      <main className="token-chrome style-guide-page min-h-svh text-service-ink">
       <StyleGuideCloseAllButton />
       <nav
         aria-label="Style guide table of contents"

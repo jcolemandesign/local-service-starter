@@ -116,7 +116,14 @@ export type GateReport = {
  * worse than none, because the report would overstate its own reach.
  */
 export const CARD_CONTEXT_COVERAGE = {
-  covered: 132,
+  /**
+   * Down from 132: the style guide's gap and radius cards were repainted in the
+   * chrome palette, so they no longer carry a card token. They live in the
+   * sections folder the count scans but are controls in the tool rather than
+   * sections on a page, so they were inflating this figure rather than
+   * contributing to it.
+   */
+  covered: 130,
   total: 148,
 } as const;
 

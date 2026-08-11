@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "classic-service",
       "recipeName": "Home",
-      "savedAt": "2026-08-11T03:00:27.656Z",
+      "savedAt": "2026-08-11T03:23:15.295Z",
       "sectionCount": 12,
       "sections": [
         {
@@ -48,29 +48,29 @@
           "cardBorder": "on",
           "borderTone": "dark",
           "cardFill": "solid",
-          "backgroundTreatment": "gradient",
+          "backgroundTreatment": "drift",
           "backgroundConfig": {
             "nodes": [
               {
                 "color": "surface",
-                "x": 19,
-                "y": 13,
-                "size": 106,
+                "x": 4,
+                "y": 8,
+                "size": 181,
                 "fade": 21,
                 "opacity": 100
               },
               {
-                "color": "accent",
-                "x": 88,
-                "y": 100,
+                "color": "surface",
+                "x": 36,
+                "y": 71,
                 "size": 95,
                 "fade": 45,
                 "opacity": 100
               }
             ],
-            "strength": 18,
-            "animate": false,
-            "speed": 100,
+            "strength": 75,
+            "animate": true,
+            "speed": 203,
             "blend": "overlay"
           }
         },
