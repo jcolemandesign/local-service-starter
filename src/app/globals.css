@@ -1109,9 +1109,17 @@ body {
      the only declaration empties the rule, the empty rule is pruned, and the
      class the section asks for simply does not exist - the fade vanishes with
      nothing failing anywhere. A mask needs only black and transparent, so the
-     ground stays one token and the easing lives in plain alpha stops. */
+     ground stays one token and the easing lives in plain alpha stops.
+
+     THE GROUND IS THE RECIPE'S, NOT THE PAGE'S. Fading to `--color-bg-page`
+     paints a near-white wash whatever the section is set to, so on any dark
+     recipe the ramp arrived as a pale bar across the image - and the copy,
+     light because the ground is dark, crossed it and lost all its contrast.
+     `--recipe-ground` is declared on the paint surface for every recipe and
+     inherits down to here; the page token remains the fallback for a section
+     rendered outside a paint surface at all. */
   .full-image-split-fade-right {
-    background-color: var(--color-bg-page);
+    background-color: var(--recipe-ground, var(--color-bg-page));
     mask-image: linear-gradient(
       to right,
       rgb(0 0 0 / 1) 0%,
@@ -1126,7 +1134,7 @@ body {
   }
 
   .full-image-split-fade-left {
-    background-color: var(--color-bg-page);
+    background-color: var(--recipe-ground, var(--color-bg-page));
     mask-image: linear-gradient(
       to left,
       rgb(0 0 0 / 1) 0%,
