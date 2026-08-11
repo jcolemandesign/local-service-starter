@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import type { CardLinkGridAlign } from "@/content/section-style-options";
 import { CardLinkShell } from "./CardLinkShell";
@@ -90,6 +91,7 @@ export function ThreeCardLinkGridSectionV3({
           >
             <CardLinkShell
               className={cx(
+                "reveal-on-scroll",
                 "group/card flex h-full min-w-0 flex-col overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service",
                 // Hover lift and focus ring belong to a card you can click.
                 // A static card keeps the surface and drops the affordance.
@@ -100,6 +102,7 @@ export function ThreeCardLinkGridSectionV3({
                 cardBorder === "off" && "!border-transparent",
               )}
               href={cardLinks === "on" ? item.href : undefined}
+              style={{ "--reveal-index": index } as CSSProperties}
             >
               {showImages ? (
                 <div

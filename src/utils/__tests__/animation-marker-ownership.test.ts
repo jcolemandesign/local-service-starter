@@ -70,6 +70,24 @@ const dormantMarkers = new Map<string, string>([
  */
 const frameOwners = new Set(["PagebuilderShell.tsx", "PageTemplatePreview.tsx"]);
 
+/**
+ * Sections whose card element is defined in another file.
+ *
+ * The scans here are per file and do not follow imports, which is a deliberate
+ * limit - resolving a card component across files is the kind of static
+ * analysis that misreports. Where a section genuinely renders a card someone
+ * else declares, the file holding the marker is named, and the check below
+ * still verifies a marker exists there. So this records where to look rather
+ * than waving the section through.
+ */
+const sharedMarkerSources = new Map<string, string>([
+  [
+    "HorizontalCardLinkGridTwoUpSectionV3",
+    // Renders `HorizontalCardLink`, which the 3-up grid declares and marks.
+    "HorizontalCardLinkGridSectionV3.tsx",
+  ],
+]);
+
 function fileFor(component: string) {
   for (const [file, source] of sources) {
     if (source.includes(`export function ${component}`)) {
@@ -115,6 +133,22 @@ describe("animation marker ownership", () => {
     const empty: string[] = [];
 
     for (const component of animationComponents) {
+      const shared = sharedMarkerSources.get(component);
+
+      if (shared) {
+        const source = sources.get(shared);
+
+        expect(
+          source,
+          `${component} is recorded as taking its marker from ${shared}, which does not exist`,
+        ).toBeDefined();
+        expect(
+          revealMarker.test(source ?? ""),
+          `${component} is recorded as taking its marker from ${shared}, but that file marks nothing`,
+        ).toBe(true);
+        continue;
+      }
+
       const file = fileFor(component);
 
       expect(file, `animationComponents names ${component}, which has no export`)

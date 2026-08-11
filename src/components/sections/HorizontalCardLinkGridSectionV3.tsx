@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import type {
   CardLinkGridAlign,
@@ -95,6 +96,10 @@ export function HorizontalCardLink({
   return (
     <CardLinkShell
       className={cx(
+        // Shared by both horizontal grids, so marking it here covers the 3-up
+        // and the 2-up at once. `index` is already a prop, which is what the
+        // stagger needs.
+        "reveal-on-scroll",
         "group/card grid h-full min-w-0 grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service max-sm:grid-cols-1",
         cardLinks === "on" &&
           "transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
@@ -103,6 +108,7 @@ export function HorizontalCardLink({
         cardBorder === "off" && "!border-transparent",
       )}
       href={cardLinks === "on" ? item.href : undefined}
+      style={{ "--reveal-index": index } as CSSProperties}
     >
       <div className="fluid-type-frame card-min-short flex min-w-0 flex-col p-[clamp(1.125rem,1.5vw,1.625rem)]">
         {icons === "on" ? (

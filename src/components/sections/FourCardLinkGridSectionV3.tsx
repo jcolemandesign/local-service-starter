@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import { CardLinkShell } from "./CardLinkShell";
 
@@ -65,6 +66,10 @@ export function FourCardLinkGridSectionV3({
           >
             <CardLinkShell
               className={cx(
+                // Marks this card as a revealable unit. Inert unless the
+                // section's animation toggle is on - see `section-reveal` in
+                // globals.css.
+                "reveal-on-scroll",
                 "group/card flex h-full min-w-0 flex-col overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service",
                 // Hover lift and focus ring belong to a card you can click.
                 // A static card keeps the surface and drops the affordance.
@@ -75,6 +80,7 @@ export function FourCardLinkGridSectionV3({
                 cardBorder === "off" && "!border-transparent",
               )}
               href={cardLinks === "on" ? item.href : undefined}
+              style={{ "--reveal-index": index } as CSSProperties}
             >
               {showImages ? (
                 <div

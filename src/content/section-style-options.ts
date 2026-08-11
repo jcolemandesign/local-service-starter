@@ -681,9 +681,9 @@ export function sectionSupportsBackgroundFill(component: string) {
  * failure 51 of 93 sections shipped with before `getSectionToggleProps` read
  * these sets.
  *
- * These five are the sections that already carried the marker class
- * unconditionally, from before the axis existed. Everything else in the library
- * is added as it is marked up, family by family.
+ * The first four are the sections that already carried the marker class
+ * unconditionally, from before the axis existed. The rest of the library is
+ * added as it is marked up, family by family.
  *
  * `animation-marker-ownership.test.ts` pins this against the markup in both
  * directions, so a section cannot carry a marker class without being offered
@@ -694,6 +694,24 @@ export const animationComponents = new Set<string>([
   "FeatureAsymmetricCardsSectionV3",
   "FeatureStackedCardsSectionV3",
   "ProcessImageChecklistSectionV3",
+  /**
+   * The card-grid family, from the library's Scan collection. These are the
+   * "cards rise and fade in" case the axis was asked for, and they are the
+   * tightest family to do first: five sections, one repeated card each, and
+   * three of them already share their card element - both horizontal grids
+   * render `HorizontalCardLink`, so marking it covers the 3-up and the 2-up at
+   * once.
+   *
+   * The rest of the Scan collection is deliberately not here yet. The carousels
+   * and the hover/scroll panels animate internally with Motion already, and an
+   * outer entrance on top of that needs a decision per section rather than a
+   * blanket sweep.
+   */
+  "FourCardLinkGridSectionV3",
+  "HorizontalCardLinkGridSectionV3",
+  "HorizontalCardLinkGridTwoUpSectionV3",
+  "ServiceNeedsPriorityGridSectionV3",
+  "ThreeCardLinkGridSectionV3",
 ]);
 
 export function sectionSupportsAnimation(component: string) {

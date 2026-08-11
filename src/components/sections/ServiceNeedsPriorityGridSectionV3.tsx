@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
 
 export type ServiceNeedsPriorityGridItem = {
@@ -49,14 +50,25 @@ export function ServiceNeedsPriorityGridSectionV3({
       ? "col-span-9 col-start-6 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2"
       : "col-span-9 col-start-1 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2";
 
-  function renderCard(item: ServiceNeedsPriorityGridItem, isPriority: boolean) {
+  /**
+   * `revealIndex` is passed in rather than derived, because the four cards are
+   * emitted in two places and their reading order flips with `align` - the
+   * priority card leads on the left and trails on the right. Staggering by
+   * reading order is what makes the sequence look intentional either way.
+   */
+  function renderCard(
+    item: ServiceNeedsPriorityGridItem,
+    isPriority: boolean,
+    revealIndex: number,
+  ) {
     const usePriorityTypography = isPriority && !compactPriorityCard;
 
     return (
       <article
-        className={`group/card fluid-type-frame flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent ${
+        className={`reveal-on-scroll group/card fluid-type-frame flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent ${
           cardFill === "none" ? "!bg-transparent !shadow-none" : ""
         } ${cardBorder === "off" ? "!border-transparent" : ""}`}
+        style={{ "--reveal-index": revealIndex } as CSSProperties}
       >
         <div
           className={`flex flex-1 flex-col ${
@@ -112,7 +124,7 @@ export function ServiceNeedsPriorityGridSectionV3({
             alignY="stretch"
             className={`${priorityPosition} col-start-1`}
           >
-            {renderCard(priorityItem, true)}
+            {renderCard(priorityItem, true, 0)}
           </LayoutGridItem>
         ) : null}
 
@@ -131,7 +143,11 @@ export function ServiceNeedsPriorityGridSectionV3({
                 }
                 key={item.title}
               >
-                {renderCard(item, false)}
+                {renderCard(
+                  item,
+                  false,
+                  align === "left" ? index + 1 : index,
+                )}
               </div>
             ))}
           </div>
@@ -142,7 +158,7 @@ export function ServiceNeedsPriorityGridSectionV3({
             alignY="stretch"
             className={`${priorityPosition} col-start-10 max-lg:col-start-1`}
           >
-            {renderCard(priorityItem, true)}
+            {renderCard(priorityItem, true, 3)}
           </LayoutGridItem>
         ) : null}
       </LayoutGrid>
