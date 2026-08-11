@@ -2,11 +2,24 @@
 
 import Image from "next/image";
 import type { PointerEvent } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import { useLoopedRail } from "@/hooks/useLoopedRail";
+
+/**
+ * The captioned photo carousel, at two scales.
+ *
+ * The rail loops, and `useLoopedRail` owns the scroll position - the wrap, the
+ * drag, the momentum and the arrow stepping. Read the hook before changing how
+ * anything here moves; the rule that every movement is a delta rather than an
+ * absolute target is not obvious from this side.
+ *
+ * What the loop cost: the edge state went with it. `canScrollPrevious` /
+ * `canScrollNext` described a rail with ends, so the arrows are never disabled
+ * now - there is always somewhere to go in both directions.
+ */
 
 type GalleryImageSize = "small" | "medium" | "large" | "tall" | "wide";
 
@@ -26,16 +39,6 @@ type ContentPhotoGalleryCarouselSectionV3Props = {
 };
 
 type GalleryScale = "compact" | "large";
-
-type DragState = {
-  active: boolean;
-  lastTime: number;
-  lastX: number;
-  pointerId: number;
-  scrollLeft: number;
-  startX: number;
-  velocity: number;
-};
 
 const gallerySizeClasses: Record<
   GalleryScale,
@@ -66,31 +69,70 @@ function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+/**
+ * Two sizes, and the compact one is deliberately quiet.
+ *
+ * At the compact scale these sit above a shallow rail where a 4rem button with
+ * a cast shadow was competing with the photographs for the eye. It is now
+ * close to the photo band's control: small, muted, no drop shadow, and the
+ * hover reads as an accent outline rather than a filled accent disc. The large
+ * scale keeps the fuller treatment, because there the composition can carry it.
+ */
+const arrowClasses: Record<GalleryScale, string> = {
+  compact:
+    "size-9 border-service-border bg-surface-raised text-service-muted hover:border-service-accent hover:text-service-accent max-md:size-8",
+  large:
+    "size-16 border-service-border bg-surface-raised text-2xl font-semibold leading-none text-service-ink shadow-[0_10px_24px_rgb(20_27_24_/_0.09),0_0_0_1px_rgb(20_27_24_/_0.045)] hover:border-service-accent hover:bg-service-accent hover:text-white max-md:size-12 max-md:text-xl",
+};
+
 function ArrowButton({
   direction,
-  disabled,
   onClick,
   onPointerEnter,
   onPointerLeave,
+  scale,
 }: {
   direction: "previous" | "next";
-  disabled: boolean;
   onClick: () => void;
   onPointerEnter: (event: PointerEvent<HTMLButtonElement>) => void;
   onPointerLeave: () => void;
+  scale: GalleryScale;
 }) {
   return (
     <button
       aria-label={direction === "previous" ? "Previous images" : "Next images"}
-      className="flex size-16 items-center justify-center rounded-full border border-service-border bg-bg-page text-2xl font-semibold leading-none text-service-ink shadow-[0_10px_24px_rgb(20_27_24_/_0.09),0_0_0_1px_rgb(20_27_24_/_0.045)] transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-service-border disabled:hover:bg-bg-page disabled:hover:text-service-ink max-md:size-12 max-md:text-xl"
-      disabled={disabled}
+      className={cx(
+        "flex items-center justify-center rounded-full border transition-colors",
+        arrowClasses[scale],
+      )}
       onClick={onClick}
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
       onPointerUp={onPointerLeave}
       type="button"
     >
-      <span aria-hidden="true">{direction === "previous" ? "<-" : "->"}</span>
+      {/* The compact control is small enough that the text glyph read as a
+          stray character, so it takes the chevron the photo band uses. The
+          large one keeps its original mark - nothing about it was asked to
+          change, and at 4rem the glyph carries fine. */}
+      {scale === "compact" ? (
+        <svg
+          aria-hidden="true"
+          className={cx("size-3.5", direction === "previous" && "rotate-180")}
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2.5"
+          viewBox="0 0 24 24"
+        >
+          <path d="m9 5 7 7-7 7" />
+        </svg>
+      ) : (
+        <span aria-hidden="true">
+          {direction === "previous" ? "<-" : "->"}
+        </span>
+      )}
     </button>
   );
 }
@@ -107,34 +149,35 @@ function GalleryImageCard({
   const size = image.size ?? "medium";
 
   return (
-    <li className="shrink-0" data-gallery-card>
-      <figure
-        onDragStart={(event) => event.preventDefault()}
-        className={cx(
-          "group/photo fluid-type-frame relative overflow-hidden border border-service-border bg-service-ink shadow-service select-none max-md:h-[18rem] max-md:w-[calc(100vw-3rem)]",
-          scale === "compact" ? "max-h-[23rem]" : "max-h-[34rem]",
-          gallerySizeClasses[scale][size],
-        )}
-      >
-        <Image
-          alt={image.alt}
-          className="object-cover transition-transform duration-700 group-hover/photo:scale-[1.035]"
-          draggable={false}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 55vw, 38vw"
-          src={image.src}
-          style={{ objectPosition: image.objectPosition ?? "50% 50%" }}
-        />
-        <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-5 bg-gradient-to-t from-service-ink/82 via-service-ink/42 to-transparent p-6 text-white">
-          <p className="type-text-sm wrap-pretty font-semibold">
-            {image.caption}
-          </p>
-          <span className="type-caption shrink-0 text-white/68">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-        </figcaption>
-      </figure>
-    </li>
+    <figure
+      onDragStart={(event) => event.preventDefault()}
+      className={cx(
+        // The well behind the photograph is `bg-bg-dark`, an absolute dark.
+        // As `bg-service-ink` it resolved to the recipe's headline colour and
+        // flashed white behind a loading image on every dark recipe.
+        "group/photo fluid-type-frame relative overflow-hidden border border-service-border bg-bg-dark shadow-service select-none max-md:h-[18rem] max-md:w-[calc(100vw-3rem)]",
+        scale === "compact" ? "max-h-[23rem]" : "max-h-[34rem]",
+        gallerySizeClasses[scale][size],
+      )}
+    >
+      <Image
+        alt={image.alt}
+        className="object-cover transition-transform duration-700 group-hover/photo:scale-[1.035]"
+        draggable={false}
+        fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 55vw, 38vw"
+        src={image.src}
+        style={{ objectPosition: image.objectPosition ?? "50% 50%" }}
+      />
+      <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-5 bg-gradient-to-t from-service-ink/82 via-service-ink/42 to-transparent p-6 text-white">
+        <p className="type-text-sm wrap-pretty font-semibold">
+          {image.caption}
+        </p>
+        <span className="type-caption shrink-0 text-white/68">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+      </figcaption>
+    </figure>
   );
 }
 
@@ -146,269 +189,30 @@ export function ContentPhotoGalleryCarouselSectionV3({
 }: ContentPhotoGalleryCarouselSectionV3Props & {
   scale?: GalleryScale;
 }) {
-  const scrollerRef = useRef<HTMLDivElement | null>(null);
-  const hoverFrame = useRef<number | null>(null);
-  const hoverTimeout = useRef<number | null>(null);
-  const momentumFrame = useRef<number | null>(null);
-  const dragState = useRef<DragState>({
-    active: false,
-    lastTime: 0,
-    lastX: 0,
-    pointerId: -1,
-    scrollLeft: 0,
-    startX: 0,
-    velocity: 0,
-  });
-  const [isDragging, setIsDragging] = useState(false);
-  const [isCoasting, setIsCoasting] = useState(false);
-  const [canScrollPrevious, setCanScrollPrevious] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
+  const {
+    copies,
+    isFreeScrolling,
+    itemProps,
+    railRef,
+    scrollerHandlers,
+    scrollerRef,
+    startHoverScroll,
+    step,
+    stopHoverScroll,
+  } = useLoopedRail({ itemCount: images.length });
 
-  const updateScrollState = useCallback(() => {
-    const scroller = scrollerRef.current;
-
-    if (!scroller) {
-      return;
-    }
-
-    const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth;
-
-    setCanScrollPrevious(scroller.scrollLeft > 2);
-    setCanScrollNext(scroller.scrollLeft < maxScrollLeft - 2);
-  }, []);
-
-  const cancelMomentum = useCallback(() => {
-    if (momentumFrame.current !== null) {
-      window.cancelAnimationFrame(momentumFrame.current);
-      momentumFrame.current = null;
-    }
-
-    setIsCoasting(false);
-  }, []);
-
-  const stopHoverScroll = useCallback(() => {
-    if (hoverTimeout.current !== null) {
-      window.clearTimeout(hoverTimeout.current);
-      hoverTimeout.current = null;
-    }
-
-    if (hoverFrame.current !== null) {
-      window.cancelAnimationFrame(hoverFrame.current);
-      hoverFrame.current = null;
-    }
-  }, []);
-
-  const startHoverScroll = useCallback(
-    (direction: "previous" | "next") => {
-      const scroller = scrollerRef.current;
-
-      if (!scroller) {
-        return;
-      }
-
-      stopHoverScroll();
-      cancelMomentum();
-
-      hoverTimeout.current = window.setTimeout(() => {
-        let velocity = 0;
-        const directionMultiplier = direction === "next" ? 1 : -1;
-
-        const step = () => {
-          const previousScrollLeft = scroller.scrollLeft;
-
-          velocity = Math.min(9, velocity + 0.38);
-          scroller.scrollLeft += directionMultiplier * velocity;
-          updateScrollState();
-
-          if (scroller.scrollLeft === previousScrollLeft) {
-            stopHoverScroll();
-            return;
-          }
-
-          hoverFrame.current = window.requestAnimationFrame(step);
-        };
-
-        hoverTimeout.current = null;
-        hoverFrame.current = window.requestAnimationFrame(step);
-      }, 110);
-    },
-    [cancelMomentum, stopHoverScroll, updateScrollState],
-  );
-
-  const scrollImages = useCallback((direction: "previous" | "next") => {
-    const scroller = scrollerRef.current;
-
-    if (!scroller) {
-      return;
-    }
-
-    const imageElements = Array.from(
-      scroller.querySelectorAll<HTMLElement>("[data-gallery-card]"),
-    );
-    const currentScrollLeft = scroller.scrollLeft;
-    const railStartOffset = imageElements[0]?.offsetLeft ?? 0;
-    const currentAlignedLeft = currentScrollLeft + railStartOffset;
-    const targetImage =
-      direction === "next"
-        ? imageElements.find(
-            (imageElement) =>
-              imageElement.offsetLeft > currentAlignedLeft + 8,
-          )
-        : [...imageElements]
-            .reverse()
-            .find(
-              (imageElement) =>
-                imageElement.offsetLeft < currentAlignedLeft - 8,
-            );
-
-    scroller.scrollTo({
-      behavior: "smooth",
-      left:
-        targetImage !== undefined
-          ? targetImage.offsetLeft - railStartOffset
-          : direction === "next"
-            ? scroller.scrollWidth
-            : 0,
-    });
-  }, []);
-
-  const coastScroll = useCallback(
-    (initialVelocity: number) => {
-      const scroller = scrollerRef.current;
-
-      if (!scroller) {
-        return;
-      }
-
-      let velocity = Math.max(-0.72, Math.min(0.72, initialVelocity));
-
-      if (Math.abs(velocity) < 0.08) {
-        setIsCoasting(false);
-        updateScrollState();
-        return;
-      }
-
-      setIsCoasting(true);
-
-      const step = () => {
-        const previousScrollLeft = scroller.scrollLeft;
-
-        velocity *= 0.9;
-        scroller.scrollLeft -= velocity * 16;
-        updateScrollState();
-
-        if (
-          Math.abs(velocity) < 0.035 ||
-          scroller.scrollLeft === previousScrollLeft
-        ) {
-          momentumFrame.current = null;
-          setIsCoasting(false);
-          return;
-        }
-
-        momentumFrame.current = window.requestAnimationFrame(step);
-      };
-
-      momentumFrame.current = window.requestAnimationFrame(step);
-    },
-    [updateScrollState],
-  );
-
-  useEffect(() => {
-    const scroller = scrollerRef.current;
-
-    if (!scroller) {
-      return;
-    }
-
-    updateScrollState();
-
-    const resizeObserver = new ResizeObserver(updateScrollState);
-    resizeObserver.observe(scroller);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [images.length, updateScrollState]);
-
-  useEffect(() => {
-    return () => {
-      stopHoverScroll();
-      cancelMomentum();
-    };
-  }, [cancelMomentum, stopHoverScroll]);
-
-  const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType !== "mouse" || event.button !== 0) {
-      return;
-    }
-
-    const scroller = scrollerRef.current;
-
-    if (!scroller) {
-      return;
-    }
-
-    cancelMomentum();
-    stopHoverScroll();
-    event.preventDefault();
-
-    const eventTime = window.performance.now();
-
-    dragState.current = {
-      active: true,
-      lastTime: eventTime,
-      lastX: event.clientX,
-      pointerId: event.pointerId,
-      scrollLeft: scroller.scrollLeft,
-      startX: event.clientX,
-      velocity: 0,
-    };
-
-    scroller.setPointerCapture(event.pointerId);
-    setIsDragging(true);
-  };
-
-  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    const scroller = scrollerRef.current;
-    const currentDrag = dragState.current;
-
-    if (!scroller || !currentDrag.active) {
-      return;
-    }
-
-    const dragOffset = event.clientX - currentDrag.startX;
-    const eventTime = window.performance.now();
-    const elapsedTime = Math.max(16, eventTime - currentDrag.lastTime);
-    const deltaX = event.clientX - currentDrag.lastX;
-    event.preventDefault();
-
-    currentDrag.lastTime = eventTime;
-    currentDrag.lastX = event.clientX;
-    currentDrag.velocity = (deltaX / elapsedTime) * 0.95;
-    scroller.scrollLeft = currentDrag.scrollLeft - dragOffset * 1.08;
-    updateScrollState();
-  };
-
-  const finishDrag = () => {
-    const scroller = scrollerRef.current;
-
-    if (!scroller || !dragState.current.active) {
-      return;
-    }
-
-    if (scroller.hasPointerCapture(dragState.current.pointerId)) {
-      scroller.releasePointerCapture(dragState.current.pointerId);
-    }
-
-    dragState.current.active = false;
-    setIsDragging(false);
-    coastScroll(dragState.current.velocity);
-    updateScrollState();
-  };
-
-  const isFreeScrolling = isDragging || isCoasting;
   const hasHeaderCopy = Boolean(title || body);
+  // The looped copies are decoration for a reader that a screen reader has
+  // already heard once, so only the first copy is exposed. `aria-hidden` goes
+  // on the item rather than the image because the caption repeats too.
+  const loopedImages = Array.from({ length: copies }, (_, copyIndex) =>
+    images.map((image, index) => ({
+      copyIndex,
+      image,
+      index,
+      key: `${copyIndex}-${index}-${image.src}`,
+    })),
+  ).flat();
 
   return (
     <section className="bg-service-surface">
@@ -452,25 +256,25 @@ export function ContentPhotoGalleryCarouselSectionV3({
             <div className="ml-auto flex shrink-0 items-center self-end justify-self-end inline-gap-sml">
               <ArrowButton
                 direction="previous"
-                disabled={!canScrollPrevious}
-                onClick={() => scrollImages("previous")}
+                onClick={() => step("previous")}
                 onPointerEnter={(event) => {
                   if (event.pointerType === "mouse") {
                     startHoverScroll("previous");
                   }
                 }}
                 onPointerLeave={stopHoverScroll}
+                scale={scale}
               />
               <ArrowButton
                 direction="next"
-                disabled={!canScrollNext}
-                onClick={() => scrollImages("next")}
+                onClick={() => step("next")}
                 onPointerEnter={(event) => {
                   if (event.pointerType === "mouse") {
                     startHoverScroll("next");
                   }
                 }}
                 onPointerLeave={stopHoverScroll}
+                scale={scale}
               />
             </div>
           </div>
@@ -488,14 +292,9 @@ export function ContentPhotoGalleryCarouselSectionV3({
                   ? "cursor-grabbing select-none scroll-auto"
                   : "cursor-grab scroll-auto",
               )}
-              onLostPointerCapture={finishDrag}
-              onPointerCancel={finishDrag}
-              onPointerDown={handlePointerDown}
-              onPointerMove={handlePointerMove}
-              onPointerUp={finishDrag}
-              onScroll={updateScrollState}
               ref={scrollerRef}
               role="region"
+              {...scrollerHandlers}
               style={{ cursor: isFreeScrolling ? grabbingCursor : grabCursor }}
               tabIndex={0}
             >
@@ -504,16 +303,22 @@ export function ContentPhotoGalleryCarouselSectionV3({
                   "flex w-max items-center pb-6 pt-1",
                   scale === "large" ? "gap-6" : "gap-4",
                 )}
+                ref={railRef}
               >
-                {images.map((image, index) => (
-                  <GalleryImageCard
-                    image={image}
-                    index={index}
-                    key={`${image.src}-${image.caption}`}
-                    scale={scale}
-                  />
+                {loopedImages.map(({ copyIndex, image, index, key }) => (
+                  <li
+                    aria-hidden={copyIndex === 0 ? undefined : "true"}
+                    className="shrink-0"
+                    key={key}
+                    {...itemProps}
+                  >
+                    <GalleryImageCard
+                      image={image}
+                      index={index}
+                      scale={scale}
+                    />
+                  </li>
                 ))}
-                <li aria-hidden="true" className="w-[min(14vw,10rem)] shrink-0" />
               </ul>
             </div>
           </div>

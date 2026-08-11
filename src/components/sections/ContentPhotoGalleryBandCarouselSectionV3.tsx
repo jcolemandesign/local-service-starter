@@ -1,8 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import type { KeyboardEvent, PointerEvent } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
@@ -11,6 +9,7 @@ import type {
   SectionCardBorder,
   SectionCardFill,
 } from "@/content/section-color-recipes";
+import { useLoopedRail } from "@/hooks/useLoopedRail";
 
 /**
  * A shallow, edge-to-edge photo band that is dragged rather than clicked.
@@ -20,16 +19,16 @@ import type {
  * - every photo shares one height, so the band reads as a single horizontal
  *   line of imagery instead of a ragged mosaic. Width still varies with the
  *   image's `size` hint, which is what keeps the rhythm from going metronomic.
- * - the rail loops. The image list is repeated end to end and the scroll
- *   position is wrapped back into the middle copy whenever it leaves it, so a
- *   drag never hits a wall. Because the wrap teleports `scrollLeft`, every
- *   scroll movement in here is expressed as a *delta* rather than an absolute
- *   target - an absolute `scrollTo` would be aimed at a position that the next
- *   wrap invalidates, and the rail would visibly snap back.
+ * - the rail loops, via `useLoopedRail` - the shared hook that owns the wrap,
+ *   the drag and the arrow stepping for both this and the gallery carousel.
  * - no captions. The band is texture between two sections, not a place to read.
  *
  * The arrows are deliberately small and tucked into the corner: they exist so
  * the control is reachable without a pointer drag, not as the primary way in.
+ *
+ * This band does not wire up the hook's press-and-hold acceleration. Holding an
+ * arrow here would race the drag the band is built around, and the corner
+ * control is a fallback rather than the main way through.
  */
 
 type GalleryImageSize = "small" | "medium" | "large" | "tall" | "wide";
@@ -60,14 +59,6 @@ type ContentPhotoGalleryBandCarouselSectionV3Props = {
   cardFill?: SectionCardFill;
 };
 
-type DragState = {
-  active: boolean;
-  lastTime: number;
-  lastX: number;
-  pointerId: number;
-  velocity: number;
-};
-
 /**
  * Width comes from the shared band height and these ratios, so "same height"
  * holds no matter which sizes the content happens to use.
@@ -87,13 +78,6 @@ const grabbingCursor =
 
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
-}
-
-function prefersReducedMotion() {
-  return (
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
 }
 
 function BandArrow({
@@ -133,291 +117,15 @@ export function ContentPhotoGalleryBandCarouselSectionV3({
   cardBorder = "on",
   cardFill = "solid",
 }: ContentPhotoGalleryBandCarouselSectionV3Props) {
-  const scrollerRef = useRef<HTMLDivElement | null>(null);
-  const railRef = useRef<HTMLUListElement | null>(null);
-  /** Distance from one copy of the list to the next - the wrap period. */
-  const loopWidth = useRef(0);
-  const startPlaced = useRef(false);
-  const momentumFrame = useRef<number | null>(null);
-  const tweenFrame = useRef<number | null>(null);
-  const dragState = useRef<DragState>({
-    active: false,
-    lastTime: 0,
-    lastX: 0,
-    pointerId: -1,
-    velocity: 0,
-  });
-  const [copies, setCopies] = useState(3);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const imageCount = images.length;
-
-  const cancelAnimations = useCallback(() => {
-    if (momentumFrame.current !== null) {
-      window.cancelAnimationFrame(momentumFrame.current);
-      momentumFrame.current = null;
-    }
-
-    if (tweenFrame.current !== null) {
-      window.cancelAnimationFrame(tweenFrame.current);
-      tweenFrame.current = null;
-    }
-  }, []);
-
-  /**
-   * Pulls the scroll position back into the middle copy. Written as a modulo
-   * rather than a single subtraction so a fast flick that overshoots several
-   * copies in one frame still lands correctly.
-   */
-  const wrap = useCallback(() => {
-    const scroller = scrollerRef.current;
-    const loop = loopWidth.current;
-
-    if (!scroller || loop <= 0) {
-      return;
-    }
-
-    const offset = scroller.scrollLeft - loop;
-
-    if (offset < 0 || offset >= loop) {
-      scroller.scrollLeft = loop + (((offset % loop) + loop) % loop);
-    }
-  }, []);
-
-  const measure = useCallback(() => {
-    const scroller = scrollerRef.current;
-    const rail = railRef.current;
-
-    if (!scroller || !rail || imageCount === 0) {
-      return;
-    }
-
-    const cards = rail.querySelectorAll<HTMLElement>("[data-band-card]");
-    const first = cards[0];
-    const secondCopy = cards[imageCount];
-
-    if (!first || !secondCopy) {
-      return;
-    }
-
-    const loop = secondCopy.offsetLeft - first.offsetLeft;
-
-    if (loop <= 0) {
-      return;
-    }
-
-    loopWidth.current = loop;
-
-    // Enough copies that the viewport is still filled at the far edge of the
-    // wrap window. Too few and the rail runs out of images before the wrap
-    // fires, leaving a gap at the end of a fast drag.
-    const needed = Math.max(3, Math.ceil((scroller.clientWidth * 2) / loop) + 2);
-    setCopies((current) => (current === needed ? current : needed));
-
-    if (!startPlaced.current) {
-      scroller.scrollLeft = loop;
-      startPlaced.current = true;
-    }
-  }, [imageCount]);
-
-  useEffect(() => {
-    const scroller = scrollerRef.current;
-
-    if (!scroller) {
-      return;
-    }
-
-    measure();
-
-    const resizeObserver = new ResizeObserver(measure);
-    resizeObserver.observe(scroller);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [copies, measure]);
-
-  useEffect(() => cancelAnimations, [cancelAnimations]);
-
-  /**
-   * Moves by a relative distance over a few frames. Relative is the whole
-   * point: `wrap` may teleport the scroll position mid-flight, and a tween
-   * chasing a remembered absolute target would fight it.
-   */
-  const nudge = useCallback(
-    (delta: number) => {
-      const scroller = scrollerRef.current;
-
-      if (!scroller) {
-        return;
-      }
-
-      cancelAnimations();
-
-      if (prefersReducedMotion()) {
-        scroller.scrollLeft += delta;
-        wrap();
-        return;
-      }
-
-      let remaining = delta;
-
-      const step = () => {
-        const current = scrollerRef.current;
-
-        if (!current) {
-          tweenFrame.current = null;
-          return;
-        }
-
-        if (Math.abs(remaining) < 0.5) {
-          tweenFrame.current = null;
-          return;
-        }
-
-        const move = remaining * 0.22;
-
-        current.scrollLeft += move;
-        remaining -= move;
-        wrap();
-        tweenFrame.current = window.requestAnimationFrame(step);
-      };
-
-      tweenFrame.current = window.requestAnimationFrame(step);
-    },
-    [cancelAnimations, wrap],
-  );
-
-  const stepImages = useCallback(
-    (direction: "previous" | "next") => {
-      const loop = loopWidth.current;
-      const scroller = scrollerRef.current;
-      // Average card pitch. Cards differ in width, so an average keeps the
-      // arrow travelling a consistent distance instead of lurching on a wide
-      // one and barely moving on a portrait.
-      const stride =
-        imageCount > 0 && loop > 0
-          ? loop / imageCount
-          : (scroller?.clientWidth ?? 0) / 3;
-
-      nudge(direction === "next" ? stride : -stride);
-    },
-    [imageCount, nudge],
-  );
-
-  const coastScroll = useCallback(
-    (initialVelocity: number) => {
-      let velocity = Math.max(-0.72, Math.min(0.72, initialVelocity));
-
-      if (Math.abs(velocity) < 0.08) {
-        return;
-      }
-
-      const step = () => {
-        const scroller = scrollerRef.current;
-
-        if (!scroller) {
-          momentumFrame.current = null;
-          return;
-        }
-
-        velocity *= 0.9;
-        scroller.scrollLeft -= velocity * 16;
-        wrap();
-
-        if (Math.abs(velocity) < 0.035) {
-          momentumFrame.current = null;
-          return;
-        }
-
-        momentumFrame.current = window.requestAnimationFrame(step);
-      };
-
-      momentumFrame.current = window.requestAnimationFrame(step);
-    },
-    [wrap],
-  );
-
-  // Touch is handled here rather than left to native overflow scrolling so a
-  // swipe gets the same momentum and the same wrap as a mouse drag. The rail
-  // keeps `touch-action: pan-y`, so a vertical gesture still scrolls the page.
-  const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType === "mouse" && event.button !== 0) {
-      return;
-    }
-
-    const scroller = scrollerRef.current;
-
-    if (!scroller) {
-      return;
-    }
-
-    cancelAnimations();
-
-    if (event.pointerType === "mouse") {
-      event.preventDefault();
-    }
-
-    dragState.current = {
-      active: true,
-      lastTime: window.performance.now(),
-      lastX: event.clientX,
-      pointerId: event.pointerId,
-      velocity: 0,
-    };
-
-    scroller.setPointerCapture(event.pointerId);
-    setIsDragging(true);
-  };
-
-  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    const scroller = scrollerRef.current;
-    const currentDrag = dragState.current;
-
-    if (!scroller || !currentDrag.active) {
-      return;
-    }
-
-    const eventTime = window.performance.now();
-    const elapsedTime = Math.max(16, eventTime - currentDrag.lastTime);
-    const deltaX = event.clientX - currentDrag.lastX;
-
-    currentDrag.lastTime = eventTime;
-    currentDrag.lastX = event.clientX;
-    currentDrag.velocity = (deltaX / elapsedTime) * 0.95;
-    // Incremental, not `start - offset`: the wrap moves the baseline out from
-    // under an absolute calculation every time the rail loops.
-    scroller.scrollLeft -= deltaX * 1.08;
-    wrap();
-  };
-
-  const finishDrag = () => {
-    const scroller = scrollerRef.current;
-
-    if (!scroller || !dragState.current.active) {
-      return;
-    }
-
-    if (scroller.hasPointerCapture(dragState.current.pointerId)) {
-      scroller.releasePointerCapture(dragState.current.pointerId);
-    }
-
-    dragState.current.active = false;
-    setIsDragging(false);
-    coastScroll(dragState.current.velocity);
-  };
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "ArrowRight") {
-      event.preventDefault();
-      stepImages("next");
-    }
-
-    if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      stepImages("previous");
-    }
-  };
+  const {
+    copies,
+    isDragging,
+    itemProps,
+    railRef,
+    scrollerHandlers,
+    scrollerRef,
+    step: stepImages,
+  } = useLoopedRail({ itemCount: images.length });
 
   const hasHeaderCopy = Boolean(title || body);
   // The looped copies are decoration for the reader that a screen reader has
@@ -456,21 +164,15 @@ export function ContentPhotoGalleryBandCarouselSectionV3({
                 "-mx-[var(--site-grid-inset-inline)] touch-pan-y overflow-x-auto overscroll-x-contain px-[var(--site-grid-inset-inline)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
                 isDragging ? "cursor-grabbing select-none" : "cursor-grab",
               )}
-              onKeyDown={handleKeyDown}
-              onLostPointerCapture={finishDrag}
-              onPointerCancel={finishDrag}
-              onPointerDown={handlePointerDown}
-              onPointerMove={handlePointerMove}
-              onPointerUp={finishDrag}
-              onScroll={wrap}
               ref={scrollerRef}
               role="region"
+              {...scrollerHandlers}
               style={{ cursor: isDragging ? grabbingCursor : grabCursor }}
               tabIndex={0}
             >
               <ul className="media-band-height flex w-max items-stretch gap-2" ref={railRef}>
                 {loopedImages.map(({ copyIndex, image, key }) => (
-                  <li className="h-full shrink-0" data-band-card key={key}>
+                  <li className="h-full shrink-0" key={key} {...itemProps}>
                     <figure
                       className={cx(
                         "relative h-full select-none overflow-hidden",
@@ -480,7 +182,8 @@ export function ContentPhotoGalleryBandCarouselSectionV3({
                           : "border border-service-border",
                         cardFill === "none"
                           ? undefined
-                          : "bg-service-ink shadow-service",
+                          // Absolute dark, not ink - see the standard gallery.
+                          : "bg-bg-dark shadow-service",
                       )}
                       onDragStart={(event) => event.preventDefault()}
                     >
