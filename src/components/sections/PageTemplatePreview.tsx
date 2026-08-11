@@ -183,6 +183,7 @@ import {
   resolveCardBorder,
   resolveCardFill,
   resolveHeadlineWrap,
+  fullImageSplitVariantValues,
   resolveSectionAnimation,
   resolveSectionIcons,
   sectionSupportsCardStyle,
@@ -276,11 +277,25 @@ export type SiteNavigationLink = {
   label: string;
 };
 
-const heroSplitFullHeightVariants = new Set<string>(
-  sectionLibraryV3Content.heroSplitFullHeight.variants.map(
-    (option) => option.variant,
-  ),
-);
+/**
+ * The variant allowlist for the full-image split hero.
+ *
+ * `fullImageSplitVariantValues`, NOT the library demo content's `variants`
+ * list. That list carries the four demo arrangements the /sections preview
+ * cycles through and stops there; the axis has six values, because
+ * `fullImageSplitVariantOptions` adds the two overlap treatments. Validating
+ * against the demo list silently rejected `text-7-image-9-overlap-right` and
+ * `image-9-overlap-left-text-7`, so `getHeroSplitFullHeightVariant` returned
+ * `undefined` and the hero fell back to its default - a plain split with no
+ * overlap - on the staged preview AND in the export, while the builder canvas
+ * rendered the overlap correctly because it validates against the real set.
+ *
+ * The component's own prop type is `FullImageSplitVariant` and `variantConfig`
+ * covers all six, so nothing else had to change. This is the "one list per axis"
+ * rule in `section-style-options.ts`: two of the three render paths were reading
+ * a narrower list than the control that writes the value.
+ */
+const heroSplitFullHeightVariants = fullImageSplitVariantValues;
 
 const heroSplitFixedImageVariants = splitImageVariantValues;
 

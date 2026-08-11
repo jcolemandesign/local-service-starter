@@ -166,6 +166,7 @@ import {
   calloutRevealGridVariantValues,
   calloutSplitPanelVariantValues,
   cardLinkGridAlignValues,
+  fullImageSplitVariantValues,
   resolveHeadlineWrap,
   resolveSectionIcons,
   splitBentoVariantValues,
@@ -181,11 +182,9 @@ import {
   type SiteIdentity,
 } from "@/content/site-identity";
 
-const heroSplitFullHeightVariants = new Set<string>(
-  sectionLibraryV3Content.heroSplitFullHeight.variants.map(
-    (option) => option.variant,
-  ),
-);
+/** The real axis, not the library's four demo arrangements - see the same
+ *  constant in `PageTemplatePreview` for what the narrower list broke. */
+const heroSplitFullHeightVariants = fullImageSplitVariantValues;
 
 function getHeroSplitFullHeightVariant(section: PagebuilderRecipeSection) {
   return heroSplitFullHeightVariants.has(section.variant ?? "")
