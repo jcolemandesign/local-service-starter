@@ -67,7 +67,6 @@ import {
   ProcessStripSectionV3,
   ProcessStepsBranchingSectionV3,
   ProcessStepsStaggeredSectionV3,
-  ProcessStepsSectionV3,
   QuickPageLinksSectionV2,
   ServicesBentoCardsSectionV2,
   ServicesHoverPanelSectionV2,
@@ -414,9 +413,6 @@ const sectionElements = {
     <ServicesScrollCardsSectionV2
       {...sectionLibraryV3Content.servicesScrollCards}
     />
-  ),
-  "process-steps-v3": (
-    <ProcessStepsSectionV3 {...sectionLibraryV3Content.process} />
   ),
   "process-strip-v3": (
     <ProcessStripSectionV3 {...sectionLibraryV3Content.processStrip} />

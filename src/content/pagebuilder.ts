@@ -295,9 +295,9 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
           "Surface urgent service paths quickly and let visitors scan the most relevant offer without leaving the page.",
       },
       {
-        name: "Sticky card stream content",
+        name: "Process steps",
         component: "ContentStickyCardStreamSectionV2",
-        mode: "Narrative",
+        mode: "Decision",
         instruction:
           "Use this as useful content that keeps the promise fixed while response, diagnosis, options, and follow-up details move through.",
       },
@@ -640,7 +640,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       },
       {
         name: "Process steps",
-        component: "ProcessStepsSectionV3",
+        component: "ContentStickyCardStreamSectionV2",
         mode: "Decision",
         instruction:
           "Show the basic path from estimate to application/approval to installation without inventing provider details.",
@@ -846,7 +846,7 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       },
       {
         name: "Process steps",
-        component: "ProcessStepsSectionV3",
+        component: "ContentStickyCardStreamSectionV2",
         mode: "Decision",
         instruction:
           "Explain how visitors move from product interest to recommendation, estimate, and installation.",

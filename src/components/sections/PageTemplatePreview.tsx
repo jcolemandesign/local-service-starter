@@ -50,7 +50,6 @@ import {
 } from "@/components/sections/FAQConversionContactFooterSectionsV3";
 import {
   FeatureOverlapRowsSectionV3,
-  ProcessStepsSectionV3,
   TestimonialsSectionV3,
 } from "@/components/sections/FeatureProcessTestimonialsSectionsV3";
 import { FeatureAsymmetricCardsSectionV3 } from "@/components/sections/FeatureAsymmetricCardsSectionV3";
@@ -1288,12 +1287,6 @@ export function renderPageTemplateSection(
           {...processImageChecklistProps(fieldSection)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
-        />
-      );
-    case "ProcessStepsSectionV3":
-      return (
-        <ProcessStepsSectionV3
-          {...processProps(fieldSection, navigationLinks)}
         />
       );
     case "ContactStripBentoSectionV3":
@@ -3265,30 +3258,6 @@ function footerProps(
         ? footerLinks.slice(0, 5)
         : sectionLibraryV3Content.footer.services,
     serviceAreas: sectionLibraryV3Content.footer.serviceAreas,
-  };
-}
-
-function processProps(
-  section: FieldSection,
-  navigationLinks: SiteNavigationLink[] = [],
-) {
-  return {
-    ...sectionLibraryV3Content.process,
-    body: getBody(section, sectionLibraryV3Content.process.body),
-    eyebrow: getValue(
-      section,
-      "eyebrow",
-      sectionLibraryV3Content.process.eyebrow,
-    ),
-    steps: cardItemsWithFallback(
-      section,
-      ["steps", "items", "supportingItems"],
-      sectionLibraryV3Content.process.steps,
-    ),
-    primaryAction: getValue(section, "primaryAction", ""),
-    secondaryAction: getValue(section, "secondaryAction", ""),
-    secondaryActionHref: getServicesHref(navigationLinks),
-    title: getTitle(section, sectionLibraryV3Content.process.title),
   };
 }
 

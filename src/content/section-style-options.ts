@@ -952,7 +952,6 @@ export const animationExcludedComponents = new Map<string, string>([
       "FAQAccordionSectionV3",
       "FAQAccordionSidebarSectionV3",
       "FeatureOverlapRowsSectionV3",
-      "ProcessStepsSectionV3",
       "ProjectCaseStudyGallerySectionV3",
       "ServiceCalloutRevealGridSectionV3",
       "ServiceCalloutSplitPanelSectionV3",

@@ -1,23 +1,12 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
-import {
-  Button,
-  SevenColumnGrid,
-  SevenColumnGridItem,
-} from "@/components/primitives";
-import { RequestServiceButton } from "@/components/request-service";
+import { SevenColumnGrid, SevenColumnGridItem } from "@/components/primitives";
 
 type FeatureOverlapItem = {
   body: string;
   eyebrow: string;
   imageLabel: string;
   position: "top" | "middle" | "bottom";
-  title: string;
-};
-
-type ProcessStep = {
-  body: string;
   title: string;
 };
 
@@ -31,16 +20,6 @@ type FeatureOverlapRowsSectionV3Props = {
   cardBorder?: "on" | "off";
   cardFill?: "solid" | "none";
   items: readonly FeatureOverlapItem[];
-};
-
-type ProcessStepsSectionV3Props = {
-  body: string;
-  eyebrow: string;
-  primaryAction?: string;
-  secondaryAction?: string;
-  secondaryActionHref?: string;
-  steps: readonly ProcessStep[];
-  title: string;
 };
 
 type TestimonialsSectionV3Props = {
@@ -181,96 +160,6 @@ export function FeatureOverlapRowsSectionV3({
           mirrored={index % 2 === 1}
         />
       ))}
-    </section>
-  );
-}
-
-export function ProcessStepsSectionV3({
-  body,
-  eyebrow,
-  primaryAction,
-  secondaryAction,
-  secondaryActionHref = "#services",
-  steps,
-  title,
-}: ProcessStepsSectionV3Props) {
-  const shouldReduceMotion = useReducedMotion();
-
-  return (
-    <section className="bg-bg-page">
-      <SevenColumnGrid className="section-min-none" padding="med">
-        <SevenColumnGridItem
-          className="col-span-3 max-lg:col-span-7"
-          measure="copy"
-        >
-          <div className="fluid-type-frame">
-            <p className="type-label text-service-accent">{eyebrow}</p>
-            <h2 className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
-              {title}
-            </h2>
-            <p className="type-text-lg wrap-pretty mt-heading-body-lg text-service-muted">
-              {body}
-            </p>
-            {primaryAction || secondaryAction ? (
-              <div className="mt-body-actions-md flex flex-wrap inline-gap-med">
-                {primaryAction ? (
-                  <RequestServiceButton>{primaryAction}</RequestServiceButton>
-                ) : null}
-                {secondaryAction ? (
-                  <Button href={secondaryActionHref} variant="secondary">
-                    {secondaryAction}
-                  </Button>
-                ) : null}
-              </div>
-            ) : null}
-          </div>
-        </SevenColumnGridItem>
-
-        <SevenColumnGridItem
-          className="col-span-4 col-start-4 max-lg:col-span-7 max-lg:col-start-1"
-          alignY="top"
-        >
-          <motion.ol
-            className="grid card-grid-gap-med"
-            initial={shouldReduceMotion ? false : "hidden"}
-            viewport={{ once: true, amount: 0.42 }}
-            whileInView="visible"
-          >
-            {steps.map((step, index) => (
-              <motion.li
-                className={cx(
-                  "fluid-type-frame grid grid-cols-[auto_minmax(0,1fr)] items-center layout-gap-med bg-transparent py-7 text-service-ink max-md:grid-cols-1 max-md:items-start",
-                  index === steps.length - 1
-                    ? undefined
-                    : "border-b border-service-border",
-                )}
-                key={step.title}
-                variants={{
-                  hidden: { opacity: 0, y: 18 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-                transition={{
-                  delay: shouldReduceMotion ? 0 : 0.15 + index * 0.462,
-                  duration: shouldReduceMotion ? 0 : 0.44,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                <div className="flex h-12 min-w-12 items-center justify-center text-sm font-semibold text-service-ink">
-                  {String(index + 1).padStart(2, "0")}
-                </div>
-                <div className="pl-4 max-md:pl-0 max-md:pt-4">
-                  <h3 className="type-heading-md text-service-ink">
-                    {step.title}
-                  </h3>
-                  <p className="type-text-md wrap-pretty mt-heading-body-md text-service-muted">
-                    {step.body}
-                  </p>
-                </div>
-              </motion.li>
-            ))}
-          </motion.ol>
-        </SevenColumnGridItem>
-      </SevenColumnGrid>
     </section>
   );
 }

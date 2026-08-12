@@ -55,7 +55,6 @@ import {
 } from "@/components/sections/FAQConversionContactFooterSectionsV3";
 import {
   FeatureOverlapRowsSectionV3,
-  ProcessStepsSectionV3,
   TestimonialsSectionV3,
 } from "@/components/sections/FeatureProcessTestimonialsSectionsV3";
 import { FeatureAsymmetricCardsSectionV3 } from "@/components/sections/FeatureAsymmetricCardsSectionV3";
@@ -921,8 +920,6 @@ function renderSectionElement(
           {...sectionLibraryV3Content.processImageChecklist}
         />
       );
-    case "ProcessStepsSectionV3":
-      return <ProcessStepsSectionV3 {...sectionLibraryV3Content.process} />;
     case "ProcessStripSectionV3":
       return <ProcessStripSectionV3 {...sectionLibraryV3Content.processStrip} />;
     case "ProcessStepsStaggeredSectionV3":

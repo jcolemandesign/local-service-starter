@@ -144,7 +144,6 @@ export {
 } from "./AdditionalOffersSectionV3";
 export {
   FeatureOverlapRowsSectionV3,
-  ProcessStepsSectionV3,
   TestimonialsSectionV3,
 } from "./FeatureProcessTestimonialsSectionsV3";
 export {

@@ -2154,7 +2154,7 @@ export const sectionLibraryV3Collections = [
         component: "content-scroll-written-reveal-v2",
       },
       {
-        label: "Sticky card stream",
+        label: "Process steps",
         component: "content-sticky-card-stream-v2",
       },
       {
@@ -2291,7 +2291,6 @@ export const sectionLibraryV3Collections = [
         component: "decision-matrix-card-v3",
       },
       { label: "Offer terms", component: "offer-terms-v3" },
-      { label: "Process steps", component: "process-steps-v3" },
       { label: "Process strip", component: "process-strip-v3" },
       {
         label: "Process steps staggered",
@@ -2471,7 +2470,6 @@ export const sectionLibraryV3ComponentBySlug = {
   "decision-question-table-four-v3": "DecisionQuestionTableFourSectionV3",
   "decision-matrix-card-v3": "DecisionMatrixCardSectionV3",
   "offer-terms-v3": "OfferTermsSectionV3",
-  "process-steps-v3": "ProcessStepsSectionV3",
   "process-strip-v3": "ProcessStripSectionV3",
   "process-steps-staggered-v3": "ProcessStepsStaggeredSectionV3",
   "process-steps-branching-v3": "ProcessStepsBranchingSectionV3",

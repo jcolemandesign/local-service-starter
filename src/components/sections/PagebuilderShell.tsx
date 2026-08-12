@@ -1613,9 +1613,9 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
   {
     component: "ContentStickyCardStreamSectionV2",
     instruction:
-      "Keep a promise fixed while supporting details move through response, diagnosis, options, and follow-up.",
-    mode: "Narrative",
-    name: "Sticky card stream content",
+      "Keep a promise fixed while supporting details move through response, diagnosis, options, and follow-up. This is the process sequence for a page: use it wherever the visitor needs to see how the work unfolds before they commit.",
+    mode: "Decision",
+    name: "Process steps",
   },
   {
     component: "ContentStickyIdeasSectionV2",
@@ -1863,13 +1863,6 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     layoutGrid: 14,
     mode: "Decision",
     name: "Table compare 3 col",
-  },
-  {
-    component: "ProcessStepsSectionV3",
-    instruction:
-      "Use current process steps when the page needs a clearer, more styled decision sequence.",
-    mode: "Decision",
-    name: "Process steps",
   },
   {
     component: "ProcessStripSectionV3",
