@@ -77,14 +77,14 @@ const variantConfig: Record<
       "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
   },
   "text-7-image-9-overlap-right": {
-    textClassName: "relative z-10 col-span-9 col-start-1",
+    textClassName: "relative z-10 col-span-8 col-start-1",
     imageClassName: "z-0 col-span-9 col-start-6",
     imagePanelClassName:
       "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
     imageMaskClassName: "full-image-split-image-mask-right",
   },
   "image-9-overlap-left-text-7": {
-    textClassName: "relative z-10 col-span-9 col-start-6",
+    textClassName: "relative z-10 col-span-8 col-start-7",
     imageClassName: "z-0 col-span-9 col-start-1",
     imagePanelClassName:
       "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",

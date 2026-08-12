@@ -259,9 +259,15 @@ export function TrustLogoMarqueeSectionV3({
   cardFill,
   logos,
 }: TrustLogosProps) {
+  /* Clipped on one axis only. The marquee needs the horizontal clip - the
+   * track is wider than the screen by design - but `overflow-hidden` clips
+   * both, and the logo tiles' `shadow-service` paints below the track, so the
+   * bottom of every shadow was being cut off square. `overflow-x: clip` is the
+   * pair that `hidden` cannot be: it does not force the other axis to `auto`,
+   * so the vertical stays genuinely visible. */
   return (
-    <section className="section-min-none section-space-vsml overflow-hidden bg-bg-page">
-      <MeasuredMarquee className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
+    <section className="section-min-none section-space-vsml overflow-x-clip bg-bg-page">
+      <MeasuredMarquee className="relative left-1/2 w-screen -translate-x-1/2 overflow-x-clip">
         <LogoTrack cardBorder={cardBorder} cardFill={cardFill} logos={logos} />
       </MeasuredMarquee>
     </section>

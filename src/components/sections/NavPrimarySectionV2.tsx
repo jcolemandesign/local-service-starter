@@ -37,6 +37,38 @@ type NavPrimarySectionV2Props = {
 
 type NavPrimaryLayout = "default" | "centerLogo";
 
+/**
+ * The nearest ancestor that actually scrolls, or null for the window.
+ *
+ * The builder canvas is an `overflow: auto` box, so a nav inside it scrolls
+ * against that element and not against the page. Everywhere else - a real
+ * site, the staged preview, the template preview - nothing between the nav and
+ * the document scrolls, and this returns null so the window is used.
+ *
+ * The overflow check is paired with a real height comparison on purpose: an
+ * `overflow: auto` box that is not actually overflowing scrolls nothing, and
+ * treating it as the scroll surface would freeze the nav in a container the
+ * reader is scrolling past rather than through.
+ */
+function getScrollContainer(node: HTMLElement | null): HTMLElement | null {
+  let current = node?.parentElement ?? null;
+
+  while (current && current !== document.body) {
+    const { overflowY } = window.getComputedStyle(current);
+
+    if (
+      (overflowY === "auto" || overflowY === "scroll") &&
+      current.scrollHeight > current.clientHeight
+    ) {
+      return current;
+    }
+
+    current = current.parentElement;
+  }
+
+  return null;
+}
+
 function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
@@ -205,7 +237,7 @@ function NavPrimaryLayoutSection({
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNavHidden, setIsNavHidden] = useState(false);
-  const [isPagebuilderPreview, setIsPagebuilderPreview] = useState(false);
+  const [hiddenTravel, setHiddenTravel] = useState(0);
   const [lockActive, setLockActive] = useState(false);
   const navRef = useRef<HTMLElement>(null);
   const shouldReduceMotion = useReducedMotion();
@@ -227,17 +259,79 @@ function NavPrimaryLayoutSection({
   useScrollLock(lockActive);
 
   useEffect(() => {
-    const isEmbeddedPagebuilder = Boolean(
-      navRef.current?.closest(".pagebuilder-section-frame") &&
-        !navRef.current?.closest(".page-template-preview"),
-    );
+    /**
+     * How far up the nav has to travel to actually be gone.
+     *
+     * Its own height is not far enough. The group surface inside it carries
+     * `shadow-service`, which paints past the nav's bottom edge by the
+     * shadow's y-offset plus its blur - so a `-100%` translate parked the box
+     * out of sight and left the shadow's falloff on screen as a band along the
+     * top. Reading the token off the nav rather than the document keeps this
+     * right inside the builder canvas, which overrides the shadow per preview.
+     */
+    const measureHiddenTravel = () => {
+      const nav = navRef.current;
 
-    if (isEmbeddedPagebuilder) {
-      setIsPagebuilderPreview(true);
-      return;
-    }
+      if (!nav) {
+        return;
+      }
 
-    let lastScrollY = window.scrollY;
+      const [, offsetY, blur] =
+        getComputedStyle(nav)
+          .getPropertyValue("--shadow-service")
+          .match(/-?[\d.]+px/g) ?? [];
+      const shadowReach =
+        (Number.parseFloat(offsetY) || 0) + (Number.parseFloat(blur) || 0);
+
+      setHiddenTravel(nav.offsetHeight + Math.max(shadowReach, 0));
+    };
+
+    measureHiddenTravel();
+    window.addEventListener("resize", measureHiddenTravel);
+
+    return () => {
+      window.removeEventListener("resize", measureHiddenTravel);
+    };
+  }, []);
+
+  useEffect(() => {
+    /**
+     * The surface this nav scrolls against.
+     *
+     * On a real page and in the staged/template preview that is the window. In
+     * the builder canvas it is the canvas itself, which is an `overflow: auto`
+     * box - so `window.scrollY` never moves and every measurement below reads
+     * zero. That is why this effect used to detect the builder and return,
+     * leaving the nav statically in flow with no hide-on-scroll at all.
+     *
+     * Reading the scroll container instead gives the builder the same behaviour
+     * as the site. What pins the nav to the canvas rather than to the browser
+     * window is the `contain: layout` wrapper around the canvas in
+     * `PagebuilderShell` - `container-type` alone reads like it should be
+     * enough and measurably is not.
+     */
+    let scroller = getScrollContainer(navRef.current);
+
+    /**
+     * Resolved again while it is still unknown. On the builder's first paint
+     * the canvas has not overflowed yet, so the walk finds no scrolling
+     * ancestor; a mount-only lookup left the nav listening to a window that
+     * never scrolls, and hide-on-scroll silently did nothing there for the
+     * whole session even once the canvas filled up.
+     */
+    const readScroller = () => {
+      scroller ??= getScrollContainer(navRef.current);
+
+      return scroller;
+    };
+    const readScrollTop = () => readScroller()?.scrollTop ?? window.scrollY;
+    /** Where the top of the scrolling viewport sits in client coordinates. */
+    const readViewportTop = () =>
+      readScroller()?.getBoundingClientRect().top ?? 0;
+    const readViewportHeight = () =>
+      readScroller()?.clientHeight ?? window.innerHeight;
+
+    let lastScrollY = readScrollTop();
 
     const getFollowingHero = () => {
       const navSection = navRef.current?.closest("section");
@@ -258,13 +352,17 @@ function NavPrimaryLayoutSection({
     };
 
     const updateNavVisibility = () => {
-      const currentScrollY = window.scrollY;
+      const currentScrollY = readScrollTop();
       const scrollDelta = currentScrollY - lastScrollY;
       const hero = getFollowingHero();
       const navHeight = navRef.current?.offsetHeight ?? 0;
+      // Both sides in the same coordinate space. `getBoundingClientRect` is
+      // relative to the window, so inside a scroll container the container's
+      // own offset has to come out of it - otherwise the hero reads as passed
+      // from the moment the canvas sits below the top of the page.
       const hasPassedHero = hero
-        ? hero.getBoundingClientRect().bottom <= navHeight
-        : currentScrollY > window.innerHeight;
+        ? hero.getBoundingClientRect().bottom - readViewportTop() <= navHeight
+        : currentScrollY > readViewportHeight();
 
       if (!hasPassedHero || currentScrollY <= 0) {
         setIsNavHidden(false);
@@ -275,12 +373,18 @@ function NavPrimaryLayoutSection({
       lastScrollY = currentScrollY;
     };
 
-    window.addEventListener("scroll", updateNavVisibility, { passive: true });
+    // Captured on the window rather than bound to the scroller: scroll events
+    // do not bubble, so a listener attached to whatever scrolled at mount
+    // misses the canvas in the case above where it was not scrollable yet. In
+    // the capture phase the window sees a scroll from any element on the page.
+    const listenerOptions = { capture: true, passive: true } as const;
+
+    window.addEventListener("scroll", updateNavVisibility, listenerOptions);
     window.addEventListener("resize", updateNavVisibility);
     updateNavVisibility();
 
     return () => {
-      window.removeEventListener("scroll", updateNavVisibility);
+      window.removeEventListener("scroll", updateNavVisibility, listenerOptions);
       window.removeEventListener("resize", updateNavVisibility);
     };
   }, []);
@@ -289,7 +393,7 @@ function NavPrimaryLayoutSection({
     <section
       className={cx(
         "relative",
-        isPagebuilderPreview ? "fluid-type-frame" : "min-h-20",
+        "min-h-20",
         backgroundFill === "solid" ? "bg-bg-page" : "bg-transparent",
       )}
       style={
@@ -308,9 +412,7 @@ function NavPrimaryLayoutSection({
           isCenterLogo
             ? "grid grid-cols-[1fr_auto_1fr] max-lg:flex max-lg:justify-between"
             : "flex justify-between",
-          isPagebuilderPreview
-            ? "relative z-30 min-h-20 w-full items-center gap-8 border-b px-8 max-md:px-6"
-            : "fixed inset-x-0 top-0 z-30 min-h-20 w-full items-center gap-8 border-b px-8 max-md:px-6",
+          "fixed inset-x-0 top-0 z-30 min-h-20 w-full items-center gap-8 border-b px-8 max-md:px-6",
           isMenuOpen
             ? "border-transparent bg-transparent max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:z-50 max-lg:text-white"
             : cx(
@@ -324,7 +426,7 @@ function NavPrimaryLayoutSection({
             : undefined
         }
         animate={{
-          y: isPagebuilderPreview || isMenuOpen || !isNavHidden ? 0 : "-100%",
+          y: isMenuOpen || !isNavHidden ? 0 : -hiddenTravel,
         }}
         transition={
           shouldReduceMotion

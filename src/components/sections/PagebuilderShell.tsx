@@ -2706,32 +2706,50 @@ function PagebuilderPreviewWindow({
         </div>
       </div>
 
+      {/* The containing block for the fixed navs inside the canvas.
+        *
+        * A nav pins with `position: fixed`, so without an ancestor to hold it
+        * the builder's nav stretched the full browser window and sat over the
+        * left and right panels. `container-type` was assumed to be enough -
+        * layout containment is supposed to make a box the containing block for
+        * fixed descendants - but Chrome does not honour it, measured against
+        * the running builder: the nav still resolved to the window.
+        *
+        * `contain: layout` here does honour it. It sits *outside* the scroll
+        * box on purpose. Put on the scroll box itself the nav resolves against
+        * the scrolled content and slides away with it; put on an ancestor of
+        * the scroller the nav pins to that ancestor's box and the canvas
+        * scrolls underneath, which is the behaviour a real page has. It also
+        * has to be this wrapper rather than the window frame above, or the nav
+        * pins over the fake browser chrome bar. */}
       <div
         className={cx(
-          "min-h-0 overflow-auto bg-bg-page [container-type:size]",
+          "relative flex min-h-0 flex-col [contain:layout]",
           screenClassName,
         )}
       >
-        <div
-          className={cx(
-            "min-h-full w-full bg-bg-page",
-            spacingClassName,
-            responsiveClassName,
-            !showSectionMarkers && "pagebuilder-hide-markers",
-          )}
-          style={{
-            ...previewStyle,
-            "--section-viewport-height": "100cqh",
-            "--section-min-screen": "var(--section-viewport-height)",
-          } as PreviewVariableStyle}
-        >
+        <div className="min-h-0 flex-1 overflow-auto bg-bg-page [container-type:size]">
           <div
             className={cx(
-              "fluid-type-frame mx-auto min-h-full w-full bg-bg-page",
-              contentClassName,
+              "min-h-full w-full bg-bg-page",
+              spacingClassName,
+              responsiveClassName,
+              !showSectionMarkers && "pagebuilder-hide-markers",
             )}
+            style={{
+              ...previewStyle,
+              "--section-viewport-height": "100cqh",
+              "--section-min-screen": "var(--section-viewport-height)",
+            } as PreviewVariableStyle}
           >
-            {children}
+            <div
+              className={cx(
+                "fluid-type-frame mx-auto min-h-full w-full bg-bg-page",
+                contentClassName,
+              )}
+            >
+              {children}
+            </div>
           </div>
         </div>
       </div>

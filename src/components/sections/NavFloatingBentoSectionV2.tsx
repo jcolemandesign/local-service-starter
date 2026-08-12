@@ -9,6 +9,16 @@ import { useScrollLock } from "@/hooks/useScrollLock";
 
 const menuEase = [0.22, 1, 0.36, 1] as const;
 
+/** A tile inside a floating panel has to give back the panel's inset, or its
+ *  corners cut across the curve they sit in. The link bar is padded by 4px and
+ *  the dropdown popover by 8px, so each nests its children by that much. The
+ *  underscores are Tailwind's escape for the spaces calc() wants around the
+ *  minus. */
+const nestedRadiusInP1 =
+  "rounded-[max(0px,calc(var(--radius-surface-token)_-_0.25rem))]";
+const nestedRadiusInP2 =
+  "rounded-[max(0px,calc(var(--radius-surface-token)_-_0.5rem))]";
+
 type NavDropdownItem =
   | string
   | {
@@ -41,7 +51,6 @@ type NavFloatingBentoSectionV2Props = {
   phone: string;
   action: string;
   links: readonly NavLink[];
-  fixed?: boolean;
 };
 
 /** The floating panel treatment shared by the logo tile, the link bar and the
@@ -87,22 +96,22 @@ function FloatingLogo({
   label: string;
   src?: string;
 }) {
-  // This nav floats over the hero, so unlike the primary nav its panel is kept
-  // even with a real logo - the mark needs a surface to stay legible against
-  // whatever image is behind it.
+  // A real logo is its own ground: it takes the full height of the bar it sits
+  // beside and carries the shadow on its own silhouette, so no panel is drawn
+  // behind it. The lettered placeholder below still needs one - it is type, not
+  // a mark, and would disappear into the hero image without a surface.
   if (src) {
     return (
       <a
-        className={cx(
-          "radius-surface",
-          "relative block h-12 w-36 shrink-0 cursor-pointer border border-service-border bg-bg-page/90 p-2 shadow-service backdrop-blur-md",
-          floatingSurface(cardFill, cardBorder),
-        )}
+        className="relative block h-12 w-36 shrink-0 cursor-pointer"
         href={href}
       >
         <Image
           alt={label}
-          className="object-contain"
+          className={cx(
+            "object-contain object-left",
+            cardFill === "none" ? undefined : "drop-shadow-service",
+          )}
           fill
           priority
           sizes="144px"
@@ -116,7 +125,7 @@ function FloatingLogo({
     <a
       className={cx(
         "type-label",
-        "radius-surface",
+        "rounded-[var(--radius-surface-token)]",
         "flex h-12 w-36 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-bg-page/90 p-1 text-service-muted shadow-service backdrop-blur-md transition-colors hover:border-service-accent hover:text-service-accent",
         floatingSurface(cardFill, cardBorder),
       )}
@@ -235,7 +244,6 @@ export function NavFloatingBentoSectionV2({
   phone,
   action,
   links,
-  fixed = false,
 }: NavFloatingBentoSectionV2Props) {
   const visibleLinks = links
     .filter((link) => link.href !== "/thank-you")
@@ -255,16 +263,21 @@ export function NavFloatingBentoSectionV2({
   useScrollLock(lockActive);
 
   return (
-    <section
-      className={cx(
-        fixed
-          ? "fixed inset-x-0 top-0 z-50 bg-transparent"
-          : "relative min-h-20 bg-transparent",
-        "fluid-type-frame",
-      )}
-    >
-      <nav aria-label="Floating bento v2 preview navigation">
-        <div className="pointer-events-none relative z-30 grid grid-cols-[1fr_auto_1fr] items-center px-[var(--site-grid-inset-inline)] py-[var(--inline-gap-active)] max-lg:hidden">
+    <section className="fluid-type-frame relative min-h-20 bg-transparent">
+      {/* Pinned like the other two navs, but it never hides: the bars float
+        * over the hero rather than sitting on a band, so there is no moment
+        * where they are in the reader's way. The section keeps its height in
+        * flow so what follows starts below the bars, same as the primary. */}
+      <nav
+        aria-label="Floating bento v2 preview navigation"
+        className={cx(
+          "fixed inset-x-0 top-0",
+          // Above the mobile menu overlay only while that menu is open, so the
+          // Close control stays reachable; z-30 otherwise, matching the primary.
+          isMenuOpen ? "z-50" : "z-30",
+        )}
+      >
+        <div className="pointer-events-none relative z-30 grid grid-cols-[1fr_auto_1fr] items-center px-[var(--site-grid-inset-inline)] py-[var(--site-grid-gap)] max-lg:hidden">
           <div className="pointer-events-auto col-start-1 flex justify-self-start">
             <FloatingLogo cardBorder={cardBorder} cardFill={cardFill} href={logoHref} label={logoLabel} src={logoSrc} />
           </div>
@@ -272,7 +285,7 @@ export function NavFloatingBentoSectionV2({
           <ul
             className={cx(
               "type-text-sm",
-              "radius-surface",
+              "rounded-[var(--radius-surface-token)]",
               "pointer-events-auto col-start-2 flex min-h-12 items-center gap-1 border border-service-border bg-bg-page/90 p-1 font-semibold text-service-ink shadow-service backdrop-blur-md",
               floatingSurface(cardFill, cardBorder),
             )}
@@ -303,7 +316,7 @@ export function NavFloatingBentoSectionV2({
                         aria-controls={menuId}
                         aria-expanded={isOpen}
                         className={cx(
-                          "radius-button",
+                          nestedRadiusInP1,
                           "flex h-10 cursor-pointer items-center gap-2 px-4 transition-colors hover:bg-service-surface hover:text-service-accent",
                         )}
                         type="button"
@@ -327,7 +340,7 @@ export function NavFloatingBentoSectionV2({
                           <motion.div
                             id={menuId}
                             className={cx(
-                              "radius-surface",
+                              "rounded-[var(--radius-surface-token)]",
                               "absolute left-0 top-[calc(100%+0.5rem)] z-40 w-56 border border-service-border bg-bg-page p-2 shadow-service",
                             )}
                             initial={{
@@ -346,7 +359,7 @@ export function NavFloatingBentoSectionV2({
                                 <li key={getDropdownItemKey(item)}>
                                   <a
                                     className={cx(
-                                      "radius-button",
+                                      nestedRadiusInP2,
                                       "block cursor-pointer px-4 py-3 text-sm font-semibold text-service-ink transition-colors hover:bg-service-surface hover:text-service-accent",
                                     )}
                                     href={getDropdownItemHref(item)}
@@ -363,7 +376,7 @@ export function NavFloatingBentoSectionV2({
                   ) : (
                     <a
                       className={cx(
-                        "radius-button",
+                        nestedRadiusInP1,
                         "flex h-10 cursor-pointer items-center px-4 transition-colors hover:bg-service-surface hover:text-service-accent",
                       )}
                       href={link.href ?? "#"}
@@ -391,7 +404,7 @@ export function NavFloatingBentoSectionV2({
           </div>
         </div>
 
-        <div className="relative z-50 hidden items-center justify-between inline-gap-med px-[var(--site-grid-inset-inline)] py-[var(--inline-gap-active)] max-lg:flex">
+        <div className="relative z-50 hidden items-center justify-between inline-gap-med px-[var(--site-grid-inset-inline)] py-[var(--site-grid-gap)] max-lg:flex">
           <FloatingLogo cardBorder={cardBorder} cardFill={cardFill} href={logoHref} label={logoLabel} src={logoSrc} />
 
           <button

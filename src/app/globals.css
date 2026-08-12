@@ -1301,16 +1301,19 @@ body {
    *
    * `--split-mask-end` is where the overlap ends as a fraction of the image
    * panel, and it is a variable because that fraction is per layout rather than
-   * universal. The default 41% is nine columns plus one inset bleed with the
-   * overlap covering the first four - it holds between 39% and 41% from a 1366
-   * laptop to a 2560 display, because the column, gap and inset clamps all move
-   * together. A layout whose overlap is a different share of its image sets its
+   * universal. The default 31% is nine columns plus one inset bleed with the
+   * overlap covering the first three - the ramp has to end where the copy ends
+   * or it dissolves picture nothing is sitting on. It was 41% while the copy
+   * took nine columns and the overlap four; the share per column is the same,
+   * and it holds within a couple of points from a 1366 laptop to a 2560
+   * display, because the column, gap and inset clamps all move together.
+   * A layout whose overlap is a different share of its image sets its
    * own end and inherits the curve; the intermediate stops are fixed fractions
    * of it, so the easing is identical at any width. Alpha stops are the inverse
    * of the slab's, so the curve is the one that was tuned. */
   .full-image-split-image-mask-right,
   .full-image-split-image-mask-left {
-    --split-mask-end: 41%;
+    --split-mask-end: 31%;
   }
 
   .full-image-split-image-mask-right {
@@ -1342,7 +1345,7 @@ body {
   }
 
   /* The narrative split's overlap narrows below `lg` - two of its image's six
-     columns rather than four of nine - so the ramp has to narrow with it or it
+     columns rather than three of nine - so the ramp has to narrow with it or it
      would dissolve most of the picture. Roughly 28% across that range, measured
      the same way. It stacks at `md`, where there is no overlap left and the
      mask is dropped by the section rather than tuned here. */
@@ -1355,7 +1358,7 @@ body {
      mask fully opaque, which is `none` without needing a second declaration.
 
      The narrative split is the exception: its overlap survives down to `md`, at
-     two of its image's six columns rather than four of nine, so it re-declares
+     two of its image's six columns rather than three of nine, so it re-declares
      a narrower end. It sits after the reset in source order and both are
      single-class selectors, so it wins on the cascade for that range and gives
      the ramp back. */
@@ -1464,6 +1467,14 @@ body {
 
   .shadow-service {
     box-shadow: var(--shadow-service);
+  }
+
+  /* The same shadow cast by an element's own silhouette rather than its box -
+     for a logo or icon that sits on the page with no panel behind it. The
+     shadow token is always offset/blur/color with no spread, so it is valid
+     drop-shadow() syntax as written. */
+  .drop-shadow-service {
+    filter: drop-shadow(var(--shadow-service));
   }
 
   .wrap-balance {

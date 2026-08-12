@@ -65,7 +65,13 @@ export function TestimonialsMasonrySectionV3({
           <div className="relative mt-16 max-md:mt-12">
             <motion.div
               animate={{ height: isExpanded ? "auto" : 620 }}
-              className="overflow-hidden"
+              // Clipped on the block axis only. The collapsed height is what
+              // this box is for, so the vertical clip has to stay - but
+              // `overflow-hidden` also clipped the inline axis, and the outer
+              // columns' `shadow-service` reaches past the edge, so their
+              // shadows were sheared off flat. `clip` leaves the other axis
+              // genuinely visible where `hidden` would force it to `auto`.
+              className="overflow-y-clip"
               initial={false}
               transition={revealTransition}
             >

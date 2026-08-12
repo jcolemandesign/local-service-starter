@@ -46,17 +46,18 @@ export const splitImageVariantValues = new Set<string>(
   splitImageVariantOptions.map((option) => option.value),
 );
 
-/** Full-image splits can also let the two panels share two grid columns.
- * Kept out of the base split list because framed fixed-image layouts do not
- * implement the overlap treatment. */
+/** Full-image splits can also let the two panels share grid columns: the copy
+ * takes eight and the image nine, so three of the fourteen carry both. Kept out
+ * of the base split list because framed fixed-image layouts do not implement
+ * the overlap treatment. */
 export const fullImageSplitVariantOptions = [
   ...splitImageVariantOptions,
   {
-    label: "Text 9 / Img 9",
+    label: "Text 8 / Img 9",
     value: "text-7-image-9-overlap-right",
   },
   {
-    label: "Img 9 / Text 9",
+    label: "Img 9 / Text 8",
     value: "image-9-overlap-left-text-7",
   },
 ] as const;

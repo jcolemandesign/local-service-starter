@@ -236,7 +236,10 @@ export function ServicesScrollCardsSectionV2({
       ref={sectionRef}
       className="relative min-h-[240svh] bg-bg-page max-lg:min-h-0"
     >
-      <div className="sticky top-0 flex min-h-svh items-center overflow-hidden py-16 max-lg:static max-lg:min-h-0 max-lg:overflow-visible">
+      {/* Inline axis only: this holds the horizontally travelling rail, so it
+          has to stop that travel escaping sideways, but clipping the block axis
+          as well cut the cards' shadow off along the top and bottom. */}
+      <div className="sticky top-0 flex min-h-svh items-center overflow-x-clip py-16 max-lg:static max-lg:min-h-0 max-lg:overflow-x-visible">
         <div className="w-full">
           <SevenColumnGrid
             className="px-[var(--site-grid-inset-inline)]"
@@ -264,10 +267,12 @@ export function ServicesScrollCardsSectionV2({
           </SevenColumnGrid>
 
           {/* The desktop rail must mask horizontal travel, but the cards lift by
-              0.5rem on hover. The vertical buffer gives that lift room without
-              changing the rail's visible starting position or its X bounds. */}
+              0.5rem on hover. Masking only the inline axis lets the lift and the
+              card shadow paint outside the rail; the vertical buffer stays so
+              the lifted card still has room in flow rather than riding up into
+              the heading above it. */}
           <div
-            className="mt-11 overflow-hidden py-3 max-lg:mt-14 max-lg:overflow-visible max-lg:py-0"
+            className="mt-11 overflow-x-clip py-3 max-lg:mt-14 max-lg:overflow-x-visible max-lg:py-0"
             ref={railViewportRef}
           >
             <div className="px-[var(--site-grid-inset-inline)] max-lg:grid max-lg:gap-4">

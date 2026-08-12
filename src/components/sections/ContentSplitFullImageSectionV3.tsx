@@ -95,14 +95,14 @@ const variantConfig: Record<
     imageBleedClassName: bleedLeft,
   },
   "text-7-image-9-overlap-right": {
-    textClassName: `relative z-10 col-span-9 col-start-1 max-lg:col-span-6 max-lg:col-start-1 ${stackedColumns}`,
+    textClassName: `relative z-10 col-span-8 col-start-1 max-lg:col-span-6 max-lg:col-start-1 ${stackedColumns}`,
     imageClassName: `z-0 col-span-9 col-start-6 max-lg:col-span-6 max-lg:col-start-5 ${stackedColumns}`,
     imageBleedClassName: bleedRight,
     imageMaskClassName:
       "full-image-split-image-mask-right full-image-split-narrow-overlap",
   },
   "image-9-overlap-left-text-7": {
-    textClassName: `relative z-10 col-span-9 col-start-6 max-lg:col-span-6 max-lg:col-start-5 ${stackedColumns}`,
+    textClassName: `relative z-10 col-span-8 col-start-7 max-lg:col-span-6 max-lg:col-start-5 ${stackedColumns}`,
     imageClassName: `z-0 col-span-9 col-start-1 max-lg:col-span-6 max-lg:col-start-1 ${stackedColumns}`,
     imageBleedClassName: bleedLeft,
     imageMaskClassName:

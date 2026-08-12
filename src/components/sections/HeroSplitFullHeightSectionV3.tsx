@@ -77,19 +77,19 @@ const variantConfig: Record<HeroSplitFullHeightVariant, HeroVariantConfig> = {
     imageSlotLabel: "Image area: columns 1-7",
   },
   "text-7-image-9-overlap-right": {
-    textClassName: "relative z-10 col-span-9 col-start-1",
+    textClassName: "relative z-10 col-span-8 col-start-1",
     imageClassName: "z-0 col-span-9 col-start-6",
     imagePanelClassName:
       "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
-    imageSlotLabel: "Image area: columns 6-14; overlaps columns 6-9",
+    imageSlotLabel: "Image area: columns 6-14; overlaps columns 6-8",
     imageMaskClassName: "full-image-split-image-mask-right",
   },
   "image-9-overlap-left-text-7": {
-    textClassName: "relative z-10 col-span-9 col-start-6",
+    textClassName: "relative z-10 col-span-8 col-start-7",
     imageClassName: "z-0 col-span-9 col-start-1",
     imagePanelClassName:
       "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
-    imageSlotLabel: "Image area: columns 1-9; overlaps columns 6-9",
+    imageSlotLabel: "Image area: columns 1-9; overlaps columns 7-9",
     imageMaskClassName: "full-image-split-image-mask-left",
   },
 };
