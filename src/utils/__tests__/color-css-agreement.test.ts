@@ -128,6 +128,97 @@ describe("tint constants", () => {
   }
 });
 
+/**
+ * The card's copy of the eyebrow tint.
+ *
+ * `--card-eyebrow` is the same formula as `--chroma-text` run against the
+ * CARD's text source instead of the section's, and it has to be written out
+ * rather than reused: `--chroma-text` is declared on the painting surface,
+ * where it has already substituted the section's `--recipe-text`, and CSS has
+ * no way to re-run a declaration against different inputs.
+ *
+ * That duplication is exactly what this file exists to police. If the two
+ * percentages ever disagree, the eyebrow on a card and the eyebrow on the
+ * section beside it are drawn from different scales - which is the class of
+ * drift that put eighteen copies of the recipe tables in eighteen sections.
+ */
+describe("the card's chromatic tint", () => {
+  it("uses the same text percentage as the section's tint", () => {
+    expect(readMixDeclaration("card-eyebrow").percent).toBeCloseTo(
+      tintRoles.text * 100,
+      6,
+    );
+    expect(readMixDeclaration("card-eyebrow").percent).toBeCloseTo(
+      readMixDeclaration("chroma-text").percent,
+      6,
+    );
+  });
+
+  it("runs from the recipe chromatic toward the CARD's text source", () => {
+    const declaration = readMixDeclaration("card-eyebrow");
+
+    expect(declaration.source).toBe("recipe-chromatic");
+    // The whole point of the card copy. Targeting `--recipe-text` here would
+    // resolve against the section's polarity and reproduce the bug.
+    expect(declaration.target).toBe("recipe-card-text");
+  });
+
+  it("is applied to the live accent roles, never to --recipe-eyebrow itself", () => {
+    // Declaring `--recipe-eyebrow: var(--card-eyebrow, var(--recipe-eyebrow))`
+    // is the obvious spelling and it is a cycle - see the card-accent rule in
+    // globals.css. The consumer has to be a different property from the ones
+    // it reads, which is why it repoints `--live-*-accent` instead.
+    for (const role of ["live-service-accent", "live-text-accent"]) {
+      expect(globalsCss).toContain(
+        `--${role}: var(--card-eyebrow, var(--recipe-eyebrow));`,
+      );
+    }
+  });
+
+  it("falls back to the section's eyebrow so an un-overridden card is unchanged", () => {
+    // No card override means no attribute, which means `--card-eyebrow` is
+    // never set. The fallback is what makes this change provably inert for
+    // every page that has not been overridden - the recipes' own cards were
+    // already resolving a correct eyebrow.
+    expect(globalsCss).toMatch(/var\(--card-eyebrow,\s*var\(--recipe-eyebrow\)\)/);
+  });
+});
+
+/**
+ * A custom property may never reference itself, in a value or in a fallback.
+ *
+ * CSS calls that a cycle and makes the property invalid at computed-value
+ * time. Nothing errors, no build fails, and the browser falls through to
+ * whatever fallback sits at the far end of the chain - here the `@theme
+ * inline` defaults, which are the starter's own green rather than the
+ * business's palette. It shipped once as `--recipe-eyebrow: var(--card-eyebrow,
+ * var(--recipe-eyebrow))` and surfaced as green arrows on card icons.
+ *
+ * The self-referencing-fallback idiom is genuinely tempting - it reads exactly
+ * like "use the override if there is one, otherwise keep what I inherited" -
+ * so this is worth a standing check rather than a comment.
+ */
+describe("no custom property references itself", () => {
+  it("has no self-referencing declaration anywhere in globals.css", () => {
+    const offenders: string[] = [];
+    // Comments stripped first. The rule above this one is explained by quoting
+    // the broken declaration verbatim, and a guard that cannot tell an example
+    // from a declaration would either fail on the documentation or teach the
+    // next person to stop writing it.
+    const declarations = globalsCss.replace(/\/\*[\s\S]*?\*\//g, "");
+
+    for (const [, property, value] of declarations.matchAll(
+      /(--[a-z0-9-]+):([^;{}]*);/gi,
+    )) {
+      if (new RegExp(`var\\(\\s*${property}\\b`).test(value)) {
+        offenders.push(`${property}:${value.trim().slice(0, 80)}`);
+      }
+    }
+
+    expect(offenders).toEqual([]);
+  });
+});
+
 describe("mixing space", () => {
   it("uses oklab everywhere a scale is declared", () => {
     for (const property of [

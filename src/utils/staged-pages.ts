@@ -82,6 +82,9 @@ export type StagedPageTemplateSection = {
   cardLinks?: string;
   /** Marker icons on/off - see `iconsOptions` in `section-style-options`. */
   icons?: string;
+  /** Headline scale - see `sectionHeadingSizeOptions` in
+   *  `section-style-options`. Copy-neutral, so it is its own field. */
+  headingSize?: string;
   /** Headline wrap - see `headlineWrapOptions` in `section-style-options`. */
   headlineWrap?: string;
   /**
@@ -1214,6 +1217,34 @@ function getComponentAssetFields(
         value: sectionLibraryV3Content.heroServiceAreaZipLookup.imageSrc,
       },
     ];
+  }
+
+  /**
+   * Four icons, one per quadrant, all required.
+   *
+   * Vector rather than raster: these sit at 80px against a card ground, get
+   * recoloured by nothing and scaled by the breakpoint, and a bitmap at that
+   * size is soft on any second-generation display. SVG is the format to supply;
+   * an animated SVG drops in through the same field, since it is still one file
+   * the `img` renders. Lottie or a video loop would not - those need a player
+   * and a different field kind, so if a client wants motion beyond SVG that is
+   * a section change, not a value an editor can paste here.
+   */
+  if (component.includes("decisionmatrixcard")) {
+    return sectionLibraryV3Content.decisionMatrixCard.quadrants.flatMap(
+      (quadrant, index) => [
+        {
+          kind: "meta" as const,
+          name: `quadrants.${index + 1}.iconAlt`,
+          value: quadrant.iconAlt,
+        },
+        {
+          kind: "image" as const,
+          name: `quadrants.${index + 1}.iconSrc`,
+          value: quadrant.iconSrc,
+        },
+      ],
+    );
   }
 
   if (component.includes("projectcasestudygallery")) {

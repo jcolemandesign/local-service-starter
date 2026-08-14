@@ -12,37 +12,43 @@ type Floater = {
   tone: string;
 };
 
+/**
+ * Widths and offsets are scaled up from the original composition so the two
+ * columns read as photographs rather than as swatches: each floater is roughly
+ * a fifth wider and sits nearer its outer edge, leaving the same stagger
+ * between the three depths while using most of the column.
+ */
 const floaters: Record<FloaterSide, Floater[]> = {
   left: [
     {
-      className: "left-[2%] top-[7%] aspect-[3/2] w-[72%]",
+      className: "left-0 top-[3%] aspect-[3/2] w-[88%]",
       depth: "far",
       tone: "bg-zinc-200",
     },
     {
-      className: "right-[4%] top-[31%] aspect-square w-[56%]",
+      className: "right-0 top-[30%] aspect-square w-[66%]",
       depth: "near",
       tone: "bg-zinc-300",
     },
     {
-      className: "left-[16%] bottom-[3%] aspect-[2/3] w-[38%]",
+      className: "left-[8%] bottom-0 aspect-[2/3] w-[46%]",
       depth: "mid",
       tone: "bg-zinc-100",
     },
   ],
   right: [
     {
-      className: "right-[4%] top-[4%] aspect-[2/3] w-[36%]",
+      className: "right-0 top-0 aspect-[2/3] w-[44%]",
       depth: "mid",
       tone: "bg-zinc-100",
     },
     {
-      className: "left-[4%] top-[29%] aspect-[3/2] w-[70%]",
+      className: "left-0 top-[27%] aspect-[3/2] w-[86%]",
       depth: "near",
       tone: "bg-zinc-300",
     },
     {
-      className: "right-[10%] bottom-[6%] aspect-square w-[46%]",
+      className: "right-[6%] bottom-[2%] aspect-square w-[56%]",
       depth: "far",
       tone: "bg-zinc-200",
     },
@@ -92,7 +98,11 @@ export function HeroCenteredFloatersParallax({
         <motion.div
           aria-hidden="true"
           className={cx(
-            "radius-medium absolute overflow-hidden border border-white/55 shadow-service",
+            // No outline. These are photographs, and a light rule around each
+            // one read as a frame rather than as an edge - it also survived
+            // every recipe unchanged, which is the pairing the colour system
+            // exists to avoid.
+            "radius-medium absolute overflow-hidden shadow-service",
             floater.tone,
             floater.className,
           )}

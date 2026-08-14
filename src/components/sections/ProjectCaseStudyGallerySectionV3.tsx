@@ -167,11 +167,23 @@ export function ProjectCaseStudyGallerySectionV3({
   const cardTextClass = "text-service-ink";
   const cardMutedTextClass = "text-service-muted";
   const eyebrowClass = "text-service-accent";
-  // The field behind the print is the border colour at 30%. No per-recipe map
-  // is needed: globals.css already redefines --live-service-border for the dark
-  // and accent recipes, so the field follows whatever the section's own edges
-  // are drawn in.
-  const imageBackdropClass = "bg-service-border/30";
+  /**
+   * The field behind the print is the card's own surface, so the two carry the
+   * same contrast against the ground in every recipe.
+   *
+   * It was `bg-service-border/30` - a *line* colour at 30% over whatever ground
+   * was behind it. Border is derived as the surface stepped 0.30 down in
+   * lightness, so a fraction of it lands nowhere near the card's step: measured
+   * against this palette the field sat about 0.09 off the ground in perceptual
+   * lightness while the card sat at 0, so the tint read as the heavier object
+   * of the pair when it is meant to be the quieter one.
+   *
+   * `bg-bg-muted` is not the answer either, for the same reason at smaller
+   * scale - it is a step *past* the surface, so it out-contrasts the card by
+   * whatever that step is. Only the card's own token keeps pace by
+   * construction rather than by two numbers happening to agree.
+   */
+  const imageBackdropClass = "bg-service-surface";
 
   if (!activeSlide) {
     return null;

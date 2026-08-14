@@ -194,7 +194,7 @@ describe("card polarity", () => {
 });
 
 describe("attributes", () => {
-  it("ships swatch, intensity and polarity together for a card override", () => {
+  it("ships swatch, intensity and both card-ground answers for a card override", () => {
     expect(
       colorOverrideAttributes(palette, "page", {
         cardSwatch: "dark",
@@ -203,8 +203,34 @@ describe("attributes", () => {
     ).toEqual({
       "data-pagebuilder-card-swatch": "dark",
       "data-pagebuilder-card-intensity": "strong",
+      // The two things CSS cannot derive from a `color-mix()` result: which way
+      // the card's text points, and which of the three chromatic treatments its
+      // ground takes. They travel together because they answer the same
+      // question about the same colour.
       "data-pagebuilder-card-polarity": "dark",
+      "data-pagebuilder-card-chroma": "tinted",
     });
+  });
+
+  /** The card's chroma answer is about the CARD, not the recipe. A brand
+   *  swatch at full strength is a chromatic ground however light the section
+   *  it sits on is, and the eyebrow on it has to fall to the text source. */
+  it("reads the chromatic treatment off the card, not the section", () => {
+    expect(
+      colorOverrideAttributes(palette, "page", {
+        cardSwatch: "brand",
+        cardIntensity: "strong",
+      })["data-pagebuilder-card-chroma"],
+    ).toBe("textSource");
+
+    // The same swatch at Faint is mostly the section's own light ground, so it
+    // is a light card and takes the full-strength chromatic.
+    expect(
+      colorOverrideAttributes(palette, "page", {
+        cardSwatch: "brand",
+        cardIntensity: "faint",
+      })["data-pagebuilder-card-chroma"],
+    ).toBe("none");
   });
 
   it("ships no polarity for a border-only override", () => {

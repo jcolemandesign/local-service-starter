@@ -49,7 +49,7 @@ export function FeatureAsymmetricCardsSectionV3({
   eyebrow,
   title,
 }: FeatureAsymmetricCardsSectionV3Props) {
-  const cardsFirst = align === "right";
+  const cardsOnLeft = align === "right";
   const displayCards = cards.slice(0, 4);
   /**
    * Parity picks the arrangement.
@@ -81,8 +81,8 @@ export function FeatureAsymmetricCardsSectionV3({
             cards never moved. The text moved, the cards did not, and the two
             overlapped in columns 5-7. */}
         <SevenColumnGridItem
-          className={`col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1 max-lg:col-start-1 ${
-            cardsFirst ? "col-start-5" : "col-start-1"
+          className={`col-span-3 row-start-1 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1 ${
+            cardsOnLeft ? "col-start-5" : "col-start-1"
           }`}
           measure="copyWide"
         >
@@ -106,15 +106,25 @@ export function FeatureAsymmetricCardsSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem
-          className={`col-span-4 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-1 ${
-            cardsFirst ? "col-start-1" : "col-start-4"
+          className={`col-span-4 row-start-1 max-lg:col-span-5 max-lg:col-start-1 max-lg:row-start-auto max-md:col-span-3 max-sm:col-span-1 ${
+            cardsOnLeft ? "col-start-1" : "col-start-4"
           }`}
         >
+          {/* Both arrangements below carry a card section's indent, so these
+              line up with the cards in the section above or below them - the
+              split decision is the usual neighbour.
+
+              These cards draw no surface, so without it the icon started hard
+              on the column edge while a real card's content sat 20px in. The
+              value is that padding plus the border, because a bordered card
+              insets its content by both and matching only the padding left
+              these two pixels adrift. Token, not a literal 22px, so it tracks
+              the border width if that is ever retuned. */}
           {isStacked ? (
             <div className="grid gap-y-[var(--site-grid-gap)]">
               {displayCards.map((card, cardIndex) => (
                 <article
-                  className="reveal-on-scroll fluid-type-frame grid grid-cols-[auto_minmax(0,1fr)] items-start gap-[var(--site-grid-gap)] text-service-ink max-sm:grid-cols-1"
+                  className="reveal-on-scroll fluid-type-frame grid grid-cols-[auto_minmax(0,1fr)] items-start gap-[var(--site-grid-gap)] px-[calc(1.25rem+var(--border-surface-width-token))] text-service-ink max-sm:grid-cols-1"
                   key={card.title}
                   style={{ "--reveal-index": cardIndex } as CSSProperties}
                 >
@@ -149,7 +159,7 @@ export function FeatureAsymmetricCardsSectionV3({
 
                   return (
                     <article
-                      className="reveal-on-scroll fluid-type-frame min-h-60 pb-0 pt-5 text-service-ink max-md:min-h-0"
+                      className="reveal-on-scroll fluid-type-frame min-h-60 px-[calc(1.25rem+var(--border-surface-width-token))] pb-0 pt-5 text-service-ink max-md:min-h-0"
                       key={card.title}
                       style={{ "--reveal-index": cardIndex } as CSSProperties}
                     >

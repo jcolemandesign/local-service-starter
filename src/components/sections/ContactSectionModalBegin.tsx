@@ -35,10 +35,10 @@ function SelectionButton({
   return (
     <button
       aria-pressed={isSelected}
-      className={`radius-button min-h-12 cursor-pointer border px-4 type-caption font-semibold transition-colors ${
+      className={`radius-button min-h-12 cursor-pointer border px-4 type-caption font-semibold transition-colors disabled:cursor-not-allowed ${
         isSelected
           ? "border-service-accent bg-service-accent text-text-inverse"
-          : "border-service-border bg-surface-raised text-service-ink hover:border-service-accent hover:text-service-accent"
+          : "border-service-border bg-surface-raised text-service-ink hover:border-service-accent hover:text-service-accent disabled:hover:border-service-border disabled:hover:text-service-ink"
       }`}
       onClick={onClick}
       type="button"
@@ -109,11 +109,20 @@ export function ContactSectionModalBegin({
               openRequestService({ requestType, systemType });
             }}
           >
-            <fieldset className="grid card-grid-gap-sml">
-              <legend className="type-text-sm mb-3 font-semibold text-service-ink">
+            {/* `card-grid-gap-sml` is not small - all three card gap utilities
+              * resolve to the same 2.25rem - so the option rows were spaced
+              * like cards rather than like a control. Plain `gap-3` between the
+              * answers instead.
+              *
+              * The space under each prompt is a margin on the `legend` and has
+              * to be: a legend is not a grid item, so the fieldset's own `gap`
+              * skips straight past it and the buttons end up against the
+              * prompt. */}
+            <fieldset className="grid gap-4">
+              <legend className="type-heading-sm mb-4 text-service-ink">
                 {systemPrompt}
               </legend>
-              <div className="grid grid-cols-2 card-grid-gap-sml max-sm:grid-cols-1">
+              <div className="grid grid-cols-2 gap-3 max-sm:grid-cols-1">
                 {requestServiceSystemOptions.map((option) => (
                   <SelectionButton
                     isSelected={systemType === option.value}
@@ -125,11 +134,26 @@ export function ContactSectionModalBegin({
               </div>
             </fieldset>
 
-            <fieldset className="grid card-grid-gap-sml">
-              <legend className="type-text-sm mb-3 font-semibold text-service-ink">
+            {/* Held shut until the system is chosen. The two questions are a
+              * sequence, not a pair - what you need done only makes sense once
+              * it is heating or cooling - and answering them out of order was
+              * possible but meaningless. `disabled` on the fieldset takes every
+              * button inside it out of the tab order too, so the dimming is not
+              * just paint. */}
+            <fieldset
+              className={[
+                "grid gap-4 transition-opacity",
+                // Conditional rather than the `disabled:` variant, so the
+                // dimming is stated in the same place as the gate it reflects
+                // and does not rely on a variant resolving.
+                systemType ? "opacity-100" : "opacity-45",
+              ].join(" ")}
+              disabled={!systemType}
+            >
+              <legend className="type-heading-sm mb-4 text-service-ink">
                 {requestPrompt}
               </legend>
-              <div className="grid grid-cols-2 card-grid-gap-sml max-sm:grid-cols-1">
+              <div className="grid grid-cols-2 gap-3 max-sm:grid-cols-1">
                 {requestServiceRequestOptions.map((option) => (
                   <SelectionButton
                     isSelected={requestType === option.value}
@@ -154,7 +178,12 @@ export function ContactSectionModalBegin({
               >
                 {continueLabel}
               </button>
-              <p className="type-caption text-center text-service-muted">
+              {/* `mx-auto` is the part that centres it. `type-caption` carries
+                * a max-width measure of its own, so the paragraph is narrower
+                * than the button above it; `text-center` only centred the words
+                * inside that narrower box, which still sat against the left
+                * edge of the column. */}
+              <p className="type-caption mx-auto text-center text-service-muted">
                 {helperText}
               </p>
             </div>

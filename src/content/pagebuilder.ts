@@ -19,6 +19,10 @@ export type PagebuilderRecipeSection = {
   cardLinks?: string;
   /** Marker icons on/off - see `iconsOptions` in `section-style-options`. */
   icons?: string;
+  /** Headline scale - see `sectionHeadingSizeOptions` in
+   *  `section-style-options`. Copy-neutral, so it is its own field rather than
+   *  a suffix on `variant` the way the older compact headers encode theirs. */
+  headingSize?: string;
   /** Headline wrap - see `headlineWrapOptions` in `section-style-options`. */
   headlineWrap?: string;
   /**
@@ -338,6 +342,10 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       {
         name: "Fullscreen image hero",
         component: "HeroFullscreenSectionV2",
+        // The image is the section's whole identity, and it is the ground-image
+        // axis rather than anything the component paints - so a stack that
+        // starts from this recipe starts with the ground set to take one.
+        backgroundTreatment: "image",
         mode: "Hero",
         instruction:
           "Use a strong image, calm h1, review proof, and one visible request path.",
@@ -424,13 +432,6 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
         mode: "Scan",
         instruction:
           "Use a compact service rail when there are more service paths than a small grid can handle gracefully.",
-      },
-      {
-        name: "Rule header content",
-        component: "ContentRuleHeaderSectionV2",
-        mode: "Narrative",
-        instruction:
-          "Use this as a lightweight editorial texture to introduce the next practical idea without adding a heavy section.",
       },
       {
         name: "FAQ",
@@ -586,6 +587,10 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       {
         name: "Fullscreen image hero",
         component: "HeroFullscreenSectionV2",
+        // The image is the section's whole identity, and it is the ground-image
+        // axis rather than anything the component paints - so a stack that
+        // starts from this recipe starts with the ground set to take one.
+        backgroundTreatment: "image",
         mode: "Hero",
         instruction:
           "Lead with the offer category, eligibility note, and one claim path without unsupported savings details.",
@@ -730,6 +735,10 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       {
         name: "Fullscreen image hero",
         component: "HeroFullscreenSectionV2",
+        // The image is the section's whole identity, and it is the ground-image
+        // axis rather than anything the component paints - so a stack that
+        // starts from this recipe starts with the ground set to take one.
+        backgroundTreatment: "image",
         mode: "Hero",
         instruction:
           "Introduce the resource center with a clear opening message and request path.",
@@ -833,6 +842,10 @@ export const pagebuilderRecipes: PagebuilderRecipe[] = [
       {
         name: "Fullscreen image hero",
         component: "HeroFullscreenSectionV2",
+        // The image is the section's whole identity, and it is the ground-image
+        // axis rather than anything the component paints - so a stack that
+        // starts from this recipe starts with the ground set to take one.
+        backgroundTreatment: "image",
         mode: "Hero",
         instruction:
           "Frame the product category, comparison need, and request-estimate action.",

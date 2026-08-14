@@ -527,11 +527,14 @@ export function StrategyWorkspaceSection({
     }
   }
 
-  function updateLayoutApproval(pageId: string, isApproved: boolean) {
+  function updateLayoutApproval(
+    pageId: string,
+    status: "approved" | "rejected" | "",
+  ) {
     const layoutApprovalKey = getPageLayoutApprovalField(pageId);
     const nextFields = {
       ...fieldsRef.current,
-      [layoutApprovalKey]: isApproved ? "approved" : "",
+      [layoutApprovalKey]: status,
     };
 
     setFields(nextFields);
@@ -1009,6 +1012,8 @@ export function StrategyWorkspaceSection({
                     const layoutApprovalKey = getPageLayoutApprovalField(page.id);
                     const isLayoutApproved =
                       fields[layoutApprovalKey] === "approved";
+                    const isLayoutRejected =
+                      fields[layoutApprovalKey] === "rejected";
 
                     return (
                       <div
@@ -1040,7 +1045,10 @@ export function StrategyWorkspaceSection({
                             checked={isLayoutApproved}
                             className="peer sr-only"
                             onChange={(event) =>
-                              updateLayoutApproval(page.id, event.target.checked)
+                              updateLayoutApproval(
+                                page.id,
+                                event.target.checked ? "approved" : "",
+                              )
                             }
                             type="checkbox"
                           />
@@ -1056,6 +1064,47 @@ export function StrategyWorkspaceSection({
                               viewBox="0 0 12 12"
                             >
                               <path d="m3 6.2 2 2L9 4" />
+                            </svg>
+                          </span>
+                        </label>
+                        <label
+                          className="absolute right-3 top-[10rem] flex size-10 cursor-pointer items-center justify-center"
+                          title={
+                            isLayoutRejected
+                              ? "Layout rejected"
+                              : "Mark layout rejected"
+                          }
+                        >
+                          <input
+                            aria-label="Layout rejected"
+                            checked={isLayoutRejected}
+                            className="peer sr-only"
+                            // The chrome sheet paints every checked box in the
+                            // workspace green, with !important, so the red
+                            // peer-checked utilities below never landed. This
+                            // marks the box whose checked state means "no" and
+                            // is what the sheet's red rule keys off.
+                            data-strategy-intent="reject"
+                            onChange={(event) =>
+                              updateLayoutApproval(
+                                page.id,
+                                event.target.checked ? "rejected" : "",
+                              )
+                            }
+                            type="checkbox"
+                          />
+                          <span className="pointer-events-none flex size-5 shrink-0 items-center justify-center rounded-[3px] border border-service-border bg-bg-surface transition-colors peer-checked:border-red-700 peer-checked:bg-red-700 peer-checked:[&>svg]:opacity-100 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-red-700">
+                            <svg
+                              aria-hidden="true"
+                              className="size-2.5 text-white opacity-0 transition-opacity"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              viewBox="0 0 12 12"
+                            >
+                              <path d="m3 3 6 6M9 3l-6 6" />
                             </svg>
                           </span>
                         </label>
@@ -2084,8 +2133,17 @@ function PageCopyReadyIcon({
   isReady: boolean;
 }) {
   const label = getContractStatusLabel(contractStatus);
+  /**
+   * Green for a match, red for a mismatch, amber for unverified.
+   *
+   * A match used to be `bg-accent`, and `--color-accent` is #ce0019 - so the
+   * state that means "this page's copy is in step with its template" rendered
+   * in the same red as the state that means it is not, and the icon read as a
+   * warning at a glance whatever it was actually saying. Green also matches
+   * `ContractStatusLabel`, which has always set the `current` text green.
+   */
   const readyClassName = {
-    current: "border-accent bg-accent text-white",
+    current: "border-green-700 bg-green-700 text-white",
     empty: "strategy-status-icon-inert",
     stale: "border-red-700 bg-red-700 text-white",
     unverified: "border-amber-700 bg-amber-50 text-amber-900",

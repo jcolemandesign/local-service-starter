@@ -26,6 +26,16 @@ function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+/**
+ * `measure` caps the body copy, not the block.
+ *
+ * It used to sit on the wrapper, which capped the headline at the same 70ch a
+ * paragraph wants. A headline is set at three times the body size, so that
+ * ceiling landed a hundred pixels inside its own column and broke a short
+ * headline over three lines with the room to spare sitting empty beside it.
+ * Reading measure is a property of running text; a headline is sized by its
+ * column.
+ */
 const alignClassName: Record<
   HeroCompactAlign,
   {
@@ -36,21 +46,21 @@ const alignClassName: Record<
   }
 > = {
   left: {
-    body: "",
+    body: "mr-auto",
     item: "col-span-5 col-start-1",
-    measure: "mr-auto max-w-[var(--measure-copy-wide)]",
+    measure: "mr-auto",
     text: "text-left",
   },
   center: {
     body: "mx-auto",
     item: "col-span-5 col-start-2",
-    measure: "mx-auto max-w-[var(--measure-copy-wide)]",
+    measure: "mx-auto",
     text: "text-center",
   },
   right: {
     body: "ml-auto",
     item: "col-span-5 col-start-3",
-    measure: "ml-auto max-w-[var(--measure-copy-wide)]",
+    measure: "ml-auto",
     text: "text-right",
   },
 };
@@ -68,11 +78,12 @@ export function SectionHeaderCompactSectionV3({
 
   return (
     <section className="bg-bg-page">
-      <SevenColumnGrid
-        minHeight="none"
-        padding="none"
-        style={{ paddingBlock: "var(--section-space-vsml)" }}
-      >
+      {/* Spacing through the shared scale rather than an inline
+        * `--section-space-vsml`. The one-off value was both too tight to read as
+        * a section in its own right and invisible to the builder, which tunes
+        * density by the `section-space-*` classes - so the header stayed at its
+        * hardcoded 2rem whatever the canvas was set to. */}
+      <SevenColumnGrid minHeight="none" padding="sml">
         <SevenColumnGridItem
           alignX={align}
           className={cx(
@@ -106,7 +117,7 @@ export function SectionHeaderCompactSectionV3({
                 headingSize === "display-lg"
                   ? "type-text-xl"
                   : "type-text-lg",
-                "wrap-pretty mt-heading-body-lg text-service-muted",
+                "wrap-pretty mt-heading-body-lg max-w-[var(--measure-copy-wide)] text-service-muted",
                 alignment.body,
               )}
             >

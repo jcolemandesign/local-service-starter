@@ -155,6 +155,7 @@ import { pagebuilderRecipes, sectionModes } from "@/content/pagebuilder";
 import {
   getCanonicalSectionLabel,
   sectionLibraryV3Content,
+  heroContentTopImageBottomFpoSrc,
   heroSplitFullImageFpoSrc,
   servicesBentoPreviewItemCount,
 } from "@/content/section-library-v3";
@@ -170,6 +171,7 @@ import {
   resolveSectionIcons,
   splitBentoVariantValues,
   tableCompareAlignValues,
+  resolveHeadingSize,
   type CalloutRevealGridVariant,
   type CalloutSplitPanelVariant,
   type CardLinkGridAlign,
@@ -469,6 +471,7 @@ function renderSectionElement(
         <HeroContentTopImageBottomSectionV2
           {...sectionLibraryV3Content.hero}
           headingLevel={headingLevel}
+          imageSrc={heroContentTopImageBottomFpoSrc}
         />
       );
     case "HeroCompactSectionV3":
@@ -525,9 +528,19 @@ function renderSectionElement(
         />
       );
     case "TrustMarqueeSection":
-      return <TrustMarqueeSection {...sectionLibraryV3Content.trustMarquee} />;
+      return (
+        <TrustMarqueeSection
+          {...sectionLibraryV3Content.trustMarquee}
+          headingSize={resolveHeadingSize(section.headingSize, "display-lg")}
+        />
+      );
     case "TrustMarqueeSectionV3":
-      return <TrustMarqueeSectionV3 {...sectionLibraryV3Content.trustMarquee} />;
+      return (
+        <TrustMarqueeSectionV3
+          items={sectionLibraryV3Content.trustMarquee.items}
+          label={sectionLibraryV3Content.trustMarquee.label}
+        />
+      );
     case "TrustLogoMarqueeSectionV3":
       return (
         <TrustLogoMarqueeSectionV3
@@ -555,6 +568,7 @@ function renderSectionElement(
       return (
         <FourCardLinkGridSectionV3
           {...sectionLibraryV3Content.fourCardLinkGrid}
+          align={getCardLinkGridAlign(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           showImages={section.variant !== "text-only"}
@@ -827,6 +841,7 @@ function renderSectionElement(
           align={getTableCompareAlign(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+          headingSize={resolveHeadingSize(section.headingSize, "heading-xl")}
         />
       );
     case "DecisionSplitLargeCardsSectionV3":
@@ -846,6 +861,7 @@ function renderSectionElement(
           {...sectionLibraryV3Content.sectionHeaderSplitLink}
           cardLinks={section.cardLinks === "off" ? "off" : "on"}
           headingLevel={headingLevel}
+          headingSize={resolveHeadingSize(section.headingSize, "heading-xl")}
         />
       );
     case "DecisionSplitDecisionLargeSectionV3":

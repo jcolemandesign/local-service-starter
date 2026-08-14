@@ -13,8 +13,10 @@ import {
 import {
   type ColorPalette,
   type ColorRecipeId,
+  type TintMode,
   cardTextSource,
   colorRecipeIds,
+  deriveTintMode,
   isRecipeAvailable,
   recipeInputs,
   resolveRef,
@@ -135,8 +137,13 @@ export const CARD_CONTEXT_COVERAGE = {
    * Back to 130 in the same pass: the sticky image panel's card was painted
    * `bg-bg-page` - the ground token - and now takes the raised card token like
    * the rest, so it counts for real rather than not at all.
+   *
+   * 130 -> 131: the fullscreen image hero's proof tray. Its trust figures and
+   * review badge were translucent white chips over a scrim the section painted
+   * itself; they are now ordinary cards on the card token, which is what let
+   * the hero join `cardStyleComponents` and take the override axes.
    */
-  covered: 130,
+  covered: 131,
   total: 148,
 } as const;
 
@@ -161,6 +168,22 @@ function rungPercent(rungs: RungPercentages, level: keyof typeof ladderLevels) {
     default:
       return ladderLevels[level];
   }
+}
+
+/**
+ * The chromatic text role a ground implies, in that ground's own terms.
+ *
+ * One function so the ground and the card cannot answer it differently - which
+ * is precisely how the two drifted: the card had no answer at all.
+ */
+function chromaticText(
+  mode: TintMode,
+  chromatic: string,
+  textSource: string,
+): string {
+  if (mode === "tinted") return resolveTint(chromatic, textSource, "text");
+
+  return mode === "textSource" ? textSource : chromatic;
 }
 
 function finding(
@@ -253,12 +276,7 @@ export function gateColorSystem(palette: ColorPalette): GateReport {
           ? textSource
           : ctaChromatic;
 
-    const eyebrow =
-      inputs.tintMode === "tinted"
-        ? resolveTint(chromatic, textSource, "text")
-        : inputs.tintMode === "textSource"
-          ? textSource
-          : chromatic;
+    const eyebrow = chromaticText(inputs.tintMode, chromatic, textSource);
 
     // A button's own edge against the field it sits on - WCAG 1.4.11 rather
     // than the text bar, because the fill is a boundary and not copy.
@@ -266,6 +284,30 @@ export function gateColorSystem(palette: ColorPalette): GateReport {
     findings.push(finding(id, "cta-label", "ground", ctaLabel, ctaFill, contrastBars.text));
     // The eyebrow is readable copy, so it takes the text bar.
     findings.push(finding(id, "eyebrow", "ground", eyebrow, ground, contrastBars.text));
+
+    /**
+     * The eyebrow on the card, which this gate used to omit.
+     *
+     * Every laddered role above is measured on both surfaces and the chromatic
+     * one was measured on only the ground - so the surface where the role was
+     * actually broken was the surface nobody was looking at. The stylesheet had
+     * the same gap in the same place: a card re-resolved the ladder and
+     * inherited the eyebrow. Both are closed now, and this is what keeps them
+     * closed.
+     *
+     * Derived from the CARD's own lightness and chroma rather than from the
+     * recipe's declared mode, because that is what the markup now does.
+     */
+    findings.push(
+      finding(
+        id,
+        "eyebrow",
+        "card",
+        chromaticText(deriveTintMode(card), chromatic, cardText),
+        card,
+        contrastBars.text,
+      ),
+    );
   }
 
   return {

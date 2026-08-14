@@ -1,0 +1,117 @@
+# Bulk Paste Copy
+
+<!-- Page target: Services Overview (/services) -->
+
+<!-- Template contract: tc-v2-k3xbxu -->
+
+### 02-compact-section-header
+
+<!-- Section contract: sc-v1-13j6z9p -->
+
+eyebrow: Residential HVAC Services
+heading: The right HVAC service starts with a clear next step
+body: Explore repair, replacement, heat pump, maintenance, and supporting services for homes around Huntersville and Lake Norman. Choose a service below or tell North Star what your system is doing.
+items: Something stopped working - Start with repair or diagnosis.
+Planning ahead - Explore replacement, maintenance, or installation.
+Need help choosing - Submit a request and describe the problem.
+
+### 03-priority-service-cards
+
+<!-- Section contract: sc-v1-1u2ysmj -->
+
+eyebrow: Start Here
+title: The services at the center of keeping your system reliable
+priorityServices: System Replacement - Compare repair and replacement paths when reliability is declining or another major repair may offer limited long-term value.
+HVAC Repair - Find the cause of a heating, cooling, airflow, or performance problem and understand the practical repair path.
+Heat Pump Service - Get focused support for heat pump repair, maintenance, performance concerns, or replacement planning.
+Maintenance & Tune-Ups - Check system operation, prepare for seasonal demand, and identify concerns that may need attention.
+
+### 04-customer-stories-condensed
+
+<!-- Section contract: sc-v1-10lu10f -->
+
+eyebrow: Customer Stories
+heading: What homeowners remember after the work is done
+intro: Clear explanations and respectful service can make a stressful HVAC decision feel far more manageable.
+testimonials: “They explained what had failed, what could be repaired, and what could wait. I never felt pushed into replacing the whole system.” - Melissa R., Huntersville
+“The technician was careful in the house, answered every question, and left the work area cleaner than he found it.” - David T., Cornelius
+“We finally understood why our heat pump kept struggling and had a clear plan for what to do next.” - Andrea M., Davidson
+
+### 05-services-hover-panel
+
+<!-- Section contract: sc-v1-6hu474 -->
+
+eyebrow: More Ways We Can Help
+heading: Focused help for the rest of your HVAC system
+intro: Explore additional repair, installation, comfort, and urgent-service paths without losing sight of what your system actually needs.
+serviceItems: AC Repair - Diagnose warm air, weak airflow, unusual cycling, and other cooling problems before choosing the appropriate repair.
+Heating Repair - Address inconsistent heat, unusual operation, or a heating system that is no longer keeping the home comfortable.
+Emergency HVAC Service - Call directly for an urgent heating or cooling problem and ask about current technician availability.
+HVAC Installation - Plan the installation of appropriately selected heating and cooling equipment for your home and existing system.
+Inspection & Diagnosis - Identify what the equipment is doing, isolate the likely cause, and review the available next steps.
+Indoor Air Quality - Consider practical options for filtration, humidity, airflow, and other concerns affecting the indoor environment.
+Smart Thermostat Installation - Add compatible controls and learn how to use scheduling and temperature settings more effectively.
+Ductless Mini-Split Service - Get help diagnosing, maintaining, or replacing ductless equipment in rooms and targeted comfort zones.
+Replacement Financing - Ask about current financing options that may be available for qualifying replacement projects.
+
+### 06-main-idea-support-grid
+
+<!-- Section contract: sc-v1-khztrp -->
+
+eyebrow: Choosing Where to Start
+heading: Start with what changed—not what you think you need
+body: You do not have to diagnose the system before asking for help. Describe the symptoms, timing, and recent changes, and North Star can help identify the service path that fits the situation.
+points.1.title: A sudden failure
+points.1.body: If heating or cooling stops unexpectedly, call directly so the team can discuss the problem and current availability.
+points.2.title: A recurring problem
+points.2.body: Frequent cycling, inconsistent temperatures, rising noise, or repeated repairs may call for a broader system evaluation.
+points.3.title: A planned improvement
+points.3.body: Replacement, installation, thermostat, and air-quality projects begin with the home, current equipment, and desired outcome.
+points.4.title: Seasonal preparation
+points.4.body: Maintenance and tune-ups review system operation before peak demand and help surface concerns worth addressing.
+
+### 07-faq-accordion-sidebar
+
+<!-- Section contract: sc-v1-1fobi5b -->
+
+heading: Not sure where to begin?
+intro: Describe what your system is doing and North Star can help determine which service path makes sense.
+primaryAction: Request a Quote
+faqs: Which service should I request if I do not know what is wrong? - Choose HVAC repair or inspection and diagnosis, then describe the symptoms in your request. North Star can review what is happening and help determine the appropriate service path.
+Should I call or submit the online request form? - Call directly when a heating or cooling problem is urgent. Use the online form for non-urgent repairs, maintenance, replacement questions, tune-ups, and other planned service needs.
+Do you work on both traditional HVAC systems and heat pumps? - Yes. North Star services residential heating and cooling equipment, including heat pumps. The appropriate repair, maintenance, or replacement path depends on the equipment and its condition.
+Can you tell me whether repair or replacement makes more sense? - Yes. North Star considers the diagnosis, equipment condition, reliability, repair history, and longer-term value before explaining the practical options.
+
+### 08-featured-offer
+
+<!-- Section contract: sc-v1-i7wpsa -->
+
+bannerLabel: Seasonal Service
+eyebrow: Spring Cooling Preparation
+heading: Spring AC tune-up special
+priceLabel: Special price
+priceValue: $89
+dateLabel: Available
+dateValue: March 1 through May 31
+includesLabel: Tune-up includes
+bullets: Thermostat operation check
+Filter condition check
+System airflow review
+Outdoor-unit inspection
+General performance check
+benefitTitle: Head into cooling season with a clearer picture
+benefitBody: Review how the system is operating now and identify concerns worth addressing before the heaviest cooling demand arrives.
+primaryAction: Request a Tune-Up
+terms: Residential systems only. Scheduling is subject to availability.
+
+### 09-contact-section-modal-begin
+
+<!-- Section contract: sc-v1-r593ft -->
+
+eyebrow: Request HVAC Service
+heading: Start with the system and the help you need
+body: Choose the system type and request that best match your situation. Your selections will carry into the next step, where you can add details and contact information.
+systemPrompt: What type of system needs help?
+requestPrompt: What service do you need?
+continueLabel: Continue
+helperText: Not sure which option fits? Choose the closest match and describe the issue next.

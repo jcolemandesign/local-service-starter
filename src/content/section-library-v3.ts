@@ -33,6 +33,15 @@ export const servicesBentoPreviewItemCount = 6;
 export const heroSplitFullImageFpoSrc =
   "/images/full-image-splite-template-temp2.jpg";
 
+/**
+ * Stand-in image for the content-top / image-bottom hero.
+ *
+ * That hero's slot is a full-width band across the foot of the section, so a
+ * landscape source is the only one that reads honestly there - the square-ish
+ * `fpo-image.svg` left the crop a guess.
+ */
+export const heroContentTopImageBottomFpoSrc = "/images/about-temp.jpg";
+
 export const sectionLibraryV3Content = {
   hero: {
     eyebrow: "Local service starter",
@@ -588,6 +597,11 @@ export const sectionLibraryV3Content = {
       "Trusted by homeowners, property managers, and small businesses across the metro area",
     actionLabel: "Request service",
     actionHref: "/contact",
+    callHref: "tel:5550142250",
+    callLabel: "Urgent issue? Call now",
+    ctaBody:
+      "Tell us what you need and we'll follow up with a clear next step.",
+    ctaTitle: "Ready to get started?",
     items: [
       "4.9 average rating",
       "2,400+ jobs completed",
@@ -1140,20 +1154,40 @@ export const sectionLibraryV3Content = {
     eyebrow: "Maintenance visit",
     title: "What may be reviewed during the visit?",
     body: "A simple matrix for showing the areas a technician may review without turning the visit into a rigid checklist.",
+    /**
+     * Each quadrant declares its own icon, so the asset spec asks for four and
+     * each one is tied to the heading it belongs beside. The alt text is the
+     * real thing an editor should keep, since it describes the quadrant rather
+     * than the drawing.
+     *
+     * The four `fpo-icon-*` files are stand-ins drawn for these headings rather
+     * than the generic `fpo-image.svg`, so the slot shows the *kind* of mark
+     * that belongs there while still reading as unfinished. They are flat line
+     * art in one neutral stroke - a real icon set should follow the palette,
+     * which a static file served through `img` cannot do.
+     */
     quadrants: [
       {
+        iconAlt: "System controls",
+        iconSrc: "/images/fpo-icon-system-controls.svg",
         title: "System controls",
         items: ["Thermostat operation", "General response"],
       },
       {
+        iconAlt: "Airflow",
+        iconSrc: "/images/fpo-icon-airflow.svg",
         title: "Airflow",
         items: ["Filter condition", "General airflow review"],
       },
       {
+        iconAlt: "Visible equipment",
+        iconSrc: "/images/fpo-icon-visible-equipment.svg",
         title: "Visible equipment",
         items: ["Outdoor-unit review", "Accessible components"],
       },
       {
+        iconAlt: "System performance",
+        iconSrc: "/images/fpo-icon-system-performance.svg",
         title: "System performance",
         items: ["General operation", "Notable changes"],
       },
@@ -1566,7 +1600,7 @@ export const sectionLibraryV3Content = {
       "General system performance check",
     ],
     dateLabel: "Valid dates",
-    dateValue: "Limited seasonal availability",
+    dateValue: "March 1 - May 31, 2027",
     eyebrow: "Spring service special",
     heading: "Spring AC tune-up special",
     imageAlt: "Outdoor air conditioning unit beside a home",
@@ -2152,6 +2186,7 @@ export const sectionLibraryV3Collections = [
       {
         label: "Scroll written reveal",
         component: "content-scroll-written-reveal-v2",
+        hidden: true,
       },
       {
         label: "Process steps",
@@ -2196,6 +2231,7 @@ export const sectionLibraryV3Collections = [
       {
         label: "Rule header",
         component: "content-rule-header-v2",
+        hidden: true,
       },
       {
         label: "Editorial portrait",
@@ -2507,6 +2543,7 @@ export const sectionLibraryV3Registry = sectionLibraryV3Collections.flatMap(
     collection.items.map((item) => ({
       component: sectionLibraryV3ComponentBySlug[item.component],
       family: collection.title,
+      hidden: "hidden" in item && item.hidden,
       label: item.label,
       slug: item.component,
     })),

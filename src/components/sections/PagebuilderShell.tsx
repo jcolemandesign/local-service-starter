@@ -149,13 +149,20 @@ import {
   resolveCardFill,
   headlineWrapOptions,
   iconsOptions,
+  resolveHeadingSize,
   resolveHeadlineWrap,
   resolveSectionAnimation,
   resolveSectionIcons,
+  sectionHeadingSizeOptions,
+  sectionMirrorAlignOptions,
+  sectionMirrorAlignValues,
   sectionSupportsAnimation,
+  sectionSupportsHeadingSize,
   sectionSupportsHeadlineWrap,
   sectionSupportsIcons,
+  sectionSupportsMirrorAlign,
   cardLinkGridAlignOptions,
+  getCardLinkGridAlignOptions,
   cardLinkGridAlignValues,
   fullImageSplitVariantOptions,
   fullImageSplitVariantValues,
@@ -184,8 +191,10 @@ import {
   type CalloutRevealGridVariant,
   type CalloutSplitPanelVariant,
   type CardLinkGridAlign,
+  type SectionHeadingSize,
   type SectionHeadlineWrap,
   type SectionIcons,
+  type SectionMirrorAlign,
   type ServicesBentoVariant,
   type TableCompareAlign,
   type SplitBentoVariant,
@@ -1002,6 +1011,21 @@ function getTableCompareAlignLabel(align: string | undefined) {
     ?.label;
 }
 
+function getMirrorAlign(section: WorkingSection): SectionMirrorAlign {
+  return sectionMirrorAlignValues.has(section.align ?? "")
+    ? (section.align as SectionMirrorAlign)
+    : "left";
+}
+
+function getMirrorAlignLabel(align: string | undefined) {
+  return sectionMirrorAlignOptions.find((option) => option.value === align)
+    ?.label;
+}
+
+function getSectionHeadingSize(section: WorkingSection): SectionHeadingSize {
+  return resolveHeadingSize(section.headingSize);
+}
+
 function getFourCardLinkGridVariant(
   section: WorkingSection,
 ): FourCardLinkGridVariant {
@@ -1590,13 +1614,6 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     name: "Reveal paragraph",
   },
   {
-    component: "ContentScrollWrittenRevealSectionV2",
-    instruction:
-      "Use written reveal copy when a narrative point should build in short, readable beats.",
-    mode: "Narrative",
-    name: "Scroll written reveal",
-  },
-  {
     component: "ContentSplitFixedImageSectionV3",
     instruction:
       "Use a content-height split layout when the section needs fixed-ratio imagery without hero-scale height.",
@@ -1661,13 +1678,6 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     layoutGrid: 14,
     mode: "Narrative",
     name: "3 col mixed content",
-  },
-  {
-    component: "ContentRuleHeaderSectionV2",
-    instruction:
-      "Use as lightweight editorial texture to introduce a practical idea without adding a heavy section.",
-    mode: "Narrative",
-    name: "Rule header content",
   },
   {
     component: "ContentMainIdeaGridSectionV3",
@@ -2344,6 +2354,10 @@ function buildPageInstruction({
         ? `Alignment: ${
              getTableCompareAlignLabel(getTableCompareAlign(section)) ?? "Center"
            } (${getTableCompareAlign(section)})`
+       : sectionSupportsMirrorAlign(section.component)
+        ? `Alignment: ${
+             getMirrorAlignLabel(getMirrorAlign(section)) ?? "Left"
+           } (${getMirrorAlign(section)})`
       : section.component === contentStickyCardStreamComponent
         ? `Content image: ${
             getStickyCardStreamShowImage(section) ? "shown" : "hidden"
@@ -2804,6 +2818,15 @@ export function PagebuilderShell({
   );
   const [dragDropPosition, setDragDropPosition] =
     useState<DragDropPosition>(null);
+  /**
+   * View preference, not page data - deliberately component state rather than
+   * a `designStyle` field. The accent ring is builder chrome; persisting it
+   * would write a viewing choice into every saved layout and into the files the
+   * dev server rewrites, to remember something that costs one click. It resets
+   * on reload, which is the right default for "let me see this section without
+   * the outline".
+   */
+  const [showSelectionHighlight, setShowSelectionHighlight] = useState(true);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isRenderedPreviewOpen, setIsRenderedPreviewOpen] = useState(false);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
@@ -3853,6 +3876,33 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
+  function updateMirrorAlign(sectionId: string, align: SectionMirrorAlign) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId &&
+        sectionSupportsMirrorAlign(section.component)
+          ? { ...section, align }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
+  function updateSectionHeadingSize(
+    sectionId: string,
+    headingSize: SectionHeadingSize,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId &&
+        sectionSupportsHeadingSize(section.component)
+          ? { ...section, headingSize }
+          : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateCalloutRevealGridVariant(
     sectionId: string,
     variant: CalloutRevealGridVariant,
@@ -4305,8 +4355,10 @@ export function PagebuilderShell({
         ) : section.component === heroServicesComponent ? (
           <HeroServicesSectionV3
             {...sectionLibraryV3Content.heroServices}
+            align={getMirrorAlign(section)}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
+            cardLinks={getCardLinks(section)}
             headingLevel={headingLevel}
           />
         ) : section.component === heroCompactServiceComponent ? (
@@ -4361,6 +4413,7 @@ export function PagebuilderShell({
             align={getContentThreeColumnMixedAlign(section)}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
+            cardLinks={getCardLinks(section)}
           />
         ) : section.component === faqAccordionSidebarComponent ? (
           <FAQAccordionSidebarSectionV3
@@ -4440,6 +4493,7 @@ export function PagebuilderShell({
         ) : isFourCardLinkGridSection(section) ? (
           <FourCardLinkGridSectionV3
             {...sectionLibraryV3Content.fourCardLinkGrid}
+            align={getCardLinkGridAlign(section)}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
             cardLinks={getCardLinks(section)}
@@ -4466,6 +4520,7 @@ export function PagebuilderShell({
             align={getTableCompareAlign(section)}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
+            headingSize={resolveHeadingSize(section.headingSize, "heading-xl")}
           />
         ) : // Named outright rather than "whatever else reads the align axis":
         // that axis is shared by sections this branch does not render, so a
@@ -4545,6 +4600,7 @@ export function PagebuilderShell({
           <SectionHeaderSplitLinkSectionV3
             {...sectionLibraryV3Content.sectionHeaderSplitLink}
             cardLinks={getCardLinks(section)}
+            headingSize={resolveHeadingSize(section.headingSize, "heading-xl")}
           />
         ) : section.component === decisionSplitDecisionComponent ? (
           <DecisionSplitDecisionSectionV3
@@ -4594,6 +4650,7 @@ export function PagebuilderShell({
             options.isOverlay && "pointer-events-none",
             options.className,
             isSelected &&
+              showSelectionHighlight &&
               "z-10 shadow-[0_0_0_3px_var(--color-service-accent)]",
           )}
           data-pagebuilder-section-id={section.id}
@@ -4778,10 +4835,15 @@ export function PagebuilderShell({
             return null;
           }
 
+          // A nav followed by anything that is not a hero. No spacer under it:
+          // the nav pins, and its section already holds its own height open in
+          // flow, so the section below starts exactly at the bar's bottom edge
+          // the way it does on the built site. The `--section-space-sml` margin
+          // that used to sit here dated from the nav being statically in flow;
+          // once it pinned, that margin was 4rem of bare canvas between the bar
+          // and the first section, and only in the builder.
           if (isNavigationBand(band) && nextBand) {
-            return renderSectionFrame(first, {
-              className: "mb-[var(--section-space-sml)]",
-            });
+            return renderSectionFrame(first);
           }
 
           return renderBand();
@@ -6752,8 +6814,14 @@ export function PagebuilderShell({
                               <legend className="type-caption font-semibold text-current">
                                 Row Alignment
                               </legend>
+                              {/* Per component, not the whole axis: the four-up
+                                  grid cannot express a justified row, so it is
+                                  offered three buttons rather than a fourth
+                                  that would do nothing. */}
                               <div className="grid grid-cols-4 gap-2 max-md:grid-cols-2">
-                                {cardLinkGridAlignOptions.map((option) => {
+                                {getCardLinkGridAlignOptions(
+                                  section.component,
+                                ).map((option) => {
                                   const optionIsActive =
                                     getCardLinkGridAlign(section) ===
                                     option.value;
@@ -6809,6 +6877,79 @@ export function PagebuilderShell({
                                       key={option.value}
                                       onClick={() =>
                                         updateTableCompareAlign(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </fieldset>
+                          ) : null}
+
+                          {sectionSupportsMirrorAlign(section.component) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Alignment
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {sectionMirrorAlignOptions.map((option) => {
+                                  const optionIsActive =
+                                    getMirrorAlign(section) === option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateMirrorAlign(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </fieldset>
+                          ) : null}
+
+                          {sectionSupportsHeadingSize(section.component) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Headline Size
+                              </legend>
+                              <div className="grid grid-cols-3 gap-2">
+                                {sectionHeadingSizeOptions.map((option) => {
+                                  const optionIsActive =
+                                    getSectionHeadingSize(section) ===
+                                    option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                        optionIsActive
+                                          ? "token-chrome-card-active"
+                                          : "token-chrome-card",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateSectionHeadingSize(
                                           section.id,
                                           option.value,
                                         )
@@ -7205,6 +7346,47 @@ export function PagebuilderShell({
                   <span className="token-chrome-muted type-caption">
                     All pagebuilder previews use this fixed canvas for
                     agreement and consistency.
+                  </span>
+                </div>
+
+                <div className="grid gap-2">
+                  <span className="type-caption font-semibold">
+                    Selection Highlight
+                  </span>
+                  {/* `role="switch"` rather than a pressed button: this is an
+                      on/off state, not an action, and the accent ring it
+                      controls is the one piece of builder chrome that sits on
+                      top of the design being judged. */}
+                  <button
+                    aria-checked={showSelectionHighlight}
+                    className="token-chrome-control flex min-h-10 items-center justify-between rounded-[var(--chrome-radius-control)] border px-3 text-sm font-semibold transition-colors"
+                    onClick={() =>
+                      setShowSelectionHighlight((isOn) => !isOn)
+                    }
+                    role="switch"
+                    type="button"
+                  >
+                    <span>{showSelectionHighlight ? "On" : "Off"}</span>
+                    <span
+                      aria-hidden="true"
+                      className={cx(
+                        "relative h-5 w-9 shrink-0 rounded-full transition-colors duration-200",
+                        showSelectionHighlight
+                          ? "bg-service-accent"
+                          : "bg-service-border",
+                      )}
+                    >
+                      <span
+                        className={cx(
+                          "absolute top-0.5 size-4 rounded-full bg-white shadow-service transition-[left] duration-200 ease-out",
+                          showSelectionHighlight ? "left-[1.125rem]" : "left-0.5",
+                        )}
+                      />
+                    </span>
+                  </button>
+                  <span className="token-chrome-muted type-caption">
+                    Turns off the accent outline on the selected section, so a
+                    section can be judged without builder chrome over it.
                   </span>
                 </div>
 

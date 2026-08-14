@@ -104,19 +104,23 @@ function ViewAllCard({ label }: { label: string }) {
       className={cx(
         "fluid-type-frame",
         "radius-medium",
-        // `bg-bg-dark`: ink is a text token and resolved to the recipe's
-        // headline colour, which is white on every dark recipe - this card's
-        // white copy on a white field.
-        "group/service-card flex h-[68svh] w-[min(39vw,495px)] shrink-0 cursor-pointer flex-col border border-service-border bg-bg-dark p-8 text-white shadow-service transition-transform duration-300 ease-out hover:-translate-y-2 max-lg:h-auto max-lg:min-h-[360px] max-lg:w-full",
+        // The alternating card. It is the whole point of this one that it
+        // reads as the opposite of the service cards beside it, so it names
+        // the contrast rung rather than a fixed dark: `bg-bg-dark` does not
+        // move with the recipe, so on the five dark recipes this card sat on a
+        // dark ground and the alternation vanished.
+        "group/service-card flex h-[68svh] w-[min(39vw,495px)] shrink-0 cursor-pointer flex-col border border-service-border bg-contrast-card p-8 text-contrast-card-ink shadow-service transition-transform duration-300 ease-out hover:-translate-y-2 max-lg:h-auto max-lg:min-h-[360px] max-lg:w-full",
       )}
       href="#services"
     >
       <div>
-        <p className={cx("type-label", "text-white/60")}>Services</p>
+        <p className={cx("type-label", "text-contrast-card-ink/60")}>
+          Services
+        </p>
         <h3
           className={cx(
             "type-heading-lg",
-            "mt-5 text-white",
+            "mt-5 text-contrast-card-ink",
           )}
         >
           {label}
@@ -125,12 +129,14 @@ function ViewAllCard({ label }: { label: string }) {
       <div className="flex flex-1 items-center justify-center">
         <span
           aria-hidden="true"
-          // Absolute light on an absolute dark card, the same way every other
-          // dark band in the library paints its inset elements. The old
-          // `bg-bg-page`/`text-service-ink` pair only read because the card was
-          // ink: both resolve contextually, so on a dark recipe the disc sank
-          // into the card it is supposed to sit on.
-          className="flex size-40 items-center justify-center rounded-full bg-white text-7xl leading-none text-bg-dark transition-transform duration-300 ease-out group-hover/service-card:scale-105 max-md:size-32 max-md:text-6xl"
+          // The card's own pair, inverted: the disc paints the card's ink and
+          // draws its glyph in the card's fill. That is guaranteed to read on
+          // whichever side of the ground the contrast card landed, which a
+          // literal white/dark pair only managed while the card was always
+          // dark. An earlier `bg-bg-page`/`text-service-ink` pair failed the
+          // same way in the other direction - both resolve contextually, so on
+          // a dark recipe the disc sank into the card it sits on.
+          className="flex size-40 items-center justify-center rounded-full bg-contrast-card-ink text-7xl leading-none text-contrast-card transition-transform duration-300 ease-out group-hover/service-card:scale-105 max-md:size-32 max-md:text-6xl"
         >
           -&gt;
         </span>

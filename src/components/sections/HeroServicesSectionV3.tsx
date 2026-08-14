@@ -4,6 +4,7 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import type { SectionMirrorAlign } from "@/content/section-style-options";
 
 type ServicesHeroCard = {
   body?: string;
@@ -12,11 +13,15 @@ type ServicesHeroCard = {
 };
 
 type HeroServicesSectionV3Props = {
+  /** Which side the copy sits on; the photograph takes the other. */
+  align?: SectionMirrorAlign;
   body: string;
   /** The service cards float over the hero photograph, so their panel is what
    *  keeps them readable - they ship filled and outlined, and these strip it. */
   cardBorder?: "on" | "off";
   cardFill?: "solid" | "none";
+  /** Off turns the tiles into a static statement of the service range. */
+  cardLinks?: "on" | "off";
   cards: readonly ServicesHeroCard[];
   eyebrow: string;
   headingLevel?: 1 | 2;
@@ -25,9 +30,39 @@ type HeroServicesSectionV3Props = {
   title: string;
 };
 
+/**
+ * The two mirrored arrangements.
+ *
+ * The photograph is a full-bleed panel, so mirroring is not only a column swap:
+ * the panel has to bleed off whichever edge it now sits against, which is what
+ * the `panel` row moves. The `max-md` stack is shared - below that breakpoint
+ * the copy is always above the image.
+ */
+const alignClassName: Record<
+  SectionMirrorAlign,
+  { copy: string; image: string; panel: string }
+> = {
+  left: {
+    copy: "col-span-3 col-start-1 max-lg:col-span-2",
+    image: "col-span-4 col-start-4 max-lg:col-span-5 max-lg:col-start-3",
+    panel:
+      "right-[calc(var(--site-grid-inset-inline)*-1)] max-md:inset-x-[calc(var(--site-grid-inset-inline)*-1)]",
+  },
+  right: {
+    copy: "col-span-3 col-start-5 max-lg:col-span-2 max-lg:col-start-6",
+    image: "col-span-4 col-start-1 max-lg:col-span-5 max-lg:col-start-1",
+    panel:
+      "left-[calc(var(--site-grid-inset-inline)*-1)] max-md:inset-x-[calc(var(--site-grid-inset-inline)*-1)]",
+  },
+};
+
 const fullBleedImageStyle: CSSProperties = {
   width: "calc(100% + var(--site-grid-inset-inline))",
 };
+
+function cx(...classes: Array<string | false | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
 
 function serviceHref(card: ServicesHeroCard) {
   return (
@@ -82,9 +117,11 @@ function ServiceHeroIcon({ index }: { index: number }) {
 }
 
 export function HeroServicesSectionV3({
+  align = "left",
   body,
   cardBorder = "on",
   cardFill = "solid",
+  cardLinks = "on",
   cards,
   eyebrow,
   headingLevel = 1,
@@ -94,13 +131,37 @@ export function HeroServicesSectionV3({
 }: HeroServicesSectionV3Props) {
   const Heading = headingLevel === 1 ? "h1" : "h2";
   const visibleCards = cards.slice(0, 7);
+  const alignment = alignClassName[align] ?? alignClassName.left;
+  const cardClassName = [
+    // `recipe-card-context` is explicit here because the fill cannot be an
+    // unmodified card token: these sit on the photograph and the 92% is what
+    // lets it read through. An opacity-modified class is a different class, so
+    // the token-keyed rule cannot see it - this is the escape hatch the context
+    // class exists for.
+    //
+    // The outline is `border-service-border`, not a literal white. A fixed
+    // white ignored the recipe entirely and, more to the point, ignored the
+    // border swatch, tone and weight the editor sets on this section - the
+    // override composes into `--live-service-border`, which only a section
+    // naming the token can read.
+    "recipe-card-context radius-medium flex min-h-14 items-center gap-3 border border-service-border bg-bg-surface/92 px-4 py-3 text-service-ink shadow-service backdrop-blur-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-service-accent",
+    cardFill === "none" && "!bg-transparent !shadow-none !backdrop-blur-none",
+    cardBorder === "off" && "!border-transparent",
+    cardLinks === "on" &&
+      "transition duration-200 hover:-translate-y-0.5 hover:border-service-accent hover:text-service-accent",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <section className="bg-bg-page">
       <SevenColumnGrid className="section-min-sliver h-[calc(var(--section-min-screen)-var(--section-sliver-gap))] grid-rows-[minmax(0,1fr)] max-md:h-auto max-md:grid-rows-none">
         <SevenColumnGridItem
           alignY="middle"
-          className="content-padding-y col-span-3 col-start-1 row-start-1 h-full min-h-0 max-lg:col-span-2 max-md:col-span-3 max-md:row-auto max-sm:col-span-1"
+          className={cx(
+            "content-padding-y row-start-1 h-full min-h-0 max-md:col-span-3 max-md:col-start-1 max-md:row-start-1 max-sm:col-span-1",
+            alignment.copy,
+          )}
           measure="copyWide"
         >
           <div className="fluid-type-frame">
@@ -116,10 +177,16 @@ export function HeroServicesSectionV3({
 
         <SevenColumnGridItem
           alignY="stretch"
-          className="relative col-span-4 col-start-4 row-start-1 h-full min-h-0 overflow-visible max-lg:col-span-5 max-lg:col-start-3 max-md:media-min-medium max-md:col-span-3 max-md:col-start-1 max-md:row-auto max-md:min-h-[38rem] max-sm:col-span-1"
+          className={cx(
+            "relative row-start-1 h-full min-h-0 overflow-visible max-md:media-min-medium max-md:col-span-3 max-md:col-start-1 max-md:row-start-2 max-md:min-h-[38rem] max-sm:col-span-1",
+            alignment.image,
+          )}
         >
           <div
-            className="absolute bottom-[calc(0px_-_var(--site-grid-inset-block))] right-[calc(var(--site-grid-inset-inline)*-1)] top-[calc(0px_-_var(--site-grid-inset-block))] overflow-hidden bg-service-surface max-md:inset-x-[calc(var(--site-grid-inset-inline)*-1)] max-md:bottom-[calc(0px_-_var(--site-grid-inset-block))] max-md:top-0 max-md:!w-auto"
+            className={cx(
+              "absolute bottom-[calc(0px_-_var(--site-grid-inset-block))] top-[calc(0px_-_var(--site-grid-inset-block))] overflow-hidden bg-service-surface max-md:bottom-[calc(0px_-_var(--site-grid-inset-block))] max-md:top-0 max-md:!w-auto",
+              alignment.panel,
+            )}
             style={fullBleedImageStyle}
           >
             <Image
@@ -132,31 +199,30 @@ export function HeroServicesSectionV3({
             />
 
             <div className="absolute inset-x-5 bottom-5 grid grid-cols-2 gap-2 max-sm:grid-cols-1">
-              {visibleCards.map((card, index) => (
-                <a
-                  className={[
-                    // `recipe-card-context` is explicit here because the fill
-                    // cannot be an unmodified card token: these sit on the
-                    // photograph and the 92% is what lets it read through. An
-                    // opacity-modified class is a different class, so the
-                    // token-keyed rule cannot see it - this is the escape hatch
-                    // the context class exists for.
-                    "recipe-card-context radius-medium flex min-h-14 items-center gap-3 border border-white/65 bg-bg-surface/92 px-4 py-3 text-service-ink shadow-service backdrop-blur-sm transition duration-200 hover:-translate-y-0.5 hover:border-service-accent hover:text-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
-                    cardFill === "none" &&
-                      "!bg-transparent !shadow-none !backdrop-blur-none",
-                    cardBorder === "off" && "!border-transparent",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  href={serviceHref(card)}
-                  key={`${card.title}-${index}`}
-                >
-                  <ServiceHeroIcon index={index} />
-                  <span className="type-caption font-semibold leading-snug">
-                    {card.title}
-                  </span>
-                </a>
-              ))}
+              {visibleCards.map((card, index) => {
+                const content = (
+                  <>
+                    <ServiceHeroIcon index={index} />
+                    <span className="type-caption font-semibold leading-snug">
+                      {card.title}
+                    </span>
+                  </>
+                );
+
+                return cardLinks === "on" ? (
+                  <a
+                    className={cardClassName}
+                    href={serviceHref(card)}
+                    key={`${card.title}-${index}`}
+                  >
+                    {content}
+                  </a>
+                ) : (
+                  <div className={cardClassName} key={`${card.title}-${index}`}>
+                    {content}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </SevenColumnGridItem>

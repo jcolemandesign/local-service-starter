@@ -1511,10 +1511,19 @@ export function getTemplateCopyFieldsForSection(
         ],
         format: "One item per line as Title - Description.",
         name: "serviceItems",
+        // The tiles are navigation with links on and a statement of the service
+        // range with them off, and the title has to carry a different job in
+        // each case: a destination the reader is being sent to, or a label they
+        // are only being shown. The destination itself is derived from the
+        // title, so nothing is added or removed here - the brief changes.
         purpose:
-          "Priority service links shown as compact cards over the hero image. The card displays the title; retain a useful description in the content data.",
+          section.cardLinks === "off"
+            ? "Priority services shown as compact tiles over the hero image, as a statement of what the business covers rather than as links. The tile displays the title; retain a useful description in the content data."
+            : "Priority service links shown as compact cards over the hero image. Each title becomes its own service page destination, so it must match the service page it points at. The card displays the title; retain a useful description in the content data.",
         target:
-          "Use 1-7 approved priority services. Do not repeat these services in the following hover panel.",
+          section.cardLinks === "off"
+            ? "Use 1-7 approved priority services. Do not repeat these services in the following hover panel."
+            : "Use 1-7 approved priority services that have their own service pages. Do not repeat these services in the following hover panel.",
       },
     ];
   }
@@ -2773,6 +2782,44 @@ export function getTemplateCopyFieldsForSection(
         purpose: "Action label beside the proof banner.",
         target: "12-26 characters.",
       },
+      // Only the legacy `TrustMarqueeSection` renders a CTA panel. `includes`
+      // also matches `TrustMarqueeSectionV3`, which is the bare scrolling strip
+      // and has no panel at all - handing it these fields asked for copy that
+      // nothing renders, and moved its contract fingerprint, which is what
+      // turned staged pages carrying the plain strip stale for no reason.
+      ...(component.includes("trustmarqueesectionv3")
+        ? []
+        : [
+            {
+              example: "Ready to get started?",
+              name: "ctaTitle",
+              purpose:
+                "Short prompt above the action, in the panel beside the headline.",
+              target: "16-32 characters.",
+            },
+            {
+              example:
+                "Tell us what you need and we'll follow up with a clear next step.",
+              name: "ctaBody",
+              purpose:
+                "One sentence setting expectations for what happens after the request.",
+              target: "60-110 characters.",
+            },
+            {
+              example: "Urgent issue? Call now",
+              name: "callLabel",
+              purpose:
+                "Secondary path for callers who cannot wait for a callback. Omit if the business does not take urgent calls.",
+              target: "16-30 characters.",
+            },
+            {
+              example: "tel:5551234567",
+              name: "callPhone",
+              purpose:
+                "The number the secondary path dials, as a tel: URI. The business's real published number - never a placeholder.",
+              target: "A tel: URI.",
+            },
+          ]),
     ];
   }
 

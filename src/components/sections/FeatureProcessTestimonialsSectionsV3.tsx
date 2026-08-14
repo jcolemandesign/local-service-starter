@@ -86,17 +86,22 @@ function FeatureOverlapCard({
 function FeatureOverlapRow({
   cardBorder,
   cardFill,
+  compactTop = false,
   item,
   mirrored = false,
 }: {
   cardBorder?: "on" | "off";
   cardFill?: "solid" | "none";
+  compactTop?: boolean;
   item: FeatureOverlapItem;
   mirrored?: boolean;
 }) {
   return (
     <SevenColumnGrid
-      className="section-min-none py-0 max-lg:py-10"
+      className={cx(
+        "section-min-none py-0 max-lg:py-10",
+        compactTop ? "-mt-8 max-lg:mt-0" : undefined,
+      )}
       padding="none"
     >
       {mirrored ? (
@@ -155,6 +160,7 @@ export function FeatureOverlapRowsSectionV3({
         <FeatureOverlapRow
           cardBorder={cardBorder}
           cardFill={cardFill}
+          compactTop={index > 0}
           item={item}
           key={item.title}
           mirrored={index % 2 === 1}

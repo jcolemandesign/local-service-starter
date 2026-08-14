@@ -4,6 +4,14 @@ import {
   SevenColumnGridItem,
 } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
+import type {
+  SectionCardBorder,
+  SectionCardFill,
+} from "@/content/section-color-recipes";
+import type {
+  SectionHeadingSize,
+  SectionMirrorAlign,
+} from "@/content/section-style-options";
 
 type ReviewSnippet = {
   rating: string;
@@ -17,82 +25,125 @@ type TrustSignal = {
 };
 
 type HeroFullscreenSectionV2Props = {
-  eyebrow: string;
-  title: string;
+  /** Which side the copy sits on; the proof tray takes the other. */
+  align?: SectionMirrorAlign;
   body: string;
-  primaryAction: string;
-  secondaryAction: string;
-  review: ReviewSnippet;
-  trustSignals: TrustSignal[];
+  cardBorder?: SectionCardBorder;
+  cardFill?: SectionCardFill;
+  eyebrow: string;
   headingLevel?: 1 | 2;
+  headingSize?: SectionHeadingSize;
+  primaryAction: string;
+  review: ReviewSnippet;
+  secondaryAction: string;
+  secondaryActionHref?: string;
+  title: string;
+  trustSignals: TrustSignal[];
 };
 
-function cx(...classes: Array<string | undefined>) {
+function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-function FullBleedImage() {
-  return (
-    <div className="absolute inset-0 overflow-hidden bg-bg-dark" aria-hidden="true">
-      <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.44),rgb(23_33_29_/_0.12)),linear-gradient(45deg,rgb(255_255_255_/_0.16)_0_1px,transparent_1px_20px)]" />
-      <div className="absolute inset-0 bg-bg-dark/20" />
-    </div>
-  );
-}
+/**
+ * The two mirrored arrangements.
+ *
+ * Copy takes four of the seven columns and the proof tray two, so one column is
+ * always spare between them whichever side the copy is on.
+ *
+ * BOTH SLOTS PIN ROW 1, AND THE MIRROR DOES NOT WORK WITHOUT IT. The copy comes
+ * first in the DOM, so on `right` it is placed at columns 4-7 and the proof tray
+ * then asks for columns 1-2 - behind the placement cursor. Grid's sparse
+ * auto-placement never moves the cursor backwards, so the tray drops to a second
+ * row and the two stack instead of sitting side by side. `left` hides the
+ * problem completely, because there the columns only ever run forwards.
+ */
+const alignClassName: Record<
+  SectionMirrorAlign,
+  { copy: string; proof: string }
+> = {
+  left: {
+    copy: "col-span-4 col-start-1 row-start-1",
+    proof: "col-span-2 col-start-6 row-start-1",
+  },
+  right: {
+    copy: "col-span-4 col-start-4 row-start-1",
+    proof: "col-span-2 col-start-1 row-start-1",
+  },
+};
+
+const headingSizeClassName: Record<SectionHeadingSize, string> = {
+  "heading-lg": "type-heading-lg",
+  "heading-xl": "type-heading-xl",
+  "display-lg": "type-display-lg",
+};
 
 export function HeroFullscreenSectionV2({
-  eyebrow,
-  title,
+  align = "left",
   body,
-  primaryAction,
-  secondaryAction,
-  review,
-  trustSignals,
+  cardBorder = "on",
+  cardFill = "solid",
+  eyebrow,
   headingLevel = 1,
+  headingSize = "heading-lg",
+  primaryAction,
+  review,
+  secondaryAction,
+  secondaryActionHref = "#services",
+  title,
+  trustSignals,
 }: HeroFullscreenSectionV2Props) {
   const HeadingTag = `h${headingLevel}` as const;
+  const alignment = alignClassName[align] ?? alignClassName.left;
+  const cardClassName = cx(
+    "radius-medium recipe-card-context border border-service-border bg-service-surface text-service-ink shadow-service",
+    cardFill === "none" && "!bg-transparent !shadow-none",
+    cardBorder === "off" && "!border-transparent",
+  );
 
   return (
-    <section className="relative overflow-hidden bg-bg-dark text-white">
-      <FullBleedImage />
-      <div className="absolute inset-0 bg-bg-dark/35" aria-hidden="true" />
-      <div
-        className="absolute inset-0 bg-linear-to-t from-bg-dark via-bg-dark/52 to-transparent"
-        aria-hidden="true"
-      />
-
-      <SevenColumnGrid className="section-min-sliver relative z-10 content-end">
+    /*
+     * No ground of its own.
+     *
+     * This section used to paint an opaque stand-in photograph plus two dark
+     * scrims across its whole box, which sat on top of everything the frame
+     * paints - so the colour recipe, a background band and a real ground image
+     * were all invisible behind it, and the copy had to be hardcoded white to
+     * clear a scrim nobody could change. The image belongs to the ground-image
+     * axis (`backgroundTreatment` + the `backgroundImage` asset), which already
+     * spans a band and already composes with the recipe.
+     */
+    <section className="text-service-ink">
+      <SevenColumnGrid className="section-min-sliver content-end">
         <SevenColumnGridItem
           alignX="left"
           alignY="bottom"
-          className="col-span-4 max-lg:col-span-7"
+          className={cx(
+            alignment.copy,
+            // Stacked below lg, copy first in both alignments. Spelled as an
+            // explicit row rather than `row-auto`, which is the `grid-row`
+            // shorthand and would be fighting the `grid-row-start` longhand
+            // above it for who wins in the cascade.
+            "max-lg:col-span-7 max-lg:col-start-1 max-lg:row-start-1",
+          )}
         >
           <div className="fluid-type-frame min-w-0">
-            <p className={cx("type-label", "text-white/70")}>
-              {eyebrow}
-            </p>
+            <p className="type-label text-service-accent">{eyebrow}</p>
             <HeadingTag
               className={cx(
-                "type-heading-lg",
-                "measure-copy-wide",
-                "mt-6 text-white",
+                headingSizeClassName[headingSize] ??
+                  headingSizeClassName["heading-lg"],
+                "measure-copy-wide mt-eyebrow-display text-service-ink",
               )}
             >
               {title}
             </HeadingTag>
-            <p
-              className={cx(
-                "type-text-lg",
-                "measure-copy",
-                "wrap-pretty",
-                "mt-7 text-white/78",
-              )}
-            >
+            <p className="type-text-lg measure-copy wrap-pretty mt-display-body text-service-muted">
               {body}
             </p>
-            <div className="mt-10 flex flex-wrap gap-3 max-lg:mt-8">
+            <div className="mt-body-actions-md flex flex-wrap inline-gap-med">
               <RequestServiceButton>{primaryAction}</RequestServiceButton>
-              <Button href="#services" variant="secondary">
+              <Button href={secondaryActionHref} variant="secondary">
                 {secondaryAction}
               </Button>
             </div>
@@ -102,38 +153,29 @@ export function HeroFullscreenSectionV2({
         <SevenColumnGridItem
           alignX="stretch"
           alignY="bottom"
-          className="col-span-2 col-start-6 max-lg:col-span-7 max-lg:col-start-1"
+          className={cx(
+            alignment.proof,
+            "max-lg:col-span-7 max-lg:col-start-1 max-lg:row-start-2",
+          )}
         >
-          <aside className="grid w-full shrink-0 grid-cols-2 gap-4 text-white max-lg:max-w-md max-md:gap-3">
+          <aside className="grid w-full shrink-0 grid-cols-2 gap-4 max-lg:max-w-md max-md:gap-3">
             {trustSignals.map((signal) => (
-            <div
-              className={cx(
-                "radius-medium",
-                "border border-white/18 bg-white/12 p-5 backdrop-blur-md max-md:p-4",
-              )}
-              key={signal.label}
-            >
-              <p className="text-2xl font-semibold leading-none max-md:text-xl">
-                {signal.value}
-              </p>
-              <p className="mt-3 text-sm font-semibold leading-5 text-white/72 max-md:mt-2 max-md:text-xs max-md:leading-4">
-              {signal.label}
-            </p>
-          </div>
+              <div
+                className={cx(cardClassName, "p-5 max-md:p-4")}
+                key={signal.label}
+              >
+                <p className="type-heading-sm leading-none">{signal.value}</p>
+                <p className="type-caption mt-3 font-semibold text-service-muted max-md:mt-2">
+                  {signal.label}
+                </p>
+              </div>
             ))}
-            <div
-              className={cx(
-                "radius-medium",
-                "col-span-2 border border-white/18 bg-white/12 p-6 backdrop-blur-md max-md:p-4",
-              )}
-            >
-              <p className="text-4xl font-semibold leading-none max-md:text-2xl">
-                {review.rating}
-              </p>
-              <p className="mt-4 text-base font-semibold leading-7 max-md:mt-2 max-md:text-sm max-md:leading-5">
+            <div className={cx(cardClassName, "col-span-2 p-6 max-md:p-4")}>
+              <p className="type-heading-md leading-none">{review.rating}</p>
+              <p className="type-text-sm mt-4 font-semibold max-md:mt-2">
                 {review.label}
               </p>
-              <p className="mt-2 text-sm leading-6 text-white/72 max-lg:hidden">
+              <p className="type-caption mt-2 text-service-muted max-lg:hidden">
                 {review.detail}
               </p>
             </div>

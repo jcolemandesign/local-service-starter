@@ -105,6 +105,21 @@
   --color-bg-surface: var(--live-bg-surface, #f4f7f3);
   --color-bg-muted: var(--live-bg-muted, oklch(from var(--live-service-surface, #f4f7f3) calc(l - 0.03) c h));
   --color-bg-dark: var(--live-bg-dark, #10141b);
+  /* THE CONTRAST CARD, and its matching foreground.
+   *
+   * A card that deliberately sits on the OTHER side of its section's ground
+   * from the ordinary card, so a run of cards can alternate. The services
+   * carousel is the case: light service cards then a dark "view all" card.
+   *
+   * It existed only as a literal `bg-bg-dark` before, which is a fixed token -
+   * so the alternation read correctly on the light recipes and disappeared
+   * completely on the five dark ones, where a dark card sat on a dark ground.
+   * Each recipe now names its own, opposite whatever its ground is.
+   *
+   * The fallbacks are the old literal pair, so a section that has not been
+   * repointed and a page with no recipe both render exactly as before. */
+  --color-contrast-card: var(--live-contrast-card, var(--live-bg-dark, #10141b));
+  --color-contrast-card-ink: var(--live-contrast-card-ink, #ffffff);
   /* The card that sits on a dark ground. Authored when a business wants it,
      derived otherwise: 12% toward white, which is the only lift that works
      without a second authored colour - stepping down collides with ink, and
@@ -1428,6 +1443,33 @@ body {
     max-width: 16rem;
   }
 
+  /* Five cards break to three and two, never four and one.
+   *
+   * A 1/5 basis with a 12rem floor shrinks through a band where exactly four
+   * still fit, and a row of four over a row of one reads as a card that fell
+   * off rather than a second row anyone intended. Five stop fitting at
+   * 5 x 12rem + 4 gaps, so at that point the basis jumps straight to a third
+   * and skips the four-up state entirely.
+   *
+   * 69rem is that figure with the gap token at its shipped 2.25rem; a query
+   * condition cannot read a custom property, so a much larger gap would want
+   * this number moved with it.
+   *
+   * Scoped to the five-card set - three and four never had the problem - and
+   * asked of the section's own frame rather than the viewport, because in the
+   * builder the section is far narrower than the window it sits in. */
+  .services-three-cards-frame {
+    container: priority-service-cards / inline-size;
+  }
+
+  @container priority-service-cards (width < 69rem) {
+    .services-three-cards-list:has(> :nth-child(5)) .services-three-card {
+      flex-basis: calc(
+        (100% - var(--card-grid-gap-active, 1rem) * 2) / 3
+      );
+    }
+  }
+
   .site-grid-gap {
     column-gap: var(--site-grid-gap);
     row-gap: var(--site-grid-row-gap);
@@ -2285,6 +2327,8 @@ body {
        read --recipe-text. */
     --recipe-text: var(--recipe-card-text);
     --recipe-faint: var(--recipe-card-text);
+    /* The chromatic role is NOT re-declared here. It cannot be: see the
+       card-accent rule below the role table. */
     /* And the rungs go back to the standard spread.
      *
      * A card is a different ground from the section it sits on, so a
@@ -2382,6 +2426,9 @@ body {
     --recipe-chromatic: var(--palette-brand);
     --recipe-cta-fill: var(--palette-cta-accent);
     --recipe-cta-label: #ffffff;
+    /* Light ground, so the contrast card is the dark swatch. */
+    --recipe-contrast-card: var(--palette-dark);
+    --recipe-contrast-card-text: #ffffff;
     --recipe-eyebrow: var(--palette-brand);
   }
 
@@ -2405,6 +2452,9 @@ body {
     --recipe-chromatic: var(--palette-brand);
     --recipe-cta-fill: var(--palette-cta-accent);
     --recipe-cta-label: #ffffff;
+    /* Light ground, so the contrast card is the dark swatch. */
+    --recipe-contrast-card: var(--palette-dark);
+    --recipe-contrast-card-text: #ffffff;
     --recipe-eyebrow: var(--palette-brand);
   }
 
@@ -2420,6 +2470,9 @@ body {
     --recipe-chromatic: var(--palette-brand);
     --recipe-cta-fill: var(--chroma-fill);
     --recipe-cta-label: var(--palette-ink);
+    /* Dark ground, so the contrast card is the lightest neutral. */
+    --recipe-contrast-card: var(--palette-raised);
+    --recipe-contrast-card-text: var(--palette-ink);
     --recipe-eyebrow: var(--chroma-text);
   }
 
@@ -2435,6 +2488,9 @@ body {
     --recipe-chromatic: var(--palette-brand);
     --recipe-cta-fill: var(--chroma-fill);
     --recipe-cta-label: var(--palette-ink);
+    /* Dark ground, so the contrast card is the lightest neutral. */
+    --recipe-contrast-card: var(--palette-raised);
+    --recipe-contrast-card-text: var(--palette-ink);
     --recipe-eyebrow: var(--chroma-text);
   }
 
@@ -2450,6 +2506,9 @@ body {
     --recipe-chromatic: var(--palette-brand);
     --recipe-cta-fill: var(--chroma-fill);
     --recipe-cta-label: var(--palette-ink);
+    /* Dark ground, so the contrast card is the lightest neutral. */
+    --recipe-contrast-card: var(--palette-raised);
+    --recipe-contrast-card-text: var(--palette-ink);
     --recipe-eyebrow: var(--chroma-text);
   }
 
@@ -2467,6 +2526,9 @@ body {
        brand button on a brand field is the case the brief rules out. */
     --recipe-cta-fill: #ffffff;
     --recipe-cta-label: var(--palette-brand);
+    /* Dark ground, so the contrast card is the lightest neutral. */
+    --recipe-contrast-card: var(--palette-raised);
+    --recipe-contrast-card-text: var(--palette-ink);
     --recipe-eyebrow: #ffffff;
   }
 
@@ -2485,6 +2547,9 @@ body {
     --recipe-chromatic: var(--palette-cta-accent);
     --recipe-cta-fill: #ffffff;
     --recipe-cta-label: var(--palette-cta-accent);
+    /* Dark ground, so the contrast card is the lightest neutral. */
+    --recipe-contrast-card: var(--palette-raised);
+    --recipe-contrast-card-text: var(--palette-ink);
     --recipe-eyebrow: #ffffff;
   }
 
@@ -2500,6 +2565,9 @@ body {
     --recipe-chromatic: var(--palette-highlight);
     --recipe-cta-fill: #ffffff;
     --recipe-cta-label: var(--palette-highlight);
+    /* Dark ground, so the contrast card is the lightest neutral. */
+    --recipe-contrast-card: var(--palette-raised);
+    --recipe-contrast-card-text: var(--palette-ink);
     --recipe-eyebrow: #ffffff;
   }
 
@@ -2622,6 +2690,26 @@ body {
     --live-service-surface: var(--recipe-card);
     --live-bg-surface: var(--recipe-card);
     --live-surface-raised: var(--recipe-card);
+    /* The recessed chip - eleven sections draw icon shells, tags and pills on
+       it, several of them carrying accent text.
+       IT WAS THE ONE SURFACE TOKEN MISSING FROM THIS TABLE, and the omission
+       was invisible until a style guide was promoted. `--color-bg-muted` falls
+       back to `oklch(from var(--live-service-surface) ...)`, which resolves at
+       the element using it and therefore did follow the recipe on a cold
+       start; the generated block then pins `--live-bg-muted` to a :root
+       literal computed from the root surface, and from that point the chip was
+       a fixed pale grey while the accent text on it moved with the recipe. On
+       the five dark and chromatic recipes that put a near-white accent on a
+       near-white chip.
+       Derived from the card rather than mapped flat onto it so the 3%
+       recession the token means is preserved on every ground. */
+    --live-bg-muted: oklch(from var(--recipe-card) calc(l - 0.03) c h);
+    /* The alternating card and its foreground, opposite this recipe's ground.
+       Both rows, always together: a contrast fill with the section's ordinary
+       ink on it is the invisible-text failure, since the fill is by definition
+       the opposite polarity from everything around it. */
+    --live-contrast-card: var(--recipe-contrast-card);
+    --live-contrast-card-ink: var(--recipe-contrast-card-text);
 
     /* Borders and dividers.
        `--border-override` is set only when a section names a border swatch, so
@@ -2639,6 +2727,64 @@ body {
     --live-cta-primary-ink: var(--recipe-cta-label);
     --live-cta-secondary-ink: var(--recipe-cta-fill);
     --live-cta-secondary-border: var(--recipe-cta-fill);
+  }
+
+  /* ------------------------------------------------------------------
+   * The accent role on a card.
+   *
+   * This is the chromatic half of the card context, and it has to live here -
+   * one level further down the chain than the ladder's - because of a CSS rule
+   * that is easy to walk into.
+   *
+   * THE OBVIOUS VERSION IS A CYCLE AND SILENTLY PAINTS THE THEME FALLBACK.
+   * The natural place for this is beside `--recipe-text` in the card context,
+   * written `--recipe-eyebrow: var(--card-eyebrow, var(--recipe-eyebrow))` so
+   * an un-overridden card keeps the section's value. A custom property that
+   * references itself is invalid at computed-value time, and a var() inside a
+   * FALLBACK still counts for cycle detection - so `--recipe-eyebrow` resolved
+   * to nothing on every card, `--live-service-accent` resolved to nothing
+   * after it, and `.text-service-accent` fell all the way through to the
+   * `@theme inline` default of #1f7a5a. It renders as an out-of-palette green
+   * on card icons and arrows, and nothing errors.
+   *
+   * Repointing the `--live-*` role instead breaks the cycle, because the
+   * property being declared is no longer one of the properties being read.
+   * Same result, one link further along: the role table above sets these two
+   * from `--recipe-eyebrow`, and this rule - later in source order, matching
+   * only cards - sets them from the card's own answer when there is one.
+   *
+   * `--card-eyebrow` is set on the painting surface and therefore inherits
+   * everywhere, so the card-only selector list is what scopes it. A section's
+   * own eyebrow keeps the role table's value.
+   * ------------------------------------------------------------------ */
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )[data-pagebuilder-card-fill="solid"]
+    :is(
+      .bg-bg-surface:not(section),
+      .bg-service-surface:not(section),
+      .bg-surface-raised:not(section)
+    ),
+  .pagebuilder-section-band[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )
+    [data-pagebuilder-card-fill="solid"]
+    :is(
+      .bg-bg-surface:not(section),
+      .bg-service-surface:not(section),
+      .bg-surface-raised:not(section)
+    ),
+  .pagebuilder-paint-surface[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )[data-pagebuilder-card-fill="solid"]
+    .recipe-card-context,
+  .pagebuilder-section-band[data-pagebuilder-color-recipe]:not(
+      [data-pagebuilder-color-recipe="inherit"]
+    )
+    [data-pagebuilder-card-fill="solid"]
+    .recipe-card-context {
+    --live-service-accent: var(--card-eyebrow, var(--recipe-eyebrow));
+    --live-text-accent: var(--card-eyebrow, var(--recipe-eyebrow));
   }
 
   /* ==================================================================
@@ -2744,6 +2890,47 @@ body {
 
   .pagebuilder-paint-surface[data-pagebuilder-card-polarity="light"] {
     --recipe-card-text: var(--palette-ink);
+  }
+
+  /* ---- Card chromatic treatment.
+   *
+   * The companion to polarity above, and the fix for the one role that did not
+   * re-resolve on a card.
+   *
+   * A card context already re-declares every laddered role from
+   * `--recipe-card-text`, so an overridden card gets a correct headline, body,
+   * meta rung and faint line. The chromatic roles did not follow, because a
+   * recipe resolves `--recipe-eyebrow` once for its own ground and a card
+   * inherits the substituted colour. On the recipes' own cards that is
+   * harmless - no recipe's card flips lightness relative to its ground - but a
+   * card overridden to a light swatch on the ink recipe kept ink's near-white
+   * eyebrow and put it on a near-white card at 1.36:1, where re-resolving
+   * gives 10.08. Eyebrows and card links are both this role, which is why the
+   * two symptoms always appeared together.
+   *
+   * `deriveTintMode` picks the treatment from the CARD's lightness and chroma
+   * and ships it as the attribute below - the same escape hatch polarity uses,
+   * and for the same reason: CSS cannot ask a `color-mix()` result how light
+   * or how saturated it is.
+   *
+   * The tint is recomputed here against `--recipe-card-text` rather than read
+   * from `--chroma-text`, which resolves against the SECTION's text source on
+   * this element. It is the same formula and the same 30% the scales use; the
+   * agreement is asserted by `color-css-agreement.test.ts`. ---- */
+  .pagebuilder-paint-surface[data-pagebuilder-card-chroma="none"] {
+    --card-eyebrow: var(--recipe-chromatic);
+  }
+
+  .pagebuilder-paint-surface[data-pagebuilder-card-chroma="tinted"] {
+    --card-eyebrow: color-mix(
+      in oklab,
+      var(--recipe-chromatic) 30%,
+      var(--recipe-card-text)
+    );
+  }
+
+  .pagebuilder-paint-surface[data-pagebuilder-card-chroma="textSource"] {
+    --card-eyebrow: var(--recipe-card-text);
   }
 
   /* RETIRED: card border tone.
@@ -3625,12 +3812,12 @@ body {
   --live-service-ink: #133049;
   --live-service-muted: #3898c2;
   --live-service-accent: #175c82;
-  --live-service-surface: #e8e8e8;
+  --live-service-surface: #e0e0e0;
   --live-surface-raised: #ffffff;
   --live-service-border: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
   --live-service-border-light: oklch(from var(--live-service-surface) calc(l + 0.30) c h);
-  --live-bg-page: #d9d9d9;
-  --live-bg-surface: #e8e8e8;
+  --live-bg-page: #d1d1d1;
+  --live-bg-surface: #e0e0e0;
   --live-bg-muted: oklch(from var(--live-service-surface) calc(l - 0.03) c h);
   --live-bg-dark: #153856;
   --live-text-main: #133049;
@@ -3641,17 +3828,17 @@ body {
   --live-accent-ink: #ffffff;
   --live-accent-muted-text: #dcefe7;
   --live-bg-dark-surface: #1e4766;
-  --live-cta-accent: #126fa1;
+  --live-cta-accent: #007cbd;
   --live-shadow-service: 8px 10px 22px rgb(27 45 65 / 0.1369);
   --color-service-ink: #133049;
   --color-service-muted: #3898c2;
   --color-service-accent: #175c82;
-  --color-service-surface: #e8e8e8;
+  --color-service-surface: #e0e0e0;
   --color-surface-raised: #ffffff;
   --color-service-border: oklch(from var(--live-service-surface) calc(l - 0.30) c h);
   --color-service-border-light: oklch(from var(--live-service-surface) calc(l + 0.30) c h);
-  --color-bg-page: #d9d9d9;
-  --color-bg-surface: #e8e8e8;
+  --color-bg-page: #d1d1d1;
+  --color-bg-surface: #e0e0e0;
   --color-bg-muted: oklch(from var(--live-service-surface) calc(l - 0.03) c h);
   --color-bg-dark: #153856;
   --color-text-main: #133049;
@@ -3692,7 +3879,7 @@ body {
   --shadow-service: 8px 10px 22px rgb(27 45 65 / 0.1369);
   --type-display-xl-font: "Zalando Sans SemiExpanded", var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --type-display-xl-size: clamp(3.5rem, calc(4.8611cqw + 2.3333rem), 7rem);
-  --type-display-xl-leading: 0.83;
+  --type-display-xl-leading: 0.98;
   --type-display-xl-measure: 14ch;
   --type-display-xl-weight: 300;
   --type-display-xl-tracking: 0em;
@@ -3700,7 +3887,7 @@ body {
   --type-display-xl-transform: none;
   --type-display-lg-font: "Zalando Sans SemiExpanded", var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --type-display-lg-size: clamp(2.75rem, calc(3.8194cqw + 1.8333rem), 5.5rem);
-  --type-display-lg-leading: 0.84;
+  --type-display-lg-leading: 0.98;
   --type-display-lg-measure: 18ch;
   --type-display-lg-weight: 300;
   --type-display-lg-tracking: 0em;
@@ -3708,7 +3895,7 @@ body {
   --type-display-lg-transform: none;
   --type-heading-xl-font: "Zalando Sans SemiExpanded", var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --type-heading-xl-size: clamp(2.25rem, calc(2.4306cqw + 1.6667rem), 4rem);
-  --type-heading-xl-leading: 0.8;
+  --type-heading-xl-leading: 0.98;
   --type-heading-xl-measure: 22ch;
   --type-heading-xl-weight: 410;
   --type-heading-xl-tracking: 0em;
@@ -3802,9 +3989,9 @@ body {
    sitting them closer together rather than by letting the faintest one fall
    away. Recomputed from the palette on every promote; see color-rungs.ts. */
 .pagebuilder-paint-surface[data-pagebuilder-color-recipe="accent"] {
-  --rung-body: 86.5%;
-  --rung-muted: 76.8%;
-  --rung-meta: 59.4%;
+  --rung-body: 89.5%;
+  --rung-muted: 81.9%;
+  --rung-meta: 68.4%;
 }
 /* END PAGEWORKS STYLEGUIDE TOKEN OVERRIDES */
 .strategy-workspace :is(
@@ -3938,6 +4125,32 @@ body {
 
 .strategy-chrome input[type="checkbox"]:checked + span svg {
   color: #fff !important;
+}
+
+/*
+ * The one checked state in the workspace that does not mean "done".
+ *
+ * The rule above is deliberately blanket - every checkbox in the chrome reads
+ * as an affirmative tick - but the layout REJECT box inverts that: ticking it
+ * records a refusal. It carried the red `peer-checked:` utilities from the
+ * start and never showed them, because a blanket !important rule outranks a
+ * utility however specific the variant. Reject opts out by attribute rather
+ * than by having the green rule narrowed, so any checkbox added later still
+ * gets the affirmative treatment by default.
+ *
+ * Fill and edge mirror the green pair's own relationship - a settled 700-level
+ * fill under a 400-level edge - so the two states read as one control in two
+ * moods rather than two unrelated widgets.
+ */
+.strategy-chrome
+  input[type="checkbox"][data-strategy-intent="reject"]:checked
+  + span {
+  border-color: rgb(248 113 113 / 0.92) !important;
+  background-color: #b91c1c !important;
+  background-image: linear-gradient(145deg, rgb(255 255 255 / 0.13), transparent 58%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.16),
+    0 0 0 1px rgb(248 113 113 / 0.18);
 }
 
 .strategy-chrome .strategy-status-icon-inert {

@@ -73,7 +73,7 @@ export function ServicesThreeCardsRightSectionV3({
         className="services-three-cards-grid"
         minHeight="none"
       >
-        <SevenColumnGridItem className="col-span-7">
+        <SevenColumnGridItem className="services-three-cards-frame col-span-7">
           <div className="services-three-cards-list">
             {displayCards.map((card, index) => {
               const href =

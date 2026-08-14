@@ -186,7 +186,12 @@ export function TestimonialsCarouselCondensedSectionV3({
     <section className="bg-service-surface">
       <LayoutGrid className="section-min-none" columns={14} padding="med">
         <LayoutGridItem className="relative col-span-14">
-          <div className="grid overflow-hidden">
+          {/* Clipped on the inline axis only. The slide animates in and out
+              sideways, so the horizontal clip is the carousel - but
+              `overflow-hidden` clips both, and the cards carry `shadow-service`,
+              so every card had its shadow sheared off top and bottom. `clip` is
+              the value that does not force the other axis to `auto`. */}
+          <div className="grid overflow-x-clip">
             <div
               aria-hidden="true"
               className="invisible col-start-1 row-start-1 grid"

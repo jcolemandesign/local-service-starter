@@ -116,9 +116,23 @@ describe("sections do not own colour", () => {
         // does not, and they do not converge with the text the way an opaque
         // fill does.
         const hasFixedFill = /\bbg-white(?![/\w-])/.test(classString);
-        const hasRecipeText = /\btext-(service-ink|service-muted|main|muted)\b/.test(
-          classString,
-        );
+        /*
+         * The accent tokens are in this list, and were the reason it had to
+         * grow.
+         *
+         * It covered the ink and muted rows only, so the role that moves
+         * FURTHEST between recipes was the one role it did not watch. Ink and
+         * muted stay dark on the three light recipes and go light on the five
+         * dark ones; the accent does the same and is also the role a section
+         * is most likely to paint on a small fixed chip - a carousel arrow, an
+         * icon shell, a tag. Every offender this addition found was exactly
+         * that shape, and each one rendered near-white on white the moment the
+         * recipe went dark.
+         */
+        const hasRecipeText =
+          /\btext-(service-ink|service-muted|service-accent|main|muted|text-accent)\b/.test(
+            classString,
+          );
 
         if (hasFixedFill && hasRecipeText) {
           offenders.push(`${path.relative(process.cwd(), file)}: ${classString.slice(0, 70)}`);

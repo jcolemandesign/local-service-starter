@@ -133,7 +133,7 @@ export function ServiceNeedsPriorityGridSectionV3({
             {smallItems.map((item, index) => (
               <div
                 className={
-                  cardFill === "none" && index > 0
+                  cardFill === "none" && cardBorder === "off" && index > 0
                     ? `relative flex before:absolute before:inset-y-0 before:-left-3 before:border-l before:border-service-border before:[border-left-width:var(--border-surface-width-token)] ${
                         index === 2
                           ? "max-lg:before:hidden"

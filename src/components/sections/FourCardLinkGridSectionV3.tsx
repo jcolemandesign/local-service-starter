@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
+import type { CardLinkGridAlign } from "@/content/section-style-options";
 import { CardLinkShell } from "./CardLinkShell";
 
 export type FourCardLinkGridItem = {
@@ -13,6 +14,7 @@ export type FourCardLinkGridItem = {
 };
 
 export type FourCardLinkGridSectionV3Props = {
+  align?: CardLinkGridAlign;
   cardBorder?: "on" | "off";
   /**
    * Turns the whole family of card links off so these render as plain
@@ -30,7 +32,36 @@ function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+/**
+ * Column start per card, indexed by position - the same idea as the three-up
+ * grid, one column narrower per card. Four cards of three columns fill twelve
+ * of the fourteen, so these place the two spare columns: all on the right,
+ * split either side, or all on the left.
+ *
+ * No `justified` row. Two spare columns cannot be shared across three gaps in
+ * whole columns, which is why the builder does not offer it here - see
+ * `unjustifiableCardLinkGrids` in `section-style-options`. It is still keyed so
+ * a section that carries the value from another component renders centred
+ * rather than losing its starts.
+ */
+const alignColumnStarts: Record<
+  CardLinkGridAlign,
+  readonly [string, string, string, string]
+> = {
+  left: ["col-start-1", "col-start-4", "col-start-7", "col-start-10"],
+  center: ["col-start-2", "col-start-5", "col-start-8", "col-start-11"],
+  right: ["col-start-3", "col-start-6", "col-start-9", "col-start-12"],
+  justified: ["col-start-2", "col-start-5", "col-start-8", "col-start-11"],
+};
+
+// Alignment is a fourteen-column idea. Below that the row has already reflowed
+// and then stacked, where there are no spare columns to place, so the explicit
+// starts are released back to auto.
+const responsiveColumns =
+  "max-lg:col-span-5 max-lg:col-start-auto max-md:col-span-3 max-md:col-start-auto max-sm:col-span-2";
+
 export function FourCardLinkGridSectionV3({
+  align = "center",
   cardBorder = "on",
   cardLinks = "on",
   cardFill = "solid",
@@ -46,6 +77,7 @@ export function FourCardLinkGridSectionV3({
   const cardTextPadding = hasCardSurface
     ? "p-[clamp(1.5rem,1.9vw,2.125rem)]"
     : "px-0 py-[clamp(1.25rem,1.6vw,1.75rem)]";
+  const columnStarts = alignColumnStarts[align] ?? alignColumnStarts.center;
 
   return (
     <section className="bg-bg-page">
@@ -57,11 +89,11 @@ export function FourCardLinkGridSectionV3({
         {items.slice(0, 4).map((item, index) => (
           <LayoutGridItem
             alignY="stretch"
-            className={
-              index === 0
-                ? "col-span-3 col-start-2 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3 max-sm:col-span-2"
-                : "col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-2"
-            }
+            className={cx(
+              "col-span-3",
+              columnStarts[index],
+              responsiveColumns,
+            )}
             key={item.title}
           >
             <CardLinkShell

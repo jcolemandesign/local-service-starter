@@ -191,7 +191,11 @@ function FooterColumn({
   return (
     <div className="fluid-type-frame">
       <h2 className="type-label text-white/55">{title}</h2>
-      <ul className="mt-heading-body-sm grid card-grid-gap-sml">
+      {/* A link list is lines of text, not a grid of cards.
+        * `card-grid-gap-sml` is not small - all three card gap utilities
+        * resolve to the same 2.25rem - so consecutive links sat 36px apart and
+        * the column read as separate items rather than one list. */}
+      <ul className="mt-heading-body-sm grid gap-2">
         {links.map((link) => (
           <li key={link.label}>
             <a
@@ -530,7 +534,11 @@ export function ContactSectionV3({
   return (
     <section className="bg-bg-page" id="contact">
       <SevenColumnGrid className="section-min-none" padding="med">
-        <SevenColumnGridItem className="col-span-2 col-start-2 max-lg:col-span-7 max-lg:col-start-1">
+        {/* Lead-in on the first column, three wide. It used to start on column
+          * two, which indented the copy away from every other section's left
+          * edge, and left the pair floating inside the grid with an empty
+          * column on both sides. */}
+        <SevenColumnGridItem className="col-span-3 col-start-1 max-lg:col-span-7 max-lg:col-start-1">
           <div
             className="reveal-on-scroll fluid-type-frame"
             style={{ "--reveal-index": 0 } as CSSProperties}
@@ -554,7 +562,10 @@ export function ContactSectionV3({
           </div>
         </SevenColumnGridItem>
 
-        <SevenColumnGridItem className="col-span-3 col-start-4 max-lg:col-span-7 max-lg:col-start-1">
+        {/* Held at three columns and pushed to the right edge, so the pair
+          * spans the full grid on a column of air rather than by widening the
+          * form - a form stretched past this reads as a wall of inputs. */}
+        <SevenColumnGridItem className="col-span-3 col-start-5 max-lg:col-span-7 max-lg:col-start-1">
           <div
             className={cardSurfaceClass(
               "reveal-on-scroll content-padding fluid-type-frame radius-medium border border-service-border bg-service-surface shadow-service",
@@ -564,7 +575,7 @@ export function ContactSectionV3({
             style={{ "--reveal-index": 1 } as CSSProperties}
           >
             <form className="grid card-grid-gap-med">
-              <label className="type-text-sm grid card-grid-gap-sml font-semibold text-service-ink">
+              <label className="type-text-sm grid content-start gap-2 font-semibold text-service-ink">
                 Name
                 <input
                   className="radius-4 min-h-12 border border-service-border bg-surface-raised px-4 text-base font-normal outline-none transition-colors focus:border-service-accent"
@@ -572,7 +583,7 @@ export function ContactSectionV3({
                   type="text"
                 />
               </label>
-              <label className="type-text-sm grid card-grid-gap-sml font-semibold text-service-ink">
+              <label className="type-text-sm grid content-start gap-2 font-semibold text-service-ink">
                 Service needed
                 <input
                   className="radius-4 min-h-12 border border-service-border bg-surface-raised px-4 text-base font-normal outline-none transition-colors focus:border-service-accent"
@@ -580,7 +591,7 @@ export function ContactSectionV3({
                   type="text"
                 />
               </label>
-              <label className="type-text-sm grid card-grid-gap-sml font-semibold text-service-ink">
+              <label className="type-text-sm grid content-start gap-2 font-semibold text-service-ink">
                 Message
                 <textarea
                   className="radius-4 min-h-32 border border-service-border bg-surface-raised px-4 py-3 text-base font-normal outline-none transition-colors focus:border-service-accent"
@@ -601,6 +612,20 @@ export function ContactSectionV3({
   );
 }
 
+/**
+ * Top edge as a muted line, not a bald one.
+ *
+ * 15% white, matching the hairline the business-name chip and the legal rule
+ * inside the footer already draw. Those are rewritten to 18% of
+ * `--color-text-inverse` by `.token-footer-inverse`, which only reaches
+ * descendants - this border is on the token element itself, so it keeps the
+ * literal value and lands in the same place visually.
+ *
+ * Not the recipe's `--faint-line`, which is the muted line everywhere else:
+ * the footer forces `bg-dark` under every recipe, so on a light recipe that
+ * line is mixed against a light ground and comes out brighter than the text
+ * sitting under it.
+ */
 export function FooterSectionV3({
   businessName,
   contact,
@@ -616,7 +641,7 @@ export function FooterSectionV3({
 }: FooterSectionV3Props) {
   return (
     <footer
-      className="reveal-on-scroll token-footer-inverse bg-bg-dark text-text-inverse"
+      className="reveal-on-scroll token-footer-inverse border-t border-white/15 bg-bg-dark text-text-inverse"
       style={{ "--reveal-index": 0 } as CSSProperties}
     >
       <SevenColumnGrid className="section-min-none" padding="sml">
@@ -631,7 +656,7 @@ export function FooterSectionV3({
             <p className="type-text-md wrap-pretty mt-heading-body-sm text-white/70">
               {description}
             </p>
-            <ul aria-label="Social links" className="mt-body-actions-sm flex inline-gap-sml">
+            <ul aria-label="Social links" className="mt-body-actions-sm flex gap-3">
               {socialLinks.map((link) => (
                 <li key={link.label}>
                   <a
@@ -668,7 +693,7 @@ export function FooterSectionV3({
         <SevenColumnGridItem className="col-span-1 col-start-7 min-w-0 max-lg:col-span-7 max-lg:col-start-1">
           <div className="fluid-type-frame min-w-0">
             <h2 className="type-label text-white/55">Contact</h2>
-            <address className="mt-heading-body-sm grid card-grid-gap-sml not-italic">
+            <address className="mt-heading-body-sm grid gap-2 not-italic">
               <span className="type-text-sm font-medium text-white/72">
                 {contact.name}
               </span>

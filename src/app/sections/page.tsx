@@ -103,6 +103,7 @@ import { DecisionQuestionTableFourSectionLibraryDemo } from "@/components/sectio
 import {
   sectionLibraryV3Collections,
   sectionLibraryV3Content,
+  heroContentTopImageBottomFpoSrc,
   heroSplitFullImageFpoSrc,
   servicesBentoPreviewItemCount,
 } from "@/content/section-library-v3";
@@ -141,6 +142,7 @@ const sectionElements = {
     <HeroContentTopImageBottomSectionV2
       {...sectionLibraryV3Content.hero}
       headingLevel={2}
+      imageSrc={heroContentTopImageBottomFpoSrc}
     />
   ),
   "hero-split-full-height-v3": (
@@ -543,7 +545,10 @@ const sectionElements = {
     />
   ),
   "trust-marquee-v3": (
-    <TrustMarqueeSectionV3 {...sectionLibraryV3Content.trustMarquee} />
+    <TrustMarqueeSectionV3
+      items={sectionLibraryV3Content.trustMarquee.items}
+      label={sectionLibraryV3Content.trustMarquee.label}
+    />
   ),
   "trust-marquee-legacy": (
     <TrustMarqueeSection {...sectionLibraryV3Content.trustMarquee} />
@@ -563,6 +568,7 @@ const sectionElements = {
 const collections = sectionLibraryV3Collections.map((collection) => ({
   ...collection,
   items: [...collection.items]
+    .filter((item) => !("hidden" in item && item.hidden))
     .sort((first, second) => first.label.localeCompare(second.label))
     .map((item) => ({
       label: item.label,
@@ -571,7 +577,9 @@ const collections = sectionLibraryV3Collections.map((collection) => ({
 }));
 
 const sectionTemplateCount = sectionLibraryV3Collections.reduce(
-  (total, collection) => total + collection.items.length,
+  (total, collection) =>
+    total +
+    collection.items.filter((item) => !("hidden" in item && item.hidden)).length,
   0,
 );
 

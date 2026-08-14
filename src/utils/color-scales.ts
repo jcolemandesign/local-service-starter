@@ -263,6 +263,24 @@ export function isDarkGround(hex: string): boolean {
   return relativeLuminance(hex) < 0.4;
 }
 
+/**
+ * How saturated a colour is, as OKLab chroma.
+ *
+ * The second question a ground has to answer about itself. `isDarkGround`
+ * above decides which way its text points; this decides whether the ground is
+ * *neutral* dark or *chromatic* dark, which is what separates the two
+ * treatments a chromatic role can take on a dark field - the tint, or the text
+ * source. See `deriveTintMode` in `color-recipe-inputs.ts`.
+ *
+ * OKLab rather than OKLCh only because the conversion is already here; chroma
+ * is the same quantity in both, being the length of the (a, b) vector.
+ */
+export function oklabChroma(hex: string): number {
+  const [, a, b] = rgbToOklab(parseHex(hex));
+
+  return Math.hypot(a, b);
+}
+
 /** One rung of the ladder: a source mixed toward its local ground. */
 export function resolveLadder(
   source: string,

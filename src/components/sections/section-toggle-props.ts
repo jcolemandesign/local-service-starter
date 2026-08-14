@@ -7,13 +7,17 @@ import {
   cardLinkGridAlignValues,
   cardStyleComponents,
   backgroundFillComponents,
+  headingSizeComponents,
   headlineWrapComponents,
   iconComponents,
   resolveCardFill,
   resolveCardBorder,
   resolveBackgroundFill,
+  resolveHeadingSize,
   resolveHeadlineWrap,
   resolveSectionIcons,
+  sectionMirrorAlignComponents,
+  sectionMirrorAlignValues,
   tableCompareAlignComponents,
   tableCompareAlignValues,
 } from "@/content/section-style-options";
@@ -31,6 +35,7 @@ export type SectionToggleSource = {
   cardLinks?: string;
   colorRecipe?: string;
   component: string;
+  headingSize?: string;
   headlineWrap?: string;
   icons?: string;
 };
@@ -77,6 +82,10 @@ export function getSectionToggleProps(section: SectionToggleSource) {
     props.headlineWrap = resolveHeadlineWrap(section.headlineWrap);
   }
 
+  if (headingSizeComponents.has(section.component)) {
+    props.headingSize = resolveHeadingSize(section.headingSize);
+  }
+
   // Alignment is the one axis with no safe default to force: each section's own
   // default differs, and the two axes accept different value sets. Set it only
   // when the record holds a value valid for that section's axis, so an unset
@@ -85,7 +94,9 @@ export function getSectionToggleProps(section: SectionToggleSource) {
     ? cardLinkGridAlignValues
     : tableCompareAlignComponents.has(section.component)
       ? tableCompareAlignValues
-      : undefined;
+      : sectionMirrorAlignComponents.has(section.component)
+        ? sectionMirrorAlignValues
+        : undefined;
 
   if (alignValues?.has(section.align ?? "")) {
     props.align = section.align as string;

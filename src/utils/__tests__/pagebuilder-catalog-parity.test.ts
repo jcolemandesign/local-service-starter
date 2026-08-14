@@ -89,7 +89,9 @@ const templateRendererCases = new Set(
   [...read("PageTemplatePreview.tsx").matchAll(/case "(\w+)":/g)].map((m) => m[1]),
 );
 
-const registryComponents = sectionLibraryV3Registry.map((entry) => entry.component);
+const registryComponents = sectionLibraryV3Registry
+  .filter((entry) => !entry.hidden)
+  .map((entry) => entry.component);
 
 describe("pagebuilder catalog parity", () => {
   it("parses both catalogs", () => {

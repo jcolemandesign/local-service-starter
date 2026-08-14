@@ -198,12 +198,23 @@ export function FeaturedOfferSectionV3({
                   ) : null}
                   <div>
                     <dt className="type-caption text-service-muted">{dateLabel}</dt>
-                    <dd className="type-text-xl mt-1 font-semibold text-service-ink">{dateValue}</dd>
+                    {/* A date is a detail, not a headline. At `type-text-xl` it
+                      * set larger than the price beside it - the one number the
+                      * offer turns on - and any value longer than a word broke
+                      * over three lines and pushed the divider below it down
+                      * with it. */}
+                    <dd className="type-text-md mt-1 font-semibold text-service-ink">{dateValue}</dd>
                   </div>
                 </div>
               </dl>
 
-              <div className="mt-8 grid flex-1 grid-cols-2 gap-8 max-lg:grid-cols-1">
+              {/* Not an even split. The bullet list is a column of short
+                * fragments and never fills half the panel, while the closing
+                * pitch beside it carries a headline, a paragraph and a
+                * full-width button - so an even split left a lake of air
+                * against the divider on one side and cramped copy on the
+                * other, and read as a rule sitting off-centre. */}
+              <div className="mt-8 grid flex-1 grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-8 max-lg:grid-cols-1">
                 <div>
                   <h3 className="type-label text-service-accent">{includesLabel}</h3>
                   <ul className="mt-5 grid gap-4">
@@ -217,13 +228,33 @@ export function FeaturedOfferSectionV3({
                 </div>
 
                 <aside className="flex flex-col border-l border-service-border pl-8 max-lg:border-l-0 max-lg:border-t max-lg:pl-0 max-lg:pt-8">
-                  <h3 className="type-heading-sm text-service-ink">{benefitTitle}</h3>
+                  {/* Below `type-heading-sm`, which at this column width set as
+                    * large as the section's own price figure. Note the scale is
+                    * not ordered the way the names suggest here - `type-text-lg`
+                    * resolves *larger* than `type-heading-sm`, so the step down
+                    * is to `type-text-md`, carried by weight rather than size. */}
+                  {/* Weight comes from the type token, because nothing else
+                    * reaches it: `.type-text-md` declares `font-weight` with
+                    * `!important`, which beats a plain class, an inline style,
+                    * and even `!font-semibold` (equal specificity, and the type
+                    * utility is emitted last). Setting the variable the utility
+                    * itself reads is the way in. */}
+                  <h3
+                    className="type-text-md wrap-pretty text-service-ink"
+                    style={{ "--type-text-md-weight": 600 } as CSSProperties}
+                  >
+                    {benefitTitle}
+                  </h3>
                   <p className="type-text-md wrap-pretty mt-3 text-service-muted">
                     {benefitBody}
                   </p>
                   <div className="mt-auto pt-8">
                     <RequestServiceButton className="w-full">{action}</RequestServiceButton>
-                    <p className="type-caption mt-3 text-service-muted">{terms}</p>
+                    {/* Centred on the full-width button it belongs to, rather
+                      * than ranged left away from it. */}
+                    <p className="type-caption mt-3 text-center text-service-muted">
+                      {terms}
+                    </p>
                   </div>
                 </aside>
               </div>

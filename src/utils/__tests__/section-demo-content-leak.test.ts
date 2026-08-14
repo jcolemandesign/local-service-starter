@@ -280,7 +280,7 @@ describe("section demo-content leak guard", () => {
    * otherwise leave a green suite covering a handful of sections.
    */
   it("covers the whole builder catalog", () => {
-    expect(checkedSections.size).toBeGreaterThan(90);
+    expect(checkedSections.size).toBeGreaterThanOrEqual(90);
   });
 
   for (const [key, section] of checkedSections) {

@@ -46,7 +46,8 @@ export function ContentNarrativeFeatureRailSectionV3({
   title,
 }: ContentNarrativeFeatureRailSectionV3Props) {
   const contentPosition =
-    align === "right" ? "col-start-1" : "col-start-7 max-lg:col-start-5";
+    align === "right" ? "col-start-1" : "col-start-8 max-lg:col-start-5";
+  const contentSpan = align === "right" ? "col-span-8" : "col-span-7";
   const railPosition =
     align === "right" ? "col-start-9 max-lg:col-start-7" : "col-start-1";
   /**
@@ -73,7 +74,7 @@ export function ContentNarrativeFeatureRailSectionV3({
       >
         <LayoutGridItem
           alignY="stretch"
-          className={`col-span-8 ${contentPosition} row-start-1 max-lg:col-span-6 max-md:col-span-6 max-md:col-start-1 max-md:row-auto max-sm:col-span-2`}
+          className={`${contentSpan} ${contentPosition} row-start-1 max-lg:col-span-6 max-md:col-span-6 max-md:col-start-1 max-md:row-auto max-sm:col-span-2`}
         >
           <article className="fluid-type-frame sticky top-[var(--site-grid-inset-block)] self-start pr-8 max-lg:pr-2 max-md:static max-md:pr-0">
             <p className="type-label text-service-accent">{eyebrow}</p>

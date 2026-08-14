@@ -264,9 +264,15 @@ export function TrustLogoMarqueeSectionV3({
    * both, and the logo tiles' `shadow-service` paints below the track, so the
    * bottom of every shadow was being cut off square. `overflow-x: clip` is the
    * pair that `hidden` cannot be: it does not force the other axis to `auto`,
-   * so the vertical stays genuinely visible. */
+   * so the vertical stays genuinely visible.
+   *
+   * Padded `sml` rather than `vsml` for the same reason from the other end:
+   * the tiles' shadow reaches 32px below them, exactly the 2rem `vsml` was
+   * padding, so its outer edge landed on the section's own boundary. Nothing
+   * clipped it, but the surface below starts at that pixel, so the falloff
+   * still read as a cut. `sml` leaves it 2rem of slack. */
   return (
-    <section className="section-min-none section-space-vsml overflow-x-clip bg-bg-page">
+    <section className="section-min-none section-space-sml overflow-x-clip bg-bg-page">
       <MeasuredMarquee className="relative left-1/2 w-screen -translate-x-1/2 overflow-x-clip">
         <LogoTrack cardBorder={cardBorder} cardFill={cardFill} logos={logos} />
       </MeasuredMarquee>

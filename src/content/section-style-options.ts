@@ -199,12 +199,33 @@ export const cardLinkGridAlignValues = new Set<string>(
 
 /** Sections that read the `align` axis, so the builder only offers it there. */
 export const cardLinkGridAlignComponents = new Set<string>([
+  "FourCardLinkGridSectionV3",
   "HorizontalCardLinkGridSectionV3",
   "ThreeCardLinkGridSectionV3",
 ]);
 
 export function sectionSupportsCardLinkGridAlign(component: string) {
   return cardLinkGridAlignComponents.has(component);
+}
+
+/**
+ * Sections whose row cannot be justified, so the builder does not offer it.
+ *
+ * Justified spreads the spare columns *between* the cards, which needs at least
+ * as many spare columns as gaps. Four three-column cards leave two spare of the
+ * fourteen and have three gaps, so there is no whole-column way to distribute
+ * them - the row would either stay centred or land visibly lopsided. Three
+ * four-column cards leave two spare across two gaps, which is why that section
+ * can offer it.
+ */
+const unjustifiableCardLinkGrids = new Set<string>([
+  "FourCardLinkGridSectionV3",
+]);
+
+export function getCardLinkGridAlignOptions(component: string) {
+  return unjustifiableCardLinkGrids.has(component)
+    ? cardLinkGridAlignOptions.filter((option) => option.value !== "justified")
+    : cardLinkGridAlignOptions;
 }
 
 /**
@@ -252,6 +273,95 @@ export const tableCompareAlignComponents = new Set<string>([
 
 export function sectionSupportsTableCompareAlign(component: string) {
   return tableCompareAlignComponents.has(component);
+}
+
+/**
+ * Which side a two-slot section puts its copy on.
+ *
+ * The third of the `align` axes, and the simplest: there are no spare columns
+ * to redistribute here, the two slots simply swap. Sections qualify when their
+ * composition is a copy block beside a second element - a proof tray, an image
+ * panel - and neither side is load-bearing for the reading order, so mirroring
+ * it is a purely visual decision.
+ *
+ * Shares the copy-neutral `align` field with the two axes above rather than
+ * folding into `variant`, per the rule in `docs/builder-workflow.md` §3:
+ * `variant` is hashed into the copy-contract fingerprint, so a mirror would
+ * report every approved page's copy as stale for a change that cannot touch a
+ * single word.
+ */
+export const sectionMirrorAlignOptions = [
+  { label: "Left", value: "left" },
+  { label: "Right", value: "right" },
+] as const;
+
+export type SectionMirrorAlign =
+  (typeof sectionMirrorAlignOptions)[number]["value"];
+
+export const sectionMirrorAlignValues = new Set<string>(
+  sectionMirrorAlignOptions.map((option) => option.value),
+);
+
+export const sectionMirrorAlignComponents = new Set<string>([
+  "HeroFullscreenSectionV2",
+  "HeroServicesSectionV3",
+]);
+
+export function sectionSupportsMirrorAlign(component: string) {
+  return sectionMirrorAlignComponents.has(component);
+}
+
+/**
+ * The three-step headline scale, as its own axis.
+ *
+ * The compact hero and the two section headers already offer a size control,
+ * but each encodes it into `variant` as an `{align}-{size}` string - a shape
+ * that predates the copy-neutral rule and that cannot be reused, because those
+ * sections' variants also carry alignment. Type scale changes no copy, so it
+ * gets a field of its own here and every section added to the set below reads
+ * the same three values.
+ *
+ * Deliberately three steps rather than the seven the large section header
+ * offers: this is the headline of a hero, and the two ends of that range are
+ * already the wrong size for one.
+ */
+export const sectionHeadingSizeOptions = [
+  { label: "Heading LG", value: "heading-lg" },
+  { label: "Heading XL", value: "heading-xl" },
+  { label: "Display LG", value: "display-lg" },
+] as const;
+
+export type SectionHeadingSize =
+  (typeof sectionHeadingSizeOptions)[number]["value"];
+
+export const sectionHeadingSizeValues = new Set<string>(
+  sectionHeadingSizeOptions.map((option) => option.value),
+);
+
+export const headingSizeComponents = new Set<string>([
+  "DecisionMatrixCardSectionV3",
+  "HeroFullscreenSectionV2",
+  "SectionHeaderSplitLinkSectionV3",
+  "TrustMarqueeSection",
+]);
+
+export function sectionSupportsHeadingSize(component: string) {
+  return headingSizeComponents.has(component);
+}
+
+/** Defaults to the smallest step, which is the size the fullscreen hero drew
+ *  before this axis existed, so no saved page moves. */
+export function resolveHeadingSize(
+  headingSize: string | undefined,
+  /** Per-section, because "the size it drew before the axis existed" is not
+   *  the same step everywhere - the scrolling-banner CTA has always set its
+   *  headline at `display-lg`, and defaulting it to `heading-lg` would shrink
+   *  every page that never touched the control. */
+  fallback: SectionHeadingSize = "heading-lg",
+): SectionHeadingSize {
+  return sectionHeadingSizeValues.has(headingSize ?? "")
+    ? (headingSize as SectionHeadingSize)
+    : fallback;
 }
 
 export const servicesBentoVariantOptions = [
@@ -307,6 +417,7 @@ export const cardStyleComponents = new Set<string>([
   "FinancingCalculatorSectionV3",
   "FourCardLinkGridSectionV3",
   "HeroCompactServiceSectionV3",
+  "HeroFullscreenSectionV2",
   "HeroServiceAreaZipLookupSectionV3",
   "HeroServicesSectionV3",
   "HeroSplitBentoSectionV3",
@@ -368,6 +479,13 @@ export const cardLinkComponents = new Set<string>([
   "DecisionSplitDecisionSectionV3",
   "DecisionSplitLargeCardsSectionV3",
   "FourCardLinkGridSectionV3",
+  /**
+   * The services hero's tiles over the photograph. They are service-page
+   * navigation, which is the rule for this set - but a hero often wants them as
+   * a plain statement of what the business does, with the conversion left to
+   * the buttons beside them.
+   */
+  "HeroServicesSectionV3",
   "HorizontalCardLinkGridSectionV3",
   "HorizontalCardLinkGridTwoUpSectionV3",
   "SectionHeaderSplitLinkSectionV3",
@@ -591,6 +709,7 @@ export const sectionToggleFieldNames = [
   "cardSwatch",
   "cardLinks",
   "colorRecipe",
+  "headingSize",
   "headlineWrap",
   "icons",
   "joinAbove",

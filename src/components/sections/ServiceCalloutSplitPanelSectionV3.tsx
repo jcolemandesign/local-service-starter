@@ -114,7 +114,9 @@ export function ServiceCalloutSplitPanelSectionV3({
             >
               {openHint}
             </span>
-            <CalloutCardAffordance isActive={isActive} />
+            {/* These tiles toggle and hold their state, so the cue is a
+                checkbox rather than the reveal grid's one-way arrow. */}
+            <CalloutCardAffordance isActive={isActive} marker="check" />
           </span>
         </span>
       </button>

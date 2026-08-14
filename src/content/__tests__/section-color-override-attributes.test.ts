@@ -64,6 +64,7 @@ describe("section colour override attributes", () => {
       "data-pagebuilder-card-swatch": "dark",
       "data-pagebuilder-card-intensity": "strong",
       "data-pagebuilder-card-polarity": "dark",
+      "data-pagebuilder-card-chroma": "tinted",
     });
   });
 

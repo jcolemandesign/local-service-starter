@@ -1,6 +1,7 @@
 import {
   type LadderLevel,
   isDarkGround,
+  oklabChroma,
   resolveLadder,
 } from "@/utils/color-scales";
 
@@ -67,6 +68,43 @@ export type ColorRef =
  *                rules out. Both roles fall to the text source.
  */
 export type TintMode = "none" | "tinted" | "textSource";
+
+/**
+ * The chroma above which a dark ground counts as chromatic rather than neutral.
+ *
+ * Measured, not picked. Across the three palettes `tint-mode-derivation.test.ts`
+ * walks, the neutral darks (ink, dark, darkSurface) top out at 0.068 and the
+ * chromatic grounds (brand, accent, highlight) bottom out at 0.090 - a gap with
+ * no authored colour anywhere in it. That separation is structural rather than
+ * lucky: a neutral is chosen for being near-grey and a brand colour is chosen
+ * for not being.
+ */
+const chromaticGroundChroma = 0.08;
+
+/**
+ * The treatment a ground implies, derived from the ground itself.
+ *
+ * The comment above says the mode is a function of the ground and not a
+ * per-recipe preference. It was still written out by hand on each recipe,
+ * which was fine while a ground was only ever a recipe's own - and wrong as
+ * soon as a card became a ground too. A card overridden to a light swatch on
+ * the ink recipe inherited ink's `tinted` eyebrow, a near-white, and put it on
+ * a near-white card at 1.36:1, while every laddered role on that same card had
+ * already re-resolved correctly.
+ *
+ * So the rule moves here, where any ground can ask it. The recipes keep their
+ * declared `tintMode` as the authored statement of intent, and
+ * `tint-mode-derivation.test.ts` asserts this reproduces all eight of them on
+ * every palette it checks - if the two ever disagree, one of them is wrong and
+ * the test says which recipe.
+ */
+export function deriveTintMode(ground: string): TintMode {
+  if (!isDarkGround(ground)) {
+    return "none";
+  }
+
+  return oklabChroma(ground) >= chromaticGroundChroma ? "textSource" : "tinted";
+}
 
 export type RecipeInputs = {
   ground: ColorRef;

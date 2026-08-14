@@ -160,6 +160,7 @@ import {
 } from "@/components/sections/TrustSectionsV3";
 import {
   getCanonicalSectionLabel,
+  heroContentTopImageBottomFpoSrc,
   sectionLibraryV3Content,
 } from "@/content/section-library-v3";
 import {
@@ -181,10 +182,12 @@ import {
   resolveBorderTone,
   resolveCardBorder,
   resolveCardFill,
+  resolveHeadingSize,
   resolveHeadlineWrap,
   fullImageSplitVariantValues,
   resolveSectionAnimation,
   resolveSectionIcons,
+  sectionMirrorAlignValues,
   sectionSupportsCardStyle,
   sectionSupportsSectionSpacing,
   servicesBentoVariantValues,
@@ -196,6 +199,7 @@ import {
   type CalloutRevealGridVariant,
   type CalloutSplitPanelVariant,
   type CardLinkGridAlign,
+  type SectionMirrorAlign,
   type TableCompareAlign,
 } from "@/content/section-style-options";
 import {
@@ -245,6 +249,7 @@ export type PageTemplatePreviewSection = {
   /** Ground image focal point as `"<x> <y>"`. Absent means centred. */
   backgroundImageFocus?: string;
   icons?: string;
+  headingSize?: string;
   headlineWrap?: string;
   ratio?: string;
   variant?: string;
@@ -506,10 +511,12 @@ export function PageTemplatePreview({
             return null;
           }
 
+          // No spacer under a nav that is followed by a non-hero section - see
+          // the same branch in `PagebuilderShell`. The nav pins and reserves its
+          // own height, so the margin only opened a gap the built page does not
+          // have.
           if (isNavigationBand(band) && nextBand) {
-            return renderSection(first, band.startIndex, {
-              className: "mb-[var(--section-space-sml)]",
-            });
+            return renderSection(first, band.startIndex);
           }
 
           return renderBand(band);
@@ -792,7 +799,12 @@ export function renderPageTemplateSection(
       return (
         <HeroFullscreenSectionV2
           {...heroFullscreenProps(fieldSection)}
+          align={getMirrorAlign(section)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
           headingLevel={headingLevel}
+          headingSize={resolveHeadingSize(section.headingSize)}
+          secondaryActionHref={getServicesHref(navigationLinks)}
         />
       );
     case "HeroCenteredFloatersSectionV2":
@@ -807,6 +819,7 @@ export function renderPageTemplateSection(
         <HeroContentTopImageBottomSectionV2
           {...heroBasicProps(fieldSection)}
           headingLevel={headingLevel}
+          imageSrc={heroContentTopImageBottomFpoSrc}
         />
       );
     case "HeroCompactSectionV3":
@@ -823,8 +836,10 @@ export function renderPageTemplateSection(
       return (
         <HeroServicesSectionV3
           {...heroServicesProps(fieldSection)}
+          align={getMirrorAlign(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+          cardLinks={section.cardLinks === "off" ? "off" : "on"}
           headingLevel={headingLevel}
         />
       );
@@ -868,9 +883,22 @@ export function renderPageTemplateSection(
         />
       );
     case "TrustMarqueeSection":
-      return <TrustMarqueeSection {...trustMarqueeProps(fieldSection)} />;
+      return (
+        <TrustMarqueeSection
+          {...trustMarqueeProps(fieldSection)}
+          headingSize={resolveHeadingSize(section.headingSize, "display-lg")}
+        />
+      );
     case "TrustMarqueeSectionV3":
-      return <TrustMarqueeSectionV3 {...trustMarqueeProps(fieldSection)} />;
+      // Only `items`: this is the bare scrolling strip, and spreading the
+      // shared marquee content handed it the CTA panel copy that only the
+      // legacy section renders.
+      return (
+        <TrustMarqueeSectionV3
+          items={trustMarqueeProps(fieldSection).items}
+          label={trustMarqueeProps(fieldSection).label}
+        />
+      );
     case "TrustLogoMarqueeSectionV3":
       return (
         <TrustLogoMarqueeSectionV3
@@ -901,6 +929,7 @@ export function renderPageTemplateSection(
       return (
         <FourCardLinkGridSectionV3
           {...fourCardLinkGridProps(fieldSection)}
+          align={getCardLinkGridAlign(section)}
           cardLinks={resolveCardLinks(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
@@ -1187,6 +1216,7 @@ export function renderPageTemplateSection(
           align={getTableCompareAlign(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+          headingSize={resolveHeadingSize(section.headingSize, "heading-xl")}
         />
       );
     case "DecisionSplitLargeCardsSectionV3":
@@ -1206,6 +1236,7 @@ export function renderPageTemplateSection(
           {...sectionHeaderSplitLinkProps(fieldSection)}
           cardLinks={resolveCardLinks(section)}
           headingLevel={headingLevel}
+          headingSize={resolveHeadingSize(section.headingSize, "heading-xl")}
         />
       );
     case "DecisionSplitDecisionLargeSectionV3":
@@ -2355,6 +2386,26 @@ function trustMarqueeProps(section: FieldSection) {
         sectionLibraryV3Content.trustMarquee.actionLabel,
       ),
     ),
+    callHref: getValue(
+      section,
+      "callPhone",
+      sectionLibraryV3Content.trustMarquee.callHref,
+    ),
+    callLabel: getValue(
+      section,
+      "callLabel",
+      sectionLibraryV3Content.trustMarquee.callLabel,
+    ),
+    ctaBody: getValue(
+      section,
+      "ctaBody",
+      sectionLibraryV3Content.trustMarquee.ctaBody,
+    ),
+    ctaTitle: getValue(
+      section,
+      "ctaTitle",
+      sectionLibraryV3Content.trustMarquee.ctaTitle,
+    ),
     items: getListValues(
       section,
       ["proofItems", "items", "proofPoints"],
@@ -2614,17 +2665,45 @@ function splitQuestionOptions(value: string) {
 }
 
 function resolveMatrixQuadrants(section: FieldSection) {
+  const fallbackQuadrants =
+    sectionLibraryV3Content.decisionMatrixCard.quadrants;
   const records = getRepeatedRecords(section, ["quadrants"]);
 
   return (
     records.length > 0
-      ? records.map((record) => ({
-          items: splitQuestionOptions(
-            record.items ?? record.options ?? record.body ?? "",
-          ),
-          title: (record.title ?? record.heading ?? "").trim(),
-        }))
-      : splitItems(getValue(section, "quadrants", "")).map(parseMatrixQuadrant)
+      ? records.map((record, index) => {
+          const title = (record.title ?? record.heading ?? "").trim();
+
+          return {
+            // The icon rides the same `quadrants.N.*` record the copy does, so
+            // an authored icon lands on its own cell.
+            //
+            // Unwritten alt falls back to the quadrant's own title, not to the
+            // library's: the icon illustrates that heading, so the heading is
+            // the correct description of it - and a demo string here would ship
+            // "System controls" to a client whose quadrant says something else.
+            iconAlt: record.iconAlt ?? title,
+            // The source may fall back, because an FPO that is visibly a
+            // placeholder is the point until a real file arrives.
+            iconSrc: record.iconSrc ?? fallbackQuadrants[index]?.iconSrc,
+            items: splitQuestionOptions(
+              record.items ?? record.options ?? record.body ?? "",
+            ),
+            title,
+          };
+        })
+      : splitItems(getValue(section, "quadrants", "")).map((value, index) => {
+          const quadrant = parseMatrixQuadrant(value);
+
+          return {
+            ...quadrant,
+            // Its own title, for the reason above - the flat form has no
+            // per-quadrant alt to read, and borrowing the library's would ship
+            // a description of the wrong quadrant.
+            iconAlt: quadrant.title,
+            iconSrc: fallbackQuadrants[index]?.iconSrc,
+          };
+        })
   )
     .slice(0, 4)
     .filter((quadrant) => quadrant.title.length > 0 && quadrant.items.length > 0);
@@ -4303,6 +4382,14 @@ function getCardLinkGridAlign(section: PageTemplatePreviewSection) {
 function getTableCompareAlign(section: PageTemplatePreviewSection) {
   return tableCompareAlignValues.has(section.align ?? "")
     ? (section.align as TableCompareAlign)
+    : undefined;
+}
+
+/** Undefined rather than a forced default, so an unset value leaves the
+ *  section's own side in place - the same rule the two axes above follow. */
+function getMirrorAlign(section: PageTemplatePreviewSection) {
+  return sectionMirrorAlignValues.has(section.align ?? "")
+    ? (section.align as SectionMirrorAlign)
     : undefined;
 }
 

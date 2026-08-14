@@ -56,6 +56,7 @@ describe("section toggle transport", () => {
       "cardLinks",
       "cardSwatch",
       "colorRecipe",
+      "headingSize",
       "headlineWrap",
       "icons",
       "joinAbove",

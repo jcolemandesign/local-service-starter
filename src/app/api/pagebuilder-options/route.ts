@@ -19,6 +19,7 @@ type SavedPagebuilderSection = {
   align?: string;
   cardLinks?: string;
   icons?: string;
+  headingSize?: string;
   headlineWrap?: string;
   ratio?: string;
   /**
@@ -313,6 +314,8 @@ function normalizeSection(
     cardLinks:
       typeof section.cardLinks === "string" ? section.cardLinks : undefined,
     icons: typeof section.icons === "string" ? section.icons : undefined,
+    headingSize:
+      typeof section.headingSize === "string" ? section.headingSize : undefined,
     headlineWrap:
       typeof section.headlineWrap === "string"
         ? section.headlineWrap

@@ -3,6 +3,7 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import type { SectionHeadingSize } from "@/content/section-style-options";
 
 type SectionHeaderSplitLinkSectionV3Props = {
   actionHref?: string;
@@ -10,7 +11,16 @@ type SectionHeaderSplitLinkSectionV3Props = {
   body: string;
   cardLinks?: "on" | "off";
   headingLevel?: 1 | 2;
+  headingSize?: SectionHeadingSize;
   title: string;
+};
+
+/** Purely visual, so it rides its own field rather than `variant` - the copy
+ *  this section asks for is the same at every step. */
+const headingSizeClassName: Record<SectionHeadingSize, string> = {
+  "heading-lg": "type-heading-lg",
+  "heading-xl": "type-heading-xl",
+  "display-lg": "type-display-lg",
 };
 
 // Heading left, description and link right. Deliberately fixed: the mirrored
@@ -34,6 +44,7 @@ export function SectionHeaderSplitLinkSectionV3({
   body,
   cardLinks = "on",
   headingLevel = 2,
+  headingSize = "heading-xl",
   title,
 }: SectionHeaderSplitLinkSectionV3Props) {
   const Heading = headingLevel === 1 ? "h1" : "h2";
@@ -72,7 +83,10 @@ export function SectionHeaderSplitLinkSectionV3({
               aside sit side by side, so they earn a real two-step stagger
               rather than one block fade. */}
           <Heading
-            className="reveal-on-scroll type-heading-xl max-w-3xl text-service-ink"
+            className={`reveal-on-scroll ${
+              headingSizeClassName[headingSize] ??
+              headingSizeClassName["heading-xl"]
+            } max-w-3xl text-service-ink`}
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
             {title}

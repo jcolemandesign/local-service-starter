@@ -2,6 +2,7 @@ import {
   type ColorPalette,
   type ColorRecipeId,
   type PaletteKey,
+  deriveTintMode,
   recipeInputs,
   resolveRef,
   resolveSwatch,
@@ -353,6 +354,24 @@ export function colorOverrideAttributes(
       palette,
       recipe,
       overrides,
+    );
+    /**
+     * THE SECOND THING CSS CANNOT DO.
+     *
+     * Polarity above answers "which way does this card's text point". This
+     * answers "which of the three chromatic treatments does this card's ground
+     * take", and it is the same shape of problem: the rule is a function of
+     * the ground's lightness AND its chroma, and CSS can ask a `color-mix()`
+     * result neither.
+     *
+     * Without it the chromatic roles were the only roles that did not
+     * re-resolve on a card. Every laddered role already does - the card
+     * context re-declares the scales from `--recipe-card-text` - so an
+     * overridden card got correct headings, correct body copy, correct
+     * dividers, and an eyebrow computed for a ground it is not sitting on.
+     */
+    attributes["data-pagebuilder-card-chroma"] = deriveTintMode(
+      resolveSectionCard(palette, recipe, overrides),
     );
   }
 
