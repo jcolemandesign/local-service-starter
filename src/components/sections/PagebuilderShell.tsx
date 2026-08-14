@@ -141,12 +141,14 @@ import {
   calloutRevealGridVariantValues,
   calloutSplitPanelVariantOptions,
   calloutSplitPanelVariantValues,
+  cardLinkMediaOptions,
   cardFillOptInComponents,
   pickSectionToggleFields,
   resolveBackgroundFill,
   resolveBorderTone,
   resolveCardBorder,
   resolveCardFill,
+  resolveCardLinkMedia,
   headlineWrapOptions,
   iconsOptions,
   resolveHeadingSize,
@@ -187,6 +189,7 @@ import {
   splitImageVariantValues,
   splitImageRatioOptions as fixedRatioSplitRatioOptions,
   splitImageVariantOptions as fixedRatioSplitVariantOptions,
+  type CardLinkMedia,
   splitImageVariantOptions as splitContentImageVariantOptions,
   type CalloutRevealGridVariant,
   type CalloutSplitPanelVariant,
@@ -322,9 +325,6 @@ const fourCardLinkGridVariantOptions = [
   { label: "Images", value: "with-images" },
   { label: "No images", value: "text-only" },
 ] as const;
-type FourCardLinkGridVariant =
-  (typeof fourCardLinkGridVariantOptions)[number]["value"];
-type ThreeCardLinkGridVariant = FourCardLinkGridVariant;
 type SplitContentImageVariant = FullImageSplitVariant;
 
 type FixedRatioSplitVariant = SplitImageVariant;
@@ -1026,18 +1026,6 @@ function getSectionHeadingSize(section: WorkingSection): SectionHeadingSize {
   return resolveHeadingSize(section.headingSize);
 }
 
-function getFourCardLinkGridVariant(
-  section: WorkingSection,
-): FourCardLinkGridVariant {
-  return section.variant === "text-only" ? "text-only" : "with-images";
-}
-
-function getCardLinkGridVariant(
-  section: WorkingSection,
-): ThreeCardLinkGridVariant {
-  return section.variant === "text-only" ? "text-only" : "with-images";
-}
-
 function getStickyCardStreamShowImage(section: WorkingSection) {
   return section.variant === "with-images";
 }
@@ -1064,6 +1052,9 @@ function createInitialWorkingStack(
     colorRecipe: section.colorRecipe ?? "page",
     backgroundFill: section.backgroundFill ?? "solid",
     cardFill: resolveCardFill(section.component, section.cardFill),
+    cardMedia: isCardLinkGridSection(section)
+      ? resolveCardLinkMedia(section.cardMedia, section.variant)
+      : section.cardMedia,
     ratio:
       section.component === fixedRatioSplitComponent ||
       section.component === contentFixedRatioSplitComponent
@@ -1094,10 +1085,6 @@ function createInitialWorkingStack(
                 ? section.variant ?? calloutSplitPanelVariantOptions[0].value
               : isServiceCalloutRevealGridSection(section)
                 ? section.variant ?? calloutRevealGridVariantOptions[0].value
-              : isFourCardLinkGridSection(section)
-                ? section.variant ?? fourCardLinkGridVariantOptions[0].value
-                : isThreeCardLinkGridSection(section)
-                  ? section.variant ?? fourCardLinkGridVariantOptions[0].value
                 : section.variant,
   }));
 }
@@ -1219,6 +1206,14 @@ function updateSectionFromSwapOption(
     instruction: nextOption.instruction,
     mode: nextOption.mode,
     name: nextOption.name,
+    cardMedia: isCardLinkGridSection({
+      ...section,
+      component: nextOption.component,
+    })
+      ? isCardLinkGridSection(section)
+        ? resolveCardLinkMedia(section.cardMedia, section.variant)
+        : "photo"
+      : undefined,
     ratio:
       nextOption.component === fixedRatioSplitComponent ||
       nextOption.component === contentFixedRatioSplitComponent
@@ -1259,8 +1254,6 @@ function updateSectionFromSwapOption(
                 ? calloutSplitPanelVariantOptions[0].value
               : nextOption.component === serviceCalloutRevealGridComponent
                 ? calloutRevealGridVariantOptions[0].value
-              : nextOption.component === fourCardLinkGridComponent
-                ? fourCardLinkGridVariantOptions[0].value
               : undefined,
   };
 }
@@ -1511,7 +1504,7 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
   {
     component: "FourCardLinkGridSectionV3",
     instruction:
-      "Show four linked cards on the shared 14-column grid. Each card spans three columns, leaving the first and last columns open; images may be toggled off for a shorter text-only layout.",
+      "Show four linked cards on the shared 14-column grid. Each card spans three columns, leaving the first and last columns open; media can use full-width photos, compact icons, or a text-only layout.",
     layoutGrid: 14,
     mode: "Scan",
     name: "Card Links 4 Up",
@@ -1519,7 +1512,7 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
   {
     component: "ThreeCardLinkGridSectionV3",
     instruction:
-      "Show three linked cards on the shared 14-column grid. Each card spans four columns, leaving the first and last columns open; images may be toggled off for a shorter text-only layout.",
+      "Show three linked cards on the shared 14-column grid. Each card spans four columns, leaving the first and last columns open; media can use full-width photos, compact icons, or a text-only layout.",
     layoutGrid: 14,
     mode: "Scan",
     name: "Card Links 3 Up",
@@ -2336,17 +2329,21 @@ function buildPageInstruction({
              calloutRevealGridVariantOptions[0].label
            } (${section.variant ?? calloutRevealGridVariantOptions[0].value})`
       : isFourCardLinkGridSection(section)
-         ? `Variant: ${
-             getFourCardLinkGridVariant(section) === "with-images"
-               ? "Images"
-               : "No images"
-           } (${getFourCardLinkGridVariant(section)})`
+         ? `Card media: ${
+             cardLinkMediaOptions.find(
+               (option) =>
+                 option.value ===
+                 resolveCardLinkMedia(section.cardMedia, section.variant),
+             )?.label ?? "Photos"
+           } (${resolveCardLinkMedia(section.cardMedia, section.variant)})`
        : isThreeCardLinkGridSection(section)
-         ? `Variant: ${
-             getCardLinkGridVariant(section) === "with-images"
-               ? "Images"
-               : "No images"
-           } (${getCardLinkGridVariant(section)})
+         ? `Card media: ${
+             cardLinkMediaOptions.find(
+               (option) =>
+                 option.value ===
+                 resolveCardLinkMedia(section.cardMedia, section.variant),
+             )?.label ?? "Photos"
+           } (${resolveCardLinkMedia(section.cardMedia, section.variant)})
    Row alignment: ${
      getCardLinkGridAlignLabel(getCardLinkGridAlign(section)) ?? "Center"
    } (${getCardLinkGridAlign(section)})`
@@ -2453,6 +2450,35 @@ function CardImageIcon({ hidden }: { hidden?: boolean }) {
       <circle cx="8" cy="10" fill="currentColor" r="1.4" />
       <path d="m5 17 4.25-4.25L12 15.5l2.25-2.25L19 18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" />
       {hidden ? <path d="M4 4 20 20" stroke="currentColor" strokeLinecap="round" strokeWidth="2" /> : null}
+    </svg>
+  );
+}
+
+function CardMediaIcon({ media }: { media: CardLinkMedia }) {
+  if (media !== "icon") {
+    return <CardImageIcon hidden={media === "none"} />;
+  }
+
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <rect
+        height="14"
+        rx="1.5"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        width="18"
+        x="3"
+        y="5"
+      />
+      <path
+        d="M12 8.25 13.15 10.6 15.75 11l-1.88 1.84.44 2.59L12 14.2l-2.31 1.23.44-2.59L8.25 11l2.6-.4L12 8.25Z"
+        fill="currentColor"
+      />
     </svg>
   );
 }
@@ -3917,14 +3943,14 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
-  function updateCardLinkGridVariant(
+  function updateCardLinkMedia(
     sectionId: string,
-    variant: ThreeCardLinkGridVariant,
+    cardMedia: CardLinkMedia,
   ) {
     updateActiveStack((stack) =>
       stack.map((section) =>
         section.id === sectionId && isCardLinkGridSection(section)
-          ? { ...section, variant }
+          ? { ...section, cardMedia }
           : section,
       ),
     );
@@ -4001,6 +4027,11 @@ export function PagebuilderShell({
       name: nextOption.name,
       originalComponent: nextOption.component,
       originalIndex: -1,
+      cardMedia:
+        nextOption.component === fourCardLinkGridComponent ||
+        nextOption.component === threeCardLinkGridComponent
+          ? "photo"
+          : undefined,
       ratio:
         nextOption.component === fixedRatioSplitComponent ||
         nextOption.component === contentFixedRatioSplitComponent
@@ -4026,10 +4057,7 @@ export function PagebuilderShell({
                   ? calloutSplitPanelVariantOptions[0].value
                 : nextOption.component === serviceCalloutRevealGridComponent
                   ? calloutRevealGridVariantOptions[0].value
-                : nextOption.component === fourCardLinkGridComponent
-                  ? fourCardLinkGridVariantOptions[0].value
-                  : nextOption.component === threeCardLinkGridComponent ||
-                      nextOption.component === serviceNeedsPriorityGridComponent
+                : nextOption.component === serviceNeedsPriorityGridComponent
                     ? fourCardLinkGridVariantOptions[0].value
                 : undefined,
     };
@@ -4497,7 +4525,7 @@ export function PagebuilderShell({
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
             cardLinks={getCardLinks(section)}
-            showImages={getFourCardLinkGridVariant(section) === "with-images"}
+            cardMedia={resolveCardLinkMedia(section.cardMedia, section.variant)}
           />
         ) : isThreeCardLinkGridSection(section) ? (
           <ThreeCardLinkGridSectionV3
@@ -4506,7 +4534,7 @@ export function PagebuilderShell({
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
             cardLinks={getCardLinks(section)}
-            showImages={getCardLinkGridVariant(section) === "with-images"}
+            cardMedia={resolveCardLinkMedia(section.cardMedia, section.variant)}
           />
         ) : section.component === decisionQuestionTableComponent ? (
           <DecisionQuestionTableSectionV3
@@ -5792,12 +5820,15 @@ export function PagebuilderShell({
                           {isCardLinkGridSection(section) ? (
                             <fieldset className="grid gap-2">
                               <legend className="type-caption font-semibold text-current">
-                                Card images
+                                Card media
                               </legend>
                               <div className="flex items-center gap-2">
-                                {fourCardLinkGridVariantOptions.map((option) => {
+                                {cardLinkMediaOptions.map((option) => {
                                   const optionIsActive =
-                                    getCardLinkGridVariant(section) === option.value;
+                                    resolveCardLinkMedia(
+                                      section.cardMedia,
+                                      section.variant,
+                                    ) === option.value;
 
                                   return (
                                     <button
@@ -5808,26 +5839,16 @@ export function PagebuilderShell({
                                       )}
                                       key={option.value}
                                       onClick={() =>
-                                        updateCardLinkGridVariant(
+                                        updateCardLinkMedia(
                                           section.id,
                                           option.value,
                                         )
                                       }
-                                      title={
-                                        option.value === "with-images"
-                                          ? "Show card images"
-                                          : "Hide card images"
-                                      }
+                                      title={option.label}
                                       type="button"
                                     >
-                                      <CardImageIcon
-                                        hidden={option.value === "text-only"}
-                                      />
-                                      <span className="sr-only">
-                                        {option.value === "with-images"
-                                          ? "Show card images"
-                                          : "Hide card images"}
-                                      </span>
+                                      <CardMediaIcon media={option.value} />
+                                      <span className="sr-only">{option.label}</span>
                                     </button>
                                   );
                                 })}

@@ -133,6 +133,7 @@ describe("pagebuilder option save round-trip", () => {
       "cardBorder",
       "cardFill",
       "cardLinks",
+      "cardMedia",
       "colorRecipe",
       "headlineWrap",
       "icons",

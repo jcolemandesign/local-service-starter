@@ -173,6 +173,7 @@ import {
   calloutRevealGridVariantValues,
   calloutSplitPanelVariantValues,
   cardLinkGridAlignValues,
+  resolveCardLinkMedia,
   getSectionStyleFieldSpecs,
   isValidStyleFieldValue,
   resolveBackgroundFill,
@@ -234,6 +235,7 @@ export type PageTemplatePreviewSection = {
   reduceTopPadding?: boolean;
   align?: string;
   cardLinks?: string;
+  cardMedia?: string;
   /** `"join"` shares the background of the section above - see
    *  `groupSectionsIntoBands` in `@/utils/section-bands`. */
   joinAbove?: string;
@@ -931,9 +933,9 @@ export function renderPageTemplateSection(
           {...fourCardLinkGridProps(fieldSection)}
           align={getCardLinkGridAlign(section)}
           cardLinks={resolveCardLinks(section)}
+          cardMedia={resolveCardLinkMedia(section.cardMedia, section.variant)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
-          showImages={section.variant !== "text-only"}
         />
       );
     case "ThreeCardLinkGridSectionV3":
@@ -942,9 +944,9 @@ export function renderPageTemplateSection(
           {...threeCardLinkGridProps(fieldSection)}
           align={getCardLinkGridAlign(section)}
           cardLinks={resolveCardLinks(section)}
+          cardMedia={resolveCardLinkMedia(section.cardMedia, section.variant)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
-          showImages={section.variant !== "text-only"}
         />
       );
     case "ServiceCalloutRevealGridSectionV3":

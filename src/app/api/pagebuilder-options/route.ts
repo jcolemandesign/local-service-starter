@@ -18,6 +18,7 @@ type SavedPagebuilderSection = {
   reduceTopPadding?: boolean;
   align?: string;
   cardLinks?: string;
+  cardMedia?: string;
   icons?: string;
   headingSize?: string;
   headlineWrap?: string;
@@ -313,6 +314,8 @@ function normalizeSection(
     // this function quietly built an object without them.
     cardLinks:
       typeof section.cardLinks === "string" ? section.cardLinks : undefined,
+    cardMedia:
+      typeof section.cardMedia === "string" ? section.cardMedia : undefined,
     icons: typeof section.icons === "string" ? section.icons : undefined,
     headingSize:
       typeof section.headingSize === "string" ? section.headingSize : undefined,

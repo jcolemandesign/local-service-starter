@@ -728,7 +728,7 @@ export const sectionLibraryV3Content = {
         href: "/services/system-replacement",
         imageAlt: "Heating and cooling system replacement",
         imageLabel: "Replacement",
-        imageSrc: "/images/fpo-image.svg",
+        imageSrc: "/images/fpo-icon-visible-equipment.svg",
       },
       {
         title: "HVAC Repair",
@@ -736,7 +736,7 @@ export const sectionLibraryV3Content = {
         href: "/services/hvac-repair",
         imageAlt: "HVAC repair service",
         imageLabel: "Repair",
-        imageSrc: "/images/fpo-image.svg",
+        imageSrc: "/images/fpo-icon-system-performance.svg",
       },
       {
         title: "Maintenance Plans",
@@ -744,7 +744,7 @@ export const sectionLibraryV3Content = {
         href: "/maintenance-plan",
         imageAlt: "Seasonal HVAC maintenance",
         imageLabel: "Maintenance",
-        imageSrc: "/images/fpo-image.svg",
+        imageSrc: "/images/fpo-icon-system-controls.svg",
       },
       {
         title: "Indoor Air Quality",
@@ -752,7 +752,7 @@ export const sectionLibraryV3Content = {
         href: "/services/indoor-air-quality",
         imageAlt: "Indoor air quality service",
         imageLabel: "Air quality",
-        imageSrc: "/images/fpo-image.svg",
+        imageSrc: "/images/fpo-icon-airflow.svg",
       },
     ],
   },
@@ -873,7 +873,7 @@ export const sectionLibraryV3Content = {
         href: "/services/system-replacement",
         imageAlt: "Heating and cooling system replacement",
         imageLabel: "Replacement",
-        imageSrc: "/images/fpo-image.svg",
+        imageSrc: "/images/fpo-icon-visible-equipment.svg",
       },
       {
         title: "HVAC Repair",
@@ -881,7 +881,7 @@ export const sectionLibraryV3Content = {
         href: "/services/hvac-repair",
         imageAlt: "HVAC repair service",
         imageLabel: "Repair",
-        imageSrc: "/images/fpo-image.svg",
+        imageSrc: "/images/fpo-icon-system-performance.svg",
       },
       {
         title: "Maintenance Plans",
@@ -889,7 +889,7 @@ export const sectionLibraryV3Content = {
         href: "/maintenance-plan",
         imageAlt: "Seasonal HVAC maintenance",
         imageLabel: "Maintenance",
-        imageSrc: "/images/fpo-image.svg",
+        imageSrc: "/images/fpo-icon-system-controls.svg",
       },
     ],
   },

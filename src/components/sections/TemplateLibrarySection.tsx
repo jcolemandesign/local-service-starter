@@ -45,6 +45,7 @@ export type PageTemplateSummary = {
     reduceTopPadding?: boolean;
     align?: string;
     cardLinks?: string;
+    cardMedia?: string;
     ratio?: string;
     /** Stable rename anchor - see `SlottedSection` in @/utils/section-id. */
     slotId?: string;

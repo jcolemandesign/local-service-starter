@@ -166,6 +166,7 @@ import {
   calloutRevealGridVariantValues,
   calloutSplitPanelVariantValues,
   cardLinkGridAlignValues,
+  resolveCardLinkMedia,
   fullImageSplitVariantValues,
   resolveHeadlineWrap,
   resolveSectionIcons,
@@ -571,7 +572,7 @@ function renderSectionElement(
           align={getCardLinkGridAlign(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
-          showImages={section.variant !== "text-only"}
+          cardMedia={resolveCardLinkMedia(section.cardMedia, section.variant)}
         />
       );
     case "ServiceCalloutRevealGridSectionV3":
@@ -599,7 +600,7 @@ function renderSectionElement(
           align={getCardLinkGridAlign(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
-          showImages={section.variant !== "text-only"}
+          cardMedia={resolveCardLinkMedia(section.cardMedia, section.variant)}
         />
       );
     case "HorizontalCardLinkGridSectionV3":

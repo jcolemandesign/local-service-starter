@@ -19,6 +19,7 @@ type PageTemplateSection = {
   reduceTopPadding?: boolean;
   align?: string;
   cardLinks?: string;
+  cardMedia?: string;
   icons?: string;
   headingSize?: string;
   headlineWrap?: string;

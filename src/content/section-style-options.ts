@@ -172,11 +172,8 @@ export const calloutRevealGridVariantValues = new Set<string>(
  *   justified  1-4  6-9  11-14  one spare column between each card
  *
  * Deliberately its own axis rather than another value folded into `variant`.
- * `variant` already carries this section's images on/off mode and is hashed
- * into the copy-contract fingerprint, so compounding the two would make a
- * purely visual nudge report every approved page's copy as stale. This sits
- * with `cardFill` and `cardBorder` instead - copy-neutral, outside the
- * fingerprint.
+ * The card media treatment is copy-neutral too; both sit with `cardFill` and
+ * `cardBorder`, outside the copy-contract fingerprint.
  *
  * Four-up is not offered this axis: four cards with a column between each needs
  * 4w + 3 = 14, and there is no whole-column width that satisfies it.
@@ -226,6 +223,47 @@ export function getCardLinkGridAlignOptions(component: string) {
   return unjustifiableCardLinkGrids.has(component)
     ? cardLinkGridAlignOptions.filter((option) => option.value !== "justified")
     : cardLinkGridAlignOptions;
+}
+
+/**
+ * How the vertical card-link grids render each card's single media asset.
+ *
+ * One choice controls the whole row so its visual rhythm stays coherent, and
+ * one asset field per card means switching treatment never creates competing
+ * photo and icon values. `variant` used to hold `with-images` / `text-only`;
+ * the resolver keeps those saved templates rendering while new edits use this
+ * copy-neutral axis.
+ */
+export const cardLinkMediaOptions = [
+  { label: "Photos", value: "photo" },
+  { label: "Icons", value: "icon" },
+  { label: "None", value: "none" },
+] as const;
+
+export type CardLinkMedia = (typeof cardLinkMediaOptions)[number]["value"];
+
+export const cardLinkMediaValues = new Set<string>(
+  cardLinkMediaOptions.map((option) => option.value),
+);
+
+export const cardLinkMediaComponents = new Set<string>([
+  "FourCardLinkGridSectionV3",
+  "ThreeCardLinkGridSectionV3",
+]);
+
+export function sectionSupportsCardLinkMedia(component: string) {
+  return cardLinkMediaComponents.has(component);
+}
+
+export function resolveCardLinkMedia(
+  cardMedia: string | undefined,
+  legacyVariant?: string,
+): CardLinkMedia {
+  if (cardLinkMediaValues.has(cardMedia ?? "")) {
+    return cardMedia as CardLinkMedia;
+  }
+
+  return legacyVariant === "text-only" ? "none" : "photo";
 }
 
 /**
@@ -706,6 +744,7 @@ export const sectionToggleFieldNames = [
    * override into either the wrong colour or nothing at all.
    */
   "cardIntensity",
+  "cardMedia",
   "cardSwatch",
   "cardLinks",
   "colorRecipe",

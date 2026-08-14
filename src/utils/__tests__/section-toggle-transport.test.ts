@@ -54,6 +54,7 @@ describe("section toggle transport", () => {
       "cardFill",
       "cardIntensity",
       "cardLinks",
+      "cardMedia",
       "cardSwatch",
       "colorRecipe",
       "headingSize",

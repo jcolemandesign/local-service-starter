@@ -181,7 +181,7 @@ section (`page-templates.json` / `pagebuilder-options.json`, and on
 `WorkingSection` while editing):
 
 ```txt
-variant     ratio     cardLinks     align   icons   headlineWrap
+variant     ratio     cardLinks     cardMedia     align   icons   headlineWrap
 colorRecipe cardFill  cardBorder    reduceTopPadding  reduceBottomPadding
 ```
 
@@ -218,6 +218,7 @@ The copy-contract fingerprint hashes: `component`, the derived field specs,
 | `variant` | template | **Yes** | In the fingerprint directly |
 | `ratio` | template (staged override allowed) | **Yes** | In the fingerprint directly |
 | `cardLinks` | template | **Yes**, indirectly | `getTemplateCopyFieldsForSection` reads it (`section.cardLinks !== "off"`), so destinations and link labels come and go with it - the shared `linkLabel` on the card grids, `sectionAction` or per-card `actionLabel` on the split-decision sections |
+| `cardMedia` | template | No | Photo / compact icon / none for the vertical card-link grids. One asset field per card is reused across treatments, and legacy `with-images` / `text-only` variants resolve to photo / none. |
 | `align` | template | No | Deliberately its own field, not folded into `variant`, so a purely visual nudge does not report every approved page's copy as stale |
 | `icons` | template | No | Marker icons on/off; same reasoning as `align` |
 | `headlineWrap` | template | No | `text-wrap` on the section's headline (`balance` / `pretty` / `wrap`); same reasoning as `align` |

@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import { sectionLibraryV3Registry } from "@/content/section-library-v3";
 import {
   cardLinkComponents,
+  cardLinkMediaComponents,
   cardLinkGridAlignComponents,
   cardStyleComponents,
   headingSizeComponents,
@@ -58,6 +59,7 @@ const registryComponents = new Set<string>(
 const requiredProps: Array<{ members: Set<string>; props: string[] }> = [
   { members: cardStyleComponents, props: ["cardFill", "cardBorder"] },
   { members: cardLinkComponents, props: ["cardLinks"] },
+  { members: cardLinkMediaComponents, props: ["cardMedia"] },
   { members: cardLinkGridAlignComponents, props: ["align"] },
   { members: tableCompareAlignComponents, props: ["align"] },
   { members: sectionMirrorAlignComponents, props: ["align"] },

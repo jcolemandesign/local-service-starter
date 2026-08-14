@@ -1,7 +1,10 @@
-import Image from "next/image";
 import type { CSSProperties } from "react";
 import { LayoutGrid, LayoutGridItem } from "@/components/primitives";
-import type { CardLinkGridAlign } from "@/content/section-style-options";
+import type {
+  CardLinkGridAlign,
+  CardLinkMedia,
+} from "@/content/section-style-options";
+import { CardLinkIcon, CardLinkPhoto } from "./CardLinkMedia";
 import { CardLinkShell } from "./CardLinkShell";
 
 export type ThreeCardLinkGridItem = {
@@ -22,10 +25,10 @@ export type ThreeCardLinkGridSectionV3Props = {
    * whether copy happened to supply a destination.
    */
   cardLinks?: "on" | "off";
+  cardMedia?: CardLinkMedia;
   cardFill?: "solid" | "none";
   items: readonly ThreeCardLinkGridItem[];
   linkLabel?: string;
-  showImages?: boolean;
 };
 
 function cx(...classes: Array<string | false | undefined>) {
@@ -58,10 +61,10 @@ export function ThreeCardLinkGridSectionV3({
   align = "center",
   cardBorder = "on",
   cardLinks = "on",
+  cardMedia = "photo",
   cardFill = "solid",
   items,
   linkLabel = "Learn more",
-  showImages = true,
 }: ThreeCardLinkGridSectionV3Props) {
   const columnStarts = alignColumnStarts[align] ?? alignColumnStarts.center;
   // See `cardTextPadding` in ServicesBentoCardsSectionV2: fill or border makes
@@ -104,33 +107,12 @@ export function ThreeCardLinkGridSectionV3({
               href={cardLinks === "on" ? item.href : undefined}
               style={{ "--reveal-index": index } as CSSProperties}
             >
-              {showImages ? (
-                <div
-                  className={cx(
-                    "relative aspect-[4/3] overflow-hidden bg-bg-muted",
-                    // With no card around it the image is a standalone element:
-                    // round all four corners rather than the two the card's
-                    // overflow clips, and drop the divider, which would
-                    // otherwise draw a straight line across a rounded edge.
-                    hasCardSurface
-                      ? "border-b border-service-border"
-                      : "rounded-[var(--radius-surface-token)]",
-                  )}
-                >
-                  {item.imageSrc ? (
-                    <Image
-                      alt={item.imageAlt ?? item.title}
-                      className="object-cover transition duration-300 ease-out group-hover/card:scale-[1.025]"
-                      fill
-                      sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 34vw"
-                      src={item.imageSrc}
-                    />
-                  ) : (
-                    <span className="type-label grid h-full place-items-center px-4 text-center text-service-muted">
-                      {item.imageLabel ?? item.title}
-                    </span>
-                  )}
-                </div>
+              {cardMedia === "photo" ? (
+                <CardLinkPhoto
+                  asset={item}
+                  hasCardSurface={hasCardSurface}
+                  sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 34vw"
+                />
               ) : null}
 
               <div
@@ -139,6 +121,7 @@ export function ThreeCardLinkGridSectionV3({
                   cardTextPadding,
                 )}
               >
+                {cardMedia === "icon" ? <CardLinkIcon asset={item} /> : null}
                 <h3 className="type-heading-sm text-service-ink">{item.title}</h3>
                 <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
                   {item.body}

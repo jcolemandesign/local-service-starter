@@ -17,6 +17,8 @@ export type PagebuilderRecipeSection = {
    */
   align?: string;
   cardLinks?: string;
+  /** Photo, compact icon, or no media for the vertical card-link grids. */
+  cardMedia?: string;
   /** Marker icons on/off - see `iconsOptions` in `section-style-options`. */
   icons?: string;
   /** Headline scale - see `sectionHeadingSizeOptions` in

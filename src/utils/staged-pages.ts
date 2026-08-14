@@ -9,6 +9,7 @@ import type {
 import { sectionLibraryV3Content } from "@/content/section-library-v3";
 import {
   getSectionStyleFieldSpecs,
+  resolveCardLinkMedia,
   styleFieldPrefix,
   treatmentUsesGroundImage,
 } from "@/content/section-style-options";
@@ -80,6 +81,8 @@ export type StagedPageTemplateSection = {
   reduceBottomPadding?: boolean;
   reduceTopPadding?: boolean;
   cardLinks?: string;
+  /** Photo, compact icon, or no media for the vertical card-link grids. */
+  cardMedia?: string;
   /** Marker icons on/off - see `iconsOptions` in `section-style-options`. */
   icons?: string;
   /** Headline scale - see `sectionHeadingSizeOptions` in
@@ -1467,6 +1470,7 @@ function getComponentAssetFields(
     return imageCollectionFields(
       "items",
       sectionLibraryV3Content.fourCardLinkGrid.items,
+      resolveCardLinkMedia(section.cardMedia, section.variant) === "none",
     );
   }
 
@@ -1488,6 +1492,7 @@ function getComponentAssetFields(
     return imageCollectionFields(
       "items",
       sectionLibraryV3Content.threeCardLinkGrid.items,
+      resolveCardLinkMedia(section.cardMedia, section.variant) === "none",
     );
   }
 
@@ -1576,6 +1581,7 @@ export function getTemplateAssetFieldsForSection(
 function imageCollectionFields(
   collectionName: string,
   items: ReadonlyArray<{ imageAlt?: string; imageSrc: string }>,
+  optional = false,
 ): TemplateAssetField[] {
   return items.flatMap((item, index) => [
     {
@@ -1586,6 +1592,7 @@ function imageCollectionFields(
     {
       kind: "image" as const,
       name: `${collectionName}.${index + 1}.imageSrc`,
+      optional,
       value: item.imageSrc,
     },
   ]);

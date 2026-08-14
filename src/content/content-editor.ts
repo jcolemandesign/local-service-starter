@@ -79,6 +79,7 @@ type StagedEditorSection = {
   mode?: string;
   name?: string;
   cardLinks?: string;
+  cardMedia?: string;
   ratio?: string;
   variant?: string;
 };
