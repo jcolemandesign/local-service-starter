@@ -14,11 +14,8 @@ import type { PageTemplateSummary } from "@/components/sections";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Template Structure Preview | Local Service Starter",
-  description:
-    "Preview a saved page template's layout and section order. Shows placeholder copy only — real content is populated once a page is staged.",
-};
+const templatePreviewDescription =
+  "Preview a saved page template's layout and section order. Shows placeholder copy only — real content is populated once a page is staged.";
 
 type TemplatePreviewPageProps = {
   params: Promise<{
@@ -37,6 +34,19 @@ const pageTemplatesPath = path.join(
   "content",
   "page-templates.json",
 );
+
+export async function generateMetadata({
+  params,
+}: TemplatePreviewPageProps): Promise<Metadata> {
+  const { templateId } = await params;
+  const templates = await readPageTemplates();
+  const template = templates.find((item) => item.id === templateId);
+
+  return {
+    title: template ? `${template.name} - Template Preview` : "Template Preview",
+    description: templatePreviewDescription,
+  };
+}
 
 export default async function TemplatePreviewPage({
   params,
