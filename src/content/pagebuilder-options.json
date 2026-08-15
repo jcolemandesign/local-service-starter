@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "compact-utility",
       "recipeName": "Individual Service",
-      "savedAt": "2026-08-14T23:19:40.243Z",
+      "savedAt": "2026-08-15T16:01:52.700Z",
       "sectionCount": 12,
       "sections": [
         {
@@ -210,7 +210,7 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "ratio": "4-5",
-          "variant": "text-4-image-3-right",
+          "variant": "image-3-left-text-4",
           "colorRecipe": "page",
           "backgroundFill": "solid",
           "cardBorder": "on",
@@ -226,34 +226,14 @@
           "name": "Large section header",
           "originalComponent": "SectionHeaderLargeSectionV3",
           "originalIndex": -1,
-          "reduceBottomPadding": false,
+          "reduceBottomPadding": true,
           "reduceTopPadding": false,
-          "variant": "center-heading-lg",
+          "variant": "center-heading-xl",
           "colorRecipe": "dark",
           "backgroundFill": "solid",
           "cardBorder": "on",
           "borderTone": "dark",
           "cardFill": "solid"
-        },
-        {
-          "component": "ThreeCardLinkGridSectionV3",
-          "id": "compact-utility-ThreeCardLinkGridSectionV3-added-2",
-          "included": true,
-          "instruction": "Show three linked cards on the shared 14-column grid. Each card spans four columns, leaving the first and last columns open; media can use full-width photos, compact icons, or a text-only layout.",
-          "mode": "Scan",
-          "name": "Card Links 3 Up",
-          "originalComponent": "ThreeCardLinkGridSectionV3",
-          "originalIndex": -1,
-          "reduceBottomPadding": false,
-          "reduceTopPadding": true,
-          "colorRecipe": "dark",
-          "backgroundFill": "solid",
-          "cardBorder": "on",
-          "borderTone": "dark",
-          "cardFill": "none",
-          "align": "center",
-          "cardLinks": "off",
-          "cardMedia": "none"
         },
         {
           "component": "ServiceCalloutRevealGridSectionV3",
@@ -271,7 +251,54 @@
           "backgroundFill": "solid",
           "cardBorder": "on",
           "borderTone": "dark",
-          "cardFill": "none"
+          "cardFill": "none",
+          "joinAbove": "join"
+        },
+        {
+          "component": "SectionHeaderLargeSectionV3",
+          "id": "compact-utility-SectionHeaderLargeSectionV3-added-1-duplicate-2",
+          "included": true,
+          "instruction": "Use a large title-only section header when the next content module needs a stronger visual reset.",
+          "mode": "Section Header",
+          "name": "Large section header",
+          "originalComponent": "SectionHeaderLargeSectionV3",
+          "originalIndex": -1,
+          "reduceBottomPadding": false,
+          "reduceTopPadding": false,
+          "variant": "center-heading-lg",
+          "colorRecipe": "surface",
+          "backgroundFill": "solid",
+          "cardBorder": "on",
+          "borderTone": "dark",
+          "cardFill": "solid",
+          "animation": "reveal",
+          "backgroundTreatment": "image",
+          "joinAbove": "separate",
+          "backgroundConfig": {
+            "nodes": [
+              {
+                "color": "#9ac0fe",
+                "x": 28,
+                "y": 0,
+                "size": 168,
+                "fade": 62,
+                "opacity": 100
+              },
+              {
+                "color": "surface",
+                "x": 88,
+                "y": 100,
+                "size": 95,
+                "fade": 45,
+                "opacity": 100
+              }
+            ],
+            "strength": 18,
+            "animate": false,
+            "speed": 100,
+            "blend": "normal"
+          },
+          "backgroundImageFocus": "24 30"
         },
         {
           "component": "ProjectCaseStudyGallerySectionV3",
@@ -282,13 +309,14 @@
           "name": "Project case study gallery",
           "originalComponent": "ProjectCaseStudyGallerySectionV3",
           "originalIndex": -1,
-          "reduceBottomPadding": true,
+          "reduceBottomPadding": false,
           "reduceTopPadding": true,
           "colorRecipe": "surface",
           "backgroundFill": "solid",
-          "cardBorder": "off",
+          "cardBorder": "on",
           "borderTone": "dark",
-          "cardFill": "solid"
+          "cardFill": "none",
+          "joinAbove": "join"
         },
         {
           "component": "ContentNarrativeFeatureRailSectionV3",
@@ -301,11 +329,11 @@
           "originalIndex": -1,
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
-          "colorRecipe": "surface",
+          "colorRecipe": "page",
           "backgroundFill": "solid",
           "cardBorder": "off",
           "borderTone": "dark",
-          "cardFill": "none"
+          "cardFill": "solid"
         },
         {
           "component": "SectionHeaderLargeSectionV3",
@@ -319,7 +347,7 @@
           "reduceBottomPadding": true,
           "reduceTopPadding": false,
           "variant": "center-heading-md",
-          "colorRecipe": "page",
+          "colorRecipe": "surface",
           "backgroundFill": "solid",
           "cardBorder": "on",
           "borderTone": "dark",
@@ -336,11 +364,12 @@
           "originalIndex": -1,
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
-          "colorRecipe": "page",
+          "colorRecipe": "surface",
           "backgroundFill": "solid",
-          "cardBorder": "off",
+          "cardBorder": "on",
           "borderTone": "dark",
-          "cardFill": "solid",
+          "cardFill": "none",
+          "joinAbove": "join",
           "icons": "off"
         },
         {
@@ -359,7 +388,8 @@
           "backgroundFill": "solid",
           "cardBorder": "off",
           "borderTone": "dark",
-          "cardFill": "none"
+          "cardFill": "none",
+          "joinAbove": "join"
         },
         {
           "component": "ContactSectionModalBegin",

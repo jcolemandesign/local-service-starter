@@ -24,6 +24,7 @@
 # misc
 .DS_Store
 *.pem
+/.claude/settings.local.json
 
 # design reference screenshots - scratch material for a working session, not
 # project assets. Kept on disk, out of history.

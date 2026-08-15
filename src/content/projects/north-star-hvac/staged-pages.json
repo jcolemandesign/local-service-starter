@@ -6,7 +6,7 @@
           "id": "ac-repair.strategy.pageCopy",
           "kind": "copy",
           "path": "strategy.pageCopy",
-          "value": "# Bulk Paste Copy\n\n<!-- Page target: AC Repair (/services/ac-repair) -->\n\n<!-- Template contract: tc-v2-14faavu -->\n\n### 02-fixed-ratio-split-image\n\n<!-- Section contract: sc-v1-1wfa5u0 -->\n\neyebrow: AC Repair Around Lake Norman\nh1: When Your AC Stops Cooling, Get a Clear Next Step\nintro: North Star HVAC helps Lake Norman-area homeowners diagnose cooling problems, understand the repair options, and decide what makes sense after the system has been inspected.\nprimaryAction: Request AC Repair\nsecondaryAction: Call Now\nproofPoints: Serving Huntersville and nearby Lake Norman communities\nClear options after the system is inspected\nClean, respectful service in your home\n\n### 03-large-section-header\n\n<!-- Section contract: sc-v1-1fwo0h3 -->\n\neyebrow: Start with what changed\nheading: You do not need to diagnose the AC before calling\nbody: Tell North Star HVAC what the system is doing now, when the problem started, and what feels different. Those details give the service visit a useful starting point without asking you to identify the cause yourself.\nitems: No Cooling - The system runs or tries to run, but the home is not getting cooler.\nWeak Cooling - The AC is working, but cooling performance has noticeably dropped.\nUneven Rooms - Some areas of the home stay warmer even while the system runs.\n\n### 04-card-links-3-up\n\n<!-- Section contract: sc-v1-ryhh9t -->\n\nserviceItems: Cooling Has Stopped - The AC is running or attempting to run, but the home is no longer cooling the way it should.\nPerformance Has Changed - Airflow, cycling, sound, or cooling output feels different from the system's normal operation.\nThe Problem Keeps Returning - The same cooling concern has come back and you want a clearer look at the current issue and system condition.\n\n### 05-callout-cards-with-reveal-panel\n\n<!-- Section contract: sc-v1-ig8dqb -->\n\ncalloutItems: No Cool Air - The system runs, but the temperature indoors is not coming down the way you expect.\nWeak Airflow - Air from the vents feels noticeably weaker even though the cooling system is operating.\nUneven Cooling - Some rooms stay warmer than others while the rest of the home feels closer to the set temperature.\nFrequent Cycling - The AC starts and stops more often than usual instead of completing a normal cooling cycle.\nUnusual Sounds - The cooling system sounds different than it normally does while starting, running, or shutting down.\nRecurring AC Problem - The same cooling issue has returned after earlier service and you want to understand why.\ncalloutPanels: Get a clear diagnosis before choosing a repair - A complete loss of cooling can have more than one cause. North Star HVAC can inspect the system, explain what was found, and outline the practical repair options before you decide what to do next.\nFind out what changed in the airflow - Weak airflow is useful information for the service visit, but it does not identify the cause by itself. Describe where you notice it and the technician can evaluate the system and explain whether repair or another step is appropriate.\nLook at why some rooms are falling behind - Uneven cooling can show up in several ways, so the next step is understanding how the system is operating rather than guessing at the cause. A service visit can narrow down what deserves attention.\nHave the cycling change properly checked - A noticeable change in how often the AC starts and stops is worth mentioning when you request service. The system can be inspected so the recommendation is based on its current condition and operation.\nStart with when the sound changed - New or unusual sounds are helpful clues during diagnosis. Note when the sound happens and how the system is behaving so the visit can focus on what changed without assuming the cause beforehand.\nLook beyond the latest symptom - When the same AC problem returns, North Star HVAC can evaluate the current issue and overall system condition. If another repair makes sense, it can be explained. If replacement deserves consideration, that path can be discussed clearly too.\ncalloutActions: Request AC repair -> /contact\nRequest an AC check -> /contact\nRequest AC service -> /contact\nRequest a diagnostic -> /contact\nRequest AC repair -> /contact\nReview your options -> /contact\nopenHint: See the next step\ncloseLabel: Close details\n\n### 06-project-case-study-gallery\n\n<!-- Section contract: sc-v1-1vdz21a -->\n\nslides.1.project: NEEDS REVIEW: Verified AC repair project missing\nslides.1.title: NEEDS REVIEW: Approved AC repair case-study headline missing\nslides.1.summary: NEEDS REVIEW: Verified homeowner situation, completed AC repair work, and project outcome were not provided in the supplied source material.\nslides.1.equipment.1.label: Location\nslides.1.equipment.1.value: NEEDS REVIEW: Verified project location missing\nslides.1.equipment.2.label: Equipment\nslides.1.equipment.2.value: NEEDS REVIEW: Verified equipment details missing\nslides.1.equipment.3.label: Work completed\nslides.1.equipment.3.value: NEEDS REVIEW: Verified repair scope missing\nslides.1.testimonial.quote: NEEDS REVIEW: Approved project-specific customer quote missing\nslides.1.testimonial.attribution: NEEDS REVIEW: Approved testimonial attribution missing\nslides.2.project: NEEDS REVIEW: Second verified AC repair project missing\nslides.2.title: NEEDS REVIEW: Approved AC repair case-study headline missing\nslides.2.summary: NEEDS REVIEW: A second verified homeowner situation, completed AC repair scope, and project outcome were not provided in the supplied source material.\nslides.2.equipment.1.label: Location\nslides.2.equipment.1.value: NEEDS REVIEW: Verified project location missing\nslides.2.equipment.2.label: Equipment\nslides.2.equipment.2.value: NEEDS REVIEW: Verified equipment details missing\nslides.2.equipment.3.label: Work completed\nslides.2.equipment.3.value: NEEDS REVIEW: Verified repair scope missing\nslides.2.testimonial.quote: NEEDS REVIEW: Approved project-specific customer quote missing\nslides.2.testimonial.attribution: NEEDS REVIEW: Approved testimonial attribution missing\n\n### 07-longform-with-feature-rail\n\n<!-- Section contract: sc-v1-14nw8b5 -->\n\neyebrow: After the immediate repair\nheading: Use the service visit to make the next decision clearer\nbody: The first job is understanding why the AC is not working properly. Once the system has been inspected, the conversation can stay focused on what needs attention now and whether anything else is worth planning for.\n\nIf repair remains the practical path, North Star HVAC can explain the proposed work after diagnosis. If the system has recurring problems or its condition raises a larger question, replacement can be discussed without treating it as the automatic answer.\n\nSeasonal maintenance can also help you keep a closer eye on system condition between repair calls. Current promotions, replacement financing, and future maintenance-plan details should be confirmed before they become part of the decision.\nsupportingItems.1.eyebrow: Seasonal offer\nsupportingItems.1.title: NEEDS REVIEW: Spring AC offer\nsupportingItems.1.body: NEEDS REVIEW: Confirm that the Spring AC Tune-Up Special is current and approve its pricing, dates, availability, and exclusions.\nsupportingItems.1.actionLabel: Ask About Tune-Ups\nsupportingItems.2.eyebrow: Payment options\nsupportingItems.2.title: Replacement financing\nsupportingItems.2.body: Financing may be available when replacement becomes the practical path. Ask about current eligibility, terms, and options.\nsupportingItems.2.actionLabel: Ask About Financing\nsupportingItems.3.eyebrow: Ongoing care\nsupportingItems.3.title: Plan seasonal maintenance\nsupportingItems.3.body: Maintenance service is available, while formal membership details are still developing and should be confirmed before promotion.\nsupportingItems.3.actionLabel: Ask About Maintenance\nbullets: Diagnose the current AC problem before deciding on the repair.\nCompare replacement only when system condition makes it relevant.\nUse seasonal maintenance to stay informed about system condition.\ntextLinkLabel: Explore all HVAC services\n\n### 08-large-section-header\n\n<!-- Section contract: sc-v1-wgyzbr -->\n\neyebrow: What happens next\nheading: A clear path from the AC problem to your options\nbody: The service process should move from the change you noticed to an informed decision. North Star HVAC reviews the request, inspects the system, explains the findings, and lets you choose the next step.\nitems: Describe the Problem - Share what changed with the AC and when you first noticed it.\nInspect the System - Diagnosis comes before exact repair pricing or a repair recommendation.\nReview Your Options - Understand the proposed work before deciding whether to move forward.\n\n### 09-process-strip\n\n<!-- Section contract: sc-v1-156rav4 -->\n\nsteps: Describe the change - Tell us what stopped working, what still works, and when the AC problem began.\nReview the request - North Star HVAC may call or text to clarify the problem and coordinate the next step.\nInspect the system - The AC is checked so the recommendation is based on its actual condition.\nChoose the next step - Review the findings and proposed work before deciding whether to proceed.\n\n### 10-faq-accordion-sidebar\n\n<!-- Section contract: sc-v1-1txqype -->\n\nheading: Questions about AC repair?\nintro: AC problems can get stressful quickly. Start with these practical answers, or contact North Star HVAC directly if you need help choosing the next step.\nprimaryAction: Contact North Star\nfaqs: Should I call if my AC stops cooling completely? - Yes. Call directly when the loss of cooling is urgent. Limited urgent service may be available depending on schedule, distance, and technician availability, so current availability should be confirmed by phone.\nIs there a diagnostic fee for an AC repair visit? - Repair visits usually require a diagnostic fee. The exact amount and any credit toward approved work are not confirmed for publication, so ask North Star HVAC about the current policy when requesting service.\nCan you tell me the repair price before inspecting the AC? - Exact repair pricing depends on diagnosis. North Star HVAC inspects the system first, explains what was found, and then presents the proposed work and pricing before you decide whether to proceed.\nHow do I know whether to repair or replace my AC? - The right path depends on the diagnosis, system condition, repair history, reliability, and current needs. An older system does not automatically need replacement; both options can be discussed when relevant.\n\n### 11-contact-section-modal-begin\n\n<!-- Section contract: sc-v1-r593ft -->\n\neyebrow: Request AC repair\nheading: Start with what your cooling system needs\nbody: Choose the system and request type that best match the problem. Your selections carry into the next step so North Star HVAC can review what is happening.\nsystemPrompt: What system needs help?\nrequestPrompt: What kind of AC help?\ncontinueLabel: Continue\nhelperText: Your selections carry forward; submitting the request does not confirm an appointment."
+          "value": "# Bulk Paste Copy\n\n<!-- Page target: AC Repair (/services/ac-repair) -->\n\n<!-- Template contract: tc-v2-1h11rng -->\n\n### 02-fixed-ratio-split-image\n\n<!-- Section contract: sc-v1-qq5n3d -->\n\neyebrow: AC Repair Around Lake Norman\nh1: When Your AC Stops Cooling, Get a Clear Next Step\nintro: North Star HVAC helps Lake Norman-area homeowners understand what changed, diagnose the cooling problem, and review practical repair options after the system has been inspected.\nprimaryAction: Request AC Repair\nsecondaryAction: Call for AC Help\nproofPoints: Serving Huntersville and nearby Lake Norman communities\nClear options after the system is inspected\nClean, respectful service in your home\n\n### 03-large-section-header\n\n<!-- Section contract: sc-v1-1mraaw2 -->\n\neyebrow: Start with what changed\nheading: You do not need to diagnose the AC before calling\nbody: Tell North Star HVAC what the system is doing now, when the problem started, and what feels different. Those details give the service visit a useful starting point without asking you to identify the cause yourself.\nitems: No Cooling - The system runs or tries to run, but the home is not getting noticeably cooler.\nWeak Cooling - The AC is working, but cooling performance has dropped from what you normally expect.\nUneven Rooms - Some parts of the home stay warmer even while the cooling system continues to run.\n\n### 04-callout-cards-with-reveal-panel\n\n<!-- Section contract: sc-v1-ig8dqb -->\n\ncalloutItems: AC Is Not Cooling - The system runs or attempts to run, but the temperature indoors is not coming down as expected.\nAirflow Feels Weak - Air from the vents feels noticeably weaker than usual even while the cooling system is operating.\nRooms Cool Unevenly - Some rooms stay warmer than others while the rest of the home gets closer to the thermostat setting.\nAC Starts and Stops - The system begins cooling, shuts off, and starts again more often than it normally does.\nNew or Unusual Sounds - The AC sounds different while starting, running, or shutting down and you want the change checked.\nProblem Keeps Returning - The same cooling concern has come back after earlier service and you want a clearer explanation.\ncalloutPanels: Get a clear diagnosis before choosing a repair - A complete loss of cooling can have more than one cause. North Star HVAC can inspect the system, explain what was found, and outline the practical repair options before you decide what to do next.\nFind out what changed in the airflow - Weak airflow is useful information, but it does not identify the cause by itself. Describe where you notice the change and the system can be inspected to determine whether repair or another service step is appropriate.\nLook at why some rooms are falling behind - Uneven cooling can show up for different reasons, so the useful next step is understanding how the system is operating rather than guessing at the cause. A service visit can narrow down what deserves attention.\nHave the cycling change properly checked - A noticeable change in how often the AC starts and stops is worth mentioning when you request service. The system can be inspected so the recommendation is based on its current operation and condition.\nStart with when the sound changed - New or unusual sounds can help focus the service visit. Note when the sound happens and what the system is doing at the time so the technician can evaluate the change without assuming the cause beforehand.\nLook beyond the latest symptom - When the same AC problem returns, North Star HVAC can evaluate the current issue and overall system condition. If another repair makes sense, it can be explained. If replacement deserves consideration, that can be discussed too.\ncalloutActions: Request AC repair -> /contact\nRequest an AC check -> /contact\nRequest AC service -> /contact\nRequest a diagnostic -> /contact\nRequest AC repair -> /contact\nReview your options -> /contact\nopenHint: See the next step\ncloseLabel: Close details\n\n### 05-large-section-header\n\n<!-- Section contract: sc-v1-1fwo0h3 -->\n\neyebrow: What good service adds\nheading: A repair visit should leave you with more than a guess\nbody: The goal is to understand what was found, what work is being recommended, and what happens next. North Star HVAC focuses on clear explanations and practical options rather than pushing the most expensive path.\nitems: Clear Findings - Understand what the inspection found before deciding on the work.\nPractical Options - Repair stays on the table when it makes sense for the system.\nA Defined Next Step - Know what is being recommended and what you are choosing before work moves forward.\n\n### 06-project-case-study-gallery\n\n<!-- Section contract: sc-v1-1vdz21a -->\n\nslides.1.project: NEEDS REVIEW: Verified AC repair project missing\nslides.1.title: NEEDS REVIEW: Approved AC repair case-study headline missing\nslides.1.summary: NEEDS REVIEW: Verified homeowner situation, completed AC repair work, and project outcome were not provided in the supplied source material.\nslides.1.equipment.1.label: Location\nslides.1.equipment.1.value: NEEDS REVIEW: Verified project location missing\nslides.1.equipment.2.label: Equipment\nslides.1.equipment.2.value: NEEDS REVIEW: Verified equipment details missing\nslides.1.equipment.3.label: Work completed\nslides.1.equipment.3.value: NEEDS REVIEW: Verified repair scope missing\nslides.1.testimonial.quote: NEEDS REVIEW: Approved project-specific customer quote missing\nslides.1.testimonial.attribution: NEEDS REVIEW: Approved testimonial attribution missing\nslides.2.project: NEEDS REVIEW: Second verified AC repair project missing\nslides.2.title: NEEDS REVIEW: Approved AC repair case-study headline missing\nslides.2.summary: NEEDS REVIEW: A second verified homeowner situation, completed AC repair scope, and project outcome were not provided in the supplied source material.\nslides.2.equipment.1.label: Location\nslides.2.equipment.1.value: NEEDS REVIEW: Verified project location missing\nslides.2.equipment.2.label: Equipment\nslides.2.equipment.2.value: NEEDS REVIEW: Verified equipment details missing\nslides.2.equipment.3.label: Work completed\nslides.2.equipment.3.value: NEEDS REVIEW: Verified repair scope missing\nslides.2.testimonial.quote: NEEDS REVIEW: Approved project-specific customer quote missing\nslides.2.testimonial.attribution: NEEDS REVIEW: Approved testimonial attribution missing\n\n### 07-longform-with-feature-rail\n\n<!-- Section contract: sc-v1-14nw8b5 -->\n\neyebrow: After the immediate repair\nheading: Use the diagnosis to make the next decision clearer\nbody: The first job is understanding why the AC is not working properly. Once the system has been inspected, the conversation can stay focused on what needs attention now and what, if anything, is worth planning for next.\n\nIf repair remains the practical path, North Star HVAC can explain the proposed work after diagnosis. If the system has recurring problems or its condition raises a larger question, replacement can be discussed without treating it as the automatic answer.\n\nSeasonal maintenance can also help you stay informed about system condition between repair calls. Current promotions, replacement financing, and future maintenance-plan details should be confirmed before they become part of the decision.\nsupportingItems.1.eyebrow: Seasonal offer\nsupportingItems.1.title: NEEDS REVIEW: Spring AC offer\nsupportingItems.1.body: NEEDS REVIEW: Confirm that the Spring AC Tune-Up Special is current and approve its pricing, dates, availability, and exclusions.\nsupportingItems.1.actionLabel: Ask About Tune-Ups\nsupportingItems.2.eyebrow: Payment options\nsupportingItems.2.title: Replacement financing\nsupportingItems.2.body: Financing may be available when replacement becomes the practical path. Ask about current eligibility, terms, and options.\nsupportingItems.2.actionLabel: Ask About Financing\nsupportingItems.3.eyebrow: Ongoing care\nsupportingItems.3.title: Plan seasonal maintenance\nsupportingItems.3.body: Maintenance service is available, while formal membership details are still developing and should be confirmed before promotion.\nsupportingItems.3.actionLabel: Ask About Maintenance\nbullets: Diagnose the current AC problem before deciding on the repair.\nKeep repair on the table when it remains the practical option.\nCompare replacement only when system condition makes it relevant.\ntextLinkLabel: Explore all HVAC services\n\n### 08-large-section-header\n\n<!-- Section contract: sc-v1-wgyzbr -->\n\neyebrow: What happens next\nheading: From the cooling problem to a clear decision\nbody: The process moves from what you noticed to an informed next step. North Star HVAC reviews the request, inspects the system, explains the findings, and gives you the information needed to decide how to proceed.\nitems: Describe the Problem - Share what changed with the AC and when you first noticed it.\nInspect the System - Diagnosis comes before exact repair pricing or a repair recommendation.\nReview Your Options - Understand the proposed work before deciding whether to move forward.\n\n### 09-process-strip\n\n<!-- Section contract: sc-v1-156rav4 -->\n\nsteps: Describe the change - Tell us what stopped working, what still works, and when the AC problem began.\nReview the request - North Star HVAC may call or text to clarify the problem and coordinate the next step.\nInspect the system - The AC is checked so the recommendation is based on its current condition.\nChoose the next step - Review the findings and proposed work before deciding whether to proceed.\n\n### 10-faq-accordion-sidebar\n\n<!-- Section contract: sc-v1-1txqype -->\n\nheading: Questions about AC repair?\nintro: AC problems can get stressful quickly. Start with these practical answers, or contact North Star HVAC directly if you need help choosing the next step.\nprimaryAction: Contact North Star\nfaqs: Should I call if my AC stops cooling completely? - Yes. Call directly when the loss of cooling is urgent. Limited urgent service may be available depending on schedule, distance, and technician availability, so current availability should be confirmed by phone.\nIs there a diagnostic fee for an AC repair visit? - Repair visits usually require a diagnostic fee. The exact amount and any credit toward approved work are not confirmed for publication, so ask North Star HVAC about the current policy when requesting service.\nCan you tell me the repair price before inspecting the AC? - Exact repair pricing depends on diagnosis. North Star HVAC inspects the system first, explains what was found, and then presents the proposed work and pricing before you decide whether to proceed.\nHow do I know whether to repair or replace my AC? - The right path depends on the diagnosis, system condition, repair history, reliability, and current needs. An older system does not automatically need replacement; both options can be discussed when relevant.\n\n### 11-contact-section-modal-begin\n\n<!-- Section contract: sc-v1-r593ft -->\n\neyebrow: Request AC repair\nheading: Start with what your cooling system needs\nbody: Choose the system and request type that best match what is happening. If the loss of cooling is urgent, call directly rather than relying on the online request.\nsystemPrompt: What system needs help?\nrequestPrompt: What kind of AC help?\ncontinueLabel: Continue\nhelperText: Your selections carry into the next step; submitting a request does not confirm an appointment.\n\nRewritten from the prior AC Repair batch against the new **Individual Service Balanced 1** contract and fingerprint."
         },
         {
           "id": "ac-repair.strategy.contentPlan",
@@ -132,7 +132,7 @@
           "id": "ac-repair.02-fixed-ratio-split-image.intro",
           "kind": "copy",
           "path": "02-fixed-ratio-split-image.intro",
-          "value": "North Star HVAC helps Lake Norman-area homeowners diagnose cooling problems, understand the repair options, and decide what makes sense after the system has been inspected."
+          "value": "North Star HVAC helps Lake Norman-area homeowners understand what changed, diagnose the cooling problem, and review practical repair options after the system has been inspected."
         },
         {
           "id": "ac-repair.02-fixed-ratio-split-image.primaryAction",
@@ -144,7 +144,7 @@
           "id": "ac-repair.02-fixed-ratio-split-image.secondaryAction",
           "kind": "copy",
           "path": "02-fixed-ratio-split-image.secondaryAction",
-          "value": "Call Now"
+          "value": "Call for AC Help"
         },
         {
           "id": "ac-repair.02-fixed-ratio-split-image.proofPoints",
@@ -228,7 +228,7 @@
           "id": "ac-repair.03-large-section-header.items",
           "kind": "copy",
           "path": "03-large-section-header.items",
-          "value": "No Cooling - The system runs or tries to run, but the home is not getting cooler.\nWeak Cooling - The AC is working, but cooling performance has noticeably dropped.\nUneven Rooms - Some areas of the home stay warmer even while the system runs."
+          "value": "No Cooling - The system runs or tries to run, but the home is not getting noticeably cooler.\nWeak Cooling - The AC is working, but cooling performance has dropped from what you normally expect.\nUneven Rooms - Some parts of the home stay warmer even while the cooling system continues to run."
         },
         {
           "id": "ac-repair.03-large-section-header.style.colorRecipe",
@@ -279,249 +279,201 @@
           "value": ""
         },
         {
-          "id": "ac-repair.04-card-links-3-up.contentDirection",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.contentDirection",
           "kind": "meta",
-          "path": "04-card-links-3-up.contentDirection",
-          "value": "Show three linked cards on the shared 14-column grid. Each card spans four columns, leaving the first and last columns open; media can use full-width photos, compact icons, or a text-only layout."
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.serviceItems",
-          "kind": "copy",
-          "path": "04-card-links-3-up.serviceItems",
-          "value": "Cooling Has Stopped - The AC is running or attempting to run, but the home is no longer cooling the way it should.\nPerformance Has Changed - Airflow, cycling, sound, or cooling output feels different from the system's normal operation.\nThe Problem Keeps Returning - The same cooling concern has come back and you want a clearer look at the current issue and system condition."
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.items.1.imageAlt",
-          "kind": "meta",
-          "path": "04-card-links-3-up.items.1.imageAlt",
-          "value": "Heating and cooling system replacement"
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.items.1.imageSrc",
-          "kind": "image",
-          "path": "04-card-links-3-up.items.1.imageSrc",
-          "value": "/images/fpo-image.svg"
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.items.2.imageAlt",
-          "kind": "meta",
-          "path": "04-card-links-3-up.items.2.imageAlt",
-          "value": "HVAC repair service"
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.items.2.imageSrc",
-          "kind": "image",
-          "path": "04-card-links-3-up.items.2.imageSrc",
-          "value": "/images/fpo-image.svg"
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.items.3.imageAlt",
-          "kind": "meta",
-          "path": "04-card-links-3-up.items.3.imageAlt",
-          "value": "Seasonal HVAC maintenance"
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.items.3.imageSrc",
-          "kind": "image",
-          "path": "04-card-links-3-up.items.3.imageSrc",
-          "value": "/images/fpo-image.svg"
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.style.colorRecipe",
-          "kind": "meta",
-          "path": "04-card-links-3-up.style.colorRecipe",
-          "value": ""
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.style.joinAbove",
-          "kind": "meta",
-          "path": "04-card-links-3-up.style.joinAbove",
-          "value": ""
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.style.backgroundTreatment",
-          "kind": "meta",
-          "path": "04-card-links-3-up.style.backgroundTreatment",
-          "value": ""
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.style.backgroundImageFit",
-          "kind": "meta",
-          "path": "04-card-links-3-up.style.backgroundImageFit",
-          "value": ""
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.style.backgroundImageFocus",
-          "kind": "meta",
-          "path": "04-card-links-3-up.style.backgroundImageFocus",
-          "value": ""
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.style.cardFill",
-          "kind": "meta",
-          "path": "04-card-links-3-up.style.cardFill",
-          "value": ""
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.style.cardBorder",
-          "kind": "meta",
-          "path": "04-card-links-3-up.style.cardBorder",
-          "value": ""
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.style.cardSwatch",
-          "kind": "meta",
-          "path": "04-card-links-3-up.style.cardSwatch",
-          "value": ""
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.style.cardIntensity",
-          "kind": "meta",
-          "path": "04-card-links-3-up.style.cardIntensity",
-          "value": ""
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.style.borderSwatch",
-          "kind": "meta",
-          "path": "04-card-links-3-up.style.borderSwatch",
-          "value": ""
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.style.borderIntensity",
-          "kind": "meta",
-          "path": "04-card-links-3-up.style.borderIntensity",
-          "value": ""
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.style.animation",
-          "kind": "meta",
-          "path": "04-card-links-3-up.style.animation",
-          "value": ""
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.style.reduceTopPadding",
-          "kind": "meta",
-          "path": "04-card-links-3-up.style.reduceTopPadding",
-          "value": ""
-        },
-        {
-          "id": "ac-repair.04-card-links-3-up.style.reduceBottomPadding",
-          "kind": "meta",
-          "path": "04-card-links-3-up.style.reduceBottomPadding",
-          "value": ""
-        },
-        {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.contentDirection",
-          "kind": "meta",
-          "path": "05-callout-cards-with-reveal-panel.contentDirection",
+          "path": "04-callout-cards-with-reveal-panel.contentDirection",
           "value": "Show four problem-first callout cards in a 2x2 block on the 14-column grid. Clicking a card reveals a panel over the whole block with that card's detail and its own CTA. Card copy is left-aligned and runs the full card width; the cards carry no imagery."
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.calloutItems",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.calloutItems",
           "kind": "copy",
-          "path": "05-callout-cards-with-reveal-panel.calloutItems",
-          "value": "No Cool Air - The system runs, but the temperature indoors is not coming down the way you expect.\nWeak Airflow - Air from the vents feels noticeably weaker even though the cooling system is operating.\nUneven Cooling - Some rooms stay warmer than others while the rest of the home feels closer to the set temperature.\nFrequent Cycling - The AC starts and stops more often than usual instead of completing a normal cooling cycle.\nUnusual Sounds - The cooling system sounds different than it normally does while starting, running, or shutting down.\nRecurring AC Problem - The same cooling issue has returned after earlier service and you want to understand why."
+          "path": "04-callout-cards-with-reveal-panel.calloutItems",
+          "value": "AC Is Not Cooling - The system runs or attempts to run, but the temperature indoors is not coming down as expected.\nAirflow Feels Weak - Air from the vents feels noticeably weaker than usual even while the cooling system is operating.\nRooms Cool Unevenly - Some rooms stay warmer than others while the rest of the home gets closer to the thermostat setting.\nAC Starts and Stops - The system begins cooling, shuts off, and starts again more often than it normally does.\nNew or Unusual Sounds - The AC sounds different while starting, running, or shutting down and you want the change checked.\nProblem Keeps Returning - The same cooling concern has come back after earlier service and you want a clearer explanation."
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.calloutPanels",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.calloutPanels",
           "kind": "copy",
-          "path": "05-callout-cards-with-reveal-panel.calloutPanels",
-          "value": "Get a clear diagnosis before choosing a repair - A complete loss of cooling can have more than one cause. North Star HVAC can inspect the system, explain what was found, and outline the practical repair options before you decide what to do next.\nFind out what changed in the airflow - Weak airflow is useful information for the service visit, but it does not identify the cause by itself. Describe where you notice it and the technician can evaluate the system and explain whether repair or another step is appropriate.\nLook at why some rooms are falling behind - Uneven cooling can show up in several ways, so the next step is understanding how the system is operating rather than guessing at the cause. A service visit can narrow down what deserves attention.\nHave the cycling change properly checked - A noticeable change in how often the AC starts and stops is worth mentioning when you request service. The system can be inspected so the recommendation is based on its current condition and operation.\nStart with when the sound changed - New or unusual sounds are helpful clues during diagnosis. Note when the sound happens and how the system is behaving so the visit can focus on what changed without assuming the cause beforehand.\nLook beyond the latest symptom - When the same AC problem returns, North Star HVAC can evaluate the current issue and overall system condition. If another repair makes sense, it can be explained. If replacement deserves consideration, that path can be discussed clearly too."
+          "path": "04-callout-cards-with-reveal-panel.calloutPanels",
+          "value": "Get a clear diagnosis before choosing a repair - A complete loss of cooling can have more than one cause. North Star HVAC can inspect the system, explain what was found, and outline the practical repair options before you decide what to do next.\nFind out what changed in the airflow - Weak airflow is useful information, but it does not identify the cause by itself. Describe where you notice the change and the system can be inspected to determine whether repair or another service step is appropriate.\nLook at why some rooms are falling behind - Uneven cooling can show up for different reasons, so the useful next step is understanding how the system is operating rather than guessing at the cause. A service visit can narrow down what deserves attention.\nHave the cycling change properly checked - A noticeable change in how often the AC starts and stops is worth mentioning when you request service. The system can be inspected so the recommendation is based on its current operation and condition.\nStart with when the sound changed - New or unusual sounds can help focus the service visit. Note when the sound happens and what the system is doing at the time so the technician can evaluate the change without assuming the cause beforehand.\nLook beyond the latest symptom - When the same AC problem returns, North Star HVAC can evaluate the current issue and overall system condition. If another repair makes sense, it can be explained. If replacement deserves consideration, that can be discussed too."
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.calloutActions",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.calloutActions",
           "kind": "copy",
-          "path": "05-callout-cards-with-reveal-panel.calloutActions",
+          "path": "04-callout-cards-with-reveal-panel.calloutActions",
           "value": "Request AC repair -> /contact\nRequest an AC check -> /contact\nRequest AC service -> /contact\nRequest a diagnostic -> /contact\nRequest AC repair -> /contact\nReview your options -> /contact"
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.openHint",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.openHint",
           "kind": "copy",
-          "path": "05-callout-cards-with-reveal-panel.openHint",
+          "path": "04-callout-cards-with-reveal-panel.openHint",
           "value": "See the next step"
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.closeLabel",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.closeLabel",
           "kind": "copy",
-          "path": "05-callout-cards-with-reveal-panel.closeLabel",
+          "path": "04-callout-cards-with-reveal-panel.closeLabel",
           "value": "Close details"
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.style.colorRecipe",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.style.colorRecipe",
           "kind": "meta",
-          "path": "05-callout-cards-with-reveal-panel.style.colorRecipe",
+          "path": "04-callout-cards-with-reveal-panel.style.colorRecipe",
           "value": ""
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.style.joinAbove",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.style.joinAbove",
           "kind": "meta",
-          "path": "05-callout-cards-with-reveal-panel.style.joinAbove",
+          "path": "04-callout-cards-with-reveal-panel.style.joinAbove",
           "value": ""
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.style.backgroundTreatment",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.style.backgroundTreatment",
           "kind": "meta",
-          "path": "05-callout-cards-with-reveal-panel.style.backgroundTreatment",
+          "path": "04-callout-cards-with-reveal-panel.style.backgroundTreatment",
           "value": ""
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.style.backgroundImageFit",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.style.backgroundImageFit",
           "kind": "meta",
-          "path": "05-callout-cards-with-reveal-panel.style.backgroundImageFit",
+          "path": "04-callout-cards-with-reveal-panel.style.backgroundImageFit",
           "value": ""
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.style.backgroundImageFocus",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.style.backgroundImageFocus",
           "kind": "meta",
-          "path": "05-callout-cards-with-reveal-panel.style.backgroundImageFocus",
+          "path": "04-callout-cards-with-reveal-panel.style.backgroundImageFocus",
           "value": ""
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.style.cardFill",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.style.cardFill",
           "kind": "meta",
-          "path": "05-callout-cards-with-reveal-panel.style.cardFill",
+          "path": "04-callout-cards-with-reveal-panel.style.cardFill",
           "value": ""
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.style.cardBorder",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.style.cardBorder",
           "kind": "meta",
-          "path": "05-callout-cards-with-reveal-panel.style.cardBorder",
+          "path": "04-callout-cards-with-reveal-panel.style.cardBorder",
           "value": ""
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.style.cardSwatch",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.style.cardSwatch",
           "kind": "meta",
-          "path": "05-callout-cards-with-reveal-panel.style.cardSwatch",
+          "path": "04-callout-cards-with-reveal-panel.style.cardSwatch",
           "value": ""
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.style.cardIntensity",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.style.cardIntensity",
           "kind": "meta",
-          "path": "05-callout-cards-with-reveal-panel.style.cardIntensity",
+          "path": "04-callout-cards-with-reveal-panel.style.cardIntensity",
           "value": ""
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.style.borderSwatch",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.style.borderSwatch",
           "kind": "meta",
-          "path": "05-callout-cards-with-reveal-panel.style.borderSwatch",
+          "path": "04-callout-cards-with-reveal-panel.style.borderSwatch",
           "value": ""
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.style.borderIntensity",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.style.borderIntensity",
           "kind": "meta",
-          "path": "05-callout-cards-with-reveal-panel.style.borderIntensity",
+          "path": "04-callout-cards-with-reveal-panel.style.borderIntensity",
           "value": ""
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.style.reduceTopPadding",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.style.reduceTopPadding",
           "kind": "meta",
-          "path": "05-callout-cards-with-reveal-panel.style.reduceTopPadding",
+          "path": "04-callout-cards-with-reveal-panel.style.reduceTopPadding",
           "value": ""
         },
         {
-          "id": "ac-repair.05-callout-cards-with-reveal-panel.style.reduceBottomPadding",
+          "id": "ac-repair.04-callout-cards-with-reveal-panel.style.reduceBottomPadding",
           "kind": "meta",
-          "path": "05-callout-cards-with-reveal-panel.style.reduceBottomPadding",
+          "path": "04-callout-cards-with-reveal-panel.style.reduceBottomPadding",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-large-section-header.contentDirection",
+          "kind": "meta",
+          "path": "05-large-section-header.contentDirection",
+          "value": "Use a large title-only section header when the next content module needs a stronger visual reset."
+        },
+        {
+          "id": "ac-repair.05-large-section-header.eyebrow",
+          "kind": "copy",
+          "path": "05-large-section-header.eyebrow",
+          "value": "What good service adds"
+        },
+        {
+          "id": "ac-repair.05-large-section-header.heading",
+          "kind": "copy",
+          "path": "05-large-section-header.heading",
+          "value": "A repair visit should leave you with more than a guess"
+        },
+        {
+          "id": "ac-repair.05-large-section-header.body",
+          "kind": "copy",
+          "path": "05-large-section-header.body",
+          "value": "The goal is to understand what was found, what work is being recommended, and what happens next. North Star HVAC focuses on clear explanations and practical options rather than pushing the most expensive path."
+        },
+        {
+          "id": "ac-repair.05-large-section-header.items",
+          "kind": "copy",
+          "path": "05-large-section-header.items",
+          "value": "Clear Findings - Understand what the inspection found before deciding on the work.\nPractical Options - Repair stays on the table when it makes sense for the system.\nA Defined Next Step - Know what is being recommended and what you are choosing before work moves forward."
+        },
+        {
+          "id": "ac-repair.05-large-section-header.backgroundImage",
+          "kind": "image",
+          "path": "05-large-section-header.backgroundImage",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-large-section-header.style.colorRecipe",
+          "kind": "meta",
+          "path": "05-large-section-header.style.colorRecipe",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-large-section-header.style.joinAbove",
+          "kind": "meta",
+          "path": "05-large-section-header.style.joinAbove",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-large-section-header.style.backgroundTreatment",
+          "kind": "meta",
+          "path": "05-large-section-header.style.backgroundTreatment",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-large-section-header.style.backgroundImageFit",
+          "kind": "meta",
+          "path": "05-large-section-header.style.backgroundImageFit",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-large-section-header.style.backgroundImageFocus",
+          "kind": "meta",
+          "path": "05-large-section-header.style.backgroundImageFocus",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-large-section-header.style.animation",
+          "kind": "meta",
+          "path": "05-large-section-header.style.animation",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-large-section-header.style.reduceTopPadding",
+          "kind": "meta",
+          "path": "05-large-section-header.style.reduceTopPadding",
+          "value": ""
+        },
+        {
+          "id": "ac-repair.05-large-section-header.style.reduceBottomPadding",
+          "kind": "meta",
+          "path": "05-large-section-header.style.reduceBottomPadding",
           "value": ""
         },
         {
@@ -780,13 +732,13 @@
           "id": "ac-repair.07-longform-with-feature-rail.heading",
           "kind": "copy",
           "path": "07-longform-with-feature-rail.heading",
-          "value": "Use the service visit to make the next decision clearer"
+          "value": "Use the diagnosis to make the next decision clearer"
         },
         {
           "id": "ac-repair.07-longform-with-feature-rail.body",
           "kind": "copy",
           "path": "07-longform-with-feature-rail.body",
-          "value": "The first job is understanding why the AC is not working properly. Once the system has been inspected, the conversation can stay focused on what needs attention now and whether anything else is worth planning for.\n\nIf repair remains the practical path, North Star HVAC can explain the proposed work after diagnosis. If the system has recurring problems or its condition raises a larger question, replacement can be discussed without treating it as the automatic answer.\n\nSeasonal maintenance can also help you keep a closer eye on system condition between repair calls. Current promotions, replacement financing, and future maintenance-plan details should be confirmed before they become part of the decision."
+          "value": "The first job is understanding why the AC is not working properly. Once the system has been inspected, the conversation can stay focused on what needs attention now and what, if anything, is worth planning for next.\n\nIf repair remains the practical path, North Star HVAC can explain the proposed work after diagnosis. If the system has recurring problems or its condition raises a larger question, replacement can be discussed without treating it as the automatic answer.\n\nSeasonal maintenance can also help you stay informed about system condition between repair calls. Current promotions, replacement financing, and future maintenance-plan details should be confirmed before they become part of the decision."
         },
         {
           "id": "ac-repair.07-longform-with-feature-rail.supportingItems.1.eyebrow",
@@ -864,7 +816,7 @@
           "id": "ac-repair.07-longform-with-feature-rail.bullets",
           "kind": "copy",
           "path": "07-longform-with-feature-rail.bullets",
-          "value": "Diagnose the current AC problem before deciding on the repair.\nCompare replacement only when system condition makes it relevant.\nUse seasonal maintenance to stay informed about system condition."
+          "value": "Diagnose the current AC problem before deciding on the repair.\nKeep repair on the table when it remains the practical option.\nCompare replacement only when system condition makes it relevant."
         },
         {
           "id": "ac-repair.07-longform-with-feature-rail.textLinkLabel",
@@ -984,13 +936,13 @@
           "id": "ac-repair.08-large-section-header.heading",
           "kind": "copy",
           "path": "08-large-section-header.heading",
-          "value": "A clear path from the AC problem to your options"
+          "value": "From the cooling problem to a clear decision"
         },
         {
           "id": "ac-repair.08-large-section-header.body",
           "kind": "copy",
           "path": "08-large-section-header.body",
-          "value": "The service process should move from the change you noticed to an informed decision. North Star HVAC reviews the request, inspects the system, explains the findings, and lets you choose the next step."
+          "value": "The process moves from what you noticed to an informed next step. North Star HVAC reviews the request, inspects the system, explains the findings, and gives you the information needed to decide how to proceed."
         },
         {
           "id": "ac-repair.08-large-section-header.items",
@@ -1056,7 +1008,7 @@
           "id": "ac-repair.09-process-strip.steps",
           "kind": "copy",
           "path": "09-process-strip.steps",
-          "value": "Describe the change - Tell us what stopped working, what still works, and when the AC problem began.\nReview the request - North Star HVAC may call or text to clarify the problem and coordinate the next step.\nInspect the system - The AC is checked so the recommendation is based on its actual condition.\nChoose the next step - Review the findings and proposed work before deciding whether to proceed."
+          "value": "Describe the change - Tell us what stopped working, what still works, and when the AC problem began.\nReview the request - North Star HVAC may call or text to clarify the problem and coordinate the next step.\nInspect the system - The AC is checked so the recommendation is based on its current condition.\nChoose the next step - Review the findings and proposed work before deciding whether to proceed."
         },
         {
           "id": "ac-repair.09-process-strip.style.colorRecipe",
@@ -1272,7 +1224,7 @@
           "id": "ac-repair.11-contact-section-modal-begin.body",
           "kind": "copy",
           "path": "11-contact-section-modal-begin.body",
-          "value": "Choose the system and request type that best match the problem. Your selections carry into the next step so North Star HVAC can review what is happening."
+          "value": "Choose the system and request type that best match what is happening. If the loss of cooling is urgent, call directly rather than relying on the online request."
         },
         {
           "id": "ac-repair.11-contact-section-modal-begin.systemPrompt",
@@ -1296,7 +1248,7 @@
           "id": "ac-repair.11-contact-section-modal-begin.helperText",
           "kind": "copy",
           "path": "11-contact-section-modal-begin.helperText",
-          "value": "Your selections carry forward; submitting the request does not confirm an appointment."
+          "value": "Your selections carry into the next step; submitting a request does not confirm an appointment.\n\nRewritten from the prior AC Repair batch against the new **Individual Service Balanced 1** contract and fingerprint."
         },
         {
           "id": "ac-repair.11-contact-section-modal-begin.style.colorRecipe",
@@ -1486,10 +1438,10 @@
         }
       ],
       "fieldCounts": {
-        "copy": 84,
-        "image": 7,
+        "copy": 87,
+        "image": 5,
         "link": 0,
-        "meta": 156
+        "meta": 147
       },
       "navigation": [
         {
@@ -1572,17 +1524,17 @@
       "pageId": "ac-repair",
       "pageLabel": "AC Repair",
       "previewHref": "/dev/staged-pages/ac-repair",
-      "promotedAt": "2026-08-14T23:20:36.488Z",
+      "promotedAt": "2026-08-15T16:04:43.510Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-14T23:33:14.271Z",
-        "id": "north-star-hvac-v59",
-        "version": 59
+        "createdAt": "2026-08-15T16:07:38.194Z",
+        "id": "north-star-hvac-v60",
+        "version": 60
       },
       "sourceStage": "strategy-template",
       "template": {
-        "id": "individual-service-balanced",
-        "name": "Individual Service Balanced",
+        "id": "individual-service-balanced-1",
+        "name": "Individual Service Balanced 1",
         "pageType": "Individual Service",
         "sectionCount": 12,
         "sections": [
@@ -1603,7 +1555,7 @@
             "colorRecipe": "brand"
           },
           {
-            "slotId": "slot-21449ec972b9",
+            "slotId": "slot-c36be615ab5f",
             "component": "HeroSplitFixedImageSectionV3",
             "instruction": "Use a split hero with a bounded fixed-ratio image frame instead of a full-screen image.",
             "mode": "Hero",
@@ -1618,46 +1570,27 @@
             "cardFill": "solid",
             "colorRecipe": "page",
             "ratio": "4-5",
-            "variant": "text-4-image-3-right"
+            "variant": "image-3-left-text-4"
           },
           {
-            "slotId": "slot-df4eba30d428",
+            "slotId": "slot-246009df77b4",
             "component": "SectionHeaderLargeSectionV3",
             "instruction": "Use a large title-only section header when the next content module needs a stronger visual reset.",
             "mode": "Section Header",
             "name": "Large section header",
             "originalComponent": "SectionHeaderLargeSectionV3",
             "originalIndex": -1,
-            "reduceBottomPadding": false,
+            "reduceBottomPadding": true,
             "reduceTopPadding": false,
             "backgroundFill": "solid",
             "borderTone": "dark",
             "cardBorder": "on",
             "cardFill": "solid",
             "colorRecipe": "dark",
-            "variant": "center-heading-lg"
+            "variant": "center-heading-xl"
           },
           {
-            "slotId": "slot-d5405a8ab601",
-            "component": "ThreeCardLinkGridSectionV3",
-            "instruction": "Show three linked cards on the shared 14-column grid. Each card spans four columns, leaving the first and last columns open; media can use full-width photos, compact icons, or a text-only layout.",
-            "mode": "Scan",
-            "name": "Card Links 3 Up",
-            "originalComponent": "ThreeCardLinkGridSectionV3",
-            "originalIndex": -1,
-            "reduceBottomPadding": false,
-            "reduceTopPadding": true,
-            "align": "center",
-            "backgroundFill": "solid",
-            "borderTone": "dark",
-            "cardBorder": "on",
-            "cardFill": "none",
-            "cardMedia": "none",
-            "cardLinks": "off",
-            "colorRecipe": "dark"
-          },
-          {
-            "slotId": "slot-6a3948460ffd",
+            "slotId": "slot-8ffd83ef30a9",
             "component": "ServiceCalloutRevealGridSectionV3",
             "instruction": "Show four problem-first callout cards in a 2x2 block on the 14-column grid. Clicking a card reveals a panel over the whole block with that card's detail and its own CTA. Card copy is left-aligned and runs the full card width; the cards carry no imagery.",
             "mode": "Decision",
@@ -1671,26 +1604,73 @@
             "cardBorder": "on",
             "cardFill": "none",
             "colorRecipe": "surface",
+            "joinAbove": "join",
             "variant": "three-across"
           },
           {
-            "slotId": "slot-41bc36cf93a0",
+            "slotId": "slot-bde3bd64a45b",
+            "component": "SectionHeaderLargeSectionV3",
+            "instruction": "Use a large title-only section header when the next content module needs a stronger visual reset.",
+            "mode": "Section Header",
+            "name": "Large section header",
+            "originalComponent": "SectionHeaderLargeSectionV3",
+            "originalIndex": -1,
+            "reduceBottomPadding": false,
+            "reduceTopPadding": false,
+            "animation": "reveal",
+            "backgroundConfig": {
+              "nodes": [
+                {
+                  "color": "#9ac0fe",
+                  "x": 28,
+                  "y": 0,
+                  "size": 168,
+                  "fade": 62,
+                  "opacity": 100
+                },
+                {
+                  "color": "surface",
+                  "x": 88,
+                  "y": 100,
+                  "size": 95,
+                  "fade": 45,
+                  "opacity": 100
+                }
+              ],
+              "strength": 18,
+              "animate": false,
+              "speed": 100,
+              "blend": "normal"
+            },
+            "backgroundFill": "solid",
+            "backgroundImageFocus": "24 30",
+            "backgroundTreatment": "image",
+            "borderTone": "dark",
+            "cardBorder": "on",
+            "cardFill": "solid",
+            "colorRecipe": "surface",
+            "joinAbove": "separate",
+            "variant": "center-heading-lg"
+          },
+          {
+            "slotId": "slot-538e2a1aa927",
             "component": "ProjectCaseStudyGallerySectionV3",
             "instruction": "Use a focused project gallery when one image and concise project details should work together as a mini case study.",
             "mode": "Images",
             "name": "Project case study gallery",
             "originalComponent": "ProjectCaseStudyGallerySectionV3",
             "originalIndex": -1,
-            "reduceBottomPadding": true,
+            "reduceBottomPadding": false,
             "reduceTopPadding": true,
             "backgroundFill": "solid",
             "borderTone": "dark",
-            "cardBorder": "off",
-            "cardFill": "solid",
-            "colorRecipe": "surface"
+            "cardBorder": "on",
+            "cardFill": "none",
+            "colorRecipe": "surface",
+            "joinAbove": "join"
           },
           {
-            "slotId": "slot-6ff3b50574de",
+            "slotId": "slot-38f3aba14fc2",
             "component": "ContentNarrativeFeatureRailSectionV3",
             "instruction": "Use an eight-column longform narrative with three fixed rail slots. Item order is fixed: 1. Seasonal offer, 2. Financing or payment options, 3. Ongoing care or maintenance plan. Each title and description must match the fixed eyebrow and CTA for its slot; do not reorder these concepts.",
             "mode": "Narrative",
@@ -1702,11 +1682,11 @@
             "backgroundFill": "solid",
             "borderTone": "dark",
             "cardBorder": "off",
-            "cardFill": "none",
-            "colorRecipe": "surface"
+            "cardFill": "solid",
+            "colorRecipe": "page"
           },
           {
-            "slotId": "slot-bdda9f3f21db",
+            "slotId": "slot-2723ec1f2871",
             "component": "SectionHeaderLargeSectionV3",
             "instruction": "Use a large title-only section header when the next content module needs a stronger visual reset.",
             "mode": "Section Header",
@@ -1719,11 +1699,11 @@
             "borderTone": "dark",
             "cardBorder": "on",
             "cardFill": "solid",
-            "colorRecipe": "page",
+            "colorRecipe": "surface",
             "variant": "center-heading-md"
           },
           {
-            "slotId": "slot-f312efdc588f",
+            "slotId": "slot-27ef646066cd",
             "component": "ProcessStripSectionV3",
             "instruction": "Summarize a short three- or four-step customer process in one compact horizontal strip. Keep every step concrete, sequential, and brief enough to scan without a section header.",
             "mode": "Decision",
@@ -1734,13 +1714,14 @@
             "reduceTopPadding": false,
             "backgroundFill": "solid",
             "borderTone": "dark",
-            "cardBorder": "off",
-            "cardFill": "solid",
-            "colorRecipe": "page",
-            "icons": "off"
+            "cardBorder": "on",
+            "cardFill": "none",
+            "colorRecipe": "surface",
+            "icons": "off",
+            "joinAbove": "join"
           },
           {
-            "slotId": "slot-e1d095d9aeaa",
+            "slotId": "slot-1615dfcc0a0b",
             "component": "FAQAccordionSidebarSectionV3",
             "instruction": "Handle objections with expandable answers beside a sidebar panel (header, subhead, one CTA) on the shared seven-column grid. Use when the FAQ section should also carry a direct contact path.",
             "mode": "Utility",
@@ -1754,10 +1735,11 @@
             "cardBorder": "off",
             "cardFill": "none",
             "colorRecipe": "page",
+            "joinAbove": "join",
             "variant": "left"
           },
           {
-            "slotId": "slot-38a445055f14",
+            "slotId": "slot-d15d17401816",
             "component": "ContactSectionModalBegin",
             "instruction": "Begin the request flow in-page with system and service choices, then carry those answers into step two of the request modal.",
             "mode": "Action",
@@ -1773,7 +1755,7 @@
             "colorRecipe": "dark"
           },
           {
-            "slotId": "slot-3f2e7c9b1e9d",
+            "slotId": "slot-777c37b9285a",
             "component": "FooterSectionV3",
             "instruction": "End with service links, areas, contact details, and legal links.",
             "mode": "Utility",
@@ -3228,9 +3210,9 @@
       "promotedAt": "2026-08-14T21:56:38.344Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-14T23:33:14.271Z",
-        "id": "north-star-hvac-v59",
-        "version": 59
+        "createdAt": "2026-08-15T16:07:38.194Z",
+        "id": "north-star-hvac-v60",
+        "version": 60
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -4835,9 +4817,9 @@
       "promotedAt": "2026-08-13T07:22:48.017Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-14T23:33:14.271Z",
-        "id": "north-star-hvac-v59",
-        "version": 59
+        "createdAt": "2026-08-15T16:07:38.194Z",
+        "id": "north-star-hvac-v60",
+        "version": 60
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -6610,9 +6592,9 @@
       "promotedAt": "2026-08-13T05:21:51.854Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-14T23:33:14.271Z",
-        "id": "north-star-hvac-v59",
-        "version": 59
+        "createdAt": "2026-08-15T16:07:38.194Z",
+        "id": "north-star-hvac-v60",
+        "version": 60
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -7949,9 +7931,9 @@
       "promotedAt": "2026-08-12T22:29:28.452Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-14T23:33:14.271Z",
-        "id": "north-star-hvac-v59",
-        "version": 59
+        "createdAt": "2026-08-15T16:07:38.194Z",
+        "id": "north-star-hvac-v60",
+        "version": 60
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -9657,9 +9639,9 @@
       "promotedAt": "2026-08-12T22:13:01.181Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-14T23:33:14.271Z",
-        "id": "north-star-hvac-v59",
-        "version": 59
+        "createdAt": "2026-08-15T16:07:38.194Z",
+        "id": "north-star-hvac-v60",
+        "version": 60
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -11210,9 +11192,9 @@
       "promotedAt": "2026-08-12T20:47:29.619Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-14T23:33:14.271Z",
-        "id": "north-star-hvac-v59",
-        "version": 59
+        "createdAt": "2026-08-15T16:07:38.194Z",
+        "id": "north-star-hvac-v60",
+        "version": 60
       },
       "sourceStage": "strategy-template",
       "template": {
@@ -13333,9 +13315,9 @@
       "promotedAt": "2026-08-02T21:29:44.982Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
-        "createdAt": "2026-08-14T23:33:14.271Z",
-        "id": "north-star-hvac-v59",
-        "version": 59
+        "createdAt": "2026-08-15T16:07:38.194Z",
+        "id": "north-star-hvac-v60",
+        "version": 60
       },
       "sourceStage": "strategy-template",
       "template": {
