@@ -78,7 +78,15 @@ export function SectionHeaderLargeSectionV3({
           {/* A single revealable unit - this section is one headline. See
               `singleUnitReveals`. */}
           <div
-            className={cx("reveal-on-scroll", "fluid-type-frame", textAlignment)}
+            className={cx(
+              "reveal-on-scroll",
+              "fluid-type-frame",
+              // Large fluid type can visually overshoot its line box at both
+              // ends. Keep a small internal buffer so ascenders and descenders
+              // are never clipped by a surrounding preview or band frame.
+              "py-1",
+              textAlignment,
+            )}
           >
             {/* Set inline rather than with the `wrap-*` utility: every
                 `type-*` utility declares `text-wrap` itself and is emitted

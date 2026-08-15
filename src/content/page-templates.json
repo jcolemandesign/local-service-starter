@@ -5,11 +5,11 @@
         "showSectionMarkers": false,
         "viewportId": "main"
       },
-      "id": "individual-service-balanced-1",
-      "name": "Individual Service Balanced 1",
+      "id": "individual-service-balanced-2",
+      "name": "Individual Service Balanced 2",
       "notes": "",
       "pageType": "Individual Service",
-      "promotedAt": "2026-08-15T16:03:45.239Z",
+      "promotedAt": "2026-08-15T16:47:34.284Z",
       "sectionCount": 12,
       "sections": [
         {
@@ -29,7 +29,7 @@
           "colorRecipe": "brand"
         },
         {
-          "slotId": "slot-c36be615ab5f",
+          "slotId": "slot-73ce9cd82d38",
           "component": "HeroSplitFixedImageSectionV3",
           "instruction": "Use a split hero with a bounded fixed-ratio image frame instead of a full-screen image.",
           "mode": "Hero",
@@ -47,7 +47,7 @@
           "variant": "image-3-left-text-4"
         },
         {
-          "slotId": "slot-246009df77b4",
+          "slotId": "slot-bfd65776d2f4",
           "component": "SectionHeaderLargeSectionV3",
           "instruction": "Use a large title-only section header when the next content module needs a stronger visual reset.",
           "mode": "Section Header",
@@ -64,7 +64,7 @@
           "variant": "center-heading-xl"
         },
         {
-          "slotId": "slot-8ffd83ef30a9",
+          "slotId": "slot-a06294d79e13",
           "component": "ServiceCalloutRevealGridSectionV3",
           "instruction": "Show four problem-first callout cards in a 2x2 block on the 14-column grid. Clicking a card reveals a panel over the whole block with that card's detail and its own CTA. Card copy is left-aligned and runs the full card width; the cards carry no imagery.",
           "mode": "Decision",
@@ -82,7 +82,7 @@
           "variant": "three-across"
         },
         {
-          "slotId": "slot-bde3bd64a45b",
+          "slotId": "slot-fef7e2255113",
           "component": "SectionHeaderLargeSectionV3",
           "instruction": "Use a large title-only section header when the next content module needs a stronger visual reset.",
           "mode": "Section Header",
@@ -127,7 +127,7 @@
           "variant": "center-heading-lg"
         },
         {
-          "slotId": "slot-538e2a1aa927",
+          "slotId": "slot-ec3b9b621b14",
           "component": "ProjectCaseStudyGallerySectionV3",
           "instruction": "Use a focused project gallery when one image and concise project details should work together as a mini case study.",
           "mode": "Images",
@@ -144,7 +144,7 @@
           "joinAbove": "join"
         },
         {
-          "slotId": "slot-38f3aba14fc2",
+          "slotId": "slot-f9c6c082a442",
           "component": "ContentNarrativeFeatureRailSectionV3",
           "instruction": "Use an eight-column longform narrative with three fixed rail slots. Item order is fixed: 1. Seasonal offer, 2. Financing or payment options, 3. Ongoing care or maintenance plan. Each title and description must match the fixed eyebrow and CTA for its slot; do not reorder these concepts.",
           "mode": "Narrative",
@@ -160,7 +160,7 @@
           "colorRecipe": "page"
         },
         {
-          "slotId": "slot-2723ec1f2871",
+          "slotId": "slot-748ee39b27ec",
           "component": "SectionHeaderLargeSectionV3",
           "instruction": "Use a large title-only section header when the next content module needs a stronger visual reset.",
           "mode": "Section Header",
@@ -177,7 +177,7 @@
           "variant": "center-heading-md"
         },
         {
-          "slotId": "slot-27ef646066cd",
+          "slotId": "slot-cd8349067222",
           "component": "ProcessStripSectionV3",
           "instruction": "Summarize a short three- or four-step customer process in one compact horizontal strip. Keep every step concrete, sequential, and brief enough to scan without a section header.",
           "mode": "Decision",
@@ -195,7 +195,7 @@
           "joinAbove": "join"
         },
         {
-          "slotId": "slot-1615dfcc0a0b",
+          "slotId": "slot-952273922084",
           "component": "FAQAccordionSidebarSectionV3",
           "instruction": "Handle objections with expandable answers beside a sidebar panel (header, subhead, one CTA) on the shared seven-column grid. Use when the FAQ section should also carry a direct contact path.",
           "mode": "Utility",
@@ -213,7 +213,7 @@
           "variant": "left"
         },
         {
-          "slotId": "slot-d15d17401816",
+          "slotId": "slot-0d20030ad4ed",
           "component": "ContactSectionModalBegin",
           "instruction": "Begin the request flow in-page with system and service choices, then carry those answers into step two of the request modal.",
           "mode": "Action",
@@ -229,7 +229,7 @@
           "colorRecipe": "dark"
         },
         {
-          "slotId": "slot-777c37b9285a",
+          "slotId": "slot-4fc3c6502280",
           "component": "FooterSectionV3",
           "instruction": "End with service links, areas, contact details, and legal links.",
           "mode": "Utility",

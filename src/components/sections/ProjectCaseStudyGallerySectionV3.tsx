@@ -147,16 +147,6 @@ export function ProjectCaseStudyGallerySectionV3({
 }: ProjectCaseStudyGallerySectionV3Props) {
   const isImageRight = align === "right";
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
-  /**
-   * Natural aspect ratio per image source, measured once on load.
-   *
-   * The white stroke has to hug the picture, and slides carry no dimensions -
-   * which forces `fill`, which makes the <img> box the frame and letterboxes
-   * the picture inside it. Sizing the frame to the ratio the browser reports
-   * removes the letterbox entirely, so the stroke is even on all four sides at
-   * any ratio and the grey field supplies the surrounding space.
-   */
-  const [imageRatios, setImageRatios] = useState<Record<string, number>>({});
   const hasMultipleSlides = slides.length > 1;
   const activeSlide = slides[activeSlideIndex] ?? slides[0];
   const shouldReduceMotion = useReducedMotion();
@@ -189,39 +179,6 @@ export function ProjectCaseStudyGallerySectionV3({
     return null;
   }
 
-  // Measured wins over authored: authored dimensions can go stale when a staged
-  // page swaps the image behind them, and the browser is reporting the file
-  // that actually rendered. Falls back to landscape, which sits close to the
-  // field's own proportion, so an unmeasured unauthored image barely moves.
-  const authoredRatio =
-    activeSlide.imageWidth && activeSlide.imageHeight
-      ? activeSlide.imageWidth / activeSlide.imageHeight
-      : undefined;
-  const frameRatio =
-    imageRatios[activeSlide.imageSrc] ?? authoredRatio ?? 3 / 2;
-  // The field is 5/4. An image wider than that is limited by the field's width,
-  // a taller one by its height - picking the constrained axis is what keeps the
-  // frame inside the padding instead of overflowing it.
-  const isFrameWidthLimited = frameRatio >= 5 / 4;
-
-  const handleImageLoad = (
-    event: React.SyntheticEvent<HTMLImageElement>,
-  ) => {
-    const { naturalHeight, naturalWidth } = event.currentTarget;
-
-    if (!naturalHeight || !naturalWidth) {
-      return;
-    }
-
-    // Keyed by the slide's own src rather than the resolved optimizer URL, so
-    // the lookup above finds it.
-    setImageRatios((current) =>
-      current[activeSlide.imageSrc]
-        ? current
-        : { ...current, [activeSlide.imageSrc]: naturalWidth / naturalHeight },
-    );
-  };
-
   const moveSlide = (direction: "previous" | "next") => {
     setActiveSlideIndex((currentIndex) => {
       const offset = direction === "previous" ? -1 : 1;
@@ -243,9 +200,11 @@ export function ProjectCaseStudyGallerySectionV3({
         >
           {/* Its own fourteen columns with the same gap as the page grid, and
               it spans all fourteen of them - so these columns sit exactly on
-              the page's. The card takes 1-6 and the image 7-14, both by real
-              column spans, and the image closes the one gutter between them
-              with a negative margin so the two still read as one object. */}
+              the page's. Wide screens use an even seven/seven split so the
+              image field cannot make the copy panel excessively tall. At the
+              regular desktop width the image returns to the original eight
+              columns and the copy takes six. The image closes the one gutter
+              between them so the two still read as one object. */}
           <div
             className={`radius-medium site-grid-gap grid grid-cols-14 overflow-hidden max-lg:grid-cols-1 ${
               cardFill === "none" ? "" : "shadow-service"
@@ -255,32 +214,33 @@ export function ProjectCaseStudyGallerySectionV3({
                 existing step down from a surface, so the panel beside it reads
                 as the nearer plane without inventing a colour. */}
             <div
-              className={`relative col-span-8 grid place-items-center p-[clamp(1.25rem,2.5vw,2.75rem)] max-lg:col-span-1 max-lg:col-start-1 max-lg:mx-0 ${
+              className={`relative col-span-7 grid place-items-center p-[clamp(1.25rem,2.5vw,2.75rem)] max-2xl:col-span-8 max-lg:col-span-1 max-lg:col-start-1 max-lg:mx-0 ${
                 isImageRight
-                  ? "order-2 col-start-7 -ml-[var(--site-grid-gap)]"
+                  ? "order-2 col-start-8 -ml-[var(--site-grid-gap)] max-2xl:col-start-7"
                   : "order-1 col-start-1 -mr-[var(--site-grid-gap)]"
               } max-lg:order-1 ${
                 cardFill === "none" ? "bg-transparent" : imageBackdropClass
               }`}
             >
-              {/* The 5/4 lives on this inner box, not the grid item above it.
+              {/* The aspect ratio lives on this inner box, not the grid item above it.
                   The wrapper stretches its items, and stretching sets a
                   definite height, which makes aspect-ratio a no-op - so the
                   field was taking its height from whatever the current photo
                   happened to be. A 2:1 image left it short enough that the card
                   became the taller side and drove the whole assembly, and the
                   height moved every time the slide changed. Held here, the
-                  field measures the same on every slide whatever the ratio. */}
-              <div className="grid aspect-[5/4] w-full place-items-center max-lg:aspect-[16/10]">
+                  field measures the same on every slide whatever the ratio.
+                  The wider 16/10 field on large canvases also prevents the
+                  image from creating unused vertical space in the copy panel. */}
+              <div className="grid aspect-[16/10] w-full place-items-center max-2xl:aspect-[5/4] max-lg:aspect-[16/10]">
               <AnimatePresence initial={false} mode="wait">
-                {/* Sized to the picture's own ratio, so the padding below is a
-                    stroke of even width rather than a mat. The grey field
-                    around it supplies the breathing room. */}
+                {/* Every slide uses one stable 3/2 print frame. Wide and
+                    stacked 16/10 fields constrain it by height; the taller 5/4
+                    desktop field constrains it by width. Source images crop
+                    inside that frame rather than resizing the carousel. */}
                 <motion.figure
                   aria-live="polite"
-                  className={`group/project relative col-start-1 row-start-1 max-h-full max-w-full ${
-                    isFrameWidthLimited ? "w-full" : "h-full"
-                  } ${
+                  className={`group/project relative col-start-1 row-start-1 aspect-[3/2] h-full w-auto max-h-full max-w-full max-2xl:h-auto max-2xl:w-full max-lg:h-full max-lg:w-auto ${
                     cardFill === "none"
                       ? "bg-transparent p-0 shadow-none"
                       : `bg-white p-2.5 max-md:p-2 ${printShadow}`
@@ -289,7 +249,6 @@ export function ProjectCaseStudyGallerySectionV3({
                   initial={{ opacity: 0, x: shouldReduceMotion ? 0 : 10 }}
                   animate={{ opacity: 1, x: 0 }}
                   key={activeSlide.imageSrc}
-                  style={{ aspectRatio: String(frameRatio) }}
                   transition={imageTransition}
                 >
                   <div className="relative h-full w-full overflow-hidden">
@@ -299,8 +258,7 @@ export function ProjectCaseStudyGallerySectionV3({
                       // it exactly - there is nothing left to letterbox.
                       className="object-cover transition-transform duration-500 group-hover/project:scale-[1.015]"
                       fill
-                      onLoad={handleImageLoad}
-                      sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 1024px) calc(100vw - 3rem), 58vw"
+                      sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 1024px) calc(100vw - 3rem), (max-width: 1536px) 58vw, 50vw"
                       src={activeSlide.imageSrc}
                     />
                   </div>
@@ -310,67 +268,92 @@ export function ProjectCaseStudyGallerySectionV3({
             </div>
 
             <div
-              className={`col-span-6 grid max-lg:col-span-1 max-lg:col-start-1 ${
-                isImageRight ? "order-1 col-start-1" : "order-2 col-start-9"
+              aria-atomic="true"
+              aria-live="polite"
+              className={`col-span-7 grid max-2xl:col-span-6 max-lg:col-span-1 max-lg:col-start-1 ${
+                isImageRight
+                  ? "order-1 col-start-1"
+                  : "order-2 col-start-8 max-2xl:col-start-9"
               } max-lg:order-2`}
             >
-              <AnimatePresence initial={false} mode="wait">
-                <motion.article
-                  aria-live="polite"
-                  className={`flex flex-col col-start-1 row-start-1 p-7 max-md:p-6 ${
-                    cardFill === "none" ? "bg-transparent" : "bg-service-surface"
-                  }`}
-                  exit={{ opacity: 0, x: shouldReduceMotion ? 0 : -6 }}
-                  initial={{ opacity: 0, x: shouldReduceMotion ? 0 : 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  key={activeSlide.title}
-                  transition={imageTransition}
-                >
-                <p className={`type-caption font-semibold tracking-[0.14em] uppercase ${eyebrowClass}`}>
-                  {activeSlide.project}
-                </p>
-                <h2 className={`type-heading-md mt-3 ${cardTextClass}`}>
-                  {activeSlide.title}
-                </h2>
-                <p className={`type-text-sm measure-copy mt-heading-body-sm ${cardMutedTextClass}`}>
-                  {activeSlide.summary}
-                </p>
+              {/* Every copy slide occupies the same grid cell. Invisible
+                  slides still contribute their intrinsic height, so the
+                  assembly reserves enough room for the tallest slide instead
+                  of resizing when the active copy changes. */}
+              {slides.map((slide, index) => {
+                const isActive = index === activeSlideIndex;
 
-                <dl className={`mt-7 border-y ${cardBorderClass}`}>
-                  {activeSlide.equipment.map((detail) => (
-                    <div
-                      className={`grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-4 border-b py-3 last:border-b-0 ${cardBorderClass}`}
-                      key={detail.label}
+                return (
+                  <motion.article
+                    animate={{ opacity: isActive ? 1 : 0 }}
+                    aria-hidden={!isActive}
+                    className={`col-start-1 row-start-1 flex flex-col p-7 max-md:p-6 ${
+                      isActive ? "" : "pointer-events-none"
+                    } ${
+                      cardFill === "none"
+                        ? "bg-transparent"
+                        : "bg-service-surface"
+                    }`}
+                    initial={false}
+                    key={`${slide.title}-${index}`}
+                    transition={imageTransition}
+                  >
+                    <p
+                      className={`type-caption font-semibold tracking-[0.14em] uppercase ${eyebrowClass}`}
                     >
-                      <dt className={`type-caption font-semibold ${cardMutedTextClass}`}>
-                        {detail.label}
-                      </dt>
-                      <dd className={`type-caption text-right font-semibold ${cardTextClass}`}>
-                        {detail.value}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
+                      {slide.project}
+                    </p>
+                    <h2 className={`type-heading-md mt-3 ${cardTextClass}`}>
+                      {slide.title}
+                    </h2>
+                    <p
+                      className={`type-text-sm measure-copy mt-heading-body-sm ${cardMutedTextClass}`}
+                    >
+                      {slide.summary}
+                    </p>
 
-                {activeSlide.testimonial.quote &&
-                activeSlide.testimonial.attribution ? (
-                  // The gap above the quote belongs to this wrapper, not to the
-                  // blockquote. As padding inside the bordered element it was
-                  // part of what the accent rule spanned, so the stroke started
-                  // 28px above the first line and ran up into the block above.
-                  <div className="mt-auto pt-7">
-                    <blockquote className="border-l-2 border-service-accent pl-4">
-                      <p className={`type-text-sm ${cardTextClass}`}>
-                        “{activeSlide.testimonial.quote}”
-                      </p>
-                      <footer className={`type-caption mt-3 ${cardMutedTextClass}`}>
-                        {activeSlide.testimonial.attribution}
-                      </footer>
-                    </blockquote>
-                  </div>
-                ) : null}
-                </motion.article>
-              </AnimatePresence>
+                    <dl className={`mt-7 border-y ${cardBorderClass}`}>
+                      {slide.equipment.map((detail) => (
+                        <div
+                          className={`grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-4 border-b py-3 last:border-b-0 ${cardBorderClass}`}
+                          key={detail.label}
+                        >
+                          <dt
+                            className={`type-caption font-semibold ${cardMutedTextClass}`}
+                          >
+                            {detail.label}
+                          </dt>
+                          <dd
+                            className={`type-caption text-right font-semibold ${cardTextClass}`}
+                          >
+                            {detail.value}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+
+                    {slide.testimonial.quote &&
+                    slide.testimonial.attribution ? (
+                      // The gap above the quote belongs to this wrapper, not to
+                      // the blockquote. As padding inside the bordered element
+                      // it was part of what the accent rule spanned, so the
+                      // stroke starts with the quote instead of the empty gap.
+                      <div className="mt-auto pt-7">
+                        <blockquote className="border-l-2 border-service-accent pl-4">
+                          <p className={`type-text-sm ${cardTextClass}`}>
+                            “{slide.testimonial.quote}”
+                          </p>
+                          <footer
+                            className={`type-caption mt-3 ${cardMutedTextClass}`}
+                          >
+                            {slide.testimonial.attribution}
+                          </footer>
+                        </blockquote>
+                      </div>
+                    ) : null}
+                  </motion.article>
+                );
+              })}
             </div>
           </div>
 

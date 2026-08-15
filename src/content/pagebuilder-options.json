@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "compact-utility",
       "recipeName": "Individual Service",
-      "savedAt": "2026-08-15T16:01:52.700Z",
+      "savedAt": "2026-08-15T17:25:03.656Z",
       "sectionCount": 12,
       "sections": [
         {
@@ -266,26 +266,26 @@
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
           "variant": "center-heading-lg",
-          "colorRecipe": "surface",
+          "colorRecipe": "dark",
           "backgroundFill": "solid",
           "cardBorder": "on",
           "borderTone": "dark",
           "cardFill": "solid",
           "animation": "reveal",
-          "backgroundTreatment": "image",
+          "backgroundTreatment": "gradient",
           "joinAbove": "separate",
           "backgroundConfig": {
             "nodes": [
               {
-                "color": "#9ac0fe",
-                "x": 28,
-                "y": 0,
+                "color": "surface",
+                "x": 23,
+                "y": 7,
                 "size": 168,
                 "fade": 62,
                 "opacity": 100
               },
               {
-                "color": "surface",
+                "color": "highlight",
                 "x": 88,
                 "y": 100,
                 "size": 95,
@@ -293,7 +293,7 @@
                 "opacity": 100
               }
             ],
-            "strength": 18,
+            "strength": 40,
             "animate": false,
             "speed": 100,
             "blend": "normal"
