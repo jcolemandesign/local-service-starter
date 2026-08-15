@@ -70,10 +70,19 @@ describe("content editor field references", () => {
     expect(imageFields.length).toBeGreaterThan(0);
     expect(
       imageFields.every(
-        (field) =>
-          field.fallback?.source === "template-default" &&
-          field.fallback.exact === true &&
-          field.fallback.value.trim().length > 0,
+        (field) => {
+          const isUnsetDecorativeBackground =
+            field.path.endsWith(".backgroundImage") &&
+            !field.value.trim() &&
+            field.fallback === undefined;
+
+          return (
+            isUnsetDecorativeBackground ||
+            (field.fallback?.source === "template-default" &&
+              field.fallback.exact === true &&
+              field.fallback.value.trim().length > 0)
+          );
+        },
       ),
     ).toBe(true);
     expect(contentDirection?.fallback).toBeUndefined();

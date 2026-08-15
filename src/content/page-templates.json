@@ -2426,8 +2426,8 @@
         },
         {
           "slotId": "slot-8a0204f9d15e",
-          "component": "ProcessStepsSectionV3",
-          "instruction": "Use current process steps when the page needs a clearer, more styled decision sequence.",
+          "component": "ContentStickyCardStreamSectionV2",
+          "instruction": "Keep a promise fixed while supporting details move through response, diagnosis, options, and follow-up. This is the process sequence for a page: use it wherever the visitor needs to see how the work unfolds before they commit.",
           "mode": "Decision",
           "name": "Process steps",
           "originalComponent": "ProcessStepsSectionV3",
@@ -3281,8 +3281,8 @@
         },
         {
           "slotId": "slot-311b3563954b",
-          "component": "ProcessStepsSectionV3",
-          "instruction": "Use current process steps when the page needs a clearer, more styled decision sequence.",
+          "component": "ContentStickyCardStreamSectionV2",
+          "instruction": "Keep a promise fixed while supporting details move through response, diagnosis, options, and follow-up. This is the process sequence for a page: use it wherever the visitor needs to see how the work unfolds before they commit.",
           "mode": "Decision",
           "name": "Process steps",
           "originalComponent": "ProcessStepsSectionV3",

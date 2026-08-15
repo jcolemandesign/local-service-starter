@@ -4565,6 +4565,7 @@ export function PagebuilderShell({
             {...sectionLibraryV3Content.serviceCalloutRevealGrid}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
+            icons={getSectionIcons(section)}
             variant={getCalloutRevealGridVariant(section)}
           />
         ) : isServiceCalloutSplitPanelSection(section) ? (
@@ -4572,6 +4573,7 @@ export function PagebuilderShell({
             {...sectionLibraryV3Content.serviceCalloutSplitPanel}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
+            icons={getSectionIcons(section)}
             variant={getCalloutSplitPanelVariant(section)}
           />
         ) : isServiceNeedsPriorityGridSection(section) ? (

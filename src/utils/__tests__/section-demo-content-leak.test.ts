@@ -280,7 +280,10 @@ describe("section demo-content leak guard", () => {
    * otherwise leave a green suite covering a handful of sections.
    */
   it("covers the whole builder catalog", () => {
-    expect(checkedSections.size).toBeGreaterThanOrEqual(90);
+    // ProcessStepsSectionV3 was the 90th distinct signature only because
+    // persisted templates still referenced that retired component. Its live
+    // replacement, ContentStickyCardStreamSectionV2, is already represented.
+    expect(checkedSections.size).toBeGreaterThanOrEqual(89);
   });
 
   for (const [key, section] of checkedSections) {

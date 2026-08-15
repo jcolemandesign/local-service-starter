@@ -20,7 +20,7 @@ import {
 const css = readFileSync(
   path.join(process.cwd(), "src", "app", "globals.css"),
   "utf8",
-);
+).replace(/\r\n?/g, "\n");
 
 /**
  * The block a marker opens, matched by braces rather than by a line pattern.
