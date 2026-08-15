@@ -7,6 +7,7 @@ import {
   cardLinkComponents,
   cardLinkGridAlignComponents,
   cardStyleComponents,
+  headingSizeComponents,
   headlineWrapComponents,
   iconComponents,
   tableCompareAlignComponents,
@@ -38,6 +39,7 @@ const toggleSupporting = [
     ...cardStyleComponents,
     ...cardLinkComponents,
     ...cardLinkGridAlignComponents,
+    ...headingSizeComponents,
     ...headlineWrapComponents,
     ...iconComponents,
     ...tableCompareAlignComponents,
@@ -67,6 +69,7 @@ describe("section toggle props", () => {
         cardLinks: "off",
         colorRecipe: "dark",
         component,
+        headingSize: "heading-xl",
         headlineWrap: "pretty",
         icons: "off",
       });
@@ -94,6 +97,10 @@ describe("section toggle props", () => {
 
       if (headlineWrapComponents.has(component)) {
         expect(props.headlineWrap, `${component} headlineWrap`).toBe("pretty");
+      }
+
+      if (headingSizeComponents.has(component)) {
+        expect(props.headingSize, `${component} headingSize`).toBe("heading-xl");
       }
 
       if (
@@ -171,5 +178,13 @@ describe("section toggle props", () => {
         component: "NavPrimarySectionV2",
       }).colorRecipe,
     ).toBe("default");
+  });
+
+  it("preserves the narrative rail's existing headline size by default", () => {
+    expect(
+      getSectionToggleProps({
+        component: "ContentNarrativeFeatureRailSectionV3",
+      }).headingSize,
+    ).toBe("display-lg");
   });
 });

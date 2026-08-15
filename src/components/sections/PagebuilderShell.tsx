@@ -152,6 +152,7 @@ import {
   headlineWrapOptions,
   iconsOptions,
   resolveHeadingSize,
+  resolveSectionHeadingSize,
   resolveHeadlineWrap,
   resolveSectionAnimation,
   resolveSectionIcons,
@@ -1023,7 +1024,7 @@ function getMirrorAlignLabel(align: string | undefined) {
 }
 
 function getSectionHeadingSize(section: WorkingSection): SectionHeadingSize {
-  return resolveHeadingSize(section.headingSize);
+  return resolveSectionHeadingSize(section.component, section.headingSize);
 }
 
 function getStickyCardStreamShowImage(section: WorkingSection) {
@@ -2605,6 +2606,51 @@ function CardFillIcon({ filled }: { filled: boolean }) {
         x="3"
         y="5"
       />
+    </svg>
+  );
+}
+
+function EntranceAnimationIcon({ enabled }: { enabled: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <rect
+        height="12"
+        rx="1.5"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        width="12"
+        x="8"
+        y="6"
+      />
+      {enabled ? (
+        <>
+          <path
+            d="M3.5 12h8M8.5 8.5 12 12l-3.5 3.5"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="1.75"
+          />
+          <path
+            d="M4 8h1M4 16h1"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeWidth="1.75"
+          />
+        </>
+      ) : (
+        <path
+          d="M4.5 4.5 19.5 19.5"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeWidth="2"
+        />
+      )}
     </svg>
   );
 }
@@ -4426,6 +4472,7 @@ export function PagebuilderShell({
             align={getNarrativeFeatureRailAlign(section)}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
+            headingSize={getSectionHeadingSize(section)}
             showImage={getNarrativeFeatureRailShowImage(section)}
           />
         ) : section.component === contentCardTwoUpComponent ? (
@@ -5440,46 +5487,6 @@ export function PagebuilderShell({
                             </fieldset>
                           ) : null}
 
-                          {section.component ===
-                          processStepsBranchingComponent ? (
-                            <fieldset className="grid gap-2">
-                              <legend className="type-caption font-semibold text-current">
-                                Header alignment
-                              </legend>
-                              <div className="grid grid-cols-2 gap-2">
-                                {processStepsBranchingAlignOptions.map(
-                                  (option) => {
-                                    const optionIsActive =
-                                      getProcessStepsBranchingAlign(section) ===
-                                      option.value;
-
-                                    return (
-                                      <button
-                                        aria-pressed={optionIsActive}
-                                        className={cx(
-                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
-                                          optionIsActive
-                                            ? "token-chrome-card-active"
-                                            : "token-chrome-card",
-                                        )}
-                                        key={option.value}
-                                        onClick={() =>
-                                          updateProcessStepsBranchingAlign(
-                                            section.id,
-                                            option.value,
-                                          )
-                                        }
-                                        type="button"
-                                      >
-                                        {option.label}
-                                      </button>
-                                    );
-                                  },
-                                )}
-                              </div>
-                            </fieldset>
-                          ) : null}
-
                           {/* Offered only where the section marks revealable
                               units, so the control can never render and do
                               nothing. Unlike the texture above there is no
@@ -5490,7 +5497,7 @@ export function PagebuilderShell({
                               <legend className="type-caption font-semibold text-current">
                                 Entrance animation
                               </legend>
-                              <div className="grid grid-cols-2 gap-2">
+                              <div className="flex items-center gap-2">
                                 {styleFieldOptions.animation
                                   .filter((option) => option.value !== "")
                                   .map((option) => {
@@ -5503,10 +5510,9 @@ export function PagebuilderShell({
                                       <button
                                         aria-pressed={optionIsActive}
                                         className={cx(
-                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-2 text-center text-xs font-semibold transition-colors",
-                                          optionIsActive
-                                            ? "token-chrome-card-active"
-                                            : "token-chrome-card",
+                                          "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                          optionIsActive &&
+                                            "token-chrome-card-active",
                                         )}
                                         key={option.value}
                                         onClick={() =>
@@ -5516,8 +5522,20 @@ export function PagebuilderShell({
                                           )
                                         }
                                         type="button"
+                                        title={
+                                          option.value === "none"
+                                            ? "Animation off"
+                                            : "Animation on"
+                                        }
                                       >
-                                        {option.label}
+                                        <EntranceAnimationIcon
+                                          enabled={option.value !== "none"}
+                                        />
+                                        <span className="sr-only">
+                                          {option.value === "none"
+                                            ? "Animation off"
+                                            : "Animation on"}
+                                        </span>
                                       </button>
                                     );
                                   })}
@@ -6871,6 +6889,46 @@ export function PagebuilderShell({
                                     </button>
                                   );
                                 })}
+                              </div>
+                            </fieldset>
+                          ) : null}
+
+                          {section.component ===
+                          processStepsBranchingComponent ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Header alignment
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {processStepsBranchingAlignOptions.map(
+                                  (option) => {
+                                    const optionIsActive =
+                                      getProcessStepsBranchingAlign(section) ===
+                                      option.value;
+
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-center text-xs font-semibold transition-colors",
+                                          optionIsActive
+                                            ? "token-chrome-card-active"
+                                            : "token-chrome-card",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateProcessStepsBranchingAlign(
+                                            section.id,
+                                            option.value,
+                                          )
+                                        }
+                                        type="button"
+                                      >
+                                        {option.label}
+                                      </button>
+                                    );
+                                  },
+                                )}
                               </div>
                             </fieldset>
                           ) : null}

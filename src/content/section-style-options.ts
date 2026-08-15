@@ -377,6 +377,7 @@ export const sectionHeadingSizeValues = new Set<string>(
 );
 
 export const headingSizeComponents = new Set<string>([
+  "ContentNarrativeFeatureRailSectionV3",
   "DecisionMatrixCardSectionV3",
   "HeroFullscreenSectionV2",
   "SectionHeaderSplitLinkSectionV3",
@@ -400,6 +401,25 @@ export function resolveHeadingSize(
   return sectionHeadingSizeValues.has(headingSize ?? "")
     ? (headingSize as SectionHeadingSize)
     : fallback;
+}
+
+const sectionHeadingSizeDefaults: Partial<Record<string, SectionHeadingSize>> = {
+  ContentNarrativeFeatureRailSectionV3: "display-lg",
+  DecisionMatrixCardSectionV3: "heading-xl",
+  SectionHeaderSplitLinkSectionV3: "heading-xl",
+  TrustMarqueeSection: "display-lg",
+};
+
+/** Resolve the shared axis without changing the size a section used before it
+ * joined the control. */
+export function resolveSectionHeadingSize(
+  component: string,
+  headingSize: string | undefined,
+) {
+  return resolveHeadingSize(
+    headingSize,
+    sectionHeadingSizeDefaults[component] ?? "heading-lg",
+  );
 }
 
 export const servicesBentoVariantOptions = [

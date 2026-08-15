@@ -13,7 +13,7 @@ import {
   resolveCardFill,
   resolveCardBorder,
   resolveBackgroundFill,
-  resolveHeadingSize,
+  resolveSectionHeadingSize,
   resolveHeadlineWrap,
   resolveSectionIcons,
   sectionMirrorAlignComponents,
@@ -83,7 +83,10 @@ export function getSectionToggleProps(section: SectionToggleSource) {
   }
 
   if (headingSizeComponents.has(section.component)) {
-    props.headingSize = resolveHeadingSize(section.headingSize);
+    props.headingSize = resolveSectionHeadingSize(
+      section.component,
+      section.headingSize,
+    );
   }
 
   // Alignment is the one axis with no safe default to force: each section's own

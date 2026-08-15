@@ -1136,6 +1136,7 @@ export function renderPageTemplateSection(
           align={section.variant?.startsWith("left") ? "left" : "right"}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+          headingSize={resolveHeadingSize(section.headingSize, "display-lg")}
           showImage={!section.variant?.includes("text-only")}
         />
       );

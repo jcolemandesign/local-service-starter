@@ -181,7 +181,7 @@ section (`page-templates.json` / `pagebuilder-options.json`, and on
 `WorkingSection` while editing):
 
 ```txt
-variant     ratio     cardLinks     cardMedia     align   icons   headlineWrap
+variant     ratio     cardLinks     cardMedia     align   icons   headingSize   headlineWrap
 colorRecipe cardFill  cardBorder    reduceTopPadding  reduceBottomPadding
 ```
 
@@ -221,6 +221,7 @@ The copy-contract fingerprint hashes: `component`, the derived field specs,
 | `cardMedia` | template | No | Photo / compact icon / none for the vertical card-link grids. One asset field per card is reused across treatments, and legacy `with-images` / `text-only` variants resolve to photo / none. |
 | `align` | template | No | Deliberately its own field, not folded into `variant`, so a purely visual nudge does not report every approved page's copy as stale |
 | `icons` | template | No | Marker icons on/off; same reasoning as `align` |
+| `headingSize` | template | No | Shared three-step headline scale; each component preserves its pre-toggle size as the unset default |
 | `headlineWrap` | template | No | `text-wrap` on the section's headline (`balance` / `pretty` / `wrap`); same reasoning as `align` |
 | `colorRecipe`, `cardFill`, `cardBorder` | template + staged override | No | Repaint only |
 | `reduceTopPadding`, `reduceBottomPadding` | template + staged override | No | Frame padding only; offered to content-height sections, not to `viewportHeightComponents` — min-height takes the space back, so the control would read as broken |
@@ -243,6 +244,8 @@ renders that silently does nothing. The membership sets live in
 - `cardLinkGridAlignComponents`, `tableCompareAlignComponents` — the two
   alignment axes
 - `iconComponents` / `sectionSupportsIcons` — sections that draw marker icons
+- `headingSizeComponents` / `sectionSupportsHeadingSize` — sections that use
+  the shared three-step headline scale
 - `headlineWrapComponents` / `sectionSupportsHeadlineWrap` — sections whose
   headline is the whole composition, where how it breaks is a layout decision
   rather than the type scale's default

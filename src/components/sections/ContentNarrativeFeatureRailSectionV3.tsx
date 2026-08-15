@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Fragment, type CSSProperties } from "react";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
+import type { SectionHeadingSize } from "@/content/section-style-options";
 
 export type NarrativeFeatureRailCard = {
   actionHref?: string;
@@ -12,6 +13,12 @@ export type NarrativeFeatureRailCard = {
 
 export type ContentNarrativeFeatureRailAlign = "left" | "right";
 
+const headingSizeClassName: Record<SectionHeadingSize, string> = {
+  "heading-lg": "type-heading-lg",
+  "heading-xl": "type-heading-xl",
+  "display-lg": "type-display-lg",
+};
+
 export type ContentNarrativeFeatureRailSectionV3Props = {
   align?: ContentNarrativeFeatureRailAlign;
   bullets: readonly string[];
@@ -21,6 +28,7 @@ export type ContentNarrativeFeatureRailSectionV3Props = {
   eyebrow: string;
   imageAlt: string;
   imageSrc: string;
+  headingSize?: SectionHeadingSize;
   intro: string;
   paragraphs: readonly string[];
   showImage?: boolean;
@@ -38,6 +46,7 @@ export function ContentNarrativeFeatureRailSectionV3({
   eyebrow,
   imageAlt,
   imageSrc,
+  headingSize = "display-lg",
   intro,
   paragraphs,
   showImage = true,
@@ -79,14 +88,16 @@ export function ContentNarrativeFeatureRailSectionV3({
         >
           <article className="fluid-type-frame sticky top-[var(--site-grid-inset-block)] self-start pr-8 max-lg:pr-2 max-md:static max-md:pr-0">
             <p className="type-label text-service-accent">{eyebrow}</p>
-            <h2 className="type-display-lg wrap-pretty mt-eyebrow-display text-service-ink">
+            <h2
+              className={`${headingSizeClassName[headingSize]} wrap-pretty mt-eyebrow-display text-service-ink`}
+            >
               {title}
             </h2>
             <p className="type-text-xl measure-lead wrap-pretty mt-display-body text-service-muted">
               {intro}
             </p>
 
-            <div className="measure-longform mt-14 grid gap-8 max-md:mt-10">
+            <div className="measure-longform mt-14 grid gap-6 max-md:mt-10">
               {paragraphs.map((paragraph, index) => (
                 <p
                   className={

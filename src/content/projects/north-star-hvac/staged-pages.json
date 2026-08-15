@@ -210,25 +210,25 @@
           "id": "ac-repair.03-large-section-header.eyebrow",
           "kind": "copy",
           "path": "03-large-section-header.eyebrow",
-          "value": "Start with what changed"
+          "value": ""
         },
         {
           "id": "ac-repair.03-large-section-header.heading",
           "kind": "copy",
           "path": "03-large-section-header.heading",
-          "value": "You do not need to diagnose the AC before calling"
+          "value": ""
         },
         {
           "id": "ac-repair.03-large-section-header.body",
           "kind": "copy",
           "path": "03-large-section-header.body",
-          "value": "Tell North Star HVAC what the system is doing now, when the problem started, and what feels different. Those details give the service visit a useful starting point without asking you to identify the cause yourself."
+          "value": ""
         },
         {
           "id": "ac-repair.03-large-section-header.items",
           "kind": "copy",
           "path": "03-large-section-header.items",
-          "value": "No Cooling - The system runs or tries to run, but the home is not getting noticeably cooler.\nWeak Cooling - The AC is working, but cooling performance has dropped from what you normally expect.\nUneven Rooms - Some parts of the home stay warmer even while the cooling system continues to run."
+          "value": ""
         },
         {
           "id": "ac-repair.03-large-section-header.style.colorRecipe",
@@ -421,12 +421,6 @@
           "kind": "copy",
           "path": "05-large-section-header.items",
           "value": "Clear Findings - Understand what the inspection found before deciding on the work.\nPractical Options - Repair stays on the table when it makes sense for the system.\nA Defined Next Step - Know what is being recommended and what you are choosing before work moves forward."
-        },
-        {
-          "id": "ac-repair.05-large-section-header.backgroundImage",
-          "kind": "image",
-          "path": "05-large-section-header.backgroundImage",
-          "value": ""
         },
         {
           "id": "ac-repair.05-large-section-header.style.colorRecipe",
@@ -1439,7 +1433,7 @@
       ],
       "fieldCounts": {
         "copy": 87,
-        "image": 5,
+        "image": 4,
         "link": 0,
         "meta": 147
       },
@@ -1524,7 +1518,7 @@
       "pageId": "ac-repair",
       "pageLabel": "AC Repair",
       "previewHref": "/dev/staged-pages/ac-repair",
-      "promotedAt": "2026-08-15T16:47:47.995Z",
+      "promotedAt": "2026-08-15T17:46:45.860Z",
       "snapshot": {
         "clientSlug": "north-star-hvac",
         "createdAt": "2026-08-15T16:07:38.194Z",
@@ -1533,8 +1527,8 @@
       },
       "sourceStage": "strategy-template",
       "template": {
-        "id": "individual-service-balanced-2",
-        "name": "Individual Service Balanced 2",
+        "id": "individual-service-balanced",
+        "name": "Individual Service Balanced",
         "pageType": "Individual Service",
         "sectionCount": 12,
         "sections": [
@@ -1555,7 +1549,7 @@
             "colorRecipe": "brand"
           },
           {
-            "slotId": "slot-73ce9cd82d38",
+            "slotId": "slot-202f6824ba73",
             "component": "HeroSplitFixedImageSectionV3",
             "instruction": "Use a split hero with a bounded fixed-ratio image frame instead of a full-screen image.",
             "mode": "Hero",
@@ -1573,7 +1567,7 @@
             "variant": "image-3-left-text-4"
           },
           {
-            "slotId": "slot-bfd65776d2f4",
+            "slotId": "slot-83df524a6483",
             "component": "SectionHeaderLargeSectionV3",
             "instruction": "Use a large title-only section header when the next content module needs a stronger visual reset.",
             "mode": "Section Header",
@@ -1582,7 +1576,32 @@
             "originalIndex": -1,
             "reduceBottomPadding": true,
             "reduceTopPadding": false,
+            "backgroundConfig": {
+              "nodes": [
+                {
+                  "color": "accent",
+                  "x": 28,
+                  "y": 20,
+                  "size": 99,
+                  "fade": 68,
+                  "opacity": 100
+                },
+                {
+                  "color": "ink",
+                  "x": 78,
+                  "y": 100,
+                  "size": 95,
+                  "fade": 45,
+                  "opacity": 100
+                }
+              ],
+              "strength": 45,
+              "animate": false,
+              "speed": 100,
+              "blend": "normal"
+            },
             "backgroundFill": "solid",
+            "backgroundTreatment": "gradient",
             "borderTone": "dark",
             "cardBorder": "on",
             "cardFill": "solid",
@@ -1590,7 +1609,7 @@
             "variant": "center-heading-xl"
           },
           {
-            "slotId": "slot-a06294d79e13",
+            "slotId": "slot-74d61d019360",
             "component": "ServiceCalloutRevealGridSectionV3",
             "instruction": "Show four problem-first callout cards in a 2x2 block on the 14-column grid. Clicking a card reveals a panel over the whole block with that card's detail and its own CTA. Card copy is left-aligned and runs the full card width; the cards carry no imagery.",
             "mode": "Decision",
@@ -1608,7 +1627,7 @@
             "variant": "three-across"
           },
           {
-            "slotId": "slot-fef7e2255113",
+            "slotId": "slot-be939be4f7aa",
             "component": "SectionHeaderLargeSectionV3",
             "instruction": "Use a large title-only section header when the next content module needs a stronger visual reset.",
             "mode": "Section Header",
@@ -1621,15 +1640,15 @@
             "backgroundConfig": {
               "nodes": [
                 {
-                  "color": "#9ac0fe",
-                  "x": 28,
-                  "y": 0,
+                  "color": "surface",
+                  "x": 23,
+                  "y": 7,
                   "size": 168,
                   "fade": 62,
                   "opacity": 100
                 },
                 {
-                  "color": "surface",
+                  "color": "highlight",
                   "x": 88,
                   "y": 100,
                   "size": 95,
@@ -1637,23 +1656,23 @@
                   "opacity": 100
                 }
               ],
-              "strength": 18,
+              "strength": 40,
               "animate": false,
               "speed": 100,
               "blend": "normal"
             },
             "backgroundFill": "solid",
             "backgroundImageFocus": "24 30",
-            "backgroundTreatment": "image",
+            "backgroundTreatment": "none",
             "borderTone": "dark",
             "cardBorder": "on",
             "cardFill": "solid",
             "colorRecipe": "surface",
             "joinAbove": "separate",
-            "variant": "center-heading-lg"
+            "variant": "center-heading-xl"
           },
           {
-            "slotId": "slot-ec3b9b621b14",
+            "slotId": "slot-5082ccd3d6d7",
             "component": "ProjectCaseStudyGallerySectionV3",
             "instruction": "Use a focused project gallery when one image and concise project details should work together as a mini case study.",
             "mode": "Images",
@@ -1670,7 +1689,7 @@
             "joinAbove": "join"
           },
           {
-            "slotId": "slot-f9c6c082a442",
+            "slotId": "slot-9ac624e9fb09",
             "component": "ContentNarrativeFeatureRailSectionV3",
             "instruction": "Use an eight-column longform narrative with three fixed rail slots. Item order is fixed: 1. Seasonal offer, 2. Financing or payment options, 3. Ongoing care or maintenance plan. Each title and description must match the fixed eyebrow and CTA for its slot; do not reorder these concepts.",
             "mode": "Narrative",
@@ -1683,10 +1702,11 @@
             "borderTone": "dark",
             "cardBorder": "off",
             "cardFill": "solid",
-            "colorRecipe": "page"
+            "colorRecipe": "page",
+            "headingSize": "heading-xl"
           },
           {
-            "slotId": "slot-748ee39b27ec",
+            "slotId": "slot-1e096d58d207",
             "component": "SectionHeaderLargeSectionV3",
             "instruction": "Use a large title-only section header when the next content module needs a stronger visual reset.",
             "mode": "Section Header",
@@ -1703,7 +1723,7 @@
             "variant": "center-heading-md"
           },
           {
-            "slotId": "slot-cd8349067222",
+            "slotId": "slot-99a372384b02",
             "component": "ProcessStripSectionV3",
             "instruction": "Summarize a short three- or four-step customer process in one compact horizontal strip. Keep every step concrete, sequential, and brief enough to scan without a section header.",
             "mode": "Decision",
@@ -1721,7 +1741,7 @@
             "joinAbove": "join"
           },
           {
-            "slotId": "slot-952273922084",
+            "slotId": "slot-9578aa626479",
             "component": "FAQAccordionSidebarSectionV3",
             "instruction": "Handle objections with expandable answers beside a sidebar panel (header, subhead, one CTA) on the shared seven-column grid. Use when the FAQ section should also carry a direct contact path.",
             "mode": "Utility",
@@ -1739,7 +1759,7 @@
             "variant": "left"
           },
           {
-            "slotId": "slot-0d20030ad4ed",
+            "slotId": "slot-845749d61f26",
             "component": "ContactSectionModalBegin",
             "instruction": "Begin the request flow in-page with system and service choices, then carry those answers into step two of the request modal.",
             "mode": "Action",
@@ -1755,7 +1775,7 @@
             "colorRecipe": "dark"
           },
           {
-            "slotId": "slot-4fc3c6502280",
+            "slotId": "slot-b718707abecd",
             "component": "FooterSectionV3",
             "instruction": "End with service links, areas, contact details, and legal links.",
             "mode": "Utility",

@@ -775,6 +775,7 @@ function renderSectionElement(
         <ContentNarrativeFeatureRailSectionV3
           {...sectionLibraryV3Content.contentNarrativeFeatureRail}
           align={section.variant?.startsWith("left") ? "left" : "right"}
+          headingSize={resolveHeadingSize(section.headingSize, "display-lg")}
           showImage={!section.variant?.includes("text-only")}
         />
       );

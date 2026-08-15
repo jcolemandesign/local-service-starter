@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   type CardSurfaceState,
   type ColorOverrideIntensity,
@@ -73,6 +75,32 @@ const borderIntensityLabels: Record<string, string> = {
 
 const controlClassName =
   "token-chrome-control flex size-10 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors";
+
+type OpenPicker = "card" | "border" | null;
+
+function ColorButtonSwatch({ color }: { color: string | undefined }) {
+  if (!color) {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-5"
+        fill="none"
+        viewBox="0 0 20 20"
+      >
+        <rect height="18" stroke="currentColor" strokeWidth="1.5" width="18" x="1" y="1" />
+        <path d="M2 18 18 2" stroke="currentColor" strokeWidth="1.5" />
+      </svg>
+    );
+  }
+
+  return (
+    <span
+      aria-hidden="true"
+      className="size-5 rounded-[var(--radius-tiny-token)] border border-service-border"
+      style={{ backgroundColor: color ?? "transparent" }}
+    />
+  );
+}
 
 function SwatchGrid({
   disabledReason,
@@ -204,6 +232,7 @@ export function SectionColorOverrideControls({
   section,
   surface,
 }: Props) {
+  const [openPicker, setOpenPicker] = useState<OpenPicker>(null);
   const cardSwatch = resolveOverrideSwatch(section.cardSwatch);
   const borderSwatch = resolveOverrideSwatch(section.borderSwatch);
   const cardIntensity = resolveOverrideIntensity(section.cardIntensity);
@@ -229,74 +258,130 @@ export function SectionColorOverrideControls({
     surface,
   ).filter((finding) => !finding.pass);
 
+  const cardColor = cardSwatch
+    ? resolveOverrideColor(palette, recipe, cardSwatch, cardIntensity)
+    : undefined;
+  const borderColor = borderSwatch
+    ? resolveOverrideColor(palette, recipe, borderSwatch, borderIntensity)
+    : undefined;
+  const pickerTitle = openPicker === "card" ? "Card color" : "Border color";
+
   return (
-    <div className="grid gap-4">
+    <>
       <fieldset className="grid gap-2">
         <legend className="type-caption font-semibold text-current">
-          Card colour
+          Card colors
         </legend>
-        <SwatchGrid
-          intensity={cardIntensity}
-          onSelect={(value) => onChange("cardSwatch", value)}
-          palette={palette}
-          recipe={recipe}
-          selected={cardSwatch}
-        />
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            className="token-chrome-control flex min-h-11 items-center justify-between gap-3 rounded-[var(--chrome-radius-control)] border px-3 text-left text-xs font-semibold transition-colors"
+            onClick={() => setOpenPicker("card")}
+            type="button"
+          >
+            <span>Card color</span>
+            <ColorButtonSwatch color={cardColor} />
+          </button>
+          <button
+            className="token-chrome-control flex min-h-11 items-center justify-between gap-3 rounded-[var(--chrome-radius-control)] border px-3 text-left text-xs font-semibold transition-colors"
+            onClick={() => setOpenPicker("border")}
+            type="button"
+          >
+            <span>Border color</span>
+            <ColorButtonSwatch color={borderColor} />
+          </button>
+        </div>
       </fieldset>
 
-      {cardSwatch ? (
-        <fieldset className="grid gap-2">
-          <legend className="type-caption font-semibold text-current">
-            Card intensity
-          </legend>
-          <IntensityRow
-            labels={cardIntensityLabels}
-            onSelect={(value) => onChange("cardIntensity", value)}
-            options={cardIntensityOptions}
-            selected={cardIntensity}
-          />
-        </fieldset>
-      ) : null}
+      {openPicker ? (
+        <div
+          className="fixed inset-0 z-[70] grid place-items-center bg-bg-dark/35 px-4 py-8"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setOpenPicker(null);
+          }}
+          role="presentation"
+        >
+          <div
+            aria-labelledby="pagebuilder-color-picker-title"
+            aria-modal="true"
+            className="w-full max-w-sm rounded-[var(--chrome-radius-control)] border border-service-border bg-bg-page p-5 text-service-ink shadow-service"
+            role="dialog"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="type-label text-service-accent">Section cards</p>
+                <h3
+                  className="type-heading-sm mt-2 text-service-ink"
+                  id="pagebuilder-color-picker-title"
+                >
+                  {pickerTitle}
+                </h3>
+              </div>
+              <button
+                autoFocus
+                aria-label={`Close ${pickerTitle.toLowerCase()} picker`}
+                className="token-chrome-control flex size-9 items-center justify-center rounded-[var(--chrome-radius-control)] border text-lg leading-none"
+                onClick={() => setOpenPicker(null)}
+                type="button"
+              >
+                ×
+              </button>
+            </div>
 
-      <fieldset className="grid gap-2">
-        <legend className="type-caption font-semibold text-current">
-          Border colour
-        </legend>
-        <SwatchGrid
-          intensity={borderIntensity}
-          onSelect={(value) => onChange("borderSwatch", value)}
-          palette={palette}
-          recipe={recipe}
-          selected={borderSwatch}
-        />
-      </fieldset>
+            <div className="mt-5 grid gap-4">
+              <SwatchGrid
+                intensity={openPicker === "card" ? cardIntensity : borderIntensity}
+                onSelect={(value) =>
+                  onChange(openPicker === "card" ? "cardSwatch" : "borderSwatch", value)
+                }
+                palette={palette}
+                recipe={recipe}
+                selected={openPicker === "card" ? cardSwatch : borderSwatch}
+              />
 
-      {borderSwatch ? (
-        <fieldset className="grid gap-2">
-          <legend className="type-caption font-semibold text-current">
-            Border weight
-          </legend>
-          <IntensityRow
-            labels={borderIntensityLabels}
-            onSelect={(value) => onChange("borderIntensity", value)}
-            options={borderIntensityOptions}
-            selected={borderIntensity}
-          />
-        </fieldset>
-      ) : null}
+              {openPicker === "card" && cardSwatch ? (
+                <fieldset className="grid gap-2">
+                  <legend className="type-caption font-semibold text-current">
+                    Card intensity
+                  </legend>
+                  <IntensityRow
+                    labels={cardIntensityLabels}
+                    onSelect={(value) => onChange("cardIntensity", value)}
+                    options={cardIntensityOptions}
+                    selected={cardIntensity}
+                  />
+                </fieldset>
+              ) : null}
 
-      {failures.length > 0 ? (
-        <ul className="grid gap-1">
-          {failures.map((finding) => (
-            <li
-              className="type-caption text-service-muted"
-              key={`${finding.role}-${finding.surface}`}
-            >
-              {formatGateFinding(finding)}
-            </li>
-          ))}
-        </ul>
+              {openPicker === "border" && borderSwatch ? (
+                <fieldset className="grid gap-2">
+                  <legend className="type-caption font-semibold text-current">
+                    Border weight
+                  </legend>
+                  <IntensityRow
+                    labels={borderIntensityLabels}
+                    onSelect={(value) => onChange("borderIntensity", value)}
+                    options={borderIntensityOptions}
+                    selected={borderIntensity}
+                  />
+                </fieldset>
+              ) : null}
+
+              {failures.length > 0 ? (
+                <ul className="grid gap-1">
+                  {failures.map((finding) => (
+                    <li
+                      className="type-caption text-service-muted"
+                      key={`${finding.role}-${finding.surface}`}
+                    >
+                      {formatGateFinding(finding)}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          </div>
+        </div>
       ) : null}
-    </div>
+    </>
   );
 }
