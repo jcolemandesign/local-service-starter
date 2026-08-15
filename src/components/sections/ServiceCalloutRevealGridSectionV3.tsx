@@ -3,8 +3,14 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useId, useRef, useState } from "react";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
-import type { CalloutRevealGridVariant } from "@/content/section-style-options";
-import { CalloutCardAffordance } from "./CalloutCardAffordance";
+import type {
+  CalloutRevealGridVariant,
+  SectionIcons,
+} from "@/content/section-style-options";
+import {
+  CalloutCardAffordance,
+  CalloutCardTopicIcon,
+} from "./CalloutCardAffordance";
 
 export type ServiceCalloutRevealGridItem = {
   /**
@@ -24,6 +30,7 @@ export type ServiceCalloutRevealGridSectionV3Props = {
   cardBorder?: "on" | "off";
   cardFill?: "solid" | "none";
   closeLabel?: string;
+  icons?: SectionIcons;
   items: readonly ServiceCalloutRevealGridItem[];
   openHint?: string;
   variant?: CalloutRevealGridVariant;
@@ -39,6 +46,7 @@ export function ServiceCalloutRevealGridSectionV3({
   cardBorder = "on",
   cardFill = "solid",
   closeLabel = "Close details",
+  icons = "on",
   items,
   openHint = "See what to do",
   variant = "default",
@@ -103,7 +111,7 @@ export function ServiceCalloutRevealGridSectionV3({
         aria-controls={panelId}
         aria-expanded={openIndex === index}
         className={cx(
-          "group/callout flex w-full min-w-0 cursor-pointer flex-col items-start overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-left text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent hover:bg-bg-page focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
+          "group/callout relative flex w-full min-w-0 cursor-pointer flex-col items-start overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-left text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent hover:bg-bg-page focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
           // Three across makes each card two columns narrower, so it steps the
           // padding and body copy down a notch to keep the same density - the
           // title holds its size in both. The taller floor is what keeps a
@@ -123,6 +131,7 @@ export function ServiceCalloutRevealGridSectionV3({
         }}
         type="button"
       >
+        {icons === "on" ? <CalloutCardTopicIcon index={index} /> : null}
         <span className="fluid-type-frame flex w-full flex-1 flex-col">
           {/* Three across holds a taller floor so the card reads square, which
               leaves more height than the copy fills. Claiming that slack here
@@ -136,7 +145,14 @@ export function ServiceCalloutRevealGridSectionV3({
               isThreeAcross && "flex-1 justify-center",
             )}
           >
-            <span className="type-heading-lg wrap-pretty">{item.title}</span>
+            <span
+              className={cx(
+                "type-heading-lg wrap-pretty",
+                icons === "on" && "pr-14",
+              )}
+            >
+              {item.title}
+            </span>
             {item.body ? (
               <span
                 className={cx(
@@ -150,7 +166,10 @@ export function ServiceCalloutRevealGridSectionV3({
           </span>
           <span className="mt-auto flex items-center justify-between gap-3 pt-3">
             <span className="type-label text-service-accent">{openHint}</span>
-            <CalloutCardAffordance />
+            <CalloutCardAffordance
+              isActive={openIndex === index}
+              marker="check"
+            />
           </span>
         </span>
       </button>

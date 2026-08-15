@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { resolveCardLinkMedia } from "@/content/section-style-options";
+import { sectionLibraryV3Content } from "@/content/section-library-v3";
 import { getTemplateAssetFieldsForSection } from "@/utils/staged-pages";
 
 function cardGridSection(overrides: Record<string, unknown> = {}) {
@@ -14,6 +15,20 @@ function cardGridSection(overrides: Record<string, unknown> = {}) {
 }
 
 describe("card-link media", () => {
+  it("keeps photo FPOs separate from the icon FPOs", () => {
+    const items = [
+      ...sectionLibraryV3Content.threeCardLinkGrid.items,
+      ...sectionLibraryV3Content.fourCardLinkGrid.items,
+    ];
+
+    expect(items.every((item) => item.imageSrc === "/images/fpo-image.svg")).toBe(
+      true,
+    );
+    expect(items.every((item) => item.iconSrc.startsWith("/images/fpo-icon-"))).toBe(
+      true,
+    );
+  });
+
   it("keeps legacy image variants backward compatible", () => {
     expect(resolveCardLinkMedia(undefined, "with-images")).toBe("photo");
     expect(resolveCardLinkMedia(undefined, "text-only")).toBe("none");

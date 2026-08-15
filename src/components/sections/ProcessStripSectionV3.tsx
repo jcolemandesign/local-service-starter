@@ -114,7 +114,7 @@ export function ProcessStripSectionV3({
                     cardBorder === "off" && "!border-transparent",
                   )}
                 >
-                  <span className="type-caption absolute -top-3 left-4 grid size-8 place-items-center rounded-full bg-service-accent font-semibold text-text-inverse">
+                  <span className="type-caption absolute -top-3 left-4 grid size-8 place-items-center rounded-full bg-cta-primary font-semibold text-cta-primary-ink">
                     {index + 1}
                   </span>
 

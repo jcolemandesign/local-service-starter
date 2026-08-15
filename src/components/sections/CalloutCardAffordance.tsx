@@ -19,11 +19,10 @@
 /**
  * Which cue the box draws.
  *
- * `arrow` for a card that opens something - the reveal grid, whose cards are
- * one-way and never sit in an "on" state. `check` for a card that toggles, and
- * therefore has a state worth showing: the split panel's tiles, which carry
- * `aria-pressed` and stay selected. A check on a card that cannot be unchecked
- * would promise a state that does not exist.
+ * `arrow` for a directional open cue. `check` for a selectable card whose
+ * expanded or pressed state is worth showing. Both callout-card sections use
+ * the checkbox treatment so their related interactions share one visual
+ * language even though one reveals over the grid and one updates a side panel.
  */
 type CalloutCardMarker = "arrow" | "check";
 
@@ -53,6 +52,67 @@ function CheckMark() {
     >
       <path d="m5 12.5 4.6 4.5L19 7.5" />
     </svg>
+  );
+}
+
+/**
+ * Small, decorative topic cues for the callout demo cards. The six drawings
+ * follow the sample content order (temperature, airflow, noise, replacement,
+ * efficiency, and air quality); longer real lists repeat the sequence.
+ */
+export function CalloutCardTopicIcon({ index }: { index: number }) {
+  const topic = index % 6;
+
+  return (
+    <span
+      aria-hidden="true"
+      className="pointer-events-none absolute right-5 top-5 size-10 text-cta-primary"
+    >
+      <svg
+        className="size-full"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+        viewBox="0 0 24 24"
+      >
+        {topic === 0 ? (
+          <>
+            <path d="M9 14.6V6a3 3 0 0 1 6 0v8.6a5 5 0 1 1-6 0Z" />
+            <path d="M12 10v7" />
+          </>
+        ) : topic === 1 ? (
+          <>
+            <path d="M4 8h10.5a2.5 2.5 0 1 0-2.4-3.2" />
+            <path d="M4 12h14a2 2 0 1 1-1.8 2.9" />
+            <path d="M4 16h7" />
+          </>
+        ) : topic === 2 ? (
+          <>
+            <path d="M5 10v4h3l4 3V7L8 10H5Z" />
+            <path d="M15 9.5a4 4 0 0 1 0 5" />
+            <path d="M18 7a7 7 0 0 1 0 10" />
+          </>
+        ) : topic === 3 ? (
+          <>
+            <path d="M7 7h10v10H7z" />
+            <path d="m9 4-2 3 2 3M15 20l2-3-2-3" />
+          </>
+        ) : topic === 4 ? (
+          <>
+            <path d="M5 17a8 8 0 1 1 14 0" />
+            <path d="m12 13 4-4" />
+            <path d="M8 17h8" />
+          </>
+        ) : (
+          <>
+            <path d="M7 15c0-5 4-8 10-8 0 6-3 10-8 10" />
+            <path d="M7 19c2-4 5-7 9-9" />
+          </>
+        )}
+      </svg>
+    </span>
   );
 }
 

@@ -3109,6 +3109,14 @@ body {
     padding-bottom: calc(var(--section-space-med) * 0.325) !important;
   }
 
+  /* Keep the project gallery's slide indicators off the section seam when the
+   * section-spacing control removes its normal bottom padding. */
+  .pagebuilder-density-normal
+    .pagebuilder-section-frame[data-pagebuilder-padding-bottom="none"][data-pagebuilder-section-component="ProjectCaseStudyGallerySectionV3"]
+    .site-grid-frame {
+    padding-bottom: calc(var(--section-space-vsml) * 0.5) !important;
+  }
+
   .pagebuilder-density-normal
     .pagebuilder-section-frame[data-pagebuilder-padding-top="none"]
     > [class*="py-"] {
@@ -3184,6 +3192,15 @@ body {
       .bg-surface-raised:not(section)
     ):not(.absolute):not(.fixed):not(.sticky) {
     position: relative;
+    z-index: 1;
+  }
+
+  /* The logo marquee's translated viewport is itself a stacking context, so
+   * lifting its shadowed tiles above cannot carry their paint past it. Lift
+   * that viewport at a flush bottom edge instead; the section keeps zero
+   * padding while the tile shadows clear the following section's ground. */
+  .pagebuilder-section-frame[data-pagebuilder-padding-bottom="none"]
+    .trust-logo-marquee-viewport {
     z-index: 1;
   }
 

@@ -571,6 +571,8 @@ export const iconComponents = new Set<string>([
   "InfoStripSectionV3",
   "OfferTermsSectionV3",
   "ProcessStripSectionV3",
+  "ServiceCalloutRevealGridSectionV3",
+  "ServiceCalloutSplitPanelSectionV3",
 ]);
 
 export function sectionSupportsIcons(component: string) {

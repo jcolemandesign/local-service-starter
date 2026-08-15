@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { CSSProperties } from "react";
+import { Fragment, type CSSProperties } from "react";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
 
 export type NarrativeFeatureRailCard = {
@@ -63,6 +63,7 @@ export function ContentNarrativeFeatureRailSectionV3({
    * rather than opening the sequence on a gap.
    */
   const railRevealOffset = showImage ? 1 : 0;
+  const hasUnframedRail = cardFill === "none" && cardBorder === "off";
 
   return (
     <section className="bg-bg-page">
@@ -143,44 +144,50 @@ export function ContentNarrativeFeatureRailSectionV3({
               </div>
             ) : null}
 
-            {cards.slice(0, 3).map((card, index) => (
-              <article
-                className={[
-                  // Marks this card as a revealable unit. Inert unless the
-                  // section's animation toggle is on - see `section-reveal` in
-                  // globals.css.
-                  "reveal-on-scroll",
-                  "fluid-type-frame radius-medium border border-service-border bg-service-surface p-6 shadow-service",
-                  cardFill === "none" && "!bg-transparent !shadow-none",
-                  cardBorder === "off" && "!border-transparent",
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
-                key={`${card.eyebrow}-${card.title}`}
-                style={
-                  {
-                    "--reveal-index": index + railRevealOffset,
-                  } as CSSProperties
-                }
-              >
-                <p className="type-label text-service-accent">{card.eyebrow}</p>
-                <h3 className="type-heading-md wrap-pretty mt-eyebrow-heading-md text-service-ink">
-                  {card.title}
-                </h3>
-                <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
-                  {card.body}
-                </p>
-                {card.actionLabel && card.actionHref ? (
-                  <Button
-                    className="mt-body-actions-sm"
-                    href={card.actionHref}
-                    treatment="text-lift"
+            <div className={hasUnframedRail ? "grid" : "contents"}>
+              {cards.slice(0, 3).map((card, index) => (
+                <Fragment key={`${card.eyebrow}-${card.title}`}>
+                  {hasUnframedRail && index > 0 ? (
+                    <div aria-hidden="true" className="border-t border-service-border" />
+                  ) : null}
+                  <article
+                    className={[
+                      // Marks this card as a revealable unit. Inert unless the
+                      // section's animation toggle is on - see `section-reveal` in
+                      // globals.css.
+                      "reveal-on-scroll",
+                      "fluid-type-frame radius-medium border border-service-border bg-service-surface p-6 shadow-service",
+                      cardFill === "none" && "!bg-transparent !shadow-none",
+                      cardBorder === "off" && "!border-transparent",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    style={
+                      {
+                        "--reveal-index": index + railRevealOffset,
+                      } as CSSProperties
+                    }
                   >
-                    {card.actionLabel}
-                  </Button>
-                ) : null}
-              </article>
-            ))}
+                    <p className="type-label text-service-accent">{card.eyebrow}</p>
+                    <h3 className="type-heading-md wrap-pretty mt-eyebrow-heading-md text-service-ink">
+                      {card.title}
+                    </h3>
+                    <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
+                      {card.body}
+                    </p>
+                    {card.actionLabel && card.actionHref ? (
+                      <Button
+                        className="mt-body-actions-sm"
+                        href={card.actionHref}
+                        treatment="text-lift"
+                      >
+                        {card.actionLabel}
+                      </Button>
+                    ) : null}
+                  </article>
+                </Fragment>
+              ))}
+            </div>
           </aside>
         </LayoutGridItem>
       </LayoutGrid>

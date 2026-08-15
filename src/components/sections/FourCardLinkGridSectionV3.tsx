@@ -78,7 +78,9 @@ export function FourCardLinkGridSectionV3({
   // image and horizontal padding only breaks its alignment with that image.
   const hasCardSurface = cardFill === "solid" || cardBorder === "on";
   const cardTextPadding = hasCardSurface
-    ? "p-[clamp(1.5rem,1.9vw,2.125rem)]"
+    ? cardMedia === "icon"
+      ? "px-[clamp(1.5rem,1.9vw,2.125rem)] pb-[clamp(1.5rem,1.9vw,2.125rem)] pt-4"
+      : "p-[clamp(1.5rem,1.9vw,2.125rem)]"
     : "px-0 py-[clamp(1.25rem,1.6vw,1.75rem)]";
   const columnStarts = alignColumnStarts[align] ?? alignColumnStarts.center;
 
@@ -131,7 +133,12 @@ export function FourCardLinkGridSectionV3({
                   cardTextPadding,
                 )}
               >
-                {cardMedia === "icon" ? <CardLinkIcon asset={item} /> : null}
+                {cardMedia === "icon" ? (
+                  <CardLinkIcon
+                    asset={item}
+                    hasCardSurface={hasCardSurface}
+                  />
+                ) : null}
                 <h3 className="type-heading-sm text-service-ink">{item.title}</h3>
                 <p className="type-text-sm wrap-pretty mt-heading-body-sm text-service-muted">
                   {item.body}

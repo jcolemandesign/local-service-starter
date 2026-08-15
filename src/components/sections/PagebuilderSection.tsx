@@ -581,6 +581,7 @@ function renderSectionElement(
           {...sectionLibraryV3Content.serviceCalloutRevealGrid}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+          icons={resolveSectionIcons(section.icons)}
           variant={getCalloutRevealGridVariant(section)}
         />
       );
@@ -590,6 +591,7 @@ function renderSectionElement(
           {...sectionLibraryV3Content.serviceCalloutSplitPanel}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+          icons={resolveSectionIcons(section.icons)}
           variant={getCalloutSplitPanelVariant(section)}
         />
       );

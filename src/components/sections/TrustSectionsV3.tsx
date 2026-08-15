@@ -273,7 +273,7 @@ export function TrustLogoMarqueeSectionV3({
    * still read as a cut. `sml` leaves it 2rem of slack. */
   return (
     <section className="section-min-none section-space-sml overflow-x-clip bg-bg-page">
-      <MeasuredMarquee className="relative left-1/2 w-screen -translate-x-1/2 overflow-x-clip">
+      <MeasuredMarquee className="trust-logo-marquee-viewport relative left-1/2 w-screen -translate-x-1/2 overflow-x-clip">
         <LogoTrack cardBorder={cardBorder} cardFill={cardFill} logos={logos} />
       </MeasuredMarquee>
     </section>

@@ -958,6 +958,7 @@ export function renderPageTemplateSection(
           )}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+          icons={resolveSectionIcons(section.icons)}
           variant={getCalloutRevealGridVariant(section)}
         />
       );
@@ -970,6 +971,7 @@ export function renderPageTemplateSection(
           )}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+          icons={resolveSectionIcons(section.icons)}
           variant={getCalloutSplitPanelVariant(section)}
         />
       );

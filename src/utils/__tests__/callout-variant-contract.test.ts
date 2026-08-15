@@ -4,6 +4,7 @@ import {
   calloutRevealGridVariantOptions,
   calloutSplitPanelVariantOptions,
 } from "@/content/section-style-options";
+import { getSectionToggleProps } from "@/components/sections/section-toggle-props";
 import { getTemplateCopyFieldsForSection } from "@/utils/template-copy-contract";
 
 /**
@@ -41,6 +42,15 @@ const calloutSections = [
 ];
 
 describe("callout card arrangement variants", () => {
+  it("offers the shared UX icon axis to both callout sections", () => {
+    for (const section of calloutSections) {
+      expect(
+        getSectionToggleProps({ component: section.component, icons: "off" })
+          .icons,
+      ).toBe("off");
+    }
+  });
+
   it("treats an unset variant exactly like the default option", () => {
     for (const section of calloutSections) {
       const base = {

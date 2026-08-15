@@ -5,6 +5,7 @@ function cx(...classes: Array<string | false | undefined>) {
 }
 
 type CardLinkMediaAsset = {
+  iconSrc?: string;
   imageAlt?: string;
   imageLabel?: string;
   imageSrc?: string;
@@ -46,17 +47,36 @@ export function CardLinkPhoto({
   );
 }
 
-export function CardLinkIcon({ asset }: { asset: CardLinkMediaAsset }) {
-  return asset.imageSrc ? (
+export function CardLinkIcon({
+  asset,
+  hasCardSurface,
+}: {
+  asset: CardLinkMediaAsset;
+  hasCardSurface: boolean;
+}) {
+  const iconSrc =
+    asset.imageSrc === "/images/fpo-image.svg"
+      ? (asset.iconSrc ?? asset.imageSrc)
+      : asset.imageSrc;
+
+  return iconSrc ? (
     <Image
       alt={asset.imageAlt ?? asset.title}
-      className="mx-auto mb-5 size-[4.6rem] object-contain transition duration-300 ease-out group-hover/card:scale-[1.04] max-sm:size-16"
+      className={cx(
+        "mb-5 size-[4.6rem] object-contain transition duration-300 ease-out group-hover/card:scale-[1.04] max-sm:size-16",
+        hasCardSurface && "mx-auto",
+      )}
       height={74}
-      src={asset.imageSrc}
+      src={iconSrc}
       width={74}
     />
   ) : (
-    <span className="type-caption mx-auto mb-5 grid size-[4.6rem] place-items-center rounded-[var(--radius-surface-token)] bg-bg-muted px-2 text-center text-service-muted max-sm:size-16">
+    <span
+      className={cx(
+        "type-caption mb-5 grid size-[4.6rem] place-items-center rounded-[var(--radius-surface-token)] bg-bg-muted px-2 text-center text-service-muted max-sm:size-16",
+        hasCardSurface && "mx-auto",
+      )}
+    >
       {asset.imageLabel ?? asset.title}
     </span>
   );

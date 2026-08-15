@@ -3,8 +3,14 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useId, useState } from "react";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
-import type { CalloutSplitPanelVariant } from "@/content/section-style-options";
-import { CalloutCardAffordance } from "./CalloutCardAffordance";
+import type {
+  CalloutSplitPanelVariant,
+  SectionIcons,
+} from "@/content/section-style-options";
+import {
+  CalloutCardAffordance,
+  CalloutCardTopicIcon,
+} from "./CalloutCardAffordance";
 
 export type ServiceCalloutSplitPanelItem = {
   /**
@@ -26,6 +32,7 @@ export type ServiceCalloutSplitPanelSectionV3Props = {
   closeLabel?: string;
   introBody?: string;
   introHeading?: string;
+  icons?: SectionIcons;
   items: readonly ServiceCalloutSplitPanelItem[];
   openHint?: string;
   variant?: CalloutSplitPanelVariant;
@@ -43,6 +50,7 @@ export function ServiceCalloutSplitPanelSectionV3({
   closeLabel = "Close details",
   introBody = "",
   introHeading = "",
+  icons = "on",
   items,
   openHint = "See what to do",
   variant = "default",
@@ -67,7 +75,7 @@ export function ServiceCalloutSplitPanelSectionV3({
         // state is the only thing tying a card to what the panel is showing.
         aria-pressed={isActive}
         className={cx(
-          "group/callout card-min-short flex w-full min-w-0 cursor-pointer flex-col items-start overflow-hidden rounded-[var(--radius-surface-token)] border bg-service-surface text-left text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent hover:bg-bg-page focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
+          "group/callout card-min-short relative flex w-full min-w-0 cursor-pointer flex-col items-start overflow-hidden rounded-[var(--radius-surface-token)] border bg-service-surface text-left text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent hover:bg-bg-page focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
           // A stacked card is the full width of the column rather than half of
           // it, so it carries the roomier padding and type the extra width can
           // hold - the two-up card would look overscaled at these values.
@@ -83,11 +91,13 @@ export function ServiceCalloutSplitPanelSectionV3({
         onClick={() => setActiveIndex(isActive ? null : index)}
         type="button"
       >
+        {icons === "on" ? <CalloutCardTopicIcon index={index} /> : null}
         <span className="fluid-type-frame flex w-full flex-1 flex-col">
           <span
             className={cx(
               "wrap-pretty",
               isStacked ? "type-heading-lg" : "type-heading-md",
+              icons === "on" && "pr-14",
             )}
           >
             {item.title}
@@ -114,8 +124,8 @@ export function ServiceCalloutSplitPanelSectionV3({
             >
               {openHint}
             </span>
-            {/* These tiles toggle and hold their state, so the cue is a
-                checkbox rather than the reveal grid's one-way arrow. */}
+            {/* These tiles toggle and hold their state, so the checkbox stays
+                visibly checked while this card drives the side panel. */}
             <CalloutCardAffordance isActive={isActive} marker="check" />
           </span>
         </span>
