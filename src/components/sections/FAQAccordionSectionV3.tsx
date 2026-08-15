@@ -47,7 +47,10 @@ export function FAQAccordionSectionV3({
               const answerId = `${sectionId}-answer-${index}`;
 
               return (
-                <article className="fluid-type-frame" key={item.question}>
+                <article
+                  className="faq-accordion-item fluid-type-frame"
+                  key={item.question}
+                >
                   <h3>
                     <button
                       aria-controls={answerId}

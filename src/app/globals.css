@@ -3071,6 +3071,14 @@ body {
     border-color: transparent !important;
   }
 
+  /* FAQ rows use their article borders as internal separators, not card
+   * chrome. Keep those lines when the author removes a sibling panel's outer
+   * card border. */
+  .pagebuilder-section-frame[data-pagebuilder-card-border="off"][data-pagebuilder-section-mode]
+    .faq-accordion-item {
+    border-color: var(--color-service-border) !important;
+  }
+
   .pagebuilder-section-frame[data-pagebuilder-card-fill="none"][data-pagebuilder-section-component="FourCardLinkGridSectionV3"]
     a.bg-service-surface,
   .pagebuilder-section-frame[data-pagebuilder-card-fill="none"][data-pagebuilder-section-component="ThreeCardLinkGridSectionV3"]
@@ -3089,6 +3097,16 @@ body {
     .pagebuilder-section-frame[data-pagebuilder-padding-bottom="none"]
     :is(.site-grid-frame, .section-space-vsml, .section-space-sml, .section-space-med, .section-space-lrg) {
     padding-bottom: 0 !important;
+  }
+
+  /* The condensed testimonial carousel ends with its group indicators. A
+   * fully flush ending makes those controls feel cramped, so retain half of
+   * the section's normal medium bottom space only for this component, then
+   * reduce that buffer by 35% to keep the finish compact. */
+  .pagebuilder-density-normal
+    .pagebuilder-section-frame[data-pagebuilder-padding-bottom="none"][data-pagebuilder-section-component="TestimonialsCarouselCondensedSectionV3"]
+    .section-space-med {
+    padding-bottom: calc(var(--section-space-med) * 0.325) !important;
   }
 
   .pagebuilder-density-normal
@@ -3740,6 +3758,12 @@ body {
       padding-block: var(--section-space-med-tablet);
     }
 
+    .pagebuilder-density-normal
+      .pagebuilder-section-frame[data-pagebuilder-padding-bottom="none"][data-pagebuilder-section-component="TestimonialsCarouselCondensedSectionV3"]
+      .section-space-med {
+      padding-bottom: calc(var(--section-space-med-tablet) * 0.325) !important;
+    }
+
     .section-space-lrg {
       padding-block: var(--section-space-lrg-tablet);
     }
@@ -3774,6 +3798,12 @@ body {
     .section-space-med,
     .section-space-lrg {
       padding-block: var(--section-space-med-mobile);
+    }
+
+    .pagebuilder-density-normal
+      .pagebuilder-section-frame[data-pagebuilder-padding-bottom="none"][data-pagebuilder-section-component="TestimonialsCarouselCondensedSectionV3"]
+      .section-space-med {
+      padding-bottom: calc(var(--section-space-med-mobile) * 0.325) !important;
     }
 
     .section-space-sml {

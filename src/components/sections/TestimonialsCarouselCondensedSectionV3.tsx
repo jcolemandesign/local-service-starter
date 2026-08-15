@@ -162,6 +162,10 @@ export function TestimonialsCarouselCondensedSectionV3({
   const visibleItems = getVisibleTestimonials(carouselItems, activeIndex);
   const groupCount = Math.ceil(carouselItems.length / visibleTestimonialCount);
   const activeGroupIndex = Math.floor(activeIndex / visibleTestimonialCount);
+  const isUnframed = cardBorder === "off" && cardFill === "none";
+  const slideGridClassName = isUnframed
+    ? "grid grid-cols-14 site-grid-gap max-lg:grid-cols-2 max-md:grid-cols-1"
+    : "grid grid-cols-3 inline-gap-xlrg max-lg:grid-cols-2 max-md:grid-cols-1";
   const cardTransition = shouldReduceMotion
     ? { duration: 0 }
     : { duration: 0.26, ease: testimonialEase };
@@ -186,19 +190,21 @@ export function TestimonialsCarouselCondensedSectionV3({
     <section className="bg-service-surface">
       <LayoutGrid className="section-min-none" columns={14} padding="med">
         <LayoutGridItem className="relative col-span-14">
-          {/* Clipped on the inline axis only. The slide animates in and out
-              sideways, so the horizontal clip is the carousel - but
-              `overflow-hidden` clips both, and the cards carry `shadow-service`,
-              so every card had its shadow sheared off top and bottom. `clip` is
-              the value that does not force the other axis to `auto`. */}
-          <div className="grid overflow-x-clip">
+          {/* The slide still clips on the inline axis, but the clip margin
+              extends beyond the card grid so the first and last shadows can
+              paint. Unlike margin and padding, this does not affect sizing or
+              move the centred carousel. */}
+          <div className="grid overflow-x-clip [overflow-clip-margin:var(--section-space-sml)]">
             <div
               aria-hidden="true"
               className="invisible col-start-1 row-start-1 grid"
             >
               {Array.from({ length: groupCount }, (_, index) => (
                 <div
-                  className="col-start-1 row-start-1 grid grid-cols-3 inline-gap-xlrg max-lg:grid-cols-2 max-md:grid-cols-1"
+                  className={cx(
+                    "col-start-1 row-start-1",
+                    slideGridClassName,
+                  )}
                   key={`size-group-${index}`}
                 >
                   {getVisibleTestimonials(
@@ -208,6 +214,14 @@ export function TestimonialsCarouselCondensedSectionV3({
                     <TestimonialCard
                       cardBorder={cardBorder}
                       cardFill={cardFill}
+                      className={
+                        isUnframed
+                          ? cx(
+                              "col-span-4 max-lg:col-span-1",
+                              itemIndex === 0 && "col-start-2 max-lg:col-start-auto",
+                            )
+                          : undefined
+                      }
                       item={item}
                       key={`${itemIndex}-size`}
                     />
@@ -219,7 +233,10 @@ export function TestimonialsCarouselCondensedSectionV3({
             <AnimatePresence initial={false} mode="wait">
               <motion.div
                 aria-live="polite"
-                className="col-start-1 row-start-1 grid grid-cols-3 inline-gap-xlrg max-lg:grid-cols-2 max-md:grid-cols-1"
+                className={cx(
+                  "col-start-1 row-start-1",
+                  slideGridClassName,
+                )}
                 key={activeIndex}
                 initial={{
                   opacity: 0,
@@ -236,6 +253,14 @@ export function TestimonialsCarouselCondensedSectionV3({
                   <TestimonialCard
                     cardBorder={cardBorder}
                     cardFill={cardFill}
+                    className={
+                      isUnframed
+                        ? cx(
+                            "col-span-4 max-lg:col-span-1",
+                            itemIndex === 0 && "col-start-2 max-lg:col-start-auto",
+                          )
+                        : undefined
+                    }
                     item={item}
                     key={itemIndex}
                   />
