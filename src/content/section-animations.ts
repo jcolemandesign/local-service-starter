@@ -55,6 +55,25 @@ export const sectionAnimationRoles = [
   "accent",
   /** A composite unit that reveals as one block rather than as its parts. */
   "frame",
+  /**
+   * The unit whose purpose is the action - a CTA panel, a conversion block, the
+   * card that holds the button.
+   *
+   * THE SEVENTH ROLE, AND THE VOCABULARY DID NOT GROW LIGHTLY. The Phase 5
+   * write-up concluded six was right, and it was - for the suites that existed
+   * then. This one arrived with a suite that is ABOUT the action, and no
+   * existing role could carry it: `accent` is visual emphasis (a stat, a
+   * badge), `card` is one of several, `frame` is a composite. "The thing the
+   * reader is meant to do" is a different fact about the markup, and it is the
+   * fact an entire class of attention suites will key on.
+   *
+   * IT GOES ON THE UNIT, NOT ON THE BUTTON. Every CTA section in this library
+   * already marks a block that CONTAINS its button - a copy column, a
+   * conversion card - so marking the button too would nest a revealable unit
+   * inside a revealable unit, and two opacity fades multiply into a muddy one.
+   * The action unit is the panel that carries the action.
+   */
+  "action",
 ] as const;
 
 export type SectionAnimationRole = (typeof sectionAnimationRoles)[number];
@@ -111,6 +130,19 @@ type SectionAnimationSuiteDefinition = {
    * it. Promotion is one word here.
    */
   status: "offered" | "prototype";
+  /**
+   * The unit role this suite is ABOUT, if it is about one.
+   *
+   * Offered only on sections that mark that role. Omitted means "offered
+   * wherever the entrance is offered", which is what a suite with no signature
+   * role - like Rise - should be.
+   *
+   * This is derived availability, not a membership set: the suite names a role,
+   * the sections name their roles, and the intersection is computed. Adding a
+   * suite adds no list, and marking up a section adds it to every suite that
+   * cares, with no edit to either file.
+   */
+  requiresRole?: SectionAnimationRole;
   /** One line, shown in the builder control and the style-guide gallery. */
   description: string;
   /** What content the suite suits, for the gallery. */
@@ -153,6 +185,10 @@ export const sectionAnimationSuites = [
     id: "reveal",
     label: "Rise",
     status: "offered",
+    /** No signature role - Rise is the entrance every section can have, so it
+     *  is offered wherever the axis is. Stated rather than omitted so both
+     *  suites carry the field and neither reads as an oversight. */
+    requiresRole: undefined,
     description: "Units rise a short distance and fade in as they arrive.",
     guidance:
       "The default entrance. Suits everything, which is also why it cannot tell you whether the role vocabulary is right.",
@@ -164,6 +200,7 @@ export const sectionAnimationSuites = [
         "fade only, no rise - a bled panel that travels opens a band of bare ground beneath it",
       accent: "rise + fade",
       frame: "rise + fade, as a single unit",
+      action: "rise + fade - Rise makes no special case of the action",
     },
     /**
      * One, which is exactly why Rise cannot validate the role vocabulary on its
@@ -173,36 +210,178 @@ export const sectionAnimationSuites = [
     differentiatedRoles: ["media"],
   },
   {
-    id: "editorial",
-    label: "Editorial",
     /**
-     * PROTOTYPE. Its job is to answer three questions about the vocabulary
-     * before 86 marker sites are classified against it - see the report in
-     * `docs/animation-axis-handoff.md` §8.
+     * RENAMED FROM `editorial`, and this is the one moment that was free.
+     *
+     * Persisted ids are never renamed here - `reveal` is still `reveal` for
+     * exactly that reason. This one could be renamed because it had never been
+     * offered: it shipped as a `prototype`, filtered out of the option list, so
+     * no template, staged page, saved builder option or exported site can
+     * contain the string `editorial`. There was nothing to migrate and nothing
+     * to alias.
+     *
+     * That window is now closed. The moment this suite is selectable, the id is
+     * frozen like every other.
+     *
+     * The new id is also the better one: it names the motion rather than a
+     * mood, which is the rule every suite after `reveal` follows.
      */
-    status: "prototype",
+    id: "wipe",
+    label: "Wipe",
+    status: "offered",
     description:
-      "The heading wipes in behind a moving edge; cards rise, accents scale up, media fades.",
+      "Text is revealed behind an edge travelling left to right. Nothing else moves — it fades in place.",
     guidance:
-      "For sections led by a headline. The first suite that treats roles differently, which is what makes it the test of whether the roles are right.",
+      "For sections led by a headline — the wipe is the whole point, so it is offered where a heading is marked as one.",
+    /**
+     * OFFERED ONLY WHERE IT DOES SOMETHING, and this is the one place the
+     * "every suite is safe everywhere" claim needs qualifying.
+     *
+     * It is still true that a suite has an ANSWER for every role, so nothing
+     * breaks if this runs on a section with no heading marked. But it would be
+     * indistinguishable from Rise there, and an editor picking "Wipe" and
+     * watching a rise is a control that appears to work and paints nothing.
+     *
+     * NOT A MEMBERSHIP SET PER VALUE - the thing this architecture exists to
+     * avoid. `requiresRole` is derived: a suite names the role it is about, and
+     * availability falls out of which sections mark that role. Nobody maintains
+     * a list per suite, and a section that gains a heading role in the backfill
+     * gains this suite with no edit here.
+     */
+    requiresRole: "heading",
     roles: {
       heading:
         "clip wipe, left to right, no travel - A WIPE, NOT TYPING; see §5.2 of the plan",
-      content: "rise + fade, as one block",
-      card: "rise + fade, staggered by --reveal-index",
-      media: "fade only, no rise - same reason as Rise",
-      accent: "scale up from 94% while rising and fading",
-      frame: "rise + fade, as a single unit",
+      content: "clip wipe, left to right - text is text, whatever size it is",
+      card: "fade in place, staggered by --reveal-index",
+      media: "fade in place",
+      accent: "scale up from 94% while fading - a scale is not a travel",
+      frame: "fade in place, as a single unit",
+      action: "fade in place - the wipe is about the text, not the action",
     },
     /**
-     * Three, and the two ABSENTEES are the finding.
+     * Three, and the ABSENTEES are the finding.
      *
-     * `card` and `frame` are not here because neither needed a rule: the
-     * difference between "a list that staggers" and "one block that does not"
-     * is `--reveal-index`, which the SECTION sets per element. A suite has no
-     * way to express it and no need to.
+     * `media` left the list when the suite stopped travelling: "fade without
+     * rising" was a special case only while everything else rose, and now it
+     * IS the default. A suite with one idea needs fewer exceptions than a suite
+     * with two, which is the argument for having one.
+     *
+     * `card` and `frame` were never here. The difference between "a list that
+     * staggers" and "one block that does not" is `--reveal-index`, which the
+     * SECTION sets per element - a suite has no way to express it and no need
+     * to.
      */
-    differentiatedRoles: ["heading", "media", "accent"],
+    differentiatedRoles: ["heading", "content", "accent"],
+  },
+  {
+    /**
+     * REBUILT, NOT PROMOTED, and the distinction matters.
+     *
+     * A `pulse` rule has sat dormant in `globals.css` since before the axis was
+     * timed, and the handoff calls promoting it "one entry in the option list".
+     * It is not, for a reason that has nothing to do with bookkeeping: that rule
+     * was SCROLL-SCRUBBED - `animation-timeline: view()`, progress tied to
+     * scroll position - which is the exact mechanism this axis was redesigned
+     * away from. A trackpad flick put the whole range behind the reader in
+     * ~150ms and the blip never registered. Shipping it as written would have
+     * shipped the known-bad version of itself.
+     *
+     * So the intent survives and the mechanism does not: same idea, on a clock,
+     * inside the timed-suite contract like every other suite.
+     */
+    id: "pulse",
+    label: "Pulse",
+    status: "offered",
+    description:
+      "Everything fades in place, then the action block gives one soft beat once it has landed.",
+    guidance:
+      "For sections whose job is a decision — a CTA panel, a conversion block. Nothing else moves, because the beat only reads as “look here” while it is the only thing moving.",
+    /**
+     * The action is the whole point, so it is also the gate. On a section with
+     * no action unit this would be Rise with extra steps.
+     */
+    requiresRole: "action",
+    /**
+     * Every role fades at the same moment - this is the one suite with no
+     * stagger. A stagger is a sequence, and a sequence is something to watch;
+     * the beat needs that attention to itself.
+     */
+    roles: {
+      heading: "fades in with everything else",
+      content: "fades in with everything else",
+      card: "fades in with everything else - no stagger in this suite",
+      media: "fades in with everything else",
+      accent: "fades in with everything else",
+      frame: "fades in with everything else",
+      action:
+        "fades in with everything else, then one scale beat once it has landed - ONE beat, not a loop",
+    },
+    /**
+     * One, and deliberately one. A suite that emphasised several roles would
+     * emphasise nothing: the beat reads as "look here" only while it is the
+     * only thing moving after the section has settled.
+     */
+    differentiatedRoles: ["action"],
+  },
+  {
+    id: "lateral",
+    label: "Lateral",
+    status: "offered",
+    description:
+      "The image slides in from off-screen; everything else fades quietly in place.",
+    guidance:
+      "For sections with a strong left/right composition. One element carries the movement and the rest simply appear — a slide only reads as emphasis while it is the only one.",
+    /**
+     * NO SIGNATURE ROLE, and that is the answer to the obvious wrinkle.
+     *
+     * The temptation is `requiresRole: "media"`, since sliding a panel in from
+     * off-screen is the reason to reach for this. Do not: the gate is computed
+     * per COMPONENT, and whether a section has an image is often a per-INSTANCE
+     * toggle. A media gate would offer Lateral on a section whose image is
+     * currently switched off, which is the failure the gate exists to prevent,
+     * and would keep offering it after someone switched the image off - a
+     * control that silently stops meaning anything.
+     *
+     * So the suite is built not to need one. Cards, panels and frames all
+     * travel, so a section with its image off still slides its remaining units;
+     * a section with no media at all is still a coherent Lateral. The media
+     * rule simply has nothing to match, which costs nothing. A suite that works
+     * whether or not an optional element is present needs no gate, and that is
+     * a better answer than teaching the gate about instance state.
+     */
+    requiresRole: undefined,
+    /**
+     * No stagger anywhere in this suite. Everything fades in together and one
+     * element travels, so there is exactly one thing to watch - a staggered row
+     * would pull the eye along itself while the lead is trying to be the
+     * moving element.
+     */
+    roles: {
+      heading: "fades in with everything else",
+      content: "fades in with everything else",
+      card: "fades in with everything else - no stagger in this suite",
+      media:
+        "THE SLIDE - in from off-screen, 100% of its own width, so it starts one panel outside its own box",
+      accent: "fades in with everything else",
+      frame: "fades in with everything else",
+      action: "fades in with everything else",
+    },
+    /**
+     * ONE, and the count is the design.
+     *
+     * The first version slid the cards and the panels too, which made the
+     * section a page that moves rather than a page with one thing moving. A
+     * slide only says "look at this" while it is the only slide on the screen,
+     * so everything that is not the lead fades in place and the media panel
+     * carries the motion by itself.
+     *
+     * Direction is not in this list because it is not a role. Which side a
+     * panel enters from is a fact about the section's layout - often per
+     * variant - so the section declares it with `reveal-from-end` and the suite
+     * reads it. Default is the inline start.
+     */
+    differentiatedRoles: ["media"],
   },
 ] as const satisfies readonly SectionAnimationSuiteDefinition[];
 
@@ -283,6 +462,72 @@ export const offeredSectionAnimationSuites = sectionAnimationSuites.filter(
 );
 
 /**
+ * Which sections mark which unit roles.
+ *
+ * The registry side of the role markup. It exists because a suite's
+ * availability is derived from the roles a section marks, and nothing at
+ * RUNTIME can read a `className` out of a section's source - the tests scan
+ * files, the builder cannot.
+ *
+ * So this is the one hand-maintained fact in the role system, and it is pinned
+ * from both directions by `animation-marker-ownership.test.ts`: a component
+ * listed here must carry that role class, and a file carrying the class must
+ * have its section listed. A stale entry fails rather than quietly offering a
+ * suite that does nothing.
+ *
+ * ONLY THE ROLES A SUITE ASKS ABOUT NEED TO BE HERE. `heading` is populated
+ * because Wipe is about headings; the other five have no suite gated on them,
+ * so listing them would be bookkeeping nobody reads. Phase 6's backfill fills
+ * this in as it goes.
+ */
+export const sectionAnimationRoleComponents: Partial<
+  Record<SectionAnimationRole, readonly string[]>
+> = {
+  heading: [
+    "SectionHeaderCompactSectionV3",
+    "SectionHeaderLargeSectionV3",
+    "SectionHeaderSplitLinkSectionV3",
+    "CTASectionV3",
+    "CTAFullscreenSectionV3",
+    "ProcessStepsStaggeredSectionV3",
+    "ProcessStepsBranchingSectionV3",
+  ],
+  /**
+   * The CTA sections with ONE action unit.
+   *
+   * `CTAServiceTriageSectionV3` is deliberately absent: its actions live on
+   * several triage cards, so there is no single thing for a beat to point at,
+   * and pulsing all of them at once points at nothing. Its cards stay `card`,
+   * and it simply is not offered Pulse - which is the gate doing its job rather
+   * than an omission.
+   */
+  action: [
+    "CTAImageSectionV3",
+    "CTASectionV3",
+    "CTAMutedSectionV3",
+    "CTAFullscreenSectionV3",
+    "CTASmallBandImageSectionV3",
+  ],
+};
+
+/** Whether a section marks a given kind of unit. */
+export function sectionMarksRole(
+  component: string,
+  role: SectionAnimationRole,
+) {
+  return sectionAnimationRoleComponents[role]?.includes(component) ?? false;
+}
+
+/** The suites worth offering on one section: those with no signature role, plus
+ *  those whose signature role this section actually marks. */
+export function sectionAnimationSuitesFor(component: string) {
+  return offeredSectionAnimationSuites.filter(
+    (suite) =>
+      !suite.requiresRole || sectionMarksRole(component, suite.requiresRole),
+  );
+}
+
+/**
  * The builder's option list, derived rather than hand-written.
  *
  * Hand-listing it is how the option list and the registry drift apart, and the
@@ -297,3 +542,23 @@ export const sectionAnimationOptions = [
     value: suite.id,
   })),
 ] as const satisfies ReadonlyArray<{ label: string; value: string }>;
+
+/**
+ * The option list for one section.
+ *
+ * Same list, minus the suites whose signature role this section does not mark.
+ * Every screen that offers the control must use this rather than the full list
+ * above, or it offers a suite that would do nothing there.
+ */
+export function sectionAnimationOptionsFor(
+  component: string,
+): ReadonlyArray<{ label: string; value: string }> {
+  return [
+    { label: "Use template default", value: "" },
+    { label: "None", value: "none" },
+    ...sectionAnimationSuitesFor(component).map((suite) => ({
+      label: suite.label,
+      value: suite.id,
+    })),
+  ];
+}

@@ -23,23 +23,42 @@ STATUS 2026-08-15 — PHASES 1-5 BUILT. PHASE 6 IS NEXT.
                                               converted to reveal-role-media
   Phase 3  Per-suite waiting/arrival    DONE  Rise fills the contract template
   Phase 4  Style guide gallery          DONE  /dev/style-guide#motion
-  Phase 5  Prototype Editorial          DONE  findings below; suite is built and
-                                              deliberately NOT offered
-  Phase 6  Role backfill                NEXT  86 markers, 47 files
+  Phase 5  Prototype the Wipe suite     DONE  findings below
+  Phase 6  Role backfill                PART  section headers done (3 sections,
+                                              the heading role); 44 files left
   Phase 7  Project-level default        open  separate review, per Q2
   Phase 8  Author more suites           open
 
-ONE DEVIATION FROM THIS PLAN, and it is the only place the built system differs
-from what is written below. The plan assumed one list: a suite in the registry
-is a suite in the builder. Editorial cannot be, yet. Until the phase-6 backfill
-lands, nearly every marked element in the library is an unroled `content` unit,
-so a suite that DIFFERENTIATES looks identical to Rise on nearly every section
-an editor could pick it for — the "control that appears to work and paints
-nothing" failure, arriving by a different door. So a suite now carries
-`status: "offered" | "prototype"`; the builder derives from the offered ones,
-the style-guide gallery shows all of them. Promotion is one word, and a test
-pins both halves: a prototype stays out of the option list and still owes the
-full CSS contract.
+  The Wipe suite is now OFFERED, gated to sections that mark a heading. It was
+  called `editorial` while it was a prototype and was renamed on the way out —
+  the one free rename, because a never-offered id cannot be in saved data. That
+  window is closed; `wipe` is frozen like every other id now.
+
+TWO DEVIATIONS FROM THIS PLAN. Both are places the built system is better than
+what is written below, and both came from the same discovery.
+
+1. A SUITE CAN BE BUILT WITHOUT BEING SELECTABLE. The plan assumed one list: a
+   suite in the registry is a suite in the builder. That cannot hold while the
+   backfill is partial — before a section marks roles, a suite that
+   DIFFERENTIATES looks identical to Rise there, which is the "control that
+   appears to work and paints nothing" failure arriving by a different door. So
+   a suite carries `status: "offered" | "prototype"`; the builder derives from
+   the offered ones, the style-guide gallery shows all of them.
+
+2. AVAILABILITY IS DERIVED FROM ROLES, NOT FROM A LIST. §1 rejects a membership
+   set per value and is right to — but "offer every suite everywhere" was never
+   the only alternative. A suite declares the role it is ABOUT
+   (`requiresRole`), sections declare the roles they mark
+   (`sectionAnimationRoleComponents`), and availability is the intersection.
+   Nobody maintains a list per suite; a section that gains a role in the
+   backfill gains every suite that cares about it, with no edit to either file.
+   This is what lets Wipe ship on the section headers today instead of waiting
+   for all 47 files.
+
+   The role registry is the one hand-maintained fact, because nothing at
+   RUNTIME can read a className out of a section's source. It is pinned both
+   ways: listed-but-unmarked offers a suite that does nothing;
+   marked-but-unlisted silently misses a suite it qualifies for.
 
 PHASE 5'S THREE QUESTIONS, ANSWERED (full write-up in the handoff doc §8):
 
@@ -153,7 +172,7 @@ LAYER 2 — SUITE. One value on the frame naming a motion suite, which answers
 how every role arrives.
 
     Suite "Rise"       (id `reveal`)  every role: rise + fade, media: fade only
-    Suite "Editorial"  heading: clip wipe   card: rise+fade   media: fade
+    Suite "Wipe"       heading: clip wipe   card: rise+fade   media: fade
     Suite "Lateral"    card: side entry     heading: fade     media: fade
 
 WHY THIS SHAPE:
@@ -222,7 +241,7 @@ So the default is opted into by an explicit meta-value:
     none        never animate this section
     site        use the project's default suite
     reveal      pin this section to Rise
-    editorial   pin this section to Editorial
+    wipe        pin this section to Wipe
     ...
 
 Resolution order:
@@ -386,7 +405,7 @@ Test: the demo list is derived, not hand-enumerated, so a suite added later
 appears here with no style-guide edit.
 
 -------------------------------------------------------------------------------
-PHASE 5 — Prototype Editorial's role mapping BEFORE the backfill
+PHASE 5 — Prototype the Wipe suite's role mapping BEFORE the backfill
 -------------------------------------------------------------------------------
 
 This phase is new in rev. 2 and it is the one that de-risks everything after it.
@@ -396,12 +415,12 @@ roles are the right six. Classifying 86 marker sites against a vocabulary that
 has never been tested by a suite that actually differentiates is how you get a
 taxonomy you have to redo.
 
-So: sketch or privately implement Editorial's mapping first. It will answer
+So: sketch or privately implement the Wipe suite's mapping first. It will answer
   - does `accent` earn a role, or does it collapse into `card`?
   - do `frame` and `card` actually need different behaviour?
   - is `heading` one role or does eyebrow-vs-title matter?
 
-Adjust the vocabulary, then backfill. Editorial does not need to ship here —
+Adjust the vocabulary, then backfill. The suite does not need to ship here —
 only to exist far enough to answer those three questions.
 
 -------------------------------------------------------------------------------
@@ -474,7 +493,7 @@ must remain selectable and copyable).
 
 DECIDED: the groundwork ships the CLIP WIPE and names it a wipe.
 
-  - Editorial's `heading` role is a clip-path wipe: the heading is revealed
+  - The Wipe suite's `heading` role is a clip-path wipe: the heading is revealed
     left-to-right behind a moving edge, as one element, no per-character
     markup. It is honest about being a wipe in the registry label, the
     description and the gallery caption. Nothing in the builder or the gallery
@@ -489,7 +508,7 @@ DECIDED: the groundwork ships the CLIP WIPE and names it a wipe.
     string is long or wraps. None of that is groundwork and none of it is
     implied by this plan.
 
-This closes Q4. Phase 5's Editorial sketch is scoped to the wipe.
+This closes Q4. Phase 5's prototype is scoped to the wipe.
 
 5.3  STORAGE NORMALISATION IS NOT RENDER RESOLUTION.
 `route.ts:295` currently preserves any animation string; sanitising happens at

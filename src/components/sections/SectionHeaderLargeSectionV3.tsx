@@ -75,11 +75,11 @@ export function SectionHeaderLargeSectionV3({
           alignX={align}
           className="col-span-7 col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
         >
-          {/* A single revealable unit - this section is one headline. See
-              `singleUnitReveals`. */}
+          {/* A single revealable unit, and a `heading` one - this section is
+              one headline. See `singleUnitReveals`. */}
           <div
             className={cx(
-              "reveal-on-scroll",
+              "reveal-on-scroll reveal-role-heading",
               "fluid-type-frame",
               // Large fluid type can visually overshoot its line box at both
               // ends. Keep a small internal buffer so ascenders and descenders

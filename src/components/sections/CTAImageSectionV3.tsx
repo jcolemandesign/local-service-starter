@@ -71,7 +71,10 @@ export function CTAImageSectionV3({
           className={cx(columns.content, stackedClasses)}
         >
           <div
-            className="reveal-on-scroll flex h-full flex-col"
+            // The action unit: this column is the copy AND the button, and the
+            // button is not marked separately because a revealable unit inside
+            // a revealable unit fades twice.
+            className="reveal-on-scroll reveal-role-action flex h-full flex-col"
             style={
               {
                 "--reveal-index": imageLeadsReadingOrder ? 1 : 0,
@@ -115,6 +118,10 @@ export function CTAImageSectionV3({
               // full-image narrative split carries this role. Rise answers
               // `media` with a pure fade; the section only says what it is.
               "reveal-on-scroll reveal-role-media",
+              // Arrives from the edge it sits against. `imageLeadsReadingOrder`
+              // already answers which side that is; when the image does not
+              // lead, it is the trailing one.
+              imageLeadsReadingOrder ? undefined : "reveal-from-end",
               "media-min-medium absolute inset-y-0 !w-auto overflow-hidden bg-bg-muted max-lg:relative max-lg:inset-auto max-lg:-mx-[var(--site-grid-inset-inline)] max-lg:!w-[calc(100%+var(--site-grid-inset-inline)+var(--site-grid-inset-inline))]",
               columns.media,
             )}

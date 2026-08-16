@@ -196,6 +196,12 @@ function CroppedImagePanel({
           // the time. The role says what it IS; whether media fades or travels
           // is the suite's answer, and Rise's answer is a pure fade.
           "reveal-on-scroll reveal-role-media",
+          // Which edge it bleeds past is which edge it should arrive from, and
+          // the panel already knows: the bleed direction is picked per variant
+          // a few lines up. Declaring it is the section stating a fact about
+          // its own layout - inert unless a suite cares, and Lateral is the
+          // one that does.
+          bleedClassName === bleedRight ? "reveal-from-end" : undefined,
           "absolute inset-y-0 overflow-hidden bg-service-surface max-md:relative max-md:inset-auto max-md:h-full max-md:min-h-[var(--media-min-medium)] max-md:!w-full",
           bleedClassName,
           maskClassName,

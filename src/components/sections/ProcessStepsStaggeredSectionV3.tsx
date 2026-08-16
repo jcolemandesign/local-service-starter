@@ -35,7 +35,7 @@ export function ProcessStepsStaggeredSectionV3({
           measure="copy"
         >
           <div
-            className="reveal-on-scroll fluid-type-frame"
+            className="reveal-on-scroll reveal-role-heading fluid-type-frame"
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <p className="type-label text-service-accent">{eyebrow}</p>
@@ -55,7 +55,7 @@ export function ProcessStepsStaggeredSectionV3({
             18px and the rail it is joined to stays put, so the path visibly
             comes apart and re-joins for the length of the entrance. */}
         <ol
-          className="reveal-on-scroll relative mx-auto grid max-w-6xl"
+          className="reveal-on-scroll reveal-role-frame relative mx-auto grid max-w-6xl"
           style={{ "--reveal-index": 1 } as CSSProperties}
         >
           {steps.map((step, index) => {

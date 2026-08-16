@@ -367,7 +367,7 @@ export function CTASectionV3({
       >
         <LayoutGridItem className="col-span-6 max-lg:col-span-10 max-md:col-span-6 max-sm:col-span-2">
           <div
-            className="reveal-on-scroll fluid-type-frame"
+            className="reveal-on-scroll reveal-role-heading fluid-type-frame"
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <p className={`type-label ${colors.eyebrow}`}>Conversion</p>
@@ -386,7 +386,7 @@ export function CTASectionV3({
         >
           <article
             className={cardSurfaceClass(
-              `reveal-on-scroll content-padding fluid-type-frame radius-medium border ${colors.card}`,
+              `reveal-on-scroll reveal-role-action content-padding fluid-type-frame radius-medium border ${colors.card}`,
               cardFill,
               cardBorder,
             )}
@@ -429,7 +429,7 @@ export function CTAMutedSectionV3({
         <SevenColumnGridItem className="col-span-7">
           <article
             className={cardSurfaceClass(
-              `reveal-on-scroll content-padding radius-medium border ${colors.card}`,
+              `reveal-on-scroll reveal-role-action content-padding radius-medium border ${colors.card}`,
               cardFill,
               cardBorder,
             )}
@@ -491,7 +491,7 @@ export function CTAFullscreenSectionV3({
           className="col-span-5 col-start-2 row-start-2 max-lg:col-span-7 max-lg:col-start-1"
         >
           <div
-            className="reveal-on-scroll fluid-type-frame mx-auto w-full text-center"
+            className="reveal-on-scroll reveal-role-heading fluid-type-frame mx-auto w-full text-center"
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <p className="type-label text-white/75">{eyebrow}</p>
@@ -507,7 +507,7 @@ export function CTAFullscreenSectionV3({
           className="col-span-7 row-start-3 mt-body-actions-md max-md:mt-body-actions-sm"
         >
           <div
-            className="reveal-on-scroll flex w-full justify-center"
+            className="reveal-on-scroll reveal-role-action flex w-full justify-center"
             style={{ "--reveal-index": 1 } as CSSProperties}
           >
             <RequestServiceButton

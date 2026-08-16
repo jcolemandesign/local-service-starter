@@ -81,9 +81,11 @@ export function SectionHeaderSplitLinkSectionV3({
         >
           {/* Two units here, unlike the other two headers: the headline and the
               aside sit side by side, so they earn a real two-step stagger
-              rather than one block fade. */}
+              rather than one block fade. The headline is the `heading` unit and
+              the aside is `content` - which is what lets the Wipe suite wipe
+              the title while the aside beside it simply rises. */}
           <Heading
-            className={`reveal-on-scroll ${
+            className={`reveal-on-scroll reveal-role-heading ${
               headingSizeClassName[headingSize] ??
               headingSizeClassName["heading-xl"]
             } max-w-3xl text-service-ink`}
@@ -99,7 +101,7 @@ export function SectionHeaderSplitLinkSectionV3({
           measure="none"
         >
           <div
-            className="reveal-on-scroll fluid-type-frame"
+            className="reveal-on-scroll reveal-role-content fluid-type-frame"
             style={{ "--reveal-index": 1 } as CSSProperties}
           >
             <p

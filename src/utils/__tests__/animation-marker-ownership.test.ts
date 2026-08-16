@@ -3,7 +3,10 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { sectionAnimationRoles } from "@/content/section-animations";
+import {
+  sectionAnimationRoleComponents,
+  sectionAnimationRoles,
+} from "@/content/section-animations";
 import { sectionLibraryV3Registry } from "@/content/section-library-v3";
 import {
   animationComponents,
@@ -61,10 +64,13 @@ const sources = new Map(
 );
 
 /**
- * The marker for the one offered value. `pulse-on-scroll` is deliberately not
- * here: it is gated by the same attribute but is not an option value, so a
- * section carrying only a pulse marker cannot be switched on and must not be
- * offered a control - see `dormantMarkers`.
+ * The one marker class. Every suite drives it; roles narrow what it means.
+ *
+ * There used to be a second, `pulse-on-scroll`, for a scrubbed scale blip that
+ * no section used. Pulse is a timed suite now and drives `.reveal-role-action`
+ * like every other suite drives a role, so the second marker is gone - and its
+ * disappearance is the point of the roles design: a new effect is a new ROLE on
+ * the one marker, not a new marker.
  */
 const revealMarker = /\breveal-on-scroll\b/;
 
@@ -72,15 +78,14 @@ const revealMarker = /\breveal-on-scroll\b/;
  * Sections marked up for a value the builder does not offer yet.
  *
  * Empty, and worth keeping that way. It held one entry - the split-decision
- * section marked `pulse-on-scroll`, a rule that is gated but has never been an
- * offered value, so that section was the one piece of marked-up animation in
- * the library that no editor could reach. It marks the ordinary entrance now
- * and is registered like everything else.
+ * section marked `pulse-on-scroll`, which was gated but never an offered value,
+ * so it was the one piece of marked-up animation in the library no editor could
+ * reach. It marks the ordinary entrance now.
  *
- * The list stays because the arrangement it records can recur: `pulse` is
- * still a scoped, dormant rule in `globals.css` waiting on a style-guide
- * suite, and anything marked for it before it is offered belongs here with its
- * reason rather than silently failing the coverage check above.
+ * The list stays because the arrangement can recur: `scrub` is still a scoped,
+ * dormant rule in `globals.css` with no offered value, and anything marked for
+ * it before it is offered belongs here with its reason rather than silently
+ * failing the coverage check above.
  */
 const dormantMarkers = new Map<string, string>();
 
@@ -166,7 +171,7 @@ describe("animation marker ownership", () => {
 
     expect(
       unreachable.sort(),
-      "these carry a reveal/pulse marker class but no section in them is in animationComponents, so the markup is dead - add the section to the set, or remove the class",
+      "these carry a reveal marker class but no section in them is in animationComponents, so the markup is dead - add the section to the set, or remove the class",
     ).toEqual([]);
   });
 
@@ -337,9 +342,7 @@ describe("animation marker ownership", () => {
         continue;
       }
 
-      const markers = (
-        source.match(/\b(?:reveal|pulse)-on-scroll\b/g) ?? []
-      ).length;
+      const markers = (source.match(/\breveal-on-scroll\b/g) ?? []).length;
 
       if (markers === 0) {
         continue;
@@ -518,6 +521,100 @@ describe("animation marker ownership", () => {
   });
 
   /**
+   * The role registry and the markup have to agree, both ways round.
+   *
+   * `sectionAnimationRoleComponents` is the one hand-maintained fact in the
+   * role system - nothing at runtime can read a `className` out of a section's
+   * source, so a suite gated on a role needs the list written down. Both
+   * failures are silent without this:
+   *
+   *   - listed but unmarked: the section is offered a suite that has nothing to
+   *     act on, which is the "control that appears to work and paints nothing"
+   *     failure the gating exists to prevent, reintroduced by the gate itself
+   *   - marked but unlisted: the section quietly misses a suite it qualifies
+   *     for, and nobody can tell that from a deliberate omission
+   */
+  it("keeps the role registry and the role markup in agreement", () => {
+    for (const role of sectionAnimationRoles) {
+      const listed = sectionAnimationRoleComponents[role] ?? [];
+      const marker = new RegExp(`\\breveal-role-${role}\\b`);
+
+      const unmarked = listed.filter((component) => {
+        const file = sharedMarkerSources.get(component) ?? fileFor(component);
+
+        return !file || !marker.test(sources.get(file) ?? "");
+      });
+
+      expect(
+        unmarked.sort(),
+        `these are listed as marking the "${role}" role but no such class appears in their source, so any suite gated on that role is offered where it does nothing`,
+      ).toEqual([]);
+
+      // The other direction is only checkable for roles the registry tracks at
+      // all. An untracked role is a deliberate blank - no suite asks about it
+      // yet - so a section marking it is not yet missing anything.
+      if (!sectionAnimationRoleComponents[role]) {
+        continue;
+      }
+
+      const known = new Set(listed);
+      const missing: string[] = [];
+
+      for (const [file, source] of sources) {
+        if (frameOwners.has(file) || !marker.test(source)) {
+          continue;
+        }
+
+        const exports = [...source.matchAll(/export function (\w+)/g)].map(
+          (match) => match[1],
+        );
+
+        if (
+          exports.some((name) => animationComponents.has(name)) &&
+          !exports.some((name) => known.has(name))
+        ) {
+          missing.push(file);
+        }
+      }
+
+      expect(
+        missing.sort(),
+        `these mark the "${role}" role but no section in them is listed in sectionAnimationRoleComponents.${role}, so they silently miss every suite gated on it`,
+      ).toEqual([]);
+    }
+  });
+
+  /**
+   * The edge hint is a closed vocabulary too.
+   *
+   * `reveal-from-end` says which side a unit arrives from under Lateral. It is
+   * a layout fact the section already knows - which edge a panel bleeds past -
+   * and it is inert under every other suite, which is exactly what makes a typo
+   * invisible: `reveal-from-right` would match no rule, the panel would quietly
+   * arrive from the wrong side, and nothing would error.
+   *
+   * `reveal-from-start` is deliberately NOT a class. It is the default, and a
+   * no-op class that exists only to be written is a thing to keep in sync for
+   * no benefit.
+   */
+  it("uses only the edge hints that exist", () => {
+    const unknown: string[] = [];
+
+    for (const [file, source] of sources) {
+      for (const match of source.matchAll(/\breveal-from-([\w-]+)\b/g)) {
+        if (match[1] !== "end") {
+          unknown.push(`${file} — reveal-from-${match[1]}`);
+        }
+      }
+    }
+
+    expect(
+      unknown.sort(),
+      "these name an edge hint that does not exist, so the unit silently arrives from the default side - `reveal-from-end` is the only one, and the inline start is the default",
+    ).toEqual([]);
+  });
+
+  /**
    * The role belongs on the element that is the revealable unit.
    *
    * A role on a wrapper while the marker sits on a child means the suite's role
@@ -615,12 +712,9 @@ describe("animation marker ownership", () => {
       expect(source, `dormantMarkers names ${file}, which does not exist`)
         .toBeDefined();
 
-      // Either it gained a reveal marker (so it should be registered and drop
-      // out of here), or it lost its pulse marker (so the entry is pointless).
-      if (
-        source &&
-        (revealMarker.test(source) || !/\bpulse-on-scroll\b/.test(source))
-      ) {
+      // An entry rots when the section gains the ordinary marker: it is
+      // reachable now, so it should be registered and drop out of here.
+      if (source && revealMarker.test(source)) {
         stale.push(`${file} — ${reason}`);
       }
     }

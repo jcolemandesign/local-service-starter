@@ -16,7 +16,10 @@ import {
   cardIntensityOptions,
 } from "@/content/color-overrides";
 import type { WrapMode } from "@/content/type-palettes";
-import { sectionAnimationOptions } from "@/content/section-animations";
+import {
+  sectionAnimationOptions,
+  sectionAnimationOptionsFor,
+} from "@/content/section-animations";
 import {
   type SectionBackgroundFill,
   type SectionCardBorder,
@@ -1649,11 +1652,15 @@ const backgroundTreatmentStyleField: SectionStyleFieldSpec = {
   options: styleFieldOptions.backgroundTreatment,
 };
 
-const animationStyleField: SectionStyleFieldSpec = {
-  label: "Entrance animation",
-  name: "animation",
-  options: styleFieldOptions.animation,
-};
+/** Per component, because a suite gated on a unit role is only offered where
+ *  that role is marked - see `sectionAnimationOptionsFor`. */
+function animationStyleField(component: string): SectionStyleFieldSpec {
+  return {
+    label: "Entrance animation",
+    name: "animation",
+    options: sectionAnimationOptionsFor(component),
+  };
+}
 
 /**
  * The two ground-image axes, offered together with the treatment above.
@@ -1788,7 +1795,9 @@ export function getSectionStyleFieldSpecs(
       ? [backgroundFillStyleField]
       : []),
     ...(sectionSupportsCardStyle(component) ? cardStyleFields : []),
-    ...(sectionSupportsAnimation(component) ? [animationStyleField] : []),
+    ...(sectionSupportsAnimation(component)
+      ? [animationStyleField(component)]
+      : []),
     ...(sectionSupportsSectionSpacing(component) ? spacingStyleFields : []),
   ];
 }

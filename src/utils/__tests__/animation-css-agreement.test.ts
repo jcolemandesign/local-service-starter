@@ -251,6 +251,32 @@ describe("animation css agreement", () => {
   });
 
   /**
+   * A suite that slides has to contain its own slide.
+   *
+   * A translated element still contributes to the scrollable overflow area, so
+   * a media panel starting one width off-screen widens the document and flashes
+   * a horizontal scrollbar for the length of the entrance. The page looks
+   * broken, and nothing about the section explains why.
+   *
+   * `clip` and not `hidden`: `hidden` creates a scroll container, which traps
+   * `position: sticky` inside the section and hands the frame a scrollport it
+   * never asked for. Both halves are asserted because "fixed the scrollbar with
+   * overflow: hidden" is the obvious wrong repair.
+   */
+  it("contains the slide inside the frame that chose it", () => {
+    const frame = blockAt(css, '[data-pagebuilder-animation="lateral"] {');
+
+    expect(
+      frame,
+      "the lateral frame does not clip, so a panel sliding in from off-screen widens the document and flashes a horizontal scrollbar",
+    ).not.toBe("");
+    expect(
+      frame,
+      "the lateral frame clips with something other than `clip` - `hidden` would make the section a scroll container and break sticky inside it",
+    ).toContain("overflow-x: clip");
+  });
+
+  /**
    * The gallery is derived from the registry, so a suite added later appears in
    * the style guide with no edit to either file.
    *
@@ -290,15 +316,64 @@ describe("animation css agreement", () => {
   });
 
   /**
-   * Pulse is gated but deliberately not offered - it had a single user, and
-   * these values are persisted ids, so the enum should not gain one
-   * speculatively. This asserts that arrangement rather than leaving the extra
-   * rule looking like a mistake: the rule is scoped and dormant, and promoting
-   * it is one entry in the option list.
+   * Pulse is a timed suite now, and the scrubbed one it replaced is gone.
+   *
+   * The old rule drove a scale blip from `animation-timeline: view()`, so its
+   * progress was the reader's scroll position - the mechanism this axis was
+   * redesigned away from, because a flick put the whole range behind them
+   * before the blip registered. It was rebuilt on a clock rather than promoted,
+   * and this pins that: if a scroll timeline ever reappears under the `pulse`
+   * value, the suite has quietly regained the defect it was rebuilt to lose.
    */
-  it("keeps pulse gated but unoffered", () => {
-    expect(gated).toContain("pulse");
-    expect(offered).not.toContain("pulse");
+  it("drives pulse from a clock, not from the scroller", () => {
+    expect(offered).toContain("pulse");
+
+    const arriving = blockAt(
+      css,
+      '[data-pagebuilder-animation="pulse"][data-pagebuilder-animation-state="in"]',
+    );
+
+    expect(
+      arriving,
+      "no rule answers pulse's arriving state, so the observer would set an attribute nothing reads",
+    ).not.toBe("");
+    expect(
+      arriving,
+      "pulse is attached to a scroll timeline again - that is the scrubbed version it replaced",
+    ).not.toContain("animation-timeline");
+
+    expect(
+      css,
+      "the retired `.pulse-on-scroll` marker rule is back; the suite drives `.reveal-role-action` now",
+    ).not.toContain(".pulse-on-scroll {");
+  });
+
+  /**
+   * The beat is one beat.
+   *
+   * An infinitely pulsing CTA never stops asking, makes the page read as
+   * unfinished, and is a real problem for anyone who finds movement
+   * distracting. Nothing about `iteration-count` is obvious from the rule, so
+   * it is asserted rather than trusted.
+   */
+  it("beats once rather than looping", () => {
+    const action = blockAt(
+      css,
+      '[data-pagebuilder-animation="pulse"][data-pagebuilder-animation-state="in"]\n    .reveal-role-action',
+    );
+
+    expect(
+      action,
+      "the action role has no rule under pulse, so the suite is Rise with extra steps",
+    ).not.toBe("");
+    expect(
+      action,
+      "the attention beat loops - one beat points, a loop nags",
+    ).not.toContain("infinite");
+    expect(
+      action,
+      "the beat no longer runs the attention keyframes",
+    ).toContain("section-attention-pulse");
   });
 
   /**

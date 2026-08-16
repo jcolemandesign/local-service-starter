@@ -78,7 +78,21 @@ export function ContentStickyCardStreamSectionV2({
               </p>
             </div>
             {showImage ? (
-              <div className="radius-medium mt-body-actions-lg w-full max-w-full overflow-hidden border border-service-border bg-service-surface shadow-service">
+              /* A media unit, and an OPTIONAL one - which is the whole reason
+                 no suite is gated on `media`. This panel exists only while
+                 `showImage` is on, and that is a per-page toggle rather than a
+                 fact about the component, so a suite that needed it would be
+                 offered on this section and then quietly stop meaning anything
+                 the moment someone switched the image off. Lateral slides it in
+                 from the section's leading edge when it is here, and has one
+                 less thing to move when it is not.
+
+                 No edge hint: this column is the leading one, so the inline
+                 start - the default - is already the edge it sits against. */
+              <div
+                className="reveal-on-scroll reveal-role-media radius-medium mt-body-actions-lg w-full max-w-full overflow-hidden border border-service-border bg-service-surface shadow-service"
+                style={{ "--reveal-index": 0 } as CSSProperties}
+              >
                 <Image
                   alt={imageAlt}
                   className="h-auto w-full object-contain"

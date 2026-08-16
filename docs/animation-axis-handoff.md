@@ -13,8 +13,9 @@ paths, membership sets).
 ## 1. What exists
 
 A per-section **entrance animation** toggle, off by default, settable in
-pagebuilder and overridable per staged page, with a **Play entrance** button
-beside it so an editor can see what they just switched on.
+pagebuilder and overridable per staged page. It used to carry a **Play entrance**
+button; picking a value replays the entrance now, so the button was removed as a
+second control for what the first already did — see §8.
 
 The single most important fact for anyone picking this up: **almost none of this
 was new machinery.** `globals.css` already carried a complete CSS scroll-driven
@@ -46,7 +47,8 @@ late" and "lasts long" cannot both fit inside one screen of travel.**
 
 Scrubbing is still wanted for a few sections and is kept whole, gated on
 `[data-pagebuilder-animation="scrub"]` — dormant until the builder offers that
-value, the same arrangement `pulse` is in. §4.5 has the cost of promoting it.
+value. §4.5 has the cost of promoting it — and the correction that `pulse`,
+which used to sit in the same arrangement, was rebuilt rather than promoted.
 
 Both marker rules in `globals.css` are scoped to that attribute, so "off by
 default" is the selector matching nothing rather than markup being stripped. A
@@ -85,7 +87,7 @@ generated root layout is source text the import walk never reads.
 
 Every value is a custom property with a default (`--anim-reveal-distance`,
 `--anim-reveal-duration`, `--anim-reveal-delay-step`, `--anim-reveal-easing`,
-`--anim-pulse-scale`, `--anim-pulse-stagger`, and the scrubbed variant's own
+`--anim-pulse-scale` / `-duration` / `-delay`, and the scrubbed variant's own
 `--anim-scrub-entry-start` / `-entry-end` / `-stagger`).
 
 **This is what makes the future style-guide "animation suites" cheap** — a suite
@@ -398,23 +400,33 @@ onto sections where an entrance is the right answer, so it probably wants a
 `scrubComponents` set naming the few, in the same shape as every other
 membership set in `section-style-options.ts`.
 
-**`pulse`** now has no users at all. It had one, and that section was the only
-marked-up section in the library no editor could animate. It marks the ordinary
-entrance now and is registered like everything else; the rule, keyframes and
-tokens stay as the dormant path a suite can promote.
+**`pulse`** — **shipped, as a rebuilt timed suite. This section is kept for what
+it got wrong.**
 
-**Promoting `pulse` is not one line, and this is the trap.** Adding it to the
-option list offers it on all 57 animated sections and it would do nothing on
-every one of them, because none of them mark a pulse unit — the exact failure
-the membership sets exist to prevent, inverted. It needs a per-section option
-filter or every animated section marking both. `scrub` does not have this
-problem, which is the difference between the two.
+It said promoting pulse was blocked by a bookkeeping problem: offering it would
+put it on all 57 animated sections and do nothing on 56, so it needed "a
+per-section option filter or every animated section marking both."
 
-**§8 is the structural answer to that trap, and it is why the library grew unit
-roles rather than more enum values.** A suite answers every role, so it cannot
-be offered on a section it does nothing for. Neither `pulse` nor `scrub` has
-been folded into that contract — both stay gated exactly as described here, and
-folding them in is a later decision rather than groundwork.
+Both halves turned out to be answerable, and neither the way this predicted:
+
+- **The bookkeeping problem dissolved.** A suite declares `requiresRole` and is
+  offered only where that role is marked (§8). Pulse declares `action`, so it
+  appears on the CTA sections and nowhere else. No filter, no list.
+- **The real blocker was never mentioned here.** The dormant rule was
+  **scroll-scrubbed** — `animation-timeline: view()`, progress tied to scroll
+  position. That is the mechanism §4.2 documents replacing, for the reason it
+  documents: a flick puts the range behind the reader in ~150ms and the blip
+  never registers. "Promoting it is one entry in the option list" would have
+  shipped the known-bad version of itself.
+
+So it was **rebuilt, not promoted**: same intent, on a clock, inside the
+two-halves contract. The old `.pulse-on-scroll` marker is retired — a second
+marker class is exactly what the role vocabulary makes unnecessary, since a new
+effect is a new *role* on the one marker.
+
+**`scrub` still sits where this section describes**, and inherits the correction:
+its membership problem is solved by `requiresRole`, but it is still scrubbed, so
+it still needs a rebuild rather than a promotion.
 
 ---
 
@@ -656,27 +668,50 @@ backfill across 47 files; then the project-level default behind an explicit
 
 ### The prototype's findings — read before the backfill
 
-Editorial exists as a **prototype suite**: real CSS, a real gallery specimen,
-and deliberately absent from the builder's option list (`status: "prototype"`).
-The two lists diverge because a suite is only as expressive as the roles the
-library has been marked up with — before the backfill nearly every marked
-element is an unroled `content` unit, so a differentiating suite would look
-*identical to Rise* on nearly every section an editor could pick it for. That is
-a control that appears to work and paints nothing, arriving by a different door.
-Promoting it is one word.
+The second suite — **Wipe** (`wipe`) — was built as a prototype to answer three
+questions about the vocabulary before 86 marker sites were classified against
+it. It has since been **offered**, gated to the sections that mark a heading.
+
+It shipped first as `status: "prototype"` — real CSS, real gallery specimen,
+absent from the builder's option list — because a suite is only as expressive as
+the roles the library has been marked up with. Before any backfill, nearly every
+marked element was an unroled `content` unit, so a differentiating suite would
+have looked *identical to Rise* on nearly every section an editor could pick it
+for: a control that appears to work and paints nothing, arriving by a different
+door.
+
+**It was renamed from `editorial` to `wipe` on the way out of prototype, and
+that was the one free moment.** Persisted ids are never renamed here, but this
+one had never been offered, so no template, staged page, saved builder option or
+exported site could contain the old string — nothing to migrate, nothing to
+alias. The window closed the instant it became selectable. The new id is also
+the better one: it names the motion rather than a mood.
+
+**Gating is derived, not a membership list.** The suite declares
+`requiresRole: "heading"`; sections declare the roles they mark, in
+`sectionAnimationRoleComponents`; availability is the intersection. Adding a
+suite adds no list, and a section that gains a heading role in the backfill
+gains this suite with no edit to either file. That distinction is the whole
+reason the axis grew roles instead of enum values — a hand-maintained set per
+suite is the bookkeeping explosion §8 opens by rejecting.
+
+The role registry is the one hand-maintained fact in the system, because nothing
+at runtime can read a `className` out of a section's source. It is pinned from
+both directions: listed-but-unmarked offers a suite that does nothing;
+marked-but-unlisted silently misses a suite it qualifies for.
 
 It was built to answer three questions about the vocabulary before 86 marker
 sites are classified against it. It answers all three.
 
 **1. Does `accent` earn a role, or collapse into `card`? — It earns it.**
-Editorial gives it `section-reveal-scale`: it grows from 94% while it rises and
+Wipe gives it `section-reveal-scale`: it grows from 94% while it rises and
 fades. A stat or a badge arriving with slightly more presence than the copy
 around it is a real distinction and it is not expressible any other way — a card
 scaling reads as a panel zooming, which is wrong. Keep it, and keep it *small*:
 `accent` is for a figure, not for anything card-sized.
 
 **2. Do `frame` and `card` need different behaviour? — No, and this is the one
-to act on.** Neither is in Editorial's `differentiatedRoles`, and the attempt to
+to act on.** Neither is in Wipe's `differentiatedRoles`, and the attempt to
 give them different rules is what showed why: the difference between "a list
 that staggers" and "one block that does not" is `--reveal-index`, which the
 **section** sets per element. A suite has no way to express it and no need to.
@@ -705,3 +740,38 @@ boundary settled (`heading` is the block). The backfill can proceed against it.
 the same zero distance, and that duplication should stay. It is two suites
 independently deciding a bled panel must not travel — the next one is free to
 disagree, and factoring it into a shared rule would take that freedom away.
+
+### The suites, as they stand
+
+| Suite | id | Offered | Signature role | What it does |
+|---|---|---|---|---|
+| Rise | `reveal` | everywhere | — | units rise and fade in |
+| Wipe | `wipe` | marks a `heading` | `heading` | an edge crosses the heading; cards rise, accents scale, media fades |
+| Pulse | `pulse` | marks an `action` | `action` | normal arrival, then one soft beat on the action once it lands |
+
+**Seven roles now, not six.** `action` joined with Pulse, and the Phase 5
+finding that "six is right" was right *for the suites that existed then* — no
+existing role could carry "the thing the reader is meant to do". `accent` is
+visual emphasis, `card` is one of several, `frame` is a composite.
+
+**The action role goes on the unit, not on the button.** Every CTA section here
+already marks a block that *contains* its button — a copy column, a conversion
+card — so marking the button as well would nest a revealable unit inside a
+revealable unit, and two opacity fades multiply into a muddy one.
+
+**`CTAServiceTriageSectionV3` is deliberately not an action section.** Its
+actions live on several triage cards, so there is no single thing for a beat to
+point at, and pulsing all of them points at nothing. It is simply not offered
+Pulse — the gate working, not an omission.
+
+**One beat, never a loop.** An infinitely pulsing CTA never stops asking, reads
+as a page that has not finished loading, and is a real problem for anyone who
+finds movement distracting. The beat is delayed past the entrance so the reader
+watches the section land and *then* watches one thing move; overlapping the two
+just looks like a longer, wobblier entrance. Both properties are asserted in
+`animation-css-agreement.test.ts` rather than trusted, because neither is
+obvious from reading the rule.
+
+Two animations run on the action unit at once and do not collide: the entrance
+owns `opacity` and `translate`, the beat owns `scale`, and in modern CSS those
+are separate properties rather than fields of one `transform` shorthand.

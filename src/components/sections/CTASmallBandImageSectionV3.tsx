@@ -49,10 +49,11 @@ export function CTASmallBandImageSectionV3({
         <LayoutGridItem className="col-span-14 max-lg:col-span-10 max-md:col-span-6 max-sm:col-span-2">
           <article
             className={cx(
-              // One unit. The band is a single bordered box holding copy, an
-              // action and a cropped photo flush to its own edge; staggering
-              // those three would take the band apart as it arrives.
-              "reveal-on-scroll",
+              // One unit, and an action one. The band is a single bordered box
+              // holding copy, an action and a cropped photo flush to its own
+              // edge; staggering those three would take the band apart as it
+              // arrives, and the action is what the band is for.
+              "reveal-on-scroll reveal-role-action",
               "radius-medium grid grid-cols-14 overflow-hidden border max-lg:grid-cols-10 max-md:grid-cols-6 max-sm:grid-cols-2",
               colors.band,
               colors.border,

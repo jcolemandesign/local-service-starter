@@ -206,6 +206,7 @@ import {
   type SplitImageRatio,
   type SplitImageVariant,
 } from "@/content/section-style-options";
+import { sectionAnimationOptionsFor } from "@/content/section-animations";
 import { replaySectionAnimationById } from "@/utils/replay-section-animation";
 import { groupSectionsIntoBands, withBandRecipe } from "@/utils/section-bands";
 
@@ -5449,6 +5450,34 @@ export function PagebuilderShell({
                             </fieldset>
                           ) : null}
 
+                          {/* THE ICON-TOGGLE RUN. Every two-icon control on the
+                              panel flows through one grid: entrance animation,
+                              background, background band, section spacing.
+
+                              A pair of 56px buttons under a caption leaves most
+                              of a full-width row empty, and four of those
+                              stacked read as four unrelated settings separated
+                              by gaps. Two to a row fixes that.
+
+                              ONE GRID RATHER THAN TWO PAIRS, and the difference
+                              only shows on the sections where it matters. These
+                              four are independently conditional - a hero has no
+                              band, a section with no marked units has no
+                              entrance - so fixed pairs strand a lone survivor
+                              beside an empty column, once per pair. Flowing
+                              them means whichever controls a section actually
+                              has close up against each other, and at most one
+                              gap is left over instead of one per pair.
+
+                              The card cluster below deliberately does NOT join
+                              this run - see the note there. */}
+                          {sectionSupportsAnimation(section.component) ||
+                          sectionSupportsBackgroundFill(section.component) ||
+                          (sectionSupportsJoinAbove(section.component) &&
+                            includedSections[0]?.id !== section.id) ||
+                          sectionSupportsSectionSpacing(section.component) ||
+                          isServicesBentoSection(section) ? (
+                          <div className="grid grid-cols-2 items-start gap-4">
                           {/* Offered only where the section marks revealable
                               units, so the control can never render and do
                               nothing. Unlike the texture above there is no
@@ -5459,70 +5488,99 @@ export function PagebuilderShell({
                               <legend className="type-caption font-semibold text-current">
                                 Entrance animation
                               </legend>
-                              <div className="flex items-center gap-2">
-                                {styleFieldOptions.animation
-                                  .filter((option) => option.value !== "")
-                                  .map((option) => {
-                                    const optionIsActive =
-                                      resolveSectionAnimation(
-                                        section.animation,
-                                      ) === option.value;
+                              {/* Two shapes, because the axis has two shapes.
+                                  On most sections the choice is off/on and two
+                                  icons say it faster than two words. Where a
+                                  section marks a heading it also gets Wipe, and
+                                  three buttons drawn with two icons would make
+                                  the two suites look like the same setting.
+                                  Named buttons there, the same treatment every
+                                  other multi-option control on this panel
+                                  uses. */}
+                              {(() => {
+                                const options = sectionAnimationOptionsFor(
+                                  section.component,
+                                ).filter((option) => option.value !== "");
+                                const asIcons = options.length <= 2;
+                                const activeAnimation = resolveSectionAnimation(
+                                  section.animation,
+                                );
 
-                                    return (
-                                      <button
-                                        aria-pressed={optionIsActive}
-                                        className={cx(
-                                          "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
-                                          optionIsActive &&
-                                            "token-chrome-card-active",
-                                        )}
-                                        key={option.value}
-                                        onClick={() =>
-                                          updateSectionAnimation(
-                                            section.id,
-                                            option.value,
-                                          )
-                                        }
-                                        type="button"
-                                        title={
-                                          option.value === "none"
-                                            ? "Animation off"
-                                            : "Animation on"
-                                        }
-                                      >
-                                        <EntranceAnimationIcon
-                                          enabled={option.value !== "none"}
-                                        />
-                                        <span className="sr-only">
-                                          {option.value === "none"
-                                            ? "Animation off"
-                                            : "Animation on"}
-                                        </span>
-                                      </button>
-                                    );
-                                  })}
-                              </div>
-                              {/* The affordance the axis could not work
-                                  without. An entrance plays as a section
-                                  travels into view, so by the time anyone has
-                                  scrolled to a section and clicked its toggle
-                                  there is no entry left to play - the control
-                                  reads as broken while working perfectly. This
-                                  scrolls the section back out and in, so the
-                                  real entrance runs. Hidden on `None`, where
-                                  there would be nothing to play. */}
-                              {resolveSectionAnimation(section.animation) !==
-                              "none" ? (
-                                <button
-                                  className="token-chrome-card min-h-10 rounded-[var(--chrome-radius-control)] border px-2 text-center text-xs font-semibold transition-colors"
-                                  onClick={() =>
-                                    replaySectionAnimationById(section.id)
-                                  }
-                                  type="button"
-                                >
-                                  Play entrance
-                                </button>
-                              ) : null}
+                                return (
+                                  <div
+                                    className={
+                                      asIcons
+                                        ? "flex items-center gap-2"
+                                        : "grid grid-cols-3 gap-2"
+                                    }
+                                  >
+                                    {options.map((option) => {
+                                      const optionIsActive =
+                                        activeAnimation === option.value;
+                                      const label =
+                                        option.value === "none"
+                                          ? "Animation off"
+                                          : `Entrance: ${option.label}`;
+
+                                      return (
+                                        <button
+                                          aria-pressed={optionIsActive}
+                                          className={cx(
+                                            "token-chrome-control flex items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                            asIcons
+                                              ? "size-14"
+                                              : "min-h-11 px-2 text-xs font-semibold",
+                                            optionIsActive &&
+                                              "token-chrome-card-active",
+                                          )}
+                                          key={option.value}
+                                          onClick={() =>
+                                            updateSectionAnimation(
+                                              section.id,
+                                              option.value,
+                                            )
+                                          }
+                                          type="button"
+                                          title={label}
+                                        >
+                                          {asIcons ? (
+                                            <>
+                                              <EntranceAnimationIcon
+                                                enabled={option.value !== "none"}
+                                              />
+                                              <span className="sr-only">
+                                                {label}
+                                              </span>
+                                            </>
+                                          ) : (
+                                            <span>
+                                              {option.value === "none"
+                                                ? "Off"
+                                                : option.label}
+                                            </span>
+                                          )}
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
+                                );
+                              })()}
+                              {/* REMOVED: the "Play entrance" button.
+                                *
+                                * The problem it solved is real and has not gone
+                                * away: an entrance plays as a section travels
+                                * into view, so by the time anyone has scrolled
+                                * to a section and clicked its toggle there is
+                                * no entry left to play, and the control reads
+                                * as broken while working perfectly.
+                                *
+                                * It is solved by the toggle itself now. Picking
+                                * a value calls `updateSectionAnimation`, which
+                                * replays whenever the result is not `none` -
+                                * including when the value picked was already
+                                * active, so pressing "on" again is the replay.
+                                * A separate button was a second control for
+                                * something the first one already did. */}
                             </fieldset>
                           ) : null}
 
@@ -5571,10 +5629,6 @@ export function PagebuilderShell({
                             </fieldset>
                           ) : null}
 
-                          {(sectionSupportsJoinAbove(section.component) &&
-                            includedSections[0]?.id !== section.id) ||
-                          sectionSupportsSectionSpacing(section.component) ? (
-                          <div className="grid grid-cols-2 items-start gap-4">
                           {/* Hidden on the first section, which has nothing
                               above it to join, and on anything that cannot join
                               a band at all - see `navigationComponents`. */}
@@ -5682,10 +5736,74 @@ export function PagebuilderShell({
                             </div>
                           </fieldset>
                           ) : null}
+
+                          {/* The one component-specific control in this run.
+                              It is here because it is the same SHAPE as the
+                              others - two icon buttons under a caption - and
+                              shape is what the run is grouping. Left where it
+                              was declared, among the per-section controls, it
+                              was the last fieldset on the panel and sat alone
+                              on a full-width row. */}
+                          {isServicesBentoSection(section) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Layout
+                              </legend>
+                              <div className="flex items-center gap-2">
+                                {servicesBentoVariantOptions.map((option) => {
+                                  const optionIsActive =
+                                    getServicesBentoVariant(section) ===
+                                    option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={optionIsActive}
+                                      className={cx(
+                                        "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
+                                        optionIsActive && "token-chrome-card-active",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateServicesBentoVariant(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      title={option.label}
+                                      type="button"
+                                    >
+                                      <ServicesBentoLayoutIcon
+                                        split={option.value === "split-header"}
+                                      />
+                                      <span className="sr-only">{option.label}</span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </fieldset>
+                          ) : null}
                           </div>
                           ) : null}
 
+                          {/* THE CARD CLUSTER. Fill, border, and the two colour
+                              pickers are one group and render as one block.
+
+                              They were two adjacent conditionals on the same
+                              predicate, which is one edit away from drifting
+                              apart - and they must not, because they are the
+                              same decision at three levels of detail: whether
+                              the card is filled, whether it is outlined, and
+                              what colour each of those is. Choosing a card
+                              colour with the fill control somewhere else on the
+                              panel is choosing a colour for something you
+                              cannot see the state of.
+
+                              Fill and border pair into a two-icon row; the
+                              colour pickers stay full width, because their
+                              buttons carry a label and a swatch and squashing
+                              them into half a column truncates the label. */}
                           {sectionSupportsCardFill(section) ? (
+                          <>
                           <div className="grid grid-cols-2 items-start gap-4">
                           <fieldset className="grid gap-2">
                             <legend className="type-caption font-semibold text-current">
@@ -5760,25 +5878,24 @@ export function PagebuilderShell({
                               </div>
                             </fieldset>
                           </div>
-                          ) : null}
 
-                          {sectionSupportsCardFill(section) ? (
-                            <SectionColorOverrideControls
-                              onChange={(field, value) =>
-                                updateSectionColorOverride(
-                                  section.id,
-                                  field,
-                                  value,
-                                )
-                              }
-                              palette={promotedPalette}
-                              recipe={getSectionColorRecipe(section)}
-                              section={section}
-                              surface={{
-                                fill: getSectionCardFill(section),
-                                border: getSectionCardBorder(section),
-                              }}
-                            />
+                          <SectionColorOverrideControls
+                            onChange={(field, value) =>
+                              updateSectionColorOverride(
+                                section.id,
+                                field,
+                                value,
+                              )
+                            }
+                            palette={promotedPalette}
+                            recipe={getSectionColorRecipe(section)}
+                            section={section}
+                            surface={{
+                              fill: getSectionCardFill(section),
+                              border: getSectionCardBorder(section),
+                            }}
+                          />
+                          </>
                           ) : null}
 
                           {/* REMOVED: the border tone control.
@@ -6732,44 +6849,11 @@ export function PagebuilderShell({
                             </div>
                           ) : null}
 
-                          {isServicesBentoSection(section) ? (
-                            <fieldset className="grid gap-2">
-                              <legend className="type-caption font-semibold text-current">
-                                Layout
-                              </legend>
-                              <div className="flex items-center gap-2">
-                                {servicesBentoVariantOptions.map((option) => {
-                                  const optionIsActive =
-                                    getServicesBentoVariant(section) ===
-                                    option.value;
-
-                                  return (
-                                    <button
-                                      aria-pressed={optionIsActive}
-                                      className={cx(
-                                        "token-chrome-control flex size-14 items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
-                                        optionIsActive && "token-chrome-card-active",
-                                      )}
-                                      key={option.value}
-                                      onClick={() =>
-                                        updateServicesBentoVariant(
-                                          section.id,
-                                          option.value,
-                                        )
-                                      }
-                                      title={option.label}
-                                      type="button"
-                                    >
-                                      <ServicesBentoLayoutIcon
-                                        split={option.value === "split-header"}
-                                      />
-                                      <span className="sr-only">{option.label}</span>
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            </fieldset>
-                          ) : null}
+                          {/* MOVED UP into the icon-toggle run - see the note
+                              there. It is a two-icon toggle like the four
+                              generic ones, and sitting down here it was the
+                              last thing on the panel, alone on a full-width row
+                              with an empty column beside it. */}
 
                           {isServiceCalloutSplitPanelSection(section) ? (
                             <fieldset className="grid gap-2">

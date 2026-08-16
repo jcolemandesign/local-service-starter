@@ -51,7 +51,7 @@ export function ProcessStepsBranchingSectionV3({
             measure="copy"
           >
             <h2
-              className="reveal-on-scroll type-heading-lg wrap-pretty text-service-ink"
+              className="reveal-on-scroll reveal-role-heading type-heading-lg wrap-pretty text-service-ink"
               style={{ "--reveal-index": 0 } as CSSProperties}
             >
               {title}
@@ -82,7 +82,7 @@ export function ProcessStepsBranchingSectionV3({
               Index 1 only when there is a heading above to follow; the centred
               arrangement renders none, so the diagram leads. */}
           <div
-            className="reveal-on-scroll mx-auto max-w-4xl"
+            className="reveal-on-scroll reveal-role-frame mx-auto max-w-4xl"
             style={{ "--reveal-index": centered ? 0 : 1 } as CSSProperties}
           >
             <ol>

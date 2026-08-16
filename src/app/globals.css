@@ -257,7 +257,8 @@
  * So the timed rules below are the default. SCRUBBING IS STILL WANTED for a
  * few sections, and is kept intact further down, gated on
  * `[data-pagebuilder-animation="scrub"]` - dormant until the builder offers
- * that value, in the same way `pulse` is.
+ * that value. `pulse` was in the same arrangement until it was rebuilt as a
+ * timed suite - see the retired block at the foot of this file.
  *
  * The token layer is what makes the animation suites cheap. Every number below
  * is a custom property with a default, so a suite is a block that re-points
@@ -288,17 +289,38 @@
   /* Decisive out-easing: most of the travel happens in the first third, so the
      unit reads as arriving and settling rather than as drifting. */
   --anim-reveal-easing: cubic-bezier(0.22, 1, 0.36, 1);
-  /* Editorial's own numbers. The suite reuses the shared duration, stagger and
+  /* The wipe's own numbers. The suite reuses the shared duration, stagger and
      easing above on purpose - the rhythm of the library should be one rhythm,
      and what differs between suites is the SHAPE of the arrival, not its
      tempo. Only the two values that have no equivalent in Rise live here. */
   --anim-wipe-duration: 720ms;
   --anim-accent-scale-from: 0.94;
-  /* Pulse is gated by the same attribute but is not an offered value yet - see
-     `SectionAnimation`. Its tokens live here so promoting it stays a one-line
-     change. */
-  --anim-pulse-scale: 1.025;
-  --anim-pulse-stagger: 10%;
+  /* The Pulse suite's beat.
+     1.025 over 900ms was the first attempt and it was reported as "just Rise" -
+     which was fair. A 2.5% grow eased symmetrically over most of a second is
+     slower than the eye reads as a beat, and on a wide panel a slow change of
+     scale is nearly impossible to see at all: there is no edge to compare
+     against, and the movement per frame is under a pixel.
+     So it is faster and slightly larger. The shape does the rest - the growth
+     takes a third of the time and the settle takes the remaining two thirds, so
+     it reads as a tap rather than a breath. Larger than this and a wide card
+     starts to read as the layout twitching. */
+  --anim-pulse-scale: 1.03;
+  --anim-pulse-duration: 620ms;
+  --anim-pulse-delay: 180ms;
+  /* Lateral's two travels, and they are in different units on purpose.
+
+     An ordinary unit moves a fixed 40px - far enough to read as coming from
+     somewhere, short enough that it is never a long slide across the page.
+
+     A media panel moves 100% OF ITS OWN WIDTH, so it starts exactly one panel
+     outside its own box and arrives from off-screen rather than from a nudge.
+     A length could not do that job: 40px is nothing on a bled half-width panel,
+     and a length large enough for the panel would throw a small card into the
+     next county. The percentage is the only unit that means "my own edge"
+     whatever size I am. */
+  --anim-lateral-distance: 40px;
+  --anim-lateral-media-distance: 100%;
   /* The scrubbed variant's own range, kept apart from the timed tokens above
      so the two can be tuned without colliding - one is measured in time, the
      other in scroll distance. See the `scrub` block further down. */
@@ -376,19 +398,79 @@
   }
 }
 
-/* A small figure arriving with a little more presence than the copy around it -
-   it rises and fades like everything else, and grows into place. */
-@keyframes section-reveal-scale {
+/*
+ * The attention beat. One soft grow-and-return, AFTER the unit has arrived.
+ *
+ * Scale only, and that is what lets it run alongside the entrance rather than
+ * replacing it: `scale` and `translate` are independent properties in modern
+ * CSS, not fields of one `transform` shorthand, so the arrival can still be
+ * moving this element while the beat scales it. Two animations, one element, no
+ * fight.
+ *
+ * ONE BEAT, NOT A LOOP. An infinitely pulsing CTA is the thing everyone
+ * remembers hating: it never stops asking, it makes the page feel unfinished,
+ * and it is a genuine problem for anyone who finds movement distracting. One
+ * beat points; a loop nags.
+ */
+@keyframes section-attention-pulse {
+  0%,
+  100% {
+    scale: 1;
+  }
+
+  /* Not 50%. The growth takes a third and the settle takes the rest, so it
+     reads as a tap rather than as a breath - a symmetric curve at this size
+     moves less than a pixel per frame and is genuinely hard to see. */
+  32% {
+    scale: var(--anim-pulse-scale);
+  }
+}
+
+/*
+ * Arriving from the side.
+ *
+ * ONE KEYFRAME FOR THE WHOLE SUITE. It reads `--anim-lateral-travel`, which is
+ * composed from a size and a direction, so a role changes how far a unit
+ * travels and a section's edge hint changes which way - both by re-pointing a
+ * token rather than by needing a keyframe of their own. This is the token layer
+ * doing the job it was built for.
+ */
+@keyframes section-lateral {
+  from {
+    opacity: 0;
+    translate: var(--anim-lateral-travel) 0;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* Arriving without moving. The default for every suite whose idea is something
+   other than travel - the wipe's non-text units, and everything under Pulse. */
+@keyframes section-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* A small figure with a little more presence than the copy around it, arriving
+   without travelling: it grows into place as it fades. A scale is not a
+   movement, so this keeps a no-travel suite's one idea intact. */
+@keyframes section-fade-scale {
   from {
     opacity: 0;
     scale: var(--anim-accent-scale-from);
-    translate: 0 var(--anim-reveal-distance);
   }
 
   to {
     opacity: 1;
     scale: 1;
-    translate: 0 0;
   }
 }
 
@@ -444,10 +526,10 @@
  * helpful means a half-finished suite blanks the page. Per-suite, a suite with
  * no rules simply does nothing, which is the correct failure.
  *
- * `scrub` and `pulse` stay OUTSIDE this contract, gated exactly as they always
- * were. They are pre-existing and orthogonal - one is scroll-driven rather than
- * timed, the other animates a different marker class - and folding them in is a
- * later decision rather than groundwork.
+ * `scrub` stays OUTSIDE this contract, gated exactly as it always was. It is
+ * scroll-driven rather than timed, so it has no waiting state to own; folding
+ * it in is a later decision. `pulse` used to sit beside it and no longer does -
+ * it was rebuilt as a timed suite rather than promoted as written.
  * ================================================================== */
 
 @media (prefers-reduced-motion: no-preference) {
@@ -524,56 +606,62 @@
     --anim-reveal-distance: 0px;
   }
 
-  /* == Suite: Editorial (stored id `editorial`) — PROTOTYPE ==========
+  /* == Suite: Wipe (stored id `wipe`) ===============================
    *
-   * Watchable in the style guide, deliberately NOT offered in the builder. See
-   * `status` in `section-animations.ts`: until the role backfill lands, almost
-   * every marked element in the library is an unroled `content` unit, so a
-   * suite that differentiates would look identical to Rise on nearly every
-   * section an editor could pick it for.
+   * Text blocks are revealed behind an edge travelling left to right. NOTHING
+   * TRAVELS in this suite - everything that is not text simply fades in place.
    *
-   * It exists now because Rise cannot validate the role vocabulary - it treats
-   * five of six roles identically. A suite that pulls them apart is the only
-   * thing that can tell you whether six is the right six, and finding that out
-   * AFTER classifying 86 marker sites is how you get a taxonomy you redo.
+   * That is the whole idea, and the first version missed it: it wiped the
+   * heading and then rose everything else, which made it Rise with a wipe
+   * bolted on. Two kinds of motion in one arrival read as indecision. A suite
+   * should have one idea about how things appear, and this one's idea is the
+   * edge.
+   *
+   * OFFERED ONLY WHERE A HEADING ROLE IS MARKED - the section headers today,
+   * and whatever the role backfill adds. Not a membership list: the suite
+   * declares `requiresRole: "heading"` and availability is computed from the
+   * sections that mark it.
    *
    * Fills the same contract as Rise: a waiting rule and an arrival rule, both
    * written here, neither inherited from a generalised selector.
    */
 
-  /* Editorial, waiting to arrive. Same default as Rise - the roles below are
-     where it departs. */
+  /* Wipe, waiting to arrive. Hidden, NOT displaced - `translate` is untouched,
+     so nothing in this suite has anywhere to travel from. */
   [data-pagebuilder-animation-ready]
-    [data-pagebuilder-animation="editorial"]:not([data-pagebuilder-animation-state])
+    [data-pagebuilder-animation="wipe"]:not([data-pagebuilder-animation-state])
     .reveal-on-scroll {
     opacity: 0;
-    translate: 0 var(--anim-reveal-distance);
   }
 
-  /* Editorial, arriving. */
-  [data-pagebuilder-animation="editorial"][data-pagebuilder-animation-state="in"]
+  /* Wipe, arriving. A plain fade in place for everything that is not text. */
+  [data-pagebuilder-animation="wipe"][data-pagebuilder-animation-state="in"]
     .reveal-on-scroll {
-    animation: section-reveal var(--anim-reveal-duration)
+    animation: section-fade var(--anim-reveal-duration)
       var(--anim-reveal-easing) both;
     animation-delay: calc(
       var(--reveal-index, 0) * var(--anim-reveal-delay-step)
     );
   }
 
-  /* Editorial, heading role: THE WIPE.
-     Waits clipped rather than displaced - it is revealed by an edge, so it
-     never travels. `translate: none` is explicit because the default waiting
-     rule above sets one and both selectors have equal specificity. */
+  /* Wipe, text roles: THE WIPE ITSELF.
+     Both text roles, because a heading and the paragraph under it are the same
+     kind of thing to an edge - wiping one and fading the other would put the
+     suite's one idea on half the copy. */
   [data-pagebuilder-animation-ready]
-    [data-pagebuilder-animation="editorial"]:not([data-pagebuilder-animation-state])
-    .reveal-role-heading {
+    [data-pagebuilder-animation="wipe"]:not([data-pagebuilder-animation-state])
+    .reveal-role-heading,
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="wipe"]:not([data-pagebuilder-animation-state])
+    .reveal-role-content {
     clip-path: inset(0 100% 0 0);
     opacity: 0;
-    translate: none;
   }
 
-  [data-pagebuilder-animation="editorial"][data-pagebuilder-animation-state="in"]
-    .reveal-role-heading {
+  [data-pagebuilder-animation="wipe"][data-pagebuilder-animation-state="in"]
+    .reveal-role-heading,
+  [data-pagebuilder-animation="wipe"][data-pagebuilder-animation-state="in"]
+    .reveal-role-content {
     animation: section-wipe var(--anim-wipe-duration) var(--anim-reveal-easing)
       both;
     animation-delay: calc(
@@ -581,34 +669,196 @@
     );
   }
 
-  /* Editorial, media role: fades without moving. Same reason as Rise - a bled
-     panel that travels opens a band of bare ground under itself. That both
-     suites answer `media` the same way is the vocabulary working, not a
-     duplication to factor out: the next suite is free to disagree. */
+  /* Wipe, accent role: grows into place as it fades.
+     A scale is not a travel, so it keeps the suite's no-movement rule while
+     still giving a stat more presence than the copy beside it. This is the
+     evidence the `accent` role earned its place - see the handoff doc. */
   [data-pagebuilder-animation-ready]
-    [data-pagebuilder-animation="editorial"]:not([data-pagebuilder-animation-state])
-    .reveal-role-media,
-  [data-pagebuilder-animation="editorial"][data-pagebuilder-animation-state="in"]
-    .reveal-role-media {
-    --anim-reveal-distance: 0px;
-  }
-
-  /* Editorial, accent role: grows into place.
-     The one role whose existence was in doubt. It reads as a distinct arrival
-     here - see the finding in the handoff doc. */
-  [data-pagebuilder-animation-ready]
-    [data-pagebuilder-animation="editorial"]:not([data-pagebuilder-animation-state])
+    [data-pagebuilder-animation="wipe"]:not([data-pagebuilder-animation-state])
     .reveal-role-accent {
     scale: var(--anim-accent-scale-from);
   }
 
-  [data-pagebuilder-animation="editorial"][data-pagebuilder-animation-state="in"]
+  [data-pagebuilder-animation="wipe"][data-pagebuilder-animation-state="in"]
     .reveal-role-accent {
-    animation: section-reveal-scale var(--anim-reveal-duration)
+    animation: section-fade-scale var(--anim-reveal-duration)
       var(--anim-reveal-easing) both;
     animation-delay: calc(
       var(--reveal-index, 0) * var(--anim-reveal-delay-step)
     );
+  }
+
+  /* == Suite: Pulse (stored id `pulse`) =============================
+   *
+   * Everything fades in place, and the ACTION unit gives one soft beat once it
+   * has landed. That is all it does, and the restraint is the point: the beat
+   * only reads as "look here" while it is the only thing moving.
+   *
+   * NOTHING RISES HERE EITHER. An entrance that travels and then pulses is two
+   * gestures competing for the same attention, and the one that matters is the
+   * second.
+   *
+   * OFFERED ONLY WHERE AN ACTION IS MARKED - `requiresRole: "action"`. On a
+   * section with no action unit this would be a plain fade, and offering it
+   * there would be a control that appears to work and paints nothing.
+   *
+   * This is a REBUILD of the old dormant `pulse`, not a promotion of it. That
+   * rule was scroll-scrubbed; this one is on a clock, like the rest of the
+   * axis. See the retired block further down.
+   */
+
+  /* Pulse, waiting to arrive. Hidden in place, like Wipe. */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="pulse"]:not([data-pagebuilder-animation-state])
+    .reveal-on-scroll {
+    opacity: 0;
+  }
+
+  /* Pulse, arriving. NO STAGGER, and it is the only suite without one.
+     A stagger is a sequence, and a sequence is something to watch - which is
+     exactly the attention the beat needs to have to itself. Everything appears
+     at once so that the section is simply THERE, and then one thing moves.
+     `--reveal-index` is ignored here rather than absent: sections still set it,
+     and Rise and Wipe still read it. */
+  [data-pagebuilder-animation="pulse"][data-pagebuilder-animation-state="in"]
+    .reveal-on-scroll {
+    animation: section-fade var(--anim-reveal-duration)
+      var(--anim-reveal-easing) both;
+  }
+
+  /* Pulse, action role: fades in with everything else, then beats once.
+     TWO ANIMATIONS ON ONE ELEMENT, and they do not collide - the fade owns
+     `opacity`, the beat owns `scale`, and those are separate properties rather
+     than fields of one `transform`.
+
+     THE BEAT'S DELAY LIVES IN THE SHORTHAND, not in a comma-separated
+     `animation-delay` beside it. That version worked but was a single point of
+     failure: one unparseable value drops the WHOLE declaration, both delays go
+     to zero, and the beat then runs underneath the fade where it is invisible -
+     which looks exactly like the suite doing nothing.
+
+     With the stagger gone the delay is simply the fade plus a pause. Nothing
+     here reads `--reveal-index`, so the beat lands at the same moment whichever
+     unit carries the action. */
+  [data-pagebuilder-animation="pulse"][data-pagebuilder-animation-state="in"]
+    .reveal-role-action {
+    --anim-beat-delay: calc(
+      var(--anim-reveal-duration) + var(--anim-pulse-delay)
+    );
+    animation:
+      section-fade var(--anim-reveal-duration) var(--anim-reveal-easing) both,
+      section-attention-pulse var(--anim-pulse-duration) ease-in-out
+        var(--anim-beat-delay) both;
+  }
+
+  /* == Suite: Lateral (stored id `lateral`) =========================
+   *
+   * Units arrive from the side. Cards and panels slide in; TEXT DOES NOT -
+   * horizontal movement under a line of prose reads as the column reflowing,
+   * which is the one thing an entrance must never look like.
+   *
+   * A media panel travels 100% of its own width, so it comes from outside its
+   * own box rather than from a nudge - the "slides in from off-screen" this
+   * suite exists for. Everything else travels a flat 40px.
+   *
+   * DIRECTION IS THE SECTION'S FACT, NOT THE SUITE'S. Which side a panel sits
+   * on is a layout decision the section already made - often per variant, so it
+   * is not even fixed per component - and a suite cannot see it. A section
+   * declares it with `reveal-from-end`; the default is the inline start. That
+   * is the same division as everywhere else here: the section states what is
+   * true about itself, the system decides what that means in motion. The class
+   * is inert under every other suite.
+   */
+
+  /* The containment that makes sliding safe.
+   *
+   * A translated element still contributes to the scrollable overflow area, so
+   * a panel starting one width off-screen would widen the document and flash a
+   * horizontal scrollbar for the length of the entrance. `clip` rather than
+   * `hidden` on purpose: `hidden` creates a scroll container, which would trap
+   * `position: sticky` inside the section and give the frame a scrollport it
+   * never asked for. `clip` just clips.
+   *
+   * THE SUITE OWNS ITS OWN CONTAINMENT. No section changes anything to be safe
+   * here, which is what keeps "a section owns no motion" true - the cost of a
+   * motion belongs to whoever chose it.
+   */
+  [data-pagebuilder-animation="lateral"] {
+    overflow-x: clip;
+  }
+
+  /* Lateral, waiting to arrive.
+     The travel is composed rather than written: a SIZE (how far) and a SIGN
+     (which way), so the role rules below change one and the edge hint changes
+     the other, and neither needs to know about the other.
+
+     THE DEFAULT SIZE IS ZERO - everything fades in place, and one unit travels.
+     That inversion is the suite's whole idea: a section is read as one thing
+     arriving, and a slide only says "look at this" while it is the only slide
+     on the screen. Four things entering from the left at once is just a page
+     that moves. */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="lateral"]:not([data-pagebuilder-animation-state])
+    .reveal-on-scroll,
+  [data-pagebuilder-animation="lateral"][data-pagebuilder-animation-state="in"]
+    .reveal-on-scroll {
+    --anim-lateral-size: 0px;
+    --anim-lateral-sign: -1;
+    --anim-lateral-travel: calc(
+      var(--anim-lateral-sign) * var(--anim-lateral-size)
+    );
+  }
+
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="lateral"]:not([data-pagebuilder-animation-state])
+    .reveal-on-scroll {
+    opacity: 0;
+    translate: var(--anim-lateral-travel) 0;
+  }
+
+  /* NO STAGGER, for the same reason there is only one slide.
+     A stagger is a sequence, and a sequence is a second thing to watch - it
+     pulls the eye along a row of cards while the lead is trying to be the one
+     moving element. Everything arrives together and one thing travels, so
+     there is exactly one place to look. Pulse reaches the same conclusion from
+     the other direction: its beat needs the room too.
+     `--reveal-index` is ignored here rather than absent; sections still set it,
+     and Rise and Wipe still read it. */
+  [data-pagebuilder-animation="lateral"][data-pagebuilder-animation-state="in"]
+    .reveal-on-scroll {
+    animation: section-lateral var(--anim-reveal-duration)
+      var(--anim-reveal-easing) both;
+  }
+
+  /* Lateral, media role: THE ONE THING THAT TRAVELS.
+     100% of its own width, so a bled panel starts exactly one panel outside its
+     own box whatever the viewport is doing - it arrives from off-screen rather
+     than from a nudge.
+
+     Media carries the slide because it is the element a reader's eye goes to
+     anyway; giving the motion to the thing already holding attention is what
+     makes one moving element enough. If a section ever wants its slide on
+     something else - a rail, a stat, a single card - that is a per-section
+     editorial call and wants a marker for "this is the lead unit" rather than
+     a second suite. Nothing needs it yet, so nothing has been built for it. */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="lateral"]:not([data-pagebuilder-animation-state])
+    .reveal-role-media,
+  [data-pagebuilder-animation="lateral"][data-pagebuilder-animation-state="in"]
+    .reveal-role-media {
+    --anim-lateral-size: var(--anim-lateral-media-distance);
+  }
+
+  /* The edge hint. Declared by the section, meaningful only here.
+     Physical rather than logical because `translate` takes physical axes; this
+     is the one place the axis would need revisiting for a right-to-left
+     locale, and it is written down rather than discovered. */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="lateral"]:not([data-pagebuilder-animation-state])
+    .reveal-from-end,
+  [data-pagebuilder-animation="lateral"][data-pagebuilder-animation-state="in"]
+    .reveal-from-end {
+    --anim-lateral-sign: 1;
   }
 }
 
@@ -618,9 +868,11 @@
  * Progress is the scroll position rather than a clock, so the motion tracks the
  * reader's hand exactly - which is wrong for an entrance, and right for the
  * handful of sections that want to be driven rather than triggered. It is
- * gated on a value `styleFieldOptions.animation` does not offer yet, the same
- * arrangement `pulse` is in, so promoting it is one entry in that list plus a
- * membership set saying which sections may use it.
+ * gated on a value the builder does not offer yet, the arrangement `pulse` used
+ * to be in. Promoting it no longer needs a hand-maintained membership set: a
+ * suite can declare `requiresRole` and be offered only where that role is
+ * marked. What it does still need is a rebuild, for the same reason pulse did -
+ * it is scrubbed, and everything else on this axis runs on a clock.
  *
  * Everything specific to it lives here: its own range tokens, its own height
  * cap, and the named timeline on the frame. The timed rules above share only
@@ -756,40 +1008,19 @@
 }
 
 /*
- * Entrance pulse, for cards that drew attention with a brief scale blip rather
- * than a fade. Driven by the same view() timeline, so the pulse plays as the
- * card scrolls through its entry range instead of firing once on a timer. The
- * intent - a subtle nudge as the card arrives - survives; the exact timing is
- * tied to scroll position rather than to the clock.
+ * RETIRED: the scrubbed pulse and its `.pulse-on-scroll` marker.
+ *
+ * It was a scale blip driven by `animation-timeline: view()`, so its progress
+ * was the reader's scroll position. That is the mechanism this whole axis was
+ * redesigned away from - a trackpad flick put the range behind them in ~150ms
+ * and the blip never registered - and it had no users left.
+ *
+ * The idea survives as the Pulse suite above, on a clock, inside the same
+ * two-halves contract as every other suite. `--anim-pulse-scale` survives with
+ * it. Nothing here was promoted; it was rebuilt, and the difference is the
+ * entire reason the handoff's "promoting it is one entry in the option list"
+ * was wrong.
  */
-@keyframes section-card-pulse {
-  0%,
-  100% {
-    scale: 1;
-  }
-
-  50% {
-    scale: var(--anim-pulse-scale);
-  }
-}
-
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    /* Gated like the reveal above, but `pulse` is not an offered value yet, so
-       nothing can currently select it. Deliberate: the rule stays correctly
-       scoped rather than being deleted and rebuilt, and promoting it is one
-       entry in `styleFieldOptions.animation`. Leaving it ungated was the option
-       to avoid - it would keep one section animating unconditionally while
-       every other section obeyed the toggle. */
-    [data-pagebuilder-animation="pulse"] .pulse-on-scroll {
-      animation: section-card-pulse ease-in-out both;
-      animation-timeline: view();
-      animation-range: entry
-        calc(20% + var(--reveal-index, 0) * var(--anim-pulse-stagger)) entry
-        calc(85% + var(--reveal-index, 0) * var(--anim-pulse-stagger));
-    }
-  }
-}
 
 @keyframes trust-marquee {
   from {
