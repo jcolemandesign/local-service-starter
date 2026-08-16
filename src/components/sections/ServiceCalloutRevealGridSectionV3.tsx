@@ -36,6 +36,17 @@ export type ServiceCalloutRevealGridSectionV3Props = {
   variant?: CalloutRevealGridVariant;
 };
 
+export function resolveCalloutRevealGridVariant(
+  itemCount: number,
+  previewVariant?: CalloutRevealGridVariant,
+): CalloutRevealGridVariant {
+  if (previewVariant) {
+    return previewVariant;
+  }
+
+  return itemCount === 2 || itemCount === 4 ? "default" : "three-across";
+}
+
 const revealEase = [0.22, 1, 0.36, 1] as const;
 
 function cx(...classes: Array<string | false | undefined>) {
@@ -49,18 +60,19 @@ export function ServiceCalloutRevealGridSectionV3({
   icons = "on",
   items,
   openHint = "See what to do",
-  variant = "default",
+  variant,
 }: ServiceCalloutRevealGridSectionV3Props) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const closeRef = useRef<HTMLButtonElement | null>(null);
   const panelId = useId();
   const shouldReduceMotion = useReducedMotion();
-  const isThreeAcross = variant === "three-across";
-  // Both arrangements only look right at a whole number of rows: four in a 2x2,
-  // or three and six across three columns. The cap is the row limit, not a
-  // content limit - anything past it would leave a ragged final row.
-  const cards = isThreeAcross ? items.slice(0, 6) : items.slice(0, 4);
+  // Pagebuilder and the section library pass an explicit variant so both
+  // compositions remain selectable as design previews. Staged pages and site
+  // export omit it: once real copy exists, its item count owns the layout.
+  const cards = items.slice(0, 6);
+  const isThreeAcross =
+    resolveCalloutRevealGridVariant(cards.length, variant) === "three-across";
   const activeItem = openIndex === null ? undefined : cards[openIndex];
 
   // The panel replaces the cards visually, so leaving focus on a card the user

@@ -63,7 +63,11 @@ export function ServiceCalloutRevealGridSectionLibraryDemo(
         </Container>
       </div>
 
-      <ServiceCalloutRevealGridSectionV3 {...props} variant={variant} />
+      <ServiceCalloutRevealGridSectionV3
+        {...props}
+        items={props.items.slice(0, variant === "three-across" ? 6 : 4)}
+        variant={variant}
+      />
     </div>
   );
 }

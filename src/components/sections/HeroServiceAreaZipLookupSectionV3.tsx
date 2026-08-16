@@ -24,6 +24,8 @@ type HeroServiceAreaZipLookupSectionV3Props = {
   imageSrc: string;
   inputLabel: string;
   inputPlaceholder: string;
+  serviceAreas: readonly string[];
+  serviceAreasLabel: string;
   serviceAreaText: string;
   submitLabel: string;
   successActionHref: string;
@@ -113,6 +115,59 @@ function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+function MapPinIcon({ className = "size-5" }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M12 21s6-5.35 6-11a6 6 0 1 0-12 0c0 5.65 6 11 6 11Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+      <circle cx="12" cy="10" r="2" stroke="currentColor" strokeWidth="1.8" />
+    </svg>
+  );
+}
+
+function ArrowRightIcon() {
+  return (
+    <svg aria-hidden="true" className="size-4" fill="none" viewBox="0 0 20 20">
+      <path
+        d="M4 10h11M11 6l4 4-4 4"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <span
+      aria-hidden="true"
+      className="grid size-6 shrink-0 place-items-center rounded-full bg-service-accent text-white"
+    >
+      <svg className="size-3.5" fill="none" viewBox="0 0 16 16">
+        <path
+          d="m3.5 8.25 2.75 2.75 6.25-6.25"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.8"
+        />
+      </svg>
+    </span>
+  );
+}
+
 export function HeroServiceAreaZipLookupSectionV3({
   body,
   cardBorder = "on",
@@ -123,6 +178,8 @@ export function HeroServiceAreaZipLookupSectionV3({
   imageSrc,
   inputLabel,
   inputPlaceholder,
+  serviceAreas,
+  serviceAreasLabel,
   serviceAreaText,
   submitLabel,
   successActionHref,
@@ -164,7 +221,10 @@ export function HeroServiceAreaZipLookupSectionV3({
           )}
         >
           <div className="fluid-type-frame w-full">
-            <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
+            <p className={cx("type-label flex items-center gap-2", colors.eyebrow)}>
+              <MapPinIcon className="size-4" />
+              <span>{eyebrow}</span>
+            </p>
             <HeadingTag
               className={cx(
                 "mt-eyebrow-display wrap-pretty",
@@ -185,22 +245,31 @@ export function HeroServiceAreaZipLookupSectionV3({
                 {inputLabel}
               </label>
               <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 max-sm:grid-cols-1">
-                <input
-                  autoComplete="postal-code"
-                  className="radius-button min-h-12 border border-service-border bg-surface-raised px-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent"
-                  id={inputId}
-                  inputMode="numeric"
-                  name="zip-code"
-                  placeholder={inputPlaceholder}
-                />
+                <div className="relative min-w-0">
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-y-0 left-4 grid place-items-center text-service-muted"
+                  >
+                    <MapPinIcon className="size-5" />
+                  </span>
+                  <input
+                    autoComplete="postal-code"
+                    className="radius-button min-h-12 w-full border border-service-border bg-surface-raised pl-12 pr-4 type-text-sm text-service-ink outline-none transition-colors placeholder:text-service-muted/70 focus:border-service-accent"
+                    id={inputId}
+                    inputMode="numeric"
+                    name="zip-code"
+                    placeholder={inputPlaceholder}
+                  />
+                </div>
                 <button
                   className={cx(
-                    "radius-button min-h-12 cursor-pointer border px-5 type-caption font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current",
+                    "radius-button inline-flex min-h-12 cursor-pointer items-center justify-between gap-4 border px-5 type-caption font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current",
                     colors.submit,
                   )}
                   type="submit"
                 >
-                  {submitLabel}
+                  <span>{submitLabel}</span>
+                  <ArrowRightIcon />
                 </button>
               </div>
             </form>
@@ -232,19 +301,28 @@ export function HeroServiceAreaZipLookupSectionV3({
               </div>
             ) : null}
 
+            <div className="mt-body-actions-md">
+              <p className="type-heading-sm">{serviceAreasLabel}</p>
+              <ul className="mt-heading-body-sm flex flex-wrap gap-2">
+                {serviceAreas.map((area) => (
+                  <li
+                    className="radius-button inline-flex min-h-10 items-center gap-2 border border-service-border bg-surface-raised px-3 type-text-sm font-semibold text-service-ink"
+                    key={area}
+                  >
+                    <MapPinIcon className="size-4 text-service-accent" />
+                    <span>{area}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             <p
               className={cx(
                 "mt-body-actions-lg flex max-w-[var(--measure-copy-wide)] items-start gap-3 type-text-sm font-semibold",
                 colors.serviceArea,
               )}
             >
-              <span
-                aria-hidden="true"
-                className={cx(
-                  "mt-[0.55em] size-2 shrink-0 rounded-full",
-                  colors.marker,
-                )}
-              />
+              <CheckIcon />
               <span>{serviceAreaText}</span>
             </p>
           </div>

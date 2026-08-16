@@ -185,26 +185,23 @@ function CroppedImagePanel({
     <div className="relative h-full min-h-[var(--media-min-medium)] w-full">
       <div
         className={cx(
-          // Marks the image panel as a revealable unit, and overrides the
-          // travel distance to zero so it fades without moving.
+          // Marks the image panel as a revealable unit, and says what kind of
+          // unit it is: a bled media panel.
           //
-          // The panel is absolutely positioned and bled off the grid to sit
-          // flush with the section's edges. The library's 18px rise would open
-          // an 18px band of bare ground along the top of that bleed for the
-          // length of the entrance - the crop visibly detaching from the
-          // section it is cut into. A pure fade keeps the composition intact.
-          //
-          // Which is the token layer doing its job rather than a special case:
-          // `--anim-reveal-distance` is read from the animating element, so any
-          // element can re-point it without a rule of its own.
-          "reveal-on-scroll",
+          // It used to re-point `--anim-reveal-distance` to 0px inline, because
+          // a panel bled flush with the section's edges opens a band of bare
+          // ground along the top of the bleed while it rises - the crop
+          // visibly detaching from the section it is cut into. That was this
+          // section deciding how it moved, in the only vocabulary available at
+          // the time. The role says what it IS; whether media fades or travels
+          // is the suite's answer, and Rise's answer is a pure fade.
+          "reveal-on-scroll reveal-role-media",
           "absolute inset-y-0 overflow-hidden bg-service-surface max-md:relative max-md:inset-auto max-md:h-full max-md:min-h-[var(--media-min-medium)] max-md:!w-full",
           bleedClassName,
           maskClassName,
         )}
         style={{
           ...bleedPanelStyle,
-          "--anim-reveal-distance": "0px",
           "--reveal-index": revealIndex,
         } as CSSProperties}
       >

@@ -305,6 +305,17 @@ They used to be declared per screen, and duplicated lists drift silently: a
 value one screen accepts and another does not falls back to a default with no
 error. One list per axis.
 
+**The animation axis is the exception to where its list lives, and the reason
+generalises.** `styleFieldOptions.animation` is *derived* from the motion-suite
+registry in `section-animations.ts` rather than written out, because that axis's
+values are no longer a flat enum — each one is a suite with a label, a
+description, and an answer for every kind of unit a section can mark. When an
+axis grows structure, the option list stops being the source of truth and
+becomes a projection of it; hand-listing it is how the two drift while both look
+right. It also carries a `status`, so a suite can be real and watchable in the
+style guide without being selectable yet. See `docs/animation-axis-handoff.md`
+§8.
+
 ---
 
 ## 4. Staged pages

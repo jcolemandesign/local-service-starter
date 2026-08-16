@@ -170,7 +170,6 @@ import {
 import { buildBackgroundImageStyle } from "@/content/background-image-config";
 import {
   booleanStyleFields,
-  calloutRevealGridVariantValues,
   calloutSplitPanelVariantValues,
   cardLinkGridAlignValues,
   resolveCardLinkMedia,
@@ -197,7 +196,6 @@ import {
   splitImageVariantValues,
   styleFieldPrefix,
   tableCompareAlignValues,
-  type CalloutRevealGridVariant,
   type CalloutSplitPanelVariant,
   type CardLinkGridAlign,
   type SectionMirrorAlign,
@@ -241,8 +239,8 @@ export type PageTemplatePreviewSection = {
   joinAbove?: string;
   /** Ground texture - see `backgroundTreatment` in `section-style-options`. */
   backgroundTreatment?: string;
-  /** Entrance animation - see `animation` in `section-style-options`. Absent
-   *  means none; motion is opt-in per section. */
+  /** Entrance animation. A motion suite id, or `none` - see the registry in
+   *  `section-animations`. Absent means none; motion is opt-in per section. */
   animation?: string;
   /** Tuned gradient - see `background-config`. Absent keeps the CSS default. */
   backgroundConfig?: import("@/content/background-config").BackgroundConfig;
@@ -952,14 +950,10 @@ export function renderPageTemplateSection(
     case "ServiceCalloutRevealGridSectionV3":
       return (
         <ServiceCalloutRevealGridSectionV3
-          {...serviceCalloutRevealGridProps(
-            fieldSection,
-            getCalloutRevealGridVariant(section),
-          )}
+          {...serviceCalloutRevealGridProps(fieldSection)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           icons={resolveSectionIcons(section.icons)}
-          variant={getCalloutRevealGridVariant(section)}
         />
       );
     case "ServiceCalloutSplitPanelSectionV3":
@@ -1653,6 +1647,16 @@ function heroServiceAreaZipLookupProps(section: FieldSection) {
       "inputPlaceholder",
       fallback.inputPlaceholder,
     ),
+    serviceAreas: getListValues(
+      section,
+      ["serviceAreas", "serviceItems", "areas"],
+      fallback.serviceAreas.join("\n"),
+    ).slice(0, 10),
+    serviceAreasLabel: getValue(
+      section,
+      "serviceAreasLabel",
+      fallback.serviceAreasLabel,
+    ),
     serviceAreaText: getValue(
       section,
       "serviceAreaText",
@@ -2080,7 +2084,6 @@ function threeCardLinkGridProps(section: FieldSection) {
  */
 function serviceCalloutRevealGridProps(
   section: FieldSection,
-  variant: CalloutRevealGridVariant | undefined,
 ) {
   const fallback = sectionLibraryV3Content.serviceCalloutRevealGrid;
   const items = cardItemsWithFallback(
@@ -2090,10 +2093,10 @@ function serviceCalloutRevealGridProps(
   );
   const panels = getListValues(section, ["calloutPanels", "panels"], "");
   const actions = getListValues(section, ["calloutActions", "actions"], "");
-  // Matches the section's own row limit. Trimming to four here would silently
-  // drop approved copy that the three-across arrangement is willing to render.
-  const cards =
-    variant === "three-across" ? items.slice(0, 6) : items.slice(0, 4);
+  // The content count chooses two or three columns in the section itself, so
+  // this mapper must preserve that count instead of trimming by the template's
+  // design-preview variant.
+  const cards = items.slice(0, 6);
 
   return {
     ...fallback,
@@ -4362,12 +4365,6 @@ function getServicesBentoVariant(section: PageTemplatePreviewSection) {
 function getCalloutSplitPanelVariant(section: PageTemplatePreviewSection) {
   return calloutSplitPanelVariantValues.has(section.variant ?? "")
     ? (section.variant as CalloutSplitPanelVariant)
-    : undefined;
-}
-
-function getCalloutRevealGridVariant(section: PageTemplatePreviewSection) {
-  return calloutRevealGridVariantValues.has(section.variant ?? "")
-    ? (section.variant as CalloutRevealGridVariant)
     : undefined;
 }
 

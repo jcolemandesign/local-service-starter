@@ -36,7 +36,8 @@ export type PagebuilderRecipeSection = {
   /** Ground texture - see `backgroundTreatment` in `section-style-options`. */
   backgroundTreatment?: string;
   /**
-   * Entrance animation - see `animation` in `section-style-options`.
+   * Entrance animation. A motion suite id, or `none` - see the registry in
+   * `section-animations`. Absent means none; motion is opt-in per section.
    *
    * Absent means none. Unlike every other axis here, an unset value is not
    * "inherit a sensible visual" but "do not move": motion is opt-in, so every

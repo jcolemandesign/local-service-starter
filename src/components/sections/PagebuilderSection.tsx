@@ -582,6 +582,10 @@ function renderSectionElement(
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           icons={resolveSectionIcons(section.icons)}
+          items={sectionLibraryV3Content.serviceCalloutRevealGrid.items.slice(
+            0,
+            getCalloutRevealGridVariant(section) === "three-across" ? 6 : 4,
+          )}
           variant={getCalloutRevealGridVariant(section)}
         />
       );

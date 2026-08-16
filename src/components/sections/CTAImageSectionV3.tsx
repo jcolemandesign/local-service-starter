@@ -109,17 +109,17 @@ export function CTAImageSectionV3({
         >
           <div
             className={cx(
-              // Fades without moving. The panel is absolutely positioned to
-              // the section's own edges, so the library's 18px rise would open
-              // a band of bare ground along the top of the bleed - the same
-              // reason the full-image narrative split re-points this token.
-              "reveal-on-scroll",
+              // A bled media panel. It is absolutely positioned to the
+              // section's own edges, so a rise would open a band of bare
+              // ground along the top of the bleed - the same reason the
+              // full-image narrative split carries this role. Rise answers
+              // `media` with a pure fade; the section only says what it is.
+              "reveal-on-scroll reveal-role-media",
               "media-min-medium absolute inset-y-0 !w-auto overflow-hidden bg-bg-muted max-lg:relative max-lg:inset-auto max-lg:-mx-[var(--site-grid-inset-inline)] max-lg:!w-[calc(100%+var(--site-grid-inset-inline)+var(--site-grid-inset-inline))]",
               columns.media,
             )}
             style={
               {
-                "--anim-reveal-distance": "0px",
                 "--reveal-index": imageLeadsReadingOrder ? 0 : 1,
               } as CSSProperties
             }

@@ -7,6 +7,7 @@ import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
+import { MotionSuiteGallery } from "@/app/dev/style-guide/MotionSuiteGallery";
 import { StyleGuideLiveSurface } from "@/components/sections/StyleGuideLiveSurface";
 import { StyleGuideRadiusControls } from "@/components/sections/StyleGuideRadiusControls";
 import { StyleGuideSectionMinControl } from "@/components/sections/StyleGuideSectionMinControl";
@@ -811,6 +812,7 @@ const styleGuideToc = [
   { href: "#color-system", label: "Color" },
   { href: "#shape", label: "Shape" },
   { href: "#buttons", label: "Buttons" },
+  { href: "#motion", label: "Motion" },
   { href: "#styles-in-context", label: "Context" },
 ];
 
@@ -2460,6 +2462,15 @@ export default function StyleGuidePage() {
       </GuideSection>
 
       {false && <StyleGuideListControlSamples />}
+
+      <GuideSection
+        eyebrow="Motion"
+        id="motion"
+        title="Animation Suites"
+        body="Each suite answers how every kind of unit arrives — a heading, a card, a bled media panel. A section marks what its elements ARE; the suite on the frame decides how they move. Replay a specimen to watch it, and tune the rhythm locally before promoting anything."
+      >
+        <MotionSuiteGallery />
+      </GuideSection>
 
       <GuideSection
         eyebrow="Composition"

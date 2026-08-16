@@ -46,7 +46,7 @@ const readyAttribute = "data-pagebuilder-animation-ready";
  * avoid; too high and the section is well into the middle of the screen,
  * already read, before anything moves.
  */
-const triggerInset = 0.18;
+export const triggerInset = 0.18;
 
 export function SectionEntrance() {
   useEffect(() => {

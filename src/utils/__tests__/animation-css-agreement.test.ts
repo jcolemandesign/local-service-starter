@@ -4,6 +4,10 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import {
+  sectionAnimationRoles,
+  sectionAnimationSuites,
+} from "@/content/section-animations";
+import {
   resolveSectionAnimation,
   styleFieldOptions,
 } from "@/content/section-style-options";
@@ -79,6 +83,118 @@ describe("animation css agreement", () => {
     }
   });
 
+  /**
+   * THE ASSERTION THAT MAKES THE LIBRARY SAFE TO GROW.
+   *
+   * Every timed suite owns both halves - a waiting rule that hides its units
+   * and an arrival rule that brings them back - and it writes them itself
+   * rather than inheriting a generalised one.
+   *
+   * A suite with a waiting rule and no arrival rule hides content INDEFINITELY:
+   * the observer sets `in`, nothing answers it, and the section stays at
+   * opacity 0 forever. That is why the waiting selector is not generalised
+   * across every non-`none` value - a generalised hider makes a half-finished
+   * suite blank the page, where a per-suite one makes it do nothing.
+   *
+   * `scrub` and `pulse` are deliberately outside this: one is scroll-driven
+   * rather than timed and has no waiting state to own, the other animates a
+   * different marker class. Neither is offered, and the two tests below pin
+   * that arrangement.
+   */
+  it("gives every offered suite both halves of the timed contract", () => {
+    for (const suite of sectionAnimationSuites) {
+      const waiting = blockAt(
+        css,
+        `[data-pagebuilder-animation-ready]\n    [data-pagebuilder-animation="${suite.id}"]`,
+      );
+
+      expect(
+        waiting,
+        `suite "${suite.id}" (${suite.label}) has no waiting rule scoped to the observer's ready flag, so its units are never hidden and the entrance plays from the end state`,
+      ).not.toBe("");
+      expect(
+        waiting,
+        `suite "${suite.id}" hides units without excluding frames that already carry a state, so an arriving or settled section stays hidden and fights its own animation`,
+      ).toContain(":not([data-pagebuilder-animation-state])");
+
+      const arriving = blockAt(
+        css,
+        `[data-pagebuilder-animation="${suite.id}"][data-pagebuilder-animation-state="in"]`,
+      );
+
+      expect(
+        arriving,
+        `suite "${suite.id}" hides its units but nothing answers the arriving state, so every section using it stays blank permanently`,
+      ).not.toBe("");
+    }
+  });
+
+  /**
+   * The registry describes the motion; the stylesheet performs it. Those are
+   * two representations of one fact and they can drift - see the header comment
+   * in `section-animations.ts`, which accepts that gap deliberately.
+   *
+   * This narrows it at the one place it is checkable: a role the registry
+   * describes as differing from the suite's default has to have a selector, or
+   * the description is fiction. Only `media` differs today, under Rise.
+   */
+  it("gives a role selector to every role the registry differentiates", () => {
+    // Comments stripped: the prose above these rules names both the suite and
+    // the role class, and a check a comment could satisfy would pass on a
+    // stylesheet that had lost the rule the comment describes.
+    const rules = css.replace(/\/\*[\s\S]*?\*\//g, "");
+
+    /** Whether a gated rule for this suite selects this role class. */
+    function hasRoleRule(suiteId: string, role: string) {
+      const selector = `[data-pagebuilder-animation="${suiteId}"]`;
+
+      return rules
+        .split(`.reveal-role-${role}`)
+        .slice(0, -1)
+        .some((before) => {
+          // Back to the start of this selector list: everything since the
+          // previous rule's closing brace. Selectors here wrap across lines and
+          // list several role hooks at once, so a window would either clip a
+          // long list or run into the rule above it.
+          const start = Math.max(
+            before.lastIndexOf("}"),
+            before.lastIndexOf("{"),
+          );
+
+          return before.slice(start + 1).includes(selector);
+        });
+    }
+
+    const missing: string[] = [];
+    const undeclared: string[] = [];
+
+    for (const suite of sectionAnimationSuites) {
+      const differentiated = new Set<string>(suite.differentiatedRoles);
+
+      for (const role of sectionAnimationRoles) {
+        const declared = differentiated.has(role);
+        const implemented = hasRoleRule(suite.id, role);
+
+        if (declared && !implemented) {
+          missing.push(`${suite.id}.${role} — "${suite.roles[role]}"`);
+        }
+
+        if (!declared && implemented) {
+          undeclared.push(`${suite.id}.${role}`);
+        }
+      }
+    }
+
+    expect(
+      missing.sort(),
+      "the registry names these roles as moving differently from their suite's default, but no gated `.reveal-role-*` rule makes them - so the registry, the gallery caption and the builder all describe motion the stylesheet does not perform",
+    ).toEqual([]);
+    expect(
+      undeclared.sort(),
+      "the stylesheet moves these roles specially but the suite does not name them in `differentiatedRoles`, so a behaviour exists that nothing describes - the gallery caption and the builder both under-report what the suite does",
+    ).toEqual([]);
+  });
+
   it("resolves every offered value to itself", () => {
     // Guards the resolver's allowlist against the option list: a value offered
     // but not in `animationValues` would be stored and then silently resolved
@@ -97,6 +213,80 @@ describe("animation css agreement", () => {
     // A template saved with a value since removed must render a still section
     // rather than an attribute no rule matches.
     expect(resolveSectionAnimation("slide-sideways")).toBe("none");
+  });
+
+  /**
+   * A prototype suite is watchable and not selectable, and both halves matter.
+   *
+   * Watchable, because a suite that treats every role the same cannot tell you
+   * whether the roles are right — so it has to exist and be looked at BEFORE
+   * the backfill. Not selectable, because until the backfill lands almost every
+   * marked element in the library is an unroled `content` unit, and a
+   * differentiating suite would look identical to Rise on nearly every section
+   * an editor could pick it for. That is a control that appears to work and
+   * paints nothing.
+   */
+  it("keeps prototype suites out of the builder's option list", () => {
+    for (const suite of sectionAnimationSuites) {
+      if (suite.status === "offered") {
+        expect(
+          offered,
+          `suite "${suite.id}" is marked offered but is not in the option list`,
+        ).toContain(suite.id);
+        continue;
+      }
+
+      expect(
+        offered,
+        `suite "${suite.id}" is a prototype but the builder offers it - until the role backfill lands it would look identical to Rise on nearly every section`,
+      ).not.toContain(suite.id);
+
+      // The other half: a prototype still owes the CSS contract, because it is
+      // rendered for real in the gallery. Unoffered is not unimplemented.
+      expect(
+        gated,
+        `prototype suite "${suite.id}" has no gated rule at all, so its gallery specimen would show nothing`,
+      ).toContain(suite.id);
+    }
+  });
+
+  /**
+   * The gallery is derived from the registry, so a suite added later appears in
+   * the style guide with no edit to either file.
+   *
+   * A hand-written demo list is the failure this prevents, and it is a quiet
+   * one: the suite still works, it is still offered in the builder, and the one
+   * screen built for looking at motion simply does not show it. Nobody notices
+   * until someone asks why the new suite "isn't in the style guide".
+   */
+  it("derives the style-guide gallery from the registry", () => {
+    const gallery = readFileSync(
+      path.join(
+        process.cwd(),
+        "src",
+        "app",
+        "dev",
+        "style-guide",
+        "MotionSuiteGallery.tsx",
+      ),
+      "utf8",
+    );
+
+    expect(
+      gallery,
+      "the gallery no longer maps over sectionAnimationSuites, so a suite added to the registry would not appear in the style guide",
+    ).toContain("sectionAnimationSuites.map");
+    expect(
+      gallery,
+      "the gallery no longer maps over sectionAnimationRoles, so a role added to the vocabulary would have no specimen",
+    ).toContain("sectionAnimationRoles.map");
+
+    for (const suite of sectionAnimationSuites) {
+      expect(
+        gallery,
+        `the gallery names suite "${suite.id}" as a literal - the list is meant to be derived, and a literal is how it silently stops covering the registry`,
+      ).not.toContain(`"${suite.id}"`);
+    }
   });
 
   /**

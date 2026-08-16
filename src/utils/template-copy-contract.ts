@@ -1473,10 +1473,34 @@ export function getTemplateCopyFieldsForSection(
         target: "10-24 characters.",
       },
       {
+        example: "Primary service areas",
+        name: "serviceAreasLabel",
+        purpose: "Heading above the list of primary towns and coverage areas.",
+        target: "18-32 characters.",
+      },
+      {
+        example: [
+          "Huntersville",
+          "Cornelius",
+          "Davidson",
+          "Mooresville",
+          "North Charlotte",
+          "Denver",
+          "Lake Norman",
+        ],
+        format: "One approved city, township, or service area per line.",
+        name: "serviceAreas",
+        purpose:
+          "Primary service locations displayed as a compact wrapping list beneath the ZIP lookup.",
+        target:
+          "4-10 sourced locations. Use concise approved place names only; do not invent coverage.",
+      },
+      {
         example:
-          "Serving Huntersville, Cornelius, Davidson, Mooresville, and nearby Lake Norman communities.",
+          "Regular service is centered around Huntersville and nearby Lake Norman communities.",
         name: "serviceAreaText",
-        purpose: "Sourced service-area summary shown beneath the lookup.",
+        purpose:
+          "Short wrap-up line beneath the location list explaining where regular service is centered.",
         target: "55-150 characters. Use approved locations only.",
       },
     ];
@@ -1780,8 +1804,11 @@ export function getTemplateCopyFieldsForSection(
   // to card 1. Splitting them this way keeps every line in the existing
   // "Title - Description" / "Label -> path" shapes the rest of the contract
   // uses, rather than inventing a wide per-card delimiter format.
-  // The three-across arrangement fills rows of three rather than a 2x2, so it
-  // wants three or six cards, and each card is two columns narrower - the
+  // The selected arrangement seeds the content count: four items for the
+  // two-across preview and six for the three-across preview. Once content is
+  // staged, its supported count owns the rendered layout: two or four items
+  // use two columns; three, five, or six items use three columns.
+  // Three-across cards are two columns narrower, so the
   // teaser has to come down accordingly. Everything below keys off the variant
   // rather than replacing the default branch: saved pages store no variant at
   // all, and their fields have to stay byte-identical or approved copy goes
@@ -1798,7 +1825,7 @@ export function getTemplateCopyFieldsForSection(
           "Planning a Replacement - The equipment is aging and still running, but you want the repair and replacement options in writing before deciding.",
         ],
         format: isThreeAcross
-          ? "Either three or six lines as Title - Card teaser."
+          ? "Exactly six lines as Title - Card teaser."
           : "Exactly four lines as Title - Card teaser.",
         itemCount: isThreeAcross ? 6 : 4,
         name: "calloutItems",
@@ -1806,7 +1833,7 @@ export function getTemplateCopyFieldsForSection(
           ? "The clickable card faces, written as the problem the visitor is experiencing rather than the service name. Order maps left to right, top to bottom across rows of three."
           : "The four clickable card faces, written as the problem the visitor is experiencing rather than the service name. Order maps left to right, top to bottom.",
         target: isThreeAcross
-          ? "Exactly 3 or exactly 6 items so the last row stays full. Titles 14-34 characters. Teasers 80-130 characters - these cards are a third of the row, so keep the symptom to one tight sentence."
+          ? "Exactly 6 items. Six items render three across. Titles 14-34 characters. Teasers 80-130 characters - these cards are a third of the row, so keep the symptom to one tight sentence."
           : "Exactly 4 items. Titles 14-34 characters. Teasers 100-160 characters - two clauses that describe the symptom concretely, not a one-line label.",
       },
       {

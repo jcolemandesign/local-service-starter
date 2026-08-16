@@ -16,8 +16,8 @@ import {
   cardIntensityOptions,
 } from "@/content/color-overrides";
 import type { WrapMode } from "@/content/type-palettes";
+import { sectionAnimationOptions } from "@/content/section-animations";
 import {
-  type SectionAnimation,
   type SectionBackgroundFill,
   type SectionCardBorder,
   type SectionCardBorderTone,
@@ -141,8 +141,9 @@ export const calloutSplitPanelVariantValues = new Set<string>(
  * Card arrangement for the callout section whose panel reveals over the cards.
  *
  * "default" is the existing two-across block, capped at four cards in a 2x2.
- * "three-across" runs three to a row and takes up to six, so it sits right at
- * either one full row of three or two full rows of six.
+ * "three-across" remains the explicit Pagebuilder preview. Rendered page copy
+ * resolves the live layout from its supported item count: two or four use two
+ * columns; three, five, or six use three columns.
  *
  * Saved pages predate this axis and store no variant at all. Both the unset
  * value and "default" have to resolve to the same layout and the same copy
@@ -1199,26 +1200,19 @@ export function sectionSupportsAnimation(component: string) {
   return animationComponents.has(component);
 }
 
-/** Declared after `styleFieldOptions` would put this inside its own TDZ, so the
- *  accepted set is written out rather than derived. `animation-css-agreement`
- *  pins it against the option list and against `globals.css`. */
-const animationValues = new Set<SectionAnimation>(["none", "reveal"]);
-
 /**
- * The animation a section actually plays when nothing is set.
+ * The animation axis lives in `section-animations.ts` now - the registry of
+ * suites, the role vocabulary, the storage parser and the render resolver.
  *
- * `none`, unlike every other resolver here. See `styleFieldOptions.animation`.
- * Anything unrecognised also lands on `none`, so a template saved with a value
- * that has since been removed renders a still section rather than an attribute
- * no stylesheet matches.
+ * Re-exported here because this is where every caller already imports its
+ * resolvers from, and because the accepted set is no longer something this file
+ * can own: it is derived from the suite registry, so a suite added there
+ * reaches the builder with no edit here.
  */
-export function resolveSectionAnimation(
-  animation: string | undefined,
-): SectionAnimation {
-  return animation && animationValues.has(animation as SectionAnimation)
-    ? (animation as SectionAnimation)
-    : "none";
-}
+export {
+  parseStoredSectionAnimation,
+  resolveSectionAnimation,
+} from "@/content/section-animations";
 
 export function resolveBackgroundFill(
   backgroundFill: string | undefined,
@@ -1306,22 +1300,20 @@ export const styleFieldOptions = {
    * exists for the same reason - a saved section must not gain a visual it was
    * never given.
    *
-   * Deliberately short. Per-section expressiveness comes from WHICH elements a
-   * section marks as revealable, not from a longer enum here: a section marks
-   * its cards and its heading, and the one value decides whether any of it
-   * moves. A longer list is what the future style-guide animation suites are
-   * for, and those re-point the tokens rather than adding values.
+   * DERIVED FROM `sectionAnimationSuites`, not hand-listed. Each entry is a
+   * motion suite that answers every unit role, which is what lets the list grow
+   * without a membership set per value: a suite is safe on every marked section
+   * because it has an answer for every kind of unit a section can mark.
+   *
+   * Per-section expressiveness comes from WHICH elements a section marks and
+   * WHAT KIND of unit each one is - never from the section choosing a motion.
    *
    * Copy-neutral. The contract fingerprint hashes component, the derived field
    * specs, instruction, mode, name, ratio and variant - none of which this is -
    * so switching it moves no fingerprint and flips no approved page to `stale`.
    * That is also why it must never be folded into `variant`.
    */
-  animation: [
-    { label: "Use template default", value: "" },
-    { label: "None", value: "none" },
-    { label: "Reveal", value: "reveal" },
-  ],
+  animation: sectionAnimationOptions,
   backgroundFill: [
     { label: "Use template default", value: "" },
     { label: "Background on", value: "solid" },

@@ -1138,51 +1138,6 @@ export function StrategyWorkspaceSection({
                         {hasPageCopy ? (
                           <ContractStatusLabel status={contractStatus} />
                         ) : null}
-                        {page.repeatable && page.childPages.length > 0 ? (
-                          <div className="mt-3 grid gap-2">
-                            <p className="type-caption font-semibold text-service-ink">
-                              {page.childPages.length} staged{" "}
-                              {page.childPages.length === 1 ? "page" : "pages"}
-                            </p>
-                            <div className="grid gap-2">
-                              {page.childPages.map((childPage) => (
-                                <div
-                                  className="rounded-sm border border-service-border bg-bg-surface p-2"
-                                  key={childPage.pageId}
-                                >
-                                  <Link
-                                    className="type-caption font-semibold text-service-accent hover:text-service-ink"
-                                    href={childPage.previewHref}
-                                    rel="noreferrer"
-                                    target="_blank"
-                                  >
-                                    {childPage.pageLabel}
-                                  </Link>
-                                  <p className="type-caption mt-1 text-service-muted">
-                                    <span className="font-semibold text-service-accent">
-                                      Template:
-                                    </span>{" "}
-                                    <span className="font-semibold text-service-ink">
-                                      {childPage.templateName}
-                                    </span>
-                                  </p>
-                                  <button
-                                    className="type-caption radius-4 mt-2 inline-flex min-h-8 items-center justify-center border border-service-border bg-bg-surface px-3 font-semibold text-service-muted transition-colors hover:border-service-accent hover:text-service-accent"
-                                    onClick={() =>
-                                      openTemplatePicker(
-                                        page.id,
-                                        childPage.pageId,
-                                      )
-                                    }
-                                    type="button"
-                                  >
-                                    Change template
-                                  </button>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        ) : null}
                         <div className="mt-3 flex flex-wrap items-center gap-2">
                           {page.previewHref ? (
                             <Link

@@ -801,9 +801,9 @@ export const sectionLibraryV3Content = {
         actionLabel: "Request a written quote",
         actionHref: "/contact",
       },
-      // Cards five and six exist for the three-across arrangement, which runs
-      // to two full rows. The two-across arrangement slices to four and never
-      // sees them, so its demo output is unchanged.
+      // Extra cards let Pagebuilder and the section library preview the
+      // three-across arrangement with an odd item count. Real page content
+      // chooses its layout from the count supplied by the staged fields.
       {
         title: "Rising Utility Bills",
         body: "Nothing about the household has changed, but the heating or cooling portion of the bill keeps climbing month over month.",
@@ -1911,7 +1911,7 @@ export const sectionLibraryV3Content = {
   },
   heroServiceAreaZipLookup: {
     eyebrow: "Service area",
-    title: "Do we come to your home?",
+    title: "Check if we serve your area",
     body: "Enter your ZIP code to see whether your address is within our regular or availability-based service area.",
     inputLabel: "ZIP code lookup",
     inputPlaceholder: "ZIP code",
@@ -1920,8 +1920,18 @@ export const sectionLibraryV3Content = {
     successBody: "Send a request and the team will confirm timing and availability.",
     successActionLabel: "Request service",
     successActionHref: "/contact",
+    serviceAreasLabel: "Primary service areas",
+    serviceAreas: [
+      "Huntersville",
+      "Cornelius",
+      "Davidson",
+      "Mooresville",
+      "North Charlotte",
+      "Denver",
+      "Lake Norman",
+    ],
     serviceAreaText:
-      "Serving Huntersville, Cornelius, Davidson, Mooresville, and nearby Lake Norman communities.",
+      "Regular service is centered around Huntersville and nearby Lake Norman communities.",
     imageAlt: "Local service van parked in a residential neighborhood",
     imageSrc: "/images/fpo-image.svg",
   },

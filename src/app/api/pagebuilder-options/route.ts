@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { resolveBackgroundConfig } from "@/content/background-config";
+import { parseStoredSectionAnimation } from "@/content/section-animations";
 import { requireBuilderApiAccess } from "@/utils/builder-access";
 
 export const runtime = "nodejs";
@@ -292,8 +293,21 @@ function normalizeSection(
         ? section.borderIntensity
         : undefined,
     align: typeof section.align === "string" ? section.align : undefined,
-    animation:
-      typeof section.animation === "string" ? section.animation : undefined,
+    /**
+     * The one field here that validates rather than passing a string through.
+     *
+     * Its neighbours can afford to be permissive because an unrecognised value
+     * resolves to a sensible visual at render. Animation has no sensible
+     * default - unset means OFF - so a junk value is indistinguishable from a
+     * deliberate `none` until something reads it, and it would sit in saved
+     * data looking like a choice nobody made.
+     *
+     * Parsing, not resolving: `undefined` is preserved because blank means
+     * "inherit the template", which is the opposite of what an unknown value
+     * should get. `resolveSectionAnimation` is what turns both into `none`, and
+     * it runs at render.
+     */
+    animation: parseStoredSectionAnimation(section.animation),
     backgroundTreatment:
       typeof section.backgroundTreatment === "string"
         ? section.backgroundTreatment

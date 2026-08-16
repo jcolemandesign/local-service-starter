@@ -93,9 +93,10 @@ re-points them, and touches no section. `animation-css-agreement` fails if a
 literal creeps back into the keyframes, the duration or the stagger.
 
 It is also what §4.4 turned out to need. The tokens are read from the *animating
-element*, so any element can answer one differently by setting it inline — which
-is how two sections give their bled image panels a pure fade with no rule, no
-variant and no exception list. See §3.
+element*, so an element can answer one differently without a rule per section —
+which is how a suite gives a bled image panel a pure fade. That used to be done
+by setting the token inline in the section; it is a **unit role** now, and
+sections may no longer set `--anim-*` themselves. See §3 and §8.
 
 ---
 
@@ -103,8 +104,8 @@ variant and no exception list. See §3.
 
 | Concern | File |
 |---|---|
-| Option list, resolver, membership, exclusions | `src/content/section-style-options.ts` |
-| The `SectionAnimation` type | `src/content/section-color-recipes.ts` |
+| Membership, exclusions, the other style axes | `src/content/section-style-options.ts` |
+| **Suite registry, role vocabulary, `SectionAnimation`, parser + resolver** | `src/content/section-animations.ts` |
 | Keyframes, tokens, the three states, the dormant scrub | `src/app/globals.css` (~line 207–420) |
 | The trigger — one observer, renders nothing | `src/components/primitives/SectionEntrance.tsx` |
 | Where it is mounted | `src/app/layout.tsx`, and `buildRootLayout` in `site-export.ts` |
@@ -135,39 +136,49 @@ replay a two-line reset rather than a fight with the cascade.
 
 ### Tests
 
-- `animation-marker-ownership.test.ts` — 13 assertions. Registry vs markup in
+- `animation-marker-ownership.test.ts` — 17 assertions. Registry vs markup in
   both directions; **every registered section is offered or excluded, with no
   silent middle**; neither set names a section the library does not have; no
   section may set the animation attribute or the state attribute itself; both
   frame owners must still set the animation attribute; the builder must replay
   by resetting state, and no file may carry the retired replay attribute;
   markers pair with a stagger index; the exception lists are kept honest
-  (`dormantMarkers`, `sharedMarkerSources`, `singleUnitReveals`).
+  (`dormantMarkers`, `sharedMarkerSources`, `singleUnitReveals`,
+  `inlineAnimationTokens`); **roles come from the closed vocabulary** and sit in
+  the same class string as the marker; **no section sets an `--anim-*` token
+  inline**.
   **It strips comments before scanning** — every marker in the library carries a
   comment naming the class, and prose explaining why a section marks one unit
   counted as marking two.
-- `animation-css-agreement.test.ts` — 9 assertions. Offered values have rules,
+- `animation-css-agreement.test.ts` — 11 assertions. Offered values have rules,
   resolver accepts exactly the offered set, no ungated marker rule, token layer
   intact, the entrance is **timed rather than scrubbed** (has a duration, staggers
   by delay, is on no scroll timeline), the waiting rule is scoped to the
-  observer's ready flag **and excludes frames that already have a state**, and
-  the scrubbed variant is intact, capped, clamped and unoffered.
+  observer's ready flag **and excludes frames that already have a state**, the
+  scrubbed variant is intact, capped, clamped and unoffered, **every registered
+  suite has both halves of the timed contract**, and **`differentiatedRoles`
+  matches the stylesheet in both directions**.
 - `hero-variant-parity.test.ts` — from the bug in §5.
 
 ---
 
 ## 3. Rollout status — **complete**
 
-**Every one of the 98 registered sections is accounted for: 57 marked, 41
+**Every one of the 97 registered sections is accounted for: 57 marked, 40
 excluded, 0 unaccounted.** `animation-marker-ownership` fails if that ever stops
 being true, so "unmarked" is no longer a state a new section can quietly sit in.
+
+Counts re-verified 2026-08-15. This table read 98 / 57 / 41 and had drifted in
+one row: the Decision family lost a section, so it is 13 / 11 / 2 rather than
+14 / 11 / 3. The totals are derived from `sectionLibraryV3Registry` and the two
+membership sets, so re-derive them rather than adjusting them by hand.
 
 | Family | total | marked | excluded |
 |---|---|---|---|
 | Section Headers | 3 | 3 | 0 |
 | Scan | 11 | 8 | 3 |
 | Narrative | 17 | 12 | 5 |
-| Decision | 14 | 11 | 3 |
+| Decision | 13 | 11 | 2 |
 | Utility | 13 | 10 | 3 |
 | Action | 13 | 9 | 4 |
 | Proof | 9 | 3 | 6 |
@@ -235,18 +246,25 @@ And two mechanical rules:
   Three sections have one: the services bento's split header, the narrative
   feature rail's prose column, the FAQ's heading column.
 
-### The per-element token override
+### The per-element token override — **superseded by unit roles**
 
 A bled image panel — the full-image narrative split, the CTA with image — is
-absolutely positioned to the section's own edges. The library's 18px rise opens
-a band of bare ground along the top of that bleed for the length of the
-entrance, the crop visibly detaching from the section it is cut into. Both set
+absolutely positioned to the section's own edges. The library's rise opens a
+band of bare ground along the top of that bleed for the length of the entrance,
+the crop visibly detaching from the section it is cut into. Both used to set
 `--anim-reveal-distance: 0px` on the panel and fade without moving.
 
-Worth stating because it is the shape §4.4 was asking for and it needed nothing
-built: the tokens resolve against the animating element, so per-element tuning
-is already available to any marker. Verified in Chrome — the override resolves
-on the element.
+That worked, and it was still the wrong shape: a section deciding how it moved.
+What those two panels were actually saying is *"this is a media panel"*, in the
+only vocabulary available at the time. **They say it with `reveal-role-media`
+now, and the zero distance belongs to the suite.** An inline token override is
+also invisible from the stylesheet, so no suite could ever have moved those
+elements again — `animation-marker-ownership` now fails on any section that sets
+an `--anim-*` token inline, with a named exception map for a genuine one-off.
+
+The mechanism the old note recorded is still true and still useful: tokens
+resolve against the animating element, which is exactly how a role class re-points
+one without a rule per section. See §8.
 
 ---
 
@@ -392,6 +410,12 @@ the membership sets exist to prevent, inverted. It needs a per-section option
 filter or every animated section marking both. `scrub` does not have this
 problem, which is the difference between the two.
 
+**§8 is the structural answer to that trap, and it is why the library grew unit
+roles rather than more enum values.** A suite answers every role, so it cannot
+be offered on a section it does nothing for. Neither `pulse` nor `scrub` has
+been folded into that contract — both stay gated exactly as described here, and
+folding them in is a later decision rather than groundwork.
+
 ---
 
 ## 5. Reported "bugs" that were not the axis
@@ -484,7 +508,7 @@ safety net.
 ## 7. How to verify
 
 ```bash
-npx vitest run        # 766 at this revision
+npx vitest run        # 846 at this revision
 npx tsc --noEmit
 npx eslint src/
 npx next build        # run it — the only gate that sees the server/client split
@@ -523,3 +547,161 @@ dev server writes repo files while running** — record
 `git hash-object src/content/pagebuilder-options.json src/content/page-templates.json`
 before and after, and never sweep builder state into a code commit. A plain page
 like `/thank-you` is enough for CSS probes and writes nothing.
+
+---
+
+## 8. Unit roles and motion suites — **groundwork landed 2026-08-15**
+
+The axis has grown from a two-value enum into a library, and this is the shape
+it grew into. Full design and phase list: `reference code/animation-library-plan.txt`.
+
+### Why not simply more enum values
+
+The obvious move — `reveal | slide-left | wipe | scale-in` — is the trap §4.5
+already documents with `pulse`. Three failure modes, all of them shipping:
+
+1. **Meaningless combinations.** "Typewriter" on a nine-card bento types out
+   nine cards.
+2. **Bookkeeping explosion.** Preventing that means a membership set *per
+   value* — ten values × 97 sections of hand-maintained lists.
+3. **It puts motion back in the section.** "Which sections may use the wipe" is
+   a per-section motion decision wearing a registry's clothes.
+
+The request that prompted it contained the answer: *"a header that types in vs
+a card sliding in from the bottom vs something sliding in from the side."* That
+is not one axis. It is two.
+
+### The two layers
+
+**Role** — the section says WHAT KIND OF UNIT each marked element is, never how
+it moves:
+
+```tsx
+<h2 className="reveal-on-scroll reveal-role-heading">
+<article className="reveal-on-scroll reveal-role-card" style={{ "--reveal-index": i }}>
+```
+
+Six, closed, declared in `src/content/section-animations.ts`: `heading`,
+`content` (the default), `card`, `media`, `accent`, `frame`.
+
+**Suite** — one value on the frame, naming a motion suite that answers how
+*every* role arrives. `reveal` is the stored id of the suite labelled **Rise**.
+
+**This kills the pulse trap structurally.** A suite answers every role, so every
+suite is safe on every marked section, and no suite needs a membership set.
+
+### The stored id stays `reveal`
+
+The label is "Rise"; the id is not renamed. Persisted values are opaque ids
+(`add-section/SKILL.md`, `builder-workflow.md` §3), and the decisive reason is
+the one `renamedSectionColorRecipes` writes out: the id is in page templates,
+staged pages, saved builder options and exported sites, several of which the dev
+server rewrites on its own schedule. An alias cannot race anything; a migration
+can. Every *new* suite gets an id named for its motion — `reveal` is the one
+grandfathered exception.
+
+### The timed-suite contract
+
+Every offered suite owns **both halves** explicitly in `globals.css`: a waiting
+rule that hides its units, and an arrival rule that brings them back.
+`animation-css-agreement` requires both of every suite in the registry.
+
+**The waiting selector is deliberately not generalised** across every non-`none`
+value. That version was proposed and rejected: it also matches `scrub`, imposing
+the timed entrance's hidden state on a variant that has its own scroll-driven
+range, and it turns "registered suite with a missing arrival rule" into a state
+that hides content indefinitely. Per-suite, a half-finished suite does nothing;
+generalised, it blanks the page.
+
+`scrub` and `pulse` stay **outside** this contract, gated exactly as before.
+
+### What the registry does and does not own
+
+It owns ids, labels, the option list and the *documented* role mapping. It does
+not own the movement — that is a selector and a keyframe in `globals.css`. Those
+are two representations of one fact and **they can drift**. Each suite declares
+`differentiatedRoles`, and the test pins it both ways: a named role with no CSS
+rule, and a CSS rule for a role not named. That narrows the gap; it does not
+close it, because no test reads a keyframe and tells you it looks like a fade.
+**The gap is accepted deliberately.** If it ever bites, generating the CSS from
+the registry is the fix — not a bigger test.
+
+### "Types in" means a wipe
+
+Settled, and it constrains what may be built: a role class can drive opacity,
+transform, scale and clip-path. It **cannot** produce character-by-character
+typing without extra markup, JavaScript, and an accessibility story. So the
+library ships a **clip wipe and calls it a wipe** — nothing in the builder or
+the gallery may use the word "type" for it. Real typing is a separate capability
+design (markup split, `aria-label` carrying the whole string, a reduced-motion
+path rendering it finished, text that stays selectable) and is **not** implied by
+this groundwork.
+
+### What is done, and what is next
+
+Landed: the registry with literal-preserving types, `SectionAnimation` moved out
+of `section-color-recipes.ts` (re-exported there for compatibility), the derived
+option list, a storage parser separate from the render resolver, the six role
+classes, Rise filling the contract template, and the two inline overrides
+converted to `reveal-role-media`. **No stored data changed and no computed style
+changed** — Rise's two rules are textually what they were.
+
+Next, in order: the style-guide gallery; **prototype a differentiating suite
+before backfilling roles** — Rise treats five of six roles identically, so it
+cannot tell you whether six is the right number, and classifying 86 marker sites
+against an untested taxonomy is how you get one you have to redo; then the
+backfill across 47 files; then the project-level default behind an explicit
+`site` value, which needs its own review because absence must keep meaning
+`none`.
+
+### The prototype's findings — read before the backfill
+
+Editorial exists as a **prototype suite**: real CSS, a real gallery specimen,
+and deliberately absent from the builder's option list (`status: "prototype"`).
+The two lists diverge because a suite is only as expressive as the roles the
+library has been marked up with — before the backfill nearly every marked
+element is an unroled `content` unit, so a differentiating suite would look
+*identical to Rise* on nearly every section an editor could pick it for. That is
+a control that appears to work and paints nothing, arriving by a different door.
+Promoting it is one word.
+
+It was built to answer three questions about the vocabulary before 86 marker
+sites are classified against it. It answers all three.
+
+**1. Does `accent` earn a role, or collapse into `card`? — It earns it.**
+Editorial gives it `section-reveal-scale`: it grows from 94% while it rises and
+fades. A stat or a badge arriving with slightly more presence than the copy
+around it is a real distinction and it is not expressible any other way — a card
+scaling reads as a panel zooming, which is wrong. Keep it, and keep it *small*:
+`accent` is for a figure, not for anything card-sized.
+
+**2. Do `frame` and `card` need different behaviour? — No, and this is the one
+to act on.** Neither is in Editorial's `differentiatedRoles`, and the attempt to
+give them different rules is what showed why: the difference between "a list
+that staggers" and "one block that does not" is `--reveal-index`, which the
+**section** sets per element. A suite has no way to express it and no need to.
+
+They are still worth keeping as *two names* — `frame` says "this composite is
+one unit" where `card` says "this is one of several", and that is a real fact
+about the markup that the stagger index alone does not record. But **do not
+expect a suite to distinguish them**, and do not spend backfill time agonising
+over the boundary: if it carries an index it is a `card`, if it does not it is a
+`frame`. That rule makes the 86 sites mechanical.
+
+**3. Is `heading` one role, or does eyebrow-vs-title matter? — One role.**
+The wipe runs across whichever element carries the class. Marking an eyebrow and
+its headline separately gives two edges travelling at once, which reads as two
+things happening rather than one heading arriving; marking the block gives one.
+The existing convention already says this — `SectionHeaderCompactSectionV3` is
+in `singleUnitReveals` because "eyebrow, headline and body are one block of
+copy" — and the wipe is the first suite that makes the reason visible rather
+than merely tasteful. **Mark the header block, not its lines.**
+
+**Net: the vocabulary stays at six.** One role confirmed (`accent`), one pair
+confirmed as naming-only rather than motion-bearing (`card` / `frame`), one
+boundary settled (`heading` is the block). The backfill can proceed against it.
+
+**A note for whoever writes the next suite.** Both suites answer `media` with
+the same zero distance, and that duplication should stay. It is two suites
+independently deciding a bled panel must not travel — the next one is free to
+disagree, and factoring it into a shared rule would take that freedom away.

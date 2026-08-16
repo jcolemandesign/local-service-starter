@@ -5,6 +5,7 @@ import {
   calloutSplitPanelVariantOptions,
 } from "@/content/section-style-options";
 import { getSectionToggleProps } from "@/components/sections/section-toggle-props";
+import { resolveCalloutRevealGridVariant } from "@/components/sections/ServiceCalloutRevealGridSectionV3";
 import { getTemplateCopyFieldsForSection } from "@/utils/template-copy-contract";
 
 /**
@@ -42,6 +43,21 @@ const calloutSections = [
 ];
 
 describe("callout card arrangement variants", () => {
+  it("uses the supported content count when no Pagebuilder preview variant is supplied", () => {
+    expect(resolveCalloutRevealGridVariant(2)).toBe("default");
+    expect(resolveCalloutRevealGridVariant(4)).toBe("default");
+    expect(resolveCalloutRevealGridVariant(3)).toBe("three-across");
+    expect(resolveCalloutRevealGridVariant(5)).toBe("three-across");
+    expect(resolveCalloutRevealGridVariant(6)).toBe("three-across");
+  });
+
+  it("keeps an explicit Pagebuilder preview selection", () => {
+    expect(resolveCalloutRevealGridVariant(5, "default")).toBe("default");
+    expect(resolveCalloutRevealGridVariant(4, "three-across")).toBe(
+      "three-across",
+    );
+  });
+
   it("offers the shared UX icon axis to both callout sections", () => {
     for (const section of calloutSections) {
       expect(

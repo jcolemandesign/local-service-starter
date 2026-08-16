@@ -1,0 +1,582 @@
+ANIMATION LIBRARY — IMPLEMENTATION PLAN (rev. 3)
+Groundwork for a named, browsable library of section animations
+Written 2026-08-15. Revised after review the same day; rev. 3 the same evening.
+
+Rev. 2 changes: stored id `reveal` is KEPT (rev. 1 proposed migrating it to
+`rise` — that was wrong and contradicted a documented project rule); the
+generalised waiting selector is replaced by an explicit per-suite contract; the
+role-coverage contradiction is resolved; a prototype phase is inserted before
+the backfill; site-level defaults are moved to their own phase behind an
+explicit `site` value; section counts corrected.
+
+Rev. 3 changes: Q4 is CLOSED — the groundwork ships a clip WIPE and calls it a
+wipe; real character-by-character typing is scoped out as a separate capability
+(§5.2). §5's subsections are renumbered 5.1–5.4, closing the gap left when rev.
+2 folded three of them into §3 and the phases.
+
+===============================================================================
+STATUS 2026-08-15 — PHASES 1-5 BUILT. PHASE 6 IS NEXT.
+===============================================================================
+
+  Phase 1  Registry                     DONE  src/content/section-animations.ts
+  Phase 2  Role vocabulary              DONE  6 classes + both inline overrides
+                                              converted to reveal-role-media
+  Phase 3  Per-suite waiting/arrival    DONE  Rise fills the contract template
+  Phase 4  Style guide gallery          DONE  /dev/style-guide#motion
+  Phase 5  Prototype Editorial          DONE  findings below; suite is built and
+                                              deliberately NOT offered
+  Phase 6  Role backfill                NEXT  86 markers, 47 files
+  Phase 7  Project-level default        open  separate review, per Q2
+  Phase 8  Author more suites           open
+
+ONE DEVIATION FROM THIS PLAN, and it is the only place the built system differs
+from what is written below. The plan assumed one list: a suite in the registry
+is a suite in the builder. Editorial cannot be, yet. Until the phase-6 backfill
+lands, nearly every marked element in the library is an unroled `content` unit,
+so a suite that DIFFERENTIATES looks identical to Rise on nearly every section
+an editor could pick it for — the "control that appears to work and paints
+nothing" failure, arriving by a different door. So a suite now carries
+`status: "offered" | "prototype"`; the builder derives from the offered ones,
+the style-guide gallery shows all of them. Promotion is one word, and a test
+pins both halves: a prototype stays out of the option list and still owes the
+full CSS contract.
+
+PHASE 5'S THREE QUESTIONS, ANSWERED (full write-up in the handoff doc §8):
+
+  1. Does `accent` earn a role?          YES. Scaling up from 94% while rising
+                                         is a real distinction for a stat or a
+                                         badge, and is not expressible another
+                                         way — a card that scales reads as a
+                                         panel zooming.
+  2. Do `frame` and `card` need          NO — and this is the one to act on.
+     different behaviour?                The difference is `--reveal-index`,
+                                         which the SECTION sets. A suite cannot
+                                         express it and does not need to. Keep
+                                         both NAMES; expect no suite to tell
+                                         them apart. Backfill rule: carries an
+                                         index -> `card`, does not -> `frame`.
+                                         That makes the 86 sites mechanical.
+  3. Is `heading` one role?              YES, and it is the BLOCK. Marking an
+                                         eyebrow and its headline separately
+                                         gives two wipe edges travelling at
+                                         once, which reads as two things
+                                         happening rather than one heading
+                                         arriving.
+
+  Net: the vocabulary stays at six. R1 below is closed.
+
+===============================================================================
+0. WHAT ALREADY EXISTS (read this first)
+===============================================================================
+
+Most of what this feature needs is already built. `docs/animation-axis-handoff.md`
+documents a complete per-section entrance axis shipped 2026-08-11:
+
+  - One document-wide IntersectionObserver (`SectionEntrance.tsx`) that renders
+    nothing, so every section stays a server component.
+  - A three-state machine on the section frame: waiting / in / settled.
+  - A full token layer — every number in the motion is a custom property with a
+    default (`--anim-reveal-distance`, `-duration`, `-delay-step`, `-easing`).
+  - A builder control, a per-staged-page override, an export path, and a
+    "Play entrance" replay button.
+  - Two dormant variants written in CSS but not offered: `scrub` and `pulse`.
+  - Two tests, 22 assertions, currently passing.
+
+SECTION COUNTS, VERIFIED 2026-08-15 (the handoff doc says 98/41 and is stale):
+
+    57  marked      (animationComponents)
+    40  excluded    (animationExcludedComponents)
+    ---
+    97  registered, fully accounted for, no silent middle
+    86  marker occurrences across 47 files
+
+Correct the handoff doc's table as part of this work.
+
+The governing rule, which this plan does not change:
+
+  A SECTION DOES NOT DECIDE WHETHER OR HOW IT ANIMATES.
+  A section marks which elements are revealable units and what index each one
+  is. The frame's `data-pagebuilder-animation` attribute decides the motion.
+
+So the work is NOT "make sections accept animations" — they already do. It is
+turning a two-value enum into a LIBRARY, and making that library viewable.
+
+
+===============================================================================
+1. THE PROBLEM WITH JUST ADDING MORE VALUES
+===============================================================================
+
+The obvious move is to widen the enum:
+
+    animation: none | reveal | slide-left | typewriter | scale-in | ...
+
+This is the trap §4.5 of the handoff doc already documents with `pulse`, which
+is gated in CSS but cannot be offered because it would appear on all 57
+animated sections and do nothing on 56 of them.
+
+Three failure modes:
+
+  a) MEANINGLESS COMBINATIONS. "Typewriter" on a nine-card bento would type out
+     nine cards.
+
+  b) BOOKKEEPING EXPLOSION. Preventing (a) means a membership set per value —
+     10 values × 97 sections of hand-maintained lists.
+
+  c) IT PUTS MOTION BACK IN THE SECTION. "Which sections may use typewriter" is
+     a per-section motion decision wearing a registry's clothes.
+
+The request itself is the clue: "different animation types may be INTENDED FOR
+DIFFERENT CONTENT — a header that types in vs a card sliding in from the bottom
+vs something sliding in from the side." That is not one axis. It is two.
+
+
+===============================================================================
+2. THE ARCHITECTURE — UNIT ROLES x MOTION SUITES
+===============================================================================
+
+LAYER 1 — ROLE. The section says WHAT KIND OF UNIT each marked element is.
+Never how it moves.
+
+    <h2 className="reveal-on-scroll reveal-role-heading">
+    <article className="reveal-on-scroll reveal-role-card" style={{ "--reveal-index": i }}>
+
+Proposed vocabulary (closed set, six entries, enforced by test):
+
+    reveal-role-heading   a section heading / eyebrow / header block
+    reveal-role-content   prose, body copy, a paragraph split   [DEFAULT]
+    reveal-role-card      an independent card in a grid or list
+    reveal-role-media     an image, a bled panel, a video frame
+    reveal-role-accent    a stat, a badge, a small emphatic figure
+    reveal-role-frame     a composite unit revealing as one block
+
+LAYER 2 — SUITE. One value on the frame naming a motion suite, which answers
+how every role arrives.
+
+    Suite "Rise"       (id `reveal`)  every role: rise + fade, media: fade only
+    Suite "Editorial"  heading: clip wipe   card: rise+fade   media: fade
+    Suite "Lateral"    card: side entry     heading: fade     media: fade
+
+WHY THIS SHAPE:
+
+  - It preserves the inversion. The section declares what a thing IS; the
+    system declares how it MOVES. Same split as the colour recipes.
+  - It kills the pulse trap structurally: a suite answers every role, so every
+    suite is safe on every marked section. No per-value membership sets.
+  - "A header types in while cards slide up" becomes one selectable thing.
+  - It redeems two existing hacks. `ContentSplitFullImageSectionV3:207` and
+    `CTAImageSectionV3:122` hand-set `--anim-reveal-distance: 0px` inline
+    because a bled panel opens a band of bare ground when it rises. They are
+    saying "this is a media panel" in the only vocabulary available.
+  - It costs nothing today: default role is `content` via CSS fallback, so an
+    unroled marker behaves exactly as it does now.
+
+
+===============================================================================
+3. THE THREE QUESTIONS, ANSWERED
+===============================================================================
+
+-------------------------------------------------------------------------------
+Q1 — KEEP THE STORED ID `reveal`. LABEL IT "Rise".
+-------------------------------------------------------------------------------
+
+Rev. 1 proposed migrating the id to `rise`. That was wrong. The project has a
+documented rule in two places:
+
+  - `.agents/skills/add-section/SKILL.md`:
+      "Persisted values are opaque ids — never rename one."
+  - `docs/builder-workflow.md` §297:
+      "Persisted values are opaque ids, not descriptions. Renaming a value
+       would require migrating every saved page."
+
+And there is direct precedent: `renamedSectionColorRecipes` in
+`section-color-recipes.ts` keeps `muted -> surface` and `default -> page` as
+permanent aliases rather than migrating stored data, with the reason written
+out — "the dev server rewrites several of those on its own schedule. An alias
+cannot race anything; a migration can." That last point is decisive here, and
+it also matches the standing note that this repo's dev server writes content
+JSON on its own schedule.
+
+The eight occurrences I counted are only the repository-visible ones. Exported
+sites and other project data may carry `reveal` too. Tidying an internal id
+does not justify a permanent migration path.
+
+    { id: "reveal", label: "Rise", ... }
+
+Ids are machine vocabulary; labels are editor vocabulary. Every new suite gets
+an id named for its motion; `reveal` is the one grandfathered exception, and
+the registry comment should say so.
+
+-------------------------------------------------------------------------------
+Q2 — SITE DEFAULT: YES, EVENTUALLY, BEHIND AN EXPLICIT `site` VALUE
+-------------------------------------------------------------------------------
+
+The key constraint, which rev. 1 missed: ABSENCE MUST KEEP MEANING `none`.
+`section-color-recipes.ts:70` states it — "has to mean off. Animation is opt-in
+per section." If a project default were applied to sections whose value is
+blank, choosing one would suddenly animate every eligible section saved before
+the feature existed, breaking the off-by-default guarantee.
+
+So the default is opted into by an explicit meta-value:
+
+    ""          inherit the template (existing meaning, unchanged)
+    none        never animate this section
+    site        use the project's default suite
+    reveal      pin this section to Rise
+    editorial   pin this section to Editorial
+    ...
+
+Resolution order:
+
+    staged override
+       -> blank means template value
+    template section value
+       -> "site" means project default
+    project default suite
+       -> invalid or missing resolves to none
+
+Also correcting rev. 1: this is NOT "how colour recipes work." Palettes are
+site-level, but recipe SELECTION resolves per section; there is no
+project-level default recipe. `resolveSectionColorRecipe` returns the value or
+its alias and nothing else.
+
+The site default is its own phase because it needs per-project design-settings
+persistence, builder and staged-editor labelling for two inheritance layers,
+export resolution to a concrete suite, approval invalidation when the project
+default changes, and a way to revert a section to "Site default". None of that
+changes the registry's shape, so deferring it is safe.
+
+-------------------------------------------------------------------------------
+Q3 — LIVE RHYTHM CONTROLS: YES, LOCAL AND RESETTABLE. TRIGGER IS SEPARATE.
+-------------------------------------------------------------------------------
+
+Live controls in the gallery for duration, stagger, distance, and easing
+presets. These are custom properties and can be scoped to the specimen frame
+without touching production state.
+
+`triggerInset` is NOT one of these and must not be presented as a peer slider.
+It is a TypeScript constant in `SectionEntrance.tsx:49`, and replaying an
+already-visible specimen never exercises the intersection trigger at all — a
+slider that changes nothing you can see is worse than no slider. Either show it
+read-only in v1, or build a separate scroll-trigger lab with a constrained
+scroll container and its own observer.
+
+Keep the controls local and resettable. Promote values into shared tokens only
+after the rhythm has actually been judged (handoff §4.3).
+
+
+===============================================================================
+4. PHASES
+===============================================================================
+
+-------------------------------------------------------------------------------
+PHASE 1 — Registry, with literal-preserving types
+-------------------------------------------------------------------------------
+
+NEW FILE: `src/content/section-animations.ts`
+
+Types must be literal-derived. An `id: string` field collapses a derived
+`SectionAnimation` to `string` and loses every compile-time guarantee the axis
+currently has:
+
+    export const sectionAnimationRoles = [
+      "heading", "content", "card", "media", "accent", "frame",
+    ] as const;
+
+    export type SectionAnimationRole = (typeof sectionAnimationRoles)[number];
+
+    type SectionAnimationSuiteDefinition = {
+      id: string;
+      label: string;
+      description: string;   // one line, builder + gallery
+      guidance: string;      // what content it suits
+      roles: Record<SectionAnimationRole, string>;  // exhaustive, see §5.1
+    };
+
+    export const sectionAnimationSuites = [
+      { id: "reveal", label: "Rise", ... },
+    ] as const satisfies readonly SectionAnimationSuiteDefinition[];
+
+    export type SectionAnimationSuiteId =
+      (typeof sectionAnimationSuites)[number]["id"];
+
+    export type SectionAnimation = "none" | SectionAnimationSuiteId;
+
+`SectionAnimation` moves here from `section-color-recipes.ts:78`, where it only
+ever sat by accident of history. Re-export it from the old module so existing
+imports keep resolving, then clean those up in the same pass.
+
+ALSO IN THIS PHASE:
+  - `styleFieldOptions.animation` derives from the registry rather than being
+    hand-listed.
+  - Storage parser and render resolver are SEPARATE functions (§5.3).
+  - No stored data changes. No CSS changes.
+
+-------------------------------------------------------------------------------
+PHASE 2 — Role vocabulary
+-------------------------------------------------------------------------------
+
+Add the six role classes to `globals.css` as pure markers, plus the documented
+`content` fallback. Convert the two inline `--anim-reveal-distance: 0px`
+overrides to `reveal-role-media` and move the zero distance into Rise's media
+rule — the vocabulary's first real proof.
+
+Tests: role classes must come from the closed vocabulary (a typo'd
+`reveal-role-heading2` fails rather than silently doing nothing); role must sit
+on the same element as `.reveal-on-scroll`; no section may set `--anim-*`
+inline any more, with a named exception map if a genuine one-off survives.
+
+-------------------------------------------------------------------------------
+PHASE 3 — Explicit per-suite waiting + arrival contract
+-------------------------------------------------------------------------------
+
+Rev. 1 proposed generalising the waiting rule to every non-`none` value:
+
+    [data-pagebuilder-animation]:not([data-pagebuilder-animation="none"])
+      :not([data-pagebuilder-animation-state]) .reveal-on-scroll { ... }
+
+DO NOT DO THIS. Two defects:
+
+  - It also matches the dormant `scrub`, imposing the timed entrance's hidden
+    state on a variant that has its own scroll-driven range and never asked
+    for it.
+  - It makes "registered suite with a missing arrival rule" a state that hides
+    content indefinitely. Widening the hiding selector to be helpful means a
+    half-finished suite blanks the page.
+
+Instead, each TIMED suite explicitly owns both halves:
+
+    /* == Suite: Rise (id `reveal`) == */
+    [ready] [anim="reveal"]:not([state]) .reveal-on-scroll   { waiting }
+    [anim="reveal"][state="in"] .reveal-on-scroll            { arriving }
+    [anim="reveal"][state="in"] .reveal-role-media           { role override }
+
+`scrub` and `pulse` stay OUTSIDE the timed-suite contract, gated exactly as
+they are now. They are pre-existing and orthogonal; folding them in is a later
+decision, not groundwork.
+
+Rise fills the template first and must produce byte-identical computed styles.
+Verify against the measurements in handoff §4.2: waiting units compute
+`opacity: 0; translate: 0 28px; animation-name: none`; `in` computes
+`section-reveal 0.62s cubic-bezier(0.22, 1, 0.36, 1)` with 0/.09/.18/.27s
+delays; `settled` computes `opacity: 1; translate: none`.
+
+Tests: every offered suite has BOTH a waiting rule and an arrival rule — this
+is the assertion that makes the library safe to grow. Plus: every waiting rule
+scoped to the ready flag and excluding frames that already carry a state; the
+resolver accepts exactly the registry ids plus `none`; the no-literals rule
+extends to every suite.
+
+-------------------------------------------------------------------------------
+PHASE 4 — Style guide gallery
+-------------------------------------------------------------------------------
+
+New `<GuideSection id="motion">` in `src/app/dev/style-guide/page.tsx`, plus a
+`styleGuideToc` entry (line 808).
+
+`MotionSuiteGallery` (client, small boundary) maps over `sectionAnimationSuites`
+— not a hand-written list — and per suite renders name, description, guidance,
+a live specimen frame carrying `data-pagebuilder-animation="<id>"` containing
+one specimen per role, a per-role caption naming the effect, a Replay button,
+and a gallery-level Replay all.
+
+Plus the local, resettable rhythm controls from Q3, and `triggerInset` shown
+read-only.
+
+Test: the demo list is derived, not hand-enumerated, so a suite added later
+appears here with no style-guide edit.
+
+-------------------------------------------------------------------------------
+PHASE 5 — Prototype Editorial's role mapping BEFORE the backfill
+-------------------------------------------------------------------------------
+
+This phase is new in rev. 2 and it is the one that de-risks everything after it.
+
+Rise treats nearly every role identically, so it CANNOT validate whether six
+roles are the right six. Classifying 86 marker sites against a vocabulary that
+has never been tested by a suite that actually differentiates is how you get a
+taxonomy you have to redo.
+
+So: sketch or privately implement Editorial's mapping first. It will answer
+  - does `accent` earn a role, or does it collapse into `card`?
+  - do `frame` and `card` actually need different behaviour?
+  - is `heading` one role or does eyebrow-vs-title matter?
+
+Adjust the vocabulary, then backfill. Editorial does not need to ship here —
+only to exist far enough to answer those three questions.
+
+-------------------------------------------------------------------------------
+PHASE 6 — Role backfill, then tighten enforcement
+-------------------------------------------------------------------------------
+
+86 marker sites across 47 files, in the handoff doc's family order. Honour the
+conventions already established in handoff §3, which map onto roles almost
+one-for-one: body copy is not staggered (`content`, single unit); a composite
+card is one unit (`frame`); a footer is one unit on its own root (`frame`);
+independent cards stagger (`card`); bled image panels (`media`).
+
+At the end, tighten the test: every `.reveal-on-scroll` in the section library
+carries an explicit role. The CSS `content` fallback stays — it protects
+hand-written pages and exports — but inside the library the silent middle
+closes, the same discipline that already makes "unmarked" impossible.
+
+-------------------------------------------------------------------------------
+PHASE 7 — Project-level default, behind the explicit `site` value
+-------------------------------------------------------------------------------
+
+Per Q2. Separate phase, separate review. Needs per-project design-settings
+persistence, two-layer inheritance labelling in builder and staged editor,
+export resolution to a concrete suite, approval invalidation when the project
+default changes, a revert-to-site-default affordance, and round-trip tests.
+
+-------------------------------------------------------------------------------
+PHASE 8 — Author and offer additional suites
+-------------------------------------------------------------------------------
+
+Out of scope for the groundwork. What the groundwork leaves behind: adding a
+suite is one registry entry + one CSS block filling the contract + zero section
+edits + zero style-guide edits, and it appears in the builder and the gallery
+automatically.
+
+
+===============================================================================
+5. CORRECTIONS AND CONSTRAINTS CARRIED IN FROM REVIEW
+===============================================================================
+
+Renumbered in rev. 3. Rev. 2 ran 5.3 / 5.5 / 5.6 / 5.7 because three earlier
+items were folded into §3 and the phases — the id decision into Q1, the site
+default into Q2, the waiting selector into phase 3 — and the survivors kept
+their old numbers. They are now 5.1–5.4 and every cross-reference is updated.
+
+5.1  THE COVERAGE CONTRADICTION, RESOLVED.
+Rev. 1 said both "roles inherit the suite default unless overridden" and "CSS
+tests require every role covered." Those cannot both hold. The contract is:
+
+  - TYPESCRIPT requires an exhaustive `roles` record — for documentation and
+    for the gallery's per-role captions. The author must state an intent for
+    all six.
+  - CSS requires a default `.reveal-on-scroll` waiting + arrival rule per suite.
+  - CSS role SELECTORS are required only for roles whose registry effect
+    differs from that suite's default.
+
+And be precise about "single source of truth": the registry owns ids, labels,
+options and the DOCUMENTED role mapping. The actual movement lives in CSS.
+Without generated CSS those are two representations of one fact and they can
+drift — the registry can claim `media: "fade"` while the stylesheet rises. The
+tests narrow the gap but do not close it. Either accept that and say so in the
+registry's header comment, or generate the CSS later; do not pretend the
+registry is authoritative over motion.
+
+5.2  THE BOUNDARY OF WHAT A ROLE CLASS CAN DO — Q4, CLOSED.
+Role classes drive whole-element opacity, transform, scale and clip-path. They
+CANNOT produce character-by-character typing without extra markup, JavaScript,
+and an accessibility story (screen-reader output, reduced motion, text that
+must remain selectable and copyable).
+
+DECIDED: the groundwork ships the CLIP WIPE and names it a wipe.
+
+  - Editorial's `heading` role is a clip-path wipe: the heading is revealed
+    left-to-right behind a moving edge, as one element, no per-character
+    markup. It is honest about being a wipe in the registry label, the
+    description and the gallery caption. Nothing in the builder or the gallery
+    may use the word "type" for it.
+  - REAL TYPING IS OUT OF SCOPE and is not a suite. It cannot ride the role
+    vocabulary at all, because a role class styles one element and typing needs
+    per-character nodes plus a timer. If it is wanted later it is a separate
+    capability design with its own review, covering: the markup split, an
+    `aria-label` carrying the complete string so screen readers never hear it
+    letter by letter, a `prefers-reduced-motion` path that renders the finished
+    string immediately, selectable and copyable text, and what happens when the
+    string is long or wraps. None of that is groundwork and none of it is
+    implied by this plan.
+
+This closes Q4. Phase 5's Editorial sketch is scoped to the wipe.
+
+5.3  STORAGE NORMALISATION IS NOT RENDER RESOLUTION.
+`route.ts:295` currently preserves any animation string; sanitising happens at
+render. Keep two functions:
+
+  - a STORAGE PARSER that preserves `undefined`, accepts known ids, rejects
+    unknown values;
+  - a RENDER RESOLVER that turns invalid or missing into `none`, and later
+    resolves `site`.
+
+One function doing both becomes wrong the moment inheritance exists, because
+"unknown" and "inherit" need opposite treatment.
+
+5.4  THE REPLAY HELPER MUST BE ELEMENT-BASED.
+`replaySectionAnimation` is a closure inside `PagebuilderShell.tsx:3353` that
+takes a `sectionId` and does a `querySelector`. The gallery has no pagebuilder
+section ids. Extract:
+
+    replaySectionAnimation(frame: HTMLElement): void
+
+Pagebuilder keeps a thin wrapper that resolves its frame by id; the gallery
+passes a ref.
+
+NOTE WHILE YOU ARE IN THERE: that function's doc comment is stale. It describes
+the SCROLL-BASED replay — "the section is parked below the fold and scrolled
+in" — which is attempt two from handoff §4.1, discarded for reading as a harsh
+jump. The body does the state reset. Fix the comment in the same commit.
+
+
+===============================================================================
+6. FILES TOUCHED
+===============================================================================
+
+NEW
+  src/content/section-animations.ts               registry, roles, types
+  src/app/dev/style-guide/MotionSuiteGallery.tsx  gallery (client)
+  src/utils/replay-section-animation.ts           element-based replay
+
+MODIFIED — code
+  src/app/globals.css                             roles, per-suite contract
+  src/content/section-style-options.ts            derive options from registry
+  src/content/section-color-recipes.ts            SectionAnimation moves out,
+                                                  re-export for compatibility
+  src/app/dev/style-guide/page.tsx                #motion section + toc entry
+  src/components/sections/PagebuilderShell.tsx    shared replay + stale comment
+  src/components/sections/ContentSplitFullImageSectionV3.tsx  inline -> role
+  src/components/sections/CTAImageSectionV3.tsx               inline -> role
+  src/app/api/pagebuilder-options/route.ts        storage parser
+  + 47 section files in phase 6 (role classes only, no logic)
+
+MODIFIED — tests
+  src/utils/__tests__/animation-css-agreement.test.ts     per-suite contract
+  src/utils/__tests__/animation-marker-ownership.test.ts  role vocabulary
+  export / round-trip tests                               phase 7 only
+
+MODIFIED — documentation (rev. 1 under-counted this)
+  .claude/skills/add-section/SKILL.md      BOTH copies must be updated
+  .agents/skills/add-section/SKILL.md
+  docs/animation-axis-handoff.md           record the roles design; fix the
+                                           stale 98/41 counts to 57/40/97
+  docs/builder-workflow.md                 §3 axis rules; the `site` value and
+                                           its inheritance layer in phase 7
+  in-code comments: SectionEntrance.tsx, pagebuilder.ts, PageTemplatePreview.tsx,
+  globals.css — all four narrate a single-value axis today
+
+UNCHANGED — worth stating, because it is the point
+  src/components/primitives/SectionEntrance.tsx   the observer is suite-agnostic
+  src/components/sections/PageTemplatePreview.tsx  frame already emits the value
+  src/utils/site-export.ts                        already passes the value through
+  (comments in the first two still need updating; behaviour does not)
+
+
+===============================================================================
+7. RISKS AND REMAINING QUESTIONS
+===============================================================================
+
+R1  CLOSED by phase 5. Six is right: `accent` earns its place, `card`/`frame`
+    are two names for one motion, `heading` is the block. See the status block
+    at the top and §8 of the handoff doc.
+
+R2  Registry/CSS drift (§5.1) is real and unclosed. Accept it explicitly or
+    plan generated CSS later.
+
+R3  Phase 6 is 47 files of mechanical edits — the bulk of the wall-clock time
+    and none of the design. It can be deferred behind phases 1–5 without
+    blocking anything, since the `content` fallback keeps everything working.
+
+Q4  CLOSED in rev. 3. "Types in" means a CLIP WIPE, named a wipe everywhere it
+    is shown. Real character-by-character typing is out of scope and is a
+    separate capability design, not a suite. See §5.2.

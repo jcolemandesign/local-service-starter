@@ -206,6 +206,7 @@ import {
   type SplitImageRatio,
   type SplitImageVariant,
 } from "@/content/section-style-options";
+import { replaySectionAnimationById } from "@/utils/replay-section-animation";
 import { groupSectionsIntoBands, withBandRecipe } from "@/utils/section-bands";
 
 type PagebuilderShellProps = {
@@ -255,14 +256,6 @@ type PreviewVariableStyle = CSSProperties & Record<`--${string}`, string>;
 
 const normalSpacingClassName = "pagebuilder-density-normal";
 
-/**
- * The frame attribute `SectionEntrance` drives, and the builder's replay resets.
- *
- * Owned by the observer rather than by React, which is what makes an imperative
- * reset safe here: React never renders this attribute, so it cannot clobber it
- * on the next commit, and the observer only ever sets it once per frame.
- */
-const animationStateAttribute = "data-pagebuilder-animation-state";
 const splitContentImageComponent = "HeroSplitFullHeightSectionV3";
 const fixedRatioSplitComponent = "HeroSplitFixedImageSectionV3";
 const splitBentoComponent = "HeroSplitBentoSectionV3";
@@ -3330,43 +3323,8 @@ export function PagebuilderShell({
     // seeing nothing move is the whole reported defect; choosing it and
     // watching it play is the control explaining itself.
     if (resolveSectionAnimation(animation) !== "none") {
-      replaySectionAnimation(sectionId);
+      replaySectionAnimationById(sectionId);
     }
-  }
-
-  /**
-   * Play one section's entrance by scrolling it back through its own arrival.
-   *
-   * Not an imitation of the animation - the animation itself. The section is
-   * parked below the fold and scrolled in, so what plays is the scroll-driven
-   * rule at a real scrolling speed, against the same scroller the view timeline
-   * resolves. There is nothing here that can drift from what a visitor sees,
-   * and nothing to keep in sync.
-   *
-   * This replaced a clock-based playback that was wrong twice over: it could
-   * not restart (a CSS animation only restarts when `animation-name` changes,
-   * and swapping only the timeline kept the name, so a second press updated an
-   * animation already at its end state and did nothing), and a duration tuned
-   * to look right in isolation says nothing about how the entrance actually
-   * reads while someone scrolls.
-   */
-  function replaySectionAnimation(sectionId: string) {
-    const frame = document.querySelector<HTMLElement>(
-      `[data-pagebuilder-section-id="${CSS.escape(sectionId)}"]`,
-    );
-
-    if (!frame) {
-      return;
-    }
-
-    // Back to the waiting state, then straight into the arriving one. Removing
-    // the attribute is what makes this restart: the units match the hidden rule
-    // again, and re-adding it starts the animation from the top. Reading
-    // `offsetWidth` between the two forces the style flush that makes them two
-    // changes rather than one no-op.
-    frame.removeAttribute(animationStateAttribute);
-    void frame.offsetWidth;
-    frame.setAttribute(animationStateAttribute, "in");
   }
 
   function updateSectionCardBorder(
@@ -4613,6 +4571,10 @@ export function PagebuilderShell({
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
             icons={getSectionIcons(section)}
+            items={sectionLibraryV3Content.serviceCalloutRevealGrid.items.slice(
+              0,
+              getCalloutRevealGridVariant(section) === "three-across" ? 6 : 4,
+            )}
             variant={getCalloutRevealGridVariant(section)}
           />
         ) : isServiceCalloutSplitPanelSection(section) ? (
@@ -5554,7 +5516,7 @@ export function PagebuilderShell({
                                 <button
                                   className="token-chrome-card min-h-10 rounded-[var(--chrome-radius-control)] border px-2 text-center text-xs font-semibold transition-colors"
                                   onClick={() =>
-                                    replaySectionAnimation(section.id)
+                                    replaySectionAnimationById(section.id)
                                   }
                                   type="button"
                                 >

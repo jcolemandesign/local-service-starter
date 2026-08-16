@@ -3,6 +3,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
+import { sectionAnimationRoles } from "@/content/section-animations";
 import { sectionLibraryV3Registry } from "@/content/section-library-v3";
 import {
   animationComponents,
@@ -258,8 +259,28 @@ describe("animation marker ownership", () => {
     const builder = sources.get("PagebuilderShell.tsx") ?? "";
 
     expect(
-      builder.includes("animationStateAttribute"),
-      "the builder no longer resets the frame's animation state, so the Play button cannot restart anything",
+      builder.includes("replaySectionAnimationById"),
+      "the builder no longer calls the shared replay, so the Play button cannot restart anything",
+    ).toBe(true);
+
+    // The reset itself moved out of the builder and into a shared helper, so
+    // the style-guide gallery can replay a frame it holds a ref to rather than
+    // one carrying a builder section id. Checked here because the builder's
+    // Play button is now only as good as what it delegates to.
+    const replay = withoutComments(
+      readFileSync(
+        path.join(process.cwd(), "src", "utils", "replay-section-animation.ts"),
+        "utf8",
+      ),
+    );
+
+    expect(
+      replay.includes("removeAttribute(animationStateAttribute)"),
+      "the shared replay no longer clears the state first, so a second press updates an animation already at its end state and does nothing",
+    ).toBe(true);
+    expect(
+      replay.includes("offsetWidth"),
+      "the shared replay no longer forces a style flush between clearing and re-setting the state, so the two collapse into one no-op",
     ).toBe(true);
 
     for (const [file, source] of sources) {
@@ -467,6 +488,121 @@ describe("animation marker ownership", () => {
     expect(
       stale.sort(),
       "these are recorded as single-unit reveals but no longer look like one - either the marker went away or it gained a stagger index",
+    ).toEqual([]);
+  });
+
+  /**
+   * A role is from the closed vocabulary or it is nothing.
+   *
+   * This is the failure the whole check exists for: `reveal-role-heading2`
+   * matches no selector, so the element silently falls back to the `content`
+   * default and animates as body copy. Nothing errors, nothing looks broken,
+   * and the section is simply not saying what the author thought it said.
+   */
+  it("uses only roles from the closed vocabulary", () => {
+    const known = new Set<string>(sectionAnimationRoles);
+    const unknown: string[] = [];
+
+    for (const [file, source] of sources) {
+      for (const match of source.matchAll(/\breveal-role-([\w-]+)\b/g)) {
+        if (!known.has(match[1])) {
+          unknown.push(`${file} — reveal-role-${match[1]}`);
+        }
+      }
+    }
+
+    expect(
+      unknown.sort(),
+      `these name a unit role that does not exist, so the element falls back to the default role and animates as body copy - the vocabulary is ${[...known].join(", ")}`,
+    ).toEqual([]);
+  });
+
+  /**
+   * The role belongs on the element that is the revealable unit.
+   *
+   * A role on a wrapper while the marker sits on a child means the suite's role
+   * rule and its default rule select two different elements, and the role does
+   * nothing. Checked by requiring the two classes to be written in the SAME
+   * string literal, which is both how they are authored and the only version of
+   * this check that does not need a JSX parser to answer.
+   */
+  it("puts every role on the element that carries the marker", () => {
+    const detached: string[] = [];
+
+    for (const [file, source] of sources) {
+      // Quoted strings of all three kinds; class lists in this codebase are
+      // always one of them, inside `cx()` or a bare `className`.
+      for (const match of source.matchAll(/(["'`])((?:[^\\]|\\.)*?)\1/g)) {
+        const literal = match[2];
+
+        if (
+          literal.includes("reveal-role-") &&
+          !literal.includes("reveal-on-scroll")
+        ) {
+          detached.push(`${file} — "${literal.trim().slice(0, 60)}"`);
+        }
+      }
+    }
+
+    expect(
+      detached.sort(),
+      "these carry a unit role in a class string that does not also carry `reveal-on-scroll`, so the role names an element that is not a revealable unit and no suite rule will reach it - write the two together",
+    ).toEqual([]);
+  });
+
+  /**
+   * A section owns no motion values, the same way it owns no colour.
+   *
+   * Two sections used to set `--anim-reveal-distance: 0px` inline on a bled
+   * image panel. It worked, and it was still the wrong shape: a section
+   * deciding how it moved. Both say `reveal-role-media` now and the zero
+   * distance belongs to the suite. This keeps the next one from being written -
+   * an inline token override is invisible from the stylesheet, so no suite
+   * could ever move that element again.
+   *
+   * The exception map is empty and worth keeping. If a genuine one-off ever
+   * survives review it belongs here with its reason, not scattered unexplained.
+   */
+  const inlineAnimationTokens = new Map<string, string>();
+
+  it("never lets a section set an animation token inline", () => {
+    const overrides: string[] = [];
+
+    for (const [file, source] of sources) {
+      if (frameOwners.has(file) || inlineAnimationTokens.has(file)) {
+        continue;
+      }
+
+      for (const match of source.matchAll(/["']--anim-[\w-]+["']\s*:/g)) {
+        overrides.push(`${file} — ${match[0].replace(/\s*:$/, "")}`);
+      }
+    }
+
+    expect(
+      overrides.sort(),
+      "these set an animation token inline, which is a section deciding how it moves - say what kind of unit it is with a reveal-role-* class and let the suite answer",
+    ).toEqual([]);
+  });
+
+  it("keeps the inline-token exception list honest", () => {
+    const stale: string[] = [];
+
+    for (const [file, reason] of inlineAnimationTokens) {
+      const source = sources.get(file);
+
+      expect(
+        source,
+        `inlineAnimationTokens names ${file}, which does not exist`,
+      ).toBeDefined();
+
+      if (source && !/["']--anim-[\w-]+["']\s*:/.test(source)) {
+        stale.push(`${file} — ${reason}`);
+      }
+    }
+
+    expect(
+      stale.sort(),
+      "these are excused from the inline-token rule but no longer set one, so the exception is pointless",
     ).toEqual([]);
   });
 

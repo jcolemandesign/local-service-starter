@@ -55,6 +55,7 @@ Pagebuilder and the content editor only offer a toggle to sections listed in the
 - the headline is the whole composition → `headlineWrapComponents`
 - content fills 12 of 14 columns → `tableCompareAlignComponents`; a three-card row → `cardLinkGridAlignComponents`
 - pins a viewport-derived min-height (`section-min-screen` / `-sliver` / `-story` / `-sticky`) → `viewportHeightComponents`, which *removes* the spacing control — min-height takes the space back, so the control would read as broken
+- **animates, or must not** → `animationComponents` *or* `animationExcludedComponents` (with the reason). This one is **not optional and has no silent middle**: `animation-marker-ownership.test.ts` fails on any registered section in neither set, so a new section has to say which it is. Mark revealable units with `reveal-on-scroll`, give each one a `reveal-role-*` class from the closed vocabulary in `src/content/section-animations.ts`, and set `--reveal-index` on the same element when it is one of several. A section never picks a motion and never sets an `--anim-*` token — read `docs/animation-axis-handoff.md` §8 first
 
 ## Adding a new toggle axis
 

@@ -98,8 +98,8 @@ export function TestimonialsCarouselSectionV3({
   return (
     <section className="bg-service-surface">
       <SevenColumnGrid className="section-min-none" padding="med">
-        <SevenColumnGridItem className="col-span-5 col-start-2 max-lg:col-span-7 max-lg:col-start-1">
-          <div className="flex items-center justify-center inline-gap-xlrg max-md:flex-wrap">
+        <SevenColumnGridItem className="col-span-7 col-start-1 max-lg:col-span-7 max-lg:col-start-1">
+          <div className="mx-auto flex !w-5/6 items-center justify-center inline-gap-xlrg max-lg:!w-full max-md:flex-wrap">
             <SliderButton
               direction="previous"
               label="Show previous testimonial"

@@ -119,7 +119,7 @@ export function InfoStripSectionV3({
           measure="copyWide"
         >
           <p
-            className={cx("reveal-on-scroll type-text-lg wrap-pretty", colors.body)}
+            className={cx("reveal-on-scroll type-text-md wrap-pretty", colors.body)}
             style={{ "--reveal-index": 1 } as CSSProperties}
           >
             {body}

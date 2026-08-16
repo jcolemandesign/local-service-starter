@@ -65,17 +65,16 @@ export type SectionBackgroundFill = "solid" | "none";
 /**
  * The section's entrance animation.
  *
- * `none` is the resolved default, which is the one place this axis differs from
- * every other: elsewhere an unset value inherits a sensible visual, and here it
- * has to mean off. Animation is opt-in per section.
+ * MOVED to `section-animations.ts`, which owns the whole axis: the suite
+ * registry, the unit-role vocabulary, the storage parser and the render
+ * resolver. It only ever sat in this file by accident of history - motion is
+ * not a colour recipe, and once the axis grew from an enum into a library the
+ * two had nothing to share but a home.
  *
- * Only `reveal` is offered for now. `.pulse-on-scroll` exists in `globals.css`
- * and is gated by the same attribute, but is deliberately not an option value
- * yet - it had a single user, and an enum whose values are persisted ids should
- * not gain one speculatively. Promoting it later is one entry in
- * `styleFieldOptions.animation` and nothing else.
+ * Re-exported so existing imports keep resolving. New code should import it
+ * from `section-animations.ts` directly.
  */
-export type SectionAnimation = "none" | "reveal";
+export type { SectionAnimation } from "@/content/section-animations";
 
 /**
  * Recipe ids that were renamed, mapped to what they are called now.

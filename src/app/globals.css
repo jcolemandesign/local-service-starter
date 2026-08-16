@@ -230,13 +230,15 @@
  * that renders nothing - see `SectionEntrance` - so sections stay server
  * components and no page carries a runtime for this.
  *
- * THE SECTION DOES NOT DECIDE WHETHER IT ANIMATES. A section marks which of its
- * elements are revealable units (`.reveal-on-scroll`) and, in a list, which
- * index each one is (`--reveal-index`). Whether any of it moves is the frame's
- * `data-pagebuilder-animation` attribute, set per section in the builder and
- * overridable per staged page. That split is the same one the colour recipes
- * use, and for the same reason: a value the system owns cannot drift section by
- * section, and a marker class is inert until the system switches it on.
+ * THE SECTION DOES NOT DECIDE WHETHER OR HOW IT ANIMATES. A section marks which
+ * of its elements are revealable units (`.reveal-on-scroll`), WHAT KIND of unit
+ * each one is (`.reveal-role-*`), and, in a list, which index it is
+ * (`--reveal-index`). Whether any of it moves - and how each kind of unit
+ * arrives - is the frame's `data-pagebuilder-animation` attribute, which names
+ * a MOTION SUITE. Set per section in the builder, overridable per staged page.
+ * That split is the same one the colour recipes use, and for the same reason: a
+ * value the system owns cannot drift section by section, and a marker class is
+ * inert until the system switches it on.
  *
  * THE SECTION IS THE TRIGGER, AND THE CLOCK IS THE MOTION. Scroll position
  * decides WHEN a section's entrance starts and nothing else; the animation then
@@ -257,9 +259,11 @@
  * `[data-pagebuilder-animation="scrub"]` - dormant until the builder offers
  * that value, in the same way `pulse` is.
  *
- * The token layer is what makes the future animation suites cheap. Every number
- * below is a custom property with a default, so a suite is a block that
- * re-points them - not an edit to any section.
+ * The token layer is what makes the animation suites cheap. Every number below
+ * is a custom property with a default, so a suite is a block that re-points
+ * them and answers each role - not an edit to any section. The suites
+ * themselves are registered in `src/content/section-animations.ts`, and every
+ * one of them fills the two-halves contract described further down.
  *
  * CONTENT IS VISIBLE BY DEFAULT, and the ordering that keeps it that way is
  * load-bearing. Units are hidden only under `[data-pagebuilder-animation-ready]`,
@@ -284,6 +288,12 @@
   /* Decisive out-easing: most of the travel happens in the first third, so the
      unit reads as arriving and settling rather than as drifting. */
   --anim-reveal-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Editorial's own numbers. The suite reuses the shared duration, stagger and
+     easing above on purpose - the rhythm of the library should be one rhythm,
+     and what differs between suites is the SHAPE of the arrival, not its
+     tempo. Only the two values that have no equivalent in Rise live here. */
+  --anim-wipe-duration: 720ms;
+  --anim-accent-scale-from: 0.94;
   /* Pulse is gated by the same attribute but is not an offered value yet - see
      `SectionAnimation`. Its tokens live here so promoting it stays a one-line
      change. */
@@ -335,9 +345,123 @@
   }
 }
 
+/*
+ * The wipe. A heading revealed behind a moving edge, left to right.
+ *
+ * IT IS A WIPE AND IT IS CALLED A WIPE. The request that prompted the library
+ * asked for "a header that animates in like being typed", and this is the
+ * honest version of that: a clip-path on ONE element, no per-character markup,
+ * no timer, no accessibility story to get wrong. Real character-by-character
+ * typing cannot be done by a role class at all - it needs per-character nodes,
+ * an `aria-label` carrying the whole string so a screen reader does not hear it
+ * letter by letter, a reduced-motion path that renders it finished, and text
+ * that stays selectable. That is a separate capability design, and nothing here
+ * should be described as typing.
+ *
+ * Fades slightly ahead of the edge so the first letters do not snap in.
+ */
+@keyframes section-wipe {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* A small figure arriving with a little more presence than the copy around it -
+   it rises and fades like everything else, and grows into place. */
+@keyframes section-reveal-scale {
+  from {
+    opacity: 0;
+    scale: var(--anim-accent-scale-from);
+    translate: 0 var(--anim-reveal-distance);
+  }
+
+  to {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+}
+
+/* ==================================================================
+ * UNIT ROLES
+ *
+ * A marked element says WHAT KIND OF UNIT it is - never how it moves. The suite
+ * on the frame decides that, and it answers every role, which is what lets the
+ * library grow without a membership set per value: no suite can be unsafe on a
+ * section, because there is no kind of unit a suite has no answer for.
+ *
+ * These classes carry no declarations of their own. They are selector hooks, in
+ * the same way `.reveal-on-scroll` is - inert until a suite matches them.
+ *
+ * `content` is the default, and it is a fallback rather than a requirement: an
+ * unroled marker behaves exactly as it did before roles existed, which is what
+ * keeps hand-written pages and already-exported sites working. Inside the
+ * section library that fallback is not allowed to be load-bearing - every
+ * marker there carries an explicit role, enforced by
+ * `animation-marker-ownership.test.ts`.
+ *
+ *   reveal-role-heading   a section heading / eyebrow / header block
+ *   reveal-role-content   prose, body copy, a paragraph split   [DEFAULT]
+ *   reveal-role-card      an independent card in a grid or list
+ *   reveal-role-media     an image, a bled panel, a video frame
+ *   reveal-role-accent    a stat, a badge, a small emphatic figure
+ *   reveal-role-frame     a composite unit revealing as one block
+ *
+ * The vocabulary is declared in `section-animations.ts`. Roles and suites are
+ * two files that have to agree, and the tests pin them together.
+ * ================================================================== */
+
+/* ==================================================================
+ * THE TIMED-SUITE CONTRACT
+ *
+ * Every offered suite owns BOTH HALVES explicitly: a waiting rule that hides
+ * its units, and an arrival rule that brings them back. Both are written per
+ * suite, and `animation-css-agreement.test.ts` requires both of every suite in
+ * the registry. That pairing is the assertion that makes this library safe to
+ * grow.
+ *
+ * IT IS DELIBERATE THAT THE WAITING RULE IS NOT GENERALISED. The tempting
+ * version is one rule for every non-`none` value:
+ *
+ *   [data-pagebuilder-animation]:not([data-pagebuilder-animation="none"])
+ *     :not([data-pagebuilder-animation-state]) .reveal-on-scroll { opacity: 0 }
+ *
+ * Do not write that. It has two defects, and both are the kind that ship. It
+ * also matches `scrub`, imposing the timed entrance's hidden state on a variant
+ * that has its own scroll-driven range and never asked to be hidden by a clock.
+ * And it makes "registered suite whose arrival rule is missing or misspelled" a
+ * state that HIDES CONTENT INDEFINITELY - widening the hiding selector to be
+ * helpful means a half-finished suite blanks the page. Per-suite, a suite with
+ * no rules simply does nothing, which is the correct failure.
+ *
+ * `scrub` and `pulse` stay OUTSIDE this contract, gated exactly as they always
+ * were. They are pre-existing and orthogonal - one is scroll-driven rather than
+ * timed, the other animates a different marker class - and folding them in is a
+ * later decision rather than groundwork.
+ * ================================================================== */
+
 @media (prefers-reduced-motion: no-preference) {
+  /* == Suite: Rise (stored id `reveal`) ==============================
+   *
+   * The default entrance, and the one every other suite is measured against.
+   * Units rise a short distance and fade in, staggered by `--reveal-index`.
+   *
+   * The id is `reveal` and the label is "Rise". Ids are machine vocabulary and
+   * this project does not rename persisted ones - see `SectionAnimation`.
+   */
+
   /*
-   * Waiting to arrive.
+   * Rise, waiting to arrive.
    *
    * `:not([data-pagebuilder-animation-state])` is the whole state machine: no
    * state means the observer has seen this frame and is waiting, `in` means it
@@ -357,8 +481,9 @@
   }
 
   /*
-   * Arriving. A plain timed animation - the same length whether the reader
-   * creeps or flicks past, which is the entire reason this is not scrubbed.
+   * Rise, arriving. A plain timed animation - the same length whether the
+   * reader creeps or flicks past, which is the entire reason this is not
+   * scrubbed.
    *
    * The stagger is an `animation-delay` here. Read the scrubbed variant below
    * for the same idea expressed as a range offset, which is what it has to be
@@ -367,6 +492,119 @@
   [data-pagebuilder-animation="reveal"][data-pagebuilder-animation-state="in"]
     .reveal-on-scroll {
     animation: section-reveal var(--anim-reveal-duration)
+      var(--anim-reveal-easing) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-reveal-delay-step)
+    );
+  }
+
+  /*
+   * Rise, media role: FADES WITHOUT MOVING.
+   *
+   * A bled panel is cut into the section's own edges, so a rise opens a band of
+   * bare ground along the top of the bleed for the length of the entrance - the
+   * crop visibly detaching from the section it sits in. A pure fade keeps the
+   * composition intact.
+   *
+   * THIS RULE IS THE ROLE VOCABULARY'S FIRST PROOF. Two sections used to set
+   * `--anim-reveal-distance: 0px` inline on the panel itself - the narrative
+   * split and the CTA image. That worked, but it was a section deciding how it
+   * moved, in the only vocabulary available at the time. What they were
+   * actually saying is "this is a media panel", and now they can say it: the
+   * zero distance belongs to Rise's answer for `media`, not to either section.
+   *
+   * Written on both halves because a role can change the waiting state too -
+   * here it is what the unit waits AT, and a fade waits at opacity 0 in place.
+   */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="reveal"]:not([data-pagebuilder-animation-state])
+    .reveal-role-media,
+  [data-pagebuilder-animation="reveal"][data-pagebuilder-animation-state="in"]
+    .reveal-role-media {
+    --anim-reveal-distance: 0px;
+  }
+
+  /* == Suite: Editorial (stored id `editorial`) — PROTOTYPE ==========
+   *
+   * Watchable in the style guide, deliberately NOT offered in the builder. See
+   * `status` in `section-animations.ts`: until the role backfill lands, almost
+   * every marked element in the library is an unroled `content` unit, so a
+   * suite that differentiates would look identical to Rise on nearly every
+   * section an editor could pick it for.
+   *
+   * It exists now because Rise cannot validate the role vocabulary - it treats
+   * five of six roles identically. A suite that pulls them apart is the only
+   * thing that can tell you whether six is the right six, and finding that out
+   * AFTER classifying 86 marker sites is how you get a taxonomy you redo.
+   *
+   * Fills the same contract as Rise: a waiting rule and an arrival rule, both
+   * written here, neither inherited from a generalised selector.
+   */
+
+  /* Editorial, waiting to arrive. Same default as Rise - the roles below are
+     where it departs. */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="editorial"]:not([data-pagebuilder-animation-state])
+    .reveal-on-scroll {
+    opacity: 0;
+    translate: 0 var(--anim-reveal-distance);
+  }
+
+  /* Editorial, arriving. */
+  [data-pagebuilder-animation="editorial"][data-pagebuilder-animation-state="in"]
+    .reveal-on-scroll {
+    animation: section-reveal var(--anim-reveal-duration)
+      var(--anim-reveal-easing) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-reveal-delay-step)
+    );
+  }
+
+  /* Editorial, heading role: THE WIPE.
+     Waits clipped rather than displaced - it is revealed by an edge, so it
+     never travels. `translate: none` is explicit because the default waiting
+     rule above sets one and both selectors have equal specificity. */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="editorial"]:not([data-pagebuilder-animation-state])
+    .reveal-role-heading {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+    translate: none;
+  }
+
+  [data-pagebuilder-animation="editorial"][data-pagebuilder-animation-state="in"]
+    .reveal-role-heading {
+    animation: section-wipe var(--anim-wipe-duration) var(--anim-reveal-easing)
+      both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-reveal-delay-step)
+    );
+  }
+
+  /* Editorial, media role: fades without moving. Same reason as Rise - a bled
+     panel that travels opens a band of bare ground under itself. That both
+     suites answer `media` the same way is the vocabulary working, not a
+     duplication to factor out: the next suite is free to disagree. */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="editorial"]:not([data-pagebuilder-animation-state])
+    .reveal-role-media,
+  [data-pagebuilder-animation="editorial"][data-pagebuilder-animation-state="in"]
+    .reveal-role-media {
+    --anim-reveal-distance: 0px;
+  }
+
+  /* Editorial, accent role: grows into place.
+     The one role whose existence was in doubt. It reads as a distinct arrival
+     here - see the finding in the handoff doc. */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="editorial"]:not([data-pagebuilder-animation-state])
+    .reveal-role-accent {
+    scale: var(--anim-accent-scale-from);
+  }
+
+  [data-pagebuilder-animation="editorial"][data-pagebuilder-animation-state="in"]
+    .reveal-role-accent {
+    animation: section-reveal-scale var(--anim-reveal-duration)
       var(--anim-reveal-easing) both;
     animation-delay: calc(
       var(--reveal-index, 0) * var(--anim-reveal-delay-step)
@@ -3944,7 +4182,7 @@ body {
   --type-heading-xl-size: clamp(2.25rem, calc(2.4306cqw + 1.6667rem), 4rem);
   --type-heading-xl-leading: 0.98;
   --type-heading-xl-measure: 22ch;
-  --type-heading-xl-weight: 410;
+  --type-heading-xl-weight: 300;
   --type-heading-xl-tracking: 0em;
   --type-heading-xl-wrap: balance;
   --type-heading-xl-transform: none;
@@ -3952,12 +4190,12 @@ body {
   --type-heading-lg-size: clamp(1.625rem, calc(0.6944cqw + 1.4583rem), 2.125rem);
   --type-heading-lg-leading: 1.05;
   --type-heading-lg-measure: 22ch;
-  --type-heading-lg-weight: 800;
+  --type-heading-lg-weight: 500;
   --type-heading-lg-tracking: 0em;
   --type-heading-lg-wrap: balance;
   --type-heading-lg-transform: none;
   --type-heading-md-font: "Zalando Sans SemiExpanded", var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  --type-heading-md-size: clamp(1.0625rem, calc(1.5625cqw + 0.6875rem), 2.1875rem);
+  --type-heading-md-size: clamp(1.0625rem, calc(1.3021cqw + 0.75rem), 2rem);
   --type-heading-md-leading: 1.15;
   --type-heading-md-measure: 28ch;
   --type-heading-md-weight: 650;
