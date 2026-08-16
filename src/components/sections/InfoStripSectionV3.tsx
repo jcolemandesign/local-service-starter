@@ -95,7 +95,7 @@ export function InfoStripSectionV3({
         >
           <div
             className={cx(
-              "reveal-on-scroll",
+              "reveal-on-scroll reveal-role-card",
               "fluid-type-frame flex min-w-0 items-start gap-4 rounded-[var(--radius-surface-token)] border p-8 shadow-service max-md:p-6",
               colors.card,
               colors.cardBorder,
@@ -119,7 +119,7 @@ export function InfoStripSectionV3({
           measure="copyWide"
         >
           <p
-            className={cx("reveal-on-scroll type-text-md wrap-pretty", colors.body)}
+            className={cx("reveal-on-scroll reveal-role-content type-text-md wrap-pretty", colors.body)}
             style={{ "--reveal-index": 1 } as CSSProperties}
           >
             {body}

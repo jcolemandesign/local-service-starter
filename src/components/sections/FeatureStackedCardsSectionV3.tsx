@@ -75,7 +75,7 @@ export function FeatureStackedCardsSectionV3({
           <div className="grid gap-[var(--site-grid-gap)]">
             {cards.slice(0, 4).map((card, cardIndex) => (
               <article
-                className="reveal-on-scroll fluid-type-frame flex min-h-44 items-start gap-7 border-t border-service-border py-7 text-service-ink first:border-t-0 first:pt-0 max-md:gap-5 max-sm:min-h-0 max-sm:flex-col"
+                className="reveal-on-scroll reveal-role-card fluid-type-frame flex min-h-44 items-start gap-7 border-t border-service-border py-7 text-service-ink first:border-t-0 first:pt-0 max-md:gap-5 max-sm:min-h-0 max-sm:flex-col"
                 key={card.title}
                 style={{ "--reveal-index": cardIndex } as CSSProperties}
               >

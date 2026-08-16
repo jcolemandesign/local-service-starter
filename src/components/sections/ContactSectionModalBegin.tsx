@@ -73,7 +73,7 @@ export function ContactSectionModalBegin({
       <LayoutGrid className="section-min-none" columns={14} padding="med">
         <LayoutGridItem className="col-span-6 col-start-1 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2">
           <div
-            className="reveal-on-scroll fluid-type-frame"
+            className="reveal-on-scroll reveal-role-heading fluid-type-frame"
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <p className="type-label text-service-accent">{eyebrow}</p>
@@ -91,7 +91,7 @@ export function ContactSectionModalBegin({
             className={[
               // The form panel is one unit. An entrance moves the panel as it
               // arrives and never touches the selection state inside it.
-              "reveal-on-scroll",
+              "reveal-on-scroll reveal-role-action",
               "content-padding fluid-type-frame radius-medium grid card-grid-gap-med border border-service-border bg-service-surface shadow-service",
               cardFill === "none" && "!bg-transparent !shadow-none",
               cardBorder === "off" && "!border-transparent",

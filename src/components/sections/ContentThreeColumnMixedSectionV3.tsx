@@ -139,7 +139,7 @@ export function ContentThreeColumnMixedSectionV3({
           {/* Top-aligned with auto rows so each frame keeps its 4:3 ratio
               instead of being stretched to the height of the middle rail. */}
           <div
-            className="reveal-on-scroll grid gap-6 max-lg:grid-cols-2 max-sm:grid-cols-1"
+            className="reveal-on-scroll reveal-role-media grid gap-6 max-lg:grid-cols-2 max-sm:grid-cols-1"
             style={{ "--reveal-index": revealIndexes.images } as CSSProperties}
           >
             {images.map((image) => (
@@ -164,7 +164,7 @@ export function ContentThreeColumnMixedSectionV3({
           className={cx(columns.cta, railClassName)}
         >
           <div
-            className="reveal-on-scroll flex flex-col gap-6"
+            className="reveal-on-scroll reveal-role-action flex flex-col gap-6"
             style={{ "--reveal-index": revealIndexes.cta } as CSSProperties}
           >
             {/* No border or fill - the shared card padding alone insets this
@@ -234,7 +234,7 @@ export function ContentThreeColumnMixedSectionV3({
           {/* Rows are auto-sized and the cards are not height-locked, so each
               one is only as tall as its own content. */}
           <ul
-            className="reveal-on-scroll grid gap-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1"
+            className="reveal-on-scroll reveal-role-frame grid gap-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1"
             style={{ "--reveal-index": revealIndexes.links } as CSSProperties}
           >
             {links.map((link) => (

@@ -106,7 +106,7 @@ export function FourCardLinkGridSectionV3({
                 // Marks this card as a revealable unit. Inert unless the
                 // section's animation toggle is on - see `section-reveal` in
                 // globals.css.
-                "reveal-on-scroll",
+                "reveal-on-scroll reveal-role-card",
                 "group/card flex h-full min-w-0 flex-col overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service",
                 // Hover lift and focus ring belong to a card you can click.
                 // A static card keeps the surface and drops the affordance.

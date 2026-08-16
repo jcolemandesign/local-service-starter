@@ -212,7 +212,7 @@ export function ContentSplitFixedImageSectionV3({
               // Marks the copy column as one revealable unit. Inert unless the
               // section's animation toggle is on - see `section-reveal` in
               // globals.css.
-              "reveal-on-scroll",
+              "reveal-on-scroll reveal-role-content",
               "fluid-type-frame w-full",
               isFilled &&
                 "radius-medium flex h-full flex-col justify-center bg-service-surface p-14 shadow-service max-md:p-10",
@@ -302,7 +302,7 @@ export function ContentSplitFixedImageSectionV3({
         >
           <FixedRatioImage
             alt={imageAlt}
-            className="reveal-on-scroll"
+            className="reveal-on-scroll reveal-role-media"
             ratio={ratio}
             src={imageSrc}
             style={{ "--reveal-index": imageRevealIndex } as CSSProperties}

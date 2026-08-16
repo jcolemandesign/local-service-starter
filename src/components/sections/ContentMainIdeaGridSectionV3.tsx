@@ -103,7 +103,7 @@ export function ContentMainIdeaGridSectionV3({
               rather than as a deliberate anchor. */}
           <article
             className={cx(
-              "reveal-on-scroll",
+              "reveal-on-scroll reveal-role-card",
               "fluid-type-frame flex h-full flex-col justify-center rounded-[var(--radius-surface-token)] border p-8 max-md:p-6",
               colors.card,
               cardOverride,
@@ -145,7 +145,7 @@ export function ContentMainIdeaGridSectionV3({
           >
             <article
               className={cx(
-                "reveal-on-scroll",
+                "reveal-on-scroll reveal-role-card",
                 "fluid-type-frame flex h-full min-h-44 flex-col justify-between rounded-[var(--radius-surface-token)] border p-5 max-md:min-h-0",
                 colors.card,
                 cardOverride,

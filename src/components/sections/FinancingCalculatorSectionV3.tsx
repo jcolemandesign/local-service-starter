@@ -135,7 +135,7 @@ export function FinancingCalculatorSectionV3({
     // Both panels are revealable units, and both take their classes from here.
     // An entrance and the calculator's own state do not interact: this moves
     // the panel once as it arrives and never touches what is inside it.
-    "reveal-on-scroll",
+    "reveal-on-scroll reveal-role-frame",
     "content-padding radius-medium h-full border shadow-service",
     colors.card,
     colors.cardBorder,

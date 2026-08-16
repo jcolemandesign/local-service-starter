@@ -88,7 +88,7 @@ export function ProcessImageChecklistSectionV3({
               {items.map((item, index) => (
                 <li
                   className={[
-                    "reveal-on-scroll content-padding radius-medium grid grid-cols-[2rem_minmax(0,1fr)] items-start inline-gap-med border border-service-border bg-service-surface",
+                    "reveal-on-scroll reveal-role-card content-padding radius-medium grid grid-cols-[2rem_minmax(0,1fr)] items-start inline-gap-med border border-service-border bg-service-surface",
                     cardFill === "none" && "!bg-transparent",
                     cardBorder === "off" && "!border-transparent",
                   ]

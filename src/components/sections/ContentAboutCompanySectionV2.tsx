@@ -45,7 +45,7 @@ function BentoImage({
       className={cx(
         // Marks this tile as a revealable unit. Inert unless the section's
         // animation toggle is on - see `section-reveal` in globals.css.
-        "reveal-on-scroll",
+        "reveal-on-scroll reveal-role-media",
         "radius-medium",
         "relative aspect-[5/4] min-w-0 overflow-hidden bg-service-border",
       )}
@@ -84,7 +84,7 @@ export function ContentAboutCompanySectionV2({
               thought from the sentence it introduces. */}
           <p
             className={cx(
-              "reveal-on-scroll",
+              "reveal-on-scroll reveal-role-heading",
               "content-about-company-eyebrow",
               "type-label",
               "text-service-accent",
@@ -97,7 +97,7 @@ export function ContentAboutCompanySectionV2({
 
         <SevenColumnGridItem className="col-span-5 col-start-3 max-lg:col-span-5 max-lg:col-start-1 max-md:col-span-3">
           <div
-            className="reveal-on-scroll fluid-type-frame"
+            className="reveal-on-scroll reveal-role-heading fluid-type-frame"
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <h2
@@ -133,7 +133,7 @@ export function ContentAboutCompanySectionV2({
         >
           <div
             className={cx(
-              "reveal-on-scroll",
+              "reveal-on-scroll reveal-role-card",
               "fluid-type-frame",
               "radius-medium",
               "flex h-full min-w-0 flex-col justify-between bg-service-surface p-7 max-md:p-6",

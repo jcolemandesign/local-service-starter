@@ -52,7 +52,7 @@ export function DecisionQuestionTableSectionV3({
           measure="copy"
         >
           <div
-            className="reveal-on-scroll fluid-type-frame"
+            className="reveal-on-scroll reveal-role-heading fluid-type-frame"
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <p className="type-label text-service-accent">{eyebrow}</p>
@@ -73,7 +73,7 @@ export function DecisionQuestionTableSectionV3({
               them for the length of the entrance. */}
           <ul
             className={cx(
-              "reveal-on-scroll",
+              "reveal-on-scroll reveal-role-frame",
               "radius-medium grid grid-cols-3 grid-rows-[auto_1fr] overflow-hidden border border-service-border bg-service-surface max-sm:grid-cols-1",
               cardFill === "none"
                 ? "!bg-transparent !shadow-none"

@@ -92,7 +92,7 @@ export function OfferTermsSectionV3({
               // The section is one card, so it is one revealable unit. Its
               // three panels are divided by shared rules inside a single border
               // box; staggering them would pull the card apart as it arrives.
-              "reveal-on-scroll",
+              "reveal-on-scroll reveal-role-frame",
               "grid grid-cols-14 overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service max-md:grid-cols-6 max-sm:grid-cols-2",
               "recipe-card-context",
               cardFill === "none" && "!bg-transparent !shadow-none",

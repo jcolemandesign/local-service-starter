@@ -126,7 +126,7 @@ export function ContactStripBentoSectionV3({
     // classes from here - so the marker rides along and each card only has to
     // declare which index it is. Inert unless the section's animation toggle
     // is on; see `section-reveal` in globals.css.
-    "reveal-on-scroll",
+    "reveal-on-scroll reveal-role-card",
     "h-full min-w-0 rounded-[var(--radius-surface-token)] border shadow-service",
     colors.card,
     colors.cardBorder,

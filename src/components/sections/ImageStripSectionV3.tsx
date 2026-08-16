@@ -50,7 +50,7 @@ export function ImageStripSectionV3({ images }: ImageStripSectionV3Props) {
                 // globals.css. The lead frame animates with the other two
                 // rather than anchoring them: a static first image reads as one
                 // photograph failing to load.
-                "reveal-on-scroll",
+                "reveal-on-scroll reveal-role-media",
                 "grid h-full grid-rows-[minmax(0,1fr)_auto] overflow-hidden bg-bg-page",
                 index === 0 && "aspect-[4/3]",
               )}

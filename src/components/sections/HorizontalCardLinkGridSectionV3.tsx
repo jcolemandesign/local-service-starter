@@ -99,7 +99,7 @@ export function HorizontalCardLink({
         // Shared by both horizontal grids, so marking it here covers the 3-up
         // and the 2-up at once. `index` is already a prop, which is what the
         // stagger needs.
-        "reveal-on-scroll",
+        "reveal-on-scroll reveal-role-card",
         "group/card grid h-full min-w-0 grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service max-sm:grid-cols-1",
         cardLinks === "on" &&
           "transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",

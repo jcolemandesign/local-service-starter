@@ -163,7 +163,7 @@ export function CTAServiceTriageSectionV3({
     // Each triage card is a revealable unit and they all take their classes
     // from here, so the marker rides along and each card only declares which
     // index it is. Inert unless the section animation toggle is on.
-    "reveal-on-scroll",
+    "reveal-on-scroll reveal-role-card",
     "fluid-type-frame flex h-full min-w-0 flex-col rounded-[var(--radius-surface-token)] border p-8 shadow-service max-md:p-6",
     colors.card,
     colors.cardBorder,

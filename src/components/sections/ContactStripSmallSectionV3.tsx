@@ -162,7 +162,7 @@ function Tile({
       className={cx(
         // Marks this tile as a revealable unit. Inert unless the section's
         // animation toggle is on - see `section-reveal` in globals.css.
-        "reveal-on-scroll",
+        "reveal-on-scroll reveal-role-card",
         "flex h-full min-w-0 flex-col items-start p-6 text-left max-sm:p-5",
         className,
       )}

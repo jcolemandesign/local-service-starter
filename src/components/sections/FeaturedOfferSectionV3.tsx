@@ -133,7 +133,7 @@ export function FeaturedOfferSectionV3({
               // One unit: a single bordered card with the photo cropped flush
               // to its own edge. Moving the copy panel independently would
               // slide it out from under the frame it sits in.
-              "reveal-on-scroll",
+              "reveal-on-scroll reveal-role-action",
               "grid grid-cols-14 overflow-hidden rounded-[var(--radius-surface-token)] border max-lg:grid-cols-10 max-md:grid-cols-6 max-sm:grid-cols-2",
               fillClassName,
               borderClassName,

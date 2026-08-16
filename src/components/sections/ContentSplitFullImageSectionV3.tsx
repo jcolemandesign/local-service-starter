@@ -276,7 +276,7 @@ export function ContentSplitFullImageSectionV3({
               reads as a loading state rather than as a composition. */}
           <div
             className={cx(
-              "reveal-on-scroll",
+              "reveal-on-scroll reveal-role-content",
               "fluid-type-frame w-full",
               copyBlockPadding,
             )}

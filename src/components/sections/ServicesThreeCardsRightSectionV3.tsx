@@ -89,7 +89,7 @@ export function ServicesThreeCardsRightSectionV3({
                     // Marks this card as a revealable unit. Inert unless the
                     // section's animation toggle is on - see `section-reveal`
                     // in globals.css.
-                    "reveal-on-scroll",
+                    "reveal-on-scroll reveal-role-card",
                     "services-three-card radius-medium relative flex min-h-28 items-center justify-center border border-service-border bg-service-surface text-center text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent hover:shadow-[0_18px_48px_rgb(20_27_24_/_0.12)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
                     "recipe-card-context",
                     cardFill === "none" && "!bg-transparent !shadow-none",

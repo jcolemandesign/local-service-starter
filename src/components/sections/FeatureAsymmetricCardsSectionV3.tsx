@@ -124,7 +124,7 @@ export function FeatureAsymmetricCardsSectionV3({
             <div className="grid gap-y-[var(--site-grid-gap)]">
               {displayCards.map((card, cardIndex) => (
                 <article
-                  className="reveal-on-scroll fluid-type-frame grid grid-cols-[auto_minmax(0,1fr)] items-start gap-[var(--site-grid-gap)] px-[calc(1.25rem+var(--border-surface-width-token))] text-service-ink max-sm:grid-cols-1"
+                  className="reveal-on-scroll reveal-role-card fluid-type-frame grid grid-cols-[auto_minmax(0,1fr)] items-start gap-[var(--site-grid-gap)] px-[calc(1.25rem+var(--border-surface-width-token))] text-service-ink max-sm:grid-cols-1"
                   key={card.title}
                   style={{ "--reveal-index": cardIndex } as CSSProperties}
                 >
@@ -159,7 +159,7 @@ export function FeatureAsymmetricCardsSectionV3({
 
                   return (
                     <article
-                      className="reveal-on-scroll fluid-type-frame min-h-60 px-[calc(1.25rem+var(--border-surface-width-token))] pb-0 pt-5 text-service-ink max-md:min-h-0"
+                      className="reveal-on-scroll reveal-role-card fluid-type-frame min-h-60 px-[calc(1.25rem+var(--border-surface-width-token))] pb-0 pt-5 text-service-ink max-md:min-h-0"
                       key={card.title}
                       style={{ "--reveal-index": cardIndex } as CSSProperties}
                     >

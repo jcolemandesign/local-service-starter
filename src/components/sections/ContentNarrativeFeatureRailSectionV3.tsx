@@ -142,7 +142,7 @@ export function ContentNarrativeFeatureRailSectionV3({
           <aside className="grid card-grid-gap-med">
             {showImage ? (
               <div
-                className="reveal-on-scroll relative aspect-[4/3] overflow-hidden rounded-[var(--radius-surface-token)] bg-service-border"
+                className="reveal-on-scroll reveal-role-media relative aspect-[4/3] overflow-hidden rounded-[var(--radius-surface-token)] bg-service-border"
                 style={{ "--reveal-index": 0 } as CSSProperties}
               >
                 <Image
@@ -166,7 +166,7 @@ export function ContentNarrativeFeatureRailSectionV3({
                       // Marks this card as a revealable unit. Inert unless the
                       // section's animation toggle is on - see `section-reveal` in
                       // globals.css.
-                      "reveal-on-scroll",
+                      "reveal-on-scroll reveal-role-card",
                       "fluid-type-frame radius-medium border border-service-border bg-service-surface p-6 shadow-service",
                       cardFill === "none" && "!bg-transparent !shadow-none",
                       cardBorder === "off" && "!border-transparent",

@@ -64,7 +64,7 @@ export function ContentAboutStorySectionV3({
               copy arriving line by line reads as a loading state rather than as
               a composition. */}
           <article
-            className="reveal-on-scroll fluid-type-frame"
+            className="reveal-on-scroll reveal-role-heading fluid-type-frame"
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <h2 className="type-heading-xl text-service-ink">{title}</h2>
@@ -93,7 +93,7 @@ export function ContentAboutStorySectionV3({
           alignY="top"
         >
           <aside
-            className="reveal-on-scroll grid card-grid-gap-lrg"
+            className="reveal-on-scroll reveal-role-frame grid card-grid-gap-lrg"
             style={{ "--reveal-index": 1 } as CSSProperties}
           >
             <blockquote className="fluid-type-frame border-y border-service-border py-7">

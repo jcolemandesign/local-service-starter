@@ -313,7 +313,7 @@ export function FAQSectionV3({
           <div className="grid card-grid-gap-med">
             {items.map((item, index) => (
               <article
-                className={`reveal-on-scroll content-padding fluid-type-frame radius-medium border ${colors.card} ${
+                className={`reveal-on-scroll reveal-role-card content-padding fluid-type-frame radius-medium border ${colors.card} ${
                   cardFill === "none" ? "!bg-transparent !shadow-none" : ""
                 } ${cardBorder === "off" ? "!border-transparent" : ""}`}
                 key={item.question}
@@ -540,7 +540,7 @@ export function ContactSectionV3({
           * column on both sides. */}
         <SevenColumnGridItem className="col-span-3 col-start-1 max-lg:col-span-7 max-lg:col-start-1">
           <div
-            className="reveal-on-scroll fluid-type-frame"
+            className="reveal-on-scroll reveal-role-heading fluid-type-frame"
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <p className="type-label text-service-accent">{eyebrow}</p>
@@ -568,7 +568,7 @@ export function ContactSectionV3({
         <SevenColumnGridItem className="col-span-3 col-start-5 max-lg:col-span-7 max-lg:col-start-1">
           <div
             className={cardSurfaceClass(
-              "reveal-on-scroll content-padding fluid-type-frame radius-medium border border-service-border bg-service-surface shadow-service",
+              "reveal-on-scroll reveal-role-action content-padding fluid-type-frame radius-medium border border-service-border bg-service-surface shadow-service",
               cardFill,
               cardBorder,
             )}
@@ -641,7 +641,7 @@ export function FooterSectionV3({
 }: FooterSectionV3Props) {
   return (
     <footer
-      className="reveal-on-scroll token-footer-inverse border-t border-white/15 bg-bg-dark text-text-inverse"
+      className="reveal-on-scroll reveal-role-frame token-footer-inverse border-t border-white/15 bg-bg-dark text-text-inverse"
       style={{ "--reveal-index": 0 } as CSSProperties}
     >
       <SevenColumnGrid className="section-min-none" padding="sml">
@@ -770,7 +770,7 @@ export function FooterHorizontalSectionV3({
 }: FooterSectionV3Props) {
   return (
     <footer
-      className="reveal-on-scroll token-footer-inverse bg-bg-dark text-text-inverse"
+      className="reveal-on-scroll reveal-role-frame token-footer-inverse bg-bg-dark text-text-inverse"
       style={{ "--reveal-index": 0 } as CSSProperties}
     >
       <SevenColumnGrid className="section-min-none" padding="sml">
@@ -889,7 +889,7 @@ export function FooterCompactSectionV3({
 }: FooterSectionV3Props) {
   return (
     <footer
-      className="reveal-on-scroll token-footer-inverse bg-bg-dark text-text-inverse"
+      className="reveal-on-scroll reveal-role-frame token-footer-inverse bg-bg-dark text-text-inverse"
       style={{ "--reveal-index": 0 } as CSSProperties}
     >
       <SevenColumnGrid className="section-min-none" padding="sml">

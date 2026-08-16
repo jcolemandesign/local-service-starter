@@ -255,7 +255,7 @@ export function ServicesBentoCardsSectionV2({
                   // deliberately not marked: it is `sticky`, so its own box
                   // travels with the scroller rather than through it, and a
                   // view timeline on it does not describe an arrival.
-                  "reveal-on-scroll",
+                  "reveal-on-scroll reveal-role-card",
                   "fluid-type-frame",
                   "radius-medium",
                   "group/service-card relative flex cursor-pointer flex-col overflow-hidden transition-transform duration-300 ease-out hover:scale-[1.015]",

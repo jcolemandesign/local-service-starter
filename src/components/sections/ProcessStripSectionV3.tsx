@@ -100,7 +100,7 @@ export function ProcessStripSectionV3({
               // positioned against this box, so animating the card alone would
               // leave its own number badge behind.
               <li
-                className="reveal-on-scroll relative min-w-0"
+                className="reveal-on-scroll reveal-role-card relative min-w-0"
                 key={`${step.title}-${index}`}
                 style={{ "--reveal-index": index } as CSSProperties}
               >

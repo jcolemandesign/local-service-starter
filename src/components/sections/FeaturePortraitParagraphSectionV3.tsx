@@ -31,7 +31,7 @@ export function FeaturePortraitParagraphSectionV3({
           {/* Portrait then paragraph, two units in reading order. */}
           <div
             aria-label={`${imageLabel} portrait image placeholder`}
-            className="reveal-on-scroll relative aspect-[2/3] w-full min-w-0 overflow-hidden bg-service-border"
+            className="reveal-on-scroll reveal-role-media relative aspect-[2/3] w-full min-w-0 overflow-hidden bg-service-border"
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(31_122_90_/_0.26),rgb(23_33_29_/_0.04)),linear-gradient(45deg,rgb(255_255_255_/_0.2)_0_1px,transparent_1px_18px)]" />
@@ -46,7 +46,7 @@ export function FeaturePortraitParagraphSectionV3({
           measure="lead"
         >
           <p
-            className="reveal-on-scroll type-text-lg wrap-pretty text-service-ink"
+            className="reveal-on-scroll reveal-role-content type-text-lg wrap-pretty text-service-ink"
             style={{ "--reveal-index": 1 } as CSSProperties}
           >
             {body}

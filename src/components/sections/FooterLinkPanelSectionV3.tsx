@@ -110,7 +110,7 @@ export function FooterLinkPanelSectionV3({
    */
   return (
     <footer
-      className="reveal-on-scroll relative overflow-hidden bg-bg-page text-service-ink"
+      className="reveal-on-scroll reveal-role-frame relative overflow-hidden bg-bg-page text-service-ink"
       style={{ "--reveal-index": 0 } as CSSProperties}
     >
       <div

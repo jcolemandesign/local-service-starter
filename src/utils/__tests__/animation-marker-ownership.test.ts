@@ -585,6 +585,39 @@ describe("animation marker ownership", () => {
   });
 
   /**
+   * EVERY MARKER IN THE LIBRARY CARRIES A ROLE. The backfill is finished, and
+   * this is what stops it coming undone.
+   *
+   * The CSS `content` fallback stays - it protects hand-written pages and sites
+   * exported before roles existed - but inside the section library it is no
+   * longer allowed to be load-bearing. An unroled marker there is not a section
+   * choosing the default; it is a section nobody has classified, and the two
+   * are indistinguishable without this. Same discipline that already makes
+   * "unmarked" impossible.
+   */
+  it("gives every marker in the library an explicit role", () => {
+    const unroled: string[] = [];
+
+    for (const [file, source] of sources) {
+      if (frameOwners.has(file)) {
+        continue;
+      }
+
+      const markers = (source.match(/\breveal-on-scroll\b/g) ?? []).length;
+      const roles = (source.match(/\breveal-role-[\w-]+\b/g) ?? []).length;
+
+      if (markers > roles) {
+        unroled.push(`${file} — ${roles} of ${markers} marked units roled`);
+      }
+    }
+
+    expect(
+      unroled.sort(),
+      "these mark revealable units without saying what kind of unit they are, so they fall back to `content` and every suite treats them as body copy - the fallback is for pages outside this library, not for sections in it",
+    ).toEqual([]);
+  });
+
+  /**
    * The edge hint is a closed vocabulary too.
    *
    * `reveal-from-end` says which side a unit arrives from under Lateral. It is

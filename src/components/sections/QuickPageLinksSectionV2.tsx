@@ -37,7 +37,7 @@ export function QuickPageLinksSectionV2({
           {/* The label column leads, then the links. One unit rather than two
               lines: an eyebrow and its sentence are a single caption. */}
           <div
-            className="reveal-on-scroll fluid-type-frame"
+            className="reveal-on-scroll reveal-role-heading fluid-type-frame"
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <p className="type-label text-service-accent">{eyebrow}</p>
@@ -57,7 +57,7 @@ export function QuickPageLinksSectionV2({
                   // Marks this card as a revealable unit. Inert unless the
                   // section's animation toggle is on - see `section-reveal` in
                   // globals.css.
-                  "reveal-on-scroll",
+                  "reveal-on-scroll reveal-role-card",
                   // The fill is an unmodified card token on purpose: the recipe
                   // card context keys on the class itself, so `/70` softening
                   // would leave the card ungrounded. Hover is carried by the

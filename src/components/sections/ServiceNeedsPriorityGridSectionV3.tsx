@@ -65,7 +65,7 @@ export function ServiceNeedsPriorityGridSectionV3({
 
     return (
       <article
-        className={`reveal-on-scroll group/card fluid-type-frame flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent ${
+        className={`reveal-on-scroll reveal-role-card group/card fluid-type-frame flex h-full w-full min-w-0 flex-col overflow-hidden rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface text-service-ink shadow-service transition duration-200 ease-out hover:-translate-y-1 hover:border-service-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent ${
           cardFill === "none" ? "!bg-transparent !shadow-none" : ""
         } ${cardBorder === "off" ? "!border-transparent" : ""}`}
         style={{ "--reveal-index": revealIndex } as CSSProperties}

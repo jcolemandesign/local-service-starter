@@ -114,7 +114,7 @@ export function ContentStickyCardStreamSectionV2({
             {cards.map((card, index) => (
               <article
                 className={cx(
-                  "reveal-on-scroll",
+                  "reveal-on-scroll reveal-role-card",
                   "fluid-type-frame",
                   "radius-medium",
                   "border border-service-border p-8 shadow-service max-md:p-6",

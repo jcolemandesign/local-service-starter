@@ -158,7 +158,7 @@ function SplitLargeCard({
         // animation toggle is on - see `section-reveal` in globals.css. The
         // paragraph chunks inside stay part of the card: they are one argument
         // divided by rules, not a list arriving.
-        "reveal-on-scroll",
+        "reveal-on-scroll reveal-role-card",
         "fluid-type-frame radius-medium flex h-full flex-col border border-service-border bg-service-surface text-service-ink shadow-none",
         cardFill === "solid" ? "p-12 max-md:p-8" : "p-6",
         "recipe-card-context",

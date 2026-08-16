@@ -46,7 +46,7 @@ export function DecisionSplitDecisionSectionV3({
           measure="copyWide"
         >
           <div
-            className="reveal-on-scroll fluid-type-frame"
+            className="reveal-on-scroll reveal-role-heading fluid-type-frame"
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <p className="type-label text-service-accent">{eyebrow}</p>
@@ -81,7 +81,7 @@ export function DecisionSplitDecisionSectionV3({
                   // as the dormant path a future animation suite can promote;
                   // what this card marks is the entrance the builder can
                   // actually switch on.
-                  "reveal-on-scroll",
+                  "reveal-on-scroll reveal-role-card",
                   "fluid-type-frame radius-medium min-h-56 border border-service-border bg-service-surface p-5 text-service-ink shadow-none max-md:min-h-0",
                   "recipe-card-context",
                   cardFill === "none" && "!bg-transparent !shadow-none",

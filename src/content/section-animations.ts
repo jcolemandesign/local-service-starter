@@ -491,6 +491,21 @@ export const sectionAnimationRoleComponents: Partial<
     "CTAFullscreenSectionV3",
     "ProcessStepsStaggeredSectionV3",
     "ProcessStepsBranchingSectionV3",
+    /**
+     * Its eyebrow and its statement are two marked units on the same index -
+     * one header split across two grid cells because the layout puts them
+     * side by side. Both carry the heading role, so the wipe crosses them
+     * together rather than racing two edges down the page.
+     */
+    "ContentAboutCompanySectionV2",
+    "ContentAboutStorySectionV3",
+    "DecisionMatrixCardSectionV3",
+    "DecisionQuestionTableSectionV3",
+    "DecisionSplitDecisionSectionV3",
+    "ContactSectionModalBegin",
+    "ServiceAreaZipLookupSectionV3",
+    "QuickPageLinksSectionV2",
+    "ContactSectionV3",
   ],
   /**
    * The CTA sections with ONE action unit.
@@ -507,6 +522,16 @@ export const sectionAnimationRoleComponents: Partial<
     "CTAMutedSectionV3",
     "CTAFullscreenSectionV3",
     "CTASmallBandImageSectionV3",
+    /** Not a CTA section, but one of its three columns is the CTA column, and
+     *  that column is the unit a beat should point at. */
+    "ContentThreeColumnMixedSectionV3",
+    /** The offer band is one bordered unit whose reason for existing is its
+     *  offer and its button. */
+    "FeaturedOfferSectionV3",
+    /** The request panel is the section; the strip beside it is context. */
+    "ContactSectionModalBegin",
+    "ServiceAreaZipLookupSectionV3",
+    "ContactSectionV3",
   ],
 };
 

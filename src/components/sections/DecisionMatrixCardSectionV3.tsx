@@ -161,7 +161,7 @@ export function DecisionMatrixCardSectionV3({
           measure="copy"
         >
           <div
-            className="reveal-on-scroll fluid-type-frame"
+            className="reveal-on-scroll reveal-role-heading fluid-type-frame"
             style={{ "--reveal-index": headerRevealIndex } as CSSProperties}
           >
             <p className="type-label text-service-accent">{eyebrow}</p>
@@ -186,7 +186,7 @@ export function DecisionMatrixCardSectionV3({
               take the grid apart while it arrives. */}
           <ul
             className={cx(
-              "reveal-on-scroll",
+              "reveal-on-scroll reveal-role-card",
               // `shadow-service` like every other card surface in the library.
               // Without it this panel was the one card on the page sitting flat
               // on the ground, which is most of what made it read as unstyled.
