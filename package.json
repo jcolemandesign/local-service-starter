@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:fresh": "node -e \"require('node:fs').rmSync('.next', { recursive: true, force: true })\" && next dev",
+    "css:verify": "node scripts/verify-served-css.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
