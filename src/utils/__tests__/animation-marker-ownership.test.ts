@@ -6,6 +6,9 @@ import { describe, expect, it } from "vitest";
 import {
   sectionAnimationRoleComponents,
   sectionAnimationRoles,
+  sectionAnimationSuites,
+  sectionMarksRole,
+  suiteExcludedComponents,
 } from "@/content/section-animations";
 import { sectionLibraryV3Registry } from "@/content/section-library-v3";
 import {
@@ -411,6 +414,61 @@ describe("animation marker ownership", () => {
     expect(
       unknown,
       "these are named by the animation sets but are not in the section library, so the entry is stale - a rename or a deletion left it behind",
+    ).toEqual([]);
+  });
+
+  /**
+   * The per-suite veto holds exceptions, and an exception that is not one is a
+   * lie about the system.
+   *
+   * `suiteExcludedComponents` exists to say the one thing the role gate cannot:
+   * "this section marks the role and the suite is still wrong here." Both ways
+   * of getting that wrong are silent:
+   *
+   *   - a stale name, left by a rename or a deletion, reads as a deliberate
+   *     editorial decision and strikes nothing
+   *   - a REDUNDANT name - a section the gate already withholds the suite from -
+   *     is a hand-maintained copy of a derived fact. It looks like the veto is
+   *     doing work it is not, and it is the first step back towards the
+   *     per-value membership lists this architecture exists to avoid. Worse, it
+   *     goes stale in the one direction nobody checks: mark that section's
+   *     signature role later and the veto silently starts meaning something.
+   */
+  it("keeps the per-suite veto list to real exceptions", () => {
+    const registered = new Set<string>(
+      sectionLibraryV3Registry.map((entry) => entry.component),
+    );
+    const stale: string[] = [];
+    const redundant: string[] = [];
+
+    for (const [id, components] of Object.entries(suiteExcludedComponents)) {
+      const suite = sectionAnimationSuites.find((entry) => entry.id === id);
+
+      for (const component of components ?? []) {
+        if (!registered.has(component)) {
+          stale.push(`${id}.${component}`);
+          continue;
+        }
+
+        // What the gate would have said on its own. Only a section the gate
+        // WOULD have offered the suite to can be a real exception to it.
+        const gateOffers =
+          !suite?.requiresRole ||
+          sectionMarksRole(component, suite.requiresRole);
+
+        if (!gateOffers) {
+          redundant.push(`${id}.${component}`);
+        }
+      }
+    }
+
+    expect(
+      stale.sort(),
+      "these are struck from a suite but are not in the section library, so the entry is stale - a rename or a deletion left it behind",
+    ).toEqual([]);
+    expect(
+      redundant.sort(),
+      "these are struck from a suite the role gate already withholds, so the entry does nothing today and quietly starts doing something the day that section marks the signature role - the veto is for sections the gate WOULD offer",
     ).toEqual([]);
   });
 

@@ -333,24 +333,36 @@ export const sectionAnimationSuites = [
     guidance:
       "For sections with a strong left/right composition. One element carries the movement and the rest simply appear — a slide only reads as emphasis while it is the only one.",
     /**
-     * NO SIGNATURE ROLE, and that is the answer to the obvious wrinkle.
+     * GATED ON `media`, AND THIS REVERSES AN EARLIER DECISION - the reasoning
+     * is kept because the argument it lost to is worth having written down.
      *
-     * The temptation is `requiresRole: "media"`, since sliding a panel in from
-     * off-screen is the reason to reach for this. Do not: the gate is computed
-     * per COMPONENT, and whether a section has an image is often a per-INSTANCE
-     * toggle. A media gate would offer Lateral on a section whose image is
-     * currently switched off, which is the failure the gate exists to prevent,
-     * and would keep offering it after someone switched the image off - a
-     * control that silently stops meaning anything.
+     * This suite originally declared no signature role, on the grounds that
+     * whether a section has an image is often a per-INSTANCE toggle: gate on
+     * `media` and Lateral would be offered on a section whose image is
+     * currently switched off, or keep being offered after someone switched it
+     * off - a control that silently stops meaning anything.
      *
-     * So the suite is built not to need one. Cards, panels and frames all
-     * travel, so a section with its image off still slides its remaining units;
-     * a section with no media at all is still a coherent Lateral. The media
-     * rule simply has nothing to match, which costs nothing. A suite that works
-     * whether or not an optional element is present needs no gate, and that is
-     * a better answer than teaching the gate about instance state.
+     * That argument was answered by looking at what the alternative actually
+     * cost. TWO THINGS WERE WRONG WITH IT:
+     *
+     * 1. The gate reads the SOURCE, not the instance. A section that can show
+     *    an image carries `reveal-role-media` in its markup unconditionally, so
+     *    a component-level gate still offers Lateral there. The only case the
+     *    old argument describes is an instance with its image switched off, and
+     *    that one degrades to a fade - which is a graceful ending, not a
+     *    failure.
+     * 2. Ungated, Lateral was offered on all 57 animated sections and differed
+     *    from a plain fade on the 10 that mark media. On the other 47 it was
+     *    precisely the "control that appears to work and paints nothing"
+     *    failure - reported from a section header, where a slide is not merely
+     *    absent but impossible. Preventing a fade on one instance is not worth
+     *    a dead control on 47 sections.
+     *
+     * The general lesson: a gate protecting against an INSTANCE-level absence
+     * is the wrong tool, but that is an argument for accepting the instance
+     * case, not for removing the gate.
      */
-    requiresRole: undefined,
+    requiresRole: "media",
     /**
      * No stagger anywhere in this suite. Everything fades in together and one
      * element travels, so there is exactly one thing to watch - a staggered row
@@ -553,6 +565,32 @@ export const sectionAnimationRoleComponents: Partial<
     "ContactSectionV3",
   ],
   /**
+   * The sections with a media unit - what Lateral slides.
+   *
+   * Populated when Lateral gained its gate. Everything here already marked
+   * `reveal-role-media`; the list is the registry catching up with markup that
+   * was written during the backfill, which is why it needed no section edits.
+   *
+   * REMEMBER WHAT THIS LIST IS FOR. It is not "sections with an image" - it is
+   * sections that mark an image AS A REVEALABLE UNIT. A section can show a
+   * picture inside a card and belong nowhere near here, because the card is the
+   * unit and the picture is part of it.
+   */
+  media: [
+    "ContentAboutCompanySectionV2",
+    "ContentNarrativeFeatureRailSectionV3",
+    "ContentSplitFixedImageSectionV3",
+    "ContentSplitFullImageSectionV3",
+    "ContentStickyCardStreamSectionV2",
+    "ContentThreeColumnMixedSectionV3",
+    "CTAImageSectionV3",
+    "FeaturePortraitParagraphSectionV3",
+    "ImageStripSectionV3",
+    /** The logo grid, not the file it shares with four other trust sections -
+     *  the marker is on its panel and the other four have none. */
+    "TrustLogoGridSectionV3",
+  ],
+  /**
    * The CTA sections with ONE action unit.
    *
    * `CTAServiceTriageSectionV3` is deliberately absent: its actions live on
@@ -588,12 +626,59 @@ export function sectionMarksRole(
   return sectionAnimationRoleComponents[role]?.includes(component) ?? false;
 }
 
-/** The suites worth offering on one section: those with no signature role, plus
- *  those whose signature role this section actually marks. */
+/**
+ * THE VETO. Sections struck from a suite by name, whatever the role gate says.
+ *
+ * WHY A LIST EXISTS AT ALL, IN A FILE THAT ARGUES AGAINST LISTS. The header of
+ * this file rejects a membership set PER VALUE - a hand-maintained allow-list
+ * for every suite, which is 5 x 97 today, grows with each suite, and makes a
+ * new section silently unanimated until someone adds it to all of them. That
+ * argument is about ALLOW-lists, and it still stands: the role gate is what
+ * decides availability, and it needs no upkeep.
+ *
+ * This is the opposite shape. It holds only EXCEPTIONS, so the common case
+ * costs nothing and a new section inherits the gate's answer with no edit. Same
+ * shape and same reasoning as `animationExcludedComponents`, which does the job
+ * one level up for the axis as a whole.
+ *
+ * WHAT BELONGS HERE. Exactly one thing the role gate cannot say: "this section
+ * marks the role, and the suite is still wrong here." A media panel that is a
+ * small inline thumbnail rather than a bled panel would qualify - it marks
+ * `media`, and sliding it in from off-screen would look like a bug rather than
+ * an entrance.
+ *
+ * WHAT DOES NOT. "This section has no media" - that is the gate's job, and
+ * writing it here would be maintaining by hand a fact already derived. If an
+ * entry would be redundant with the gate, `animation-marker-ownership` fails on
+ * it rather than letting the two drift into disagreeing.
+ *
+ * EMPTY IS A REAL STATE. Nothing has needed striking yet. The lists are the
+ * control surface, deliberately unused until a section earns a place on one.
+ */
+export const suiteExcludedComponents: Partial<
+  Record<SectionAnimationSuiteId, readonly string[]>
+> = {};
+
+/** Whether a suite has been struck from one section by name. */
+export function suiteExcludesSection(
+  suite: SectionAnimationSuiteId,
+  component: string,
+) {
+  return suiteExcludedComponents[suite]?.includes(component) ?? false;
+}
+
+/**
+ * The suites worth offering on one section.
+ *
+ * Three filters, in order of how much upkeep they cost: the suite is offered at
+ * all, its signature role is marked here (derived, no upkeep), and it has not
+ * been struck from this section by name (hand-maintained, exceptions only).
+ */
 export function sectionAnimationSuitesFor(component: string) {
   return offeredSectionAnimationSuites.filter(
     (suite) =>
-      !suite.requiresRole || sectionMarksRole(component, suite.requiresRole),
+      (!suite.requiresRole || sectionMarksRole(component, suite.requiresRole)) &&
+      !suiteExcludesSection(suite.id, component),
   );
 }
 
