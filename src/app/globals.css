@@ -321,6 +321,14 @@
      whatever size I am. */
   --anim-lateral-distance: 40px;
   --anim-lateral-media-distance: 100%;
+  /* Focus's one number: how far out of focus a unit starts.
+
+     10px reads as "resolving" rather than as "smeared" at heading sizes. Much
+     less and the arrival is indistinguishable from a plain fade at these
+     durations; much more and the first frames are an unreadable grey block,
+     which is worse than not animating - a reader who glances at a heading
+     mid-entrance should still be able to read it. */
+  --anim-focus-blur: 10px;
   /* The scrubbed variant's own range, kept apart from the timed tokens above
      so the two can be tuned without colliding - one is measured in time, the
      other in scroll distance. See the `scrub` block further down. */
@@ -471,6 +479,37 @@
   to {
     opacity: 1;
     scale: 1;
+  }
+}
+
+/*
+ * Coming into focus. A unit resolves out of a blur as it fades in.
+ *
+ * ONE PROPERTY, and that is the whole appeal: no travel, no clip, no scale, so
+ * it cannot fight a layout, reflow a column, or open a band of bare ground under
+ * a bled panel the way a travel can. It is also the only suite here whose
+ * signature is a change in legibility rather than in position.
+ *
+ * `blur(0)` rather than `none` at the end, because `none` is not a filter
+ * function and the two do not interpolate - the arrival would snap on the last
+ * frame instead of resolving.
+ *
+ * THE FILL IS FORWARDS, so `filter: blur(0)` stays applied after the entrance.
+ * A filter - even a no-op one - makes its element a containing block for
+ * absolutely and fixed positioned descendants and gives it its own stacking
+ * context. That is harmless on the roles this suite blurs, which are text blocks
+ * and small figures, and it is one more reason it is not put on anything that
+ * contains an overlay or a pinned child.
+ */
+@keyframes section-focus {
+  from {
+    opacity: 0;
+    filter: blur(var(--anim-focus-blur));
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
   }
 }
 
@@ -859,6 +898,87 @@
   [data-pagebuilder-animation="lateral"][data-pagebuilder-animation-state="in"]
     .reveal-from-end {
     --anim-lateral-sign: 1;
+  }
+
+  /* == Suite: Focus (stored id `focus`) =============================
+   *
+   * Type resolves out of a blur as it fades in. Everything else fades in place.
+   *
+   * NOTHING TRAVELS HERE EITHER, which puts it beside Wipe rather than beside
+   * Rise: both suites' idea is something happening TO the text, not something
+   * happening to its position. Where Wipe uncovers a line behind a moving edge,
+   * this one brings it into focus - the same restraint, a different gesture.
+   *
+   * THE BLUR IS ON THE HEADING AND THE ACCENT, and the omissions are the
+   * design:
+   *
+   *   - NOT on media. Blurring a large raster is the one case where the
+   *     compositor genuinely struggles: the cost of a blur scales with the area
+   *     it covers, and a bled panel is the largest area on the page. A
+   *     half-screen image resolving from 10px is where a suite this cheap
+   *     everywhere else would start dropping frames, so a media panel simply
+   *     fades.
+   *   - NOT on body copy. A paragraph is several lines of small type, and small
+   *     type under a 10px blur is not "out of focus", it is a grey smear that
+   *     resolves into text - which reads as the page failing to load rather
+   *     than as an arrival. A heading has the stroke weight to survive it; a
+   *     caption does not.
+   *   - NOT on cards or frames, for the reason every suite here keeps its idea
+   *     to one lead: a section should read as one thing arriving. If everything
+   *     resolves at once the effect stops being emphasis and becomes a page
+   *     that was briefly out of focus.
+   *
+   * OFFERED ONLY WHERE A HEADING ROLE IS MARKED - `requiresRole: "heading"`,
+   * the same gate as Wipe and for the same reason. `accent` is the second role
+   * it treats, but nothing in the library marks one yet, so a heading is what
+   * makes this suite visible on a real section.
+   */
+
+  /* Focus, waiting to arrive. Hidden in place - no travel to wait at. */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="focus"]:not([data-pagebuilder-animation-state])
+    .reveal-on-scroll {
+    opacity: 0;
+  }
+
+  /* Focus, arriving. A plain fade in place for everything the blur is not on.
+     STAGGERED, unlike Pulse and Lateral. Those two dropped the stagger because
+     their lead is a MOVEMENT, and a staggered row pulls the eye along itself
+     while the one moving thing is trying to hold it. Nothing moves here, so a
+     row of cards arriving in reading order competes with nothing - the same
+     conclusion Wipe reached. */
+  [data-pagebuilder-animation="focus"][data-pagebuilder-animation-state="in"]
+    .reveal-on-scroll {
+    animation: section-fade var(--anim-reveal-duration)
+      var(--anim-reveal-easing) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-reveal-delay-step)
+    );
+  }
+
+  /* Focus, heading and accent: THE BLUR ITSELF.
+     Two roles on one rule because they are the same request - a line of display
+     type and a single large figure are both heavy enough strokes to read while
+     they are still resolving, which is the property the blur depends on. */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="focus"]:not([data-pagebuilder-animation-state])
+    .reveal-role-heading,
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="focus"]:not([data-pagebuilder-animation-state])
+    .reveal-role-accent {
+    filter: blur(var(--anim-focus-blur));
+    opacity: 0;
+  }
+
+  [data-pagebuilder-animation="focus"][data-pagebuilder-animation-state="in"]
+    .reveal-role-heading,
+  [data-pagebuilder-animation="focus"][data-pagebuilder-animation-state="in"]
+    .reveal-role-accent {
+    animation: section-focus var(--anim-reveal-duration)
+      var(--anim-reveal-easing) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-reveal-delay-step)
+    );
   }
 }
 

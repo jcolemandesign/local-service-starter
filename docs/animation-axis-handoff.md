@@ -740,6 +740,34 @@ boundary settled (`heading` is the block). The backfill can proceed against it.
 the same zero distance, and that duplication should stay. It is two suites
 independently deciding a bled panel must not travel — the next one is free to
 disagree, and factoring it into a shared rule would take that freedom away.
+Lateral took that freedom immediately: `media` is the one thing that *does*
+travel there.
+
+### What Focus found
+
+**Two suites now gate on `heading`, and that is fine.** Wipe and Focus are two
+answers to "how does a headline arrive", offered side by side on the same 15
+sections. The gate was never a claim of exclusivity — it only says a suite is
+not offered where it would paint nothing.
+
+**`accent` is marked nowhere.** The role backfill classified 86 marker sites and
+gave `accent` zero of them (`heading` 14, `content` 6, `card` 26, `media` 10,
+`frame` 11, `action` 7). Focus blurs `heading` and `accent`, so half of its
+signature is currently visible only in the style-guide gallery. That is not a
+defect in Focus — it is the Phase 5 finding coming due. `accent` earned its place
+on the argument that a stat or a badge deserves more presence than the copy
+around it, and nothing has yet been marked as one.
+
+**The role stays** — decided 2026-08-16, with a pass over the library to find
+stat figures and badges to mark as one still to come. So the gap is a backfill
+that has not happened, not a role to retire: two suites already describe
+behaviour for it, and the markup is what is missing.
+
+**The blur is not put on body copy, and that is a legibility call rather than a
+performance one.** 10px over a heading reads as resolving; the same blur over a
+paragraph of `type-text-md` is a grey smear that becomes text, which reads as the
+page failing to load. Media is excluded for the performance reason instead — blur
+cost scales with area, and a bled panel is the largest area on the page.
 
 ### The suites, as they stand
 
@@ -748,6 +776,8 @@ disagree, and factoring it into a shared rule would take that freedom away.
 | Rise | `reveal` | everywhere | — | units rise and fade in |
 | Wipe | `wipe` | marks a `heading` | `heading` | an edge crosses the heading; cards rise, accents scale, media fades |
 | Pulse | `pulse` | marks an `action` | `action` | normal arrival, then one soft beat on the action once it lands |
+| Lateral | `lateral` | everywhere | `media` | the media panel slides in from off-screen; everything else fades in place |
+| Focus | `focus` | marks a `heading` | `heading` | the heading resolves out of a 10px blur; everything else fades in place |
 
 **Seven roles now, not six.** `action` joined with Pulse, and the Phase 5
 finding that "six is right" was right *for the suites that existed then* — no

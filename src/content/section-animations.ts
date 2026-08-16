@@ -383,6 +383,51 @@ export const sectionAnimationSuites = [
      */
     differentiatedRoles: ["media"],
   },
+  {
+    id: "focus",
+    label: "Focus",
+    status: "offered",
+    description:
+      "The heading resolves out of a blur as it fades in. Everything else fades quietly in place.",
+    guidance:
+      "For sections led by a statement rather than by a picture. It is the quietest suite here - nothing moves at all, so it suits dense sections where a travel would read as the layout shifting.",
+    /**
+     * THE SAME GATE AS WIPE, AND THE SAME ARGUMENT.
+     *
+     * The blur lands on `heading` and `accent`, and nothing in the library
+     * marks an accent yet - so on a section with no heading this would be a
+     * plain staggered fade, which is a control that appears to work and paints
+     * nothing. The gate is derived from the roles a section marks, so a section
+     * that gains a heading role gains this suite with no edit here.
+     *
+     * That it competes with Wipe for the same sections is intended rather than
+     * unfortunate: they are two answers to "how does a headline arrive", and an
+     * editor picking between them is the axis working.
+     */
+    requiresRole: "heading",
+    roles: {
+      heading: "THE BLUR - resolves from 10px as it fades, no travel",
+      content:
+        "fades in place - small type under a 10px blur is a grey smear resolving into text, which reads as a page failing to load",
+      card: "fades in place, staggered by --reveal-index",
+      media:
+        "fades in place - blurring a large raster is the one case where the compositor genuinely struggles, and the cost scales with the area",
+      accent:
+        "resolves from the same blur - a large figure has the strokes for it",
+      frame: "fades in place, as a single unit",
+      action:
+        "fades in place - the focus is about the statement, not the action",
+    },
+    /**
+     * Two, and `media` is the notable absentee twice over.
+     *
+     * It is not here because the suite does not travel, so "fade without
+     * rising" is simply the default - the same reason it left Wipe's list. And
+     * it is not here as a blur either, which is the one performance judgement
+     * this suite makes: everything else it touches is type.
+     */
+    differentiatedRoles: ["heading", "accent"],
+  },
 ] as const satisfies readonly SectionAnimationSuiteDefinition[];
 
 export type SectionAnimationSuiteId =
