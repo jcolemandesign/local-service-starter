@@ -203,6 +203,15 @@ export const motionControlGroups = [
       "The default entrance. Distance is Rise's alone — nothing else in the library travels vertically — and its tempo follows the shared rhythm unless you give it one.",
     controls: [
       {
+        token: "--anim-reveal-easing",
+        label: "Easing",
+        hint: "Unset, Rise uses the shared curve. Give it its own if you lengthen its duration and the extra time does not read.",
+        kind: "easing",
+        defaultValue: "",
+        presets: travelEasingPresets,
+        inheritsFrom: "--anim-easing",
+      },
+      {
         token: "--anim-reveal-distance",
         label: "Distance",
         hint: "How far a rising unit travels. Distance is what makes a short movement register.",
@@ -243,6 +252,15 @@ export const motionControlGroups = [
       "The quiet entrance. It owns no shape of its own — only how long it takes and how far apart its units land.",
     controls: [
       {
+        token: "--anim-fade-easing",
+        label: "Easing",
+        hint: "Unset, Fade uses the shared curve. Give it its own if you lengthen its duration and the extra time does not read.",
+        kind: "easing",
+        defaultValue: "",
+        presets: travelEasingPresets,
+        inheritsFrom: "--anim-easing",
+      },
+      {
         token: "--anim-fade-duration",
         label: "Duration",
         hint: "Unset, Fade keeps time with the shared rhythm.",
@@ -272,6 +290,15 @@ export const motionControlGroups = [
     description:
       "The edge crossing the headline. Wipe reuses the shared rhythm and owns only what has no equivalent in Rise.",
     controls: [
+      {
+        token: "--anim-wipe-easing",
+        label: "Easing",
+        hint: "Unset, Wipe uses the shared curve. Give it its own if you lengthen its duration and the extra time does not read.",
+        kind: "easing",
+        defaultValue: "",
+        presets: travelEasingPresets,
+        inheritsFrom: "--anim-easing",
+      },
       {
         token: "--anim-wipe-duration",
         label: "Wipe duration",
@@ -313,6 +340,15 @@ export const motionControlGroups = [
       "The beat the action block gives once everything has landed. One beat, never a loop — a looping CTA never stops asking.",
     controls: [
       {
+        token: "--anim-pulse-easing",
+        label: "Easing",
+        hint: "Unset, Pulse uses the shared curve. Give it its own if you lengthen its duration and the extra time does not read.",
+        kind: "easing",
+        defaultValue: "",
+        presets: travelEasingPresets,
+        inheritsFrom: "--anim-easing",
+      },
+      {
         token: "--anim-pulse-scale",
         label: "Beat scale",
         hint: "How far the action block grows. Larger than this and a wide card reads as the layout twitching.",
@@ -350,6 +386,15 @@ export const motionControlGroups = [
     description:
       "The panel arriving from its own edge. Two travels in two different units, because they answer two different questions.",
     controls: [
+      {
+        token: "--anim-lateral-easing",
+        label: "Easing",
+        hint: "Unset, Lateral uses the shared curve. Give it its own if you lengthen its duration and the extra time does not read.",
+        kind: "easing",
+        defaultValue: "",
+        presets: travelEasingPresets,
+        inheritsFrom: "--anim-easing",
+      },
       {
         token: "--anim-lateral-duration",
         label: "Duration",

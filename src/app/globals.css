@@ -643,7 +643,7 @@
   [data-pagebuilder-animation="reveal"][data-pagebuilder-animation-state="in"]
     .reveal-on-scroll {
     animation: section-reveal var(--anim-reveal-duration, var(--anim-duration))
-      var(--anim-easing) both;
+      var(--anim-reveal-easing, var(--anim-easing)) both;
     animation-delay: calc(
       var(--reveal-index, 0) * var(--anim-reveal-stagger, var(--anim-stagger))
     );
@@ -714,7 +714,7 @@
   [data-pagebuilder-animation="fade"][data-pagebuilder-animation-state="in"]
     .reveal-on-scroll {
     animation: section-fade var(--anim-fade-duration, var(--anim-duration))
-      var(--anim-easing) both;
+      var(--anim-fade-easing, var(--anim-easing)) both;
     animation-delay: calc(
       var(--reveal-index, 0) * var(--anim-fade-stagger, var(--anim-stagger))
     );
@@ -752,7 +752,7 @@
   [data-pagebuilder-animation="wipe"][data-pagebuilder-animation-state="in"]
     .reveal-on-scroll {
     animation: section-fade var(--anim-wipe-duration, var(--anim-duration))
-      var(--anim-easing) both;
+      var(--anim-wipe-easing, var(--anim-easing)) both;
     animation-delay: calc(
       var(--reveal-index, 0) * var(--anim-wipe-stagger, var(--anim-stagger))
     );
@@ -780,7 +780,7 @@
        note in `:root` for why this stopped being a constant. */
     animation: section-wipe
       var(--anim-wipe-duration, var(--anim-duration))
-      var(--anim-easing)
+      var(--anim-wipe-easing, var(--anim-easing))
       both;
     animation-delay: calc(
       var(--reveal-index, 0) * var(--anim-wipe-stagger, var(--anim-stagger))
@@ -800,7 +800,7 @@
   [data-pagebuilder-animation="wipe"][data-pagebuilder-animation-state="in"]
     .reveal-role-accent {
     animation: section-fade-scale var(--anim-wipe-duration, var(--anim-duration))
-      var(--anim-easing) both;
+      var(--anim-wipe-easing, var(--anim-easing)) both;
     animation-delay: calc(
       var(--reveal-index, 0) * var(--anim-wipe-stagger, var(--anim-stagger))
     );
@@ -841,7 +841,7 @@
   [data-pagebuilder-animation="pulse"][data-pagebuilder-animation-state="in"]
     .reveal-on-scroll {
     animation: section-fade var(--anim-duration)
-      var(--anim-easing) both;
+      var(--anim-pulse-easing, var(--anim-easing)) both;
   }
 
   /* Pulse, action role: fades in with everything else, then beats once.
@@ -864,7 +864,7 @@
       var(--anim-duration) + var(--anim-pulse-delay)
     );
     animation:
-      section-fade var(--anim-duration) var(--anim-easing) both,
+      section-fade var(--anim-duration) var(--anim-pulse-easing, var(--anim-easing)) both,
       section-attention-pulse var(--anim-pulse-duration) ease-in-out
         var(--anim-beat-delay) both;
   }
@@ -954,7 +954,7 @@
   [data-pagebuilder-animation="lateral"][data-pagebuilder-animation-state="in"]
     .reveal-on-scroll {
     animation: section-lateral var(--anim-lateral-duration, var(--anim-duration))
-      var(--anim-easing) both;
+      var(--anim-lateral-easing, var(--anim-easing)) both;
   }
 
   /* Lateral, media role: THE ONE THING THAT TRAVELS.
@@ -4713,14 +4713,21 @@ body {
   --type-label-tracking: 0.1em;
   --type-label-wrap: wrap;
   --type-label-transform: uppercase;
-  --anim-duration: 1080ms;
-  --anim-stagger: 200ms;
-  --anim-reveal-distance: 100px;
-  --anim-easing: cubic-bezier(0.16, 1, 0.3, 1);
-  --anim-accent-scale-from: 0.94;
+  --anim-duration: 720ms;
+  --anim-stagger: 90ms;
+  --anim-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  --anim-reveal-distance: 120px;
+  --anim-reveal-duration: 1600ms;
+  --anim-reveal-stagger: 400ms;
+  --anim-fade-duration: 1600ms;
+  --anim-fade-stagger: 0ms;
+  --anim-wipe-duration: 1600ms;
+  --anim-wipe-stagger: 0ms;
+  --anim-accent-scale-from: 0.86;
   --anim-pulse-scale: 1.07;
-  --anim-pulse-duration: 620ms;
-  --anim-pulse-delay: 180ms;
+  --anim-pulse-duration: 500ms;
+  --anim-pulse-delay: 480ms;
+  --anim-lateral-duration: 1380ms;
   --anim-lateral-distance: 0px;
   --anim-lateral-media-distance: 100%;
   --anim-focus-easing: cubic-bezier(0.4, 0, 0.2, 1);
