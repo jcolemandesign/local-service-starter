@@ -60,8 +60,16 @@ function ServiceAreaMapPlaceholder({
       className={cx(
         // The whole panel is the unit. Its rules and its FPO badge are
         // absolutely positioned against this box, so anything smaller would
-        // animate the map out from under its own furniture.
-        "reveal-on-scroll reveal-role-action",
+        // animate the map out from under its own furniture. That is the
+        // definition of `frame` - a composite that reveals as one block rather
+        // than as its parts.
+        //
+        // IT WAS `action`, AND THAT WAS THE WRONG UNIT. The action role is what
+        // Pulse beats, and the point of the beat is to say "do this" - so it
+        // belongs on the thing there is to do. Here that is the ZIP form below,
+        // not the map beside it. A map placeholder that pulses points at
+        // scenery.
+        "reveal-on-scroll reveal-role-frame",
         "content-padding radius-medium relative isolate grid h-full min-h-[31rem] overflow-hidden max-lg:min-h-[24rem] max-md:min-h-[20rem]",
         cardFill === "none" ? "bg-transparent shadow-none" : "bg-service-surface shadow-service",
         cardBorder === "off" ? "!border-0" : "border border-service-border",
@@ -133,7 +141,18 @@ export function ServiceAreaZipLookupSectionV3({
         <SevenColumnGridItem className="col-span-3 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1">
           <div
             className={cx(
-              "reveal-on-scroll reveal-role-frame",
+              // THE ACTION UNIT: the card that carries the ZIP lookup.
+              //
+              // The role goes on the unit that CONTAINS the action, never on the
+              // input or the button - every CTA section in this library marks
+              // the panel rather than the control, because a revealable unit
+              // nested inside a revealable unit gives you two opacity fades
+              // multiplying into a muddy one.
+              //
+              // So the whole card takes it, area list and all. That is right
+              // rather than merely convenient: the list is the answer to "do you
+              // come here", and the field is what you do about it. One unit.
+              "reveal-on-scroll reveal-role-action",
               "content-padding radius-medium grid h-full content-between",
               cardFill === "none" ? "bg-transparent shadow-none" : "bg-service-surface shadow-service",
               cardBorder === "off" ? "!border-0" : "border border-service-border",
