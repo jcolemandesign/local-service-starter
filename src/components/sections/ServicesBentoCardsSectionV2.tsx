@@ -283,10 +283,25 @@ export function ServicesBentoCardsSectionV2({
                   label={item.imageLabel}
                   src={item.imageSrc}
                 />
+                {/* THE HOVER READS THE CTA PAIR, NOT THE ACCENT.
+                    It used to be `bg-service-accent` + `text-white`, which
+                    inverts on the light recipes and disappears on the chromatic
+                    ones. Inside a recipe `service-accent` resolves to
+                    `--recipe-eyebrow`, and on accent and highlight that is
+                    #ffffff - so the badge went white-on-white and the arrow
+                    vanished at the moment it was meant to be pointing.
+
+                    `cta-primary` / `cta-primary-ink` is the pair the recipe
+                    tables already invert per ground: the chromatic swatch with a
+                    white label on the light recipes, and a white fill with the
+                    ground's own colour as the label on the chromatic ones. It is
+                    also the honest name for this element - the badge IS the
+                    card's call to action - and it keeps the section naming a
+                    role rather than picking a colour. */}
                 <div
                   className={cx(
                     "radius-medium",
-                    "absolute right-3 top-3 flex size-12 items-center justify-center border border-service-border bg-surface-raised text-xl font-semibold leading-none text-service-ink shadow-service transition-colors group-hover/service-card:bg-service-accent group-hover/service-card:text-white",
+                    "absolute right-3 top-3 flex size-12 items-center justify-center border border-service-border bg-surface-raised text-xl font-semibold leading-none text-service-ink shadow-service transition-colors group-hover/service-card:bg-cta-primary group-hover/service-card:text-cta-primary-ink",
                   )}
                 >
                   <span aria-hidden="true">-&gt;</span>
