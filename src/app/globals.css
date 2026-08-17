@@ -4673,7 +4673,7 @@ body {
   --anim-reveal-delay-step: 200ms;
   --anim-reveal-distance: 100px;
   --anim-reveal-easing: cubic-bezier(0.16, 1, 0.3, 1);
-  --anim-accent-scale-from: 1;
+  --anim-accent-scale-from: 0.94;
   --anim-pulse-scale: 1.07;
   --anim-pulse-duration: 620ms;
   --anim-pulse-delay: 180ms;
