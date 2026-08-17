@@ -29,9 +29,9 @@ function ArrowMark({ className = "" }: { className?: string }) {
       className={cx(
         // The CTA pair, not the accent: inside a recipe `service-accent` is
         // --recipe-eyebrow, which is #ffffff on accent and highlight - so the
-        // mark went white on white and the arrow vanished. `cta-primary` is the
-        // pair the recipe tables already invert per ground.
-        "flex items-center justify-center rounded-full border border-service-border bg-surface-raised text-service-accent shadow-service transition-colors group-hover/service-card:border-cta-primary group-hover/service-card:bg-cta-primary group-hover/service-card:text-cta-primary-ink",
+        // mark went white on white and the arrow vanished. `card-cta-fill` is the
+        // pair the recipe tables resolve from the CARD, not the ground.
+        "flex items-center justify-center rounded-full border border-service-border bg-surface-raised text-service-accent shadow-service transition-colors group-hover/service-card:border-card-cta-fill group-hover/service-card:bg-card-cta-fill group-hover/service-card:text-card-cta-label",
         className,
       )}
     >

@@ -160,6 +160,22 @@
    * dark while the CTA edge is the highlight. Both read the accent token
    * today, so one of the two would always be wrong. */
   --color-cta-primary-ink: var(--live-cta-primary-ink, #ffffff);
+  /* The CTA pair as it applies ON A CARD rather than on the section ground.
+   *
+   * `--color-cta-primary` is keyed on the GROUND - the regime table further
+   * down says so outright, and its contrast figures are measured against the
+   * ground. That is right for a button sitting on the section, and wrong for a
+   * control sitting on a card, which is a different surface in a different
+   * regime. On the two chromatic recipes the card is the dark swatch, so a
+   * ground-keyed fill hands it the chromatic-ground answer - the text source -
+   * and the control goes white on white.
+   *
+   * `--card-cta-fill` is picked from the CARD's own lightness and chroma by
+   * `deriveTintMode`, the same way `--card-eyebrow` already is. Falls back to
+   * the ground-keyed pair, so a control outside a recipe or on a section with
+   * no card context behaves exactly as it did. */
+  --color-card-cta-fill: var(--card-cta-fill, var(--color-cta-primary));
+  --color-card-cta-label: var(--card-cta-label, var(--color-cta-primary-ink));
   --color-cta-secondary-ink: var(--live-cta-secondary-ink, var(--live-service-accent, #1f7a5a));
   --color-cta-secondary-border: var(--live-cta-secondary-border, var(--live-service-accent, #1f7a5a));
   /* The muted token in its ink-recipe card role.
@@ -3558,8 +3574,21 @@ body {
    * from `--chroma-text`, which resolves against the SECTION's text source on
    * this element. It is the same formula and the same 30% the scales use; the
    * agreement is asserted by `color-css-agreement.test.ts`. ---- */
+  /* The CTA pair rides the same three modes as the eyebrow, and for the same
+     reason: both answer "what does a chromatic treatment do on THIS card",
+     which only the card's own lightness and chroma can decide.
+     THE FILL MIXES AT 50% WHERE THE EYEBROW MIXES AT 30%. The eyebrow is text
+     and the fill is a field, and a field carries its colour at a weight text
+     cannot - 30% reads as a wash once it is an area rather than a glyph. 50%
+     is the same figure `--chroma-fill` uses for the ground-keyed pair, so the
+     two are the same treatment resolved against different surfaces. */
   .pagebuilder-paint-surface[data-pagebuilder-card-chroma="none"] {
     --card-eyebrow: var(--recipe-chromatic);
+    /* Light card: the swatch at full strength, which is what page and surface
+       already do and what a hover on them reads as - a brightening rather than
+       an inversion. */
+    --card-cta-fill: var(--recipe-chromatic);
+    --card-cta-label: #ffffff;
   }
 
   .pagebuilder-paint-surface[data-pagebuilder-card-chroma="tinted"] {
@@ -3568,10 +3597,25 @@ body {
       var(--recipe-chromatic) 30%,
       var(--recipe-card-text)
     );
+    /* Dark card - the accent and highlight recipes both land here, because
+       their card is the dark swatch. Full-strength chromatic would darken into
+       the card and die; the tint lightens away from it, so the hover brightens
+       here too instead of going negative. */
+    --card-cta-fill: color-mix(
+      in oklab,
+      var(--recipe-chromatic) 50%,
+      var(--recipe-card-text)
+    );
+    --card-cta-label: var(--palette-ink);
   }
 
   .pagebuilder-paint-surface[data-pagebuilder-card-chroma="textSource"] {
     --card-eyebrow: var(--recipe-card-text);
+    /* Chromatic card. Chromatic-on-chromatic is the one case the brief rules
+       out, so the text source is the only answer left and this mode stays an
+       inversion. The label takes the card so the two cannot collide. */
+    --card-cta-fill: var(--recipe-card-text);
+    --card-cta-label: var(--recipe-card);
   }
 
   /* RETIRED: card border tone.

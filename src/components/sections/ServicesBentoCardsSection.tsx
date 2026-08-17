@@ -50,7 +50,7 @@ export function ServicesBentoCardsSection({
               key={item.title}
             >
               <ServiceImagePlaceholder label={item.imageLabel} />
-              <div className="absolute right-3 top-3 flex size-12 items-center justify-center rounded-lg border border-white/60 bg-white/90 text-xl font-semibold leading-none text-service-ink shadow-service transition-colors group-hover/service-card:bg-cta-primary group-hover/service-card:text-cta-primary-ink">
+              <div className="absolute right-3 top-3 flex size-12 items-center justify-center rounded-lg border border-white/60 bg-white/90 text-xl font-semibold leading-none text-service-ink shadow-service transition-colors group-hover/service-card:bg-card-cta-fill group-hover/service-card:text-card-cta-label">
                 <span aria-hidden="true">-&gt;</span>
               </div>
               <div className="absolute inset-x-0 bottom-0 flex h-[46%] flex-col justify-start bg-[linear-gradient(to_bottom,rgb(255_255_255_/_0)_0%,rgb(255_255_255_/_0.88)_34%,rgb(255_255_255)_48%,rgb(255_255_255)_100%)] px-7 pb-7 pt-20 max-lg:px-6 max-lg:pb-6">

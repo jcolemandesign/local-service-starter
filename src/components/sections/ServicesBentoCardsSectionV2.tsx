@@ -291,8 +291,8 @@ export function ServicesBentoCardsSectionV2({
                     #ffffff - so the badge went white-on-white and the arrow
                     vanished at the moment it was meant to be pointing.
 
-                    `cta-primary` / `cta-primary-ink` is the pair the recipe
-                    tables already invert per ground: the chromatic swatch with a
+                    `card-cta-fill` / `card-cta-label` is the pair the recipe
+                    tables resolve from the CARD, not the ground: the chromatic swatch with a
                     white label on the light recipes, and a white fill with the
                     ground's own colour as the label on the chromatic ones. It is
                     also the honest name for this element - the badge IS the
@@ -301,7 +301,7 @@ export function ServicesBentoCardsSectionV2({
                 <div
                   className={cx(
                     "radius-medium",
-                    "absolute right-3 top-3 flex size-12 items-center justify-center border border-service-border bg-surface-raised text-xl font-semibold leading-none text-service-ink shadow-service transition-colors group-hover/service-card:bg-cta-primary group-hover/service-card:text-cta-primary-ink",
+                    "absolute right-3 top-3 flex size-12 items-center justify-center border border-service-border bg-surface-raised text-xl font-semibold leading-none text-service-ink shadow-service transition-colors group-hover/service-card:bg-card-cta-fill group-hover/service-card:text-card-cta-label",
                   )}
                 >
                   <span aria-hidden="true">-&gt;</span>
