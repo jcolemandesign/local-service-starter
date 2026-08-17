@@ -1239,7 +1239,23 @@ function GuideSection({
           </SevenColumnGrid>
         </summary>
         <SevenColumnGrid
-          className="style-guide-accordion-content bg-bg-page px-[var(--site-grid-inset-inline)] pb-[var(--site-grid-inset-block)] text-service-ink"
+          /* Padded on all four sides, and the top one was missing.
+             The panel had horizontal insets and a bottom inset but nothing at
+             the top, so an accordion whose first child is a surface - the motion
+             groups, which open straight onto a Card - had it butted against the
+             summary above. Sections that happen to start with a heading were
+             carried by that heading's own top margin, which is why this went
+             unnoticed: the frame was relying on its contents to supply the
+             frame's own spacing.
+
+             DELIBERATELY NOT SYMMETRIC WITH THE BOTTOM. The obvious fix is to
+             mirror `--site-grid-inset-block`, and it is wrong here: the summary
+             above already carries ~96px of its own bottom padding, so matching
+             it stacks to roughly 200px between the header and the first control
+             - a band of empty ground that reads as broken rather than generous.
+             The bottom inset has no such neighbour, which is why the two ends
+             are not the same number. */
+          className="style-guide-accordion-content bg-bg-page px-[var(--site-grid-inset-inline)] pb-[var(--site-grid-inset-block)] pt-[var(--section-space-vsml)] text-service-ink"
           frame="none"
           minHeight="none"
           padding="none"
