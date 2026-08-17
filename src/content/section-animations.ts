@@ -31,6 +31,8 @@
  * `docs/animation-axis-handoff.md` for the entrance axis this builds on.
  */
 
+import type { MotionControlGroupId } from "@/content/motion-tokens";
+
 /**
  * What kind of unit a marked element is. A closed set, enforced by
  * `animation-marker-ownership.test.ts` - a typo'd `reveal-role-heading2` fails
@@ -170,6 +172,27 @@ type SectionAnimationSuiteDefinition = {
    * description does not mention.
    */
   differentiatedRoles: readonly SectionAnimationRole[];
+  /**
+   * The Style Guide control groups this suite's live behaviour is authored
+   * through. Required, and required to be non-empty.
+   *
+   * NO ANIMATION MAY EXIST WHOSE BEHAVIOUR CANNOT BE AUTHORED. A suite that
+   * reuses the shared rhythm names only `rhythm`; a suite that owns numbers of
+   * its own names its own group too, and that group has to exist in
+   * `motion-tokens.ts` with a control for every token the suite's rules read.
+   * If a new suite's motion model cannot reasonably use an existing group,
+   * adding the suite means adding its tokens and its controls in the same
+   * change - not shipping a suite that can only be tuned by editing a
+   * stylesheet.
+   *
+   * This is a required field rather than an optional one so that omitting it is
+   * a compile error rather than something noticed a session later, which is how
+   * the axis got a style guide that promoted nothing in the first place.
+   *
+   * Checked both ways by `motion-token-agreement.test.ts`: a named group that
+   * does not exist, and a registered group no suite claims.
+   */
+  controlGroups: readonly MotionControlGroupId[];
 };
 
 /**
@@ -208,6 +231,10 @@ export const sectionAnimationSuites = [
      * is what tells you whether six is the right number.
      */
     differentiatedRoles: ["media"],
+    /** Nothing of its own. Rise IS the shared rhythm - every number it moves on
+     *  is a number every other suite also uses, which is what makes it the
+     *  thing the others are measured against. */
+    controlGroups: ["rhythm"],
   },
   {
     /**
@@ -273,6 +300,11 @@ export const sectionAnimationSuites = [
      * to.
      */
     differentiatedRoles: ["heading", "content", "accent"],
+    /** The shared rhythm for stagger and easing, plus its own two numbers: the
+     *  length of the wipe itself, and where an accent starts before scaling up.
+     *  Neither has an equivalent in Rise, which is the test for whether a suite
+     *  has earned a group. */
+    controlGroups: ["rhythm", "wipe"],
   },
   {
     /**
@@ -323,6 +355,11 @@ export const sectionAnimationSuites = [
      * only thing moving after the section has settled.
      */
     differentiatedRoles: ["action"],
+    /** The shared rhythm for the fade every unit gets, plus the beat's own
+     *  three numbers. The beat is not an entrance and cannot borrow an
+     *  entrance's tempo: it starts after the section has landed, and its delay
+     *  is measured from there. */
+    controlGroups: ["rhythm", "pulse"],
   },
   {
     id: "lateral",
@@ -394,6 +431,10 @@ export const sectionAnimationSuites = [
      * reads it. Default is the inline start.
      */
     differentiatedRoles: ["media"],
+    /** The shared rhythm for duration and easing - a slide is a travel like any
+     *  other - plus its own two distances, which are in two different units and
+     *  so could never have been the shared one. */
+    controlGroups: ["rhythm", "lateral"],
   },
   {
     id: "focus",
@@ -439,6 +480,16 @@ export const sectionAnimationSuites = [
      * this suite makes: everything else it touches is type.
      */
     differentiatedRoles: ["heading", "accent"],
+    /** THE SUITE THAT PROVES WHY GROUPS ARE PER-SUITE AND NOT PER-SUITE-ID.
+     *
+     *  Focus's plain fades ride the shared rhythm and keep time with Rise, so
+     *  it names `rhythm`. Its blur does not: it is the one arrival in the
+     *  library that is not a travel, so front-loading throws the duration away
+     *  and the shared curve is actively wrong for it. That is what earns a
+     *  group - a genuinely different motion model, not a preference for a
+     *  different number. The shared easing control must never write
+     *  `--anim-focus-easing`. */
+    controlGroups: ["rhythm", "focus"],
   },
 ] as const satisfies readonly SectionAnimationSuiteDefinition[];
 

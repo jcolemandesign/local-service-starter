@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { CSSProperties } from "react";
 
 import { triggerInset } from "@/components/primitives/SectionEntrance";
+import { useStyleGuideTokens } from "@/components/sections/StyleGuideLiveSurface";
+import { StyleGuideMotionControls } from "@/components/sections/StyleGuideMotionControls";
+import { defaultMotionTokens } from "@/content/motion-tokens";
 import {
   type SectionAnimationRole,
   sectionAnimationRoles,
@@ -126,91 +129,9 @@ const roleSpecimens: Record<
   },
 };
 
-/**
- * The rhythm controls, and the tokens they drive.
- *
- * LOCAL AND RESETTABLE ON PURPOSE. These are scoped to the gallery's own
- * element, so nothing here touches production state or any saved page - you are
- * judging a rhythm, not authoring one. Promoting a value into the shared tokens
- * in `globals.css` is a separate, deliberate edit, and should happen only once
- * the rhythm has actually been judged.
- */
-const rhythmControls = [
-  {
-    token: "--anim-reveal-duration",
-    label: "Duration",
-    min: 120,
-    max: 1600,
-    step: 20,
-    unit: "ms",
-  },
-  {
-    token: "--anim-reveal-delay-step",
-    label: "Stagger",
-    min: 0,
-    max: 400,
-    step: 10,
-    unit: "ms",
-  },
-  {
-    token: "--anim-reveal-distance",
-    label: "Distance",
-    min: 0,
-    max: 120,
-    step: 2,
-    unit: "px",
-  },
-] as const;
-
-/**
- * Easing presets, named for what they do to the arrival.
- *
- * Deliberately not tokens. They exist to answer "is the default the right
- * curve?" and a preset that earned its place would be promoted into
- * `--anim-reveal-easing` rather than kept here.
- */
-const easingPresets = [
-  { label: "Default", value: "" },
-  { label: "Linear", value: "linear" },
-  { label: "Soft", value: "cubic-bezier(0.33, 1, 0.68, 1)" },
-  { label: "Sharp", value: "cubic-bezier(0.16, 1, 0.3, 1)" },
-] as const;
-
-type RhythmToken = (typeof rhythmControls)[number]["token"];
-
-/** The stylesheet's own values, read once rather than restated here.
- *  Restating them is how a "reset" quietly stops matching the default. */
-function readTokenDefaults() {
-  const computed = getComputedStyle(document.documentElement);
-  const defaults = {} as Record<RhythmToken, number>;
-
-  for (const control of rhythmControls) {
-    defaults[control.token] =
-      Number.parseFloat(computed.getPropertyValue(control.token)) || 0;
-  }
-
-  return defaults;
-}
-
 export function MotionSuiteGallery() {
   const frames = useRef(new Map<string, HTMLDivElement | null>());
-  const [rhythm, setRhythm] = useState<Record<RhythmToken, number> | null>(null);
-  const [easing, setEasing] = useState<string>("");
-
-  /**
-   * Read the stylesheet's values once the DOM exists.
-   *
-   * A ref callback rather than an effect, and not to dodge the lint rule: the
-   * thing being waited for is a mounted document to measure, which is precisely
-   * what a ref callback signals. There is no stylesheet on the server, so a
-   * lazy `useState` initialiser would render numbers on the client and dashes
-   * on the server - a hydration mismatch. Guarded, so it runs once.
-   */
-  function readDefaultsOnMount(node: HTMLDivElement | null) {
-    if (node && !rhythm) {
-      setRhythm(readTokenDefaults());
-    }
-  }
+  const { draft, updateDraft } = useStyleGuideTokens();
 
   function replay(id: string) {
     replaySectionAnimation(frames.current.get(id));
@@ -241,12 +162,13 @@ export function MotionSuiteGallery() {
    *
    * It also fires once on mount, which is deliberate: the gallery is worth
    * looking at the moment it opens rather than after you find the button.
+   *
+   * The dependency is the draft's motion record rather than local state now, so
+   * a value changed in the controls above replays the specimens exactly as it
+   * used to - the difference being that the value survives the reload and
+   * reaches every page once promoted.
    */
   useEffect(() => {
-    if (!rhythm) {
-      return;
-    }
-
     const timer = setTimeout(() => {
       for (const suite of sectionAnimationSuites) {
         replaySectionAnimation(frames.current.get(suite.id));
@@ -254,32 +176,34 @@ export function MotionSuiteGallery() {
     }, 160);
 
     return () => clearTimeout(timer);
-  }, [rhythm, easing]);
-
-  const rhythmStyle = {
-    ...(rhythm
-      ? Object.fromEntries(
-          rhythmControls.map((control) => [
-            control.token,
-            `${rhythm[control.token]}${control.unit}`,
-          ]),
-        )
-      : {}),
-    ...(easing ? { "--anim-reveal-easing": easing } : {}),
-  } as CSSProperties;
+  }, [draft.motionTokens]);
 
   return (
-    <div className="grid gap-8" ref={readDefaultsOnMount} style={rhythmStyle}>
+    <div className="grid gap-8">
+      {/*
+        NO INLINE STYLE HERE ANY MORE, and its absence is the point.
+
+        The gallery used to carry the rhythm as inline custom properties on this
+        element, which is exactly why the values reached the specimens and
+        nothing else. They now live in the Style Guide draft, and every screen in
+        the style guide renders inside `StyleGuideLiveSurface`, which puts that
+        draft on an ancestor element. So the specimens below read the same
+        declarations a real page reads once the draft is promoted - one
+        mechanism, not a preview that imitates one.
+      */}
+      <StyleGuideMotionControls />
+
       <div className="style-guide-control-band grid gap-4 border-y px-[var(--site-grid-inset-inline)] py-4">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="grid gap-1">
             <span className="type-caption font-semibold text-current">
-              Rhythm
+              Specimens
             </span>
             <span className="type-caption text-current/70">
-              Scoped to this gallery. Nothing here is saved, and nothing here
-              changes a page — promote a value into globals.css once the rhythm
-              has been judged. Every change replays the specimens below.
+              Every change above replays these. Values are part of the Style
+              Guide draft — they survive a reload, and “Promote Style Guide”
+              writes them into globals.css, where pagebuilder, staged pages, real
+              pages and the export all read them.
             </span>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -292,66 +216,14 @@ export function MotionSuiteGallery() {
             </button>
             <button
               className="token-chrome-card min-h-10 rounded-[var(--chrome-radius-control)] border px-3 text-xs font-semibold transition-colors"
-              onClick={() => {
-                setRhythm(readTokenDefaults());
-                setEasing("");
-              }}
+              onClick={() =>
+                updateDraft("motionTokens", { ...defaultMotionTokens })
+              }
               type="button"
             >
-              Reset
+              Reset motion
             </button>
           </div>
-        </div>
-
-        <div className="grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-sm:grid-cols-1">
-          {rhythmControls.map((control) => (
-            <label className="grid gap-2" key={control.token}>
-              <span className="flex items-center justify-between gap-2">
-                <span className="type-caption font-semibold text-current">
-                  {control.label}
-                </span>
-                <span className="type-caption text-current/70">
-                  {rhythm ? `${rhythm[control.token]}${control.unit}` : "—"}
-                </span>
-              </span>
-              <input
-                className="style-guide-control-slider w-full"
-                disabled={!rhythm}
-                max={control.max}
-                min={control.min}
-                onChange={(event) =>
-                  setRhythm((current) =>
-                    current
-                      ? {
-                          ...current,
-                          [control.token]: Number(event.target.value),
-                        }
-                      : current,
-                  )
-                }
-                step={control.step}
-                type="range"
-                value={rhythm?.[control.token] ?? control.min}
-              />
-            </label>
-          ))}
-
-          <label className="grid gap-2">
-            <span className="type-caption font-semibold text-current">
-              Easing
-            </span>
-            <select
-              className="token-chrome-card min-h-10 rounded-[var(--chrome-radius-control)] border px-2 text-xs"
-              onChange={(event) => setEasing(event.target.value)}
-              value={easing}
-            >
-              {easingPresets.map((preset) => (
-                <option key={preset.label} value={preset.value}>
-                  {preset.label}
-                </option>
-              ))}
-            </select>
-          </label>
         </div>
 
         {/*

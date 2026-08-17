@@ -254,11 +254,11 @@
  *     bottom edge - which is too early to look at. "Starts late" and "lasts
  *     long" cannot both fit inside one screen of travel.
  *
- * So the timed rules below are the default. SCRUBBING IS STILL WANTED for a
- * few sections, and is kept intact further down, gated on
- * `[data-pagebuilder-animation="scrub"]` - dormant until the builder offers
- * that value. `pulse` was in the same arrangement until it was rebuilt as a
- * timed suite - see the retired block at the foot of this file.
+ * So the timed rules below are the default, and they are the only rules. The
+ * scrubbed variant that used to sit dormant further down is retired - see the
+ * note near the foot of this file, next to the retired scrubbed pulse. A
+ * section that genuinely wants to be driven by the scroll rather than triggered
+ * by it owns that motion itself and sits in `animationExcludedComponents`.
  *
  * The token layer is what makes the animation suites cheap. Every number below
  * is a custom property with a default, so a suite is a block that re-points
@@ -281,9 +281,9 @@
      short movement register. */
   --anim-reveal-distance: 28px;
   --anim-reveal-duration: 620ms;
-  /* Per-index delay. A real stagger, because there is a real clock now - the
-     scrubbed version below has to express the same idea as a range offset,
-     since a scroll timeline has no clock for `animation-delay` to work
+  /* Per-index delay. A real stagger, because there is a real clock - the
+     scrubbed variant this axis replaced had to express the same idea as a range
+     offset, since a scroll timeline has no clock for `animation-delay` to work
      against. */
   --anim-reveal-delay-step: 90ms;
   /* Decisive out-easing: most of the travel happens in the first third, so the
@@ -310,8 +310,11 @@
   --anim-pulse-delay: 180ms;
   /* Lateral's two travels, and they are in different units on purpose.
 
-     An ordinary unit moves a fixed 40px - far enough to read as coming from
-     somewhere, short enough that it is never a long slide across the page.
+     An ordinary unit moves NOTHING by default. The suite's idea is that one
+     panel slides and everything else fades in place, so a second thing moving
+     is what breaks it - see the rule further down. This ships at zero and is
+     kept as a dial rather than deleted: turn it up in the Style Guide and every
+     ordinary unit in a Lateral section gains that sideways travel.
 
      A media panel moves 100% OF ITS OWN WIDTH, so it starts exactly one panel
      outside its own box and arrives from off-screen rather than from a nudge.
@@ -319,7 +322,7 @@
      and a length large enough for the panel would throw a small card into the
      next county. The percentage is the only unit that means "my own edge"
      whatever size I am. */
-  --anim-lateral-distance: 40px;
+  --anim-lateral-distance: 0px;
   --anim-lateral-media-distance: 100%;
   /* Focus's one number: how far out of focus a unit starts.
 
@@ -329,38 +332,36 @@
      which is worse than not animating - a reader who glances at a heading
      mid-entrance should still be able to read it. */
   --anim-focus-blur: 10px;
-  /* The scrubbed variant's own range, kept apart from the timed tokens above
-     so the two can be tuned without colliding - one is measured in time, the
-     other in scroll distance. See the `scrub` block further down. */
-  --anim-scrub-entry-start: 24%;
-  --anim-scrub-entry-end: 62%;
-  --anim-scrub-stagger: 7%;
-}
+  /* Focus's own curve, and the reason it owns one.
 
-/*
- * The scrubbed variant's height cap. A percentage of `entry` is a percentage of
- * the SECTION, and that is the defect it fixes.
- *
- * `entry` runs for `min(subject height, scrollport height)` of scrolling, so
- * the same percentage is ~150px of travel on a trust strip and a full
- * scrollport on a nine-card bento. Uncapped, one token reads as a quick fade on
- * one section and a half-screen crawl on the next. A length is the same
- * wherever it lands; `min()` keeps the shorter, so a small section is never
- * handed a length that is most of its whole arrival.
- *
- * Guarded rather than assumed. If a browser will not parse a math function in
- * `animation-range`, the declaration would be dropped and the range would fall
- * back to `normal` - the whole `cover` range, which fades an element in over
- * its entire pass across the screen and reads as obviously broken. `@supports`
- * makes that unreachable: the cap applies where it parses, and everywhere else
- * the percentages above stand. Chrome 151 parses it.
- */
-@supports (animation-range-end: entry min(62%, 460px)) {
-  :root {
-    --anim-scrub-entry-start: min(24%, 200px);
-    --anim-scrub-entry-end: min(62%, 460px);
-    --anim-scrub-stagger: min(7%, 56px);
-  }
+     The shared `--anim-reveal-easing` is a decisive out-curve: most of the
+     progress lands in the first third. That is right for a TRAVEL, where the
+     unit should arrive and then settle, and wrong for a BLUR, where it means
+     the 10px is gone in the first ~200ms and the remaining 400ms is a tail
+     nobody can see. The entrance is nominally 620ms and reads as a third of it.
+
+     This curve spreads the same 620ms far more evenly, so the blur is still
+     resolving in the second half where the eye is actually on it. It is still
+     an out-curve - it starts immediately, no hesitation at the front, which an
+     ease-in-out would introduce and which reads as lag on an entrance.
+
+     Only the blur rule uses this. Everything else in the suite is a plain fade
+     and stays on the shared curve, so Focus's fades keep time with Rise's. */
+  --anim-focus-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Focus's own tempo is DELIBERATELY NOT DECLARED HERE.
+
+     `--anim-focus-duration` is read by the blur rule as
+     `var(--anim-focus-duration, var(--anim-reveal-duration))`, so unset means
+     "keep time with the shared rhythm" - which is the right default, and the
+     one the suite has always had. Declaring it at a value would decouple Focus
+     from the shared duration permanently, on a screen where nobody asked for
+     that.
+
+     The Style Guide offers it as an authorable token whose empty value means
+     inherit, and the promoted block OMITS the declaration rather than emitting
+     it empty. An empty custom property makes every var() reading it invalid at
+     computed-value time instead of taking its fallback - the same reason
+     `--live-cta-accent` is omitted rather than blanked. */
 }
 
 @keyframes section-reveal {
@@ -557,18 +558,17 @@
  *   [data-pagebuilder-animation]:not([data-pagebuilder-animation="none"])
  *     :not([data-pagebuilder-animation-state]) .reveal-on-scroll { opacity: 0 }
  *
- * Do not write that. It has two defects, and both are the kind that ship. It
- * also matches `scrub`, imposing the timed entrance's hidden state on a variant
- * that has its own scroll-driven range and never asked to be hidden by a clock.
- * And it makes "registered suite whose arrival rule is missing or misspelled" a
- * state that HIDES CONTENT INDEFINITELY - widening the hiding selector to be
- * helpful means a half-finished suite blanks the page. Per-suite, a suite with
- * no rules simply does nothing, which is the correct failure.
+ * Do not write that. It makes "registered suite whose arrival rule is missing
+ * or misspelled" a state that HIDES CONTENT INDEFINITELY - widening the hiding
+ * selector to be helpful means a half-finished suite blanks the page.
+ * Per-suite, a suite with no rules simply does nothing, which is the correct
+ * failure.
  *
- * `scrub` stays OUTSIDE this contract, gated exactly as it always was. It is
- * scroll-driven rather than timed, so it has no waiting state to own; folding
- * it in is a later decision. `pulse` used to sit beside it and no longer does -
- * it was rebuilt as a timed suite rather than promoted as written.
+ * It was also what kept the scrubbed variant out of this contract while it
+ * existed: scroll-driven rather than timed, it had no waiting state to own, and
+ * a generalised hider would have imposed a clock's hidden state on a range that
+ * never asked for one. Both it and the scrubbed pulse are retired now, and the
+ * argument for keeping the hiding rule per-suite stands on its own.
  * ================================================================== */
 
 @media (prefers-reduced-motion: no-preference) {
@@ -606,9 +606,9 @@
    * reader creeps or flicks past, which is the entire reason this is not
    * scrubbed.
    *
-   * The stagger is an `animation-delay` here. Read the scrubbed variant below
-   * for the same idea expressed as a range offset, which is what it has to be
-   * when the driver is a scroll position with no clock in it.
+   * The stagger is an `animation-delay`, which is only available because there
+   * is a clock. The scrubbed variant this replaced had to express the same idea
+   * as a range offset, since a scroll position has no clock in it.
    */
   [data-pagebuilder-animation="reveal"][data-pagebuilder-animation-state="in"]
     .reveal-on-scroll {
@@ -835,13 +835,22 @@
      That inversion is the suite's whole idea: a section is read as one thing
      arriving, and a slide only says "look at this" while it is the only slide
      on the screen. Four things entering from the left at once is just a page
-     that moves. */
+     that moves.
+
+     The zero is a TOKEN rather than a literal, and it used to be a literal
+     while `--anim-lateral-distance: 40px` sat declared and read by nothing -
+     the token's comment claimed ordinary units moved 40px, the rule moved them
+     none, and both comments were in this file disagreeing with each other. The
+     rule was right about the design, so the token now ships at 0px and this
+     reads it. That keeps the dial: turn it up in the Style Guide and promote,
+     and ordinary units travel. Left as a literal, a Style Guide control for it
+     would have been a control that appears to work and paints nothing. */
   [data-pagebuilder-animation-ready]
     [data-pagebuilder-animation="lateral"]:not([data-pagebuilder-animation-state])
     .reveal-on-scroll,
   [data-pagebuilder-animation="lateral"][data-pagebuilder-animation-state="in"]
     .reveal-on-scroll {
-    --anim-lateral-size: 0px;
+    --anim-lateral-size: var(--anim-lateral-distance);
     --anim-lateral-sign: -1;
     --anim-lateral-travel: calc(
       var(--anim-lateral-sign) * var(--anim-lateral-size)
@@ -974,8 +983,16 @@
     .reveal-role-heading,
   [data-pagebuilder-animation="focus"][data-pagebuilder-animation-state="in"]
     .reveal-role-accent {
-    animation: section-focus var(--anim-reveal-duration)
-      var(--anim-reveal-easing) both;
+    /* THE ONE ARRIVAL THAT MAY OWN ITS OWN TEMPO, and by default does not.
+       `--anim-focus-duration` is undeclared, so this falls back to the shared
+       rhythm and Focus keeps time with Rise - which is the right default and the
+       one the suite shipped with. The Style Guide offers it as an authorable
+       token whose empty value means inherit, so a blur that still reads short
+       after the easing fix can be given its own length without dragging the
+       other four suites along. */
+    animation: section-focus
+      var(--anim-focus-duration, var(--anim-reveal-duration))
+      var(--anim-focus-easing) both;
     animation-delay: calc(
       var(--reveal-index, 0) * var(--anim-reveal-delay-step)
     );
@@ -983,60 +1000,32 @@
 }
 
 /*
- * The scrubbed variant, kept whole and deliberately unreachable.
+ * RETIRED: the scrubbed variant and its three range tokens.
  *
- * Progress is the scroll position rather than a clock, so the motion tracks the
- * reader's hand exactly - which is wrong for an entrance, and right for the
- * handful of sections that want to be driven rather than triggered. It is
- * gated on a value the builder does not offer yet, the arrangement `pulse` used
- * to be in. Promoting it no longer needs a hand-maintained membership set: a
- * suite can declare `requiresRole` and be offered only where that role is
- * marked. What it does still need is a rebuild, for the same reason pulse did -
- * it is scrubbed, and everything else on this axis runs on a clock.
+ * It was gated on an animation value the builder never offered, kept whole and
+ * awaiting a rebuild for the same reason the scrubbed pulse needed one: its
+ * progress WAS the scroll position, where everything else on this axis runs on
+ * a clock. A trackpad flick put the whole range behind the reader before the
+ * motion registered, and no amount of range tuning fixes that -
+ * "starts late" and "lasts long" cannot both fit inside one screen of travel.
  *
- * Everything specific to it lives here: its own range tokens, its own height
- * cap, and the named timeline on the frame. The timed rules above share only
- * the keyframes and the distance token, so tuning one cannot disturb the other.
+ * It is deleted rather than kept dormant because the rebuild would reuse none
+ * of it, and because it was the one part of this axis that could not be
+ * authored in the Style Guide. Its tokens were declared twice - plain
+ * percentages, then capped `min()` values inside an `@supports` guard - and the
+ * promoted token block is spliced in at the END of this file, so promoting the
+ * percentages would have landed after the guard and silently removed the cap.
+ * Deleting it leaves the "every animation token is authorable" invariant with
+ * no exceptions, which is what makes `motion-token-agreement.test.ts` worth
+ * having.
+ *
+ * SCROLL-DRIVEN MOTION IS STILL SUPPORTED, just not through this axis. A
+ * section that wants to be driven rather than triggered owns that motion
+ * itself - "Sticky ideas" translates its sidebar bubble against the scroll on
+ * `requestAnimationFrame` - and is listed in `animationExcludedComponents`
+ * under "owns its own motion". That is the supported arrangement, and it needs
+ * nothing from here.
  */
-@supports (animation-timeline: view()) {
-  /* The section publishes its own arrival as a named timeline, so every marked
-     unit animates against the SECTION rather than against its own box - one
-     clock for the whole composition. Verified in Chrome: a descendant resolves
-     the name from its nearest declaring ancestor, so sibling frames declaring
-     the same name do not collide. */
-  [data-pagebuilder-animation="scrub"] {
-    view-timeline-name: --section-entrance;
-    view-timeline-axis: block;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    [data-pagebuilder-animation="scrub"] .reveal-on-scroll {
-      animation: section-reveal linear both;
-      animation-timeline: --section-entrance;
-      animation-range: entry
-        calc(
-          var(--anim-scrub-entry-start) + var(--reveal-index, 0) *
-            var(--anim-scrub-stagger)
-        )
-        entry
-        /*
-         * Clamped, which keeps a section at the very end of a document from
-         * being stranded part-faded: it can only travel its own height before
-         * scrolling stops, so a range asking for more than `entry 100%` has no
-         * scroll left to finish it. A deep stagger index degrades into several
-         * units landing together instead of a section that never finishes
-         * appearing.
-         */
-        min(
-          calc(
-            var(--anim-scrub-entry-end) + var(--reveal-index, 0) *
-              var(--anim-scrub-stagger)
-          ),
-          100%
-        );
-    }
-  }
-}
 
 /*
  * Ground texture drift.
@@ -4617,6 +4606,19 @@ body {
   --type-label-tracking: 0.1em;
   --type-label-wrap: wrap;
   --type-label-transform: uppercase;
+  --anim-reveal-duration: 620ms;
+  --anim-reveal-delay-step: 90ms;
+  --anim-reveal-distance: 28px;
+  --anim-reveal-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  --anim-wipe-duration: 720ms;
+  --anim-accent-scale-from: 0.94;
+  --anim-pulse-scale: 1.03;
+  --anim-pulse-duration: 620ms;
+  --anim-pulse-delay: 180ms;
+  --anim-lateral-distance: 0px;
+  --anim-lateral-media-distance: 100%;
+  --anim-focus-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --anim-focus-blur: 10px;
 }
 
 /* Text hierarchy spread, for grounds that cannot afford the standard one.

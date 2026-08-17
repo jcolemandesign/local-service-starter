@@ -76,6 +76,41 @@ describe("setPageExportApproval - style token changes", () => {
     expect(state.styleTokenCss).toContain("#222222");
   });
 
+  /**
+   * MOTION IS INSIDE THE APPROVAL FINGERPRINT, and it has to be.
+   *
+   * The comparison is over the whole promoted block, so a rhythm change counts
+   * exactly like a colour change: an export ships one `globals.css` for the
+   * whole site, and a page approved under a 620ms entrance would otherwise be
+   * re-frozen under a 1400ms one without anyone saying so.
+   *
+   * Asserted rather than assumed, because motion joined the block after this
+   * mechanism was written and nothing about the comparison mentions tokens by
+   * name - it would go on passing if the promotion silently stopped emitting
+   * them.
+   */
+  it("un-approves pages when only the motion tokens changed", async () => {
+    files.globals = `${beginMarker}\n:root { --live-service-ink: #111111; --anim-reveal-duration: 620ms; }\n${endMarker}`;
+
+    await setPageExportApproval({
+      approved: true,
+      clientSlug: "test-client",
+      pageId: "home",
+    });
+
+    // Same colours, slower entrance.
+    files.globals = `${beginMarker}\n:root { --live-service-ink: #111111; --anim-reveal-duration: 1400ms; }\n${endMarker}`;
+
+    const { invalidatedPageIds, state } = await setPageExportApproval({
+      approved: true,
+      clientSlug: "test-client",
+      pageId: "about",
+    });
+
+    expect(invalidatedPageIds).toEqual(["home"]);
+    expect(state.styleTokenCss).toContain("--anim-reveal-duration: 1400ms");
+  });
+
   it("does not re-freeze tokens when removing an approval", async () => {
     await setPageExportApproval({
       approved: true,

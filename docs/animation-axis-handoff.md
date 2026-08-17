@@ -45,10 +45,10 @@ means starting it earlier, and the earliest point is the instant the section's
 first pixel crosses the bottom edge, which is too early to look at. **"Starts
 late" and "lasts long" cannot both fit inside one screen of travel.**
 
-Scrubbing is still wanted for a few sections and is kept whole, gated on
-`[data-pagebuilder-animation="scrub"]` — dormant until the builder offers that
-value. §4.5 has the cost of promoting it — and the correction that `pulse`,
-which used to sit in the same arrangement, was rebuilt rather than promoted.
+Scrubbing was kept whole and dormant for a while, and is now retired — §4.5. A
+section that genuinely wants to be driven by the scroll owns that motion itself
+and sits in `animationExcludedComponents`; nothing on this axis is driven by the
+scroller.
 
 Both marker rules in `globals.css` are scoped to that attribute, so "off by
 default" is the selector matching nothing rather than markup being stripped. A
@@ -85,13 +85,16 @@ generated root layout is source text the import walk never reads.
 
 ### The token layer
 
-Every value is a custom property with a default (`--anim-reveal-distance`,
-`--anim-reveal-duration`, `--anim-reveal-delay-step`, `--anim-reveal-easing`,
-`--anim-pulse-scale` / `-duration` / `-delay`, and the scrubbed variant's own
-`--anim-scrub-entry-start` / `-entry-end` / `-stagger`).
+Every value is a custom property with a default. The full set is declared in
+`src/content/motion-tokens.ts`, grouped by which suites consume it — that file,
+not this list, is the inventory, and the Style Guide's controls are derived from
+it. See the 2026-08-17 "motion is a Style Guide axis" entry at the end for the
+group table and the rule that every suite must name its group.
 
-**This is what makes the future style-guide "animation suites" cheap** — a suite
-re-points them, and touches no section. `animation-css-agreement` fails if a
+**This is what makes a suite cheap** — a suite re-points tokens, and touches no
+section. It is also what makes motion authorable at all: a literal in a keyframe
+is a value the Style Guide cannot reach.
+`animation-css-agreement` fails if a
 literal creeps back into the keyframes, the duration or the stagger.
 
 It is also what §4.4 turned out to need. The tokens are read from the *animating
@@ -108,7 +111,9 @@ sections may no longer set `--anim-*` themselves. See §3 and §8.
 |---|---|
 | Membership, exclusions, the other style axes | `src/content/section-style-options.ts` |
 | **Suite registry, role vocabulary, `SectionAnimation`, parser + resolver** | `src/content/section-animations.ts` |
-| Keyframes, tokens, the three states, the dormant scrub | `src/app/globals.css` (~line 207–420) |
+| Keyframes, tokens, the three states | `src/app/globals.css` (~line 200–1000) |
+| **Motion token groups, defaults, validators, both emitters** | `src/content/motion-tokens.ts` |
+| The Style Guide's motion controls | `src/components/sections/StyleGuideMotionControls.tsx` |
 | The trigger — one observer, renders nothing | `src/components/primitives/SectionEntrance.tsx` |
 | Where it is mounted | `src/app/layout.tsx`, and `buildRootLayout` in `site-export.ts` |
 | Staged/export frame + staged override fold | `src/components/sections/PageTemplatePreview.tsx` |
@@ -156,10 +161,20 @@ replay a two-line reset rather than a fight with the cascade.
   resolver accepts exactly the offered set, no ungated marker rule, token layer
   intact, the entrance is **timed rather than scrubbed** (has a duration, staggers
   by delay, is on no scroll timeline), the waiting rule is scoped to the
-  observer's ready flag **and excludes frames that already have a state**, the
-  scrubbed variant is intact, capped, clamped and unoffered, **every registered
+  observer's ready flag **and excludes frames that already have a state**,
+  nothing on the axis is attached to a scroll timeline, **every registered
   suite has both halves of the timed contract**, and **`differentiatedRoles`
   matches the stylesheet in both directions**.
+- `motion-token-agreement.test.ts` — the tokens and the controls. Shipped
+  defaults match the authored `:root`, **every declared token has a control and
+  every control has a token the stylesheet reads**, an inheriting token is
+  undeclared and has a `var()` fallback, every suite names a control group that
+  exists, the preview and the promoted block emit the same declarations, and a
+  value that could close its own declaration is refused.
+- `style-guide-motion-promotion.test.ts` — the route, end to end: a rhythm posted
+  to `/api/style-guide-tokens` lands inside the markers, after the authored
+  default, replaces the previous block, and survives the export's vocabulary
+  rename.
 - `hero-variant-parity.test.ts` — from the bug in §5.
 
 ---
@@ -384,9 +399,14 @@ section marks*, and a per-section duration dial is the kind of knob that makes
 every page's motion slightly different — which is what the style-guide suites
 exist to prevent.
 
-### 4.5 Two values are gated but not offered: `scrub` and `pulse`
+### 4.5 Two values were gated but not offered: `scrub` and `pulse`
 
-**`scrub`** is the original scroll-driven reveal, kept whole. Progress is the
+> **Both are resolved.** `pulse` was rebuilt as a timed suite and ships; `scrub`
+> is retired outright. The section is kept for the reasoning, and each part
+> carries its own correction at the end. Neither value is gated-but-unoffered any
+> more, and nothing in the library is today.
+
+**`scrub`** was the original scroll-driven reveal, kept whole. Progress is the
 reader's scroll position rather than a clock, which is wrong for an entrance —
 that is why it is not the default any more — and right for the handful of
 sections that should be *driven* rather than triggered. Everything it needs is
@@ -424,9 +444,30 @@ two-halves contract. The old `.pulse-on-scroll` marker is retired — a second
 marker class is exactly what the role vocabulary makes unnecessary, since a new
 effect is a new *role* on the one marker.
 
-**`scrub` still sits where this section describes**, and inherits the correction:
-its membership problem is solved by `requiresRole`, but it is still scrubbed, so
-it still needs a rebuild rather than a promotion.
+**`scrub` is retired — 2026-08-17.** It inherited the correction above and then
+the conclusion: its membership problem was solved by `requiresRole`, but it was
+still scrubbed, so it needed a rebuild rather than a promotion — and the rebuild
+would have reused none of it. It is deleted rather than left dormant, tokens,
+height cap and rules together.
+
+Two reasons beyond the rebuild. It was the one part of the axis that **could not
+be promoted safely**: its range tokens were declared twice, plain percentages and
+then capped `min()` values inside an `@supports` guard, and the promoted token
+block is spliced in at the *end* of `globals.css` — promoting the percentages
+would have landed after the guard and silently removed the cap. Retiring it
+leaves "every animation token is authorable" with no exceptions, which is what
+makes that test worth having.
+
+And it was covering a need that is already met a better way. **Scroll-driven
+motion is still supported, just not through this axis.** A section that wants to
+be *driven* rather than triggered owns that motion itself — "Sticky ideas"
+translates its sidebar bubble against the scroll on `requestAnimationFrame` — and
+sits in `animationExcludedComponents` under "owns its own motion". That is the
+supported arrangement, and it needs nothing from the suite registry.
+
+`animation-css-agreement.test.ts` now pins the absence: no rule may attach an
+`animation-timeline`, declare a `view-timeline-name`, or reintroduce the scrub
+tokens.
 
 ---
 
@@ -788,6 +829,67 @@ Also open:
   headline arrives, which is intended; if a given section should only offer one,
   `suiteExcludedComponents` is now how to say so. It is empty.
 - **`scrub` is still gated, unoffered and unrebuilt** — §4.5.
+
+### Where this stands — 2026-08-17, later: motion is a Style Guide axis
+
+**The section above is superseded on two points. Both were resolved rather than
+worked around, and the "Copy as CSS" suggestion was rejected.**
+
+**Motion promotes like every other token now.** The rhythm controls are no longer
+private state on the gallery; they write the same Style Guide draft that colour,
+type, radii and spacing write, and the existing **Promote Style Guide** button
+writes them into the marker block in `globals.css`. Everything downstream reads
+that block through ordinary cascade — the gallery, pagebuilder, staged pages,
+real pages — and `freezeStyleTokens` carries it into the exported site. Approval
+invalidation came free: `setPageExportApproval` compares the whole block, so
+re-promoting a rhythm correctly un-approves pages approved under the old timing.
+
+A write path from a dev screen into the stylesheet turned out to be exactly what
+the Style Guide already was. Nothing new was built for it.
+
+**The controls are grouped by motion family, and the groups are data.**
+`src/content/motion-tokens.ts` declares them; the draft's defaults, the live
+preview's inline variables, the promoted CSS, the validators and the panels are
+all derived from it.
+
+| Group | Tokens | Consumed by |
+|---|---|---|
+| `rhythm` | duration, stagger, distance, easing | all five suites |
+| `wipe` | wipe duration, accent scale-from | Wipe |
+| `pulse` | beat scale, beat duration, beat delay | Pulse |
+| `lateral` | unit travel, media travel | Lateral |
+| `focus` | blur easing, blur amount, blur duration | Focus |
+
+**Every suite declares which group authors it.** `controlGroups` is a *required*
+field on the suite definition, so adding a suite without answering "what authors
+this?" is a compile error. A suite whose motion model cannot use an existing
+group must bring its own group and its own tokens in the same change. The rule
+in one line: **no animation may exist whose live behaviour cannot be authored and
+promoted through the Style Guide.**
+
+`motion-token-agreement.test.ts` enforces it in both directions — a token
+declared in the stylesheet with no control, and a control whose token the
+stylesheet never reads, both fail.
+
+**Focus's easing is still Focus's alone**, and the shared control no longer
+touches it. The gallery's old picker set both easing tokens at once because it
+was the only control; with a real Focus group that workaround would defeat the
+distinction the suite exists to express. Focus also gained
+`--anim-focus-duration`, undeclared and inherit-by-default — the blur rule reads
+`var(--anim-focus-duration, var(--anim-reveal-duration))`, so unset means "keep
+time with Rise". That is the lever the open Focus-timing item was waiting on, and
+it is now a control rather than a hand edit.
+
+**Two things were found and fixed on the way:**
+
+- **`--anim-lateral-distance` was dead.** Declared at 40px, read by nothing; the
+  rule hardcoded `0px`, and the two comments in `globals.css` disagreed about
+  which was intended. The rule was right about the design — one panel travels,
+  everything else fades in place — so the token ships at `0px` and the rule now
+  reads it. The dial survives; nothing on any page moved. The widened
+  custom-properties test would have caught this years earlier had it not named
+  four tokens by hand.
+- **`scrub` is retired**, tokens and rules together. See §4.5.
 
 ### What Focus found
 

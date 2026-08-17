@@ -50,7 +50,7 @@ Section library          src/components/sections/ + src/content/section-library-
 | `/dev/staged-pages` | Staged Pages | Per-page status, refresh, alts, approval and export controls |
 | `/dev/staged-pages/[pageId]`, `.../debug` | Staged preview | Renders the staged page; debug view shows raw fields |
 | `/dev/content-editor` | Content Editor | Edits staged copy, assets and per-section style overrides |
-| `/dev/style-guide` | Style Guide | Global tokens; promote writes an override block into `globals.css` |
+| `/dev/style-guide` | Style Guide | Global tokens — colour, type, spacing, shape and **motion**; promote writes an override block into `globals.css` |
 
 ### Where data lives
 
@@ -315,6 +315,18 @@ becomes a projection of it; hand-listing it is how the two drift while both look
 right. It also carries a `status`, so a suite can be real and watchable in the
 style guide without being selectable yet. See `docs/animation-axis-handoff.md`
 §8.
+
+The same reasoning runs one level down, into the Style Guide. A suite's *numbers*
+— duration, stagger, distance, easing, and whatever a given suite owns — are
+declared in `src/content/motion-tokens.ts`, grouped by which suites consume them,
+and the draft's defaults, the live preview, the promoted CSS, the validators and
+the control panels are all derived from that one declaration. Each suite names
+the group or groups that author it in a required `controlGroups` field, so a
+suite whose motion model needs numbers no group has must add the tokens and the
+controls in the same change. **No animation may exist whose live behaviour cannot
+be authored and promoted through the Style Guide** — a value that can only be
+changed by editing `globals.css` is a value no editor can reach, which is the
+state the axis shipped in and the reason this rule is written down.
 
 ---
 

@@ -71,6 +71,8 @@ New toggle axes follow the copy-affecting vs copy-neutral rule in `docs/builder-
 
 Sections own no motion, the same way they own no colour. A section marks which of its elements are revealable units and which index each one is; whether any of it moves is the section frame's animation attribute. Read `docs/animation-axis-handoff.md` before adding a marker class, marking a new section, or tuning any animation token.
 
+Motion tokens are authored in the Style Guide and promoted like every other token — never hand-edited in `globals.css`. The groups live in `src/content/motion-tokens.ts`, and every suite declares which group authors it. **No animation may exist whose live behaviour cannot be authored and promoted through the Style Guide**: a new suite that needs numbers no existing group has must add its tokens and its controls in the same change. A literal in a keyframe is a value the Style Guide cannot reach, and `motion-token-agreement.test.ts` fails both a token with no control and a control whose token nothing reads.
+
 Tokens should be design-facing and easy to reference while building.
 
 These are the tokens the system actually uses. Use them — do not invent parallel names.

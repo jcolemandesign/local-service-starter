@@ -142,8 +142,18 @@ export const CARD_CONTEXT_COVERAGE = {
    * review badge were translucent white chips over a scrim the section painted
    * itself; they are now ordinary cards on the card token, which is what let
    * the hero join `cardStyleComponents` and take the override axes.
+   *
+   * 131 -> 132: `StyleGuideMotionControls`, the panels that author the animation
+   * tokens. A style-guide control panel, so the first note above applies to it -
+   * but it is counted for the same reason the radius, surface and semantic
+   * spacing control panels already are: it is a `Card` on the card token, like
+   * theirs. What that note removed was the gap and radius SPECIMEN cards, which
+   * were repainted in the chrome palette; the control panels themselves have
+   * always been in this figure. Bringing this one out of it would mean making it
+   * the one control panel that looks different from its siblings, which is a
+   * worse trade than a number that is four dev panels wide and says so.
    */
-  covered: 131,
+  covered: 132,
   total: 148,
 } as const;
 

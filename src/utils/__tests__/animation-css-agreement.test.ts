@@ -3,6 +3,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
+import { motionTokenControls } from "@/content/motion-tokens";
 import {
   sectionAnimationRoles,
   sectionAnimationSuites,
@@ -408,24 +409,22 @@ describe("animation css agreement", () => {
   });
 
   /**
-   * The token layer is what makes the future style-guide animation suites a
-   * token swap rather than an edit to every animated section. If a literal
-   * creeps back into the keyframes, the duration or the stagger, a suite
-   * silently cannot move it.
+   * The token layer is what makes a motion change a token swap rather than an
+   * edit to every animated section. If a literal creeps back into a keyframe, a
+   * duration or a stagger, the Style Guide control for it silently stops
+   * working.
+   *
+   * WIDENED FROM THE FOUR REVEAL TOKENS TO EVERY REGISTERED CONTROL. It used to
+   * name four tokens by hand, which is why it never noticed that
+   * `--anim-lateral-distance` was declared and read by nothing. Derived from the
+   * registry, a token that stops being read fails here the moment it happens.
    */
-  it("drives the reveal from custom properties, not literals", () => {
-    for (const token of [
-      "--anim-reveal-distance",
-      "--anim-reveal-duration",
-      "--anim-reveal-delay-step",
-      "--anim-reveal-easing",
-    ]) {
-      expect(css, `${token} is not declared`).toContain(`${token}:`);
+  it("drives every authored token from a custom property, not a literal", () => {
+    for (const control of motionTokenControls) {
       expect(
-        css.split(`${token}:`).length,
-        `${token} is declared but never read, so it cannot be what a suite re-points`,
-      ).toBeGreaterThan(1);
-      expect(css, `${token} is never referenced`).toContain(`var(${token}`);
+        css,
+        `${control.token} is offered as a Style Guide control but the stylesheet never reads it, so authoring it would paint nothing`,
+      ).toContain(`var(${control.token}`);
     }
   });
 
@@ -492,34 +491,41 @@ describe("animation css agreement", () => {
   });
 
   /**
-   * Scrubbing is still wanted for a few sections, so it is kept whole rather
-   * than deleted and rebuilt later - gated on a value the builder does not
-   * offer, the same arrangement `pulse` is in.
+   * NOTHING ON THIS AXIS IS DRIVEN BY THE SCROLLER.
+   *
+   * The scrubbed variant used to sit here gated and unoffered, kept whole for a
+   * rebuild. It is retired: its progress WAS the scroll position, so a trackpad
+   * flick put the whole range behind the reader before the motion registered,
+   * and no range tuning fixes that - "starts late" and "lasts long" cannot both
+   * fit inside one screen of travel. The scrubbed pulse was retired earlier for
+   * the same reason.
+   *
+   * It was also the one part of the axis that could not be authored in the
+   * Style Guide. Its tokens were declared twice - plain percentages, then capped
+   * `min()` values inside an `@supports` guard - and the promoted token block is
+   * spliced in at the END of `globals.css`, so promoting the percentages would
+   * have landed after the guard and silently removed the cap. Retiring it leaves
+   * `motion-token-agreement.test.ts` with an invariant that has no exceptions.
+   *
+   * Scroll-driven motion is still supported, just not through this axis: a
+   * section that wants to be driven rather than triggered owns that motion
+   * itself and sits in `animationExcludedComponents`. This test pins that no
+   * suite regains a scroll timeline by the back door.
    */
-  it("keeps the scrubbed variant intact but unoffered", () => {
-    expect(gated).toContain("scrub");
+  it("keeps scroll-scrubbed motion off this axis", () => {
+    expect(gated).not.toContain("scrub");
     expect(offered).not.toContain("scrub");
 
-    const scrubbed = blockAt(css, '[data-pagebuilder-animation="scrub"] .reveal-on-scroll');
+    const rules = css.replace(/\/\*[\s\S]*?\*\//g, "");
 
     expect(
-      scrubbed,
-      "the scrubbed rule is no longer driven by the section's own timeline",
-    ).toContain("animation-timeline: --section-entrance");
-
-    const frameRule = blockAt(css, '[data-pagebuilder-animation="scrub"] {');
-
+      rules,
+      "a scroll timeline is attached to something again - progress driven by the reader's hand is the mechanism this axis was rebuilt to lose",
+    ).not.toContain("animation-timeline:");
     expect(
-      frameRule,
-      "no frame declares --section-entrance, so the name the scrubbed rule references resolves to nothing",
-    ).toContain("view-timeline-name: --section-entrance");
-
-    // Its range is capped in a length, because a percentage of `entry` is a
-    // percentage of the section - the same token is ~150px of travel on a trust
-    // strip and a full scrollport on a nine-card bento.
-    const cap = blockAt(css, "@supports (animation-range-end:");
-
-    expect(cap, "the scrubbed range has lost its height cap").not.toBe("");
+      rules,
+      "a named view timeline is declared again, which is how the scrubbed variant published the section's arrival to its units",
+    ).not.toContain("view-timeline-name:");
 
     for (const token of [
       "--anim-scrub-entry-start",
@@ -527,28 +533,38 @@ describe("animation css agreement", () => {
       "--anim-scrub-stagger",
     ]) {
       expect(
-        cap,
-        `${token} is not re-pointed under the cap, so it still scales with the section's height`,
-      ).toContain(`${token}: min(`);
-
-      // A dropped `animation-range` falls back to `normal` - the whole `cover`
-      // range - so the percentages have to stand outside the guard.
-      const declarations = css
-        .split(`${token}:`)
-        .slice(1)
-        .map((rest) => rest.slice(0, rest.indexOf(";")));
-      const unguarded = declarations.filter(
-        (value) => !cap.includes(`${token}:${value};`),
-      );
-
-      expect(
-        unguarded,
-        `${token} is only declared inside the @supports guard, so a browser that cannot parse the cap gets no range at all`,
-      ).not.toEqual([]);
+        css,
+        `${token} is back. It is a scroll-distance token, and it cannot be promoted safely - the @supports height cap it needs would be defeated by the promoted block, which is appended after it`,
+      ).not.toContain(token);
     }
+  });
 
-    // Clamped, so a section flush with the end of a document is not stranded
-    // part-faded with no scroll left to finish it.
-    expect(scrubbed.replace(/\s+/g, "")).toContain("100%)");
+  /**
+   * THE LATERAL DEFAULT IS A TOKEN, NOT A LITERAL, and it was a literal.
+   *
+   * `--anim-lateral-distance: 40px` sat declared and read by nothing while the
+   * rule hardcoded `0px`; the token's comment claimed ordinary units moved 40px
+   * and the rule moved them none. The rule was right about the design - one
+   * panel travels, everything else fades in place - so the token ships at zero
+   * and the rule reads it.
+   *
+   * That is what makes a Style Guide control for it honest. Pointed at a
+   * literal, the control would have been the exact failure this project guards
+   * against everywhere else: one that appears to work and paints nothing.
+   */
+  it("drives lateral's default travel from its token", () => {
+    const shared = blockAt(
+      css,
+      '[data-pagebuilder-animation="lateral"][data-pagebuilder-animation-state="in"]\n    .reveal-on-scroll',
+    );
+
+    expect(
+      shared,
+      "the lateral travel rule is missing, so nothing composes the suite's size and sign",
+    ).not.toBe("");
+    expect(
+      shared,
+      "lateral's default size is a literal again - a Style Guide control for --anim-lateral-distance would then author a token nothing reads",
+    ).toContain("--anim-lateral-size: var(--anim-lateral-distance)");
   });
 });

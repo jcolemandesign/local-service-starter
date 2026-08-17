@@ -5,6 +5,11 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { deriveDarkSurface } from "@/content/color-palette-adapter";
 import { derivedColorValues } from "@/content/color-derivations";
 import { resolveBorderWidthOption } from "@/content/section-style-options";
+import {
+  defaultMotionTokens,
+  motionTokenDeclarations,
+  normalizeMotionTokens,
+} from "@/content/motion-tokens";
 import { type TypeRole, typePalettes } from "@/content/type-palettes";
 
 export type StyleGuideColorTokens = {
@@ -87,6 +92,20 @@ export type StyleGuideTokenDraft = StyleGuideColorTokens & {
   typeRoleOverrides: Record<string, string>;
   typeRoles: TypeRole[];
   typeSelectedRoleId: string;
+  /**
+   * The animation tokens, keyed by CSS custom property name.
+   *
+   * A record rather than flat keys because the set is DERIVED from
+   * `motionControlGroups` - adding a motion token must not mean editing this
+   * type, the default draft, the preview builder, the promotion route and the
+   * validator in five separate places. `typeRoleOverrides` is the existing
+   * precedent for a record on the draft.
+   *
+   * A value of `""` is meaningful for tokens that declare `inheritsFrom`: it
+   * means "keep time with the token I inherit from", and both emitters omit the
+   * declaration rather than writing it blank.
+   */
+  motionTokens: Record<string, string>;
 };
 
 type StyleGuideLiveSurfaceProps = {
@@ -186,6 +205,7 @@ export const defaultStyleGuideTokenDraft: StyleGuideTokenDraft = {
   typeRoleOverrides: { ...typePalettes[0].roleFontOverrides },
   typeRoles: typePalettes[0].roles.map((role) => ({ ...role })),
   typeSelectedRoleId: typePalettes[0].roles[0]?.id ?? "",
+  motionTokens: { ...defaultMotionTokens },
 };
 
 const numberFormat = new Intl.NumberFormat("en-US", {
@@ -311,6 +331,12 @@ function normalizeStyleGuideDraft(value: unknown): StyleGuideTokenDraft {
     ...savedColorTokens,
     activeBorderWidthName: borderWidthOption.name,
     activeBorderWidthValue: borderWidthOption.value,
+    // Rebuilt from the registry rather than spread, because a spread would
+    // replace the whole record: a draft saved before a motion token existed
+    // would load that token as `undefined` and emit nothing for it. Same reason
+    // the colour overhaul made its two new swatches optional - a saved state has
+    // to keep loading, or an approved page's token set stops being reachable.
+    motionTokens: normalizeMotionTokens(savedDraft.motionTokens),
   };
 }
 
@@ -404,6 +430,11 @@ export function buildStyleVariables(
     "--radius-xl-token": `${draft.radiusXl}px`,
     "--live-shadow-service": serviceShadow,
     "--shadow-service": serviceShadow,
+    // The same declarations the promoted block emits, from the same function.
+    // Everything the Style Guide renders sits inside this element, so the motion
+    // gallery's specimens read the draft with no inline style of their own -
+    // which is what replaced the gallery's private React state.
+    ...Object.fromEntries(motionTokenDeclarations(draft.motionTokens)),
     ...Object.fromEntries(typeVariableEntries(draft)),
   };
 }
@@ -456,8 +487,15 @@ export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) 
 
   function replaceDraft(next: StyleGuideTokenDraft) {
     // Merged over the defaults so a slot saved before a token was added still
-    // loads, with the new token at its default rather than undefined.
-    setDraft({ ...defaultStyleGuideTokenDraft, ...next });
+    // loads, with the new token at its default rather than undefined. The
+    // motion record is rebuilt rather than spread for the same reason, one level
+    // down - a spread restores the whole record and takes any token the slot
+    // predates with it.
+    setDraft({
+      ...defaultStyleGuideTokenDraft,
+      ...next,
+      motionTokens: normalizeMotionTokens(next.motionTokens),
+    });
   }
 
   function resetDraft() {

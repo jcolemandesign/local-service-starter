@@ -6,6 +6,10 @@ import {
 } from "@/content/color-palette-adapter";
 import { rungOverrideCss } from "@/content/color-rungs";
 import { derivedColorValues } from "@/content/color-derivations";
+import {
+  motionTokenDeclarations,
+  normalizeMotionTokens,
+} from "@/content/motion-tokens";
 import { requireBuilderApiAccess } from "@/utils/builder-access";
 import {
   type CapitalizationStyle,
@@ -80,6 +84,15 @@ type StyleGuideTokenDraft = {
   typeGlobalFont: string;
   typeRoleOverrides: Record<string, string>;
   typeRoles: TypeRole[];
+  /**
+   * The animation tokens, keyed by CSS custom property name.
+   *
+   * Optional for the same reason `bgDarkSurface` and `ctaAccent` are: every slot
+   * saved before motion joined the axis lacks the key, and those slots must keep
+   * promoting. `normalizeMotionTokens` fills the whole set from the registry's
+   * defaults, so an absent key promotes the shipped rhythm rather than nothing.
+   */
+  motionTokens?: Record<string, string>;
 };
 
 const globalsPath = path.join(process.cwd(), "src", "app", "globals.css");
@@ -257,6 +270,12 @@ function normalizeTokens(tokens: Partial<StyleGuideTokenDraft> | undefined) {
     typeGlobalFont: normalizeFontChoice(tokens.typeGlobalFont, false),
     typeRoleOverrides: normalizeTypeRoleOverrides(tokens.typeRoleOverrides),
     typeRoles: normalizeTypeRoles(tokens.typeRoles),
+    // Drops unknown names and snaps bad values back to the shipped default
+    // rather than throwing. A single stale key from an old slot should not stop
+    // every other token in the style guide from landing - and the values here go
+    // straight into a stylesheet, so the grammars are exact and easings are an
+    // allowlist rather than free-form CSS.
+    motionTokens: normalizeMotionTokens(tokens.motionTokens),
   };
 }
 
@@ -559,6 +578,14 @@ function hexToRgbChannels(value: string) {
 function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   const serviceShadow = `${tokens.shadowX}px ${tokens.shadowY}px ${tokens.shadowBlur}px rgb(${hexToRgbChannels(tokens.shadowColor)} / ${tokens.shadowAlpha})`;
   const typeVariables = typeVariableLines(tokens).join("\n");
+  // Built by the same function the live preview uses, so the rhythm you judged
+  // in the gallery is the rhythm that lands in the stylesheet. A token left to
+  // inherit is omitted here rather than emitted empty - an empty custom property
+  // makes every var() reading it invalid at computed-value time instead of
+  // taking its fallback, which would break the rule rather than let it inherit.
+  const motionVariables = motionTokenDeclarations(tokens.motionTokens)
+    .map(([name, value]) => `  ${name}: ${value};`)
+    .join("\n");
 
   return `${beginMarker}
 :root {
@@ -638,6 +665,7 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   --site-grid-gap: ${tokens.activeSiteGridGapValue};
   --shadow-service: ${serviceShadow};
 ${typeVariables}
+${motionVariables}
 }
 ${rungOverrideCss(
   toColorPalette({

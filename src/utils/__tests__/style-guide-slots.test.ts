@@ -1,5 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import {
+  defaultMotionTokens,
+  normalizeMotionTokens,
+} from "@/content/motion-tokens";
+
 // Virtual filesystem, so the suite never writes a real slots file.
 const files = new Map<string, string>();
 
@@ -117,5 +122,52 @@ describe("style guide slots", () => {
   it("normalizes slot ids", () => {
     expect(sanitizeSlotId(" Slot 1 ")).toBe("slot-1");
     expect(sanitizeSlotId(42)).toBe("");
+  });
+
+  /**
+   * Motion rides in the slot like every other token.
+   *
+   * A slot stores the token DRAFT rather than the compiled CSS, so loading one
+   * has to restore an editable rhythm, not just repaint it. The record is
+   * carried opaquely here - `tokens` is `Record<string, unknown>` on purpose -
+   * which is what let motion join the axis with no change to this file's
+   * storage shape at all.
+   */
+  it("round-trips the motion tokens", async () => {
+    const motionTokens = {
+      "--anim-reveal-duration": "1400ms",
+      "--anim-focus-blur": "24px",
+      "--anim-focus-duration": "",
+    };
+
+    await saveStyleGuideSlot({
+      name: "Slow",
+      slotId: "slot-1",
+      tokens: { ...tokens, motionTokens },
+    });
+
+    const [slot] = await readStyleGuideSlots();
+
+    expect(slot.tokens.motionTokens).toEqual(motionTokens);
+  });
+
+  /**
+   * A slot saved before motion joined the axis still loads.
+   *
+   * Every slot in the real file predates this, and an approved page records the
+   * token set it was approved under - a slot that failed to load, or loaded with
+   * an undefined rhythm, would take the shared timing off the site it was
+   * approved for. `normalizeMotionTokens` fills the whole set from the registry,
+   * and this pins that the storage layer does not stand in the way.
+   */
+  it("loads a slot saved before motion was part of the draft", async () => {
+    await saveStyleGuideSlot({ name: "Old", slotId: "slot-1", tokens });
+
+    const [slot] = await readStyleGuideSlots();
+
+    expect(slot.tokens.motionTokens).toBeUndefined();
+    expect(normalizeMotionTokens(slot.tokens.motionTokens)).toEqual(
+      defaultMotionTokens,
+    );
   });
 });
