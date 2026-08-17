@@ -579,6 +579,45 @@ describe("animation css agreement", () => {
   });
 
   /**
+   * SETTLE'S MEDIA PANEL DOES NOT TRAVEL, and proving it needs the indirection.
+   *
+   * `section-reveal` travels by `--anim-reveal-distance`. A suite cannot hand a
+   * keyframe a different variable, only a different value for the one it names -
+   * so Settle zeroing its OWN distance on the panel did nothing at all, and the
+   * bled panel rose its full 28px while the picture scaled inside it. What that
+   * looked like was the photograph's top edge sliding up to meet the section's:
+   * the exact band of bare ground the media role exists to prevent.
+   *
+   * Both halves are asserted because either alone is satisfiable while broken.
+   */
+  it("stops settle's media panel travelling", () => {
+    const frame = blockAt(css, '[data-pagebuilder-animation="settle"] {');
+
+    expect(
+      frame,
+      "settle no longer re-points --anim-reveal-distance, so its own distance control cannot reach the keyframe that does the travelling",
+    ).toContain("--anim-reveal-distance: var(--anim-settle-distance)");
+
+    const panel = blockAt(
+      css,
+      '[data-pagebuilder-animation="settle"][data-pagebuilder-animation-state="in"]\n    .reveal-role-media {',
+    );
+
+    expect(
+      panel,
+      "settle's media panel no longer zeroes its travel, so a bled panel rises and opens bare ground under its own crop",
+    ).toContain("--anim-settle-distance: 0px");
+    // The one the KEYFRAME reads. Zeroing only Settle's own token was the first
+    // fix and it changed nothing: a var() inside a custom property resolves
+    // where it is declared, so the frame's indirection had already computed to
+    // a number by the time it inherited down here.
+    expect(
+      panel,
+      "settle's media panel does not zero --anim-reveal-distance, which is the token section-reveal actually travels by - the panel will rise regardless of Settle's own distance",
+    ).toContain("--anim-reveal-distance: 0px");
+  });
+
+  /**
    * The scale is opacity-free, because the panel around it is already fading.
    *
    * Two opacity animations on nested elements multiply into a muddy one - the

@@ -783,6 +783,31 @@
    * differently rather than two that treat it identically. If the distinction
    * holds up here, `media` is a real role.
    */
+  /* THE KEYFRAME READS RISE'S TOKEN, SO SETTLE POINTS IT AT ITS OWN.
+   *
+   * `section-reveal` travels by `var(--anim-reveal-distance)`, and a suite
+   * cannot hand a keyframe a different variable - only a different value for
+   * the one it names. Re-pointing it here is what lets Settle's own distance
+   * control drive the rise on everything that is not media.
+   *
+   * IT DOES NOT REACH THE MEDIA PANEL, and that is a fact about custom
+   * properties rather than about this rule. A `var()` inside a custom property
+   * is substituted where the property is DECLARED, so this computes to 28px
+   * here and inherits as the resolved length; a descendant re-declaring
+   * `--anim-settle-distance` cannot reach back into a value that is already a
+   * number. The media rule below therefore zeroes `--anim-reveal-distance`
+   * directly, exactly as Rise's media rule does.
+   *
+   * WITHOUT THAT THE PANEL STILL TRAVELLED. Zeroing Settle's own distance did
+   * nothing to a keyframe that never reads it, so the bled panel rose its full
+   * 28px while the picture scaled inside it - and what you saw was the
+   * photograph's top edge sliding up to meet the section's, which is precisely
+   * the band of bare ground the media role exists to prevent.
+   */
+  [data-pagebuilder-animation="settle"] {
+    --anim-reveal-distance: var(--anim-settle-distance);
+  }
+
   [data-pagebuilder-animation-ready]
     [data-pagebuilder-animation="settle"]:not([data-pagebuilder-animation-state])
     .reveal-on-scroll {
@@ -811,7 +836,11 @@
     .reveal-role-media,
   [data-pagebuilder-animation="settle"][data-pagebuilder-animation-state="in"]
     .reveal-role-media {
+    /* Both, and both are load-bearing. The settle token zeroes the waiting
+       rule's own `translate`; the reveal token zeroes the keyframe's, which is
+       the one that actually animates and which reads Rise's name. */
     --anim-settle-distance: 0px;
+    --anim-reveal-distance: 0px;
   }
 
   /* THE SETTLE ITSELF, AND IT IS THE PICTURE THAT MOVES, NOT THE PANEL.
