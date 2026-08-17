@@ -53,6 +53,32 @@ function normalize(css) {
 }
 
 /**
+ * A number written the way the compiler writes it.
+ *
+ * THE COMPILER REWRITES VALUES IT CONSIDERS EQUIVALENT, and a value check that
+ * does not know that reports a mismatch on every run - which is the same as
+ * having no check, only louder. Two rewrites are handled, and both were found by
+ * this check failing on a stylesheet that was perfectly fresh:
+ *
+ *   - MILLISECONDS BECOME SECONDS where that is shorter: `620ms` is emitted as
+ *     `.62s`. `90ms` is not, because `.09s` is no shorter - so the same
+ *     stylesheet uses both units and only some of the tokens appeared to be
+ *     missing, which is exactly the shape of a real staleness bug.
+ *   - LEADING ZEROS GO: `cubic-bezier(0.22, 1, 0.36, 1)` is emitted as
+ *     `cubic-bezier(.22,1,.36,1)`.
+ *
+ * Both sides go through this, so the comparison is between two canonical forms
+ * rather than between a source and a guess about the compiler.
+ */
+function numeric(value) {
+  return value
+    .replace(/\s+/g, "")
+    .replace(/([\d.]+)ms\b/g, (_, ms) => `${Number(ms) / 1000}s`)
+    .replace(/(^|[^\w.])0\./g, "$1.")
+    .toLowerCase();
+}
+
+/**
  * The fingerprints, and the families are chosen rather than exhaustive.
  *
  * NOT every class in the file. Tailwind legitimately tree-shakes a utility
@@ -93,6 +119,38 @@ function fingerprints(source) {
 
   for (const [, name] of withoutTheme.matchAll(/(--[\w-]+):/g)) {
     probes.set(`${name}:`, "custom property");
+  }
+
+  /**
+   * The motion tokens are checked BY VALUE, not just by presence.
+   *
+   * Everything else here answers "did the file compile", which is the question
+   * that matters when a rule is missing. It is the wrong question during a
+   * TUNING session: `--anim-reveal-duration` is present whether it says 620ms or
+   * 900ms, so a stale server passes every other probe while the browser quietly
+   * keeps playing the old number. That failure looks like "the value I promoted
+   * made no difference", which is indistinguishable from "the value makes no
+   * difference" - and one of those sends you changing a number that was already
+   * right.
+   *
+   * ONLY `--anim-*`, AND ONLY FROM `:root`. Value comparison is only safe where
+   * the compiler does not rewrite the value: these are times, lengths, plain
+   * numbers and one cubic-bezier. Colour tokens are deliberately left on
+   * presence-only, because `oklch()` and friends legitimately come back
+   * reformatted and a check that cries wolf gets ignored.
+   */
+  // EVERY `:root` block, not the first. There are three in this stylesheet and
+  // the motion tokens are in the second - slicing only the first found nothing
+  // and reported a clean run, which is the worst possible outcome for a check.
+  for (const match of css.matchAll(/^:root\s*\{/gm)) {
+    const start = match.index;
+    const root = css.slice(start, css.indexOf("\n}", start));
+
+    for (const [, name, value] of root.matchAll(
+      /(--anim-[\w-]+):\s*([^;]+);/g,
+    )) {
+      probes.set(`${name}:${numeric(value)}`, "token value");
+    }
   }
 
   /** The axis attributes - every colour recipe and motion suite is gated on one. */
@@ -168,8 +226,21 @@ try {
   process.exit(2);
 }
 
+/**
+ * Two haystacks, because the two kinds of probe survive different mangling.
+ *
+ * A selector keeps its spaces and needs them (`@keyframes section-focus` is not
+ * `@keyframessection-focus`); a value has to be compared with every space gone,
+ * or `620ms` and ` 620ms` disagree. One normalisation cannot serve both, and
+ * using the wrong one silently reports every token as missing.
+ */
 const haystack = normalize(served.css);
-const missing = [...probes].filter(([probe]) => !haystack.includes(probe));
+const haystackNumeric = numeric(served.css);
+const missing = [...probes].filter(([probe, kind]) =>
+  kind === "token value"
+    ? !haystackNumeric.includes(probe)
+    : !haystack.includes(probe),
+);
 
 console.log(
   `\n  ${target}\n  ${served.count} stylesheet${served.count === 1 ? "" : "s"}, ${probes.size} fingerprints from globals.css\n`,

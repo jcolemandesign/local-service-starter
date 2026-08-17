@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 
 import { triggerInset } from "@/components/primitives/SectionEntrance";
@@ -222,6 +222,40 @@ export function MotionSuiteGallery() {
     }
   }
 
+  /**
+   * CHANGING A VALUE REPLAYS, and without this the controls above read as dead.
+   *
+   * Every specimen is on screen when the gallery loads, so the observer settles
+   * it immediately - there is no arrival left to play, and nothing on this
+   * screen is moving. A new duration or easing only takes effect on the NEXT
+   * run, and the only thing that started one was the Replay button. So the
+   * honest description of the old behaviour is: drag a slider, watch nothing
+   * happen, conclude the slider does nothing. That is the exact failure this
+   * project names everywhere else, in the one screen built for judging motion.
+   *
+   * Debounced rather than immediate. A range input fires continuously while
+   * dragging, and replaying on every frame restarts the animation faster than it
+   * can play - the specimens would sit permanently at their first frame, which
+   * looks even more broken than not replaying at all. The wait is for the hand
+   * to stop, not for the value to change.
+   *
+   * It also fires once on mount, which is deliberate: the gallery is worth
+   * looking at the moment it opens rather than after you find the button.
+   */
+  useEffect(() => {
+    if (!rhythm) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      for (const suite of sectionAnimationSuites) {
+        replaySectionAnimation(frames.current.get(suite.id));
+      }
+    }, 160);
+
+    return () => clearTimeout(timer);
+  }, [rhythm, easing]);
+
   const rhythmStyle = {
     ...(rhythm
       ? Object.fromEntries(
@@ -245,7 +279,7 @@ export function MotionSuiteGallery() {
             <span className="type-caption text-current/70">
               Scoped to this gallery. Nothing here is saved, and nothing here
               changes a page — promote a value into globals.css once the rhythm
-              has been judged.
+              has been judged. Every change replays the specimens below.
             </span>
           </div>
           <div className="flex flex-wrap gap-2">
