@@ -160,10 +160,16 @@ export function ServicesHoverPanelSectionV2({
                   >
                     <span className="px-5">{item.title}</span>
                     <span
+                      // The CTA pair, not the accent: inside a recipe
+                      // `service-accent` is --recipe-eyebrow, which is #ffffff on
+                      // accent and highlight - so this went white on white and
+                      // the arrow vanished. `cta-primary` is the pair the recipe
+                      // tables already invert per ground. Both states, because
+                      // the active one had it too.
                       className={`flex min-h-14 w-14 shrink-0 items-center justify-center text-lg leading-none transition-colors ${
                         isActive
-                          ? "bg-service-accent text-white"
-                          : "bg-service-surface text-service-accent group-hover/service-link:bg-service-accent group-hover/service-link:text-white"
+                          ? "bg-cta-primary text-cta-primary-ink"
+                          : "bg-service-surface text-service-accent group-hover/service-link:bg-cta-primary group-hover/service-link:text-cta-primary-ink"
                       }`}
                       aria-hidden="true"
                     >

@@ -20,7 +20,7 @@ function ArrowMark({ className = "" }: { className?: string }) {
   return (
     <span
       aria-hidden="true"
-      className={`flex items-center justify-center rounded-full border border-service-border bg-service-surface text-service-accent transition-colors group-hover/service-card:border-service-accent group-hover/service-card:bg-service-accent group-hover/service-card:text-white ${className}`}
+      className={`flex items-center justify-center rounded-full border border-service-border bg-service-surface text-service-accent transition-colors group-hover/service-card:border-cta-primary group-hover/service-card:bg-cta-primary group-hover/service-card:text-cta-primary-ink ${className}`}
     >
       -&gt;
     </span>

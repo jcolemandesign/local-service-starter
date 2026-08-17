@@ -27,7 +27,11 @@ function ArrowMark({ className = "" }: { className?: string }) {
     <span
       aria-hidden="true"
       className={cx(
-        "flex items-center justify-center rounded-full border border-service-border bg-surface-raised text-service-accent shadow-service transition-colors group-hover/service-card:border-service-accent group-hover/service-card:bg-service-accent group-hover/service-card:text-white",
+        // The CTA pair, not the accent: inside a recipe `service-accent` is
+        // --recipe-eyebrow, which is #ffffff on accent and highlight - so the
+        // mark went white on white and the arrow vanished. `cta-primary` is the
+        // pair the recipe tables already invert per ground.
+        "flex items-center justify-center rounded-full border border-service-border bg-surface-raised text-service-accent shadow-service transition-colors group-hover/service-card:border-cta-primary group-hover/service-card:bg-cta-primary group-hover/service-card:text-cta-primary-ink",
         className,
       )}
     >

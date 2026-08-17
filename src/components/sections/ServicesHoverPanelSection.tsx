@@ -78,8 +78,8 @@ export function ServicesHoverPanelSection({
                       <span
                         className={`flex min-h-14 w-14 shrink-0 items-center justify-center text-lg leading-none transition-colors ${
                           isActive
-                            ? "bg-service-accent text-white"
-                            : "bg-service-surface text-service-accent group-hover/service-link:bg-service-accent group-hover/service-link:text-white"
+                            ? "bg-cta-primary text-cta-primary-ink"
+                            : "bg-service-surface text-service-accent group-hover/service-link:bg-cta-primary group-hover/service-link:text-cta-primary-ink"
                         }`}
                         aria-hidden="true"
                       >
