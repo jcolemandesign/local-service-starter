@@ -794,6 +794,7 @@ veto, and three safeguards against the stale dev stylesheet.
 | Rise | `reveal` | 57 (no gate) |
 | Wipe | `wipe` | 16 (marks a heading) |
 | Fade | `fade` | 57 (no gate) — added later the same day, see below |
+| Settle | `settle` | 10 (marks media) — see below |
 | Focus | `focus` | 16 (marks a heading) |
 | Pulse | `pulse` | 10 (marks an action) |
 | Lateral | `lateral` | 10 (marks media) — was 57 |
@@ -970,6 +971,7 @@ cost scales with area, and a bled panel is the largest area on the page.
 |---|---|---|---|---|
 | Rise | `reveal` | everywhere | — | units rise and fade in |
 | Fade | `fade` | everywhere | — | units fade up in place, staggered; nothing moves |
+| Settle | `settle` | marks `media` | `media` | the image eases down from 1.06 inside its frame; everything else rises |
 | Wipe | `wipe` | marks a `heading` | `heading` | an edge crosses the heading; cards rise, accents scale, media fades |
 | Pulse | `pulse` | marks an `action` | `action` | normal arrival, then one soft beat on the action once it lands |
 | Lateral | `lateral` | everywhere | `media` | the media panel slides in from off-screen; everything else fades in place |

@@ -289,6 +289,58 @@ export const sectionAnimationSuites = [
   },
   {
     /**
+     * THE SECOND OPINION ON `media`, and that is half of why it exists.
+     *
+     * Rise and Lateral both answer that role, and until now they agreed on the
+     * important half: a bled panel does not travel. One behaviour described by
+     * two suites is a single data point wearing a vocabulary's clothes -
+     * `media` could just as well have been spelled "the thing that must not
+     * move", and nothing in the library could tell the difference.
+     *
+     * Settle moves it, in the one way that does not open a band of bare ground
+     * beneath the crop: the image scales inside its own frame rather than
+     * travelling out of it. So the role now has suites that treat it
+     * differently rather than suites that agree by default, which is what tells
+     * us whether `media` is carrying a real distinction.
+     */
+    id: "settle",
+    label: "Settle",
+    status: "offered",
+    description:
+      "The image eases down into its frame from 1.06 while it fades. Everything else rises.",
+    guidance:
+      "For image-led sections — a full-bleed feature photograph, an image CTA. The settle is the whole point, so it is offered where a media panel is marked.",
+    /**
+     * Offered only where a media panel is marked, for the same reason Wipe gates
+     * on a heading: without one this is Rise exactly, and an editor picking
+     * "Settle" and watching a plain rise is a control that appears to work and
+     * paints nothing.
+     */
+    requiresRole: "media",
+    roles: {
+      heading: "rise + fade",
+      content: "rise + fade, as one block",
+      card: "rise + fade, staggered by --reveal-index",
+      media: "THE SETTLE - scales from 1.06 to 1 while fading, no travel",
+      accent: "rise + fade",
+      frame: "rise + fade, as a single unit",
+      action: "rise + fade - Settle makes no special case of the action",
+    },
+    /**
+     * One, and it is the opposite one from Rise's.
+     *
+     * Rise names `media` to take movement AWAY from it - the panel is the thing
+     * that must not travel. Settle names the same role to give it a movement of
+     * its own. Same role, opposite exceptions, which is the clearest evidence
+     * available that the role is about what a unit IS rather than about what it
+     * must not do.
+     */
+    differentiatedRoles: ["media"],
+    /** The shared spine, plus the scale and travel that are its own. */
+    controlGroups: ["rhythm", "settle"],
+  },
+  {
+    /**
      * RENAMED FROM `editorial`, and this is the one moment that was free.
      *
      * Persisted ids are never renamed here - `reveal` is still `reveal` for

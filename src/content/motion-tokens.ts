@@ -94,6 +94,7 @@ export type MotionControlGroupId =
   | "rhythm"
   | "reveal"
   | "fade"
+  | "settle"
   | "wipe"
   | "pulse"
   | "lateral"
@@ -280,6 +281,65 @@ export const motionControlGroups = [
         min: 0,
         max: 400,
         step: 10,
+        inheritsFrom: "--anim-stagger",
+      },
+    ],
+  },
+  {
+    id: "settle",
+    label: "Settle",
+    description:
+      "The image easing down into its frame. Everything that is not media rises, so Settle owns a travel of its own alongside the scale.",
+    controls: [
+      {
+        token: "--anim-settle-scale-from",
+        label: "Scale from",
+        hint: "Where the image starts before easing down to life size. Larger than this and the first frame reads as a different crop.",
+        kind: "ratio",
+        defaultValue: "1.06",
+        min: 1,
+        max: 1.2,
+        step: 0.005,
+      },
+      {
+        token: "--anim-settle-distance",
+        label: "Distance",
+        hint: "How far a non-media unit rises. Settle's own, not Rise's - a shared var() would make Rise's control move this suite too.",
+        kind: "px",
+        defaultValue: "28px",
+        min: 0,
+        max: 120,
+        step: 2,
+      },
+      {
+        token: "--anim-settle-easing",
+        label: "Easing",
+        hint: "Unset, Settle uses the shared curve. Give it its own if you lengthen its duration and the extra time does not read.",
+        kind: "easing",
+        defaultValue: "",
+        presets: travelEasingPresets,
+        inheritsFrom: "--anim-easing",
+      },
+      {
+        token: "--anim-settle-duration",
+        label: "Duration",
+        hint: "Unset, Settle keeps time with the shared rhythm.",
+        kind: "ms",
+        defaultValue: "",
+        min: 120,
+        max: 1600,
+        step: 20,
+        inheritsFrom: "--anim-duration",
+      },
+      {
+        token: "--anim-settle-stagger",
+        label: "Stagger",
+        hint: "Unset, Settle staggers by the shared step.",
+        kind: "ms",
+        defaultValue: "",
+        min: 0,
+        max: 400,
+        step: 20,
         inheritsFrom: "--anim-stagger",
       },
     ],

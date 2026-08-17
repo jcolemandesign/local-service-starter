@@ -354,6 +354,22 @@
      whatever size I am. */
   --anim-lateral-distance: 0px;
   --anim-lateral-media-distance: 100%;
+  /* Settle's two numbers.
+
+     The scale starts just over life size. 1.06 is enough to read as motion on a
+     large crop and small enough that the first frame is not visibly a different
+     photograph - the image never leaves its frame, so nothing beneath it is
+     exposed and no layout moves.
+
+     The distance is Settle's OWN rather than Rise's, even though the two ship
+     the same 28px and mean the same thing. A cross-suite `var()` would make
+     Rise's Style Guide control silently move a second suite, which is the
+     "shared" mistake the spine split was undoing. Two suites travelling is not
+     yet a shared travel; a third would be, and at that point this and
+     `--anim-reveal-distance` should collapse into a spine token the way
+     duration and stagger did. */
+  --anim-settle-scale-from: 1.06;
+  --anim-settle-distance: 28px;
   /* Focus's one number: how far out of focus a unit starts.
 
      10px reads as "resolving" rather than as "smeared" at heading sizes. Much
@@ -505,6 +521,30 @@
   from {
     opacity: 0;
     scale: var(--anim-accent-scale-from);
+  }
+
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+/*
+ * Settle's media arrival: a photograph easing down into its frame.
+ *
+ * Scales DOWN to rest rather than up. Starting over-size and settling reads as
+ * the image coming to rest; starting under-size and growing reads as a zoom
+ * beginning, which leaves the eye waiting for more movement that never comes.
+ *
+ * Separate from `section-fade-scale` even though the shape is the same, because
+ * the two scale in opposite directions from different tokens - Wipe's accent
+ * grows from 0.94, this shrinks from 1.06 - and folding them together would
+ * mean one keyframe whose direction depends on which token the caller set.
+ */
+@keyframes section-settle {
+  from {
+    opacity: 0;
+    scale: var(--anim-settle-scale-from);
   }
 
   to {
@@ -717,6 +757,67 @@
       var(--anim-fade-easing, var(--anim-easing)) both;
     animation-delay: calc(
       var(--reveal-index, 0) * var(--anim-fade-stagger, var(--anim-stagger))
+    );
+  }
+
+  /* == Suite: Settle (stored id `settle`) ===========================
+   *
+   * Rise, with the media panel easing down into place instead of holding
+   * still. Everything that is not media rises and fades exactly as Rise does;
+   * the photograph scales from 1.06 to 1 while it fades.
+   *
+   * WHY IT IS TRANSFORM-ONLY. `scale` and `opacity` are both compositor
+   * properties, so this costs nothing extra on a full-bleed image - which is
+   * the one place a layout-affecting entrance would be most expensive, since
+   * the cost scales with area.
+   *
+   * IT IS ALSO THE SECOND OPINION ON `media`. Rise and Lateral both answer that
+   * role, and until now they agreed on the important half: whatever else
+   * happens, a bled panel does not travel. That is a single data point wearing
+   * a vocabulary's clothes - "media" could just as easily be spelled "the thing
+   * that must not move". Settle moves it, in a way that does not open a band of
+   * bare ground beneath the crop, so the role now has two suites that treat it
+   * differently rather than two that treat it identically. If the distinction
+   * holds up here, `media` is a real role.
+   */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="settle"]:not([data-pagebuilder-animation-state])
+    .reveal-on-scroll {
+    opacity: 0;
+    translate: 0 var(--anim-settle-distance);
+  }
+
+  [data-pagebuilder-animation="settle"][data-pagebuilder-animation-state="in"]
+    .reveal-on-scroll {
+    animation: section-reveal
+      var(--anim-settle-duration, var(--anim-duration))
+      var(--anim-settle-easing, var(--anim-easing)) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-settle-stagger, var(--anim-stagger))
+    );
+  }
+
+  /* Settle, media role: THE SETTLE ITSELF.
+     The travel is zeroed the same way Rise zeroes it - by re-pointing the
+     suite's own distance token on the unit rather than by writing a competing
+     `translate`, so the two declarations cannot fight on specificity. What
+     replaces it is the scale, and `section-reveal` is swapped for
+     `section-settle` on the arriving half. */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="settle"]:not([data-pagebuilder-animation-state])
+    .reveal-role-media {
+    --anim-settle-distance: 0px;
+    scale: var(--anim-settle-scale-from);
+  }
+
+  [data-pagebuilder-animation="settle"][data-pagebuilder-animation-state="in"]
+    .reveal-role-media {
+    --anim-settle-distance: 0px;
+    animation: section-settle
+      var(--anim-settle-duration, var(--anim-duration))
+      var(--anim-settle-easing, var(--anim-easing)) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-settle-stagger, var(--anim-stagger))
     );
   }
 
