@@ -4716,7 +4716,7 @@ body {
   --anim-duration: 720ms;
   --anim-stagger: 90ms;
   --anim-easing: cubic-bezier(0.22, 1, 0.36, 1);
-  --anim-reveal-distance: 120px;
+  --anim-reveal-distance: 28px;
   --anim-accent-scale-from: 0.86;
   --anim-pulse-scale: 1.07;
   --anim-pulse-duration: 500ms;
