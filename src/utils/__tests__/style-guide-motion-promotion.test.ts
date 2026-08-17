@@ -38,7 +38,7 @@ vi.mock("@/utils/builder-access", () => ({
 
 const { POST } = await import("@/app/api/style-guide-tokens/route");
 
-const baseCss = `:root {\n  --anim-reveal-duration: 620ms;\n}\n`;
+const baseCss = `:root {\n  --anim-duration: 620ms;\n}\n`;
 
 async function promote(motionTokens: Record<string, string>) {
   const response = await POST(
@@ -81,14 +81,14 @@ describe("promoting motion tokens", () => {
   it("writes the authored rhythm into the marker block", async () => {
     const css = await promote({
       ...defaultMotionTokens,
-      "--anim-reveal-duration": "1400ms",
+      "--anim-duration": "1400ms",
       "--anim-reveal-distance": "48px",
       "--anim-focus-blur": "24px",
     });
     const block = promotedBlock(css);
 
     expect(block, "no marker block was written at all").not.toBe("");
-    expect(block).toContain("--anim-reveal-duration: 1400ms;");
+    expect(block).toContain("--anim-duration: 1400ms;");
     expect(block).toContain("--anim-reveal-distance: 48px;");
     expect(block).toContain("--anim-focus-blur: 24px;");
   });
@@ -102,27 +102,27 @@ describe("promoting motion tokens", () => {
   it("puts the promoted value after the authored default", async () => {
     const css = await promote({
       ...defaultMotionTokens,
-      "--anim-reveal-duration": "1400ms",
+      "--anim-duration": "1400ms",
     });
 
-    expect(css.indexOf("--anim-reveal-duration: 620ms")).toBeLessThan(
-      css.indexOf("--anim-reveal-duration: 1400ms"),
+    expect(css.indexOf("--anim-duration: 620ms")).toBeLessThan(
+      css.indexOf("--anim-duration: 1400ms"),
     );
   });
 
   it("replaces the previous block rather than stacking another one", async () => {
     await promote({
       ...defaultMotionTokens,
-      "--anim-reveal-duration": "1400ms",
+      "--anim-duration": "1400ms",
     });
     const css = await promote({
       ...defaultMotionTokens,
-      "--anim-reveal-duration": "300ms",
+      "--anim-duration": "300ms",
     });
 
     expect(css.split(beginMarker)).toHaveLength(2);
-    expect(css).toContain("--anim-reveal-duration: 300ms;");
-    expect(css).not.toContain("--anim-reveal-duration: 1400ms;");
+    expect(css).toContain("--anim-duration: 300ms;");
+    expect(css).not.toContain("--anim-duration: 1400ms;");
   });
 
   /**
@@ -162,14 +162,14 @@ describe("promoting motion tokens", () => {
     const block = promotedBlock(
       await promote({
         ...defaultMotionTokens,
-        "--anim-reveal-duration": "620ms; --anim-reveal-distance: 9999px",
+        "--anim-duration": "620ms; --anim-reveal-distance: 9999px",
       }),
     );
 
     // Narrowly, the smuggled declaration - `9999px` on its own also matches the
     // legitimate `--radius-round-token`, which is in this block too.
     expect(block).not.toContain("--anim-reveal-distance: 9999px");
-    expect(block).toContain("--anim-reveal-duration: 620ms;");
+    expect(block).toContain("--anim-duration: 620ms;");
     expect(block).toContain("--anim-reveal-distance: 28px;");
   });
 
@@ -191,13 +191,13 @@ describe("promoting motion tokens", () => {
     const block = promotedBlock(
       await promote({
         ...defaultMotionTokens,
-        "--anim-reveal-duration": "1400ms",
+        "--anim-duration": "1400ms",
         "--anim-lateral-media-distance": "80%",
       }),
     );
     const exported = neutralizeBuilderVocabulary(block);
 
-    expect(exported).toContain("--anim-reveal-duration: 1400ms;");
+    expect(exported).toContain("--anim-duration: 1400ms;");
     expect(exported).toContain("--anim-lateral-media-distance: 80%;");
   });
 });

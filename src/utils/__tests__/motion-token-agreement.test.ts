@@ -310,7 +310,7 @@ describe("motion token agreement", () => {
       ...defaultStyleGuideTokenDraft,
       motionTokens: {
         ...defaultMotionTokens,
-        "--anim-reveal-duration": "1400ms",
+        "--anim-duration": "1400ms",
         "--anim-focus-blur": "24px",
       },
     };
@@ -385,37 +385,37 @@ describe("motion token agreement", () => {
      */
     it("refuses a value that could close its own declaration", () => {
       const normalized = normalizeMotionTokens({
-        "--anim-reveal-duration": "620ms; --anim-reveal-distance: 9999px",
-        "--anim-reveal-easing": "linear; } :root { --color-bg-page: red",
+        "--anim-duration": "620ms; --anim-reveal-distance: 9999px",
+        "--anim-easing": "linear; } :root { --color-bg-page: red",
       });
 
-      expect(normalized["--anim-reveal-duration"]).toBe("620ms");
-      expect(normalized["--anim-reveal-easing"]).toBe(
+      expect(normalized["--anim-duration"]).toBe("620ms");
+      expect(normalized["--anim-easing"]).toBe(
         "cubic-bezier(0.22, 1, 0.36, 1)",
       );
     });
 
     it("clamps a number outside the control's range", () => {
       const normalized = normalizeMotionTokens({
-        "--anim-reveal-duration": "99999ms",
+        "--anim-duration": "99999ms",
         "--anim-reveal-distance": "0px",
       });
 
-      expect(normalized["--anim-reveal-duration"]).toBe("1600ms");
+      expect(normalized["--anim-duration"]).toBe("1600ms");
       expect(normalized["--anim-reveal-distance"]).toBe("0px");
     });
 
     it("accepts only easings the control offers", () => {
       const normalized = normalizeMotionTokens({
         "--anim-focus-easing": "cubic-bezier(0.33, 0, 0.67, 1)",
-        "--anim-reveal-easing": "cubic-bezier(0.9, 0.1, 0.1, 0.9)",
+        "--anim-easing": "cubic-bezier(0.9, 0.1, 0.1, 0.9)",
       });
 
       expect(normalized["--anim-focus-easing"]).toBe(
         "cubic-bezier(0.33, 0, 0.67, 1)",
       );
       expect(
-        normalized["--anim-reveal-easing"],
+        normalized["--anim-easing"],
         "an easing outside the preset list was accepted, which makes the value free-form CSS in a file this writes to disk",
       ).toBe("cubic-bezier(0.22, 1, 0.36, 1)");
     });
@@ -437,11 +437,58 @@ describe("motion token agreement", () => {
     it("drops a token the registry no longer offers", () => {
       const normalized = normalizeMotionTokens({
         "--anim-scrub-entry-start": "24%",
-        "--anim-reveal-duration": "400ms",
+        "--anim-duration": "400ms",
       });
 
       expect(normalized["--anim-scrub-entry-start"]).toBeUndefined();
-      expect(normalized["--anim-reveal-duration"]).toBe("400ms");
+      expect(normalized["--anim-duration"]).toBe("400ms");
     });
+  });
+});
+
+describe("the spine rename", () => {
+  /**
+   * A draft authored before the rename keeps its tempo.
+   *
+   * The shared tokens were named for Rise while being read by every suite -
+   * `--anim-reveal-duration` was the shared duration, not Rise's. Renaming them
+   * to a neutral spine is what let Rise have a module of its own, but unknown
+   * keys are dropped on read, so without an alias an old draft would come back
+   * carrying the shipped defaults and report as unchanged. The author's rhythm
+   * would be gone with no error and nothing to notice.
+   */
+  it("carries a pre-rename draft onto the spine", () => {
+    const migrated = normalizeMotionTokens({
+      "--anim-reveal-duration": "1080ms",
+      "--anim-reveal-delay-step": "200ms",
+      "--anim-reveal-easing": "cubic-bezier(0.16, 1, 0.3, 1)",
+    });
+
+    expect(migrated["--anim-duration"]).toBe("1080ms");
+    expect(migrated["--anim-stagger"]).toBe("200ms");
+    expect(migrated["--anim-easing"]).toBe("cubic-bezier(0.16, 1, 0.3, 1)");
+  });
+
+  /**
+   * A draft carrying BOTH keys is post-rename, and both are kept.
+   *
+   * `--anim-reveal-duration` is a live token again with a new meaning - Rise's
+   * own tempo, which inherits - so the two names are not competing for one
+   * value. The presence of `--anim-duration` is what says the draft was authored
+   * after the split, and there "shared is 300, Rise overrides to 1080" is a
+   * perfectly ordinary thing to have chosen.
+   *
+   * The ambiguity exists only when `--anim-duration` is ABSENT, and that is the
+   * case the positional migration above handles: a lone `--anim-reveal-duration`
+   * is the old spine, so it moves to the spine rather than staying on Rise.
+   */
+  it("keeps both when a draft was authored after the split", () => {
+    const migrated = normalizeMotionTokens({
+      "--anim-duration": "300ms",
+      "--anim-reveal-duration": "1080ms",
+    });
+
+    expect(migrated["--anim-duration"]).toBe("300ms");
+    expect(migrated["--anim-reveal-duration"]).toBe("1080ms");
   });
 });

@@ -231,10 +231,10 @@ export const sectionAnimationSuites = [
      * is what tells you whether six is the right number.
      */
     differentiatedRoles: ["media"],
-    /** Nothing of its own. Rise IS the shared rhythm - every number it moves on
-     *  is a number every other suite also uses, which is what makes it the
-     *  thing the others are measured against. */
-    controlGroups: ["rhythm"],
+    /** Rise has a module of its own now. The distance is the reason: it is the
+     *  only vertical travel in the library, so it was never shared - it merely
+     *  lived in the shared group and was read by one suite. */
+    controlGroups: ["rhythm", "reveal"],
   },
   {
     /**
@@ -283,10 +283,9 @@ export const sectionAnimationSuites = [
      * having one.
      */
     differentiatedRoles: [],
-    /** The shared rhythm, and only three quarters of it - there is no travel for
-     *  the distance to apply to. A group is what authors a suite, not a claim
-     *  that the suite reads every token in it. */
-    controlGroups: ["rhythm"],
+    /** The shared spine plus its own tempo and stagger. It owns no shape, so
+     *  those two are the whole of it. */
+    controlGroups: ["rhythm", "fade"],
   },
   {
     /**

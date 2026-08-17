@@ -92,6 +92,8 @@ export type MotionTokenControl = {
 
 export type MotionControlGroupId =
   | "rhythm"
+  | "reveal"
+  | "fade"
   | "wipe"
   | "pulse"
   | "lateral"
@@ -153,10 +155,10 @@ export const motionControlGroups = [
     id: "rhythm",
     label: "Shared rhythm",
     description:
-      "One answer for every suite. Duration, stagger, distance and easing are the rhythm of the library — what differs between suites is the shape of the arrival, not its tempo.",
+      "The spine every suite inherits from. Set the tempo of the library here; a suite only diverges where you deliberately untick “Match shared rhythm” in its own group.",
     controls: [
       {
-        token: "--anim-reveal-duration",
+        token: "--anim-duration",
         label: "Duration",
         hint: "How long one unit takes to arrive.",
         kind: "ms",
@@ -166,7 +168,7 @@ export const motionControlGroups = [
         step: 20,
       },
       {
-        token: "--anim-reveal-delay-step",
+        token: "--anim-stagger",
         label: "Stagger",
         hint: "Added per reveal index, so a row of cards arrives in reading order.",
         kind: "ms",
@@ -175,6 +177,31 @@ export const motionControlGroups = [
         max: 400,
         step: 10,
       },
+      {
+        token: "--anim-easing",
+        label: "Easing",
+        hint: "The shared travel curve. Front-loaded, so a unit reads as arriving and settling rather than drifting.",
+        kind: "easing",
+        defaultValue: "cubic-bezier(0.22, 1, 0.36, 1)",
+        presets: travelEasingPresets,
+      },
+    ],
+  },
+  {
+    /**
+     * RISE FINALLY HAS A MODULE, and the distance is why it needed one.
+     *
+     * `--anim-reveal-distance` sat in the shared group and was read by exactly
+     * one suite. Nothing else travels: Fade and Wipe move nothing, Pulse scales,
+     * Lateral has its own two distances in its own units. So "shared" was a
+     * claim about where the control lived rather than about what read it, and a
+     * Distance slider in a group labelled "every suite" moved one of six.
+     */
+    id: "reveal",
+    label: "Rise",
+    description:
+      "The default entrance. Distance is Rise's alone — nothing else in the library travels vertically — and its tempo follows the shared rhythm unless you give it one.",
+    controls: [
       {
         token: "--anim-reveal-distance",
         label: "Distance",
@@ -186,12 +213,56 @@ export const motionControlGroups = [
         step: 2,
       },
       {
-        token: "--anim-reveal-easing",
-        label: "Easing",
-        hint: "The shared travel curve. Front-loaded, so a unit reads as arriving and settling rather than drifting.",
-        kind: "easing",
-        defaultValue: "cubic-bezier(0.22, 1, 0.36, 1)",
-        presets: travelEasingPresets,
+        token: "--anim-reveal-duration",
+        label: "Duration",
+        hint: "Unset, Rise keeps time with the shared rhythm.",
+        kind: "ms",
+        defaultValue: "",
+        min: 120,
+        max: 1600,
+        step: 20,
+        inheritsFrom: "--anim-duration",
+      },
+      {
+        token: "--anim-reveal-stagger",
+        label: "Stagger",
+        hint: "Unset, Rise staggers by the shared step.",
+        kind: "ms",
+        defaultValue: "",
+        min: 0,
+        max: 400,
+        step: 10,
+        inheritsFrom: "--anim-stagger",
+      },
+    ],
+  },
+  {
+    id: "fade",
+    label: "Fade",
+    description:
+      "The quiet entrance. It owns no shape of its own — only how long it takes and how far apart its units land.",
+    controls: [
+      {
+        token: "--anim-fade-duration",
+        label: "Duration",
+        hint: "Unset, Fade keeps time with the shared rhythm.",
+        kind: "ms",
+        defaultValue: "",
+        min: 120,
+        max: 1600,
+        step: 20,
+        inheritsFrom: "--anim-duration",
+      },
+      {
+        token: "--anim-fade-stagger",
+        label: "Stagger",
+        hint: "Unset, Fade staggers by the shared step.",
+        kind: "ms",
+        defaultValue: "",
+        min: 0,
+        max: 400,
+        step: 10,
+        inheritsFrom: "--anim-stagger",
       },
     ],
   },
@@ -210,7 +281,18 @@ export const motionControlGroups = [
         min: 120,
         max: 1600,
         step: 20,
-        inheritsFrom: "--anim-reveal-duration",
+        inheritsFrom: "--anim-duration",
+      },
+      {
+        token: "--anim-wipe-stagger",
+        label: "Stagger",
+        hint: "Unset, Wipe staggers by the shared step.",
+        kind: "ms",
+        defaultValue: "",
+        min: 0,
+        max: 400,
+        step: 20,
+        inheritsFrom: "--anim-stagger",
       },
       {
         token: "--anim-accent-scale-from",
@@ -269,6 +351,17 @@ export const motionControlGroups = [
       "The panel arriving from its own edge. Two travels in two different units, because they answer two different questions.",
     controls: [
       {
+        token: "--anim-lateral-duration",
+        label: "Duration",
+        hint: "Unset, the slide keeps time with the shared rhythm. Lateral does not stagger — a row sliding in sequence reads as a conveyor.",
+        kind: "ms",
+        defaultValue: "",
+        min: 120,
+        max: 1600,
+        step: 20,
+        inheritsFrom: "--anim-duration",
+      },
+      {
         token: "--anim-lateral-distance",
         label: "Unit travel",
         hint: "How far an ordinary unit slides. Ships at zero: the suite's idea is that one panel travels and everything else fades in place.",
@@ -315,6 +408,17 @@ export const motionControlGroups = [
         step: 1,
       },
       {
+        token: "--anim-focus-stagger",
+        label: "Stagger",
+        hint: "Unset, Focus staggers by the shared step.",
+        kind: "ms",
+        defaultValue: "",
+        min: 0,
+        max: 400,
+        step: 20,
+        inheritsFrom: "--anim-stagger",
+      },
+      {
         token: "--anim-focus-duration",
         label: "Blur duration",
         hint: "Unset, the blur keeps time with the shared rhythm. Give it its own length only if the blur still reads short after the curve is right.",
@@ -323,7 +427,7 @@ export const motionControlGroups = [
         min: 120,
         max: 1600,
         step: 20,
-        inheritsFrom: "--anim-reveal-duration",
+        inheritsFrom: "--anim-duration",
       },
     ],
   },
@@ -455,11 +559,53 @@ export function motionTokenInheritedValue(control: MotionTokenControl) {
  * an allowlist. There is no shape of input here that can close a declaration
  * and open another one.
  */
+/**
+ * Spine tokens that were named for Rise before Rise had a module of its own.
+ *
+ * `--anim-reveal-duration` and friends were read by every suite while being
+ * named for one, which is the confusion that prompted the split. The names are
+ * neutral now, and the old ones survive here as a read-only alias so a draft or
+ * a saved slot authored under them still loads with its values intact.
+ *
+ * WITHOUT THIS THE LOSS IS SILENT. Unknown keys are dropped, so an old draft
+ * would come back carrying the shipped defaults and report as unchanged - the
+ * author's tempo gone with no error and nothing to notice. This is a rename of
+ * CSS custom properties rather than of persisted page data, so an alias on read
+ * is the whole migration; nothing has to be rewritten anywhere.
+ *
+ * Note `--anim-reveal-duration` is a LIVE token again with a new meaning - Rise's
+ * own tempo, which inherits. It is deliberately not aliased: a value saved under
+ * the old spine name belongs to the spine, and moving it onto Rise would give
+ * one suite a tempo the author meant for all of them.
+ */
+const legacySpineAliases: Record<string, string> = {
+  "--anim-reveal-delay-step": "--anim-stagger",
+  "--anim-reveal-easing": "--anim-easing",
+};
+
 export function normalizeMotionTokens(value: unknown): Record<string, string> {
   const posted =
     value && typeof value === "object" && !Array.isArray(value)
-      ? (value as Record<string, unknown>)
+      ? { ...(value as Record<string, unknown>) }
       : {};
+
+  // The old spine duration is the one that cannot be aliased by name, because
+  // the name was reused. It is migrated by position instead: whatever a draft
+  // saved as the shared duration is still the shared duration.
+  if (
+    posted["--anim-duration"] === undefined &&
+    typeof posted["--anim-reveal-duration"] === "string"
+  ) {
+    posted["--anim-duration"] = posted["--anim-reveal-duration"];
+    delete posted["--anim-reveal-duration"];
+  }
+
+  for (const [legacy, current] of Object.entries(legacySpineAliases)) {
+    if (posted[current] === undefined && posted[legacy] !== undefined) {
+      posted[current] = posted[legacy];
+    }
+  }
+
   const normalized: Record<string, string> = {};
 
   for (const control of motionTokenControls) {

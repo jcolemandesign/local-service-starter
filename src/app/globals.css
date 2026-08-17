@@ -296,15 +296,15 @@
      hard to see even once it was timed correctly, and distance is what makes a
      short movement register. */
   --anim-reveal-distance: 28px;
-  --anim-reveal-duration: 620ms;
+  --anim-duration: 620ms;
   /* Per-index delay. A real stagger, because there is a real clock - the
      scrubbed variant this axis replaced had to express the same idea as a range
      offset, since a scroll timeline has no clock for `animation-delay` to work
      against. */
-  --anim-reveal-delay-step: 90ms;
+  --anim-stagger: 90ms;
   /* Decisive out-easing: most of the travel happens in the first third, so the
      unit reads as arriving and settling rather than as drifting. */
-  --anim-reveal-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  --anim-easing: cubic-bezier(0.22, 1, 0.36, 1);
   /* The wipe's own number. Only the value that has no equivalent in Rise lives
      here - the suite reuses the shared stagger and easing on purpose, because
      the rhythm of the library should be one rhythm and what differs between
@@ -319,7 +319,7 @@
      whose whole point is the headline, is a control that appears to work and
      paints nothing.
 
-     So the wipe rule reads `var(--anim-wipe-duration, var(--anim-reveal-duration))`
+     So the wipe rule reads `var(--anim-wipe-duration, var(--anim-duration))`
      and unset means "keep time with the shared rhythm". The suite can still own
      its tempo - the Style Guide offers the dial, and unticking "Match shared
      rhythm" authors it - but it now has to be chosen rather than inherited from
@@ -364,7 +364,7 @@
   --anim-focus-blur: 10px;
   /* Focus's own curve, and the reason it owns one.
 
-     The shared `--anim-reveal-easing` is a decisive out-curve: most of the
+     The shared `--anim-easing` is a decisive out-curve: most of the
      progress lands in the first third. That is right for a TRAVEL, where the
      unit should arrive and then settle, and wrong for a BLUR, where it means
      the 10px is gone in the first ~200ms and the remaining 400ms is a tail
@@ -381,7 +381,7 @@
   /* Focus's own tempo is DELIBERATELY NOT DECLARED HERE.
 
      `--anim-focus-duration` is read by the blur rule as
-     `var(--anim-focus-duration, var(--anim-reveal-duration))`, so unset means
+     `var(--anim-focus-duration, var(--anim-duration))`, so unset means
      "keep time with the shared rhythm" - which is the right default, and the
      one the suite has always had. Declaring it at a value would decouple Focus
      from the shared duration permanently, on a screen where nobody asked for
@@ -642,10 +642,10 @@
    */
   [data-pagebuilder-animation="reveal"][data-pagebuilder-animation-state="in"]
     .reveal-on-scroll {
-    animation: section-reveal var(--anim-reveal-duration)
-      var(--anim-reveal-easing) both;
+    animation: section-reveal var(--anim-reveal-duration, var(--anim-duration))
+      var(--anim-easing) both;
     animation-delay: calc(
-      var(--reveal-index, 0) * var(--anim-reveal-delay-step)
+      var(--reveal-index, 0) * var(--anim-reveal-stagger, var(--anim-stagger))
     );
   }
 
@@ -713,10 +713,10 @@
 
   [data-pagebuilder-animation="fade"][data-pagebuilder-animation-state="in"]
     .reveal-on-scroll {
-    animation: section-fade var(--anim-reveal-duration)
-      var(--anim-reveal-easing) both;
+    animation: section-fade var(--anim-fade-duration, var(--anim-duration))
+      var(--anim-easing) both;
     animation-delay: calc(
-      var(--reveal-index, 0) * var(--anim-reveal-delay-step)
+      var(--reveal-index, 0) * var(--anim-fade-stagger, var(--anim-stagger))
     );
   }
 
@@ -751,10 +751,10 @@
   /* Wipe, arriving. A plain fade in place for everything that is not text. */
   [data-pagebuilder-animation="wipe"][data-pagebuilder-animation-state="in"]
     .reveal-on-scroll {
-    animation: section-fade var(--anim-reveal-duration)
-      var(--anim-reveal-easing) both;
+    animation: section-fade var(--anim-wipe-duration, var(--anim-duration))
+      var(--anim-easing) both;
     animation-delay: calc(
-      var(--reveal-index, 0) * var(--anim-reveal-delay-step)
+      var(--reveal-index, 0) * var(--anim-wipe-stagger, var(--anim-stagger))
     );
   }
 
@@ -779,11 +779,11 @@
     /* Unset by default, so the shared Duration leads the wipe. See the token
        note in `:root` for why this stopped being a constant. */
     animation: section-wipe
-      var(--anim-wipe-duration, var(--anim-reveal-duration))
-      var(--anim-reveal-easing)
+      var(--anim-wipe-duration, var(--anim-duration))
+      var(--anim-easing)
       both;
     animation-delay: calc(
-      var(--reveal-index, 0) * var(--anim-reveal-delay-step)
+      var(--reveal-index, 0) * var(--anim-wipe-stagger, var(--anim-stagger))
     );
   }
 
@@ -799,10 +799,10 @@
 
   [data-pagebuilder-animation="wipe"][data-pagebuilder-animation-state="in"]
     .reveal-role-accent {
-    animation: section-fade-scale var(--anim-reveal-duration)
-      var(--anim-reveal-easing) both;
+    animation: section-fade-scale var(--anim-wipe-duration, var(--anim-duration))
+      var(--anim-easing) both;
     animation-delay: calc(
-      var(--reveal-index, 0) * var(--anim-reveal-delay-step)
+      var(--reveal-index, 0) * var(--anim-wipe-stagger, var(--anim-stagger))
     );
   }
 
@@ -840,8 +840,8 @@
      and Rise and Wipe still read it. */
   [data-pagebuilder-animation="pulse"][data-pagebuilder-animation-state="in"]
     .reveal-on-scroll {
-    animation: section-fade var(--anim-reveal-duration)
-      var(--anim-reveal-easing) both;
+    animation: section-fade var(--anim-duration)
+      var(--anim-easing) both;
   }
 
   /* Pulse, action role: fades in with everything else, then beats once.
@@ -861,10 +861,10 @@
   [data-pagebuilder-animation="pulse"][data-pagebuilder-animation-state="in"]
     .reveal-role-action {
     --anim-beat-delay: calc(
-      var(--anim-reveal-duration) + var(--anim-pulse-delay)
+      var(--anim-duration) + var(--anim-pulse-delay)
     );
     animation:
-      section-fade var(--anim-reveal-duration) var(--anim-reveal-easing) both,
+      section-fade var(--anim-duration) var(--anim-easing) both,
       section-attention-pulse var(--anim-pulse-duration) ease-in-out
         var(--anim-beat-delay) both;
   }
@@ -953,8 +953,8 @@
      and Rise and Wipe still read it. */
   [data-pagebuilder-animation="lateral"][data-pagebuilder-animation-state="in"]
     .reveal-on-scroll {
-    animation: section-lateral var(--anim-reveal-duration)
-      var(--anim-reveal-easing) both;
+    animation: section-lateral var(--anim-lateral-duration, var(--anim-duration))
+      var(--anim-easing) both;
   }
 
   /* Lateral, media role: THE ONE THING THAT TRAVELS.
@@ -1037,10 +1037,10 @@
      conclusion Wipe reached. */
   [data-pagebuilder-animation="focus"][data-pagebuilder-animation-state="in"]
     .reveal-on-scroll {
-    animation: section-fade var(--anim-reveal-duration)
-      var(--anim-reveal-easing) both;
+    animation: section-fade var(--anim-focus-duration, var(--anim-duration))
+      var(--anim-easing) both;
     animation-delay: calc(
-      var(--reveal-index, 0) * var(--anim-reveal-delay-step)
+      var(--reveal-index, 0) * var(--anim-focus-stagger, var(--anim-stagger))
     );
   }
 
@@ -1070,10 +1070,10 @@
        after the easing fix can be given its own length without dragging the
        other four suites along. */
     animation: section-focus
-      var(--anim-focus-duration, var(--anim-reveal-duration))
+      var(--anim-focus-duration, var(--anim-duration))
       var(--anim-focus-easing) both;
     animation-delay: calc(
-      var(--reveal-index, 0) * var(--anim-reveal-delay-step)
+      var(--reveal-index, 0) * var(--anim-focus-stagger, var(--anim-stagger))
     );
   }
 }
@@ -4713,10 +4713,10 @@ body {
   --type-label-tracking: 0.1em;
   --type-label-wrap: wrap;
   --type-label-transform: uppercase;
-  --anim-reveal-duration: 1080ms;
-  --anim-reveal-delay-step: 200ms;
+  --anim-duration: 1080ms;
+  --anim-stagger: 200ms;
   --anim-reveal-distance: 100px;
-  --anim-reveal-easing: cubic-bezier(0.16, 1, 0.3, 1);
+  --anim-easing: cubic-bezier(0.16, 1, 0.3, 1);
   --anim-accent-scale-from: 0.94;
   --anim-pulse-scale: 1.07;
   --anim-pulse-duration: 620ms;

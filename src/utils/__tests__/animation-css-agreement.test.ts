@@ -451,7 +451,7 @@ describe("animation css agreement", () => {
     expect(
       arriving,
       "the entrance has no duration, so it is being scrubbed rather than timed",
-    ).toContain("var(--anim-reveal-duration)");
+    ).toContain("var(--anim-reveal-duration, var(--anim-duration))");
     expect(
       arriving,
       "the entrance does not stagger by delay - with a clock available, a range offset would be the scrubbed idea in the wrong place",

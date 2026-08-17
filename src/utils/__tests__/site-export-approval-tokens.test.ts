@@ -90,7 +90,7 @@ describe("setPageExportApproval - style token changes", () => {
    * them.
    */
   it("un-approves pages when only the motion tokens changed", async () => {
-    files.globals = `${beginMarker}\n:root { --live-service-ink: #111111; --anim-reveal-duration: 620ms; }\n${endMarker}`;
+    files.globals = `${beginMarker}\n:root { --live-service-ink: #111111; --anim-duration: 620ms; }\n${endMarker}`;
 
     await setPageExportApproval({
       approved: true,
@@ -99,7 +99,7 @@ describe("setPageExportApproval - style token changes", () => {
     });
 
     // Same colours, slower entrance.
-    files.globals = `${beginMarker}\n:root { --live-service-ink: #111111; --anim-reveal-duration: 1400ms; }\n${endMarker}`;
+    files.globals = `${beginMarker}\n:root { --live-service-ink: #111111; --anim-duration: 1400ms; }\n${endMarker}`;
 
     const { invalidatedPageIds, state } = await setPageExportApproval({
       approved: true,
@@ -108,7 +108,7 @@ describe("setPageExportApproval - style token changes", () => {
     });
 
     expect(invalidatedPageIds).toEqual(["home"]);
-    expect(state.styleTokenCss).toContain("--anim-reveal-duration: 1400ms");
+    expect(state.styleTokenCss).toContain("--anim-duration: 1400ms");
   });
 
   it("does not re-freeze tokens when removing an approval", async () => {
