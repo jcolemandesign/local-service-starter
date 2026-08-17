@@ -793,6 +793,7 @@ veto, and three safeguards against the stale dev stylesheet.
 |---|---|---|
 | Rise | `reveal` | 57 (no gate) |
 | Wipe | `wipe` | 16 (marks a heading) |
+| Fade | `fade` | 57 (no gate) — added later the same day, see below |
 | Focus | `focus` | 16 (marks a heading) |
 | Pulse | `pulse` | 10 (marks an action) |
 | Lateral | `lateral` | 10 (marks media) — was 57 |
@@ -854,11 +855,26 @@ all derived from it.
 
 | Group | Tokens | Consumed by |
 |---|---|---|
-| `rhythm` | duration, stagger, distance, easing | all five suites |
-| `wipe` | wipe duration, accent scale-from | Wipe |
+| `rhythm` | duration, stagger, distance, easing | every suite |
+| `wipe` | wipe duration*, accent scale-from | Wipe |
 | `pulse` | beat scale, beat duration, beat delay | Pulse |
 | `lateral` | unit travel, media travel | Lateral |
-| `focus` | blur easing, blur amount, blur duration | Focus |
+| `focus` | blur easing, blur amount, blur duration* | Focus |
+
+\* **Inherit-by-default.** Both duration tokens are undeclared, and their rules
+read `var(--anim-<suite>-duration, var(--anim-reveal-duration))`, so unset means
+"keep time with the shared rhythm" and the promotion omits the declaration
+rather than emitting it empty. The control ships with "Match shared rhythm"
+ticked; unticking it authors a tempo for that suite alone.
+
+`--anim-wipe-duration` was a declared 720ms until this was reported as *the
+shared Duration control doing nothing to Wipe* — which was fair. Under that suite
+the cards, media, frame and accent all fade at the shared duration, and the one
+thing that did not was the wipe itself, which is the entire suite. A control
+reading "how long one unit takes to arrive" that visibly cannot move the
+headline, on the suite whose whole point is the headline, is a control that
+appears to work and paints nothing. A suite may still own its tempo — it just has
+to be chosen rather than inherited from a constant nobody revisits.
 
 **Every suite declares which group authors it.** `controlGroups` is a *required*
 field on the suite definition, so adding a suite without answering "what authors
@@ -891,6 +907,37 @@ it is now a control rather than a hand edit.
   four tokens by hand.
 - **`scrub` is retired**, tokens and rules together. See §4.5.
 
+### Where this stands — 2026-08-17, later still
+
+**Fade (`fade`) is the sixth suite**, offered everywhere Rise is (57 sections).
+Units fade up in place, staggered by reading order, and nothing moves. It reuses
+`section-fade` and the shared rhythm — no keyframe and no token of its own, which
+is the cheapest a suite can be and the shape the token layer exists to make
+possible.
+
+It is a suite rather than "Rise with distance 0" because the distance is a
+*shared* token: turning it down answers for all 57 sections at once. A section
+that wants stillness while the library keeps its travel cannot say so on Rise,
+and the only vocabulary left would be a section overriding a token inline —
+which `animation-marker-ownership.test.ts` forbids, and rightly. A suite is the
+unit of "how this section arrives", so the answer is a suite.
+
+`differentiatedRoles: []`, which is the finding rather than an oversight. Rise
+makes a special case of `media` because a bled panel that travels opens a band of
+bare ground beneath it; that is a defect of the movement, so with no movement it
+dissolves and every role gets one answer. Wipe recorded the same thing when it
+stopped travelling. Note the test count did not move when Fade landed — the
+suite-level assertions loop over the registry, so it was covered by the existing
+tests rather than needing new ones.
+
+**Entrance animation is its own block in pagebuilder**, three across, shaped like
+Background texture. It used to sit in the icon-toggle run drawn as two 56px icons
+where a section offered only off/on and as named buttons where it offered more —
+one control with two appearances, and the icon one was wrong. A section marking a
+heading now offers Rise, Fade, Wipe and Focus, and squeezing that into half a row
+beside "Background" made an editorial decision look like an on/off switch someone
+had run out of room for. `EntranceAnimationIcon` is deleted with it.
+
 ### What Focus found
 
 **Two suites now gate on `heading`, and that is fine.** Wipe and Focus are two
@@ -922,6 +969,7 @@ cost scales with area, and a bled panel is the largest area on the page.
 | Suite | id | Offered | Signature role | What it does |
 |---|---|---|---|---|
 | Rise | `reveal` | everywhere | — | units rise and fade in |
+| Fade | `fade` | everywhere | — | units fade up in place, staggered; nothing moves |
 | Wipe | `wipe` | marks a `heading` | `heading` | an edge crosses the heading; cards rise, accents scale, media fades |
 | Pulse | `pulse` | marks an `action` | `action` | normal arrival, then one soft beat on the action once it lands |
 | Lateral | `lateral` | everywhere | `media` | the media panel slides in from off-screen; everything else fades in place |

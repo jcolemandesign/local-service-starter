@@ -238,6 +238,58 @@ export const sectionAnimationSuites = [
   },
   {
     /**
+     * THE QUIET ONE. Rise without the travel.
+     *
+     * WHY THIS IS NOT "RISE WITH DISTANCE 0". The distance is a shared token, so
+     * turning it down answers for all 57 sections at once. A section that wants
+     * stillness while the library keeps its travel cannot say so on Rise, and
+     * the only vocabulary left would be a section overriding a token inline -
+     * which `animation-marker-ownership.test.ts` forbids, and rightly: that is a
+     * section deciding how it moves.
+     *
+     * A suite is the unit of "how this section arrives", so the answer is a
+     * suite. It costs one CSS rule pair and no tokens.
+     */
+    id: "fade",
+    label: "Fade",
+    status: "offered",
+    /** No signature role. A fade suits every kind of unit equally, which is the
+     *  same reason Rise carries no gate - and, unlike Rise, is also true of its
+     *  every role rather than five of seven. */
+    requiresRole: undefined,
+    description:
+      "Units fade up in place, staggered by reading order. Nothing moves.",
+    guidance:
+      "The quiet entrance. For a band under something already moving, a page that has spent its one big arrival, or anywhere a travel would read as fussy.",
+    roles: {
+      heading: "fade in place",
+      content: "fade in place, as one block",
+      card: "fade in place, staggered by --reveal-index",
+      media: "fade in place - the same answer as everything else here",
+      accent: "fade in place",
+      frame: "fade in place, as a single unit",
+      action: "fade in place - Fade makes no special case of the action",
+    },
+    /**
+     * NONE, and that is the finding rather than an oversight.
+     *
+     * Rise differentiates `media` because a bled panel that travels opens a band
+     * of bare ground beneath it - a defect of the movement, not of the panel.
+     * Remove the movement and the defect goes with it, so the exception
+     * dissolves and every role gets one answer. Wipe recorded the same thing
+     * when it stopped travelling.
+     *
+     * A suite with one idea needs no exceptions, which is the argument for
+     * having one.
+     */
+    differentiatedRoles: [],
+    /** The shared rhythm, and only three quarters of it - there is no travel for
+     *  the distance to apply to. A group is what authors a suite, not a claim
+     *  that the suite reads every token in it. */
+    controlGroups: ["rhythm"],
+  },
+  {
+    /**
      * RENAMED FROM `editorial`, and this is the one moment that was free.
      *
      * Persisted ids are never renamed here - `reveal` is still `reveal` for

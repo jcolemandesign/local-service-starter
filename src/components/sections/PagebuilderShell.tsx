@@ -2604,51 +2604,6 @@ function CardFillIcon({ filled }: { filled: boolean }) {
   );
 }
 
-function EntranceAnimationIcon({ enabled }: { enabled: boolean }) {
-  return (
-    <svg
-      aria-hidden="true"
-      className="size-6"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <rect
-        height="12"
-        rx="1.5"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        width="12"
-        x="8"
-        y="6"
-      />
-      {enabled ? (
-        <>
-          <path
-            d="M3.5 12h8M8.5 8.5 12 12l-3.5 3.5"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.75"
-          />
-          <path
-            d="M4 8h1M4 16h1"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeWidth="1.75"
-          />
-        </>
-      ) : (
-        <path
-          d="M4.5 4.5 19.5 19.5"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeWidth="2"
-        />
-      )}
-    </svg>
-  );
-}
-
 function ServicesBentoLayoutIcon({ split }: { split: boolean }) {
   return (
     <svg
@@ -5450,121 +5405,73 @@ export function PagebuilderShell({
                             </fieldset>
                           ) : null}
 
-                          {/* THE ICON-TOGGLE RUN. Every two-icon control on the
-                              panel flows through one grid: entrance animation,
-                              background, background band, section spacing.
+                          {/* ENTRANCE ANIMATION: ITS OWN BLOCK, THREE ACROSS.
 
-                              A pair of 56px buttons under a caption leaves most
-                              of a full-width row empty, and four of those
-                              stacked read as four unrelated settings separated
-                              by gaps. Two to a row fixes that.
+                              It used to sit in the icon-toggle run below, drawn
+                              as two 56px icons where a section offered only
+                              off/on and as named buttons where it offered more.
+                              Two shapes for one control, and the icon shape was
+                              the wrong one: the axis is not a toggle any more.
+                              A section that marks a heading offers Rise, Wipe
+                              and Focus, and squeezing a five-suite choice into
+                              half a row beside "Background" made a real
+                              editorial decision look like an on/off switch
+                              someone had run out of room for.
 
-                              ONE GRID RATHER THAN TWO PAIRS, and the difference
-                              only shows on the sections where it matters. These
-                              four are independently conditional - a hero has no
-                              band, a section with no marked units has no
-                              entrance - so fixed pairs strand a lone survivor
-                              beside an empty column, once per pair. Flowing
-                              them means whichever controls a section actually
-                              has close up against each other, and at most one
-                              gap is left over instead of one per pair.
-
-                              The card cluster below deliberately does NOT join
-                              this run - see the note there. */}
-                          {sectionSupportsAnimation(section.component) ||
-                          sectionSupportsBackgroundFill(section.component) ||
-                          (sectionSupportsJoinAbove(section.component) &&
-                            includedSections[0]?.id !== section.id) ||
-                          sectionSupportsSectionSpacing(section.component) ||
-                          isServicesBentoSection(section) ? (
-                          <div className="grid grid-cols-2 items-start gap-4">
-                          {/* Offered only where the section marks revealable
-                              units, so the control can never render and do
-                              nothing. Unlike the texture above there is no
-                              joined-section branch: band members keep their own
-                              contents and animate them independently. */}
+                              So it is shaped like Background texture, which is
+                              the control it actually resembles: a full-width
+                              fieldset, named buttons, three to a row. Both are
+                              a named list of section-wide treatments, and they
+                              now read as the same kind of choice. */}
                           {sectionSupportsAnimation(section.component) ? (
                             <fieldset className="grid gap-2">
                               <legend className="type-caption font-semibold text-current">
                                 Entrance animation
                               </legend>
-                              {/* Two shapes, because the axis has two shapes.
-                                  On most sections the choice is off/on and two
-                                  icons say it faster than two words. Where a
-                                  section marks a heading it also gets Wipe, and
-                                  three buttons drawn with two icons would make
-                                  the two suites look like the same setting.
-                                  Named buttons there, the same treatment every
-                                  other multi-option control on this panel
-                                  uses. */}
-                              {(() => {
-                                const options = sectionAnimationOptionsFor(
-                                  section.component,
-                                ).filter((option) => option.value !== "");
-                                const asIcons = options.length <= 2;
-                                const activeAnimation = resolveSectionAnimation(
-                                  section.animation,
-                                );
+                              {/* Offered only where the section marks revealable
+                                  units, so the control can never render and do
+                                  nothing. Unlike the texture above there is no
+                                  joined-section branch: band members keep their
+                                  own contents and animate them independently. */}
+                              <div className="grid grid-cols-3 gap-2 max-md:grid-cols-2">
+                                {sectionAnimationOptionsFor(section.component)
+                                  .filter((option) => option.value !== "")
+                                  .map((option) => {
+                                    const optionIsActive =
+                                      resolveSectionAnimation(
+                                        section.animation,
+                                      ) === option.value;
 
-                                return (
-                                  <div
-                                    className={
-                                      asIcons
-                                        ? "flex items-center gap-2"
-                                        : "grid grid-cols-3 gap-2"
-                                    }
-                                  >
-                                    {options.map((option) => {
-                                      const optionIsActive =
-                                        activeAnimation === option.value;
-                                      const label =
-                                        option.value === "none"
-                                          ? "Animation off"
-                                          : `Entrance: ${option.label}`;
-
-                                      return (
-                                        <button
-                                          aria-pressed={optionIsActive}
-                                          className={cx(
-                                            "token-chrome-control flex items-center justify-center rounded-[var(--chrome-radius-control)] border transition-colors",
-                                            asIcons
-                                              ? "size-14"
-                                              : "min-h-11 px-2 text-xs font-semibold",
-                                            optionIsActive &&
-                                              "token-chrome-card-active",
-                                          )}
-                                          key={option.value}
-                                          onClick={() =>
-                                            updateSectionAnimation(
-                                              section.id,
-                                              option.value,
-                                            )
-                                          }
-                                          type="button"
-                                          title={label}
-                                        >
-                                          {asIcons ? (
-                                            <>
-                                              <EntranceAnimationIcon
-                                                enabled={option.value !== "none"}
-                                              />
-                                              <span className="sr-only">
-                                                {label}
-                                              </span>
-                                            </>
-                                          ) : (
-                                            <span>
-                                              {option.value === "none"
-                                                ? "Off"
-                                                : option.label}
-                                            </span>
-                                          )}
-                                        </button>
-                                      );
-                                    })}
-                                  </div>
-                                );
-                              })()}
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-2 text-center text-xs font-semibold transition-colors",
+                                          optionIsActive
+                                            ? "token-chrome-card-active"
+                                            : "token-chrome-card",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateSectionAnimation(
+                                            section.id,
+                                            option.value,
+                                          )
+                                        }
+                                        title={
+                                          option.value === "none"
+                                            ? "Animation off"
+                                            : `Entrance: ${option.label}`
+                                        }
+                                        type="button"
+                                      >
+                                        {option.value === "none"
+                                          ? "Off"
+                                          : option.label}
+                                      </button>
+                                    );
+                                  })}
+                              </div>
                               {/* REMOVED: the "Play entrance" button.
                                 *
                                 * The problem it solved is real and has not gone
@@ -5574,15 +5481,45 @@ export function PagebuilderShell({
                                 * no entry left to play, and the control reads
                                 * as broken while working perfectly.
                                 *
-                                * It is solved by the toggle itself now. Picking
-                                * a value calls `updateSectionAnimation`, which
-                                * replays whenever the result is not `none` -
-                                * including when the value picked was already
-                                * active, so pressing "on" again is the replay.
-                                * A separate button was a second control for
-                                * something the first one already did. */}
+                                * It is solved by the buttons themselves now.
+                                * Picking a value calls `updateSectionAnimation`,
+                                * which replays whenever the result is not
+                                * `none` - including when the value picked was
+                                * already active, so pressing the active suite
+                                * again is the replay. A separate button was a
+                                * second control for something the first one
+                                * already did. */}
                             </fieldset>
                           ) : null}
+
+                          {/* THE ICON-TOGGLE RUN. Every two-icon control on the
+                              panel flows through one grid: background,
+                              background band, section spacing.
+
+                              A pair of 56px buttons under a caption leaves most
+                              of a full-width row empty, and three of those
+                              stacked read as three unrelated settings separated
+                              by gaps. Two to a row fixes that.
+
+                              ONE GRID RATHER THAN FIXED PAIRS, and the
+                              difference only shows on the sections where it
+                              matters. These are independently conditional - a
+                              hero has no band - so fixed pairs strand a lone
+                              survivor beside an empty column, once per pair.
+                              Flowing them means whichever controls a section
+                              actually has close up against each other, and at
+                              most one gap is left over instead of one per pair.
+
+                              Entrance animation left this run when it stopped
+                              being an on/off icon - see the note above. The card
+                              cluster below deliberately does NOT join it
+                              either - see the note there. */}
+                          {sectionSupportsBackgroundFill(section.component) ||
+                          (sectionSupportsJoinAbove(section.component) &&
+                            includedSections[0]?.id !== section.id) ||
+                          sectionSupportsSectionSpacing(section.component) ||
+                          isServicesBentoSection(section) ? (
+                          <div className="grid grid-cols-2 items-start gap-4">
 
                           {sectionSupportsBackgroundFill(section.component) ? (
                             <fieldset className="grid gap-2">

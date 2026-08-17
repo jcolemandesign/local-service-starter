@@ -199,17 +199,18 @@ export const motionControlGroups = [
     id: "wipe",
     label: "Wipe",
     description:
-      "The edge crossing the headline. Wipe reuses the shared stagger and easing and owns only the two values that have no equivalent in Rise.",
+      "The edge crossing the headline. Wipe reuses the shared rhythm and owns only what has no equivalent in Rise.",
     controls: [
       {
         token: "--anim-wipe-duration",
         label: "Wipe duration",
-        hint: "How long the edge takes to cross the text. Longer than the shared duration, because a wipe is read along its whole length.",
+        hint: "Unset, the edge keeps time with the shared rhythm. Give the wipe its own length only if it needs to be read along more of its travel than a fade does.",
         kind: "ms",
-        defaultValue: "720ms",
+        defaultValue: "",
         min: 120,
         max: 1600,
         step: 20,
+        inheritsFrom: "--anim-reveal-duration",
       },
       {
         token: "--anim-accent-scale-from",
@@ -298,7 +299,7 @@ export const motionControlGroups = [
       {
         token: "--anim-focus-easing",
         label: "Blur easing",
-        hint: "Focus's own curve. The shared easing control does not touch this, and must not: four of the five suites would give the same answer and this one would be wrong.",
+        hint: "Focus's own curve. The shared easing control does not touch this, and must not: every other suite would give the same answer and this one would be wrong.",
         kind: "easing",
         defaultValue: "cubic-bezier(0.4, 0, 0.2, 1)",
         presets: focusEasingPresets,

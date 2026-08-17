@@ -289,11 +289,25 @@
   /* Decisive out-easing: most of the travel happens in the first third, so the
      unit reads as arriving and settling rather than as drifting. */
   --anim-reveal-easing: cubic-bezier(0.22, 1, 0.36, 1);
-  /* The wipe's own numbers. The suite reuses the shared duration, stagger and
-     easing above on purpose - the rhythm of the library should be one rhythm,
-     and what differs between suites is the SHAPE of the arrival, not its
-     tempo. Only the two values that have no equivalent in Rise live here. */
-  --anim-wipe-duration: 720ms;
+  /* The wipe's own number. Only the value that has no equivalent in Rise lives
+     here - the suite reuses the shared stagger and easing on purpose, because
+     the rhythm of the library should be one rhythm and what differs between
+     suites is the SHAPE of the arrival, not its tempo.
+
+     `--anim-wipe-duration` IS DELIBERATELY NOT DECLARED, and it used to be, at
+     720ms. That was reported as the shared Duration control doing nothing to
+     Wipe, and the report was fair: under this suite the cards, media, frame and
+     accent all fade at the shared duration, and the one thing that does not is
+     the wipe itself - which is the entire suite. A control reading "how long one
+     unit takes to arrive" that visibly cannot move the headline, on the suite
+     whose whole point is the headline, is a control that appears to work and
+     paints nothing.
+
+     So the wipe rule reads `var(--anim-wipe-duration, var(--anim-reveal-duration))`
+     and unset means "keep time with the shared rhythm". The suite can still own
+     its tempo - the Style Guide offers the dial, and unticking "Match shared
+     rhythm" authors it - but it now has to be chosen rather than inherited from
+     a constant nobody revisits. Same arrangement as `--anim-focus-duration`. */
   --anim-accent-scale-from: 0.94;
   /* The Pulse suite's beat.
      1.025 over 900ms was the first attempt and it was reported as "just Rise" -
@@ -645,6 +659,51 @@
     --anim-reveal-distance: 0px;
   }
 
+  /* == Suite: Fade (stored id `fade`) ===============================
+   *
+   * Rise without the travel. Every unit fades up in place, staggered by reading
+   * order, and nothing moves.
+   *
+   * WHY IT IS A SUITE AND NOT A DISTANCE OF ZERO. Setting
+   * `--anim-reveal-distance: 0px` under Rise gets the same picture, but the
+   * distance is a SHARED token - turning it down for one section turns it down
+   * for all 57. A section that wants stillness while the rest of the library
+   * keeps its travel has no way to say so on the Rise suite, and the only
+   * vocabulary left is a section overriding a token inline, which is exactly
+   * what the role rule above was written to stop.
+   *
+   * So it is the quiet answer, chosen per section: for a band that sits under
+   * something already moving, for a page that has used its one big entrance
+   * already, and for anywhere a travel would read as fussy rather than as
+   * arrival.
+   *
+   * NO DIFFERENTIATED ROLES, and that is the finding rather than an oversight.
+   * Rise makes a special case of `media` because a bled panel that travels
+   * opens a band of bare ground beneath it - a defect of the movement. With no
+   * movement there is no defect, so the exception dissolves and every role gets
+   * the same answer. Wipe reached the same conclusion when it stopped
+   * travelling: "fade without rising" is only a special case while everything
+   * else rises.
+   *
+   * It reuses `section-fade` and the shared rhythm entirely. No keyframe and no
+   * token of its own - which is the cheapest a suite can be, and the shape the
+   * token layer exists to make possible.
+   */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="fade"]:not([data-pagebuilder-animation-state])
+    .reveal-on-scroll {
+    opacity: 0;
+  }
+
+  [data-pagebuilder-animation="fade"][data-pagebuilder-animation-state="in"]
+    .reveal-on-scroll {
+    animation: section-fade var(--anim-reveal-duration)
+      var(--anim-reveal-easing) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-reveal-delay-step)
+    );
+  }
+
   /* == Suite: Wipe (stored id `wipe`) ===============================
    *
    * Text blocks are revealed behind an edge travelling left to right. NOTHING
@@ -701,7 +760,11 @@
     .reveal-role-heading,
   [data-pagebuilder-animation="wipe"][data-pagebuilder-animation-state="in"]
     .reveal-role-content {
-    animation: section-wipe var(--anim-wipe-duration) var(--anim-reveal-easing)
+    /* Unset by default, so the shared Duration leads the wipe. See the token
+       note in `:root` for why this stopped being a constant. */
+    animation: section-wipe
+      var(--anim-wipe-duration, var(--anim-reveal-duration))
+      var(--anim-reveal-easing)
       both;
     animation-delay: calc(
       var(--reveal-index, 0) * var(--anim-reveal-delay-step)
@@ -4606,16 +4669,16 @@ body {
   --type-label-tracking: 0.1em;
   --type-label-wrap: wrap;
   --type-label-transform: uppercase;
-  --anim-reveal-duration: 620ms;
-  --anim-reveal-delay-step: 90ms;
-  --anim-reveal-distance: 28px;
-  --anim-reveal-easing: cubic-bezier(0.22, 1, 0.36, 1);
-  --anim-wipe-duration: 720ms;
-  --anim-accent-scale-from: 0.94;
-  --anim-pulse-scale: 1.03;
+  --anim-reveal-duration: 1080ms;
+  --anim-reveal-delay-step: 200ms;
+  --anim-reveal-distance: 100px;
+  --anim-reveal-easing: cubic-bezier(0.16, 1, 0.3, 1);
+  --anim-wipe-duration: 1600ms;
+  --anim-accent-scale-from: 1;
+  --anim-pulse-scale: 1.07;
   --anim-pulse-duration: 620ms;
   --anim-pulse-delay: 180ms;
-  --anim-lateral-distance: 0px;
+  --anim-lateral-distance: 68px;
   --anim-lateral-media-distance: 100%;
   --anim-focus-easing: cubic-bezier(0.4, 0, 0.2, 1);
   --anim-focus-blur: 10px;
