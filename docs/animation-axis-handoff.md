@@ -743,6 +743,52 @@ disagree, and factoring it into a shared rule would take that freedom away.
 Lateral took that freedom immediately: `media` is the one thing that *does*
 travel there.
 
+### Where this stands — 2026-08-17
+
+Landed this session: **Focus** (`focus`), Lateral gated on `media`, a per-suite
+veto, and three safeguards against the stale dev stylesheet.
+
+| Suite | id | Offered on |
+|---|---|---|
+| Rise | `reveal` | 57 (no gate) |
+| Wipe | `wipe` | 16 (marks a heading) |
+| Focus | `focus` | 16 (marks a heading) |
+| Pulse | `pulse` | 10 (marks an action) |
+| Lateral | `lateral` | 10 (marks media) — was 57 |
+
+**Open, and it is the live one: Focus reads too quick, and the cause is
+probably the easing rather than the duration.** `--anim-reveal-easing` is
+`cubic-bezier(0.22, 1, 0.36, 1)`, a decisive out-curve that puts most of the
+progress in the first third. That is right for a travel — the unit arrives and
+settles — and wrong for a blur, where it means the 10px is gone by ~200ms and
+the remaining 400ms is a tail nobody can see. So the entrance is nominally
+620ms and perceptually about a third of that.
+
+Untested as of this writing. Two candidate fixes, which compose: a
+Focus-specific `--anim-focus-duration` around 900ms, and a gentler curve for the
+focus keyframe so the blur resolves across the whole duration. Wipe's
+`--anim-wipe-duration` is the precedent for a suite owning its own tempo.
+
+**THE STYLE GUIDE PROMOTES NOTHING, and this cost a round trip.** Its rhythm
+controls are React state scoped to the gallery element. They save nothing, reach
+no page, and reset on reload — deliberately, so you can judge a rhythm without
+authoring one. "Promoting" is a hand edit to a token in `globals.css` and there
+is no button for it. Changing the easing there and then looking at pagebuilder
+shows the default curve, because that is all pagebuilder has ever been given.
+If that keeps biting, the honest fix is a **Copy as CSS** affordance that emits
+the token block for pasting — not a write path from a dev screen into the
+stylesheet.
+
+Also open:
+
+- **`accent` is marked on no section.** Keeping the role — Josh is looking for
+  places to use it. Until then half of Focus's signature is visible only in the
+  gallery.
+- **Wipe and Focus are offered on the same 16 sections.** Two answers to how a
+  headline arrives, which is intended; if a given section should only offer one,
+  `suiteExcludedComponents` is now how to say so. It is empty.
+- **`scrub` is still gated, unoffered and unrebuilt** — §4.5.
+
 ### What Focus found
 
 **Two suites now gate on `heading`, and that is fine.** Wipe and Focus are two
