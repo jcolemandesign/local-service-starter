@@ -1549,7 +1549,21 @@ export const sectionLibraryV3Content = {
     secondaryAction: "Explore services",
     secondaryActionHref: "#services",
     imageAlt: "Technician arriving for a scheduled service visit",
-    imageSrc: "/images/fpo-image.svg",
+    /**
+     * A PHOTOGRAPH, NOT THE LINE-ART PLACEHOLDER, and the swap was a motion
+     * decision rather than a cosmetic one.
+     *
+     * This panel is bled, half width and full height, and `fpo-image.svg` is
+     * square-ish line art on a flat ground. Under Settle - where the crop eases
+     * back inside a fixed frame - a flat vector shows almost nothing: there is
+     * no detail near the edges for the scale to reveal, so the entrance reads
+     * as not running. Judging that suite needs an image with something in the
+     * corners.
+     *
+     * This is the portrait crop cut for the full-image split's tall column
+     * (2550x2750), which is the same box shape this panel is.
+     */
+    imageSrc: heroSplitFullImageFpoSrc,
   },
   ctaSmallBandImage: {
     action: "Request a replacement quote",

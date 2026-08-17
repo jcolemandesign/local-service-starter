@@ -540,6 +540,61 @@ describe("animation css agreement", () => {
   });
 
   /**
+   * SETTLE SCALES THE PICTURE, NOT THE PANEL.
+   *
+   * Scaling the marked unit was the first attempt and it is wrong in a way only
+   * a real photograph shows: these panels are bled, so growing one 3% sweeps its
+   * inner edge across the text column and back. That reads as the layout
+   * twitching rather than as an image settling, and clipping at the section
+   * level cannot help because the movement is inward.
+   *
+   * The picture scales inside a panel that holds still, and the panel's own
+   * crop clipping cuts the overhang. If the animation ever moves back onto
+   * `.reveal-role-media` itself, the suite has quietly regained the defect it
+   * was rebuilt to lose.
+   */
+  it("settles the picture inside the panel rather than the panel", () => {
+    const arriving = blockAt(
+      css,
+      '[data-pagebuilder-animation="settle"][data-pagebuilder-animation-state="in"]\n    .reveal-role-media :is(img, video)',
+    );
+
+    expect(
+      arriving,
+      "nothing runs section-settle on the picture inside a media unit, so the suite's signature does not play",
+    ).not.toBe("");
+    expect(arriving).toContain("section-settle");
+
+    // The panel's own rule must NOT animate - it only zeroes the travel, which
+    // turns the suite's default rise into the pure fade a bled panel wants.
+    const panel = blockAt(
+      css,
+      '[data-pagebuilder-animation="settle"][data-pagebuilder-animation-state="in"]\n    .reveal-role-media {',
+    );
+
+    expect(
+      panel,
+      "the media panel itself animates again - scaling a bled panel sweeps its inner edge across the copy beside it",
+    ).not.toContain("section-settle");
+  });
+
+  /**
+   * The scale is opacity-free, because the panel around it is already fading.
+   *
+   * Two opacity animations on nested elements multiply into a muddy one - the
+   * same defect the role vocabulary avoids by never nesting revealable units.
+   */
+  it("keeps opacity out of the settle keyframe", () => {
+    const keyframe = blockAt(css, "@keyframes section-settle");
+
+    expect(keyframe, "the section-settle keyframe is gone").not.toBe("");
+    expect(
+      keyframe,
+      "section-settle animates opacity as well as scale, so it fades against the panel that is already fading it",
+    ).not.toContain("opacity");
+  });
+
+  /**
    * THE LATERAL DEFAULT IS A TOKEN, NOT A LITERAL, and it was a literal.
    *
    * `--anim-lateral-distance: 40px` sat declared and read by nothing while the

@@ -534,21 +534,24 @@
  *
  * Scales DOWN to rest rather than up. Starting over-size and settling reads as
  * the image coming to rest; starting under-size and growing reads as a zoom
- * beginning, which leaves the eye waiting for more movement that never comes.
+ * beginning, which leaves the eye waiting for movement that never comes.
  *
- * Separate from `section-fade-scale` even though the shape is the same, because
+ * SCALE ONLY, NO OPACITY, and that is what makes it composable. The unit it
+ * runs on is inside a media panel that is already fading, so animating opacity
+ * here would multiply two fades into a muddy one - the same defect the role
+ * vocabulary avoids by never nesting one revealable unit inside another.
+ *
+ * Separate from `section-fade-scale` even though the shape is similar, because
  * the two scale in opposite directions from different tokens - Wipe's accent
  * grows from 0.94, this shrinks from 1.06 - and folding them together would
  * mean one keyframe whose direction depends on which token the caller set.
  */
 @keyframes section-settle {
   from {
-    opacity: 0;
     scale: var(--anim-settle-scale-from);
   }
 
   to {
-    opacity: 1;
     scale: 1;
   }
 }
@@ -797,22 +800,52 @@
     );
   }
 
-  /* Settle, media role: THE SETTLE ITSELF.
+  /* Settle, media role: the PANEL holds still and fades.
      The travel is zeroed the same way Rise zeroes it - by re-pointing the
-     suite's own distance token on the unit rather than by writing a competing
-     `translate`, so the two declarations cannot fight on specificity. What
-     replaces it is the scale, and `section-reveal` is swapped for
-     `section-settle` on the arriving half. */
+     suite's own distance token on the unit rather than writing a competing
+     `translate`, so the two declarations cannot fight on specificity. With the
+     distance at zero the default rule above becomes a pure fade, which is
+     exactly what this panel should do. */
   [data-pagebuilder-animation-ready]
     [data-pagebuilder-animation="settle"]:not([data-pagebuilder-animation-state])
+    .reveal-role-media,
+  [data-pagebuilder-animation="settle"][data-pagebuilder-animation-state="in"]
     .reveal-role-media {
     --anim-settle-distance: 0px;
+  }
+
+  /* THE SETTLE ITSELF, AND IT IS THE PICTURE THAT MOVES, NOT THE PANEL.
+   *
+   * Scaling the marked unit was the first attempt and it was wrong in a way
+   * only a real photograph shows. These panels are bled: absolutely positioned
+   * to the section's own edges, half the width, full height. Scaling the panel
+   * grows it 3% in every direction, and the direction that matters is INWARD -
+   * the panel's inner edge sweeps across the text column and back. You do not
+   * read that as a photograph settling, you read it as the layout twitching,
+   * and no amount of clipping at the section level helps because the movement
+   * is toward the middle rather than past the edge.
+   *
+   * The picture scales inside a panel that stays exactly where it is. Every
+   * media unit in this library that holds a photograph already clips - it has
+   * to, to crop - so the 3% overhang is cut off on all four sides and the only
+   * thing that changes is how much of the image you can see. That is the
+   * effect: the frame is fixed, the crop eases back.
+   *
+   * `:is(img, video)` rather than a marker class, and this is the one place
+   * this axis reaches into a section's markup. It is a convention rather than a
+   * guess - a media unit's whole purpose is to hold a picture, and every one of
+   * them renders it through `next/image` or a `<video>`. The alternative is a
+   * second marker class for "the picture inside the media unit", which is
+   * vocabulary for a thing that has exactly one shape.
+   */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="settle"]:not([data-pagebuilder-animation-state])
+    .reveal-role-media :is(img, video) {
     scale: var(--anim-settle-scale-from);
   }
 
   [data-pagebuilder-animation="settle"][data-pagebuilder-animation-state="in"]
-    .reveal-role-media {
-    --anim-settle-distance: 0px;
+    .reveal-role-media :is(img, video) {
     animation: section-settle
       var(--anim-settle-duration, var(--anim-duration))
       var(--anim-settle-easing, var(--anim-easing)) both;
