@@ -590,31 +590,26 @@ describe("animation css agreement", () => {
    *
    * Both halves are asserted because either alone is satisfiable while broken.
    */
-  it("stops settle's media panel travelling", () => {
-    const frame = blockAt(css, '[data-pagebuilder-animation="settle"] {');
-
-    expect(
-      frame,
-      "settle no longer re-points --anim-reveal-distance, so its own distance control cannot reach the keyframe that does the travelling",
-    ).toContain("--anim-reveal-distance: var(--anim-settle-distance)");
-
-    const panel = blockAt(
+  it("never travels under settle", () => {
+    const waiting = blockAt(
       css,
-      '[data-pagebuilder-animation="settle"][data-pagebuilder-animation-state="in"]\n    .reveal-role-media {',
+      '[data-pagebuilder-animation-ready]\n    [data-pagebuilder-animation="settle"]',
+    );
+    const arriving = blockAt(
+      css,
+      '[data-pagebuilder-animation="settle"][data-pagebuilder-animation-state="in"]\n    .reveal-on-scroll',
     );
 
+    expect(waiting, "settle has no waiting rule").not.toBe("");
     expect(
-      panel,
-      "settle's media panel no longer zeroes its travel, so a bled panel rises and opens bare ground under its own crop",
-    ).toContain("--anim-settle-distance: 0px");
-    // The one the KEYFRAME reads. Zeroing only Settle's own token was the first
-    // fix and it changed nothing: a var() inside a custom property resolves
-    // where it is declared, so the frame's indirection had already computed to
-    // a number by the time it inherited down here.
+      waiting,
+      "settle's waiting units are displaced, so something travels under a suite whose whole idea is that only the picture moves",
+    ).not.toContain("translate");
     expect(
-      panel,
-      "settle's media panel does not zero --anim-reveal-distance, which is the token section-reveal actually travels by - the panel will rise regardless of Settle's own distance",
-    ).toContain("--anim-reveal-distance: 0px");
+      arriving,
+      "settle's units arrive on section-reveal, which travels - they should fade in place beside the settling picture",
+    ).toContain("section-fade");
+    expect(arriving).not.toContain("section-reveal");
   });
 
   /**

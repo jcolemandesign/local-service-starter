@@ -289,7 +289,7 @@ export const motionControlGroups = [
     id: "settle",
     label: "Settle",
     description:
-      "The image easing down into its frame. Everything that is not media rises, so Settle owns a travel of its own alongside the scale.",
+      "The image easing down into its frame while everything else fades in place. Nothing under this suite travels, so the scale is the only shape it owns.",
     controls: [
       {
         token: "--anim-settle-scale-from",
@@ -300,16 +300,6 @@ export const motionControlGroups = [
         min: 1,
         max: 1.2,
         step: 0.005,
-      },
-      {
-        token: "--anim-settle-distance",
-        label: "Distance",
-        hint: "How far a non-media unit rises. Settle's own, not Rise's - a shared var() would make Rise's control move this suite too.",
-        kind: "px",
-        defaultValue: "28px",
-        min: 0,
-        max: 120,
-        step: 2,
       },
       {
         token: "--anim-settle-easing",

@@ -354,22 +354,16 @@
      whatever size I am. */
   --anim-lateral-distance: 0px;
   --anim-lateral-media-distance: 100%;
-  /* Settle's two numbers.
+  /* Settle's one number: how far over life size the picture starts.
 
-     The scale starts just over life size. 1.06 is enough to read as motion on a
-     large crop and small enough that the first frame is not visibly a different
-     photograph - the image never leaves its frame, so nothing beneath it is
-     exposed and no layout moves.
+     1.06 is enough to read as motion on a large crop and small enough that the
+     first frame is not visibly a different photograph. The image never leaves
+     its frame, so nothing beneath it is exposed and no layout moves.
 
-     The distance is Settle's OWN rather than Rise's, even though the two ship
-     the same 28px and mean the same thing. A cross-suite `var()` would make
-     Rise's Style Guide control silently move a second suite, which is the
-     "shared" mistake the spine split was undoing. Two suites travelling is not
-     yet a shared travel; a third would be, and at that point this and
-     `--anim-reveal-distance` should collapse into a spine token the way
-     duration and stagger did. */
+     There is no distance token here any more. Settle used to rise its non-media
+     units and needed one; nothing travels under this suite now, so a distance
+     control would author a value no rule reads. */
   --anim-settle-scale-from: 1.06;
-  --anim-settle-distance: 28px;
   /* Settle's own curve, DECLARED rather than inherited - the second suite to
      earn one, on exactly the rule Focus established: a suite earns its own
      curve when it drives something that is not a travel.
@@ -800,62 +794,31 @@
    */
   /* THE KEYFRAME READS RISE'S TOKEN, SO SETTLE POINTS IT AT ITS OWN.
    *
-   * `section-reveal` travels by `var(--anim-reveal-distance)`, and a suite
-   * cannot hand a keyframe a different variable - only a different value for
-   * the one it names. Re-pointing it here is what lets Settle's own distance
-   * control drive the rise on everything that is not media.
+   * NOTHING TRAVELS UNDER SETTLE. Everything that is not media fades in place,
+   * and the media panel holds still while the picture scales inside it. That is
+   * the whole suite: one thing moves, and it moves within its own frame.
    *
-   * IT DOES NOT REACH THE MEDIA PANEL, and that is a fact about custom
-   * properties rather than about this rule. A `var()` inside a custom property
-   * is substituted where the property is DECLARED, so this computes to 28px
-   * here and inherits as the resolved length; a descendant re-declaring
-   * `--anim-settle-distance` cannot reach back into a value that is already a
-   * number. The media rule below therefore zeroes `--anim-reveal-distance`
-   * directly, exactly as Rise's media rule does.
-   *
-   * WITHOUT THAT THE PANEL STILL TRAVELLED. Zeroing Settle's own distance did
-   * nothing to a keyframe that never reads it, so the bled panel rose its full
-   * 28px while the picture scaled inside it - and what you saw was the
-   * photograph's top edge sliding up to meet the section's, which is precisely
-   * the band of bare ground the media role exists to prevent.
+   * The non-media units used to rise, which cost this suite a distance token, a
+   * re-pointing of Rise's token at the frame, and a zeroing of both on the media
+   * panel - three mechanisms to stop the one unit that must not travel from
+   * travelling. Fading them instead deletes all three. It also reads better
+   * beside the settle: a rise pulls the eye vertically while the photograph is
+   * easing back, and two directions of movement compete for the same moment.
    */
-  [data-pagebuilder-animation="settle"] {
-    --anim-reveal-distance: var(--anim-settle-distance);
-  }
-
   [data-pagebuilder-animation-ready]
     [data-pagebuilder-animation="settle"]:not([data-pagebuilder-animation-state])
     .reveal-on-scroll {
     opacity: 0;
-    translate: 0 var(--anim-settle-distance);
   }
 
   [data-pagebuilder-animation="settle"][data-pagebuilder-animation-state="in"]
     .reveal-on-scroll {
-    animation: section-reveal
+    animation: section-fade
       var(--anim-settle-duration, var(--anim-duration))
       var(--anim-settle-easing, var(--anim-easing)) both;
     animation-delay: calc(
       var(--reveal-index, 0) * var(--anim-settle-stagger, var(--anim-stagger))
     );
-  }
-
-  /* Settle, media role: the PANEL holds still and fades.
-     The travel is zeroed the same way Rise zeroes it - by re-pointing the
-     suite's own distance token on the unit rather than writing a competing
-     `translate`, so the two declarations cannot fight on specificity. With the
-     distance at zero the default rule above becomes a pure fade, which is
-     exactly what this panel should do. */
-  [data-pagebuilder-animation-ready]
-    [data-pagebuilder-animation="settle"]:not([data-pagebuilder-animation-state])
-    .reveal-role-media,
-  [data-pagebuilder-animation="settle"][data-pagebuilder-animation-state="in"]
-    .reveal-role-media {
-    /* Both, and both are load-bearing. The settle token zeroes the waiting
-       rule's own `translate`; the reveal token zeroes the keyframe's, which is
-       the one that actually animates and which reads Rise's name. */
-    --anim-settle-distance: 0px;
-    --anim-reveal-distance: 0px;
   }
 
   /* THE SETTLE ITSELF, AND IT IS THE PICTURE THAT MOVES, NOT THE PANEL.
