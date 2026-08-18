@@ -271,10 +271,18 @@ export function MotionSuiteGallery() {
                     a mystery: an editor who cannot find "Wipe" on a section
                     should be able to read why here rather than assume it is
                     broken. */}
+                {/* The trigger, spelled out here rather than in the label.
+                    Pagebuilder never shows both sets at once - a section is
+                    offered load suites or scroll suites, never a mix - so the
+                    names can stay short there. This screen lists every suite in
+                    the registry, which is the one place "Rise" appears twice,
+                    so this is where the difference has to be said. */}
                 <span className="type-caption text-current/70">
-                  {suite.requiresRole
-                    ? `Offered on sections that mark a "${suite.requiresRole}" unit.`
-                    : "Offered wherever the entrance is offered."}
+                  {suite.trigger === "load"
+                    ? "Plays as the page paints. Offered on sections that are above the fold, where there is no scroll arrival to wait for."
+                    : suite.requiresRole
+                      ? `Offered on sections that mark a "${suite.requiresRole}" unit.`
+                      : "Offered wherever the entrance is offered."}
                 </span>
               </div>
               <div className="flex items-center gap-3">

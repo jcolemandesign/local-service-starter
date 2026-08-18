@@ -392,7 +392,7 @@ export const sectionAnimationSuites = [
      * rather than a longer list.
      */
     id: "settle-load",
-    label: "Settle on load",
+    label: "Settle",
     status: "offered",
     description:
       "The image eases down into its frame as the page paints. Everything else fades in place.",
@@ -677,7 +677,7 @@ export const sectionAnimationSuites = [
   {
     /** Rise, played by the page. */
     id: "reveal-load",
-    label: "Rise on load",
+    label: "Rise",
     status: "offered",
     description:
       "Units rise a short distance and fade in as the page paints.",
@@ -700,7 +700,7 @@ export const sectionAnimationSuites = [
   {
     /** Fade, played by the page. */
     id: "fade-load",
-    label: "Fade on load",
+    label: "Fade",
     status: "offered",
     description:
       "Units fade up in place as the page paints. Nothing moves.",
@@ -723,7 +723,7 @@ export const sectionAnimationSuites = [
   {
     /** Wipe, played by the page. Same rules as `wipe` with the animation-state gate removed - see `settle-load` for why a load entrance cannot be a state of its scroll twin. */
     id: "wipe-load",
-    label: "Wipe on load",
+    label: "Wipe",
     status: "offered",
     description:
       "The headline is revealed behind an edge as the page paints. Everything else fades in place.",

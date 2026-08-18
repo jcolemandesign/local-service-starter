@@ -206,7 +206,10 @@ import {
   type SplitImageRatio,
   type SplitImageVariant,
 } from "@/content/section-style-options";
-import { sectionAnimationOptionsFor } from "@/content/section-animations";
+import {
+  sectionAnimationOptionsFor,
+  sectionUsesLoadEntrance,
+} from "@/content/section-animations";
 import { replaySectionAnimationById } from "@/utils/replay-section-animation";
 import { groupSectionsIntoBands, withBandRecipe } from "@/utils/section-bands";
 
@@ -5426,7 +5429,16 @@ export function PagebuilderShell({
                           {sectionSupportsAnimation(section.component) ? (
                             <fieldset className="grid gap-2">
                               <legend className="type-caption font-semibold text-current">
+                                {/* The qualifier goes on the header, not on
+                                    every option. A load section is offered load
+                                    suites and nothing else, so repeating "on
+                                    load" through four labels said the same
+                                    thing four times and made the names longer
+                                    than the choice between them. */}
                                 Entrance animation
+                                {sectionUsesLoadEntrance(section.component)
+                                  ? " (on load)"
+                                  : ""}
                               </legend>
                               {/* Offered only where the section marks revealable
                                   units, so the control can never render and do
