@@ -219,30 +219,23 @@ membership sets, so re-derive them rather than adjusting them by hand.
 | Action | 13 | 9 | 4 |
 | Proof | 9 | 3 | 6 |
 | Images | 5 | 1 | 4 |
-| Hero | 10 | 9 | 1 |
+| Hero | 10 | 10 | 0 |
 | Navigation | 3 | 0 | 3 |
 
 ### Why an exclusion set exists
 
 `animationComponents` is opt-in, so an excluded section needs no code to stay
-still. The set exists to say **which**. Five reasons, and they are different
+still. The set exists to say **which**. Four reasons, and they are different
 reasons:
 
-- **Hero (1)** — above the fold at load. Measured: an element in
-  view at load holds at the end state, opacity 1, no movement, even with a
-  stagger index. A SCROLL control would render and do nothing.
-  **This reason is no longer the last word.** It rules out the scroll suites and
-  says nothing about the load ones, which never consult the observer — so a hero
-  belongs here only until someone marks its units and puts it in
-  `loadEntranceComponents`. Nine of the ten are across, and so is the
-  confirmation page, which was excluded for the same reason reached from the
-  other end. The one left is the centered-floaters hero, which needs the
-  decision recorded in §"Backfilling the heroes" below rather than an edit — and
-  which is filed under this reason when its real one is the next entry down.
-- **Thank-you confirmation** — was the same reason reached from the other end,
-  and is now a load-entrance section like the heroes. It is not a section that
-  happens to sit first; it is the entire content of `/thank-you`, so it is above
-  the fold every time it renders.
+- **Above the fold at load — RETIRED, and worth reading as a shape.** This held
+  ten heroes and the confirmation page. Measured: an element in view at load
+  holds at the end state, opacity 1, no movement, even with a stagger index — so
+  a SCROLL control would render and do nothing. What made it an *exclusion* was
+  the unstated second half, that a section with no arrival cannot animate at
+  all, and the load suites disproved it. Above the fold is a ROUTING question
+  now: `loadEntranceComponents` decides which of the two suite sets a section is
+  offered, and every section that carried this reason is on the axis.
 - **Navigation (3)** — fixed/absolute, out of flow.
 - **Marquees (3)** — already in continuous motion; never gated.
 - **Owns its own motion (24)** — 18 via `motion/react`, plus six found by
@@ -837,9 +830,9 @@ veto, and three safeguards against the stale dev stylesheet.
 | Wipe | `wipe` | 16 (marks a heading) |
 | Fade | `fade` | 57 (no gate) — added later the same day, see below |
 | Settle | `settle` | 10 (marks media) — see below |
-| Rise on load | `reveal-load` | 10 (load-entrance sections) — see below |
-| Fade on load | `fade-load` | 10 (load-entrance sections) |
-| Wipe on load | `wipe-load` | 10 (load-entrance sections) |
+| Rise on load | `reveal-load` | 11 (load-entrance sections) — see below |
+| Fade on load | `fade-load` | 11 (load-entrance sections) |
+| Wipe on load | `wipe-load` | 11 (load-entrance sections) |
 | Settle on load | `settle-load` | 7 (load-entrance sections that mark media) |
 | Focus | `focus` | 16 (marks a heading) |
 | Pulse | `pulse` | 10 (marks an action) |
@@ -1033,11 +1026,10 @@ all.
 
 ### Backfilling the heroes
 
-Audited 2026-08-18. The exclusion reason was written before the load suites
-existed, so every hero in it is there by default rather than by decision. Nine
-of the ten are across, plus the confirmation page; this is the map, and what
-they settled. **Only the centered-floaters hero is left, and it needs a decision
-rather than an edit.**
+Audited 2026-08-18, finished the same day. The exclusion reason was written
+before the load suites existed, so every hero in it was there by default rather
+than by decision. **All ten are across now, plus the confirmation page**, and
+the reason they shared is retired. This is what they settled.
 
 **Only one question varies between them.** `reveal-load`, `fade-load` and
 `wipe-load` carry no `requiresRole`, so a section in `loadEntranceComponents` is
@@ -1067,7 +1059,7 @@ but it means settle on a hero with no image set looks exactly like Fade.
 | `HeroSplitFixedImageSectionV3` | done | ratio-chosen frame, still clips and fills |
 | `HeroFullscreenSectionV2` | done, n/a | its picture is the background axis, not an element |
 | `HeroCompactSectionV3` | done, n/a | copy only — the library's cleanest wipe-load case |
-| `HeroCenteredFloatersSectionV2` | no | see below |
+| `HeroCenteredFloatersSectionV2` | done, n/a | copy column only — see below |
 
 `ThankYouConfirmationSectionV3` went across in the same pass, for the identical
 reason. Its tick is marked `accent` rather than folded into the heading below it —
@@ -1113,16 +1105,26 @@ gained a `style` prop for that and nothing else: wrapping it in a marked div
 would have put a full-width block between the grid item and its centred flex
 row, which is a layout change bought to carry a custom property.
 
-**`HeroCenteredFloatersSectionV2` is the one that needs a decision, not an**
-**edit.** Its flanking columns are `HeroCenteredFloatersParallax`, driving
-motion/react `useScroll` — the "owns its own motion" category. By the letter of
-that rule it stays out. But the rule is about elements that would FIGHT, and a
-load entrance on the centre copy column finishes before the reader has
-scrolled; the two never touch the same element. Bringing it on would make it
-the first partly-self-animating section on the axis, which is a precedent to
-set deliberately rather than by backfill. If it stays out, its reason string
-should change from "above the fold" to "owns its own motion" — it is misfiled
-either way.
+**`HeroCenteredFloatersSectionV2` is the first partly self-animating section on
+the axis**, and the precedent it sets is worth stating rather than discovering.
+
+Its flanking columns are `HeroCenteredFloatersParallax`, driving motion/react
+`useScroll`. A section that animates itself on scroll is normally excluded
+outright — but that rule is about elements that would FIGHT, and here they do
+not. Only the centre copy column is marked; the parallax is on the floaters; a
+load entrance is over before the reader has scrolled at all. Nothing on this
+section animates an element the parallax also animates.
+
+**So the floaters must never gain a marker**, and the note in the section says
+so where someone adding one would read it. That is the whole of what keeps this
+safe: the exclusion set can no longer speak for this section, so the constraint
+has to live next to the markup it constrains. Its two mobile-only `aspect-[4/3]`
+blocks are unmarked for the same reason and a second one — they are drawn
+placeholders with no picture in them.
+
+The general rule this settles: **"owns its own motion" is a claim about
+ELEMENTS, not about files.** A section may hold both kinds, as long as no
+element is claimed twice.
 
 **Five edits per hero**, and the fourth is the one that fails silently:
 

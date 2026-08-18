@@ -975,6 +975,16 @@ export const animationComponents = new Set<string>([
   "HeroSplitFixedImageSectionV3",
   "HeroFullscreenSectionV2",
   /**
+   * THE PARTLY SELF-ANIMATING ONE, and the only section on the axis that is.
+   *
+   * Its flanking columns run their own parallax through motion/react, which
+   * normally means excluded outright. The rule is about elements that would
+   * fight, and here they do not: only the centre copy column is marked, and a
+   * load entrance is over before the reader has scrolled. See the note in the
+   * section itself for why the floaters must never gain a marker.
+   */
+  "HeroCenteredFloatersSectionV2",
+  /**
    * NOT A HERO, AND HERE FOR THE HERO'S REASON. It is the entire content of
    * `/thank-you`, so it is above the fold every time it renders - which makes it
    * a load-entrance section, not an unanimated one.
@@ -1167,41 +1177,16 @@ export const animationComponents = new Set<string>([
  * not have - so an exclusion cannot be quietly contradicted, or quietly
  * outlive the component it was written for.
  *
- * Five reasons, and they are different reasons:
+ * FOUR reasons, and they are different reasons. THERE USED TO BE FIVE: "above
+ * the fold at load, so a scroll entrance is inert" held ten heroes and the
+ * confirmation page, and it is gone because it stopped being a reason to sit
+ * still. It rules out the six SCROLL suites and says nothing about the four
+ * load ones, which consult no observer and run from first paint - so every
+ * section that carried it is now in `animationComponents` plus
+ * `loadEntranceComponents` instead. Above the fold is a routing question now,
+ * not an exclusion: see `loadEntranceComponents` in `section-animations.ts`.
  */
 export const animationExcludedComponents = new Map<string, string>([
-  /**
-   * A hero is the first section on essentially every page, so it has already
-   * passed its entry range by the time anything is painted. MEASURED: an
-   * element in view at load holds at the end state - opacity 1, no movement -
-   * even with a stagger index. A SCROLL control would render and do nothing,
-   * which is exactly what `viewportHeightComponents` exists to prevent for
-   * section spacing.
-   *
-   * THIS REASON NO LONGER MEANS "UNANIMATED", and the list is one entry long
-   * because of it. It rules out the six scroll suites and says nothing about
-   * the four load ones, which consult no observer and run from first paint - so
-   * every other hero has moved to `animationComponents` plus
-   * `loadEntranceComponents`, and so has the confirmation page, which was here
-   * for the same reason reached from the other end.
-   *
-   * THE ONE LEFT IS HERE ON THE WRONG REASON, deliberately and temporarily.
-   * `HeroCenteredFloatersSectionV2` drives its own parallax on its flanking
-   * columns through motion/react `useScroll`, so it belongs to the "owns its own
-   * motion" group below rather than to this one. It is not moved yet because
-   * the honest answer may be neither: the parallax is on the floaters and a
-   * load entrance would be on the centre copy column, so the two would never
-   * animate the same element. Bringing it on would make it the first partly
-   * self-animating section on the axis, which is a precedent to set
-   * deliberately rather than by backfill. Until that call is made, moving the
-   * string would assert an answer nobody has given.
-   */
-  ...(
-    ["HeroCenteredFloatersSectionV2"] as const
-  ).map(
-    (component) =>
-      [component, "above the fold at load, so a scroll entrance is inert"] as const,
-  ),
   /**
    * Navigation spends most of its life `fixed` or `absolute`, out of flow. A
    * view timeline on an out-of-flow element does not describe the reader's

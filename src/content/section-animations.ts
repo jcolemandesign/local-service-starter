@@ -868,6 +868,8 @@ export const sectionAnimationRoleComponents: Partial<
      *  neither is offered Settle. */
     "HeroFullscreenSectionV2",
     "ThankYouConfirmationSectionV3",
+    /** Marked on its centre column only - its floaters own their own motion. */
+    "HeroCenteredFloatersSectionV2",
     "SectionHeaderCompactSectionV3",
     "SectionHeaderLargeSectionV3",
     "SectionHeaderSplitLinkSectionV3",
@@ -1031,6 +1033,7 @@ export const loadEntranceComponents = new Set<string>([
   "HeroSplitBentoSectionV3",
   "HeroSplitFixedImageSectionV3",
   "HeroFullscreenSectionV2",
+  "HeroCenteredFloatersSectionV2",
   /** Not a hero, and above the fold for the hero's reason: it is the whole of
    *  `/thank-you`. */
   "ThankYouConfirmationSectionV3",
