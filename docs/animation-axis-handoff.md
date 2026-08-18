@@ -124,7 +124,7 @@ sections may no longer set `--anim-*` themselves. See §3 and §8.
 
 Key names: `styleFieldOptions.animation`, `resolveSectionAnimation`,
 `animationComponents`, `animationExcludedComponents`, `sectionSupportsAnimation`,
-`replaySectionAnimation`, `SectionEntrance`.
+`replaySectionAnimation`, `SectionEntrance`, `loadEntranceComponents`.
 
 ### The three states
 
@@ -136,6 +136,12 @@ state machine is which of three selectors matches:
 | waiting | `:not([…-state])` | observed, below the trigger line — hidden |
 | arriving | `[…-state="in"]` | crossed the line — the timed animation runs |
 | settled | `[…-state="settled"]` | on screen at load — no entrance to play |
+
+**`settled` has no rule and must not gain one.** Animating it is the obvious way
+to give a hero an entrance and it reintroduces a flash: the observer runs on
+mount, after first paint, so anything hung off that state blanks content the
+reader is already looking at. Load entrances use no state at all — see the load
+entrance section near the end.
 
 `settled` needs no rule of its own: it simply stops matching the hiding rule, so
 nothing has to out-specify anything. That is also what makes the builder's
@@ -795,7 +801,10 @@ veto, and three safeguards against the stale dev stylesheet.
 | Wipe | `wipe` | 16 (marks a heading) |
 | Fade | `fade` | 57 (no gate) — added later the same day, see below |
 | Settle | `settle` | 10 (marks media) — see below |
-| Settle on load | `settle-load` | 1 (one hero) — see below |
+| Rise on load | `reveal-load` | 1 (one hero) — see below |
+| Fade on load | `fade-load` | 1 (one hero) |
+| Wipe on load | `wipe-load` | 1 (one hero) |
+| Settle on load | `settle-load` | 1 (one hero) |
 | Focus | `focus` | 16 (marks a heading) |
 | Pulse | `pulse` | 10 (marks an action) |
 | Lateral | `lateral` | 10 (marks media) — was 57 |
@@ -935,20 +944,53 @@ It cannot be a state of `settle`. Dropping that suite's state gate would fire it
 at load on the ten below-fold sections whose entire reason for using it is the
 scroll trigger.
 
-**Hero-only by veto, in both directions.** `suiteExcludedComponents` strikes
-`settle-load` from the ten scroll-triggered media sections, and strikes
-`reveal` / `fade` / `settle` / `lateral` from the hero — Wipe, Focus and Pulse
-need no entry, because they gate on roles it does not mark and the derived gate
-already withholds them. That is a hand-maintained list in a system built to
-avoid them, and it is the right shape here: *above the fold* is a property of
-where a section is **used**, not of what it marks, so there is nothing to derive
-from. If a second hero takes this, the gate should become the inverse of the
-above-fold exclusion reason rather than a longer list.
+**There are four of them now** — `reveal-load`, `fade-load`, `wipe-load` and
+`settle-load`. Each reuses its scroll twin's keyframe outright, so a hero cannot
+drift away from the library it belongs to: move the shared rhythm and both move
+together. What they do not share is a waiting rule, because nothing waits — the
+`both` fill holds each animation's first frame until it starts, which on a load
+entrance is immediately.
 
-`animation-css-agreement.test.ts` exempts it from the timed contract and adds
-the mirror: an untimed suite must have gated rules **and** none of them may read
-an animation state. An exemption that only subtracts assertions is how a
-half-finished timed suite would slip past the file built to catch it.
+**Gated by `trigger`, not by a veto list.** A suite declares `trigger: "scroll"`
+or `"load"`, one small `loadEntranceComponents` set names the sections that are
+above the fold, and `sectionAnimationSuitesFor` offers one set or the other. A
+section gets load suites or scroll suites, never a mix — and the wrong set is not
+merely unhelpful: a scroll suite above the fold never plays, and a load suite
+below it has finished before the reader arrives.
+
+**The veto approach it replaced could not have scaled, and that is the useful
+part.** `settle-load` shipped first, gated by striking it from every
+scroll-triggered section by name. That survived only because it happened to carry
+`requiresRole: "media"` and there were ten of them. `reveal-load` and `fade-load`
+have no signature role, so the same approach wanted ~57 entries *each* — the
+point at which an exception list has quietly become the mechanism. Fourteen
+vetoes became one list of one, and `suiteExcludedComponents` is empty again.
+
+It is still a list and still cannot be derived. Every other gate on this axis
+computes from what a section **marks**; *above the fold* is a property of where a
+section is **used**, which is why `animationExcludedComponents` already spells the
+same heroes out by hand.
+
+**The hero marks two copy units, side by side** — intro text as `heading`, body
+and actions as `content`. Wipe needs a heading to reveal behind its edge, and a
+single `frame` around the whole column would have given it nothing but a fade.
+The cost is that Rise moves them as two staggered units rather than as one pane;
+marking the column *and* its heading would buy that back and nest a revealable
+unit inside a revealable unit, which multiplies two opacity fades into a muddy
+one. If the stagger reads wrong, the fix is the hero's Rise stagger in the Style
+Guide, not the markup.
+
+`animation-css-agreement.test.ts` exempts them from the timed contract, derived
+from `trigger` rather than named, so a load suite added later is covered without
+touching the test. The exemption carries its mirror: an untimed suite must have
+gated rules **and** none of them may read an animation state. An exemption that
+only subtracts assertions is how a half-finished timed suite would slip past the
+file built to catch it.
+
+**The three states table above is still accurate, with one footnote.** `settled`
+has no rule of its own and must not gain one — that is the trap this whole
+section exists to record. The load suites do not use it; they use no state at
+all.
 
 ### Where this stands — 2026-08-17, later still
 
@@ -1014,7 +1056,10 @@ cost scales with area, and a bled panel is the largest area on the page.
 | Rise | `reveal` | everywhere | — | units rise and fade in |
 | Fade | `fade` | everywhere | — | units fade up in place, staggered; nothing moves |
 | Settle | `settle` | marks `media` | `media` | the image eases down from 1.06 inside its frame; everything else fades in place |
-| Settle on load | `settle-load` | one hero, by veto | `media` | the same gesture, played from first paint instead of on scroll |
+| Rise on load | `reveal-load` | load sections | `media` | units rise and fade as the page paints |
+| Fade on load | `fade-load` | load sections | — | units fade up in place as the page paints |
+| Wipe on load | `wipe-load` | load sections | `heading`, `content`, `accent` | an edge crosses the headline as the page paints |
+| Settle on load | `settle-load` | load sections + `media` | `media` | the same gesture as Settle, played from first paint |
 | Wipe | `wipe` | marks a `heading` | `heading` | an edge crosses the heading; cards rise, accents scale, media fades |
 | Pulse | `pulse` | marks an `action` | `action` | normal arrival, then one soft beat on the action once it lands |
 | Lateral | `lateral` | everywhere | `media` | the media panel slides in from off-screen; everything else fades in place |
