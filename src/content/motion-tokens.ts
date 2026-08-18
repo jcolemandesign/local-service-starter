@@ -88,6 +88,24 @@ export type MotionTokenControl = {
    * `var(<token>, var(<inheritsFrom>))`. The agreement test checks that.
    */
   inheritsFrom?: `--anim-${string}`;
+  /**
+   * THE READER IS JAVASCRIPT, and this is the repo-relative path to it.
+   *
+   * Set only where CSS cannot express the thing the token controls - which so
+   * far is one token, the trigger threshold, because "when does this fire" is an
+   * IntersectionObserver root margin and nothing else. Everything else here is
+   * read by a rule, and a control for a token no rule reads is the failure this
+   * project names everywhere: it appears to work and paints nothing.
+   *
+   * So this field is an ESCAPE FROM AN ASSERTION, and it pays for itself by
+   * naming the escape route. Two tests assert that every control's token is read
+   * by `globals.css`; both skip a token that declares a reader here, and
+   * `motion-token-agreement.test.ts` then opens that file and fails if the token
+   * is not mentioned in it. Rename the property and the reader would otherwise
+   * go on asking for the old name, get an empty string, and fall back to its
+   * shipped default with nothing to notice.
+   */
+  readBy?: string;
 };
 
 export type MotionControlGroupId =
@@ -156,7 +174,7 @@ export const motionControlGroups = [
     id: "rhythm",
     label: "Shared rhythm",
     description:
-      "The spine every suite inherits from. Set the tempo of the library here; a suite only diverges where you deliberately untick “Match shared rhythm” in its own group.",
+      "The spine every suite inherits from. Set the tempo of the library here, and the height every entrance triggers at; a suite only diverges where you deliberately untick “Match shared rhythm” in its own group.",
     controls: [
       {
         token: "--anim-duration",
@@ -185,6 +203,31 @@ export const motionControlGroups = [
         kind: "easing",
         defaultValue: "cubic-bezier(0.22, 1, 0.36, 1)",
         presets: travelEasingPresets,
+      },
+      /**
+       * WHEN, not how long - the only control here that is not a tempo.
+       *
+       * Shared across the whole library rather than per suite, and that is a
+       * decision rather than a shortcut. The threshold is a property of the
+       * READER: it answers "how far up the screen do I want to be looking
+       * before anything moves", which is one answer for a page. Per-suite
+       * thresholds would let two sections with different suites fire at
+       * different heights on the same scroll, which reads as the page
+       * triggering unevenly rather than as two kinds of arrival.
+       *
+       * Read by JavaScript rather than by a rule - see the token's note in
+       * `globals.css`, and the script-token exception in the agreement test.
+       */
+      {
+        token: "--anim-trigger-inset",
+        readBy: "src/components/primitives/SectionEntrance.tsx",
+        label: "Trigger inset",
+        hint: "How far up the screen a section comes before its entrance starts. At zero it fires on its first visible pixel, which is too early to watch.",
+        kind: "percent",
+        defaultValue: "18%",
+        min: 0,
+        max: 45,
+        step: 1,
       },
     ],
   },

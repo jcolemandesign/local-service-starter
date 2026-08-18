@@ -105,6 +105,30 @@ const derivedTokens = new Map([
   ],
 ]);
 
+/**
+ * Tokens whose READER IS JAVASCRIPT, so the stylesheet declares them and never
+ * reads them back.
+ *
+ * A second named exception, and it points the opposite way from the derived
+ * list above: derived tokens are read by CSS and cannot be authored, these are
+ * authored and are not read by CSS. Both exist so the assertion below stays an
+ * assertion rather than becoming a warning nobody acts on.
+ *
+ * DERIVED FROM THE REGISTRY, never hand-listed here, for the reason every other
+ * list in this axis is: a hand-written exception list is a place to quietly park
+ * a token nobody can reach. A control declares its reader with `readBy`, and the
+ * test opens that file and looks for the token by name. That check is the whole
+ * reason the exception is safe: the reader cannot import the registry - it ships
+ * on every page, and pulling the control catalogue into that bundle to read one
+ * string is not a trade worth making - so the two ends are joined by this test
+ * instead of by the type system.
+ */
+const scriptTokens = new Map(
+  motionTokenControls
+    .filter((control) => control.readBy)
+    .map((control) => [control.token as string, control.readBy as string]),
+);
+
 describe("motion token agreement", () => {
   /**
    * The registry's defaults ARE the stylesheet's defaults.
@@ -202,12 +226,55 @@ describe("motion token agreement", () => {
 
     const unread = motionTokenControls
       .map((control) => control.token as string)
-      .filter((token) => !referencedTokens.has(token));
+      .filter(
+        (token) => !referencedTokens.has(token) && !scriptTokens.has(token),
+      );
 
     expect(
       unread.sort(),
       "these tokens have a Style Guide control but the stylesheet never reads them, so authoring and promoting one would change nothing on any page",
     ).toEqual([]);
+  });
+
+  /**
+   * The script-token list is real exceptions only, checked from both ends.
+   *
+   * The entry above is an escape from the assertion that every control's token
+   * is read, so it has to earn it every run: the stylesheet must still declare
+   * the token (or the control authors nothing), the stylesheet must still NOT
+   * read it (or the exception is stale and should be deleted), and the named
+   * reader must still contain the token by name - which is the one that
+   * actually breaks. Rename the property in `globals.css` and the reader goes on
+   * asking for the old name, gets an empty string, and silently falls back to
+   * its shipped default. Nothing else in the codebase would notice.
+   */
+  it("keeps the script-token list honest", () => {
+    expect(
+      scriptTokens.size,
+      "no control declares a JavaScript reader, so this test is asserting nothing - if the last one was retired, delete this case",
+    ).toBeGreaterThan(0);
+
+    for (const [token, reader] of scriptTokens) {
+      expect(
+        declaredTokens,
+        `${token} is carried as a script token but the authored stylesheet never declares it`,
+      ).toContain(token);
+      expect(
+        referencedTokens,
+        `${token} IS read by globals.css now, so its script-token exception is stale - delete the entry and let the ordinary assertion cover it`,
+      ).not.toContain(token);
+      expect(
+        registeredTokens,
+        `${token} is carried as a script token but no Style Guide control authors it`,
+      ).toContain(token);
+
+      const source = readFileSync(path.join(process.cwd(), reader), "utf8");
+
+      expect(
+        source,
+        `${reader} is named as the reader of ${token} but never mentions it, so the token is authored, promoted, and read by nothing`,
+      ).toContain(token);
+    }
   });
 
   /**

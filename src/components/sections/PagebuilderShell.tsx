@@ -2712,6 +2712,32 @@ function PagebuilderPreviewWindow({
   sizeLabel,
   spacingClassName,
 }: PagebuilderPreviewWindowProps) {
+  const canvasRef = useRef<HTMLDivElement>(null);
+  /**
+   * A reload here is a REMOUNT of the canvas contents, not a re-render.
+   *
+   * Half the animation axis has no state to reset: the load-entrance suites
+   * carry no `data-pagebuilder-animation-state`, on purpose, so they play once
+   * per element and there is nothing to put back. Replacing the elements is
+   * the only thing that replays them. The scroll-triggered suites come along
+   * for free - `SectionEntrance`'s mutation observer settles or observes every
+   * frame it sees added, which is exactly what it does on a real page load.
+   */
+  const [reloadNonce, setReloadNonce] = useState(0);
+
+  function reloadPreview() {
+    /*
+     * Before the state change, on purpose. The scroll box is not part of what
+     * remounts, so it keeps its scroll position across the commit - and a
+     * frame is measured against the viewport the moment it is inserted. Scroll
+     * home first and the sections below the fold are below the fold when they
+     * arrive, so they wait for the reader; scroll home after and they are all
+     * measured on screen, settle, and never animate again.
+     */
+    canvasRef.current?.scrollTo({ behavior: "instant", top: 0 });
+    setReloadNonce((nonce) => nonce + 1);
+  }
+
   return (
     <div
       className={cx(
@@ -2737,6 +2763,15 @@ function PagebuilderPreviewWindow({
             {sizeLabel} / {activePageLabel}
           </span>
         </div>
+        <button
+          aria-label="Reload preview"
+          className="inline-flex size-6 shrink-0 items-center justify-center rounded-full text-service-muted transition-colors hover:bg-bg-page hover:text-service-ink"
+          onClick={reloadPreview}
+          title="Reload preview - replay entrance animations"
+          type="button"
+        >
+          <ReloadIcon />
+        </button>
       </div>
 
       {/* The containing block for the fixed navs inside the canvas.
@@ -2761,7 +2796,10 @@ function PagebuilderPreviewWindow({
           screenClassName,
         )}
       >
-        <div className="min-h-0 flex-1 overflow-auto bg-bg-page [container-type:size]">
+        <div
+          className="min-h-0 flex-1 overflow-auto bg-bg-page [container-type:size]"
+          ref={canvasRef}
+        >
           <div
             className={cx(
               "min-h-full w-full bg-bg-page",
@@ -2769,6 +2807,7 @@ function PagebuilderPreviewWindow({
               responsiveClassName,
               !showSectionMarkers && "pagebuilder-hide-markers",
             )}
+            key={reloadNonce}
             style={{
               ...previewStyle,
               "--section-viewport-height": "100cqh",
@@ -8340,6 +8379,24 @@ export function PagebuilderShell({
         </div>
       )}
     </section>
+  );
+}
+
+function ReloadIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="size-3.5"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+      viewBox="0 0 24 24"
+    >
+      <path d="M21 12a9 9 0 1 1-3-6.7L21 8" />
+      <path d="M21 3v5h-5" />
+    </svg>
   );
 }
 

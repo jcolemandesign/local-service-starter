@@ -598,6 +598,24 @@
   /* Decisive out-easing: most of the travel happens in the first third, so the
      unit reads as arriving and settling rather than as drifting. */
   --anim-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  /* WHEN an entrance starts: how far up the viewport a section comes before it
+     fires, as a share of viewport height taken off the bottom edge.
+
+     THE ONE TOKEN IN THIS FILE THAT CSS NEVER READS, and it is a token anyway
+     on purpose. A trigger threshold has no CSS expression left now the scrubbed
+     variant is retired - it is an IntersectionObserver root margin, and
+     `SectionEntrance` resolves this property at mount and hands it over. Making
+     it a constant in that file instead is the state the whole motion axis was
+     rebuilt out of: a number that can only be changed by editing source, on the
+     one axis whose rule is that no animation may behave in a way the Style
+     Guide cannot author. `motion-token-agreement.test.ts` carries it as a named
+     script-token exception and checks the reader by name, so it cannot become a
+     place to hide a value nobody can reach.
+
+     18% rather than 0: at 0 a section fires the instant its first pixel crosses
+     the bottom edge, which is too early to be looking at it. Much higher and it
+     is mid-screen and already read before anything moves. */
+  --anim-trigger-inset: 18%;
   /* The wipe's own number. Only the value that has no equivalent in Rise lives
      here - the suite reuses the shared stagger and easing on purpose, because
      the rhythm of the library should be one rhythm and what differs between

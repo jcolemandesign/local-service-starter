@@ -3,7 +3,10 @@
 import { useEffect, useRef } from "react";
 import type { CSSProperties } from "react";
 
-import { triggerInset } from "@/components/primitives/SectionEntrance";
+import {
+  triggerInset,
+  triggerInsetToken,
+} from "@/components/primitives/SectionEntrance";
 import { useStyleGuideTokens } from "@/components/sections/StyleGuideLiveSurface";
 import { StyleGuideMotionControls } from "@/components/sections/StyleGuideMotionControls";
 import { defaultMotionTokens } from "@/content/motion-tokens";
@@ -227,21 +230,30 @@ export function MotionSuiteGallery() {
         </div>
 
         {/*
-          Read-only, and that is the honest presentation rather than a missing
-          feature. The trigger inset is a TypeScript constant in
-          `SectionEntrance`, not a custom property - and more to the point,
-          replaying a specimen that is already on screen never exercises the
-          intersection trigger at all, so a slider here would change nothing you
-          could see. Judging it needs a scroll-trigger lab with its own
-          constrained scroller, which is a separate build.
+          THE ONE CONTROL ABOVE THIS SCREEN CANNOT SHOW YOU, said plainly rather
+          than left to be discovered.
+
+          It was read-only here for exactly that reason, and the reasoning was
+          sound as far as it went: replaying a specimen that is already on screen
+          never exercises the intersection trigger, so the slider moves nothing
+          in this gallery. What was missing was a place to judge it - "a
+          scroll-trigger lab with its own constrained scroller". The builder's
+          preview window is that scroller, and it reloads now, so the threshold
+          is watchable where it matters and there is no longer a case for
+          keeping it out of the draft.
+
+          The readout follows the draft rather than the shipped constant, so it
+          agrees with the slider the moment it moves.
         */}
         <p className="type-caption text-current/70">
           Trigger inset{" "}
           <span className="font-semibold text-current">
-            {Math.round(triggerInset * 100)}%
+            {draft.motionTokens[triggerInsetToken] ||
+              `${Math.round(triggerInset * 100)}%`}
           </span>{" "}
-          of viewport height — read-only. It decides <em>when</em> an entrance
-          starts, which a replay in place cannot show. Entrances are also
+          of viewport height — authored under Shared rhythm above. It decides{" "}
+          <em>when</em> an entrance starts, which a replay in place cannot show:
+          reload the builder’s preview window to watch it. Entrances are also
           suppressed entirely under <code>prefers-reduced-motion</code>.
         </p>
       </div>

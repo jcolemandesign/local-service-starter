@@ -445,6 +445,14 @@ describe("animation css agreement", () => {
    */
   it("drives every authored token from a custom property, not a literal", () => {
     for (const control of motionTokenControls) {
+      // A token whose reader is JavaScript is exempt, and only because it names
+      // its reader - `motion-token-agreement.test.ts` opens that file and checks
+      // the token is mentioned there, so the guarantee this assertion gives is
+      // kept rather than dropped. See `readBy` in `motion-tokens.ts`.
+      if (control.readBy) {
+        continue;
+      }
+
       expect(
         css,
         `${control.token} is offered as a Style Guide control but the stylesheet never reads it, so authoring it would paint nothing`,

@@ -38,19 +38,67 @@ const stateAttribute = "data-pagebuilder-animation-state";
 const readyAttribute = "data-pagebuilder-animation-ready";
 
 /**
- * How far up the viewport a section comes before its entrance starts.
+ * The custom property that authors the trigger threshold.
  *
- * As a fraction of the viewport height, subtracted from the observer root's
- * bottom edge. At 0 a section would trigger the instant its first pixel
- * crossed the bottom, which is the "starts too early to see" this exists to
- * avoid; too high and the section is well into the middle of the screen,
- * already read, before anything moves.
+ * Named here rather than imported from `motion-tokens` on purpose. This
+ * component is the one piece of JavaScript the animation axis puts on every
+ * page, including pages that ship no other client code, and importing the
+ * registry to read one string would pull the whole control catalogue - labels,
+ * hints, easing presets, ranges - into that bundle. The agreement test closes
+ * the loop instead: it looks for this literal in this file, so the token and
+ * its reader cannot drift apart silently.
+ */
+export const triggerInsetToken = "--anim-trigger-inset";
+
+/**
+ * How far up the viewport a section comes before its entrance starts, as a
+ * fraction of viewport height subtracted from the observer root's bottom edge.
+ *
+ * THE SHIPPED DEFAULT AND THE FALLBACK, no longer the setting itself. The live
+ * value is `--anim-trigger-inset`, authored in the Style Guide's shared rhythm
+ * group and promoted into `globals.css` like every other motion token. This
+ * stays because the token can be illegible - a stylesheet that has not arrived,
+ * a promoted block that omitted it - and a threshold is not a thing to guess at
+ * 0. It must equal what the stylesheet declares; the agreement test pins that
+ * through the control's `defaultValue`.
  */
 export const triggerInset = 0.18;
+
+/**
+ * The authored threshold, or the shipped one if nothing legible is declared.
+ *
+ * Resolved ONCE per observer rather than per frame. `rootMargin` belongs to the
+ * observer, not to a target, so a per-frame answer would need a separate
+ * observer for every distinct value - and there is only ever one value, because
+ * this is deliberately a shared control rather than a per-suite one.
+ *
+ * The clamp is not the registry's range restated. The registry decides what can
+ * be AUTHORED; this only refuses a value that would break the observer - a
+ * negative inset, or one so large the trigger line sits above the top edge and
+ * nothing ever fires.
+ */
+function resolveTriggerInset(root: Element) {
+  const declared = getComputedStyle(root)
+    .getPropertyValue(triggerInsetToken)
+    .trim();
+
+  if (!declared.endsWith("%")) {
+    return triggerInset;
+  }
+
+  const parsed = Number.parseFloat(declared);
+
+  if (!Number.isFinite(parsed)) {
+    return triggerInset;
+  }
+
+  return Math.min(0.9, Math.max(0, parsed / 100));
+}
 
 export function SectionEntrance() {
   useEffect(() => {
     const root = document.documentElement;
+    const inset = resolveTriggerInset(root);
     const observed = new WeakSet<Element>();
 
     /**
@@ -72,7 +120,7 @@ export function SectionEntrance() {
 
       if (
         frame.getBoundingClientRect().top <
-        window.innerHeight * (1 - triggerInset)
+        window.innerHeight * (1 - inset)
       ) {
         frame.setAttribute(stateAttribute, "settled");
         return;
@@ -95,7 +143,7 @@ export function SectionEntrance() {
           observer.unobserve(entry.target);
         }
       },
-      { rootMargin: `0px 0px -${Math.round(triggerInset * 100)}% 0px` },
+      { rootMargin: `0px 0px -${Math.round(inset * 100)}% 0px` },
     );
 
     for (const frame of document.querySelectorAll(frameSelector)) {
