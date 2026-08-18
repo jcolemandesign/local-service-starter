@@ -396,6 +396,15 @@
     place-items: center;
     align-self: stretch;
     width: var(--btn-glyph-size);
+    /* The glyph is the one mark on a button that need not stand on the button's
+       own ground: sized to a chip, it stands on the FILL. So it gets a colour of
+       its own rather than inheriting the label's, and `currentColor` is how the
+       styles whose glyph does share that ground decline it.
+
+       Not in the transition list, and it does not need to be. There is no hover
+       variant of this token, so the only way the value moves is through
+       `currentColor`, which follows the button's own transitioned colour. */
+    color: var(--btn-glyph-ink);
     translate: 0 0;
     transition: translate var(--btn-duration) var(--btn-easing);
   }
@@ -467,6 +476,7 @@
     --btn-shadow-hover: none;
     --btn-glyph: none;
     --btn-glyph-size: auto;
+    --btn-glyph-ink: currentColor;
     --btn-glyph-hover: 0 0;
     --btn-duration: 200ms;
     --btn-easing: cubic-bezier(0.22, 1, 0.36, 1);
@@ -492,6 +502,7 @@
     --btn-shadow-hover: none;
     --btn-glyph: none;
     --btn-glyph-size: auto;
+    --btn-glyph-ink: currentColor;
     --btn-glyph-hover: 0 0;
     --btn-duration: 200ms;
     --btn-easing: cubic-bezier(0.22, 1, 0.36, 1);
@@ -522,6 +533,7 @@
     --btn-shadow-hover: none;
     --btn-glyph: "\2192";
     --btn-glyph-size: auto;
+    --btn-glyph-ink: currentColor;
     --btn-glyph-hover: 4px 0;
     --btn-duration: 320ms;
     --btn-easing: cubic-bezier(0.22, 1, 0.36, 1);

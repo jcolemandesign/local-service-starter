@@ -103,6 +103,24 @@ export const buttonStyleTokenNames = [
    *  glyph costs no layout - see the anatomy note. */
   "glyph",
   "glyph-size",
+  /**
+   * The glyph's own colour, and it needs one because the glyph is the one part
+   * of a button that does not necessarily sit on the button's own ground.
+   *
+   * Every other mark on a button - the label above all - is painted on whatever
+   * `surface` and the fill layer put behind it, so `ink` answers for all of it.
+   * A glyph sized to a chip is painted on the CHIP, which is a different colour
+   * by definition; that is what makes it a chip. Inheriting `ink` there gives an
+   * arrow in the outline ink on a solid fill, which on most recipes is the same
+   * hue twice and reads as an empty square.
+   *
+   * `currentColor` is how a style declines it, which is every style whose glyph
+   * shares the label's ground. There is no hover variant on purpose: a glyph
+   * that changed colour mid-gesture would need a transition of its own, and a
+   * chip that grows to the whole button hands its glyph the same colour at both
+   * ends anyway.
+   */
+  "glyph-ink",
   "glyph-hover",
   "duration",
   "easing",
@@ -154,6 +172,7 @@ const inertTokens: ButtonStyleTokens = {
   "shadow-hover": "none",
   glyph: "none",
   "glyph-size": "auto",
+  "glyph-ink": "currentColor",
   "glyph-hover": "0 0",
   duration: "200ms",
   easing: "cubic-bezier(0.22, 1, 0.36, 1)",
@@ -307,15 +326,30 @@ export const buttonStyles = [
      * exactly on top of it: `glyph-size` 2.25rem against a `pad-end` of
      * 0.375rem puts the glyph's flex box over the chip's inset. Change one
      * without the other and the arrow drifts off its own square.
+     *
+     * IT HAS A GROUND OF ITS OWN, and it shipped without one. Transparent, in
+     * the special slot, it read lighter than the ordinary primary sitting next
+     * to it - which inverts the only reason the special slot exists. The tint
+     * is mixed from the EDGE rather than from the fill: the fill is what the
+     * chip is, so a button already wearing it would have nothing left to grow.
+     *
+     * AND THE ARROW IS COLOURED FOR THE CHIP, not for the button. At rest the
+     * glyph is the one mark here standing on the fill instead of on the ground,
+     * so it takes the fill's own label colour - which is also what every mark
+     * gets once the chip has grown to the whole box, so one value covers both
+     * halves of the gesture.
      */
     id: "chip-arrow",
     label: "Chip arrow",
     description:
-      "An outlined button carrying a filled square at its trailing edge, which grows to fill the whole button as the arrow steps forward.",
+      "A softly filled button carrying a solid square at its trailing edge, which grows to fill the whole button as the arrow steps forward.",
     slots: ["special"],
     tokens: {
       ...inertTokens,
       "pad-end": "0.375rem",
+      surface: "color-mix(in srgb, var(--btn-cta-edge) 12%, transparent)",
+      "surface-hover":
+        "color-mix(in srgb, var(--btn-cta-edge) 12%, transparent)",
       "border-color": "var(--btn-cta-edge)",
       "border-color-hover": "var(--btn-cta-fill)",
       "ink-hover": "var(--btn-cta-label)",
@@ -324,6 +358,7 @@ export const buttonStyles = [
       "fill-inset-hover": "0",
       glyph: "\"\\2192\"",
       "glyph-size": "2.25rem",
+      "glyph-ink": "var(--btn-cta-label)",
       "glyph-hover": "3px 0",
       duration: "320ms",
     },
