@@ -11,12 +11,19 @@
  *
  * A STYLE IS STRUCTURAL, NEVER CHROMATIC. Colour is already owned by the colour
  * recipes - every recipe row resolves `--recipe-cta-fill` / `--recipe-cta-label`
- * into `--color-cta-primary` and friends, and it does so per section ground. A
+ * into the `--live-cta-*` roles, and it does so per section ground. A
  * style that carried its own colours would be correct on the page recipe and
  * wrong on the five dark and chromatic ones, and it would be "sections own no
  * colour" broken one level up. So a style decides where the fill comes from, how
  * it arrives, whether the box lifts and whether there is a glyph - and it reads
  * whatever colours the recipe hands it.
+ *
+ * A style names one of the five `--btn-cta-*` roles and NEVER a `--color-*`
+ * token. Those are frozen at `:root` by Tailwind's `@theme inline` and cannot
+ * see a recipe; the roles are declared on `.button-cta`, inside the recipe's
+ * subtree. This shipped wrong once - `docs/button-style-axis.md` §4 has the
+ * measured account, and `button-style-agreement` now fails on any style value
+ * containing `var(--color-`.
  *
  * WHY THIS IS DATA. The draft's defaults, the Style Guide's live preview, the
  * promoted CSS, the validator and the controls are all derived from the arrays
@@ -52,11 +59,12 @@ export const buttonStyleSlots = [
  * The token vocabulary, in the order the promoted block emits it.
  *
  * Every style declares EVERY token. That completeness is load-bearing rather
- * than tidy: the three slots emit into three prefixed namespaces which the
- * anatomy rules read wholesale, so a style omitting a token would inherit
- * whatever the previously promoted style left behind - a button that is mostly
- * the new style with one dimension of the old one, and nothing to indicate why.
- * The `satisfies` below makes an omission a compile error.
+ * than tidy: the three slots are three RULES declaring the same token names on
+ * different selectors, so a style omitting a token would take whichever rule
+ * declared it last - a button that is mostly the new style with one dimension
+ * of another, and nothing to indicate why. The `satisfies` below makes an
+ * omission a compile error, and `button-style-agreement` catches an empty
+ * value, which is an omission CSS cares about and the compiler does not.
  */
 export const buttonStyleTokenNames = [
   /** Trailing padding. Its own token because a glyph that fills a chip needs the
@@ -154,9 +162,13 @@ const inertTokens: ButtonStyleTokens = {
 /**
  * The library.
  *
- * Nine styles: four that can be the site's primary, four that can be its
- * secondary, and three with enough gesture to be the special - the counts
- * overlap because two styles declare two slots.
+ * Filled and lifting styles for the primary, outline and ghost ones for the
+ * secondary, and the gestural ones for the special. A style may declare more
+ * than one slot where it genuinely works as either - `sweep-up` does.
+ *
+ * NO COUNTS HERE ON PURPOSE. `buttonStylesForSlot` derives what each slot is
+ * offered, and the animation axis has a table of totals in its handoff that
+ * drifted in exactly this way - re-derive rather than restate.
  *
  * `as const satisfies` rather than a plain annotation, and it is load-bearing
  * the same way it is on `sectionAnimationSuites` and `motionControlGroups`: a

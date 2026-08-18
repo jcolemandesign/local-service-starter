@@ -1479,10 +1479,19 @@ function getStyleFieldSpec(field: ContentEditorField) {
     : undefined;
 }
 
+/**
+ * Words the camel-case split cannot capitalise, because it has no way to know
+ * they are acronyms rather than words. "Special Cta" is the label the derivation
+ * produces on its own, and it reads as a typo in a panel where every other label
+ * is correct.
+ */
+const styleFieldNameAcronyms: Record<string, string> = { Cta: "CTA" };
+
 function humanizeStyleFieldName(name: string) {
   return name
     .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
-    .replace(/^\w/, (letter) => letter.toUpperCase());
+    .replace(/^\w/, (letter) => letter.toUpperCase())
+    .replace(/\b\w+\b/g, (word) => styleFieldNameAcronyms[word] ?? word);
 }
 
 function getFieldFilterLabel(fieldFilter: FieldFilter) {
