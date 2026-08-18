@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import Image from "next/image";
 import {
   Button,
@@ -22,10 +24,25 @@ function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+/**
+ * The band, and BOTH BRANCHES ARE THE SAME UNIT.
+ *
+ * The marker goes on each of them rather than on the grid item around them,
+ * because `settle-load` scales the picture INSIDE the marked unit and the
+ * placeholder branch has no picture to scale. Marked in both places the frame
+ * fades either way and the scale simply has nothing to act on when the image is
+ * unset - the same graceful half-answer an optional media unit already gets in
+ * the sticky card stream. Marked on the grid item instead, the two branches
+ * would be one unit whose behaviour changed with a content field, which is
+ * harder to explain than a scale that quietly does not happen.
+ */
 function BottomImage({ alt, src }: { alt?: string; src?: string }) {
   if (src) {
     return (
-      <div className="relative h-full min-h-0 overflow-hidden bg-bg-muted">
+      <div
+        className="reveal-on-scroll reveal-role-media relative h-full min-h-0 overflow-hidden bg-bg-muted"
+        style={{ "--reveal-index": 2 } as CSSProperties}
+      >
         <Image
           alt={alt ?? ""}
           className="object-cover object-center"
@@ -45,7 +62,8 @@ function BottomImage({ alt, src }: { alt?: string; src?: string }) {
   return (
     <div
       aria-label="Sample service image placeholder"
-      className="relative h-full min-h-0 overflow-hidden bg-zinc-300"
+      className="reveal-on-scroll reveal-role-media relative h-full min-h-0 overflow-hidden bg-zinc-300"
+      style={{ "--reveal-index": 2 } as CSSProperties}
     >
       <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(255_255_255_/_0.24),transparent_42%),linear-gradient(45deg,rgb(255_255_255_/_0.18)_0_1px,transparent_1px_22px)]" />
     </div>
@@ -76,7 +94,15 @@ export function HeroContentTopImageBottomSectionV2({
           alignY="bottom"
           className="col-span-5 col-start-1 max-lg:col-span-7"
         >
-          <div className="fluid-type-frame measure-copy-wide">
+          {/* Eyebrow and headline are one heading unit on one index. They are
+              a single header stacked in one cell, so a stagger between them
+              would read as the label being a separate thought from the sentence
+              it introduces - the same call the About company section makes for
+              the same reason. */}
+          <div
+            className="reveal-on-scroll reveal-role-heading fluid-type-frame measure-copy-wide"
+            style={{ "--reveal-index": 0 } as CSSProperties}
+          >
             <p className="type-label text-service-accent">{eyebrow}</p>
             <HeadingTag className="type-heading-xl mt-eyebrow-display text-service-ink">
               {title}
@@ -89,11 +115,18 @@ export function HeroContentTopImageBottomSectionV2({
           alignY="bottom"
           className="col-span-2 col-start-6 max-lg:col-span-7 max-lg:col-start-1"
         >
+          {/* Body and actions are one content unit, and the buttons are not a
+              unit of their own. An action unit only matters to Pulse, which is
+              scroll-triggered and therefore never offered here; marking one
+              would list this section under a role no suite it can reach asks
+              about. */}
           <div
             className={cx(
+              "reveal-on-scroll reveal-role-content",
               "fluid-type-frame",
               "measure-copy flex flex-col items-start",
             )}
+            style={{ "--reveal-index": 1 } as CSSProperties}
           >
             <p className="type-text-md wrap-pretty text-service-muted">
               {body}

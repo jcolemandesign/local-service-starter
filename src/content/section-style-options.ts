@@ -952,15 +952,21 @@ export function sectionSupportsBackgroundFill(component: string) {
  */
 export const animationComponents = new Set<string>([
   /**
-   * THE ONE HERO ON THIS AXIS, and it takes exactly one suite.
+   * THE HEROES ON THIS AXIS, and what they take is the LOAD suites.
    *
-   * Above the fold at load like every hero, so no scroll-timed suite can play
-   * on it - the observer settles it before the ready flag and there is no
-   * arrival left. It is here for `settle-load`, whose CSS never consults the
-   * observer and runs from first paint. The other suites its gate would offer
-   * are struck by name in `suiteExcludedComponents`.
+   * Above the fold at load, so no scroll-timed suite can play on them - the
+   * observer settles them before the ready flag and there is no arrival left.
+   * They are here for the load entrances, whose CSS never consults the observer
+   * and runs from first paint. Which set a section is offered is decided by
+   * `loadEntranceComponents`, not by striking suites off one at a time.
+   *
+   * A HERO HERE MUST ALSO BE IN THAT SET. Membership in this one only says the
+   * control is offered; without the other it is offered the six SCROLL suites,
+   * every one of them inert above the fold - a control that saves, promotes and
+   * paints nothing.
    */
   "HeroSplitFullHeightSectionV3",
+  "HeroContentTopImageBottomSectionV2",
   "ContentStickyCardStreamSectionV2",
   "FeatureAsymmetricCardsSectionV3",
   "FeatureStackedCardsSectionV3",
@@ -1164,7 +1170,6 @@ export const animationExcludedComponents = new Map<string, string>([
       "HeroCenteredFloatersSectionV2",
       "HeroCompactSectionV3",
       "HeroCompactServiceSectionV3",
-      "HeroContentTopImageBottomSectionV2",
       "HeroFullscreenSectionV2",
       "HeroServiceAreaZipLookupSectionV3",
       "HeroServicesSectionV3",

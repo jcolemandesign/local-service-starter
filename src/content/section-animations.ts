@@ -844,9 +844,12 @@ export const sectionAnimationRoleComponents: Partial<
   Record<SectionAnimationRole, readonly string[]>
 > = {
   heading: [
-    /** The load-entrance hero. Its intro text is a heading unit so `wipe-load`
-     *  has an edge to reveal - see `loadEntranceComponents`. */
+    /** The load-entrance heroes. Each one's intro text is a heading unit, so
+     *  `wipe-load` has an edge to reveal - see `loadEntranceComponents`. */
     "HeroSplitFullHeightSectionV3",
+    /** Eyebrow and headline are one unit on one index here, stacked in a single
+     *  cell - so the wipe crosses the pair rather than racing two edges. */
+    "HeroContentTopImageBottomSectionV2",
     "SectionHeaderCompactSectionV3",
     "SectionHeaderLargeSectionV3",
     "SectionHeaderSplitLinkSectionV3",
@@ -891,9 +894,16 @@ export const sectionAnimationRoleComponents: Partial<
     "ContentThreeColumnMixedSectionV3",
     "CTAImageSectionV3",
     "FeaturePortraitParagraphSectionV3",
-    /** The load-entrance hero. Its panel clips and holds a next/image, which is
-     *  what `settle-load` scales - see suiteExcludedComponents. */
+    /** The load-entrance heroes. Each panel clips and holds a next/image, which
+     *  is what `settle-load` scales.
+     *
+     *  THE TEST IS NOT "HAS AN IMAGE". It is a picture that FILLS a box that
+     *  CLIPS, because the suite scales the image and lets the frame crop it. A
+     *  box the picture sizes - `h-auto object-contain` - would lose 3% off each
+     *  edge of the artwork instead of settling into a crop. An aspect-ratio
+     *  frame is still a frame; both of these cover-fill and clip. */
     "HeroSplitFullHeightSectionV3",
+    "HeroContentTopImageBottomSectionV2",
     "ImageStripSectionV3",
     /** The logo grid, not the file it shares with four other trust sections -
      *  the marker is on its panel and the other four have none. */
@@ -987,6 +997,7 @@ export function sectionMarksRole(
  */
 export const loadEntranceComponents = new Set<string>([
   "HeroSplitFullHeightSectionV3",
+  "HeroContentTopImageBottomSectionV2",
 ]);
 
 /** Whether a section's entrance is played by the page rather than the scroll. */

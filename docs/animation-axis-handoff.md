@@ -219,7 +219,7 @@ membership sets, so re-derive them rather than adjusting them by hand.
 | Action | 13 | 9 | 4 |
 | Proof | 9 | 3 | 6 |
 | Images | 5 | 1 | 4 |
-| Hero | 10 | 0 | 10 |
+| Hero | 10 | 2 | 8 |
 | Navigation | 3 | 0 | 3 |
 
 ### Why an exclusion set exists
@@ -228,9 +228,15 @@ membership sets, so re-derive them rather than adjusting them by hand.
 still. The set exists to say **which**. Five reasons, and they are different
 reasons:
 
-- **Hero (10)** — above the fold at load. Measured: an element in view at load
-  holds at the end state, opacity 1, no movement, even with a stagger index. The
-  control would render and do nothing.
+- **Hero (8, and falling)** — above the fold at load. Measured: an element in
+  view at load holds at the end state, opacity 1, no movement, even with a
+  stagger index. A SCROLL control would render and do nothing.
+  **This reason is no longer the last word.** It rules out the scroll suites and
+  says nothing about the load ones, which never consult the observer — so a hero
+  belongs here only until someone marks its units and puts it in
+  `loadEntranceComponents`. Two are across: the split full-height hero and the
+  content-top-image-bottom band. The remaining eight are audited, with the
+  suites each should be offered, in §"Backfilling the heroes" below.
 - **Thank-you confirmation (1)** — the same reason reached from the other end. It
   is not a section that happens to sit first; it is the entire content of
   `/thank-you`.
@@ -828,10 +834,10 @@ veto, and three safeguards against the stale dev stylesheet.
 | Wipe | `wipe` | 16 (marks a heading) |
 | Fade | `fade` | 57 (no gate) — added later the same day, see below |
 | Settle | `settle` | 10 (marks media) — see below |
-| Rise on load | `reveal-load` | 1 (one hero) — see below |
-| Fade on load | `fade-load` | 1 (one hero) |
-| Wipe on load | `wipe-load` | 1 (one hero) |
-| Settle on load | `settle-load` | 1 (one hero) |
+| Rise on load | `reveal-load` | 2 (load-entrance sections) — see below |
+| Fade on load | `fade-load` | 2 (load-entrance sections) |
+| Wipe on load | `wipe-load` | 2 (load-entrance sections) |
+| Settle on load | `settle-load` | 2 (load-entrance sections that mark media) |
 | Focus | `focus` | 16 (marks a heading) |
 | Pulse | `pulse` | 10 (marks an action) |
 | Lateral | `lateral` | 10 (marks media) — was 57 |
@@ -947,12 +953,15 @@ it is now a control rather than a hand edit.
 
 ### Where this stands — the load entrance
 
-**`settle-load` is the one suite the observer never touches**, and it is a
-prototype on `HeroSplitFullHeightSectionV3` alone.
+**`settle-load` is the one suite the observer never touches.** It shipped as a
+prototype on `HeroSplitFullHeightSectionV3` alone; it is offered now, and the
+heroes are being brought across one at a time — see "Backfilling the heroes".
 
-A hero is above the fold, so it has no arrival to trigger — which is why every
-hero sits in `animationExcludedComponents` under *"above the fold at load, so a
-scroll entrance is inert"*. **The obvious fix is wrong.** Hanging an animation
+A hero is above the fold, so it has no arrival to trigger — which is why the
+heroes were written into `animationExcludedComponents` under *"above the fold at
+load, so a scroll entrance is inert"*. That reason is still true and no longer
+sufficient: it rules out the six scroll suites and says nothing about the four
+load ones. **The obvious fix is wrong.** Hanging an animation
 off the `settled` state the observer already sets on above-the-fold frames looks
 safe — nothing matches `settled` today, and the waiting rule is scoped to
 `:not([state])` so nothing gets hidden. But the observer runs on mount, *after*
@@ -1018,6 +1027,69 @@ file built to catch it.
 has no rule of its own and must not gain one — that is the trap this whole
 section exists to record. The load suites do not use it; they use no state at
 all.
+
+### Backfilling the heroes
+
+Audited 2026-08-18. The exclusion reason was written before the load suites
+existed, so every hero in it is there by default rather than by decision. Two
+are across; this is the map for the rest.
+
+**Only one question varies between them.** `reveal-load`, `fade-load` and
+`wipe-load` carry no `requiresRole`, so a section in `loadEntranceComponents` is
+offered all three with no further gate. `settle-load` needs `media`. So the audit
+is really: does this hero have something settle can scale.
+
+**What settle needs is narrower than "has an image"** — the rule scales
+`.reveal-role-media :is(img, video)`, so it wants a real element inside a box
+that CLIPS a picture FILLING it. The boundary is not frame-versus-ratio: an
+`aspect-[4/3]` frame is still a frame, because the picture cover-fills and crops
+inside it. What breaks settle is `h-auto object-contain`, where the box IS the
+picture — scaling then eats 3% off each edge of the artwork instead of settling
+into a crop. No hero does that; `ContentStickyCardStreamSectionV2` does, which is
+the case worth keeping the distinction for.
+
+A placeholder branch with no `<img>` degrades to a fade under settle. That is
+acceptable and already precedented by the sticky card stream's optional media,
+but it means settle on a hero with no image set looks exactly like Fade.
+
+| Hero | settle | why |
+|---|---|---|
+| `HeroContentTopImageBottomSectionV2` | done | bled band, grid-sized frame, cover fill |
+| `HeroCompactServiceSectionV3` | yes | `aspect-[4/3]` frame, cover fill |
+| `HeroServicesSectionV3` | yes | bled panel, cover fill |
+| `HeroServiceAreaZipLookupSectionV3` | yes | bled panel, cover fill |
+| `HeroSplitBentoSectionV3` | yes | `h-full overflow-hidden`, cover fill |
+| `HeroSplitFixedImageSectionV3` | yes | ratio-chosen frame, still clips and fills |
+| `HeroFullscreenSectionV2` | no | its picture is the background axis, not an element |
+| `HeroCompactSectionV3` | no | copy only — the library's cleanest wipe-load case |
+| `HeroCenteredFloatersSectionV2` | no | see below |
+
+`ThankYouConfirmationSectionV3` is excluded for the identical reason and
+qualifies unchanged. It belongs in the same pass.
+
+**`HeroCenteredFloatersSectionV2` is the one that needs a decision, not an**
+**edit.** Its flanking columns are `HeroCenteredFloatersParallax`, driving
+motion/react `useScroll` — the "owns its own motion" category. By the letter of
+that rule it stays out. But the rule is about elements that would FIGHT, and a
+load entrance on the centre copy column finishes before the reader has
+scrolled; the two never touch the same element. Bringing it on would make it
+the first partly-self-animating section on the axis, which is a precedent to
+set deliberately rather than by backfill. If it stays out, its reason string
+should change from "above the fold" to "owns its own motion" — it is misfiled
+either way.
+
+**Five edits per hero**, and the fourth is the one that fails silently:
+
+1. markers in the section file — `reveal-on-scroll` + `reveal-role-*` + `--reveal-index`
+2. delete from `animationExcludedComponents`
+3. add to `animationComponents`
+4. **add to `loadEntranceComponents`** — miss this and the section is offered the
+   six scroll suites instead, every one inert above the fold. The control
+   renders, saves, promotes and paints nothing.
+5. add to `sectionAnimationRoleComponents.media` / `.heading` for the roles it
+   marks. `content`, `card`, `frame` and `accent` are untracked and need no entry;
+   `action` is tracked but only gates Pulse, which is scroll-only — so fold hero
+   buttons into the content unit rather than marking them separately.
 
 ### Where this stands — 2026-08-17, later still
 
