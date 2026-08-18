@@ -795,6 +795,7 @@ veto, and three safeguards against the stale dev stylesheet.
 | Wipe | `wipe` | 16 (marks a heading) |
 | Fade | `fade` | 57 (no gate) — added later the same day, see below |
 | Settle | `settle` | 10 (marks media) — see below |
+| Settle on load | `settle-load` | 1 (one hero) — see below |
 | Focus | `focus` | 16 (marks a heading) |
 | Pulse | `pulse` | 10 (marks an action) |
 | Lateral | `lateral` | 10 (marks media) — was 57 |
@@ -908,6 +909,47 @@ it is now a control rather than a hand edit.
   four tokens by hand.
 - **`scrub` is retired**, tokens and rules together. See §4.5.
 
+### Where this stands — the load entrance
+
+**`settle-load` is the one suite the observer never touches**, and it is a
+prototype on `HeroSplitFullHeightSectionV3` alone.
+
+A hero is above the fold, so it has no arrival to trigger — which is why every
+hero sits in `animationExcludedComponents` under *"above the fold at load, so a
+scroll entrance is inert"*. **The obvious fix is wrong.** Hanging an animation
+off the `settled` state the observer already sets on above-the-fold frames looks
+safe — nothing matches `settled` today, and the waiting rule is scoped to
+`:not([state])` so nothing gets hidden. But the observer runs on mount, *after*
+first paint, so an animation starting at `opacity: 0` blanks something the
+reader is already looking at. Paint, blank, fade back in: the exact flash the
+settle-before-ready ordering in `SectionEntrance` exists to prevent,
+reintroduced on the first thing on the page.
+
+So its rules carry **no `data-pagebuilder-animation-state` selector at all**. The
+gate is `data-pagebuilder-animation`, which the frame owners render server-side,
+so it is in the HTML at first paint and the animation begins with the page. No
+JavaScript participates; if scripting never runs, nothing changes, because there
+is no hiding rule to get stuck in.
+
+It cannot be a state of `settle`. Dropping that suite's state gate would fire it
+at load on the ten below-fold sections whose entire reason for using it is the
+scroll trigger.
+
+**Hero-only by veto, in both directions.** `suiteExcludedComponents` strikes
+`settle-load` from the ten scroll-triggered media sections, and strikes
+`reveal` / `fade` / `settle` / `lateral` from the hero — Wipe, Focus and Pulse
+need no entry, because they gate on roles it does not mark and the derived gate
+already withholds them. That is a hand-maintained list in a system built to
+avoid them, and it is the right shape here: *above the fold* is a property of
+where a section is **used**, not of what it marks, so there is nothing to derive
+from. If a second hero takes this, the gate should become the inverse of the
+above-fold exclusion reason rather than a longer list.
+
+`animation-css-agreement.test.ts` exempts it from the timed contract and adds
+the mirror: an untimed suite must have gated rules **and** none of them may read
+an animation state. An exemption that only subtracts assertions is how a
+half-finished timed suite would slip past the file built to catch it.
+
 ### Where this stands — 2026-08-17, later still
 
 **Fade (`fade`) is the sixth suite**, offered everywhere Rise is (57 sections).
@@ -971,7 +1013,8 @@ cost scales with area, and a bled panel is the largest area on the page.
 |---|---|---|---|---|
 | Rise | `reveal` | everywhere | — | units rise and fade in |
 | Fade | `fade` | everywhere | — | units fade up in place, staggered; nothing moves |
-| Settle | `settle` | marks `media` | `media` | the image eases down from 1.06 inside its frame; everything else rises |
+| Settle | `settle` | marks `media` | `media` | the image eases down from 1.06 inside its frame; everything else fades in place |
+| Settle on load | `settle-load` | one hero, by veto | `media` | the same gesture, played from first paint instead of on scroll |
 | Wipe | `wipe` | marks a `heading` | `heading` | an edge crosses the heading; cards rise, accents scale, media fades |
 | Pulse | `pulse` | marks an `action` | `action` | normal arrival, then one soft beat on the action once it lands |
 | Lateral | `lateral` | everywhere | `media` | the media panel slides in from off-screen; everything else fades in place |

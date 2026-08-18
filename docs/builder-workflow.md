@@ -42,7 +42,7 @@ Section library          src/components/sections/ + src/content/section-library-
 
 | Route | Label | Does |
 |---|---|---|
-| `/sections` | Section preview | Renders every registered section |
+| `/sections` | Section preview | Every registered section, in a two-level accordion. **Each preview mounts only when its own section is expanded** — opening a mode group lists the sections, it does not render them |
 | `/dev/pagebuilder` | Page Builder | Arrange section stacks, set toggles, promote to a template |
 | `/dev/templates`, `/dev/templates/[templateId]` | Template Library | Promoted templates; stage a page; copy a contract |
 | `/dev/projects`, `/dev/projects/[slug]/strategy` | Workspace archive / Strategy | Client sitemap, page copy, snapshots |
@@ -91,7 +91,22 @@ these exist — the checklist is in `.claude/skills/add-section/SKILL.md`, and
 1. Component in `src/components/sections/`
 2. Export from `src/components/sections/index.ts`
 3. Entry in `src/content/section-library-v3.ts`, in the right semantic collection
-4. Entry in the `/sections` preview map (`src/app/sections/page.tsx`)
+4. Entry in the `/sections` preview map (`src/app/sections/page.tsx`), keyed by
+   **slug**. Pinned by `sections-preview-parity.test.ts`, which was the last
+   registration surface with no test. Six sections are rendered directly in the
+   page layout instead — nav, footer, the FAQ and CTA blocks it closes with —
+   because the page uses them as itself rather than as specimens; that list is
+   curated in the test and checked both ways.
+
+   **`/sections` renders nothing until you expand a section, and this has cost
+   time twice.** It is a two-level accordion: `<details>` per mode group, and
+   inside each, a per-section accordion whose preview is `{isOpen ? … : null}`
+   in an `<AnimatePresence>` (`SectionLibraryV3Accordions.tsx`). Opening a mode
+   group lists the sections; it does not mount them. So a DOM query on a freshly
+   loaded page finds no section markup at all — no images, no marker classes —
+   and that looks exactly like a section having failed to register. It is not.
+   Expand the individual section, or read the source, before concluding anything
+   is missing.
 5. Added to **both** pagebuilder lists under the **same semantic mode** as the
    library — `sectionSwapOptions` in `PagebuilderShell.tsx` (what is offered)
    and `previewCatalog` in `PagebuilderSection.tsx` (what the gallery renders).
