@@ -26,8 +26,9 @@ import { useEffect } from "react";
  * until the builder offers that value. This is the default, not the only
  * option.
  *
- * One observer for the whole document rather than a client boundary per
- * section. Sections stay server components; this is the only JavaScript the
+ * One observer per SCROLLER rather than a client boundary per section - which
+ * on an ordinary page means one for the document, since the only scroller is
+ * the window. Sections stay server components; this is the only JavaScript the
  * axis costs, and it renders nothing.
  */
 
@@ -36,6 +37,31 @@ import { useEffect } from "react";
 const frameSelector = "[data-pagebuilder-animation]";
 const stateAttribute = "data-pagebuilder-animation-state";
 const readyAttribute = "data-pagebuilder-animation-ready";
+
+/**
+ * A SCROLLER STANDING IN FOR THE VIEWPORT, marked by whatever owns it.
+ *
+ * A page scrolls in the window, so the window is the right root and nothing
+ * needs marking - which is why this started with no concept of a root at all.
+ * The builder does not: its canvas is an `overflow-auto` box inside a window
+ * that never scrolls, so with the viewport as root the trigger line was a line
+ * across the BROWSER at 82% of its height, cutting the canvas wherever it
+ * happened to fall. Close enough to look right, and wrong in the way that
+ * matters - the inset you tuned in the builder was not the inset the page got.
+ *
+ * So a scroller declares itself and the frames inside it are observed against
+ * it. One observer per distinct root, resolved with `closest` at the moment a
+ * frame is settled or observed, because `root` belongs to the observer and a
+ * document can hold both kinds at once: the builder canvas and, on the same
+ * screen, anything outside it that still scrolls with the window.
+ *
+ * OPT-IN, not "nearest scrollable ancestor". Sniffing `overflow` would make
+ * every incidental scroll box in a layout a trigger boundary, and the failure
+ * would be a section that never animates because something three levels up
+ * happened to clip. A marked root is a decision someone made.
+ */
+const rootAttribute = "data-pagebuilder-animation-root";
+const rootSelector = `[${rootAttribute}]`;
 
 /**
  * The custom property that authors the trigger threshold.
@@ -67,10 +93,11 @@ export const triggerInset = 0.18;
 /**
  * The authored threshold, or the shipped one if nothing legible is declared.
  *
- * Resolved ONCE per observer rather than per frame. `rootMargin` belongs to the
- * observer, not to a target, so a per-frame answer would need a separate
- * observer for every distinct value - and there is only ever one value, because
- * this is deliberately a shared control rather than a per-suite one.
+ * Resolved ONCE for the effect and shared by every observer it builds.
+ * `rootMargin` belongs to the observer rather than to a target, so a per-frame
+ * answer would need an observer for each distinct value - and there is only ever
+ * one value, because this is deliberately a shared control rather than a
+ * per-suite one. Roots multiply the observers; the inset does not.
  *
  * The clamp is not the registry's range restated. The registry decides what can
  * be AUTHORED; this only refuses a value that would break the observer - a
@@ -100,6 +127,62 @@ export function SectionEntrance() {
     const root = document.documentElement;
     const inset = resolveTriggerInset(root);
     const observed = new WeakSet<Element>();
+    /** Keyed by root, `null` being the viewport. Built on demand: most
+     *  documents only ever need the one. */
+    const observers = new Map<Element | null, IntersectionObserver>();
+
+    function observerFor(scroller: Element | null) {
+      const existing = observers.get(scroller);
+
+      if (existing) {
+        return existing;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) {
+              continue;
+            }
+
+            entry.target.setAttribute(stateAttribute, "in");
+            // Once only. An entrance that replayed every time a section came
+            // back past the line would animate on the way UP as well, which
+            // reads as the page redrawing itself rather than as content
+            // arriving.
+            observer.unobserve(entry.target);
+          }
+        },
+        {
+          // A percentage in `rootMargin` resolves against the ROOT's height,
+          // so this is the same inset whichever root it is handed - which is
+          // the whole point of passing one.
+          root: scroller,
+          rootMargin: `0px 0px -${Math.round(inset * 100)}% 0px`,
+        },
+      );
+
+      observers.set(scroller, observer);
+
+      return observer;
+    }
+
+    /**
+     * Where the trigger line sits right now, in client coordinates.
+     *
+     * The viewport case is the element case with the root's box filled in -
+     * top 0, height `innerHeight` - rather than a second formula that has to be
+     * kept in step with the first.
+     */
+    function triggerLine(scroller: Element | null) {
+      if (!scroller) {
+        return window.innerHeight * (1 - inset);
+      }
+
+      const box = scroller.getBoundingClientRect();
+
+      return box.bottom - box.height * inset;
+    }
 
     /**
      * A frame that is already past the trigger line gets `settled` instead of
@@ -118,33 +201,15 @@ export function SectionEntrance() {
 
       observed.add(frame);
 
-      if (
-        frame.getBoundingClientRect().top <
-        window.innerHeight * (1 - inset)
-      ) {
+      const scroller = frame.closest(rootSelector);
+
+      if (frame.getBoundingClientRect().top < triggerLine(scroller)) {
         frame.setAttribute(stateAttribute, "settled");
         return;
       }
 
-      observer.observe(frame);
+      observerFor(scroller).observe(frame);
     }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) {
-            continue;
-          }
-
-          entry.target.setAttribute(stateAttribute, "in");
-          // Once only. An entrance that replayed every time a section came back
-          // past the line would animate on the way UP as well, which reads as
-          // the page redrawing itself rather than as content arriving.
-          observer.unobserve(entry.target);
-        }
-      },
-      { rootMargin: `0px 0px -${Math.round(inset * 100)}% 0px` },
-    );
 
     for (const frame of document.querySelectorAll(frameSelector)) {
       settleOrObserve(frame);
@@ -180,7 +245,11 @@ export function SectionEntrance() {
 
     return () => {
       mutations.disconnect();
-      observer.disconnect();
+
+      for (const observer of observers.values()) {
+        observer.disconnect();
+      }
+
       root.removeAttribute(readyAttribute);
     };
   }, []);

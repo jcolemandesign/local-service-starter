@@ -59,11 +59,23 @@ Measured: a marked element with no frame attribute computes
 This is the same split the colour recipes use, for the same reason: a value the
 system owns cannot drift section by section.
 
-### One observer, and no client boundary in any section
+### One observer per scroller, and no client boundary in any section
 
 `SectionEntrance` is a `"use client"` component that renders `null`, mounted
-once in the root layout. It holds one `IntersectionObserver` for every section
-frame in the document and sets one attribute. Sections stay server components —
+once in the root layout. It watches every section frame in the document and sets
+one attribute.
+
+It holds one `IntersectionObserver` per scroller. On an ordinary page that is
+one observer with the window as its root, because the window is the only thing
+that scrolls. An element marked `data-pagebuilder-animation-root` becomes the
+root for the frames inside it, resolved with `closest` when a frame is first
+seen — the builder's preview canvas is marked, because it is an `overflow-auto`
+box inside a window that never scrolls, and without it the trigger line was a
+line across the browser rather than across the canvas. The marker is opt-in
+rather than a search for the nearest scrollable ancestor: sniffing `overflow`
+would make every incidental scroll box a trigger boundary, and the failure mode
+is a section that never animates because something three levels up happened to
+clip. Sections stay server components —
 this matters because 21 of them already import `motion/react`, and a wrapper
 per section would have had to negotiate with all of them.
 
@@ -174,7 +186,8 @@ replay a two-line reset rather than a fight with the cascade.
 - `motion-token-agreement.test.ts` — the tokens and the controls. Shipped
   defaults match the authored `:root`, **every declared token has a control and
   every control has a token the stylesheet reads**, an inheriting token is
-  undeclared and has a `var()` fallback, every suite names a control group that
+  undeclared and has a `var()` fallback, **a control whose reader is JavaScript
+  names that file in `readBy` and the file is opened and checked for the token**, every suite names a control group that
   exists, the preview and the promoted block emit the same declarations, and a
   value that could close its own declaration is refused.
 - `style-guide-motion-promotion.test.ts` — the route, end to end: a rhythm posted
@@ -354,10 +367,24 @@ out-curve, both because the entrance was reported as hard to see even once it
 was timed correctly. Distance and front-loaded easing are what make a short
 movement register.
 
-The trigger line is `triggerInset` in `SectionEntrance`: 18% of the viewport
-height, subtracted from the observer root's bottom edge, so a section must come
-that far up before anything moves. **That is the knob for "too early / too
-late"** — it is one number and it is the whole of that decision.
+The trigger line is `--anim-trigger-inset`, authored under **Shared rhythm** in
+the Style Guide and shipped at 18%: that share of the observer root's height,
+subtracted from its bottom edge, so a section must come that far up before
+anything moves. **That is the knob for "too early / too late"** — it is one
+number, shared by the whole library, and it is the whole of that decision. It is
+shared rather than per-suite on purpose: the threshold answers "how far up the
+screen before anything moves", which is one answer for a page, and per-suite
+thresholds would fire two adjacent sections at different heights on one scroll.
+
+`triggerInset` in `SectionEntrance` is now only the shipped default and the
+fallback for a token that cannot be read. The token is the setting, and the
+control's `readBy` field is what lets it be one — see §4.2 and the note on
+`readBy` in `motion-tokens.ts` for why a JavaScript-read token is allowed at all.
+
+Judge it in the builder's preview window, whose address bar has a reload: it
+remounts the canvas contents and scrolls home, so every entrance on the layout
+plays again from the top. That is also what makes the load-entrance suites
+watchable, since they carry no state attribute and only play on a new element.
 
 Measured on `/dev/templates/tester`: waiting units compute
 `opacity: 0; translate: 0 28px; animation-name: none`; on `in` they compute

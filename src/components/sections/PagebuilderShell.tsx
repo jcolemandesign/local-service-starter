@@ -2796,8 +2796,16 @@ function PagebuilderPreviewWindow({
           screenClassName,
         )}
       >
+        {/* The observer's root, not just a scroll box.
+          *
+          * The canvas is where a preview actually scrolls, so it is what the
+          * trigger inset has to be measured against - see `rootAttribute` in
+          * `SectionEntrance`. Without it the threshold resolved against the
+          * browser window, which never scrolls here, and the line landed
+          * wherever the canvas happened to sit inside it. */}
         <div
           className="min-h-0 flex-1 overflow-auto bg-bg-page [container-type:size]"
+          data-pagebuilder-animation-root="true"
           ref={canvasRef}
         >
           <div
