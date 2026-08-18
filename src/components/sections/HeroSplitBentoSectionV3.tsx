@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import Image from "next/image";
 import {
   Button,
@@ -86,6 +88,15 @@ export function HeroSplitBentoSectionV3({
   const config = variantConfig[variant] ?? variantConfig["image-right"];
   const colors = colorRecipeClassName;
   const HeadingTag = `h${headingLevel}` as const;
+  /**
+   * Reading order, and the image leads on one of the two arrangements.
+   * Staggering by source order would sweep right-to-left on the image-left variant,
+   * which reads as a rendering fault rather than as a stagger.
+   */
+  const order =
+    variant === "image-left"
+      ? { image: 0, heading: 1, content: 2 }
+      : { heading: 0, content: 1, image: 2 };
   const isFilled = cardFill === "solid";
   const hasBorder = cardBorder === "on";
 
@@ -113,12 +124,25 @@ export function HeroSplitBentoSectionV3({
               isFilled && hasBorder && "border border-service-border",
             )}
           >
-            <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
-            <HeadingTag
-              className={cx("type-display-lg mt-eyebrow-display", colors.ink)}
+            {/* Eyebrow and headline are one heading unit; copy, actions and the
+                stat rail below are one content unit. The stats are not a list
+                to walk the eye down - they are a footnote to the claim above
+                them, and inside the same tray. */}
+            <div
+              className="reveal-on-scroll reveal-role-heading"
+              style={{ "--reveal-index": order.heading } as CSSProperties}
             >
-              {title}
-            </HeadingTag>
+              <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
+              <HeadingTag
+                className={cx("type-display-lg mt-eyebrow-display", colors.ink)}
+              >
+                {title}
+              </HeadingTag>
+            </div>
+            <div
+              className="reveal-on-scroll reveal-role-content"
+              style={{ "--reveal-index": order.content } as CSSProperties}
+            >
             <p
               className={cx(
                 "type-text-xl wrap-pretty mt-display-body",
@@ -154,6 +178,7 @@ export function HeroSplitBentoSectionV3({
                 ))}
               </ul>
             ) : null}
+            </div>
           </div>
         </LayoutGridItem>
 
@@ -166,9 +191,11 @@ export function HeroSplitBentoSectionV3({
               crops to whatever shape that leaves. */}
           <div
             className={cx(
+              "reveal-on-scroll reveal-role-media",
               "radius-medium relative h-full min-h-0 w-full overflow-hidden bg-service-surface shadow-service",
               hasBorder && "border border-service-border",
             )}
+            style={{ "--reveal-index": order.image } as CSSProperties}
           >
             <Image
               alt={imageAlt}

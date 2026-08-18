@@ -48,6 +48,17 @@ type HeroVariantConfig = {
   imageClassName: string;
   imagePanelClassName: string;
   textClassName: string;
+  /**
+   * Whether the image takes the leading columns in this arrangement.
+   *
+   * Declared rather than read back out of `textClassName`. The reveal order has
+   * to follow reading order - three of these six variants lead with the image,
+   * and staggering by source order would sweep right-to-left on exactly those
+   * three, which reads as a rendering fault rather than as a stagger. Parsing a
+   * `col-start` out of a class string to find that out would make a Tailwind
+   * class the source of truth for an animation.
+   */
+  imageLeads?: boolean;
 };
 
 const variantConfig: Record<
@@ -71,12 +82,14 @@ const variantConfig: Record<
     imageClassName: "col-span-6 col-start-1",
     imagePanelClassName:
       "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
+    imageLeads: true,
   },
   "image-4-left-text-3": {
     textClassName: "col-span-6 col-start-9",
     imageClassName: "col-span-7 col-start-1",
     imagePanelClassName:
       "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
+    imageLeads: true,
   },
   "text-7-image-9-overlap-right": {
     textClassName: "relative z-10 col-span-8 col-start-1",
@@ -91,6 +104,7 @@ const variantConfig: Record<
     imagePanelClassName:
       "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
     imageMaskClassName: "full-image-split-image-mask-left",
+    imageLeads: true,
   },
 };
 
@@ -194,6 +208,10 @@ export function HeroServiceAreaZipLookupSectionV3({
   const config = variantConfig[variant] ?? variantConfig["text-3-image-4-right"];
   const colors = colorRecipeClassName;
   const HeadingTag = `h${headingLevel}` as const;
+  /** Reading order, and the image leads on three of the six arrangements. */
+  const order = config.imageLeads
+    ? { image: 0, heading: 1, content: 2 }
+    : { heading: 0, content: 1, image: 2 };
   const hasWideTextColumn =
     variant === "text-4-image-3-right" ||
     variant === "image-3-left-text-4" ||
@@ -221,18 +239,37 @@ export function HeroServiceAreaZipLookupSectionV3({
           )}
         >
           <div className="fluid-type-frame w-full">
-            <p className={cx("type-label flex items-center gap-2", colors.eyebrow)}>
-              <MapPinIcon className="size-4" />
-              <span>{eyebrow}</span>
-            </p>
-            <HeadingTag
-              className={cx(
-                "mt-eyebrow-display wrap-pretty",
-                hasWideTextColumn ? "type-display-xl" : "type-display-lg",
-              )}
+            {/* Eyebrow and headline are one heading unit; everything below them
+                - copy, the lookup form, its result, the area chips and the
+                coverage note - is one content unit.
+
+                ONE UNIT RATHER THAN FIVE, and the form is why. An entrance
+                moves a panel once as it arrives and never touches the state
+                inside it, which holds only while the state lives INSIDE a
+                unit. Marked as siblings, the success panel would appear after
+                submit as an unanimated element among four animated ones, in a
+                column whose entrance finished seconds earlier. */}
+            <div
+              className="reveal-on-scroll reveal-role-heading"
+              style={{ "--reveal-index": order.heading } as CSSProperties}
             >
-              {title}
-            </HeadingTag>
+              <p className={cx("type-label flex items-center gap-2", colors.eyebrow)}>
+                <MapPinIcon className="size-4" />
+                <span>{eyebrow}</span>
+              </p>
+              <HeadingTag
+                className={cx(
+                  "mt-eyebrow-display wrap-pretty",
+                  hasWideTextColumn ? "type-display-xl" : "type-display-lg",
+                )}
+              >
+                {title}
+              </HeadingTag>
+            </div>
+            <div
+              className="reveal-on-scroll reveal-role-content"
+              style={{ "--reveal-index": order.content } as CSSProperties}
+            >
             <p className={cx("type-text-lg wrap-pretty mt-display-body", colors.body)}>
               {body}
             </p>
@@ -325,6 +362,7 @@ export function HeroServiceAreaZipLookupSectionV3({
               <CheckIcon />
               <span>{serviceAreaText}</span>
             </p>
+            </div>
           </div>
         </LayoutGridItem>
 
@@ -338,11 +376,17 @@ export function HeroServiceAreaZipLookupSectionV3({
         >
           <div
             className={cx(
+              "reveal-on-scroll reveal-role-media",
               "absolute bottom-[calc(0px_-_var(--site-grid-inset-block))] top-[calc(0px_-_var(--site-grid-inset-block))] overflow-hidden bg-service-surface max-md:relative max-md:inset-auto max-md:h-full max-md:min-h-[var(--media-min-medium)] max-md:!w-full",
               config.imagePanelClassName,
               config.imageMaskClassName,
             )}
-            style={fullBleedImagePanelStyle}
+            style={
+              {
+                ...fullBleedImagePanelStyle,
+                "--reveal-index": order.image,
+              } as CSSProperties
+            }
           >
             <Image
               alt={imageAlt}

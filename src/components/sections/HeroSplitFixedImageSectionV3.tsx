@@ -108,22 +108,35 @@ function cx(...classes: Array<string | undefined>) {
 function FixedRatioImage({
   alt,
   ratio,
+  revealIndex,
   src,
 }: {
   alt: string;
   ratio: HeroSplitFixedImageRatio;
+  revealIndex: number;
   src: string;
 }) {
   const config = ratioConfig[ratio] ?? ratioConfig["3-2"];
 
   return (
     <div className="grid w-full place-items-center">
+      {/* The marker goes on the CLIPPING frame, not on the centring wrapper
+          around it. `settle-load` scales the picture and lets the frame crop it,
+          which only reads as a settle if the marked box is the one with
+          `overflow-hidden` on it. The ratio picks the frame's shape; the picture
+          still cover-fills it, so an aspect-ratio frame is still a frame. */}
       <div
         className={cx(
+          "reveal-on-scroll reveal-role-media",
           "hero-media-cap radius-medium relative w-full overflow-hidden bg-service-surface shadow-service",
           config.aspectClassName,
         )}
-        style={{ "--hero-media-ratio": config.value } as CSSProperties}
+        style={
+          {
+            "--hero-media-ratio": config.value,
+            "--reveal-index": revealIndex,
+          } as CSSProperties
+        }
       >
         <Image
           alt={alt}
@@ -154,6 +167,16 @@ export function HeroSplitFixedImageSectionV3({
 }: HeroSplitFixedImageSectionV3Props) {
   const config =
     variantConfig[variant] ?? variantConfig["text-3-image-4-right"];
+  /**
+   * Reading order, and the image leads on two of the four arrangements.
+   *
+   * Read off the variant id rather than off a column class: the ids name the
+   * arrangement, and parsing a col-start out of a Tailwind string would make a
+   * utility class the source of truth for an animation.
+   */
+  const order = variant.startsWith("image-")
+    ? { image: 0, heading: 1, content: 2 }
+    : { heading: 0, content: 1, image: 2 };
   const colors = colorRecipeClassName;
   const HeadingTag = `h${headingLevel}` as const;
 
@@ -180,15 +203,27 @@ export function HeroSplitFixedImageSectionV3({
           )}
         >
           <div className="fluid-type-frame w-full">
-            <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
-            <HeadingTag
-              className={cx(
-                "type-display-lg mt-eyebrow-display",
-                colors.ink,
-              )}
+            {/* Eyebrow and headline are one heading unit; copy, actions and the
+                stat rail are one content unit. The stats are a footnote to the
+                claim above them rather than a list to walk the eye down. */}
+            <div
+              className="reveal-on-scroll reveal-role-heading"
+              style={{ "--reveal-index": order.heading } as CSSProperties}
             >
-              {title}
-            </HeadingTag>
+              <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
+              <HeadingTag
+                className={cx(
+                  "type-display-lg mt-eyebrow-display",
+                  colors.ink,
+                )}
+              >
+                {title}
+              </HeadingTag>
+            </div>
+            <div
+              className="reveal-on-scroll reveal-role-content"
+              style={{ "--reveal-index": order.content } as CSSProperties}
+            >
             <p className={cx("type-text-xl wrap-pretty mt-display-body", colors.body)}>
               {body}
             </p>
@@ -219,6 +254,7 @@ export function HeroSplitFixedImageSectionV3({
                 ))}
               </ul>
             ) : null}
+            </div>
           </div>
         </LayoutGridItem>
 
@@ -230,7 +266,12 @@ export function HeroSplitFixedImageSectionV3({
             config.imageClassName,
           )}
         >
-          <FixedRatioImage alt={imageAlt} ratio={ratio} src={imageSrc} />
+          <FixedRatioImage
+            alt={imageAlt}
+            ratio={ratio}
+            revealIndex={order.image}
+            src={imageSrc}
+          />
         </LayoutGridItem>
       </LayoutGrid>
     </section>

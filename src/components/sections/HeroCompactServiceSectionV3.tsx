@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import Image from "next/image";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
@@ -44,6 +46,28 @@ const alignColumnClassName: Record<
   },
 };
 
+/**
+ * REVEAL ORDER, COMPUTED FROM `align` RATHER THAN FROM JSX ORDER.
+ *
+ * The three blocks are written copy-image-cta and rendered in whatever order
+ * the alignment puts them: left leads with the CTA panel, center puts it
+ * between copy and image, right trails it. Staggering by source order would
+ * sweep right-to-left on the two arrangements that move it, which reads as a
+ * rendering fault rather than as a stagger - the same finding the full-image
+ * narrative split and the three-column mixed section both record.
+ *
+ * The copy block is two units, so it takes two consecutive indices wherever it
+ * lands.
+ */
+const revealIndex: Record<
+  HeroCompactAlign,
+  { body: number; cta: number; heading: number; image: number }
+> = {
+  left: { cta: 0, heading: 1, body: 2, image: 3 },
+  center: { heading: 0, body: 1, cta: 2, image: 3 },
+  right: { heading: 0, body: 1, image: 2, cta: 3 },
+};
+
 // `row-start-1` keeps all three items on one row: they carry explicit column
 // starts but auto rows, so once the placement cursor passes a start column the
 // item would otherwise wrap to a new row. `max-lg:row-auto` restores normal
@@ -73,6 +97,7 @@ export function HeroCompactServiceSectionV3({
 }: HeroCompactServiceSectionV3Props) {
   const HeadingTag = `h${headingLevel}` as const;
   const columns = alignColumnClassName[align];
+  const order = revealIndex[align];
   /**
    * Left puts the CTA panel in the first columns, ahead of the copy, where it
    * reads as part of the opening statement rather than as a trailing aside. It
@@ -93,11 +118,21 @@ export function HeroCompactServiceSectionV3({
           className={cx(columns.text, gridItemClassName)}
         >
           <div className="fluid-type-frame w-full">
-            <p className="type-label text-service-accent">{eyebrow}</p>
-            <HeadingTag className="type-heading-xl wrap-pretty mt-eyebrow-heading-md text-service-ink">
-              {title}
-            </HeadingTag>
-            <p className="type-text-md wrap-pretty mt-heading-body-sm text-service-muted">
+            {/* Eyebrow and headline are one heading unit, so Wipe has an edge
+                to cross and crosses the pair together. */}
+            <div
+              className="reveal-on-scroll reveal-role-heading"
+              style={{ "--reveal-index": order.heading } as CSSProperties}
+            >
+              <p className="type-label text-service-accent">{eyebrow}</p>
+              <HeadingTag className="type-heading-xl wrap-pretty mt-eyebrow-heading-md text-service-ink">
+                {title}
+              </HeadingTag>
+            </div>
+            <p
+              className="reveal-on-scroll reveal-role-content type-text-md wrap-pretty mt-heading-body-sm text-service-muted"
+              style={{ "--reveal-index": order.body } as CSSProperties}
+            >
               {body}
             </p>
           </div>
@@ -107,7 +142,13 @@ export function HeroCompactServiceSectionV3({
           alignY="middle"
           className={cx(columns.image, gridItemClassName)}
         >
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-surface-token)] bg-service-surface shadow-service">
+          {/* An aspect-ratio frame is still a frame: the panel clips and the
+              picture cover-fills it, so `settle-load` scales the image and the
+              frame crops it rather than the box changing size. */}
+          <div
+            className="reveal-on-scroll reveal-role-media relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-surface-token)] bg-service-surface shadow-service"
+            style={{ "--reveal-index": order.image } as CSSProperties}
+          >
             <Image
               alt={imageAlt}
               className="object-cover"
@@ -125,13 +166,19 @@ export function HeroCompactServiceSectionV3({
           alignY={isLeftAligned ? "middle" : "stretch"}
           className={cx(columns.cta, gridItemClassName)}
         >
+          {/* `frame`, not `card`: one composite panel holding a heading, copy and
+              two buttons inside a single border, revealing as one block. It is
+              not one of a list, and staggering its parts would move them out
+              from under the border that contains them. */}
           <article
             className={cx(
+              "reveal-on-scroll reveal-role-frame",
               "flex flex-col rounded-[var(--radius-surface-token)] border border-service-border bg-service-surface p-8 text-service-ink shadow-service max-md:p-6",
               isLeftAligned ? undefined : "h-full",
               cardFill === "none" ? "!bg-transparent !shadow-none" : undefined,
               cardBorder === "off" ? "!border-transparent" : undefined,
             )}
+            style={{ "--reveal-index": order.cta } as CSSProperties}
           >
             <div
               className={cx(

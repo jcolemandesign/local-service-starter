@@ -968,6 +968,11 @@ export const animationComponents = new Set<string>([
   "HeroSplitFullHeightSectionV3",
   "HeroContentTopImageBottomSectionV2",
   "HeroCompactSectionV3",
+  "HeroCompactServiceSectionV3",
+  "HeroServiceAreaZipLookupSectionV3",
+  "HeroServicesSectionV3",
+  "HeroSplitBentoSectionV3",
+  "HeroSplitFixedImageSectionV3",
   "ContentStickyCardStreamSectionV2",
   "FeatureAsymmetricCardsSectionV3",
   "FeatureStackedCardsSectionV3",
@@ -1169,12 +1174,7 @@ export const animationExcludedComponents = new Map<string, string>([
   ...(
     [
       "HeroCenteredFloatersSectionV2",
-      "HeroCompactServiceSectionV3",
       "HeroFullscreenSectionV2",
-      "HeroServiceAreaZipLookupSectionV3",
-      "HeroServicesSectionV3",
-      "HeroSplitBentoSectionV3",
-      "HeroSplitFixedImageSectionV3",
     ] as const
   ).map(
     (component) =>

@@ -854,6 +854,14 @@ export const sectionAnimationRoleComponents: Partial<
      *  a heading, a paragraph and two buttons, so nothing competes with the
      *  edge crossing the headline. */
     "HeroCompactSectionV3",
+    /** The five framed-image heroes. Every one splits its copy the same way -
+     *  eyebrow and headline as the heading unit, everything below it as one
+     *  content unit - so the wipe has an edge and the rest fades behind it. */
+    "HeroCompactServiceSectionV3",
+    "HeroServiceAreaZipLookupSectionV3",
+    "HeroServicesSectionV3",
+    "HeroSplitBentoSectionV3",
+    "HeroSplitFixedImageSectionV3",
     "SectionHeaderCompactSectionV3",
     "SectionHeaderLargeSectionV3",
     "SectionHeaderSplitLinkSectionV3",
@@ -908,6 +916,14 @@ export const sectionAnimationRoleComponents: Partial<
      *  frame is still a frame; both of these cover-fill and clip. */
     "HeroSplitFullHeightSectionV3",
     "HeroContentTopImageBottomSectionV2",
+    /** The five framed-image heroes. Bled panels, aspect-ratio frames and a
+     *  ratio-chosen one - all of them clip a cover-filling picture, which is
+     *  the whole of what settle needs. */
+    "HeroCompactServiceSectionV3",
+    "HeroServiceAreaZipLookupSectionV3",
+    "HeroServicesSectionV3",
+    "HeroSplitBentoSectionV3",
+    "HeroSplitFixedImageSectionV3",
     "ImageStripSectionV3",
     /** The logo grid, not the file it shares with four other trust sections -
      *  the marker is on its panel and the other four have none. */
@@ -1003,6 +1019,11 @@ export const loadEntranceComponents = new Set<string>([
   "HeroSplitFullHeightSectionV3",
   "HeroContentTopImageBottomSectionV2",
   "HeroCompactSectionV3",
+  "HeroCompactServiceSectionV3",
+  "HeroServiceAreaZipLookupSectionV3",
+  "HeroServicesSectionV3",
+  "HeroSplitBentoSectionV3",
+  "HeroSplitFixedImageSectionV3",
 ]);
 
 /** Whether a section's entrance is played by the page rather than the scroll. */

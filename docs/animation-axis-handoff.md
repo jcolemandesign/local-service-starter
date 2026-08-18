@@ -219,7 +219,7 @@ membership sets, so re-derive them rather than adjusting them by hand.
 | Action | 13 | 9 | 4 |
 | Proof | 9 | 3 | 6 |
 | Images | 5 | 1 | 4 |
-| Hero | 10 | 3 | 7 |
+| Hero | 10 | 8 | 2 |
 | Navigation | 3 | 0 | 3 |
 
 ### Why an exclusion set exists
@@ -228,15 +228,16 @@ membership sets, so re-derive them rather than adjusting them by hand.
 still. The set exists to say **which**. Five reasons, and they are different
 reasons:
 
-- **Hero (7, and falling)** — above the fold at load. Measured: an element in
+- **Hero (2)** — above the fold at load. Measured: an element in
   view at load holds at the end state, opacity 1, no movement, even with a
   stagger index. A SCROLL control would render and do nothing.
   **This reason is no longer the last word.** It rules out the scroll suites and
   says nothing about the load ones, which never consult the observer — so a hero
   belongs here only until someone marks its units and puts it in
-  `loadEntranceComponents`. Three are across: the split full-height hero, the
-  content-top-image-bottom band and the compact hero. The rest are audited, with
-  the suites each should be offered, in §"Backfilling the heroes" below.
+  `loadEntranceComponents`. Eight of the ten are across. The two left are the
+  fullscreen hero, which has no media element to mark because its picture comes
+  from the background axis, and the centered-floaters hero, which needs the
+  decision recorded in §"Backfilling the heroes" below rather than an edit.
 - **Thank-you confirmation (1)** — the same reason reached from the other end. It
   is not a section that happens to sit first; it is the entire content of
   `/thank-you`.
@@ -834,10 +835,10 @@ veto, and three safeguards against the stale dev stylesheet.
 | Wipe | `wipe` | 16 (marks a heading) |
 | Fade | `fade` | 57 (no gate) — added later the same day, see below |
 | Settle | `settle` | 10 (marks media) — see below |
-| Rise on load | `reveal-load` | 3 (load-entrance sections) — see below |
-| Fade on load | `fade-load` | 3 (load-entrance sections) |
-| Wipe on load | `wipe-load` | 3 (load-entrance sections) |
-| Settle on load | `settle-load` | 2 (load-entrance sections that mark media) |
+| Rise on load | `reveal-load` | 8 (load-entrance sections) — see below |
+| Fade on load | `fade-load` | 8 (load-entrance sections) |
+| Wipe on load | `wipe-load` | 8 (load-entrance sections) |
+| Settle on load | `settle-load` | 7 (load-entrance sections that mark media) |
 | Focus | `focus` | 16 (marks a heading) |
 | Pulse | `pulse` | 10 (marks an action) |
 | Lateral | `lateral` | 10 (marks media) — was 57 |
@@ -1031,8 +1032,8 @@ all.
 ### Backfilling the heroes
 
 Audited 2026-08-18. The exclusion reason was written before the load suites
-existed, so every hero in it is there by default rather than by decision. Three
-are across; this is the map for the rest.
+existed, so every hero in it is there by default rather than by decision. Eight
+of the ten are across; this is the map, and what the eight settled.
 
 **Only one question varies between them.** `reveal-load`, `fade-load` and
 `wipe-load` carry no `requiresRole`, so a section in `loadEntranceComponents` is
@@ -1055,17 +1056,43 @@ but it means settle on a hero with no image set looks exactly like Fade.
 | Hero | settle | why |
 |---|---|---|
 | `HeroContentTopImageBottomSectionV2` | done | bled band, grid-sized frame, cover fill |
-| `HeroCompactServiceSectionV3` | yes | `aspect-[4/3]` frame, cover fill |
-| `HeroServicesSectionV3` | yes | bled panel, cover fill |
-| `HeroServiceAreaZipLookupSectionV3` | yes | bled panel, cover fill |
-| `HeroSplitBentoSectionV3` | yes | `h-full overflow-hidden`, cover fill |
-| `HeroSplitFixedImageSectionV3` | yes | ratio-chosen frame, still clips and fills |
+| `HeroCompactServiceSectionV3` | done | `aspect-[4/3]` frame, cover fill |
+| `HeroServicesSectionV3` | done | bled panel, cover fill |
+| `HeroServiceAreaZipLookupSectionV3` | done | bled panel, cover fill |
+| `HeroSplitBentoSectionV3` | done | `h-full overflow-hidden`, cover fill |
+| `HeroSplitFixedImageSectionV3` | done | ratio-chosen frame, still clips and fills |
 | `HeroFullscreenSectionV2` | no | its picture is the background axis, not an element |
 | `HeroCompactSectionV3` | done, n/a | copy only — the library's cleanest wipe-load case |
 | `HeroCenteredFloatersSectionV2` | no | see below |
 
 `ThankYouConfirmationSectionV3` is excluded for the identical reason and
 qualifies unchanged. It belongs in the same pass.
+
+**Three things the eight settled, worth reusing on the two that are left.**
+
+*Reveal order is computed from the arrangement prop, never from JSX order.*
+Five of these heroes move their image between the leading and trailing columns
+by a `variant` or `align` prop while the JSX order stays put. Staggering by source
+order sweeps right-to-left on exactly the arrangements that flip, which reads as
+a rendering fault rather than as a stagger — the same finding the full-image
+narrative split and the three-column mixed section each recorded independently.
+Each of them now derives indices from the prop. Where the answer is "does the
+image lead", it is a declared field or an id check, never a `col-start` parsed
+back out of a Tailwind string: a utility class must not become the source of
+truth for an animation.
+
+*A panel's overlaid children are part of the panel.* The services hero pins its
+service cards inside the image panel with `absolute`. Marking them would nest a
+revealable unit inside a revealable one and multiply two opacity fades into a
+muddy one, so they are unmarked and arrive with the panel — which is also what
+they look like.
+
+*An interactive column is one unit, not five.* The ZIP hero's copy column holds
+a lookup form, its success panel, the area chips and a coverage note. Marked as
+siblings, the success panel would appear after submit as an unanimated element
+among four animated ones, in a column whose entrance finished seconds earlier.
+One content unit keeps the axis's promise that an entrance moves a panel once as
+it arrives and never touches the state inside it.
 
 **The compact hero added one wrinkle worth reusing.** Its actions move between
 two places depending on `align` — inside the copy column when centred, in a grid

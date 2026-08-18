@@ -56,6 +56,28 @@ const alignClassName: Record<
   },
 };
 
+/**
+ * REVEAL ORDER, COMPUTED FROM `align` RATHER THAN FROM JSX ORDER.
+ *
+ * The copy is written first and rendered second under `right`, where the image
+ * takes the leading columns. Staggering by source order would sweep
+ * right-to-left on that arrangement, which reads as a rendering fault rather
+ * than as a stagger.
+ *
+ * THE SERVICE CARDS ARE NOT UNITS. They are absolutely positioned inside the
+ * image panel, so marking them would nest a revealable unit inside a revealable
+ * one - two opacity fades multiplied into a muddy one. They are part of the
+ * panel and they arrive with it, which is also what they look like: pinned to
+ * its bottom edge rather than laid out beside it.
+ */
+const revealIndex: Record<
+  SectionMirrorAlign,
+  { body: number; heading: number; image: number }
+> = {
+  left: { heading: 0, body: 1, image: 2 },
+  right: { image: 0, heading: 1, body: 2 },
+};
+
 const fullBleedImageStyle: CSSProperties = {
   width: "calc(100% + var(--site-grid-inset-inline))",
 };
@@ -132,6 +154,7 @@ export function HeroServicesSectionV3({
   const Heading = headingLevel === 1 ? "h1" : "h2";
   const visibleCards = cards.slice(0, 7);
   const alignment = alignClassName[align] ?? alignClassName.left;
+  const order = revealIndex[align] ?? revealIndex.left;
   const cardClassName = [
     // `recipe-card-context` is explicit here because the fill cannot be an
     // unmodified card token: these sit on the photograph and the 92% is what
@@ -165,11 +188,19 @@ export function HeroServicesSectionV3({
           measure="copyWide"
         >
           <div className="fluid-type-frame">
-            <p className="type-label text-service-accent">{eyebrow}</p>
-            <Heading className="type-display-lg mt-eyebrow-display text-service-ink">
-              {title}
-            </Heading>
-            <p className="type-text-xl wrap-pretty mt-display-body text-service-muted">
+            <div
+              className="reveal-on-scroll reveal-role-heading"
+              style={{ "--reveal-index": order.heading } as CSSProperties}
+            >
+              <p className="type-label text-service-accent">{eyebrow}</p>
+              <Heading className="type-display-lg mt-eyebrow-display text-service-ink">
+                {title}
+              </Heading>
+            </div>
+            <p
+              className="reveal-on-scroll reveal-role-content type-text-xl wrap-pretty mt-display-body text-service-muted"
+              style={{ "--reveal-index": order.body } as CSSProperties}
+            >
               {body}
             </p>
           </div>
@@ -184,10 +215,16 @@ export function HeroServicesSectionV3({
         >
           <div
             className={cx(
+              "reveal-on-scroll reveal-role-media",
               "absolute bottom-[calc(0px_-_var(--site-grid-inset-block))] top-[calc(0px_-_var(--site-grid-inset-block))] overflow-hidden bg-service-surface max-md:bottom-[calc(0px_-_var(--site-grid-inset-block))] max-md:top-0 max-md:!w-auto",
               alignment.panel,
             )}
-            style={fullBleedImageStyle}
+            style={
+              {
+                ...fullBleedImageStyle,
+                "--reveal-index": order.image,
+              } as CSSProperties
+            }
           >
             <Image
               alt={imageAlt}
