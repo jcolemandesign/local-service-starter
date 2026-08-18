@@ -27,6 +27,13 @@ function cx(...classes: Array<string | undefined>) {
 /**
  * The band, and BOTH BRANCHES ARE THE SAME UNIT.
  *
+ * INDEX 1, SHARED WITH THE COPY BESIDE IT rather than trailing it at 2. The
+ * headline opens alone and then the rest of the section arrives together, which
+ * is what the layout already says: the body sits in the same row as the
+ * headline and the band runs the full width beneath both. A full-bleed band
+ * arriving a beat after everything else reads as the page still loading rather
+ * than as a composition landing.
+ *
  * The marker goes on each of them rather than on the grid item around them,
  * because `settle-load` scales the picture INSIDE the marked unit and the
  * placeholder branch has no picture to scale. Marked in both places the frame
@@ -41,7 +48,7 @@ function BottomImage({ alt, src }: { alt?: string; src?: string }) {
     return (
       <div
         className="reveal-on-scroll reveal-role-media relative h-full min-h-0 overflow-hidden bg-bg-muted"
-        style={{ "--reveal-index": 2 } as CSSProperties}
+        style={{ "--reveal-index": 1 } as CSSProperties}
       >
         <Image
           alt={alt ?? ""}
@@ -63,7 +70,7 @@ function BottomImage({ alt, src }: { alt?: string; src?: string }) {
     <div
       aria-label="Sample service image placeholder"
       className="reveal-on-scroll reveal-role-media relative h-full min-h-0 overflow-hidden bg-zinc-300"
-      style={{ "--reveal-index": 2 } as CSSProperties}
+      style={{ "--reveal-index": 1 } as CSSProperties}
     >
       <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(255_255_255_/_0.24),transparent_42%),linear-gradient(45deg,rgb(255_255_255_/_0.18)_0_1px,transparent_1px_22px)]" />
     </div>
