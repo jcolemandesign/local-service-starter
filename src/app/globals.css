@@ -895,6 +895,70 @@
     );
   }
 
+  /* Rise, Fade and Wipe, played by the page.
+   *
+   * The same three gestures the scroll axis offers, with the animation-state
+   * gate removed - see the note above for why a load entrance cannot be a state
+   * of its scroll twin, and why nothing here consults the observer.
+   *
+   * Each reuses its twin's keyframe outright, so a hero cannot drift away from
+   * the library it belongs to: change the shared rhythm and both move together.
+   * What they do NOT share is a waiting rule, because there is no waiting - the
+   * `both` fill holds each animation's own first frame until it starts, which
+   * on a load entrance is immediately. */
+  [data-pagebuilder-animation="reveal-load"] .reveal-on-scroll {
+    animation: section-reveal
+      var(--anim-reveal-duration, var(--anim-duration))
+      var(--anim-reveal-easing, var(--anim-easing)) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-reveal-stagger, var(--anim-stagger))
+    );
+  }
+
+  /* A bled panel that travels opens a band of bare ground beneath it, exactly
+     as under Rise. Same answer, same reason. */
+  [data-pagebuilder-animation="reveal-load"] .reveal-role-media {
+    --anim-reveal-distance: 0px;
+  }
+
+  [data-pagebuilder-animation="fade-load"] .reveal-on-scroll {
+    animation: section-fade
+      var(--anim-fade-duration, var(--anim-duration))
+      var(--anim-fade-easing, var(--anim-easing)) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-fade-stagger, var(--anim-stagger))
+    );
+  }
+
+  [data-pagebuilder-animation="wipe-load"] .reveal-on-scroll {
+    animation: section-fade
+      var(--anim-wipe-duration, var(--anim-duration))
+      var(--anim-wipe-easing, var(--anim-easing)) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-wipe-stagger, var(--anim-stagger))
+    );
+  }
+
+  /* The wipe itself: text revealed behind an edge, no travel. */
+  [data-pagebuilder-animation="wipe-load"] .reveal-role-heading,
+  [data-pagebuilder-animation="wipe-load"] .reveal-role-content {
+    animation: section-wipe
+      var(--anim-wipe-duration, var(--anim-duration))
+      var(--anim-wipe-easing, var(--anim-easing)) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-wipe-stagger, var(--anim-stagger))
+    );
+  }
+
+  [data-pagebuilder-animation="wipe-load"] .reveal-role-accent {
+    animation: section-fade-scale
+      var(--anim-wipe-duration, var(--anim-duration))
+      var(--anim-wipe-easing, var(--anim-easing)) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-wipe-stagger, var(--anim-stagger))
+    );
+  }
+
   [data-pagebuilder-animation="settle-load"]
     .reveal-role-media
     :is(img, video) {

@@ -190,7 +190,20 @@ export function HeroSplitFullHeightSectionV3({
           )}
         >
           <div className="fluid-type-frame w-full">
-            <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
+            {/* TWO UNITS, SIDE BY SIDE, NOT ONE INSIDE THE OTHER.
+                The intro text and the rest of the copy are marked separately so
+                every load suite has something to answer: Wipe needs a `heading`
+                to reveal behind its edge, and a single `frame` around the whole
+                column would give it nothing but a fade. The cost is that Rise
+                moves them as two staggered units rather than as one pane -
+                marking both the column AND its heading would buy that back and
+                nest a revealable unit inside a revealable unit, which multiplies
+                two opacity fades into a muddy one. */}
+            <div
+              className="reveal-on-scroll reveal-role-heading"
+              style={{ "--reveal-index": 0 } as CSSProperties}
+            >
+              <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
             <HeadingTag
               className={cx(
                 "mt-eyebrow-display",
@@ -203,6 +216,11 @@ export function HeroSplitFullHeightSectionV3({
             >
               {title}
             </HeadingTag>
+            </div>
+            <div
+              className="reveal-on-scroll reveal-role-content"
+              style={{ "--reveal-index": 1 } as CSSProperties}
+            >
             <p
               className={cx(
                 "type-text-lg measure-lead wrap-pretty mt-body-actions-md",
@@ -247,6 +265,7 @@ export function HeroSplitFullHeightSectionV3({
                 ))}
               </ul>
             ) : null}
+            </div>
           </div>
         </LayoutGridItem>
 

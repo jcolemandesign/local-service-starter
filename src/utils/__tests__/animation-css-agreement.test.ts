@@ -114,12 +114,14 @@ describe("animation css agreement", () => {
    * an exemption that only ever subtracts assertions is how a half-finished
    * timed suite gets past this file.
    */
-  const untimedSuites = new Map([
-    [
-      "settle-load",
-      "plays from first paint on the server-rendered attribute; the observer never touches it",
-    ],
-  ]);
+  const untimedSuites = new Map(
+    sectionAnimationSuites
+      .filter((suite) => suite.trigger === "load")
+      .map((suite) => [
+        suite.id as string,
+        "plays from first paint on the server-rendered attribute; the observer never touches it",
+      ]),
+  );
 
   it("gives every offered suite both halves of the timed contract", () => {
     for (const suite of sectionAnimationSuites) {

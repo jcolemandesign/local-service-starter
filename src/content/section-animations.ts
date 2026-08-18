@@ -193,6 +193,29 @@ type SectionAnimationSuiteDefinition = {
    * does not exist, and a registered group no suite claims.
    */
   controlGroups: readonly MotionControlGroupId[];
+  /**
+   * What starts this suite.
+   *
+   * `scroll` is the axis as designed: the observer sets a state when the frame
+   * crosses the trigger line, and the CSS answers it. `load` is for sections
+   * that are on screen before any of that can happen - those rules read no
+   * animation state at all and run from first paint on the server-rendered
+   * attribute.
+   *
+   * THE TWO ARE MUTUALLY EXCLUSIVE PER SECTION, not per suite. A scroll suite on
+   * an above-the-fold section never plays, and a load suite on a below-fold one
+   * has finished before the reader arrives - so `sectionAnimationSuitesFor`
+   * offers one set or the other by asking where the section is used, and no
+   * suite needs a veto list.
+   *
+   * That replaced one. The first load suite was gated by striking it from every
+   * scroll-triggered section by name, which worked only because it happened to
+   * carry `requiresRole: "media"` and there were ten of them. The next load
+   * suite had no signature role at all, so the same approach wanted ~57 entries
+   * - which is the point at which a list stops being an exception and becomes
+   * the mechanism, badly.
+   */
+  trigger: "scroll" | "load";
 };
 
 /**
@@ -234,6 +257,7 @@ export const sectionAnimationSuites = [
     /** Rise has a module of its own now. The distance is the reason: it is the
      *  only vertical travel in the library, so it was never shared - it merely
      *  lived in the shared group and was read by one suite. */
+    trigger: "scroll",
     controlGroups: ["rhythm", "reveal"],
   },
   {
@@ -285,6 +309,7 @@ export const sectionAnimationSuites = [
     differentiatedRoles: [],
     /** The shared spine plus its own tempo and stagger. It owns no shape, so
      *  those two are the whole of it. */
+    trigger: "scroll",
     controlGroups: ["rhythm", "fade"],
   },
   {
@@ -337,6 +362,7 @@ export const sectionAnimationSuites = [
      */
     differentiatedRoles: ["media"],
     /** The shared spine, plus the scale and travel that are its own. */
+    trigger: "scroll",
     controlGroups: ["rhythm", "settle"],
   },
   {
@@ -383,6 +409,7 @@ export const sectionAnimationSuites = [
       action: "fade in place",
     },
     differentiatedRoles: ["media"],
+    trigger: "load",
     /** Shares Settle's tokens outright. Two triggers, one gesture - giving the
      *  load version its own scale and tempo would let a hero drift away from
      *  the suite it is meant to be the same as. */
@@ -456,6 +483,7 @@ export const sectionAnimationSuites = [
      *  length of the wipe itself, and where an accent starts before scaling up.
      *  Neither has an equivalent in Rise, which is the test for whether a suite
      *  has earned a group. */
+    trigger: "scroll",
     controlGroups: ["rhythm", "wipe"],
   },
   {
@@ -511,6 +539,7 @@ export const sectionAnimationSuites = [
      *  three numbers. The beat is not an entrance and cannot borrow an
      *  entrance's tempo: it starts after the section has landed, and its delay
      *  is measured from there. */
+    trigger: "scroll",
     controlGroups: ["rhythm", "pulse"],
   },
   {
@@ -586,6 +615,7 @@ export const sectionAnimationSuites = [
     /** The shared rhythm for duration and easing - a slide is a travel like any
      *  other - plus its own two distances, which are in two different units and
      *  so could never have been the shared one. */
+    trigger: "scroll",
     controlGroups: ["rhythm", "lateral"],
   },
   {
@@ -641,7 +671,77 @@ export const sectionAnimationSuites = [
      *  group - a genuinely different motion model, not a preference for a
      *  different number. The shared easing control must never write
      *  `--anim-focus-easing`. */
+    trigger: "scroll",
     controlGroups: ["rhythm", "focus"],
+  },
+  {
+    /** Rise, played by the page. */
+    id: "reveal-load",
+    label: "Rise on load",
+    status: "offered",
+    description:
+      "Units rise a short distance and fade in as the page paints.",
+    guidance:
+      "The default hero entrance. Suits a hero whose copy and image should arrive together.",
+    requiresRole: undefined,
+    roles: {
+      heading: "rise + fade",
+      content: "rise + fade, as one block",
+      card: "rise + fade, staggered by --reveal-index",
+      media: "fade only, no rise - a bled panel that travels opens a band of bare ground beneath it",
+      accent: "rise + fade",
+      frame: "rise + fade, as a single unit",
+      action: "rise + fade",
+    },
+    differentiatedRoles: ["media"],
+    trigger: "load",
+    controlGroups: ["rhythm", "reveal"],
+  },
+  {
+    /** Fade, played by the page. */
+    id: "fade-load",
+    label: "Fade on load",
+    status: "offered",
+    description:
+      "Units fade up in place as the page paints. Nothing moves.",
+    guidance:
+      "The quiet hero entrance. For a hero carrying a large photograph, where a travel competes with the picture.",
+    requiresRole: undefined,
+    roles: {
+      heading: "fade in place",
+      content: "fade in place, as one block",
+      card: "fade in place, staggered by --reveal-index",
+      media: "fade in place - the same answer as everything else here",
+      accent: "fade in place",
+      frame: "fade in place, as a single unit",
+      action: "fade in place",
+    },
+    differentiatedRoles: [],
+    trigger: "load",
+    controlGroups: ["rhythm", "fade"],
+  },
+  {
+    /** Wipe, played by the page. Same rules as `wipe` with the animation-state gate removed - see `settle-load` for why a load entrance cannot be a state of its scroll twin. */
+    id: "wipe-load",
+    label: "Wipe on load",
+    status: "offered",
+    description:
+      "The headline is revealed behind an edge as the page paints. Everything else fades in place.",
+    guidance:
+      "For a hero led by its words. The wipe is the arrival, so nothing else competes with it.",
+    requiresRole: undefined,
+    roles: {
+      heading: "clip wipe, left to right, no travel",
+      content: "clip wipe, left to right",
+      card: "fade in place",
+      media: "fade in place",
+      accent: "scale up from 94% while fading",
+      frame: "fade in place, as a single unit",
+      action: "fade in place",
+    },
+    differentiatedRoles: ["heading", "content", "accent"],
+    trigger: "load",
+    controlGroups: ["rhythm", "wipe"],
   },
 ] as const satisfies readonly SectionAnimationSuiteDefinition[];
 
@@ -744,6 +844,9 @@ export const sectionAnimationRoleComponents: Partial<
   Record<SectionAnimationRole, readonly string[]>
 > = {
   heading: [
+    /** The load-entrance hero. Its intro text is a heading unit so `wipe-load`
+     *  has an edge to reveal - see `loadEntranceComponents`. */
+    "HeroSplitFullHeightSectionV3",
     "SectionHeaderCompactSectionV3",
     "SectionHeaderLargeSectionV3",
     "SectionHeaderSplitLinkSectionV3",
@@ -862,54 +965,44 @@ export function sectionMarksRole(
  * control surface, deliberately unused until a section earns a place on one.
  */
 /**
- * The hero that takes the load entrance, and the only section whose suites are
- * decided by hand.
+ * Sections that animate on LOAD rather than on scroll.
  *
- * `HeroSplitFullHeightSectionV3` is above the fold, so none of the scroll-timed
- * suites can play on it - the observer settles it before the ready flag and
- * there is no arrival left. It is offered exactly one suite, `settle-load`,
- * whose CSS never consults the observer.
+ * One list, and it answers both directions of the question. A section here is
+ * offered the load suites and none of the scroll ones; a section not here gets
+ * the reverse. Nothing is struck by name.
  *
- * Both directions of the veto are listed below because the gate cannot express
- * either. "Above the fold" is a property of where a section is USED, not of
- * what it marks, so there is nothing to derive from - which is precisely the
- * situation `suiteExcludedComponents` was kept for.
+ * IT IS A LIST BECAUSE THERE IS NOTHING TO DERIVE FROM. Every other gate on this
+ * axis computes from what a section MARKS - the intersection of a suite's
+ * `requiresRole` and the roles in `sectionAnimationRoleComponents`. "Above the
+ * fold" is not a property of markup at all; it is a property of where a section
+ * is used, which is why `animationExcludedComponents` already spells the heroes
+ * out by hand for the same reason.
+ *
+ * It replaced a veto list that would not have scaled. The first load suite was
+ * gated by striking it from every scroll-triggered section by name, which was
+ * survivable only because it carried `requiresRole: "media"` and there were ten
+ * of them. The next load suites have no signature role, so the same approach
+ * wanted ~57 entries each - the point where an exception list has quietly become
+ * the mechanism.
  */
-const loadEntranceHero = "HeroSplitFullHeightSectionV3";
+export const loadEntranceComponents = new Set<string>([
+  "HeroSplitFullHeightSectionV3",
+]);
+
+/** Whether a section's entrance is played by the page rather than the scroll. */
+export function sectionUsesLoadEntrance(component: string) {
+  return loadEntranceComponents.has(component);
+}
 
 /**
- * The media-marking sections that are NOT above the fold.
+ * The per-suite veto, for exceptions the derived gates cannot express.
  *
- * `settle-load` is gated on `media` like `settle`, so without this it would be
- * offered on all ten - and on a section the reader scrolls to, an entrance that
- * has already played by the time they arrive is an entrance they never see.
+ * Empty again, and worth keeping empty. It briefly held fourteen entries doing
+ * the load-versus-scroll split by hand; that is `loadEntranceComponents` now.
  */
-const scrollTriggeredMediaSections = [
-  "ContentAboutCompanySectionV2",
-  "ContentNarrativeFeatureRailSectionV3",
-  "ContentSplitFixedImageSectionV3",
-  "ContentSplitFullImageSectionV3",
-  "ContentStickyCardStreamSectionV2",
-  "ContentThreeColumnMixedSectionV3",
-  "CTAImageSectionV3",
-  "FeaturePortraitParagraphSectionV3",
-  "ImageStripSectionV3",
-  "TrustLogoGridSectionV3",
-] as const;
-
 export const suiteExcludedComponents: Partial<
   Record<SectionAnimationSuiteId, readonly string[]>
-> = {
-  /* The scroll-timed suites the hero's gate would otherwise offer. Wipe, Focus
-     and Pulse are absent because they gate on roles it does not mark, so the
-     derived gate already withholds them and a veto here would be redundant. */
-  reveal: [loadEntranceHero],
-  fade: [loadEntranceHero],
-  settle: [loadEntranceHero],
-  lateral: [loadEntranceHero],
-  /* The inverse: the load entrance belongs to the hero alone. */
-  "settle-load": scrollTriggeredMediaSections,
-};
+> = {};
 
 /** Whether a suite has been struck from one section by name. */
 export function suiteExcludesSection(
@@ -927,8 +1020,15 @@ export function suiteExcludesSection(
  * been struck from this section by name (hand-maintained, exceptions only).
  */
 export function sectionAnimationSuitesFor(component: string) {
+  // A section gets load suites or scroll suites, never a mix. The wrong set is
+  // not merely unhelpful: a scroll suite on an above-the-fold section never
+  // plays at all, and a load suite below the fold has finished before the reader
+  // reaches it. Either way the control appears to work and paints nothing.
+  const wantsLoadEntrance = sectionUsesLoadEntrance(component);
+
   return offeredSectionAnimationSuites.filter(
     (suite) =>
+      (suite.trigger === "load") === wantsLoadEntrance &&
       (!suite.requiresRole || sectionMarksRole(component, suite.requiresRole)) &&
       !suiteExcludesSection(suite.id, component),
   );
