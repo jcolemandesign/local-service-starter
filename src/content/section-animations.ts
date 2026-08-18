@@ -850,6 +850,10 @@ export const sectionAnimationRoleComponents: Partial<
     /** Eyebrow and headline are one unit on one index here, stacked in a single
      *  cell - so the wipe crosses the pair rather than racing two edges. */
     "HeroContentTopImageBottomSectionV2",
+    /** The copy-only hero, and the library's plainest `wipe-load` case: it has
+     *  a heading, a paragraph and two buttons, so nothing competes with the
+     *  edge crossing the headline. */
+    "HeroCompactSectionV3",
     "SectionHeaderCompactSectionV3",
     "SectionHeaderLargeSectionV3",
     "SectionHeaderSplitLinkSectionV3",
@@ -998,6 +1002,7 @@ export function sectionMarksRole(
 export const loadEntranceComponents = new Set<string>([
   "HeroSplitFullHeightSectionV3",
   "HeroContentTopImageBottomSectionV2",
+  "HeroCompactSectionV3",
 ]);
 
 /** Whether a section's entrance is played by the page rather than the scroll. */

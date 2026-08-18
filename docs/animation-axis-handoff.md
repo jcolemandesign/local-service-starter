@@ -219,7 +219,7 @@ membership sets, so re-derive them rather than adjusting them by hand.
 | Action | 13 | 9 | 4 |
 | Proof | 9 | 3 | 6 |
 | Images | 5 | 1 | 4 |
-| Hero | 10 | 2 | 8 |
+| Hero | 10 | 3 | 7 |
 | Navigation | 3 | 0 | 3 |
 
 ### Why an exclusion set exists
@@ -228,15 +228,15 @@ membership sets, so re-derive them rather than adjusting them by hand.
 still. The set exists to say **which**. Five reasons, and they are different
 reasons:
 
-- **Hero (8, and falling)** — above the fold at load. Measured: an element in
+- **Hero (7, and falling)** — above the fold at load. Measured: an element in
   view at load holds at the end state, opacity 1, no movement, even with a
   stagger index. A SCROLL control would render and do nothing.
   **This reason is no longer the last word.** It rules out the scroll suites and
   says nothing about the load ones, which never consult the observer — so a hero
   belongs here only until someone marks its units and puts it in
-  `loadEntranceComponents`. Two are across: the split full-height hero and the
-  content-top-image-bottom band. The remaining eight are audited, with the
-  suites each should be offered, in §"Backfilling the heroes" below.
+  `loadEntranceComponents`. Three are across: the split full-height hero, the
+  content-top-image-bottom band and the compact hero. The rest are audited, with
+  the suites each should be offered, in §"Backfilling the heroes" below.
 - **Thank-you confirmation (1)** — the same reason reached from the other end. It
   is not a section that happens to sit first; it is the entire content of
   `/thank-you`.
@@ -834,9 +834,9 @@ veto, and three safeguards against the stale dev stylesheet.
 | Wipe | `wipe` | 16 (marks a heading) |
 | Fade | `fade` | 57 (no gate) — added later the same day, see below |
 | Settle | `settle` | 10 (marks media) — see below |
-| Rise on load | `reveal-load` | 2 (load-entrance sections) — see below |
-| Fade on load | `fade-load` | 2 (load-entrance sections) |
-| Wipe on load | `wipe-load` | 2 (load-entrance sections) |
+| Rise on load | `reveal-load` | 3 (load-entrance sections) — see below |
+| Fade on load | `fade-load` | 3 (load-entrance sections) |
+| Wipe on load | `wipe-load` | 3 (load-entrance sections) |
 | Settle on load | `settle-load` | 2 (load-entrance sections that mark media) |
 | Focus | `focus` | 16 (marks a heading) |
 | Pulse | `pulse` | 10 (marks an action) |
@@ -1031,7 +1031,7 @@ all.
 ### Backfilling the heroes
 
 Audited 2026-08-18. The exclusion reason was written before the load suites
-existed, so every hero in it is there by default rather than by decision. Two
+existed, so every hero in it is there by default rather than by decision. Three
 are across; this is the map for the rest.
 
 **Only one question varies between them.** `reveal-load`, `fade-load` and
@@ -1061,11 +1061,21 @@ but it means settle on a hero with no image set looks exactly like Fade.
 | `HeroSplitBentoSectionV3` | yes | `h-full overflow-hidden`, cover fill |
 | `HeroSplitFixedImageSectionV3` | yes | ratio-chosen frame, still clips and fills |
 | `HeroFullscreenSectionV2` | no | its picture is the background axis, not an element |
-| `HeroCompactSectionV3` | no | copy only — the library's cleanest wipe-load case |
+| `HeroCompactSectionV3` | done, n/a | copy only — the library's cleanest wipe-load case |
 | `HeroCenteredFloatersSectionV2` | no | see below |
 
 `ThankYouConfirmationSectionV3` is excluded for the identical reason and
 qualifies unchanged. It belongs in the same pass.
+
+**The compact hero added one wrinkle worth reusing.** Its actions move between
+two places depending on `align` — inside the copy column when centred, in a grid
+cell of their own when side-aligned — so they cannot always be folded into the
+content unit the way the other heroes' can. They carry `--reveal-index: 1` in
+both arrangements, the same index as the body they belong to, so rearranging the
+section moves the buttons without changing when they arrive. `HeroCompactActions`
+gained a `style` prop for that and nothing else: wrapping it in a marked div
+would have put a full-width block between the grid item and its centred flex
+row, which is a layout change bought to carry a custom property.
 
 **`HeroCenteredFloatersSectionV2` is the one that needs a decision, not an**
 **edit.** Its flanking columns are `HeroCenteredFloatersParallax`, driving

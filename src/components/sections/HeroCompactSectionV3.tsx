@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import {
   Button,
   SevenColumnGrid,
@@ -69,6 +71,14 @@ const headingSizeClassName: Record<HeroCompactHeadingSize, string> = {
   "display-lg": "type-display-lg",
 };
 
+/**
+ * `style` exists for the reveal index and nothing else.
+ *
+ * The side-aligned arrangement renders this into a grid cell of its own, where
+ * it has to carry its own marker - and a marker needs an index. Wrapping it in a
+ * marked div instead would put a full-width block between the grid item and its
+ * centred flex row, which is a layout change to buy a custom property.
+ */
 function HeroCompactActions({
   actionClassName,
   className,
@@ -76,6 +86,7 @@ function HeroCompactActions({
   secondaryAction,
   secondaryActionClassName,
   secondaryActionHref,
+  style,
 }: {
   actionClassName?: string;
   className?: string;
@@ -83,6 +94,7 @@ function HeroCompactActions({
   secondaryAction: string;
   secondaryActionClassName?: string;
   secondaryActionHref: string;
+  style?: CSSProperties;
 }) {
   return (
     <div
@@ -90,6 +102,7 @@ function HeroCompactActions({
         "flex flex-wrap items-center justify-center inline-gap-med",
         className,
       )}
+      style={style}
     >
       <RequestServiceButton className={actionClassName}>
         {primaryAction}
@@ -149,38 +162,53 @@ export function HeroCompactSectionV3({
               alignment.text,
             )}
           >
-            <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
-            <Heading
-              className={cx(
-                headingSizeClassName[headingSize],
-                "mt-eyebrow-display",
-                colors.ink,
-              )}
+            {/* Eyebrow and headline are one heading unit; body and actions are
+                one content unit. Two units rather than one pane around the
+                column, because Wipe needs a heading to reveal behind its edge
+                and a single unit would give it nothing but a fade - the same
+                trade the split full-height hero records in full. */}
+            <div
+              className="reveal-on-scroll reveal-role-heading"
+              style={{ "--reveal-index": 0 } as CSSProperties}
             >
-              {title}
-            </Heading>
-            <p
-              className={cx(
-                headingSize === "display-lg"
-                  ? "type-text-xl"
-                  : "type-text-lg",
-                "wrap-pretty mt-heading-body-lg",
-                colors.body,
-                alignment.body,
-              )}
+              <p className={cx("type-label", colors.eyebrow)}>{eyebrow}</p>
+              <Heading
+                className={cx(
+                  headingSizeClassName[headingSize],
+                  "mt-eyebrow-display",
+                  colors.ink,
+                )}
+              >
+                {title}
+              </Heading>
+            </div>
+            <div
+              className="reveal-on-scroll reveal-role-content"
+              style={{ "--reveal-index": 1 } as CSSProperties}
             >
-              {body}
-            </p>
-            {align === "center" ? (
-              <HeroCompactActions
-                actionClassName={colors.action}
-                className="mt-body-actions-md"
-                primaryAction={primaryAction}
-                secondaryAction={secondaryAction}
-                secondaryActionClassName={colors.secondaryAction}
-                secondaryActionHref={secondaryActionHref}
-              />
-            ) : null}
+              <p
+                className={cx(
+                  headingSize === "display-lg"
+                    ? "type-text-xl"
+                    : "type-text-lg",
+                  "wrap-pretty mt-heading-body-lg",
+                  colors.body,
+                  alignment.body,
+                )}
+              >
+                {body}
+              </p>
+              {align === "center" ? (
+                <HeroCompactActions
+                  actionClassName={colors.action}
+                  className="mt-body-actions-md"
+                  primaryAction={primaryAction}
+                  secondaryAction={secondaryAction}
+                  secondaryActionClassName={colors.secondaryAction}
+                  secondaryActionHref={secondaryActionHref}
+                />
+              ) : null}
+            </div>
           </div>
         </SevenColumnGridItem>
         {align !== "center" ? (
@@ -192,12 +220,18 @@ export function HeroCompactSectionV3({
               "max-lg:col-span-5 max-lg:col-start-1 max-lg:row-auto max-lg:mt-body-actions-md max-md:col-span-3 max-sm:col-span-1",
             )}
           >
+            {/* INDEX 1, THE SAME AS THE BODY IT BELONGS TO. Side-aligned, the
+                actions move to a cell of their own; centred, they sit inside
+                the content unit. Same index either way, so rearranging the
+                section moves the buttons without changing when they arrive. */}
             <HeroCompactActions
               actionClassName={colors.action}
+              className="reveal-on-scroll reveal-role-content"
               primaryAction={primaryAction}
               secondaryAction={secondaryAction}
               secondaryActionClassName={colors.secondaryAction}
               secondaryActionHref={secondaryActionHref}
+              style={{ "--reveal-index": 1 } as CSSProperties}
             />
           </SevenColumnGridItem>
         ) : null}
