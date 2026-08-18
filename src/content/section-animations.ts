@@ -862,6 +862,12 @@ export const sectionAnimationRoleComponents: Partial<
     "HeroServicesSectionV3",
     "HeroSplitBentoSectionV3",
     "HeroSplitFixedImageSectionV3",
+    /** The two load-entrance sections with no media. The fullscreen hero's
+     *  picture belongs to the ground-image axis rather than to an element, and
+     *  the confirmation page has no picture at all - so both mark a heading and
+     *  neither is offered Settle. */
+    "HeroFullscreenSectionV2",
+    "ThankYouConfirmationSectionV3",
     "SectionHeaderCompactSectionV3",
     "SectionHeaderLargeSectionV3",
     "SectionHeaderSplitLinkSectionV3",
@@ -1024,6 +1030,10 @@ export const loadEntranceComponents = new Set<string>([
   "HeroServicesSectionV3",
   "HeroSplitBentoSectionV3",
   "HeroSplitFixedImageSectionV3",
+  "HeroFullscreenSectionV2",
+  /** Not a hero, and above the fold for the hero's reason: it is the whole of
+   *  `/thank-you`. */
+  "ThankYouConfirmationSectionV3",
 ]);
 
 /** Whether a section's entrance is played by the page rather than the scroll. */

@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import {
   Button,
   SevenColumnGrid,
@@ -72,6 +74,32 @@ const alignClassName: Record<
   },
 };
 
+/**
+ * REVEAL ORDER, COMPUTED FROM `align` RATHER THAN FROM JSX ORDER.
+ *
+ * The proof tray takes the leading columns under `right` while staying second in
+ * the DOM - the placement quirk the note above already documents. Staggering by
+ * source order would sweep right-to-left on that arrangement.
+ *
+ * `proof` is the index the FIRST card takes; the three of them run from there.
+ * They are independent cards in a grid, so they stagger - the convention the
+ * Decision family settled, where joined panels reveal as one block and separate
+ * cards do not.
+ *
+ * NO MEDIA UNIT, AND NOTHING TO FIX. This hero's picture belongs to the
+ * ground-image axis rather than to an element of its own, so there is no
+ * `<img>` for `settle-load` to scale and the role gate simply does not offer it.
+ * Rise, Fade and Wipe are the three it gets, which is the gate working rather
+ * than an omission.
+ */
+const revealIndex: Record<
+  SectionMirrorAlign,
+  { content: number; heading: number; proof: number }
+> = {
+  left: { heading: 0, content: 1, proof: 2 },
+  right: { proof: 0, heading: 3, content: 4 },
+};
+
 const headingSizeClassName: Record<SectionHeadingSize, string> = {
   "heading-lg": "type-heading-lg",
   "heading-xl": "type-heading-xl",
@@ -95,6 +123,7 @@ export function HeroFullscreenSectionV2({
 }: HeroFullscreenSectionV2Props) {
   const HeadingTag = `h${headingLevel}` as const;
   const alignment = alignClassName[align] ?? alignClassName.left;
+  const order = revealIndex[align] ?? revealIndex.left;
   const cardClassName = cx(
     "radius-medium recipe-card-context border border-service-border bg-service-surface text-service-ink shadow-service",
     cardFill === "none" && "!bg-transparent !shadow-none",
@@ -128,16 +157,25 @@ export function HeroFullscreenSectionV2({
           )}
         >
           <div className="fluid-type-frame min-w-0">
-            <p className="type-label text-service-accent">{eyebrow}</p>
-            <HeadingTag
-              className={cx(
-                headingSizeClassName[headingSize] ??
-                  headingSizeClassName["heading-lg"],
-                "measure-copy-wide mt-eyebrow-display text-service-ink",
-              )}
+            <div
+              className="reveal-on-scroll reveal-role-heading"
+              style={{ "--reveal-index": order.heading } as CSSProperties}
             >
-              {title}
-            </HeadingTag>
+              <p className="type-label text-service-accent">{eyebrow}</p>
+              <HeadingTag
+                className={cx(
+                  headingSizeClassName[headingSize] ??
+                    headingSizeClassName["heading-lg"],
+                  "measure-copy-wide mt-eyebrow-display text-service-ink",
+                )}
+              >
+                {title}
+              </HeadingTag>
+            </div>
+            <div
+              className="reveal-on-scroll reveal-role-content"
+              style={{ "--reveal-index": order.content } as CSSProperties}
+            >
             <p className="type-text-lg measure-copy wrap-pretty mt-display-body text-service-muted">
               {body}
             </p>
@@ -146,6 +184,7 @@ export function HeroFullscreenSectionV2({
               <Button href={secondaryActionHref} variant="secondary">
                 {secondaryAction}
               </Button>
+            </div>
             </div>
           </div>
         </SevenColumnGridItem>
@@ -159,10 +198,15 @@ export function HeroFullscreenSectionV2({
           )}
         >
           <aside className="grid w-full shrink-0 grid-cols-2 gap-4 max-lg:max-w-md max-md:gap-3">
-            {trustSignals.map((signal) => (
+            {trustSignals.map((signal, index) => (
               <div
-                className={cx(cardClassName, "p-5 max-md:p-4")}
+                className={cx(
+                  "reveal-on-scroll reveal-role-card",
+                  cardClassName,
+                  "p-5 max-md:p-4",
+                )}
                 key={signal.label}
+                style={{ "--reveal-index": order.proof + index } as CSSProperties}
               >
                 <p className="type-heading-sm leading-none">{signal.value}</p>
                 <p className="type-caption mt-3 font-semibold text-service-muted max-md:mt-2">
@@ -170,7 +214,18 @@ export function HeroFullscreenSectionV2({
                 </p>
               </div>
             ))}
-            <div className={cx(cardClassName, "col-span-2 p-6 max-md:p-4")}>
+            <div
+              className={cx(
+                "reveal-on-scroll reveal-role-card",
+                cardClassName,
+                "col-span-2 p-6 max-md:p-4",
+              )}
+              style={
+                {
+                  "--reveal-index": order.proof + trustSignals.length,
+                } as CSSProperties
+              }
+            >
               <p className="type-heading-md leading-none">{review.rating}</p>
               <p className="type-text-sm mt-4 font-semibold max-md:mt-2">
                 {review.label}

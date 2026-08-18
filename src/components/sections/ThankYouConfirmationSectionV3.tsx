@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
 
 export type ThankYouConfirmationStep = {
@@ -53,18 +55,33 @@ export function ThankYouConfirmationSectionV3({
           measure="copyWide"
         >
           <div className="fluid-type-frame">
+            {/* The tick is an `accent` unit rather than part of the heading below
+                it: a small emphatic figure, which is the role's definition, and
+                the one element on this page whose whole job is to say the thing
+                worked. Wipe scales it up from 94% while everything else fades,
+                which is the arrival this page wants. */}
             <span
               aria-hidden="true"
-              className="flex size-14 items-center justify-center rounded-full border border-service-accent/35 bg-service-accent/10 type-heading-sm text-service-accent"
+              className="reveal-on-scroll reveal-role-accent flex size-14 items-center justify-center rounded-full border border-service-accent/35 bg-service-accent/10 type-heading-sm text-service-accent"
+              style={{ "--reveal-index": 0 } as CSSProperties}
             >
               &#10003;
             </span>
-            <p className="type-label mt-body-actions-sm text-service-accent">
-              {eyebrow}
-            </p>
-            <Heading className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
-              {title}
-            </Heading>
+            <div
+              className="reveal-on-scroll reveal-role-heading"
+              style={{ "--reveal-index": 1 } as CSSProperties}
+            >
+              <p className="type-label mt-body-actions-sm text-service-accent">
+                {eyebrow}
+              </p>
+              <Heading className="type-heading-xl mt-eyebrow-heading-lg text-service-ink">
+                {title}
+              </Heading>
+            </div>
+            <div
+              className="reveal-on-scroll reveal-role-content"
+              style={{ "--reveal-index": 2 } as CSSProperties}
+            >
             <p className="type-text-lg wrap-pretty mt-heading-body-lg text-service-muted">
               {body}
             </p>
@@ -77,6 +94,7 @@ export function ThankYouConfirmationSectionV3({
                 </Button>
               ) : null}
             </div>
+            </div>
           </div>
         </LayoutGridItem>
 
@@ -85,14 +103,20 @@ export function ThankYouConfirmationSectionV3({
           alignY="middle"
           className="col-span-6 col-start-8 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2"
         >
+          {/* `frame`, not a list of cards: the label, the numbered steps and the
+              note sit inside one border joined by a divider, so staggering the
+              steps would walk them out from under the panel that contains them
+              - the composite-card rule the Decision family settled. */}
           <aside
           className={[
+            "reveal-on-scroll reveal-role-frame",
             "content-padding radius-medium border border-service-border bg-service-surface shadow-service",
             cardFill === "none" && "!bg-transparent !shadow-none",
             cardBorder === "off" && "!border-transparent",
           ]
             .filter(Boolean)
             .join(" ")}
+          style={{ "--reveal-index": 3 } as CSSProperties}
         >
             <p className="type-label text-service-accent">{nextStepsTitle}</p>
             <ol className="mt-body-actions-md grid card-grid-gap-sml">

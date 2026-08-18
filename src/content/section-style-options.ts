@@ -973,6 +973,13 @@ export const animationComponents = new Set<string>([
   "HeroServicesSectionV3",
   "HeroSplitBentoSectionV3",
   "HeroSplitFixedImageSectionV3",
+  "HeroFullscreenSectionV2",
+  /**
+   * NOT A HERO, AND HERE FOR THE HERO'S REASON. It is the entire content of
+   * `/thank-you`, so it is above the fold every time it renders - which makes it
+   * a load-entrance section, not an unanimated one.
+   */
+  "ThankYouConfirmationSectionV3",
   "ContentStickyCardStreamSectionV2",
   "FeatureAsymmetricCardsSectionV3",
   "FeatureStackedCardsSectionV3",
@@ -1167,15 +1174,30 @@ export const animationExcludedComponents = new Map<string, string>([
    * A hero is the first section on essentially every page, so it has already
    * passed its entry range by the time anything is painted. MEASURED: an
    * element in view at load holds at the end state - opacity 1, no movement -
-   * even with a stagger index. The control would render and do nothing, which
-   * is exactly what `viewportHeightComponents` exists to prevent for section
-   * spacing.
+   * even with a stagger index. A SCROLL control would render and do nothing,
+   * which is exactly what `viewportHeightComponents` exists to prevent for
+   * section spacing.
+   *
+   * THIS REASON NO LONGER MEANS "UNANIMATED", and the list is one entry long
+   * because of it. It rules out the six scroll suites and says nothing about
+   * the four load ones, which consult no observer and run from first paint - so
+   * every other hero has moved to `animationComponents` plus
+   * `loadEntranceComponents`, and so has the confirmation page, which was here
+   * for the same reason reached from the other end.
+   *
+   * THE ONE LEFT IS HERE ON THE WRONG REASON, deliberately and temporarily.
+   * `HeroCenteredFloatersSectionV2` drives its own parallax on its flanking
+   * columns through motion/react `useScroll`, so it belongs to the "owns its own
+   * motion" group below rather than to this one. It is not moved yet because
+   * the honest answer may be neither: the parallax is on the floaters and a
+   * load entrance would be on the centre copy column, so the two would never
+   * animate the same element. Bringing it on would make it the first partly
+   * self-animating section on the axis, which is a precedent to set
+   * deliberately rather than by backfill. Until that call is made, moving the
+   * string would assert an answer nobody has given.
    */
   ...(
-    [
-      "HeroCenteredFloatersSectionV2",
-      "HeroFullscreenSectionV2",
-    ] as const
+    ["HeroCenteredFloatersSectionV2"] as const
   ).map(
     (component) =>
       [component, "above the fold at load, so a scroll entrance is inert"] as const,
@@ -1286,7 +1308,6 @@ export const animationExcludedComponents = new Map<string, string>([
    * element already in view holds at the end state, so the control would render
    * and do nothing.
    */
-  ["ThankYouConfirmationSectionV3", "above the fold at load, so a scroll entrance is inert"],
 ]);
 
 export function sectionSupportsAnimation(component: string) {

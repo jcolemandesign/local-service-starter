@@ -219,7 +219,7 @@ membership sets, so re-derive them rather than adjusting them by hand.
 | Action | 13 | 9 | 4 |
 | Proof | 9 | 3 | 6 |
 | Images | 5 | 1 | 4 |
-| Hero | 10 | 8 | 2 |
+| Hero | 10 | 9 | 1 |
 | Navigation | 3 | 0 | 3 |
 
 ### Why an exclusion set exists
@@ -228,19 +228,21 @@ membership sets, so re-derive them rather than adjusting them by hand.
 still. The set exists to say **which**. Five reasons, and they are different
 reasons:
 
-- **Hero (2)** — above the fold at load. Measured: an element in
+- **Hero (1)** — above the fold at load. Measured: an element in
   view at load holds at the end state, opacity 1, no movement, even with a
   stagger index. A SCROLL control would render and do nothing.
   **This reason is no longer the last word.** It rules out the scroll suites and
   says nothing about the load ones, which never consult the observer — so a hero
   belongs here only until someone marks its units and puts it in
-  `loadEntranceComponents`. Eight of the ten are across. The two left are the
-  fullscreen hero, which has no media element to mark because its picture comes
-  from the background axis, and the centered-floaters hero, which needs the
-  decision recorded in §"Backfilling the heroes" below rather than an edit.
-- **Thank-you confirmation (1)** — the same reason reached from the other end. It
-  is not a section that happens to sit first; it is the entire content of
-  `/thank-you`.
+  `loadEntranceComponents`. Nine of the ten are across, and so is the
+  confirmation page, which was excluded for the same reason reached from the
+  other end. The one left is the centered-floaters hero, which needs the
+  decision recorded in §"Backfilling the heroes" below rather than an edit — and
+  which is filed under this reason when its real one is the next entry down.
+- **Thank-you confirmation** — was the same reason reached from the other end,
+  and is now a load-entrance section like the heroes. It is not a section that
+  happens to sit first; it is the entire content of `/thank-you`, so it is above
+  the fold every time it renders.
 - **Navigation (3)** — fixed/absolute, out of flow.
 - **Marquees (3)** — already in continuous motion; never gated.
 - **Owns its own motion (24)** — 18 via `motion/react`, plus six found by
@@ -835,9 +837,9 @@ veto, and three safeguards against the stale dev stylesheet.
 | Wipe | `wipe` | 16 (marks a heading) |
 | Fade | `fade` | 57 (no gate) — added later the same day, see below |
 | Settle | `settle` | 10 (marks media) — see below |
-| Rise on load | `reveal-load` | 8 (load-entrance sections) — see below |
-| Fade on load | `fade-load` | 8 (load-entrance sections) |
-| Wipe on load | `wipe-load` | 8 (load-entrance sections) |
+| Rise on load | `reveal-load` | 10 (load-entrance sections) — see below |
+| Fade on load | `fade-load` | 10 (load-entrance sections) |
+| Wipe on load | `wipe-load` | 10 (load-entrance sections) |
 | Settle on load | `settle-load` | 7 (load-entrance sections that mark media) |
 | Focus | `focus` | 16 (marks a heading) |
 | Pulse | `pulse` | 10 (marks an action) |
@@ -1032,8 +1034,10 @@ all.
 ### Backfilling the heroes
 
 Audited 2026-08-18. The exclusion reason was written before the load suites
-existed, so every hero in it is there by default rather than by decision. Eight
-of the ten are across; this is the map, and what the eight settled.
+existed, so every hero in it is there by default rather than by decision. Nine
+of the ten are across, plus the confirmation page; this is the map, and what
+they settled. **Only the centered-floaters hero is left, and it needs a decision
+rather than an edit.**
 
 **Only one question varies between them.** `reveal-load`, `fade-load` and
 `wipe-load` carry no `requiresRole`, so a section in `loadEntranceComponents` is
@@ -1061,12 +1065,17 @@ but it means settle on a hero with no image set looks exactly like Fade.
 | `HeroServiceAreaZipLookupSectionV3` | done | bled panel, cover fill |
 | `HeroSplitBentoSectionV3` | done | `h-full overflow-hidden`, cover fill |
 | `HeroSplitFixedImageSectionV3` | done | ratio-chosen frame, still clips and fills |
-| `HeroFullscreenSectionV2` | no | its picture is the background axis, not an element |
+| `HeroFullscreenSectionV2` | done, n/a | its picture is the background axis, not an element |
 | `HeroCompactSectionV3` | done, n/a | copy only — the library's cleanest wipe-load case |
 | `HeroCenteredFloatersSectionV2` | no | see below |
 
-`ThankYouConfirmationSectionV3` is excluded for the identical reason and
-qualifies unchanged. It belongs in the same pass.
+`ThankYouConfirmationSectionV3` went across in the same pass, for the identical
+reason. Its tick is marked `accent` rather than folded into the heading below it —
+a small emphatic figure, which is that role's definition, and the one element on
+the page whose whole job is to say the thing worked. Under Wipe it scales up
+from 94% while everything else fades. Its next-steps panel is `frame`: label,
+numbered steps and note inside one border joined by a divider, so staggering the
+steps would walk them out from under the panel that contains them.
 
 **Three things the eight settled, worth reusing on the two that are left.**
 
