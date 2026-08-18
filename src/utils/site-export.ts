@@ -34,6 +34,7 @@ import {
   resolveBorderTone,
   resolveCardFill,
   resolveSectionAnimation,
+  resolveSpecialCta,
   treatmentRendersOverlay,
   treatmentUsesGroundImage,
 } from "@/content/section-style-options";
@@ -103,6 +104,17 @@ type ResolvedSection = {
    * and the copied stylesheet in one pass, so the selector keeps matching.
    */
   animation: string;
+  /**
+   * Whether this section's primary CTA is the site's special one - see
+   * `specialCta` in `section-style-options`.
+   *
+   * Costs exactly what the entrance above costs, and for the same reason: the
+   * axis ships no component. One attribute on the frame, one rule in the copied
+   * stylesheet, and `neutralizeBuilderVocabulary` renames both in one pass. The
+   * style it resolves to travels separately, frozen into the exported
+   * `globals.css` by `freezeStyleTokens` along with every other promoted token.
+   */
+  specialCta: string;
   /** Sanitised ground image path, empty unless the treatment is `image`. */
   backgroundImage: string;
   /** Sanitised gradient tuning, null when the section keeps the CSS default. */
@@ -777,6 +789,11 @@ function resolvePageSections(
         // becomes `none` in the frozen source rather than an attribute the
         // exported stylesheet has no rule for.
         animation: resolveSectionAnimation(resolvedSection.animation),
+        // Same treatment as the entrance above, for the same two reasons: off
+        // the resolved section so a staged page's override is folded on, and
+        // resolved here so an unrecognised saved value freezes as `off` rather
+        // than as an attribute the exported stylesheet has no rule for.
+        specialCta: resolveSpecialCta(resolvedSection.specialCta),
         // Read off the same staged fields the component props were built from,
         // so a ground image set on a staged page reaches the export the way any
         // other asset does.
@@ -1062,6 +1079,7 @@ ${indent}  data-pagebuilder-padding-top=${JSON.stringify(
   )}
 ${indent}  data-pagebuilder-section-component=${JSON.stringify(section.component)}
 ${indent}  data-pagebuilder-section-mode=${JSON.stringify(section.mode)}
+${indent}  data-pagebuilder-special-cta=${JSON.stringify(section.specialCta)}
 ${indent}  key=${JSON.stringify(section.sectionId)}${
     inBand ? "" : backgroundImageStyleJsx(section, `${indent}  `)
   }

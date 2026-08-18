@@ -62,6 +62,7 @@ describe("section toggle transport", () => {
       "icons",
       "joinAbove",
       "ratio",
+      "specialCta",
       "variant",
     ];
 

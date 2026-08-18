@@ -1,6 +1,11 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import {
+  type ButtonStyleSelection,
+  buttonStyleCss,
+  normalizeButtonStyleSelection,
+} from "@/content/button-styles";
+import {
   deriveDarkSurface,
   toColorPalette,
 } from "@/content/color-palette-adapter";
@@ -93,6 +98,16 @@ type StyleGuideTokenDraft = {
    * defaults, so an absent key promotes the shipped rhythm rather than nothing.
    */
   motionTokens?: Record<string, string>;
+  /**
+   * Which button style fills each slot.
+   *
+   * Optional for the reason `motionTokens` is: a slot saved before buttons
+   * joined the axis lacks the key, and it must still promote.
+   * `normalizeButtonStyleSelection` fills every slot from the shipped
+   * assignment, so an absent key promotes Solid / Outline / Sweep arrow - which
+   * is what the stylesheet already authors, so such a promotion changes nothing.
+   */
+  buttonStyleSelection?: ButtonStyleSelection;
 };
 
 const globalsPath = path.join(process.cwd(), "src", "app", "globals.css");
@@ -276,6 +291,13 @@ function normalizeTokens(tokens: Partial<StyleGuideTokenDraft> | undefined) {
     // straight into a stylesheet, so the grammars are exact and easings are an
     // allowlist rather than free-form CSS.
     motionTokens: normalizeMotionTokens(tokens.motionTokens),
+    // Same posture as the motion tokens above: an unknown id, or an id assigned
+    // to a slot it does not declare, falls back to the shipped assignment for
+    // that slot rather than failing the whole promotion. A style nobody can see
+    // is better than every other token not landing.
+    buttonStyleSelection: normalizeButtonStyleSelection(
+      tokens.buttonStyleSelection,
+    ),
   };
 }
 
@@ -586,6 +608,19 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
   const motionVariables = motionTokenDeclarations(tokens.motionTokens)
     .map(([name, value]) => `  ${name}: ${value};`)
     .join("\n");
+  /**
+   * The three button slots, as RULES rather than as `:root` declarations.
+   *
+   * Not a formatting choice. A custom property substitutes its `var()`s at the
+   * element where it is declared, so a slot declared at `:root` resolves
+   * `var(--color-cta-primary)` there - outside every colour recipe - and every
+   * button inherits one already-resolved colour whatever ground it lands on.
+   * Emitted as rules, each lands on the buttons themselves, inside the recipe's
+   * subtree. See the authored block in `globals.css` for the full account.
+   *
+   * Unlayered and after the authored copy, so a promotion wins.
+   */
+  const buttonRules = buttonStyleCss(tokens.buttonStyleSelection);
 
   return `${beginMarker}
 :root {
@@ -667,6 +702,7 @@ function buildOverrideBlock(tokens: StyleGuideTokenDraft) {
 ${typeVariables}
 ${motionVariables}
 }
+${buttonRules}
 ${rungOverrideCss(
   toColorPalette({
     bgPage: tokens.bgPage,

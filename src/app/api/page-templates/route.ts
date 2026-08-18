@@ -40,6 +40,9 @@ type PageTemplateSection = {
   joinAbove?: string;
   /** Ground texture - see `backgroundTreatment` in `section-style-options`. */
   backgroundTreatment?: string;
+  /** Whether this section's primary CTA is the site's special one. Absent means
+   *  off - see `resolveSpecialCta`. */
+  specialCta?: string;
   /**
    * Tuned gradient, held loosely because this route is a transport boundary
    * rather than the authority on the model - `resolveBackgroundConfig`

@@ -37,6 +37,9 @@ function section(overrides: Partial<ExportSection> = {}): ExportSection {
     reduceTopPadding: false,
     sectionId: "section-1",
     sourcePath: "",
+    // Off, for the same reason the entrance above is: the special CTA is
+    // emphasis, and an unset section never gains it.
+    specialCta: "off",
     ...overrides,
   };
 }

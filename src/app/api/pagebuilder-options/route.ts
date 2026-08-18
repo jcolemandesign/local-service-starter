@@ -48,6 +48,9 @@ type SavedPagebuilderSection = {
   /** Entrance animation - the next paint axis added, landing beside the others
    *  exactly as the note above asks. Absent means none. */
   animation?: string;
+  /** Whether this section's primary CTA is the site's special one. Absent means
+   *  off - the switch is emphasis, and emphasis is never a default. */
+  specialCta?: string;
   joinAbove?: string;
   /**
    * The tuned gradient, stored as the editor's own shape. Held as `unknown`
@@ -308,6 +311,14 @@ function normalizeSection(
      * it runs at render.
      */
     animation: parseStoredSectionAnimation(section.animation),
+    /**
+     * Preserved as written, `undefined` included, for the reason the animation
+     * note above gives: blank means "inherit the template", which is a
+     * different answer from "off". `resolveSpecialCta` turns both into `off`,
+     * and it runs at render.
+     */
+    specialCta:
+      typeof section.specialCta === "string" ? section.specialCta : undefined,
     backgroundTreatment:
       typeof section.backgroundTreatment === "string"
         ? section.backgroundTreatment

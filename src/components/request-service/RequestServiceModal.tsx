@@ -12,6 +12,7 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
+import { buttonClassNames, type ButtonVariant } from "@/components/primitives";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { supabase } from "@/utils/supabase/client";
 
@@ -32,10 +33,23 @@ type RequestServiceContextValue = {
   openRequestService: (prefill?: RequestServicePrefill) => void;
 };
 
+/**
+ * The site's real conversion CTA, and the reason `buttonClassNames` is exported
+ * from the primitive at all.
+ *
+ * This renders a `<button>` that opens the request modal rather than an `<a>`,
+ * so it cannot BE the primitive - but it has to look like it, and for a long
+ * time it only nearly did. It hand-copied the primary's classes, which left the
+ * two free to drift, and its secondary was a filled surface button: precisely
+ * the "second primary" shape `Button` documents having removed. It appears on
+ * about thirty sections including every hero, so the divergence was the common
+ * case rather than the edge one, and a globally assigned button style would have
+ * reached the primitive's eighteen sections and stopped.
+ */
 type RequestServiceButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode;
   prefill?: RequestServicePrefill;
-  variant?: "primary" | "secondary";
+  variant?: ButtonVariant;
 };
 
 type RequestServiceTriggerProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -359,14 +373,10 @@ export function RequestServiceButton({
   ...props
 }: RequestServiceButtonProps) {
   const { openRequestService } = useRequestService();
-  const styles =
-    variant === "primary"
-      ? "bg-cta-primary text-cta-primary-ink hover:bg-cta-primary-hover"
-      : "border border-service-border bg-bg-surface text-service-ink hover:border-service-accent hover:text-service-accent";
 
   return (
     <button
-      className={`radius-button inline-flex min-h-12 cursor-pointer items-center justify-center whitespace-nowrap px-6 type-caption font-semibold transition-colors ${styles} ${className}`}
+      className={buttonClassNames(variant, className)}
       type="button"
       onClick={(event) => {
         onClick?.(event);

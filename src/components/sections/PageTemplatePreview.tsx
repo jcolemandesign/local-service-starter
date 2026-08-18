@@ -187,6 +187,7 @@ import {
   fullImageSplitVariantValues,
   resolveSectionAnimation,
   resolveSectionIcons,
+  resolveSpecialCta,
   sectionMirrorAlignValues,
   sectionSupportsCardStyle,
   sectionSupportsSectionSpacing,
@@ -242,6 +243,9 @@ export type PageTemplatePreviewSection = {
   /** Entrance animation. A motion suite id, or `none` - see the registry in
    *  `section-animations`. Absent means none; motion is opt-in per section. */
   animation?: string;
+  /** Whether this section's primary CTA is the site's special one. Absent means
+   *  off - emphasis is never a default. See `resolveSpecialCta`. */
+  specialCta?: string;
   /** Tuned gradient - see `background-config`. Absent keeps the CSS default. */
   backgroundConfig?: import("@/content/background-config").BackgroundConfig;
   /** Ground image sizing - see `background-image-config`. Absent means `fill`. */
@@ -682,6 +686,10 @@ function TemplateSectionFrame({
       // band element has none of its own, so deferring to it would mean a
       // joined section could never animate.
       data-pagebuilder-animation={resolveSectionAnimation(section.animation)}
+      // Beside the entrance and taking the same decision it takes: a band
+      // shares a ground, not a call to action, so a joined section keeps its
+      // own answer here.
+      data-pagebuilder-special-cta={resolveSpecialCta(section.specialCta)}
       data-pagebuilder-color-recipe={
         inBand
           ? "inherit"

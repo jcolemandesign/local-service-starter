@@ -155,11 +155,13 @@ import {
   resolveSectionHeadingSize,
   resolveHeadlineWrap,
   resolveSectionAnimation,
+  resolveSpecialCta,
   resolveSectionIcons,
   sectionHeadingSizeOptions,
   sectionMirrorAlignOptions,
   sectionMirrorAlignValues,
   sectionSupportsAnimation,
+  sectionSupportsSpecialCta,
   sectionSupportsHeadingSize,
   sectionSupportsHeadlineWrap,
   sectionSupportsIcons,
@@ -3286,6 +3288,15 @@ export function PagebuilderShell({
     }
   }
 
+  function updateSectionSpecialCta(sectionId: string, specialCta: string) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId ? { ...section, specialCta } : section,
+      ),
+    );
+    setSelectedSectionId(sectionId);
+  }
+
   function updateSectionCardBorder(
     sectionId: string,
     cardBorder: SectionCardBorder,
@@ -4676,6 +4687,10 @@ export function PagebuilderShell({
           // and one band paints once, but an entrance belongs to the content and
           // band members keep their own. See the frame in `PageTemplatePreview`.
           data-pagebuilder-animation={resolveSectionAnimation(section.animation)}
+          // Also no `inBand` branch, and for the same reason: a band shares a
+          // ground, not a call to action. Two joined sections each keep their
+          // own answer.
+          data-pagebuilder-special-cta={resolveSpecialCta(section.specialCta)}
           data-pagebuilder-padding-top={
             section.reduceTopPadding && sectionSupportsSectionSpacing(section.component)
               ? "none"
@@ -5501,6 +5516,63 @@ export function PagebuilderShell({
                                 * again is the replay. A separate button was a
                                 * second control for something the first one
                                 * already did. */}
+                            </fieldset>
+                          ) : null}
+
+                          {/* SPECIAL CTA.
+                              Named buttons rather than the icon run below, for
+                              the reason the entrance note above gives: there is
+                              no icon that says "this button is the emphatic
+                              one", and drawing two squares for it would make an
+                              editorial decision look like a display setting.
+
+                              Offered only to sections that render a primary CTA
+                              - see `specialCtaComponents` - so the switch can
+                              never appear on a section with no button to move.
+
+                              WHICH special this is, is not asked here and must
+                              not be. The section says that its CTA is the
+                              special one; the Style Guide says what special
+                              means, once, for the site. */}
+                          {sectionSupportsSpecialCta(section.component) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Special CTA
+                              </legend>
+                              <div className="grid grid-cols-2 gap-2">
+                                {styleFieldOptions.specialCta
+                                  .filter((option) => option.value !== "")
+                                  .map((option) => {
+                                    const optionIsActive =
+                                      resolveSpecialCta(section.specialCta) ===
+                                      option.value;
+
+                                    return (
+                                      <button
+                                        aria-pressed={optionIsActive}
+                                        className={cx(
+                                          "min-h-10 rounded-[var(--chrome-radius-control)] border px-2 text-center text-xs font-semibold transition-colors",
+                                          optionIsActive
+                                            ? "token-chrome-card-active"
+                                            : "token-chrome-card",
+                                        )}
+                                        key={option.value}
+                                        onClick={() =>
+                                          updateSectionSpecialCta(
+                                            section.id,
+                                            option.value,
+                                          )
+                                        }
+                                        title={option.label}
+                                        type="button"
+                                      >
+                                        {option.value === "on"
+                                          ? "Special"
+                                          : "Standard"}
+                                      </button>
+                                    );
+                                  })}
+                              </div>
                             </fieldset>
                           ) : null}
 

@@ -734,6 +734,81 @@ export function resolveBorderTone(
 }
 
 /**
+ * Sections that render a primary call to action, and can therefore be told to
+ * render it in the site's SPECIAL button style.
+ *
+ * "Renders a primary CTA" means exactly one thing here: it renders `Button` or
+ * `RequestServiceButton` without `variant="secondary"`. Those two components are
+ * the whole of the CTA vocabulary - one is an anchor, one opens the request
+ * modal, and both render the same anatomy - so membership is a fact about the
+ * markup rather than a judgement about the design.
+ * `button-cta-ownership.test.ts` scans for it in both directions: a section
+ * rendering a primary CTA and missing here silently misses the switch, and a
+ * section listed here with no primary CTA gets a control that paints nothing.
+ *
+ * WHAT THIS SET DOES NOT COVER, deliberately. Three sections style a bare
+ * `<button type="submit">` inside a form with the CTA tokens - the two zip
+ * lookups and the financing calculator. Those are form controls that match the
+ * button, not the shared button, and they keep their current appearance. Making
+ * them switchable means converting them to the anatomy, which is its own change
+ * with its own opinions about the arrow each one already draws.
+ *
+ * THE SWITCH IS A BOOLEAN, NOT A PICKER. A section says whether its CTA is the
+ * special one; which style that is stays a Style Guide decision. A per-section
+ * style picker is exactly what the Style Guide exists to prevent - the same
+ * argument that keeps a motion suite off the section and a colour off it too.
+ */
+export const specialCtaComponents = new Set<string>([
+  "AdditionalOffersSectionV3",
+  "CTAImageSectionV3",
+  "CTAServiceTriageSectionV3",
+  "ContentAboutCompanySectionV2",
+  "ContentNarrativeFeatureRailSectionV3",
+  "ContentSplitFixedImageSectionV3",
+  "ContentSplitFullImageSectionV3",
+  "ContentThreeColumnMixedSectionV3",
+  "FAQAccordionSidebarSectionV3",
+  "FeaturedOfferSectionV3",
+  "FinancingCalculatorSectionV3",
+  "HeroCenteredFloatersSectionV2",
+  "HeroCompactSectionV3",
+  "HeroCompactServiceSectionV3",
+  "HeroContentTopImageBottomSectionV2",
+  "HeroFullscreenSectionV2",
+  "HeroServiceAreaZipLookupSectionV3",
+  "HeroSplitBentoSectionV3",
+  "HeroSplitFixedImageSectionV3",
+  "HeroSplitFullHeightSectionV3",
+  "NavFloatingBentoSectionV2",
+  "NavPrimarySectionV2",
+  "OfferTermsSectionV3",
+  "ServiceAreaZipLookupSectionV3",
+  "ServiceCalloutRevealGridSectionV3",
+  "ServiceCalloutSplitPanelSectionV3",
+  "ServiceNeedsPriorityGridSectionV3",
+  "TestimonialsMasonrySectionV3",
+  "ThankYouConfirmationSectionV3",
+  "TrustMarqueeSection",
+]);
+
+export function sectionSupportsSpecialCta(component: string) {
+  return specialCtaComponents.has(component);
+}
+
+/**
+ * Off by default, which is why this resolver exists at all.
+ *
+ * Most axes here treat an unset value as "inherit a sensible visual". The
+ * special CTA is not sensible-by-default: it is emphasis, and emphasis
+ * everywhere is emphasis nowhere. Unset therefore resolves to `off`, the same
+ * way `resolveSectionAnimation` resolves unset motion to `none` and for the same
+ * reason - a saved section must not gain a visual it was never given.
+ */
+export function resolveSpecialCta(specialCta: string | undefined) {
+  return specialCta === "on" ? "on" : "off";
+}
+
+/**
  * Every per-section setting that has to survive the trip from the builder to
  * the exported site.
  *
@@ -779,6 +854,7 @@ export const sectionToggleFieldNames = [
   "icons",
   "joinAbove",
   "ratio",
+  "specialCta",
   "variant",
 ] as const;
 
@@ -1463,6 +1539,30 @@ export const styleFieldOptions = {
     { label: "Use template default", value: "" },
     ...sectionColorRecipes.map(({ id, label }) => ({ label, value: id })),
   ],
+  /**
+   * Whether this section's primary CTA is the site's special one.
+   *
+   * OFF BY DEFAULT, hence `resolveSpecialCta` - see the note there. Offered only
+   * to `specialCtaComponents`, so no section renders a switch for a button it
+   * does not have.
+   *
+   * A BOOLEAN RATHER THAN A STYLE PICKER, and that is the axis's whole design.
+   * The section says "this one is special"; the Style Guide says what special
+   * means. Delivered as `data-pagebuilder-special-cta` on the frame, which
+   * `globals.css` reads to re-point the primary slot's tokens at the special
+   * slot's - so no section component knows this axis exists, and none had to
+   * change to gain it.
+   *
+   * Copy-neutral. The contract fingerprint hashes component, the derived field
+   * specs, instruction, mode, name, ratio and variant, none of which this is, so
+   * switching it flips no approved page to `stale`. That is also why it must
+   * never be folded into `variant`.
+   */
+  specialCta: [
+    { label: "Use template default", value: "" },
+    { label: "Standard CTA", value: "off" },
+    { label: "Special CTA", value: "on" },
+  ],
   reduceTopPadding: [
     { label: "Use template default", value: "" },
     { label: "Default spacing", value: "default" },
@@ -1733,6 +1833,18 @@ const cardStyleFields: SectionStyleFieldSpec[] = [
 ];
 
 /**
+ * Offered per staged page as well as per template, because it repaints one
+ * button and nothing else. Which page a special CTA belongs on is exactly the
+ * kind of decision that is made while looking at the page rather than while
+ * building the template it came from.
+ */
+const specialCtaStyleField: SectionStyleFieldSpec = {
+  label: "Special CTA",
+  name: "specialCta",
+  options: styleFieldOptions.specialCta,
+};
+
+/**
  * Section spacing moves the frame's padding and nothing else, so it can never
  * change which fields a section renders or invalidate approved copy. Every
  * content-height section offers it - see `viewportHeightComponents` for the
@@ -1807,6 +1919,7 @@ export function getSectionStyleFieldSpecs(
     ...(sectionSupportsAnimation(component)
       ? [animationStyleField(component)]
       : []),
+    ...(sectionSupportsSpecialCta(component) ? [specialCtaStyleField] : []),
     ...(sectionSupportsSectionSpacing(component) ? spacingStyleFields : []),
   ];
 }

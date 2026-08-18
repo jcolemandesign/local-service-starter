@@ -154,10 +154,6 @@ export function CTAServiceTriageSectionV3({
   const cardIcon = colors.icon;
   const cardIconShell = colors.iconShell;
   const choiceClassName = colors.choice;
-  // Hand-styled rather than a Button, so it names the CTA tokens directly to
-  // get what a Button would have got for free.
-  const serviceActionClassName =
-    "!border-transparent !bg-cta-primary !text-cta-primary-ink hover:!bg-cta-primary-hover";
   const cardActionText = "!text-service-ink";
   const cardClassName = cx(
     // Each triage card is a revealable unit and they all take their classes
@@ -209,12 +205,13 @@ export function CTAServiceTriageSectionV3({
               ))}
             </div>
 
-            <RequestServiceButton
-              className={cx(
-                "mt-6 w-full !border !py-2 !text-sm !font-semibold !duration-200 !ease-out",
-                serviceActionClassName,
-              )}
-            >
+            {/* Layout only. This used to carry a run of `!important` CTA
+                classes with a comment saying it was hand-styled "to get what a
+                Button would have got for free" - which it now does get, because
+                `RequestServiceButton` renders the shared anatomy. Those
+                overrides would beat the assigned button style, so the wish and
+                the workaround left together. */}
+            <RequestServiceButton className="mt-6 w-full">
               {serviceAction}
               {icons === "on" ? <span aria-hidden="true" className="ml-3">→</span> : null}
             </RequestServiceButton>

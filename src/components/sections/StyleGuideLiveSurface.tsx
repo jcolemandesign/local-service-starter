@@ -2,6 +2,12 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  type ButtonStyleSelection,
+  buttonStyleCss,
+  defaultButtonStyleSelection,
+  normalizeButtonStyleSelection,
+} from "@/content/button-styles";
 import { deriveDarkSurface } from "@/content/color-palette-adapter";
 import { derivedColorValues } from "@/content/color-derivations";
 import { resolveBorderWidthOption } from "@/content/section-style-options";
@@ -106,6 +112,23 @@ export type StyleGuideTokenDraft = StyleGuideColorTokens & {
    * declaration rather than writing it blank.
    */
   motionTokens: Record<string, string>;
+  /**
+   * Which button style fills each of the three slots.
+   *
+   * A record of ids rather than of values, which is the one place this axis
+   * differs from motion: a motion control authors a number directly, while a
+   * button style is a complete set of two dozen tokens that only makes sense
+   * together. Authoring them individually would let you build a button no entry
+   * in the library describes, and then no picker could ever show you what you
+   * had. So the draft stores the choice and `buttonStyleDeclarations` expands
+   * it, in both emitters.
+   *
+   * Optional-by-absence is handled the same way `motionTokens` handles it: the
+   * record is REBUILT from the registry on load rather than spread, so a slot
+   * saved before this axis existed comes back on the shipped assignment instead
+   * of with an undefined slot.
+   */
+  buttonStyleSelection: ButtonStyleSelection;
 };
 
 type StyleGuideLiveSurfaceProps = {
@@ -132,6 +155,10 @@ type StyleGuideTokenContextValue = {
 type StyleVariableProperties = CSSProperties & Record<`--${string}`, string>;
 
 export const styleGuideStorageKey = "pageworks-styleguide-token-draft-v1";
+
+/** The class the live surface carries, and the scope its button rules are
+ *  written against. A constant, so nothing user-supplied reaches a selector. */
+export const styleGuideButtonScope = ".style-guide-button-surface";
 
 /** Shipped starting colors. Saved token sets live in Style Guide Slots. */
 const defaultColorTokens: StyleGuideColorTokens = {
@@ -206,6 +233,7 @@ export const defaultStyleGuideTokenDraft: StyleGuideTokenDraft = {
   typeRoles: typePalettes[0].roles.map((role) => ({ ...role })),
   typeSelectedRoleId: typePalettes[0].roles[0]?.id ?? "",
   motionTokens: { ...defaultMotionTokens },
+  buttonStyleSelection: { ...defaultButtonStyleSelection },
 };
 
 const numberFormat = new Intl.NumberFormat("en-US", {
@@ -337,6 +365,14 @@ function normalizeStyleGuideDraft(value: unknown): StyleGuideTokenDraft {
     // the colour overhaul made its two new swatches optional - a saved state has
     // to keep loading, or an approved page's token set stops being reachable.
     motionTokens: normalizeMotionTokens(savedDraft.motionTokens),
+    // Rebuilt for the same reason the motion record above is, and with one
+    // addition: a saved id may name a style that has since been retired, or one
+    // assigned to a slot it does not belong in. Both fall back to the shipped
+    // assignment for that slot rather than emitting a set of tokens nobody
+    // chose.
+    buttonStyleSelection: normalizeButtonStyleSelection(
+      savedDraft.buttonStyleSelection,
+    ),
   };
 }
 
@@ -495,6 +531,9 @@ export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) 
       ...defaultStyleGuideTokenDraft,
       ...next,
       motionTokens: normalizeMotionTokens(next.motionTokens),
+      buttonStyleSelection: normalizeButtonStyleSelection(
+        next.buttonStyleSelection,
+      ),
     });
   }
 
@@ -513,7 +552,32 @@ export function StyleGuideLiveSurface({ children }: StyleGuideLiveSurfaceProps) 
         updateDrafts,
       }}
     >
-      <div style={previewStyle}>{children}</div>
+      <div className={styleGuideButtonScope.slice(1)} style={previewStyle}>
+        {/*
+         * THE ONE AXIS THAT CANNOT RIDE THE INLINE STYLE ABOVE.
+         *
+         * Every other token is a single value that inherits, so one element's
+         * `style` carries the whole draft. A button assignment is three
+         * different answers resolving on three different elements at the same
+         * time, which no inline style can express - and it cannot be flattened
+         * to `:root`-style variables here either, for the reason the authored
+         * block in `globals.css` documents at length: a custom property
+         * substitutes its `var()`s where it is DECLARED, so a colour folded in
+         * on this wrapper would freeze to this wrapper's ground and stop
+         * answering to the recipe of whatever demo surface it lands on.
+         *
+         * So the preview emits the same rules the promotion emits, from the
+         * same function, scoped to this element. Scoped means strictly more
+         * specific than the promoted copy, so the draft wins here without
+         * depending on source order - and wins nowhere else.
+         */}
+        <style>
+          {buttonStyleCss(draft.buttonStyleSelection, {
+            scope: styleGuideButtonScope,
+          })}
+        </style>
+        {children}
+      </div>
     </StyleGuideTokenContext.Provider>
   );
 }

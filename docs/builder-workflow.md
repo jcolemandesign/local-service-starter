@@ -13,6 +13,9 @@ jobs:
 - `animation-axis-handoff.md` — the per-section entrance animation axis: how it
   works, which sections are marked or deliberately excluded, and the open
   problems. Read it before touching animation or adding a marker class.
+- `button-style-axis.md` — the button style library and the Special CTA switch.
+  Read it before adding a button style, touching the anatomy, or writing any
+  rule that reads a `--color-*` token by hand.
 - `pageworks-pipeline.md`, `staged-copy-workflow-handoff.md` — historical, both
   flagged as such at the top. Good for vocabulary and for the original
   mechanism write-ups; wrong in specifics.
@@ -240,6 +243,7 @@ The copy-contract fingerprint hashes: `component`, the derived field specs,
 | `headlineWrap` | template | No | `text-wrap` on the section's headline (`balance` / `pretty` / `wrap`); same reasoning as `align` |
 | `colorRecipe`, `cardFill`, `cardBorder` | template + staged override | No | Repaint only |
 | `reduceTopPadding`, `reduceBottomPadding` | template + staged override | No | Frame padding only; offered to content-height sections, not to `viewportHeightComponents` — min-height takes the space back, so the control would read as broken |
+| `specialCta` | template + staged override | No | Whether this section's primary CTA renders in the site's **special** button style. A boolean, never a style picker: *which* style the special is stays a Style Guide assignment. Off by default (`resolveSpecialCta`), offered to `specialCtaComponents`. See `docs/button-style-axis.md` |
 
 Flipping a copy-affecting toggle moves the fingerprint, which flips affected
 sections to `stale`. That is expected and safe — it surfaces warnings on

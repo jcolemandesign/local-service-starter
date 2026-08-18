@@ -174,8 +174,8 @@
    * `deriveTintMode`, the same way `--card-eyebrow` already is. Falls back to
    * the ground-keyed pair, so a control outside a recipe or on a section with
    * no card context behaves exactly as it did. */
-  --color-card-cta-fill: var(--card-cta-fill, var(--color-cta-primary));
-  --color-card-cta-label: var(--card-cta-label, var(--color-cta-primary-ink));
+  --color-card-cta-fill: var(--card-cta-fill, var(--btn-cta-fill));
+  --color-card-cta-label: var(--card-cta-label, var(--btn-cta-label));
   --color-cta-secondary-ink: var(--live-cta-secondary-ink, var(--live-service-accent, #1f7a5a));
   --color-cta-secondary-border: var(--live-cta-secondary-border, var(--live-service-accent, #1f7a5a));
   /* The muted token in its ink-recipe card role.
@@ -233,6 +233,299 @@
     var(--live-cta-accent, var(--live-service-accent, #1f7a5a)) 82%,
     white
   );
+}
+
+/*
+ * ==================================================================
+ * The button anatomy.
+ *
+ * One box, two pseudo-elements, and a token for every dimension a button style
+ * is allowed to differ on. The styles themselves are data, in
+ * `src/content/button-styles.ts`; the Style Guide assigns one to each of three
+ * slots and promotes the result into the marker block at the foot of this file.
+ *
+ * THE SECTION DOES NOT DECIDE HOW A BUTTON LOOKS. It may say that its primary
+ * CTA is the SPECIAL one, through `data-pagebuilder-special-cta` on its frame,
+ * and that is the whole of its vocabulary. Which style the special is remains a
+ * site-wide decision. Same split as the motion suites and the colour recipes: a
+ * marker is inert until the system switches it on, and a value the system owns
+ * cannot drift section by section.
+ *
+ * A STYLE CARRIES NO COLOUR. Every fill, label and edge below resolves through
+ * the `--color-cta-*` tokens, which the colour recipes answer per section
+ * ground. A style that named its own colours would be right on the page recipe
+ * and wrong on the five dark and chromatic ones.
+ *
+ * WHY `@layer components`. Sections pass Tailwind utilities to buttons - `w-full`
+ * on the financing calculator, `gap-2 px-5` on the primary nav - and unlayered
+ * rules beat every layer. Sitting in `components` means utilities still win,
+ * which is what those call sites have always assumed.
+ *
+ * THE FILL LAYER PAINTS ABOVE THE BACKGROUND AND BELOW THE LABEL, and that is
+ * painting order rather than a trick: a negative z-index child of a stacking
+ * context paints after the context root's own background and before its inline
+ * content. `isolation: isolate` is what guarantees the button IS the context, so
+ * the layer cannot escape behind whatever the section painted.
+ *
+ * EVERY GESTURE TOKEN IS THE HOVER VALUE. The resting state is inert here -
+ * `translate: 0 0`, `scale: 1` - and `:hover` switches to the token. A style
+ * therefore states what happens, and declines a gesture by answering it with the
+ * inert value rather than by omitting it.
+ * ================================================================== */
+@layer components {
+  /* THE CTA COLOUR ROLES, RESOLVED ON THE BUTTON.
+   *
+   * These five are the only colours a button style may name, and they are
+   * written as the full `--live-*` chain rather than as the `--color-cta-*`
+   * tokens that look like the obvious way to say the same thing.
+   *
+   * `--color-cta-*` LIVES IN `@theme inline` AND IS THEREFORE FROZEN AT :root.
+   * A custom property substitutes its var()s where it is declared, so
+   * `--color-cta-primary` resolves `--live-cta-primary` at the root - outside
+   * every recipe - and computes to the brand accent everywhere, at the root and
+   * on a button inside a red section alike. Tailwind's own utilities escape this
+   * because `inline` means it substitutes the VALUE into the generated utility,
+   * so `bg-cta-primary` expands to this same chain and resolves at the element.
+   * Hand-written CSS reading the token does not get that treatment.
+   *
+   * Measured, after shipping the mistake: with a brand recipe on the frame,
+   * `--live-cta-primary` is `#fff` at the button while `--color-cta-primary` is
+   * `#007cbd` at the button AND at the root.
+   *
+   * Declared here, on `.button-cta`, they resolve inside the recipe's subtree.
+   * The slot rules below sit on the same element, and custom properties resolve
+   * by name at computed-value time, so order between the two rules is irrelevant.
+   * The fallbacks are the `@theme inline` block's own, for frameless pages. */
+  .button-cta {
+    --btn-cta-fill: var(
+      --live-cta-primary,
+      var(--live-cta-accent, var(--live-service-accent, #1f7a5a))
+    );
+    --btn-cta-fill-hover: var(
+      --live-cta-primary-hover,
+      var(--live-bg-dark, #10141b)
+    );
+    --btn-cta-label: var(--live-cta-primary-ink, #ffffff);
+    --btn-cta-edge: var(
+      --live-cta-secondary-border,
+      var(--live-service-accent, #1f7a5a)
+    );
+    --btn-cta-edge-ink: var(
+      --live-cta-secondary-ink,
+      var(--live-service-accent, #1f7a5a)
+    );
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3rem;
+    padding-block: 0.5rem;
+    /* The trailing padding is a token because a glyph sized to fill a chip needs
+       the box to stop where the chip starts - see `chip-arrow`. */
+    padding-inline: 1.5rem var(--btn-pad-end);
+    border: var(--btn-border-width) solid var(--btn-border-color);
+    border-radius: var(--radius-button-token, var(--radius-sm-token));
+    background-color: var(--btn-surface);
+    box-shadow: var(--btn-shadow);
+    color: var(--btn-ink);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+    white-space: nowrap;
+    cursor: pointer;
+    translate: 0 0;
+    scale: 1;
+    transition-property:
+      background-color, border-color, box-shadow, color, translate, scale;
+    transition-duration: var(--btn-duration);
+    transition-timing-function: var(--btn-easing);
+  }
+
+  .button-cta:hover {
+    background-color: var(--btn-surface-hover);
+    border-color: var(--btn-border-color-hover);
+    box-shadow: var(--btn-shadow-hover);
+    color: var(--btn-ink-hover);
+    translate: var(--btn-lift);
+    scale: var(--btn-press);
+  }
+
+  .button-cta:focus-visible {
+    outline: 2px solid var(--color-service-accent);
+    outline-offset: 4px;
+  }
+
+  /* The fill layer. Two vocabularies for one gesture, and both are needed: a
+     sweep is a `translate`, which the compositor handles and which every style
+     that moves a full-bleed fill uses; a chip growing out of one edge is an
+     `inset`, which no transform expresses. A style uses one and leaves the other
+     inert.
+
+     The containing block is the button's PADDING box, so a 0 inset stops inside
+     the border rather than under it. That is why `chip-arrow` can recolour its
+     edge on hover and still read as one solid button. */
+  .button-cta::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: var(--btn-fill-inset);
+    border-radius: inherit;
+    background-color: var(--btn-fill);
+    translate: var(--btn-fill-rest);
+    transition-property: inset, translate;
+    transition-duration: var(--btn-duration);
+    transition-timing-function: var(--btn-easing);
+  }
+
+  .button-cta:hover::before {
+    inset: var(--btn-fill-inset-hover);
+    translate: var(--btn-fill-hover);
+  }
+
+  /* The glyph, as an ordinary flex item after the label.
+     `content: none` generates no box at all, so a style without a glyph pays no
+     layout for one - not even the flex gap. `align-self: stretch` is what lets a
+     glyph sit centred on the chip behind it whatever the button's height. */
+  .button-cta::after {
+    content: var(--btn-glyph);
+    display: grid;
+    place-items: center;
+    align-self: stretch;
+    width: var(--btn-glyph-size);
+    translate: 0 0;
+    transition: translate var(--btn-duration) var(--btn-easing);
+  }
+
+  .button-cta:hover::after {
+    translate: var(--btn-glyph-hover);
+  }
+
+  /* Reduced motion keeps every colour change and drops the travel to a step.
+     The sweep styles are the reason this is a duration rather than a
+     `transition: none`: a fill that has to arrive still has to arrive, and
+     removing the transition outright leaves the hover state paint-identical to
+     the resting one on the two styles whose entire hover IS the fill. */
+  @media (prefers-reduced-motion: reduce) {
+    .button-cta,
+    .button-cta::before,
+    .button-cta::after {
+      transition-duration: 1ms;
+    }
+  }
+
+  /* ------------------------------------------------------------------
+   * THE THREE SLOTS, AND WHY THEY ARE DECLARED HERE RATHER THAN AT :root.
+   *
+   * A custom property substitutes its var()s AT THE ELEMENT WHERE IT IS
+   * DECLARED, not where it is read. These slots were declared at :root, and
+   * that is a colour bug wearing a scoping bug's clothes: var(--btn-cta-fill)
+   * resolved once, at the root, where no colour recipe is in scope. It fell
+   * through to the brand accent, every button on the site inherited that one
+   * already-resolved colour, and the recipes' own --live-cta-* - set far down
+   * the tree on the section frame - was never read again.
+   *
+   * The symptom was a primary button that is the SAME BLUE on a red ground and
+   * a navy one. Nothing errors, and the two light-ground recipes look correct
+   * throughout, because their answer happens to equal the root fallback.
+   *
+   * Declared on the buttons, each rule sits inside the recipe's subtree where
+   * --color-cta-* has already inherited the right answer, and the substitution
+   * happens there. This is also why the Tailwind-class buttons these replaced
+   * were correct: bg-cta-primary resolves at the element.
+   *
+   * The shipped assignment is Solid, Outline and Sweep arrow - the first two
+   * are what the variants looked like before this axis existed, so promoting an
+   * untouched Style Guide moves nothing. Pinned by
+   * button-style-agreement.test.ts, which reads this block and compares it to
+   * defaultButtonStyleSelection; restating a default is how a Reset quietly
+   * stops matching the stylesheet.
+   *
+   * The promoted block emits these same three rules, unlayered and later, so a
+   * promotion wins over what is authored here.
+   * ------------------------------------------------------------------ */
+  .button-cta-primary {
+    --btn-pad-end: 1.5rem;
+    --btn-surface: var(--btn-cta-fill);
+    --btn-surface-hover: var(--btn-cta-fill-hover);
+    --btn-ink: var(--btn-cta-label);
+    --btn-ink-hover: var(--btn-cta-label);
+    --btn-border-color: transparent;
+    --btn-border-color-hover: transparent;
+    --btn-border-width: 1px;
+    --btn-fill: transparent;
+    --btn-fill-rest: 0 0;
+    --btn-fill-hover: 0 0;
+    --btn-fill-inset: 0;
+    --btn-fill-inset-hover: 0;
+    --btn-lift: 0 0;
+    --btn-press: 1;
+    --btn-shadow: none;
+    --btn-shadow-hover: none;
+    --btn-glyph: none;
+    --btn-glyph-size: auto;
+    --btn-glyph-hover: 0 0;
+    --btn-duration: 200ms;
+    --btn-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .button-cta-secondary {
+    --btn-pad-end: 1.5rem;
+    --btn-surface: transparent;
+    --btn-surface-hover: color-mix(in srgb, var(--btn-cta-edge) 10%, transparent);
+    --btn-ink: var(--btn-cta-edge-ink);
+    --btn-ink-hover: var(--btn-cta-edge-ink);
+    --btn-border-color: var(--btn-cta-edge);
+    --btn-border-color-hover: var(--btn-cta-edge);
+    --btn-border-width: 1px;
+    --btn-fill: transparent;
+    --btn-fill-rest: 0 0;
+    --btn-fill-hover: 0 0;
+    --btn-fill-inset: 0;
+    --btn-fill-inset-hover: 0;
+    --btn-lift: 0 0;
+    --btn-press: 1;
+    --btn-shadow: none;
+    --btn-shadow-hover: none;
+    --btn-glyph: none;
+    --btn-glyph-size: auto;
+    --btn-glyph-hover: 0 0;
+    --btn-duration: 200ms;
+    --btn-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Two selectors, one rule: the frame attribute is how a section asks for the
+     special, and the bare class is how the Style Guide shows a specimen outside
+     any frame. Last, so it wins the tie with the primary on the one element
+     that carries both. */
+  .pagebuilder-section-frame[data-pagebuilder-special-cta="on"] .button-cta-primary,
+  .button-cta-special {
+    --btn-pad-end: 1.5rem;
+    --btn-surface: var(--btn-cta-fill);
+    --btn-surface-hover: var(--btn-cta-fill);
+    --btn-ink: var(--btn-cta-label);
+    --btn-ink-hover: var(--btn-cta-label);
+    --btn-border-color: transparent;
+    --btn-border-color-hover: transparent;
+    --btn-border-width: 1px;
+    --btn-fill: var(--btn-cta-fill-hover);
+    --btn-fill-rest: 0 100%;
+    --btn-fill-hover: 0 0;
+    --btn-fill-inset: 0;
+    --btn-fill-inset-hover: 0;
+    --btn-lift: 0 0;
+    --btn-press: 1;
+    --btn-shadow: none;
+    --btn-shadow-hover: none;
+    --btn-glyph: "\2192";
+    --btn-glyph-size: auto;
+    --btn-glyph-hover: 4px 0;
+    --btn-duration: 320ms;
+    --btn-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  }
 }
 
 /*
@@ -3354,6 +3647,8 @@ body {
     --recipe-chromatic: var(--palette-brand);
     --recipe-cta-fill: var(--palette-cta-accent);
     --recipe-cta-label: #ffffff;
+    /* Light ground, white label: hover darkens, away from the label. */
+    --recipe-cta-hover: oklch(from var(--recipe-cta-fill) calc(l - 0.08) c h);
     /* Light ground, so the contrast card is the dark swatch. */
     --recipe-contrast-card: var(--palette-dark);
     --recipe-contrast-card-text: #ffffff;
@@ -3380,6 +3675,8 @@ body {
     --recipe-chromatic: var(--palette-brand);
     --recipe-cta-fill: var(--palette-cta-accent);
     --recipe-cta-label: #ffffff;
+    /* Light ground, white label: hover darkens, away from the label. */
+    --recipe-cta-hover: oklch(from var(--recipe-cta-fill) calc(l - 0.08) c h);
     /* Light ground, so the contrast card is the dark swatch. */
     --recipe-contrast-card: var(--palette-dark);
     --recipe-contrast-card-text: #ffffff;
@@ -3398,6 +3695,9 @@ body {
     --recipe-chromatic: var(--palette-brand);
     --recipe-cta-fill: var(--chroma-fill);
     --recipe-cta-label: var(--palette-ink);
+    /* Dark ground, so the chip is light and its label is ink: hover LIGHTENS.
+       This is the direction the old constant got wrong - see the role table. */
+    --recipe-cta-hover: oklch(from var(--recipe-cta-fill) calc(l + 0.08) c h);
     /* Dark ground, so the contrast card is the lightest neutral. */
     --recipe-contrast-card: var(--palette-raised);
     --recipe-contrast-card-text: var(--palette-ink);
@@ -3416,6 +3716,9 @@ body {
     --recipe-chromatic: var(--palette-brand);
     --recipe-cta-fill: var(--chroma-fill);
     --recipe-cta-label: var(--palette-ink);
+    /* Dark ground, so the chip is light and its label is ink: hover LIGHTENS.
+       This is the direction the old constant got wrong - see the role table. */
+    --recipe-cta-hover: oklch(from var(--recipe-cta-fill) calc(l + 0.08) c h);
     /* Dark ground, so the contrast card is the lightest neutral. */
     --recipe-contrast-card: var(--palette-raised);
     --recipe-contrast-card-text: var(--palette-ink);
@@ -3434,6 +3737,9 @@ body {
     --recipe-chromatic: var(--palette-brand);
     --recipe-cta-fill: var(--chroma-fill);
     --recipe-cta-label: var(--palette-ink);
+    /* Dark ground, so the chip is light and its label is ink: hover LIGHTENS.
+       This is the direction the old constant got wrong - see the role table. */
+    --recipe-cta-hover: oklch(from var(--recipe-cta-fill) calc(l + 0.08) c h);
     /* Dark ground, so the contrast card is the lightest neutral. */
     --recipe-contrast-card: var(--palette-raised);
     --recipe-contrast-card-text: var(--palette-ink);
@@ -3454,6 +3760,10 @@ body {
        brand button on a brand field is the case the brief rules out. */
     --recipe-cta-fill: #ffffff;
     --recipe-cta-label: var(--palette-brand);
+    /* Chromatic ground, white chip, chromatic label. Darkening is the only
+       direction available from white, so it is kept small - enough to register
+       as a state without walking the label toward its own fill. */
+    --recipe-cta-hover: oklch(from var(--recipe-cta-fill) calc(l - 0.06) c h);
     /* Dark ground, so the contrast card is the lightest neutral. */
     --recipe-contrast-card: var(--palette-raised);
     --recipe-contrast-card-text: var(--palette-ink);
@@ -3475,6 +3785,10 @@ body {
     --recipe-chromatic: var(--palette-cta-accent);
     --recipe-cta-fill: #ffffff;
     --recipe-cta-label: var(--palette-cta-accent);
+    /* Chromatic ground, white chip, chromatic label. Darkening is the only
+       direction available from white, so it is kept small - enough to register
+       as a state without walking the label toward its own fill. */
+    --recipe-cta-hover: oklch(from var(--recipe-cta-fill) calc(l - 0.06) c h);
     /* Dark ground, so the contrast card is the lightest neutral. */
     --recipe-contrast-card: var(--palette-raised);
     --recipe-contrast-card-text: var(--palette-ink);
@@ -3493,6 +3807,10 @@ body {
     --recipe-chromatic: var(--palette-highlight);
     --recipe-cta-fill: #ffffff;
     --recipe-cta-label: var(--palette-highlight);
+    /* Chromatic ground, white chip, chromatic label. Darkening is the only
+       direction available from white, so it is kept small - enough to register
+       as a state without walking the label toward its own fill. */
+    --recipe-cta-hover: oklch(from var(--recipe-cta-fill) calc(l - 0.06) c h);
     /* Dark ground, so the contrast card is the lightest neutral. */
     --recipe-contrast-card: var(--palette-raised);
     --recipe-contrast-card-text: var(--palette-ink);
@@ -3655,6 +3973,26 @@ body {
     --live-cta-primary-ink: var(--recipe-cta-label);
     --live-cta-secondary-ink: var(--recipe-cta-fill);
     --live-cta-secondary-border: var(--recipe-cta-fill);
+    /* THE HOVER FILL IS THE RECIPE'S, AND IT HAS TO BE.
+     *
+     * No recipe used to answer this, so every one of the eight fell through to
+     * `--color-cta-primary-hover`'s last resort - the near-black page ground -
+     * while the LABEL stayed whatever the recipe had chosen. That is fine on the
+     * two light-ground recipes, whose label is white, and it is the
+     * invisible-text failure on the three dark-ground ones: their chip is a
+     * light chromatic carrying an ink label, so the hover slid the fill to
+     * near-black and left dark text on it. On the three chromatic grounds it
+     * flipped a white chip to black under a chromatic label.
+     *
+     * A constant cannot be right for all three polarities, which is why this is
+     * a row in each recipe rather than a formula here: the recipe is the only
+     * thing that knows which way its own pair points. Each moves its fill a
+     * small step AWAY from its label, so the pair the recipe author chose
+     * survives the hover instead of being overwritten by it.
+     *
+     * The `--live-bg-dark` fallback stays where it is, for frameless pages that
+     * have no recipe at all. */
+    --live-cta-primary-hover: var(--recipe-cta-hover);
   }
 
   /* ------------------------------------------------------------------

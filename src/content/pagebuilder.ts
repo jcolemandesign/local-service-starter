@@ -45,6 +45,15 @@ export type PagebuilderRecipeSection = {
    */
   animation?: string;
   /**
+   * Whether this section's primary CTA is the site's special one - see
+   * `specialCta` in `section-style-options`.
+   *
+   * Absent means off, on the same footing as the entrance above and for the
+   * same reason: this is emphasis rather than a sensible default, so every
+   * stack saved before it existed renders exactly as it did.
+   */
+  specialCta?: string;
+  /**
    * Per-section tuning for the gradient treatments - node colours, positions,
    * radii, strength and motion. Absent means the stylesheet's own two washes,
    * so a section that has never been tuned is unaffected by this existing.

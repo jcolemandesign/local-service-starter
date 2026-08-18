@@ -1,174 +1,57 @@
 import type { AnchorHTMLAttributes, ReactNode } from "react";
 
-export type ButtonTreatment = "standard" | "expanding-arrow" | "wrapping-arrow" | "text-lift";
-
 type ButtonProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   children: ReactNode;
-  treatment?: ButtonTreatment;
-  variant?: "primary" | "secondary";
+  variant?: ButtonVariant;
 };
+
+export type ButtonVariant = "primary" | "secondary";
 
 function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-const buttonFocusClassName =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent";
-
-const standardButtonBaseClassName =
-  "radius-button inline-flex min-h-12 cursor-pointer items-center justify-center whitespace-nowrap border px-6 py-2 text-sm font-semibold transition duration-200 ease-out";
-
 /**
- * Both variants read CTA tokens rather than the palette directly, so a colour
- * recipe decides what they are without any section overriding them.
+ * The two class hooks every button in the system renders, and the whole of what
+ * a call site may say about a button's appearance.
  *
- * The secondary is an outline, not a filled pill. Every recipe table gives it a
- * transparent fill, which makes it a property of the button rather than of any
- * one ground - and the filled version it replaces read as a second primary on a
- * light section and had to be overridden by hand on every dark one.
+ * THE STYLE IS NOT HERE. `.button-cta` and the three slot rules live in
+ * `globals.css`; the styles themselves are data in
+ * `src/content/button-styles.ts`, assigned in the Style Guide and promoted like
+ * every other token. This component chooses a ROLE - is this the page's primary
+ * action or its companion - and the system answers what that role looks like.
+ *
+ * That is the same ownership split the motion axis settled on, and it arrived
+ * here for the same reason: the `treatment` prop this replaces let a section
+ * pick its own button, and exactly one section had - the narrative feature rail,
+ * hard-coded to the old text lift. A per-section choice of style is what the
+ * Style Guide exists to prevent, so the prop is gone rather than deprecated.
+ *
+ * `buttonClassNames` is exported because `RequestServiceButton` renders a
+ * `<button>` that opens the request modal rather than an `<a>`, and it has to be
+ * the same button. It used to hand-copy these classes; the two drifted, and its
+ * secondary was still the filled pill this system removed.
  */
-const standardButtonVariantClassNames = {
-  primary:
-    "border-transparent bg-cta-primary text-cta-primary-ink hover:bg-cta-primary-hover",
-  secondary:
-    "border-cta-secondary-border bg-transparent text-cta-secondary-ink hover:bg-cta-secondary-border/10",
-} as const;
+export function buttonClassNames(
+  variant: ButtonVariant = "primary",
+  className = "",
+) {
+  return cx(
+    "button-cta",
+    variant === "secondary" ? "button-cta-secondary" : "button-cta-primary",
+    className,
+  );
+}
 
 export function Button({
   children,
   className = "",
-  treatment = "standard",
   variant = "primary",
   ...props
 }: ButtonProps) {
-  if (treatment === "expanding-arrow") {
-    return (
-      <ExpandingArrowButton className={className} {...props}>
-        {children}
-      </ExpandingArrowButton>
-    );
-  }
-
-  if (treatment === "wrapping-arrow") {
-    return (
-      <WrappingArrowButton className={className} {...props}>
-        {children}
-      </WrappingArrowButton>
-    );
-  }
-
-  if (treatment === "text-lift") {
-    return (
-      <TextLiftButton className={className} {...props}>
-        {children}
-      </TextLiftButton>
-    );
-  }
-
   return (
-    <a
-      className={cx(
-        standardButtonBaseClassName,
-        standardButtonVariantClassNames[variant],
-        buttonFocusClassName,
-        className,
-      )}
-      {...props}
-    >
+    <a className={buttonClassNames(variant, className)} {...props}>
       {children}
-    </a>
-  );
-}
-
-export function ExpandingArrowButton({
-  children,
-  className = "",
-  ...props
-}: Omit<ButtonProps, "treatment" | "variant">) {
-  return (
-    <a
-      className={cx(
-        "group/button radius-button relative isolate inline-flex min-h-12 cursor-pointer items-center overflow-hidden border border-bg-dark bg-bg-dark px-6 py-2 pr-16 text-sm font-semibold text-cta-primary transition-colors duration-300 ease-out hover:text-bg-dark",
-        buttonFocusClassName,
-        className,
-      )}
-      {...props}
-    >
-      <span
-        aria-hidden="true"
-        className="radius-button absolute right-1.5 top-1/2 -z-10 h-9 w-9 -translate-y-1/2 bg-cta-primary transition-all duration-300 ease-out group-hover/button:right-0 group-hover/button:h-full group-hover/button:w-full"
-      />
-      <span>{children}</span>
-      <span
-        aria-hidden="true"
-        className="absolute right-5 top-1/2 -translate-y-1/2 text-bg-dark transition-transform duration-300 ease-out group-hover/button:-translate-x-1"
-      >
-        -&gt;
-      </span>
-    </a>
-  );
-}
-
-export function WrappingArrowButton({
-  children,
-  className = "",
-  ...props
-}: Omit<ButtonProps, "treatment" | "variant">) {
-  return (
-    <a
-      className={cx(
-        "group/button radius-button relative isolate inline-flex min-h-12 cursor-pointer items-center overflow-hidden border border-bg-dark bg-bg-dark px-6 py-2 pr-16 text-sm font-semibold text-text-inverse transition-colors duration-300 ease-out hover:text-text-inverse",
-        buttonFocusClassName,
-        className,
-      )}
-      {...props}
-    >
-      <span
-        aria-hidden="true"
-        className="radius-button absolute right-1.5 top-1/2 -z-10 h-9 w-9 -translate-y-1/2 bg-cta-primary transition-all duration-300 ease-out group-hover/button:right-0 group-hover/button:h-full group-hover/button:w-full"
-      />
-      <span>{children}</span>
-      <span
-        aria-hidden="true"
-        className="radius-button absolute right-1.5 top-1/2 grid h-9 w-9 -translate-y-1/2 overflow-hidden bg-cta-primary text-cta-primary-ink transition-transform duration-300 ease-out group-hover/button:-translate-x-1"
-      >
-        <span className="absolute inset-0 grid place-items-center transition-transform duration-300 ease-out group-hover/button:translate-x-full">
-          -&gt;
-        </span>
-        <span className="absolute inset-0 grid -translate-x-full place-items-center transition-transform duration-300 ease-out group-hover/button:translate-x-0">
-          -&gt;
-        </span>
-      </span>
-    </a>
-  );
-}
-
-export function TextLiftButton({
-  children,
-  className = "",
-  ...props
-}: Omit<ButtonProps, "treatment" | "variant">) {
-  return (
-    <a
-      className={cx(
-        "group/button radius-button relative inline-flex min-h-12 cursor-pointer items-center justify-center overflow-hidden border border-transparent bg-cta-primary px-7 py-2 text-sm font-semibold text-cta-primary-ink transition duration-200 ease-out hover:scale-[0.97] hover:bg-cta-primary-hover",
-        buttonFocusClassName,
-        className,
-      )}
-      {...props}
-    >
-      <span className="invisible" aria-hidden="true">
-        {children}
-      </span>
-      <span className="absolute inset-0 flex items-center justify-center transition-transform duration-200 ease-out group-hover/button:-translate-y-full">
-        {children}
-      </span>
-      <span
-        aria-hidden="true"
-        className="absolute inset-0 flex translate-y-full items-center justify-center transition-transform duration-200 ease-out group-hover/button:translate-y-0"
-      >
-        {children}
-      </span>
     </a>
   );
 }

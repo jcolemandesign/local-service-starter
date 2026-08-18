@@ -190,7 +190,6 @@ export function ContentNarrativeFeatureRailSectionV3({
                       <Button
                         className="mt-body-actions-sm"
                         href={card.actionHref}
-                        treatment="text-lift"
                       >
                         {card.actionLabel}
                       </Button>

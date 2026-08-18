@@ -1,10 +1,5 @@
-export {
-  Button,
-  ExpandingArrowButton,
-  TextLiftButton,
-  WrappingArrowButton,
-} from "./Button";
-export type { ButtonTreatment } from "./Button";
+export { Button, buttonClassNames } from "./Button";
+export type { ButtonVariant } from "./Button";
 export { Card } from "./Card";
 export { Container } from "./Container";
 export { DownArrowIcon } from "./DownArrowIcon";

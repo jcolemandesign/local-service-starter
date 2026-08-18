@@ -1,45 +1,62 @@
 "use client";
 
-import { useState } from "react";
-import type { ButtonTreatment } from "@/components/primitives";
+import { Button, Card } from "@/components/primitives";
+import { useStyleGuideTokens } from "@/components/sections/StyleGuideLiveSurface";
 import {
-  Button,
-  Card,
-  TextLiftButton,
-  WrappingArrowButton,
-} from "@/components/primitives";
+  type ButtonStyleSlot,
+  buttonStyleById,
+  buttonStylesForSlot,
+} from "@/content/button-styles";
 
-type ButtonExample = {
-  description: string;
+/**
+ * The button half of the Style Guide.
+ *
+ * WHAT CHANGED. This panel used to be a read-only showcase: four hard-coded
+ * treatments, a picker that changed which one the preview pane rendered, and no
+ * way for any of it to reach a page. Choosing "Text lift" here told you what
+ * text lift looked like and nothing else - the site's buttons were whatever each
+ * section had imported.
+ *
+ * It authors the real assignment now. Three slots, one style each, written into
+ * the same draft colour, type, radii, spacing and motion write, promoted by the
+ * same button into the same block in `globals.css`. The specimens below are
+ * ordinary `<Button>`s reading the draft through inheritance, so what you are
+ * looking at is the component every section renders rather than a mock of it.
+ *
+ * DERIVED FROM THE REGISTRY. Each slot's options are `buttonStylesForSlot`, so a
+ * style added to `src/content/button-styles.ts` appears here with no edit to
+ * this file - and a style can only be offered for a slot it declares.
+ */
+
+type SlotPanel = {
+  slot: ButtonStyleSlot;
   label: string;
-  name: string;
-  treatment: ButtonTreatment;
+  description: string;
+  /** The demo label, chosen to read as the kind of action the slot is for. */
+  specimen: string;
 };
 
-const buttonExamples: ButtonExample[] = [
+const slotPanels: SlotPanel[] = [
   {
-    description: "Default shared CTA for forms, heroes, and conversion rows.",
-    label: "Standard primary",
-    name: "standard-primary",
-    treatment: "standard",
+    slot: "primary",
+    label: "Primary",
+    description:
+      "Every primary call to action on the site. This is the one that has to work on all eight colour recipes and at every size, so it is the slot to keep quiet.",
+    specimen: "Request service",
   },
   {
-    description: "Default outline companion action for paired CTA groups.",
-    label: "Standard secondary",
-    name: "standard-secondary",
-    treatment: "standard",
+    slot: "secondary",
+    label: "Secondary",
+    description:
+      "The companion action beside a primary. Its job is to be available without competing, which is why the library offers no filled option here.",
+    specimen: "View services",
   },
   {
-    description: "Expanding accent field with a wrapped arrow transition.",
-    label: "Wrapping arrow",
-    name: "wrapping-arrow",
-    treatment: "wrapping-arrow",
-  },
-  {
-    description: "Compact action with a vertical label lift on hover.",
-    label: "Text lift",
-    name: "text-lift",
-    treatment: "text-lift",
+    slot: "special",
+    label: "Special CTA",
+    description:
+      "The one a section can ask for by switching Special CTA on in the builder. Nothing uses it until a section does, so this slot can afford more gesture than the other two.",
+    specimen: "Schedule service",
   },
 ];
 
@@ -47,28 +64,82 @@ function cx(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-function ButtonPreview({ example }: { example: ButtonExample }) {
-  if (example.name === "standard-secondary") {
-    return (
-      <Button href="#" variant="secondary">
-        View services
-      </Button>
-    );
+function SlotControls({ panel }: { panel: SlotPanel }) {
+  const { draft, updateDraft } = useStyleGuideTokens();
+  const activeId = draft.buttonStyleSelection[panel.slot];
+  const options = buttonStylesForSlot(panel.slot);
+  const activeStyle = buttonStyleById(activeId) ?? options[0];
+
+  function selectStyle(id: string) {
+    updateDraft("buttonStyleSelection", {
+      ...draft.buttonStyleSelection,
+      [panel.slot]: id,
+    });
   }
 
-  if (example.treatment === "wrapping-arrow") {
-    return (
-      <WrappingArrowButton href="#">
-        Schedule service
-      </WrappingArrowButton>
-    );
-  }
+  return (
+    <Card className="style-guide-control-panel p-6 shadow-none">
+      <div className="fluid-type-frame">
+        <p className="type-label text-service-accent">Buttons</p>
+        <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
+          {panel.label}
+        </h3>
+        <p className="type-text-sm mt-heading-body-sm text-service-muted">
+          {panel.description}
+        </p>
+      </div>
 
-  if (example.treatment === "text-lift") {
-    return <TextLiftButton href="#">Book a visit</TextLiftButton>;
-  }
+      <div className="mt-6 grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-6 max-lg:grid-cols-1">
+        <div className="grid content-start gap-2">
+          {options.map((style) => {
+            const isActive = style.id === activeStyle?.id;
 
-  return <Button href="#">Request service</Button>;
+            return (
+              <button
+                aria-pressed={isActive}
+                className={cx(
+                  "radius-button min-h-11 border px-3 py-2 text-left text-xs font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
+                  isActive
+                    ? "border-service-accent bg-service-accent text-white"
+                    : "border-service-border bg-surface-raised text-service-ink hover:border-service-accent hover:text-service-accent",
+                )}
+                key={style.id}
+                onClick={() => selectStyle(style.id)}
+                type="button"
+              >
+                {style.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="grid content-start gap-3">
+          {/* The specimen sits on the raised surface rather than the panel's own
+              ground so an outline style has something to be an outline against.
+              It is a real Button: the slot's tokens reach it by inheritance from
+              the live surface, exactly as they reach a section. */}
+          <div className="radius-medium flex min-h-32 items-center justify-center border border-service-border bg-surface-raised p-6">
+            <Button
+              className={
+                panel.slot === "special" ? "button-cta-special" : undefined
+              }
+              href="#"
+              variant={panel.slot === "secondary" ? "secondary" : "primary"}
+            >
+              {panel.specimen}
+            </Button>
+          </div>
+
+          <p className="type-text-sm text-service-muted">
+            {activeStyle?.description}
+          </p>
+          <code className="radius-button inline-flex bg-service-surface px-3 py-2 text-xs font-semibold text-service-muted">
+            {activeStyle?.id}
+          </code>
+        </div>
+      </div>
+    </Card>
+  );
 }
 
 export function StyleGuideButtonControls({
@@ -76,86 +147,21 @@ export function StyleGuideButtonControls({
 }: {
   compact?: boolean;
 }) {
-  const [activeName, setActiveName] = useState(buttonExamples[0].name);
-  const activeExample =
-    buttonExamples.find((example) => example.name === activeName) ??
-    buttonExamples[0];
-
   return (
     <div className="grid gap-5">
-      <div className="style-guide-control-band grid border-y px-[var(--site-grid-inset-inline)] py-4">
-        <Card className="bg-service-surface p-5 shadow-none">
-          <div className="fluid-type-frame">
-            <p className="type-label text-service-accent">Button controls</p>
-            <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
-              Shared CTA treatments
-            </h3>
-            <p className="type-text-sm mt-heading-body-sm text-service-muted">
-              Choose a treatment to inspect its shared radius, surface, hover, and
-              focus behavior. New button ideas can be added to this same list.
-            </p>
-          </div>
+      {slotPanels.map((panel) => (
+        <SlotControls key={panel.slot} panel={panel} />
+      ))}
 
-          <div className="radius-medium mt-5 border border-service-border bg-surface-raised p-3">
-            <div className="grid grid-cols-4 gap-2 max-lg:grid-cols-2 max-md:grid-cols-1">
-              {buttonExamples.map((example) => {
-                const isActive = example.name === activeExample.name;
-
-                return (
-                  <button
-                    aria-pressed={isActive}
-                    className={cx(
-                      "radius-button min-h-11 border px-3 py-2 text-center text-xs font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-service-accent",
-                      isActive
-                        ? "border-service-accent bg-service-accent text-white"
-                        : "border-service-border bg-surface-raised text-service-ink hover:border-service-accent hover:text-service-accent",
-                    )}
-                    key={example.name}
-                    onClick={() => setActiveName(example.name)}
-                    type="button"
-                  >
-                    {example.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      <div
-        className={cx(
-          "grid gap-5",
-          compact
-            ? "grid-cols-1"
-            : "grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] max-lg:grid-cols-1",
-        )}
-      >
-        <Card className="fluid-type-frame p-6 shadow-none">
-          <p className="type-label text-service-accent">Active treatment</p>
-          <h3 className="type-heading-md mt-eyebrow-heading-sm text-service-ink">
-            {activeExample.label}
-          </h3>
-          <p className="type-text-sm mt-heading-body-sm text-service-muted">
-            {activeExample.description}
-          </p>
-          <code className="radius-button mt-5 inline-flex bg-service-surface px-3 py-2 text-xs font-semibold text-service-muted">
-            {activeExample.name}
-          </code>
-        </Card>
-
-        <Card className="p-6 shadow-none">
-          <div className="radius-medium flex min-h-64 items-center justify-center border border-service-border bg-service-surface p-8">
-            <ButtonPreview example={activeExample} />
-          </div>
-        </Card>
-      </div>
-
+      {/* The three together, which is the only view that answers the question
+          the slots cannot answer separately: whether the primary and the
+          secondary read as a pair, and whether the special is distinguishable
+          from the primary without shouting over it. */}
       <Card className={cx("p-6 shadow-none", compact && "hidden")}>
         <div className="fluid-type-frame">
-          <p className="type-label text-service-accent">Full set</p>
+          <p className="type-label text-service-accent">Together</p>
           <h3 className="type-heading-sm mt-eyebrow-heading-sm text-service-ink">
-            Standard and special buttons together
+            The assignment, side by side
           </h3>
         </div>
         <div className="radius-medium mt-6 flex flex-wrap items-center justify-center gap-3 border border-service-border bg-service-surface p-6">
@@ -163,8 +169,9 @@ export function StyleGuideButtonControls({
           <Button href="#" variant="secondary">
             View services
           </Button>
-          <WrappingArrowButton href="#">Schedule service</WrappingArrowButton>
-          <TextLiftButton href="#">Book a visit</TextLiftButton>
+          <Button className="button-cta-special" href="#">
+            Schedule service
+          </Button>
         </div>
       </Card>
     </div>
