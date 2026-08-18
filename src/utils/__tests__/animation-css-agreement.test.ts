@@ -670,6 +670,44 @@ describe("animation css agreement", () => {
   });
 
   /**
+   * THE WIPE MUST NOT EAT DESCENDERS.
+   *
+   * `clip-path: inset(0 …)` clips to the border box, and `both` leaves the
+   * finished state applied for good - so a terminal inset of zero permanently
+   * shaves the bottoms off g, y, p and j on a display headline with tight
+   * leading. On the one suite whose entire purpose is revealing type.
+   *
+   * Every edge of the finished state has to be negative. Asserted on the
+   * keyframe rather than measured, because the symptom only appears at some
+   * font sizes and only on some glyphs, which is precisely the kind of thing
+   * that comes back.
+   */
+  it("leaves room for the whole glyph when the wipe finishes", () => {
+    const keyframe = blockAt(css, "@keyframes section-wipe");
+
+    expect(keyframe, "the section-wipe keyframe is gone").not.toBe("");
+
+    const insets = [...keyframe.matchAll(/clip-path:\s*inset\(([^)]+)\)/g)].map(
+      (match) => match[1].trim().split(/\s+/),
+    );
+
+    expect(
+      insets.length,
+      "no clip-path insets were parsed out of section-wipe, so this test asserts nothing",
+    ).toBeGreaterThan(1);
+
+    // The last one is the finished state - the one `both` makes permanent.
+    const finished = insets[insets.length - 1];
+
+    for (const [index, edge] of finished.entries()) {
+      expect(
+        edge.startsWith("-"),
+        `the wipe's finished clip inset is "${finished.join(" ")}" - edge ${index} is not negative, so the clip lands on the border box and cuts any glyph that hangs outside it`,
+      ).toBe(true);
+    }
+  });
+
+  /**
    * The scale is opacity-free, because the panel around it is already fading.
    *
    * Two opacity animations on nested elements multiply into a muddy one - the

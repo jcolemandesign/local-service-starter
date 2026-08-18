@@ -446,10 +446,31 @@
  *
  * Fades slightly ahead of the edge so the first letters do not snap in.
  */
+/*
+ * The wipe, and the vertical slack is a correctness detail rather than a taste
+ * one.
+ *
+ * `clip-path: inset(0 0 0 0)` clips to the BORDER BOX, and `animation-fill-mode:
+ * both` leaves that clip applied for good once the animation ends. Text is not
+ * contained by its box: a display headline on tight leading hangs its
+ * descenders - g, y, p, j - below the line box, and an ascender or a diacritic
+ * can sit above it. So the finished state was permanently shaving the bottoms
+ * off letters, on the suite whose entire purpose is revealing type.
+ *
+ * The slack is expressed in `em` so it tracks the font size it is protecting
+ * rather than being right at one size and wrong at the others. It is a literal
+ * rather than a token on purpose: this is the margin that stops the effect
+ * destroying glyphs, not a dial anyone should be able to turn down.
+ *
+ * The horizontal edges keep their slack too. The right one matters on the
+ * finished state for an italic or a swash overhanging its own advance width;
+ * the left is symmetry, and costs nothing because clip-path only ever clips the
+ * element it is on.
+ */
 @keyframes section-wipe {
   from {
     opacity: 0;
-    clip-path: inset(0 100% 0 0);
+    clip-path: inset(-0.35em 100% -0.35em -0.15em);
   }
 
   30% {
@@ -458,7 +479,7 @@
 
   to {
     opacity: 1;
-    clip-path: inset(0 0 0 0);
+    clip-path: inset(-0.35em -0.15em -0.35em -0.15em);
   }
 }
 
