@@ -370,6 +370,21 @@
      duration and stagger did. */
   --anim-settle-scale-from: 1.06;
   --anim-settle-distance: 28px;
+  /* Settle's own curve, DECLARED rather than inherited - the second suite to
+     earn one, on exactly the rule Focus established: a suite earns its own
+     curve when it drives something that is not a travel.
+
+     A scale is not a travel. On the shared front-loaded curve the 1.06 is
+     measurably gone in the first quarter of the duration - 1.014 at 180ms of
+     720ms, 1.002 by 360ms - so what plays is a snap followed by half a second
+     of nothing. Exactly the defect that made Focus read as a third of its
+     nominal length, arriving on a different property.
+
+     This spreads the same duration far more evenly, so the crop is still
+     easing back in the second half where the eye is on it. Inheriting was the
+     first attempt and it is the wrong default: the curve a travel wants is the
+     one this suite is worst served by. */
+  --anim-settle-easing: cubic-bezier(0.4, 0, 0.2, 1);
   /* Focus's one number: how far out of focus a unit starts.
 
      10px reads as "resolving" rather than as "smeared" at heading sizes. Much

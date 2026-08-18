@@ -136,7 +136,7 @@ const travelEasingPresets = [
  * progress the most evenly, at the risk of a slow start. The shared curve is
  * offered too, so the choice to differ stays visible as a choice.
  */
-const focusEasingPresets = [
+const nonTravelEasingPresets = [
   { label: "Even (default)", value: "cubic-bezier(0.4, 0, 0.2, 1)" },
   { label: "Symmetric", value: "cubic-bezier(0.33, 0, 0.67, 1)" },
   { label: "Decisive (shared curve)", value: "cubic-bezier(0.22, 1, 0.36, 1)" },
@@ -314,11 +314,10 @@ export const motionControlGroups = [
       {
         token: "--anim-settle-easing",
         label: "Easing",
-        hint: "Unset, Settle uses the shared curve. Give it its own if you lengthen its duration and the extra time does not read.",
+        hint: "Settle's own curve, declared rather than inherited. A scale is not a travel, so the shared front-loaded curve finishes it in the first quarter and it reads as a snap.",
         kind: "easing",
-        defaultValue: "",
-        presets: travelEasingPresets,
-        inheritsFrom: "--anim-easing",
+        defaultValue: "cubic-bezier(0.4, 0, 0.2, 1)",
+        presets: nonTravelEasingPresets,
       },
       {
         token: "--anim-settle-duration",
@@ -500,7 +499,7 @@ export const motionControlGroups = [
         hint: "Focus's own curve. The shared easing control does not touch this, and must not: every other suite would give the same answer and this one would be wrong.",
         kind: "easing",
         defaultValue: "cubic-bezier(0.4, 0, 0.2, 1)",
-        presets: focusEasingPresets,
+        presets: nonTravelEasingPresets,
       },
       {
         token: "--anim-focus-blur",
