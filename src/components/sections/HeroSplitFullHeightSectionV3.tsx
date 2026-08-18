@@ -112,10 +112,17 @@ function SampleImagePanel({
   return (
     <div
       className={cx(
+        // A bled media panel, and the only hero unit on the animation axis.
+        // The section says what it IS; whether it moves is the frame's
+        // attribute, same as everywhere else. The one suite offered here is
+        // `settle-load`, which scales the picture inside this box - which is
+        // why the `overflow-hidden` below is load-bearing twice over: it crops
+        // the photograph, and it cuts the 6% the settle starts at.
+        "reveal-on-scroll reveal-role-media",
         "absolute bottom-[calc(0px_-_var(--site-grid-inset-block))] top-[calc(0px_-_var(--site-grid-inset-block))] overflow-hidden bg-service-surface max-md:relative max-md:inset-auto max-md:h-full max-md:min-h-[var(--media-min-medium)] max-md:!w-full",
         className,
       )}
-      style={fullBleedImagePanelStyle}
+      style={{ ...fullBleedImagePanelStyle, "--reveal-index": 0 } as CSSProperties}
     >
       <Image
         alt={imageAlt}

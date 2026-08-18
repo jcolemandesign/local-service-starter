@@ -861,6 +861,51 @@
     );
   }
 
+  /* == Suite: Settle on load (stored id `settle-load`) ==============
+   *
+   * THE ONE SUITE THE OBSERVER NEVER TOUCHES, and that is the whole design.
+   *
+   * A hero is above the fold at load, so it has no arrival to be triggered by -
+   * which is why every hero sits in `animationExcludedComponents`. The obvious
+   * fix is to animate the `settled` state the observer already sets on
+   * above-the-fold frames, and it is wrong in a way that is worst precisely
+   * here: the observer runs on mount, AFTER first paint, so an animation
+   * starting at `opacity: 0` would blank something the reader is already
+   * looking at. Paint, blank, fade back in - the exact flash the settle-before-
+   * ready ordering in `SectionEntrance` exists to prevent, reintroduced on the
+   * first thing on the page.
+   *
+   * So these rules carry NO `[data-pagebuilder-animation-state]` at all. The
+   * gate is `data-pagebuilder-animation`, which the frame owners render
+   * server-side, so it is in the HTML at first paint and the animation begins
+   * with the page rather than after it. No JavaScript participates. If the
+   * stylesheet is missing the content is simply there, and if scripting never
+   * runs nothing changes - there is no hiding rule to get stuck in.
+   *
+   * It is a separate value rather than a state of `settle` because `settle`'s
+   * rules would then fire on load for the ten below-fold sections that use it,
+   * defeating the scroll trigger they exist for.
+   */
+  [data-pagebuilder-animation="settle-load"] .reveal-on-scroll {
+    animation: section-fade
+      var(--anim-settle-duration, var(--anim-duration))
+      var(--anim-settle-easing) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-settle-stagger, var(--anim-stagger))
+    );
+  }
+
+  [data-pagebuilder-animation="settle-load"]
+    .reveal-role-media
+    :is(img, video) {
+    animation: section-settle
+      var(--anim-settle-duration, var(--anim-duration))
+      var(--anim-settle-easing) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-settle-stagger, var(--anim-stagger))
+    );
+  }
+
   /* == Suite: Wipe (stored id `wipe`) ===============================
    *
    * Text blocks are revealed behind an edge travelling left to right. NOTHING

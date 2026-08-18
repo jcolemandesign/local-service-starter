@@ -341,6 +341,55 @@ export const sectionAnimationSuites = [
   },
   {
     /**
+     * SETTLE, PLAYED BY THE PAGE RATHER THAN BY THE SCROLL.
+     *
+     * Same gesture as `settle`, different trigger, and the trigger is the only
+     * reason it is a second entry rather than an option on the first. A hero is
+     * above the fold at load, so there is no arrival to trigger - which is why
+     * every hero is excluded from this axis. This suite's CSS carries no
+     * animation-state selector at all: it is gated on the attribute the frame
+     * renders server-side, so it plays from first paint with no JavaScript in
+     * the path.
+     *
+     * IT CANNOT BE A STATE OF `settle`. The observer sets `settled` on
+     * above-the-fold frames, but it does so on mount - after first paint - so an
+     * animation hung off that state blanks something already on screen and fades
+     * it back in. And `settle`'s own rules cannot simply drop their state gate,
+     * because they would then fire at load on the ten below-fold sections that
+     * use them, which is exactly the scroll trigger those sections exist for.
+     *
+     * PROTOTYPE SCOPE: one hero. The offering is a veto list rather than a
+     * derived gate, and that is the honest shape for now - "above the fold"
+     * is a property of where a section is used rather than of what it marks, so
+     * there is nothing to derive from. If more heroes take this, the gate should
+     * become the inverse of `animationExcludedComponents`' above-fold reason
+     * rather than a longer list.
+     */
+    id: "settle-load",
+    label: "Settle on load",
+    status: "offered",
+    description:
+      "The image eases down into its frame as the page paints. Everything else fades in place.",
+    guidance:
+      "For a hero, where there is no scroll arrival to wait for. The only suite that plays without the observer.",
+    requiresRole: "media",
+    roles: {
+      heading: "fade in place",
+      content: "fade in place, as one block",
+      card: "fade in place, staggered by --reveal-index",
+      media: "THE SETTLE - scales from 1.06 to 1 while the panel holds still",
+      accent: "fade in place",
+      frame: "fade in place, as a single unit",
+      action: "fade in place",
+    },
+    differentiatedRoles: ["media"],
+    /** Shares Settle's tokens outright. Two triggers, one gesture - giving the
+     *  load version its own scale and tempo would let a hero drift away from
+     *  the suite it is meant to be the same as. */
+    controlGroups: ["rhythm", "settle"],
+  },
+  {
+    /**
      * RENAMED FROM `editorial`, and this is the one moment that was free.
      *
      * Persisted ids are never renamed here - `reveal` is still `reveal` for
@@ -739,6 +788,9 @@ export const sectionAnimationRoleComponents: Partial<
     "ContentThreeColumnMixedSectionV3",
     "CTAImageSectionV3",
     "FeaturePortraitParagraphSectionV3",
+    /** The load-entrance hero. Its panel clips and holds a next/image, which is
+     *  what `settle-load` scales - see suiteExcludedComponents. */
+    "HeroSplitFullHeightSectionV3",
     "ImageStripSectionV3",
     /** The logo grid, not the file it shares with four other trust sections -
      *  the marker is on its panel and the other four have none. */
@@ -809,9 +861,55 @@ export function sectionMarksRole(
  * EMPTY IS A REAL STATE. Nothing has needed striking yet. The lists are the
  * control surface, deliberately unused until a section earns a place on one.
  */
+/**
+ * The hero that takes the load entrance, and the only section whose suites are
+ * decided by hand.
+ *
+ * `HeroSplitFullHeightSectionV3` is above the fold, so none of the scroll-timed
+ * suites can play on it - the observer settles it before the ready flag and
+ * there is no arrival left. It is offered exactly one suite, `settle-load`,
+ * whose CSS never consults the observer.
+ *
+ * Both directions of the veto are listed below because the gate cannot express
+ * either. "Above the fold" is a property of where a section is USED, not of
+ * what it marks, so there is nothing to derive from - which is precisely the
+ * situation `suiteExcludedComponents` was kept for.
+ */
+const loadEntranceHero = "HeroSplitFullHeightSectionV3";
+
+/**
+ * The media-marking sections that are NOT above the fold.
+ *
+ * `settle-load` is gated on `media` like `settle`, so without this it would be
+ * offered on all ten - and on a section the reader scrolls to, an entrance that
+ * has already played by the time they arrive is an entrance they never see.
+ */
+const scrollTriggeredMediaSections = [
+  "ContentAboutCompanySectionV2",
+  "ContentNarrativeFeatureRailSectionV3",
+  "ContentSplitFixedImageSectionV3",
+  "ContentSplitFullImageSectionV3",
+  "ContentStickyCardStreamSectionV2",
+  "ContentThreeColumnMixedSectionV3",
+  "CTAImageSectionV3",
+  "FeaturePortraitParagraphSectionV3",
+  "ImageStripSectionV3",
+  "TrustLogoGridSectionV3",
+] as const;
+
 export const suiteExcludedComponents: Partial<
   Record<SectionAnimationSuiteId, readonly string[]>
-> = {};
+> = {
+  /* The scroll-timed suites the hero's gate would otherwise offer. Wipe, Focus
+     and Pulse are absent because they gate on roles it does not mark, so the
+     derived gate already withholds them and a veto here would be redundant. */
+  reveal: [loadEntranceHero],
+  fade: [loadEntranceHero],
+  settle: [loadEntranceHero],
+  lateral: [loadEntranceHero],
+  /* The inverse: the load entrance belongs to the hero alone. */
+  "settle-load": scrollTriggeredMediaSections,
+};
 
 /** Whether a suite has been struck from one section by name. */
 export function suiteExcludesSection(

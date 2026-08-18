@@ -102,8 +102,30 @@ describe("animation css agreement", () => {
    * different marker class. Neither is offered, and the two tests below pin
    * that arrangement.
    */
+  /**
+   * Suites that are NOT timed, and therefore owe none of this contract.
+   *
+   * A load entrance plays from first paint on an attribute the frame renders
+   * server-side. It has no waiting state because nothing waits: hiding a hero
+   * and revealing it needs the observer, and the observer runs after first
+   * paint, so anything hung off it blanks content the reader can already see.
+   *
+   * Listed rather than inferred, and checked in the opposite direction below -
+   * an exemption that only ever subtracts assertions is how a half-finished
+   * timed suite gets past this file.
+   */
+  const untimedSuites = new Map([
+    [
+      "settle-load",
+      "plays from first paint on the server-rendered attribute; the observer never touches it",
+    ],
+  ]);
+
   it("gives every offered suite both halves of the timed contract", () => {
     for (const suite of sectionAnimationSuites) {
+      if (untimedSuites.has(suite.id)) {
+        continue;
+      }
       const waiting = blockAt(
         css,
         `[data-pagebuilder-animation-ready]\n    [data-pagebuilder-animation="${suite.id}"]`,
@@ -590,6 +612,39 @@ describe("animation css agreement", () => {
    *
    * Both halves are asserted because either alone is satisfiable while broken.
    */
+  /**
+   * The other direction of the exemption, and the half that makes it safe.
+   *
+   * A suite excused the timed contract must be untimed in fact, not merely
+   * unfinished. If a `settle-load` rule ever grows an animation-state selector
+   * it has become a timed suite with no waiting rule - which is the one failure
+   * this file exists to prevent, arriving through the exemption meant to
+   * describe its opposite.
+   */
+  it("keeps the untimed suites genuinely untimed", () => {
+    const rules = css.replace(/\/\*[\s\S]*?\*\//g, "");
+
+    for (const [id, reason] of untimedSuites) {
+      const gated = [
+        ...rules.matchAll(
+          new RegExp(`[^{}]*\\[data-pagebuilder-animation="${id}"\\][^{}]*\\{`, "g"),
+        ),
+      ].map((match) => match[0]);
+
+      expect(
+        gated.length,
+        `no rule is gated on "${id}", so the suite is exempted from the timed contract and implements nothing at all`,
+      ).toBeGreaterThan(0);
+
+      for (const selector of gated) {
+        expect(
+          selector,
+          `"${id}" is excused the timed contract because it ${reason} - but this rule reads an animation state, so it IS timed, and a timed suite without a waiting rule plays from its end state`,
+        ).not.toContain("data-pagebuilder-animation-state");
+      }
+    }
+  });
+
   it("never travels under settle", () => {
     const waiting = blockAt(
       css,

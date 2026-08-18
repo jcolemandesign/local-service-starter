@@ -875,6 +875,16 @@ export function sectionSupportsBackgroundFill(component: string) {
  * the control, and cannot be listed here without carrying one.
  */
 export const animationComponents = new Set<string>([
+  /**
+   * THE ONE HERO ON THIS AXIS, and it takes exactly one suite.
+   *
+   * Above the fold at load like every hero, so no scroll-timed suite can play
+   * on it - the observer settles it before the ready flag and there is no
+   * arrival left. It is here for `settle-load`, whose CSS never consults the
+   * observer and runs from first paint. The other suites its gate would offer
+   * are struck by name in `suiteExcludedComponents`.
+   */
+  "HeroSplitFullHeightSectionV3",
   "ContentStickyCardStreamSectionV2",
   "FeatureAsymmetricCardsSectionV3",
   "FeatureStackedCardsSectionV3",
@@ -1084,7 +1094,6 @@ export const animationExcludedComponents = new Map<string, string>([
       "HeroServicesSectionV3",
       "HeroSplitBentoSectionV3",
       "HeroSplitFixedImageSectionV3",
-      "HeroSplitFullHeightSectionV3",
     ] as const
   ).map(
     (component) =>
