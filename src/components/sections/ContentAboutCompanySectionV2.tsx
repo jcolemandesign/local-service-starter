@@ -47,7 +47,7 @@ function BentoImage({
         // animation toggle is on - see `section-reveal` in globals.css.
         "reveal-on-scroll reveal-role-media",
         "radius-medium",
-        "relative aspect-[5/4] min-w-0 overflow-hidden bg-service-border",
+        "relative aspect-[5/4] min-w-0 overflow-hidden bg-service-border shadow-service",
       )}
       style={{ "--reveal-index": revealIndex } as CSSProperties}
     >
@@ -136,8 +136,11 @@ export function ContentAboutCompanySectionV2({
               "reveal-on-scroll reveal-role-card",
               "fluid-type-frame",
               "radius-medium",
-              "flex h-full min-w-0 flex-col justify-between bg-service-surface p-7 max-md:p-6",
-              cardFill === "none" ? "!bg-transparent" : undefined,
+              "flex h-full min-w-0 flex-col justify-between bg-service-surface p-7 shadow-service max-md:p-6",
+              // The shadow goes with the fill. It is cast BY the card surface,
+              // so a transparent card keeping one would be a shadow under
+              // nothing - the same pairing every other card section makes.
+              cardFill === "none" ? "!bg-transparent !shadow-none" : undefined,
               // Added rather than removed: this card has no border of its own,
               // so "on" is what draws one.
               cardBorder === "on" ? "border border-service-border" : undefined,
