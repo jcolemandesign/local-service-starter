@@ -67,6 +67,31 @@ export function ContentMainIdeaGridSectionV3({
     cardFill === "none" ? "!bg-transparent !shadow-none" : undefined,
     cardBorder === "off" ? "!border-transparent" : undefined,
   );
+  /**
+   * NO FILL AND NO BORDER MEANS THERE IS NO CARD, and the padding was still
+   * behaving as though there were one.
+   *
+   * A point card's `p-5`, its `min-h-44` floor and its `justify-between` all exist
+   * to give a surface a comfortable shape: room inside the box, a floor so a
+   * short point does not collapse, and the index pinned to the top while the
+   * copy sits at the bottom. Take the surface away and every one of them turns
+   * into bare ground - the reader sees two rows of text held apart by the
+   * padding of boxes that are not drawn, which is why the rows read as too far
+   * apart with the toggles off and correct with them on.
+   *
+   * BOTH TOGGLES, NOT EITHER. A filled card with no border is still a card and
+   * still wants its padding; so is an outlined one with no fill. Only the pair
+   * removes the surface, and only then is the padding decorating nothing.
+   *
+   * The horizontal padding stays. It is not what separates the rows, and
+   * dropping it would move the copy out to the column edges - a realignment
+   * nobody asked for while adjusting a vertical rhythm.
+   */
+  const isBareSurface = cardFill === "none" && cardBorder === "off";
+  const pointCardOverride = cx(
+    cardOverride,
+    isBareSurface ? "!min-h-0 !justify-start !py-0" : undefined,
+  );
   const colors = {
     body: "text-service-muted",
     card: "border-service-border bg-service-surface shadow-service",
@@ -148,7 +173,7 @@ export function ContentMainIdeaGridSectionV3({
                 "reveal-on-scroll reveal-role-card",
                 "fluid-type-frame flex h-full min-h-44 flex-col justify-between rounded-[var(--radius-surface-token)] border p-5 max-md:min-h-0",
                 colors.card,
-                cardOverride,
+                pointCardOverride,
               )}
               // Offset by one: the lead card above holds index 0.
               style={{ "--reveal-index": index + 1 } as CSSProperties}
@@ -156,7 +181,10 @@ export function ContentMainIdeaGridSectionV3({
               <p className={cx("type-label", colors.index)}>
                 {String(index + 1).padStart(2, "0")}
               </p>
-              <div className="mt-8">
+              {/* The step from the index to the copy is the card's internal
+                  rhythm, so it comes down with the rest of the padding when
+                  there is no card to have one. */}
+              <div className={isBareSurface ? "mt-4" : "mt-8"}>
                 <h3 className={cx("type-heading-sm wrap-pretty", colors.heading)}>
                   {point.title}
                 </h3>
