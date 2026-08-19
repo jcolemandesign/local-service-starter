@@ -5560,15 +5560,100 @@ body {
   --anim-duration: 720ms;
   --anim-stagger: 90ms;
   --anim-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  --anim-trigger-inset: 25%;
   --anim-reveal-distance: 28px;
+  --anim-settle-scale-from: 1.03;
+  --anim-settle-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  --anim-settle-duration: 1000ms;
+  --anim-settle-stagger: 0ms;
   --anim-accent-scale-from: 0.86;
-  --anim-pulse-scale: 1.07;
-  --anim-pulse-duration: 500ms;
+  --anim-text-wipe-duration: 1400ms;
+  --anim-text-wipe-stagger: 480ms;
+  --anim-pulse-scale: 1.02;
+  --anim-pulse-duration: 340ms;
   --anim-pulse-delay: 480ms;
+  --anim-lateral-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  --anim-lateral-duration: 1600ms;
   --anim-lateral-distance: 0px;
   --anim-lateral-media-distance: 100%;
   --anim-focus-easing: cubic-bezier(0.4, 0, 0.2, 1);
   --anim-focus-blur: 10px;
+}
+.button-cta-primary {
+  --btn-pad-end: 1.5rem;
+  --btn-surface: var(--btn-cta-fill);
+  --btn-surface-hover: var(--btn-cta-fill);
+  --btn-ink: var(--btn-cta-label);
+  --btn-ink-hover: var(--btn-cta-label);
+  --btn-border-color: transparent;
+  --btn-border-color-hover: transparent;
+  --btn-border-width: 1px;
+  --btn-fill: var(--btn-cta-fill-hover);
+  --btn-fill-rest: 0 100%;
+  --btn-fill-hover: 0 0;
+  --btn-fill-inset: 0;
+  --btn-fill-inset-hover: 0;
+  --btn-lift: 0 0;
+  --btn-press: 1;
+  --btn-shadow: none;
+  --btn-shadow-hover: none;
+  --btn-glyph: none;
+  --btn-glyph-size: auto;
+  --btn-glyph-ink: currentColor;
+  --btn-glyph-hover: 0 0;
+  --btn-duration: 320ms;
+  --btn-easing: cubic-bezier(0.22, 1, 0.36, 1);
+}
+.button-cta-secondary {
+  --btn-pad-end: 1.5rem;
+  --btn-surface: transparent;
+  --btn-surface-hover: var(--btn-cta-edge);
+  --btn-ink: var(--btn-cta-edge-ink);
+  --btn-ink-hover: var(--btn-cta-label);
+  --btn-border-color: var(--btn-cta-edge);
+  --btn-border-color-hover: var(--btn-cta-edge);
+  --btn-border-width: 1px;
+  --btn-fill: transparent;
+  --btn-fill-rest: 0 0;
+  --btn-fill-hover: 0 0;
+  --btn-fill-inset: 0;
+  --btn-fill-inset-hover: 0;
+  --btn-lift: 0 0;
+  --btn-press: 1;
+  --btn-shadow: none;
+  --btn-shadow-hover: none;
+  --btn-glyph: none;
+  --btn-glyph-size: auto;
+  --btn-glyph-ink: currentColor;
+  --btn-glyph-hover: 0 0;
+  --btn-duration: 200ms;
+  --btn-easing: cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pagebuilder-section-frame[data-pagebuilder-special-cta="on"] .button-cta-primary,
+.button-cta-special {
+  --btn-pad-end: 0.375rem;
+  --btn-surface: color-mix(in srgb, var(--btn-cta-edge) 12%, transparent);
+  --btn-surface-hover: color-mix(in srgb, var(--btn-cta-edge) 12%, transparent);
+  --btn-ink: var(--btn-cta-edge-ink);
+  --btn-ink-hover: var(--btn-cta-label);
+  --btn-border-color: var(--btn-cta-edge);
+  --btn-border-color-hover: var(--btn-cta-fill);
+  --btn-border-width: 1px;
+  --btn-fill: var(--btn-cta-fill);
+  --btn-fill-rest: 0 0;
+  --btn-fill-hover: 0 0;
+  --btn-fill-inset: 0.375rem 0.375rem 0.375rem calc(100% - 2.625rem);
+  --btn-fill-inset-hover: 0;
+  --btn-lift: 0 0;
+  --btn-press: 1;
+  --btn-shadow: none;
+  --btn-shadow-hover: none;
+  --btn-glyph: "\2192";
+  --btn-glyph-size: 2.25rem;
+  --btn-glyph-ink: var(--btn-cta-label);
+  --btn-glyph-hover: 3px 0;
+  --btn-duration: 320ms;
+  --btn-easing: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Text hierarchy spread, for grounds that cannot afford the standard one.
