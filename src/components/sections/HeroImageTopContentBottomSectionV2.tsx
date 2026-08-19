@@ -23,7 +23,11 @@ function TopImagePlaceholder() {
       className="radius-large relative h-full min-h-0 overflow-hidden bg-zinc-300"
     >
       <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(255_255_255_/_0.22),transparent_46%),linear-gradient(45deg,rgb(255_255_255_/_0.17)_0_1px,transparent_1px_22px)]" />
-      <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-service-ink/18 to-transparent" />
+      {/* No type over this one - it is a vignette rather than a legibility
+          scrim - and it is still wrong from `service-ink`, for a plainer reason:
+          on a light-ink recipe the bottom edge LIGHTENS instead of darkening,
+          so the vignette turns inside out. A shade is a shade. */}
+      <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-bg-dark/18 to-transparent" />
     </div>
   );
 }

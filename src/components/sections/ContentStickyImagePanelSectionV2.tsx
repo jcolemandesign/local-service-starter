@@ -23,7 +23,12 @@ function FullHeightImage({ label }: { label: string }) {
     >
       <div className="absolute inset-0 bg-[linear-gradient(145deg,rgb(23_33_29_/_0.18),rgb(31_122_90_/_0.06)),linear-gradient(45deg,rgb(255_255_255_/_0.2)_0_1px,transparent_1px_20px)]" />
       <div className="absolute inset-0 bg-service-accent/15" />
-      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-service-ink/30 to-transparent" />
+      {/* A SCRIM IS A SHADE, NOT AN INK. Built from `service-ink` this
+          tracked the recipe's headline colour, which is a near-white on every
+          chromatic and dark recipe - so the gradient inverted under the
+          hardcoded white type above it. `bg-dark` is an absolute, which is what
+          a shade over a photograph has to be. */}
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-bg-dark/30 to-transparent" />
       <span className="type-label absolute bottom-[var(--site-grid-inset-block)] left-[var(--site-grid-inset-inline)] text-white/70">
         {label}
       </span>

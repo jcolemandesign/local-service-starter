@@ -481,7 +481,12 @@ export function CTAFullscreenSectionV3({
       <div aria-hidden="true" className="absolute inset-0 bg-bg-dark/55" />
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-linear-to-t from-service-ink via-service-ink/35 to-service-ink/10"
+        /* A SCRIM IS A SHADE, NOT AN INK. Built from `service-ink` this
+          tracked the recipe's headline colour, which is a near-white on every
+          chromatic and dark recipe - so the gradient inverted under the
+          hardcoded white type above it. `bg-dark` is an absolute, which is what
+          a shade over a photograph has to be. */
+        className="absolute inset-0 bg-linear-to-t from-bg-dark via-bg-dark/35 to-bg-dark/10"
       />
 
       <SevenColumnGrid className="relative z-10 min-h-[80svh] grid-rows-[1fr_auto_1fr]">

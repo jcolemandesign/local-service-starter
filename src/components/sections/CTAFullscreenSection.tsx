@@ -32,7 +32,7 @@ export function CTAFullscreenSection({
       <PlaceholderBackground />
       <div className="absolute inset-0 bg-service-ink/55" aria-hidden="true" />
       <div
-        className="absolute inset-0 bg-linear-to-t from-service-ink via-service-ink/35 to-service-ink/10"
+        className="absolute inset-0 bg-linear-to-t from-bg-dark via-bg-dark/35 to-bg-dark/10"
         aria-hidden="true"
       />
 
