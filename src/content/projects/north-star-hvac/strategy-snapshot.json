@@ -1,6 +1,6 @@
 {
   "clientSlug": "north-star-hvac",
-  "createdAt": "2026-08-15T19:25:12.320Z",
+  "createdAt": "2026-08-19T17:45:06.567Z",
   "fields": {
     "aboutCopy": "",
     "contactCopy": "",
@@ -40,7 +40,7 @@
     "pageCopy.financing": "",
     "pageCopy.contact": ""
   },
-  "id": "north-star-hvac-v61",
+  "id": "north-star-hvac-v64",
   "navigation": [
     {
       "href": "/",
@@ -303,5 +303,5 @@
       "status": "needs-template"
     }
   ],
-  "version": 61
+  "version": 64
 }
