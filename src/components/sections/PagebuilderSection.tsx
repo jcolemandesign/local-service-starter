@@ -881,8 +881,21 @@ function renderSectionElement(
       );
     case "DecisionSplitDecisionLargeSectionV3":
       return (
+        /* Same gap its smaller sibling had: the three card toggles were never
+           passed, so the builder showed this section's defaults whatever the
+           controls said. It is in `cardStyleComponents` and
+           `cardLinkComponents`, so all three are offered - they just never
+           arrived.
+
+           `align` is deliberately still absent. The staged path derives it from
+           `variant` rather than from the align axis, and this section is in no
+           align membership set, so passing one here would invent a control the
+           builder does not offer. */
         <DecisionSplitDecisionLargeSectionV3
           {...sectionLibraryV3Content.decisionSplitDecisionLarge}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          cardLinks={section.cardLinks === "off" ? "off" : "on"}
         />
       );
     case "DecisionQuestionTableSectionV3":
