@@ -46,13 +46,13 @@ const alignClassName: Record<
     copy: "col-span-3 col-start-1 max-lg:col-span-2",
     image: "col-span-4 col-start-4 max-lg:col-span-5 max-lg:col-start-3",
     panel:
-      "right-[calc(var(--site-grid-inset-inline)*-1)] max-md:inset-x-[calc(var(--site-grid-inset-inline)*-1)]",
+      "site-grid-bleed-inline-end max-md:inset-x-[calc(0px_-_var(--site-grid-bleed))]",
   },
   right: {
     copy: "col-span-3 col-start-5 max-lg:col-span-2 max-lg:col-start-6",
     image: "col-span-4 col-start-1 max-lg:col-span-5 max-lg:col-start-1",
     panel:
-      "left-[calc(var(--site-grid-inset-inline)*-1)] max-md:inset-x-[calc(var(--site-grid-inset-inline)*-1)]",
+      "site-grid-bleed-inline-start max-md:inset-x-[calc(0px_-_var(--site-grid-bleed))]",
   },
 };
 
@@ -76,10 +76,6 @@ const revealIndex: Record<
 > = {
   left: { heading: 0, body: 1, image: 2 },
   right: { image: 0, heading: 1, body: 2 },
-};
-
-const fullBleedImageStyle: CSSProperties = {
-  width: "calc(100% + var(--site-grid-inset-inline))",
 };
 
 function cx(...classes: Array<string | false | undefined>) {
@@ -177,7 +173,7 @@ export function HeroServicesSectionV3({
     .join(" ");
 
   return (
-    <section className="bg-bg-page">
+    <section className="overflow-x-clip bg-bg-page">
       <SevenColumnGrid className="section-min-sliver h-[calc(var(--section-min-screen)-var(--section-sliver-gap))] grid-rows-[minmax(0,1fr)] max-md:h-auto max-md:grid-rows-none">
         <SevenColumnGridItem
           alignY="middle"
@@ -219,12 +215,7 @@ export function HeroServicesSectionV3({
               "absolute bottom-[calc(0px_-_var(--site-grid-inset-block))] top-[calc(0px_-_var(--site-grid-inset-block))] overflow-hidden bg-service-surface max-md:bottom-[calc(0px_-_var(--site-grid-inset-block))] max-md:top-0 max-md:!w-auto",
               alignment.panel,
             )}
-            style={
-              {
-                ...fullBleedImageStyle,
-                "--reveal-index": order.image,
-              } as CSSProperties
-            }
+            style={{ "--reveal-index": order.image } as CSSProperties}
           >
             <Image
               alt={imageAlt}

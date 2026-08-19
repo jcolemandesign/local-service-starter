@@ -52,35 +52,35 @@ const variantConfig: Record<HeroSplitFullHeightVariant, HeroVariantConfig> = {
     textClassName: "col-span-6 col-start-1",
     imageClassName: "col-span-7 col-start-8",
     imagePanelClassName:
-      "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
+      "site-grid-bleed-inline-end",
     imageSlotLabel: "Image area: columns 8-14",
   },
   "text-4-image-3-right": {
     textClassName: "col-span-7 col-start-1",
     imageClassName: "col-span-6 col-start-9",
     imagePanelClassName:
-      "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
+      "site-grid-bleed-inline-end",
     imageSlotLabel: "Image area: columns 9-14",
   },
   "image-3-left-text-4": {
     textClassName: "col-span-7 col-start-8",
     imageClassName: "col-span-6 col-start-1",
     imagePanelClassName:
-      "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
+      "site-grid-bleed-inline-start",
     imageSlotLabel: "Image area: columns 1-6",
   },
   "image-4-left-text-3": {
     textClassName: "col-span-6 col-start-9",
     imageClassName: "col-span-7 col-start-1",
     imagePanelClassName:
-      "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
+      "site-grid-bleed-inline-start",
     imageSlotLabel: "Image area: columns 1-7",
   },
   "text-7-image-9-overlap-right": {
     textClassName: "relative z-10 col-span-8 col-start-1",
     imageClassName: "z-0 col-span-9 col-start-6",
     imagePanelClassName:
-      "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
+      "site-grid-bleed-inline-end",
     imageSlotLabel: "Image area: columns 6-14; overlaps columns 6-8",
     imageMaskClassName: "full-image-split-image-mask-right",
   },
@@ -88,14 +88,10 @@ const variantConfig: Record<HeroSplitFullHeightVariant, HeroVariantConfig> = {
     textClassName: "relative z-10 col-span-8 col-start-7",
     imageClassName: "z-0 col-span-9 col-start-1",
     imagePanelClassName:
-      "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
+      "site-grid-bleed-inline-start",
     imageSlotLabel: "Image area: columns 1-9; overlaps columns 7-9",
     imageMaskClassName: "full-image-split-image-mask-left",
   },
-};
-
-const fullBleedImagePanelStyle: CSSProperties = {
-  width: "calc(100% + var(--site-grid-inset-inline))",
 };
 
 function SampleImagePanel({
@@ -122,7 +118,7 @@ function SampleImagePanel({
         "absolute bottom-[calc(0px_-_var(--site-grid-inset-block))] top-[calc(0px_-_var(--site-grid-inset-block))] overflow-hidden bg-service-surface max-md:relative max-md:inset-auto max-md:h-full max-md:min-h-[var(--media-min-medium)] max-md:!w-full",
         className,
       )}
-      style={{ ...fullBleedImagePanelStyle, "--reveal-index": 0 } as CSSProperties}
+      style={{ "--reveal-index": 0 } as CSSProperties}
     >
       <Image
         alt={imageAlt}
@@ -175,7 +171,7 @@ export function HeroSplitFullHeightSectionV3({
   };
 
   return (
-    <section className={colors.section}>
+    <section className={cx("overflow-x-clip", colors.section)}>
       <LayoutGrid
         className="section-min-sliver h-[calc(var(--section-min-screen)-var(--section-sliver-gap))] grid-rows-[minmax(0,1fr)] max-lg:grid-rows-none max-md:h-auto"
         columns={14}

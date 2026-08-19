@@ -69,47 +69,43 @@ const variantConfig: Record<
     textClassName: "col-span-6 col-start-1",
     imageClassName: "col-span-7 col-start-8",
     imagePanelClassName:
-      "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
+      "site-grid-bleed-inline-end",
   },
   "text-4-image-3-right": {
     textClassName: "col-span-7 col-start-1",
     imageClassName: "col-span-6 col-start-9",
     imagePanelClassName:
-      "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
+      "site-grid-bleed-inline-end",
   },
   "image-3-left-text-4": {
     textClassName: "col-span-7 col-start-8",
     imageClassName: "col-span-6 col-start-1",
     imagePanelClassName:
-      "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
+      "site-grid-bleed-inline-start",
     imageLeads: true,
   },
   "image-4-left-text-3": {
     textClassName: "col-span-6 col-start-9",
     imageClassName: "col-span-7 col-start-1",
     imagePanelClassName:
-      "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
+      "site-grid-bleed-inline-start",
     imageLeads: true,
   },
   "text-7-image-9-overlap-right": {
     textClassName: "relative z-10 col-span-8 col-start-1",
     imageClassName: "z-0 col-span-9 col-start-6",
     imagePanelClassName:
-      "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]",
+      "site-grid-bleed-inline-end",
     imageMaskClassName: "full-image-split-image-mask-right",
   },
   "image-9-overlap-left-text-7": {
     textClassName: "relative z-10 col-span-8 col-start-7",
     imageClassName: "z-0 col-span-9 col-start-1",
     imagePanelClassName:
-      "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto",
+      "site-grid-bleed-inline-start",
     imageMaskClassName: "full-image-split-image-mask-left",
     imageLeads: true,
   },
-};
-
-const fullBleedImagePanelStyle: CSSProperties = {
-  width: "calc(100% + var(--site-grid-inset-inline))",
 };
 
 const colorRecipeClassName = {
@@ -224,7 +220,7 @@ export function HeroServiceAreaZipLookupSectionV3({
   }
 
   return (
-    <section className={cx("relative", colors.section)}>
+    <section className={cx("relative overflow-x-clip", colors.section)}>
       <LayoutGrid
         className="section-min-sliver h-[calc(var(--section-min-screen)-var(--section-sliver-gap))] grid-rows-[minmax(0,1fr)] max-lg:grid-rows-none max-md:h-auto"
         columns={14}
@@ -381,12 +377,7 @@ export function HeroServiceAreaZipLookupSectionV3({
               config.imagePanelClassName,
               config.imageMaskClassName,
             )}
-            style={
-              {
-                ...fullBleedImagePanelStyle,
-                "--reveal-index": order.image,
-              } as CSSProperties
-            }
+            style={{ "--reveal-index": order.image } as CSSProperties}
           >
             <Image
               alt={imageAlt}

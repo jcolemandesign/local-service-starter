@@ -64,8 +64,8 @@ type FullImageVariantConfig = {
 // Fourteen columns with one empty column between the slots, matching the split
 // families: 6 | gutter | 7. The image bleeds past the grid frame on whichever
 // side it sits, so its panel also picks the direction of that bleed.
-const bleedRight = "left-auto right-[calc(var(--site-grid-inset-inline)*-1)]";
-const bleedLeft = "left-[calc(var(--site-grid-inset-inline)*-1)] right-auto";
+const bleedRight = "site-grid-bleed-inline-end";
+const bleedLeft = "site-grid-bleed-inline-start";
 
 const stackedColumns =
   "max-md:col-span-6 max-md:col-start-1 max-md:row-auto max-sm:col-span-2";
@@ -142,11 +142,6 @@ const colorRecipeClassName = {
   stat: "border-service-border",
 };
 
-// Reaches past the grid frame's inline inset so the crop runs to the page edge.
-const bleedPanelStyle: CSSProperties = {
-  width: "calc(100% + var(--site-grid-inset-inline))",
-};
-
 /**
  * The grid carries no vertical padding; the copy column carries it instead.
  *
@@ -206,10 +201,7 @@ function CroppedImagePanel({
           bleedClassName,
           maskClassName,
         )}
-        style={{
-          ...bleedPanelStyle,
-          "--reveal-index": revealIndex,
-        } as CSSProperties}
+        style={{ "--reveal-index": revealIndex } as CSSProperties}
       >
         <Image
           alt={imageAlt}
@@ -257,7 +249,7 @@ export function ContentSplitFullImageSectionV3({
   const imageRevealIndex = imageLeadsReadingOrder ? 0 : 1;
 
   return (
-    <section className={cx("relative", colors.section)}>
+    <section className={cx("relative overflow-x-clip", colors.section)}>
       {/* No section floor, matching ContentSplitFixedImageSectionV3. The height
           comes from the copy or the image panel's own --media-min-medium floor,
           whichever is taller - which is what keeps this reading as a beat in

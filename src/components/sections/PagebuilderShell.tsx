@@ -2820,6 +2820,25 @@ function PagebuilderPreviewWindow({
               ...previewStyle,
               "--section-viewport-height": "100cqh",
               "--section-min-screen": "var(--section-viewport-height)",
+              /*
+               * The canvas is the screen in here, for width as well as height.
+               *
+               * `--site-grid-edge-gap` is the ground the 2000px cap leaves down
+               * each side, and a bled panel crosses it to reach the edge. At
+               * `:root` it is measured in `svw` - the browser window - which is the
+               * right answer on a page and the wrong one here, where the page
+               * is a box a third of that width. Unfixed, a preview of a
+               * 900px-wide phone would compute the gap for a 2300px desktop and
+               * bleed 700px of image out through the clip.
+               *
+               * Restated rather than left to inherit, for the same reason
+               * `--section-min-screen` above it is: a custom property
+               * substitutes its var()s where it is DECLARED, so the root's
+               * `svw` is already baked into the value by the time it reaches
+               * here.
+               */
+              "--site-grid-edge-gap":
+                "max(0px, (100cqw - var(--site-grid-max)) / 2)",
             } as PreviewVariableStyle}
           >
             <div

@@ -9,6 +9,27 @@
   --container-gutter: 3rem;
   --site-grid-max: 2000px;
   --site-grid-inset-inline: clamp(1.5rem, 4vw, 8rem);
+  /* THE GROUND BETWEEN THE GRID AND THE SCREEN, and it is zero until the cap
+     bites.
+
+     `.site-grid-frame` is capped at `--site-grid-max` and centred, so past that
+     width the page carries a band of bare ground down each side that the grid
+     knows nothing about. A section's GROUND still covers it - the section
+     element is a full-width block and only the grid inside it is capped - but
+     anything positioned against the frame stops short. That is the bug this
+     fixes: a bled image panel offset by one inset reached the frame's edge and
+     left a strip of the section showing beyond it on any screen wider than
+     2000px.
+
+     Small-viewport units on purpose: `svw` and `vw` agree horizontally, and the
+     small one is the honest name for "the width the page is laid out in".
+
+     NOT COMPOSED WITH THE INSET HERE. A custom property substitutes its var()s
+     where it is DECLARED, and `--site-grid-inset-inline` is redeclared by two
+     media queries and by the promoted block - so a `:root` token that folded it
+     in would freeze the desktop value for every screen. The bleed utilities
+     below compose the two on the element instead, where both resolve. */
+  --site-grid-edge-gap: max(0px, (100svw - var(--site-grid-max)) / 2);
   --site-grid-inset-block: clamp(2rem, 4vw, 7rem);
   --site-grid-gap: clamp(0.75rem, 1vw, 1.5rem);
   --site-grid-row-gap: clamp(2.5rem, 4vw, 4.5rem);
@@ -2665,6 +2686,59 @@ body {
     margin-inline: auto;
     padding: var(--site-grid-inset-block) var(--site-grid-inset-inline);
   }
+
+  /* A panel that reaches the screen edge from inside the capped grid.
+   *
+   * The distance is one gutter plus whatever ground the cap left over, composed
+   * HERE rather than in a token so both halves resolve on the element - see the
+   * note on `--site-grid-edge-gap`.
+   *
+   * These replaced four sections' worth of the same arbitrary values written
+   * out by hand, each of which had the same defect: offset by one inset, they
+   * reached the frame's edge and called it the screen's.
+   *
+   * THE SECTION HAS TO CLIP. `100svw` counts the classic scrollbar's width, so
+   * the bleed overshoots by half of it where one is showing, which is a few
+   * pixels of horizontal scroll if nothing catches it. `overflow-x: clip` on the
+   * section catches it - `clip` rather than `hidden`, for the reason the Lateral
+   * suite's containment already records: `hidden` creates a scroll container and
+   * traps `position: sticky` inside the section, and `clip` just clips. */
+  .site-grid-bleed-inline-start,
+  .site-grid-bleed-inline-end {
+    --site-grid-bleed: calc(
+      var(--site-grid-inset-inline) + var(--site-grid-edge-gap)
+    );
+  }
+
+  .site-grid-bleed-inline-start,
+  .site-grid-bleed-inline-end {
+    width: calc(100% + var(--site-grid-bleed));
+  }
+
+  .site-grid-bleed-inline-end {
+    left: auto;
+    right: calc(0px - var(--site-grid-bleed));
+  }
+
+  .site-grid-bleed-inline-start {
+    left: calc(0px - var(--site-grid-bleed));
+    right: auto;
+  }
+
+  /* NO RESPONSIVE VARIANT OF THESE, and it is not an omission.
+   *
+   * A stacked layout wants the panel to bleed from BOTH edges, and the obvious
+   * shape - a third class taking a `max-md:` prefix - does not work here. A
+   * hand-written class in this file is not a Tailwind utility, so a variant on
+   * one is scanned, matched to nothing and dropped without an error. There are
+   * already live examples in the library: `max-md:media-min-medium` is written
+   * on three heroes and generates no rule at all.
+   *
+   * A media query nested in this layer fares no better - it is tree-shaken with
+   * the layer, measured against the served stylesheet rather than assumed. So a
+   * section that needs both edges below a breakpoint writes an ordinary
+   * arbitrary utility and reads `--site-grid-bleed` out of the class above,
+   * which is exactly what it is declared separately for. */
 
   .services-three-cards-grid.site-grid-frame {
     min-height: 0;
