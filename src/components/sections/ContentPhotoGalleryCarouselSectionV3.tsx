@@ -80,9 +80,9 @@ function cx(...classes: Array<string | false | undefined>) {
  */
 const arrowClasses: Record<GalleryScale, string> = {
   compact:
-    "size-9 border-service-border bg-surface-raised text-service-muted hover:border-service-accent hover:text-service-accent max-md:size-8",
+    "size-11 border-service-border bg-surface-raised text-service-muted hover:border-service-accent hover:text-service-accent max-md:size-10",
   large:
-    "size-16 border-service-border bg-surface-raised text-2xl font-semibold leading-none text-service-ink shadow-[0_10px_24px_rgb(20_27_24_/_0.09),0_0_0_1px_rgb(20_27_24_/_0.045)] hover:border-service-accent hover:bg-service-accent hover:text-white max-md:size-12 max-md:text-xl",
+    "size-19 border-service-border bg-surface-raised text-3xl font-semibold leading-none text-service-ink shadow-[0_10px_24px_rgb(20_27_24_/_0.09),0_0_0_1px_rgb(20_27_24_/_0.045)] hover:border-service-accent hover:bg-service-accent hover:text-white max-md:size-14 max-md:text-2xl",
 };
 
 function ArrowButton({
@@ -118,7 +118,7 @@ function ArrowButton({
       {scale === "compact" ? (
         <svg
           aria-hidden="true"
-          className={cx("size-3.5", direction === "previous" && "rotate-180")}
+          className={cx("size-4", direction === "previous" && "rotate-180")}
           fill="none"
           stroke="currentColor"
           strokeLinecap="round"
@@ -169,7 +169,17 @@ function GalleryImageCard({
         src={image.src}
         style={{ objectPosition: image.objectPosition ?? "50% 50%" }}
       />
-      <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-5 bg-gradient-to-t from-service-ink/82 via-service-ink/42 to-transparent p-6 text-white">
+      {/* THE SCRIM IS AN ABSOLUTE DARK, for the same reason the well above it
+          is - and it is the same bug, four lines apart and fixed once.
+
+          Built from `service-ink` it is the RECIPE'S headline colour, which is a
+          near-white on every chromatic and dark recipe. The caption over it is
+          `text-white`, because a scrim only exists to make white type legible on
+          a photograph - so on those recipes the gradient inverted and the
+          caption went white on white. A scrim is not a text colour that
+          happens to be dark; it is a shade over a picture, and it has to stay
+          dark whatever the section's ground is doing. */}
+      <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-5 bg-gradient-to-t from-bg-dark/82 via-bg-dark/42 to-transparent p-6 text-white">
         <p className="type-text-sm wrap-pretty font-semibold">
           {image.caption}
         </p>
@@ -253,7 +263,16 @@ export function ContentPhotoGalleryCarouselSectionV3({
                 ended up on the left of the section. Pushed right explicitly,
                 they sit correctly whether or not there is a headline beside
                 them. */}
-            <div className="ml-auto flex shrink-0 items-center self-end justify-self-end inline-gap-sml">
+            {/* `gap-2`, not `inline-gap-sml`, and the reason is worth recording
+                because it looks like a system bypass. All four `inline-gap-*`
+                utilities read `--inline-gap-active` and only fall back to their
+                own size when nothing declares it - the Style Guide does, so
+                sml, med, lrg and xlrg all resolve to the promoted value and the
+                scale has no small end any more. That token is the rhythm
+                BETWEEN items in a row; these two buttons are one stepper
+                control split in half, and the distance across a control is a
+                property of the control. */}
+            <div className="ml-auto flex shrink-0 items-center gap-2 self-end justify-self-end">
               <ArrowButton
                 direction="previous"
                 onClick={() => step("previous")}
@@ -281,9 +300,18 @@ export function ContentPhotoGalleryCarouselSectionV3({
         </SevenColumnGridItem>
 
         <SevenColumnGridItem className="col-span-7">
-          <div
-            className={scale === "large" ? "mt-heading-body-xl" : "mt-heading-body-lg"}
-          >
+          {/* NO MARGIN OF ITS OWN. The grid's row gap already separates the
+              header from the rail, and this added a second space on top of it -
+              which read as a band of empty ground above the photographs once
+              the section's own block padding was turned down.
+
+              It also removes an inconsistency nobody could see: the large scale
+              asked for `mt-heading-body-xl`, and there is no such utility, so
+              large has been running with the row gap alone all along while
+              compact carried an extra 1.5rem. The two scales now differ in the
+              ways they are meant to - photo size, arrow weight - and not in a
+              margin one of them never actually had. */}
+          <div>
             <div
               aria-label={title ? `${title} gallery` : "Image gallery"}
               className={cx(
