@@ -112,7 +112,7 @@ export function ServicesHoverPanelSection({
                   <PlaceholderBackground label={activeItem.imageLabel} />
                   <div className="absolute inset-0 bg-service-ink/45" aria-hidden="true" />
                   <div
-                    className="absolute inset-0 bg-linear-to-t from-service-ink via-service-ink/45 to-transparent"
+                    className="absolute inset-0 bg-linear-to-t from-bg-dark via-bg-dark/45 to-transparent"
                     aria-hidden="true"
                   />
                   <div className="relative z-10 max-w-3xl">
