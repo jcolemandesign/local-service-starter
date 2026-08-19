@@ -4723,12 +4723,14 @@ body {
     --type-text-xl-transform: var(--type-text-md-transform);
   }
 
-  /* The condensed testimonial carousel ends with its group indicators. A
-   * fully flush ending makes those controls feel cramped, so retain half of
-   * the section's normal medium bottom space only for this component, then
-   * reduce that buffer by 35% to keep the finish compact. */
+  /* The testimonial carousels end with their slide indicators. A fully flush
+   * ending makes those controls feel cramped, so retain a compact portion of
+   * the normal medium bottom space even when the section edge is set to none. */
   .pagebuilder-density-normal
     .pagebuilder-section-frame[data-pagebuilder-padding-bottom="none"][data-pagebuilder-section-component="TestimonialsCarouselCondensedSectionV3"]
+    .section-space-med,
+  .pagebuilder-density-normal
+    .pagebuilder-section-frame[data-pagebuilder-padding-bottom="none"][data-pagebuilder-section-component="TestimonialsCarouselSectionV3"]
     .section-space-med {
     padding-bottom: calc(var(--section-space-med) * 0.325) !important;
   }
@@ -5419,6 +5421,9 @@ body {
 
     .pagebuilder-density-normal
       .pagebuilder-section-frame[data-pagebuilder-padding-bottom="none"][data-pagebuilder-section-component="TestimonialsCarouselCondensedSectionV3"]
+      .section-space-med,
+    .pagebuilder-density-normal
+      .pagebuilder-section-frame[data-pagebuilder-padding-bottom="none"][data-pagebuilder-section-component="TestimonialsCarouselSectionV3"]
       .section-space-med {
       padding-bottom: calc(var(--section-space-med-tablet) * 0.325) !important;
     }
@@ -5461,6 +5466,9 @@ body {
 
     .pagebuilder-density-normal
       .pagebuilder-section-frame[data-pagebuilder-padding-bottom="none"][data-pagebuilder-section-component="TestimonialsCarouselCondensedSectionV3"]
+      .section-space-med,
+    .pagebuilder-density-normal
+      .pagebuilder-section-frame[data-pagebuilder-padding-bottom="none"][data-pagebuilder-section-component="TestimonialsCarouselSectionV3"]
       .section-space-med {
       padding-bottom: calc(var(--section-space-med-mobile) * 0.325) !important;
     }

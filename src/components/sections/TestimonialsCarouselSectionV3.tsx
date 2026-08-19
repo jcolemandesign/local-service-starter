@@ -68,6 +68,7 @@ export function TestimonialsCarouselSectionV3({
   cardFill = "solid",
   items,
 }: TestimonialsCarouselSectionV3Props) {
+  const isUnframed = cardBorder === "off" && cardFill === "none";
   // The visible card and the invisible sizer behind it must carry identical
   // box classes - the sizer is what reserves the row's height, so a fill or
   // border applied to only one of them would resize the carousel.
@@ -75,6 +76,7 @@ export function TestimonialsCarouselSectionV3({
     "content-padding radius-medium border border-service-border bg-surface-raised text-center shadow-service",
     cardFill === "none" && "!bg-transparent !shadow-none",
     cardBorder === "off" && "!border-transparent",
+    isUnframed && "!pb-0",
   );
   const [activeIndex, setActiveIndex] = useState(0);
   const activeItem = items[activeIndex];
@@ -141,7 +143,7 @@ export function TestimonialsCarouselSectionV3({
 
               <div
                 aria-label="Testimonial slides"
-                className="mt-body-actions-sm flex items-center justify-center inline-gap-sml"
+                className="testimonial-carousel-indicators mt-body-actions-sm flex items-center justify-center inline-gap-sml"
               >
                 {items.map((_item, index) => {
                   const isActive = index === activeIndex;

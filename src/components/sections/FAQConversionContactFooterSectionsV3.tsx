@@ -454,11 +454,11 @@ export function CTAMutedSectionV3({
                   {action}
                 </RequestServiceButton>
                 {secondaryAction ? (
-                  // Deliberately a text link, not a second button: it has to
-                  // read as the lower-commitment path, and `border-current`
-                  // keeps it legible across all four color recipes.
+                  // Deliberately a quiet sentence-case text link, not a second
+                  // button or an eyebrow-style label: it has to read as the
+                  // lower-commitment path beside the request action.
                   <a
-                    className={`type-label inline-flex min-h-12 w-fit shrink-0 items-center border-b border-current transition-opacity hover:opacity-75 max-md:w-full ${colors.heading}`}
+                    className={`cta-muted-secondary-link type-text-sm inline-flex w-fit shrink-0 items-center border-b border-current pb-1 font-semibold transition-opacity hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 ${colors.heading}`}
                     href={secondaryActionHref ?? "/contact"}
                   >
                     {secondaryAction}
