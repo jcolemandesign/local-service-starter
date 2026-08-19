@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button, DownArrowIcon } from "@/components/primitives";
 import { RequestServiceButton } from "@/components/request-service";
 import { useScrollLock } from "@/hooks/useScrollLock";
+import type { NavLogoLayout } from "@/content/section-style-options";
 
 const menuEase = [0.22, 1, 0.36, 1] as const;
 
@@ -27,9 +28,19 @@ type NavPrimarySectionV2Props = {
   cardBorder?: "on" | "off";
   cardFill?: "solid" | "none";
   logoHref?: string;
+  /**
+   * The compact mark, for the centre slot of the split arrangement. Falls back
+   * to `logoSrc` here as well as at the injector, so a caller that knows
+   * nothing about the icon slot still draws something.
+   */
+  logoIconSrc?: string;
   logoLabel: string;
   /** Public path to a logo image. Empty renders the lettered placeholder. */
   logoSrc?: string;
+  /** Which marks the centre-logo arrangement draws - see
+   *  `navLogoLayoutOptions`. Ignored by the other two layouts, which have no
+   *  centre slot to put a second mark beside. */
+  navLogoLayout?: NavLogoLayout;
   phone: string;
   action: string;
   links: readonly NavLink[];
@@ -105,37 +116,60 @@ function getDropdownItemKey(item: NavDropdownItem) {
 }
 
 /**
+ * TWO SHAPES, BECAUSE A WORDMARK AND AN ICON ARE NOT THE SAME PICTURE.
+ *
+ * A wordmark is wide and reads from its left edge, so its box is 3:1 and the
+ * image is anchored `object-left` - centring it would let the mark drift away
+ * from the nav's edge as the file's own aspect ratio changed. An icon is
+ * square and belongs on its own centre line, which is the whole point of the
+ * slot it sits in.
+ *
  * The lettered placeholder box is dropped once a real logo is set - a mark
  * inside a bordered panel reads as a placeholder that someone forgot to finish.
  * `fill` with `object-contain` because the image's aspect ratio is whatever the
  * client's file happens to be; the box only caps it.
  */
+type LogoShape = "wordmark" | "mark";
+
+const logoShapeClasses: Record<LogoShape, string> = {
+  mark: "size-[3.6rem]",
+  wordmark: "h-[3.6rem] w-[10.8rem]",
+};
+
 function Logo({
   isMenuOpen,
   href = "#",
   label,
+  shape = "wordmark",
   src,
 }: {
   href?: string;
   isMenuOpen: boolean;
   label: string;
+  shape?: LogoShape;
   src?: string;
 }) {
   if (src) {
     return (
       <a
-        className="relative block h-[3.6rem] w-[10.8rem] shrink-0 cursor-pointer"
+        className={cx(
+          "relative block shrink-0 cursor-pointer",
+          logoShapeClasses[shape],
+        )}
         href={href}
       >
         <Image
           alt={label}
-          className="object-contain object-left"
+          className={cx(
+            "object-contain",
+            shape === "mark" ? "object-center" : "object-left",
+          )}
           fill
           // Eager: the logo is above-the-fold chrome on every page, and the
           // default lazy loading never fires inside the staged preview's
           // container - the image element renders with an empty currentSrc.
           priority
-          sizes="173px"
+          sizes={shape === "mark" ? "58px" : "173px"}
           src={src}
         />
       </a>
@@ -147,7 +181,8 @@ function Logo({
       className={cx(
         "type-label",
         "radius-medium",
-        "flex h-[3.6rem] w-[10.8rem] shrink-0 cursor-pointer items-center justify-center border transition-colors",
+        "flex shrink-0 cursor-pointer items-center justify-center border transition-colors",
+        logoShapeClasses[shape],
         isMenuOpen
           ? "border-white/20 bg-white/5 text-white"
           : "border-service-border bg-service-surface text-service-muted hover:border-service-accent hover:text-service-accent",
@@ -191,8 +226,10 @@ export function NavCenterLogoSectionV2({
   cardBorder,
   cardFill,
   logoHref,
+  logoIconSrc,
   logoLabel,
   logoSrc,
+  navLogoLayout,
   phone,
   action,
   links,
@@ -206,8 +243,10 @@ export function NavCenterLogoSectionV2({
       layout="centerLogo"
       links={links}
       logoHref={logoHref}
+      logoIconSrc={logoIconSrc}
       logoLabel={logoLabel}
       logoSrc={logoSrc}
+      navLogoLayout={navLogoLayout}
       phone={phone}
     />
   );
@@ -218,8 +257,10 @@ function NavPrimaryLayoutSection({
   cardBorder = "off",
   cardFill = "none",
   logoHref,
+  logoIconSrc,
   logoLabel,
   logoSrc,
+  navLogoLayout = "center",
   phone,
   action,
   links,
@@ -245,6 +286,19 @@ function NavPrimaryLayoutSection({
     ? { duration: 0 }
     : { duration: 0.24, ease: menuEase };
   const isCenterLogo = layout === "centerLogo";
+  /**
+   * The split arrangement: a wordmark at the left edge, the compact mark on the
+   * centre line.
+   *
+   * The centre mark is drawn only when there is a mark to draw. With no logo
+   * set at all, both slots would render the same lettered placeholder - the
+   * business name twice, a few inches apart - which reads as a bug rather than
+   * as a brand with no artwork yet. Unset, the arrangement degrades to a
+   * wordmark on the left, which is what a nav with no logo should look like.
+   */
+  const isSplitLogo = isCenterLogo && navLogoLayout === "split";
+  const centerMarkSrc = logoIconSrc || logoSrc;
+  const showsCenterMark = isSplitLogo ? Boolean(centerMarkSrc) : isCenterLogo;
   const hasGroupSurface = cardFill === "solid" || cardBorder === "on";
   const groupSurfaceClassName = cx(
     "radius-medium",
@@ -442,7 +496,12 @@ function NavPrimaryLayoutSection({
               : "flex min-w-0 items-center gap-10"
           }
         >
-          {!isCenterLogo ? (
+          {/* The left slot belongs to the default layout and to the split
+              arrangement, for the same reason in both: the left corner is
+              where a reader looks for the full name, and a wordmark is what
+              goes there. Centre-only leaves it empty so its single mark stays
+              the one thing in the bar. */}
+          {!isCenterLogo || isSplitLogo ? (
             <Logo href={logoHref} isMenuOpen={isMenuOpen} label={logoLabel} src={logoSrc} />
           ) : null}
 
@@ -555,8 +614,19 @@ function NavPrimaryLayoutSection({
           </ul>
         </div>
 
-        {isCenterLogo ? (
-          <Logo href={logoHref} isMenuOpen={isMenuOpen} label={logoLabel} src={logoSrc} />
+        {/* Hidden below `lg` in the split arrangement, where the grid has
+            already collapsed to a flex row: a wordmark and the menu button are
+            what a phone has room for, and a third mark wedged between them
+            crowds both. Centre-only keeps its mark at every width, because
+            there it is the only mark there is. */}
+        {showsCenterMark ? (
+          <Logo
+            href={logoHref}
+            isMenuOpen={isMenuOpen}
+            label={logoLabel}
+            shape={isSplitLogo ? "mark" : "wordmark"}
+            src={isSplitLogo ? centerMarkSrc : logoSrc}
+          />
         ) : null}
 
         <button

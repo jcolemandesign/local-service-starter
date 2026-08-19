@@ -2,6 +2,8 @@ import { createHash } from "node:crypto";
 import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 
+import type { SiteIdentityLogoSlot } from "@/content/site-identity";
+
 /**
  * Storing an uploaded logo under `public/`.
  *
@@ -38,6 +40,24 @@ const allowedTypes = new Map<string, string>([
 /** Generous for a logo and small enough that a mis-picked photo is caught
  *  here rather than committed into the repo. */
 export const MAX_LOGO_BYTES = 2 * 1024 * 1024;
+
+/**
+ * ONE DIRECTORY, THREE SLOTS, AND THE SWEEP BELOW IS WHY THIS TABLE EXISTS.
+ *
+ * Every client's marks live in the same folder, and replacing one deletes the
+ * files it supersedes. With a single `logo-` prefix for all three, uploading an
+ * icon would have swept away the wordmark and the footer mark on its way in -
+ * silently, since the identity record would still point at paths whose files
+ * had just been removed.
+ *
+ * The primary keeps the bare `logo-` prefix so marks uploaded before the slots
+ * existed are still recognised as its own and still get cleaned up.
+ */
+const slotPrefixes: Record<SiteIdentityLogoSlot, string> = {
+  footer: "logo-footer-",
+  icon: "logo-icon-",
+  primary: "logo-",
+};
 
 export type LogoUploadResult =
   | { ok: true; logoSrc: string }
@@ -96,10 +116,12 @@ export function hasValidLogoBytes(type: string, bytes: ArrayBuffer) {
 export async function storeClientLogo({
   bytes,
   clientSlug,
+  slot = "primary",
   type,
 }: {
   bytes: ArrayBuffer;
   clientSlug: string;
+  slot?: SiteIdentityLogoSlot;
   type: string;
 }): Promise<LogoUploadResult> {
   const extension = logoExtensionFor(type);
@@ -131,13 +153,13 @@ export async function storeClientLogo({
 
   const buffer = Buffer.from(bytes);
   const hash = createHash("sha256").update(buffer).digest("hex").slice(0, 12);
-  const fileName = `logo-${hash}.${extension}`;
+  const fileName = `${slotPrefixes[slot]}${hash}.${extension}`;
   const directory = clientAssetDir(clientSlug);
 
   await mkdir(directory, { recursive: true });
   await writeFile(path.join(directory, fileName), buffer);
 
-  await removeSupersededLogos(clientSlug, fileName);
+  await removeSupersededLogos(clientSlug, slot, fileName);
 
   return { logoSrc: `/clients/${clientSlug}/${fileName}`, ok: true };
 }
@@ -150,25 +172,35 @@ export async function storeClientLogo({
  * recorded - an upload whose identity write then failed would otherwise leave
  * a file nothing references and nothing ever removes.
  *
- * Scoped to this client's folder, to the `logo-` prefix this function writes,
- * and to the extensions on the allowlist. It can only delete files it wrote.
+ * Scoped to this client's folder, to THIS SLOT'S prefix, and to the extensions
+ * on the allowlist. It can only delete files it wrote for the slot being
+ * replaced.
+ *
+ * Matched on a full-filename pattern rather than `startsWith`, because the
+ * primary's prefix is a prefix of the other two: `logo-` starts `logo-icon-abc.svg`
+ * as surely as it starts its own files, and a prefix test would have made
+ * replacing the wordmark delete the icon and the footer mark with it.
  */
-async function removeSupersededLogos(clientSlug: string, keepFileName: string) {
+function supersededPattern(slot: SiteIdentityLogoSlot) {
+  return new RegExp(
+    `^${slotPrefixes[slot]}[0-9a-f]{12}\\.(?:${[...allowedTypes.values()].join("|")})$`,
+  );
+}
+
+async function removeSupersededLogos(
+  clientSlug: string,
+  slot: SiteIdentityLogoSlot,
+  keepFileName: string,
+) {
   const directory = clientAssetDir(clientSlug);
+  const pattern = supersededPattern(slot);
 
   try {
     const entries = await readdir(directory);
 
     await Promise.all(
       entries
-        .filter(
-          (entry) =>
-            entry !== keepFileName &&
-            entry.startsWith("logo-") &&
-            [...allowedTypes.values()].some((extension) =>
-              entry.endsWith(`.${extension}`),
-            ),
-        )
+        .filter((entry) => entry !== keepFileName && pattern.test(entry))
         .map((entry) => rm(path.join(directory, entry), { force: true })),
     );
   } catch {

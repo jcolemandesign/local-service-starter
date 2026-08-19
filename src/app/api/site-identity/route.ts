@@ -12,6 +12,8 @@ export const runtime = "nodejs";
 type SiteIdentityRequest = {
   businessName?: unknown;
   clientSlug?: unknown;
+  footerLogoSrc?: unknown;
+  logoIconSrc?: unknown;
   logoSrc?: unknown;
 };
 
@@ -79,22 +81,36 @@ export async function PUT(request: Request) {
   try {
     const requested = sanitizeSiteIdentity({
       businessName: body.businessName,
+      footerLogoSrc: body.footerLogoSrc,
+      logoIconSrc: body.logoIconSrc,
       logoSrc: body.logoSrc,
     });
 
     // Reject a path that resolves to nothing before it is stored. It would save
     // cleanly, render as an empty logo, and be skipped by the exporter - a
     // broken mark on the client's site with no error anywhere.
-    if (requested.logoSrc && !(await logoFileExists(requested.logoSrc))) {
-      return Response.json({
-        error: `No file at public${requested.logoSrc}. Check the path.`,
-        ok: false,
-      }, { status: 400 });
+    //
+    // Every slot is checked, and the label is the one the editor puts on the
+    // field: three paths in one form means "no file at that path" has to say
+    // WHICH path, or the message sends someone to look at the wrong one.
+    const checks = [
+      ["Primary logo", requested.logoSrc] as const,
+      ["Logo icon", requested.logoIconSrc] as const,
+      ["Footer logo", requested.footerLogoSrc] as const,
+    ];
+
+    for (const [label, value] of checks) {
+      if (value && !(await logoFileExists(value))) {
+        return Response.json({
+          error: `${label}: no file at public${value}. Check the path.`,
+          ok: false,
+        }, { status: 400 });
+      }
     }
 
     const identity = await writeSiteIdentity(clientSlug, requested);
 
-    // Echo the sanitised record back: `logoSrc` is dropped unless it is a
+    // Echo the sanitised record back: a path is dropped unless it is a
     // same-origin path, so the editor can show what was actually stored rather
     // than what was typed.
     return Response.json({ identity, ok: true });

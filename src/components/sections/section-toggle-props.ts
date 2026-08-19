@@ -10,9 +10,11 @@ import {
   headingSizeComponents,
   headlineWrapComponents,
   iconComponents,
+  navLogoLayoutComponents,
   resolveCardFill,
   resolveCardBorder,
   resolveBackgroundFill,
+  resolveNavLogoLayout,
   resolveSectionHeadingSize,
   resolveHeadlineWrap,
   resolveSectionIcons,
@@ -38,6 +40,7 @@ export type SectionToggleSource = {
   headingSize?: string;
   headlineWrap?: string;
   icons?: string;
+  navLogoLayout?: string;
 };
 
 /**
@@ -63,6 +66,10 @@ export function getSectionToggleProps(section: SectionToggleSource) {
 
   if (backgroundFillComponents.has(section.component)) {
     props.backgroundFill = resolveBackgroundFill(section.backgroundFill);
+  }
+
+  if (navLogoLayoutComponents.has(section.component)) {
+    props.navLogoLayout = resolveNavLogoLayout(section.navLogoLayout);
   }
 
   if (cardStyleComponents.has(section.component)) {

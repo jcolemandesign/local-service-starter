@@ -144,6 +144,7 @@ import {
   cardLinkMediaOptions,
   cardFillOptInComponents,
   pickSectionToggleFields,
+  sectionToggleFieldNames,
   resolveBackgroundFill,
   resolveBorderTone,
   resolveCardBorder,
@@ -175,6 +176,10 @@ import {
   sectionSupportsCardLinks,
   sectionSupportsCardStyle,
   sectionSupportsBackgroundFill,
+  sectionSupportsNavLogoLayout,
+  resolveNavLogoLayout,
+  navLogoLayoutOptions,
+  type NavLogoLayout,
   sectionSupportsJoinAbove,
   sectionSupportsBackgroundTreatment,
   sectionSupportsSectionSpacing,
@@ -754,6 +759,10 @@ function getSectionBackgroundFill(
   return resolveBackgroundFill(section.backgroundFill);
 }
 
+function getSectionNavLogoLayout(section: WorkingSection): NavLogoLayout {
+  return resolveNavLogoLayout(section.navLogoLayout);
+}
+
 function sectionSupportsCardFill(
   section: PagebuilderRecipe["sectionStack"][number],
 ) {
@@ -1116,6 +1125,7 @@ function serializeWorkingSection(section: WorkingSection) {
     // Resolved after the spread, since these carry per-component defaults.
     colorRecipe: getSectionColorRecipe(section),
     backgroundFill: getSectionBackgroundFill(section),
+    navLogoLayout: getSectionNavLogoLayout(section),
     cardBorder: getSectionCardBorder(section),
     cardFill: getSectionCardFill(section),
     borderTone: getSectionBorderTone(section),
@@ -1258,25 +1268,51 @@ function updateSectionFromSwapOption(
   };
 }
 
+/**
+ * ONE NAVIGATION, COPIED ONTO EVERY PAGE IN THE BUILDER.
+ *
+ * This is a fourth transport hop and it was not on the list. It used to name
+ * seven toggles by hand - align, backgroundFill, cardBorder, cardFill,
+ * colorRecipe, ratio, variant - so every axis added after it was written
+ * stopped at the source page. The nav on the first page took the new setting,
+ * the copies did not, and the difference read as the other pages having gone
+ * stale rather than as a field that was never copied. `navLogoLayout` is how
+ * it surfaced; entrance animation, the ground texture, the colour-override
+ * swatches, the heading scale and the special-CTA switch were all silently in
+ * the same position.
+ *
+ * ASSIGNED, NOT SPREAD, and undefined is a value here. `pickSectionToggleFields`
+ * drops unset keys so that spreading it cannot blank something the target
+ * already holds - correct at a promotion hop, wrong at this one, where the
+ * shared nav IS the answer and a target holding its own older value is exactly
+ * the divergence this function exists to remove.
+ */
 function copySharedNavigationSection(
   section: WorkingSection,
   sharedNavigation: WorkingSection,
 ): WorkingSection {
-  return {
+  const shared = sharedNavigation as Record<string, unknown>;
+  const next: Record<string, unknown> = {
     ...section,
     component: sharedNavigation.component,
     included: sharedNavigation.included,
     instruction: sharedNavigation.instruction,
     mode: sharedNavigation.mode,
     name: sharedNavigation.name,
-    align: sharedNavigation.align,
-    backgroundFill: sharedNavigation.backgroundFill,
-    cardBorder: sharedNavigation.cardBorder,
-    cardFill: sharedNavigation.cardFill,
-    colorRecipe: sharedNavigation.colorRecipe,
-    ratio: sharedNavigation.ratio,
-    variant: sharedNavigation.variant,
+    // The two axes the shared list deliberately leaves out, because they are
+    // stored as booleans rather than option strings - see the trap documented
+    // on `sectionToggleFieldNames`. They are still settings on the nav, and a
+    // shared nav with different padding per page is the same divergence by
+    // another route.
+    reduceTopPadding: sharedNavigation.reduceTopPadding,
+    reduceBottomPadding: sharedNavigation.reduceBottomPadding,
   };
+
+  for (const name of sectionToggleFieldNames) {
+    next[name] = shared[name];
+  }
+
+  return next as WorkingSection;
 }
 
 function findSharedNavigationSource(layoutSlots: PageLayoutSlot[][]) {
@@ -3425,6 +3461,17 @@ export function PagebuilderShell({
     updateActiveStack((stack) =>
       stack.map((section) =>
         section.id === sectionId ? { ...section, backgroundFill } : section,
+      ),
+    );
+  }
+
+  function updateSectionNavLogoLayout(
+    sectionId: string,
+    navLogoLayout: NavLogoLayout,
+  ) {
+    updateActiveStack((stack) =>
+      stack.map((section) =>
+        section.id === sectionId ? { ...section, navLogoLayout } : section,
       ),
     );
   }
@@ -5666,6 +5713,7 @@ export function PagebuilderShell({
                               cluster below deliberately does NOT join it
                               either - see the note there. */}
                           {sectionSupportsBackgroundFill(section.component) ||
+                          sectionSupportsNavLogoLayout(section.component) ||
                           (sectionSupportsJoinAbove(section.component) &&
                             includedSections[0]?.id !== section.id) ||
                           sectionSupportsSectionSpacing(section.component) ||
@@ -5713,6 +5761,46 @@ export function PagebuilderShell({
                                     );
                                   },
                                 )}
+                              </div>
+                            </fieldset>
+                          ) : null}
+
+                          {/* Text rather than icons, unlike its neighbours.
+                              The difference between these two is WHERE a mark
+                              sits and how many there are, and no 14px glyph
+                              says that - the two icons it would take are the
+                              same icon in two positions. */}
+                          {sectionSupportsNavLogoLayout(section.component) ? (
+                            <fieldset className="grid gap-2">
+                              <legend className="type-caption font-semibold text-current">
+                                Logo layout
+                              </legend>
+                              <div className="flex flex-wrap items-center gap-2">
+                                {navLogoLayoutOptions.map((option) => {
+                                  const isActive =
+                                    getSectionNavLogoLayout(section) ===
+                                    option.value;
+
+                                  return (
+                                    <button
+                                      aria-pressed={isActive}
+                                      className={cx(
+                                        "token-chrome-control type-caption rounded-[var(--chrome-radius-control)] border px-3 py-2 transition-colors",
+                                        isActive && "token-chrome-card-active",
+                                      )}
+                                      key={option.value}
+                                      onClick={() =>
+                                        updateSectionNavLogoLayout(
+                                          section.id,
+                                          option.value,
+                                        )
+                                      }
+                                      type="button"
+                                    >
+                                      {option.label}
+                                    </button>
+                                  );
+                                })}
                               </div>
                             </fieldset>
                           ) : null}

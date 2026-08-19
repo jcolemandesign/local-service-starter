@@ -14,12 +14,20 @@
 
 import { describe, expect, it } from "vitest";
 import { renderPageTemplateSection } from "@/components/sections/PageTemplatePreview";
-import type { SiteIdentity } from "@/content/site-identity";
+import { emptySiteIdentity, type SiteIdentity } from "@/content/site-identity";
 
 const identity: SiteIdentity = {
+  ...emptySiteIdentity,
   businessName: "North Star HVAC",
-  logoSrc: "",
 };
+
+const footerComponents = [
+  "FooterSectionV2",
+  "FooterSectionV3",
+  "FooterHorizontalSectionV3",
+  "FooterCompactSectionV3",
+  "FooterLinkPanelSectionV3",
+];
 
 function render(component: string, mode: string, name: string, fields: unknown[] = [], id?: SiteIdentity) {
   return renderPageTemplateSection(
@@ -68,6 +76,7 @@ describe("site identity reaches the chrome", () => {
 
   it("passes a logo image path to every nav when one is set", () => {
     const withLogo: SiteIdentity = {
+      ...emptySiteIdentity,
       businessName: "North Star HVAC",
       logoSrc: "/images/north-star-logo.svg",
     };
@@ -85,14 +94,57 @@ describe("site identity reaches the chrome", () => {
   });
 
   it("every footer variant gets it", () => {
-    for (const c of [
-      "FooterSectionV3",
-      "FooterHorizontalSectionV3",
-      "FooterCompactSectionV3",
-      "FooterLinkPanelSectionV3",
-    ]) {
+    for (const c of footerComponents) {
       expect(render(c, "Utility", "Footer", [], identity).props.businessName).toBe(
         "North Star HVAC",
+      );
+    }
+  });
+
+  /**
+   * The footer's own mark, which is a separate slot from the nav's.
+   *
+   * Every footer in the library sits on a dark ground, and the wordmark that
+   * reads correctly in the nav is regularly the one that disappears down here -
+   * so the slot exists to hold a light version. It falls back to the primary,
+   * because one file is the common case.
+   */
+  it("passes the footer mark to every footer variant", () => {
+    const withMarks: SiteIdentity = {
+      ...emptySiteIdentity,
+      businessName: "North Star HVAC",
+      footerLogoSrc: "/images/north-star-footer.svg",
+      logoSrc: "/images/north-star-logo.svg",
+    };
+
+    for (const c of footerComponents) {
+      expect(render(c, "Utility", "Footer", [], withMarks).props.logoSrc, c).toBe(
+        "/images/north-star-footer.svg",
+      );
+    }
+  });
+
+  it("falls the footer mark back to the primary logo", () => {
+    const onlyPrimary: SiteIdentity = {
+      ...emptySiteIdentity,
+      businessName: "North Star HVAC",
+      logoSrc: "/images/north-star-logo.svg",
+    };
+
+    for (const c of footerComponents) {
+      expect(
+        render(c, "Utility", "Footer", [], onlyPrimary).props.logoSrc,
+        c,
+      ).toBe("/images/north-star-logo.svg");
+    }
+  });
+
+  it("leaves the footer mark empty when no logo is set at all", () => {
+    // `FooterLogo` renders its children in that case, so each footer keeps the
+    // business-name treatment it had before the slot existed.
+    for (const c of footerComponents) {
+      expect(render(c, "Utility", "Footer", [], identity).props.logoSrc, c).toBe(
+        "",
       );
     }
   });

@@ -1,3 +1,5 @@
+import { FooterLogo } from "./FooterLogo";
+
 
 type FooterLink = {
   label: string;
@@ -14,6 +16,9 @@ type FooterContact = {
 type FooterSectionV2Props = {
   businessName: string;
   description: string;
+  /** The client's footer mark. Empty keeps the business name as text, which
+   *  is what every footer did before the slot existed. */
+  logoSrc?: string;
   quickLinks: FooterLink[];
   services: FooterLink[];
   serviceAreas: FooterLink[];
@@ -146,6 +151,7 @@ function FooterColumn({
 export function FooterSectionV2({
   businessName,
   description,
+  logoSrc,
   quickLinks,
   services,
   serviceAreas,
@@ -161,16 +167,18 @@ export function FooterSectionV2({
       <div className="container-site">
         <div className="grid grid-cols-6 gap-10 max-lg:grid-cols-3 max-md:grid-cols-1">
           <div className={cx("fluid-type-frame", "col-span-2 max-lg:col-span-3 max-md:col-span-1")}>
-            <a
-              className={cx(
-                "radius-medium",
-                "type-label",
-                "inline-flex min-h-12 min-w-40 cursor-pointer items-center justify-center border border-white/15 bg-white/5 px-5 text-white",
-              )}
-              href="#"
-            >
-              {businessName}
-            </a>
+            <FooterLogo businessName={businessName} src={logoSrc}>
+              <a
+                className={cx(
+                  "radius-medium",
+                  "type-label",
+                  "inline-flex min-h-12 min-w-40 cursor-pointer items-center justify-center border border-white/15 bg-white/5 px-5 text-white",
+                )}
+                href="#"
+              >
+                {businessName}
+              </a>
+            </FooterLogo>
             <p
               className={cx(
                 "type-text-md",

@@ -181,6 +181,8 @@ import {
 import type { PagebuilderRecipeSection } from "@/content/pagebuilder";
 import {
   emptySiteIdentity,
+  resolveFooterLogoSrc,
+  resolveIconLogoSrc,
   type SiteIdentity,
 } from "@/content/site-identity";
 
@@ -413,7 +415,10 @@ function renderSectionElement(
     case "NavPrimarySectionV2":
       return <NavPrimarySectionV2 {...sectionLibraryV3Content.navPrimary} logoLabel={siteIdentity.businessName || sectionLibraryV3Content.navPrimary.logoLabel} logoSrc={siteIdentity.logoSrc} />;
     case "NavCenterLogoSectionV2":
-      return <NavCenterLogoSectionV2 {...sectionLibraryV3Content.navPrimary} logoLabel={siteIdentity.businessName || sectionLibraryV3Content.navPrimary.logoLabel} logoSrc={siteIdentity.logoSrc} />;
+      // `logoIconSrc` only here: the centre-logo nav is the only one with a
+      // second slot to put a mark in. `navLogoLayout` arrives separately, on
+      // the clone `withSectionToggles` applies to whatever this returns.
+      return <NavCenterLogoSectionV2 {...sectionLibraryV3Content.navPrimary} logoIconSrc={resolveIconLogoSrc(siteIdentity)} logoLabel={siteIdentity.businessName || sectionLibraryV3Content.navPrimary.logoLabel} logoSrc={siteIdentity.logoSrc} />;
     case "NavFloatingBentoSectionV2":
       return <NavFloatingBentoSectionV2 {...sectionLibraryV3Content.navPrimary} logoLabel={siteIdentity.businessName || sectionLibraryV3Content.navPrimary.logoLabel} logoSrc={siteIdentity.logoSrc} />;
     case "HeroSplitFullHeightSectionV3":
@@ -1103,16 +1108,44 @@ function renderSectionElement(
           {...sectionLibraryV3Content.contactModalBegin}
         />
       );
+    // Every footer takes the client's footer mark, for the same reason the
+    // navs above take the wordmark: the builder canvas should show the brand
+    // being built, not the library's demo one.
     case "FooterSectionV2":
-      return <FooterSectionV2 {...sectionLibraryV3Content.footer} />;
+      return (
+        <FooterSectionV2
+          {...sectionLibraryV3Content.footer}
+          logoSrc={resolveFooterLogoSrc(siteIdentity)}
+        />
+      );
     case "FooterSectionV3":
-      return <FooterSectionV3 {...sectionLibraryV3Content.footer} />;
+      return (
+        <FooterSectionV3
+          {...sectionLibraryV3Content.footer}
+          logoSrc={resolveFooterLogoSrc(siteIdentity)}
+        />
+      );
     case "FooterHorizontalSectionV3":
-      return <FooterHorizontalSectionV3 {...sectionLibraryV3Content.footer} />;
+      return (
+        <FooterHorizontalSectionV3
+          {...sectionLibraryV3Content.footer}
+          logoSrc={resolveFooterLogoSrc(siteIdentity)}
+        />
+      );
     case "FooterCompactSectionV3":
-      return <FooterCompactSectionV3 {...sectionLibraryV3Content.footer} />;
+      return (
+        <FooterCompactSectionV3
+          {...sectionLibraryV3Content.footer}
+          logoSrc={resolveFooterLogoSrc(siteIdentity)}
+        />
+      );
     case "FooterLinkPanelSectionV3":
-      return <FooterLinkPanelSectionV3 {...sectionLibraryV3Content.footer} />;
+      return (
+        <FooterLinkPanelSectionV3
+          {...sectionLibraryV3Content.footer}
+          logoSrc={resolveFooterLogoSrc(siteIdentity)}
+        />
+      );
     default:
       return <UnknownSection section={section} />;
   }

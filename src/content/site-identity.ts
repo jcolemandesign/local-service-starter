@@ -18,11 +18,29 @@
  * reaches `StrategyWorkspaceSection`, which is a client component: a module that
  * imports `node:fs` cannot be pulled into that bundle.
  */
+
+/**
+ * THREE MARKS, BECAUSE A BRAND IS NOT ONE FILE.
+ *
+ * A wordmark is the right thing in a nav's left corner and the wrong thing in a
+ * 3rem centred slot; an icon is the right thing there and unreadable as a
+ * footer's only identifier; a footer sits on a dark ground where a mark drawn
+ * for a light one disappears. Each slot is a separate upload rather than one
+ * file used three ways, because scaling and recolouring somebody's logo in CSS
+ * is how a brand ends up looking wrong on the site that is supposed to present
+ * it.
+ *
+ * Every slot is optional and every consumer falls back the same way: an unset
+ * mark renders the business name as text, which is what the chrome did before
+ * any of this existed.
+ */
+export type SiteIdentityLogoSlot = "primary" | "icon" | "footer";
+
 export type SiteIdentity = {
   businessName: string;
   /**
    * Public path to a logo image, e.g. `/images/north-star-logo.svg`. Typed or
-   * pasted by hand for now; an upload button is phase two.
+   * pasted by hand, or uploaded through the Site identity editor.
    *
    * Empty means the chrome keeps rendering `businessName` as text, which is the
    * previous behaviour, so this can be left unset indefinitely.
@@ -32,10 +50,27 @@ export type SiteIdentity = {
    * does not - and these files end up on client sites.
    */
   logoSrc: string;
+  /**
+   * The compact mark. Square-ish artwork for the places a wordmark is too wide
+   * to read: the centre slot of the split nav layout is the first of them.
+   *
+   * Falls back to `logoSrc` at the point of use rather than here, so a client
+   * with one file still gets a mark in every slot and the editor can still show
+   * this one as genuinely unset.
+   */
+  logoIconSrc: string;
+  /**
+   * The footer's mark. Its own slot because a footer's ground is dark in every
+   * footer this library ships, and the mark that works on the nav's page colour
+   * is regularly the one that vanishes there.
+   */
+  footerLogoSrc: string;
 };
 
 export const emptySiteIdentity: SiteIdentity = {
   businessName: "",
+  footerLogoSrc: "",
+  logoIconSrc: "",
   logoSrc: "",
 };
 
@@ -68,6 +103,41 @@ export function sanitizeSiteIdentity(value: unknown): SiteIdentity {
   return {
     businessName:
       typeof record.businessName === "string" ? record.businessName.trim() : "",
+    footerLogoSrc: sanitizeLogoSrc(record.footerLogoSrc),
+    logoIconSrc: sanitizeLogoSrc(record.logoIconSrc),
     logoSrc: sanitizeLogoSrc(record.logoSrc),
   };
+}
+
+/** Which record field each upload slot writes. One table so the editor, the
+ *  upload route and the file-namer cannot disagree about it. */
+export const siteIdentityLogoFields: Record<
+  SiteIdentityLogoSlot,
+  "logoSrc" | "logoIconSrc" | "footerLogoSrc"
+> = {
+  footer: "footerLogoSrc",
+  icon: "logoIconSrc",
+  primary: "logoSrc",
+};
+
+export function isSiteIdentityLogoSlot(
+  value: unknown,
+): value is SiteIdentityLogoSlot {
+  return value === "primary" || value === "icon" || value === "footer";
+}
+
+/**
+ * The mark a compact slot should draw, falling back to the wordmark.
+ *
+ * Resolved here rather than in each consumer so "an unset icon means use the
+ * primary" is one answer rather than four, and so the editor can keep showing
+ * the icon field as empty while the nav still renders something.
+ */
+export function resolveIconLogoSrc(identity: SiteIdentity) {
+  return identity.logoIconSrc || identity.logoSrc;
+}
+
+/** Same fallback for the footer's slot. */
+export function resolveFooterLogoSrc(identity: SiteIdentity) {
+  return identity.footerLogoSrc || identity.logoSrc;
 }

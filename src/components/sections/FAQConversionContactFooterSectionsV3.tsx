@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { FooterLogo } from "./FooterLogo";
 import {
   LayoutGrid,
   LayoutGridItem,
@@ -102,6 +103,9 @@ type FooterSectionV3Props = {
   contact: FooterContact;
   copyright: string;
   description: string;
+  /** The client's footer mark. Empty keeps the business name as text, which
+   *  is what every footer did before the slot existed. */
+  logoSrc?: string;
   privacyLink: FooterLink;
   quickLinks: readonly FooterLink[];
   reviewLink?: FooterLink;
@@ -636,6 +640,7 @@ export function FooterSectionV3({
   contact,
   copyright,
   description,
+  logoSrc,
   privacyLink,
   quickLinks,
   reviewLink,
@@ -652,12 +657,14 @@ export function FooterSectionV3({
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
           <div className="fluid-type-frame">
-            <a
-              className="radius-medium type-label inline-flex min-h-12 min-w-40 cursor-pointer items-center justify-center border border-white/15 bg-white/5 px-5 text-white"
-              href="#"
-            >
-              {businessName}
-            </a>
+            <FooterLogo businessName={businessName} src={logoSrc}>
+              <a
+                className="radius-medium type-label inline-flex min-h-12 min-w-40 cursor-pointer items-center justify-center border border-white/15 bg-white/5 px-5 text-white"
+                href="#"
+              >
+                {businessName}
+              </a>
+            </FooterLogo>
             <p className="type-text-md wrap-pretty mt-heading-body-sm text-white/70">
               {description}
             </p>
@@ -765,6 +772,7 @@ export function FooterHorizontalSectionV3({
   businessName,
   contact,
   copyright,
+  logoSrc,
   privacyLink,
   quickLinks,
   reviewLink,
@@ -781,12 +789,14 @@ export function FooterHorizontalSectionV3({
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
           <div className="fluid-type-frame">
-            <a
-              className="radius-medium type-label inline-flex min-h-12 min-w-40 cursor-pointer items-center justify-center border border-white/15 bg-white/5 px-5 text-white"
-              href="#"
-            >
-              {businessName}
-            </a>
+            <FooterLogo businessName={businessName} src={logoSrc}>
+              <a
+                className="radius-medium type-label inline-flex min-h-12 min-w-40 cursor-pointer items-center justify-center border border-white/15 bg-white/5 px-5 text-white"
+                href="#"
+              >
+                {businessName}
+              </a>
+            </FooterLogo>
             <ul
               aria-label="Social links"
               className="mt-body-actions-sm flex inline-gap-sml"
@@ -886,6 +896,7 @@ export function FooterCompactSectionV3({
   businessName,
   contact,
   copyright,
+  logoSrc,
   privacyLink,
   quickLinks,
   reviewLink,
@@ -900,12 +911,14 @@ export function FooterCompactSectionV3({
       <SevenColumnGrid className="section-min-none" padding="sml">
         <SevenColumnGridItem className="col-span-2 max-lg:col-span-7">
           <div className="fluid-type-frame">
-            <a
-              className="radius-medium type-label inline-flex min-h-12 min-w-40 cursor-pointer items-center justify-center border border-white/15 bg-white/5 px-5 text-white"
-              href="#"
-            >
-              {businessName}
-            </a>
+            <FooterLogo businessName={businessName} src={logoSrc}>
+              <a
+                className="radius-medium type-label inline-flex min-h-12 min-w-40 cursor-pointer items-center justify-center border border-white/15 bg-white/5 px-5 text-white"
+                href="#"
+              >
+                {businessName}
+              </a>
+            </FooterLogo>
             <ul
               aria-label="Social links"
               className="mt-body-actions-sm flex inline-gap-sml"

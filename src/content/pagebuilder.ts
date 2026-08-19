@@ -96,6 +96,10 @@ export type PagebuilderRecipeSection = {
   borderSwatch?: import("@/content/color-overrides").ColorOverrideSwatch;
   borderIntensity?: import("@/content/color-overrides").ColorOverrideIntensity;
   backgroundFill?: import("@/content/section-color-recipes").SectionBackgroundFill;
+  /** Which marks the centre-logo nav draws, and where - see
+   *  `navLogoLayoutOptions`. Purely visual, so it is its own field rather
+   *  than a `variant` value. */
+  navLogoLayout?: import("@/content/section-style-options").NavLogoLayout;
 };
 
 export type PagebuilderRecipe = {

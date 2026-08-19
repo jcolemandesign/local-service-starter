@@ -1,6 +1,10 @@
 import { requireBuilderApiAccess } from "@/utils/builder-access";
 import { sanitizeClientSlug } from "@/utils/strategy-workspace";
 import { isAllowedLogoType, storeClientLogo } from "@/utils/logo-upload";
+import {
+  isSiteIdentityLogoSlot,
+  siteIdentityLogoFields,
+} from "@/content/site-identity";
 import { readSiteIdentity, writeSiteIdentity } from "@/utils/site-identity";
 
 /**
@@ -13,8 +17,10 @@ import { readSiteIdentity, writeSiteIdentity } from "@/utils/site-identity";
  * said - it validates a hand-entered path - rather than becoming a branch that
  * is skipped on upload.
  *
- * The business name is untouched here. An upload replaces the mark and nothing
- * else.
+ * The business name is untouched here. An upload replaces one mark and
+ * nothing else - which is what the `slot` field decides. It defaults to the
+ * primary, so a caller that predates the icon and footer slots still uploads a
+ * wordmark rather than being rejected for omitting a field it never sent.
  */
 
 export const runtime = "nodejs";
@@ -72,10 +78,25 @@ export async function POST(request: Request) {
     );
   }
 
+  const requestedSlot = form.get("slot");
+  const slot = isSiteIdentityLogoSlot(requestedSlot)
+    ? requestedSlot
+    : requestedSlot == null || requestedSlot === ""
+      ? ("primary" as const)
+      : null;
+
+  if (!slot) {
+    return jsonError(
+      `Unknown logo slot ${String(requestedSlot)}. Use primary, icon or footer.`,
+      400,
+    );
+  }
+
   try {
     const stored = await storeClientLogo({
       bytes: await file.arrayBuffer(),
       clientSlug,
+      slot,
       type: file.type,
     });
 
@@ -84,12 +105,12 @@ export async function POST(request: Request) {
     }
 
     // Read-modify-write rather than writing a whole identity: the upload knows
-    // about the logo and must not be able to blank a business name that was
-    // edited in another tab.
+    // about one mark and must not be able to blank a business name that was
+    // edited in another tab - nor either of the two marks it is not replacing.
     const current = await readSiteIdentity(clientSlug);
     const identity = await writeSiteIdentity(clientSlug, {
       ...current,
-      logoSrc: stored.logoSrc,
+      [siteIdentityLogoFields[slot]]: stored.logoSrc,
     });
 
     return Response.json({ identity, ok: true });

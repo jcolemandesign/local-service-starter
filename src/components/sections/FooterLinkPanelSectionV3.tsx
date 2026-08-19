@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { FooterLogo } from "./FooterLogo";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
@@ -21,6 +22,9 @@ type FooterLinkPanelSectionV3Props = {
   contact: FooterContact;
   copyright: string;
   description: string;
+  /** The client's footer mark. Empty keeps the business name as text, which
+   *  is what every footer did before the slot existed. */
+  logoSrc?: string;
   privacyLink: FooterLink;
   quickLinks: readonly FooterLink[];
   reviewLink: FooterLink;
@@ -91,6 +95,7 @@ export function FooterLinkPanelSectionV3({
   contact,
   copyright,
   description,
+  logoSrc,
   privacyLink,
   quickLinks,
   reviewLink,
@@ -127,9 +132,13 @@ export function FooterLinkPanelSectionV3({
             <p className="type-text-lg wrap-pretty mt-body-actions-sm font-semibold text-service-ink">
               {description}
             </p>
-            <p className="type-text-md mt-heading-body-sm font-semibold text-service-ink">
-              {businessName}
-            </p>
+            <div className="mt-heading-body-sm">
+              <FooterLogo businessName={businessName} src={logoSrc}>
+                <p className="type-text-md font-semibold text-service-ink">
+                  {businessName}
+                </p>
+              </FooterLogo>
+            </div>
             <address className="type-text-md mt-1 not-italic text-service-muted">
               {contact.address}
             </address>

@@ -29,6 +29,7 @@ type PageTemplateSection = {
   variant?: string;
   colorRecipe?: string;
   backgroundFill?: string;
+  navLogoLayout?: string;
   cardFill?: string;
   cardBorder?: string;
   borderTone?: string;

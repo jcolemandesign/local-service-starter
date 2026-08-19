@@ -61,6 +61,7 @@ describe("section toggle transport", () => {
       "headlineWrap",
       "icons",
       "joinAbove",
+      "navLogoLayout",
       "ratio",
       "specialCta",
       "variant",
@@ -105,12 +106,12 @@ describe("section toggle transport", () => {
   });
 
   /**
-   * Source-level, because the three remaining hops are not exported: two are
-   * module-private helpers and one is an inline request body. Asserting they
-   * read the shared list is the only way to catch a hand-written list growing
-   * back in place of it.
+   * Source-level, because the remaining hops are not exported: they are
+   * module-private helpers and one inline request body. Asserting they read
+   * the shared list is the only way to catch a hand-written list growing back
+   * in place of it.
    */
-  it("routes all four hops through the shared list", () => {
+  it("routes every hop through the shared list", () => {
     const hops = [
       {
         file: ["components", "sections", "PagebuilderShell.tsx"],
@@ -140,6 +141,35 @@ describe("section toggle transport", () => {
       route,
       "the template route should normalise from the shared name list",
     ).toContain("sectionToggleFieldNames");
+  });
+
+  /**
+   * THE FOURTH HOP, which was not on this list and had gone quietly stale.
+   *
+   * Pagebuilder copies one navigation onto every page, and that copier named
+   * seven toggles by hand. Every axis added after it was written reached the
+   * source page and stopped: the nav on page one took the setting and its
+   * copies did not, which reads as the other pages being stale rather than as
+   * a field nothing copied.
+   *
+   * Asserted on the source because the copier is module-private, and asserted
+   * as an absence too - a re-added hand-written name is what regresses this.
+   */
+  it("copies the shared navigation from the shared list", () => {
+    const shell = readSource("components", "sections", "PagebuilderShell.tsx");
+    const copier = shell.slice(
+      shell.indexOf("function copySharedNavigationSection"),
+      shell.indexOf("function findSharedNavigationSource"),
+    );
+
+    expect(copier).toContain("sectionToggleFieldNames");
+
+    for (const name of sectionToggleFieldNames) {
+      expect(
+        copier,
+        `the shared navigation copier names ${name} by hand instead of reading the list`,
+      ).not.toContain(`${name}: sharedNavigation.`);
+    }
   });
 
   it("does not let the template route drop an axis it accepts", () => {

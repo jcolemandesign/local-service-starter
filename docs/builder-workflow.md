@@ -241,6 +241,7 @@ The copy-contract fingerprint hashes: `component`, the derived field specs,
 | `icons` | template | No | Marker icons on/off; same reasoning as `align` |
 | `headingSize` | template | No | Shared three-step headline scale; each component preserves its pre-toggle size as the unset default |
 | `headlineWrap` | template | No | `text-wrap` on the section's headline (`balance` / `pretty` / `wrap`); same reasoning as `align` |
+| `navLogoLayout` | template + staged override | No | Which marks the centre-logo nav draws and where: its single centre mark, or a wordmark at the left edge with the compact mark centred. Offered to `navLogoLayoutComponents` - only that nav has a centre slot. The two arrangements ask for identical copy, which is why it is its own field and not a `variant` value |
 | `colorRecipe`, `cardFill`, `cardBorder` | template + staged override | No | Repaint only |
 | `reduceTopPadding`, `reduceBottomPadding` | template + staged override | No | Frame padding only; offered to content-height sections, not to `viewportHeightComponents` — min-height takes the space back, so the control would read as broken |
 | `specialCta` | template + staged override | No | Whether this section's primary CTA renders in the site's **special** button style. A boolean, never a style picker: *which* style the special is stays a Style Guide assignment. Off by default (`resolveSpecialCta`), offered to `specialCtaComponents`. See `docs/button-style-axis.md` |

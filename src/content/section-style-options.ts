@@ -853,6 +853,7 @@ export const sectionToggleFieldNames = [
   "headlineWrap",
   "icons",
   "joinAbove",
+  "navLogoLayout",
   "ratio",
   "specialCta",
   "variant",
@@ -890,6 +891,48 @@ export const backgroundFillComponents = new Set<string>([
   "NavCenterLogoSectionV2",
   "NavPrimarySectionV2",
 ]);
+
+/**
+ * WHICH MARKS THE CENTRE-LOGO NAV DRAWS, and where.
+ *
+ * `center` is the layout as it shipped: links left, one mark in the middle,
+ * contact right. `split` adds a second slot at the left edge, so the bar reads
+ * wordmark - links - mark - contact. It is the arrangement a brand with both
+ * a wordmark and an icon wants, and it is why `SiteIdentity` carries an icon
+ * slot: the centre of a nav is too narrow for most wordmarks, and the left
+ * corner is where a reader looks for the full name.
+ *
+ * PURELY VISUAL, so it is its own field rather than a `variant` value - see the
+ * copy-affecting vs copy-neutral rule in `docs/builder-workflow.md` §3. Both
+ * arrangements ask for exactly the same copy; folding this into `variant` would
+ * move the contract fingerprint and report every approved page as stale for a
+ * change that moved a logo.
+ */
+export const navLogoLayoutOptions = [
+  { label: "Centre mark only", value: "center" },
+  { label: "Wordmark + centre mark", value: "split" },
+] as const;
+
+export type NavLogoLayout = (typeof navLogoLayoutOptions)[number]["value"];
+
+/** Only the centre-logo nav has a centre slot to put a second mark beside.
+ *  The default and floating navs already draw their wordmark at the left, so
+ *  the axis would render and do nothing on either. */
+export const navLogoLayoutComponents = new Set<string>([
+  "NavCenterLogoSectionV2",
+]);
+
+export function sectionSupportsNavLogoLayout(component: string) {
+  return navLogoLayoutComponents.has(component);
+}
+
+/** Unset resolves to the shipped arrangement, so no saved nav gains a second
+ *  mark it was never given. */
+export function resolveNavLogoLayout(
+  navLogoLayout: string | undefined,
+): NavLogoLayout {
+  return navLogoLayout === "split" ? "split" : "center";
+}
 
 /**
  * Navigation sections, which cannot join a background band.
@@ -1425,6 +1468,12 @@ export const styleFieldOptions = {
     { label: "Background on", value: "solid" },
     { label: "Transparent", value: "none" },
   ],
+  /** Copy-neutral: it moves a mark, and both arrangements ask for the same
+   *  fields. See `navLogoLayoutOptions` for why it is not a `variant`. */
+  navLogoLayout: [
+    { label: "Use template default", value: "" },
+    ...navLogoLayoutOptions,
+  ],
   /**
    * Whether this section shares the section above's background.
    *
@@ -1767,6 +1816,12 @@ const backgroundFillStyleField: SectionStyleFieldSpec = {
   options: styleFieldOptions.backgroundFill,
 };
 
+const navLogoLayoutStyleField: SectionStyleFieldSpec = {
+  label: "Logo layout",
+  name: "navLogoLayout",
+  options: styleFieldOptions.navLogoLayout,
+};
+
 const joinAboveStyleField: SectionStyleFieldSpec = {
   label: "Background band",
   name: "joinAbove",
@@ -1932,6 +1987,9 @@ export function getSectionStyleFieldSpecs(
       : []),
     ...(sectionSupportsBackgroundFill(component)
       ? [backgroundFillStyleField]
+      : []),
+    ...(sectionSupportsNavLogoLayout(component)
+      ? [navLogoLayoutStyleField]
       : []),
     ...(sectionSupportsCardStyle(component) ? cardStyleFields : []),
     ...(sectionSupportsAnimation(component)

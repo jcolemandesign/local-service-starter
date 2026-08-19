@@ -69,6 +69,10 @@ export type StagedPageTemplateSection = {
   /** Which border-color formula an outlined card draws with - see
    *  `SectionCardBorderTone` in `section-color-recipes`. */
   borderTone?: SectionCardBorderTone;
+  /** Which marks the centre-logo nav draws, and where - see
+   *  `navLogoLayoutOptions`. Purely visual, so it is its own field rather
+   *  than a `variant` value. */
+  navLogoLayout?: import("@/content/section-style-options").NavLogoLayout;
   cardBorder?: SectionCardBorder;
   cardFill?: SectionCardFill;
   colorRecipe?: SectionColorRecipe;

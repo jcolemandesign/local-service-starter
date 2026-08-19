@@ -176,6 +176,7 @@ import {
   getSectionStyleFieldSpecs,
   isValidStyleFieldValue,
   resolveBackgroundFill,
+  resolveNavLogoLayout,
   resolveBackgroundImage,
   resolveBackgroundTreatment,
   treatmentUsesGroundImage,
@@ -216,6 +217,8 @@ import type { ColorPalette } from "@/content/color-recipe-inputs";
 import type { StagedPageField } from "@/utils/staged-pages";
 import {
   emptySiteIdentity,
+  resolveFooterLogoSrc,
+  resolveIconLogoSrc,
   type SiteIdentity,
 } from "@/content/site-identity";
 
@@ -226,6 +229,10 @@ export type PageTemplatePreviewSection = {
   mode: string;
   colorRecipe?: import("@/content/section-color-recipes").SectionColorRecipe;
   backgroundFill?: import("@/content/section-color-recipes").SectionBackgroundFill;
+  /** Which marks the centre-logo nav draws, and where - see
+   *  `navLogoLayoutOptions`. Purely visual, so it is its own field rather
+   *  than a `variant` value. */
+  navLogoLayout?: import("@/content/section-style-options").NavLogoLayout;
   cardFill?: import("@/content/section-color-recipes").SectionCardFill;
   cardBorder?: import("@/content/section-color-recipes").SectionCardBorder;
   borderTone?: import("@/content/section-color-recipes").SectionCardBorderTone;
@@ -749,6 +756,7 @@ export function renderPageTemplateSection(
           backgroundFill={resolveBackgroundFill(section.backgroundFill)}
           cardBorder={resolveCardBorder(section.component, section.cardBorder)}
           cardFill={resolveCardFill(section.component, section.cardFill)}
+          navLogoLayout={resolveNavLogoLayout(section.navLogoLayout)}
         />
       );
     case "NavFloatingBentoSectionV2":
@@ -1588,7 +1596,10 @@ function navProps(
     ),
     logoHref: homeHref,
     // Site-level only, deliberately: the point of the slot is one logo across
-    // every nav, so there is no per-page field to override it with.
+    // every nav, so there is no per-page field to override it with. Same for
+    // the compact mark beside it, which falls back to the wordmark so a client
+    // with one file still fills the centre slot.
+    logoIconSrc: resolveIconLogoSrc(siteIdentity),
     logoSrc: siteIdentity.logoSrc,
     phone: getValue(section, "phone", sectionLibraryV3Content.navPrimary.phone),
   };
@@ -3304,6 +3315,11 @@ function footerProps(
 
   return {
     ...sectionLibraryV3Content.footer,
+    // Site-level only, like the nav's mark: one footer logo across every page
+    // is the point of the slot, so there is no per-page field to override it
+    // with. Falls back to the primary logo, so a client with one file still
+    // gets a mark down here.
+    logoSrc: resolveFooterLogoSrc(siteIdentity),
     // Same precedence as the nav logo, with the existing businessName ->
     // logoLabel chain kept ahead of the site value so a page that really did set
     // one still wins.

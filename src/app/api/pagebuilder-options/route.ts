@@ -33,6 +33,7 @@ type SavedPagebuilderSection = {
   variant?: string;
   colorRecipe?: string;
   backgroundFill?: string;
+  navLogoLayout?: string;
   /**
    * The ground texture and the band membership that decides who owns it.
    *
@@ -277,6 +278,10 @@ function normalizeSection(
     backgroundFill:
       typeof section.backgroundFill === "string"
         ? section.backgroundFill
+        : undefined,
+    navLogoLayout:
+      typeof section.navLogoLayout === "string"
+        ? section.navLogoLayout
         : undefined,
     cardBorder:
       typeof section.cardBorder === "string" ? section.cardBorder : undefined,

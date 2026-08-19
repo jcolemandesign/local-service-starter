@@ -21,6 +21,7 @@ const { createClientSlug, listProjectWorkspaces, sanitizeClientSlug } =
 const { readSiteIdentity } = await import("@/utils/site-identity");
 
 import type { PagebuilderRecipeSection } from "@/content/pagebuilder";
+import { emptySiteIdentity } from "@/content/site-identity";
 
 /**
  * The client's logo reaching the builder canvas.
@@ -99,6 +100,7 @@ describe("nav logo", () => {
     const markup = renderToStaticMarkup(
       <RequestServiceProvider>
         {renderPreviewSection(navSection(component), 0, {
+          ...emptySiteIdentity,
           businessName: "North Star HVAC",
           logoSrc: "/images/test-logo.svg",
         })}
