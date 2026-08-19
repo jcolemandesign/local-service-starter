@@ -5,19 +5,25 @@ import {
 } from "@/components/primitives";
 
 type SplitDecisionCard = {
+  /** The card's own text link. Each path gets its own next step, because the
+   *  two paths are different next steps - that is the whole comparison. */
+  actionLabel: string;
   body: string;
   eyebrow: string;
   title: string;
 };
 
 type DecisionSplitDecisionSectionV3Props = {
-  actionLabel: string;
   body: string;
   cardBorder?: "on" | "off";
   cardFill?: "solid" | "none";
-  /** The two comparison cards carry no links of their own, so "off" drops the
-   *  one text link under the left-column explanation and leaves the whole
-   *  section static. */
+  /**
+   * ON THE CARDS, which is what the axis is called and what its other members
+   * do. This section used to answer the toggle with a SINGLE link under the
+   * left-column explanation and leave the two comparison cards bare - so a
+   * control named "card links" put a link everywhere except on a card, and the
+   * two sections it shares a family with both put one inside each card.
+   */
   cardLinks?: "on" | "off";
   cards: readonly SplitDecisionCard[];
   eyebrow: string;
@@ -29,7 +35,6 @@ function cx(...classes: Array<string | false | undefined>) {
 }
 
 export function DecisionSplitDecisionSectionV3({
-  actionLabel,
   body,
   cardBorder = "on",
   cardFill = "solid",
@@ -56,16 +61,6 @@ export function DecisionSplitDecisionSectionV3({
             <p className="type-text-lg wrap-pretty mt-heading-body-md text-service-muted">
               {body}
             </p>
-            {cardLinks === "on" ? (
-              <div className="mt-body-actions-md">
-                <a
-                  className="type-label inline-flex min-h-12 items-center border-b border-service-ink text-service-ink transition-colors hover:border-service-accent hover:text-service-accent"
-                  href="#contact"
-                >
-                  {actionLabel}
-                </a>
-              </div>
-            ) : null}
           </div>
         </SevenColumnGridItem>
 
@@ -82,7 +77,7 @@ export function DecisionSplitDecisionSectionV3({
                   // what this card marks is the entrance the builder can
                   // actually switch on.
                   "reveal-on-scroll reveal-role-card",
-                  "fluid-type-frame radius-medium min-h-56 border border-service-border bg-service-surface p-5 text-service-ink shadow-none max-md:min-h-0",
+                  "fluid-type-frame radius-medium flex min-h-56 flex-col border border-service-border bg-service-surface p-5 text-service-ink shadow-none max-md:min-h-0",
                   "recipe-card-context",
                   cardFill === "none" && "!bg-transparent !shadow-none",
                   cardBorder === "off" && "!border-transparent",
@@ -99,6 +94,24 @@ export function DecisionSplitDecisionSectionV3({
                 <p className="type-text-md wrap-pretty mt-heading-body-sm text-service-muted">
                   {card.body}
                 </p>
+                {cardLinks === "on" ? (
+                  /* `mt-auto` against the column, so the two links sit level
+                     whatever the copy above them does - the pair reads as a
+                     comparison, and two links at different heights reads as
+                     one card having more to say. Same placement both siblings
+                     in this family use. */
+                  <a
+                    className={cx(
+                      "type-label mt-auto inline-flex min-h-12 w-fit items-center border-b pt-6 text-service-ink transition-colors hover:text-service-accent",
+                      cardBorder === "off"
+                        ? "!border-transparent hover:!border-transparent"
+                        : "border-service-ink hover:border-service-accent",
+                    )}
+                    href="#contact"
+                  >
+                    {card.actionLabel}
+                  </a>
+                ) : null}
               </article>
             ))}
           </div>

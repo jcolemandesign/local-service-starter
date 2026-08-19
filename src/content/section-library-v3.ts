@@ -1044,17 +1044,18 @@ export const sectionLibraryV3Content = {
     eyebrow: "Repair or replace",
     title: "Clear options before a bigger decision.",
     body: "Use this compact decision section to explain how the team helps homeowners understand whether repair or replacement makes more sense after an inspection.",
-    actionLabel: "Talk through options",
     cards: [
       {
         eyebrow: "Repair path",
         title: "When repair still makes sense",
         body: "Explain what can be fixed, what can wait, and how the homeowner can keep the system running without unnecessary work.",
+        actionLabel: "Talk through a repair",
       },
       {
         eyebrow: "Replacement path",
         title: "When replacement is worth pricing",
         body: "Show when age, condition, recurring issues, or comfort goals may make a replacement estimate the more practical next step.",
+        actionLabel: "Price a replacement",
       },
     ],
   },

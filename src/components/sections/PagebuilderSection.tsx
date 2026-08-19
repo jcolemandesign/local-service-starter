@@ -838,8 +838,15 @@ function renderSectionElement(
       );
     case "DecisionSplitDecisionSectionV3":
       return (
+        /* The three card toggles were never passed here, so the builder showed
+           this section's own defaults whatever the controls said - the card
+           links control in particular looked broken because it was inert. Its
+           sibling one case up has always passed them. */
         <DecisionSplitDecisionSectionV3
           {...sectionLibraryV3Content.decisionSplitDecision}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          cardLinks={section.cardLinks === "off" ? "off" : "on"}
         />
       );
     case "DecisionMatrixCardSectionV3":

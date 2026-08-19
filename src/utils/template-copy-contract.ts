@@ -3354,16 +3354,16 @@ export function getTemplateCopyFieldsForSection(
               purpose: `Supporting copy for comparison card ${position}.`,
               target: "90-170 characters.",
             },
+            {
+              example: "Talk through a repair",
+              name: `decisionItems.${position}.actionLabel`,
+              purpose: `Text link on comparison card ${position}.`,
+              target: "12-28 characters.",
+            },
           ];
         }),
-        {
-          example: "Talk through your options",
-          name: "sectionAction",
-          purpose: "Text link below the left-column explanation.",
-          target: "12-28 characters.",
-        },
       ],
-      (name) => name === "sectionAction",
+      (name) => name.endsWith(".actionLabel"),
     );
   }
 

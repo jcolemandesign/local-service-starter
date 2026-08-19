@@ -2559,11 +2559,6 @@ function splitDecisionProps(section: FieldSection) {
 
   return {
     ...sectionLibraryV3Content.decisionSplitDecision,
-    actionLabel: getValue(
-      section,
-      "sectionAction",
-      sectionLibraryV3Content.decisionSplitDecision.actionLabel,
-    ),
     body: getBody(section, sectionLibraryV3Content.decisionSplitDecision.body),
     // Read by index so the per-card eyebrow can be authored. The previous
     // `"eyebrow" in item` check could never fire: cardItemsWithFallback has no
@@ -2573,6 +2568,13 @@ function splitDecisionProps(section: FieldSection) {
         const position = index + 1;
 
         return {
+          /* Per card now, not one link for the section - see the note on
+             `cardLinks` in the component. */
+          actionLabel: getValue(
+            section,
+            `decisionItems.${position}.actionLabel`,
+            card.actionLabel,
+          ),
           body: getValue(
             section,
             `decisionItems.${position}.body`,
