@@ -9,7 +9,7 @@
       "optionName": "Page Layout",
       "recipeId": "service-area",
       "recipeName": "Service Area",
-      "savedAt": "2026-08-19T23:05:35.172Z",
+      "savedAt": "2026-08-19T23:17:21.513Z",
       "sectionCount": 9,
       "sections": [
         {
@@ -214,7 +214,7 @@
           "originalIndex": -1,
           "reduceBottomPadding": false,
           "reduceTopPadding": false,
-          "colorRecipe": "dark",
+          "colorRecipe": "page",
           "backgroundFill": "solid",
           "navLogoLayout": "center",
           "cardBorder": "on",

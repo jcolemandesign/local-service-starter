@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { PromptLibrarySection } from "@/components/sections/PromptLibrarySection";
 import { readStrategyDigestText } from "@/utils/strategy-digest";
 import { readStrategyPageSlots } from "@/utils/client-page-slots";
@@ -19,6 +21,7 @@ import {
 } from "@/content/copywriting-personality-packets";
 import { buildTemplateCopyContract } from "@/utils/template-copy-contract";
 import { StyleGuideCloseAllButton } from "@/components/sections/StyleGuideCloseAllButton";
+import { resolveCurrentTemplateName } from "@/utils/resolve-contract-template";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -33,6 +36,22 @@ type PromptLibraryPageProps = {
     project?: string | string[];
   }>;
 };
+
+type PageTemplateNameRecord = {
+  id: string;
+  name: string;
+};
+
+type PageTemplatesFile = {
+  templates?: PageTemplateNameRecord[];
+};
+
+const pageTemplatesPath = path.join(
+  process.cwd(),
+  "src",
+  "content",
+  "page-templates.json",
+);
 
 export default async function PromptLibraryPage({
   searchParams,
@@ -55,6 +74,7 @@ export default async function PromptLibraryPage({
     ? await readStrategyWorkspace(selectedProject.clientSlug)
     : null;
   const stagedPages = await readStagedPages();
+  const pageTemplates = await readPageTemplateNames();
   // Built once per client and handed to every page spec, so a copied page
   // prompt carries its own voice rather than depending on being pasted into
   // the project-level agent instructions.
@@ -69,6 +89,7 @@ export default async function PromptLibraryPage({
         stagedPages,
         selectedProject.clientSlug,
         copywriting,
+        pageTemplates,
       )
     : [];
   const strategyPages =
@@ -98,30 +119,53 @@ function buildStagedPageContracts(
   pages: StagedPage[],
   clientSlug: string,
   copywriting?: string,
+  liveTemplates: readonly PageTemplateNameRecord[] = [],
 ) {
   // One contract per live page. Alts share their base page's copy contract, so
   // including them would list the same contract twice.
   return getActiveStagedPages(pages)
     .filter((page) => page.snapshot.clientSlug === clientSlug)
     .filter((page) => page.template?.sections?.length)
-    .map((page) => ({
-      contract: buildTemplateCopyContract({
-        copywriting,
+    .map((page) => {
+      const templateName =
+        resolveCurrentTemplateName(
+          page.template,
+          liveTemplates,
+          page.template?.id ?? "",
+        ) || "Selected template";
+
+      return {
+        contract: buildTemplateCopyContract({
+          copywriting,
+          pageLabel: page.pageLabel,
+          pageSlug: page.pageId,
+          template: {
+            id: page.template?.id ?? "",
+            name: templateName,
+            pageType: page.template?.pageType ?? "page",
+            sectionCount:
+              page.template?.sectionCount ??
+              page.template?.sections?.length ??
+              0,
+            sections: page.template?.sections ?? [],
+          },
+        }),
+        pageHref: page.pageHref,
+        pageId: page.pageId,
         pageLabel: page.pageLabel,
-        pageSlug: page.pageId,
-        template: {
-          id: page.template?.id ?? "",
-          name: page.template?.name ?? "Selected template",
-          pageType: page.template?.pageType ?? "page",
-          sectionCount:
-            page.template?.sectionCount ?? page.template?.sections?.length ?? 0,
-          sections: page.template?.sections ?? [],
-        },
-      }),
-      pageHref: page.pageHref,
-      pageId: page.pageId,
-      pageLabel: page.pageLabel,
-      pageType: page.template?.pageType ?? "",
-      templateName: page.template?.name ?? "",
-    }));
+        pageType: page.template?.pageType ?? "",
+        templateName,
+      };
+    });
+}
+
+async function readPageTemplateNames() {
+  try {
+    const contents = await readFile(pageTemplatesPath, "utf8");
+    const parsed = JSON.parse(contents) as PageTemplatesFile;
+
+    return Array.isArray(parsed.templates) ? parsed.templates : [];
+  } catch {
+    return [];
+  }
 }

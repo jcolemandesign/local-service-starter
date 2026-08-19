@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveContractTemplate } from "@/utils/resolve-contract-template";
+import {
+  resolveContractTemplate,
+  resolveCurrentTemplateName,
+} from "@/utils/resolve-contract-template";
 import type { TemplateCopyContractTemplate } from "@/utils/template-copy-contract";
 
 function makeTemplate(id: string): TemplateCopyContractTemplate {
@@ -30,5 +33,23 @@ describe("resolveContractTemplate", () => {
 
   it("returns undefined when neither a staged template nor a matching live template exists", () => {
     expect(resolveContractTemplate(undefined, [], "missing")).toBeUndefined();
+  });
+
+  it("uses a live rename without replacing the staged contract snapshot", () => {
+    const staged = makeTemplate("home-template-new");
+    staged.name = "Home Template New";
+    const live = [{ id: staged.id, name: "Home" }];
+
+    expect(resolveCurrentTemplateName(staged, live, staged.id)).toBe("Home");
+    expect(resolveContractTemplate(staged, [], staged.id)).toBe(staged);
+  });
+
+  it("falls back to the staged name when its live template no longer exists", () => {
+    const staged = makeTemplate("retired-template");
+    staged.name = "Retired template";
+
+    expect(resolveCurrentTemplateName(staged, [], staged.id)).toBe(
+      "Retired template",
+    );
   });
 });
