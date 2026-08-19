@@ -1,4 +1,6 @@
 {
   "businessName": "North Star HVAC",
-  "logoSrc": "/images/logo_blue_bg.svg"
+  "footerLogoSrc": "/images/logo_blue_bg.svg",
+  "logoIconSrc": "/images/northstar-icon-gradient-04.svg",
+  "logoSrc": "/images/northstar-logo-wordmark-white.svg"
 }
