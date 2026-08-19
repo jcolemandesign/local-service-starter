@@ -114,6 +114,7 @@ export type MotionControlGroupId =
   | "fade"
   | "settle"
   | "wipe"
+  | "text-wipe"
   | "pulse"
   | "lateral"
   | "focus";
@@ -422,6 +423,40 @@ export const motionControlGroups = [
         min: 0.8,
         max: 1,
         step: 0.01,
+      },
+    ],
+  },
+  {
+    /**
+     * ONE NUMBER, AND IT IS THE ONE A PER-LINE REVEAL CANNOT SHARE.
+     *
+     * Text wipe reuses Wipe's easing, its stagger and its accent scale, because
+     * the two suites are the same gesture and should stay the same gesture.
+     * Duration is where they part: Wipe times one edge across a whole block,
+     * and this times an edge across a single line, several times over. The same
+     * number cannot be right for both - the length that reads as decisive on a
+     * headline is a flicker on a line, and slowing Wipe to fix it slows the
+     * sixteen sections that only ever wipe once.
+     *
+     * Everything else stays in the Wipe group on purpose. A suite earns a
+     * control by having a number with no equivalent elsewhere, not by having a
+     * name of its own.
+     */
+    id: "text-wipe",
+    label: "Text wipe",
+    description:
+      "The line-by-line variant of Wipe. It borrows Wipe's curve and its step, and owns only how long one line takes.",
+    controls: [
+      {
+        token: "--anim-text-wipe-duration",
+        label: "Line duration",
+        hint: "How long one line takes to be revealed. Unset, it keeps time with the shared rhythm — the same default Wipe takes.",
+        kind: "ms",
+        defaultValue: "",
+        min: 120,
+        max: 1600,
+        step: 20,
+        inheritsFrom: "--anim-duration",
       },
     ],
   },

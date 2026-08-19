@@ -1421,6 +1421,125 @@
     );
   }
 
+  /* == Suite: Text wipe (stored id `text-wipe`) ========================
+   *
+   * Wipe, one line at a time. The same edge, the same keyframe - it reuses
+   * `section-wipe` outright rather than declaring a near-copy, so the two suites
+   * cannot drift apart in shape. What differs is what the edge is applied TO:
+   * Wipe crosses a marked block once, and this crosses each line inside it.
+   *
+   * A LINE IS NOT A REVEALABLE UNIT. It carries `.reveal-role-line` and no
+   * `.reveal-on-scroll`, because a marked unit inside a marked unit is the one
+   * thing the vocabulary forbids. This suite reaches into the block for them,
+   * the same way Settle reaches into a media unit for its picture.
+   *
+   * THE BLOCK HOLDING THE LINES DOES NOT ANIMATE ITSELF, and that is the whole
+   * reason `heading` is differentiated here. Left on the default fade it would
+   * ramp the container's opacity while each line ran its own - two animations
+   * multiplied on the same pixels, so the first line finishes its wipe at
+   * seventy percent and keeps brightening afterwards. The suite's guidance says
+   * nothing should compete with the edge; a parent fade is something competing
+   * with the edge.
+   *
+   * Fills the same contract as every other suite: a waiting rule and an arrival
+   * rule, both written here.
+   */
+
+  /* Text wipe, waiting. The default for anything that is not a line. */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="text-wipe"]:not([data-pagebuilder-animation-state])
+    .reveal-on-scroll {
+    opacity: 0;
+  }
+
+  /* Text wipe, arriving. A plain fade in place for everything that is not a
+     line or the block holding one. */
+  [data-pagebuilder-animation="text-wipe"][data-pagebuilder-animation-state="in"]
+    .reveal-on-scroll {
+    animation: section-fade var(--anim-text-wipe-duration, var(--anim-duration))
+      var(--anim-wipe-easing, var(--anim-easing)) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-wipe-stagger, var(--anim-stagger))
+    );
+  }
+
+  /* Text wipe, heading role: HOLDS STILL AND LETS ITS LINES ARRIVE.
+     Not an omission and not a fade - an explicit stop, so the container is
+     visible from the moment the state flips and every ramp on screen belongs to
+     a line. The lines are held by their own `both` fill until their delay
+     elapses, so nothing flashes. */
+  [data-pagebuilder-animation="text-wipe"][data-pagebuilder-animation-state="in"]
+    .reveal-role-heading {
+    animation: none;
+    opacity: 1;
+  }
+
+  /* Text wipe, the lines themselves: THE WIPE, ONCE PER LINE.
+   *
+   * `.reveal-line` is not written by any section. There is no selector for the
+   * lines a paragraph wraps into - no `::nth-line` - so `TextWipeLines` splits the
+   * block after layout and hands each line this class and its own
+   * `--reveal-index`. The index is per-element rather than an `nth-child` rule
+   * because the line count is a fact about the current width, and a re-split at
+   * a new width renumbers them.
+   *
+   * THE STYLESHEET STILL OWNS THE MOTION. The splitter creates elements and
+   * numbers them and reads no token; the duration, the easing and the step are
+   * Wipe's, out of the Style Guide, exactly as for the suite this one is a
+   * variant of.
+   *
+   * UNSPLIT IS A REAL STATE. Reduced motion skips the split entirely, and so
+   * does the moment before the splitter has run, so nothing here may be the
+   * only thing making the paragraph visible - the block's own rules above cover
+   * that. A page whose JavaScript never arrives shows the statement. */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="text-wipe"]:not([data-pagebuilder-animation-state])
+    .reveal-role-lines .reveal-line {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+  }
+
+  [data-pagebuilder-animation="text-wipe"][data-pagebuilder-animation-state="in"]
+    .reveal-role-lines .reveal-line {
+    animation: section-wipe
+      var(--anim-text-wipe-duration, var(--anim-duration))
+      var(--anim-wipe-easing, var(--anim-easing))
+      both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-wipe-stagger, var(--anim-stagger))
+    );
+  }
+
+  /* The mask SplitText wraps each line in, given its descenders back.
+   *
+   * `mask: "lines"` sets `overflow: clip` on the wrapper, which is right for a
+   * line sliding up from behind it and wrong for this: `section-wipe` insets its
+   * clip path 0.35em past the em box on purpose, so a `g` or a `y` clears the
+   * box it is animating in. Clipped again by the mask, the tails come off - the
+   * exact bug the negative insets were added to fix. `overflow-clip-margin`
+   * hands the allowance back without giving up the wrapper. */
+  .reveal-line-mask {
+    overflow-clip-margin: 0.4em;
+  }
+
+  /* Text wipe, accent role: inherited from Wipe unchanged. A stat beside a
+     statement is the same problem in both suites, and giving the two different
+     answers would be a difference nobody asked for. */
+  [data-pagebuilder-animation-ready]
+    [data-pagebuilder-animation="text-wipe"]:not([data-pagebuilder-animation-state])
+    .reveal-role-accent {
+    scale: var(--anim-accent-scale-from);
+  }
+
+  [data-pagebuilder-animation="text-wipe"][data-pagebuilder-animation-state="in"]
+    .reveal-role-accent {
+    animation: section-fade-scale var(--anim-text-wipe-duration, var(--anim-duration))
+      var(--anim-wipe-easing, var(--anim-easing)) both;
+    animation-delay: calc(
+      var(--reveal-index, 0) * var(--anim-wipe-stagger, var(--anim-stagger))
+    );
+  }
+
   /* == Suite: Pulse (stored id `pulse`) =============================
    *
    * Everything fades in place, and the ACTION unit gives one soft beat once it

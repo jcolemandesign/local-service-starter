@@ -103,6 +103,15 @@ const roleSpecimens: Record<
       </>
     ),
   },
+  lines: {
+    label: "Authored lines",
+    render: () => (
+      <span className="type-heading-md text-current">
+        <span className="block">A statement set large,</span>
+        <span className="block">one authored line at a time.</span>
+      </span>
+    ),
+  },
   action: {
     label: "Action",
     render: () => (

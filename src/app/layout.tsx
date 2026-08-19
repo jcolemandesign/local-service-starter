@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SectionEntrance } from "@/components/primitives/SectionEntrance";
+import { TextWipeLines } from "@/components/primitives/TextWipeLines";
 import { RequestServiceProvider } from "@/components/request-service";
 import { rootFontVariables } from "./fonts";
 import "./globals.css";
@@ -24,6 +25,9 @@ export default function RootLayout({
             see `SectionEntrance`, and `buildRootLayout` in site-export.ts,
             which mounts the same component into an exported site. */}
         <SectionEntrance />
+        {/* Renders nothing, and loads its splitter only on a page that carries
+            a Text wipe section - see `TextWipeLines`. */}
+        <TextWipeLines />
         <RequestServiceProvider>{children}</RequestServiceProvider>
       </body>
     </html>

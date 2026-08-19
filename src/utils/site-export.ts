@@ -365,6 +365,11 @@ async function resolveSiteExport(requestedClientSlug: string) {
     // optional instead, every section would render permanently hidden, because
     // nothing would ever set the ready flag the stylesheet keys off.
     path.join(sourceRoot, "components", "primitives", "SectionEntrance.tsx"),
+    // Same reason, one suite down: the generated layout mounts it as source
+    // text, so the walk never sees the import. Without it an exported site
+    // builds against a missing module; with it and no Text wipe section on any
+    // page, it costs one component that returns null and loads nothing.
+    path.join(sourceRoot, "components", "primitives", "TextWipeLines.tsx"),
   ]);
 
   for (const file of dependencyFiles) {
@@ -1254,6 +1259,7 @@ function buildRootLayout(clientSlug: string) {
 
   return `import type { Metadata } from "next";
 import { SectionEntrance } from "@/components/primitives/SectionEntrance";
+import { TextWipeLines } from "@/components/primitives/TextWipeLines";
 import { RequestServiceProvider } from "@/components/request-service";
 import { rootFontVariables } from "./fonts";
 import "./globals.css";
@@ -1268,6 +1274,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html className={\`${"${rootFontVariables}"} h-full antialiased\`} lang="en">
       <body className="min-h-full flex flex-col">
         <SectionEntrance />
+        <TextWipeLines />
         <RequestServiceProvider>{children}</RequestServiceProvider>
       </body>
     </html>

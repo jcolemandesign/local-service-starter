@@ -76,6 +76,36 @@ export const sectionAnimationRoles = [
    * The action unit is the panel that carries the action.
    */
   "action",
+  /**
+   * A TEXT BLOCK WORTH SPLITTING INTO ITS VISUAL LINES.
+   *
+   * THE EIGHTH ROLE, AND IT NAMES THE BLOCK, NOT THE LINE. Both halves of that
+   * are load-bearing. A role has to sit on the element carrying
+   * `reveal-on-scroll`, so a role per line would either nest a revealable unit
+   * inside one or replace the block as the unit - and replacing it would cost
+   * the section every suite gated on `heading`. More decisively, THE LINES DO
+   * NOT EXIST YET: they are a fact about the width the browser laid the text out
+   * at, and nothing server-rendered can name them.
+   *
+   * So the block declares itself splittable and a suite that cares finds the
+   * lines after layout - see `TextWipeLines`, which is the only JavaScript on
+   * this axis besides the observer itself. Reaching inside a unit is not new:
+   * `settle` already reaches into a media unit for its picture. What is new is
+   * that the thing being reached for has to be made first.
+   *
+   * NOT SOLVED BY AUTHORING THE BREAKS, and it was tried. If the lines are
+   * written as elements the copy's breaks stop belonging to the measure: a
+   * statement authored as four fragments came out as five ragged display lines
+   * with `text-wrap: balance` splitting the long one down the middle. The
+   * typography has to stay flowing responsive text, which means the split is a
+   * runtime job or it is nothing.
+   *
+   * IT ARRIVED WITH THE SUITE THAT IS ABOUT IT, exactly as `action` did. No
+   * existing role could carry it - `heading` and `content` only say the block is
+   * text, and a suite gated on either would be offered on sixteen sections that
+   * want one edge across the whole block.
+   */
+  "lines",
 ] as const;
 
 export type SectionAnimationRole = (typeof sectionAnimationRoles)[number];
@@ -247,6 +277,7 @@ export const sectionAnimationSuites = [
       accent: "rise + fade",
       frame: "rise + fade, as a single unit",
       action: "rise + fade - Rise makes no special case of the action",
+      lines: "not addressed - a marked block arrives as one, lines and all",
     },
     /**
      * One, which is exactly why Rise cannot validate the role vocabulary on its
@@ -293,6 +324,7 @@ export const sectionAnimationSuites = [
       accent: "fade in place",
       frame: "fade in place, as a single unit",
       action: "fade in place - Fade makes no special case of the action",
+      lines: "not addressed - a marked block arrives as one, lines and all",
     },
     /**
      * NONE, and that is the finding rather than an oversight.
@@ -350,6 +382,7 @@ export const sectionAnimationSuites = [
       accent: "rise + fade",
       frame: "rise + fade, as a single unit",
       action: "rise + fade - Settle makes no special case of the action",
+      lines: "not addressed - a marked block arrives as one, lines and all",
     },
     /**
      * One, and it is the opposite one from Rise's.
@@ -407,6 +440,7 @@ export const sectionAnimationSuites = [
       accent: "fade in place",
       frame: "fade in place, as a single unit",
       action: "fade in place",
+      lines: "not addressed - a marked block arrives as one, lines and all",
     },
     differentiatedRoles: ["media"],
     trigger: "load",
@@ -464,6 +498,7 @@ export const sectionAnimationSuites = [
       accent: "scale up from 94% while fading - a scale is not a travel",
       frame: "fade in place, as a single unit",
       action: "fade in place - the wipe is about the text, not the action",
+      lines: "not addressed - one edge crosses the whole block. Text wipe is the suite that crosses them one at a time",
     },
     /**
      * Three, and the ABSENTEES are the finding.
@@ -485,6 +520,73 @@ export const sectionAnimationSuites = [
      *  has earned a group. */
     trigger: "scroll",
     controlGroups: ["rhythm", "wipe"],
+  },
+  {
+    /**
+     * WIPE, ONE LINE AT A TIME.
+     *
+     * The same edge and the same keyframe as its sibling - it reuses
+     * `section-wipe` outright, so the two cannot drift apart in shape. What
+     * differs is what the edge crosses: Wipe takes the block as one unit and
+     * makes a single pass, and this takes the lines inside it and makes a pass
+     * each, staggered by the shared step.
+     *
+     * WHY IT IS A SUITE RATHER THAN A WIPE WITH A STAGGER. The stagger is
+     * already a token, and turning it up on Wipe would do nothing - Wipe's unit
+     * IS the block, so there is one index and nothing to stagger against. The
+     * difference is which elements the edge is applied to, and that is a suite's
+     * job to decide. Same argument Fade made against being "Rise with distance
+     * zero".
+     *
+     * GATED ON `line`, WHICH IS THE POINT. Offered on the sections that mark
+     * their lines and nowhere else, so it cannot be chosen where it would be
+     * indistinguishable from Wipe. Today that is one section; the gate is what
+     * makes it more without an edit here.
+     */
+    id: "text-wipe",
+    label: "Text wipe",
+    status: "offered",
+    description:
+      "The statement is revealed line by line, each behind its own edge travelling left to right.",
+    guidance:
+      "For a section that IS its sentence - a statement set large across a few authored lines, with nothing else competing.",
+    requiresRole: "lines",
+    roles: {
+      heading:
+        "holds still - it is the container, and every ramp on screen belongs to a line",
+      content: "fades in place, as one block",
+      card: "fade in place, staggered by --reveal-index",
+      media: "fade in place",
+      accent: "scale up from 94% while fading, as under Wipe",
+      frame: "fade in place, as a single unit",
+      action: "fade in place - the wipe is about the text, not the action",
+      lines:
+        "THE WIPE - one edge per line, left to right, staggered by --reveal-index",
+    },
+    /**
+     * Three, and the middle one is the interesting one.
+     *
+     * `lines` carries the wipe. `accent` is inherited from Wipe unchanged, because
+     * a stat beside a statement is the same problem in both suites and giving
+     * the two different answers would be a difference nobody asked for.
+     *
+     * `heading` IS DIFFERENTIATED IN ORDER TO DO NOTHING. The block holding the
+     * lines takes an explicit stop rather than the suite's default fade: left on
+     * the fade it would ramp the container's opacity while each line ran its
+     * own, and two animations multiplied on the same pixels means the first line
+     * finishes its wipe at seventy percent and keeps brightening afterwards.
+     * Nothing should compete with the edge, and a parent fade is something
+     * competing with the edge.
+     */
+    differentiatedRoles: ["accent", "heading", "lines"],
+    /** Wipe's curve, Wipe's step, and ONE number of its own. The duration is
+     *  where the two suites genuinely part: Wipe times a single edge across a
+     *  block, this times an edge across one line several times over, and the
+     *  length that reads as decisive on a headline is a flicker on a line.
+     *  Everything else stays in Wipe's group, because a suite earns a control by
+     *  owning a number with no equivalent elsewhere. */
+    trigger: "scroll",
+    controlGroups: ["rhythm", "wipe", "text-wipe"],
   },
   {
     /**
@@ -528,6 +630,7 @@ export const sectionAnimationSuites = [
       frame: "fades in with everything else",
       action:
         "fades in with everything else, then one scale beat once it has landed - ONE beat, not a loop",
+      lines: "not addressed - a marked block arrives as one, lines and all",
     },
     /**
      * One, and deliberately one. A suite that emphasised several roles would
@@ -596,6 +699,7 @@ export const sectionAnimationSuites = [
       accent: "fades in with everything else",
       frame: "fades in with everything else",
       action: "fades in with everything else",
+      lines: "not addressed - a marked block arrives as one, lines and all",
     },
     /**
      * ONE, and the count is the design.
@@ -652,6 +756,7 @@ export const sectionAnimationSuites = [
       frame: "fades in place, as a single unit",
       action:
         "fades in place - the focus is about the statement, not the action",
+      lines: "not addressed - a marked block arrives as one, lines and all",
     },
     /**
      * Two, and `media` is the notable absentee twice over.
@@ -692,6 +797,7 @@ export const sectionAnimationSuites = [
       accent: "rise + fade",
       frame: "rise + fade, as a single unit",
       action: "rise + fade",
+      lines: "not addressed - a marked block arrives as one, lines and all",
     },
     differentiatedRoles: ["media"],
     trigger: "load",
@@ -715,6 +821,7 @@ export const sectionAnimationSuites = [
       accent: "fade in place",
       frame: "fade in place, as a single unit",
       action: "fade in place",
+      lines: "not addressed - a marked block arrives as one, lines and all",
     },
     differentiatedRoles: [],
     trigger: "load",
@@ -738,6 +845,7 @@ export const sectionAnimationSuites = [
       accent: "scale up from 94% while fading",
       frame: "fade in place, as a single unit",
       action: "fade in place",
+      lines: "not addressed - a marked block arrives as one, lines and all",
     },
     differentiatedRoles: ["heading", "content", "accent"],
     trigger: "load",
@@ -909,6 +1017,14 @@ export const sectionAnimationRoleComponents: Partial<
    * picture inside a card and belong nowhere near here, because the card is the
    * unit and the picture is part of it.
    */
+  /**
+   * The sections with a text block worth splitting into lines - what Text wipe
+   * crosses one at a time.
+   *
+   * One so far, and the list is the gate: a section that marks a statement
+   * block gains the suite with no edit here.
+   */
+  lines: ["ContentRevealParagraphSectionV2"],
   media: [
     "ContentAboutCompanySectionV2",
     "ContentNarrativeFeatureRailSectionV3",
