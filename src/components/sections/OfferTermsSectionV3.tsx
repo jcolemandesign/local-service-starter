@@ -100,13 +100,13 @@ export function OfferTermsSectionV3({
             )}
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
-            <div className="col-span-6 p-[clamp(1.5rem,2.4vw,2.5rem)] max-md:col-span-6 max-sm:col-span-2">
+            <div className="col-span-6 p-12 max-lg:p-10 max-md:col-span-6 max-sm:col-span-2 max-sm:p-6">
               <h3 className="type-heading-sm text-service-ink">{detailsHeading}</h3>
-              <dl className="mt-5 divide-y divide-service-border">
+              <dl className="mt-7 divide-y divide-service-border">
                 {details.slice(0, 5).map((detail, index) => (
                   <div
                     className={cx(
-                      "grid items-center gap-4 py-4 first:pt-0 last:pb-0",
+                      "grid items-center gap-5 py-5 first:pt-0 last:pb-0",
                       icons === "on"
                         ? "grid-cols-[auto_minmax(0,1fr)_minmax(8rem,0.9fr)] max-sm:grid-cols-[auto_minmax(0,1fr)]"
                         : "grid-cols-[minmax(0,1fr)_minmax(8rem,0.9fr)] max-sm:grid-cols-1",
@@ -118,7 +118,9 @@ export function OfferTermsSectionV3({
                         <DetailIcon index={index} />
                       </span>
                     ) : null}
-                    <dt className="type-label text-service-ink">{detail.label}</dt>
+                    <dt className="type-text-sm text-service-ink">
+                      <span className="font-semibold">{detail.label}</span>
+                    </dt>
                     <dd
                       className={cx(
                         "type-text-sm text-right text-service-muted max-sm:text-left",
@@ -132,11 +134,11 @@ export function OfferTermsSectionV3({
               </dl>
             </div>
 
-            <div className="col-span-5 border-l border-service-border p-[clamp(1.5rem,2.4vw,2.5rem)] max-md:col-span-6 max-md:border-l-0 max-md:border-t max-sm:col-span-2">
+            <div className="col-span-5 border-l border-service-border p-12 max-lg:p-10 max-md:col-span-6 max-md:border-l-0 max-md:border-t max-sm:col-span-2 max-sm:p-6">
               <h3 className="type-heading-sm text-service-ink">{stepsHeading}</h3>
-              <ol className="mt-5 grid gap-5">
+              <ol className="mt-7 grid gap-6">
                 {steps.slice(0, 4).map((step, index) => (
-                  <li className="relative grid grid-cols-[2rem_minmax(0,1fr)] gap-3" key={step.title}>
+                  <li className="relative grid grid-cols-[2rem_minmax(0,1fr)] gap-4" key={step.title}>
                     {index < Math.min(steps.length, 4) - 1 ? (
                       <span aria-hidden="true" className="absolute bottom-[-1.25rem] left-[0.95rem] top-8 border-l border-dashed border-service-border" />
                     ) : null}
@@ -144,22 +146,24 @@ export function OfferTermsSectionV3({
                       {index + 1}
                     </span>
                     <div>
-                      <h4 className="type-label text-service-ink">{step.title}</h4>
-                      <p className="type-text-sm mt-1 text-service-muted">{step.body}</p>
+                      <h4 className="type-text-sm text-service-ink">
+                        <span className="font-semibold">{step.title}</span>
+                      </h4>
+                      <p className="type-text-sm mt-2 text-service-muted">{step.body}</p>
                     </div>
                   </li>
                 ))}
               </ol>
-              <RequestServiceButton className="mt-7 w-full">{action}</RequestServiceButton>
+              <RequestServiceButton className="mt-8 w-full">{action}</RequestServiceButton>
             </div>
 
-            <aside className="col-span-3 flex flex-col justify-center border-l border-service-border p-[clamp(1.5rem,2.4vw,2.5rem)] max-md:col-span-6 max-md:border-l-0 max-md:border-t max-sm:col-span-2">
+            <aside className="col-span-3 flex flex-col justify-center border-l border-service-border p-12 max-lg:p-10 max-md:col-span-6 max-md:border-l-0 max-md:border-t max-sm:col-span-2 max-sm:p-6">
               {icons === "on" ? (
                 <span className="grid size-14 place-items-center rounded-full bg-bg-muted text-service-accent">
                   <AssuranceIcon />
                 </span>
               ) : null}
-              <p className="type-text-md wrap-pretty mt-5 text-service-muted">
+              <p className="type-text-sm wrap-pretty mt-7 text-service-muted">
                 {assuranceBody}
               </p>
             </aside>

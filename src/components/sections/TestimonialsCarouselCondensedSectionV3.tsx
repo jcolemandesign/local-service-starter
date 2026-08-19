@@ -146,16 +146,18 @@ function TestimonialCard({
   cardFill,
   className,
   item,
+  showDivider = false,
 }: {
   cardBorder: "on" | "off";
   cardFill: "solid" | "none";
   className?: string;
   item: CarouselTestimonial;
+  showDivider?: boolean;
 }) {
   return (
     <figure
       className={cx(
-        "radius-medium flex min-h-full flex-col justify-between border p-8 max-md:p-6",
+        "radius-medium relative flex min-h-full flex-col justify-between border p-8 max-md:p-6",
         cardFill === "none"
           ? "bg-transparent shadow-none"
           : "bg-surface-raised shadow-service",
@@ -163,6 +165,13 @@ function TestimonialCard({
         className,
       )}
     >
+      {showDivider ? (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-8 w-px bg-service-border opacity-60 max-lg:hidden"
+          style={{ left: "calc(var(--site-grid-gap) / -2)" }}
+        />
+      ) : null}
       <blockquote className="type-text-sm leading-relaxed text-service-ink">
         &quot;{item.quote}&quot;
       </blockquote>
@@ -290,6 +299,7 @@ export function TestimonialsCarouselCondensedSectionV3({
                     }
                     item={item}
                     key={itemIndex}
+                    showDivider={isUnframed && itemIndex > 0}
                   />
                 ))}
               </motion.div>

@@ -194,6 +194,7 @@ export function FinancingCalculatorSectionV3({
     <section className={colors.section}>
       <LayoutGrid className="section-min-none items-stretch" columns={14} padding="med">
         <LayoutGridItem
+          alignY="stretch"
           className="col-span-8 col-start-1 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2"
         >
           <div
@@ -201,7 +202,7 @@ export function FinancingCalculatorSectionV3({
             style={
               {
                 "--reveal-index": 0,
-                paddingBottom: "var(--section-space-vsml)",
+                paddingBlock: "var(--section-space-vsml)",
               } as CSSProperties
             }
           >
@@ -391,7 +392,12 @@ export function FinancingCalculatorSectionV3({
         >
           <div
             className={cx(cardClassName, "grid content-between")}
-            style={{ "--reveal-index": 1 } as CSSProperties}
+            style={
+              {
+                "--reveal-index": 1,
+                paddingBlock: "var(--section-space-vsml)",
+              } as CSSProperties
+            }
           >
             <div aria-atomic="true" aria-live="polite">
               <p className={cx("type-label", colors.text)}>

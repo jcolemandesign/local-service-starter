@@ -132,12 +132,18 @@ function mapHref(address: string) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 }
 
-/**
- * One tile: optional icon, label, value. Identical shape across all five, and
- * `h-full` so they stretch to the tallest - the after-hours sentence sets the
- * row height and the rest match it.
- */
+function BareDivider() {
+  return (
+    <span
+      aria-hidden="true"
+      className="w-px shrink-0 self-stretch bg-service-border opacity-60 max-lg:hidden"
+    />
+  );
+}
+
+/** One compact contact tile: optional icon, supporting label, and value. */
 function Tile({
+  bare,
   children,
   className,
   icon,
@@ -147,6 +153,7 @@ function Tile({
   revealIndex,
   showIcon,
 }: {
+  bare: boolean;
   children: ReactNode;
   className: string;
   icon: ReactNode;
@@ -163,7 +170,10 @@ function Tile({
         // Marks this tile as a revealable unit. Inert unless the section's
         // animation toggle is on - see `section-reveal` in globals.css.
         "reveal-on-scroll reveal-role-card",
-        "flex h-full min-w-0 flex-col items-start p-6 text-left max-sm:p-5",
+        "flex h-full min-w-0 flex-col items-start text-left",
+        bare
+          ? "flex-auto px-6 py-3 max-lg:px-5 max-sm:px-0 max-sm:py-5"
+          : "px-5 py-4",
         className,
       )}
       style={{ "--reveal-index": revealIndex } as CSSProperties}
@@ -171,15 +181,17 @@ function Tile({
       {showIcon ? (
         <span
           className={cx(
-            "grid size-9 shrink-0 place-items-center rounded-full",
+            "grid size-8 shrink-0 place-items-center rounded-full",
             iconShellClassName,
           )}
         >
           {icon}
         </span>
       ) : null}
-      <p className={cx("type-label", showIcon && "mt-4", mutedClassName)}>
-        {label}
+      <p
+        className={cx("type-text-xs", showIcon && "mt-3", mutedClassName)}
+      >
+        <span className="font-semibold">{label}</span>
       </p>
       {children}
     </article>
@@ -191,19 +203,17 @@ function Tile({
  * email, hours, after-hours guidance, location - laid out as a single band
  * rather than a stacked composition.
  *
- * Five equal tiles, left aligned, distributed across their own `grid-cols-5`
- * inside one full-width slot of the shared grid. Fourteen columns do not divide
- * by five, so spans of the site grid could only ever be 3+3+3+3+2 - one tile a
- * third narrower than its neighbours. Taking the column allocation local is what
- * buys equal widths; the section still sits on the shared frame, gutters and
- * section spacing.
+ * The five tiles share one content-aware row inside a full-width slot of the
+ * shared grid. Phone can stay narrow, while email, after-hours guidance, and
+ * location receive enough measure to wrap at useful phrase boundaries.
+ * With both card controls off, the fixed card allocation gives way to five
+ * content-sized flex items and one-pixel dividers carry the rhythm instead.
  *
  * Content is left aligned and top aligned, so the labels line up across the row
  * and the tiles read as one band rather than five centred cards.
  *
- * Every detail value is `type-text-sm`. One shared size across all five is what
- * keeps them equal weight - a larger phone number or address would pull the eye
- * to a single tile.
+ * Detail values use the small text scale, with the email one step quieter so a
+ * complete address stays intact in the five-up row.
  */
 export function ContactStripSmallSectionV3({
   address,
@@ -229,32 +239,45 @@ export function ContactStripSmallSectionV3({
   const mutedClassName = colors.muted;
   const iconClassName = colors.icon;
   const iconShellClassName = cx(colors.iconShell, iconClassName);
+  const isBare = cardFill === "none" && cardBorder === "off";
 
-  const cardClassName = cx(
-    "rounded-[var(--radius-surface-token)] border shadow-service",
-    colors.card,
-    colors.cardBorder,
-    "recipe-card-context",
-    cardFill === "none" && "!bg-transparent !shadow-none",
-    cardBorder === "off" && "!border-transparent",
-  );
+  const cardClassName = isBare
+    ? "recipe-card-context"
+    : cx(
+        "rounded-[var(--radius-surface-token)] border shadow-service",
+        colors.card,
+        colors.cardBorder,
+        "recipe-card-context",
+        cardFill === "none" && "!bg-transparent !shadow-none",
+        cardBorder === "off" && "!border-transparent",
+      );
 
   const showIcon = icons === "on";
-  const valueClassName = cx("type-text-sm mt-1 font-semibold", textClassName);
+  const valueClassName = cx("type-text-xs mt-1", textClassName);
+  const emailValueClassName = cx(
+    "type-caption mt-1 whitespace-nowrap",
+    textClassName,
+  );
 
   return (
     <section className={colors.section}>
-      <LayoutGrid className="section-min-none" columns={14} padding="sml">
-        {/* One full-width slot holding its own five equal columns, rather than
-         * five spans of the 14-column grid. Fourteen does not divide by five, so
-         * spans can only ever be 3+3+3+3+2 - one tile a third narrower than the
-         * rest. An inner `grid-cols-5` distributes the row evenly instead. The
-         * section still sits on the shared frame, gutters and section spacing;
-         * only the column allocation is local. Same approach as the process
-         * strip. */}
+      <LayoutGrid
+        className="section-min-none section-space-vsml"
+        columns={14}
+      >
+        {/* Both presentations stay inside the shared 14-column frame. Visible
+         * cards use the weighted 5-up grid and its 3 / 2 / 1 fallbacks; the
+         * fully bare state uses natural flex bases and independent dividers. */}
         <LayoutGridItem className="col-span-14 col-start-1 max-lg:col-span-10 max-md:col-span-6 max-sm:col-span-2">
-          <div className="grid grid-cols-5 items-stretch gap-6 max-xl:grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1">
+          <div
+            className={cx(
+              isBare
+                ? "flex items-stretch max-lg:grid max-lg:grid-cols-2 max-lg:gap-x-4 max-lg:gap-y-6 max-sm:grid-cols-1"
+                : "grid grid-cols-[0.95fr_1.3fr_1.1fr_1.45fr_1.2fr] items-stretch gap-4 max-xl:grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1",
+            )}
+          >
             <Tile
+              bare={isBare}
               className={cardClassName}
               revealIndex={0}
               icon={<PhoneIcon />}
@@ -264,14 +287,16 @@ export function ContactStripSmallSectionV3({
               showIcon={showIcon}
             >
               <a
-                className={cx(valueClassName, "break-words")}
+                className={cx(valueClassName, "whitespace-nowrap")}
                 href={phoneHref(phone)}
               >
                 {phone}
               </a>
             </Tile>
+            {isBare ? <BareDivider /> : null}
 
             <Tile
+              bare={isBare}
               className={cardClassName}
               revealIndex={1}
               icon={<MailIcon />}
@@ -281,14 +306,16 @@ export function ContactStripSmallSectionV3({
               showIcon={showIcon}
             >
               <a
-                className={cx(valueClassName, "break-all")}
+                className={emailValueClassName}
                 href={`mailto:${email}`}
               >
                 {email}
               </a>
             </Tile>
+            {isBare ? <BareDivider /> : null}
 
             <Tile
+              bare={isBare}
               className={cardClassName}
               revealIndex={2}
               icon={<ClockIcon />}
@@ -301,8 +328,10 @@ export function ContactStripSmallSectionV3({
                 {hours}
               </p>
             </Tile>
+            {isBare ? <BareDivider /> : null}
 
             <Tile
+              bare={isBare}
               className={cardClassName}
               revealIndex={3}
               icon={<MoonIcon />}
@@ -312,13 +341,15 @@ export function ContactStripSmallSectionV3({
               showIcon={showIcon}
             >
               <p
-                className={cx("type-text-sm mt-1 wrap-pretty", mutedClassName)}
+                className={cx("type-text-xs mt-1 wrap-pretty", mutedClassName)}
               >
                 {afterHoursBody}
               </p>
             </Tile>
+            {isBare ? <BareDivider /> : null}
 
             <Tile
+              bare={isBare}
               className={cardClassName}
               revealIndex={4}
               icon={<LocationIcon />}

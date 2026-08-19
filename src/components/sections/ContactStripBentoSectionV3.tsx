@@ -137,13 +137,13 @@ export function ContactStripBentoSectionV3({
 
   return (
     <section className={colors.section}>
-      <LayoutGrid className="section-min-none" columns={14} padding="med">
+      <LayoutGrid className="section-min-none" columns={14} padding="sml">
         <LayoutGridItem alignY="stretch" className="col-span-5 col-start-1 max-lg:col-span-5 max-md:col-span-6 max-md:col-start-1 max-sm:col-span-2">
           <article
             className={cx(cardClassName, "grid grid-rows-2 overflow-hidden")}
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
-            <div className="flex min-w-0 flex-col items-center justify-center px-8 py-12 text-center max-sm:px-5 max-sm:py-9">
+            <div className="flex min-w-0 flex-col items-center justify-center px-8 py-10 text-center max-sm:px-5 max-sm:py-8">
               {icons === "on" ? (
                 <IconShell className={cx(iconShellClassName, iconClassName)}>
                   <PhoneIcon />
@@ -154,14 +154,14 @@ export function ContactStripBentoSectionV3({
                 {phone}
               </a>
             </div>
-            <div className={cx("flex min-w-0 flex-col items-center justify-center border-t px-8 py-10 text-center max-sm:px-5 max-sm:py-8", dividerClassName)}>
+            <div className={cx("flex min-w-0 flex-col items-center justify-center border-t px-8 py-8 text-center max-sm:px-5 max-sm:py-7", dividerClassName)}>
               {icons === "on" ? (
                 <IconShell className={cx(iconShellClassName, iconClassName)}>
                   <MailIcon />
                 </IconShell>
               ) : null}
               <p className={cx("type-label", icons === "on" && "mt-5", mutedClassName)}>{emailLabel}</p>
-              <a className={cx("type-text-lg mt-2 break-all font-semibold", textClassName)} href={`mailto:${email}`}>
+              <a className={cx("type-text-md mt-2 break-all font-semibold", textClassName)} href={`mailto:${email}`}>
                 {email}
               </a>
             </div>
@@ -184,7 +184,7 @@ export function ContactStripBentoSectionV3({
             </article>
 
             <article
-              className={cx(cardClassName, "flex min-w-0 flex-col items-center justify-center px-10 py-12 text-center max-sm:px-5 max-sm:py-9")}
+              className={cx(cardClassName, "flex min-w-0 flex-col items-center justify-center px-10 py-10 text-center max-sm:px-5 max-sm:py-8")}
               style={{ "--reveal-index": 2 } as CSSProperties}
             >
               {icons === "on" ? (
@@ -193,14 +193,14 @@ export function ContactStripBentoSectionV3({
                 </IconShell>
               ) : null}
               <h2 className={cx("type-heading-sm", icons === "on" && "mt-4", textClassName)}>{afterHoursLabel}</h2>
-              <p className={cx("type-text-md mt-3 max-w-[38rem] wrap-pretty", mutedClassName)}>{afterHoursBody}</p>
+              <p className={cx("type-text-sm mt-3 max-w-[38rem] wrap-pretty", mutedClassName)}>{afterHoursBody}</p>
             </article>
           </div>
         </LayoutGridItem>
 
         <LayoutGridItem alignY="stretch" className="col-span-4 col-start-11 max-lg:col-span-10 max-lg:col-start-1 max-md:col-span-6 max-sm:col-span-2">
           <article
-            className={cx(cardClassName, "flex min-w-0 flex-col items-center justify-center px-8 py-12 text-center max-sm:px-5 max-sm:py-9")}
+            className={cx(cardClassName, "flex min-w-0 flex-col items-center justify-center px-8 py-10 text-center max-sm:px-5 max-sm:py-8")}
             style={{ "--reveal-index": 3 } as CSSProperties}
           >
             {icons === "on" ? (
@@ -210,7 +210,7 @@ export function ContactStripBentoSectionV3({
             ) : null}
             <h2 className={cx("type-heading-sm", icons === "on" && "mt-5", textClassName)}>{locationLabel}</h2>
             <a
-              className={cx("type-text-lg mt-3 max-w-[24rem] whitespace-pre-line font-semibold wrap-pretty", textClassName)}
+              className={cx("type-text-md mt-3 max-w-[24rem] whitespace-pre-line font-semibold wrap-pretty", textClassName)}
               href={mapHref(address)}
               rel="noreferrer"
               target="_blank"
