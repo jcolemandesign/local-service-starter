@@ -299,13 +299,13 @@ export function TrustLogoGridSectionV3({
           <div
             className={cx(
               "reveal-on-scroll reveal-role-card",
-              "radius-medium flex h-full items-center justify-center border border-service-border bg-service-surface px-5 py-4 text-center",
+              "radius-medium flex h-full items-center justify-start border border-service-border bg-service-surface px-5 py-4 text-left",
               cardFill === "none" ? "!bg-transparent" : undefined,
               cardBorder === "off" ? "!border-transparent" : undefined,
             )}
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
-            <p className="type-text-xl wrap-balance font-semibold text-service-ink">
+            <p className="trust-logo-grid-left-headline type-text-xl wrap-balance font-semibold text-service-ink">
               {label}
             </p>
           </div>

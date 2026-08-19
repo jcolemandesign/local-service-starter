@@ -207,7 +207,7 @@ describe("gate scope", () => {
     // The exact figure is asserted against real usage in
     // color-card-coverage.test.ts; here it only has to be present and partial.
     expect(report.coveredCardSections).toBeGreaterThan(0);
-    expect(report.totalCardSections).toBe(148);
+    expect(report.totalCardSections).toBe(149);
     expect(report.coveredCardSections).toBeLessThan(report.totalCardSections);
   });
 });

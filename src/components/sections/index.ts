@@ -231,6 +231,11 @@ export { ServicesBentoCardsSectionV2 } from "./ServicesBentoCardsSectionV2";
 export { ServicesGridSection } from "./ServicesGridSection";
 export { ServicesHoverPanelSection } from "./ServicesHoverPanelSection";
 export { ServicesHoverPanelSectionV2 } from "./ServicesHoverPanelSectionV2";
+export {
+  ServicesOverviewSectionV3,
+  type ServicesOverviewCard,
+  type ServicesOverviewSectionV3Props,
+} from "./ServicesOverviewSectionV3";
 export { ServicesScrollCardsSection } from "./ServicesScrollCardsSection";
 export { ServicesScrollCardsSectionV2 } from "./ServicesScrollCardsSectionV2";
 export { SectionHeaderCompactSectionV3 } from "./SectionHeaderCompactSectionV3";

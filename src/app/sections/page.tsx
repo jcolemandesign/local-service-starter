@@ -70,6 +70,7 @@ import {
   QuickPageLinksSectionV2,
   ServicesBentoCardsSectionV2,
   ServicesHoverPanelSectionV2,
+  ServicesOverviewSectionV3,
   ServicesScrollCardsSectionV2,
   SectionHeaderCompactSectionV3,
   SectionHeaderLargeSectionV3,
@@ -360,6 +361,11 @@ const sectionElements = {
   "services-three-cards-right-v3": (
     <ServicesThreeCardsRightSectionV3
       {...sectionLibraryV3Content.servicesThreeCardsRight}
+    />
+  ),
+  "services-overview-v3": (
+    <ServicesOverviewSectionV3
+      {...sectionLibraryV3Content.servicesOverview}
     />
   ),
   "services-bento-cards-v2": (

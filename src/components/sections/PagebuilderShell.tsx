@@ -1618,6 +1618,14 @@ const sectionSwapOptions: readonly SectionSwapOption[] = [
     name: "Priority service cards",
   },
   {
+    component: "ServicesOverviewSectionV3",
+    instruction:
+      "Give a quick overview of three service groups within one category, with a concise left introduction and scannable included-service lists.",
+    layoutGrid: 14,
+    mode: "Scan",
+    name: "Services overview",
+  },
+  {
     component: "ServicesScrollCardsSectionV2",
     instruction:
       "Use a service rail when there are more service paths than a small grid can handle gracefully.",

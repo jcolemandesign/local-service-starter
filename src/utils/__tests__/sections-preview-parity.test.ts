@@ -19,7 +19,7 @@ import { sectionLibraryV3Registry } from "@/content/section-library-v3";
  * broken: the page renders every section it knows about, and the missing one is
  * only missing to someone who already knew to look for it.
  *
- * An audit found no drift when this was written - all 97 registered sections
+ * An audit found no drift when this was written - all 98 registered sections
  * reach every surface. This exists so that stays true, because "in sync today"
  * is what every one of these lists was before it drifted.
  */

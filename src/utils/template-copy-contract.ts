@@ -1705,6 +1705,98 @@ export function getTemplateCopyFieldsForSection(
     ];
   }
 
+  if (component.includes("servicesoverview")) {
+    const groupExamples = [
+      {
+        title: "Spring cooling visit",
+        items: [
+          "Inspect outdoor equipment condition",
+          "Check refrigerant performance",
+          "Test airflow and temperature split",
+          "Clean accessible components",
+        ],
+      },
+      {
+        title: "Fall heating visit",
+        items: [
+          "Verify safe startup and operation",
+          "Inspect burners or heat components",
+          "Check thermostat and controls",
+          "Confirm airflow and filter condition",
+        ],
+      },
+      {
+        title: "Year-round benefits",
+        items: [
+          "Fewer surprise breakdowns",
+          "Better day-to-day efficiency",
+          "More even comfort",
+          "Clearer recommendations over time",
+        ],
+      },
+    ];
+
+    return [
+      {
+        example: "Seasonal maintenance",
+        name: "eyebrow",
+        purpose: "Short category label above the left-hand introduction.",
+        target: "12-32 characters.",
+      },
+      {
+        example:
+          "Balanced coverage for cooling season and heating season.",
+        name: "heading",
+        purpose:
+          "Left-hand headline that explains the service category at a glance.",
+        target: "40-75 characters.",
+      },
+      {
+        example:
+          "A good maintenance plan checks both halves of the system before peak weather and catches developing concerns early.",
+        name: "body",
+        purpose:
+          "Concise introduction explaining how the three service groups fit together.",
+        target: "110-210 characters.",
+      },
+      {
+        example: "Best fit",
+        name: "fitTitle",
+        purpose: "Short label for the compact audience-fit callout.",
+        target: "8-24 characters.",
+      },
+      {
+        example:
+          "Homeowners who want fewer surprise repairs, steadier comfort, and a clearer record of system condition over time.",
+        name: "fitBody",
+        purpose:
+          "One sentence describing who benefits most from this category of service.",
+        target: "90-170 characters.",
+      },
+      ...groupExamples.flatMap((group, index) => {
+        const slot = index + 1;
+
+        return [
+          {
+            example: group.title,
+            name: `group${slot}Title`,
+            purpose: `Heading for service group ${slot}, shown in card ${slot}.`,
+            target: "16-34 characters.",
+          },
+          {
+            example: group.items,
+            format: "One concise included service or benefit per line.",
+            itemCount: group.items.length,
+            name: `group${slot}Items`,
+            purpose: `Scannable list of what service group ${slot} covers.`,
+            target:
+              "Exactly 4-5 items. Each item 24-58 characters. Keep every line parallel and specific.",
+          },
+        ];
+      }),
+    ];
+  }
+
   if (component.includes("servicesthreecardsright")) {
     return [
       {

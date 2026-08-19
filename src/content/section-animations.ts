@@ -11,7 +11,7 @@
  * WHY ROLES RATHER THAN MORE ENUM VALUES. The obvious move is to widen the
  * animation enum - `reveal | slide-left | wipe | scale-in`. That is the trap
  * `pulse` already documents: a value that only makes sense on some sections
- * needs a membership set per value, which is 10 values x 97 sections of
+ * needs a membership set per value, which is 10 values x 98 sections of
  * hand-maintained lists, and "which sections may use the wipe" is a per-section
  * motion decision wearing a registry's clothes. A suite answers every role, so
  * every suite is safe on every marked section and no membership set is needed.
@@ -1103,7 +1103,7 @@ export function sectionMarksRole(
  *
  * WHY A LIST EXISTS AT ALL, IN A FILE THAT ARGUES AGAINST LISTS. The header of
  * this file rejects a membership set PER VALUE - a hand-maintained allow-list
- * for every suite, which is 5 x 97 today, grows with each suite, and makes a
+ * for every suite, which is 5 x 98 today, grows with each suite, and makes a
  * new section silently unanimated until someone adds it to all of them. That
  * argument is about ALLOW-lists, and it still stands: the role gate is what
  * decides availability, and it needs no upkeep.

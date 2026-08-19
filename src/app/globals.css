@@ -4706,6 +4706,23 @@ body {
     padding-bottom: 0 !important;
   }
 
+  /* With both edges flush, the static logo grid becomes a compact trust band.
+   * Use the next clearly distinct shared text role for its left headline so
+   * the reduction remains legible at wide builder-canvas sizes without
+   * changing the normal, padded version of the section. */
+  .pagebuilder-density-normal
+    .pagebuilder-section-frame[data-pagebuilder-padding-top="none"][data-pagebuilder-padding-bottom="none"][data-pagebuilder-section-component="TrustLogoGridSectionV3"]
+    .trust-logo-grid-left-headline {
+    --type-text-xl-font: var(--type-text-md-font);
+    --type-text-xl-size: var(--type-text-md-size);
+    --type-text-xl-leading: var(--type-text-md-leading);
+    --type-text-xl-measure: var(--type-text-md-measure);
+    --type-text-xl-weight: var(--type-text-md-weight);
+    --type-text-xl-tracking: var(--type-text-md-tracking);
+    --type-text-xl-wrap: var(--type-text-md-wrap);
+    --type-text-xl-transform: var(--type-text-md-transform);
+  }
+
   /* The condensed testimonial carousel ends with its group indicators. A
    * fully flush ending makes those controls feel cramped, so retain half of
    * the section's normal medium bottom space only for this component, then

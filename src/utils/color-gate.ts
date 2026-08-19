@@ -152,9 +152,12 @@ export const CARD_CONTEXT_COVERAGE = {
    * always been in this figure. Bringing this one out of it would mean making it
    * the one control panel that looks different from its siblings, which is a
    * worse trade than a number that is four dev panels wide and says so.
+   *
+   * 132 -> 133: the Services overview scan section adds three ordinary card
+   * surfaces using the shared card token and therefore joins this coverage.
    */
-  covered: 132,
-  total: 148,
+  covered: 133,
+  total: 149,
 } as const;
 
 const ladderRoles: { role: GateRole; level: keyof typeof ladderLevels; bar: number }[] = [

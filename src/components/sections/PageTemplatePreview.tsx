@@ -142,6 +142,7 @@ import {
   type ServicesBentoCardsVariant,
 } from "@/components/sections/ServicesBentoCardsSectionV2";
 import { ServicesHoverPanelSectionV2 } from "@/components/sections/ServicesHoverPanelSectionV2";
+import { ServicesOverviewSectionV3 } from "@/components/sections/ServicesOverviewSectionV3";
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { ServiceAreaZipLookupSectionV3 } from "@/components/sections/ServiceAreaZipLookupSectionV3";
 import { ThankYouConfirmationSectionV3 } from "@/components/sections/ThankYouConfirmationSectionV3";
@@ -1012,6 +1013,16 @@ export function renderPageTemplateSection(
           {...servicesThreeCardsProps(fieldSection)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+        />
+      );
+    case "ServicesOverviewSectionV3":
+      return (
+        <ServicesOverviewSectionV3
+          {...servicesOverviewProps(fieldSection)}
+          cardBorder={section.cardBorder}
+          cardFill={section.cardFill}
+          headingSize={resolveHeadingSize(section.headingSize, "heading-xl")}
+          icons={resolveSectionIcons(section.icons)}
         />
       );
     case "ServicesScrollCardsSectionV2":
@@ -2334,6 +2345,30 @@ function servicesThreeCardsProps(section: FieldSection) {
       sectionLibraryV3Content.servicesThreeCardsRight.eyebrow,
     ),
     title: getTitle(section, sectionLibraryV3Content.servicesThreeCardsRight.title),
+  };
+}
+
+function servicesOverviewProps(section: FieldSection) {
+  const fallback = sectionLibraryV3Content.servicesOverview;
+
+  return {
+    ...fallback,
+    body: getValue(section, "body", fallback.body),
+    cards: fallback.cards.map((card, index) => {
+      const slot = index + 1;
+      const items = splitItems(
+        getValue(section, `group${slot}Items`, card.items.join("\n")),
+      );
+
+      return {
+        items: items.length > 0 ? items : card.items,
+        title: getValue(section, `group${slot}Title`, card.title),
+      };
+    }),
+    eyebrow: getValue(section, "eyebrow", fallback.eyebrow),
+    fitBody: getValue(section, "fitBody", fallback.fitBody),
+    fitTitle: getValue(section, "fitTitle", fallback.fitTitle),
+    heading: getValue(section, "heading", fallback.heading),
   };
 }
 

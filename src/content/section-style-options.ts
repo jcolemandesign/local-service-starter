@@ -419,6 +419,7 @@ export const headingSizeComponents = new Set<string>([
   "DecisionMatrixCardSectionV3",
   "HeroFullscreenSectionV2",
   "SectionHeaderSplitLinkSectionV3",
+  "ServicesOverviewSectionV3",
   "TrustMarqueeSection",
 ]);
 
@@ -445,6 +446,7 @@ const sectionHeadingSizeDefaults: Partial<Record<string, SectionHeadingSize>> = 
   ContentNarrativeFeatureRailSectionV3: "display-lg",
   DecisionMatrixCardSectionV3: "heading-xl",
   SectionHeaderSplitLinkSectionV3: "heading-xl",
+  ServicesOverviewSectionV3: "heading-xl",
   TrustMarqueeSection: "display-lg",
 };
 
@@ -536,6 +538,7 @@ export const cardStyleComponents = new Set<string>([
   "ServiceAreaZipLookupSectionV3",
   "ServicesBentoCardsSectionV2",
   "ServicesHoverPanelSectionV2",
+  "ServicesOverviewSectionV3",
   "ServicesScrollCardsSectionV2",
   "ServicesThreeCardsRightSectionV3",
   "ThankYouConfirmationSectionV3",
@@ -631,6 +634,7 @@ export const iconComponents = new Set<string>([
   "ProcessStripSectionV3",
   "ServiceCalloutRevealGridSectionV3",
   "ServiceCalloutSplitPanelSectionV3",
+  "ServicesOverviewSectionV3",
 ]);
 
 export function sectionSupportsIcons(component: string) {
@@ -1101,6 +1105,7 @@ export const animationComponents = new Set<string>([
    */
   "QuickPageLinksSectionV2",
   "ServicesBentoCardsSectionV2",
+  "ServicesOverviewSectionV3",
   "ServicesThreeCardsRightSectionV3",
   /**
    * The section headers, which fade rather than rise as a list. Two of the three

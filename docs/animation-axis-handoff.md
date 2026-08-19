@@ -211,7 +211,7 @@ replay a two-line reset rather than a fight with the cascade.
 
 ## 3. Rollout status — **complete**
 
-**Every one of the 97 registered sections is accounted for: 57 marked, 40
+**Every one of the 98 registered sections is accounted for: 58 marked, 40
 excluded, 0 unaccounted.** `animation-marker-ownership` fails if that ever stops
 being true, so "unmarked" is no longer a state a new section can quietly sit in.
 
@@ -662,7 +662,7 @@ already documents with `pulse`. Three failure modes, all of them shipping:
 1. **Meaningless combinations.** "Typewriter" on a nine-card bento types out
    nine cards.
 2. **Bookkeeping explosion.** Preventing that means a membership set *per
-   value* — ten values × 97 sections of hand-maintained lists.
+   value* — ten values × 98 sections of hand-maintained lists.
 3. **It puts motion back in the section.** "Which sections may use the wipe" is
    a per-section motion decision wearing a registry's clothes.
 

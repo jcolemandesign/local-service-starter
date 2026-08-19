@@ -129,6 +129,7 @@ import {
   type ServicesBentoCardsVariant,
 } from "@/components/sections/ServicesBentoCardsSectionV2";
 import { ServicesHoverPanelSectionV2 } from "@/components/sections/ServicesHoverPanelSectionV2";
+import { ServicesOverviewSectionV3 } from "@/components/sections/ServicesOverviewSectionV3";
 import { ServicesScrollCardsSectionV2 } from "@/components/sections/ServicesScrollCardsSectionV2";
 import { InfoStripSectionV3 } from "@/components/sections/InfoStripSectionV3";
 import { ContactStripBentoSectionV3 } from "@/components/sections/ContactStripBentoSectionV3";
@@ -658,6 +659,12 @@ function renderSectionElement(
           {...sectionLibraryV3Content.servicesThreeCardsRight}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
+        />
+      );
+    case "ServicesOverviewSectionV3":
+      return (
+        <ServicesOverviewSectionV3
+          {...sectionLibraryV3Content.servicesOverview}
         />
       );
     case "ServicesScrollCardsSectionV2":

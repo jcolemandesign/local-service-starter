@@ -2010,6 +2010,45 @@ export const sectionLibraryV3Content = {
       { title: "No Heating and Cooling", body: "The system has stopped heating or cooling and needs prompt attention.", href: "/contact" },
     ],
   },
+  servicesOverview: {
+    eyebrow: "Seasonal maintenance",
+    heading: "Balanced coverage for cooling season and heating season.",
+    body: "A good maintenance plan checks both halves of the system before peak weather, catches developing concerns early, and keeps the next recommendation grounded in documented condition.",
+    fitTitle: "Best fit",
+    fitBody:
+      "Homeowners who want fewer surprise repairs, steadier comfort, and a clearer picture of system condition over time.",
+    cards: [
+      {
+        title: "Spring cooling visit",
+        items: [
+          "Inspect outdoor equipment condition",
+          "Check refrigerant performance",
+          "Test airflow and temperature split",
+          "Clean accessible components",
+          "Catch wear before peak summer load",
+        ],
+      },
+      {
+        title: "Fall heating visit",
+        items: [
+          "Verify safe startup and operation",
+          "Inspect burners or heat components",
+          "Check thermostat and controls",
+          "Confirm airflow and filter condition",
+          "Spot issues before cold-weather demand",
+        ],
+      },
+      {
+        title: "Year-round benefits",
+        items: [
+          "Fewer surprise breakdowns",
+          "Better day-to-day efficiency",
+          "More even comfort",
+          "Clearer recommendations over time",
+        ],
+      },
+    ],
+  },
   servicesThreeCardsRight: {
     eyebrow: "Priority services",
     title: "Services to list first before the full service set.",
@@ -2179,18 +2218,22 @@ export const sectionLibraryV3Collections = [
   },
   {
     title: "Scan",
-      items: [
-        { label: "Card links 4-up", component: "four-card-link-grid-v3" },
-        { label: "Card links 3-up", component: "three-card-link-grid-v3" },
-        {
-          label: "Horizontal card links 3-up",
-          component: "horizontal-card-link-grid-v3",
-        },
-        {
-          label: "Horizontal card links 2-up",
-          component: "horizontal-card-link-grid-two-up-v3",
-        },
-        { label: "Service needs priority grid", component: "service-needs-priority-grid-v3" },
+    items: [
+      { label: "Card links 4-up", component: "four-card-link-grid-v3" },
+      { label: "Card links 3-up", component: "three-card-link-grid-v3" },
+      {
+        label: "Horizontal card links 3-up",
+        component: "horizontal-card-link-grid-v3",
+      },
+      {
+        label: "Horizontal card links 2-up",
+        component: "horizontal-card-link-grid-two-up-v3",
+      },
+      {
+        label: "Service needs priority grid",
+        component: "service-needs-priority-grid-v3",
+      },
+      { label: "Services overview", component: "services-overview-v3" },
       {
         label: "Services card carousel",
         component: "content-horizontal-card-carousel-v2",
@@ -2485,6 +2528,7 @@ export const sectionLibraryV3ComponentBySlug = {
   "horizontal-card-link-grid-two-up-v3":
     "HorizontalCardLinkGridTwoUpSectionV3",
   "service-needs-priority-grid-v3": "ServiceNeedsPriorityGridSectionV3",
+  "services-overview-v3": "ServicesOverviewSectionV3",
   "service-callout-reveal-grid-v3": "ServiceCalloutRevealGridSectionV3",
   "service-callout-split-panel-v3": "ServiceCalloutSplitPanelSectionV3",
   "content-horizontal-card-carousel-v2":
