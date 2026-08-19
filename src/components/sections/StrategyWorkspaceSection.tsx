@@ -287,6 +287,11 @@ export function StrategyWorkspaceSection({
     previewHref: string;
   } | null>(null);
   const [stagedCopyNotice, setStagedCopyNotice] = useState("");
+  const [unassigningPageId, setUnassigningPageId] = useState("");
+  const [unassignError, setUnassignError] = useState<{
+    message: string;
+    pageId: string;
+  } | null>(null);
   const [templatePickerError, setTemplatePickerError] = useState("");
   const [templatePreview, setTemplatePreview] = useState<{
     page: StagedPage;
@@ -870,6 +875,67 @@ export function StrategyWorkspaceSection({
     }
   }
 
+  /**
+   * Unassign, not delete. The staged page is the record that holds the
+   * assignment, so removing it is what frees the slot - the template itself
+   * stays in the library and can be assigned here or anywhere else again.
+   */
+  async function unassignTemplateFromPage(page: (typeof assemblyPages)[number]) {
+    const stagedPageId = page.stagedPageId;
+
+    if (!stagedPageId) {
+      return;
+    }
+
+    const stagedLabel = page.stagedPageLabel || page.label;
+    const confirmed = window.confirm(
+      `Unassign ${page.templateName || "this template"} from ${stagedLabel}?
+
+The staged page, and any archived alternates of it, are removed. The template itself stays in the library.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setUnassigningPageId(page.id);
+    setUnassignError(null);
+
+    try {
+      const response = await fetch("/api/staged-pages", {
+        body: JSON.stringify({ clientSlug, pageId: stagedPageId }),
+        headers: { "Content-Type": "application/json" },
+        method: "DELETE",
+      });
+      const result = (await response.json()) as {
+        error?: string;
+        ok?: boolean;
+      };
+
+      if (!response.ok || !result.ok) {
+        setUnassignError({
+          message: result.error ?? "Template could not be unassigned.",
+          pageId: page.id,
+        });
+        return;
+      }
+
+      setLocalStagedPages((currentPages) =>
+        currentPages.filter((staged) => staged.pageId !== stagedPageId),
+      );
+      // Removing the live page removes its alts with it, so an archived-alt
+      // link left on screen may now point at nothing.
+      setStagedAltNotice(null);
+    } catch {
+      setUnassignError({
+        message: "Template could not be unassigned.",
+        pageId: page.id,
+      });
+    } finally {
+      setUnassigningPageId("");
+    }
+  }
+
   return (
     <Section className="strategy-workspace strategy-chrome token-chrome min-h-svh">
       <WorkspaceNav
@@ -1014,6 +1080,11 @@ export function StrategyWorkspaceSection({
                       fields[layoutApprovalKey] === "approved";
                     const isLayoutRejected =
                       fields[layoutApprovalKey] === "rejected";
+                    const isUnassigning = unassigningPageId === page.id;
+                    const pageUnassignError =
+                      unassignError?.pageId === page.id
+                        ? unassignError.message
+                        : "";
 
                     return (
                       <div
@@ -1160,7 +1231,24 @@ export function StrategyWorkspaceSection({
                           >
                             {page.previewHref ? "Change template" : "Choose template"}
                           </button>
+                          {page.stagedPageId ? (
+                            <button
+                              aria-label={`Unassign template from ${page.label}`}
+                              className="radius-4 inline-flex size-9 items-center justify-center border border-service-border bg-bg-surface text-service-muted transition-colors hover:border-red-700 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                              disabled={isUnassigning}
+                              onClick={() => void unassignTemplateFromPage(page)}
+                              title="Unassign template"
+                              type="button"
+                            >
+                              <UnassignTemplateIcon className="size-4" />
+                            </button>
+                          ) : null}
                         </div>
+                        {pageUnassignError ? (
+                          <p className="type-caption mt-2 text-red-700">
+                            {pageUnassignError}
+                          </p>
+                        ) : null}
                       </div>
                     );
                   })}
@@ -2037,6 +2125,26 @@ function IssueList({
  * competed with the Prompt Library as a second place to get page-copy input.
  * The Prompt Library is the one source for that now.
  */
+/** Broken link: the assignment comes apart, the template survives. */
+function UnassignTemplateIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.75"
+      viewBox="0 0 24 24"
+    >
+      <path d="M9.5 14.5 7.75 16.25a3.75 3.75 0 0 1-5.3-5.3L4.2 9.2" />
+      <path d="M14.5 9.5l1.75-1.75a3.75 3.75 0 0 1 5.3 5.3L19.8 14.8" />
+      <path d="M8.5 3v2.5M3 8.5h2.5M15.5 21v-2.5M21 15.5h-2.5" />
+    </svg>
+  );
+}
+
 function TemplateReadyIcon({
   contractStatus,
   isReady,
