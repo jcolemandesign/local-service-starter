@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+
+import { resolveScrollRoot, scrollRootBox } from "@/utils/scroll-root";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
@@ -45,8 +47,17 @@ function ImportantIdeasBoxV2({
   const frameRef = useRef<number | null>(null);
   const [offset, setOffset] = useState(0);
 
+  /**
+   * THE SCROLLER THIS PANEL MOVES AGAINST, which is not always the window.
+   *
+   * Resolved once, because a section does not change scroller while it is
+   * mounted. `null` means the viewport, which is every real page - see
+   * `@/utils/scroll-root` for why the builder is the exception and why it has to
+   * be marked rather than sniffed.
+   */
   useEffect(() => {
     const media = window.matchMedia(desktopQuery);
+    const scroller = resolveScrollRoot(boxRef.current);
 
     const updateOffset = () => {
       const box = boxRef.current;
@@ -65,9 +76,22 @@ function ImportantIdeasBoxV2({
 
       const sectionRect = section.getBoundingClientRect();
       const boxRect = box.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      const scrollRange = sectionRect.height + viewportHeight;
-      const progress = clamp((viewportHeight - sectionRect.top) / scrollRange, 0, 1);
+      /**
+       * The travel is measured against the SCROLLER'S box, not the browser's.
+       *
+       * `getBoundingClientRect` is in client coordinates either way, so the
+       * scroller's own top has to come off the section's - inside the canvas
+       * the section's `top` is measured from the browser, and the distance that
+       * matters is from the canvas's top edge. On a real page the scroller's
+       * top is 0 and this is the expression it always was.
+       */
+      const view = scrollRootBox(scroller);
+      const scrollRange = sectionRect.height + view.height;
+      const progress = clamp(
+        (view.bottom - sectionRect.top) / scrollRange,
+        0,
+        1,
+      );
       const availableOffset = Math.max(0, sectionRect.height - boxRect.height - 64);
 
       setOffset(Math.min(maxOffset, availableOffset) * progress);
@@ -85,12 +109,22 @@ function ImportantIdeasBoxV2({
     };
 
     updateOffset();
-    window.addEventListener("scroll", requestUpdate, { passive: true });
+    /**
+     * LISTENED FOR ON THE SCROLLER, and this is the half that was actually
+     * broken. A scroll event from an ELEMENT does not reach the window - only
+     * the document scroller's does - so in the builder this handler fired once
+     * at mount and never again, and the panel froze at whatever offset the
+     * section happened to have when it appeared. It read as a calculation bug
+     * and it was a missing event.
+     */
+    const scrollTarget: EventTarget = scroller ?? window;
+
+    scrollTarget.addEventListener("scroll", requestUpdate, { passive: true });
     window.addEventListener("resize", requestUpdate);
     media.addEventListener("change", requestUpdate);
 
     return () => {
-      window.removeEventListener("scroll", requestUpdate);
+      scrollTarget.removeEventListener("scroll", requestUpdate);
       window.removeEventListener("resize", requestUpdate);
       media.removeEventListener("change", requestUpdate);
 

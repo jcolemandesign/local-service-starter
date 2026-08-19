@@ -2,6 +2,11 @@
 
 import { useEffect } from "react";
 
+import {
+  resolveScrollRoot,
+  scrollRootBox,
+} from "@/utils/scroll-root";
+
 /**
  * Starts each section's entrance when the section arrives, and lets it play on
  * a clock.
@@ -55,13 +60,11 @@ const readyAttribute = "data-pagebuilder-animation-ready";
  * document can hold both kinds at once: the builder canvas and, on the same
  * screen, anything outside it that still scrolls with the window.
  *
- * OPT-IN, not "nearest scrollable ancestor". Sniffing `overflow` would make
- * every incidental scroll box in a layout a trigger boundary, and the failure
- * would be a section that never animates because something three levels up
- * happened to clip. A marked root is a decision someone made.
+ * The marker and the lookup live in `@/utils/scroll-root` rather than here,
+ * because this is no longer the only thing that needs them: two sections that
+ * hand-roll their own scroll motion were measuring against the browser window
+ * inside the canvas, which is the same bug one layer down.
  */
-const rootAttribute = "data-pagebuilder-animation-root";
-const rootSelector = `[${rootAttribute}]`;
 
 /**
  * The custom property that authors the trigger threshold.
@@ -170,16 +173,12 @@ export function SectionEntrance() {
     /**
      * Where the trigger line sits right now, in client coordinates.
      *
-     * The viewport case is the element case with the root's box filled in -
-     * top 0, height `innerHeight` - rather than a second formula that has to be
-     * kept in step with the first.
+     * One formula for both roots - `scrollRootBox` writes the viewport in the
+     * same shape as an element, so there is no second expression here to keep
+     * in step with the first.
      */
     function triggerLine(scroller: Element | null) {
-      if (!scroller) {
-        return window.innerHeight * (1 - inset);
-      }
-
-      const box = scroller.getBoundingClientRect();
+      const box = scrollRootBox(scroller);
 
       return box.bottom - box.height * inset;
     }
@@ -201,7 +200,7 @@ export function SectionEntrance() {
 
       observed.add(frame);
 
-      const scroller = frame.closest(rootSelector);
+      const scroller = resolveScrollRoot(frame);
 
       if (frame.getBoundingClientRect().top < triggerLine(scroller)) {
         frame.setAttribute(stateAttribute, "settled");

@@ -1,7 +1,9 @@
 "use client";
 
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import { resolveScrollRoot } from "@/utils/scroll-root";
 
 type FloaterDepth = "near" | "mid" | "far";
 type FloaterSide = "left" | "right";
@@ -78,7 +80,36 @@ export function HeroCenteredFloatersParallax({
 }) {
   const columnRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
+  /**
+   * THE SCROLLER THE PARALLAX READS, which is the window on a page and the
+   * canvas in the builder.
+   *
+   * `useScroll` with no `container` attaches to the document scroller, and the
+   * builder canvas is an `overflow-auto` box inside a window that never
+   * scrolls - so the floaters sat perfectly still there while everything around
+   * them moved.
+   *
+   * PASSED ONLY ONCE THERE IS ONE, and the `null` case is why. Motion defers
+   * attaching while a container ref is still empty, on the reasoning that a ref
+   * hydrated by a later effect must not be mistaken for "no container" and
+   * cached as the window. That is the right call for a ref that WILL fill, and
+   * a trap for one that never does: on a real page there is no scroll root, and
+   * a container ref left permanently null would mean a parallax that never
+   * starts. So the option is absent until the lookup says otherwise, and its
+   * arrival re-runs the subscription.
+   */
+  const scrollRootRef = useRef<HTMLElement | null>(null);
+  const [hasScrollRoot, setHasScrollRoot] = useState(false);
+
+  useEffect(() => {
+    const root = resolveScrollRoot(columnRef.current);
+
+    scrollRootRef.current = root instanceof HTMLElement ? root : null;
+    setHasScrollRoot(Boolean(scrollRootRef.current));
+  }, []);
+
   const { scrollYProgress } = useScroll({
+    container: hasScrollRoot ? scrollRootRef : undefined,
     target: columnRef,
     offset: ["start end", "end start"],
   });

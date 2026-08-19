@@ -2799,13 +2799,14 @@ function PagebuilderPreviewWindow({
         {/* The observer's root, not just a scroll box.
           *
           * The canvas is where a preview actually scrolls, so it is what the
-          * trigger inset has to be measured against - see `rootAttribute` in
-          * `SectionEntrance`. Without it the threshold resolved against the
-          * browser window, which never scrolls here, and the line landed
-          * wherever the canvas happened to sit inside it. */}
+          * anything reading scroll position has to measure against - see
+          * `scrollRootAttribute` in `@/utils/scroll-root`. Without it the
+          * entrance threshold resolved against the browser window, which never
+          * scrolls here, and the sections that drive their own parallax never
+          * received a scroll event at all. */}
         <div
           className="min-h-0 flex-1 overflow-auto bg-bg-page [container-type:size]"
-          data-pagebuilder-animation-root="true"
+          data-pagebuilder-scroll-root="true"
           ref={canvasRef}
         >
           <div

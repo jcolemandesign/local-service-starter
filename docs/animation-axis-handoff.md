@@ -67,7 +67,7 @@ one attribute.
 
 It holds one `IntersectionObserver` per scroller. On an ordinary page that is
 one observer with the window as its root, because the window is the only thing
-that scrolls. An element marked `data-pagebuilder-animation-root` becomes the
+that scrolls. An element marked `data-pagebuilder-scroll-root` becomes the
 root for the frames inside it, resolved with `closest` when a frame is first
 seen — the builder's preview canvas is marked, because it is an `overflow-auto`
 box inside a window that never scrolls, and without it the trigger line was a
@@ -75,7 +75,18 @@ line across the browser rather than across the canvas. The marker is opt-in
 rather than a search for the nearest scrollable ancestor: sniffing `overflow`
 would make every incidental scroll box a trigger boundary, and the failure mode
 is a section that never animates because something three levels up happened to
-clip. Sections stay server components —
+clip.
+
+**The marker outgrew this axis, which is why it is no longer named for it.** It
+shipped as `data-pagebuilder-animation-root`; the lookup lives in
+`@/utils/scroll-root` now, and its other two callers are not on this axis at all
+— `ContentStickyIdeasSectionV2` and `HeroCenteredFloatersParallax` hand-roll
+their own scroll motion, are excluded from the entrance axis for exactly that,
+and were both measuring against the browser window inside the canvas. The sticky
+panel had the sharper version of the bug: **a scroll event from an element does
+not reach the window**, only the document scroller's does, so its listener fired
+once at mount and froze. It read as a broken calculation and it was a missing
+event. Sections stay server components —
 this matters because 21 of them already import `motion/react`, and a wrapper
 per section would have had to negotiate with all of them.
 
