@@ -885,6 +885,10 @@ export const sectionAnimationRoleComponents: Partial<
      */
     "ContentAboutCompanySectionV2",
     "ContentAboutStorySectionV3",
+    /** Its statement is one heading unit - a `<p>` at heading scale, which is
+     *  what this role is about. Wipe is the nearest thing the library has to the
+     *  clip reveal this section used to run for itself. */
+    "ContentRevealParagraphSectionV2",
     "DecisionMatrixCardSectionV3",
     "DecisionQuestionTableSectionV3",
     "DecisionSplitDecisionSectionV3",

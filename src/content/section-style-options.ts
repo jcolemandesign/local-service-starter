@@ -1048,6 +1048,14 @@ export const animationComponents = new Set<string>([
    */
   "ContentAboutStorySectionV3",
   "ContentCardTwoUpSectionV3",
+  /**
+   * THE SECTION THAT USED TO OWN ITS ENTRANCE. It ran a clip reveal through
+   * motion/react off its own observer, which put it in the exclusion set under
+   * "owns its own motion" - so the one section in the library whose entire
+   * purpose is an entrance was the one an editor could not choose one for. Its
+   * machinery is gone and its statement is an ordinary marked unit.
+   */
+  "ContentRevealParagraphSectionV2",
   "ContentMainIdeaGridSectionV3",
   "FeaturePortraitParagraphSectionV3",
   /**
@@ -1227,7 +1235,6 @@ export const animationExcludedComponents = new Map<string, string>([
     [
       "AdditionalOffersSectionV3",
       "CTAScrollRevealOfferSectionV3",
-      "ContentRevealParagraphSectionV2",
       "ContentRuleHeaderSectionV2",
       "ContentScrollWrittenRevealSectionV2",
       "FAQAccordionSectionV3",

@@ -1,13 +1,32 @@
-"use client";
+import type { CSSProperties } from "react";
 
-import { motion, useReducedMotion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
 import {
   SevenColumnGrid,
   SevenColumnGridItem,
 } from "@/components/primitives";
 
-const revealEase = [0.22, 1, 0.36, 1] as const;
+/**
+ * One statement, set large, arriving as a single unit.
+ *
+ * IT USED TO OWN ITS MOTION AND NO LONGER DOES, which is the whole of this
+ * file's history. It ran a clip reveal through motion/react off its own
+ * IntersectionObserver, plus a MutationObserver on the enclosing `<details>` so
+ * the gesture replayed when the /sections accordion opened - about eighty lines
+ * of machinery, a `"use client"` boundary and the Motion runtime, to animate one
+ * paragraph. That put it in `animationExcludedComponents` under "owns its own
+ * motion", which meant the one section in the library whose entire purpose is an
+ * entrance was the one section an editor could not choose an entrance for.
+ *
+ * It is an ordinary marked unit now. The suite decides what the arrival looks
+ * like, the frame decides whether there is one at all, and this file decides
+ * neither - the same split every other section already lived under.
+ *
+ * WHAT WAS LOST, SAID PLAINLY: the old gesture was a clip rising from the
+ * baseline, and no suite reproduces it exactly. Wipe is the closest - an edge
+ * crossing the type - and it crosses horizontally rather than rising. That is
+ * the trade the axis asks of every section: a shared vocabulary of arrivals
+ * instead of one bespoke gesture per component.
+ */
 
 type ContentRevealParagraphSectionV2Props = {
   lines: string[];
@@ -28,70 +47,7 @@ export function ContentRevealParagraphSectionV2({
     med: "section-space-med",
     lrg: "section-space-lrg",
   }[sectionSpace];
-  const sectionRef = useRef<HTMLDivElement | null>(null);
-  const [revealKey, setRevealKey] = useState(0);
-  const [isRevealed, setIsRevealed] = useState(false);
-  const shouldReduceMotion = useReducedMotion();
   const revealText = lines.map((line) => line.trim()).filter(Boolean).join(" ");
-  const transition = shouldReduceMotion
-    ? { duration: 0 }
-    : { duration: 0.58, ease: revealEase };
-
-  useEffect(() => {
-    const sectionElement = sectionRef.current;
-    let fallbackFrame: number | null = null;
-
-    if (!sectionElement || shouldReduceMotion) {
-      fallbackFrame = requestAnimationFrame(() => setIsRevealed(true));
-      return () => {
-        if (fallbackFrame !== null) {
-          cancelAnimationFrame(fallbackFrame);
-        }
-      };
-    }
-
-    if (!("IntersectionObserver" in window)) {
-      fallbackFrame = requestAnimationFrame(() => setIsRevealed(true));
-      return () => {
-        if (fallbackFrame !== null) {
-          cancelAnimationFrame(fallbackFrame);
-        }
-      };
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setIsRevealed(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "0px 0px -18% 0px", threshold: 0.2 },
-    );
-
-    observer.observe(sectionElement);
-
-    return () => observer.disconnect();
-  }, [shouldReduceMotion]);
-
-  useEffect(() => {
-    const details = sectionRef.current?.closest("details");
-
-    if (!details) {
-      return;
-    }
-
-    const observer = new MutationObserver(() => {
-      if (details.open) {
-        setRevealKey((currentKey) => currentKey + 1);
-        setIsRevealed(true);
-      }
-    });
-
-    observer.observe(details, { attributes: true, attributeFilter: ["open"] });
-
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <section className="bg-bg-page">
@@ -100,36 +56,31 @@ export function ContentRevealParagraphSectionV2({
           alignY="middle"
           className="col-span-6 max-lg:col-span-7"
         >
-          <div className="fluid-type-frame" ref={sectionRef}>
-            <div className="overflow-hidden pb-1">
-              <motion.p
-                key={`${revealKey}-${revealText}`}
-                className={cx(
-                  "type-heading-xl",
-                  "measure-copy-wide",
-                  "text-service-ink",
-                )}
-                initial={
-                  shouldReduceMotion
-                    ? false
-                    : {
-                        clipPath: "inset(100% 0 0 0)",
-                        y: "0.65em",
-                      }
-                }
-                transition={transition}
-                animate={
-                  isRevealed
-                    ? {
-                        clipPath: "inset(0% 0 0 0)",
-                        y: 0,
-                      }
-                    : undefined
-                }
-              >
-                {revealText}
-              </motion.p>
-            </div>
+          <div className="fluid-type-frame">
+            {/* `heading` rather than `content`, and the tag stays a `<p>`.
+                The role is animation vocabulary, not semantics: this is the
+                section's whole header block, set at heading scale, and Wipe and
+                Focus are both gated on a section marking one. Marked `content`
+                the stylesheet would still wipe it - both text roles wipe - but
+                the two suites would never be OFFERED here, which is the failure
+                this project names everywhere: markup that works and a control
+                that cannot reach it.
+
+                No wrapper and no `overflow-hidden`. The old clip needed a window
+                to rise out of; `section-wipe` insets its own clip path past the
+                em box on all four sides so descenders survive, and a window
+                around it would crop what those negative insets exist to spare. */}
+            <p
+              className={cx(
+                "reveal-on-scroll reveal-role-heading",
+                "type-heading-xl",
+                "measure-copy-wide",
+                "text-service-ink",
+              )}
+              style={{ "--reveal-index": 0 } as CSSProperties}
+            >
+              {revealText}
+            </p>
           </div>
         </SevenColumnGridItem>
       </SevenColumnGrid>
