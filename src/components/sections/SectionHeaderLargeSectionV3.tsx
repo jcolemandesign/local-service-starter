@@ -76,10 +76,18 @@ export function SectionHeaderLargeSectionV3({
           className="col-span-7 col-start-1 max-lg:col-span-5 max-md:col-span-3 max-sm:col-span-1"
         >
           {/* A single revealable unit, and a `heading` one - this section is
-              one headline. See `singleUnitReveals`. */}
+              one headline. See `singleUnitReveals`.
+
+              ALSO `lines`, which is what offers it Text wipe. The role says this
+              block is worth splitting into its visual lines, and this section
+              is the clearest case in the library: it is one sentence set large
+              enough to wrap, with nothing else on screen to compete with an
+              edge crossing it. The lines are found after layout - see
+              `TextWipeLines` - so the headline stays ordinary flowing text and
+              the `headlineWrap` control keeps deciding where it breaks. */}
           <div
             className={cx(
-              "reveal-on-scroll reveal-role-heading",
+              "reveal-on-scroll reveal-role-heading reveal-role-lines",
               "fluid-type-frame",
               // Large fluid type can visually overshoot its line box at both
               // ends. Keep a small internal buffer so ascenders and descenders

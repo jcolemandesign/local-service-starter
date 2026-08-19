@@ -1024,7 +1024,13 @@ export const sectionAnimationRoleComponents: Partial<
    * One so far, and the list is the gate: a section that marks a statement
    * block gains the suite with no edit here.
    */
-  lines: ["ContentRevealParagraphSectionV2"],
+  lines: [
+    "ContentRevealParagraphSectionV2",
+    /** One headline, set large enough to wrap - the case the suite describes
+     *  almost word for word. Its `headlineWrap` control still decides where the
+     *  breaks fall; the splitter only reads them. */
+    "SectionHeaderLargeSectionV3",
+  ],
   media: [
     "ContentAboutCompanySectionV2",
     "ContentNarrativeFeatureRailSectionV3",
