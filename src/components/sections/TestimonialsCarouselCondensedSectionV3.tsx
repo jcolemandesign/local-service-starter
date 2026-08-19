@@ -68,19 +68,46 @@ type TestimonialsCarouselCondensedSectionV3Props = {
   title?: string;
 };
 
+type SliderButtonSize = "default" | "large";
+
+/**
+ * Two sizes, and only the unframed layout takes the larger one.
+ *
+ * Unframed, the cards give up their fill, their border and their shadow, and
+ * the slide moves onto the 14-column grid inset a column each side. Nothing is
+ * left holding the composition's edges, so the controls become the thing that
+ * does - and a 3rem disc floating in the page gutter was too slight to.
+ *
+ * 4.75rem is the nearest step on the spacing scale to the 60% increase asked
+ * for, and the size the photo gallery's large arrow already runs at. It is also
+ * about one column wide, which is why it reads as filling the empty outer
+ * column rather than hovering next to it.
+ */
+const sliderButtonSizeClasses: Record<SliderButtonSize, string> = {
+  default: "size-12 text-xl max-md:size-11",
+  // Rendered only by the flanking pair, which is hidden below `lg`, so there
+  // is no mobile step to carry.
+  large: "size-19 text-3xl",
+};
+
 function SliderButton({
   direction,
   label,
   onClick,
+  size = "default",
 }: {
   direction: "previous" | "next";
   label: string;
   onClick: () => void;
+  size?: SliderButtonSize;
 }) {
   return (
     <button
       aria-label={label}
-      className="radius-button flex size-12 shrink-0 cursor-pointer items-center justify-center border border-service-border bg-bg-page text-xl font-semibold leading-none text-service-accent shadow-service transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white max-md:size-11"
+      className={cx(
+        "radius-button flex shrink-0 cursor-pointer items-center justify-center border border-service-border bg-bg-page font-semibold leading-none text-service-accent shadow-service transition-colors hover:border-service-accent hover:bg-service-accent hover:text-white",
+        sliderButtonSizeClasses[size],
+      )}
       onClick={onClick}
       type="button"
     >
@@ -293,24 +320,54 @@ export function TestimonialsCarouselCondensedSectionV3({
             })}
           </div>
 
+          {/* WHERE THE ARROWS SIT IS A FUNCTION OF WHETHER THE CARDS ARE
+              FRAMED, because the two states put their content in different
+              places.
+
+              Framed, the cards fill all fourteen columns and the only room
+              left is the page gutter, so each control is centred in it - half
+              its width outside the content edge, which is what the negative
+              half-inset and the x-translate compose.
+
+              Unframed, the slide is already inset by a column on each side,
+              and those two empty columns are where a control belongs. No
+              translate: the button's outer edge lands on the grid item's own
+              edge, which is the outer edge of column one and column fourteen -
+              the same line every other section's content starts on. */}
           <div
-            className="absolute top-1/2 !w-auto -translate-x-1/2 -translate-y-1/2 max-lg:hidden"
-            style={{ left: "calc(var(--site-grid-inset-inline) / -2)" }}
+            className={cx(
+              "absolute top-1/2 !w-auto -translate-y-1/2 max-lg:hidden",
+              isUnframed ? "left-0" : "-translate-x-1/2",
+            )}
+            style={
+              isUnframed
+                ? undefined
+                : { left: "calc(var(--site-grid-inset-inline) / -2)" }
+            }
           >
             <SliderButton
               direction="previous"
               label="Show previous testimonials"
               onClick={showPrevious}
+              size={isUnframed ? "large" : "default"}
             />
           </div>
           <div
-            className="absolute top-1/2 !w-auto translate-x-1/2 -translate-y-1/2 max-lg:hidden"
-            style={{ right: "calc(var(--site-grid-inset-inline) / -2)" }}
+            className={cx(
+              "absolute top-1/2 !w-auto -translate-y-1/2 max-lg:hidden",
+              isUnframed ? "right-0" : "translate-x-1/2",
+            )}
+            style={
+              isUnframed
+                ? undefined
+                : { right: "calc(var(--site-grid-inset-inline) / -2)" }
+            }
           >
             <SliderButton
               direction="next"
               label="Show next testimonials"
               onClick={showNext}
+              size={isUnframed ? "large" : "default"}
             />
           </div>
 

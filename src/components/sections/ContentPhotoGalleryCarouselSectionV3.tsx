@@ -169,17 +169,28 @@ function GalleryImageCard({
         src={image.src}
         style={{ objectPosition: image.objectPosition ?? "50% 50%" }}
       />
-      {/* THE SCRIM IS AN ABSOLUTE DARK, for the same reason the well above it
-          is - and it is the same bug, four lines apart and fixed once.
+      {/* THE SCRIM IS THE STYLE GUIDE'S INK - the swatch, not the utility,
+          and the two are different things in exactly the place that matters.
 
-          Built from `service-ink` it is the RECIPE'S headline colour, which is a
-          near-white on every chromatic and dark recipe. The caption over it is
-          `text-white`, because a scrim only exists to make white type legible on
-          a photograph - so on those recipes the gradient inverted and the
-          caption went white on white. A scrim is not a text colour that
-          happens to be dark; it is a shade over a picture, and it has to stay
-          dark whatever the section's ground is doing. */}
-      <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-5 bg-gradient-to-t from-bg-dark/82 via-bg-dark/42 to-transparent p-6 text-white">
+          A gradient stop named `service-ink` reads `--live-service-ink`,
+          which every recipe rewrites on its children to mean THIS SECTION'S
+          HEADLINE COLOUR. On the dark and chromatic recipes that is white,
+          and the caption over it is `text-white` - a scrim exists to make
+          white type legible on a photograph - so the gradient inverted and
+          the caption went white on white. That is why this was an absolute
+          `bg-dark` and not ink.
+
+          `--color-service-ink` is the same colour the Style Guide promoted,
+          resolved once at `:root` and inherited from there. The recipes only
+          ever redefine the `--live-*` half of the pair on their children, so
+          this carries the business's ink onto every recipe including the ones
+          that invert.
+
+          Ink rather than dark because a photo scrim belongs in the brand's
+          own darkest neutral rather than a second dark beside it - but it
+          still has to be FIXED whatever the section's ground is doing, and
+          this is the way to name ink that stays fixed. */}
+      <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-5 bg-gradient-to-t from-[var(--color-service-ink,#17211d)]/82 via-[var(--color-service-ink,#17211d)]/42 to-transparent p-6 text-white">
         <p className="type-text-sm wrap-pretty font-semibold">
           {image.caption}
         </p>
@@ -226,8 +237,19 @@ export function ContentPhotoGalleryCarouselSectionV3({
 
   return (
     <section className="bg-service-surface">
+      {/* `gap="lrg"` rather than the site row gap, and it is the ROW gap this
+          is after - both items span all seven columns, so the column gap the
+          grid would otherwise set never lands on anything.
+
+          The site row gap runs to 4.5rem. That is the distance between two
+          bands of content, and this header is not a band of content: it is the
+          stepper that drives the rail beneath it. Held that far off the
+          photographs the arrows read as unattached to them, and the gap above
+          them reads as the section having no top space at all. At 2rem they
+          sit on the rail's shoulder, which is what they are. */}
       <SevenColumnGrid
         className="section-min-none content-center"
+        gap="lrg"
         padding={scale === "large" ? "lrg" : "med"}
       >
         <SevenColumnGridItem className="col-span-7">

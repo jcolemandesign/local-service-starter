@@ -4646,6 +4646,24 @@ body {
     padding-bottom: calc(var(--section-space-vsml) * 0.5) !important;
   }
 
+  /* The photo gallery carousel OPENS with its arrows, which is the one place a
+   * control - not type, not a picture - is the first thing under the section
+   * seam. Take the top padding away and the discs sit on the join, touching
+   * whatever ended above them, and they read as an escaped widget rather than
+   * the head of the rail they drive.
+   *
+   * So keep a sliver of the top space for these two, the way the project
+   * gallery keeps one at its foot. It is deliberately smaller than the padding
+   * the control removed: the point is a buffer, not a restored margin. */
+  .pagebuilder-density-normal
+    .pagebuilder-section-frame[data-pagebuilder-padding-top="none"][data-pagebuilder-section-component="ContentPhotoGalleryCarouselSectionV3"]
+    .site-grid-frame,
+  .pagebuilder-density-normal
+    .pagebuilder-section-frame[data-pagebuilder-padding-top="none"][data-pagebuilder-section-component="ContentPhotoGalleryLargeCarouselSectionV3"]
+    .site-grid-frame {
+    padding-top: calc(var(--section-space-vsml) * 0.75) !important;
+  }
+
   .pagebuilder-density-normal
     .pagebuilder-section-frame[data-pagebuilder-padding-top="none"]
     > [class*="py-"] {

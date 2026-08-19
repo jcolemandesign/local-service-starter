@@ -29,6 +29,18 @@ import { describe, expect, it } from "vitest";
  * scrim ever genuinely needs to follow the recipe it needs a token meaning "the
  * dark side of this ground", and adding one is the fix rather than an exception
  * here.
+ *
+ * WHAT IS ABSOLUTE IS THE VALUE, NOT THE SWATCH. `bg-dark` is one absolute;
+ * the business's own ink is another, reached as `var(--color-service-ink)`
+ * rather than through the `service-ink` utility. The pair is not two names
+ * for one thing - the recipes redefine `--live-service-ink` on their children,
+ * while the `--color-*` half resolves once at `:root` and inherits from there,
+ * so it carries the promoted swatch onto every recipe including the ones that
+ * invert. The photo gallery's caption scrim is authored that way deliberately.
+ *
+ * Which is why the second assertion exists: reaching into a `--live-*` token
+ * from an arbitrary gradient stop is this identical bug wearing the one syntax
+ * the first assertion cannot see.
  */
 
 const sectionsDir = path.join(process.cwd(), "src", "components", "sections");
@@ -42,6 +54,15 @@ const sectionsDir = path.join(process.cwd(), "src", "components", "sections");
  * shape of bug that makes a guard read as working while guarding nothing.
  */
 const scrimStop = /\b(?:from|via|to)-service-ink\b/;
+
+/**
+ * The same reach, spelled as an arbitrary value.
+ * `from-[var(--live-service-ink)]` is precisely what the rule above forbids -
+ * the utility inlines that variable, so naming it directly is the utility with
+ * extra steps. Every `--live-*` token is recipe-local by definition, so the
+ * guard is on the prefix rather than on ink alone.
+ */
+const scrimLiveStop = /\b(?:from|via|to)-\[[^\]]*--live-[^\]]*\]/;
 
 const sources = readdirSync(sectionsDir)
   .filter((file) => file.endsWith(".tsx"))
@@ -65,7 +86,18 @@ describe("scrims are an absolute dark", () => {
 
     expect(
       offenders.sort(),
-      "these build a gradient stop from `service-ink`, which is the recipe's headline colour - on every chromatic and dark recipe it resolves near-white and the scrim inverts under the white type it exists to make legible. Use `bg-dark`, which is an absolute.",
+      "these build a gradient stop from `service-ink`, which is the recipe's headline colour - on every chromatic and dark recipe it resolves near-white and the scrim inverts under the white type it exists to make legible. Use `bg-dark`, or `var(--color-service-ink)` for the promoted ink - both are absolutes.",
+    ).toEqual([]);
+  });
+
+  it("reaches for no recipe-local variable from a gradient stop either", () => {
+    const offenders = sources
+      .filter(([, source]) => scrimLiveStop.test(source))
+      .map(([file]) => file);
+
+    expect(
+      offenders.sort(),
+      "these build a gradient stop from a `--live-*` token, which is the half of the pair every recipe rewrites on its children - the same inversion as above, reached through an arbitrary value rather than the utility. Read the `--color-*` half, which resolves at :root and stays put.",
     ).toEqual([]);
   });
 });
