@@ -631,6 +631,17 @@
   /* Decisive out-easing: most of the travel happens in the first third, so the
      unit reads as arriving and settling rather than as drifting. */
   --anim-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  /* The step between one line of a Text wipe and the next, and it is DECLARED
+     rather than inheriting the shared 90ms on purpose.
+
+     A stagger between units is a rhythm; a stagger between the lines of one
+     sentence is the reading of it, and the two are not the same number. At the
+     shared step four lines are offset by 270ms total, which against a wipe of
+     620ms - let alone the 1600ms the duration control reaches - is four edges
+     moving together with a slight lean. The suite is meant to read one line at
+     a time, and what decides that is this against the duration, not the
+     duration alone. */
+  --anim-text-wipe-stagger: 220ms;
   /* WHEN an entrance starts: how far up the viewport a section comes before it
      fires, as a share of viewport height taken off the bottom edge.
 
@@ -1505,9 +1516,10 @@
       var(--anim-text-wipe-duration, var(--anim-duration))
       var(--anim-wipe-easing, var(--anim-easing))
       both;
-    animation-delay: calc(
-      var(--reveal-index, 0) * var(--anim-wipe-stagger, var(--anim-stagger))
-    );
+    /* The LINE step, not the suite's. Anything else this suite staggers - a
+       row of cards, an accent beside the statement - is a list and keeps the
+       shared rhythm; only the lines of one sentence read on their own clock. */
+    animation-delay: calc(var(--reveal-index, 0) * var(--anim-text-wipe-stagger));
   }
 
   /* The mask SplitText wraps each line in, given its descenders back.

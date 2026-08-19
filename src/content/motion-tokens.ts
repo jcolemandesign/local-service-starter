@@ -458,6 +458,28 @@ export const motionControlGroups = [
         step: 20,
         inheritsFrom: "--anim-duration",
       },
+      /**
+       * THE CONTROL THAT DECIDES WHETHER THIS READS AS ONE LINE AT A TIME, and
+       * the duration alone cannot. What the eye judges is the step against the
+       * length: at the shared 90ms four lines are offset by 270ms in total, so
+       * a 620ms wipe overlaps by four fifths and a 1600ms one by more than
+       * nine tenths. Turning the duration up without this makes the lines land
+       * MORE together, not less.
+       *
+       * Declared rather than inheriting the shared step, because it is not the
+       * same kind of number. A stagger between units is the library's rhythm; a
+       * stagger between the lines of one sentence is its reading.
+       */
+      {
+        token: "--anim-text-wipe-stagger",
+        label: "Line step",
+        hint: "The gap between one line starting and the next. Set it near the line duration to read as one line at a time; well under it and the lines merge.",
+        kind: "ms",
+        defaultValue: "220ms",
+        min: 0,
+        max: 800,
+        step: 20,
+      },
     ],
   },
   {
