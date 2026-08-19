@@ -1066,11 +1066,9 @@ export const sectionAnimationRoleComponents: Partial<
   /**
    * The CTA sections with ONE action unit.
    *
-   * `CTAServiceTriageSectionV3` is deliberately absent: its actions live on
-   * several triage cards, so there is no single thing for a beat to point at,
-   * and pulsing all of them at once points at nothing. Its cards stay `card`,
-   * and it simply is not offered Pulse - which is the gate doing its job rather
-   * than an omission.
+   * `CTAServiceTriageSectionV3` marks only its primary service-request card as
+   * the action. The urgent and existing-customer routes remain ordinary cards,
+   * so Pulse gives one clear beat instead of making all three choices compete.
    */
   action: [
     "CTAImageSectionV3",
@@ -1084,6 +1082,7 @@ export const sectionAnimationRoleComponents: Partial<
     /** The offer band is one bordered unit whose reason for existing is its
      *  offer and its button. */
     "FeaturedOfferSectionV3",
+    "CTAServiceTriageSectionV3",
     /** The request panel is the section; the strip beside it is context. */
     "ContactSectionModalBegin",
     "ServiceAreaZipLookupSectionV3",

@@ -1,16 +1,11 @@
 import type { CSSProperties, ReactNode } from "react";
 import { Button, LayoutGrid, LayoutGridItem } from "@/components/primitives";
-import {
-  RequestServiceButton,
-  type RequestServicePrefill,
-} from "@/components/request-service";
 import type { SectionColorRecipe } from "@/content/section-color-recipes";
 import type { SectionIcons } from "@/content/section-style-options";
-
-type ServiceChoice = {
-  label: string;
-  prefill: RequestServicePrefill;
-};
+import {
+  CTAServiceTriageRequestControls,
+  type ServiceTriageChoice,
+} from "./CTAServiceTriageRequestControls";
 
 export type CTAServiceTriageSectionV3Props = {
   cardBorder?: "on" | "off";
@@ -24,7 +19,7 @@ export type CTAServiceTriageSectionV3Props = {
   icons?: SectionIcons;
   serviceAction: string;
   serviceBody: string;
-  serviceChoices: readonly ServiceChoice[];
+  serviceChoices: readonly ServiceTriageChoice[];
   serviceTitle: string;
   urgentAction: string;
   urgentBody: string;
@@ -40,8 +35,6 @@ function cx(...classes: Array<string | false | undefined>) {
 const recipeClasses = {
   card: "bg-service-surface",
   cardBorder: "border-service-border",
-  choice:
-    "!border-service-border !bg-bg-page !text-service-accent hover:!border-service-accent hover:!bg-bg-page",
   icon: "text-service-accent",
   iconShell: "bg-service-accent/10",
   muted: "text-service-muted",
@@ -153,13 +146,11 @@ export function CTAServiceTriageSectionV3({
   const cardMuted = colors.muted;
   const cardIcon = colors.icon;
   const cardIconShell = colors.iconShell;
-  const choiceClassName = colors.choice;
   const cardActionText = "!text-service-ink";
   const cardClassName = cx(
     // Each triage card is a revealable unit and they all take their classes
     // from here, so the marker rides along and each card only declares which
     // index it is. Inert unless the section animation toggle is on.
-    "reveal-on-scroll reveal-role-card",
     "fluid-type-frame flex h-full min-w-0 flex-col rounded-[var(--radius-surface-token)] border p-8 shadow-service max-md:p-6",
     colors.card,
     colors.cardBorder,
@@ -173,7 +164,10 @@ export function CTAServiceTriageSectionV3({
       <LayoutGrid className="section-min-none" columns={14} padding="med">
         <LayoutGridItem className="col-span-6 max-lg:col-span-7 max-md:col-span-6 max-sm:col-span-2">
           <article
-            className={cardClassName}
+            className={cx(
+              cardClassName,
+              "reveal-on-scroll reveal-role-action service-triage-card-primary",
+            )}
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
             <div className="flex items-start gap-5">
@@ -192,35 +186,20 @@ export function CTAServiceTriageSectionV3({
               </div>
             </div>
 
-            <div className="mt-7 grid grid-cols-2 gap-3 max-sm:grid-cols-1">
-              {serviceChoices.slice(0, 4).map((choice) => (
-                <RequestServiceButton
-                  className={cx("w-full !px-3", choiceClassName)}
-                  key={`${choice.prefill.systemType}-${choice.prefill.requestType}`}
-                  prefill={choice.prefill}
-                  variant="secondary"
-                >
-                  {choice.label}
-                </RequestServiceButton>
-              ))}
-            </div>
-
-            {/* Layout only. This used to carry a run of `!important` CTA
-                classes with a comment saying it was hand-styled "to get what a
-                Button would have got for free" - which it now does get, because
-                `RequestServiceButton` renders the shared anatomy. Those
-                overrides would beat the assigned button style, so the wish and
-                the workaround left together. */}
-            <RequestServiceButton className="mt-6 w-full">
-              {serviceAction}
-              {icons === "on" ? <span aria-hidden="true" className="ml-3">→</span> : null}
-            </RequestServiceButton>
+            <CTAServiceTriageRequestControls
+              action={serviceAction}
+              choices={serviceChoices}
+              icons={icons}
+            />
           </article>
         </LayoutGridItem>
 
         <LayoutGridItem className="col-span-4 max-lg:col-span-7 max-md:col-span-3 max-sm:col-span-2">
           <article
-            className={cardClassName}
+            className={cx(
+              cardClassName,
+              "reveal-on-scroll reveal-role-card service-triage-card-secondary",
+            )}
             style={{ "--reveal-index": 1 } as CSSProperties}
           >
             <div className="flex items-start gap-5">
@@ -240,7 +219,7 @@ export function CTAServiceTriageSectionV3({
             </div>
 
             <p className={cx("type-heading-lg mt-8 wrap-pretty", cardText)}>
-              Call <span className={cardIcon}>{urgentPhone}</span>
+              Call <span className={cardText}>{urgentPhone}</span>
             </p>
             <Button
               className={cx(
@@ -259,7 +238,10 @@ export function CTAServiceTriageSectionV3({
 
         <LayoutGridItem className="col-span-4 max-lg:col-span-7 max-md:col-span-3 max-sm:col-span-2">
           <article
-            className={cardClassName}
+            className={cx(
+              cardClassName,
+              "reveal-on-scroll reveal-role-card service-triage-card-secondary",
+            )}
             style={{ "--reveal-index": 2 } as CSSProperties}
           >
             <div className="flex items-start gap-5">

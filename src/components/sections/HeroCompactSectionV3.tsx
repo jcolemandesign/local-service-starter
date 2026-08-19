@@ -31,6 +31,12 @@ function cx(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+/**
+ * Keep the type-scaling frame sized by its grid column. The text styles give
+ * the supporting paragraph its reading measure, while the largest centred
+ * headline can extend beyond this frame without changing the cqw value that
+ * determines its font size.
+ */
 const alignClassName: Record<
   HeroCompactAlign,
   {
@@ -43,19 +49,19 @@ const alignClassName: Record<
   left: {
     body: "",
     item: "col-span-4 col-start-1",
-    measure: "mr-auto max-w-[var(--measure-copy-wide)]",
+    measure: "mr-auto",
     text: "text-left",
   },
   center: {
     body: "mx-auto",
     item: "col-span-5 col-start-2",
-    measure: "mx-auto max-w-[var(--measure-copy-wide)]",
+    measure: "mx-auto",
     text: "text-center",
   },
   right: {
     body: "ml-auto",
     item: "col-span-4 col-start-4",
-    measure: "ml-auto max-w-[var(--measure-copy-wide)]",
+    measure: "ml-auto",
     text: "text-right",
   },
 };
@@ -141,6 +147,8 @@ export function HeroCompactSectionV3({
   const Heading = headingLevel === 1 ? "h1" : "h2";
   const alignment = alignClassName[align];
   const colors = colorRecipeClassName;
+  const usesWideHeadline =
+    align === "center" && headingSize === "display-lg";
 
   return (
     <section className={colors.section}>
@@ -176,6 +184,9 @@ export function HeroCompactSectionV3({
                 className={cx(
                   headingSizeClassName[headingSize],
                   "mt-eyebrow-display",
+                  usesWideHeadline
+                    ? "hero-compact-wide-headline"
+                    : undefined,
                   colors.ink,
                 )}
               >

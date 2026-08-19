@@ -168,6 +168,7 @@ import {
   cardLinkGridAlignValues,
   resolveCardLinkMedia,
   fullImageSplitVariantValues,
+  resolveHeroCompactServiceLayout,
   resolveHeadlineWrap,
   resolveSectionIcons,
   splitBentoVariantValues,
@@ -176,6 +177,7 @@ import {
   type CalloutRevealGridVariant,
   type CalloutSplitPanelVariant,
   type CardLinkGridAlign,
+  type HeroCompactServiceLayout,
   type TableCompareAlign,
 } from "@/content/section-style-options";
 import type { PagebuilderRecipeSection } from "@/content/pagebuilder";
@@ -278,10 +280,10 @@ function getContentThreeColumnMixedAlign(section: PagebuilderRecipeSection) {
     : sectionLibraryV3Content.contentThreeColumnMixed.align;
 }
 
-function getHeroCompactServiceAlign(section: PagebuilderRecipeSection) {
-  return heroCompactAlignments.has(section.variant ?? "")
-    ? (section.variant as HeroCompactAlign)
-    : sectionLibraryV3Content.heroCompactService.align;
+function getHeroCompactServiceLayout(
+  section: PagebuilderRecipeSection,
+): HeroCompactServiceLayout {
+  return resolveHeroCompactServiceLayout(section.variant);
 }
 
 function getCompactHeaderHeadingSize(
@@ -500,7 +502,7 @@ function renderSectionElement(
       return (
         <HeroCompactServiceSectionV3
           {...sectionLibraryV3Content.heroCompactService}
-          align={getHeroCompactServiceAlign(section)}
+          align={getHeroCompactServiceLayout(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           headingLevel={headingLevel}

@@ -172,6 +172,8 @@ import {
   cardLinkGridAlignValues,
   fullImageSplitVariantOptions,
   fullImageSplitVariantValues,
+  heroCompactServiceLayoutOptions,
+  resolveHeroCompactServiceLayout,
   sectionSupportsCardLinkGridAlign,
   sectionSupportsCardLinks,
   sectionSupportsCardStyle,
@@ -210,6 +212,7 @@ import {
   type TableCompareAlign,
   type SplitBentoVariant,
   type FullImageSplitVariant,
+  type HeroCompactServiceLayout,
   type SplitImageRatio,
   type SplitImageVariant,
 } from "@/content/section-style-options";
@@ -927,10 +930,10 @@ function getContentThreeColumnMixedAlign(section: WorkingSection) {
     : sectionLibraryV3Content.contentThreeColumnMixed.align;
 }
 
-function getHeroCompactServiceAlign(section: WorkingSection) {
-  return heroCompactAlignments.has(section.variant ?? "")
-    ? (section.variant as HeroCompactAlign)
-    : sectionLibraryV3Content.heroCompactService.align;
+function getHeroCompactServiceLayout(
+  section: WorkingSection,
+): HeroCompactServiceLayout {
+  return resolveHeroCompactServiceLayout(section.variant);
 }
 
 function getCompactHeaderHeadingSize(
@@ -3882,14 +3885,14 @@ export function PagebuilderShell({
     setSelectedSectionId(sectionId);
   }
 
-  function updateHeroCompactServiceAlign(
+  function updateHeroCompactServiceLayout(
     sectionId: string,
-    align: HeroCompactAlign,
+    layout: HeroCompactServiceLayout,
   ) {
     updateActiveStack((stack) =>
       stack.map((section) =>
         section.id === sectionId && isHeroCompactServiceSection(section)
-          ? { ...section, variant: align }
+          ? { ...section, variant: layout }
           : section,
       ),
     );
@@ -4480,7 +4483,7 @@ export function PagebuilderShell({
         ) : section.component === heroCompactServiceComponent ? (
           <HeroCompactServiceSectionV3
             {...sectionLibraryV3Content.heroCompactService}
-            align={getHeroCompactServiceAlign(section)}
+            align={getHeroCompactServiceLayout(section)}
             cardBorder={getSectionCardBorder(section)}
             cardFill={getSectionCardFill(section)}
             headingLevel={headingLevel}
@@ -6335,12 +6338,12 @@ export function PagebuilderShell({
                           {isHeroCompactServiceSection(section) ? (
                             <fieldset className="grid gap-2">
                               <legend className="type-caption font-semibold text-current">
-                                Alignment
+                                Layout
                               </legend>
                               <div className="grid grid-cols-3 gap-2">
-                                {heroCompactAlignOptions.map((option) => {
+                                {heroCompactServiceLayoutOptions.map((option) => {
                                   const optionIsActive =
-                                    getHeroCompactServiceAlign(section) ===
+                                    getHeroCompactServiceLayout(section) ===
                                     option.value;
 
                                   return (
@@ -6354,7 +6357,7 @@ export function PagebuilderShell({
                                       )}
                                       key={option.value}
                                       onClick={() =>
-                                        updateHeroCompactServiceAlign(
+                                        updateHeroCompactServiceLayout(
                                           section.id,
                                           option.value,
                                         )

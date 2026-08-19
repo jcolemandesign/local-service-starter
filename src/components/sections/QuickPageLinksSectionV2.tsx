@@ -64,7 +64,7 @@ export function QuickPageLinksSectionV2({
                   // accent border alone, as on the three sibling link grids -
                   // a hover fill change is a no-op under a recipe, where every
                   // card token resolves to the same `--recipe-card`.
-                  "radius-medium group/page-link grid min-h-28 content-between border border-service-border bg-service-surface p-4 transition-colors hover:border-service-accent",
+                  "radius-medium group/page-link relative grid min-h-28 content-between border border-service-border bg-service-surface p-4 transition-colors hover:border-service-accent",
                   cardFill === "none" && "!bg-transparent",
                   cardBorder === "off" && "!border-transparent",
                 )}
@@ -72,7 +72,7 @@ export function QuickPageLinksSectionV2({
                 key={link.label}
                 style={{ "--reveal-index": index + 1 } as CSSProperties}
               >
-                <span>
+                <span className="pr-7">
                   <span className="type-label text-service-accent">
                     {link.label}
                   </span>
@@ -80,6 +80,18 @@ export function QuickPageLinksSectionV2({
                     {link.title}
                   </span>
                 </span>
+                <svg
+                  aria-hidden="true"
+                  className="absolute right-4 top-4 size-4 text-service-accent transition-transform duration-200 group-hover/page-link:translate-x-0.5 group-focus-visible/page-link:translate-x-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.75"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
                 <span className="type-text-sm mt-4 block text-service-muted transition-colors group-hover/page-link:text-service-ink">
                   {link.body}
                 </span>

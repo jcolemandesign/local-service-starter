@@ -354,6 +354,40 @@ export function sectionSupportsMirrorAlign(component: string) {
 }
 
 /**
+ * Compact Service Hero's composition choices.
+ *
+ * This deliberately lives on the existing layout/variant axis rather than the
+ * shared image toggle. `none` is a complete composition: it removes the image,
+ * expands the headline rail and gives the CTA panel one more grid column. The
+ * image fields remain in the section contract, so moving between layouts never
+ * discards or invalidates an assigned asset.
+ */
+export const heroCompactServiceLayoutOptions = [
+  { label: "None", value: "none" },
+  { label: "Center", value: "center" },
+  { label: "Right", value: "right" },
+] as const;
+
+export type HeroCompactServiceLayout =
+  (typeof heroCompactServiceLayoutOptions)[number]["value"];
+
+export const heroCompactServiceLayoutValues = new Set<string>(
+  heroCompactServiceLayoutOptions.map((option) => option.value),
+);
+
+export function resolveHeroCompactServiceLayout(
+  value: string | undefined,
+): HeroCompactServiceLayout {
+  // `left` was the retired third composition. Treating it as `none` migrates
+  // old templates and staged snapshots at read time without rewriting them.
+  if (value === "left") return "none";
+
+  return heroCompactServiceLayoutValues.has(value ?? "")
+    ? (value as HeroCompactServiceLayout)
+    : "right";
+}
+
+/**
  * The three-step headline scale, as its own axis.
  *
  * The compact hero and the two section headers already offer a size control,

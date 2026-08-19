@@ -186,6 +186,7 @@ import {
   resolveHeadingSize,
   resolveHeadlineWrap,
   fullImageSplitVariantValues,
+  resolveHeroCompactServiceLayout,
   resolveSectionAnimation,
   resolveSectionIcons,
   resolveSpecialCta,
@@ -200,6 +201,7 @@ import {
   tableCompareAlignValues,
   type CalloutSplitPanelVariant,
   type CardLinkGridAlign,
+  type HeroCompactServiceLayout,
   type SectionMirrorAlign,
   type TableCompareAlign,
 } from "@/content/section-style-options";
@@ -863,7 +865,7 @@ export function renderPageTemplateSection(
       return (
         <HeroCompactServiceSectionV3
           {...heroCompactServiceProps(fieldSection)}
-          align={getHeroCompactServiceAlign(section)}
+          align={getHeroCompactServiceLayout(section)}
           cardBorder={section.cardBorder}
           cardFill={section.cardFill}
           headingLevel={headingLevel}
@@ -4354,10 +4356,10 @@ function getContentThreeColumnMixedAlign(section: PageTemplatePreviewSection) {
     : sectionLibraryV3Content.contentThreeColumnMixed.align;
 }
 
-function getHeroCompactServiceAlign(section: PageTemplatePreviewSection) {
-  return heroCompactAlignments.has(section.variant ?? "")
-    ? (section.variant as HeroCompactAlign)
-    : sectionLibraryV3Content.heroCompactService.align;
+function getHeroCompactServiceLayout(
+  section: PageTemplatePreviewSection,
+): HeroCompactServiceLayout {
+  return resolveHeroCompactServiceLayout(section.variant);
 }
 
 function getCompactHeaderHeadingSize(

@@ -2692,6 +2692,24 @@ body {
     container-type: inline-size;
   }
 
+  /* Compact Hero keeps its type scale keyed to the same five-column frame at
+   * every heading-size setting. The largest centred headline alone reaches
+   * across the surrounding seven-column grid, so it gains line length without
+   * also making its cqw-driven font size jump. For a seven-column grid, a
+   * centred five-column span expands by 20% plus one-fifth of the grid gap on
+   * each side. */
+  .hero-compact-wide-headline {
+    width: calc(140cqw + (var(--site-grid-gap) * 0.4));
+    margin-inline: calc(-20cqw - (var(--site-grid-gap) * 0.2));
+  }
+
+  @media (max-width: 1023px) {
+    .hero-compact-wide-headline {
+      width: 100%;
+      margin-inline: 0;
+    }
+  }
+
 
   /* Dissolves the photo into the section on the full image split overlap
    * variants, where the copy sits over the image.
@@ -4050,6 +4068,66 @@ body {
     --recipe-contrast-card: var(--palette-raised);
     --recipe-contrast-card-text: var(--palette-ink);
     --recipe-eyebrow: #ffffff;
+  }
+
+  /* Service-request triage uses contrast to keep the primary request path
+     visually separate from the two routing alternatives. Each rule replaces
+     both halves of the card pair so the shared card context can rebuild its
+     text ladder, border, icon and button roles against the actual local
+     ground. The solid guard preserves the shared transparent-card option. */
+  .pagebuilder-paint-surface[data-pagebuilder-section-component="CTAServiceTriageSectionV3"][data-pagebuilder-card-fill="solid"][data-pagebuilder-color-recipe="page"]
+    .service-triage-card-secondary {
+    --recipe-card: var(--palette-dark);
+    --recipe-card-text: #ffffff;
+    background-color: var(--recipe-card) !important;
+  }
+
+  .pagebuilder-paint-surface[data-pagebuilder-section-component="CTAServiceTriageSectionV3"][data-pagebuilder-card-fill="solid"][data-pagebuilder-color-recipe="surface"]
+    .service-triage-card-secondary {
+    --recipe-card: var(--palette-ink);
+    --recipe-card-text: #ffffff;
+    background-color: var(--recipe-card) !important;
+  }
+
+  .pagebuilder-paint-surface[data-pagebuilder-section-component="CTAServiceTriageSectionV3"][data-pagebuilder-card-fill="solid"][data-pagebuilder-color-recipe="ink"]
+    .service-triage-card-primary {
+    --recipe-card: var(--palette-dark-surface);
+    --recipe-card-text: #ffffff;
+    background-color: var(--recipe-card) !important;
+  }
+
+  .pagebuilder-paint-surface[data-pagebuilder-section-component="CTAServiceTriageSectionV3"][data-pagebuilder-card-fill="solid"]:is(
+      [data-pagebuilder-color-recipe="dark"],
+      [data-pagebuilder-color-recipe="darkSurface"]
+    )
+    .service-triage-card-secondary {
+    --recipe-card: var(--palette-ink);
+    --recipe-card-text: #ffffff;
+    background-color: var(--recipe-card) !important;
+  }
+
+  .pagebuilder-paint-surface[data-pagebuilder-section-component="CTAServiceTriageSectionV3"][data-pagebuilder-card-fill="solid"]:is(
+      [data-pagebuilder-color-recipe="brand"],
+      [data-pagebuilder-color-recipe="accent"],
+      [data-pagebuilder-color-recipe="highlight"]
+    )
+    .service-triage-card-primary {
+    --recipe-card: color-mix(
+      in oklab,
+      var(--palette-dark) 90%,
+      #ffffff
+    );
+    --recipe-card-text: #ffffff;
+    /* The general dark-card treatment softens chroma into a 50% tint. That is
+       useful for secondary cards, but it makes this panel's one conversion CTA
+       look passive. Restore the chromatic recipe's high-contrast button pair
+       locally; the button anatomy and assigned Style Guide slot still own its
+       shape, gesture and timing. These must be the live roles because the
+       recipe roles were already resolved on the ancestor painting surface. */
+    --live-cta-primary: #ffffff;
+    --live-cta-primary-ink: var(--recipe-chromatic);
+    --live-cta-primary-hover: var(--recipe-cta-hover);
+    background-color: var(--recipe-card) !important;
   }
 
   /* A section that paints its own root would lay that colour over the ground
