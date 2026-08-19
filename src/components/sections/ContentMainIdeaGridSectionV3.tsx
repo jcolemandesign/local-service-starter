@@ -86,8 +86,20 @@ export function ContentMainIdeaGridSectionV3({
    * The horizontal padding stays. It is not what separates the rows, and
    * dropping it would move the copy out to the column edges - a realignment
    * nobody asked for while adjusting a vertical rhythm.
+   *
+   * THE LEAD CARD IS THE SAME CARD, and taking its vertical padding is what
+   * actually moves the bottom row. The grid is `auto-rows-fr` and the lead
+   * spans both rows, so whichever is taller - the lead or a row of points -
+   * sets BOTH row heights, and half of any surplus lands between the two rows
+   * of points as ground under row one. Bare, the lead was carrying 4rem of
+   * padding around nothing and was reliably the taller thing, so that surplus
+   * was its padding showing up a second time in a place it was never applied.
    */
   const isBareSurface = cardFill === "none" && cardBorder === "off";
+  const leadCardOverride = cx(
+    cardOverride,
+    isBareSurface ? "!py-0" : undefined,
+  );
   const pointCardOverride = cx(
     cardOverride,
     isBareSurface ? "!min-h-0 !justify-start !py-0" : undefined,
@@ -103,10 +115,26 @@ export function ContentMainIdeaGridSectionV3({
 
   return (
     <section className={colors.section}>
+      {/* The row gap comes down with the surfaces too, and only the row gap -
+          the column gap is what makes a 14-column track a 14-column track, so
+          it is the grid's and not this section's to set.
+
+          The site row rhythm is up to 4.5rem, which is the distance between
+          two BANDS. With cards it reads as the space between two rows of
+          objects; without them there are no objects, just four blocks of text
+          in a grid, and 4.5rem of nothing between two of them is a break in
+          the reading rather than a gap in a layout. The promoted layout gap is
+          the rhythm between blocks in one composition, which is what these
+          become. */}
       <LayoutGrid
         className="section-min-none auto-rows-fr items-stretch"
         columns={14}
         padding="lrg"
+        style={
+          isBareSurface
+            ? { rowGap: "var(--layout-gap-active, 1.75rem)" }
+            : undefined
+        }
       >
         <LayoutGridItem
           alignY="stretch"
@@ -131,7 +159,7 @@ export function ContentMainIdeaGridSectionV3({
               "reveal-on-scroll reveal-role-card",
               "fluid-type-frame flex h-full flex-col justify-center rounded-[var(--radius-surface-token)] border p-8 max-md:p-6",
               colors.card,
-              cardOverride,
+              leadCardOverride,
             )}
             style={{ "--reveal-index": 0 } as CSSProperties}
           >
