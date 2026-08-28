@@ -4,6 +4,10 @@ import { resolveBackgroundConfig } from "@/content/background-config";
 import { sectionToggleFieldNames } from "@/content/section-style-options";
 import { requireBuilderApiAccess } from "@/utils/builder-access";
 import { createSlotId } from "@/utils/section-id";
+import {
+  applySharedNavigationToTemplate,
+  getCanonicalTemplateNavigation,
+} from "@/utils/shared-template-navigation";
 import { validateTemplateStructure } from "@/utils/template-structure";
 
 export const runtime = "nodejs";
@@ -135,18 +139,28 @@ export async function POST(request: Request) {
 
   try {
     const templatesFile = await readTemplates();
-    const template = normalizeTemplate(
+    const normalizedTemplate = normalizeTemplate(
       body,
       templatesFile.templates.find(
         (currentTemplate) => currentTemplate.id === sanitizeSlug(body.id ?? ""),
       ),
     );
-    const nextTemplates = [
-      template,
+    const promotedTemplates = [
+      normalizedTemplate,
       ...templatesFile.templates.filter(
-        (currentTemplate) => currentTemplate.id !== template.id,
+        (currentTemplate) => currentTemplate.id !== normalizedTemplate.id,
       ),
     ];
+    const sharedNavigation = getCanonicalTemplateNavigation(
+      normalizedTemplate,
+      templatesFile.templates,
+    );
+    const nextTemplates = sharedNavigation
+      ? promotedTemplates.map((template) =>
+          applySharedNavigationToTemplate(template, sharedNavigation),
+        )
+      : promotedTemplates;
+    const template = nextTemplates[0];
 
     await mkdir(path.dirname(templatesPath), { recursive: true });
     await writeFile(

@@ -10,6 +10,10 @@ import {
 import type { StrategyPageSummary } from "@/utils/strategy-site-map";
 import { getStrategyPageCopyField } from "@/utils/strategy-site-map";
 import type { StrategyWorkspaceFields } from "@/utils/strategy-workspace";
+import {
+  getPromptLibraryPageGroupKey,
+  sortByPromptLibraryPageOrder,
+} from "@/utils/prompt-library-page-order";
 
 const strategyDigestPlaceholders = [
   "[paste strategy-digest.md here]",
@@ -918,7 +922,7 @@ function createFinalPageOptions(
 function groupFinalPageOptions(options: FinalPageOption[]) {
   const groups = new Map<string, FinalPageGroup>();
 
-  for (const option of options) {
+  for (const option of sortByPromptLibraryPageOrder(options)) {
     const bucket = getFinalPageBucket(option);
     const currentGroup = groups.get(bucket.key) ?? {
       ...bucket,
@@ -931,52 +935,13 @@ function groupFinalPageOptions(options: FinalPageOption[]) {
     });
   }
 
-  return Array.from(groups.values())
-    .map((group) => ({
-      ...group,
-      pages: group.pages.toSorted((a, b) => sortFinalPageOptions(a, b, group.key)),
-    }))
-    .sort((a, b) => a.sortOrder - b.sortOrder);
-}
-
-function sortFinalPageOptions(
-  a: FinalPageOption,
-  b: FinalPageOption,
-  groupKey: string,
-) {
-  if (groupKey === "core") {
-    return getCorePageSortOrder(a) - getCorePageSortOrder(b);
-  }
-
-  return a.label.localeCompare(b.label);
-}
-
-function getCorePageSortOrder(option: FinalPageOption) {
-  const normalizedId = normalizePageKey(option.id);
-  const normalizedType = normalizePageKey(option.pageType);
-  const normalizedLabel = normalizePageKey(option.label);
-  const normalizedValues = [normalizedId, normalizedType, normalizedLabel];
-  const coreOrder = [
-    ["home", "homepage"],
-    ["about"],
-    ["services", "services-overview"],
-    ["contact"],
-  ];
-  const matchIndex = coreOrder.findIndex((aliases) =>
-    aliases.some((alias) => normalizedValues.includes(alias)),
-  );
-
-  return matchIndex === -1 ? coreOrder.length : matchIndex;
+  return Array.from(groups.values());
 }
 
 function getFinalPageBucket(option: FinalPageOption) {
-  const normalizedPageType = normalizePageKey(option.pageType);
-  const normalizedId = normalizePageKey(option.id);
+  const groupKey = getPromptLibraryPageGroupKey(option);
 
-  if (
-    ["home", "services", "about", "contact"].includes(normalizedId) ||
-    ["home", "services-overview", "about", "contact"].includes(normalizedPageType)
-  ) {
+  if (groupKey === "core") {
     return {
       description:
         "Primary site pages that shape the main navigation, trust path, and conversion path.",
@@ -986,7 +951,7 @@ function getFinalPageBucket(option: FinalPageOption) {
     };
   }
 
-  if (normalizedPageType === "individual-service") {
+  if (groupKey === "repeatable-services") {
     return {
       description:
         "Repeatable child pages that use one service template for each priority service.",
@@ -996,7 +961,7 @@ function getFinalPageBucket(option: FinalPageOption) {
     };
   }
 
-  if (normalizedPageType === "service-area") {
+  if (groupKey === "service-areas") {
     return {
       description:
         "Coverage pages for the service area overview or individual location pages.",
@@ -1006,14 +971,11 @@ function getFinalPageBucket(option: FinalPageOption) {
     };
   }
 
-  if (
-    normalizedPageType.includes("blog") ||
-    normalizedPageType.includes("product")
-  ) {
+  if (groupKey === "content-resources") {
     return {
       description:
         "Resource, article, or product-listing structures that usually come after the core site.",
-      key: "content-resources",
+      key: groupKey,
       label: "Content and resource pages",
       sortOrder: 40,
     };
@@ -1022,7 +984,7 @@ function getFinalPageBucket(option: FinalPageOption) {
   return {
     description:
       "Secondary conversion, offer, plan, financing, confirmation, or utility pages.",
-    key: "supporting",
+    key: groupKey,
     label: "Supporting pages",
     sortOrder: 50,
   };

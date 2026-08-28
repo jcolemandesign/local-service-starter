@@ -18,9 +18,9 @@ import {
  * 180 of 192 empty required fields: the gate blocking on the system's own
  * convention rather than on unfinished work.
  *
- * This measures the two populations against the real staged data. The chrome
- * count is what the fix stops flagging; the content count is the work that
- * genuinely remains.
+ * The chrome assertion measures the real staged data. The content assertion
+ * uses a local unfinished field so completing the live project cannot make the
+ * regression test fail.
  */
 
 type Section = { component: string; mode?: string; name?: string };
@@ -80,13 +80,18 @@ describe("site chrome export validation", () => {
   });
 
   it("keeps flagging empty copy on real content sections", () => {
-    const contentEmpty = pages.flatMap(
-      (page) => classifyEmptyRequiredCopy(page).content,
-    );
+    const contentSection = {
+      component: "HeroFullscreenSectionV2",
+      mode: "Hero",
+      name: "Fullscreen image hero",
+    };
+    const contentPath = `${getSectionId(contentSection as never, 0)}.h1`;
+    const { content: contentEmpty } = classifyEmptyRequiredCopy({
+      fields: [{ kind: "copy", path: contentPath, value: "" }],
+      template: { sections: [contentSection] },
+    });
 
-    // Every one of these is genuine unfinished copy, so the exemption must not
-    // widen far enough to swallow them.
-    expect(contentEmpty.length).toBeGreaterThan(0);
+    expect(contentEmpty).toEqual([contentPath]);
     expect(contentEmpty.every((path) => !/nav|footer/i.test(path))).toBe(true);
   });
 

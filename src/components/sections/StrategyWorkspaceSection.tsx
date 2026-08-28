@@ -20,6 +20,7 @@ import { SiteIdentityEditor } from "@/components/sections/SiteIdentityEditor";
 import { usePromotedPalette } from "@/utils/use-promoted-palette";
 import type { SiteIdentity } from "@/content/site-identity";
 import { getCanonicalSectionLabel } from "@/content/section-library-v3";
+import { sortByPromptLibraryPageOrder } from "@/utils/prompt-library-page-order";
 import {
   buildStrategyNavigation,
   deriveStrategyPagesFromFields,
@@ -208,9 +209,8 @@ const baseFieldGroups: {
   },
 ];
 
-function createPageCopyFieldGroup(strategyPages: StrategyPageSummary[]) {
-  const detectedPages = strategyPages.filter((page) => page.detected);
-  const pageFields = detectedPages.map((page) => ({
+function createPageCopyFieldGroup(orderedPages: StrategyPageSummary[]) {
+  const pageFields = orderedPages.map((page) => ({
     key: getStrategyPageCopyField(page),
     label: `${page.label} copy`,
     minRows: page.id === "thank-you" ? 8 : 12,
@@ -342,13 +342,20 @@ export function StrategyWorkspaceSection({
     () => deriveStrategyPagesFromFields(fields, pageSlots),
     [fields, pageSlots],
   );
+  const orderedDetectedStrategyPages = useMemo(
+    () =>
+      sortByPromptLibraryPageOrder(
+        strategyPages.filter((page) => page.detected),
+      ),
+    [strategyPages],
+  );
   const fieldGroups = useMemo(
     () => [
       ...baseFieldGroups.slice(0, 2),
-      createPageCopyFieldGroup(strategyPages),
+      createPageCopyFieldGroup(orderedDetectedStrategyPages),
       ...baseFieldGroups.slice(2),
     ],
-    [strategyPages],
+    [orderedDetectedStrategyPages],
   );
   const fieldGroupStatuses = useMemo(
     () =>
@@ -379,11 +386,12 @@ export function StrategyWorkspaceSection({
   );
   const assemblyPages = useMemo(
     () =>
-      strategyPages.filter((page) => page.detected).map((page) => {
+      orderedDetectedStrategyPages.map((page) => {
         const matchingStagedPages = page.repeatable
           ? stagedPagesByPageType.get(normalizePageType(page.pageType)) ?? []
           : [];
-        const stagedPage = stagedPagesById.get(page.id) ?? matchingStagedPages[0];
+        const stagedPage =
+          stagedPagesById.get(page.id) ?? matchingStagedPages[0];
 
         return {
           ...page,
@@ -399,13 +407,13 @@ export function StrategyWorkspaceSection({
           templateName: stagedPage?.templateName ?? "",
         };
       }),
-    [stagedPagesById, stagedPagesByPageType, strategyPages],
+    [orderedDetectedStrategyPages, stagedPagesById, stagedPagesByPageType],
   );
   const navigation = useMemo(
     () => buildStrategyNavigation(strategyPages),
     [strategyPages],
   );
-  const detectedPageCount = strategyPages.filter((page) => page.detected).length;
+  const detectedPageCount = orderedDetectedStrategyPages.length;
   const templatePickerPage =
     assemblyPages.find((page) => page.id === templatePickerPageId) ?? null;
   const templatePickerChildPage = templatePickerChildPageId
